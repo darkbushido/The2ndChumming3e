@@ -2,10 +2,11 @@
  * Page text of a rulebook, for the rules-check ledger (TODO 121) — from the PDF or from its OCR text.
  *
  * Two sources, same page numbering (PDF page, 1-based):
- *   - **PDF** (`pdftotext`, the maintainer's library) — the authority when it is on this machine.
- *   - **OCR text** — the `darkbushido/Shadowrun-OCR` checkout: one `pdftotext -layout` dump per book,
- *     pages separated by form feeds, books with no text layer OCR'd into the same shape (`[no-text]`
- *     in the name). Used when the PDFs are not here — a cloud session, a second machine.
+ *   - **OCR text** — the default, the same everywhere: the `darkbushido/Shadowrun-OCR` checkout (or the
+ *     untracked SR-OCR/): one `pdftotext -layout` dump per book, pages separated by form feeds, books
+ *     with no text layer OCR'd into the same shape (`[no-text]` in the name).
+ *   - **PDF** (`pdftotext`, the maintainer's library) — for a book the OCR text lacks, when there is no
+ *     OCR text at all, or always with `prefer: 'pdf'` (`SR3_BOOK_SOURCE=pdf`).
  *
  * ⚠ The OCR text is copyrighted rulebook text. It is READ from a sibling checkout, never copied into
  * this repo (`tests/sr-ocr-guard.test.mjs`); the ledger carries only the short quotes it always has.
@@ -84,12 +85,14 @@ export function indexOcr(dir) {
 export const pageOfText = (text, page) => text.split('\f')[page - 1] ?? '';
 
 /**
- * A page reader. `pdfDir` is used when it exists; otherwise `ocrDir`. `read(file, page)` returns
- * `{ whole, views, source }` or throws naming what is missing.
+ * A page reader. The OCR text when `ocrDir` exists, else the PDFs; `prefer: 'pdf'` turns that round.
+ * A book missing from the preferred source is read from the other if it has it. `read(file, page)`
+ * returns `{ whole, views, source }` or throws naming what is missing.
  */
-export function bookPages({ pdfDir, ocrDir }) {
-  const usePdf = pdfDir && existsSync(pdfDir);
-  const source = usePdf ? 'pdf' : 'ocr';
+export function bookPages({ pdfDir, ocrDir, prefer = 'ocr' }) {
+  const hasPdf = Boolean(pdfDir && existsSync(pdfDir));
+  const hasOcr = Boolean(ocrDir && existsSync(ocrDir));
+  const source = (prefer === 'pdf' ? hasPdf || !hasOcr : !hasOcr && hasPdf) ? 'pdf' : 'ocr';
   let ocr = null;
   const texts = new Map(), cache = new Map();
 
@@ -104,7 +107,7 @@ export function bookPages({ pdfDir, ocrDir }) {
   }
 
   function fromOcr(file, page) {
-    if (!ocrDir || !existsSync(ocrDir)) {
+    if (!hasOcr) {
       throw new Error(`neither the PDFs (${pdfDir}) nor the OCR text (${ocrDir}) are on this machine — clone darkbushido/Shadowrun-OCR beside this repo or set SR3_OCR_DIR`);
     }
     ocr ??= indexOcr(ocrDir);
@@ -119,7 +122,12 @@ export function bookPages({ pdfDir, ocrDir }) {
     source,
     read(file, page) {
       const key = `${file}|${page}`;
-      if (!cache.has(key)) cache.set(key, { ...(usePdf ? fromPdf(file, page) : fromOcr(file, page)), source });
+      if (!cache.has(key)) {
+        const ocrHas = () => hasOcr && (ocr ??= indexOcr(ocrDir)).has(bookKey(file));
+        const from = source === 'ocr' ? (!ocrHas() && hasPdf ? 'pdf' : 'ocr')
+          : ((!hasPdf || !existsSync(path.join(pdfDir, file))) && ocrHas() ? 'ocr' : 'pdf');
+        cache.set(key, { ...(from === 'pdf' ? fromPdf(file, page) : fromOcr(file, page)), source: from });
+      }
       return cache.get(key);
     },
   };

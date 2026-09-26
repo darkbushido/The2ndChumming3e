@@ -14071,7 +14071,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2014,
+          "line": 2035,
           "snippet": "await set('unconscious', down && !dead);"
         }
       ]
@@ -14167,7 +14167,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 2011,
+          "line": 2032,
           "snippet": "const down     = physFull || (stunFull && !painEditor);"
         }
       ]
@@ -14204,7 +14204,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 2000,
+          "line": 2021,
           "snippet": "const dead     = physFull && game.sr3e.SR3EActor.deadFromOverflow(w.overflow?.value, body);"
         },
         {
@@ -16150,7 +16150,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 655,
+          "line": 676,
           "snippet": "function calcBlastM(amx, amy, walls, power) {"
         }
       ]
@@ -16202,7 +16202,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 671,
+          "line": 692,
           "snippet": "label = `Behind @${W.toFixed(1)}m`;"
         }
       ]
@@ -16228,7 +16228,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 807,
+          "line": 828,
           "snippet": "const totalP = Math.round(waves.reduce((s, w) => s + w.power, 0));"
         }
       ]
@@ -16254,7 +16254,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 953,
+          "line": 974,
           "snippet": "power: Math.round(waves.reduce((s, w) => s + w.power, 0)),"
         }
       ]
@@ -16964,7 +16964,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 2000,
+          "line": 2021,
           "snippet": "const dead     = physFull && game.sr3e.SR3EActor.deadFromOverflow(w.overflow?.value, body);"
         },
         {
@@ -19387,7 +19387,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2014,
+          "line": 2035,
           "snippet": "await set('unconscious', down && !dead);"
         }
       ],
@@ -22922,7 +22922,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2437,
+          "line": 2458,
           "snippet": "Hooks.on('deleteItem', (item) => _recordEssenceHoleOnRemoval(item));"
         }
       ]
@@ -22948,7 +22948,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2437,
+          "line": 2458,
           "snippet": "Hooks.on('deleteItem', (item) => _recordEssenceHoleOnRemoval(item));"
         }
       ]
@@ -23006,7 +23006,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2354,
+          "line": 2375,
           "snippet": "if (item.system?.essenceSlot) {"
         }
       ]

@@ -59,6 +59,14 @@ export async function run(t) {
   const pg = books.read('Book Two.pdf', 2);
   t.ok('…page 2 is the second form-feed page', pg.whole.includes('LEFT HEADING'));
   t.ok('…and its views include the split columns', pg.views.some(v => norm(v).includes('astral projecting cause physical')));
+  // Both present: the OCR text is the default; SR3_BOOK_SOURCE=pdf (prefer: 'pdf') turns it round.
+  mkdirSync(path.join(dir, 'pdfs'));
+  t.is('with both, the OCR text is the source', bookPages({ pdfDir: path.join(dir, 'pdfs'), ocrDir: dir }).source, 'ocr');
+  t.is('…and prefer pdf makes it the PDFs', bookPages({ pdfDir: path.join(dir, 'pdfs'), ocrDir: dir, prefer: 'pdf' }).source, 'pdf');
+  t.is('prefer pdf with no PDFs still reads the OCR text', bookPages({ pdfDir: path.join(dir, 'nope'), ocrDir: dir, prefer: 'pdf' }).source, 'ocr');
+  const pdfFirst = bookPages({ pdfDir: path.join(dir, 'pdfs'), ocrDir: dir, prefer: 'pdf' });
+  t.is('…and a book the PDFs lack is read from the OCR text', pdfFirst.read('Book Two.pdf', 2).source, 'ocr');
+
   let err = '';
   try { books.read('Missing Book.pdf', 1); } catch (e) { err = e.message; }
   t.ok('a book with no OCR text is an error naming it', /no OCR text for Missing Book\.pdf/.test(err));

@@ -22,8 +22,8 @@
  * Evidence formats:
  *   pdf:    { file, pdfPage, printedPage, quote, ocrQuote? }   `quote` must appear in that page's text (whitespace-normalised);
  *           `ocrQuote`, when set, is what the OCR source checks instead (a table the OCR layout prints in another order)
- *           — read from the PDFs when they are on this machine, else from the Shadowrun-OCR checkout beside
- *           this repo or SR-OCR/ (SR3_PDF_DIR / SR3_OCR_DIR override). Copy quotes from the layout text, one column at
+ *           — read from the OCR text (SR-OCR/, else the Shadowrun-OCR checkout beside this repo), else the
+ *           PDFs; SR3_BOOK_SOURCE=pdf reads the PDFs first (SR3_PDF_DIR / SR3_OCR_DIR override the paths). Copy quotes from the layout text, one column at
  *           a time: they then verify against either source.
  *   code:   { file, line, snippet }                 `snippet` must appear within 5 lines of `line`
  *   search: { pattern, path? }                      a regex; must have zero matches under `path` (default scripts/)
@@ -37,8 +37,8 @@ import { bookPages, wordsOnPage } from './lib/book-pages.mjs';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const GUIDES = path.join(ROOT, 'guides');
 const PDF_DIR = process.env.SR3_PDF_DIR ?? 'C:\\Users\\lance\\Documents\\Shadowrun 3rd Edition PDFs';
-// Without the PDFs: the OCR text (tools/lib/book-pages.mjs) — the untracked SR-OCR/ in this checkout, else
-// the Shadowrun-OCR checkout beside it.
+// The book text is the OCR text (tools/lib/book-pages.mjs) — the untracked SR-OCR/ in this checkout, else
+// the Shadowrun-OCR checkout beside it — and the PDFs only without it, or with SR3_BOOK_SOURCE=pdf.
 const OCR_DIR = process.env.SR3_OCR_DIR
   ?? [path.join(ROOT, 'SR-OCR'), path.join(ROOT, '..', 'Shadowrun-OCR')].find(existsSync)
   ?? path.join(ROOT, '..', 'Shadowrun-OCR');
@@ -116,7 +116,7 @@ function init(v) {
   console.log(`${entries.length} units in ${new Set(entries.map(e => e.file)).size} pages; ${carried} carried over. → ${path.relative(ROOT, ledgerPath(v))}`);
 }
 
-const books = bookPages({ pdfDir: PDF_DIR, ocrDir: OCR_DIR });
+const books = bookPages({ pdfDir: PDF_DIR, ocrDir: OCR_DIR, prefer: process.env.SR3_BOOK_SOURCE === 'pdf' ? 'pdf' : 'ocr' });
 const pdfPageText = (file, page) => books.read(file, page);
 /** Quotes that passed only by `wordsOnPage` on the OCR text — listed by `check`, counted in the report. */
 const looseQuotes = [];
@@ -218,7 +218,7 @@ function report(v) {
   out.push(ok
     ? `**Status: COMPLETE — all ${l.entries.length} units of ${pages} guide pages resolved, and every quote and code location re-verified by \`tools/rules-ledger.mjs check\`.**`
     : `**Status: PARTIAL — the ledger has unresolved or unverifiable entries; this record is not a completed check.**`, '');
-  out.push(`Book text: ${books.source === 'pdf' ? 'the PDFs' : 'the OCR text (Shadowrun-OCR), the PDFs being absent'}.`
+  out.push(`Book text: ${books.source === 'pdf' ? 'the PDFs' : 'the OCR text (Shadowrun-OCR)'}.`
     + (looseQuotes.length ? ` ${looseQuotes.length} quote(s) matched word by word only (tables in the OCR layout run across rows); \`check\` lists them as LOOSE.` : ''), '');
   out.push('Generated from `audit/rules-ledger-' + v + '.json`. Regenerate; do not hand-edit. A complete record proves the ledger is',
     'fully evidenced — it does not prove the evidence was read correctly. Every `diverges` and every `unverifiable`',
