@@ -144,6 +144,16 @@ export const ActionEconomy = {
   },
 
   /**
+   * The snapshot a charge carries: the one its flow took with `begin`, if taken in this phase.
+   * ⚠ **Every charge in a flow carries it, not just the first** (TODO 152). A flow can charge twice —
+   * Ready Weapon then Fire Weapon, Remove Clip then Insert Clip — and when only the first entry held
+   * the snapshot, the undo's default (the LAST entry) put nothing back, so the GM had to press ↺ again.
+   */
+  pendingSnap(pending, phase) {
+    return pending && pending.phase === phase ? pending.snap : null;
+  },
+
+  /**
    * What an undo would put back: every snapshotted value that differs now, as
    * `[{ kind: 'actor'|'item', id, name, field, now, back }]`. An item deleted since is listed with
    * `gone: true` — it cannot be restored field by field, so the dialog says so.

@@ -6504,6 +6504,53 @@ automatic — the design ethos, and the book gives the GM the pick within a slot
 ⚠ **Not the Essence hole.** #53's hole records Essence spent on removed cyberware; these slots describe
 cyberware that is still installed.
 
+## 131. ✅ Cover and visibility on elemental spells — `629638e1`
+
+**The book, SR3 p.183:** *"Elemental spells are treated like normal ranged attacks … They have a base
+Target Number of 4, regardless of range, as long as the caster can see the target. Cover, visibility,
+injury and sustaining modifiers apply."*
+
+Finding 4's fix routed elemental spells through the ranged dodge and soak. Injury and sustaining
+modifiers reach the Sorcery Test already (`rollPool`), but **cover and visibility do not**: the cast
+never opens the GM's TN window (`SR3EItem._promptGMAttackWindow`), so a Flamethrower through Thermal
+Smoke is cast at a flat 4. Wanted: open that window for an elemental cast — its Target, Attacker and
+Conditions groups, not the Gear guesses (a smartlink does nothing for a spell) — on the same
+`gmApprovesTN` rule as ranged, and fold the result into the cast TN. ⚠ **Range stays out**:
+*"regardless of range"*. ⚠ An **area** elemental spell does not need line of sight to a target behind
+a wall (p.182: *"Targets hidden behind a wall … will still get cooked"*), so for area casts the
+visibility row applies to the caster's view of the centre, not to each target.
+
+Also noticed, not fixed: `SR3EActor._spellSoakButtonHtml` and the `dp.isSpellSoak` branch after a
+failed dodge are **dead** — nothing sets `isSpellSoak`. They are a leftover spell-dodge route that led
+back to a Willpower resist; remove them once #131 is done, so nobody revives them for elemental spells.
+
+> **Done 2026-09-26.** The cast opens the GM window through `sr3e.spell.negotiate` (same `gmApprovesTN`
+> rule) after the targets and before the Spell Pool; rows from `spellModifierGroups()` (no Gear; an area
+> cast drops Target, p.182). Touch-range spells never ask (p.182: *"not subject to cover or visibility
+> modifiers"*). The GM's difference moves the roll's TN and every target's. The dead spell-soak route is
+> removed. Tests: `tests/elemental-spells.test.mjs`, two mutants; live check TESTING.md §41.
+
+## 132. ✅ Astral damage: dual beings resist with Body, not Willpower — `2143c8ed`
+
+**The book, SR3 p.175:** *"The Damage Resistance Test is resolved using Willpower or Force for astral
+beings, or Body for dual beings."* p.174 puts *"Astrally perceiving characters and other dual beings"*
+in one class, using *"their normal physical Attributes, skills and Combat Pool in astral combat"*.
+
+**The code:** `_postAstralSoakCard` always offers **Willpower** (*"Willpower / Astral Body"*) — right for
+a projecting character or a spirit, wrong for anyone astrally perceiving or dual-natured. The pool is
+editable, so a GM can correct it by hand, which is why it has not bitten.
+
+**For the maintainer:** is `system.astralMode` (`'dual'` vs `'astral'`) the right switch, and what should
+an actor with no mode set default to? p.174 also gives dual beings their **Combat Pool** in astral combat;
+check whether the astral soak card should offer it.
+
+**Done (0.6.2):** `SR3EActor.astralResistPool` — only `astralMode === 'astral'` is an astral being
+(Willpower; a spirit's Force). Every other mode, **including none**, is a dual being: Body, plus an optional
+Combat Pool spend (p.174). Reasoning: anyone in astral combat who is not projecting must be perceiving or
+dual-natured. The pool stays editable. Not done: a projecting defender adding **Astral Combat Pool** to the
+resist (p.174 gives it the pool; whether it covers resistance is not stated), and the astral attack card
+(`SR3EActor.js`, `availableAstralPool` ~line 10689) offering Astral Pool to dual beings, who use Combat Pool.
+
 ## 133. ✅ Unloading a gun returns the rounds to storage as full clips — `f48e4eba`
 
 **Done 2026-09-26 (`f48e4eba`, `d86e53f3`).** Two causes. The sheet printed every stock's `loadMechanism`, and loose rounds default to `c`, so rounds that came back out of a gun read "Removable Clip" — now `AmmoStock.loadLabel` shows them as `loose`. And an unconverted clip item (#143) still counted in rounds could take returned rounds, which then read as that many clips — `_returnRounds` now never picks an item whose name is a reload.
@@ -6511,6 +6558,34 @@ cyberware that is still installed.
 ## 134. ✅ There is no way to unload a gun — `f48e4eba`
 
 **Done 2026-09-26 (`f48e4eba`).** ⏏ Unload on a loaded firearm's row (ammo tracking on): the unfired rounds go back to loose stock of their type (`SR3EItem.unload` → `_returnRounds`), nothing is lost, and a clip or drum charges Remove Clip, one Simple Action (SR3 p.107). The book gives no action for emptying anything else by hand, so nothing is charged and the notice says so.
+
+## 135. ✅ Characters should start with nothing equipped — `db49fa8`
+
+## 136. ✅ A character who started with grenades always seems to have one equipped — `db49fa8`
+
+**Fixed 2026-09-26 (`db49fa8`, `main`), with #135 — one cause.** `system.ready` starts true (so sheets from before
+Ready Weapon keep fighting), which made every NEW weapon read as drawn: a starting character held its whole kit and
+a grenade always showed ✋. A `preCreateItem` hook now puts any weapon created on a character or NPC away
+(`ReadyWeapon.putAwayOnCreate`; body weapons, `hands: 0` cyberguns and vehicle mounts excepted) and takes new
+armour off. Mutant `new-weapons-arrive-in-hand`; live check in TESTING.md §40.
+
+## 138. ✅ The healing button moves when a character is unconscious or damaged — `6af59ead`
+
+The wound status text (TN/Init modifier, "unconscious", ☠ DEAD) sat before the 🩹 Healing button in the header's wrapping row, so the
+button shifted whenever the wounds changed. That text now comes last in the row; `tests/healing.test.mjs` pins the order.
+
+## 139. ✅ A medkit can be restocked in combat — restocking should happen when shopping — `81013d4`
+
+**Fixed.** The healing card's 🧰 Restock button charged 50¥ and refilled the kit with one click, mid-fight. It is gone; the
+card now says to buy *Medkit Supplies* (50¥, Availability 2/24hrs, Street Index 1.5, SR3 p.304). 🛒 Buy gear lists the
+empty kits and fills the form with the supplies; 💴 Pay refills the first empty kit instead of adding an item.
+- 🧪 Live: fail a medkit supplies check (1 on 1D6) → no restock button; 🛒 Buy gear → "Buy Medkit Supplies" fills the form →
+  source, pay → the kit counts again in the healing flow.
+
+## 140. ✅ The resist card's soak-hits section looks clickable — it should be greyed out — `7ea7137a`
+
+`.sr-soak-result` was a gold box with a full gold border, like the resist buttons under it. Now a grey panel with a left rule,
+muted text and a default cursor (`tests/soak-result-style.test.mjs`).
 
 ## 142. ✅ Loading a clip-fed gun treats the clips as individual rounds — `d86e53f3`
 
@@ -6601,7 +6676,7 @@ Tracking open steps needs a persisted record, such as a message flag.
 ## 148. ✅ Throwing a grenade asks for a firearm skill — `cd98d5c7`
 
 Throwing a grenade offers a firearm skill instead of a throwing skill. It may belong with
-[#146](#146) and [#136](TODO.md#136), which are also about grenades.
+[#146](#146) and [#136](#136), which are also about grenades.
 
 **Fixed 2026-09-23 (`cd98d5c7`, `main`).** `WEAPON_SKILL_MAP` had no entry for `GR` (or any thrown
 category), so `_getWeaponSkill` fell through to `'Firearms'`. SR3 p.86: *"Throwing Weapons governs the
@@ -6630,6 +6705,14 @@ worked example has a defensive grenade at 3 m doing 4S (10S − 6) and nothing a
 `system.blast` on projectile and thrown items (the book's `-1/m`, `-1/.5m`; blank = −1/m) is read by
 `scripts/data/blast.mjs`; the blast radius follows it too. Data-model change: full Foundry restart, no
 migration. The Chunky Salsa path is [#159](#159).
+
+## 152. ✅ Undoing an action only works on the second try — `c264b6d3`
+
+The GM's ↺ Undo on the action ledger ([#48](TODO.md#48)) has to be pressed twice before it takes effect.
+
+**Cause:** a flow that charges twice (Ready Weapon then Fire Weapon, Remove Clip then Insert Clip) gave its
+snapshot to the first charge only; ↺ defaults to the last entry, which had none, so the first press only freed
+the slot. Every charge in a flow now carries the snapshot (`ActionEconomy.pendingSnap`, keyed to the phase).
 
 ## 155. ✅ Grenades with no damage code cannot be thrown — `5df18568`
 

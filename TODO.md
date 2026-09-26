@@ -32,14 +32,14 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**43 open.** 133 done — see [TODO-DONE.md](TODO-DONE.md).
+**35 open.** 141 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 🔴 Confirmed bugs, still open | [135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
+| 🔴 Confirmed bugs, still open | [137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[141](#141) The second Simple Action does not flag and end the turn<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
-| 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[131](#131) Cover and visibility on elemental spells<br>[132](#132) Astral damage: dual beings resist with Body, not Willpower |
+| 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
@@ -224,10 +224,6 @@ cannot reach. If time is short, do these.
 
 ### 🔴 Confirmed bugs, still open
 
-## 135. Characters should start with nothing equipped
-
-## 136. A character who started with grenades always seems to have one equipped
-
 ## 137. The damage chat card assigns damage again after the player already assigned it through the popup
 
 **Fixed on `claude/project-thread-ccsy1c`, live check pending.** Cause (from the code, not reproduced live): the 🩸 Assign
@@ -238,13 +234,11 @@ step key; the GM checks the card's `acted` ledger, applies and records in one qu
 - 🧪 Live: player assigns a wound from the chat pop-up; the GM's chat log shows it spent; the GM (and the player after F5)
   cannot assign it again; the wound track moved once.
 
-## 138. The healing button moves when a character is unconscious or damaged
-
-## 139. A medkit can be restocked in combat — restocking should happen when shopping
-
-## 140. The resist card's soak-hits section looks clickable — it should be greyed out
-
 ## 141. The second Simple Action does not flag and end the turn
+
+**Flag — done (`c264b6d3`):** the GM's second **Simple** button lights up once two Simples are taken.
+**Still open — end the turn:** a roll's charge only marks ([#48](#48): *auto-mark, never auto-advance*); ending the
+phase on the second Simple would also put it out of ↺ Undo's reach. The maintainer's call.
 
 ## 151. Cyber weapons don't show up in the weapons list, and cannot be used in combat
 
@@ -255,10 +249,6 @@ internal magazine. Removing the implant removes it. Implants fitted earlier are 
 Body weapons (CYB/UNA) now appear in the attack picker without an Equip.
 - 🧪 Live: drag Spur(CYB) onto a character → a Spur row under Cyber & Unarmed, attack with it; drag CyGun Heavy(HPist)(CYB)
   → a firearm, reload and fire; delete the implant → its weapon goes; an older actor shows the + Add weapon offer.
-
-## 152. Undoing an action only works on the second try
-
-The GM's ↺ Undo on the action ledger ([#48](#48)) has to be pressed twice before it takes effect.
 
 ## 161. Flechette weapons — the two things the book does not settle
 
@@ -692,46 +682,6 @@ that applies its effects as a timed boost (the Adrenal Pump's `augmentations` pa
 duration, counted down on the round hook, a crash card on expiry), a resistance/addiction roll card
 in the healing helper's style, and the effects as data on the item rather than parsed from prose.
 Effects offered and applied only on a click — nothing automatic, per the design ethos.
-
-<a id="132"></a>
-
-## 131. Cover and visibility on elemental spells — **left over from rules-check 0.6.0 Finding 4, 2026-09-22**
-
-**The book, SR3 p.183:** *"Elemental spells are treated like normal ranged attacks … They have a base
-Target Number of 4, regardless of range, as long as the caster can see the target. Cover, visibility,
-injury and sustaining modifiers apply."*
-
-Finding 4's fix routed elemental spells through the ranged dodge and soak. Injury and sustaining
-modifiers reach the Sorcery Test already (`rollPool`), but **cover and visibility do not**: the cast
-never opens the GM's TN window (`SR3EItem._promptGMAttackWindow`), so a Flamethrower through Thermal
-Smoke is cast at a flat 4. Wanted: open that window for an elemental cast — its Target, Attacker and
-Conditions groups, not the Gear guesses (a smartlink does nothing for a spell) — on the same
-`gmApprovesTN` rule as ranged, and fold the result into the cast TN. ⚠ **Range stays out**:
-*"regardless of range"*. ⚠ An **area** elemental spell does not need line of sight to a target behind
-a wall (p.182: *"Targets hidden behind a wall … will still get cooked"*), so for area casts the
-visibility row applies to the caster's view of the centre, not to each target.
-
-Also noticed, not fixed: `SR3EActor._spellSoakButtonHtml` and the `dp.isSpellSoak` branch after a
-failed dodge are **dead** — nothing sets `isSpellSoak`. They are a leftover spell-dodge route that led
-back to a Willpower resist; remove them once #131 is done, so nobody revives them for elemental spells.
-
-<a id="124"></a>
-
-## 132. Astral damage: dual beings resist with Body, not Willpower — **found fixing rules-check 0.6.0 Finding 5, 2026-09-22**
-
-**The book, SR3 p.175:** *"The Damage Resistance Test is resolved using Willpower or Force for astral
-beings, or Body for dual beings."* p.174 puts *"Astrally perceiving characters and other dual beings"*
-in one class, using *"their normal physical Attributes, skills and Combat Pool in astral combat"*.
-
-**The code:** `_postAstralSoakCard` always offers **Willpower** (*"Willpower / Astral Body"*) — right for
-a projecting character or a spirit, wrong for anyone astrally perceiving or dual-natured. The pool is
-editable, so a GM can correct it by hand, which is why it has not bitten.
-
-**For the maintainer:** is `system.astralMode` (`'dual'` vs `'astral'`) the right switch, and what should
-an actor with no mode set default to? p.174 also gives dual beings their **Combat Pool** in astral combat;
-check whether the astral soak card should offer it.
-
-<a id="131"></a>
 
 ### 🖥 Matrix
 

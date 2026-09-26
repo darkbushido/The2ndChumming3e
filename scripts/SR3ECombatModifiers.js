@@ -348,6 +348,24 @@ export function mvpModifierGroups() {
 }
 
 /**
+ * The GM window's rows for an elemental spell · SR3 p.183 (TODO 131)
+ *
+ * The ranged groups minus **Gear** — a smartlink or laser sight does nothing for a spell. Range is
+ * never a row anywhere (it is the base TN), which is right here twice over: *"a base Target Number of
+ * 4, regardless of range"*.
+ *
+ * An **area** cast also drops **Target**: it is aimed at a point, and p.182 is explicit that cover
+ * does not protect the people in it — *"Targets hidden behind a wall … will still get cooked"*. Its
+ * visibility row is then the caster's view of the centre. Pure.
+ *
+ * @param {{area?: boolean}} [opts]
+ */
+export function spellModifierGroups({ area = false } = {}) {
+  const drop = new Set(area ? ['gear', 'target'] : ['gear']);
+  return mvpModifierGroups().filter(g => !drop.has(g.key));
+}
+
+/**
  * What is left of a worn gyro after recoil takes its share, spent on the Attacker movement rows the GM
  * ticked — p.113: *"The total recoil and movement modifiers are reduced by -1 for every point of
  * gyro-stabilization"*. One allowance; the fire dialog spent it on recoil first. Pure.

@@ -141,6 +141,19 @@ export async function run(t) {
   t.is('a medkit in storage is not on hand', H.findEquipment([who('a', [kit('k6', 'Medkit [6]', { stored: true }), kit('k3', 'Medkit [3]')])], 'medkit')?.rating, 3);
   t.is('an empty [6] does not beat a stocked [3]',
     H.findEquipment([who('a', [kit('k6', 'Medkit [6]', { suppliesOut: true }), kit('k3', 'Medkit [3]')])], 'medkit')?.rating, 3);
+  // TODO 139: an empty medkit is refilled by buying Medkit Supplies, never from the healing card mid-fight.
+  t.ok('"Medkit Supplies" is a refill, a medkit is not', H.isMedkitSupplies('Medkit Supplies') && !H.isMedkitSupplies('Medkit [6]'));
+  t.is('only the empty medkits need supplies',
+    H.emptyMedkits([kit('k6', 'Medkit [6]', { suppliesOut: true }), kit('k3', 'Medkit [3]'), kit('s', 'Medkit Supplies', { suppliesOut: true })]).map(i => i.id).join(), 'k6');
+  t.is('Medkit Supplies are 50¥, 2/24hrs, Street Index 1.5 (SR3 p.304)',
+    JSON.stringify(H.MEDKIT_SUPPLIES), '{"name":"Medkit Supplies","cost":50,"availability":"2/24hrs","streetIndex":1.5}');
+  {
+    const heal = readFileSync(new URL('../scripts/SR3EHealing.js', import.meta.url), 'utf8');
+    const buy  = readFileSync(new URL('../scripts/SR3EPurchase.js', import.meta.url), 'utf8');
+    t.ok('the healing card offers no restock button', !/act:\s*'restock'/.test(heal) && !/case 'restock'/.test(heal));
+    t.ok('paying for Medkit Supplies refills an empty medkit', /isMedkitSupplies\(payload\.name\)/.test(buy) && /unsetFlag\('The2ndChumming3e', 'suppliesOut'\)/.test(buy));
+    t.ok('Buy gear offers the supplies when a medkit is empty', /emptyMedkits\(actor\.items\)/.test(buy) && /#sr-buy-supplies/.test(buy));
+  }
   t.is('"Medkit Rating 6", the generator\'s spelling, reads 6', H.findEquipment([who('a', [kit('k', 'Medkit Rating 6')])], 'medkit')?.rating, 6);
   t.is('first aid with a Medkit [6] and Biotech 4: 4 dice + 6 complementary', H.firstAidDice({ biotech: 4, medkitRating: 6 }).dice, 10);
   t.is('…and with no Biotech the kit\'s 6 is the skill', H.firstAidDice({ biotech: 0, medkitRating: 6 }).dice, 6);
@@ -278,6 +291,15 @@ export async function run(t) {
   t.ok('a cancelled Charge / Next hands the button back', /act\(btn, pl\) === false/.test(entry));
   t.ok('the final wave posts the result card', /allDone && state\.healingContext[\s\S]{0,120}SR3EHealing\.onRolled/.test(actor));
   t.ok('the character sheet has the 🩹 Healing button', /data-action="openHealing"/.test(sheet) && /openHealing:\s+SR3EActorSheet\._onOpenHealing/.test(sheet));
+  {
+    // TODO 138: the button moved whenever the character was hurt, because the wound status text
+    // ("unconscious", TN/Init modifier, ☠ DEAD) sat before it in the same wrapping flex row.
+    const row = sheet.slice(sheet.indexOf('<div class="wound-tracks">'), sheet.indexOf('</header>'));
+    const btn = row.indexOf('data-action="openHealing"');
+    const after = marker => row.indexOf(marker) > btn;
+    t.ok('TODO 138: 🩹 Healing comes before the wound status, ☠ DEAD and the Init Mod, so damage cannot move it',
+      btn > 0 && after('${deadHtml}') && after('unconscious') && after('const wm    = sys.woundMod') && after('Init Mod:'));
+  }
   t.ok('the GM tools list has it too, for everyone', /mk\('sr3e-heal-btn'[^\n]*false\)/.test(entry));
   t.ok('every render wires the Dice / TN boxes', /SR3EHealing\.wireCard\(message, html\)/.test(entry));
   const css = read('styles/sr3e.css');

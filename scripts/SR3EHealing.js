@@ -92,7 +92,13 @@ export class SR3EHealing {
     antidote:      /antidote\s+patch/i,
   };
   static MEDKIT_BIOTECH  = 3;
-  static MEDKIT_RESTOCK  = 50;
+  /**
+   * Refilling an empty medkit is a purchase, not a click on the healing card (TODO 139): the
+   * *Medkit Supplies* entry, 50¥, Availability 2/24 hrs, Street Index 1.5 (SR3 p.304), bought
+   * through 🛒 Buy gear. `SR3EPurchase.pay` refills the kit when the supplies are paid for.
+   */
+  static MEDKIT_SUPPLIES = { name: 'Medkit Supplies', cost: 50, availability: '2/24hrs', streetIndex: 1.5 };
+  static SUPPLIES_RE     = /\bmedkit\s+supplies\b/i;
 
   /* ════════════════════════════════════════════════════════════════════════════════════════
    *  Pure rules
@@ -372,6 +378,15 @@ export class SR3EHealing {
       }
     }
     return best;
+  }
+
+  /** Is this purchase (by name) a refill of medkit supplies? */
+  static isMedkitSupplies(name) { return SR3EHealing.SUPPLIES_RE.test(String(name ?? '')); }
+
+  /** The medkits among these items whose supplies have run out — what buying Medkit Supplies refills. */
+  static emptyMedkits(items) {
+    const flag = (i, k) => (typeof i.getFlag === 'function' ? i.getFlag(FLAG, k) : i.flags?.[FLAG]?.[k]);
+    return [...(items ?? [])].filter(i => SR3EHealing.EQUIPMENT.medkit.test(String(i.name ?? '')) && flag(i, 'suppliesOut'));
   }
 
   /** Dermal armor rating for the permanent-damage and trauma-patch tests: a troll's hide + plating/sheath. */
@@ -1166,17 +1181,10 @@ export class SR3EHealing {
         const item = owner?.items.get(p.medkit?.itemId);
         if (out && item) await item.setFlag(FLAG, 'suppliesOut', true);
         return H._postAction(owner ?? patient, `🎲 Medkit supplies — ${p.medkit?.name ?? 'medkit'}`,
-          [`1D6: <strong>${d.total}</strong> — ${out ? 'the supplies have <strong>run out</strong>. Until restocked it counts as no medkit (+4).' : 'supplies hold.'} (p.304)`],
-          [out && item ? { act: 'restock', ownerId: owner.id, itemId: item.id, label: `🧰 Restock supplies (${yen(H.MEDKIT_RESTOCK)})` } : null],
+          // ⚠ No restock button (TODO 139): a refill is shopping — 🛒 Buy gear, Medkit Supplies — not a click mid-fight.
+          [`1D6: <strong>${d.total}</strong> — ${out ? `the supplies have <strong>run out</strong>. Until restocked it counts as no medkit (+4). Restock by buying ${H.MEDKIT_SUPPLIES.name} (${yen(H.MEDKIT_SUPPLIES.cost)}) through 🛒 Buy gear.` : 'supplies hold.'} (p.304)`],
+          [],
           { color: out ? 'var(--sr-red)' : 'var(--sr-green)' });
-      }
-      case 'restock': {
-        const item = patient.items.get(p.itemId);
-        const have = patient.system?.nuyen ?? 0;
-        await patient.update({ 'system.nuyen': Math.max(0, have - H.MEDKIT_RESTOCK) },
-          { ledgerReason: 'Medkit supplies restocked' });
-        if (item) await item.unsetFlag(FLAG, 'suppliesOut');
-        return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">🧰 ${esc(patient.name)} restocked ${esc(item?.name ?? 'the medkit')} for ${yen(H.MEDKIT_RESTOCK)}.</div></div>` });
       }
       case 'magic-loss': {
         const magic = patient.system?.attributes?.magic?.value ?? 0;

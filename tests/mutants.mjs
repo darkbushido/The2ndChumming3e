@@ -36,6 +36,7 @@ const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots'
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
+const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 
 export const MUTANTS = [
   {
@@ -499,6 +500,13 @@ export const MUTANTS = [
       }
       return null;
     },
+  },
+  {
+    id:     'medkit-supplies-refill-any-kit',
+    suite:  'healing',
+    ...HEAL, method: 'emptyMedkits',
+    was:    'TODO 139: restocking ignored whether the kit had run out, so a stocked kit could be "refilled"',
+    impl:   function (items) { return [...(items ?? [])].filter(i => this.EQUIPMENT.medkit.test(String(i.name ?? ''))); },
   },
   {
     id:     'heal-own-patients-only',
@@ -1817,6 +1825,22 @@ export const MUTANTS = [
     impl:   () => false,
   },
   {
+    id:     'elemental-cast-at-flat-4',
+    suite:  'elemental-spells',
+    ...ITEM, method: 'spellTakesGMWindow',
+    was:    'SR3 p.183 - "Cover, visibility, injury and sustaining modifiers apply". The cast never '
+          + 'opened the GM\'s TN window, so a Flamethrower through Thermal Smoke was cast at a flat 4 (TODO 131)',
+    impl:   () => false,
+  },
+  {
+    id:     'elemental-touch-takes-cover',
+    suite:  'elemental-spells',
+    ...ITEM, method: 'spellTakesGMWindow',
+    was:    'SR3 p.182 - "Spells with a range of touch are not subject to cover or visibility modifiers" '
+          + '(the easy way to get TODO 131 wrong)',
+    impl:   category => /^\s*elemental\s*$/i.test(String(category ?? '')),
+  },
+  {
     id:     'elemental-level-fixed-at-moderate',
     suite:  'elemental-spells',
     ...ITEM, method: 'spellChoosesDamageLevel',
@@ -1846,5 +1870,22 @@ export const MUTANTS = [
     was:    'SR3 p.170 - "Mystic Armor also protects against damage done in astral combat". The astral '
           + 'soak card built its TN from the Power alone until 0.6 (rules-check 0.6.0, Finding 5)',
     impl:   ({ power = 0 } = {}) => Math.max(2, Number(power) || 0),
+  },
+  {
+    id:     'dual-beings-resist-astral-with-willpower',
+    suite:  'astral-soak',
+    ...ACTOR, method: 'astralResistPool',
+    was:    'SR3 p.175 - "Willpower or Force for astral beings, or Body for dual beings". The astral '
+          + 'soak card offered Willpower to everyone until 0.6.2 (TODO 132)',
+    impl:   ({ attributes = {} } = {}) => ({ key: 'willpower', label: 'Willpower',
+      value: Math.max(attributes?.willpower?.value ?? 0, attributes?.willpower?.base ?? 0, 1), combatPool: false }),
+  },
+  {
+    id:     'new-weapons-arrive-in-hand',
+    suite:  'ready-weapon',
+    ...READY, method: 'putAwayOnCreate',
+    was:    'every weapon created on a character read as ready (the field\'s initial true), so new characters '
+          + 'started with their whole kit, grenades included, in hand (TODO 135/136)',
+    impl:   () => false,
   },
 ];
