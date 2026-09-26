@@ -1803,6 +1803,22 @@ export const MUTANTS = [
     impl:   () => false,
   },
   {
+    id:     'elemental-cast-at-flat-4',
+    suite:  'elemental-spells',
+    ...ITEM, method: 'spellTakesGMWindow',
+    was:    'SR3 p.183 - "Cover, visibility, injury and sustaining modifiers apply". The cast never '
+          + 'opened the GM\'s TN window, so a Flamethrower through Thermal Smoke was cast at a flat 4 (TODO 131)',
+    impl:   () => false,
+  },
+  {
+    id:     'elemental-touch-takes-cover',
+    suite:  'elemental-spells',
+    ...ITEM, method: 'spellTakesGMWindow',
+    was:    'SR3 p.182 - "Spells with a range of touch are not subject to cover or visibility modifiers" '
+          + '(the easy way to get TODO 131 wrong)',
+    impl:   category => /^\s*elemental\s*$/i.test(String(category ?? '')),
+  },
+  {
     id:     'elemental-level-fixed-at-moderate',
     suite:  'elemental-spells',
     ...ITEM, method: 'spellChoosesDamageLevel',
