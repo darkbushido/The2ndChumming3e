@@ -60,6 +60,11 @@ test.describe('melee wound modifier (F3)', () => {
 
   test('3 Stun boxes raise the attacker\'s TN by 2 and leave the defender\'s alone',
     async ({ player2, player3, janitor }) => {
+    // Two full attacks (unhurt baseline, then hurt), twice the dialogs of any other melee spec.
+    // On a client whose canvas falls back to software WebGL each dialog click took ~11 s
+    // (2026-09-25), and the second attack's Called Shot ran out of the 2-minute budget.
+    // test.slow() triples the timeout for this test only; the global budget still catches hangs.
+    test.slow();
     await arrangeActor(player2.page, ATTACKER, { requireSkills: ['Unarmed Combat'] });
     await arrangeActor(player3.page, DEFENDER, { equipMelee: 'Katana', requireSkills: ['Edged Weapons'] });
 
