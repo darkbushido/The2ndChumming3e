@@ -32,14 +32,14 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**34 open.** 142 done — see [TODO-DONE.md](TODO-DONE.md).
+**35 open.** 142 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 🔴 Confirmed bugs, still open | [137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
-| 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
+| 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[177](#177) Astral damage: a dual being's natural armour reduces the Power |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
@@ -676,6 +676,21 @@ that applies its effects as a timed boost (the Adrenal Pump's `augmentations` pa
 duration, counted down on the round hook, a crash card on expiry), a resistance/addiction roll card
 in the healing helper's style, and the effects as data on the item rather than parsed from prose.
 Effects offered and applied only on a click — nothing automatic, per the design ethos.
+
+## 177. Astral damage: a dual being's natural armour reduces the Power — **found fixing #132, 2026-09-26**
+
+**The book, SR3 p.175:** *"Dual beings with natural physical armor gain the benefits of their armor in
+astral combat; the Power of the attack is reduced by the target's natural armor. Physical armor worn by
+a character has no effect in astral combat."*
+
+**The code:** `SR3EActor.astralSoakTN` deducts **Mystic Armor only**. A troll's natural armour is SR3's
+Dermal Armor, +1 Body (p.56), so it is already in the Body roll and must not be deducted twice. But a
+critter whose natural armour is a rating (the Armor power, e.g. a dual-natured critter with Armor 3) has
+no numeric field anywhere, so nothing is deducted and the GM lowers the TN on the card by hand.
+
+**Wanted:** a stored natural-armour figure for critters (or a parse of the Armor power), deducted from
+the Power on the astral resist card for **dual beings only** (`astralResistPool(...).key === 'body'`),
+alongside Mystic Armor, floored at TN 2. Worn armour stays out.
 
 ### 🖥 Matrix
 
