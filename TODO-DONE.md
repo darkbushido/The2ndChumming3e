@@ -6512,6 +6512,10 @@ cyberware that is still installed.
 
 **Done 2026-09-26 (`f48e4eba`).** ⏏ Unload on a loaded firearm's row (ammo tracking on): the unfired rounds go back to loose stock of their type (`SR3EItem.unload` → `_returnRounds`), nothing is lost, and a clip or drum charges Remove Clip, one Simple Action (SR3 p.107). The book gives no action for emptying anything else by hand, so nothing is charged and the notice says so.
 
+## 135. ✅ Characters should start with nothing equipped — `db49fa8`
+
+## 136. ✅ A character who started with grenades always seems to have one equipped — `db49fa8`
+
 ## 142. ✅ Loading a clip-fed gun treats the clips as individual rounds — `d86e53f3`
 
 **Done 2026-09-26 (`f48e4eba`, `d86e53f3`).** The clips were the unconverted ones of #143: counted in rounds, so the reload dialog topped the gun up round by round. The 0.6.2 migration converts them; the sheet no longer labels loose rounds as clips.
@@ -6601,7 +6605,7 @@ Tracking open steps needs a persisted record, such as a message flag.
 ## 148. ✅ Throwing a grenade asks for a firearm skill — `cd98d5c7`
 
 Throwing a grenade offers a firearm skill instead of a throwing skill. It may belong with
-[#146](#146) and [#136](TODO.md#136), which are also about grenades.
+[#146](#146) and [#136](#136), which are also about grenades.
 
 **Fixed 2026-09-23 (`cd98d5c7`, `main`).** `WEAPON_SKILL_MAP` had no entry for `GR` (or any thrown
 category), so `_getWeaponSkill` fell through to `'Firearms'`. SR3 p.86: *"Throwing Weapons governs the
