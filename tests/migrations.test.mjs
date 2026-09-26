@@ -305,4 +305,28 @@ export async function run(t) {
   t.is('…and is not given reloads', byHand?.['system.reloads'], undefined);
   t.is('idempotent: an item already counted in reloads yields nothing',
     am.fixItem(clip('7-round cy reload ×6', { countedIn: 'reloads', reloads: 6, roundsPerReload: 7 })), null);
+
+  /* ── 0.6.2: clips 0.5.2 missed (TODO 143, reported in the trial session) ──────────────
+   * system.json reached 0.5.2 four hours before the clip conversion was added under the same
+   * number, so a world loaded in between never ran it. 0.6.2 runs it again, and converts a clip
+   * given a round count when that count divides evenly. */
+  const again = list.find(m => m.version === '0.6.2');
+  t.ok('0.6.2 exists and is a fixItem', typeof again?.fixItem === 'function');
+  const missed = again.fixItem(clip('10-Rnd Clip (Explosive) ×2'));
+  t.is('a clip a 0.5.2-stamped world never converted becomes reloads', missed?.['system.countedIn'], 'reloads');
+  t.is('…2 of them, as 0.5.2 would have made it', missed?.['system.reloads'], 2);
+  t.is('…typed from its name', missed?.['system.ammoType'], 'explosive');
+  const typedCount = again.fixItem(clip('10-Rnd Clip (Regular)', { rounds: 30 }));
+  t.is('a "10-Rnd Clip" holding 30 rounds becomes reloads', typedCount?.['system.countedIn'], 'reloads');
+  t.is('…3 clips of 10', [typedCount?.['system.reloads'], typedCount?.['system.roundsPerReload']].join(), '3,10');
+  t.is('…and its round count is cleared, not left to be read twice', typedCount?.['system.rounds'], 0);
+  const cy42 = again.fixItem(clip('7-round cy reload ×6', { rounds: 42 }, rev));
+  t.is('the reported 42 rounds of 7-round speed loaders are 6 reloads', cy42?.['system.reloads'], 6);
+  t.is('…fed to the 7(cy) revolver the character owns', cy42?.['system.loadMechanism'], 'cy');
+  t.is('an uneven count stays loose rounds — the GM\'s call', again.fixItem(clip('10-Rnd Clip (Regular)', { rounds: 35 })), null);
+  t.is('a hand-loaded gun\'s "clip" with rounds is already loose rounds', again.fixItem(clip('5-Rnd Clip (Regular)', { rounds: 15 }, tube)), null);
+  t.is('a box of rounds is not touched', again.fixItem(clip('Box of 50 rounds', { rounds: 50 })), null);
+  t.is('idempotent: its own output yields nothing',
+    again.fixItem(clip('10-Rnd Clip (Regular)', { countedIn: 'reloads', reloads: 3, roundsPerReload: 10, rounds: 0 })), null);
+  t.is('0.5.2\'s rule is unchanged: it still leaves a typed count alone', am.fixItem(clip('10-Rnd Clip (Regular)', { rounds: 30 })), null);
 }

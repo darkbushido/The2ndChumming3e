@@ -16,67 +16,28 @@ heading with the commit that closed it and run `npm run todo:archive`: it moves 
 table below is regenerated — do not edit the table by hand. Grouping is by *kind of work*
 (the `###` headings); a new item goes under its group.
 
-## Work order for 0.6 — set by the maintainer, 2026-09-15
+## Where 0.6 stands — 2026-09-26
 
-The maintainer's order: finish the action economy, then #18, then the rest **easiest first** (the order
-below is the agent's estimate). Built on `feature/action-economy` in the worktree
-`The2ndChumming3e-work` unless noted; nothing is merged without the maintainer.
+**0.6.0 and 0.6.1 are released** (tags `v0.6.0`, `v0.6.1`; guides on `gh-pages`). The 0.6 work order
+(the action economy, #18, then easiest first) is built and shipped; its record is in
+[TODO-DONE.md](TODO-DONE.md) and the git history. What it left open:
 
-| # | Item | State / why it sits here |
+| # | Item | Waiting on |
 |---|---|---|
-| [48](#48) | The action ledger | ✅ built — `c03025c5`; Take Aim across phases still open inside it |
-| [47](#47) | Ready Weapon, an equip control for firearms, Quick Draw | ✅ built — two-gun Quick Draw waits on #49 |
-| [49](#49) | Hands | ✅ built — dual-wield billing, recoil crossover and matched razors still open inside it |
-| [18](#18) | Structured weapon-accessory data (smartlink, smart goggles, laser) + gyro | ✅ built — `smartgun`/`laserSight` fields; gyro on recoil, then movement |
-| [23](TODO-DONE.md#23) | Ammunition compendium | ✅ closed — 661 docs, all 8 types; found and fixed loose rounds not loading non-clip guns (`c8e04eff`, main) |
-| [55](TODO-DONE.md#55) | `trackAmmo` on by default | ✅ — new worlds on; existing worlds pinned off; weight raised as #126 |
-| [57](TODO-DONE.md#57) | Shotgun choke and spread (p.117) | ✅ — shot ammo type, choke on the gun, spread from the range |
-| [56.1](TODO-DONE.md#56) | Smartguns waste no rounds (p.116) | ✅ `74372f9d` |
-| [56.2](TODO-DONE.md#56) | Remember who you shot at this phase | ✅ — prefills the ordinal and the walking metres |
-| [78](TODO-DONE.md#78) | Quick Strike acts first in a pass (MITS p.151) | ✅ — ⚡ on the tracker row; a queue move, no initiative write |
-| [38](TODO-DONE.md#38) | Multiple targets — the leftovers (melee, per-attack pool) | ✅ — both were already done (the archive's intro was stale); the melee count is now prefilled from #56.2's record |
-
-**All of the above is merged to `main` (`783025cc`) and awaits the live check in TESTING.md §40** — 47, 48,
-49 and 18 (and 124) stay open until it is done.
-
-### The rest of 0.6 — added by the maintainer, 2026-09-15
-
-| # | Item | Status |
-|---|---|---|
-| [119](TODO-DONE.md#119) | Audit *The Matrix Defragged v2* | ✅ — 8 confirmed, 3 doc fixes, 2 code fixes, 1 unreadable table; remainders → #128 |
-| [126](TODO-DONE.md#126) | Ammunition weight and a carried load | ✅ — per-round weights; ⚖ Carried on the Gear tab with the p.274 tiers |
-| [53](TODO-DONE.md#53) | The "Essence hole" surgery option — *M&M p.150* | ✅ — removal records a hole; an implant ticked Essence Slot spends it |
-| [109](TODO-DONE.md#109) | Cyberware, bioware and Attribute Stress — *M&M pp.124-131* | ✅ — Stress Points, Levels and the Stress Test; ⚙ Apply Stress on the Cyber tab |
-| [110](TODO-DONE.md#110) | Move-by-wire's TLE-x | ✅ — the Automatic Stress Table, the Willpower test, and the flag with its two surgeries |
-| [111](TODO-DONE.md#111) | Chronic Dissociation Syndrome — cyberzombies | ✅ — Essence below 0, the CDS table, and the GM's check |
-| [79](TODO-DONE.md#79) | A ledger for karma and nuyen | nice to have |
-| [82](TODO-DONE.md#82) | A flow for buying gear — *Availability, SR3 pp.284-286* | nice to have |
+| [47](#47) · [48](#48) · [49](#49) · [18](#18) · [124](#124) | Ready Weapon, the action ledger, hands, weapon accessories, drug rules | the live check in TESTING.md §40 — they stay open until it is walked. Remainders inside them: Take Aim across phases (#48), two-gun Quick Draw and dual-wield billing (#47/#49) |
 | [7](#7) | More test coverage for combat, initiative and pools | nice to have |
-| [127](#127) | Tagged releases, with the guides versioned beside them | in 0.6 — built on `feature/release-pipeline` |
+| [127](#127) | Tagged releases | the maintainer's last steps: hand the players the guides URL, archive the old `sr3-guides` repo |
 
-**Built 2026-09-16 on `feature/0-6-rules`** (branched from `main` at `5e26b2b1`, not merged): 53, 126,
-119, 109, 110, 111 — in that order, each with tests, docs and its own commit. What is left of 0.6 is the
-three nice-to-haves (79, 82, 7) and the release tasks below.
-
-### Release tasks — before `system.json` becomes 0.6.0
-
-1. **[121](#121) — check the code's rules against *sr3-guides*.** It is the maintainer's standing rule for
-   every version bump, and it is **part of this release**. Run it after the last code change, so the audit
-   covers what actually ships. The PDFs are the authority, and every difference goes to the maintainer.
-2. The live checks in TESTING.md §40 are done, and 47, 48, 49, 18 and 124 are archived.
-3. **Only then bump `system.json` to 0.6.0** — the maintainer: *"don't bump the version to 0.6 until we are
-   ready to push it up"*. Nothing is pushed unless the maintainer asks.
-4. **[127](#127) — the first tagged release.** Tag `v0.6.0` and push it; set Pages to the `gh-pages` branch;
-   hand the players the new guides URL.
+**Next — 0.6.2, bug fixes on `main`:** the trial session's reports under *🔴 Confirmed bugs, still open*.
 
 ## Contents
 
-**48 open.** 128 done — see [TODO-DONE.md](TODO-DONE.md).
+**44 open.** 132 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 🔴 Confirmed bugs, still open | [133](#133) Unloading a gun returns the rounds to storage as full clips<br>[134](#134) There is no way to unload a gun<br>[135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[142](#142) Loading a clip-fed gun treats the clips as individual rounds<br>[143](#143) Clipped ammunition did not migrate<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[163](#163) Launcher grenades and mini-grenades do not carry a blast<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
+| 🔴 Confirmed bugs, still open | [135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[138](#138) The healing button moves when a character is unconscious or damaged<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[140](#140) The resist card's soak-hits section looks clickable — it should be greyed out<br>[141](#141) The second Simple Action does not flag and end the turn<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[163](#163) Launcher grenades and mini-grenades do not carry a blast<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[131](#131) Cover and visibility on elemental spells<br>[132](#132) Astral damage: dual beings resist with Body, not Willpower |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
@@ -263,10 +224,6 @@ cannot reach. If time is short, do these.
 
 ### 🔴 Confirmed bugs, still open
 
-## 133. Unloading a gun returns the rounds to storage as full clips
-
-## 134. There is no way to unload a gun
-
 ## 135. Characters should start with nothing equipped
 
 ## 136. A character who started with grenades always seems to have one equipped
@@ -288,13 +245,6 @@ step key; the GM checks the card's `acted` ledger, applies and records in one qu
 ## 140. The resist card's soak-hits section looks clickable — it should be greyed out
 
 ## 141. The second Simple Action does not flag and end the turn
-
-## 142. Loading a clip-fed gun treats the clips as individual rounds
-
-## 143. Clipped ammunition did not migrate
-
-The reporter believes this caused [#133](#133) and [#142](#142): the clips were still being
-treated as loose rounds.
 
 ## 151. Cyber weapons don't show up in the weapons list, and cannot be used in combat
 

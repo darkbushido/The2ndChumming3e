@@ -172,4 +172,37 @@ export async function run(t) {
   t.ok('the choice is offered only where the table gives two methods', /AmmoStock\.kind\(s\.loadMechanism\) === 'either' \?/.test(sheet));
   t.ok('the stock cell reads AmmoStock', /_ammoStockCell\(a\) \{[\s\S]{0,200}AmmoStock\.stock\(a\.system\)/.test(read('scripts/sheets/SR3EActorSheet.js')));
   t.ok('the importer can reach AmmoStock', /game\.sr3e = \{[^}]*\bAmmoStock\b[^}]*\};/.test(read('scripts/sr3e.js')));
+
+  /* ── Loose rounds are not clips on the sheet · TODO 133/142 (reported in the trial session) ── */
+  const LABELS = { c: 'Removable Clip', cy: 'Cylinder' };
+  t.is('rounds unloaded from a clip gun (loadMechanism c) read as loose, not "c"', AmmoStock.loadLabel(rounds(15, 'c'), LABELS).code, 'loose');
+  t.is('an item saved before 0.5.2 (no countedIn) reads as loose', AmmoStock.loadLabel({ loadMechanism: 'c', rounds: 100 }, LABELS).code, 'loose');
+  t.is('a stock of clips still shows its mechanism', AmmoStock.loadLabel(clip, LABELS).code, 'c');
+  t.ok('…named in the tooltip', /Removable Clip/.test(AmmoStock.loadLabel(clip, LABELS).title));
+  t.is('speed loaders show cy', AmmoStock.loadLabel(reloads(6, 7), LABELS).code, 'cy');
+  const sheetSrc = read('scripts/sheets/SR3EActorSheet.js');
+  t.is('both ammunition lists label the Load cell through AmmoStock.loadLabel', (sheetSrc.match(/AmmoStock\.loadLabel\(a\.system/g) ?? []).length, 2);
+  t.ok('…and neither prints the raw loadMechanism', !/title="\$\{SR3E\.ammoLoadMechanisms\[mech\]/.test(sheetSrc));
+
+  /* ── Unloading a gun · TODO 134 ──────────────────────────────────────────────── */
+  t.is('unloading a clip gun is Remove Clip, one Simple Action (SR3 p.107)', AmmoStock.unloadActions('c').simple, 1);
+  t.is('…a drum too', AmmoStock.unloadActions('d').simple, 1);
+  for (const m of ['cy', 'm', 'b', 'belt', '']) t.is(`emptying ${m || 'an unmarked gun'} by hand has no book action — nothing charged`, AmmoStock.unloadActions(m).simple, 0);
+  const unloadBody = /async unload\(\) \{([\s\S]*?)\n  \}/.exec(itemSrc)?.[1] ?? '';
+  t.ok('SR3EItem.unload exists', unloadBody.length > 0);
+  t.ok('…empties the gun', /'system\.loadedRounds': 0/.test(unloadBody));
+  t.ok('…returns the rounds to loose stock', /_returnRounds\(actor, gunMech, type, n, gunClass\)/.test(unloadBody));
+  t.ok('…snapshots for the GM\'s undo before writing', unloadBody.indexOf('.begin(actor)') > -1 && unloadBody.indexOf('.begin(actor)') < unloadBody.indexOf('update('));
+  t.ok('the sheet offers ⏏ Unload and wires it', /data-action="unloadWeapon"/.test(sheetSrc) && /unloadWeapon:\s+SR3EActorSheet\._onUnloadWeapon/.test(sheetSrc));
+  const returnBody = /static async _returnRounds\([^)]*\) \{([\s\S]*?)\n  \}/.exec(itemSrc)?.[1] ?? '';
+  t.ok('returned rounds never go into a clip still counted in rounds (TODO 133)', /!AmmoStock\.fromName\(i\.name\)/.test(returnBody));
+
+  /* ── Clips stored as rounds · TODO 143 ───────────────────────────────────────── */
+  t.eq('a "10-Rnd Clip (Regular)" holding 30 rounds is 3 clips of 10', AmmoStock.reloadsFromRounds('10-Rnd Clip (Regular)', rounds(30)), { reloads: 3, roundsPerReload: 10 });
+  t.eq('the reported "7-round cy reload ×6" with 42 rounds is 6 speed loaders', AmmoStock.reloadsFromRounds('7-round cy reload ×6', rounds(42, 'cy')), { reloads: 6, roundsPerReload: 7 });
+  t.is('an uneven count is left alone — which rounds are loose is the GM\'s call', AmmoStock.reloadsFromRounds('10-Rnd Clip (Regular)', rounds(35)), null);
+  t.is('an empty stock is the 0.5.2 migration\'s, not this one', AmmoStock.reloadsFromRounds('10-Rnd Clip (Regular)', rounds(0)), null);
+  t.is('a hand-loaded mechanism has no reloads (SR3 p.280)', AmmoStock.reloadsFromRounds('5-Rnd Clip (Regular)', rounds(15, 'm')), null);
+  t.is('a box of rounds is not a reload', AmmoStock.reloadsFromRounds('Pistol Clip Ammo', rounds(100)), null);
+  t.is('idempotent: already counted in reloads', AmmoStock.reloadsFromRounds('10-Rnd Clip (Regular)', { ...rounds(30), countedIn: 'reloads' }), null);
 }

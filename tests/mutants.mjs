@@ -226,6 +226,23 @@ export const MUTANTS = [
     impl:   text => ({ smartgun: /smart/i.test(String(text ?? '')), laserSight: /laser/i.test(String(text ?? '')) }),
   },
   {
+    id:     'loose-rounds-shown-as-clips',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'loadLabel',
+    was:    'the sheet printed every stock\'s loadMechanism — loose rounds default to (c), so unloaded rounds and '
+          + 'boxes of rounds read "Removable Clip" (TODO 133/142, reported in the trial session)',
+    impl:   (sys, labels = {}) => { const m = String(sys?.loadMechanism ?? 'c'); return { code: m, title: labels[m] ?? m }; },
+  },
+  {
+    id:     'clip-rounds-converted-unevenly',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'reloadsFromRounds',
+    was:    'converting a clip stored as rounds (TODO 143) must not round an uneven count into whole reloads — '
+          + '35 rounds of a 10-round clip would become 3 clips and lose 5 rounds',
+    impl:   (name, sys = {}) => { const m = /(\d+)\s*-?\s*(?:rnd|round)s?\b/i.exec(String(name ?? '')); const per = Number(m?.[1] ?? 0);
+      const n = Math.floor(Number(sys?.rounds) || 0); return sys?.countedIn !== 'reloads' && per > 0 && n > 0 ? { reloads: Math.floor(n / per), roundsPerReload: per } : null; },
+  },
+  {
     id:     'ammo-fits-by-mechanism-only',
     suite:  'ammo-stock',
     ...AMMO, method: 'fits',

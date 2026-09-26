@@ -6504,6 +6504,25 @@ automatic — the design ethos, and the book gives the GM the pick within a slot
 ⚠ **Not the Essence hole.** #53's hole records Essence spent on removed cyberware; these slots describe
 cyberware that is still installed.
 
+## 133. ✅ Unloading a gun returns the rounds to storage as full clips — `f48e4eba`
+
+**Done 2026-09-26 (`f48e4eba`, `d86e53f3`).** Two causes. The sheet printed every stock's `loadMechanism`, and loose rounds default to `c`, so rounds that came back out of a gun read "Removable Clip" — now `AmmoStock.loadLabel` shows them as `loose`. And an unconverted clip item (#143) still counted in rounds could take returned rounds, which then read as that many clips — `_returnRounds` now never picks an item whose name is a reload.
+
+## 134. ✅ There is no way to unload a gun — `f48e4eba`
+
+**Done 2026-09-26 (`f48e4eba`).** ⏏ Unload on a loaded firearm's row (ammo tracking on): the unfired rounds go back to loose stock of their type (`SR3EItem.unload` → `_returnRounds`), nothing is lost, and a clip or drum charges Remove Clip, one Simple Action (SR3 p.107). The book gives no action for emptying anything else by hand, so nothing is charged and the notice says so.
+
+## 142. ✅ Loading a clip-fed gun treats the clips as individual rounds — `d86e53f3`
+
+**Done 2026-09-26 (`f48e4eba`, `d86e53f3`).** The clips were the unconverted ones of #143: counted in rounds, so the reload dialog topped the gun up round by round. The 0.6.2 migration converts them; the sheet no longer labels loose rounds as clips.
+
+## 143. ✅ Clipped ammunition did not migrate — `d86e53f3`
+
+The reporter believes this caused [#133](#133) and [#142](#142): the clips were still being
+treated as loose rounds.
+
+**Done 2026-09-26 (`d86e53f3`).** `system.json` reached 0.5.2 with the gear-ratings migration (`e449b395`, 17:04 on 2026-09-13); the clip conversion was added under the same number four hours later (`69948719`). A world loaded in between was stamped 0.5.2 and never ran it. The **0.6.2 migration** runs it again (fill-blanks, idempotent) and also converts a clip a GM gave a round count, when that count divides evenly into reloads (`AmmoStock.reloadsFromRounds`); an uneven count stays loose rounds. ⚠ `tests/migrations` fails until the release bumps `system.json` to 0.6.2.
+
 ## 144. ✅ Only 2nd-edition grenades are in the compendium — `a025d67d`
 
 Already known: the note *"The `sr3` pack has no grenades"* under [#91](TODO.md#91), which was first

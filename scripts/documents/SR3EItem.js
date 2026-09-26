@@ -2180,6 +2180,31 @@ export class SR3EItem extends Item {
   }
 
   /**
+   * Empty a firearm · TODO 134 (there was no way to unload one). The unfired rounds go back into the
+   * character's LOOSE-round stock of their type (`_returnRounds`) — never into a clip item, which is
+   * what TODO 133 reported: a partly fired clip is not a full one, so the rounds come back loose,
+   * the same rule that makes loading round by round lossless (the maintainer, 2026-09-13).
+   * A clip gun charges Remove Clip (SR3 p.107); the book has no action for anything else.
+   * Ammo tracking off: there is no count to return, so the button is not offered.
+   */
+  async unload() {
+    if (this.type !== 'firearm') return;
+    const actor = this.actor;
+    if (!actor) return;
+    const n = this.system.loadedRounds ?? 0;
+    if (n <= 0) { ui.notifications.info(`${this.name} is already empty.`); return; }
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
+    const gunMech  = this._weaponLoadMechanism();
+    const gunClass = AmmoStock.gunClass(this.system.category);
+    const type     = this.system.loadedAmmoType ?? 'regular';
+    await this.update({ 'system.loadedRounds': 0 });
+    const into = await SR3EItem._returnRounds(actor, gunMech, type, n, gunClass);
+    const cost = AmmoStock.unloadActions(gunMech);
+    if (cost.simple > 0) game.sr3e.SR3EActionLedger?.charge(actor, 'removeClip', this.name);
+    ui.notifications.info(`${this.name}: ${n} unfired round${n === 1 ? '' : 's'} unloaded into ${into} — ${cost.text}.`);
+  }
+
+  /**
    * Put unfired rounds taken OUT of a gun back into the character's loose-round stock of that
    * type — the one it already carries, else a new item. Loading round by round never loses a round
    * (the maintainer, 2026-09-13), and a gun holds one ammunition type, so switching type this way
@@ -2191,7 +2216,8 @@ export class SR3EItem extends Item {
     const home = actor.items.find(i => i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
       && AmmoStock.fits(i.system, mech, gunClass) && (i.system.ammoType ?? 'regular') === t
       && (!gunClass || String(i.system.gunClass ?? '') === gunClass)
-      && AmmoStock.unit(i.system) === 'rounds');
+      && AmmoStock.unit(i.system) === 'rounds'
+      && !AmmoStock.fromName(i.name));   // never a clip still counted in rounds — the rounds would read as full clips (TODO 133)
     if (home) {
       await home.update({ 'system.rounds': (home.system.rounds ?? 0) + n });
       return home.name;
