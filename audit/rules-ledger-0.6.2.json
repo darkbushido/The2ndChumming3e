@@ -723,10 +723,36 @@
         38,
         38
       ],
-      "hash": "1988dd5ea7",
-      "text": "- Decks are expensive. *(SR3 p.304)*",
-      "verdict": "unverifiable",
-      "reason": "'Decks are expensive (SR3 p.304)': the deck price table is on the cyberdeck pages; the row-by-row figures are in the next units."
+      "hash": "75a7f8902b",
+      "text": "- Decks are expensive. *(SR3 p.207, p.304)*",
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Allegiance Sigma Rating 1 Memory Memory Speed Increase 14,000"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Novatech Slimcase-10 MPCP-9 5 1000 2000 360 2 960,000"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-odm-cyberdecks/allegiance-sigma.9ddcba5b6c720a67.json",
+          "line": 9,
+          "snippet": "\"cost\": 14000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-odm-cyberdecks/novatech-slimcase-10.8664439648640990.json",
+          "line": 9,
+          "snippet": "\"cost\": 960000,"
+        }
+      ],
+      "note": "The guide had every price one row off (the cost column of the Stock Cyberdeck tables shifts up a line in the text layer, p.207 and p.304); fixed for 0.6.2 at the maintainer's call (2026-09-26) to the p.207 row, which the shipped Orthodox cyberdeck pack already carries."
     },
     {
       "id": "hiring/decker.md#13",
@@ -747,10 +773,25 @@
         42,
         42
       ],
-      "hash": "fe7eb4bf35",
-      "text": "| Allegiance Sigma | 70,000¥ |",
-      "verdict": "unverifiable",
-      "reason": "Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass."
+      "hash": "16f8ecd375",
+      "text": "| Allegiance Sigma | 14,000¥ |",
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Allegiance Sigma Rating 1 Memory Memory Speed Increase 14,000"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-odm-cyberdecks/allegiance-sigma.9ddcba5b6c720a67.json",
+          "line": 9,
+          "snippet": "\"cost\": 14000,"
+        }
+      ],
+      "note": "The guide had every price one row off (the cost column of the Stock Cyberdeck tables shifts up a line in the text layer, p.207 and p.304); fixed for 0.6.2 at the maintainer's call (2026-09-26) to the p.207 row, which the shipped Orthodox cyberdeck pack already carries."
     },
     {
       "id": "hiring/decker.md#15",
@@ -759,10 +800,25 @@
         43,
         43
       ],
-      "hash": "08b375f283",
-      "text": "| Sony CTY-360-D | 125,000¥ |",
-      "verdict": "unverifiable",
-      "reason": "Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass."
+      "hash": "e59129c52d",
+      "text": "| Sony CTY-360-D | 70,000¥ |",
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Sony CTY-360-D MPCP-3 3 70,000"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-odm-cyberdecks/sony-cty-360-d.8864a2af94558c93.json",
+          "line": 9,
+          "snippet": "\"cost\": 70000,"
+        }
+      ],
+      "note": "The guide had every price one row off (the cost column of the Stock Cyberdeck tables shifts up a line in the text layer, p.207 and p.304); fixed for 0.6.2 at the maintainer's call (2026-09-26) to the p.207 row, which the shipped Orthodox cyberdeck pack already carries."
     },
     {
       "id": "hiring/decker.md#16",
@@ -771,10 +827,25 @@
         44,
         44
       ],
-      "hash": "08bec88679",
-      "text": "| Novatech Hyperdeck-6 | 250,000¥ |",
-      "verdict": "unverifiable",
-      "reason": "Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass."
+      "hash": "eb716e6b98",
+      "text": "| Novatech Hyperdeck-6 | 125,000¥ |",
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Novatech Hyperdeck-6 MPCP-5 4 200 500 100 0 125,000"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-odm-cyberdecks/novatech-hyperdeck-6.73e89f0fae5c6a29.json",
+          "line": 9,
+          "snippet": "\"cost\": 125000,"
+        }
+      ],
+      "note": "The guide had every price one row off (the cost column of the Stock Cyberdeck tables shifts up a line in the text layer, p.207 and p.304); fixed for 0.6.2 at the maintainer's call (2026-09-26) to the p.207 row, which the shipped Orthodox cyberdeck pack already carries."
     },
     {
       "id": "hiring/decker.md#17",
@@ -783,10 +854,25 @@
         45,
         45
       ],
-      "hash": "794045b831",
-      "text": "| Renraku Kraftwerk-8 | 600,000¥ |",
-      "verdict": "unverifiable",
-      "reason": "Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass."
+      "hash": "0707f3f86f",
+      "text": "| Renraku Kraftwerk-8 | 400,000¥ |",
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Renraku Kraftwerk-8 MPCP-7 4 500 1000 240 1 400,000"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-odm-cyberdecks/renraku-kraftwerk-8.cf3087ffcace6669.json",
+          "line": 9,
+          "snippet": "\"cost\": 400000,"
+        }
+      ],
+      "note": "The guide had every price one row off (the cost column of the Stock Cyberdeck tables shifts up a line in the text layer, p.207 and p.304); fixed for 0.6.2 at the maintainer's call (2026-09-26) to the p.207 row, which the shipped Orthodox cyberdeck pack already carries."
     },
     {
       "id": "hiring/decker.md#18",
@@ -795,10 +881,25 @@
         46,
         46
       ],
-      "hash": "7b3c907355",
-      "text": "| Novatech Slimcase-10 | 1,500,000¥ |",
-      "verdict": "unverifiable",
-      "reason": "Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass."
+      "hash": "dd9448425b",
+      "text": "| Novatech Slimcase-10 | 960,000¥ |",
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Novatech Slimcase-10 MPCP-9 5 1000 2000 360 2 960,000"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-odm-cyberdecks/novatech-slimcase-10.8664439648640990.json",
+          "line": 9,
+          "snippet": "\"cost\": 960000,"
+        }
+      ],
+      "note": "The guide had every price one row off (the cost column of the Stock Cyberdeck tables shifts up a line in the text layer, p.207 and p.304); fixed for 0.6.2 at the maintainer's call (2026-09-26) to the p.207 row, which the shipped Orthodox cyberdeck pack already carries."
     },
     {
       "id": "hiring/decker.md#19",

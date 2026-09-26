@@ -35,15 +35,15 @@ nav_order: 1
 - **Lethal black IC** damages the **decker**, at (IC Rating) **Moderate** on
   Blue and Green hosts and **Serious** on Orange and Red hosts. Once it hits,
   jacking out takes a Complex Action and a Willpower test. *(SR3 p.230)*
-- Decks are expensive. *(SR3 p.304)*
+- Decks are expensive. *(SR3 p.207, p.304)*
 
 | Stock deck | Price |
 | :--- | ---: |
-| Allegiance Sigma | 70,000¥ |
-| Sony CTY-360-D | 125,000¥ |
-| Novatech Hyperdeck-6 | 250,000¥ |
-| Renraku Kraftwerk-8 | 600,000¥ |
-| Novatech Slimcase-10 | 1,500,000¥ |
+| Allegiance Sigma | 14,000¥ |
+| Sony CTY-360-D | 70,000¥ |
+| Novatech Hyperdeck-6 | 125,000¥ |
+| Renraku Kraftwerk-8 | 400,000¥ |
+| Novatech Slimcase-10 | 960,000¥ |
 
 ## House rates
 

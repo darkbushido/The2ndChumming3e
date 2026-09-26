@@ -34,6 +34,7 @@ A bug-fix release, mostly from the 2026-09-23 trial session: ammunition and clip
 - **Restocking a medkit happens when shopping.** The healing card no longer offers a one-click restock mid-combat. Buy gear lists your empty kits and pre-fills Medkit Supplies (SR3 p.304), and paying refills the first empty kit.
 - The 🩹 Healing button stays in place when a character is hurt. The wound text now comes after it.
 - The soak result on the resist card is a grey note, so it no longer looks like a button.
+- **Guides:** the Decker hiring page listed every stock cyberdeck one price row off. It now matches the book and the shipped deck items (SR3 p.207): Allegiance Sigma 14,000¥ up to Novatech Slimcase-10 960,000¥.
 
 ### Modules
 
