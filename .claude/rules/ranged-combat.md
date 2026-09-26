@@ -183,7 +183,10 @@ SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it w
   `reloads` of `roundsPerReload` each (0 = fills the gun). ⚠ **A reload is used up whole.** ⚠ **Round by
   round never loses a round** — a different type loaded by hand unloads the old rounds back to loose stock
   or a new *"… rounds (unloaded)"* item (`SR3EItem._returnRounds`). ⚠ Action cost shown, never enforced.
-  ⚠ Never from storage. ⚠ The importer reads `N-Rnd Clip (Type)` as reloads fitted to the character's gun
+  ⚠ Never from storage. ⏏ **Unload** (`SR3EItem.unload`, TODO 134) empties a firearm into loose stock the same
+  way (Remove Clip, one Simple, for `c`/`d` — `AmmoStock.unloadActions`); returned rounds never go into an item
+  whose NAME is a reload still counted in rounds (TODO 133). The sheet's Load cell reads `AmmoStock.loadLabel`:
+  **loose rounds show `loose`**, never their default `c`. ⚠ The importer reads `N-Rnd Clip (Type)` as reloads fitted to the character's gun
   (`mechanismFor`).
 - **Stacks and storage** (TODO 113): moving a stack >1 asks how many; splits and merges into an identical
   stack (`SR3EActor.stackKey`, strict). Pure rule `SR3EActor.planStackMove`.
