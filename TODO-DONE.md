@@ -6504,6 +6504,29 @@ automatic — the design ethos, and the book gives the GM the pick within a slot
 ⚠ **Not the Essence hole.** #53's hole records Essence spent on removed cyberware; these slots describe
 cyberware that is still installed.
 
+## 132. ✅ Astral damage: dual beings resist with Body, not Willpower — `2143c8ed`
+
+**The book, SR3 p.175:** *"The Damage Resistance Test is resolved using Willpower or Force for astral
+beings, or Body for dual beings."* p.174 puts *"Astrally perceiving characters and other dual beings"*
+in one class, using *"their normal physical Attributes, skills and Combat Pool in astral combat"*.
+
+**The code:** `_postAstralSoakCard` always offers **Willpower** (*"Willpower / Astral Body"*) — right for
+a projecting character or a spirit, wrong for anyone astrally perceiving or dual-natured. The pool is
+editable, so a GM can correct it by hand, which is why it has not bitten.
+
+**For the maintainer:** is `system.astralMode` (`'dual'` vs `'astral'`) the right switch, and what should
+an actor with no mode set default to? p.174 also gives dual beings their **Combat Pool** in astral combat;
+check whether the astral soak card should offer it.
+
+**Done (0.6.2):** `SR3EActor.astralResistPool` — only `astralMode === 'astral'` is an astral being
+(Willpower; a spirit's Force). Every other mode, **including none**, is a dual being: Body, plus an optional
+Combat Pool spend (p.174). Reasoning: anyone in astral combat who is not projecting must be perceiving or
+dual-natured. The pool stays editable. Not done: a projecting defender adding **Astral Combat Pool** to the
+resist (p.174 gives it the pool; whether it covers resistance is not stated), and the astral attack card
+(`SR3EActor.js`, `availableAstralPool` ~line 10689) offering Astral Pool to dual beings, who use Combat Pool.
+
+<a id="131"></a>
+
 ## 133. ✅ Unloading a gun returns the rounds to storage as full clips — `f48e4eba`
 
 **Done 2026-09-26 (`f48e4eba`, `d86e53f3`).** Two causes. The sheet printed every stock's `loadMechanism`, and loose rounds default to `c`, so rounds that came back out of a gun read "Removable Clip" — now `AmmoStock.loadLabel` shows them as `loose`. And an unconverted clip item (#143) still counted in rounds could take returned rounds, which then read as that many clips — `_returnRounds` now never picks an item whose name is a reload.
