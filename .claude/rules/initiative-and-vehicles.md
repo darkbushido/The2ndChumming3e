@@ -55,11 +55,14 @@ the GM via **`sr3e.action.charge`**.
   mode (SS/SA/BF Simple, FA Complex), Throw Weapon, melee (attacker only), spells, vehicle weapons,
   skills, nature-spirit summoning, reloads per the Ammo Reloading Table.
   ⚠ **Nothing reactive is charged** (dodge, soak, resistance, initiative). ⚠ **Auto-mark, never
-  auto-advance**: only the GM's Complex / second Simple ends a turn.
+  auto-advance**: only the GM's Complex / second Simple ends a turn (advancing would also put the phase
+  out of ↺'s reach). The second-Simple button lights up once two Simples are taken (TODO 141).
 - Pips for everyone on the active row; GM buttons: Complex (ends turn), Simple (toggle), Simple (ends turn), **↺ Undo**.
 - ⚠ **Undo restores what the action SPENT.** Each flow calls `SR3EActionLedger.begin(actor)` first (before
   any dialog) to snapshot pool spent, recoil count, Karma Pool, every weapon/ammo item's rounds and
-  quantity. ↺ lists every changed value and every card posted since, each untickable, then restores,
+  quantity. ⚠ **Every charge of the flow carries that snapshot** (TODO 152, `ActionEconomy.pendingSnap`,
+  keyed to the phase) — Ready + Fire, Remove + Insert Clip charge twice, and ↺ defaults to the last entry.
+  So anything that charges must `begin` first (the sheet's ✋ does). ↺ lists every changed value and every card posted since, each untickable, then restores,
   deletes and frees the slot.
 - **Ready Weapon** (TODO 47, p.107): `system.ready` on firearm/melee/projectile/thrown (initial true),
   rules in `ready-weapon.mjs`. ✋ toggles it (readying charges a Simple). `SR3EItem._ensureReady` at the top
