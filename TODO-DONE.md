@@ -6516,6 +6516,16 @@ cyberware that is still installed.
 
 ## 136. ✅ A character who started with grenades always seems to have one equipped — `db49fa8`
 
+## 138. ✅ The healing button moves when a character is unconscious or damaged — `6af59ead`
+
+The wound status text (TN/Init modifier, "unconscious", ☠ DEAD) sat before the 🩹 Healing button in the header's wrapping row, so the
+button shifted whenever the wounds changed. That text now comes last in the row; `tests/healing.test.mjs` pins the order.
+
+## 140. ✅ The resist card's soak-hits section looks clickable — it should be greyed out — `7ea7137a`
+
+`.sr-soak-result` was a gold box with a full gold border, like the resist buttons under it. Now a grey panel with a left rule,
+muted text and a default cursor (`tests/soak-result-style.test.mjs`).
+
 ## 142. ✅ Loading a clip-fed gun treats the clips as individual rounds — `d86e53f3`
 
 **Done 2026-09-26 (`f48e4eba`, `d86e53f3`).** The clips were the unconverted ones of #143: counted in rounds, so the reload dialog topped the gun up round by round. The 0.6.2 migration converts them; the sheet no longer labels loose rounds as clips.
