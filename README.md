@@ -29,6 +29,15 @@ Create a new world, select **The 2nd Chumming** as your system.
 
 > Requires Foundry **v14** (`compatibility.minimum` and `verified` are both `14`).
 
+## Recommended modules
+
+Foundry lists these when you install the system; none is required.
+
+- **Security Cameras** (`security-cameras`, needs `holosuite-core`) — the battlemaps' security
+  cameras show their feeds through it. Its cameras live in a world setting, so a scene import
+  brings the camera Regions but not the cameras: view the scene as GM and run the map's
+  camera-registration macro to link them.
+
 ## What to expect
 - This is not a fully automated Foundry system, it will prompt, poke and nudge you, it will track wounds and modifiers, it will deal with initiative, it will reduce your - book-keeping and it will make it much easier to do the horrible bits like car chases and tracking a character's carry load. It is designed to show you what it is doing at - each stage so if you are looking to learn or brush up, this may help but you will need to know the basics. 
 - Everything is editable at every stage, if you want to change the attribute, skill or TN used, you can.
