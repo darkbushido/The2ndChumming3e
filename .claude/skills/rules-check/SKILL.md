@@ -13,6 +13,11 @@ hand-write it, and you never edit it. What you produce is the **ledger**, `audit
 ## The rule that makes this repeatable: nothing is assumed
 
 - **The PDF is the authority.** Not `guides/`, not the code, not `CLAUDE.md`. Library: `C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`.
+- **Without the PDFs, the book text is the OCR text** (`tools/lib/book-pages.mjs`): the untracked `SR-OCR/` in the checkout, else
+  a `darkbushido/Shadowrun-OCR` clone beside the repo (`SR3_OCR_DIR` / `SR3_PDF_DIR` override). One `pdftotext -layout` dump
+  per book, pages split by form feeds, so `pdfPage` is the form-feed page. `check` says which source it read. Scanned books
+  (`[no-text]`) are real OCR and can misread a digit: a number that matters and looks wrong is `unverifiable` until someone
+  reads the page image — never "corrected" in the quote.
 - **`CLAUDE.md` and `.claude/rules/` are never evidence.** It describes the code; it is not the code. Every `code[]` entry is a line you opened and read
   in this session.
 - **A guide line is not evidence about the code.** The guides were checked against the books, not against this system.
@@ -35,6 +40,8 @@ hand-write it, and you never edit it. What you produce is the **ledger**, `audit
    1. Find the passage in the PDF. Extract with `pdftotext -f <pdfPage> -l <pdfPage> -marginr 308 "<pdf>" -` (left column) and
       `-marginl 308` (right); read the whole surrounding paragraph, not just the matching line. Get the **printed** page from the
       page footer, not from an offset you remember.
+      From the OCR text: `node -e` over the book's `.txt`, `split('\f')[pdfPage - 1]`, then `splitColumns()` from
+      `tools/lib/book-pages.mjs` to read one column at a time. A table row is one line of the layout text — quote it as a row.
    2. Copy a quote of the deciding sentence, exactly (25+ characters). The script confirms it appears on that PDF page.
    3. Open the code that implements it and read it. Record `file`, `line`, and a `snippet` you can see at that line. Search widely
       first (`Grep` for the concept under several spellings — the packs and code abbreviate).

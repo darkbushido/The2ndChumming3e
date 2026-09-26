@@ -21,18 +21,26 @@
  *
  * Evidence formats:
  *   pdf:    { file, pdfPage, printedPage, quote }   `quote` must appear in that page's text (whitespace-normalised)
+ *           — read from the PDFs when they are on this machine, else from the Shadowrun-OCR checkout beside
+ *           this repo or SR-OCR/ (SR3_PDF_DIR / SR3_OCR_DIR override). Copy quotes from the layout text, one column at
+ *           a time: they then verify against either source.
  *   code:   { file, line, snippet }                 `snippet` must appear within 5 lines of `line`
  *   search: { pattern, path? }                      a regex; must have zero matches under `path` (default scripts/)
  */
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
-import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
+import { bookPages } from './lib/book-pages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const GUIDES = path.join(ROOT, 'guides');
-const PDF_DIR = 'C:\\Users\\lance\\Documents\\Shadowrun 3rd Edition PDFs';
+const PDF_DIR = process.env.SR3_PDF_DIR ?? 'C:\\Users\\lance\\Documents\\Shadowrun 3rd Edition PDFs';
+// Without the PDFs: the OCR text (tools/lib/book-pages.mjs) — the untracked SR-OCR/ in this checkout, else
+// the Shadowrun-OCR checkout beside it.
+const OCR_DIR = process.env.SR3_OCR_DIR
+  ?? [path.join(ROOT, 'SR-OCR'), path.join(ROOT, '..', 'Shadowrun-OCR')].find(existsSync)
+  ?? path.join(ROOT, '..', 'Shadowrun-OCR');
 const SKIP = new Set(['CLAUDE.md', 'TODO.md', 'README.md']);
 const VERDICTS = ['match', 'diverges', 'guide-differs', 'not-implemented', 'unverifiable', 'no-rule-claim'];
 
@@ -107,18 +115,8 @@ function init(v) {
   console.log(`${entries.length} units in ${new Set(entries.map(e => e.file)).size} pages; ${carried} carried over. → ${path.relative(ROOT, ledgerPath(v))}`);
 }
 
-const pageCache = new Map();
-function pdfPageText(file, page) {
-  const key = `${file}|${page}`;
-  if (!pageCache.has(key)) {
-    const full = path.join(PDF_DIR, file);
-    if (!existsSync(full)) throw new Error(`PDF not found: ${full}`);
-    // Two-column pages: read each column on its own (an xpdf build — margins, not -x/-W), plus the whole page.
-    const run = extra => execFileSync('pdftotext', ['-f', String(page), '-l', String(page), ...extra, full, '-'], { encoding: 'utf8', maxBuffer: 1 << 24 });
-    pageCache.set(key, { whole: run([]), views: [run(['-marginr', '308']), run(['-marginl', '308']), run([])] });
-  }
-  return pageCache.get(key);
-}
+const books = bookPages({ pdfDir: PDF_DIR, ocrDir: OCR_DIR });
+const pdfPageText = (file, page) => books.read(file, page);
 
 function allScripts(dir, out = []) {
   for (const name of readdirSync(dir)) {
@@ -196,7 +194,8 @@ function check(v) {
     const f = faults(e, cur.get(e.id));
     if (f.length) { bad++; console.log(`FAULT    ${e.id}`); f.forEach(x => console.log(`           - ${x}`)); }
   }
-  console.log(bad ? `\n${bad} unit(s) not resolved or not verifiable.` : `\nall ${l.entries.length} units resolved and every piece of evidence re-verified.`);
+  console.log(`\nquotes checked against the ${books.source === 'pdf' ? `PDFs (${PDF_DIR})` : `OCR text (${OCR_DIR})`}`);
+  console.log(bad ? `${bad} unit(s) not resolved or not verifiable.` : `all ${l.entries.length} units resolved and every piece of evidence re-verified.`);
   return bad === 0;
 }
 
