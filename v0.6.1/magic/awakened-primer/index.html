@@ -1,0 +1,703 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.1/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.1/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(1)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(3) > ul > li:nth-child(1) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(3) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(3) > ul > li:nth-child(1) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(3) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(3) > ul.nav-list > li.nav-list-item:nth-child(1) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.6.1/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.6.1/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Primer for the Awakened | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Primer for the Awakened" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.6.1/magic/awakened-primer/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.6.1/magic/awakened-primer/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Primer for the Awakened" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"Primer for the Awakened","url":"https://darkbushido.github.io/The2ndChumming3e/v0.6.1/magic/awakened-primer/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.6.1/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/healing/" class="nav-list-link">Healing</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.6.1</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/">Magic</a></li>
+    <li class="breadcrumb-nav-list-item"><span>Primer for the Awakened</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="primer-for-the-awakened">
+  
+  
+    <a href="#primer-for-the-awakened" class="anchor-heading" aria-labelledby="primer-for-the-awakened"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Primer for the Awakened
+  
+  
+</h1>
+    
+
+<p>What a starting magician can do, how astral space works, and what an elven
+mage in Seattle knows about the world.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#1-what-a-magician-can-do" id="markdown-toc-1-what-a-magician-can-do">1. What a magician can do</a>    <ol>
+      <li><a href="#spellcasting" id="markdown-toc-spellcasting">Spellcasting</a></li>
+      <li><a href="#conjuring" id="markdown-toc-conjuring">Conjuring</a></li>
+      <li><a href="#ritual-sorcery--mits-p3436" id="markdown-toc-ritual-sorcery--mits-p3436">Ritual sorcery  <em>(MitS p.34–36)</em></a></li>
+      <li><a href="#foci--sr3-p189191-mits-p169" id="markdown-toc-foci--sr3-p189191-mits-p169">Foci  <em>(SR3 p.189–191; MitS p.169)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#2-astral-space" id="markdown-toc-2-astral-space">2. Astral space</a>    <ol>
+      <li><a href="#astral-perception--sr3-p171172" id="markdown-toc-astral-perception--sr3-p171172">Astral perception  <em>(SR3 p.171–172)</em></a></li>
+      <li><a href="#astral-projection--sr3-p172173" id="markdown-toc-astral-projection--sr3-p172173">Astral projection  <em>(SR3 p.172–173)</em></a></li>
+      <li><a href="#astral-attributes--sr3-p173174" id="markdown-toc-astral-attributes--sr3-p173174">Astral attributes  <em>(SR3 p.173–174)</em></a></li>
+      <li><a href="#astral-combat--sr3-p174175" id="markdown-toc-astral-combat--sr3-p174175">Astral combat  <em>(SR3 p.174–175)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#3-what-a-starting-elven-mage-knows" id="markdown-toc-3-what-a-starting-elven-mage-knows">3. What a starting elven mage knows</a>    <ol>
+      <li><a href="#the-awakened-world" id="markdown-toc-the-awakened-world">The Awakened world</a></li>
+      <li><a href="#elven-heritage" id="markdown-toc-elven-heritage">Elven heritage</a></li>
+      <li><a href="#street-survival" id="markdown-toc-street-survival">Street survival</a></li>
+    </ol>
+  </li>
+</ol>
+
+<blockquote class="fixed">
+  <p>Original gist: “Primer for the Awakened Elf”.</p>
+  <ul>
+    <li>Drain codes like “4L, 3M, 5H” don’t exist. SR3 writes Drain as <code class="language-plaintext highlighter-rouge">+1(M)</code>,
+meaning Power = Force ÷ 2 + 1 at Moderate. There is no “H” level.</li>
+    <li>Force is capped by <strong>the Force you learned the spell at</strong>, not by your
+Magic. Casting above your Magic is legal; the Drain just becomes Physical.</li>
+    <li>Nature spirits come in <strong>four</strong> families: Man, Land, Sky and Waters.
+“Aura Masking” is not a spirit service.</li>
+    <li>SR3 ritual sorcery uses a <strong>material link</strong>. “Sympathetic link” is a term
+from a later edition.</li>
+    <li>Astral attacks use an <strong>Astral Combat Pool</strong> and Sorcery, Unarmed Combat
+or an armed skill with a weapon focus. The gist’s “Astral Combat + Combat
+Pool” was wrong. <strong>Force / Magic is not astral armor.</strong></li>
+    <li>Projecting movement: normal speed is <strong>Intelligence × 4 m per turn</strong>, and
+fast movement is up to <strong>Magic in kilometers per turn</strong>, not a flat
+100 km per turn.</li>
+    <li>The Awakening is dated <strong>24 December 2011</strong>, when the dragon Ryumyo
+appeared near Mount Fuji. It was not 21 December.</li>
+  </ul>
+</blockquote><hr />
+<h2 id="1-what-a-magician-can-do">
+  
+  
+    <a href="#1-what-a-magician-can-do" class="anchor-heading" aria-labelledby="1-what-a-magician-can-do"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. What a magician can do
+  
+  
+</h2>
+    
+<h3 id="spellcasting">
+  
+  
+    <a href="#spellcasting" class="anchor-heading" aria-labelledby="spellcasting"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Spellcasting
+  
+  
+</h3>
+    
+
+<ul>
+  <li>Spells fall into five categories: <strong>Combat, Detection, Health, Illusion,
+Manipulation</strong>. <em>(SR3 p.191–198)</em></li>
+  <li>You learn each spell at a specific <strong>Force</strong>. You can cast it at that Force
+or lower, never higher. <em>(SR3 p.178)</em> At character creation no spell can
+be bought above Force 6. <em>(SR3 p.60)</em></li>
+  <li><strong>Casting</strong> is a Complex Action: roll <strong>Sorcery</strong> plus up to as many
+<strong>Spell Pool</strong> dice as Sorcery dice. The TN is the target’s <strong>Willpower</strong>
+(mana spells) or <strong>Body</strong> (physical spells), or its Object Resistance.
+<em>(SR3 p.107, p.182)</em></li>
+  <li><strong>Drain</strong>: Power = <strong>Force ÷ 2 (round down) + the spell’s modifier</strong>, at
+the Damage Level shown. Resist with <strong>Willpower</strong> plus any number of Spell
+Pool dice, and reduce one level per 2 successes. <em>(SR3 p.162, p.44)</em>
+    <ul>
+      <li>It’s <strong>Stun</strong> if the Force is no higher than your Magic, and
+<strong>Physical</strong> if it is higher, or if you’re astrally projecting.
+<em>(SR3 p.162)</em></li>
+      <li>Every spell you’re sustaining adds <strong>+2</strong> to Drain Power. <em>(SR3 p.162)</em></li>
+    </ul>
+  </li>
+  <li><strong>Spell Pool</strong> = (INT + WIL + MAG) ÷ 3. <em>(SR3 p.44)</em></li>
+</ul>
+
+<p>For the full step-by-step, including resistance, Spell Defense and Drain, see
+<a href="../spellcasting/">Spellcasting, Resistance &amp; Drain</a>.</p>
+<h3 id="conjuring">
+  
+  
+    <a href="#conjuring" class="anchor-heading" aria-labelledby="conjuring"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Conjuring
+  
+  
+</h3>
+    
+
+<p><strong>Hermetic mages call elementals</strong>: Earth, Air, Fire and Water. <em>(SR3
+p.186)</em></p>
+
+<ul>
+  <li>You need a <strong>conjuring library</strong> and a <strong>hermetic circle</strong>, each rated at
+least the Force of the elemental, plus ritual materials costing about
+<strong>1,000¥ × Force</strong>. <em>(SR3 p.186; MitS p.169)</em></li>
+  <li>The elemental needs something to form from: a bonfire, a pool of water,
+and so on. <em>(SR3 p.186)</em></li>
+  <li>An elemental can give five services: <strong>Aid Sorcery, Aid Study, Spell
+Sustaining, Physical Service, Remote Service</strong>. For Aid Sorcery, fire
+elementals help combat spells, air detection, water illusion and earth
+manipulation. No elemental helps health spells. <em>(SR3 p.187)</em></li>
+</ul>
+
+<p><strong>Shamans summon nature spirits</strong>, and only inside the spirit’s <strong>domain</strong>.
+<em>(SR3 p.184, p.186)</em></p>
+
+<ul>
+  <li>Summoning is an <strong>Exclusive Complex Action</strong>. The Conjuring Test is against
+TN = the spirit’s <strong>Force</strong>, and <strong>each success is one service</strong>. With no
+successes, nothing comes, but Drain still applies. <em>(SR3 p.186)</em></li>
+  <li>Nature spirits <strong>vanish at sunrise and sunset</strong>, and any unused services
+are lost. <em>(SR3 p.186)</em></li>
+  <li>A service is <strong>one use of one of the spirit’s powers</strong>, or a physical task
+such as attacking. <em>(SR3 p.186)</em></li>
+  <li>The four families are <em>(SR3 p.266–267)</em>:
+    <ul>
+      <li><strong>Spirits of Man</strong>: city, field, hearth</li>
+      <li><strong>Spirits of the Land</strong>: desert, forest, mountain, prairie</li>
+      <li><strong>Spirits of the Sky</strong>: mist, storm, wind</li>
+      <li><strong>Spirits of the Waters</strong>: lake, river, sea, swamp</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Conjuring Drain</strong>: Power = the spirit’s Force, with the level set by
+comparing Force to your Charisma. Resist with <strong>Charisma</strong>. <em>(SR3 p.162,
+p.187)</em></p>
+<h3 id="ritual-sorcery--mits-p3436">
+  
+  
+    <a href="#ritual-sorcery--mits-p3436" class="anchor-heading" aria-labelledby="ritual-sorcery--mits-p3436"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Ritual sorcery  <em>(MitS p.34–36)</em>
+  
+  
+</h3>
+    
+
+<ul>
+  <li>A team of magicians can cast one spell together. It builds over hours, but
+it can reach a target <strong>out of sight</strong>.</li>
+  <li>The team can have at most as many members as <strong>the lowest Sorcery rating</strong>
+among them. Everyone must know the spell at the chosen Force, and all must
+share a tradition (shamans of different totems may mix).</li>
+  <li>You need a hermetic circle or shamanic lodge rated at least the spell’s
+Force, plus ritual materials, which are used up whatever happens.</li>
+  <li>To reach a distant target you need a <strong>material link</strong>: a piece of the
+target, such as blood, hair or tissue.</li>
+  <li><strong>Elemental manipulation spells can’t be cast as ritual sorcery.</strong></li>
+</ul>
+<h3 id="foci--sr3-p189191-mits-p169">
+  
+  
+    <a href="#foci--sr3-p189191-mits-p169" class="anchor-heading" aria-labelledby="foci--sr3-p189191-mits-p169"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Foci  <em>(SR3 p.189–191; MitS p.169)</em>
+  
+  
+</h3>
+    
+
+<p>Foci are bonded with Karma. The core types are <strong>spell foci</strong> (one specific
+spell or a whole category), <strong>spirit foci</strong>, <strong>power foci</strong>, <strong>sustaining
+foci</strong> and <strong>weapon foci</strong>. Active foci are visible and vulnerable on the
+astral. A weapon focus lets you use an armed skill in astral combat.</p><hr />
+<h2 id="2-astral-space">
+  
+  
+    <a href="#2-astral-space" class="anchor-heading" aria-labelledby="2-astral-space"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Astral space
+  
+  
+</h2>
+    
+<h3 id="astral-perception--sr3-p171172">
+  
+  
+    <a href="#astral-perception--sr3-p171172" class="anchor-heading" aria-labelledby="astral-perception--sr3-p171172"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Astral perception  <em>(SR3 p.171–172)</em>
+  
+  
+</h3>
+    
+
+<ul>
+  <li>It takes a <strong>Simple Action</strong> to switch. While perceiving you’re
+<strong>dual-natured</strong>: you see astral forms and auras, and they can attack you.</li>
+  <li><strong>Assensing</strong>: Intelligence against TN 4, taking a Simple Action. With
+1–2 successes you learn general health, whether cyberware is present, rough
+emotions, and mundane or Awakened. More successes give Essence and Magic
+compared to yours, implant locations and astral signatures. <em>(SR3 p.172)</em></li>
+  <li>Doing ordinary, non-magical tasks while perceiving (shooting, driving)
+costs <strong>+2 TN</strong>. <em>(SR3 p.172)</em></li>
+</ul>
+<h3 id="astral-projection--sr3-p172173">
+  
+  
+    <a href="#astral-projection--sr3-p172173" class="anchor-heading" aria-labelledby="astral-projection--sr3-p172173"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Astral projection  <em>(SR3 p.172–173)</em>
+  
+  
+</h3>
+    
+
+<ul>
+  <li>Leaving your body and returning are each an <strong>Exclusive Complex Action</strong>.
+Your body lies in a trance.</li>
+  <li><strong>Your body loses 1 Essence per hour</strong> you’re away. At 0 Essence you die.
+<em>(SR3 p.173)</em></li>
+  <li>Normal movement is <strong>Intelligence × 4 m per turn</strong>. Fast movement is up to
+<strong>Magic in kilometers per turn</strong>, roughly Magic × 1,000 km per hour.
+<em>(SR3 p.173)</em></li>
+  <li>Solid earth blocks astral forms, which is why secure sites are often built
+underground. <em>(SR3 p.173)</em></li>
+</ul>
+<h3 id="astral-attributes--sr3-p173174">
+  
+  
+    <a href="#astral-attributes--sr3-p173174" class="anchor-heading" aria-labelledby="astral-attributes--sr3-p173174"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Astral attributes  <em>(SR3 p.173–174)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Physical</th>
+      <th style="text-align: left">While projecting</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Strength</td>
+      <td style="text-align: left"><strong>Charisma</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Quickness</td>
+      <td style="text-align: left"><strong>Intelligence</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Body</td>
+      <td style="text-align: left"><strong>Willpower</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Reaction</td>
+      <td style="text-align: left"><strong>Intelligence</strong>, and Initiative is <strong>INT + 20 + 1D6</strong></td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="astral-combat--sr3-p174175">
+  
+  
+    <a href="#astral-combat--sr3-p174175" class="anchor-heading" aria-labelledby="astral-combat--sr3-p174175"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Astral combat  <em>(SR3 p.174–175)</em>
+  
+  
+</h3>
+    
+
+<ul>
+  <li>Astral combat uses the <strong>melee</strong> rules. There are no ranged attacks except
+spells.</li>
+  <li>A projecting character uses the <strong>Astral Combat Pool</strong>, (INT + WIL + CHA)
+÷ 2. <em>(SR3 p.44, p.174)</em> Attack with an armed skill if you have a weapon
+focus, Unarmed Combat otherwise, or <strong>Sorcery</strong> in its place.</li>
+  <li>Damage: unarmed <strong>(Charisma)M</strong>; armed, Charisma plus the weapon focus’s
+damage; spirits, foci and barriers <strong>(Force)M</strong>. <em>(SR3 p.175)</em></li>
+  <li><strong>Worn armor is useless</strong> on the astral. Natural armor, such as a troll’s
+or an adept’s Mystic Armor, still counts. <em>(SR3 p.172, p.175)</em></li>
+  <li>The attacker picks Stun or Physical damage. <strong>Wounds appear on your
+physical body.</strong> If your astral form dies, your body dies. <em>(SR3 p.175)</em></li>
+  <li><strong>Wards</strong> and other astral barriers block astral movement, and the only way
+through is to beat the barrier in astral combat. <em>(SR3 p.174)</em></li>
+</ul><hr />
+<h2 id="3-what-a-starting-elven-mage-knows">
+  
+  
+    <a href="#3-what-a-starting-elven-mage-knows" class="anchor-heading" aria-labelledby="3-what-a-starting-elven-mage-knows"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. What a starting elven mage knows
+  
+  
+</h2>
+    
+<h3 id="the-awakened-world">
+  
+  
+    <a href="#the-awakened-world" class="anchor-heading" aria-labelledby="the-awakened-world"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Awakened world
+  
+  
+</h3>
+    
+
+<ul>
+  <li><strong>The Awakening</strong> happened in <strong>2011</strong>. On <strong>24 December</strong>, passengers on
+a bullet train saw the great dragon <strong>Ryumyo</strong> appear near Mount Fuji.
+<em>(SR3 p.25)</em></li>
+  <li><strong>Traditions</strong>: mages treat magic as a discipline of formulae and elements.
+<em>(SR3 p.158)</em> Shamans follow a <strong>totem</strong>, which grants bonus dice for some
+spells and spirits and penalties for others. <em>(SR3 p.163–165)</em></li>
+  <li><strong>Essence and Magic</strong>: every full point of Essence lost, or fraction of
+one, costs a point of <strong>Magic</strong>. Cyberware is the usual cause. <em>(SR3
+p.160)</em></li>
+  <li><strong>Magic and the law</strong>: in the UCAS and CAS, any spell, spirit or focus of
+<strong>Force 3 or higher is legally regulated</strong>, and permits are available.
+Killing with magic is treated as premeditated. <em>(MitS p.11)</em></li>
+</ul>
+<h3 id="elven-heritage">
+  
+  
+    <a href="#elven-heritage" class="anchor-heading" aria-labelledby="elven-heritage"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Elven heritage
+  
+  
+</h3>
+    
+
+<ul>
+  <li><strong>Tír Tairngire</strong>, “the Land of Promise” <em>(SR3 p.30)</em>, takes up most of
+the former state of Oregon plus parts of Washington and California.
+<em>(SR3 p.321)</em></li>
+  <li>It’s ruled by the <strong>Council of Princes</strong>, with <strong>High Prince Lugh
+Surehand</strong>. The Council was all-elven at first; it later admitted other
+metahumans, including the dragon Lofwyr. <em>(SR3 p.30)</em></li>
+  <li>Rumors of <strong>immortal elves</strong> who lived through the last low-magic age are
+not covered in the core rulebook. Treat them as street talk.</li>
+</ul>
+<h3 id="street-survival">
+  
+  
+    <a href="#street-survival" class="anchor-heading" aria-labelledby="street-survival"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Street survival
+  
+  
+</h3>
+    
+
+<ul>
+  <li>The megacorps hold <strong>extraterritoriality</strong>: their ground, their law.
+<em>(SR3 p.22)</em></li>
+  <li>Without a <strong>SIN</strong> you have few civil rights, but you’re also harder to
+trace. See <a href="../../street/sins/">SINs &amp; the SINless</a>. <em>(SR3 p.238)</em></li>
+</ul>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+

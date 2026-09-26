@@ -1,0 +1,1059 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.1/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.1/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(4)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(4) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(2) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(4) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list > li.nav-list-item:nth-child(4) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.6.1/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.6.1/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Healing | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Healing" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.6.1/rules/healing/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.6.1/rules/healing/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Healing" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"Healing","url":"https://darkbushido.github.io/The2ndChumming3e/v0.6.1/rules/healing/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.6.1/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/healing/" class="nav-list-link">Healing</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.6.1</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/">Rules</a></li>
+    <li class="breadcrumb-nav-list-item"><span>Healing</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="healing">
+  
+  
+    <a href="#healing" class="anchor-heading" aria-labelledby="healing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Healing
+  
+  
+</h1>
+    
+
+<p>What happens after someone gets hurt, step by step and in the order you do
+it at the table: who rolls, what they roll, and what it achieves. All rules
+are from the core rulebook, <em>(SR3 p.125–129)</em> and <em>(SR3 p.162, p.193–194)</em>.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#whos-involved" id="markdown-toc-whos-involved">Who’s involved</a></li>
+  <li><a href="#the-sequence-at-a-glance" id="markdown-toc-the-sequence-at-a-glance">The sequence at a glance</a></li>
+  <li><a href="#step-0-the-wound--sr3-p125126" id="markdown-toc-step-0-the-wound--sr3-p125126">Step 0: The wound  <em>(SR3 p.125–126)</em></a></li>
+  <li><a href="#step-1-stabilize-a-dying-character" id="markdown-toc-step-1-stabilize-a-dying-character">Step 1: Stabilize a dying character  <em>(SR3 p.129)</em></a></li>
+  <li><a href="#step-2-first-aid" id="markdown-toc-step-2-first-aid">Step 2: First aid  <em>(SR3 p.129)</em></a>    <ol>
+      <li><a href="#first-aid-table--sr3-p129" id="markdown-toc-first-aid-table--sr3-p129">First Aid Table  <em>(SR3 p.129)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#step-3-magical-healing" id="markdown-toc-step-3-magical-healing">Step 3: Magical healing  <em>(SR3 p.127, p.193–194)</em></a></li>
+  <li><a href="#step-4-deadly-wound-aftermath" id="markdown-toc-step-4-deadly-wound-aftermath">Step 4: Deadly-wound aftermath  <em>(SR3 p.127–129)</em></a></li>
+  <li><a href="#step-5-do-you-need-a-doctor" id="markdown-toc-step-5-do-you-need-a-doctor">Step 5: Do you need a doctor?  <em>(SR3 p.126–127)</em></a></li>
+  <li><a href="#step-6-heal-over-time" id="markdown-toc-step-6-heal-over-time">Step 6: Heal over time  <em>(SR3 p.127–128)</em></a>    <ol>
+      <li><a href="#healing-table--sr3-p127" id="markdown-toc-healing-table--sr3-p127">Healing Table  <em>(SR3 p.127)</em></a></li>
+      <li><a href="#doctoring-table--sr3-p128" id="markdown-toc-doctoring-table--sr3-p128">Doctoring Table  <em>(SR3 p.128)</em></a></li>
+      <li><a href="#what-it-costs--sr3-p128" id="markdown-toc-what-it-costs--sr3-p128">What it costs  <em>(SR3 p.128)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#stun-damage" id="markdown-toc-stun-damage">Stun damage  <em>(SR3 p.126)</em></a></li>
+  <li><a href="#worked-example" id="markdown-toc-worked-example">Worked example</a></li>
+</ol>
+
+<blockquote class="fixed">
+  <p>Original gist: “Healing Rules Reference”.</p>
+  <ul>
+    <li><strong>Stun</strong>: TN is <strong>2 plus your injury modifiers</strong>, not 2 plus the number of
+boxes filled. Recovering <strong>one box</strong> takes <strong>60 minutes ÷ successes</strong>. You
+roll the <strong>higher</strong> of Body or Willpower; that’s the rule, not a GM option.</li>
+    <li><strong>First aid</strong>: TN is <strong>4 / 6 / 8 / 10</strong> by wound level. One success lowers
+the wound <strong>one Damage Level</strong>, never more. It doesn’t heal a box per
+success, and there is no “capped by medkit rating”.</li>
+    <li><strong>Heal / Treat</strong>: TN is <strong>10 − the patient’s Essence</strong>, not the number of
+boxes filled. Each success heals <strong>one box, up to the spell’s Force</strong>.
+Heal has no +2 penalty after an hour.</li>
+    <li><strong>Natural healing</strong> uses the Healing Table (TN 4 / 6 / 8 / 10), and the
+base time is divided by your successes. The “nurse / hospital / DocWagon”
+modifiers in the original were invented. The real ones are on the
+Doctoring Table below.</li>
+    <li>The fourth level is <strong>Deadly</strong>, not “Lethal”.</li>
+  </ul>
+</blockquote><hr />
+<h2 id="whos-involved">
+  
+  
+    <a href="#whos-involved" class="anchor-heading" aria-labelledby="whos-involved"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Who’s involved
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Role</th>
+      <th style="text-align: left">Who they are</th>
+      <th style="text-align: left">What they roll</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Patient</strong></td>
+      <td style="text-align: left">The wounded character</td>
+      <td style="text-align: left"><strong>Body</strong> (natural Body, no cyberware) for most healing tests; Body or Willpower for Stun</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Medic</strong></td>
+      <td style="text-align: left">Anyone with <strong>Biotech</strong> skill, ideally with a <strong>medkit</strong></td>
+      <td style="text-align: left"><strong>Biotech</strong> for first aid and stabilizing</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Magician</strong></td>
+      <td style="text-align: left">A spellcaster who knows <strong>Heal</strong> or <strong>Treat</strong></td>
+      <td style="text-align: left"><strong>Sorcery</strong> (+ Spell Pool), then <strong>Willpower</strong> for Drain</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Doctor</strong></td>
+      <td style="text-align: left">Someone with a real medical degree, not just Biotech skill</td>
+      <td style="text-align: left">Nothing; they give the patient the Doctoring Table modifiers</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>GM</strong></td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">Judges conditions (bad, terrible), lifestyle, and interruptions</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>Gear that matters: a <strong>medkit</strong> (first aid without one is +4 TN), a <strong>trauma
+patch</strong> for a dying patient, and a <strong>hospital</strong> for intensive care.
+<em>(SR3 p.128–129)</em></p><hr />
+<h2 id="the-sequence-at-a-glance">
+  
+  
+    <a href="#the-sequence-at-a-glance" class="anchor-heading" aria-labelledby="the-sequence-at-a-glance"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The sequence at a glance
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: center">#</th>
+      <th style="text-align: left">Step</th>
+      <th style="text-align: left">When</th>
+      <th style="text-align: left">Who rolls</th>
+      <th style="text-align: left">Roll</th>
+      <th style="text-align: left">Effect</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left"><a href="#step-1-stabilize-a-dying-character">Stabilize</a></td>
+      <td style="text-align: left">Deadly wound, <strong>right away</strong></td>
+      <td style="text-align: left">Medic, then patient</td>
+      <td style="text-align: left">Biotech vs <strong>10</strong>; if that fails, Body vs <strong>10</strong></td>
+      <td style="text-align: left">Stops the bleeding; heals nothing</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: left"><a href="#step-2-first-aid">First aid</a></td>
+      <td style="text-align: left">Within <strong>1 hour</strong>, <strong>before</strong> any magic</td>
+      <td style="text-align: left">Medic</td>
+      <td style="text-align: left">Biotech vs <strong>4 / 6 / 8</strong></td>
+      <td style="text-align: left">Wound drops <strong>one level</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: left"><a href="#step-3-magical-healing">Magical healing</a></td>
+      <td style="text-align: left">Treat within <strong>1 hour</strong>; Heal any time</td>
+      <td style="text-align: left">Magician</td>
+      <td style="text-align: left">Sorcery vs <strong>10 − Essence</strong></td>
+      <td style="text-align: left">Heals <strong>1 box per success</strong>, up to Force</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: left"><a href="#step-4-deadly-wound-aftermath">Deadly-wound aftermath</a></td>
+      <td style="text-align: left">After a Deadly wound</td>
+      <td style="text-align: left">Patient</td>
+      <td style="text-align: left">Body vs <strong>4</strong>; 2D6 for Magic loss if Awakened</td>
+      <td style="text-align: left">May lose an organ, limb or attribute point, or Magic</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: left"><a href="#step-5-do-you-need-a-doctor">Need a doctor?</a></td>
+      <td style="text-align: left">After steps 2 and 3</td>
+      <td style="text-align: left">Patient</td>
+      <td style="text-align: left">Body vs <strong>2 / 4 / 6</strong></td>
+      <td style="text-align: left">Decides whether you heal on your own</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left"><a href="#step-6-heal-over-time">Heal over time</a></td>
+      <td style="text-align: left">Each wound level, one at a time</td>
+      <td style="text-align: left">Patient</td>
+      <td style="text-align: left">Body vs <strong>4 / 6 / 8 / 10</strong></td>
+      <td style="text-align: left">Base time ÷ successes to drop one level</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">—</td>
+      <td style="text-align: left"><a href="#stun-damage">Stun recovery</a></td>
+      <td style="text-align: left">Any time you can rest</td>
+      <td style="text-align: left">Patient</td>
+      <td style="text-align: left">Body or Willpower vs <strong>2</strong></td>
+      <td style="text-align: left">60 min ÷ successes per box</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>The order matters for two reasons.</strong> First aid can’t help once magical
+healing has been applied, so do first aid first. And first aid and magic both
+have to happen <strong>before</strong> the “need a doctor?” test. <em>(SR3 p.127, p.129)</em></p><hr />
+<h2 id="step-0-the-wound--sr3-p125126">
+  
+  
+    <a href="#step-0-the-wound--sr3-p125126" class="anchor-heading" aria-labelledby="step-0-the-wound--sr3-p125126"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 0: The wound  <em>(SR3 p.125–126)</em>
+  
+  
+</h2>
+    
+
+<p>Physical and Stun each have <strong>10 boxes</strong>. The <strong>Light / Moderate / Serious /
+Deadly</strong> thresholds are <strong>1 / 3 / 6 / 10</strong> boxes, and they add <strong>+1 / +2 /
++3</strong> to target numbers and <strong>−1 / −2 / −3</strong> to Initiative. At 10 boxes you’re
+unconscious.</p>
+
+<ul>
+  <li><strong>Stun</strong> past 10 boxes spills into the Physical track, and you’re knocked
+out.</li>
+  <li><strong>Physical</strong> past 10 boxes: you can survive overflow up to your <strong>Body</strong>
+rating. Until someone stabilizes you, you take <strong>another box every (Body)
+Combat Turns</strong>. Past Body in overflow, you’re dead.</li>
+</ul>
+
+<p>See <a href="../combat/#wounds-and-the-condition-monitor">Actions &amp; Combat</a> for the
+full table.</p><hr />
+<h2 id="step-1-stabilize-a-dying-character">
+  
+  
+    <a href="#step-1-stabilize-a-dying-character" class="anchor-heading" aria-labelledby="step-1-stabilize-a-dying-character"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 1: Stabilize a dying character  <em>(SR3 p.129)</em>
+  
+  
+</h2>
+    
+
+<p><strong>Only for a Deadly wound.</strong> First aid can <strong>stabilize</strong> a Deadly wound but
+can’t reduce it.</p>
+
+<ol>
+  <li><strong>Medic</strong> rolls <strong>Biotech against TN 10</strong>, with the modifiers from the
+First Aid Table in step 2. <strong>One success</strong> stabilizes the patient: the
+extra box every (Body) Combat Turns stops.</li>
+  <li>If that fails, the <strong>patient</strong> rolls <strong>natural Body against TN 10</strong>. With a
+success they stabilize on their own. If that fails too, they die once the
+damage exceeds their Body rating.</li>
+  <li><strong>Trauma patch</strong> (optional, last resort): the patient gets an <strong>extra Body
+Test</strong> to stabilize, against TN <strong>4 + the rating of any dermal armor or
+blood filters</strong>. Success stops the overflow damage. It makes permanent
+damage more likely: +2 to the step 4 test.</li>
+  <li>When <strong>professional help</strong> arrives, such as a hospital or a DocWagon
+paramedic with better Biotech, it makes <strong>another Biotech Test and Body
+Test</strong>.</li>
+</ol><hr />
+<h2 id="step-2-first-aid">
+  
+  
+    <a href="#step-2-first-aid" class="anchor-heading" aria-labelledby="step-2-first-aid"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 2: First aid  <em>(SR3 p.129)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li><strong>Who:</strong> the medic, rolling <strong>Biotech</strong>.</li>
+  <li><strong>When:</strong> within <strong>one hour</strong> of the injury, and <strong>before</strong> any magical
+healing. Once magic has been used on the wound, first aid can’t help.</li>
+  <li><strong>Effect:</strong> <strong>at least one success lowers the wound one Damage Level.</strong> It
+never drops it by more than one level, and it only helps <strong>Physical</strong>
+damage.</li>
+  <li><strong>Time:</strong> treatment time ÷ successes, in <strong>uninterrupted Combat Turns</strong>. A
+serious interruption means starting over.</li>
+</ul>
+<h3 id="first-aid-table--sr3-p129">
+  
+  
+    <a href="#first-aid-table--sr3-p129" class="anchor-heading" aria-labelledby="first-aid-table--sr3-p129"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> First Aid Table  <em>(SR3 p.129)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Damage level</th>
+      <th style="text-align: center">TN</th>
+      <th style="text-align: center">Treatment time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Light</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">5 Combat Turns</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Moderate</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">10 Combat Turns</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Serious</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">15 Combat Turns</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Deadly</td>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center">Special: stabilize only (step 1)</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Situation</th>
+      <th style="text-align: center">Modifier</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Patient is Awakened</td>
+      <td style="text-align: center">+2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Bad conditions (a city street)</td>
+      <td style="text-align: center">+1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Terrible conditions (the same street in a firefight in the rain)</td>
+      <td style="text-align: center">+3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Patient’s Body 1–3 / 4–6 / 7–9 / 10+</td>
+      <td style="text-align: center">+0 / −1 / −2 / −3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">No medkit available</td>
+      <td style="text-align: center">+4</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<blockquote class="note">
+  <p><strong>Awakened patients.</strong> The +2 isn’t optional. If a medic treats an Awakened
+patient <em>without</em> applying it (using gear and drugs that risk their magic),
+the patient rolls <strong>2D6</strong>; on a result <strong>at or below</strong> their Magic, they
+permanently lose 1 Magic. <em>(SR3 p.129)</em></p>
+</blockquote><hr />
+<h2 id="step-3-magical-healing">
+  
+  
+    <a href="#step-3-magical-healing" class="anchor-heading" aria-labelledby="step-3-magical-healing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 3: Magical healing  <em>(SR3 p.127, p.193–194)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li><strong>Who:</strong> a magician who knows the spell, <strong>touching</strong> the patient. <em>(SR3
+p.193)</em></li>
+  <li><strong>Roll:</strong> <strong>Sorcery</strong> plus up to as many Spell Pool dice as Sorcery dice,
+against <strong>TN 10 − the patient’s Essence</strong>. <em>(SR3 p.194; p.44)</em></li>
+</ul>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Spell</th>
+      <th style="text-align: center">Type</th>
+      <th style="text-align: center">TN</th>
+      <th style="text-align: left">When</th>
+      <th style="text-align: center">Drain</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Treat</strong></td>
+      <td style="text-align: center">Mana</td>
+      <td style="text-align: center">10 − Essence</td>
+      <td style="text-align: left">Within <strong>1 hour</strong> of the injury</td>
+      <td style="text-align: center">−1(Wound Level)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Heal</strong></td>
+      <td style="text-align: center">Mana</td>
+      <td style="text-align: center">10 − Essence</td>
+      <td style="text-align: left">Any time</td>
+      <td style="text-align: center">(Wound Level)</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<ul>
+  <li><strong>Effect:</strong> <strong>each success heals one box</strong> of Physical damage, <strong>up to the
+spell’s Force</strong>. You can instead spend successes to divide the base time
+before the spell becomes permanent, or split them between the two. Treat
+becomes permanent in <strong>half</strong> the normal time. <em>(SR3 p.194)</em></li>
+  <li><strong>Drain:</strong> Power = Force ÷ 2 (+0 for Heal, −1 for Treat). The <strong>Damage
+Level</strong> is the patient’s wound level when the spell is cast. The magician
+resists with <strong>Willpower</strong>. <em>(SR3 p.162, p.194)</em></li>
+  <li><strong>Once only:</strong> a character can be magically healed <strong>once for a single set
+of injuries</strong>. A successful Heal or Treat rules out further healing spells
+<strong>and first aid</strong>. <em>(SR3 p.127, p.194)</em></li>
+  <li><strong>Drain can’t be healed by magic.</strong> Physical damage from Drain heals only
+with rest and medical care. <em>(SR3 p.162)</em></li>
+</ul><hr />
+<h2 id="step-4-deadly-wound-aftermath">
+  
+  
+    <a href="#step-4-deadly-wound-aftermath" class="anchor-heading" aria-labelledby="step-4-deadly-wound-aftermath"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 4: Deadly-wound aftermath  <em>(SR3 p.127–129)</em>
+  
+  
+</h2>
+    
+
+<p><strong>Only after a Deadly wound.</strong></p>
+
+<p><strong>Permanent damage.</strong> The <strong>patient</strong> rolls <strong>Body against TN 4</strong>. Dermal
+armor counts for this test, and use of a trauma patch adds +2. <em>(SR3
+p.127–128)</em></p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Successes</th>
+      <th style="text-align: left">Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">0</td>
+      <td style="text-align: left">A vital organ or system is gravely damaged. The patient needs continuous care from someone with Biotech, the <strong>whole healing time doubles</strong>, and a transplant is needed. Roll 1D6 for the attribute permanently lost: 1 Body, 2 Strength, 3 Quickness, 4 Intelligence, 5 Willpower, 6 Reaction.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">An eye or limb is lost and must be replaced, either natural or cyber. <strong>Base healing time +50%</strong>. Roll 1D6: 1 right arm, 2 left arm, 3 right leg, 4 left leg, 5 an ear, 6 an eye.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2+</td>
+      <td style="text-align: left">No lasting damage.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Magic loss.</strong> An <strong>Awakened</strong> patient with a Deadly wound rolls <strong>2D6</strong>. At
+or below their Magic, they permanently lose 1 point. If the Deadly wound was
+also treated without the +2 Awakened modifier, they roll <strong>twice</strong>. <em>(SR3
+p.129)</em></p><hr />
+<h2 id="step-5-do-you-need-a-doctor">
+  
+  
+    <a href="#step-5-do-you-need-a-doctor" class="anchor-heading" aria-labelledby="step-5-do-you-need-a-doctor"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 5: Do you need a doctor?  <em>(SR3 p.126–127)</em>
+  
+  
+</h2>
+    
+
+<p>Once first aid and magic are done, the <strong>patient</strong> makes a <strong>Body Test</strong>
+(natural Body, no cyberware) against the TN for their current wound:</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Wound level</th>
+      <th style="text-align: center">TN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Light</td>
+      <td style="text-align: center">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Moderate</td>
+      <td style="text-align: center">4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Serious</td>
+      <td style="text-align: center">6</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Deadly</td>
+      <td style="text-align: center">Always needs medical attention</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<ul>
+  <li><strong>Any successes:</strong> you’ll heal without medical attention.</li>
+  <li><strong>No successes:</strong> you won’t heal at all until you get medical attention,
+meaning a doctor, clinic or hospital.</li>
+</ul>
+
+<p>You can make this test any time, but doing it in combat costs your whole
+next Combat Turn. <em>(SR3 p.126)</em></p><hr />
+<h2 id="step-6-heal-over-time">
+  
+  
+    <a href="#step-6-heal-over-time" class="anchor-heading" aria-labelledby="step-6-heal-over-time"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 6: Heal over time  <em>(SR3 p.127–128)</em>
+  
+  
+</h2>
+    
+
+<p>Physical damage heals <strong>one Damage Level at a time</strong>: Deadly to Serious,
+Serious to Moderate, and so on. When a level heals, the track drops to the
+<strong>lowest box</strong> of the next level. A Serious wound that heals to Moderate
+leaves exactly 3 boxes filled.</p>
+
+<p><strong>For each level:</strong></p>
+
+<ol>
+  <li>The <strong>patient</strong> rolls <strong>Body</strong> against the TN on the Healing Table below.
+Add Doctoring Table modifiers if a doctor is involved.</li>
+  <li><strong>Base time ÷ successes</strong> = how long that level takes to heal. It can
+never be shorter than the <strong>minimum time</strong>.</li>
+  <li>When the level heals, repeat for the next level down.</li>
+</ol>
+<h3 id="healing-table--sr3-p127">
+  
+  
+    <a href="#healing-table--sr3-p127" class="anchor-heading" aria-labelledby="healing-table--sr3-p127"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Healing Table  <em>(SR3 p.127)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Damage level</th>
+      <th style="text-align: center">Base time</th>
+      <th style="text-align: center">Minimum time</th>
+      <th style="text-align: center">TN</th>
+      <th style="text-align: left">Minimum lifestyle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Deadly</td>
+      <td style="text-align: center">30 days</td>
+      <td style="text-align: center">3 days</td>
+      <td style="text-align: center">10</td>
+      <td style="text-align: left">Hospitalized</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Serious</td>
+      <td style="text-align: center">20 days</td>
+      <td style="text-align: center">2 days</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: left">High</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Moderate</td>
+      <td style="text-align: center">10 days</td>
+      <td style="text-align: center">1 day</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left">Middle</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Light</td>
+      <td style="text-align: center">24 hours</td>
+      <td style="text-align: center">2 hours</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: left">Low</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>If the patient can’t support the minimum lifestyle while healing, the GM may
+add modifiers. Lifestyle can be paid by the day: the monthly cost ÷ 30.
+<em>(SR3 p.127)</em></p>
+<h3 id="doctoring-table--sr3-p128">
+  
+  
+    <a href="#doctoring-table--sr3-p128" class="anchor-heading" aria-labelledby="doctoring-table--sr3-p128"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Doctoring Table  <em>(SR3 p.128)</em>
+  
+  
+</h3>
+    
+
+<p>Use this when a real doctor is looking after the patient.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Situation</th>
+      <th style="text-align: center">Modifier</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Intensive care (hospital only)</td>
+      <td style="text-align: center">−2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Long-term magical care</td>
+      <td style="text-align: center">−2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><em>Conditions (apply only one):</em></td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Not in a hospital or clinic</td>
+      <td style="text-align: center">+2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Bad conditions</td>
+      <td style="text-align: center">+3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Terrible conditions</td>
+      <td style="text-align: center">+4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Patient is a magician</td>
+      <td style="text-align: center">+2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Patient’s natural Body 1–3 / 4–6 / 7–9 / 10+</td>
+      <td style="text-align: center">+0 / −1 / −2 / −3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Patient’s natural Willpower 1–3 / 4–6 / 7–9 / 10+</td>
+      <td style="text-align: center">+0 / −1 / −2 / −3</td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="what-it-costs--sr3-p128">
+  
+  
+    <a href="#what-it-costs--sr3-p128" class="anchor-heading" aria-labelledby="what-it-costs--sr3-p128"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> What it costs  <em>(SR3 p.128)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Service</th>
+      <th style="text-align: center">Deadly</th>
+      <th style="text-align: center">Serious</th>
+      <th style="text-align: center">Moderate</th>
+      <th style="text-align: center">Light</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Paramedic first aid</td>
+      <td style="text-align: center">400¥</td>
+      <td style="text-align: center">200¥</td>
+      <td style="text-align: center">100¥</td>
+      <td style="text-align: center">50¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Doctor’s services, per day</td>
+      <td style="text-align: center">400¥</td>
+      <td style="text-align: center">200¥</td>
+      <td style="text-align: center">100¥</td>
+      <td style="text-align: center">50¥</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>A hospitalization lifestyle is <strong>500¥ a day</strong>, including the doctor.
+Intensive care, for Deadly wounds only, is <strong>1,000¥ a day</strong>.</p><hr />
+<h2 id="stun-damage">
+  
+  
+    <a href="#stun-damage" class="anchor-heading" aria-labelledby="stun-damage"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Stun damage  <em>(SR3 p.126)</em>
+  
+  
+</h2>
+    
+
+<p>Stun runs on its own track and recovers much faster. <strong>No medicine or known
+spell helps</strong>; you just rest.</p>
+
+<ol>
+  <li>The <strong>patient</strong> rolls <strong>Body or Willpower, whichever is higher</strong>, against
+<strong>TN 2</strong>, plus current Stun and Physical injury modifiers.</li>
+  <li>Recovering <strong>one box</strong> takes <strong>60 minutes ÷ successes</strong>. Erase the box,
+then roll again for the next one.</li>
+  <li>The patient must be <strong>resting completely</strong>. If they’re interrupted, they
+start over, and the new roll can’t beat the first one.</li>
+</ol>
+
+<p>A character knocked out by Deadly Stun doesn’t wake up until the Stun is
+back down to <strong>Serious</strong>. Stim patches only mask Stun, at a price. <em>(SR3
+p.126, p.305)</em></p><hr />
+<h2 id="worked-example">
+  
+  
+    <a href="#worked-example" class="anchor-heading" aria-labelledby="worked-example"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Worked example
+  
+  
+</h2>
+    
+
+<p>Snot takes a <strong>Serious</strong> Physical wound (6 boxes) from a Predator.</p>
+
+<ol>
+  <li><strong>Stabilize</strong>: not needed; it isn’t Deadly.</li>
+  <li><strong>First aid, within the hour.</strong> Teammate Doc has Biotech 4 and a medkit,
+and it’s a city street (+1). The TN is 8 + 1 = <strong>9</strong>, less 1 for Snot’s
+Body 5 = <strong>8</strong>. Doc gets 1 success: the wound drops to <strong>Moderate</strong> (3
+boxes). Treatment takes 15 ÷ 1 = 15 Combat Turns.</li>
+  <li><strong>Magic.</strong> The team mage casts Treat, still within the hour, against 10 −
+Snot’s Essence 6 = <strong>TN 4</strong>, and gets 2 successes. Two boxes heal, leaving
+<strong>1 box: Light</strong>. Drain is resisted at Moderate, Snot’s wound level when
+the spell was cast. Nobody can use first aid or healing magic on this wound
+again.</li>
+  <li><strong>Aftermath</strong>: not needed; it wasn’t Deadly.</li>
+  <li><strong>Need a doctor?</strong> Snot rolls Body 5 against <strong>TN 2</strong> for a Light wound
+and succeeds. He’ll heal on his own.</li>
+  <li><strong>Heal over time.</strong> Body 5 against <strong>TN 4</strong> gets 2 successes: 24 hours ÷ 2
+= <strong>12 hours</strong>, above the 2-hour minimum. He needs at least a Low
+lifestyle for that time.</li>
+</ol>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+

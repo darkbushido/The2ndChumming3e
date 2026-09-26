@@ -1,0 +1,723 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.1/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.1/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(2)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(4) > ul > li:nth-child(2) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(4) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(4) > ul > li:nth-child(2) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(4) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(4) > ul.nav-list > li.nav-list-item:nth-child(2) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.6.1/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.6.1/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Buying Gear &amp; Fencing | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Buying Gear &amp; Fencing" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.6.1/street/gear-and-fencing/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.6.1/street/gear-and-fencing/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Buying Gear &amp; Fencing" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"Buying Gear &amp; Fencing","url":"https://darkbushido.github.io/The2ndChumming3e/v0.6.1/street/gear-and-fencing/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.6.1/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/healing/" class="nav-list-link">Healing</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.6.1</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/">The Street</a></li>
+    <li class="breadcrumb-nav-list-item"><span>Buying Gear & Fencing</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="buying-gear--fencing">
+  
+  
+    <a href="#buying-gear--fencing" class="anchor-heading" aria-labelledby="buying-gear--fencing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Buying Gear &amp; Fencing
+  
+  
+</h1>
+    
+
+<p>Availability, Street Index and Legality Codes; buying through contacts; and
+selling stolen goods to a fence. All rules are from the core rulebook,
+<em>(SR3 p.237–238, p.270–274)</em>.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#reading-a-gear-entry--sr3-p270272" id="markdown-toc-reading-a-gear-entry--sr3-p270272">Reading a gear entry  <em>(SR3 p.270–272)</em></a></li>
+  <li><a href="#buying-on-the-street--sr3-p272273" id="markdown-toc-buying-on-the-street--sr3-p272273">Buying on the street  <em>(SR3 p.272–273)</em></a>    <ol>
+      <li><a href="#the-books-example--sr3-p273" id="markdown-toc-the-books-example--sr3-p273">The book’s example  <em>(SR3 p.273)</em></a></li>
+      <li><a href="#example-an-ares-predator" id="markdown-toc-example-an-ares-predator">Example: an Ares Predator</a></li>
+    </ol>
+  </li>
+  <li><a href="#legality-codes--sr3-p273274" id="markdown-toc-legality-codes--sr3-p273274">Legality Codes  <em>(SR3 p.273–274)</em></a>    <ol>
+      <li><a href="#categories--sr3-p274" id="markdown-toc-categories--sr3-p274">Categories  <em>(SR3 p.274)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#fencing-the-loot" id="markdown-toc-fencing-the-loot">Fencing the loot  <em>(SR3 p.237–238)</em></a>    <ol>
+      <li><a href="#1-find-a-fence--sr3-p237" id="markdown-toc-1-find-a-fence--sr3-p237">1. Find a fence  <em>(SR3 p.237)</em></a>        <ol>
+          <li><a href="#finding-a-fence-table--sr3-p238" id="markdown-toc-finding-a-fence-table--sr3-p238">Finding a Fence Table  <em>(SR3 p.238)</em></a></li>
+        </ol>
+      </li>
+      <li><a href="#2-spend-your-successes--sr3-p237238" id="markdown-toc-2-spend-your-successes--sr3-p237238">2. Spend your successes  <em>(SR3 p.237–238)</em></a></li>
+      <li><a href="#3-the-meet--sr3-p238" id="markdown-toc-3-the-meet--sr3-p238">3. The meet  <em>(SR3 p.238)</em></a></li>
+      <li><a href="#example-five-hk227-smgs" id="markdown-toc-example-five-hk227-smgs">Example: five HK227 SMGs</a></li>
+    </ol>
+  </li>
+</ol>
+
+<blockquote class="fixed">
+  <p>Original gist: “Gear Availability, Acquisition, &amp; Fencing Guide”.</p>
+  <ul>
+    <li>SR3 Legality Codes look like <strong><code class="language-plaintext highlighter-rouge">6P-E</code></strong>, not “R” or “F”. The number is
+the restriction level, <strong>P</strong> means a permit is available, and the letter
+is the category.</li>
+    <li>Successes on the acquisition test <strong>divide</strong> the base time. They don’t
+cut it by 25–50% each.</li>
+    <li>Paying to hurry a search costs <strong>+2 days and +0.1 Street Index for each
+−1 to the Availability TN</strong>. It’s not “+25–50% per die”.</li>
+    <li>The price is <strong>negotiated</strong>: Negotiation against Intelligence, <strong>5% per
+net success</strong>.</li>
+    <li>Fencing: the <strong>30% base and 5% per net success</strong> were right, but the
+limits are a <strong>10% floor and a 50% ceiling</strong>, not 60%. The “chop shop 10–15%”
+rate and the hot, encrypted and scarce percentage modifiers were invented.
+The book handles risk through the <strong>Finding a Fence</strong> TN instead.</li>
+    <li>The <strong>Ares Predator III</strong> isn’t in the core rulebook. The examples below
+use the core <strong>Ares Predator</strong> (450¥, Availability 3/24 hrs, Street
+Index .5).</li>
+  </ul>
+</blockquote><hr />
+<h2 id="reading-a-gear-entry--sr3-p270272">
+  
+  
+    <a href="#reading-a-gear-entry--sr3-p270272" class="anchor-heading" aria-labelledby="reading-a-gear-entry--sr3-p270272"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Reading a gear entry  <em>(SR3 p.270–272)</em>
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Statistic</th>
+      <th style="text-align: left">Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Concealability</strong></td>
+      <td style="text-align: left">TN for Perception Tests to spot it. Searches use half.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Availability</strong></td>
+      <td style="text-align: left">Two numbers: <strong>TN / base time</strong>, for example <code class="language-plaintext highlighter-rouge">3/24 hrs</code>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Cost</strong></td>
+      <td style="text-align: left">The legal retail price in nuyen.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Street Index</strong></td>
+      <td style="text-align: left">The black-market multiplier on Cost.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Legality</strong></td>
+      <td style="text-align: left">Restriction level, permit availability, and category.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>At character creation, no gear may have a Device Rating above <strong>6</strong> or an
+Availability above <strong>8</strong>. <em>(SR3 p.270)</em> Gear modified for a dwarf costs
+<strong>+10%</strong>, and for a troll <strong>+25%</strong>. <em>(SR3 p.272)</em></p><hr />
+<h2 id="buying-on-the-street--sr3-p272273">
+  
+  
+    <a href="#buying-on-the-street--sr3-p272273" class="anchor-heading" aria-labelledby="buying-on-the-street--sr3-p272273"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Buying on the street  <em>(SR3 p.272–273)</em>
+  
+  
+</h2>
+    
+
+<ol>
+  <li><strong>Find a source.</strong> Contact a fixer or other suitable contact and make an
+<strong>Etiquette Test</strong> against the <strong>Availability TN</strong>. Contacts differ: a
+talismonger is great for magical goods and poor for guns.</li>
+  <li><strong>Wait.</strong> <strong>Base time ÷ successes</strong> is how long it takes the source to
+find the item.</li>
+  <li><strong>No successes?</strong> The contact can’t or won’t find it. At the GM’s
+discretion you can put the word out: <strong>for each −1 to the Availability
+TN, add 2 days to the wait and +0.1 to the Street Index</strong>. <em>(SR3 p.273)</em></li>
+  <li><strong>Negotiate.</strong> Halfway through the wait you meet the source. The asking
+price is <strong>Cost × Street Index</strong>, plus any increase from step 3. You and
+the source each roll <strong>Negotiation against the other’s Intelligence</strong>.
+The winner moves the price <strong>5% per net success</strong> in their favor.
+<em>(SR3 p.273)</em></li>
+  <li><strong>Pick up.</strong> If you won’t pay, the deal is off, and the GM may raise the
+Availability TN next time you use that contact. <em>(SR3 p.273)</em></li>
+</ol>
+<h3 id="the-books-example--sr3-p273">
+  
+  
+    <a href="#the-books-example--sr3-p273" class="anchor-heading" aria-labelledby="the-books-example--sr3-p273"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The book’s example  <em>(SR3 p.273)</em>
+  
+  
+</h3>
+    
+
+<p>Cheshire wants a <strong>monofilament whip</strong>: Availability <strong>24/14 days</strong>,
+Street Index <strong>3</strong>, Cost <strong>3,000¥</strong>. None of her contacts come close to TN</p>
+<ol>
+  <li>She puts the word out, cutting the TN to <strong>12</strong>. That adds <strong>24 days</strong>
+(2 × 12) and <strong>+1.2</strong> Street Index. She rolls 2 successes: (24 + 14) ÷ 2 =
+<strong>19 days</strong>. The price is 3,000 × 4.2 = <strong>12,600¥</strong>. She wins the
+negotiation by 4, which is 20% off, and pays <strong>10,080¥</strong>.</li>
+</ol>
+<h3 id="example-an-ares-predator">
+  
+  
+    <a href="#example-an-ares-predator" class="anchor-heading" aria-labelledby="example-an-ares-predator"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Example: an Ares Predator
+  
+  
+</h3>
+    
+
+<ul>
+  <li><strong>Ares Predator</strong>: 9M, SA, <strong>Availability 3/24 hrs</strong>, Cost <strong>450¥</strong>,
+Street Index <strong>.5</strong>, Legality <strong>6P-E</strong>. <em>(SR3 p.278)</em></li>
+  <li>An Etiquette Test against <strong>TN 3</strong> scores 2 successes, so the pistol turns
+up in <strong>12 hours</strong>.</li>
+  <li>The asking price is 450 × .5 = <strong>225¥</strong> before negotiation. Its Street
+Index is below 1, so heavy pistols are cheaper on the street than in a
+store.</li>
+</ul><hr />
+<h2 id="legality-codes--sr3-p273274">
+  
+  
+    <a href="#legality-codes--sr3-p273274" class="anchor-heading" aria-labelledby="legality-codes--sr3-p273274"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Legality Codes  <em>(SR3 p.273–274)</em>
+  
+  
+</h2>
+    
+
+<p>A code like <strong><code class="language-plaintext highlighter-rouge">6P-E</code></strong> reads as follows:</p>
+
+<ul>
+  <li><strong>6</strong> is the <strong>restriction level</strong>. The lower the number, the more tightly
+it’s controlled. When an officer notices the item, they roll their
+Security or Police Procedures skill <strong>against this number</strong>. With 1
+success they know and may warn you. With more, they ask for a permit or
+arrest you. A low-enforcement area adds up to <strong>+3</strong>; a high-enforcement
+area subtracts up to <strong>−3</strong>, to a minimum of 2.</li>
+  <li><strong>P</strong> means a <strong>permit is available</strong>. See
+<a href="../sins/#permits-and-licenses">SINs &amp; the SINless</a>.</li>
+  <li><strong>E</strong> is the <strong>category</strong> on the Local Fines and Punishment Table.</li>
+</ul>
+
+<p>Legal items have no code. They can be bought over the counter, but only in
+your own name, which leaves a data trail. <em>(SR3 p.273)</em></p>
+<h3 id="categories--sr3-p274">
+  
+  
+    <a href="#categories--sr3-p274" class="anchor-heading" aria-labelledby="categories--sr3-p274"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Categories  <em>(SR3 p.274)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left"> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>A</strong> Small blade</td>
+      <td style="text-align: left"><strong>F</strong> Rifle</td>
+      <td style="text-align: left"><strong>L</strong> Military armor</td>
+      <td style="text-align: left"><strong>S</strong> Class D Matrix (unregistered decks and software)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>B</strong> Large blade</td>
+      <td style="text-align: left"><strong>G</strong> Automatic weapon</td>
+      <td style="text-align: left"><strong>M</strong> Military ammunition</td>
+      <td style="text-align: left"><strong>T</strong> Class E Magic (unregistered spells, spirits, foci)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>C</strong> Blunt weapon</td>
+      <td style="text-align: left"><strong>H</strong> Heavy weapon</td>
+      <td style="text-align: left"><strong>N</strong> Class A cyberware (paralegal)</td>
+      <td style="text-align: left"><strong>U / V / W</strong> Class A / B / C equipment</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>D</strong> Projectile</td>
+      <td style="text-align: left"><strong>J</strong> Explosives</td>
+      <td style="text-align: left"><strong>Q</strong> Class B cyberware (security grade)</td>
+      <td style="text-align: left"><strong>X / Y / Z</strong> Class A / B / C controlled substances</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>E</strong> Pistol</td>
+      <td style="text-align: left"><strong>K</strong> Military weapon</td>
+      <td style="text-align: left"><strong>R</strong> Class C cyberware (military grade)</td>
+      <td style="text-align: left"> </td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>The table also lists fines and prison terms for <strong>possession, transport,
+threat, use and intent</strong> in each category.</p><hr />
+<h2 id="fencing-the-loot">
+  
+  
+    <a href="#fencing-the-loot" class="anchor-heading" aria-labelledby="fencing-the-loot"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Fencing the loot  <em>(SR3 p.237–238)</em>
+  
+  
+</h2>
+    
+
+<p>If the job came with an agreed way to dispose of the loot, these rules don’t
+apply. Otherwise, you need a fence.</p>
+<h3 id="1-find-a-fence--sr3-p237">
+  
+  
+    <a href="#1-find-a-fence--sr3-p237" class="anchor-heading" aria-labelledby="1-find-a-fence--sr3-p237"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 1. Find a fence  <em>(SR3 p.237)</em>
+  
+  
+</h3>
+    
+
+<p>Make an <strong>Etiquette (Street) Test</strong> against <strong>TN 4</strong>, modified as below. A
+team rolls the <strong>average</strong> Etiquette (Street) of the group <strong>plus one die
+per member</strong>, and everyone who contributes must attend the meet.</p>
+<h4 id="finding-a-fence-table--sr3-p238">
+  
+  
+    <a href="#finding-a-fence-table--sr3-p238" class="anchor-heading" aria-labelledby="finding-a-fence-table--sr3-p238"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Finding a Fence Table  <em>(SR3 p.238)</em>
+  
+  
+</h4>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Situation</th>
+      <th style="text-align: center">Modifier</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Using a regular contact</td>
+      <td style="text-align: center">−1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Disposing of standard gear</td>
+      <td style="text-align: center">−1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Disposing of hi-tech or other important loot</td>
+      <td style="text-align: center">+1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Disposing of hot loot</td>
+      <td style="text-align: center">+3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Being sought by the police</td>
+      <td style="text-align: center">+1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Being sought by a corp or organized crime</td>
+      <td style="text-align: center">+2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Magical loot (foci, spell formulae and so on)</td>
+      <td style="text-align: center">+2</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>Fences prefer, in this order: <strong>standard gear</strong> (weapons, armor, vehicles,
+jewelry, money), then <strong>high-tech loot</strong> (ordinary data, equipment,
+research), then <strong>hot loot</strong> (one-of-a-kind items, prototypes, secret
+files, magical items). <em>(SR3 p.237)</em></p>
+<h3 id="2-spend-your-successes--sr3-p237238">
+  
+  
+    <a href="#2-spend-your-successes--sr3-p237238" class="anchor-heading" aria-labelledby="2-spend-your-successes--sr3-p237238"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 2. Spend your successes  <em>(SR3 p.237–238)</em>
+  
+  
+</h3>
+    
+
+<p>You can split them between two uses:</p>
+
+<ul>
+  <li><strong>Hurry it along</strong>: finding a fence takes a base <strong>10 days</strong>, and each
+success allocated takes a day off, down to a minimum of 1 day. At the end
+of each day the GM rolls <strong>dice equal to the days spent so far against TN
+6</strong>. Any success means the former owners have found out.</li>
+  <li><strong>Finance the fence</strong>: the GM secretly rolls <strong>2D6 × 100,000¥</strong> and
+multiplies it by the successes allocated. That’s the most money the fence
+brings to the meet.</li>
+</ul>
+<h3 id="3-the-meet--sr3-p238">
+  
+  
+    <a href="#3-the-meet--sr3-p238" class="anchor-heading" aria-labelledby="3-the-meet--sr3-p238"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 3. The meet  <em>(SR3 p.238)</em>
+  
+  
+</h3>
+    
+
+<ul>
+  <li>One character and the fence each roll <strong>Negotiation against the other’s
+Intelligence, +2</strong> because both sides are suspicious.</li>
+  <li>The <strong>base price is 30%</strong> of the item’s listed value. The winner shifts it
+<strong>5% per extra success</strong>.</li>
+  <li><strong>The fence can’t push it below 10%, and the team can’t push it above
+50%.</strong></li>
+  <li>The fence will bring muscle. If the former owners are hunting the loot,
+they may turn up too.</li>
+</ul>
+<h3 id="example-five-hk227-smgs">
+  
+  
+    <a href="#example-five-hk227-smgs" class="anchor-heading" aria-labelledby="example-five-hk227-smgs"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Example: five HK227 SMGs
+  
+  
+</h3>
+    
+
+<ul>
+  <li>The <strong>Heckler &amp; Koch HK227</strong> costs <strong>1,500¥</strong> each, so five are worth
+<strong>7,500¥</strong> at list. <em>(SR3 p.278)</em></li>
+  <li>The fence’s base offer is 30%, which is <strong>2,250¥</strong>.</li>
+  <li>The team’s face wins by 3 successes: +15%, for 45%, or <strong>3,375¥</strong>.</li>
+  <li>Winning by 5 would reach 55%, but the ceiling holds it at <strong>50%</strong>, which is
+<strong>3,750¥</strong>.</li>
+</ul>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+

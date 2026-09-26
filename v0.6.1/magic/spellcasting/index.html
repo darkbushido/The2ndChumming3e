@@ -1,0 +1,1042 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.1/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.1/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(2)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(3) > ul > li:nth-child(2) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(3) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(3) > ul > li:nth-child(2) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(3) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(3) > ul.nav-list > li.nav-list-item:nth-child(2) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.6.1/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.6.1/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Spellcasting, Resistance &amp; Drain | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Spellcasting, Resistance &amp; Drain" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.6.1/magic/spellcasting/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.6.1/magic/spellcasting/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Spellcasting, Resistance &amp; Drain" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"Spellcasting, Resistance &amp; Drain","url":"https://darkbushido.github.io/The2ndChumming3e/v0.6.1/magic/spellcasting/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.6.1/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/healing/" class="nav-list-link">Healing</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.6.1</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/">Magic</a></li>
+    <li class="breadcrumb-nav-list-item"><span>Spellcasting, Resistance & Drain</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="spellcasting-resistance--drain">
+  
+  
+    <a href="#spellcasting-resistance--drain" class="anchor-heading" aria-labelledby="spellcasting-resistance--drain"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Spellcasting, Resistance &amp; Drain
+  
+  
+</h1>
+    
+
+<p>How a spell is cast, step by step and in the order the book gives: who
+rolls, what they roll, and what happens. All rules are from the core
+rulebook, <em>(SR3 p.178–185, p.191)</em>.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#who-rolls-what" id="markdown-toc-who-rolls-what">Who rolls what</a></li>
+  <li><a href="#the-sequence-at-a-glance--sr3-p181" id="markdown-toc-the-sequence-at-a-glance--sr3-p181">The sequence at a glance  <em>(SR3 p.181)</em></a></li>
+  <li><a href="#step-1-preparation" id="markdown-toc-step-1-preparation">Step 1: Preparation  <em>(SR3 p.178, p.181, p.191)</em></a></li>
+  <li><a href="#step-2-targeting" id="markdown-toc-step-2-targeting">Step 2: Targeting  <em>(SR3 p.181–182)</em></a></li>
+  <li><a href="#step-3-sorcery-test" id="markdown-toc-step-3-sorcery-test">Step 3: Sorcery Test  <em>(SR3 p.182–183)</em></a>    <ol>
+      <li><a href="#target-number" id="markdown-toc-target-number">Target number</a>        <ol>
+          <li><a href="#object-resistance-table--sr3-p182" id="markdown-toc-object-resistance-table--sr3-p182">Object Resistance Table  <em>(SR3 p.182)</em></a></li>
+        </ol>
+      </li>
+      <li><a href="#modifiers-to-the-sorcery-tn--sr3-p182183" id="markdown-toc-modifiers-to-the-sorcery-tn--sr3-p182183">Modifiers to the Sorcery TN  <em>(SR3 p.182–183)</em></a></li>
+      <li><a href="#results" id="markdown-toc-results">Results</a></li>
+    </ol>
+  </li>
+  <li><a href="#step-4-spell-resistance" id="markdown-toc-step-4-spell-resistance">Step 4: Spell Resistance  <em>(SR3 p.183)</em></a>    <ol>
+      <li><a href="#the-target-resists" id="markdown-toc-the-target-resists">The target resists</a></li>
+      <li><a href="#a-magician-blocks-it-spell-defense--sr3-p183" id="markdown-toc-a-magician-blocks-it-spell-defense--sr3-p183">A magician blocks it: Spell Defense  <em>(SR3 p.183)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#step-5-spell-effect" id="markdown-toc-step-5-spell-effect">Step 5: Spell Effect  <em>(SR3 p.183, p.191)</em></a>    <ol>
+      <li><a href="#combat-spells-armor-doesnt-help--sr3-p191" id="markdown-toc-combat-spells-armor-doesnt-help--sr3-p191">Combat spells: armor doesn’t help  <em>(SR3 p.191)</em></a></li>
+      <li><a href="#elemental-spells-work-like-guns--sr3-p183-p196" id="markdown-toc-elemental-spells-work-like-guns--sr3-p183-p196">Elemental spells work like guns  <em>(SR3 p.183, p.196)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#step-6-drain" id="markdown-toc-step-6-drain">Step 6: Drain  <em>(SR3 p.162, p.180, p.183, p.191)</em></a>    <ol>
+      <li><a href="#reading-a-drain-code--sr3-p191" id="markdown-toc-reading-a-drain-code--sr3-p191">Reading a Drain code  <em>(SR3 p.191)</em></a></li>
+      <li><a href="#adding-up-the-tn" id="markdown-toc-adding-up-the-tn">Adding up the TN</a></li>
+      <li><a href="#the-roll" id="markdown-toc-the-roll">The roll</a></li>
+      <li><a href="#stun-or-physical--sr3-p162-p183" id="markdown-toc-stun-or-physical--sr3-p162-p183">Stun or Physical?  <em>(SR3 p.162, p.183)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#sustaining-spells--sr3-p178" id="markdown-toc-sustaining-spells--sr3-p178">Sustaining spells  <em>(SR3 p.178)</em></a></li>
+  <li><a href="#worked-example-manabolt" id="markdown-toc-worked-example-manabolt">Worked example: Manabolt</a></li>
+</ol><hr />
+<h2 id="who-rolls-what">
+  
+  
+    <a href="#who-rolls-what" class="anchor-heading" aria-labelledby="who-rolls-what"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Who rolls what
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Role</th>
+      <th style="text-align: left">Roll</th>
+      <th style="text-align: left">Against</th>
+      <th style="text-align: left">When</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Caster</strong></td>
+      <td style="text-align: left"><strong>Sorcery</strong> + Spell Pool (no more pool dice than Sorcery dice)</td>
+      <td style="text-align: left">The target’s attribute, or the spell’s listed TN</td>
+      <td style="text-align: left">Step 3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Target</strong></td>
+      <td style="text-align: left">The spell’s <strong>target attribute</strong>: Willpower, Body or Intelligence</td>
+      <td style="text-align: left">The spell’s <strong>Force</strong></td>
+      <td style="text-align: left">Step 4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>A protecting magician</strong></td>
+      <td style="text-align: left"><strong>Spell Defense</strong> dice: Sorcery + Spell Pool set aside earlier</td>
+      <td style="text-align: left">The spell’s <strong>Force</strong></td>
+      <td style="text-align: left">Step 4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Caster</strong></td>
+      <td style="text-align: left"><strong>Willpower</strong> + any number of Spell Pool dice</td>
+      <td style="text-align: left"><strong>Drain Power</strong>: Force ÷ 2 + modifier</td>
+      <td style="text-align: left">Step 6</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>GM</strong></td>
+      <td style="text-align: left">Rolls the Sorcery Test <strong>secretly</strong> for detection spells</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">Step 3</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Spell Pool</strong> = (Intelligence + Willpower + Magic) ÷ 3, rounded down. It
+refreshes every Combat Turn and is shared between casting, Spell Defense and
+Drain. <em>(SR3 p.44, p.180)</em></p><hr />
+<h2 id="the-sequence-at-a-glance--sr3-p181">
+  
+  
+    <a href="#the-sequence-at-a-glance--sr3-p181" class="anchor-heading" aria-labelledby="the-sequence-at-a-glance--sr3-p181"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The sequence at a glance  <em>(SR3 p.181)</em>
+  
+  
+</h2>
+    
+
+<p>The book’s own six steps, all within your one Complex Action:</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: center">#</th>
+      <th style="text-align: left">Step</th>
+      <th style="text-align: left">What you decide or roll</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left"><a href="#step-1-preparation">Preparation</a></td>
+      <td style="text-align: left">Spell, Force, Damage Level, dice split, area radius</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: left"><a href="#step-2-targeting">Targeting</a></td>
+      <td style="text-align: left">Can you see it? Is it on your plane?</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: left"><a href="#step-3-sorcery-test">Sorcery Test</a></td>
+      <td style="text-align: left">Caster: Sorcery + Spell Pool vs the target number</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: left"><a href="#step-4-spell-resistance">Spell Resistance</a></td>
+      <td style="text-align: left">Target: attribute vs Force; plus any Spell Defense</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: left"><a href="#step-5-spell-effect">Spell Effect</a></td>
+      <td style="text-align: left">Net successes decide the effect</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left"><a href="#step-6-drain">Drain</a></td>
+      <td style="text-align: left">Caster: Willpower + Spell Pool vs Drain Power</td>
+    </tr>
+  </tbody>
+</table></div><hr />
+<h2 id="step-1-preparation">
+  
+  
+    <a href="#step-1-preparation" class="anchor-heading" aria-labelledby="step-1-preparation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 1: Preparation  <em>(SR3 p.178, p.181, p.191)</em>
+  
+  
+</h2>
+    
+
+<p>Decide all of these before rolling.</p>
+
+<ul>
+  <li><strong>The spell and its Force.</strong> You can cast at the Force you learned it at
+or lower, never higher. The minimum is Force 1. <em>(SR3 p.178)</em> Higher Force
+is harder to resist and produces more Drain.</li>
+  <li><strong>Damage Level, for combat and elemental spells.</strong> You choose <strong>L, M, S or
+D</strong> when you cast. That choice is both the spell’s base damage <strong>and</strong> its
+base Drain Level. <em>(SR3 p.191, p.196)</em></li>
+  <li><strong>How many Sorcery dice</strong> go into this spell, and how many <strong>Spell Pool</strong>
+dice. You can’t add more pool dice than Sorcery dice. <em>(SR3 p.180)</em></li>
+  <li><strong>More than one spell?</strong> You can split Sorcery and Spell Pool dice to cast
+several spells in one Complex Action, up to your Sorcery rating in spells,
+with at least 1 Sorcery die each. Each spell then gets <strong>+2 to its Drain
+TN for every extra spell</strong>. Two spells means +2 on each Drain Test; three
+means +4 on each. <em>(SR3 p.181)</em></li>
+  <li><strong>Sustaining anything?</strong> Choose whether to keep or drop spells you’re
+already sustaining. Each one you keep costs <strong>+2 to all your tests</strong>,
+including this Sorcery Test and its Drain Test. <em>(SR3 p.178)</em></li>
+  <li><strong>Area spells</strong>: the base radius is your <strong>Magic in meters</strong>, and it hits
+everyone valid inside, <strong>including you and your friends</strong>. Withhold
+Sorcery dice to change it: <strong>every 2 dice withheld shrink it by 1 m</strong>, or
+<strong>every 1 die withheld widens it by 1 m</strong>. <em>(SR3 p.181)</em></li>
+</ul>
+<h2 id="step-2-targeting">
+  
+  
+    <a href="#step-2-targeting" class="anchor-heading" aria-labelledby="step-2-targeting"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 2: Targeting  <em>(SR3 p.181–182)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li>You must <strong>see</strong> the target, and be <strong>on the same plane</strong> (physical or
+astral). Glasses, mirrors, fiber optics and cybereyes are fine. <strong>Any
+digital image</strong>, such as a camera feed, simsense or a vision-altering spell
+like Clairvoyance, is not. <em>(SR3 p.181)</em></li>
+  <li><strong>Glass</strong> doesn’t stop most spells, because the effect happens at the
+target and nothing travels. An <strong>opaque</strong> barrier blocks the spell.
+<em>(SR3 p.182)</em></li>
+  <li><strong>Touch-range spells</strong> skip cover and visibility modifiers, but you must
+touch the target first with an Unarmed Combat attack at −1 TN, as part of
+the same action. One net success is enough. <em>(SR3 p.178, p.183)</em></li>
+  <li><strong>From the astral</strong>, you can only cast <strong>mana</strong> spells, and only at astral
+targets. <strong>Astrally perceiving</strong> casters can target both planes, but can be
+attacked from both. <em>(SR3 p.182)</em></li>
+</ul>
+<h2 id="step-3-sorcery-test">
+  
+  
+    <a href="#step-3-sorcery-test" class="anchor-heading" aria-labelledby="step-3-sorcery-test"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 3: Sorcery Test  <em>(SR3 p.182–183)</em>
+  
+  
+</h2>
+    
+
+<p><strong>The caster rolls Sorcery dice plus Spell Pool dice.</strong></p>
+<h3 id="target-number">
+  
+  
+    <a href="#target-number" class="anchor-heading" aria-labelledby="target-number"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Target number
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Target</th>
+      <th style="text-align: left">Base TN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">A living being, <strong>mana</strong> spell</td>
+      <td style="text-align: left">The target’s <strong>Willpower</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">A living being, <strong>physical</strong> spell</td>
+      <td style="text-align: left">The target’s <strong>Body</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">An object</td>
+      <td style="text-align: left">The <strong>Object Resistance Table</strong>, below</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Spells with a fixed number</td>
+      <td style="text-align: left">As listed in the spell, e.g. “Target: 4”</td>
+    </tr>
+  </tbody>
+</table></div>
+<h4 id="object-resistance-table--sr3-p182">
+  
+  
+    <a href="#object-resistance-table--sr3-p182" class="anchor-heading" aria-labelledby="object-resistance-table--sr3-p182"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Object Resistance Table  <em>(SR3 p.182)</em>
+  
+  
+</h4>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Material</th>
+      <th style="text-align: center">TN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Natural objects: trees, soil, unprocessed water</td>
+      <td style="text-align: center">3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Low-tech manufactured: brick, leather, simple plastics</td>
+      <td style="text-align: center">5</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">High-tech manufactured: advanced plastics, alloys, electronics</td>
+      <td style="text-align: center">8</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Highly processed: computers, complex toxic waste</td>
+      <td style="text-align: center">10+</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>To affect an object at all, the spell’s <strong>Force must be at least half its
+Object Resistance</strong>, rounded down. Vehicles add their Body and half their
+armor to Object Resistance before halving. <em>(SR3 p.182)</em></p>
+<h3 id="modifiers-to-the-sorcery-tn--sr3-p182183">
+  
+  
+    <a href="#modifiers-to-the-sorcery-tn--sr3-p182183" class="anchor-heading" aria-labelledby="modifiers-to-the-sorcery-tn--sr3-p182183"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Modifiers to the Sorcery TN  <em>(SR3 p.182–183)</em>
+  
+  
+</h3>
+    
+
+<ul>
+  <li><strong>Cover and visibility</strong>, as for Perception.</li>
+  <li><strong>Injury modifiers</strong> (+1 / +2 / +3).</li>
+  <li><strong>+2 per spell you’re sustaining.</strong></li>
+  <li><strong>An astral barrier</strong> you’re casting across, such as a ward, hermetic
+circle or shamanic lodge, adds <strong>its Force</strong>. Its creator is exempt.</li>
+</ul>
+<h3 id="results">
+  
+  
+    <a href="#results" class="anchor-heading" aria-labelledby="results"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Results
+  
+  
+</h3>
+    
+
+<ul>
+  <li><strong>No successes:</strong> the spell fails.</li>
+  <li><strong>All 1s:</strong> it fails <strong>and</strong> your Drain TN goes up by <strong>+2</strong>. <em>(SR3 p.182)</em></li>
+  <li><strong>Area spells:</strong> roll once and compare the dice against <strong>each</strong> target’s
+TN separately. Each target then resists separately. <em>(SR3 p.182)</em></li>
+  <li><strong>Detection spells:</strong> the GM rolls in secret. On all 1s, the GM gives you
+false information. <em>(SR3 p.182)</em></li>
+</ul>
+<h2 id="step-4-spell-resistance">
+  
+  
+    <a href="#step-4-spell-resistance" class="anchor-heading" aria-labelledby="step-4-spell-resistance"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 4: Spell Resistance  <em>(SR3 p.183)</em>
+  
+  
+</h2>
+    
+
+<p>Two different things can reduce the caster’s successes here. Both can happen
+against the same spell.</p>
+<h3 id="the-target-resists">
+  
+  
+    <a href="#the-target-resists" class="anchor-heading" aria-labelledby="the-target-resists"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The target resists
+  
+  
+</h3>
+    
+
+<ul>
+  <li>Any <strong>living</strong> target that isn’t <strong>willing</strong> makes a <strong>Spell Resistance
+Test</strong>: its <strong>targeted attribute</strong> (usually Body, Intelligence or
+Willpower) against <strong>TN = the spell’s Force</strong>.</li>
+  <li><strong>No modifiers apply</strong> unless the spell says so. That includes the
+target’s wounds. <em>(SR3 p.183)</em></li>
+  <li><strong>Non-living, non-magical</strong> targets don’t resist.</li>
+</ul>
+
+<blockquote class="house">
+  <p><strong>How The 2nd Chumming reads it:</strong> a target who is <strong>sustaining spells</strong>
+still takes <strong>+2 per spell</strong> on this test. The book says both “no target
+modifiers apply to this test” <em>(SR3 p.183)</em> and that sustaining costs +2 on
+“all tests, including Drain Resistance Tests (but not normal Damage
+Resistance Tests)” <em>(SR3 p.178)</em>. The maintainer ruled that p.178’s “all
+tests” wins (2026-09-14). Wounds still don’t apply.</p>
+</blockquote>
+<h3 id="a-magician-blocks-it-spell-defense--sr3-p183">
+  
+  
+    <a href="#a-magician-blocks-it-spell-defense--sr3-p183" class="anchor-heading" aria-labelledby="a-magician-blocks-it-spell-defense--sr3-p183"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> A magician blocks it: Spell Defense  <em>(SR3 p.183)</em>
+  
+  
+</h3>
+    
+
+<ul>
+  <li>At some earlier point, a magician <strong>set aside Sorcery and Spell Pool dice
+for defense</strong>. That’s a Free Action.</li>
+  <li>They can protect up to <strong>their Sorcery rating</strong> in subjects, all within
+<strong>Magic × 100 m</strong> and on the same plane. Protecting yourself counts as one.</li>
+  <li>When a protected subject is targeted, the defender <strong>senses it</strong> and may
+roll any of those dice against <strong>TN = the spell’s Force</strong>. It takes no
+action.</li>
+  <li><strong>Every success subtracts one success from the caster’s Sorcery Test.</strong> If
+that takes the caster to <strong>0 or less</strong>, the spell fails.</li>
+  <li>Dice used are <strong>gone until the next Combat Turn</strong>.</li>
+</ul>
+<h2 id="step-5-spell-effect">
+  
+  
+    <a href="#step-5-spell-effect" class="anchor-heading" aria-labelledby="step-5-spell-effect"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 5: Spell Effect  <em>(SR3 p.183, p.191)</em>
+  
+  
+</h2>
+    
+
+<p>Compare the caster’s remaining successes with the target’s resistance
+successes.</p>
+
+<ul>
+  <li><strong>Target ties or wins:</strong> <strong>no effect.</strong> A tie goes to the target.</li>
+  <li><strong>Caster wins:</strong> the <strong>net successes</strong> (caster − target) measure the
+effect. The spell’s description says what they buy.</li>
+  <li><strong>No resistance roll</strong> (an object, or a willing subject): all the caster’s
+successes count, and <strong>1 success always gives some effect</strong>.</li>
+  <li><strong>Damaging spells:</strong> the chosen Damage Level <strong>stages up one level per 2
+net successes</strong>, up to Deadly.</li>
+</ul>
+<h3 id="combat-spells-armor-doesnt-help--sr3-p191">
+  
+  
+    <a href="#combat-spells-armor-doesnt-help--sr3-p191" class="anchor-heading" aria-labelledby="combat-spells-armor-doesnt-help--sr3-p191"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Combat spells: armor doesn’t help  <em>(SR3 p.191)</em>
+  
+  
+</h3>
+    
+
+<p>Combat spells (Manabolt, Powerbolt, Stunbolt and their ball versions)
+damage the target <strong>directly and bypass armor</strong>. The Spell Resistance Test
+is the target’s only defense, so <strong>there’s no Damage Resistance Test</strong>.
+Mana spells are resisted with <strong>Willpower</strong> and affect only living and
+magical targets. Physical spells are resisted with <strong>Body</strong> and can hit
+objects too.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Spell</th>
+      <th style="text-align: center">Type</th>
+      <th style="text-align: center">Resisted by</th>
+      <th style="text-align: left">Drain</th>
+      <th style="text-align: left">Damage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Stunbolt / Stunball</td>
+      <td style="text-align: center">Mana</td>
+      <td style="text-align: center">Willpower</td>
+      <td style="text-align: left">−1(Damage Level) / −1(Damage Level +1)</td>
+      <td style="text-align: left">Stun</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Manabolt / Manaball</td>
+      <td style="text-align: center">Mana</td>
+      <td style="text-align: center">Willpower</td>
+      <td style="text-align: left">(Damage Level) / (Damage Level +1)</td>
+      <td style="text-align: left">Physical</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Powerbolt / Powerball</td>
+      <td style="text-align: center">Physical</td>
+      <td style="text-align: center">Body</td>
+      <td style="text-align: left">+1(Damage Level) / +1(Damage Level +1)</td>
+      <td style="text-align: left">Physical</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Death Touch</td>
+      <td style="text-align: center">Mana</td>
+      <td style="text-align: center">Willpower</td>
+      <td style="text-align: left">(Damage Level −1)</td>
+      <td style="text-align: left">Physical, by touch</td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="elemental-spells-work-like-guns--sr3-p183-p196">
+  
+  
+    <a href="#elemental-spells-work-like-guns--sr3-p183-p196" class="anchor-heading" aria-labelledby="elemental-spells-work-like-guns--sr3-p183-p196"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Elemental spells work like guns  <em>(SR3 p.183, p.196)</em>
+  
+  
+</h3>
+    
+
+<p>Fireball, Flamethrower, Lightning Bolt, Acid Stream and similar spells make
+<strong>real fire, lightning or acid</strong>. They follow the ranged combat rules,
+so steps 3 to 5 change:</p>
+
+<ol>
+  <li><strong>Sorcery is the ranged combat skill.</strong> The base TN is <strong>4 at any range</strong>
+if you can see the target, plus cover, visibility, injury and sustaining
+modifiers. Spell Pool dice can be added. <em>(SR3 p.183)</em></li>
+  <li>The target can <strong>dodge</strong> with Combat Pool. <em>(SR3 p.183)</em></li>
+  <li>Instead of a Spell Resistance Test, the target makes a <strong>Damage Resistance
+Test</strong> with Body plus Combat Pool dice, and <strong>Impact armor at half its
+rating</strong> (rounded down) protects. <em>(SR3 p.183, p.196)</em></li>
+  <li>The chosen Damage Level stages up 2 successes per level for the caster
+and down for the target, as in ordinary ranged combat. <em>(SR3 p.183)</em></li>
+  <li><strong>Secondary effects</strong> can still set fires, cook off ammunition or melt
+material, even if the primary damage is staged to nothing. <em>(SR3 p.196)</em></li>
+</ol>
+
+<p>Glass and walls <strong>do</strong> block elemental spells, which have to break through
+like bullets. Targets hidden behind cover inside a Fireball’s radius <strong>still
+get hit</strong>. Spell Defense and astral barriers still work against them.
+<em>(SR3 p.182)</em></p>
+
+<blockquote class="note">
+  <p><strong>The damage Power of an elemental spell.</strong> The core book gives the spell’s
+Damage Code but never states its Power in so many words. The usual reading
+is that <strong>the Power is the spell’s Force</strong>, so a Force 6 Fireball cast at
+Moderate is 6M before staging.</p>
+</blockquote>
+<h2 id="step-6-drain">
+  
+  
+    <a href="#step-6-drain" class="anchor-heading" aria-labelledby="step-6-drain"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 6: Drain  <em>(SR3 p.162, p.180, p.183, p.191)</em>
+  
+  
+</h2>
+    
+
+<p>Right after casting, in the same action, <strong>whether or not the spell worked</strong>,
+the caster resists Drain.</p>
+<h3 id="reading-a-drain-code--sr3-p191">
+  
+  
+    <a href="#reading-a-drain-code--sr3-p191" class="anchor-heading" aria-labelledby="reading-a-drain-code--sr3-p191"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Reading a Drain code  <em>(SR3 p.191)</em>
+  
+  
+</h3>
+    
+
+<p>A spell’s Drain looks like <strong><code class="language-plaintext highlighter-rouge">+1(M)</code></strong> or <strong><code class="language-plaintext highlighter-rouge">-1(Damage Level +1)</code></strong>:</p>
+
+<ul>
+  <li>The number <strong>outside</strong> the brackets modifies the <strong>Power</strong>, which is the
+<strong>target number</strong>:
+<strong>Drain Power = Force ÷ 2, rounded down, + that modifier.</strong></li>
+  <li>The part <strong>inside</strong> the brackets is the <strong>Drain Level</strong>, the damage you
+take before resisting. For combat and elemental spells it’s the Damage
+Level you <strong>chose</strong>, adjusted by any modifier written with it.</li>
+  <li>If a modifier would push the Drain Level <strong>above Deadly</strong>, add <strong>+2 Drain
+Power per level above</strong> instead.</li>
+</ul>
+<h3 id="adding-up-the-tn">
+  
+  
+    <a href="#adding-up-the-tn" class="anchor-heading" aria-labelledby="adding-up-the-tn"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Adding up the TN
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Source</th>
+      <th style="text-align: left">Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Base</td>
+      <td style="text-align: left">Force ÷ 2 (round down) + the spell’s modifier</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Each spell you’re sustaining</td>
+      <td style="text-align: left">+2 <em>(p.178, p.180)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Each extra spell cast in the same action</td>
+      <td style="text-align: left">+2 <em>(p.181)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">The Sorcery Test came up all 1s</td>
+      <td style="text-align: left">+2 <em>(p.182)</em></td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>Otherwise, <strong>no modifiers apply</strong>, including wounds. <em>(SR3 p.183)</em></p>
+<h3 id="the-roll">
+  
+  
+    <a href="#the-roll" class="anchor-heading" aria-labelledby="the-roll"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The roll
+  
+  
+</h3>
+    
+
+<p><strong>The caster rolls Willpower plus any number of Spell Pool dice.</strong> There’s no
+cap here, unlike the Sorcery Test. <strong>Every 2 successes lower the Drain Level
+one step.</strong> Below Light, you take nothing. <em>(SR3 p.44, p.183)</em></p>
+<h3 id="stun-or-physical--sr3-p162-p183">
+  
+  
+    <a href="#stun-or-physical--sr3-p162-p183" class="anchor-heading" aria-labelledby="stun-or-physical--sr3-p162-p183"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Stun or Physical?  <em>(SR3 p.162, p.183)</em>
+  
+  
+</h3>
+    
+
+<ul>
+  <li><strong>Stun</strong> normally.</li>
+  <li><strong>Physical</strong> if the <strong>Force is higher than your Magic</strong>, or if you’re
+<strong>astrally projecting</strong>, whatever the Force.</li>
+  <li>A <strong>limited spell</strong> (fetish −1, exclusive −2) can lower the Force <em>for
+Drain purposes</em>, both for the TN and for this Stun-or-Physical check.
+<em>(SR3 p.180)</em></li>
+  <li><strong>Physical damage from Drain can’t be healed by magic</strong>, only by rest and
+medical care. <em>(SR3 p.162)</em></li>
+</ul><hr />
+<h2 id="sustaining-spells--sr3-p178">
+  
+  
+    <a href="#sustaining-spells--sr3-p178" class="anchor-heading" aria-labelledby="sustaining-spells--sr3-p178"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Sustaining spells  <em>(SR3 p.178)</em>
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Duration</th>
+      <th style="text-align: left">What it means</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Instant (I)</strong></td>
+      <td style="text-align: left">Takes effect and ends at once. The results, such as wounds, stay. Combat spells work this way.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Sustained (S)</strong></td>
+      <td style="text-align: left">Lasts while you concentrate, which takes no action.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Permanent (P)</strong></td>
+      <td style="text-align: left">Must be sustained for a base time, then becomes permanent. Sorcery successes can be spent dividing that time instead of on the effect.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>While sustaining:</p>
+
+<ul>
+  <li><strong>+2 to all your tests per sustained spell</strong>, including Drain Resistance
+but not ordinary Damage Resistance.</li>
+  <li>You can sustain up to <strong>your Sorcery rating</strong> in spells at once.</li>
+  <li><strong>If you take damage</strong>, roll <strong>Sorcery against the spell’s Force</strong> (plus
+injury modifiers) to keep it going.</li>
+  <li>Dropping a spell is a <strong>Free Action</strong>. Being knocked out or falling asleep
+drops them all.</li>
+  <li>An <strong>Exclusive Action</strong> means dropping every sustained spell first.</li>
+</ul>
+
+<p>A <strong>sustaining focus</strong> holds a spell for you, and the +2 doesn’t apply to
+you. <em>(SR3 p.191)</em></p><hr />
+<h2 id="worked-example-manabolt">
+  
+  
+    <a href="#worked-example-manabolt" class="anchor-heading" aria-labelledby="worked-example-manabolt"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Worked example: Manabolt
+  
+  
+</h2>
+    
+
+<p>Kestrel has <strong>Magic 6</strong>, <strong>Sorcery 5</strong>, and a Spell Pool of <strong>4</strong>
+(Intelligence 5, Willpower 5, Magic 6 → 16 ÷ 3 = 5, and she spent 1 earlier
+this turn). She casts <strong>Manabolt at Force 5</strong>, choosing <strong>Serious</strong>, at a
+guard with Willpower <strong>4</strong>. She isn’t sustaining anything.</p>
+
+<ol>
+  <li><strong>Preparation.</strong> Force 5, Serious, 5 Sorcery dice plus <strong>3</strong> Spell Pool
+dice. That leaves 1 pool die for Drain.</li>
+  <li><strong>Targeting.</strong> She can see him and they’re both on the physical plane.</li>
+  <li><strong>Sorcery Test.</strong> 8 dice against <strong>TN 4</strong> (his Willpower). She gets <strong>4
+successes</strong>.</li>
+  <li><strong>Resistance.</strong> The guard rolls Willpower 4 against <strong>TN 5</strong> (the Force)
+and gets <strong>1</strong>. Nobody is running Spell Defense for him.</li>
+  <li><strong>Effect.</strong> 4 − 1 = <strong>3 net successes</strong>. Two of them stage Serious up to
+<strong>Deadly</strong>; the third is left over. Combat spells ignore armor, so the
+guard takes a <strong>Deadly Physical</strong> wound.</li>
+  <li><strong>Drain.</strong> Manabolt’s Drain is <code class="language-plaintext highlighter-rouge">(Damage Level)</code>. Power is 5 ÷ 2 = <strong>2</strong>,
+and the level is <strong>Serious</strong>, the level she <em>chose</em>, not the staged one.
+She rolls Willpower 5 plus her last Spell Pool die, 6 dice against TN
+<strong>2</strong>, and gets <strong>3 successes</strong>. Two of them take Serious down to
+<strong>Moderate</strong>. Force 5 isn’t higher than her Magic 6, so it’s <strong>Moderate
+Stun</strong>.</li>
+</ol>
+
+<p><strong>If she had cast at Force 7</strong> (assuming she’d learned it that high):
+Drain Power would be 3, and the Drain would be <strong>Physical</strong>, because 7 is
+higher than her Magic.</p>
+
+<p><strong>If a mage were protecting the guard</strong> with Spell Defense and rolled 2
+successes against TN 5, Kestrel’s 4 would drop to <strong>2</strong>. The guard’s 1
+resistance success would leave <strong>1 net success</strong>: not enough to stage up,
+so he’d take <strong>Serious</strong>.</p>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+

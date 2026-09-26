@@ -1,0 +1,622 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.1/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.1/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(1)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(4) > ul > li:nth-child(1) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(4) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(4) > ul > li:nth-child(1) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(4) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(4) > ul.nav-list > li.nav-list-item:nth-child(1) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.6.1/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.6.1/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>SINs &amp; the SINless | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="SINs &amp; the SINless" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.6.1/street/sins/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.6.1/street/sins/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="SINs &amp; the SINless" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"SINs &amp; the SINless","url":"https://darkbushido.github.io/The2ndChumming3e/v0.6.1/street/sins/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.6.1/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/rules/healing/" class="nav-list-link">Healing</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.1/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.1/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.6.1</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.6.1/street/">The Street</a></li>
+    <li class="breadcrumb-nav-list-item"><span>SINs & the SINless</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="sins--the-sinless">
+  
+  
+    <a href="#sins--the-sinless" class="anchor-heading" aria-labelledby="sins--the-sinless"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> SINs &amp; the SINless
+  
+  
+</h1>
+    
+
+<p>What a System Identification Number gets you, what life without one looks
+like, and how fake IDs work in SR3.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#what-a-sin-is--sr3-p238" id="markdown-toc-what-a-sin-is--sr3-p238">What a SIN is  <em>(SR3 p.238)</em></a></li>
+  <li><a href="#life-with-a-sin--sr3-p238239" id="markdown-toc-life-with-a-sin--sr3-p238239">Life with a SIN  <em>(SR3 p.238–239)</em></a></li>
+  <li><a href="#life-without-one--sr3-p238" id="markdown-toc-life-without-one--sr3-p238">Life without one  <em>(SR3 p.238)</em></a></li>
+  <li><a href="#credsticks--sr3-p238239" id="markdown-toc-credsticks--sr3-p238239">Credsticks  <em>(SR3 p.238–239)</em></a></li>
+  <li><a href="#fake-ids-forging-credsticks--sr3-p239" id="markdown-toc-fake-ids-forging-credsticks--sr3-p239">Fake IDs: forging credsticks  <em>(SR3 p.239)</em></a>    <ol>
+      <li><a href="#creating-a-credstick-table--sr3-p239" id="markdown-toc-creating-a-credstick-table--sr3-p239">Creating a Credstick Table  <em>(SR3 p.239)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#permits-and-licenses" id="markdown-toc-permits-and-licenses">Permits and licenses  <em>(SR3 p.273–274)</em></a>    <ol>
+      <li><a href="#magic-and-the-law" id="markdown-toc-magic-and-the-law">Magic and the law</a></li>
+    </ol>
+  </li>
+</ol>
+
+<blockquote class="fixed">
+  <p>Original gist: “Life with a SIN vs. Living SINless”.</p>
+  <ul>
+    <li>The <strong>Fake SIN price table was invented</strong>. In SR3 a fake ID is a forged
+credstick, and its rating sets its price: <strong>Rating × Rating × 1,000¥</strong> at
+ratings 1–4, rising steeply after that. The table is below.</li>
+    <li>A SIN is not a “12-digit alphanumeric code”. The book says the number is
+<strong>generated from personal data</strong>, and police can read your birth date,
+state of origin and initials from it.</li>
+    <li>“30–40% of the population is SINless” appears in no SR3 book checked.</li>
+    <li>There’s no “Lesser / Greater Magical Permit”. In the UCAS and CAS, magic
+of <strong>Force 3 or more</strong> is regulated and needs a permit. Unregistered
+spells, spirits and foci fall under legality category <strong>(T) Class E
+Magic</strong>.</li>
+    <li>Permits <strong>require a valid SIN</strong>, and a fake one must beat a Rating 6
+verification system.</li>
+  </ul>
+</blockquote><hr />
+<h2 id="what-a-sin-is--sr3-p238">
+  
+  
+    <a href="#what-a-sin-is--sr3-p238" class="anchor-heading" aria-labelledby="what-a-sin-is--sr3-p238"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> What a SIN is  <em>(SR3 p.238)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li>The <strong>UCAS</strong> introduced SINs in <strong>2036</strong>, requiring every citizen to
+register. People living in the UCAS without one are “probationary
+citizens”: they can’t vote and have few or no civil rights.</li>
+  <li>A SIN is normally registered <strong>at birth</strong>, if the birth happens in a
+standard hospital. Anyone born elsewhere is SINless unless they register
+later, and registering means proving to the government that you’re worth
+admitting.</li>
+  <li>Most governments use SINs or something like them, and they <strong>share
+databases</strong>. Corporations issue <strong>corporate SINs</strong> to their employees.</li>
+  <li>The number is generated from <strong>personal data</strong>. Police can work out your
+birth date, state of origin and initials from it.</li>
+</ul>
+<h2 id="life-with-a-sin--sr3-p238239">
+  
+  
+    <a href="#life-with-a-sin--sr3-p238239" class="anchor-heading" aria-labelledby="life-with-a-sin--sr3-p238239"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Life with a SIN  <em>(SR3 p.238–239)</em>
+  
+  
+</h2>
+    
+
+<p>You need a SIN to get a legal job, open a bank account, own property, go to
+school, rent an apartment, set up utilities, and travel legally, which
+includes <strong>buying a bus ticket</strong>. Your credstick carries your ID, licenses
+and permits, and can hold your fingerprints, palmprints and retinal prints.</p>
+
+<p>The cost is a <strong>data trail</strong>. Every legal purchase leaves credit records and
+inventory, and possibly video footage, and stores that realize they sold to
+shadowrunners will hand those records to the police. <em>(SR3 p.273)</em></p>
+<h2 id="life-without-one--sr3-p238">
+  
+  
+    <a href="#life-without-one--sr3-p238" class="anchor-heading" aria-labelledby="life-without-one--sr3-p238"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Life without one  <em>(SR3 p.238)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li>You <strong>officially don’t exist</strong>, which makes you hard to trace.</li>
+  <li>If you’re arrested, you may be abused, locked away or “disappeared”, with
+no data trail to prove you existed. More often you’re issued a <strong>criminal
+SIN</strong>, which is yours for life and is stored in police databases with your
+photograph, fingerprints and perhaps more.</li>
+  <li>Legal work, housing and travel are all closed to you.</li>
+</ul>
+
+<p>Players decide at character creation whether their character has a SIN.
+<em>(SR3 p.238)</em></p>
+<h2 id="credsticks--sr3-p238239">
+  
+  
+    <a href="#credsticks--sr3-p238239" class="anchor-heading" aria-labelledby="credsticks--sr3-p238239"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Credsticks  <em>(SR3 p.238–239)</em>
+  
+  
+</h2>
+    
+
+<p>A credstick is a pen-sized tube that serves as <strong>ID and credit card
+together</strong>.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Credstick</th>
+      <th style="text-align: left">Transaction limit</th>
+      <th style="text-align: left">ID required</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Standard</td>
+      <td style="text-align: left">1–5,000¥</td>
+      <td style="text-align: left">Passcode</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Silver</td>
+      <td style="text-align: left">1–20,000¥</td>
+      <td style="text-align: left">Fingerprint</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Gold</td>
+      <td style="text-align: left">1–200,000¥</td>
+      <td style="text-align: left">Voiceprint</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Platinum</td>
+      <td style="text-align: left">1–1,000,000¥</td>
+      <td style="text-align: left">Retinal scan</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ebony</td>
+      <td style="text-align: left">Unlimited</td>
+      <td style="text-align: left">Cellular scan</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>A <strong>certified credstick</strong> is registered to no one. It’s worth what’s loaded
+on it, needs no ID, and can’t be used as ID. It’s the shadowrunner’s usual
+way to get paid. <em>(SR3 p.239)</em></p><hr />
+<h2 id="fake-ids-forging-credsticks--sr3-p239">
+  
+  
+    <a href="#fake-ids-forging-credsticks--sr3-p239" class="anchor-heading" aria-labelledby="fake-ids-forging-credsticks--sr3-p239"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Fake IDs: forging credsticks  <em>(SR3 p.239)</em>
+  
+  
+</h2>
+    
+
+<p>Faking an identity means inserting a believable credit history into
+databases all over the world. Only well-connected forgery outfits, often
+based in data havens, can do it. At least <strong>half the cost is paid up
+front</strong> to the fixer.</p>
+<h3 id="creating-a-credstick-table--sr3-p239">
+  
+  
+    <a href="#creating-a-credstick-table--sr3-p239" class="anchor-heading" aria-labelledby="creating-a-credstick-table--sr3-p239"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Creating a Credstick Table  <em>(SR3 p.239)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Stick rating</th>
+      <th style="text-align: left">Cost</th>
+      <th style="text-align: left">Availability</th>
+      <th style="text-align: center">Street Index</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1–4</td>
+      <td style="text-align: left">Rating × Rating × 1,000¥</td>
+      <td style="text-align: left">Rating / 24 hours</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5–8</td>
+      <td style="text-align: left">Rating × 5,000¥</td>
+      <td style="text-align: left">Rating / 72 hours</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">9–12</td>
+      <td style="text-align: left">Rating × 10,000¥</td>
+      <td style="text-align: left">Rating / 14 days</td>
+      <td style="text-align: center">1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">13+</td>
+      <td style="text-align: left">Rating × 50,000¥</td>
+      <td style="text-align: left">Rating / 30 days</td>
+      <td style="text-align: center">1</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>For example, a Rating 4 ID costs <strong>16,000¥</strong>, a Rating 6 costs <strong>30,000¥</strong>,
+and a Rating 10 costs <strong>100,000¥</strong>.</p>
+
+<p><strong>Using a fake</strong>: make an <strong>Opposed Test</strong> of the stick’s rating against
+the rating of the verification system. The side with more successes wins. On
+a <strong>tie</strong>, the operator is told to question the bearer about their history,
+and one wrong answer gets the ID rejected. <em>(SR3 p.239)</em></p>
+<h2 id="permits-and-licenses">
+  
+  
+    <a href="#permits-and-licenses" class="anchor-heading" aria-labelledby="permits-and-licenses"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Permits and licenses  <em>(SR3 p.273–274)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li>Gear whose Legality Code includes a <strong>“P”</strong> can be legally permitted.
+Applying takes a <strong>valid SIN</strong>, and may need proof of employment and a good
+reason. <em>(SR3 p.274)</em></li>
+  <li>Test <strong>Etiquette against the item’s Availability + 2</strong>. The base time is
+the item’s, divided by your successes. <em>(SR3 p.274)</em></li>
+  <li>A permit to <strong>possess</strong> usually costs <strong>5%</strong> of the item’s price. A permit
+to <strong>possess and transport</strong> costs <strong>10%</strong>. <em>(SR3 p.274)</em></li>
+  <li><strong>Criminal-SIN holders and the SINless can’t get permits.</strong> Applying with
+a fake ID means it must beat a <strong>Rating 6</strong> verification system. <em>(SR3
+p.274)</em></li>
+  <li>Holding the right permit gives <strong>−2 to the item’s Availability</strong> when
+you’re buying on the street. <em>(SR3 p.274)</em></li>
+</ul>
+<h3 id="magic-and-the-law">
+  
+  
+    <a href="#magic-and-the-law" class="anchor-heading" aria-labelledby="magic-and-the-law"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Magic and the law
+  
+  
+</h3>
+    
+
+<ul>
+  <li>In the UCAS and CAS, <strong>any spell, spirit, focus or other magical effect of
+Force 3 or higher is legally regulated</strong>, though permits can be had. A
+felony committed with magic always counts as <strong>premeditated</strong>. <em>(MitS p.11)</em></li>
+  <li>On the Local Fines and Punishment Table, <strong>(T) Class E Magic</strong> covers
+unregistered spells, spirits and foci. <em>(SR3 p.274)</em></li>
+  <li>Reading astral signatures is accepted forensic evidence, like fingerprints
+or DNA. <em>(MitS p.11)</em></li>
+</ul>
+
+<blockquote class="note">
+  <p><strong>Runner practice.</strong> Carrying several fake IDs for different purposes is
+common in play: one for the safehouse lease, one carrying permits, one to
+burn. The book doesn’t require it, but a burned ID is expensive to replace,
+so spreading the risk makes sense.</p>
+</blockquote>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+
