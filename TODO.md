@@ -32,12 +32,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**35 open.** 141 done — see [TODO-DONE.md](TODO-DONE.md).
+**34 open.** 142 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 🔴 Confirmed bugs, still open | [137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[141](#141) The second Simple Action does not flag and end the turn<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
+| 🔴 Confirmed bugs, still open | [137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
@@ -233,12 +233,6 @@ step key; the GM checks the card's `acted` ledger, applies and records in one qu
 `OpenSteps.runOnce`), and every copy renders the button spent. A GM ✕ in the ⏳ panel also closes it.
 - 🧪 Live: player assigns a wound from the chat pop-up; the GM's chat log shows it spent; the GM (and the player after F5)
   cannot assign it again; the wound track moved once.
-
-## 141. The second Simple Action does not flag and end the turn
-
-**Flag — done (`c264b6d3`):** the GM's second **Simple** button lights up once two Simples are taken.
-**Still open — end the turn:** a roll's charge only marks ([#48](#48): *auto-mark, never auto-advance*); ending the
-phase on the second Simple would also put it out of ↺ Undo's reach. The maintainer's call.
 
 ## 151. Cyber weapons don't show up in the weapons list, and cannot be used in combat
 

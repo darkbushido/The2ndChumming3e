@@ -6587,6 +6587,12 @@ empty kits and fills the form with the supplies; 💴 Pay refills the first empt
 `.sr-soak-result` was a gold box with a full gold border, like the resist buttons under it. Now a grey panel with a left rule,
 muted text and a default cursor (`tests/soak-result-style.test.mjs`).
 
+## 141. ✅ The second Simple Action does not flag and end the turn — `c264b6d3`
+
+**Flag:** the GM's second **Simple** button lights up once two Simples are taken.
+**End the turn:** stays the GM's click — ruled 2026-09-26, the maintainer: *"leave it to a GM button so the undo can
+still be used"*. A roll's charge only marks ([#48](TODO.md#48)); advancing would put the phase out of ↺ Undo's reach.
+
 ## 142. ✅ Loading a clip-fed gun treats the clips as individual rounds — `d86e53f3`
 
 **Done 2026-09-26 (`f48e4eba`, `d86e53f3`).** The clips were the unconverted ones of #143: counted in rounds, so the reload dialog topped the gun up round by round. The 0.6.2 migration converts them; the sheet no longer labels loose rounds as clips.
