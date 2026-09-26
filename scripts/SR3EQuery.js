@@ -590,12 +590,15 @@ export class SR3EQuery {
 
     /**
      * Apply damage boxes. Relays the DELTA; the GM reads current/max and does
-     * the `Math.min(max, current + boxes)` against live data.
+     * the `Math.min(max, current + boxes)` against live data. With `messageId` + `role` (an
+     * Assign button's step key) it applies ONCE per button, table-wide (TODO 137,
+     * `SR3EActor._applyCardDamage`).
      */
-    CONFIG.queries['sr3e.damage.apply'] = async ({ rid, uuid, kind, track, boxes }) => SR3EQuery.once(rid, async () => {
-      SR3EQuery.assertActiveGM();
-      return game.sr3e.SR3EActor._applyDamageBoxes({ uuid, kind, track, boxes });
-    });
+    CONFIG.queries['sr3e.damage.apply'] = async ({ rid, uuid, kind, track, boxes, messageId, role, label }) =>
+      SR3EQuery.once(rid, async () => {
+        SR3EQuery.assertActiveGM();
+        return game.sr3e.SR3EActor._applyCardDamage({ uuid, kind, track, boxes, messageId, role, label });
+      });
 
     /**
      * A healing step on a patient the clicker does not own — a medic lowering another player's

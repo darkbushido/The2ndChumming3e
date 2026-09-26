@@ -8,6 +8,7 @@ import { DrugRules } from '../data/drug-rules.mjs';
 import { Ledger } from '../data/ledger.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
+import { OpenSteps } from '../data/open-steps.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -8785,12 +8786,24 @@ _prepareCharacter(sys, attr) {
     });
   }
 
-  static async handleAssignDamage(btn) {
+  /**
+   * 🩸 Assign the wound — the chat button that writes wound boxes.
+   *
+   * ⚠ **Once per button, table-wide · TODO 137.** The card renders in the chat pop-up, the chat log
+   * and on every client; `_usedButtons` knows only one browser, so a second copy (the GM's, or the
+   * player's own after a reload) could add the boxes again. `claim` names the card and the step key;
+   * the GM checks the card's ledger, applies and records in one queued step (`_applyCardDamage`).
+   *
+   * @param {HTMLButtonElement} btn
+   * @param {{ messageId?: string, role?: string, label?: string }} [claim]
+   * @returns {Promise<'applied'|'already'|'failed'>}
+   */
+  static async handleAssignDamage(btn, claim = {}) {
     // Disable immediately as a double-click guard, but do NOT claim success yet — the
     // label is only truthful once a write has actually landed. Every bail below restores
     // the button so the user can retry rather than being left with a dead control.
     btn.disabled = true;
-    const fail = msg => { ui.notifications.warn(msg); btn.disabled = false; return null; };
+    const fail = msg => { ui.notifications.warn(msg); btn.disabled = false; return 'failed'; };
 
     let p;
     try { p = JSON.parse(btn.dataset.payload); }
@@ -8803,19 +8816,52 @@ _prepareCharacter(sys, attr) {
                :                    'actor';
     const uuid = p.icActorId ?? p.vehicleActorId ?? p.wardActorId ?? p.actorId;
 
+    let res;
     try {
       // Relay the DELTA (boxes). The GM reads current/max live and does the
       // Math.min itself — two players clicking Assign at once must not both
       // compute from the same stale `current` and lose one another's damage.
-      const res = (!game.users.activeGM?.isSelf)
-        ? await game.sr3e.SR3EQuery.asGM('sr3e.damage.apply', { uuid, kind, track: p.track, boxes: p.boxes })
-        : await SR3EActor._applyDamageBoxes({ uuid, kind, track: p.track, boxes: p.boxes });
-      if (!res?.ok) return fail(res?.reason ?? 'Damage could not be applied.');
+      // `asGM` runs the handler in place when this client IS the GM.
+      res = await game.sr3e.SR3EQuery.asGM('sr3e.damage.apply',
+        { uuid, kind, track: p.track, boxes: p.boxes, ...claim });
     } catch (err) {
       return fail(err?.message ?? 'Damage could not be applied.');
     }
+    if (res?.already) {
+      SR3EActor.spendAssignButton(btn);
+      ui.notifications.info('That wound has already been assigned — no damage applied.');
+      return 'already';
+    }
+    if (!res?.ok) return fail(res?.reason ?? 'Damage could not be applied.');
 
     btn.textContent = '✓ Damage Applied';   // truthful only now — a write has landed
+    return 'applied';
+  }
+
+  /** Show an Assign button as spent: its wound is on the sheet already (TODO 137). */
+  static spendAssignButton(btn) {
+    btn.disabled    = true;
+    btn.textContent = '✓ Damage Applied';
+    btn.title       = 'Already assigned. Correct the wound boxes on the sheet if it was wrong.';
+  }
+
+  /**
+   * GM-side: apply an Assign button's damage at most once (TODO 137). Held in the card's queue — the
+   * same one `sr3e.card.mark` uses — so reading the ledger, writing the boxes and recording the step
+   * are one step; the record is written only once the boxes land. Without a card, applies as before.
+   *
+   * @param {object} p  `_applyDamageBoxes`' arguments, plus `messageId`, `role` (the step key), `label`
+   * @returns {Promise<{ok:boolean, already?:boolean, reason?:string}>}
+   */
+  static async _applyCardDamage({ messageId, role, label, ...hit }) {
+    const msg = messageId ? game.messages.get(messageId) : null;
+    if (!msg || !role) return SR3EActor._applyDamageBoxes(hit);
+    return game.sr3e.SR3EQueue.run(`card:${messageId}`, async () => {
+      const res = await OpenSteps.runOnce(msg.getFlag('The2ndChumming3e', 'acted') ?? {}, role,
+        { label: label ?? role, at: Date.now() }, () => SR3EActor._applyDamageBoxes(hit));
+      if (res.acted) await msg.setFlag('The2ndChumming3e', 'acted', res.acted);
+      return { ok: res.ok, ...(res.already ? { already: true } : {}), ...(res.reason ? { reason: res.reason } : {}) };
+    });
   }
 
   /**

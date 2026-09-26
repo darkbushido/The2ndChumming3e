@@ -230,6 +230,14 @@ cannot reach. If time is short, do these.
 
 ## 137. The damage chat card assigns damage again after the player already assigned it through the popup
 
+**Fixed on `claude/project-thread-ccsy1c`, live check pending.** Cause (from the code, not reproduced live): the 🩸 Assign
+button was guarded only by `_usedButtons`, which knows one browser. The same card in the chat log on the GM's client, or
+the player's own after a reload, stayed live, and `_applyDamageBoxes` adds boxes. Now the click names the card and its
+step key; the GM checks the card's `acted` ledger, applies and records in one queued write (`SR3EActor._applyCardDamage`,
+`OpenSteps.runOnce`), and every copy renders the button spent. A GM ✕ in the ⏳ panel also closes it.
+- 🧪 Live: player assigns a wound from the chat pop-up; the GM's chat log shows it spent; the GM (and the player after F5)
+  cannot assign it again; the wound track moved once.
+
 ## 138. The healing button moves when a character is unconscious or damaged
 
 ## 139. A medkit can be restocked in combat — restocking should happen when shopping
@@ -243,6 +251,14 @@ cannot reach. If time is short, do these.
 phase on the second Simple would also put it out of ↺ Undo's reach. The maintainer's call.
 
 ## 151. Cyber weapons don't show up in the weapons list, and cannot be used in combat
+
+**Fixed on `claude/project-thread-ccsy1c`, live check pending.** The implant (`cyberware`, category Cyberweapons) carried
+Essence and cost only; the attack needed a separate `melee` item and cyberguns had none. Installing one now makes its
+weapon entry (`scripts/data/cyber-weapons.mjs`): a `melee` CYB item, or a `firearm` for a cybergun with M&M p.41's mode and
+internal magazine. Removing the implant removes it. Implants fitted earlier are offered on the weapons tab (+ Add weapon).
+Body weapons (CYB/UNA) now appear in the attack picker without an Equip.
+- 🧪 Live: drag Spur(CYB) onto a character → a Spur row under Cyber & Unarmed, attack with it; drag CyGun Heavy(HPist)(CYB)
+  → a firearm, reload and fire; delete the implant → its weapon goes; an older actor shows the + Add weapon offer.
 
 ## 161. Flechette weapons — the two things the book does not settle
 

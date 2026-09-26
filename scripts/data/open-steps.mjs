@@ -20,7 +20,9 @@
  * Pure: no Foundry globals. The Foundry side is scripts/SR3EOpenSteps.js.
  */
 
-/** Button class → what the step is. `doneBy`: older acted keys that also mean "done". */
+/** Button class → what the step is. `doneBy`: older acted keys that also mean "done". `recordsItself`: the
+ *  button's own handler writes its step key, so the generic click listener must not (it would get there
+ *  first and make the handler refuse its own click). */
 export const STEP_BUTTONS = {
   'sr-dodge-declare-btn':           { icon: '🎯', label: 'Dodge or take it', doneBy: ['defender'] },
   'sr-fd-dodge-btn':                { icon: '🛡', label: 'Full Defense dodge' },
@@ -33,7 +35,8 @@ export const STEP_BUTTONS = {
   'sr-drain-btn':                   { icon: '⚡', label: 'Resist Drain' },
   'sr-drain-roll-btn':              { icon: '⚡', label: 'Roll the Drain Resistance Test' },
   'sr-knockdown-btn':               { icon: '💥', label: 'Knockdown test' },
-  'sr-assign-damage-btn':           { icon: '🩸', label: 'Assign the wound' },
+  // Records ITSELF, on the GM, in the same queued write as the damage (TODO 137) — see `runOnce`.
+  'sr-assign-damage-btn':           { icon: '🩸', label: 'Assign the wound', recordsItself: true },
   'sr-ram-vehicle-soak-btn':        { icon: '🚗', label: 'Vehicle resists the ram' },
   'sr-ram-passenger-resist-btn':    { icon: '🚗', label: 'Occupant resists the crash' },
   'sr-matrix-ic-resist-btn':        { icon: '💻', label: 'Resist Matrix damage' },
@@ -64,6 +67,33 @@ export const OpenSteps = {
     if (!payload || typeof payload !== 'object') return null;
     for (const k of OWNER_KEYS) if (payload[k]) return String(payload[k]);
     return null;
+  },
+
+  /** Does this button's own handler record its step (so the generic click listener must not)? */
+  recordsItself(cls) {
+    return STEP_BUTTONS[cls]?.recordsItself === true;
+  },
+
+  /**
+   * Run a step's action at most ONCE per card — TODO 137: a wound assigned from the chat pop-up was
+   * assigned again from the chat log (another client, or after a reload, still showed a live button).
+   *
+   * The caller holds the card's queue, so reading the ledger, acting and recording are one step.
+   * Refuses when `key` is already in the ledger (clicked before, or ✕'d by the GM). Records only when
+   * the action succeeded, so a failed write leaves the button usable for a retry.
+   *
+   * @param {object} acted   the card's acted-ledger (not mutated)
+   * @param {string} key     the step key
+   * @param {object} entry   what to record under it
+   * @param {() => Promise<{ok:boolean}>} act
+   * @returns {Promise<object>} the action's result, plus `already: true` when refused, or `acted` (the
+   *   ledger to write) when it ran and succeeded
+   */
+  async runOnce(acted, key, entry, act) {
+    if (acted?.[key]) return { ok: false, already: true };
+    const res = await act();
+    if (!res?.ok) return res ?? { ok: false };
+    return { ...res, acted: { ...(acted ?? {}), [key]: entry } };
   },
 
   /** Has this step been done, by its own key or an older one? */
