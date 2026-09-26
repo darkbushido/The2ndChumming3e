@@ -1826,4 +1826,13 @@ export const MUTANTS = [
           + 'soak card built its TN from the Power alone until 0.6 (rules-check 0.6.0, Finding 5)',
     impl:   ({ power = 0 } = {}) => Math.max(2, Number(power) || 0),
   },
+  {
+    id:     'dual-beings-resist-astral-with-willpower',
+    suite:  'astral-soak',
+    ...ACTOR, method: 'astralResistPool',
+    was:    'SR3 p.175 - "Willpower or Force for astral beings, or Body for dual beings". The astral '
+          + 'soak card offered Willpower to everyone until 0.6.2 (TODO 132)',
+    impl:   ({ attributes = {} } = {}) => ({ key: 'willpower', label: 'Willpower',
+      value: Math.max(attributes?.willpower?.value ?? 0, attributes?.willpower?.base ?? 0, 1), combatPool: false }),
+  },
 ];

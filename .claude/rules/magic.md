@@ -20,6 +20,10 @@ paths:
 `system.astralMode`, toggled on the Magic tab (one at a time; clicking the active one clears it):
 `''` none · `'physical'` (grey badge) · `'dual'` (amber "Dual Nat.") · `'astral'` (purple; **INT + 20 + 1d6** initiative).
 
+**Astral damage resistance** · *SR3 p.174-175* (TODO 132) — `SR3EActor.astralResistPool`: only `'astral'` is an
+astral being (**Willpower**, or a spirit's **Force**, no Combat Pool); every other mode, including none, is a
+dual being in astral combat (**Body + Combat Pool**, p.174). TN is `astralSoakTN` (Power − Mystic Armor).
+
 ### Sustained spells  · *SR3 p.178, p.180, p.183*
 > "+2 target modifier per sustained spell applied to all tests, including Drain Resistance Tests (but not
 > normal Damage Resistance Tests). You can simultaneously sustain a number of spells equal to your Sorcery rating." — p.178
