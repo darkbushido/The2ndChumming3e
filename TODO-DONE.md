@@ -6516,6 +6516,12 @@ cyberware that is still installed.
 
 ## 136. ✅ A character who started with grenades always seems to have one equipped — `db49fa8`
 
+**Fixed 2026-09-26 (`db49fa8`, `main`), with #135 — one cause.** `system.ready` starts true (so sheets from before
+Ready Weapon keep fighting), which made every NEW weapon read as drawn: a starting character held its whole kit and
+a grenade always showed ✋. A `preCreateItem` hook now puts any weapon created on a character or NPC away
+(`ReadyWeapon.putAwayOnCreate`; body weapons, `hands: 0` cyberguns and vehicle mounts excepted) and takes new
+armour off. Mutant `new-weapons-arrive-in-hand`; live check in TESTING.md §40.
+
 ## 138. ✅ The healing button moves when a character is unconscious or damaged — `6af59ead`
 
 The wound status text (TN/Init modifier, "unconscious", ☠ DEAD) sat before the 🩹 Healing button in the header's wrapping row, so the
@@ -6644,6 +6650,14 @@ worked example has a defensive grenade at 3 m doing 4S (10S − 6) and nothing a
 `system.blast` on projectile and thrown items (the book's `-1/m`, `-1/.5m`; blank = −1/m) is read by
 `scripts/data/blast.mjs`; the blast radius follows it too. Data-model change: full Foundry restart, no
 migration. The Chunky Salsa path is [#159](#159).
+
+## 152. ✅ Undoing an action only works on the second try — `c264b6d3`
+
+The GM's ↺ Undo on the action ledger ([#48](TODO.md#48)) has to be pressed twice before it takes effect.
+
+**Cause:** a flow that charges twice (Ready Weapon then Fire Weapon, Remove Clip then Insert Clip) gave its
+snapshot to the first charge only; ↺ defaults to the last entry, which had none, so the first press only freed
+the slot. Every charge in a flow now carries the snapshot (`ActionEconomy.pendingSnap`, keyed to the phase).
 
 ## 155. ✅ Grenades with no damage code cannot be thrown — `5df18568`
 

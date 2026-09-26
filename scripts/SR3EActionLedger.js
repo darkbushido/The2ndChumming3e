@@ -9,7 +9,7 @@
  * writes it (`sr3e.action.charge`), the same route pool spending takes.
  * ⚠ **Auto-MARK, never auto-ADVANCE.** A charge records the action; only the GM's click ends a turn.
  * A player's roll silently ending their own turn before they readied, aimed or took their second
- * Simple would be far worse than under-counting.
+ * Simple would be far worse than under-counting — and would take the phase out of reach of ↺ Undo.
  * ⚠ **Only the active combatant is charged** — the actor whose Combat Phase it is. An action taken
  * out of phase (a delayed action, the GM waving something through) is left for the GM's buttons.
  */
@@ -43,14 +43,20 @@ export class SR3EActionLedger {
   /**
    * Snapshot what an action can spend, at the very START of a flow (before its dialogs take pool dice
    * or ammunition). `charge` attaches it to the ledger entry, so the GM's undo knows what to put back.
-   * A flow that is cancelled simply leaves its snapshot to be replaced by the next one.
+   * ⚠ It stays until the next `begin` replaces it, so EVERY charge the flow makes carries it (TODO 152);
+   * it is keyed to the phase, so it never leaks into the actor's next one. Anything that charges must
+   * `begin` first, or it would carry the last flow's snapshot.
    */
   static begin(actor) {
-    if (!actor || !SR3EActionLedger.activeFor(actor)) return;
-    SR3EActionLedger._pending.set(actor.uuid, ActionEconomy.snapshot({
-      system: actor.system,
-      items: actor.items.map(i => ({ id: i.id, name: i.name, type: i.type, system: i.system })),
-    }));
+    const cbt = SR3EActionLedger.activeFor(actor);
+    if (!cbt) return;
+    SR3EActionLedger._pending.set(actor.uuid, {
+      phase: SR3EActionLedger.phase(cbt.parent),
+      snap: ActionEconomy.snapshot({
+        system: actor.system,
+        items: actor.items.map(i => ({ id: i.id, name: i.name, type: i.type, system: i.system })),
+      }),
+    });
   }
 
   /**
@@ -60,8 +66,7 @@ export class SR3EActionLedger {
   static async charge(actor, actionKey, what = '') {
     const cbt = SR3EActionLedger.activeFor(actor);
     if (!cbt) return null;
-    const snap = SR3EActionLedger._pending.get(actor.uuid) ?? null;
-    SR3EActionLedger._pending.delete(actor.uuid);
+    const snap = ActionEconomy.pendingSnap(SR3EActionLedger._pending.get(actor.uuid), SR3EActionLedger.phase(cbt.parent));
     try {
       return await game.sr3e.SR3EQuery.asGM('sr3e.action.charge', { combatantUuid: cbt.uuid, action: actionKey, what, snap });
     } catch (err) {
@@ -99,7 +104,8 @@ export class SR3EActionLedger {
   /**
    * Pips for everyone (action economy is public at the table), buttons for the GM. Called from the
    * `renderCombatTracker` hook in sr3e.js. ⚠ The GM's Complex and second-Simple buttons still end
-   * the turn, as they always did; the charges a roll makes only mark.
+   * the turn, as they always did; the charges a roll makes only mark. The second-Simple button lights
+   * up once two Simples are taken (TODO 141), so the GM sees the phase is spent.
    */
   static renderTracker(combat, el) {
     if (!combat?.started || !combat.combatant) return;
@@ -124,7 +130,7 @@ export class SR3EActionLedger {
       ${gm ? `<div class="sr3e-act-buttons">
         <button type="button" class="sr3e-act-complex"${l.simple ? ' disabled' : ''} title="Complex Action — ends the turn">Complex</button>
         <button type="button" class="sr3e-act-simple1${l.simple ? ' used' : ''}" title="Mark a Simple Action used (click again to unmark)">Simple</button>
-        <button type="button" class="sr3e-act-simple2" title="Second Simple Action — ends the turn">Simple</button>
+        <button type="button" class="sr3e-act-simple2${l.simple > 1 ? ' used' : ''}" title="Second Simple Action — ends the turn">Simple</button>
         <button type="button" class="sr3e-act-undo"${l.log.length ? '' : ' disabled'} title="Undo the last action recorded: ${esc(l.log.at(-1)?.what ?? '—')}">↺</button>
       </div>` : ''}`;
     row.appendChild(wrap);

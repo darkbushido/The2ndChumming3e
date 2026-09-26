@@ -44,6 +44,7 @@ export async function run(t) {
   t.is('…and this phase\'s reads back', E.ledgerFor(two, '1|0').simple, 2);
   t.is('uncharge frees the slot', E.uncharge(two, 1).simple, 1);
 
+
   /* ── The GM's undo ─────────────────────────────────────────────────────────── */
   const before = { system: { combatPoolSpent: 0, roundsFiredThisPhase: 0, karmaPool: 3, nuyen: 500 },
     items: [{ id: 'g', name: 'Predator', type: 'firearm', system: { loadedRounds: 15, loadedAmmoType: 'regular' } },
@@ -63,6 +64,18 @@ export async function run(t) {
   t.eq('nothing changed → nothing to put back', E.restorePlan(snap, before), []);
   t.ok('the snapshot rides on the ledger entry', E.charge(E.empty(), 'fireWeapon', 'x', 'GM', snap).ledger.log[0].snap.at === 1000);
 
+  /* ── Every charge in a flow carries its snapshot · TODO 152 ────────────────── */
+  const pending = { phase: '1|0', snap };
+  t.ok('the flow\'s snapshot is handed to every charge made in its phase', E.pendingSnap(pending, '1|0') === snap);
+  t.is('…never to a charge in another phase', E.pendingSnap(pending, '2|0'), null);
+  t.is('…and nothing when no flow began', E.pendingSnap(undefined, '1|0'), null);
+  // Ready Weapon then Fire Weapon in one flow: the undo's default is the LAST entry, the shot. It used
+  // to hold no snapshot (the Ready took it), so the first ↺ put nothing back.
+  const flow = [['readyWeapon'], ['fireWeapon']].reduce((l, [k]) => E.charge(l, k, k, 'P', E.pendingSnap(pending, '1|0')).ledger, E.empty('1|0'));
+  t.eq('undoing the last entry of a two-charge flow puts back what the flow spent',
+    E.restorePlan(flow.log.at(-1).snap, after).filter(p => !p.gone).map(p => p.field),
+    ['combatPoolSpent', 'roundsFiredThisPhase', 'loadedRounds']);
+
   /* ── Wiring ───────────────────────────────────────────────────────────────── */
   const item = read('scripts/documents/SR3EItem.js');
   const main = read('scripts/sr3e.js');
@@ -74,6 +87,13 @@ export async function run(t) {
     /setFlag\(FLAG, KEY, ledger\)/.test(led) && /CONFIG\.queries\['sr3e\.action\.charge'\]/.test(led) && /assertActiveGM/.test(led));
   t.ok('a charge never advances the turn — only the GM\'s Complex / second Simple do',
     (led.match(/nextTurn\(\)/g) ?? []).length === 2 && !/charge[\s\S]{0,400}nextTurn/.test(led.slice(led.indexOf('static async charge'), led.indexOf('static async write'))));
+  t.ok('the GM\'s second Simple button lights up once two Simples are taken (TODO 141)', /sr3e-act-simple2\$\{l\.simple > 1 \? ' used' : ''\}/.test(led));
+  const chargeSrc = led.slice(led.indexOf('static async charge'), led.indexOf('static async write'));
+  t.ok('a charge does not use up the flow\'s snapshot — the next charge in the flow needs it too (TODO 152)',
+    !/_pending\.delete/.test(led) && /ActionEconomy\.pendingSnap\(SR3EActionLedger\._pending\.get\(actor\.uuid\), SR3EActionLedger\.phase\(cbt\.parent\)\)/.test(chargeSrc));
+  const sheet = read('scripts/sheets/SR3EActorSheet.js');
+  t.ok('the sheet\'s ✋ Ready snapshots before it charges, so it never carries the last flow\'s snapshot',
+    /_onToggleReady[\s\S]{0,400}if \(now\) game\.sr3e\.SR3EActionLedger\?\.begin\(this\.actor\);[\s\S]{0,200}if \(now\) game\.sr3e\.SR3EActionLedger\?\.charge\(this\.actor, 'readyWeapon'/.test(sheet));
   const charges = ['useSkill', 'meleeAttack', 'castSpell', 'fireVehicleWeapon', 'readyWeapon', 'removeClip', 'insertClip', 'reloadFirearm'];
   t.eq('every flow charges its action', charges.filter(k => !new RegExp(`charge\\([^)]*'${k}'`).test(item)), []);
   t.ok('firearms are charged by fire mode, thrown weapons as Throw Weapon',

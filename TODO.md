@@ -32,12 +32,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**40 open.** 136 done — see [TODO-DONE.md](TODO-DONE.md).
+**41 open.** 135 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 🔴 Confirmed bugs, still open | [137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[141](#141) The second Simple Action does not flag and end the turn<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[152](#152) Undoing an action only works on the second try<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[163](#163) Launcher grenades and mini-grenades do not carry a blast<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
+| 🔴 Confirmed bugs, still open | [135](#135) Characters should start with nothing equipped<br>[136](#136) A character who started with grenades always seems to have one equipped<br>[137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[139](#139) A medkit can be restocked in combat — restocking should happen when shopping<br>[141](#141) The second Simple Action does not flag and end the turn<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[163](#163) Launcher grenades and mini-grenades do not carry a blast<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[131](#131) Cover and visibility on elemental spells<br>[132](#132) Astral damage: dual beings resist with Body, not Willpower |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
@@ -224,6 +224,10 @@ cannot reach. If time is short, do these.
 
 ### 🔴 Confirmed bugs, still open
 
+## 135. ✅ Characters should start with nothing equipped — `db49fa8`
+
+## 136. ✅ A character who started with grenades always seems to have one equipped — `db49fa8`
+
 ## 137. The damage chat card assigns damage again after the player already assigned it through the popup
 
 **Fixed on `claude/project-thread-ccsy1c`, live check pending.** Cause (from the code, not reproduced live): the 🩸 Assign
@@ -238,6 +242,10 @@ step key; the GM checks the card's `acted` ledger, applies and records in one qu
 
 ## 141. The second Simple Action does not flag and end the turn
 
+**Flag — done (`c264b6d3`):** the GM's second **Simple** button lights up once two Simples are taken.
+**Still open — end the turn:** a roll's charge only marks ([#48](#48): *auto-mark, never auto-advance*); ending the
+phase on the second Simple would also put it out of ↺ Undo's reach. The maintainer's call.
+
 ## 151. Cyber weapons don't show up in the weapons list, and cannot be used in combat
 
 **Fixed on `claude/project-thread-ccsy1c`, live check pending.** The implant (`cyberware`, category Cyberweapons) carried
@@ -247,10 +255,6 @@ internal magazine. Removing the implant removes it. Implants fitted earlier are 
 Body weapons (CYB/UNA) now appear in the attack picker without an Equip.
 - 🧪 Live: drag Spur(CYB) onto a character → a Spur row under Cyber & Unarmed, attack with it; drag CyGun Heavy(HPist)(CYB)
   → a firearm, reload and fire; delete the implant → its weapon goes; an older actor shows the + Add weapon offer.
-
-## 152. Undoing an action only works on the second try
-
-The GM's ↺ Undo on the action ledger ([#48](#48)) has to be pressed twice before it takes effect.
 
 ## 161. Flechette weapons — the two things the book does not settle
 

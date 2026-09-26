@@ -2378,13 +2378,17 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
 - [ ] The active combatant's row shows pips (one wide Complex, two Simple, one small Free) to **every**
       user; the GM also sees Complex / Simple / Simple / ↺.
 - [ ] On their phase a player fires a pistol **SA** → one Simple pip fills; a second SA → both; a
-      third → ⚠ and a GM warning, recorded not refused. The turn does **not** advance by itself.
+      third → ⚠ and a GM warning, recorded not refused. The turn does **not** advance by itself; after
+      the second, the GM's second **Simple** button is lit (TODO 141).
 - [ ] Full auto → the Complex pip, not a Simple. A skill roll, a spell, a melee attack → Complex.
 - [ ] The defender's dodge, soak and spell resistance fill **nothing** on the defender.
 - [ ] An actor who is not the active combatant rolls → nothing is charged.
 - [ ] ↺ (GM): pick the SA shot → the dialog lists `combatPoolSpent`, `roundsFiredThisPhase`, the gun's
       `loadedRounds` and the chat cards since, all ticked → **↩ Undo** puts them back, deletes the
       cards and frees the pip. Untick one row → that value is left alone.
+- [ ] **TODO 152:** fire a put-away pistol, pick ✋ Ready → two pips (Ready, Fire). ↺ once → the dialog
+      (defaulting to the shot) lists the rounds and pool dice to put back — not "No snapshot". Same
+      after a clip swap (Remove Clip, Insert Clip).
 - [ ] Reload: a clip swap fills both Simples; loose rounds a Complex each; nocking an arrow one Simple.
 - [ ] F5 on any client keeps the pips (they are a combatant flag); the next combatant's phase starts empty.
 - [ ] **Ready (TODO 47):** a weapon row's ✋ puts it away (grey) and readies it (green); readying fills
