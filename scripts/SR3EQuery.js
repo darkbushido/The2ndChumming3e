@@ -741,6 +741,36 @@ export class SR3EQuery {
       return { tn: gmRes.tn, mods: gmRes.mods, adjudicated: true };
     });
 
+    /**
+     * The GM's TN window for an ELEMENTAL spell · SR3 p.183 (TODO 131)
+     *
+     * *"Elemental spells are treated like normal ranged attacks … Cover, visibility, injury and
+     * sustaining modifiers apply."* The same window and the same `gmApprovesTN` rule as
+     * `sr3e.attack.negotiate`, with the spell's rows (`spellModifierGroups`: no Gear, and no Target
+     * on an area cast). Every target counts towards "a player is involved". Reads and writes nothing;
+     * `adjudicated:false` means no GM looked and the caster's TN stands.
+     */
+    CONFIG.queries['sr3e.spell.negotiate'] = async ({ rid, ...ctx }) => SR3EQuery.once(rid, async () => {
+      SR3EQuery.assertActiveGM();
+      const { SR3EItem } = game.sr3e;
+
+      const mode = game.settings.get('The2ndChumming3e', 'gmApprovesTN');
+      const requesterIsGM = game.users.get(ctx._requesterId)?.isGM === true;
+      const playerInvolved = [ctx.attackerUuid, ...(ctx.targetUuids ?? [])]
+        .some(u => SR3EQuery.isPlayerCharacter(SR3EQuery.resolve(u)));
+      if (!SR3EQuery.gmWindowOpens(mode, { requesterIsGM, playerInvolved })) {
+        return { tn: ctx.baseTN, adjudicated: false };
+      }
+
+      const { spellModifierGroups } = await import('./SR3ECombatModifiers.js');
+      const attacker = SR3EQuery.resolve(ctx.attackerUuid);
+      const gmRes = await SR3EItem._promptGMAttackWindow({ ...ctx, attacker, weapon: null },
+        { groups: spellModifierGroups({ area: ctx.area === true }) });
+      if (!gmRes) return null;   // GM cancelled the cast — nothing spent, nothing written
+
+      return { tn: gmRes.tn, situational: gmRes.situational, adjudicated: true };
+    });
+
 
     /** Close a decision dialog whose answer is no longer wanted. */
     CONFIG.queries['sr3e.dialog.withdraw'] = async ({ exchangeId, reason }) => {
