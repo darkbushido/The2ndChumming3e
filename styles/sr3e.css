@@ -529,15 +529,22 @@ background-color: var(--sr-surface) !important;
   font-size: 12px;
 }
 
+/* The soak result is information, not an action. It used to be a gold box with a full gold
+ * border, identical to the gold resist buttons sitting under it, so it read as clickable
+ * (TODO 140). Grey panel, left rule only, default cursor — the look of a note, not a button. */
 .sr-soak-result {
   margin-top: 6px;
   padding: 6px 10px;
-  background: color-mix(in srgb, var(--sr-gold) 10%, transparent);
-  border: 1px solid var(--sr-gold);
+  background: var(--sr-surface);
+  border: none;
+  border-left: 3px solid var(--sr-border-hi);
   border-radius: var(--r);
-  color: var(--sr-gold);
+  color: var(--sr-muted);
   font-size: 12px;
+  cursor: default;
 }
+
+.sr-soak-result strong { color: var(--sr-text); }
 
 .sr-soak-blocked {
   background: var(--sr-green-bg);
