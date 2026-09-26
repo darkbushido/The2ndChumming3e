@@ -66,6 +66,30 @@ export async function run(t) {
   const decider = { a1: 'u1', a2: 'u2', caster: 'u1' };
   t.is('countFor: open steps whose owner\'s decider is this user', OpenSteps.countFor('u1', OpenSteps.open(after), id => decider[id]), 2);
 
+  /* ── Once per step — TODO 137 ─────────────────────────────────────────────────── */
+  // Reported: the wound was assigned from the chat pop-up, then again from the chat log. Only the
+  // clicking browser knew; the GM's copy (or the player's own after a reload) stayed live.
+  const wound = OpenSteps.key('sr-assign-damage-btn', 0);
+  let writes = 0;
+  const apply = async () => { writes++; return { ok: true }; };
+  const first = await OpenSteps.runOnce({}, wound, { label: 'Assign the wound' }, apply);
+  t.ok('the first assign applies…', first.ok && writes === 1);
+  t.ok('…and returns the ledger with the step recorded', !!first.acted?.[wound]);
+  const second = await OpenSteps.runOnce(first.acted, wound, { label: 'again' }, apply);
+  t.ok('a second assign from another copy of the card is refused', second.already === true && !second.ok);
+  t.is('…and writes nothing', writes, 1);
+  const closed = await OpenSteps.runOnce({ [wound]: { label: 'dismissed by the GM' } }, wound, {}, apply);
+  t.ok('a step the GM closed with ✕ is refused too (the boxes were ticked by hand)', closed.already === true && writes === 1);
+  const other = await OpenSteps.runOnce(first.acted, OpenSteps.key('sr-assign-damage-btn', 1), {}, apply);
+  t.ok('the card\'s OTHER Assign button (a second target) is not blocked by the first', other.ok && writes === 2);
+  const failed = await OpenSteps.runOnce({}, wound, {}, async () => ({ ok: false, reason: 'gone' }));
+  t.ok('a failed write records nothing, so the button can be pressed again', !failed.ok && !failed.acted && !failed.already);
+  const untouched = {};
+  await OpenSteps.runOnce(untouched, wound, {}, apply);
+  t.eq('the ledger passed in is not mutated', untouched, {});
+  t.ok('Assign records itself — the generic click listener must not claim it first',
+    OpenSteps.recordsItself('sr-assign-damage-btn') && !OpenSteps.recordsItself('sr-soak-btn'));
+
   /* ── Wiring (source level — the Foundry side needs a live client) ─────────────── */
   const main = read('scripts/sr3e.js');
   const lastHook = main.lastIndexOf("Hooks.on('renderChatMessageHTML'");
@@ -89,7 +113,25 @@ export async function run(t) {
     /querySelectorAll\('#sidebar-tabs \[data-tab="chat"\], #sidebar nav \[data-tab="chat"\]'\)/.test(mod)
     && !/'#sidebar \[data-tab="chat"\]/.test(mod));
 
+  t.ok('decorate attaches no mark listener to a button that records itself',
+    /if \(OpenSteps\.recordsItself\(cls\)\) return;\s*[^\n]*\n\s*btn\.addEventListener\('click'/.test(mod));
+
+  // TODO 137: the Assign button's click, the GM check and the record are one path.
+  const assignHook = main.slice(main.indexOf("html.querySelectorAll('.sr-assign-damage-btn')"));
+  t.ok('the Assign button is spent on render when its step is recorded (every client, after a reload)',
+    /const role = OpenSteps\.key\('sr-assign-damage-btn', i\);\s*\n\s*if \(_actedOn\(message\)\[role\]\) return SR3EActor\.spendAssignButton\(btn\);/.test(assignHook));
+  t.ok('…and its click names the card and the step to the GM',
+    /SR3EActor\.handleAssignDamage\(btn,\s*\{ messageId: mid, role,/.test(assignHook.slice(0, 2000)));
+  const actorSrc = read('scripts/documents/SR3EActor.js');
+  t.ok('handleAssignDamage always goes through sr3e.damage.apply (in place on the GM) with the claim',
+    /asGM\('sr3e\.damage\.apply',\s*\{ uuid, kind, track: p\.track, boxes: p\.boxes, \.\.\.claim \}\)/.test(actorSrc)
+    && !/await SR3EActor\._applyDamageBoxes\(\{ uuid, kind, track: p\.track/.test(actorSrc));
+  t.ok('the GM checks, applies and records inside the card\'s queue',
+    /static async _applyCardDamage[\s\S]{0,400}SR3EQueue\.run\(`card:\$\{messageId\}`[\s\S]{0,200}OpenSteps\.runOnce\(/.test(actorSrc));
+
   const query = read('scripts/SR3EQuery.js');
+  t.ok('sr3e.damage.apply routes through the once-per-card path',
+    /'sr3e\.damage\.apply'\][\s\S]{0,300}SR3EActor\._applyCardDamage\(\{ uuid, kind, track, boxes, messageId, role, label \}\)/.test(query));
   t.ok('card.mark is queued per message, so two marks cannot overwrite each other',
     /'sr3e\.card\.mark'\][\s\S]{0,200}SR3EQueue\.run\(`card:\$\{messageId\}`/.test(query));
 

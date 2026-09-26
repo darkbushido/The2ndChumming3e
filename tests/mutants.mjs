@@ -39,6 +39,27 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 
 export const MUTANTS = [
   {
+    id:     'wound-assigned-twice',
+    suite:  'open-steps',
+    module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'runOnce',
+    was:    'the Assign-the-wound button applied its boxes on every click from any copy of the card — the chat pop-up, then the chat log, wounded the character twice (TODO 137)',
+    impl:   async (acted, key, entry, act) => ({ ...(await act()), acted: { ...(acted ?? {}), [key]: entry } }),
+  },
+  {
+    id:     'implant-is-no-weapon',
+    suite:  'cyber-weapons',
+    module: '../scripts/data/cyber-weapons.mjs', klass: 'CyberWeapons', method: 'weaponData',
+    was:    'an implanted weapon (spur, hand razors, cybergun) gave Essence loss and nothing to attack with (TODO 151)',
+    impl:   () => null,
+  },
+  {
+    id:     'cybergun-as-melee',
+    suite:  'cyber-weapons',
+    module: '../scripts/data/cyber-weapons.mjs', klass: 'CyberWeapons', method: 'gunCode',
+    was:    'a cybergun would be built as a melee weapon if its gun code were not read (TODO 151)',
+    impl:   () => null,
+  },
+  {
     id:     'open-steps-fold-on-finish',
     suite:  'open-steps',
     module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'shouldFold',
