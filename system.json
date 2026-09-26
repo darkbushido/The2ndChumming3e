@@ -32,6 +32,15 @@
       "path": "lang/en.json"
     }
   ],
+  "relationships": {
+    "recommends": [
+      {
+        "id": "security-cameras",
+        "type": "module",
+        "reason": "Camera feeds for the security cameras on the battlemaps — each map's cameras are registered with it by a GM macro after import."
+      }
+    ]
+  },
   "documentTypes": {
     "Actor": {
       "character": {
