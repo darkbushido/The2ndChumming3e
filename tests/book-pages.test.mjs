@@ -9,7 +9,7 @@
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { splitColumns, gutterOf, bookKey, pageOfText, bookPages } from '../tools/lib/book-pages.mjs';
+import { splitColumns, gutterOf, bookKey, pageOfText, bookPages, wordsOnPage } from '../tools/lib/book-pages.mjs';
 
 export const name = 'book-pages';
 
@@ -68,6 +68,17 @@ export async function run(t) {
   try { none.read('Book Two.pdf', 1); } catch (e) { err = e.message; }
   t.ok('with neither source, the error says how to get the OCR text', /Shadowrun-OCR/.test(err));
 
+  // A table quoted down its columns (the PDF's reading order) against the layout text's rows.
+  const TABLE = 'Level   Cost      Avail\nLevel 1  12,000   6/48 hrs\nLevel 2  60,000   8/48 hrs';
+  t.ok('a column-order quote is found word by word in a row-order table', wordsOnPage('Level 1 Level 2 Cost 12,000 60,000', TABLE));
+  t.ok('…but a number not on the page is not', !wordsOnPage('Level 1 Level 2 Cost 12,000 65,000', TABLE));
+  t.ok('…and a word used twice must be on the page twice', !wordsOnPage('12,000 12,000 Level Level Level Level', TABLE));
+  t.ok('a word hyphenated across a line still counts', wordsOnPage('the magician loader', 'the magi-\ncian load-\ner'));
+  t.ok('an empty quote proves nothing', !wordsOnPage('', TABLE));
+
   const ledger = readFileSync(new URL('../tools/rules-ledger.mjs', import.meta.url), 'utf8');
   t.ok('the ledger reads pages through book-pages, not its own pdftotext call', /from '\.\/lib\/book-pages\.mjs'/.test(ledger) && !/execFileSync\('pdftotext'/.test(ledger));
+  t.ok('…accepts a word-by-word match on the OCR source only', /pg\.source === 'ocr' && wordsOnPage\(/.test(ledger));
+  t.ok('…and lists every quote that passed that way', /LOOSE/.test(ledger) && /looseQuotes\.push/.test(ledger));
+  t.ok('…and checks `ocrQuote` only on the OCR source', /pg\.source === 'ocr' \? \(p\.ocrQuote \?\? p\.quote\) : p\.quote/.test(ledger));
 }

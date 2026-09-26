@@ -124,3 +124,22 @@ export function bookPages({ pdfDir, ocrDir }) {
     },
   };
 }
+
+/**
+ * Does every word of `quote` appear on the page, as many times as the quote uses it? Order is ignored.
+ *
+ * ⚠ For the OCR source ONLY, and only as a fallback the ledger reports separately. A quote copied in
+ * the PDF's reading order runs down a table's columns; the layout text runs across its rows, and on a
+ * few pages misaligns them. The words are the same, the order is not, so an exact match fails although
+ * nothing was invented. This is weaker evidence than a contiguous quote — the ledger counts every quote
+ * that passes only this way, and the PDFs check it exactly.
+ */
+export function wordsOnPage(quote, pageText) {
+  const words = s => String(s).toLowerCase().replace(/[‘’]/g, "'").replace(/-\s+/g, '')
+    .split(/[^a-z0-9+\-/.,%'()]+/).map(w => w.replace(/^[.,()]+|[.,()]+$/g, '')).filter(Boolean);
+  const have = new Map();
+  for (const w of words(pageText)) have.set(w, (have.get(w) ?? 0) + 1);
+  const need = new Map();
+  for (const w of words(quote)) need.set(w, (need.get(w) ?? 0) + 1);
+  return need.size > 0 && [...need].every(([w, n]) => (have.get(w) ?? 0) >= n);
+}

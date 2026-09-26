@@ -20,7 +20,8 @@
  *   no-rule-claim   reason                      prose that states no rule; rejected if it cites a page or a modifier
  *
  * Evidence formats:
- *   pdf:    { file, pdfPage, printedPage, quote }   `quote` must appear in that page's text (whitespace-normalised)
+ *   pdf:    { file, pdfPage, printedPage, quote, ocrQuote? }   `quote` must appear in that page's text (whitespace-normalised);
+ *           `ocrQuote`, when set, is what the OCR source checks instead (a table the OCR layout prints in another order)
  *           — read from the PDFs when they are on this machine, else from the Shadowrun-OCR checkout beside
  *           this repo or SR-OCR/ (SR3_PDF_DIR / SR3_OCR_DIR override). Copy quotes from the layout text, one column at
  *           a time: they then verify against either source.
@@ -31,7 +32,7 @@ import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from '
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
-import { bookPages } from './lib/book-pages.mjs';
+import { bookPages, wordsOnPage } from './lib/book-pages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const GUIDES = path.join(ROOT, 'guides');
@@ -117,6 +118,8 @@ function init(v) {
 
 const books = bookPages({ pdfDir: PDF_DIR, ocrDir: OCR_DIR });
 const pdfPageText = (file, page) => books.read(file, page);
+/** Quotes that passed only by `wordsOnPage` on the OCR text — listed by `check`, counted in the report. */
+const looseQuotes = [];
 
 function allScripts(dir, out = []) {
   for (const name of readdirSync(dir)) {
@@ -137,8 +140,13 @@ function faults(e, current) {
   for (const p of e.pdf ?? []) {
     try {
       const pg = pdfPageText(p.file, p.pdfPage), t = pg.whole;
-      if (!p.quote || p.quote.length < 25) f.push(`pdf quote too short to mean anything (${p.file} p.${p.printedPage})`);
-      else if (!pg.views.some(v => [norm(v), norm(v).replace(/- /g, '')].some(x => x.includes(norm(p.quote))))) f.push(`pdf quote NOT FOUND on ${p.file} pdf page ${p.pdfPage}: "${p.quote.slice(0, 60)}…"`);
+      // `ocrQuote`: the same passage as the OCR layout text prints it, where the PDF's reading order differs.
+      const quote = pg.source === 'ocr' ? (p.ocrQuote ?? p.quote) : p.quote;
+      if (!quote || quote.length < 25) f.push(`pdf quote too short to mean anything (${p.file} p.${p.printedPage})`);
+      else if (!pg.views.some(v => [norm(v), norm(v).replace(/- /g, '')].some(x => x.includes(norm(quote))))) {
+        if (pg.source === 'ocr' && wordsOnPage(quote, t)) looseQuotes.push(`${e.id}  pdf page ${p.pdfPage}: "${quote.slice(0, 60)}…"`);
+        else f.push(`pdf quote NOT FOUND on ${p.file} pdf page ${p.pdfPage}: "${quote.slice(0, 60)}…"`);
+      }
       if (!new RegExp(`(^|\\D)${p.printedPage}(\\D|$)`).test(t)) f.push(`printed page ${p.printedPage} not found on pdf page ${p.pdfPage}`);
     } catch (err) { f.push(`pdf check failed: ${err.message.split('\n')[0]}`); }
   }
@@ -194,6 +202,8 @@ function check(v) {
     const f = faults(e, cur.get(e.id));
     if (f.length) { bad++; console.log(`FAULT    ${e.id}`); f.forEach(x => console.log(`           - ${x}`)); }
   }
+  for (const q of looseQuotes) console.log(`LOOSE    ${q}`);
+  if (looseQuotes.length) console.log(`\n${looseQuotes.length} quote(s) found only word by word (a table read in another order) — exact on the PDFs, not on the OCR layout.`);
   console.log(`\nquotes checked against the ${books.source === 'pdf' ? `PDFs (${PDF_DIR})` : `OCR text (${OCR_DIR})`}`);
   console.log(bad ? `${bad} unit(s) not resolved or not verifiable.` : `all ${l.entries.length} units resolved and every piece of evidence re-verified.`);
   return bad === 0;
@@ -208,6 +218,8 @@ function report(v) {
   out.push(ok
     ? `**Status: COMPLETE — all ${l.entries.length} units of ${pages} guide pages resolved, and every quote and code location re-verified by \`tools/rules-ledger.mjs check\`.**`
     : `**Status: PARTIAL — the ledger has unresolved or unverifiable entries; this record is not a completed check.**`, '');
+  out.push(`Book text: ${books.source === 'pdf' ? 'the PDFs' : 'the OCR text (Shadowrun-OCR), the PDFs being absent'}.`
+    + (looseQuotes.length ? ` ${looseQuotes.length} quote(s) matched word by word only (tables in the OCR layout run across rows); \`check\` lists them as LOOSE.` : ''), '');
   out.push('Generated from `audit/rules-ledger-' + v + '.json`. Regenerate; do not hand-edit. A complete record proves the ledger is',
     'fully evidenced — it does not prove the evidence was read correctly. Every `diverges` and every `unverifiable`',
     'below is the maintainer\'s to decide.', '');
