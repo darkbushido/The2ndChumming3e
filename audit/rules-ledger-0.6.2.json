@@ -7751,7 +7751,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4829,
+          "line": 4838,
           "snippet": "const pool = Math.max(1, sorceryDice + magicDice);"
         }
       ]
@@ -8060,12 +8060,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4901,
+          "line": 4910,
           "snippet": "static spellAreaRadius(magic, withheld = 0, mode = 'widen') {"
         },
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4915,
+          "line": 4924,
           "snippet": "static _actorsInRadius(center, radiusM, _caster) {"
         }
       ],
@@ -8238,7 +8238,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4829,
+          "line": 4838,
           "snippet": "const pool = Math.max(1, sorceryDice + magicDice);"
         }
       ]
@@ -8264,7 +8264,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4829,
+          "line": 4838,
           "snippet": "const pool = Math.max(1, sorceryDice + magicDice);"
         }
       ]
@@ -8398,7 +8398,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4465,
+          "line": 4467,
           "snippet": "return { tn: Math.max(2, numeric), resistAttr: 'willpower', resistName: 'Willpower', attrLabel: `Fixed ${numeric}` };"
         }
       ]
@@ -8642,7 +8642,7 @@
       ],
       "hash": "af357482a8",
       "text": "- **Cover and visibility**, as for Perception.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -8654,11 +8654,16 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4385,
-          "snippet": "return SR3EItem.isElementalSpell(category) && !/^\\s*T/i.test(String(range ?? ''));"
+          "line": 4387,
+          "snippet": "return !/^\\s*(T|P\\b)/i.test(String(range ?? ''));"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4778,
+          "snippet": "if (SR3EItem.spellTakesGMWindow(this.system.range)) {"
         }
       ],
-      "note": "New since 0.6.1 (TODO 131): the GM cover/visibility window now opens for elemental spells, but only for them. spellTakesGMWindow returns false for every non-elemental spell (its comment: \"Combat spells are not ranged attacks and never do\"), while p.182 states the cover/visibility increase for the Sorcery Test generally, in the base target number section, not only for elemental spells. A Manabolt at a target behind cover casts at the unmodified TN."
+      "note": "Found diverging in this check (only elemental spells opened the GM cover/visibility window) and fixed before release at the maintainer's call (2026-09-26): spellTakesGMWindow now takes only the range, so every spell but touch and personal ones opens the window."
     },
     {
       "id": "magic/spellcasting.md#54",
@@ -9622,7 +9627,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4465,
+          "line": 4467,
           "snippet": "return { tn: Math.max(2, numeric), resistAttr: 'willpower', resistName: 'Willpower', attrLabel: `Fixed ${numeric}` };"
         }
       ]
@@ -9791,7 +9796,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4837,
+          "line": 4846,
           "snippet": "const damageBase = { power: force, level, isStun };"
         }
       ],
@@ -10680,7 +10685,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4829,
+          "line": 4838,
           "snippet": "const pool = Math.max(1, sorceryDice + magicDice);"
         }
       ]

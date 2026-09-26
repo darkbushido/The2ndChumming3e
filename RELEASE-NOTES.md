@@ -4,7 +4,7 @@ What changed, for the people running games with it. Newest first.
 
 ## 0.6.2 — 2026-09-26
 
-A bug-fix release, mostly from the 2026-09-23 trial session: ammunition and clips, weapons that start put away, implanted weapons you can actually use, a wound that could be assigned twice, and ↺ Undo on the first press. Two rules now resolve differently: elemental spells take cover and visibility, and dual beings resist astral damage with Body.
+A bug-fix release, mostly from the 2026-09-23 trial session: ammunition and clips, weapons that start put away, implanted weapons you can actually use, a wound that could be assigned twice, and ↺ Undo on the first press. Two rules now resolve differently: spells take cover and visibility, and dual beings resist astral damage with Body.
 
 ### Before you upgrade
 
@@ -13,7 +13,7 @@ A bug-fix release, mostly from the 2026-09-23 trial session: ammunition and clip
 
 ### Rules that now resolve differently
 
-- **Elemental spells take cover and visibility** (SR3 p.183: *"Cover, visibility, injury and sustaining modifiers apply"*). Casting an elemental spell now opens the GM's target-number window, the same one a ranged attack uses, after targets are picked and before the Spell Pool is committed. The GM's change applies to the roll and to every target. An area spell has no Target row, because cover doesn't shelter anyone inside the area (p.182). Touch spells never ask (p.182). Other spells are unchanged; see *Known differences* below.
+- **Spells take cover and visibility** (SR3 p.182: *"If the caster has trouble seeing the target due to cover and visibility modifiers (p. 232), the target number of the spell increases"*; p.183 for elemental spells). Casting a spell now opens the GM's target-number window, the same one a ranged attack uses, after targets are picked and before the Spell Pool is committed. The GM's change applies to the roll and to every target. An elemental area spell has no Target row, because its blast reaches people behind cover (p.182); any other area spell keeps it, because it only affects targets the caster can see. Touch and personal spells never ask (p.182). Before, no spell asked, so a Manabolt at someone behind cover was cast at the plain TN.
 - **Dual beings resist astral damage with Body, plus Combat Pool** (SR3 p.174–175: *"Willpower or Force for astral beings, or Body for dual beings"*). The astral resist card used to offer Willpower to everyone. Now only an actor set to **Astral Plane** resists with Willpower (a spirit with its Force). Anyone else caught in astral combat, such as an astrally perceiving mage or a materialized spirit, rolls Body and may add Combat Pool. The pool is still editable on the card.
 - **A grenade launcher fires its loaded mini-grenade** (SR3 p.119, p.283). The Damage Code, blast and area now come from the round, so a Defensive mini-grenade falls off at −1 per half metre instead of −1 per metre. A shot also spends a round, which it never did. Under 5 metres, the dialog warns that a mini-grenade doesn't arm (p.118); it is a warning, not a refusal.
 
@@ -41,7 +41,6 @@ A bug-fix release, mostly from the 2026-09-23 trial session: ammunition and clip
 
 ### Known differences from the book
 
-- **Cover and visibility for non-elemental spells.** SR3 p.182 says the spell's target number increases when *"the caster has trouble seeing the target due to cover and visibility modifiers"*, for any spell. The GM window only opens for elemental spells, so a Manabolt at someone behind cover casts at the plain TN. The GM can still adjust the TN on the card by hand. Found by this release's rules check; waiting on the maintainer's call.
 - **A dual-natured critter's natural armour** (the Armor power) should reduce the Power of astral attacks (SR3 p.175). There's no field for it yet, so the GM lowers the TN on the card. Tracked as TODO 177.
 
 ## 0.6.1 — 2026-09-24

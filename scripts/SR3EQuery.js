@@ -742,10 +742,10 @@ export class SR3EQuery {
     });
 
     /**
-     * The GM's TN window for an ELEMENTAL spell · SR3 p.183 (TODO 131)
+     * The GM's TN window for a spell · SR3 p.182-183 (TODO 131)
      *
-     * *"Elemental spells are treated like normal ranged attacks … Cover, visibility, injury and
-     * sustaining modifiers apply."* The same window and the same `gmApprovesTN` rule as
+     * *"If the caster has trouble seeing the target due to cover and visibility modifiers (p. 232),
+     * the target number of the spell increases"* — p.182, any spell but touch and personal ones. The same window and the same `gmApprovesTN` rule as
      * `sr3e.attack.negotiate`, with the spell's rows (`spellModifierGroups`: no Gear, and no Target
      * on an area cast). Every target counts towards "a player is involved". Reads and writes nothing;
      * `adjudicated:false` means no GM looked and the caster's TN stands.

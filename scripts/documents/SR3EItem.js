@@ -4375,14 +4375,16 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   /**
    * Does this spell's cast open the GM's cover/visibility window? · SR3 p.182-183 (TODO 131)
    *
-   * p.183: *"Cover, visibility, injury and sustaining modifiers apply"* to an elemental spell.
-   * Injury and sustaining reach the Sorcery Test through `rollPool`; cover and visibility are the
-   * GM's call. p.182: *"Spells with a range of touch are not subject to cover or visibility
-   * modifiers"*, so a touch range (`T`, `T/D`, `T(V)`…) never opens it. Combat spells are not
-   * ranged attacks and never do. Pure.
+   * p.182, for every spell: *"If the caster has trouble seeing the target due to cover and visibility
+   * modifiers (p. 232), the target number of the spell increases."* p.183 repeats it for elemental
+   * spells. Injury and sustaining reach the Sorcery Test through `rollPool`; cover and visibility are
+   * the GM's call. *"Spells with a range of touch are not subject to cover or visibility modifiers"*
+   * (p.182), so a touch range (`T`, `T/D`, `T(V)`…) never opens it, and nor does a personal one (`P`):
+   * the caster is the target. Until 0.6.2 only elemental spells asked, so a Manabolt at a target behind
+   * cover was cast at the plain TN (rules check 0.6.2). Pure.
    */
-  static spellTakesGMWindow(category, range) {
-    return SR3EItem.isElementalSpell(category) && !/^\s*T/i.test(String(range ?? ''));
+  static spellTakesGMWindow(range) {
+    return !/^\s*(T|P\b)/i.test(String(range ?? ''));   // T, T/D, T(V), T/A… · P
   }
 
   /**
@@ -4766,24 +4768,31 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     else tnSource = `${primaryTarget.name}'s ${parsedPrimary.attrLabel}`;
     if (tnsDiffer) tnSource = `each target's own; rolled at the highest, ${tnSource}`;
 
-    /* The GM's TN window for an elemental cast · SR3 p.183 (TODO 131): *"Cover, visibility, injury
-     * and sustaining modifiers apply."* Injury and sustaining are `rollPool`'s; cover and visibility
-     * are the GM's, on the ranged window's `gmApprovesTN` rule. Asked BEFORE the Spell Pool is
-     * committed, as ranged asks before the attacker's screen — nobody spends dice against a number
-     * they cannot see. Range stays out ("regardless of range"); touch spells never ask (p.182).
-     * One window per cast: its difference moves every target's TN and the roll's alike. */
-    if (SR3EItem.spellTakesGMWindow(this.system.category, this.system.range)) {
+    /* The GM's TN window for a cast · SR3 p.182-183 (TODO 131): *"If the caster has trouble seeing
+     * the target due to cover and visibility modifiers, the target number of the spell increases"*
+     * (p.182, every spell). Injury and sustaining are `rollPool`'s; cover and visibility are the GM's,
+     * on the ranged window's `gmApprovesTN` rule. Asked BEFORE the Spell Pool is committed, as ranged
+     * asks before the attacker's screen — nobody spends dice against a number they cannot see. Range
+     * stays out; touch and personal spells never ask (p.182). One window per cast: its difference moves
+     * every target's TN and the roll's alike. */
+    if (SR3EItem.spellTakesGMWindow(this.system.range)) {
       const negotiation = await game.sr3e.SR3EQuery.asGM('sr3e.spell.negotiate', {
         attackerUuid: actor.uuid,
         targetUuids:  targetActors.map(t => t.uuid),
         attackerName: actor.name,
         targetName:   isAoE ? `area (${aoeRadius} m)` : (targetActors[0]?.name ?? '—'),
         weaponName:   this.name,
-        area:         isAoE,
+        // Only an ELEMENTAL area drops the Target rows: its blast reaches behind a wall (p.182). Any
+        // other area spell affects only targets the caster can see, so their cover still counts.
+        area:         isAoE && isElemental,
         baseTN:       tn,
-        baseNote:     isAoE
-          ? 'elemental area spell, regardless of range (p.183) — visibility is the caster’s view of the centre; cover does not shelter anyone in the area (p.182). Wounds and sustaining are added at the roll.'
-          : 'elemental spell, regardless of range (p.183). Wounds and sustaining are added at the roll.',
+        baseNote:     !isElemental
+          ? (isAoE
+            ? 'area spell (p.182) — a target completely hidden from the caster is not affected at all; partial cover and visibility raise the TN. Wounds and sustaining are added at the roll.'
+            : 'the caster must see the target; cover and visibility raise the TN (p.182). Wounds and sustaining are added at the roll.')
+          : isAoE
+            ? 'elemental area spell, regardless of range (p.183) — visibility is the caster’s view of the centre; cover does not shelter anyone in the area (p.182). Wounds and sustaining are added at the roll.'
+            : 'elemental spell, regardless of range (p.183). Wounds and sustaining are added at the roll.',
       }, { timeout: 300_000 });
       if (negotiation === null) {              // GM cancelled the cast — nothing spent yet
         // …but the area marker was drawn when the centre was placed; a cancelled cast leaves none.

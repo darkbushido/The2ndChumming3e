@@ -96,11 +96,12 @@ Sheet shows available / total.
 (`SR3EActor.elementalImpact`, round down) — ⚠ Mystic Armor is halved with it. ⚠ **Every target in an area
 elemental spell dodges** (the maintainer; MITS p.56). ⚠ `_soakButtonHtml` lists its fields — `elemental` is
 one. Secondary effects stated, never applied.
-- **Cover and visibility** (p.183, TODO 131): the cast opens the ranged GM window through
-  `sr3e.spell.negotiate` (same `gmApprovesTN` rule) after targets, **before the Spell Pool**. Rows are
-  `spellModifierGroups()` — no Gear; an **area** cast also drops Target (p.182: behind a wall still gets
-  cooked), so its visibility is the caster's view of the centre. ⚠ Range is never a row (*"regardless of
-  range"*); ⚠ **touch range never asks** (p.182, `SR3EItem.spellTakesGMWindow`). The GM's difference moves
+- **Cover and visibility** (p.182–183, TODO 131; every spell since 0.6.2): the cast opens the ranged GM
+  window through `sr3e.spell.negotiate` (same `gmApprovesTN` rule) after targets, **before the Spell Pool**.
+  Rows are `spellModifierGroups()` — no Gear; an **elemental area** cast also drops Target (p.182: behind a
+  wall still gets cooked), so its visibility is the caster's view of the centre. Any other area spell keeps
+  Target: it affects only targets the caster can see. ⚠ Range is never a row (*"regardless of range"*);
+  ⚠ **touch and personal ranges never ask** (p.182, `SR3EItem.spellTakesGMWindow(range)`). The GM's difference moves
   `tn` and every `targetTNs` entry alike; wounds and sustaining stay `rollPool`'s.
 
 **Spell Defense is declared per mage, on that mage's client.** `rollInitiative()` ends with

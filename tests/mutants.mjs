@@ -1838,7 +1838,15 @@ export const MUTANTS = [
     ...ITEM, method: 'spellTakesGMWindow',
     was:    'SR3 p.182 - "Spells with a range of touch are not subject to cover or visibility modifiers" '
           + '(the easy way to get TODO 131 wrong)',
-    impl:   category => /^\s*elemental\s*$/i.test(String(category ?? '')),
+    impl:   () => true,
+  },
+  {
+    id:     'personal-spell-takes-cover',
+    suite:  'elemental-spells',
+    ...ITEM, method: 'spellTakesGMWindow',
+    was:    'SR3 p.182 - cover and visibility are about seeing the target; a personal spell\'s target is '
+          + 'the caster. Touch was excluded and personal forgotten',
+    impl:   range => !/^\s*T/i.test(String(range ?? '')),
   },
   {
     id:     'elemental-level-fixed-at-moderate',

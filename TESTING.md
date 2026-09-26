@@ -2531,7 +2531,7 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
 
 **Ran 2026-09-20 by the agent in the Browser pane** (mcp-api, sole user, fresh load, system 0.5.2 after merging `feature/0-6-rules` + `feature/release-pipeline`): every box above verified by driving `game.sr3e.*` directly. The *player sees it greyed out* half is covered by `tests/e2e/player-sheet.spec.mjs`, which has the seats the Browser pane does not: the GM opens a 1.5 hole, Player2's sheet shows all three Essence boxes unnamed and disabled, and the same block is read back from the GM's seat named and editable — so a sheet that locked everyone out would fail too.
 
-## 41. Elemental spells — cover and visibility (TODO 131, SR3 p.182-183)
+## 41. Spells — cover and visibility (TODO 131, SR3 p.182-183; every spell since 0.6.2)
 
 **Prerequisites:** F5 after merging. `gmApprovesTN` on `player` (default). A mage PC with Flamethrower
 (LOS) and Fireball (LOS(A)), an NPC target on the scene.
@@ -2544,5 +2544,9 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
 - [ ] GM presses **Cancel attack** → nothing is cast, no Spell Pool spent.
 - [ ] Fireball → the window shows Attacker and Conditions only (no Target); on Cancel the purple area
       marker is removed.
-- [ ] A touch-range elemental spell and a Manabolt → no window.
+- [ ] A touch-range elemental spell → no window. A personal-range spell → no window.
+- [ ] **0.6.2 — every spell asks** (p.182, rules check 0.6.2): a **Manabolt** at the NPC → the window opens,
+      Target/Attacker/Conditions, and the note says the caster must see the target; Partial cover moves the
+      roll's TN. A **Manaball** → the window **keeps Target** (only an elemental area drops it), and its note
+      says a target completely hidden is not affected.
 - [ ] GM casts at an NPC with `gmApprovesTN` on `player` → no window (NPC vs NPC); set `always` → it opens.

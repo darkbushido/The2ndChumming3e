@@ -140,13 +140,17 @@ export async function run(t) {
   /* ══ Cover and visibility — the GM's TN window · SR3 p.182-183 (TODO 131) ═════════ */
   // "They have a base Target Number of 4, regardless of range, as long as the caster can see the
   //  target. Cover, visibility, injury and sustaining modifiers apply." — p.183
-  t.ok('an elemental spell at line of sight opens the GM window', SR3EItem.spellTakesGMWindow('Elemental', 'LOS'));
-  t.ok('…and so does an area one', SR3EItem.spellTakesGMWindow('Elemental', 'LOS(A)'));
+  t.ok('a spell at line of sight opens the GM window', SR3EItem.spellTakesGMWindow('LOS'));
+  t.ok('…and so does an area one', SR3EItem.spellTakesGMWindow('LOS(A)'));
+  t.ok('…and a limited-range one', SR3EItem.spellTakesGMWindow('L'));
   // "Spells with a range of touch are not subject to cover or visibility modifiers" — p.182
-  t.ok('a touch-range elemental spell does not', !SR3EItem.spellTakesGMWindow('Elemental', 'T'));
-  t.ok('…nor T/D', !SR3EItem.spellTakesGMWindow('Elemental', 'T/D'));
-  t.ok('a combat spell does not — it is no ranged attack', !SR3EItem.spellTakesGMWindow('Combat', 'LOS'));
-  t.ok('a blank range is not touch', SR3EItem.spellTakesGMWindow('Elemental', ''));
+  t.ok('a touch-range spell does not', !SR3EItem.spellTakesGMWindow('T'));
+  t.ok('…nor T/D', !SR3EItem.spellTakesGMWindow('T/D'));
+  t.ok('…nor T(V)', !SR3EItem.spellTakesGMWindow('T(V)'));
+  t.ok('a personal spell does not — the caster is the target', !SR3EItem.spellTakesGMWindow('P'));
+  t.ok('a blank range is not touch', SR3EItem.spellTakesGMWindow(''));
+  // p.182 is the general Sorcery TN rule, not an elemental one (rules check 0.6.2).
+  t.ok('the window takes only the range — a Manabolt asks as a Fireball does', SR3EItem.spellTakesGMWindow.length === 1);
 
   const keysOf = groups => groups.map(g => g.key);
   const rowsOf = groups => groups.flatMap(g => g.rows.map(r => r.key));
@@ -163,7 +167,9 @@ export async function run(t) {
 
   const cast = item.slice(item.indexOf('async rollSpell('), item.indexOf('static spellAreaRadius('));
   t.ok('the cast asks the GM through sr3e.spell.negotiate when the spell takes the window',
-    /if \(SR3EItem\.spellTakesGMWindow\(this\.system\.category, this\.system\.range\)\)[\s\S]{0,120}asGM\('sr3e\.spell\.negotiate'/.test(cast));
+    /if \(SR3EItem\.spellTakesGMWindow\(this\.system\.range\)\)[\s\S]{0,120}asGM\('sr3e\.spell\.negotiate'/.test(cast));
+  t.ok('only an ELEMENTAL area drops the Target rows — cover still counts for a Manaball (p.182)',
+    /area:\s+isAoE && isElemental,/.test(cast));
   t.ok('…BEFORE the Spell Pool is committed', cast.indexOf("'sr3e.spell.negotiate'") < cast.indexOf('_promptMagicPool('));
   t.ok('…after the targets are known', cast.indexOf('let targetTNs') < cast.indexOf("'sr3e.spell.negotiate'"));
   t.ok('the GM\'s difference moves the roll\'s TN', /tn\s+= Math\.max\(2, tn \+ gmDelta\)/.test(cast));
