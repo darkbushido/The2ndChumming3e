@@ -444,6 +444,18 @@ Hooks.on('preCreateItem', (document, data) => {
   if (fill !== undefined) document.updateSource({ 'system.rating': fill });
 });
 
+/* Nothing arrives in hand (TODO 135/136). `system.ready` starts true so sheets from before Ready
+ * Weapon keep fighting, which also made every NEW weapon — a starting character's whole kit, every
+ * grenade — read as drawn. A weapon created on a character or NPC starts put away; armour starts off.
+ * ⚠ Only embedded creates fire this: copying a whole actor (`sr3e.actor.create`) keeps its state. */
+Hooks.on('preCreateItem', (document) => {
+  const parentType = document.parent?.documentName === 'Actor' ? document.parent.type : null;
+  if (ReadyWeapon.putAwayOnCreate(document, parentType)) document.updateSource({ 'system.ready': false });
+  if (parentType && document.type === 'armor' && document.getFlag('The2ndChumming3e', 'worn')) {
+    document.updateSource({ 'flags.The2ndChumming3e.worn': false });
+  }
+});
+
 // Auto-assign newly created Matrix/vehicle actors to their organisational folder,
 // and stamp fresh world actors with isTemplate:false so they appear in selection dialogs.
 // Compendium imports are left unmarked (isTemplate:undefined) — GM must explicitly

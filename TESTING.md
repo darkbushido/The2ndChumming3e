@@ -2389,6 +2389,9 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
 - [ ] F5 on any client keeps the pips (they are a combatant flag); the next combatant's phase starts empty.
 - [ ] **Ready (TODO 47):** a weapon row's ✋ puts it away (grey) and readies it (green); readying fills
       a Simple pip on the character's phase, putting away does not.
+- [ ] **Nothing arrives in hand (TODO 135/136):** drag a pistol, a sword and grenades from the compendium
+      onto a new character, and buy one → every ✋ is grey and "In hand" reads 0. A cyber-implant weapon
+      stays ready; a vehicle's mounted gun is unaffected.
 - [ ] Fire a put-away pistol → the dialog offers Ready / ⚡ Quick Draw / Attack anyway. Quick Draw rolls
       Reaction vs 4 (6 with the holster box unticked); a success posts 🎯 Fire, which attacks without a
       second charge; a failure says it cannot fire this phase. A rifle (Concealability < 4) offers no

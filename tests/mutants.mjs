@@ -36,6 +36,7 @@ const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots'
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
+const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 
 export const MUTANTS = [
   {
@@ -1825,5 +1826,13 @@ export const MUTANTS = [
     was:    'SR3 p.170 - "Mystic Armor also protects against damage done in astral combat". The astral '
           + 'soak card built its TN from the Power alone until 0.6 (rules-check 0.6.0, Finding 5)',
     impl:   ({ power = 0 } = {}) => Math.max(2, Number(power) || 0),
+  },
+  {
+    id:     'new-weapons-arrive-in-hand',
+    suite:  'ready-weapon',
+    ...READY, method: 'putAwayOnCreate',
+    was:    'every weapon created on a character read as ready (the field\'s initial true), so new characters '
+          + 'started with their whole kit, grenades included, in hand (TODO 135/136)',
+    impl:   () => false,
   },
 ];
