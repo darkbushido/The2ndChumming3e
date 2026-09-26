@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1251",
     "name": "Ares Sonic Beam Rifle",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-laser-rifle.svg",
     "system": {
       "category": "Las",
       "skill": "Firearms",

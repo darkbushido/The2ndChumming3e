@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0890",
     "name": "Benelli M1 Tactical",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-shotgun.svg",
     "system": {
       "category": "ShtG",
       "skill": "Shotguns",

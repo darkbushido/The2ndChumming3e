@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0922",
     "name": "Savage Model 77E",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-shotgun.svg",
     "system": {
       "category": "ShtG",
       "skill": "Shotguns",

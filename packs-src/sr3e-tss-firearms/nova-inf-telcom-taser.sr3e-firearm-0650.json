@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0650",
     "name": "Nova Inf. Telcom Taser",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-taser.svg",
     "system": {
       "category": "Tasr",
       "skill": "Tasers",

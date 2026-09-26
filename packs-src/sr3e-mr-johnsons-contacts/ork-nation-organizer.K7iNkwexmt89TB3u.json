@@ -592,7 +592,7 @@
         "notes": ""
       },
       "_id": "C05R4aLbJFT5YIP5",
-      "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/melee-club.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -867,7 +867,7 @@
         "notes": ""
       },
       "_id": "mHgbItC1eRvRpwau",
-      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-coat.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -908,7 +908,7 @@
         "notes": ""
       },
       "_id": "sLdu10HGhgS3D4ys",
-      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/firearm-machine-pistol.svg",
       "effects": [],
       "folder": null,
       "sort": 0,

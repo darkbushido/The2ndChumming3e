@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0671",
     "name": "DB45-A Double Barrel",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-smg.svg",
     "system": {
       "category": "SMG",
       "skill": "SMG",

@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0768",
     "name": "FA-SB5",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-assault-rifle.svg",
     "system": {
       "category": "AsRf",
       "skill": "Rifles",

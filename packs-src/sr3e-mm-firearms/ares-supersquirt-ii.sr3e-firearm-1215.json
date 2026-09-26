@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1215",
     "name": "Ares SuperSquirt II",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-light.svg",
     "system": {
       "category": "LPist",
       "skill": "Pistols",

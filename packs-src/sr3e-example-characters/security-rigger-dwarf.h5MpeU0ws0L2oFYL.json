@@ -552,7 +552,7 @@
       "name": "Ares Predator II",
       "type": "firearm",
       "_id": "MmkZa0S4gu0bfkVM",
-      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-heavy.svg",
       "system": {
         "category": "HPist",
         "concealability": "4",
@@ -681,7 +681,7 @@
       "name": "Armor Jacket",
       "type": "armor",
       "_id": "RFNYg68Z9PB8lUDD",
-      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-jacket.svg",
       "system": {
         "concealability": "6",
         "ballistic": 5,
@@ -1000,7 +1000,7 @@
       "name": "Lined Coat",
       "type": "armor",
       "_id": "ycvwJd6dCQ9PzZ10",
-      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-coat.svg",
       "system": {
         "concealability": "8",
         "ballistic": 4,

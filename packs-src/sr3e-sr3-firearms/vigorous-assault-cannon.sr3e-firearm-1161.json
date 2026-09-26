@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1161",
     "name": "Vigorous Assault Cannon",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-assault-cannon.svg",
     "system": {
       "category": "ACan",
       "skill": "Gunnery",

@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1233",
     "name": "Ares Heavy Laser Plus",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-sniper-rifle.svg",
     "system": {
       "category": "Snip",
       "skill": "Rifles",

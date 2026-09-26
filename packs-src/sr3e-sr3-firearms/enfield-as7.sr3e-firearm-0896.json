@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0896",
     "name": "Enfield AS7",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-shotgun.svg",
     "system": {
       "category": "ShtG",
       "skill": "Shotguns",

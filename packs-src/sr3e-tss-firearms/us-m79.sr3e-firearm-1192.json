@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1192",
     "name": "US M79",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-grenade-launcher.svg",
     "system": {
       "category": "GrLn",
       "skill": "Grenade Launchers",

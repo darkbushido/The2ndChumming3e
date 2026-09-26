@@ -30,6 +30,7 @@ import { expandCyberwareName } from './data/cyberware-names.js';
 import { parseJohnsonNotes, isJohnsonNote } from './data/johnson-notes.mjs';
 import { knownRating } from './data/item-rating.mjs';
 import { AmmoStock } from './data/ammo-stock.mjs';
+import { restockImage, restockActorImage } from './data/item-icons.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -433,6 +434,29 @@ const MIGRATIONS = [
       const type = AmmoStock.fromName(item.name)?.ammoType;
       if (type && type !== 'regular' && (sys.ammoType ?? 'regular') === 'regular') delta['system.ammoType'] = type;
       return delta;
+    },
+  },
+  {
+    version: '0.6.2',
+    label: "Item and Matrix pictures: Foundry's white core icons become the drawn icons (ee1035f8)",
+    /**
+     * ⚠ **Foundry embeds items, it does not link them**, so the pack pass (`tools/apply-item-icons.mjs`)
+     * reached only the compendium: gear, ammunition and medical already on a character, in the
+     * world's Items sidebar or on an unlinked token kept the stock skull or item bag.
+     *
+     * This overwrites `img`, and argues for it: `restockImage` returns a picture ONLY when the current
+     * one is stock (blank, a Foundry core icon, a type texture or one of the drawn icons — `isStockImage`).
+     * A picture a GM or player chose is never touched, and a Matrix icon is never stock. Idempotent:
+     * once switched, the item's picture is the wanted one and it yields null.
+     */
+    fixItem: (item) => {
+      const img = restockImage(item);
+      return img ? { img } : null;
+    },
+    /** The actor twin: an IC, host or agent showing a stock picture gets its Matrix icon. */
+    fixActor: (actor) => {
+      const img = restockActorImage(actor);
+      return img ? { img } : null;
     },
   },
 

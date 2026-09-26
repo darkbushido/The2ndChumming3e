@@ -329,4 +329,18 @@ export async function run(t) {
   t.is('idempotent: its own output yields nothing',
     again.fixItem(clip('10-Rnd Clip (Regular)', { countedIn: 'reloads', reloads: 3, roundsPerReload: 10, rounds: 0 })), null);
   t.is('0.5.2\'s rule is unchanged: it still leaves a typed count alone', am.fixItem(clip('10-Rnd Clip (Regular)', { rounds: 30 })), null);
+
+  /* ── 0.6.2: the drawn icons reach owned items (the skulls on ammunition, reported 2026-09-26) ── */
+  const pic = list.find(m => m.version === '0.6.2' && /pictures/i.test(m.label));
+  t.ok('the pictures migration exists with fixItem and fixActor', typeof pic?.fixItem === 'function' && typeof pic?.fixActor === 'function');
+  const skull = { img: 'icons/svg/skull.svg' };
+  const rounds = pic.fixItem({ ...typed('ammunition', 'Regular Rnds', { unit: 'rounds' }), ...skull });
+  t.ok('ammunition with the core skull gets a drawn ammo icon', (rounds?.img ?? '').includes('styles/icons/ammo-'));
+  t.ok('gear with the core item bag gets a drawn gear icon', (pic.fixItem({ ...typed('gear', 'Medkit', { category: 'Credstick' }), img: 'icons/svg/item-bag.svg' })?.img ?? '').includes('styles/icons/gear-'));
+  t.is('an item with no picture at all gets one', typeof pic.fixItem({ ...typed('medical', 'Trauma Patch'), img: '' })?.img, 'string');
+  t.is('a picture someone chose is NOT overwritten', pic.fixItem({ ...typed('ammunition', 'Regular Rnds'), img: 'worlds/mine/ammo.png' }), null);
+  t.is('idempotent: an item already showing its icon yields nothing', pic.fixItem({ ...typed('ammunition', 'Regular Rnds'), img: rounds.img }), null);
+  t.ok('an IC showing a stock picture gets its Matrix icon', (pic.fixActor({ type: 'ic', name: 'Scrambler', img: 'icons/svg/mystery-man.svg', system: {} })?.img ?? '').includes('styles/icons/'));
+  t.is('a character portrait is left alone', pic.fixActor({ type: 'character', name: 'Sam', img: 'icons/svg/mystery-man.svg', system: {} }), null);
+  t.is('a GM-marked Matrix icon is left alone', pic.fixActor({ type: 'ic', name: 'Scrambler', img: 'systems/The2ndChumming3e/styles/icons/matrix/x.svg', system: {} }), null);
 }

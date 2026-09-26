@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1267",
     "name": "HK G38 Assault",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-assault-rifle.svg",
     "system": {
       "category": "AsRf",
       "skill": "Rifles",

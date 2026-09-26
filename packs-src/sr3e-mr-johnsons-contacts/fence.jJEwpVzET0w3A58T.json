@@ -932,7 +932,7 @@
         "notes": ""
       },
       "_id": "kuqLJB4zHyO4vYFA",
-      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-jacket.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -973,7 +973,7 @@
         "notes": ""
       },
       "_id": "oC7yRTe5ScK2SqVG",
-      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/firearm-shotgun.svg",
       "effects": [],
       "folder": null,
       "sort": 0,

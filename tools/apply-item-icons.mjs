@@ -3,6 +3,7 @@
  * Give every shipped item its picture — `scripts/data/item-icons.mjs` decides which.
  *
  *   node tools/apply-item-icons.mjs           edit packs-src, then `npm run packs:build`
+ *   node tools/apply-item-icons.mjs --type armor   only items of that type (repeatable)
  *   node tools/apply-item-icons.mjs --check   exit 1 if any file would change — changes nothing
  *
  * Covers top-level items (`!items!`), actors' embedded items (`!actors.items!`), and the IC, host and
@@ -25,11 +26,13 @@ const isItemKey = key => key.startsWith('!items!') || /^![a-z]+\.items!/.test(ke
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const check = process.argv.includes('--check');
+  const only = process.argv.flatMap((a, i, all) => a === '--type' ? [all[i + 1]] : []);
   let total = 0;
   for (const pack of readdirSync(SRC).sort()) {
     const entries = readSourceDir(join(SRC, pack));
     let n = 0;
     for (const [key, doc] of entries) {
+      if (only.length && !only.includes(doc.type)) continue;
       const img = isItemKey(key) ? restockImage(doc) : key.startsWith('!actors!') ? restockActorImage(doc) : null;
       if (!img) continue;
       doc.img = img;

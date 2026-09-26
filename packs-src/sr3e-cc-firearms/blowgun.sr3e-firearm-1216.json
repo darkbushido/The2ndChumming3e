@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1216",
     "name": "Blowgun",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-dart-gun.svg",
     "system": {
       "category": "BG",
       "skill": "Projectile Weapons",

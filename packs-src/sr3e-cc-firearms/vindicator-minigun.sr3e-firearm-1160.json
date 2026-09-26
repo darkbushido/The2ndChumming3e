@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1160",
     "name": "Vindicator Minigun",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-minigun.svg",
     "system": {
       "category": "MinG",
       "skill": "Gunnery",

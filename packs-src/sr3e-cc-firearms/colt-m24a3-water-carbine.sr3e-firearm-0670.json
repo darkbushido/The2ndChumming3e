@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0670",
     "name": "Colt M24A3 Water Carbine",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-smg.svg",
     "system": {
       "category": "SMG",
       "skill": "SMG",

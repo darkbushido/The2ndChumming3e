@@ -864,7 +864,7 @@
         "notes": ""
       },
       "_id": "GILhqXcGm9YhzPNK",
-      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-heavy.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1248,7 +1248,7 @@
         "notes": ""
       },
       "_id": "nzC9lz0RavZBxYAW",
-      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-plate.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1316,7 +1316,7 @@
         "notes": ""
       },
       "_id": "rUH05hXWSEc8Rz13",
-      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-helmet.svg",
       "effects": [],
       "folder": null,
       "sort": 0,

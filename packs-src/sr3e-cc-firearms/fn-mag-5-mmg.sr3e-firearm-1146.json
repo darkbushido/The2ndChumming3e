@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1146",
     "name": "FN MAG-5 MMG",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-heavy-mg.svg",
     "system": {
       "category": "MMG",
       "skill": "Gunnery",

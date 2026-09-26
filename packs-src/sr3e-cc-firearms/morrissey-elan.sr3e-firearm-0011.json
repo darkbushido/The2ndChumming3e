@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0011",
     "name": "Morrissey Elan",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-holdout.svg",
     "system": {
       "category": "HOPist",
       "skill": "Pistols",

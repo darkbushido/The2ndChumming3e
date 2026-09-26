@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+<filter id="neon" filterUnits="userSpaceOnUse" x="-16" y="-16" width="160" height="160"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000" flood-opacity="0.8"/></filter>
+</defs>
+<rect width="128" height="128" rx="6" fill="#1b1c1f"/>
+<path d="M16 0V128M0 16H128M32 0V128M0 32H128M48 0V128M0 48H128M64 0V128M0 64H128M80 0V128M0 80H128M96 0V128M0 96H128M112 0V128M0 112H128" stroke="#fff" stroke-opacity="0.045" stroke-width="1"/>
+<rect x="3" y="3" width="122" height="122" rx="4" fill="none" stroke="#3a3b40" stroke-width="6" filter="url(#shadow)"/>
+<rect x="3" y="3" width="122" height="122" rx="4" fill="none" stroke="#4a4b50" stroke-width="2"/>
+<path d="M40 3H88" stroke="#78f0ff" stroke-width="3" filter="url(#neon)"/>
+<g filter="url(#shadow)" fill="#35363b" stroke="#64656a" stroke-width="2" stroke-linejoin="round">
+<path d="M6 56 L32 50 H48 V62 H34 L16 78 L6 70 Z"/>
+<rect x="46" y="46" width="46" height="18" rx="3"/>
+<rect x="90" y="51" width="18" height="8" rx="2"/><circle cx="110" cy="55" r="5"/><path d="M112 55 H124" stroke="#78f0ff" stroke-width="3" fill="none" stroke-linecap="round" filter="url(#neon)"/>
+<rect x="52" y="40" width="28" height="6"/><path d="M54 55 H84" stroke="#78f0ff" stroke-width="2" fill="none" stroke-linecap="round" filter="url(#neon)"/>
+<path d="M54 64 H64 L60 82 H52 Z"/><text x="64" y="118" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', Arial, sans-serif" font-size="12" fill="#9a9ba0" stroke="none" letter-spacing="0.5">laser rifle</text>
+</g>
+</svg>

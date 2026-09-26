@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0668",
     "name": "Colt Cobra TZ-115",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-smg.svg",
     "system": {
       "category": "SMG",
       "skill": "SMG",

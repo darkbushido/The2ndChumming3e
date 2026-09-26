@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicleweapon-0004",
     "name": "Ares Vengeance Minigun",
     "type": "vehicleweapon",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/vehicle-weapon-gun.svg",
     "system": {
       "weaponType": "MMG",
       "mode": "FA",

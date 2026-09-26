@@ -78,7 +78,8 @@ const ROWS = [
     note: '<p>The size of a pack of cigarettes, this unit contains four quartz-halogen micro-flashes designed to fire in random strobe sequences to disorient, distract and blind opponents. Anyone facing a flash-pak receives a +4 target number modifier (+2 if the target has flare compensation). The pak also negates modifiers from poor or no lighting, but imposes its own +2 modifier because of the strobing flashes.</p>' },
 ];
 
-const IMG = 'systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp';
+/** A grenade is a thrown projectile: the drawn grenade icon (scripts/data/item-icons.mjs). */
+const IMG = defaultImage({ type: 'projectile', name: 'Grenade', system: { category: 'GR' } });
 /** A mini-grenade is ammunition: the drawn icon (scripts/data/item-icons.mjs). */
 const MINI_IMG = defaultImage({ type: 'ammunition', system: { loadMechanism: 'm' } });
 

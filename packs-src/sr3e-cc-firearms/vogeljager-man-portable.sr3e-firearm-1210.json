@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1210",
     "name": "Vogeljager Man Portable",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-missile-launcher.svg",
     "system": {
       "category": "VJMP",
       "skill": "Gunnery",

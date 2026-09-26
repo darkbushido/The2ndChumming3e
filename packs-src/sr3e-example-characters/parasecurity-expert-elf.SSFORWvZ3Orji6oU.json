@@ -305,7 +305,7 @@
       "name": "Lined Coat",
       "type": "armor",
       "_id": "6tvKue0BRSFxifgi",
-      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-coat.svg",
       "system": {
         "concealability": "8",
         "ballistic": 4,
@@ -410,7 +410,7 @@
       "name": "Remington 750",
       "type": "firearm",
       "_id": "LFEf0cKRYjo8ZbkB",
-      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/firearm-sporting-rifle.svg",
       "system": {
         "category": "SptR",
         "concealability": "3",

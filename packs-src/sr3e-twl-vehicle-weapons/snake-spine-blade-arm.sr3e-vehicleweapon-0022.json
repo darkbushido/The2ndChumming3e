@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicleweapon-0022",
     "name": "Snake-Spine Blade Arm",
     "type": "vehicleweapon",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/vehicle-weapon-arm.svg",
     "system": {
       "weaponType": "Mechanical Tentacle",
       "mode": "SA",

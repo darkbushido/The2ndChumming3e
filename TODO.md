@@ -32,7 +32,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**35 open.** 142 done — see [TODO-DONE.md](TODO-DONE.md).
+**46 open.** 142 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -40,7 +40,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 🔴 Confirmed bugs, still open | [137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[177](#177) Astral damage: a dual being's natural armour reduces the Power |
-| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field |
+| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings" |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
@@ -784,6 +784,111 @@ who already owns one.
 
 ⚠ **A rename is not reversible by a fill-blanks migration**, which is what every other migration
 here is. Worth a plan and the maintainer's go-ahead before starting, not a drive-by.
+
+### 🎨 Art & icons
+
+Reported by the maintainer 2026-09-26, after `ee1035f8` (drawn icons for gear, ammunition, medical) and
+`33647180` (Matrix). Gear icons were judged good; **the style to match is those** — Shadowplan-style,
+drawn by `tools/build-item-icons.mjs`, picked by `scripts/data/item-icons.mjs`, applied to the packs by
+`tools/apply-item-icons.mjs`, and to owned items by a migration (Foundry embeds items — every new icon
+family needs its own migration entry, numbered by the release it ships in, plus `packs:install`).
+Each family below also needs: the mapping in `item-icons.mjs`, a test that every named icon is drawn
+(`tests/item-icons.test.mjs`), and a step in the Foundry checklist.
+⚠ Today only gear, ammunition, medical, programs, decks and Matrix actors are drawn; **every other type
+still shows one painted texture per type** (`TYPE_ART`) — that is why all firearms look alike. No
+per-weapon-class art was ever drawn.
+
+## 178. Ammunition: tip colour by ammo type, and magazine art by weapon class
+
+**Wanted:** the bullet tip colour tells the type at a glance — regular, flechette, gel, APDS, explosive,
+hollow point, EX, etc. (one colour key, listed in the item sheet or the guides). And a magazine/clip must
+look like it belongs to its gun: pistol, SMG, rifle, shotgun, machine gun.
+**Built, uncommitted (2026-09-26):** nine type colours (`AMMO_TYPE_COLOR`, 80 tinted variants) and clip art by size
+(`CLIP_ROUND_BY_SIZE` — only where every gun taking that size is one kind; display only, NOT `gunClass`, which is a
+rules field). Still open: **the live check** — after `packs:install` a Gel 16-Rnd Clip shows the blue pistol
+magazine — and the tip-only colouring (today the whole glowing part changes).
+**Note:** `ROUND_OF_CLASS` already picks a per-class magazine and loose-round icon (SR3 p.279) — check
+after `packs:install` what is actually showing before drawing more; the type tint is new.
+
+## 179. Armour: a drawn icon per garment — and armour mods look wrong
+
+**Wanted:** icons for jacket, vest, pants, full suit, long coat, helmet, shield and so on, in the gear
+style. The current armour art "looks bad".
+**Reported, unverified:** *"I don't think we are handling armor mods correctly."* Nothing diagnosed yet —
+walk armour with mods (Ballistic/Impact stacking, Concealability, mod slots, how a mod appears on the
+sheet and in the item list) against the book and log what differs, each with its printed page.
+
+## 180. Drugs: drawn icons in the same style
+
+Same treatment as gear and medical — by kind (inhalant, injectable, pill, patch, chem…).
+
+## 181. Firearms: one icon per weapon class
+
+Holdout / light / medium / heavy / very heavy pistol, machine pistol, SMG, carbine, assault rifle, sport
+rifle, sniper, shotgun, LMG/MMG/HMG, minigun, grenade launcher. Keyed by the weapon `category` code
+(CLAUDE.md, *Weapon category codes*) so an icon reads at list size, where all firearms now share one image.
+**Built, uncommitted (2026-09-26):** 19 silhouettes in `tools/build-item-icons.mjs` (`FIREARM_ICONS`), mapped by
+`FIREARM_ICON_OF`. The maintainer judged the first pass "not happy, but it'll work for now" — redraw is still
+open (weakest: medium/heavy MG box, light MG, laser rifle, sniper stock).
+⚠ **Original drawings only.** The maintainer supplied Freepik/macrovector silhouette sheets as a look
+reference (2026-09-26). Their free licence needs attribution and forbids including the image in "any online
+or offline archive or database" — our repo is public and ships each icon as its own file — so they are a
+guide to gun anatomy, never traced or committed. Mock-up drawn in the scratchpad; grips lean BACK (bottom
+behind the top), the maintainer's correction to the first pass.
+
+## 182. Melee, projectile, thrown and vehicle weapons: icons by weapon kind
+
+Same as #181 for the other weapon types: edged, club, pole arm, whip, unarmed/cyber; bow, crossbow, sling;
+throwing knife, grenade; vehicle weapons by mount and kind (gun, cannon, missile, launcher).
+
+**Built, uncommitted (2026-09-26):** 21 original icons in `tools/build-item-icons.mjs` (`WEAPON_ICONS`), picked in
+`item-icons.mjs`: melee by category (edged, club, pole arm, whip/flail, unarmed, cyber claws; "other" read by name —
+chainsaw, pipe, staff…), projectiles (bow, crossbow, sling, throwing knife, shuriken, grenade, caltrops, net) and
+vehicle weapons by `weaponType` (mounted gun, cannon, missile, launcher, laser, mechanical arm). 167 pack documents
+re-pointed; the 0.6.2 pictures migration reaches owned copies with no new entry (it calls `restockImage`); the grenade
+generator uses the grenade icon. Foundry step: TESTING.md §42.
+Still open: **the live check** (§42, after `packs:install`), and **vehicle weapons "by mount"** — the data has no
+mount field (`VehicleWeaponData` carries `weaponType` only), so today the icon follows the kind, not the mount.
+
+## 183. Vehicles and drones: an icon that shows class, movement and seats
+
+Wanted: a drone's icon follows its **movement type** (rotor, fixed-wing, tracked, wheeled, walker, boat…);
+a vehicle's shows its **class** (bike, car, van, truck, helicopter, boat, VTOL…) and its **number of
+seats**, readable from the icon. Supersedes the "portrait per vehicle" idea in [#104](#104) for the list
+icon; #104 stays for full art. Seats and class already exist as data — derive the icon from them.
+
+## 184. Adept powers: a meditating figure with an aura
+
+Suggested: a Shadowplan-style monk meditating, radiating an aura. The current art "doesn't make sense".
+Consider a tint or glyph per power group (physical, combat, perception, mental) so a list is scannable.
+
+## 185. Bioware and cyberware: an icon that shows what the implant is
+
+Keep the style, but show the thing: **muscle** → a cluster of muscle fibres; an **organ** → a stylised
+organ (liver, kidney, lung, heart…); cyberware by location and function (eye, ear, arm, leg, skull,
+datajack, spine…). Both types are "bland" today.
+
+## 186. Spells: a mystic circle, colour-coded to what the spell does
+
+Suggested: a mystic circle per spell, its colour by category (Combat, Detection, Health, Illusion,
+Manipulation), with a glyph for the sub-kind if it reads. Uses `spell.category` and `type`.
+
+## 187. Gear descriptions — paraphrased from the books
+
+Gear items have thin or missing descriptions. The books are in the maintainer's library
+(`Shadowrun 3rd Edition PDFs`, real text layer; `pdftotext -layout`). **Paraphrase, never copy** — the
+text is copyrighted; write each in our own words, with the book code and printed page already on the item
+(`system.bookPage`). Work in batches by pack/book; a generator (`tools/build-default-gear.mjs`) or a
+patch tool goes through `packs-src` (CLAUDE.md, *Compendium packs*) and needs a migration only if owned
+copies should be filled (fill blanks, never overwrite). Related: [#91](#91), [#92](#92), [#117](#117).
+
+## 188. Rated equipment: rethink "each item × the number of ratings" — **for the next release**
+
+Much equipment has a rating, and the system currently shows/costs each item × its rating. The maintainer
+wants this rethought before the next release. Not diagnosed yet: settle first *what the book says*
+(SR3 gear tables list Cost and Weight per Rating on some items, a flat figure on others — cite each), then
+where the multiplication happens (`itemRating()`, the buy flow, encumbrance, the ledger) and where it is
+shown. Design question for the maintainer before any code.
 
 ### 📦 Content gaps
 

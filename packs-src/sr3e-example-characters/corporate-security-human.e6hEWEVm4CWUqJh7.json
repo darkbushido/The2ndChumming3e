@@ -312,7 +312,7 @@
       "name": "Club",
       "type": "melee",
       "_id": "1cAiZwo8D2OC03gB",
-      "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/melee-club.svg",
       "system": {
         "reach": 1,
         "category": "CLB",
@@ -351,7 +351,7 @@
       "name": "Light Security Armor",
       "type": "armor",
       "_id": "37qKCsTuXN5ECJJ0",
-      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-plate.svg",
       "system": {
         "concealability": "-",
         "ballistic": 6,
@@ -508,7 +508,7 @@
       "name": "Browning Max-Power",
       "type": "firearm",
       "_id": "CTXyXncdksszWNDx",
-      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-heavy.svg",
       "system": {
         "category": "HPist",
         "concealability": "6",

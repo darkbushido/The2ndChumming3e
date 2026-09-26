@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0775",
     "name": "Heckler & Koch G12A3z",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-assault-rifle.svg",
     "system": {
       "category": "AsRf",
       "skill": "Rifles",

@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0067",
     "name": "Steyr TMP",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-machine-pistol.svg",
     "system": {
       "category": "MaPist",
       "skill": "SMG",

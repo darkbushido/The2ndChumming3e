@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicleweapon-0016",
     "name": "Medium Naval Gun",
     "type": "vehicleweapon",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/vehicle-weapon-cannon.svg",
     "system": {
       "weaponType": "Medium Naval Gun",
       "mode": "SA",

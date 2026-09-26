@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1268",
     "name": "HK G38 Carbine",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-sporting-rifle.svg",
     "system": {
       "category": "SptR",
       "skill": "Rifles",

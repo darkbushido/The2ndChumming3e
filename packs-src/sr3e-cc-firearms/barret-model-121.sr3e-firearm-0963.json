@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0963",
     "name": "Barret Model 121",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-sniper-rifle.svg",
     "system": {
       "category": "Snip",
       "skill": "Rifles",

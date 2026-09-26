@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1002",
     "name": "Nostal. Ind. Long Gun",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-sporting-rifle.svg",
     "system": {
       "category": "SptR",
       "skill": "Rifles",

@@ -2550,3 +2550,18 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
       roll's TN. A **Manaball** → the window **keeps Target** (only an elemental area drops it), and its note
       says a target completely hidden is not affected.
 - [ ] GM casts at an NPC with `gmApprovesTN` on `player` → no window (NPC vs NPC); set `always` → it opens.
+
+## 42. Weapon icons by kind (TODO 182, unreleased 0.6.2)
+
+**Prerequisites:** `npm run packs:install` with Foundry **closed**, then start Foundry. A world with weapons
+already on a character (the migration reaches those), and a fresh drag from each compendium.
+
+- [ ] **Melee** pack: a sword/knife shows the red blade, a baton the club, a staff or spear the pole arm, a chain
+      or morning star the flail, a glove the fist, a hand razor/spur the claws, a **Chainsaw** the chainsaw.
+- [ ] **Projectiles** pack: bows show the bow, every crossbow the crossbow, a sling the Y-sling, throwing knives
+      the knife, **Shuriken** the star, grenades the grenade, the Caltrop and the Net their own.
+- [ ] **Vehicle weapons**: an autocannon and a railgun show the cannon, a vehicle minigun the mounted gun, the
+      EXOCET the missile, a Lure Launcher the tube box, a vehicle laser the cyan laser, a Snake-Spine the arm.
+- [ ] An **owned** weapon with a stock picture switches after one reload (the 0.6.2 pictures migration); one
+      whose picture you chose yourself does **not** change.
+- [ ] Drag a weapon onto a character whose item list shows icons → the drawn icon appears, not a texture.

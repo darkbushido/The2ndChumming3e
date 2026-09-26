@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1245",
     "name": "FN-AAL Gyrojet Pistol",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-heavy.svg",
     "system": {
       "category": "GJPist",
       "skill": "Pistols",

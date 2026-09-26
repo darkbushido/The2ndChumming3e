@@ -437,7 +437,7 @@
         "notes": ""
       },
       "_id": "1jSVh5QclCmxkQpi",
-      "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-heavy.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1016,7 +1016,7 @@
         "notes": "Ballistic +1 (additive modifier) | Impact +2 (additive modifier)"
       },
       "_id": "AC9qj6ULzpS59PEO",
-      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-helmet.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1084,7 +1084,7 @@
         "notes": ""
       },
       "_id": "Sve4pBQxWxwVw2JK",
-      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-vest.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -1156,7 +1156,7 @@
         "notes": ""
       },
       "_id": "ZS0XZWB9tTKcf5Fu",
-      "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/melee-club.svg",
       "effects": [],
       "folder": null,
       "sort": 0,

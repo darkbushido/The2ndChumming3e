@@ -716,7 +716,7 @@
         "notes": ""
       },
       "_id": "rVnBrCQjN6RBFwyq",
-      "img": "systems/The2ndChumming3e/styles/textures/melee-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/melee-club.svg",
       "effects": [],
       "folder": null,
       "sort": 0,
@@ -752,7 +752,7 @@
         "notes": ""
       },
       "_id": "viybZbA5fttGaK6E",
-      "img": "systems/The2ndChumming3e/styles/textures/armour-default.webp",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-vest.svg",
       "effects": [],
       "folder": null,
       "sort": 0,

@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1261",
     "name": "Spear Gun",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-dart-gun.svg",
     "system": {
       "category": "SpGn",
       "skill": "Projectile Weapons",

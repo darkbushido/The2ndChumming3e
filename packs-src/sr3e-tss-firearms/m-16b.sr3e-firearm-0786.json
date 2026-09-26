@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-0786",
     "name": "M-16B",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-assault-rifle.svg",
     "system": {
       "category": "AsRf",
       "skill": "Rifles",

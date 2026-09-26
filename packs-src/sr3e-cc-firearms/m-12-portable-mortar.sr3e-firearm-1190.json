@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1190",
     "name": "M-12 Portable Mortar",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-missile-launcher.svg",
     "system": {
       "category": "MrTr",
       "skill": "Gunnery",

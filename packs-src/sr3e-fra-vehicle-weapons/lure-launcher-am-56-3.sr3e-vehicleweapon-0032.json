@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicleweapon-0032",
     "name": "Lure Launcher AM-56 [3]",
     "type": "vehicleweapon",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicle-weapons-default.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/vehicle-weapon-launcher.svg",
     "system": {
       "weaponType": "Lure Launcher",
       "mode": "SS",

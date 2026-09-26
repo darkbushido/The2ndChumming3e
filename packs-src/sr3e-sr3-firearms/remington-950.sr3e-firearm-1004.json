@@ -4,7 +4,7 @@
     "_id": "sr3e-firearm-1004",
     "name": "Remington 950",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/textures/firearmsdefault.webp",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-sporting-rifle.svg",
     "system": {
       "category": "SptR",
       "skill": "Rifles",
