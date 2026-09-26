@@ -206,6 +206,50 @@ export const AmmoStock = {
     return { complex, simple: 0, text: `${plural(complex, 'Complex Action')} to insert ${plural(taken, 'round')}${into} (${how}, SR3 p.280)` };
   },
 
+  /**
+   * The sheet's "Load" cell · TODO 133/142. Loose rounds fit any gun of their class (`fits`), so
+   * their `loadMechanism` means nothing — and it defaults to `c`, which the sheet showed as
+   * "Removable Clip". Rounds unloaded from a gun looked like clips, and a box of rounds looked like
+   * clips that then loaded one round at a time. Only a reload is shaped for a mechanism.
+   * @returns {{code:string, title:string}}
+   */
+  loadLabel(sys, mechanismLabels = {}) {
+    if (AmmoStock.unit(sys) === 'rounds') {
+      return { code: 'loose', title: 'Loose rounds — inserted by hand into any gun of their class, a Complex Action per (Quickness) rounds (SR3 p.279-280)' };
+    }
+    const mech = String(sys?.loadMechanism ?? 'c').toLowerCase();
+    return { code: mech, title: `${mechanismLabels[mech] ?? mech} — pre-filled reloads, swapped whole (SR3 p.280)` };
+  },
+
+  /**
+   * What unloading a gun takes · TODO 134. Only a clip or drum has a book action for it — Remove
+   * Clip, a Simple Action (SR3 p.107). The book gives none for emptying a cylinder, a tube or a belt
+   * by hand, so nothing is charged and the card says it is the GM's call.
+   * @returns {{simple:number, text:string}}
+   */
+  unloadActions(gunMech) {
+    const mech = String(gunMech ?? '').toLowerCase();
+    if (mech === 'c' || mech === 'd') return { simple: 1, text: 'Simple Action to remove the clip (SR3 p.107)' };
+    return { simple: 0, text: 'the book gives no action for emptying this by hand — the GM\'s call' };
+  },
+
+  /**
+   * Pre-filled reloads that were stored as a count of ROUNDS · TODO 143. The 0.5.2 migration only
+   * filled an EMPTY stock, so a clip a GM had given a round count ("10-Rnd Clip (Regular)", 30
+   * rounds) stayed loose rounds and loaded one round at a time. When the name says it is a reload of
+   * N rounds, the mechanism takes reloads, and the count divides evenly by N, it is that many
+   * reloads — nothing is lost. An uneven count is left alone: which rounds are loose is the GM's call.
+   * @returns {{reloads:number, roundsPerReload:number}|null} null when it should not change.
+   */
+  reloadsFromRounds(name, sys = {}) {
+    if (sys?.countedIn === 'reloads') return null;
+    if (AmmoStock.kind(sys?.loadMechanism) !== 'either') return null;
+    const r = AmmoStock.fromName(name);
+    const rounds = whole(sys?.rounds);
+    if (!r || r.roundsPerReload <= 0 || rounds <= 0 || rounds % r.roundsPerReload !== 0) return null;
+    return { reloads: rounds / r.roundsPerReload, roundsPerReload: r.roundsPerReload };
+  },
+
   /** "6 reloads of 7" / "42 rounds" — for the sheet and the reload dialog. */
   describe(sys) {
     const st = AmmoStock.stock(sys);
