@@ -3090,8 +3090,10 @@ export class SR3EItem extends Item {
             detectVision, visionReminder, bestVisionKey, escapeHTML } =
       await import('../SR3ECombatModifiers.js');
 
-    const groups  = mvpModifierGroups();
-    const guessed = guessGearModifiers(ctx.attacker, ctx.weapon);
+    // `opts.groups` narrows the rows — an elemental spell has no Gear and, cast on an area, no
+    // Target (`spellModifierGroups`, TODO 131). No Gear rows, nothing to guess.
+    const groups  = opts.groups ?? mvpModifierGroups();
+    const guessed = groups.some(g => g.key === 'gear') ? guessGearModifiers(ctx.attacker, ctx.weapon) : {};
     const baseTN  = Number(ctx.baseTN) || 4;
     // What the attacker's eyes are (TODO 99), and the row pre-selected from them (TODO 36).
     // No attacker resolved → no line and no pre-selection: Normal, as before.
@@ -4321,6 +4323,19 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   }
 
   /**
+   * Does this spell's cast open the GM's cover/visibility window? · SR3 p.182-183 (TODO 131)
+   *
+   * p.183: *"Cover, visibility, injury and sustaining modifiers apply"* to an elemental spell.
+   * Injury and sustaining reach the Sorcery Test through `rollPool`; cover and visibility are the
+   * GM's call. p.182: *"Spells with a range of touch are not subject to cover or visibility
+   * modifiers"*, so a touch range (`T`, `T/D`, `T(V)`…) never opens it. Combat spells are not
+   * ranged attacks and never do. Pure.
+   */
+  static spellTakesGMWindow(category, range) {
+    return SR3EItem.isElementalSpell(category) && !/^\s*T/i.test(String(range ?? ''));
+  }
+
+  /**
    * Is this an Elemental Manipulation spell? **Pure.**  · *SR3 p.183, p.196*
    *
    * > "Elemental spells are treated like normal ranged attacks (see p. 109) using Sorcery as the
@@ -4497,10 +4512,11 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
    *
    * 1. Choose Force
    * 2. Select targets
-   * 3. Allocate Spell Pool
-   * 4. Roll Sorcery + Spell Pool dice vs target Essence/Body
-   * 5. On hit: each target gets a Resist Spell button (Willpower/Body, TN = Force)
-   * 6. Drain button always posted for the caster
+   * 3. The cast TN — an elemental spell opens the GM's cover/visibility window (TODO 131)
+   * 4. Allocate Spell Pool
+   * 5. Roll Sorcery + Spell Pool dice vs target Essence/Body
+   * 6. On hit: each target gets a Resist Spell button (Willpower/Body, TN = Force)
+   * 7. Drain button always posted for the caster
    */
   async rollSpell(options = {}) {
     const actor = this.actor;
@@ -4671,7 +4687,72 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       // ARE dodged, then soaked (p.183) — decided after the cast, in `_spellResistButton`.
     }
 
-    // Step 3: Spell Pool allocation — compute from raw fields, not derived cache
+    // Step 3: the cast TN. SR3 combat spell = opposed test.
+    //   Cast:   Sorcery vs TN = the spell's Target attribute on the target (W→Willpower,
+    //           B→Body, F→Force, or a fixed number).
+    //   Resist: target rolls that SAME attribute vs TN = Force (handled at resist time).
+    //   Net successes (caster − resister) stage the base damage. No soak.
+    //
+    // ⚠ Several targets: "roll the dice once. Compare the results against the target number for
+    //   each valid target … Successes are counted separately for each target" (SR3 p.182). The dice
+    //   roll at the HIGHEST target number — a die stops exploding once it reaches the roll's TN, so
+    //   only then can every lower TN be counted from the same dice — and each target's hits are
+    //   counted against its own (`hitsAgainst`, in _postWaveCard). Until 0.6.1 the FIRST target's
+    //   TN was used for everyone (TODO 171).
+    let targetTNs = Object.fromEntries(targetActors.map(t =>
+      [t.id, SR3EItem._parseSpellTarget(spellTarget, t, force, spellType).tn]));
+    const hardest   = targetActors.reduce((best, t) =>
+      (!best || targetTNs[t.id] > targetTNs[best.id]) ? t : best, null);
+    const primaryTarget  = hardest ?? null;
+    const parsedPrimary  = primaryTarget
+      ? SR3EItem._parseSpellTarget(spellTarget, primaryTarget, force, spellType)
+      : null;
+    let tn               = parsedPrimary ? parsedPrimary.tn : Math.max(2, force);
+    const tnsDiffer      = new Set(Object.values(targetTNs)).size > 1;
+    // Human-readable source of the cast TN, shown on the result card.
+    let tnSource;
+    if (!parsedPrimary || parsedPrimary.attrLabel === 'Force') tnSource = `Force ${force}`;
+    else if (parsedPrimary.attrLabel.startsWith('Fixed'))      tnSource = 'fixed';
+    else tnSource = `${primaryTarget.name}'s ${parsedPrimary.attrLabel}`;
+    if (tnsDiffer) tnSource = `each target's own; rolled at the highest, ${tnSource}`;
+
+    /* The GM's TN window for an elemental cast · SR3 p.183 (TODO 131): *"Cover, visibility, injury
+     * and sustaining modifiers apply."* Injury and sustaining are `rollPool`'s; cover and visibility
+     * are the GM's, on the ranged window's `gmApprovesTN` rule. Asked BEFORE the Spell Pool is
+     * committed, as ranged asks before the attacker's screen — nobody spends dice against a number
+     * they cannot see. Range stays out ("regardless of range"); touch spells never ask (p.182).
+     * One window per cast: its difference moves every target's TN and the roll's alike. */
+    if (SR3EItem.spellTakesGMWindow(this.system.category, this.system.range)) {
+      const negotiation = await game.sr3e.SR3EQuery.asGM('sr3e.spell.negotiate', {
+        attackerUuid: actor.uuid,
+        targetUuids:  targetActors.map(t => t.uuid),
+        attackerName: actor.name,
+        targetName:   isAoE ? `area (${aoeRadius} m)` : (targetActors[0]?.name ?? '—'),
+        weaponName:   this.name,
+        area:         isAoE,
+        baseTN:       tn,
+        baseNote:     isAoE
+          ? 'elemental area spell, regardless of range (p.183) — visibility is the caster’s view of the centre; cover does not shelter anyone in the area (p.182). Wounds and sustaining are added at the roll.'
+          : 'elemental spell, regardless of range (p.183). Wounds and sustaining are added at the roll.',
+      }, { timeout: 300_000 });
+      if (negotiation === null) {              // GM cancelled the cast — nothing spent yet
+        // …but the area marker was drawn when the centre was placed; a cancelled cast leaves none.
+        if (aoeRegionId) await canvas.scene?.deleteEmbeddedDocuments('Region', [aoeRegionId]).catch(() => {});
+        if (aoeMarkerId) game.sr3e._blastMarkers?.get(aoeMarkerId)?.destroy();
+        return null;
+      }
+
+      const gmDelta = Number.isFinite(negotiation?.tn) ? negotiation.tn - tn : 0;
+      if (gmDelta) {
+        tn        = Math.max(2, tn + gmDelta);
+        targetTNs = Object.fromEntries(Object.entries(targetTNs).map(([id, n]) => [id, Math.max(2, n + gmDelta)]));
+        tnSource += `; GM ${gmDelta > 0 ? '+' : ''}${gmDelta} cover/visibility`;
+      }
+      const sit = Math.trunc(Number(negotiation?.situational) || 0);
+      if (sit) tnSource += ` (incl. GM situational modifier ${sit > 0 ? '+' : ''}${sit})`;
+    }
+
+    // Step 4: Spell Pool allocation — compute from raw fields, not derived cache
     const sAttr     = actor.system.attributes ?? {};
     const specBonus   = hasSpellcastingSpec ? 2 : 0;
     // Dice withheld to change an area spell's radius are not rolled (p.181).
@@ -4698,34 +4779,6 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const pool = Math.max(1, sorceryDice + magicDice);
     const spellPoolForDrain = Math.max(0, spTotal2 - (actor.system.spellPoolSpent ?? 0));
 
-    // Step 4: SR3 combat spell = opposed test.
-    //   Cast:   Sorcery vs TN = the spell's Target attribute on the target (W→Willpower,
-    //           B→Body, F→Force, or a fixed number).
-    //   Resist: target rolls that SAME attribute vs TN = Force (handled at resist time).
-    //   Net successes (caster − resister) stage the base damage. No soak.
-    //
-    // ⚠ Several targets: "roll the dice once. Compare the results against the target number for
-    //   each valid target … Successes are counted separately for each target" (SR3 p.182). The dice
-    //   roll at the HIGHEST target number — a die stops exploding once it reaches the roll's TN, so
-    //   only then can every lower TN be counted from the same dice — and each target's hits are
-    //   counted against its own (`hitsAgainst`, in _postWaveCard). Until 0.6.1 the FIRST target's
-    //   TN was used for everyone (TODO 171).
-    const targetTNs = Object.fromEntries(targetActors.map(t =>
-      [t.id, SR3EItem._parseSpellTarget(spellTarget, t, force, spellType).tn]));
-    const hardest   = targetActors.reduce((best, t) =>
-      (!best || targetTNs[t.id] > targetTNs[best.id]) ? t : best, null);
-    const primaryTarget  = hardest ?? null;
-    const parsedPrimary  = primaryTarget
-      ? SR3EItem._parseSpellTarget(spellTarget, primaryTarget, force, spellType)
-      : null;
-    const tn             = parsedPrimary ? parsedPrimary.tn : Math.max(2, force);
-    const tnsDiffer      = new Set(Object.values(targetTNs)).size > 1;
-    // Human-readable source of the cast TN, shown on the result card.
-    let tnSource;
-    if (!parsedPrimary || parsedPrimary.attrLabel === 'Force') tnSource = `Force ${force}`;
-    else if (parsedPrimary.attrLabel.startsWith('Fixed'))      tnSource = 'fixed';
-    else tnSource = `${primaryTarget.name}'s ${parsedPrimary.attrLabel}`;
-    if (tnsDiffer) tnSource = `each target's own; rolled at the highest, ${tnSource}`;
 
     // Build damage context — power = Force, level chosen at cast (drives target damage AND drain level).
     // Damage track: SR3EItem.spellDealsStun — Physical unless it is a stun spell (SR3 p.191).

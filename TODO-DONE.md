@@ -6504,6 +6504,32 @@ automatic — the design ethos, and the book gives the GM the pick within a slot
 ⚠ **Not the Essence hole.** #53's hole records Essence spent on removed cyberware; these slots describe
 cyberware that is still installed.
 
+## 131. ✅ Cover and visibility on elemental spells — `629638e1`
+
+**The book, SR3 p.183:** *"Elemental spells are treated like normal ranged attacks … They have a base
+Target Number of 4, regardless of range, as long as the caster can see the target. Cover, visibility,
+injury and sustaining modifiers apply."*
+
+Finding 4's fix routed elemental spells through the ranged dodge and soak. Injury and sustaining
+modifiers reach the Sorcery Test already (`rollPool`), but **cover and visibility do not**: the cast
+never opens the GM's TN window (`SR3EItem._promptGMAttackWindow`), so a Flamethrower through Thermal
+Smoke is cast at a flat 4. Wanted: open that window for an elemental cast — its Target, Attacker and
+Conditions groups, not the Gear guesses (a smartlink does nothing for a spell) — on the same
+`gmApprovesTN` rule as ranged, and fold the result into the cast TN. ⚠ **Range stays out**:
+*"regardless of range"*. ⚠ An **area** elemental spell does not need line of sight to a target behind
+a wall (p.182: *"Targets hidden behind a wall … will still get cooked"*), so for area casts the
+visibility row applies to the caster's view of the centre, not to each target.
+
+Also noticed, not fixed: `SR3EActor._spellSoakButtonHtml` and the `dp.isSpellSoak` branch after a
+failed dodge are **dead** — nothing sets `isSpellSoak`. They are a leftover spell-dodge route that led
+back to a Willpower resist; remove them once #131 is done, so nobody revives them for elemental spells.
+
+> **Done 2026-09-26.** The cast opens the GM window through `sr3e.spell.negotiate` (same `gmApprovesTN`
+> rule) after the targets and before the Spell Pool; rows from `spellModifierGroups()` (no Gear; an area
+> cast drops Target, p.182). Touch-range spells never ask (p.182: *"not subject to cover or visibility
+> modifiers"*). The GM's difference moves the roll's TN and every target's. The dead spell-soak route is
+> removed. Tests: `tests/elemental-spells.test.mjs`, two mutants; live check TESTING.md §41.
+
 ## 132. ✅ Astral damage: dual beings resist with Body, not Willpower — `2143c8ed`
 
 **The book, SR3 p.175:** *"The Damage Resistance Test is resolved using Willpower or Force for astral
@@ -6524,8 +6550,6 @@ Combat Pool spend (p.174). Reasoning: anyone in astral combat who is not project
 dual-natured. The pool stays editable. Not done: a projecting defender adding **Astral Combat Pool** to the
 resist (p.174 gives it the pool; whether it covers resistance is not stated), and the astral attack card
 (`SR3EActor.js`, `availableAstralPool` ~line 10689) offering Astral Pool to dual beings, who use Combat Pool.
-
-<a id="131"></a>
 
 ## 133. ✅ Unloading a gun returns the rounds to storage as full clips — `f48e4eba`
 

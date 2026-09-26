@@ -236,7 +236,7 @@ at a surged Force 7), now asserted against the shipped `+1(DL+2)`. The Quick Sta
 (p.34: *"Target Number: Target's Body"*, *"Armor is ineffective"*, a fixed 4S) is a simplified
 introduction that contradicts the core book, and was **not** followed.
 
-**Left over — TODO [131](../TODO.md#131):** p.183's *"Cover, visibility … modifiers apply"*. Injury and
+**Left over — TODO [131](../TODO-DONE.md#131):** p.183's *"Cover, visibility … modifiers apply"*. Injury and
 sustaining already reach the cast through `rollPool`; cover and visibility need the GM's TN window
 on an elemental cast.
 

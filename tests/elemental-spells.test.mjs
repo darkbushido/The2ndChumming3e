@@ -28,6 +28,7 @@ const { SR3E } = await import('../scripts/config.js');
 installGame({ sr3e: { SR3E } });
 const { SR3EItem } = await import('../scripts/documents/SR3EItem.js');
 const { SR3EActor } = await import('../scripts/documents/SR3EActor.js');
+const { spellModifierGroups } = await import('../scripts/SR3ECombatModifiers.js');
 
 export const name = 'elemental-spells';
 const read = rel => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
@@ -136,4 +137,50 @@ export async function run(t) {
   // Mystic Armor is Impact armour (p.170), so it is halved with the rest: it must be added FIRST.
   t.ok('Mystic Armor is added before the halving (the maintainer, 2026-09-22)',
     soak.indexOf('impact += mysticArmor') < soak.indexOf('SR3EActor.elementalImpact('));
+  /* ══ Cover and visibility — the GM's TN window · SR3 p.182-183 (TODO 131) ═════════ */
+  // "They have a base Target Number of 4, regardless of range, as long as the caster can see the
+  //  target. Cover, visibility, injury and sustaining modifiers apply." — p.183
+  t.ok('an elemental spell at line of sight opens the GM window', SR3EItem.spellTakesGMWindow('Elemental', 'LOS'));
+  t.ok('…and so does an area one', SR3EItem.spellTakesGMWindow('Elemental', 'LOS(A)'));
+  // "Spells with a range of touch are not subject to cover or visibility modifiers" — p.182
+  t.ok('a touch-range elemental spell does not', !SR3EItem.spellTakesGMWindow('Elemental', 'T'));
+  t.ok('…nor T/D', !SR3EItem.spellTakesGMWindow('Elemental', 'T/D'));
+  t.ok('a combat spell does not — it is no ranged attack', !SR3EItem.spellTakesGMWindow('Combat', 'LOS'));
+  t.ok('a blank range is not touch', SR3EItem.spellTakesGMWindow('Elemental', ''));
+
+  const keysOf = groups => groups.map(g => g.key);
+  const rowsOf = groups => groups.flatMap(g => g.rows.map(r => r.key));
+  const single = spellModifierGroups();
+  t.eq('a single-target cast shows Target, Attacker and Conditions', keysOf(single), ['target', 'attacker', 'conditions']);
+  t.ok('…with partial cover', rowsOf(single).includes('partialCover'));
+  t.ok('…and visibility', rowsOf(single).includes('visibility'));
+  t.ok('…and the GM situational modifier', rowsOf(single).includes('situational'));
+  t.ok('…and no gear: a smartlink does nothing for a spell', !rowsOf(single).some(k => /smart|laser|secondFirearm/.test(k)));
+  const area = spellModifierGroups({ area: true });
+  // "Targets hidden behind a wall within the radius of a Fireball spell will still get cooked" — p.182
+  t.eq('an area cast drops Target — cover shelters nobody in the area', keysOf(area), ['attacker', 'conditions']);
+  t.ok('…but keeps visibility, the caster\'s view of the centre', rowsOf(area).includes('visibility'));
+
+  const cast = item.slice(item.indexOf('async rollSpell('), item.indexOf('static spellAreaRadius('));
+  t.ok('the cast asks the GM through sr3e.spell.negotiate when the spell takes the window',
+    /if \(SR3EItem\.spellTakesGMWindow\(this\.system\.category, this\.system\.range\)\)[\s\S]{0,120}asGM\('sr3e\.spell\.negotiate'/.test(cast));
+  t.ok('…BEFORE the Spell Pool is committed', cast.indexOf("'sr3e.spell.negotiate'") < cast.indexOf('_promptMagicPool('));
+  t.ok('…after the targets are known', cast.indexOf('let targetTNs') < cast.indexOf("'sr3e.spell.negotiate'"));
+  t.ok('the GM\'s difference moves the roll\'s TN', /tn\s+= Math\.max\(2, tn \+ gmDelta\)/.test(cast));
+  t.ok('…and every target\'s own TN', /targetTNs = Object\.fromEntries\([^\n]*n \+ gmDelta/.test(cast));
+  t.ok('…and the card says so', /tnSource \+= `; GM/.test(cast));
+  t.ok('a GM cancel stops the cast', /if \(negotiation === null\) \{[\s\S]{0,400}return null;/.test(cast));
+
+  const query = read('scripts/SR3EQuery.js');
+  const neg = query.slice(query.indexOf("CONFIG.queries['sr3e.spell.negotiate']"),
+    query.indexOf("CONFIG.queries['sr3e.spell.negotiate']") + 2000);
+  t.ok('the spell window follows the ranged gmApprovesTN rule', /SR3EQuery\.gmWindowOpens\(mode,/.test(neg)
+    && /game\.settings\.get\('The2ndChumming3e', 'gmApprovesTN'\)/.test(neg));
+  t.ok('…counts every target when asking whether a player is involved', /\.\.\.\(ctx\.targetUuids \?\? \[\]\)/.test(neg));
+  t.ok('…and shows the spell rows, not the ranged ones', /groups: spellModifierGroups\(\{ area: ctx\.area === true \}\)/.test(neg));
+  const win = item.slice(item.indexOf('static async _promptGMAttackWindow('), item.indexOf('static async _promptGMAttackWindow(') + 1200);
+  t.ok('the ranged window takes its rows from opts.groups when given', /const groups\s*=\s*opts\.groups \?\? mvpModifierGroups\(\)/.test(win));
+
+  // The spell-dodge route that led back to a Willpower resist is gone (TODO 131's note).
+  t.ok('the dead _spellSoakButtonHtml route is removed', !/_spellSoakButtonHtml|isSpellSoak/.test(actor));
 }
