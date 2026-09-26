@@ -3326,6 +3326,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const item = this.actor.items.get(target.dataset.itemId);
     if (!item) return;
     const now = !game.sr3e.ReadyWeapon.isReady(item);
+    if (now) game.sr3e.SR3EActionLedger?.begin(this.actor);   // its own snapshot, not the last flow's (TODO 152)
     await item.update({ 'system.ready': now });
     if (now) game.sr3e.SR3EActionLedger?.charge(this.actor, 'readyWeapon', item.name);
     // More in hand than there are hands (TODO 49) — said, never refused.
