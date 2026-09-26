@@ -6700,7 +6700,7 @@ prints Commercial −3/m, Plastic IV −6/m and XII −12/m per kilo as explosiv
 **Done 2026-09-24 (`2468df29`, `main`).** The first part of this note was wrong: the commercial explosives **do ship** (as gear in `sr3e-sr3-gear`, from the generator's data), with the
 table's Rating, cost, weight, availability and index all correct — what was missing was the p.283 **Blast** and **Legal** columns. They now ride in each description (Commercial –3/m, Plastic IV –6/m,
 Plastic XII –12/m, *"(Rating)D per kilogram"*, and the accessories' legality), SR3 book only. A **launcher** carries no falloff of its own on purpose: the blast belongs to what it FIRES, and a
-launcher grenade is an ammunition item — see [#163](TODO.md#163).
+launcher grenade is an ammunition item — see [#163](#163).
 
 ## 162. ✅ Installed packs carry broken `_id: null` documents from older builds — `ca516641`
 
@@ -6715,6 +6715,25 @@ delete with id `'null'`; the client's own `deleteDocuments` refuses it), **only 
 `finally`, on every load, never blocking the world. Verified in the dev world: 74 → 0, 104 packs / 6,147 documents, matching the release. Anything without a
 twin is logged and left alone. It relies on an internal socket call, so a failure is a console warning and the pack is left as it was. Needs no filesystem access.
 A full clean is also possible by uninstalling and reinstalling the system from Foundry's Setup screen.
+
+## 163. ✅ Launcher grenades and mini-grenades do not carry a blast — `154b401`
+
+SR3 p.283's *Mini-grenade* row (Conceal 8, Weight .1, Availability *+2/by grenade*, Cost *x2*, Street Index *+1*, Damage and Blast *by grenade*) describes a grenade for a launcher as a modifier on
+the ordinary one. Grenades fired from a launcher are `ammunition` items with no `blast` field, so they always fall off at −1/m — a Defensive mini-grenade is wrong. Needs the launcher's loaded
+grenade to say Offensive or Defensive (`system.blast` on `ammunition`), and the mini-grenade rows built from p.283 with their arithmetic stated.
+
+**Done 2026-09-26 (`154b401`, `main`).** Ammunition carries `blast`, `flechette`, `areaRadius` and `areaEffect`; a reload
+records the stock it loaded from (`equippedAmmoId`), and the AoE path reads that round's Damage Code, blast, AP rules and area
+(`MiniGrenade.round`, `scripts/data/mini-grenade.mjs`). A launcher's load is one grenade item, so loading a different grenade unloads
+the old rounds into their own box (`AmmoStock.reloadPlan`'s `ammoId`). Eight mini-grenades ship in `sr3e-sr3-ammunition`
+(`tools/build-core-grenades.mjs`, every grenade row but the Flash-Pak): Conceal 8, Weight .1, Availability +2, Cost ×2, Street Index +1,
+Damage / Blast / Legality the grenade's. Found on the way and fixed: a launcher spent no round when it fired; it is offered only
+mini-grenades (*"These weapons fire only mini-grenades"*, SR3 p.279); the roll dialog starts it on the Grenade Launcher scatter row
+and warns under 5 m that a mini-grenade does not arm (SR3 p.118 — stated, not enforced). Tests: `tests/mini-grenade.test.mjs`,
+mutants `launcher-reads-its-own-blast`, `launcher-mixes-grenades`, `mini-grenade-cost-not-doubled`.
+**Foundry check (not yet run live):** give a character an Ares Antioch and a Defensive HE Mini-grenade box, reload, fire at a spot
+8 m away — the template is 5 m, the dialog is on Grenade Launcher, the magazine drops by one; reload with Offensive HE and the unfired
+defensive rounds go back into their box; fire at 3 m and see the arming warning.
 
 ## 165. ✅ Rules check 0.6.1 — damage staging is not the book's net comparison — `a597f2a0`
 
