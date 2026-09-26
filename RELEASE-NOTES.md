@@ -2,6 +2,48 @@
 
 What changed, for the people running games with it. Newest first.
 
+## 0.6.2 — 2026-09-26
+
+A bug-fix release, mostly from the 2026-09-23 trial session: ammunition and clips, weapons that start put away, implanted weapons you can actually use, a wound that could be assigned twice, and ↺ Undo on the first press. Two rules now resolve differently: elemental spells take cover and visibility, and dual beings resist astral damage with Body.
+
+### Before you upgrade
+
+- **Fully restart Foundry** after updating, not just refresh the browser: ammunition items have new fields.
+- **One change is applied automatically** the first time a GM loads the world: clips that were stored as a count of rounds become clips again (see *Ammunition* below). A count that doesn't divide evenly into clips stays as loose rounds.
+
+### Rules that now resolve differently
+
+- **Elemental spells take cover and visibility** (SR3 p.183: *"Cover, visibility, injury and sustaining modifiers apply"*). Casting an elemental spell now opens the GM's target-number window, the same one a ranged attack uses, after targets are picked and before the Spell Pool is committed. The GM's change applies to the roll and to every target. An area spell has no Target row, because cover doesn't shelter anyone inside the area (p.182). Touch spells never ask (p.182). Other spells are unchanged; see *Known differences* below.
+- **Dual beings resist astral damage with Body, plus Combat Pool** (SR3 p.174–175: *"Willpower or Force for astral beings, or Body for dual beings"*). The astral resist card used to offer Willpower to everyone. Now only an actor set to **Astral Plane** resists with Willpower (a spirit with its Force). Anyone else caught in astral combat, such as an astrally perceiving mage or a materialized spirit, rolls Body and may add Combat Pool. The pool is still editable on the card.
+- **A grenade launcher fires its loaded mini-grenade** (SR3 p.119, p.283). The Damage Code, blast and area now come from the round, so a Defensive mini-grenade falls off at −1 per half metre instead of −1 per metre. A shot also spends a round, which it never did. Under 5 metres, the dialog warns that a mini-grenade doesn't arm (p.118); it is a warning, not a refusal.
+
+### Ammunition
+
+- **Loose rounds are shown as loose.** Rounds taken out of a gun and boxes of rounds used to read as *Removable Clip*, so unloaded rounds looked like they came back as full clips.
+- **⏏ Unload** empties a gun into loose rounds. It charges a Remove Clip action (SR3 p.107) for a clip or drum, and nothing where the book names no action.
+- **Old clips are converted.** The clip conversion was added to the 0.5.2 migration a few hours after that number was first used, so a world loaded in between was marked as done and never ran it, so its clips were counted as individual rounds and a reload topped the gun up round by round. 0.6.2 runs the conversion again.
+- **Eight mini-grenades** ship in *SR3 Ammunition*, built from the Explosives Table's Mini-grenade row (SR3 p.283). A launcher is only offered mini-grenades. Loading a different grenade puts the old rounds back into their own box.
+
+### Fixes
+
+- **New characters start with nothing in hand.** A weapon added to a character or NPC now arrives put away, and new armour arrives not worn. Before, a new character started with every weapon drawn, and a character with grenades always seemed to be holding one. Implanted weapons, cyberguns and vehicle mounts are exempt.
+- **Implanted weapons can attack.** Installing a cyberweapon now adds its melee or firearm entry, with cybergun stats from M&M p.41; removing it removes the weapon. Implants installed before this are offered on the Weapons tab. Body weapons appear in the attack picker without being equipped.
+- **A wound is assigned once.** The damage card's *Assign the wound* could add the boxes a second time from the GM's copy of the card, or after a reload. The GM now records it on the card, and every copy shows it as spent.
+- **↺ Undo works on the first press.** An action that charges twice, like Ready Weapon then Fire, or Remove Clip then Insert Clip, needed two presses to put everything back.
+- **The GM's second Simple Action button lights up** once two Simple Actions are taken. Ending the turn stays the GM's click, so ↺ Undo can still reach the phase.
+- **Restocking a medkit happens when shopping.** The healing card no longer offers a one-click restock mid-combat. Buy gear lists your empty kits and pre-fills Medkit Supplies (SR3 p.304), and paying refills the first empty kit.
+- The 🩹 Healing button stays in place when a character is hurt. The wound text now comes after it.
+- The soak result on the resist card is a grey note, so it no longer looks like a button.
+
+### Modules
+
+- The system now **recommends the Security Cameras module**. It's optional; the README explains what it's for.
+
+### Known differences from the book
+
+- **Cover and visibility for non-elemental spells.** SR3 p.182 says the spell's target number increases when *"the caster has trouble seeing the target due to cover and visibility modifiers"*, for any spell. The GM window only opens for elemental spells, so a Manabolt at someone behind cover casts at the plain TN. The GM can still adjust the TN on the card by hand. Found by this release's rules check; waiting on the maintainer's call.
+- **A dual-natured critter's natural armour** (the Armor power) should reduce the Power of astral attacks (SR3 p.175). There's no field for it yet, so the GM lowers the TN on the card. Tracked as TODO 177.
+
 ## 0.6.1 — 2026-09-24
 
 A bug-fix release: grenades and thrown weapons, a few broken skill choices, a tidy-up of the shipped packs, and every place the 0.6.1 rules check found the code disagreeing with the books.
