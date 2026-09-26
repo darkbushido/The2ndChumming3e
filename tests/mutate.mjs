@@ -35,8 +35,8 @@ console.log(`Mutation check — ${chosen.length} mutant(s). A suite going RED is
 const survivors = [];
 const broken    = [];
 
-for (const m of chosen) {
-  process.stdout.write(`  ${m.id}\n    ${m.klass}.${m.method} → ${m.was}\n`);
+for (const [i, m] of chosen.entries()) {
+  process.stdout.write(`  [${i + 1}/${chosen.length}] ${m.id}\n    ${m.klass}.${m.method} → ${m.was}\n`);
 
   const res = spawnSync(process.execPath, [join(here, 'run.mjs'), m.suite], {
     // Swallow the suite's own output: it is EXPECTED to be full of failures, and printing

@@ -45,14 +45,15 @@ const record = (name, ok, detail = '', hint = '') => {
 /* Progress — so a long gate is visibly working, not frozen. `begin` announces a gate and a
    heartbeat re-prints the elapsed time every 10 s until `record` closes it. Progress goes to
    stderr-free stdout lines only; the verdict block at the end is unchanged. */
-let gate = null, beat = null, gateNo = 0;
+let gate = null, beat = null, gateNo = 0, latest = '';
 function begin(label) {
   gate = { label, t: Date.now() };
+  latest = '';
   gateNo++;
   console.log(`▶ [${gateNo}] ${label} …`);
   clearInterval(beat);
   beat = setInterval(() => {
-    console.log(`    … ${label} still running (${Math.round((Date.now() - gate.t) / 1000)}s)`);
+    console.log(`    … ${label} still running (${Math.round((Date.now() - gate.t) / 1000)}s)${latest ? '  ' + latest : ''}`);
   }, 10_000);
   beat.unref();
 }
@@ -77,7 +78,12 @@ function run(cmd, cmdArgs, opts = {}) {
       cwd: opts.cwd ?? ROOT, stdio: ['ignore', 'pipe', 'pipe'], shell: !!opts.shell,
     });
     const timer = setTimeout(() => { timedOut = true; child.kill(); }, timeout);
-    child.stdout.on('data', d => { out += d; });
+    child.stdout.on('data', d => {
+      out += d;
+      // A "[n/N] …" line from the test runner or the mutation checker: keep the latest so the
+      // heartbeat says WHICH suite or mutant is running, not only that something is.
+      for (const line of String(d).split(/\r?\n/)) if (/^\s*\[\s*\d+\/\d+\]/.test(line)) latest = line.trim();
+    });
     child.stderr.on('data', d => { out += d; });
     child.on('error', err => { clearTimeout(timer); resolve({ ok: false, out: out || String(err.message ?? err) }); });
     child.on('close', code => {
