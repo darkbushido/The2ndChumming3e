@@ -501,6 +501,13 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'medkit-supplies-refill-any-kit',
+    suite:  'healing',
+    ...HEAL, method: 'emptyMedkits',
+    was:    'TODO 139: restocking ignored whether the kit had run out, so a stocked kit could be "refilled"',
+    impl:   function (items) { return [...(items ?? [])].filter(i => this.EQUIPMENT.medkit.test(String(i.name ?? ''))); },
+  },
+  {
     id:     'heal-own-patients-only',
     suite:  'healing',
     ...HEAL, method: 'patientsFor',

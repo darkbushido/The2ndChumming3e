@@ -70,7 +70,9 @@ until clicked.**
 - Rapid Healing (SR3 p.170): the `healing` situation adds to the patient's Body tests (`healingSituationDice`).
 - ⚠ **Equipment ratings via `itemRating()`**; `findEquipment` takes the **best** usable item, skips storage.
 - ⚠ **Medkit** (M&M p.136/138): no Biotech → its rating **is** the skill; with Biotech → **complementary dice**
-  (not p.97's 2:1). `suppliesOut` (a 1 on 1D6, p.304) hides it until restocked (50¥). "Medkit Supplies" isn't a medkit.
+  (not p.97's 2:1). `suppliesOut` (a 1 on 1D6, p.304) hides it until restocked. ⚠ Restocking is shopping, not a card button (TODO 139): 🛒 Buy gear offers
+  *Medkit Supplies* (50¥, 2/24hrs, SI 1.5, `SR3EHealing.MEDKIT_SUPPLIES`) and paying for them clears the first empty kit's flag
+  (`SR3EPurchase.pay`, `emptyMedkits`). "Medkit Supplies" isn't a medkit.
 - ⚠ **Spell Pool on a Heal card is spent on ROLL**, on the caster's client.
 - Equipment detected by name (`SR3EHealing.EQUIPMENT`): stabilization unit (auto-stabilise, −2 on healing tests),
   trauma patch, antidote patch (rating in dice on stabilization). Pre-ticked, GM can untick.

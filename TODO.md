@@ -242,6 +242,12 @@ step key; the GM checks the card's `acted` ledger, applies and records in one qu
 
 ## 139. A medkit can be restocked in combat — restocking should happen when shopping
 
+**Fixed.** The healing card's 🧰 Restock button charged 50¥ and refilled the kit with one click, mid-fight. It is gone; the
+card now says to buy *Medkit Supplies* (50¥, Availability 2/24hrs, Street Index 1.5, SR3 p.304). 🛒 Buy gear lists the
+empty kits and fills the form with the supplies; 💴 Pay refills the first empty kit instead of adding an item.
+- 🧪 Live: fail a medkit supplies check (1 on 1D6) → no restock button; 🛒 Buy gear → "Buy Medkit Supplies" fills the form →
+  source, pay → the kit counts again in the healing flow.
+
 ## 140. The resist card's soak-hits section looks clickable — it should be greyed out
 
 ## 141. The second Simple Action does not flag and end the turn
