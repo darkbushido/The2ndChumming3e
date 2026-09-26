@@ -45,7 +45,7 @@ export async function run(t) {
 
   // Wiring (source-level: the throw and the resolution need a live canvas).
   const item = read('scripts/documents/SR3EItem.js');
-  t.ok('the throw works out the effect from the item and its (missing) damage code', /AreaEffect\.of\(this\.system, parsedRaw\)/.test(item));
+  t.ok('the throw works out the effect from the item and its (missing) damage code', /AreaEffect\.of\(round, parsedRaw\)/.test(item));
   t.ok('…marks the item\'s own radius, not a blast radius', /areaEffect\s*\?\s*\(areaEffect\.radius \?\? 1\)/.test(item.replace(/\s+/g, ' ')) || /\? \(areaEffect\.radius \?\? 1\)/.test(item));
   t.ok('…and no longer refuses a grenade with no damage code when it has an effect', /if \(!damageBase && !areaEffect\)/.test(item));
   t.ok('…carrying the effect to the resolution', /options\.aoeEffect\s+= areaEffect \?/.test(item));
@@ -57,8 +57,8 @@ export async function run(t) {
   t.ok('…and draws a coloured marker that ends with its Combat Turns', /color: AreaEffect\.color\(state\.aoeEffect\.name\)/.test(actor) && /expiresRound: AreaEffect\.expiresRound\(/.test(actor));
   t.ok('a marker records its end round', /expiresRound, combatId/.test(actor));
   t.ok('the round change clears expired markers', /SR3EActor\.expireAreaMarkers\(_combat\.round\)/.test(read('scripts/sr3e.js')));
-  t.ok('the item sheet edits both fields (projectile and thrown)', (read('scripts/sheets/SR3EItemSheet.js').match(/'areaRadius'/g) ?? []).length === 2
-    && (read('scripts/data/ItemDataModels.js').match(/areaRadius:\s+new NumberField/g) ?? []).length === 2);
+  t.ok('the item sheet edits both fields (projectile, thrown and mini-grenade — TODO 163)', (read('scripts/sheets/SR3EItemSheet.js').match(/'areaRadius'/g) ?? []).length === 3
+    && (read('scripts/data/ItemDataModels.js').match(/areaRadius:\s+new NumberField/g) ?? []).length === 3);
 
   // Shipped data: exactly the p.283 rows that have no damage.
   const dir = new URL('../packs-src/sr3e-sr3-projectiles/', import.meta.url);

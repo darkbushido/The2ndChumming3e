@@ -6,6 +6,7 @@ import { WeaponAccessories } from '../data/weapon-accessories.mjs';
 import { PhaseTargets } from '../data/phase-targets.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
+import { MiniGrenade } from '../data/mini-grenade.mjs';
 
 export class SR3EItem extends Item {
 
@@ -1093,15 +1094,21 @@ export class SR3EItem extends Item {
       ui.notifications.warn('AoE attacks need a scene — place the attacker and targets on a map.');
       return null;
     }
+    // A launcher fires the mini-grenade it was loaded with: its Damage Code, blast and area are the
+    // grenade's — "by grenade", SR3 p.283 (TODO 163). A thrown grenade is its own round.
+    const grenade    = this._loadedGrenade();
+    const round      = MiniGrenade.round(this.system, grenade?.system ?? null);
+    const roundName  = grenade ? `${this.name} (${grenade.name})` : this.name;
+    if (grenade?.system.damage) rawDamage = grenade.system.damage;
     const parsedRaw  = SR3EItem.parseDamageCode(rawDamage, actor);
     // A gas / smoke / flash grenade has no Damage Code but still lands and marks an area (TODO 155, p.283).
-    const areaEffect = AreaEffect.of(this.system, parsedRaw);
+    const areaEffect = AreaEffect.of(round, parsedRaw);
     const power  = parsedRaw?.power ?? 5;
     // The blast reaches as far as its Power lasts at THIS grenade's falloff — a defensive grenade
     // (−1 per half metre) runs out at half the distance (SR3 p.119, TODO 150).
     const placed = await SR3EItem._placeBlastTemplate(actor, areaEffect
       ? (areaEffect.radius ?? 1)
-      : Blast.radius(power, Blast.rate(this.system.blast)));
+      : Blast.radius(power, Blast.rate(round.blast)));
     if (!placed) return null; // cancelled placement
 
     const aToken        = actor.getActiveTokens?.()[0] ?? null;
@@ -1118,7 +1125,8 @@ export class SR3EItem extends Item {
       woundMod: actor.system.woundMod ?? 0,
       armorQTN: this._getDefaultAttribute() === 'quickness' ? (actor.system.derived?.armorQuicknessTN ?? 0) : 0,
     });
-    const weaponOpts = await SR3EItem._promptWeaponRollOptionsAoE(rawDamage, actor, { throwDistance, pre });
+    const launcher   = this.type === 'firearm' && MiniGrenade.isLauncher(this.system);
+    const weaponOpts = await SR3EItem._promptWeaponRollOptionsAoE(rawDamage, actor, { throwDistance, pre, launcher });
     if (!weaponOpts) return null;
 
     let   tn                 = weaponOpts.tn;
@@ -1138,7 +1146,7 @@ export class SR3EItem extends Item {
     );
 
     let pool  = 0;
-    let label = `${this.name} [${effectiveRawDamage}] — Throw`;
+    let label = `${roundName} [${effectiveRawDamage}] — ${launcher ? 'Fire' : 'Throw'}`;
     let defTnMod = 0, defAllowPool = false, defPoolCap = Infinity;
     if (skill) {
       // Improved Ability / augmentation dice for this weapon's skill.
@@ -1207,15 +1215,16 @@ export class SR3EItem extends Item {
     options.aoeRadius        = placed.radius;          // blast radius (metres)
     options.aoeThrowerCenter = throwerCenter;          // for relative scatter direction
     options.aoeChunky        = weaponOpts.useSalsaGUI; // resolve confined space after scatter
-    options.aoeBlast         = this.system.blast ?? '';   // falloff per metre, read at resolution (TODO 150)
-    options.aoeEffect        = areaEffect ? { name: this.name, ...areaEffect } : null;   // no-damage area grenade (TODO 155)
-    options.ammoType         = SR3EItem.flechetteAmmo(this.system);   // AP grenades: the flechette rules, p.119 (TODO 156)
+    options.aoeBlast         = round.blast ?? '';   // falloff per metre, read at resolution (TODO 150, 163)
+    options.aoeEffect        = areaEffect ? { name: roundName, ...areaEffect } : null;   // no-damage area grenade (TODO 155)
+    options.ammoType         = SR3EItem.flechetteAmmo(round);   // AP grenades: the flechette rules, p.119 (TODO 156)
     options.grenadeType      = weaponOpts.grenadeType ?? 'standard';
     options.skipWoundMod     = true;   // pre-applied in the roll-options TN (throwPreTN)
 
     // A thrown grenade is Throw Weapon; a launcher is Fire Weapon — Simple, SR3 p.106-107 (TODO 48).
     game.sr3e.SR3EActionLedger?.charge(actor, this._isConsumable() ? 'throwWeapon' : 'fireWeapon', this.name);
     await this._consumeThrown();
+    await this._spendLaunchedRound();
     return actor.rollPool(pool, tn, label, options);
   }
 
@@ -1962,6 +1971,29 @@ export class SR3EItem extends Item {
   }
 
   /**
+   * The mini-grenade a grenade launcher is loaded with — the ammunition item its last reload came from
+   * (`equippedAmmoId`) — or null: not a launcher, nothing recorded, or that stock is gone (the launcher's
+   * own fields are used then, as before). TODO 163, SR3 p.283.
+   */
+  _loadedGrenade() {
+    if (this.type !== 'firearm' || !MiniGrenade.isLauncher(this.system)) return null;
+    const ammo = this.actor?.items.get(this.system.equippedAmmoId || '');
+    return ammo?.type === 'ammunition' ? ammo : null;
+  }
+
+  /**
+   * A launched grenade spends one round from the magazine when ammo tracking is on. The AoE path never
+   * did, so a launcher fired forever (found with TODO 163).
+   */
+  async _spendLaunchedRound() {
+    if (this.type !== 'firearm' || !game.settings.get('The2ndChumming3e', 'trackAmmo')) return;
+    const loaded = this.system.loadedRounds ?? 0;
+    if (loaded <= 0) return;   // guarded earlier
+    await this.update({ 'system.loadedRounds': loaded - 1 });
+    if (loaded === 1) ui.notifications.warn(`${this.name} is now empty — reload.`);
+  }
+
+  /**
    * Decrement a thrown weapon's quantity by one when ammo tracking is on.
    */
   async _consumeThrown() {
@@ -2120,10 +2152,12 @@ export class SR3EItem extends Item {
     // armour and a medkit. A stack split into storage used to be offered here.
     // The gun's ammunition class (SR3 p.279): a box already stated for another class is not offered.
     const gunClass = this.type === 'firearm' ? AmmoStock.gunClass(this.system.category) : null;
+    const launcher = this.type === 'firearm' && MiniGrenade.isLauncher(this.system);
     let stock = actor.items.filter(i =>
       i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
       && AmmoStock.fits(i.system, gunMech, gunClass)   // loose rounds fit any gun of their class; a reload only its own mechanism
-      && SR3EItem.weaponAcceptsAmmoType(this.system, i.system.ammoType ?? 'regular'));   // a flechette weapon takes no other type (TODO 161)
+      && SR3EItem.weaponAcceptsAmmoType(this.system, i.system.ammoType ?? 'regular')   // a flechette weapon takes no other type (TODO 161)
+      && (!launcher || MiniGrenade.isMiniGrenade(i.system)));   // a launcher fires only mini-grenades (SR3 p.279, TODO 163)
     if (trackOn) stock = stock.filter(i => AmmoStock.stock(i.system).count > 0);
     if (stock.length === 0) {
       ui.notifications.warn(SR3EItem.flechetteAmmo(this.system, 'regular') === 'regular'
@@ -2132,7 +2166,9 @@ export class SR3EItem extends Item {
       return;
     }
 
-    const current = { rounds: this.system.loadedRounds ?? 0, type: this.system.loadedAmmoType ?? null };
+    // A launcher's load is one grenade item (TODO 163) — see AmmoStock.reloadPlan.
+    const loadedId = launcher ? (this.system.equippedAmmoId || '') : '';
+    const current = { rounds: this.system.loadedRounds ?? 0, type: this.system.loadedAmmoType ?? null, ammoId: loadedId };
     const choice  = await SR3EItem._promptReloadChoice(stock, this, magSize, trackOn, current);
     if (!choice?.id) return;
     const ammo = actor.items.get(choice.id);
@@ -2143,19 +2179,20 @@ export class SR3EItem extends Item {
     if (gunClass && !String(ammo.system.gunClass ?? '').trim()) await ammo.update({ 'system.gunClass': gunClass });
 
     if (!trackOn) {
-      await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': magSize });
+      await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': magSize, 'system.equippedAmmoId': ammo.id });
       ui.notifications.info(`${this.name} loaded with ${typeLabel}.`);
       return;
     }
 
-    const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want: choice.want });
+    const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want: choice.want, ammoId: ammo.id });
     if (plan.taken <= 0) {
       ui.notifications.info(`${this.name} is already full — nothing loaded.`);
       return;
     }
     await ammo.update({ [`system.${plan.field}`]: plan.remaining });
-    await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': plan.loaded });
-    const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned, gunClass) : null;
+    // `equippedAmmoId` — the stock this load came from; a launcher fires that grenade (`_loadedGrenade`).
+    await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': plan.loaded, 'system.equippedAmmoId': ammo.id });
+    const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned, gunClass, loadedId) : null;
     const quickness = actor.system?.attributes?.quickness?.value ?? 1;
     const actions   = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness, gunMech }).text;
     // Charge what the Ammo Reloading Table says it took (TODO 48): a clip swap is Remove Clip + Insert
@@ -2180,18 +2217,51 @@ export class SR3EItem extends Item {
   }
 
   /**
+   * Empty a firearm · TODO 134 (there was no way to unload one). The unfired rounds go back into the
+   * character's LOOSE-round stock of their type (`_returnRounds`) — never into a clip item, which is
+   * what TODO 133 reported: a partly fired clip is not a full one, so the rounds come back loose,
+   * the same rule that makes loading round by round lossless (the maintainer, 2026-09-13).
+   * A clip gun charges Remove Clip (SR3 p.107); the book has no action for anything else.
+   * Ammo tracking off: there is no count to return, so the button is not offered.
+   */
+  async unload() {
+    if (this.type !== 'firearm') return;
+    const actor = this.actor;
+    if (!actor) return;
+    const n = this.system.loadedRounds ?? 0;
+    if (n <= 0) { ui.notifications.info(`${this.name} is already empty.`); return; }
+    game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
+    const gunMech  = this._weaponLoadMechanism();
+    const gunClass = AmmoStock.gunClass(this.system.category);
+    const type     = this.system.loadedAmmoType ?? 'regular';
+    await this.update({ 'system.loadedRounds': 0 });
+    const homeId   = MiniGrenade.isLauncher(this.system) ? (this.system.equippedAmmoId || '') : '';   // TODO 163
+    const into = await SR3EItem._returnRounds(actor, gunMech, type, n, gunClass, homeId);
+    const cost = AmmoStock.unloadActions(gunMech);
+    if (cost.simple > 0) game.sr3e.SR3EActionLedger?.charge(actor, 'removeClip', this.name);
+    ui.notifications.info(`${this.name}: ${n} unfired round${n === 1 ? '' : 's'} unloaded into ${into} — ${cost.text}.`);
+  }
+
+  /**
    * Put unfired rounds taken OUT of a gun back into the character's loose-round stock of that
    * type — the one it already carries, else a new item. Loading round by round never loses a round
    * (the maintainer, 2026-09-13), and a gun holds one ammunition type, so switching type this way
    * unloads the old rounds rather than discarding them. Returns the stock item's name.
    */
-  static async _returnRounds(actor, mech, type, n, gunClass = null) {
+  static async _returnRounds(actor, mech, type, n, gunClass = null, homeId = '') {
     const t = type || 'regular';
+    // A launcher's mini-grenades go back to the grenade they were loaded from, or to a new box — never
+    // to another box of the type: every mini-grenade is `regular`, so that would pour defensive rounds
+    // into an offensive box (TODO 163).
+    const own = homeId ? actor.items.get(homeId) : null;
+    const ownFits = own?.type === 'ammunition' && AmmoStock.unit(own.system) === 'rounds';
     // Rounds out of a gun are that gun's class (p.279): they go back to a box of the same class.
-    const home = actor.items.find(i => i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
+    const sameType = () => actor.items.find(i => i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
       && AmmoStock.fits(i.system, mech, gunClass) && (i.system.ammoType ?? 'regular') === t
       && (!gunClass || String(i.system.gunClass ?? '') === gunClass)
-      && AmmoStock.unit(i.system) === 'rounds');
+      && AmmoStock.unit(i.system) === 'rounds'
+      && !AmmoStock.fromName(i.name));   // never a clip still counted in rounds — the rounds would read as full clips (TODO 133)
+    const home = homeId ? (ownFits ? own : null) : sameType();
     if (home) {
       await home.update({ 'system.rounds': (home.system.rounds ?? 0) + n });
       return home.name;
@@ -2231,14 +2301,14 @@ export class SR3EItem extends Item {
         const ammo = stock.find(a => a.id === sel.value);
         if (!ammo || !trackOn) { out.textContent = ''; if (row) row.style.display = 'none'; return; }
         const loose = AmmoStock.stock(ammo.system).unit === 'rounds';
-        const full  = AmmoStock.reloadPlan(ammo.system, magSize, current);   // fill it
+        const full  = AmmoStock.reloadPlan(ammo.system, magSize, current, { ammoId: ammo.id });   // fill it
         if (row) row.style.display = loose ? '' : 'none';
         if (loose && inp) {
           inp.max = String(full.taken);
           if (fromSelect || inp.value === '') inp.value = String(full.taken);
         }
         const want = loose && inp ? Number(inp.value) : null;
-        const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want });
+        const plan = AmmoStock.reloadPlan(ammo.system, magSize, current, { want, ammoId: ammo.id });
         const act  = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness, gunMech: mech }).text;
         out.textContent = plan.taken <= 0 ? 'Already full.'
           : `${plan.loaded}/${magSize} in the gun afterwards${plan.discarded ? ` — ${plan.discarded} unfired lost` : ''}${plan.returned ? ` — ${plan.returned} unfired go back into stock` : ''}.${act ? ` ${act}.` : ''}`;
@@ -2408,10 +2478,15 @@ export class SR3EItem extends Item {
       return { label: 'Beyond Extreme', tnMod: rangeTNarr[3] ?? 5, beyond: true };
     }
 
-    const typeOpts  = Object.entries(gTypes).map(([k, v], i) =>
-      `<option value="${k}" ${i === 0 ? 'selected' : ''}>${v.label}</option>`).join('');
-    const initType  = Object.keys(gTypes)[0] ?? 'standard';
+    // A launcher scatters and ranges as one (SR3 p.119); anything else starts at the first type.
+    const initType  = opts.launcher && gTypes.launcher ? 'launcher' : (Object.keys(gTypes)[0] ?? 'standard');
+    const typeOpts  = Object.entries(gTypes).map(([k, v]) =>
+      `<option value="${k}" ${k === initType ? 'selected' : ''}>${v.label}</option>`).join('');
     const defaultTN = baseTN + (bandFor(initType)?.tnMod ?? 0);
+    // SR3 p.118: a mini-grenade arms only after about five metres — said, never enforced.
+    const armNote   = opts.launcher && !MiniGrenade.arms(throwDist)
+      ? `<div style="font-size:11px;color:var(--sr-amber);margin-top:4px">⚠ Under ${MiniGrenade.ARMS_AT} m: a mini-grenade does not arm before it has travelled about ${MiniGrenade.ARMS_AT} metres, and does not detonate if it hits anything first (SR3 p.118).</div>`
+      : '';
 
     const AOE_TITLE = 'AoE Weapon Roll Options';
     const wireAoe = (app, html) => {
@@ -2440,6 +2515,7 @@ export class SR3EItem extends Item {
           <div style="margin-bottom:10px"><label>Grenade Type:
             <select id="sr-grenade-type" style="margin-left:8px">${typeOpts}</select></label>
             <div id="sr-range-note" style="font-size:11px;color:var(--sr-amber);margin-top:4px"></div>
+            ${armNote}
           </div>
           <div style="margin-bottom:10px"><label>Target Number (TN):
             <input type="number" id="sr-tn" value="${defaultTN}" min="2" max="30" style="width:60px;margin-left:8px"/></label>
@@ -3064,8 +3140,10 @@ export class SR3EItem extends Item {
             detectVision, visionReminder, bestVisionKey, escapeHTML } =
       await import('../SR3ECombatModifiers.js');
 
-    const groups  = mvpModifierGroups();
-    const guessed = guessGearModifiers(ctx.attacker, ctx.weapon);
+    // `opts.groups` narrows the rows — an elemental spell has no Gear and, cast on an area, no
+    // Target (`spellModifierGroups`, TODO 131). No Gear rows, nothing to guess.
+    const groups  = opts.groups ?? mvpModifierGroups();
+    const guessed = groups.some(g => g.key === 'gear') ? guessGearModifiers(ctx.attacker, ctx.weapon) : {};
     const baseTN  = Number(ctx.baseTN) || 4;
     // What the attacker's eyes are (TODO 99), and the row pre-selected from them (TODO 36).
     // No attacker resolved → no line and no pre-selection: Normal, as before.
@@ -4295,6 +4373,19 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   }
 
   /**
+   * Does this spell's cast open the GM's cover/visibility window? · SR3 p.182-183 (TODO 131)
+   *
+   * p.183: *"Cover, visibility, injury and sustaining modifiers apply"* to an elemental spell.
+   * Injury and sustaining reach the Sorcery Test through `rollPool`; cover and visibility are the
+   * GM's call. p.182: *"Spells with a range of touch are not subject to cover or visibility
+   * modifiers"*, so a touch range (`T`, `T/D`, `T(V)`…) never opens it. Combat spells are not
+   * ranged attacks and never do. Pure.
+   */
+  static spellTakesGMWindow(category, range) {
+    return SR3EItem.isElementalSpell(category) && !/^\s*T/i.test(String(range ?? ''));
+  }
+
+  /**
    * Is this an Elemental Manipulation spell? **Pure.**  · *SR3 p.183, p.196*
    *
    * > "Elemental spells are treated like normal ranged attacks (see p. 109) using Sorcery as the
@@ -4471,10 +4562,11 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
    *
    * 1. Choose Force
    * 2. Select targets
-   * 3. Allocate Spell Pool
-   * 4. Roll Sorcery + Spell Pool dice vs target Essence/Body
-   * 5. On hit: each target gets a Resist Spell button (Willpower/Body, TN = Force)
-   * 6. Drain button always posted for the caster
+   * 3. The cast TN — an elemental spell opens the GM's cover/visibility window (TODO 131)
+   * 4. Allocate Spell Pool
+   * 5. Roll Sorcery + Spell Pool dice vs target Essence/Body
+   * 6. On hit: each target gets a Resist Spell button (Willpower/Body, TN = Force)
+   * 7. Drain button always posted for the caster
    */
   async rollSpell(options = {}) {
     const actor = this.actor;
@@ -4645,7 +4737,72 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       // ARE dodged, then soaked (p.183) — decided after the cast, in `_spellResistButton`.
     }
 
-    // Step 3: Spell Pool allocation — compute from raw fields, not derived cache
+    // Step 3: the cast TN. SR3 combat spell = opposed test.
+    //   Cast:   Sorcery vs TN = the spell's Target attribute on the target (W→Willpower,
+    //           B→Body, F→Force, or a fixed number).
+    //   Resist: target rolls that SAME attribute vs TN = Force (handled at resist time).
+    //   Net successes (caster − resister) stage the base damage. No soak.
+    //
+    // ⚠ Several targets: "roll the dice once. Compare the results against the target number for
+    //   each valid target … Successes are counted separately for each target" (SR3 p.182). The dice
+    //   roll at the HIGHEST target number — a die stops exploding once it reaches the roll's TN, so
+    //   only then can every lower TN be counted from the same dice — and each target's hits are
+    //   counted against its own (`hitsAgainst`, in _postWaveCard). Until 0.6.1 the FIRST target's
+    //   TN was used for everyone (TODO 171).
+    let targetTNs = Object.fromEntries(targetActors.map(t =>
+      [t.id, SR3EItem._parseSpellTarget(spellTarget, t, force, spellType).tn]));
+    const hardest   = targetActors.reduce((best, t) =>
+      (!best || targetTNs[t.id] > targetTNs[best.id]) ? t : best, null);
+    const primaryTarget  = hardest ?? null;
+    const parsedPrimary  = primaryTarget
+      ? SR3EItem._parseSpellTarget(spellTarget, primaryTarget, force, spellType)
+      : null;
+    let tn               = parsedPrimary ? parsedPrimary.tn : Math.max(2, force);
+    const tnsDiffer      = new Set(Object.values(targetTNs)).size > 1;
+    // Human-readable source of the cast TN, shown on the result card.
+    let tnSource;
+    if (!parsedPrimary || parsedPrimary.attrLabel === 'Force') tnSource = `Force ${force}`;
+    else if (parsedPrimary.attrLabel.startsWith('Fixed'))      tnSource = 'fixed';
+    else tnSource = `${primaryTarget.name}'s ${parsedPrimary.attrLabel}`;
+    if (tnsDiffer) tnSource = `each target's own; rolled at the highest, ${tnSource}`;
+
+    /* The GM's TN window for an elemental cast · SR3 p.183 (TODO 131): *"Cover, visibility, injury
+     * and sustaining modifiers apply."* Injury and sustaining are `rollPool`'s; cover and visibility
+     * are the GM's, on the ranged window's `gmApprovesTN` rule. Asked BEFORE the Spell Pool is
+     * committed, as ranged asks before the attacker's screen — nobody spends dice against a number
+     * they cannot see. Range stays out ("regardless of range"); touch spells never ask (p.182).
+     * One window per cast: its difference moves every target's TN and the roll's alike. */
+    if (SR3EItem.spellTakesGMWindow(this.system.category, this.system.range)) {
+      const negotiation = await game.sr3e.SR3EQuery.asGM('sr3e.spell.negotiate', {
+        attackerUuid: actor.uuid,
+        targetUuids:  targetActors.map(t => t.uuid),
+        attackerName: actor.name,
+        targetName:   isAoE ? `area (${aoeRadius} m)` : (targetActors[0]?.name ?? '—'),
+        weaponName:   this.name,
+        area:         isAoE,
+        baseTN:       tn,
+        baseNote:     isAoE
+          ? 'elemental area spell, regardless of range (p.183) — visibility is the caster’s view of the centre; cover does not shelter anyone in the area (p.182). Wounds and sustaining are added at the roll.'
+          : 'elemental spell, regardless of range (p.183). Wounds and sustaining are added at the roll.',
+      }, { timeout: 300_000 });
+      if (negotiation === null) {              // GM cancelled the cast — nothing spent yet
+        // …but the area marker was drawn when the centre was placed; a cancelled cast leaves none.
+        if (aoeRegionId) await canvas.scene?.deleteEmbeddedDocuments('Region', [aoeRegionId]).catch(() => {});
+        if (aoeMarkerId) game.sr3e._blastMarkers?.get(aoeMarkerId)?.destroy();
+        return null;
+      }
+
+      const gmDelta = Number.isFinite(negotiation?.tn) ? negotiation.tn - tn : 0;
+      if (gmDelta) {
+        tn        = Math.max(2, tn + gmDelta);
+        targetTNs = Object.fromEntries(Object.entries(targetTNs).map(([id, n]) => [id, Math.max(2, n + gmDelta)]));
+        tnSource += `; GM ${gmDelta > 0 ? '+' : ''}${gmDelta} cover/visibility`;
+      }
+      const sit = Math.trunc(Number(negotiation?.situational) || 0);
+      if (sit) tnSource += ` (incl. GM situational modifier ${sit > 0 ? '+' : ''}${sit})`;
+    }
+
+    // Step 4: Spell Pool allocation — compute from raw fields, not derived cache
     const sAttr     = actor.system.attributes ?? {};
     const specBonus   = hasSpellcastingSpec ? 2 : 0;
     // Dice withheld to change an area spell's radius are not rolled (p.181).
@@ -4672,34 +4829,6 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const pool = Math.max(1, sorceryDice + magicDice);
     const spellPoolForDrain = Math.max(0, spTotal2 - (actor.system.spellPoolSpent ?? 0));
 
-    // Step 4: SR3 combat spell = opposed test.
-    //   Cast:   Sorcery vs TN = the spell's Target attribute on the target (W→Willpower,
-    //           B→Body, F→Force, or a fixed number).
-    //   Resist: target rolls that SAME attribute vs TN = Force (handled at resist time).
-    //   Net successes (caster − resister) stage the base damage. No soak.
-    //
-    // ⚠ Several targets: "roll the dice once. Compare the results against the target number for
-    //   each valid target … Successes are counted separately for each target" (SR3 p.182). The dice
-    //   roll at the HIGHEST target number — a die stops exploding once it reaches the roll's TN, so
-    //   only then can every lower TN be counted from the same dice — and each target's hits are
-    //   counted against its own (`hitsAgainst`, in _postWaveCard). Until 0.6.1 the FIRST target's
-    //   TN was used for everyone (TODO 171).
-    const targetTNs = Object.fromEntries(targetActors.map(t =>
-      [t.id, SR3EItem._parseSpellTarget(spellTarget, t, force, spellType).tn]));
-    const hardest   = targetActors.reduce((best, t) =>
-      (!best || targetTNs[t.id] > targetTNs[best.id]) ? t : best, null);
-    const primaryTarget  = hardest ?? null;
-    const parsedPrimary  = primaryTarget
-      ? SR3EItem._parseSpellTarget(spellTarget, primaryTarget, force, spellType)
-      : null;
-    const tn             = parsedPrimary ? parsedPrimary.tn : Math.max(2, force);
-    const tnsDiffer      = new Set(Object.values(targetTNs)).size > 1;
-    // Human-readable source of the cast TN, shown on the result card.
-    let tnSource;
-    if (!parsedPrimary || parsedPrimary.attrLabel === 'Force') tnSource = `Force ${force}`;
-    else if (parsedPrimary.attrLabel.startsWith('Fixed'))      tnSource = 'fixed';
-    else tnSource = `${primaryTarget.name}'s ${parsedPrimary.attrLabel}`;
-    if (tnsDiffer) tnSource = `each target's own; rolled at the highest, ${tnSource}`;
 
     // Build damage context — power = Force, level chosen at cast (drives target damage AND drain level).
     // Damage track: SR3EItem.spellDealsStun — Physical unless it is a stun spell (SR3 p.191).

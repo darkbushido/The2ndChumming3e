@@ -1,0 +1,35 @@
+{
+  "_key": "!items!3896c0e18a674e9b",
+  "doc": {
+    "_id": "3896c0e18a674e9b",
+    "name": "Defensive AP Mini-grenade",
+    "type": "ammunition",
+    "system": {
+      "concealability": "8",
+      "damage": "10S",
+      "ammoType": "regular",
+      "loadMechanism": "m",
+      "countedIn": "rounds",
+      "gunClass": "GrLn",
+      "rounds": 1,
+      "reloads": 0,
+      "roundsPerReload": 0,
+      "weight": 0.1,
+      "availability": "6/4 days",
+      "cost": 60,
+      "streetIndex": "3",
+      "bookPage": "sr3.283",
+      "notes": "<p>A mini-grenade for a grenade launcher (SR3 p.283): the Defensive AP Grenade's effects, fired rather than thrown. It does not arm until it has travelled about five metres (SR3 p.118).</p><p>AP grenades are offensive or defensive grenades with high fragmentation; they are specifically designed to damage unarmored people. Determine damage from AP grenades according to the flechette rules (SR3 p.116, p.119).</p><p>SR3 p.283, the Mini-grenade row applied to the Defensive AP Grenade row: Conceal 8, Weight .1, Availability 4/4 days +2, Cost 30¥ ×2, Street Index 2 +1. Legality 3-J. Blast –1/.5m.</p>",
+      "blast": "-1/.5m",
+      "flechette": true
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-core-grenades"
+      }
+    },
+    "img": "systems/The2ndChumming3e/styles/textures/projectile-weapons-default.webp"
+  },
+  "embedded": {}
+}

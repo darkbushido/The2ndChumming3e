@@ -14,7 +14,9 @@
  *   Smoke                 6       —           —       .25    3/24 hrs    30¥  2        5–J
  *   Smoke (IR)            6       —           —       .25    4/48 hrs    40¥  2        5–J
  *   Flash-Pak             12      Special     —       .2     3/36 hrs    250¥ 1        Legal
- *   Mini-grenade          8       by grenade  by grenade .1  +2/by grenade x2  +1     by grenade  (not shipped)
+ *   Mini-grenade          8       by grenade  by grenade .1  +2/by grenade x2  +1     by grenade
+ *
+ * The Mini-grenade row ships applied to each grenade, as ammunition — tests/mini-grenade.test.mjs (TODO 163).
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';

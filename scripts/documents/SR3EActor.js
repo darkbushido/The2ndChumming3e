@@ -8,6 +8,7 @@ import { DrugRules } from '../data/drug-rules.mjs';
 import { Ledger } from '../data/ledger.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
+import { OpenSteps } from '../data/open-steps.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -4099,9 +4100,7 @@ _prepareCharacter(sys, attr) {
         // Successes." They carry to the soak, where they join the target's total that the
         // attacker's successes are compared with (p.113, `netStagedDamage`, TODO 165).
         const trackLabel = dp.isStun ? 'Stun' : 'Physical';
-        const soakBtn    = dp.isSpellSoak
-          ? SR3EActor._spellSoakButtonHtml({ ...dp, carriedSuccesses: carried })
-          : SR3EActor._soakButtonHtml({ ...dp, carriedSuccesses: carried });
+        const soakBtn    = SR3EActor._soakButtonHtml({ ...dp, carriedSuccesses: carried });
         const tieNote = (successes === atkHits && atkHits > 0)
           ? ' <span style="color:var(--sr-muted);font-size:11px">(a tie goes to the attacker)</span>'
           : '';
@@ -6145,30 +6144,6 @@ _prepareCharacter(sys, attr) {
       <div class="sr-soak-action">
         <button class="sr-soak-btn" data-payload='${soakPayload}'>
           🛡 ${targetName}: Resist Damage
-        </button>
-      </div>`;
-  }
-
-  static _spellSoakButtonHtml(payload) {
-    const targetActor      = game.actors.get(payload.targetActorId);
-    const targetName       = targetActor?.name ?? 'Target';
-    const spellSoakPayload = JSON.stringify({
-      actorId:         payload.targetActorId,
-      targetActorId:   payload.targetActorId,
-      attackerActorId: payload.attackerActorId,
-      isSpellSoak:     true,
-      spellType:       payload.spellType,
-      spellTarget:     payload.spellTarget ?? '',
-      force:           payload.force,
-      stagedPower:     payload.stagedPower,
-      stagedLevel:     payload.stagedLevel,
-      isStun:          payload.isStun,
-      rawDamage:       payload.rawDamage,
-    }).replace(/'/g, '&#39;');
-    return `
-      <div class="sr-soak-action">
-        <button class="sr-spell-soak-btn" data-payload='${spellSoakPayload}'>
-          🔮 ${targetName}: Resist Spell
         </button>
       </div>`;
   }
@@ -8785,12 +8760,24 @@ _prepareCharacter(sys, attr) {
     });
   }
 
-  static async handleAssignDamage(btn) {
+  /**
+   * 🩸 Assign the wound — the chat button that writes wound boxes.
+   *
+   * ⚠ **Once per button, table-wide · TODO 137.** The card renders in the chat pop-up, the chat log
+   * and on every client; `_usedButtons` knows only one browser, so a second copy (the GM's, or the
+   * player's own after a reload) could add the boxes again. `claim` names the card and the step key;
+   * the GM checks the card's ledger, applies and records in one queued step (`_applyCardDamage`).
+   *
+   * @param {HTMLButtonElement} btn
+   * @param {{ messageId?: string, role?: string, label?: string }} [claim]
+   * @returns {Promise<'applied'|'already'|'failed'>}
+   */
+  static async handleAssignDamage(btn, claim = {}) {
     // Disable immediately as a double-click guard, but do NOT claim success yet — the
     // label is only truthful once a write has actually landed. Every bail below restores
     // the button so the user can retry rather than being left with a dead control.
     btn.disabled = true;
-    const fail = msg => { ui.notifications.warn(msg); btn.disabled = false; return null; };
+    const fail = msg => { ui.notifications.warn(msg); btn.disabled = false; return 'failed'; };
 
     let p;
     try { p = JSON.parse(btn.dataset.payload); }
@@ -8803,19 +8790,52 @@ _prepareCharacter(sys, attr) {
                :                    'actor';
     const uuid = p.icActorId ?? p.vehicleActorId ?? p.wardActorId ?? p.actorId;
 
+    let res;
     try {
       // Relay the DELTA (boxes). The GM reads current/max live and does the
       // Math.min itself — two players clicking Assign at once must not both
       // compute from the same stale `current` and lose one another's damage.
-      const res = (!game.users.activeGM?.isSelf)
-        ? await game.sr3e.SR3EQuery.asGM('sr3e.damage.apply', { uuid, kind, track: p.track, boxes: p.boxes })
-        : await SR3EActor._applyDamageBoxes({ uuid, kind, track: p.track, boxes: p.boxes });
-      if (!res?.ok) return fail(res?.reason ?? 'Damage could not be applied.');
+      // `asGM` runs the handler in place when this client IS the GM.
+      res = await game.sr3e.SR3EQuery.asGM('sr3e.damage.apply',
+        { uuid, kind, track: p.track, boxes: p.boxes, ...claim });
     } catch (err) {
       return fail(err?.message ?? 'Damage could not be applied.');
     }
+    if (res?.already) {
+      SR3EActor.spendAssignButton(btn);
+      ui.notifications.info('That wound has already been assigned — no damage applied.');
+      return 'already';
+    }
+    if (!res?.ok) return fail(res?.reason ?? 'Damage could not be applied.');
 
     btn.textContent = '✓ Damage Applied';   // truthful only now — a write has landed
+    return 'applied';
+  }
+
+  /** Show an Assign button as spent: its wound is on the sheet already (TODO 137). */
+  static spendAssignButton(btn) {
+    btn.disabled    = true;
+    btn.textContent = '✓ Damage Applied';
+    btn.title       = 'Already assigned. Correct the wound boxes on the sheet if it was wrong.';
+  }
+
+  /**
+   * GM-side: apply an Assign button's damage at most once (TODO 137). Held in the card's queue — the
+   * same one `sr3e.card.mark` uses — so reading the ledger, writing the boxes and recording the step
+   * are one step; the record is written only once the boxes land. Without a card, applies as before.
+   *
+   * @param {object} p  `_applyDamageBoxes`' arguments, plus `messageId`, `role` (the step key), `label`
+   * @returns {Promise<{ok:boolean, already?:boolean, reason?:string}>}
+   */
+  static async _applyCardDamage({ messageId, role, label, ...hit }) {
+    const msg = messageId ? game.messages.get(messageId) : null;
+    if (!msg || !role) return SR3EActor._applyDamageBoxes(hit);
+    return game.sr3e.SR3EQueue.run(`card:${messageId}`, async () => {
+      const res = await OpenSteps.runOnce(msg.getFlag('The2ndChumming3e', 'acted') ?? {}, role,
+        { label: label ?? role, at: Date.now() }, () => SR3EActor._applyDamageBoxes(hit));
+      if (res.acted) await msg.setFlag('The2ndChumming3e', 'acted', res.acted);
+      return { ok: res.ok, ...(res.already ? { already: true } : {}), ...(res.reason ? { reason: res.reason } : {}) };
+    });
   }
 
   /**
@@ -10995,6 +11015,30 @@ _prepareCharacter(sys, attr) {
     return Math.max(2, (Number(power) || 0) - Math.max(0, Number(mysticArmor) || 0));
   }
 
+  /**
+   * Which attribute resists astral damage · *SR3 p.174-175* — TODO 132.
+   *
+   * > "The Damage Resistance Test is resolved using Willpower or Force for astral beings, or Body
+   * > for dual beings."  — p.175
+   * > "Astrally perceiving characters and other dual beings use their normal physical Attributes,
+   * > skills and Combat Pool in astral combat."  — p.174
+   *
+   * Only an actor set to **Astral Plane** (`astralMode === 'astral'`: projecting, or a spirit in
+   * astral form) is an astral being. Everyone else who ends up in astral combat — Dual Natured,
+   * or no mode set (an astrally perceiving character, a materialized spirit) — is a dual being:
+   * Body, plus Combat Pool. A spirit in astral form resists with its Force. The pool stays
+   * editable on the card, so a GM can override either choice.
+   */
+  static astralResistPool({ astralMode = '', attributes = {}, spiritForce = null } = {}) {
+    const attr = key => Math.max(attributes?.[key]?.value ?? 0, attributes?.[key]?.base ?? 0, 1);
+    if (astralMode === 'astral') {
+      const force = Number(spiritForce) || 0;
+      if (force > 0) return { key: 'force', label: 'Force (astral being)', value: force, combatPool: false };
+      return { key: 'willpower', label: 'Willpower (astral being)', value: attr('willpower'), combatPool: false };
+    }
+    return { key: 'body', label: 'Body (dual being)', value: attr('body'), combatPool: true };
+  }
+
   static async postAstralSoakCard(actorId, payload) {
     const actor = game.actors.get(actorId);
     if (!actor) return;
@@ -11006,8 +11050,13 @@ _prepareCharacter(sys, attr) {
     const trackLabel = isStun ? 'Stun' : 'Physical';
 
     this.prepareDerivedData();
-    const wilAttr = this.system.attributes?.willpower;
-    const wilVal  = Math.max(wilAttr?.value ?? 0, wilAttr?.base ?? 0, 1);
+    const spirits = game.sr3e.SR3ESpiritSummoning;
+    const resist  = SR3EActor.astralResistPool({
+      astralMode:  this.system.astralMode ?? '',
+      attributes:  this.system.attributes,
+      spiritForce: spirits?._spiritFlag(this, 'isSpirit') ? spirits._spiritFlag(this, 'force') : null,
+    });
+    const availPool = resist.combatPool ? Math.max(0, this.system.derived?.availableCombatPool ?? 0) : 0;
     // TN = Power of the attack — must reflect any weapon-focus bonus baked into stagedPower,
     // not just the winner's raw Charisma (which ignores that bonus entirely) — less Mystic Armor.
     const mysticArmor = Math.max(0, this.system.derived?.mysticArmor ?? 0);
@@ -11031,10 +11080,14 @@ _prepareCharacter(sys, attr) {
             Incoming: <strong>${stagedPower}${stagedLevel} ${trackLabel}</strong>
           </div>
           <div class="sr-soak-fields">
-            <label class="sr-soak-label">
-              Resist Pool — Willpower / Astral Body (${wilVal}):
-              <input type="number" class="sr-astral-soak-pool" value="${wilVal}" min="1" max="30" style="width:55px"/>
+            <label class="sr-soak-label" title="SR3 p.175: Willpower or Force for astral beings, Body for dual beings">
+              Resist Pool — ${resist.label} (${resist.value}):
+              <input type="number" class="sr-astral-soak-pool" value="${resist.value}" min="1" max="30" style="width:55px"/>
             </label>
+            ${availPool > 0 ? `<label class="sr-soak-label" title="SR3 p.174: dual beings use their Combat Pool in astral combat">
+              Combat Pool (<strong>${availPool}</strong> left):
+              <input type="number" class="sr-astral-soak-cp" value="0" min="0" max="${availPool}" style="width:55px"/>
+            </label>` : ''}
           ${mysticArmor > 0 ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">
             ✨ Mystic Armor −${mysticArmor} Power — it protects in astral combat; worn armour does not (SR3 p.170, p.175)
           </div>` : ''}
@@ -11056,7 +11109,8 @@ _prepareCharacter(sys, attr) {
   static async handleAstralSoakRoll(btn, physicalDice = false) {
     const payload = JSON.parse(btn.dataset.payload);
     const card    = btn.closest('.sr-astral-soak-card');
-    const pool    = parseInt(card.querySelector('.sr-astral-soak-pool')?.value) || 1;
+    const base    = parseInt(card.querySelector('.sr-astral-soak-pool')?.value) || 1;
+    const wantCP  = Math.max(0, parseInt(card.querySelector('.sr-astral-soak-cp')?.value) || 0);
     const tn      = parseInt(card.querySelector('.sr-astral-soak-tn')?.value)   || 2;
 
     btn.disabled    = true;
@@ -11065,8 +11119,15 @@ _prepareCharacter(sys, attr) {
     const actor = game.actors.get(payload.actorId);
     if (!actor) return;
 
+    // Clamp for the prompt only; spendCombatPool clamps authoritatively (as handleSoakRollClick).
+    actor.prepareDerivedData();
+    const useCP = Math.min(wantCP, actor.system.derived?.availableCombatPool ?? 0);
+    const pool  = Math.max(1, base + useCP);
+
     const effectiveTN = Math.max(2, tn);
-    const label       = `✦ ${actor.name} resists astral damage`;
+    const label       = useCP > 0
+      ? `✦ ${actor.name} resists astral damage (${base} + ${useCP} Combat Pool)`
+      : `✦ ${actor.name} resists astral damage`;
 
     let dice, ones, glitch;
     if (physicalDice) {
@@ -11077,6 +11138,16 @@ _prepareCharacter(sys, attr) {
       dice   = actor._rollWave(pool, effectiveTN, true);
       ones   = dice.filter(d => d.isOne).length;
       glitch = SR3EActor.isRuleOfOne(ones, pool);
+    }
+
+    // Charge after the roll is certain — the physical-dice prompt above can be cancelled.
+    if (useCP > 0) {
+      const spent = await actor.spendCombatPool(useCP);
+      if (spent < useCP) {
+        ui.notifications.warn(
+          `${actor.name}: only ${spent} of ${useCP} Combat Pool dice were available — ` +
+          `the roll used ${pool}. Adjust by hand if needed.`);
+      }
     }
 
     await actor._postWaveCard({

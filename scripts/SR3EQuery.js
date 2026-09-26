@@ -590,12 +590,15 @@ export class SR3EQuery {
 
     /**
      * Apply damage boxes. Relays the DELTA; the GM reads current/max and does
-     * the `Math.min(max, current + boxes)` against live data.
+     * the `Math.min(max, current + boxes)` against live data. With `messageId` + `role` (an
+     * Assign button's step key) it applies ONCE per button, table-wide (TODO 137,
+     * `SR3EActor._applyCardDamage`).
      */
-    CONFIG.queries['sr3e.damage.apply'] = async ({ rid, uuid, kind, track, boxes }) => SR3EQuery.once(rid, async () => {
-      SR3EQuery.assertActiveGM();
-      return game.sr3e.SR3EActor._applyDamageBoxes({ uuid, kind, track, boxes });
-    });
+    CONFIG.queries['sr3e.damage.apply'] = async ({ rid, uuid, kind, track, boxes, messageId, role, label }) =>
+      SR3EQuery.once(rid, async () => {
+        SR3EQuery.assertActiveGM();
+        return game.sr3e.SR3EActor._applyCardDamage({ uuid, kind, track, boxes, messageId, role, label });
+      });
 
     /**
      * A healing step on a patient the clicker does not own — a medic lowering another player's
@@ -736,6 +739,36 @@ export class SR3EQuery {
       // The window ran and the GM confirmed, so their number is authoritative even when
       // they changed nothing — "I looked, 4 is right" is a decision, not an absence of one.
       return { tn: gmRes.tn, mods: gmRes.mods, adjudicated: true };
+    });
+
+    /**
+     * The GM's TN window for an ELEMENTAL spell · SR3 p.183 (TODO 131)
+     *
+     * *"Elemental spells are treated like normal ranged attacks … Cover, visibility, injury and
+     * sustaining modifiers apply."* The same window and the same `gmApprovesTN` rule as
+     * `sr3e.attack.negotiate`, with the spell's rows (`spellModifierGroups`: no Gear, and no Target
+     * on an area cast). Every target counts towards "a player is involved". Reads and writes nothing;
+     * `adjudicated:false` means no GM looked and the caster's TN stands.
+     */
+    CONFIG.queries['sr3e.spell.negotiate'] = async ({ rid, ...ctx }) => SR3EQuery.once(rid, async () => {
+      SR3EQuery.assertActiveGM();
+      const { SR3EItem } = game.sr3e;
+
+      const mode = game.settings.get('The2ndChumming3e', 'gmApprovesTN');
+      const requesterIsGM = game.users.get(ctx._requesterId)?.isGM === true;
+      const playerInvolved = [ctx.attackerUuid, ...(ctx.targetUuids ?? [])]
+        .some(u => SR3EQuery.isPlayerCharacter(SR3EQuery.resolve(u)));
+      if (!SR3EQuery.gmWindowOpens(mode, { requesterIsGM, playerInvolved })) {
+        return { tn: ctx.baseTN, adjudicated: false };
+      }
+
+      const { spellModifierGroups } = await import('./SR3ECombatModifiers.js');
+      const attacker = SR3EQuery.resolve(ctx.attackerUuid);
+      const gmRes = await SR3EItem._promptGMAttackWindow({ ...ctx, attacker, weapon: null },
+        { groups: spellModifierGroups({ area: ctx.area === true }) });
+      if (!gmRes) return null;   // GM cancelled the cast — nothing spent, nothing written
+
+      return { tn: gmRes.tn, situational: gmRes.situational, adjudicated: true };
     });
 
 

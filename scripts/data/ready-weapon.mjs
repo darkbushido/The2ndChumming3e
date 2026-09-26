@@ -15,6 +15,9 @@
  * refuses (minimal guardrails — the same call TODO 44 made for melee range).
  * ⚠ **Everything already on a sheet reads as ready** (the field's initial is true): a world full of
  * characters who suddenly cannot fight would be a worse bug than the one being fixed.
+ * ⚠ **A weapon that ARRIVES on a character arrives put away** (TODO 135/136) — bought, dragged in,
+ * imported or made on the sheet. The initial true made every new character start with every gun,
+ * blade and grenade in hand. `putAwayOnCreate` decides; the `preCreateItem` hook in sr3e.js applies it.
  */
 
 /** The item types that can be readied. */
@@ -25,10 +28,15 @@ export const ALWAYS_READY_CATEGORIES = ['UNA', 'CYB'];
 export const ReadyWeapon = {
   READY_TYPES,
 
+  /** Is this one of the body's own weapons (unarmed, cyber-melee) — never holstered, never equipped? */
+  isBodyWeapon(item) {
+    return ALWAYS_READY_CATEGORIES.includes(String(item?.system?.category ?? '').toUpperCase());
+  },
+
   /** Is this weapon in hand? Non-weapons, the body's own weapons and anything unset read as ready. */
   isReady(item) {
     if (!READY_TYPES.includes(item?.type)) return true;
-    if (ALWAYS_READY_CATEGORIES.includes(String(item?.system?.category ?? '').toUpperCase())) return true;
+    if (ReadyWeapon.isBodyWeapon(item)) return true;
     return item?.system?.ready !== false;
   },
 
@@ -53,6 +61,18 @@ export const ReadyWeapon = {
 
   /** One success clears the weapon; none and it cannot be fired this Combat Phase. */
   quickDrawCleared(successes) { return (Number(successes) || 0) >= 1; },
+
+  /**
+   * Does a weapon being created on this actor start put away? True for a character's or NPC's
+   * holsterable weapons; never for the body's own (fists, cyber-melee), a weapon that takes no hand
+   * (a cybergun — `hands: 0`, set by cyber-weapons.mjs) or a vehicle's mounts.
+   */
+  putAwayOnCreate(item, parentType) {
+    if (!['character', 'npc'].includes(parentType)) return false;
+    if (!READY_TYPES.includes(item?.type)) return false;
+    if (item?.system?.hands === 0) return false;
+    return !ReadyWeapon.isBodyWeapon(item);
+  },
 
   /** Throwing weapons ready in batches: half Quickness, rounded down, per Ready Weapon (p.107). */
   thrownPerReady(quickness) { return Math.max(1, Math.floor((Number(quickness) || 0) / 2)); },

@@ -36,8 +36,30 @@ const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots'
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
+const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 
 export const MUTANTS = [
+  {
+    id:     'wound-assigned-twice',
+    suite:  'open-steps',
+    module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'runOnce',
+    was:    'the Assign-the-wound button applied its boxes on every click from any copy of the card — the chat pop-up, then the chat log, wounded the character twice (TODO 137)',
+    impl:   async (acted, key, entry, act) => ({ ...(await act()), acted: { ...(acted ?? {}), [key]: entry } }),
+  },
+  {
+    id:     'implant-is-no-weapon',
+    suite:  'cyber-weapons',
+    module: '../scripts/data/cyber-weapons.mjs', klass: 'CyberWeapons', method: 'weaponData',
+    was:    'an implanted weapon (spur, hand razors, cybergun) gave Essence loss and nothing to attack with (TODO 151)',
+    impl:   () => null,
+  },
+  {
+    id:     'cybergun-as-melee',
+    suite:  'cyber-weapons',
+    module: '../scripts/data/cyber-weapons.mjs', klass: 'CyberWeapons', method: 'gunCode',
+    was:    'a cybergun would be built as a melee weapon if its gun code were not read (TODO 151)',
+    impl:   () => null,
+  },
   {
     id:     'open-steps-fold-on-finish',
     suite:  'open-steps',
@@ -203,6 +225,23 @@ export const MUTANTS = [
     was:    '`/laser/` over the whole accessories text — the Ballista\'s Laser Designator and the Sonic Beam '
           + 'Rifle\'s "MP Laser III" battery note were guessed as laser sights (TODO 18)',
     impl:   text => ({ smartgun: /smart/i.test(String(text ?? '')), laserSight: /laser/i.test(String(text ?? '')) }),
+  },
+  {
+    id:     'loose-rounds-shown-as-clips',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'loadLabel',
+    was:    'the sheet printed every stock\'s loadMechanism — loose rounds default to (c), so unloaded rounds and '
+          + 'boxes of rounds read "Removable Clip" (TODO 133/142, reported in the trial session)',
+    impl:   (sys, labels = {}) => { const m = String(sys?.loadMechanism ?? 'c'); return { code: m, title: labels[m] ?? m }; },
+  },
+  {
+    id:     'clip-rounds-converted-unevenly',
+    suite:  'ammo-stock',
+    ...AMMO, method: 'reloadsFromRounds',
+    was:    'converting a clip stored as rounds (TODO 143) must not round an uneven count into whole reloads — '
+          + '35 rounds of a 10-round clip would become 3 clips and lose 5 rounds',
+    impl:   (name, sys = {}) => { const m = /(\d+)\s*-?\s*(?:rnd|round)s?\b/i.exec(String(name ?? '')); const per = Number(m?.[1] ?? 0);
+      const n = Math.floor(Number(sys?.rounds) || 0); return sys?.countedIn !== 'reloads' && per > 0 && n > 0 ? { reloads: Math.floor(n / per), roundsPerReload: per } : null; },
   },
   {
     id:     'ammo-fits-by-mechanism-only',
@@ -461,6 +500,13 @@ export const MUTANTS = [
       }
       return null;
     },
+  },
+  {
+    id:     'medkit-supplies-refill-any-kit',
+    suite:  'healing',
+    ...HEAL, method: 'emptyMedkits',
+    was:    'TODO 139: restocking ignored whether the kit had run out, so a stocked kit could be "refilled"',
+    impl:   function (items) { return [...(items ?? [])].filter(i => this.EQUIPMENT.medkit.test(String(i.name ?? ''))); },
   },
   {
     id:     'heal-own-patients-only',
@@ -757,6 +803,27 @@ export const MUTANTS = [
       return d;
     },
     needsOriginal: '__origBuild',
+  },
+  {
+    id:     'launcher-reads-its-own-blast',
+    suite:  'mini-grenade',
+    module: '../scripts/data/mini-grenade.mjs', klass: 'MiniGrenade', method: 'round',
+    was:    'a launched grenade read the launcher, which has no blast, so a Defensive mini-grenade fell off at -1/m (SR3 p.283, TODO 163)',
+    impl:   weaponSystem => weaponSystem,
+  },
+  {
+    id:     'launcher-mixes-grenades',
+    suite:  'mini-grenade',
+    ...AMMO, method: 'reloadPlan', needsOriginal: '_reloadPlanMini',
+    was:    'every mini-grenade is `regular`, so a launcher topped up offensive rounds with defensive ones and fired them all as one grenade (TODO 163)',
+    impl:   function (sys, magSize, current = {}, opts = {}) { return this._reloadPlanMini(sys, magSize, { ...current, ammoId: '' }, opts); },
+  },
+  {
+    id:     'mini-grenade-cost-not-doubled',
+    suite:  'mini-grenade',
+    module: '../scripts/data/mini-grenade.mjs', klass: 'MiniGrenade', method: 'fromGrenade', needsOriginal: '_fromGrenade',
+    was:    'the p.283 Mini-grenade row doubles the cost (x2) and adds 2 to Availability; a copy of the grenade row would ship otherwise (TODO 163)',
+    impl:   function (g) { return { ...this._fromGrenade(g), cost: g.cost, avail: g.avail }; },
   },
   {
     id:     'coded-flechette-raises-level-twice',
@@ -1758,6 +1825,22 @@ export const MUTANTS = [
     impl:   () => false,
   },
   {
+    id:     'elemental-cast-at-flat-4',
+    suite:  'elemental-spells',
+    ...ITEM, method: 'spellTakesGMWindow',
+    was:    'SR3 p.183 - "Cover, visibility, injury and sustaining modifiers apply". The cast never '
+          + 'opened the GM\'s TN window, so a Flamethrower through Thermal Smoke was cast at a flat 4 (TODO 131)',
+    impl:   () => false,
+  },
+  {
+    id:     'elemental-touch-takes-cover',
+    suite:  'elemental-spells',
+    ...ITEM, method: 'spellTakesGMWindow',
+    was:    'SR3 p.182 - "Spells with a range of touch are not subject to cover or visibility modifiers" '
+          + '(the easy way to get TODO 131 wrong)',
+    impl:   category => /^\s*elemental\s*$/i.test(String(category ?? '')),
+  },
+  {
     id:     'elemental-level-fixed-at-moderate',
     suite:  'elemental-spells',
     ...ITEM, method: 'spellChoosesDamageLevel',
@@ -1787,5 +1870,22 @@ export const MUTANTS = [
     was:    'SR3 p.170 - "Mystic Armor also protects against damage done in astral combat". The astral '
           + 'soak card built its TN from the Power alone until 0.6 (rules-check 0.6.0, Finding 5)',
     impl:   ({ power = 0 } = {}) => Math.max(2, Number(power) || 0),
+  },
+  {
+    id:     'dual-beings-resist-astral-with-willpower',
+    suite:  'astral-soak',
+    ...ACTOR, method: 'astralResistPool',
+    was:    'SR3 p.175 - "Willpower or Force for astral beings, or Body for dual beings". The astral '
+          + 'soak card offered Willpower to everyone until 0.6.2 (TODO 132)',
+    impl:   ({ attributes = {} } = {}) => ({ key: 'willpower', label: 'Willpower',
+      value: Math.max(attributes?.willpower?.value ?? 0, attributes?.willpower?.base ?? 0, 1), combatPool: false }),
+  },
+  {
+    id:     'new-weapons-arrive-in-hand',
+    suite:  'ready-weapon',
+    ...READY, method: 'putAwayOnCreate',
+    was:    'every weapon created on a character read as ready (the field\'s initial true), so new characters '
+          + 'started with their whole kit, grenades included, in hand (TODO 135/136)',
+    impl:   () => false,
   },
 ];

@@ -20,6 +20,10 @@ paths:
 `system.astralMode`, toggled on the Magic tab (one at a time; clicking the active one clears it):
 `''` none · `'physical'` (grey badge) · `'dual'` (amber "Dual Nat.") · `'astral'` (purple; **INT + 20 + 1d6** initiative).
 
+**Astral damage resistance** · *SR3 p.174-175* (TODO 132) — `SR3EActor.astralResistPool`: only `'astral'` is an
+astral being (**Willpower**, or a spirit's **Force**, no Combat Pool); every other mode, including none, is a
+dual being in astral combat (**Body + Combat Pool**, p.174). TN is `astralSoakTN` (Power − Mystic Armor).
+
 ### Sustained spells  · *SR3 p.178, p.180, p.183*
 > "+2 target modifier per sustained spell applied to all tests, including Drain Resistance Tests (but not
 > normal Damage Resistance Tests). You can simultaneously sustain a number of spells equal to your Sorcery rating." — p.178
@@ -91,7 +95,13 @@ Sheet shows available / total.
 (staged by the caster's successes); dodge, carry and soak are the gunshot's. The soak halves **Impact** only
 (`SR3EActor.elementalImpact`, round down) — ⚠ Mystic Armor is halved with it. ⚠ **Every target in an area
 elemental spell dodges** (the maintainer; MITS p.56). ⚠ `_soakButtonHtml` lists its fields — `elemental` is
-one. Secondary effects stated, never applied. Cover/visibility on the cast: TODO 131.
+one. Secondary effects stated, never applied.
+- **Cover and visibility** (p.183, TODO 131): the cast opens the ranged GM window through
+  `sr3e.spell.negotiate` (same `gmApprovesTN` rule) after targets, **before the Spell Pool**. Rows are
+  `spellModifierGroups()` — no Gear; an **area** cast also drops Target (p.182: behind a wall still gets
+  cooked), so its visibility is the caster's view of the centre. ⚠ Range is never a row (*"regardless of
+  range"*); ⚠ **touch range never asks** (p.182, `SR3EItem.spellTakesGMWindow`). The GM's difference moves
+  `tn` and every `targetTNs` entry alike; wounds and sustaining stay `rollPool`'s.
 
 **Spell Defense is declared per mage, on that mage's client.** `rollInitiative()` ends with
 `SR3EActor.promptSpellDefenseDeclaration(combatants)`: one `sr3e.spelldefense.declare` per Sorcery-capable

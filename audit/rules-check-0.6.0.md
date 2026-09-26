@@ -236,7 +236,7 @@ at a surged Force 7), now asserted against the shipped `+1(DL+2)`. The Quick Sta
 (p.34: *"Target Number: Target's Body"*, *"Armor is ineffective"*, a fixed 4S) is a simplified
 introduction that contradicts the core book, and was **not** followed.
 
-**Left over — TODO [131](../TODO.md#131):** p.183's *"Cover, visibility … modifiers apply"*. Injury and
+**Left over — TODO [131](../TODO-DONE.md#131):** p.183's *"Cover, visibility … modifiers apply"*. Injury and
 sustaining already reach the cast through `rollPool`; cover and visibility need the GM's TN window
 on an elemental cast.
 
@@ -300,7 +300,7 @@ soak card names it. A troll's natural armour is **not** a second deduction: SR3'
 level 2, hit by an astral 5M, got TN **3**. (The first live attempt derived 0 because the test actor
 lacked `magicType: 'Adept'`, which the adept-power loop requires — setup, not a bug.)
 
-**Noticed, not fixed — TODO [132](../TODO.md#132):** the same p.175 sentence begins *"The Damage
+**Noticed, not fixed — TODO [132](../TODO-DONE.md#132):** the same p.175 sentence begins *"The Damage
 Resistance Test is resolved using Willpower or Force for astral beings, or **Body for dual beings**"*,
 and p.174 counts *"Astrally perceiving characters and other dual beings"* together. The astral soak card
 always offers Willpower. Brought to the maintainer rather than decided here.

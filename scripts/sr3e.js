@@ -44,6 +44,8 @@ import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { Hands } from './data/hands.mjs';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3EOpenSteps } from './SR3EOpenSteps.js';
+import { OpenSteps } from './data/open-steps.mjs';
+import { CyberWeapons } from './data/cyber-weapons.mjs';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
 import * as Sustaining from './data/sustaining.mjs';
@@ -440,6 +442,18 @@ Hooks.on('deleteActor', async (actor) => {
 Hooks.on('preCreateItem', (document, data) => {
   const fill = ratingOnCreate(document.type, data?.system?.rating, document.name);
   if (fill !== undefined) document.updateSource({ 'system.rating': fill });
+});
+
+/* Nothing arrives in hand (TODO 135/136). `system.ready` starts true so sheets from before Ready
+ * Weapon keep fighting, which also made every NEW weapon — a starting character's whole kit, every
+ * grenade — read as drawn. A weapon created on a character or NPC starts put away; armour starts off.
+ * ⚠ Only embedded creates fire this: copying a whole actor (`sr3e.actor.create`) keeps its state. */
+Hooks.on('preCreateItem', (document) => {
+  const parentType = document.parent?.documentName === 'Actor' ? document.parent.type : null;
+  if (ReadyWeapon.putAwayOnCreate(document, parentType)) document.updateSource({ 'system.ready': false });
+  if (parentType && document.type === 'armor' && document.getFlag('The2ndChumming3e', 'worn')) {
+    document.updateSource({ 'flags.The2ndChumming3e.worn': false });
+  }
 });
 
 // Auto-assign newly created Matrix/vehicle actors to their organisational folder,
@@ -1808,7 +1822,8 @@ function _sr3eReadyWeapons(actor) {
     if (i.type === 'firearm') {
       if (!trackAmmo || (i.system.loadedRounds ?? 0) > 0) out.push(i);
     } else if (i.type === 'melee') {
-      if (actor.system.equippedMelee === i.id) out.push(i);
+      // The equipped weapon, and every body weapon — a spur or hand razors need no Equip (TODO 151).
+      if (actor.system.equippedMelee === i.id || ReadyWeapon.isBodyWeapon(i)) out.push(i);
     } else if (i.type === 'thrown' || i.type === 'projectile') {
       const consumable = i.type === 'thrown' || thrownCats.includes(i.system.category ?? '');
       if (i.type === 'projectile' && i._usesNockedAmmo?.()) {        // bow / crossbow (nocked)
@@ -2394,8 +2409,34 @@ function _recordEssenceHoleOnRemoval(item) {
     .catch(err => console.error('SR3E | essence hole record failed:', err));
 }
 
+/**
+ * An implanted weapon gets its weapon entry (TODO 151) — the `melee` (CYB) or `firearm` item the weapons
+ * list, the attack picker and the melee flow read. Gated to the active GM like the Essence hooks above,
+ * so one client makes the write; an implant fitted with no GM online is offered on the weapons tab.
+ */
+function _armImplant(item) {
+  const actor = item?.actor;
+  if (!actor || !game.users.activeGM?.isSelf) return;
+  if (!CyberWeapons.installed(item)) return;
+  if (!CyberWeapons.missing([...actor.items]).some(i => i.id === item.id)) return;
+  actor.createEmbeddedDocuments('Item', [CyberWeapons.weaponData(item)])
+    .catch(err => console.error('SR3E | implant weapon create failed:', err));
+}
+
+/** Removing the implant removes the weapon entry made for it — linked ones only, never by name. */
+function _disarmImplant(item) {
+  const actor = item?.actor;
+  if (!actor || !game.users.activeGM?.isSelf) return;
+  if (!CyberWeapons.isCyberweapon(item)) return;
+  const ids = CyberWeapons.linkedTo(item.id, actor.items).map(w => w.id);
+  if (ids.length) actor.deleteEmbeddedDocuments('Item', ids)
+    .catch(err => console.error('SR3E | implant weapon delete failed:', err));
+}
+
 Hooks.on('createItem', (item) => _ratchetEssenceOnInstall(item));
 Hooks.on('deleteItem', (item) => _recordEssenceHoleOnRemoval(item));
+Hooks.on('createItem', (item) => _armImplant(item));
+Hooks.on('deleteItem', (item) => _disarmImplant(item));
 
 // Inject red warning below the matrixRuleset setting in Configure Settings.
 Hooks.on('renderSettingsConfig', (_app, html) => {
@@ -3318,8 +3359,13 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
-  // Assign damage button — applies final staged damage directly to actor wound track
+  // Assign damage button — applies final staged damage directly to actor wound track.
+  // ⚠ ONCE per button, table-wide (TODO 137): the card renders in the chat pop-up, the chat log and
+  // on every client, and `_usedButtons` knows only this browser. The GM checks, applies and records
+  // the step on the MESSAGE in one queued write, and every copy reads that record back here.
   html.querySelectorAll('.sr-assign-damage-btn').forEach((btn, i) => {
+    const role = OpenSteps.key('sr-assign-damage-btn', i);
+    if (_actedOn(message)[role]) return SR3EActor.spendAssignButton(btn);
     if (!_checkBtn(btn, mid, 'assign', i)) return;
     // Writes to a wound track. Owner or GM only — an attacker must not be able to
     // apply damage to the actor they just shot.
@@ -3332,7 +3378,11 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'assign', i)) return;
-      await SR3EActor.handleAssignDamage(btn);
+      const who = game.actors.get(_payloadActorId(_payload(btn) ?? {}))?.name;
+      const res = await SR3EActor.handleAssignDamage(btn,
+        { messageId: mid, role, label: who ? `Assign the wound — ${who}` : 'Assign the wound' });
+      // Nothing written: this client may try again.
+      if (res === 'failed') _usedButtons.delete(`${mid}|assign|${i}`);
     });
   });
 

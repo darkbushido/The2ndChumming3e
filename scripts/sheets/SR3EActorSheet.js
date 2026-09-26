@@ -4,6 +4,7 @@ import { itemRating, vcrLevel, displayName } from '../data/item-rating.mjs';
 import { CarriedLoad } from '../data/carried-load.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import { BookPage } from '../data/book-page.mjs';
+import { CyberWeapons } from '../data/cyber-weapons.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -36,6 +37,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       rollWeapon:     SR3EActorSheet._onRollWeapon,
       rollMelee:      SR3EActorSheet._onRollMelee,
       rollUnarmed:    SR3EActorSheet._onRollUnarmed,
+      armImplant:     SR3EActorSheet._onArmImplant,
       attributeBoost: SR3EActorSheet._onAttributeBoost,
       toggleAugmentation: SR3EActorSheet._onToggleAugmentation,
       takeDrug:       SR3EActorSheet._onTakeDrug,
@@ -110,6 +112,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         toggleFullDefense:  SR3EActorSheet._onToggleFullDefense,
         resetRecoil:        SR3EActorSheet._onResetRecoil,
         reloadWeapon:       SR3EActorSheet._onReloadWeapon,
+        unloadWeapon:       SR3EActorSheet._onUnloadWeapon,
         rollCybercombat:    SR3EActorSheet._onRollCybercombat,
         rollHackingAction:  SR3EActorSheet._onRollHackingAction,
         rollDumpshock:      SR3EActorSheet._onRollDumpshock,
@@ -605,6 +608,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const body         = sys.attributes?.body?.value ?? 0;
     const overflowVal  = w.overflow?.value ?? 0;
     const isDead       = game.sr3e.SR3EActor.deadFromOverflow(overflowVal, body);
+    // ⚠ TODO 138: the wound row's text that comes and goes with damage (☠ DEAD, "unconscious",
+    // the TN/Init modifier) is rendered LAST in the row, after 🩹 Healing, Stim and Carry. Placed
+    // before them, it pushed the Healing button sideways every time a character was hurt.
     const deadHtml     = isDead
       ? `<span style="color:var(--sr-red);font-weight:bold;font-size:12px;letter-spacing:1px;margin-left:6px;">☠ DEAD</span>`
       : '';
@@ -660,9 +666,20 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 <input type="number" name="system.wounds.overflow.value" value="${overflowVal}" min="0"
                   style="width:38px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:2px 4px;font-size:13px;"
                   title="Dead if this exceeds Body (${body})"/>
-                ${deadHtml}
               </div>
             </div>
+            <button type="button" class="btn-sm" data-action="openHealing"
+                    title="Guided healing: stabilize, first aid, magic, a doctor, healing stages and the bill (SR3 pp.126-129)">🩹 Healing</button>
+            <span class="wound-mod-display">
+              Stim: <input type="number" name="system.stimBonus" value="${sys.stimBonus ?? 0}" min="0"
+                style="width:36px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:1px 2px;font-size:12px;"
+                title="Wound modifier reduction from stim patches or drugs (does not heal wounds)"/>
+            </span>
+            ${(() => { const rb = sys.attributes?.reaction?.reactionBonus ?? 0; return rb !== 0 ? `<span class="wound-mod-display" style="color:var(--sr-accent)">Init Mod: <strong>${rb > 0 ? '+' : ''}${rb}</strong></span>` : ''; })()}
+            <span class="wound-mod-display">
+              Carry: <strong>${weightDisplay}</strong>
+            </span>
+            ${deadHtml}
             ${(() => {
               const wm    = sys.woundMod    ?? 0;
               const stim  = sys.stimBonus   ?? 0;
@@ -678,17 +695,6 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 return `<span class="wound-mod-display" style="color:var(--sr-red)">TN+${-wm}, Init${wm}</span>`;
               return '';
             })()}
-            <button type="button" class="btn-sm" data-action="openHealing"
-                    title="Guided healing: stabilize, first aid, magic, a doctor, healing stages and the bill (SR3 pp.126-129)">🩹 Healing</button>
-            <span class="wound-mod-display">
-              Stim: <input type="number" name="system.stimBonus" value="${sys.stimBonus ?? 0}" min="0"
-                style="width:36px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:1px 2px;font-size:12px;"
-                title="Wound modifier reduction from stim patches or drugs (does not heal wounds)"/>
-            </span>
-            ${(() => { const rb = sys.attributes?.reaction?.reactionBonus ?? 0; return rb !== 0 ? `<span class="wound-mod-display" style="color:var(--sr-accent)">Init Mod: <strong>${rb > 0 ? '+' : ''}${rb}</strong></span>` : ''; })()}
-            <span class="wound-mod-display">
-              Carry: <strong>${weightDisplay}</strong>
-            </span>
           </div>
         </div>
       </header>`;
@@ -1350,6 +1356,17 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         : ''}
     </div>`;
 
+  // Implants that are weapons but have no weapon entry yet (TODO 151) — fitted before the fix, or with
+  // no GM online to make it. Offered, not made: the owner presses Add.
+  const unarmedImplants = CyberWeapons.missing([...actor.items]);
+  const implantOffer = unarmedImplants.length ? unarmedImplants.map(c => `
+    <div class="item-row" data-item-id="${c.id}" style="color:var(--sr-amber)">
+      <span class="item-name">⚠ ${c.name} <span style="font-size:10px">(implant — no weapon entry yet)</span></span>
+      <span class="item-cell col-xs">${CyberWeapons.damage(c.system.description) ?? '—'}</span>
+      <div class="item-controls"><button type="button" class="btn-add" data-action="armImplant" data-item-id="${c.id}"
+        title="Add this implant's weapon, so it can attack">+ Add weapon</button></div>
+    </div>`).join('') : '';
+
   // Built-in unarmed attack — always available, not a real item (uses STR / Unarmed Combat).
   const _unarmedStr = actor.system.attributes?.strength?.value ?? actor.system.attributes?.strength?.base ?? 1;
   const unarmedBuiltinRow = `
@@ -1485,6 +1502,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="list-header"><span>Name</span><span class="col-xs" title="Damage">Dam.</span><span>Reach</span><span class="col-xs" title="Concealability">Con.</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
         ${unarmedBuiltinRow}
         ${unarmedRows}
+        ${implantOffer}
         <button type="button" class="btn-add" data-action="itemCreate" data-type="melee">+ Add Unarmed/Cyber</button>
       </div>`,
   };
@@ -1688,12 +1706,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const ammo     = actor.items.filter(i => i.type === 'ammunition');
     const ammoRows = ammo.length ? ammo.map(a => {
       const typeLabel = SR3E.ammoTypes[a.system.ammoType ?? 'regular']?.label ?? 'Regular';
-      const mech      = a.system.loadMechanism ?? 'c';
+      const load      = AmmoStock.loadLabel(a.system, SR3E.ammoLoadMechanisms);   // loose rounds are not clips (TODO 133)
       return `
       <div class="item-row" data-item-id="${a.id}">
         <span class="item-name">${a.name}</span>
         <span class="item-cell">${typeLabel}</span>
-        <span class="item-cell" title="${SR3E.ammoLoadMechanisms[mech] ?? mech}">${mech}</span>
+        <span class="item-cell" title="${load.title}">${load.code}</span>
         <span class="item-cell">${this._ammoStockCell(a)}</span>
         ${this._itemControls(a.id, false)}
       </div>`;
@@ -2549,12 +2567,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const aRows = ammo.length ? ammo.map(a => {
       const typeLabel = SR3E.ammoTypes[a.system.ammoType ?? 'regular']?.label ?? 'Regular';
-      const mech      = a.system.loadMechanism ?? 'c';
+      const load      = AmmoStock.loadLabel(a.system, SR3E.ammoLoadMechanisms);   // loose rounds are not clips (TODO 133)
       return `
       <div class="item-row" data-item-id="${a.id}">
         <span class="item-name">${a.name}</span>
         <span class="item-cell">${typeLabel}</span>
-        <span class="item-cell" title="${SR3E.ammoLoadMechanisms[mech] ?? mech}">${mech}</span>
+        <span class="item-cell" title="${load.title}">${load.code}</span>
         <span class="item-cell">${this._ammoStockCell(a)}</span>
         ${this._itemControls(a.id, false, 'rollWeapon', false)}
       </div>`;
@@ -3286,6 +3304,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   _itemControls(itemId, hasRoll, rollAction = 'rollWeapon', stored = null, rollDisabled = false, reloadId = null) {
     const reloadIcon = reloadId ? `<i class="fas fa-arrows-rotate rollable" data-action="reloadWeapon" data-item-id="${reloadId}"
       title="Reload — load ammo from stock" style="cursor:pointer"></i>` : '';
+    // ⏏ Unload (TODO 134) — only a gun with rounds in it, and only when rounds are counted.
+    const gun = reloadId ? this.actor.items.get(reloadId) : null;
+    const unloadIcon = gun?.type === 'firearm' && (gun.system.loadedRounds ?? 0) > 0
+      && game.settings.get('The2ndChumming3e', 'trackAmmo')
+      ? `<i class="fas fa-eject rollable" data-action="unloadWeapon" data-item-id="${reloadId}"
+      title="Unload — the unfired rounds go back into stock as loose rounds" style="cursor:pointer"></i>` : '';
     const storeIcon = stored !== null ? `<i class="fas fa-home" data-action="toggleStored" data-item-id="${itemId}"
       style="color:${stored ? 'var(--sr-gold)' : 'var(--sr-dim)'}"
       title="${stored ? 'Remove from storage' : 'Put in storage'}"></i>` : '';
@@ -3293,10 +3317,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       : rollDisabled
         ? `<i class="fas fa-dice-d6" style="opacity:0.25;cursor:not-allowed;text-decoration:line-through" title="Out of ammo — reload / restock"></i>`
         : `<i class="fas fa-dice-d6 rollable" data-action="${rollAction}" data-item-id="${itemId}" title="Shift+Click to use Real Dice"></i>`;
-    // Order: ready, reload, dice, edit, house (store), trash
+    // Order: ready, reload, unload, dice, edit, house (store), trash
     return `<div class="item-controls">
       ${this._readyIcon(itemId)}
       ${reloadIcon}
+      ${unloadIcon}
       ${rollIcon}
       <i class="fas fa-edit" data-action="itemEdit" data-item-id="${itemId}" title="Edit"></i>
       ${storeIcon}
@@ -3326,6 +3351,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const item = this.actor.items.get(target.dataset.itemId);
     if (!item) return;
     const now = !game.sr3e.ReadyWeapon.isReady(item);
+    if (now) game.sr3e.SR3EActionLedger?.begin(this.actor);   // its own snapshot, not the last flow's (TODO 152)
     await item.update({ 'system.ready': now });
     if (now) game.sr3e.SR3EActionLedger?.charge(this.actor, 'readyWeapon', item.name);
     // More in hand than there are hands (TODO 49) — said, never refused.
@@ -3849,6 +3875,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async _onRollUnarmed(_ev, _target) {
     const SR3EItem = game.sr3e.SR3EItem;
     await SR3EItem.rollMeleeAttack(this.actor, SR3EItem._unarmedWeapon(this.actor));
+  }
+
+  /** Add an implant's weapon entry (TODO 151) — the same item the install hook makes. */
+  static async _onArmImplant(_ev, target) {
+    const implant = this.actor.items.get(target.dataset.itemId);
+    const data    = implant ? CyberWeapons.weaponData(implant) : null;
+    if (!data) return;
+    await this.actor.createEmbeddedDocuments('Item', [data]);
   }
 
   static async _onRollSpell(ev, target) {
@@ -4566,6 +4600,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const weapon = this.actor.items.get(target.dataset.itemId);
     if (!weapon) return;
     await weapon.reload();
+  }
+
+  static async _onUnloadWeapon(_ev, target) {
+    const weapon = this.actor.items.get(target.dataset.itemId);
+    if (!weapon) return;
+    await weapon.unload();
   }
 
   static async _onRollCybercombat(_ev, _target) {
