@@ -6967,3 +6967,16 @@ Where to look, from a read of the code (unconfirmed):
   flow run from the *base* actor's sheet charges whichever unlinked token of it holds the phase.
 
 This is a bug, so the fix goes on `main`.
+
+## 197. ✅ Ledger entries appear on other characters — **reported 2026-09-27** · fixed `1726af72`
+
+The real cause of the report in [#193](#193): Buzzz and Velvet carried every one of each
+other's entries, and neither was a duplicate. Every array default in the data models was a literal
+(`initial: []`) — one array shared by every document created without the field — and Foundry commits
+an update into it in place. A change on one character appeared in the ledger of every character that
+had none yet, and was saved for real on that character's next write. Reproduced live; all ten array
+defaults are factories now, and `tests/ledger.test.mjs` fails on a literal.
+
+⚠ **Only the history was wrong, never the numbers**: `system.karma` / `system.nuyen` are each
+character's own field. Ledgers already saved with another character's entries stay that way until a GM
+clears them.
