@@ -168,4 +168,17 @@ export async function run(t) {
   t.is('every Spend-calculator purchase names what it bought',
     (read('scripts/sheets/SR3EActorSheet.js').match(/ledgerReason: `/g) ?? []).length, 6);
   t.ok('a healing bill names the treatment', /ledgerReason: `Medical: /.test(read('scripts/SR3EHealing.js')));
+
+  /* ── A copy does not inherit its source's history · TODO 193 ─────────────── */
+  const copied = { system: { ledger: [L.entry({ kind: 'nuyen', delta: 100, when: 1 })] } };
+  t.ok('a duplicate carrying entries starts fresh',
+    L.inherited({ ...copied, _stats: { duplicateSource: 'Actor.abc' } }));
+  t.ok('a compendium import keeps its history (how a character moves between worlds)',
+    !L.inherited({ ...copied, _stats: { compendiumSource: 'Compendium.x.Actor.abc' } }));
+  t.ok('a brand-new actor has nothing to clear', !L.inherited({ system: {} }));
+  t.ok('a duplicate with an empty ledger needs no write', !L.inherited({ system: { ledger: [] }, _stats: { duplicateSource: 'Actor.abc' } }));
+  t.ok('the preCreateActor hook clears an inherited ledger',
+    /Ledger\.inherited\(_data\)\)\s*document\.updateSource\(\{\s*'system\.ledger':\s*\[\]/.test(read('scripts/sr3e.js')));
+  t.ok('the GM copy verb clears the ledger (it deletes _stats, so the hook cannot see a copy)',
+    /delete data\._stats;[\s\S]{0,300}data\.system\.ledger = \[\]/.test(read('scripts/SR3EQuery.js')));
 }

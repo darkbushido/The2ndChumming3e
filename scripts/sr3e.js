@@ -498,6 +498,9 @@ Hooks.on('preCreateActor', (document, _data, options, _userId) => {
     }
   }
 
+  // A duplicate starts with an empty 📒 Ledger — the source's history is not the copy's (TODO 193).
+  if (Ledger.inherited(_data)) document.updateSource({ 'system.ledger': [] });
+
   // Fresh world creates (not imported from a compendium) are live actors.
   if (!_data._stats?.compendiumSource) {
     document.updateSource({ flags: { 'The2ndChumming3e': { isTemplate: false } } });

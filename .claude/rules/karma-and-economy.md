@@ -67,6 +67,10 @@ under **📒 Ledger** on the Bio tab.
 - ⚠ Delta 0 is not an entry (forms re-send unchanged fields).
 - ⚠ **Append-only for players, compared by CONTENT** (`Ledger.reconcile`). Mutant `ledger-rewrite-checks-length-only`.
 - ⚠ Capped at `MAX_ENTRIES` (500), oldest trimmed. A write to the ledger itself is never described.
+- ⚠ **A copy starts with an empty ledger** (TODO 193): Foundry's Duplicate copies `system.ledger`, so the copy
+  showed the source's history as its own. `Ledger.inherited` (`_stats.duplicateSource`) in `preCreateActor`,
+  and the `sr3e.actor.create` copy branch clears it itself (it deletes `_stats`). A **compendium import keeps**
+  its history. Mutant `ledger-duplicate-inherits-history`.
 
 ### Buying gear  · *SR3 pp.272-273* — TODO 82
 Rules `scripts/data/purchasing.mjs` (pure); flow `scripts/SR3EPurchase.js` (**🛒 Buy gear…**, Bio tab):

@@ -1773,6 +1773,15 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'ledger-duplicate-inherits-history',
+    suite:  'ledger',
+    ...LEDGER, method: 'inherited',
+    was:    'a duplicated character kept its source\'s whole ledger (TODO 193) - Foundry\'s Duplicate '
+          + 'copies system.ledger with everything else, so the copy showed the other character\'s '
+          + 'awards and purchases as its own: "the ledger is adding things to the wrong characters"',
+    impl:   () => false,
+  },
+  {
     id:     'availability-reduction-shortens-the-wait',
     suite:  'purchasing',
     ...BUY, method: 'reduceAvailability',

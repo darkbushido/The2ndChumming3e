@@ -105,6 +105,21 @@ export const Ledger = {
     return { ok: true, why: '' };
   },
 
+  /**
+   * Is a new actor arriving with ANOTHER actor's history? · TODO 193.
+   *
+   * ⚠ **A copy is a new character, not the old one.** Foundry's Duplicate copies the whole document,
+   * `system.ledger` included, so the copy showed the source's awards and purchases as its own —
+   * reported in play as "the ledger is adding things to the wrong characters". A duplicate carries
+   * `_stats.duplicateSource`; the GM copy verb (`sr3e.actor.create` with `fromActorId`) clears the
+   * ledger itself, because it deletes `_stats`.
+   * A compendium import is NOT a copy here: it is how a character is moved between worlds, and its
+   * history should travel with it.
+   */
+  inherited(data) {
+    return !!data?._stats?.duplicateSource && Ledger.of(data?.system).length > 0;
+  },
+
   /** A running total per kind, for reconciling the ledger against the sheet's numbers. */
   totals(entries) {
     const t = {};

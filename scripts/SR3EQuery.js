@@ -526,6 +526,9 @@ export class SR3EQuery {
           // ⚠ `_stats` carries `compendiumSource`, which is what `preCreateActor` reads to flag
           // a document as a template. Copying it makes every deployed copy a template again.
           delete data._stats;
+          // …and the 📒 Ledger is the source's history, not the copy's (TODO 193). With `_stats`
+          // gone, `Ledger.inherited` in the `preCreateActor` hook cannot tell this is a copy.
+          if (data.system) data.system.ledger = [];
           if (name) data.name = name;
         } else if (source) {
           const [collection, docId] = String(source).split('|');
