@@ -2573,6 +2573,7 @@ owned by Player2. JS only — reload the tab, no restart.
 
 - [ ] The sheet has a **📒 Ledger** tab at the end of the tab bar. It lists **every** entry, newest first,
       with date and time, From → To and By.
+- [ ] Type a new Nuyen value in the box → its row's **Why** reads **By hand**, never a dash (both tabs).
 - [ ] The **Bio** tab shows only the latest **8**, then "… and N older — see the 📒 Ledger tab"; the link
       switches to the tab.
 - [ ] As the **GM**, each row on the Ledger tab has a ✕. Click one → a confirm names the change, its reason

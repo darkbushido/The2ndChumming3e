@@ -212,4 +212,11 @@ export async function run(t) {
     && /DialogV2\.confirm\(\{\s*window: \{ title: `Remove a ledger entry/.test(sheet));
   t.ok('…and writes only the ledger, never the totals',
     /await actor\.update\(\{ 'system\.ledger': next \}\);/.test(sheet));
+
+  /* ── "Why" is never a dash ─────────────────────────────────────────────── */
+  t.is('an entry with no reason reads "By hand"', L.why(L.entry({ kind: 'nuyen', delta: 5 })), 'By hand');
+  t.is('…so does a blank one', L.why({ reason: '   ' }), 'By hand');
+  t.is('a named reason is shown as it is', L.why({ reason: 'Session rewards' }), 'Session rewards');
+  t.ok('the sheet shows L.why, never a dash, for the reason',
+    /\$\{esc\(L\.why\(e\)\)\}/.test(sheet) && !/e\.reason \|\| '—'/.test(sheet) && /String\(L\.why\(e\)\)/.test(sheet));
 }

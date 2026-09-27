@@ -159,6 +159,16 @@ export const Ledger = {
     return list.filter((_e, i) => i !== idx);
   },
 
+  /**
+   * The "Why" an entry shows (the maintainer, 2026-09-27: never a dash). A write that named no reason
+   * came from someone typing in the box — every tool that changes karma or nuyen passes
+   * `ledgerReason` — so it reads "By hand".
+   */
+  why(entry) {
+    const r = str(entry?.reason).trim();
+    return r || 'By hand';
+  },
+
   /** `+40` / `−1,500` — the sign is the point, so it is never dropped. */
   formatDelta(kind, delta) {
     const d = num(delta);

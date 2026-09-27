@@ -3251,7 +3251,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const amount = (kind, n) => `${kind === 'nuyen' ? '¥' : ''}${Number(n || 0).toLocaleString('en-US')}`;
     const cols = full ? `92px 74px 74px 120px 1fr 80px${gm ? ' 22px' : ''}` : '52px 74px 74px 1fr';
     return `
-      <h3 class="section-hdr" style="margin-top:1rem" title="Every change to Good Karma, Nuyen and the Karma Pool. Append-only — the totals stay editable, and an unexplained edit is logged with no reason.">📒 Ledger</h3>
+      <h3 class="section-hdr" style="margin-top:1rem" title="Every change to Good Karma, Nuyen and the Karma Pool. Append-only — the totals stay editable, and an edit nothing explains reads “By hand”.">📒 Ledger</h3>
       <div class="list-header" style="grid-template-columns:${cols}">
         <span>When</span><span>What</span><span>Change</span>${full ? '<span>From → To</span>' : ''}<span>Why</span>${full ? '<span>By</span>' : ''}${gm ? '<span></span>' : ''}
       </div>
@@ -3261,7 +3261,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <span style="font-size:11px">${esc(L.TRACKED[e.kind === 'pool' ? 'karmaPool' : e.kind]?.label ?? e.kind)}</span>
           <span style="font-size:11px;color:${colour(e.delta)}">${esc(L.formatDelta(e.kind, e.delta))}</span>
           ${full ? `<span style="font-size:11px;color:var(--sr-muted)">${esc(amount(e.kind, e.from))} → ${esc(amount(e.kind, e.to))}</span>` : ''}
-          <span style="font-size:11px;color:var(--sr-muted)" title="${esc(e.by ? `by ${e.by}` : '')}">${esc(e.reason || '—')}</span>
+          <span style="font-size:11px;color:var(--sr-muted)" title="${esc(e.by ? `by ${e.by}` : '')}">${esc(L.why(e))}</span>
           ${full ? `<span style="font-size:11px;color:var(--sr-muted)">${esc(e.by || '—')}</span>` : ''}
           ${gm ? `<button type="button" class="btn-xs" data-action="deleteLedgerEntry" data-idx="${idx}" data-entry="${esc(JSON.stringify(e))}"
                    title="GM: remove this entry from the history. The totals are not changed.">✕</button>` : ''}
@@ -3293,7 +3293,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const e = expected ?? {};
     const ok = await foundry.applications.api.DialogV2.confirm({
       window: { title: `Remove a ledger entry — ${actor.name}` },
-      content: `<p>Remove <strong>${L.formatDelta(e.kind, e.delta)}</strong> (${String(e.reason || 'no reason').replace(/[&<>"]/g, '')}, by ${String(e.by || '—').replace(/[&<>"]/g, '')}) from ${actor.name}'s history?</p>
+      content: `<p>Remove <strong>${L.formatDelta(e.kind, e.delta)}</strong> (${String(L.why(e)).replace(/[&<>"]/g, '')}, by ${String(e.by || '—').replace(/[&<>"]/g, '')}) from ${actor.name}'s history?</p>
         <p style="color:var(--sr-muted);font-size:11px">Only the record goes. Their ${e.kind === 'nuyen' ? 'nuyen' : 'karma'} stays as it is.</p>`,
     });
     if (!ok) return;
