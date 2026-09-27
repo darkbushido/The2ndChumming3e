@@ -6944,3 +6944,26 @@ prints (read with `pdftotext -raw`/`-table`, which keep the row). The audit comp
 - `sources.md`: "Sympathetic link → Material link (MitS p.34-36)" — the Material Link passage is on p.37.
 - `awakened-primer.md`: the mage description ("a discipline of formulae and elements") is the hermetic text on
   p.158, not pp.163-165; the "Land of Promise in Sperethiel" gloss is not on p.321.
+
+## 193. ✅ The 📒 Ledger records entries on the wrong character — **reported 2026-09-27** · fixed `b42fdbae`
+
+**Cause, confirmed live 2026-09-27:** Foundry's Duplicate (and the GM copy verb `sr3e.actor.create`
+with `fromActorId`) copied `system.ledger`, so the copy showed its source's awards and purchases as
+its own. A copy now starts empty (`Ledger.inherited` in `preCreateActor`; the verb clears it itself);
+a compendium import keeps its history. ⚠ Copies made **before** the fix still carry the old entries —
+a GM can clear them (players cannot rewrite the ledger).
+
+Reported by the maintainer: *"the ledger seems to be adding things to the wrong characters."* Not
+reproduced yet. Needed first: **which ledger** — the karma / nuyen 📒 Ledger on the sheet
+([#79](#79)) or the combat action ledger on the tracker ([#48](TODO.md#48)) — what was done,
+and which character the entry landed on.
+
+Where to look, from a read of the code (unconfirmed):
+- **📒 karma / nuyen** — `SR3EActor.recordLedger` writes on the actor being updated, so a wrong
+  entry means the wrong actor was updated, or the entry was copied: a character **copied** from
+  another (Foundry's Duplicate, `sr3e.actor.create` copying an actor, a compendium template) carries
+  the source's whole `system.ledger`; an **unlinked token** starts from its base actor's ledger.
+- **Action ledger** — `SR3EActionLedger.activeFor` matches a non-token actor by `actorId`, so a
+  flow run from the *base* actor's sheet charges whichever unlinked token of it holds the phase.
+
+This is a bug, so the fix goes on `main`.

@@ -32,19 +32,19 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**53 open.** 142 done — see [TODO-DONE.md](TODO-DONE.md).
+**53 open.** 143 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 🔴 Confirmed bugs, still open | [137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[193](#193) The 📒 Ledger records entries on the wrong character |
+| 🔴 Confirmed bugs, still open | [137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[189](#189) Vehicle collisions — with a character, another vehicle, or a barrier<br>[195](#195) A concealment view — what someone is carrying, and how well it is hidden |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[177](#177) Astral damage: a dual being's natural armour reduces the Power<br>[191](#191) Buff spells on yourself or an ally should not need to hit |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings" |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [153](#153) Give the 📒 Ledger its own tab on the character sheet<br>[154](#154) 🛒 Buy gear: search the compendium, or drag an item in<br>[190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[192](#192) 💴 Make changing funds easier — a ± button, and giving money to another player<br>[194](#194) Guides: how to do rigging and decking |
+| 🗂 Unsorted | [153](#153) Give the 📒 Ledger its own tab on the character sheet<br>[154](#154) 🛒 Buy gear: search the compendium, or drag an item in<br>[190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[192](#192) 💴 Make changing funds easier — a ± button, and giving money to another player<br>[194](#194) Guides: how to do rigging and decking<br>[196](#196) Healing takes time — record the result, apply it when the time has passed |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -297,23 +297,6 @@ The full list is in `audit/rules-check-0.6.1.md` (167 units, "Real rules the cod
 
 Each needs its own item if the maintainer wants it built; several (SINs, fencing, permits, credsticks) are a small
 feature set on their own. They are features, so they are built on branches, not in a 0.6.x bug-fix release.
-
-## 193. The 📒 Ledger records entries on the wrong character — **reported 2026-09-27**
-
-Reported by the maintainer: *"the ledger seems to be adding things to the wrong characters."* Not
-reproduced yet. Needed first: **which ledger** — the karma / nuyen 📒 Ledger on the sheet
-([#79](TODO-DONE.md#79)) or the combat action ledger on the tracker ([#48](#48)) — what was done,
-and which character the entry landed on.
-
-Where to look, from a read of the code (unconfirmed):
-- **📒 karma / nuyen** — `SR3EActor.recordLedger` writes on the actor being updated, so a wrong
-  entry means the wrong actor was updated, or the entry was copied: a character **copied** from
-  another (Foundry's Duplicate, `sr3e.actor.create` copying an actor, a compendium template) carries
-  the source's whole `system.ledger`; an **unlinked token** starts from its base actor's ledger.
-- **Action ledger** — `SR3EActionLedger.activeFor` matches a non-token actor by `actorId`, so a
-  flow run from the *base* actor's sheet charges whichever unlinked token of it holds the phase.
-
-This is a bug, so the fix goes on `main`.
 
 ### 📕 Rules not implemented
 
@@ -2561,6 +2544,13 @@ GM-routed verb. This is a feature, so it goes on a branch.
 Players need a walkthrough of rigging and of decking — the rules and how to do each in the system.
 `guides/TODO.md` items 3 (full decking page) and 4 (full rigging page) cover the rules side; this
 adds the how-to. This is guide work, not a code change.
+
+## 196. Healing takes time — record the result, apply it when the time has passed — **requested 2026-09-27**
+
+Today guided healing (`SR3EHealing`) can be done all at once: the
+roll gives a healing time and the wound can be lowered straight away. Handy, but the GM needs a way
+to say *"this is the result, and it lands when that much time has gone by"* — the heal is pending
+until time passes. Pairs with [#190](#190) (a month going by). This is a feature, so it goes on a branch.
 
 ### 📌 Notes & parked
 
