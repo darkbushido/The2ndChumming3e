@@ -296,7 +296,7 @@ export class SkillData extends foundry.abstract.TypeDataModel {
       specialisations: new ArrayField(new SchemaField({
         name:  new StringField({ initial: '' }),
         level: new NumberField({ integer: true, initial: 1, min: 1, max: 2 }),
-      }), { initial: [] }),
+      }), { initial: () => [] }),
       description:     new HTMLField({ initial: '', required: false }),
     };
   }
@@ -598,7 +598,7 @@ export class CyberdeckData extends foundry.abstract.TypeDataModel {
         matrixConditionMonitor: new SchemaField({
           boxes:          new NumberField({ integer: true, initial: 10, min: 1 }),
           current:        new NumberField({ integer: true, initial: 0, min: 0 }),
-          woundPenalties: new ArrayField(new NumberField({ integer: true }), { initial: [0, 1, 2, 3, 4, 5] }),
+          woundPenalties: new ArrayField(new NumberField({ integer: true }), { initial: () => [0, 1, 2, 3, 4, 5] }),
         }),
         burnedSlots: new ArrayField(new ObjectField()),
       }),

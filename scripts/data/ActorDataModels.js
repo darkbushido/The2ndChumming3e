@@ -44,7 +44,7 @@ function sustainedSpellsField() {
     spellItemId: new StringField({ initial: '' }),
     target:      new StringField({ initial: '' }),
     focus:       new BooleanField({ initial: false }),
-  }), { initial: [] });
+  }), { initial: () => [] });
 }
 
 /** Basic persisted attribute: base, value, mod, force */
@@ -142,7 +142,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // The karma / nuyen ledger · TODO 79. Append-only for players; every entry is derived from
       // the WRITE in SR3EActor._preUpdate, so no call site can forget to record one.
       // { when, kind: 'karma'|'nuyen'|'pool', delta, from, to, reason, by } — scripts/data/ledger.mjs.
-      ledger:                  new ArrayField(new ObjectField(), { initial: [] }),
+      ledger:                  new ArrayField(new ObjectField(), { initial: () => [] }),
       // Attribute Stress · M&M pp.124-131 (TODO 109), keyed by attribute name ({ body: 3, … }).
       // ⚠ An ObjectField because only the attributes that have taken Stress appear.
       attributeStress:         new ObjectField(),
@@ -183,7 +183,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       matrixUserMode:          new StringField({ initial: '' }),
       activeHostId:            new StringField({ initial: '' }),
       currentMatrixNode:       new StringField({ initial: '' }),
-      matrixMarks:             new ArrayField(new StringField(), { initial: [] }),
+      matrixMarks:             new ArrayField(new StringField(), { initial: () => [] }),
       linkLocked:              new BooleanField({ initial: false }),
       astralMode:              new StringField({ initial: '' }),
       magicTradition:          new StringField({ initial: '' }),
@@ -275,7 +275,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       // The karma / nuyen ledger · TODO 79. Append-only for players; every entry is derived from
       // the WRITE in SR3EActor._preUpdate, so no call site can forget to record one.
       // { when, kind: 'karma'|'nuyen'|'pool', delta, from, to, reason, by } — scripts/data/ledger.mjs.
-      ledger:                  new ArrayField(new ObjectField(), { initial: [] }),
+      ledger:                  new ArrayField(new ObjectField(), { initial: () => [] }),
       attributeStress:  new ObjectField(),   // TODO 109 — see CharacterData
       tlex:             new ObjectField(),   // TODO 110 — see CharacterData
       cybermancy:       new ObjectField(),   // TODO 111 — see CharacterData
@@ -293,7 +293,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       matrixUserMode:   new StringField({ initial: '' }),
       activeHostId:     new StringField({ initial: '' }),
       currentMatrixNode: new StringField({ initial: '' }),
-      matrixMarks:      new ArrayField(new StringField(), { initial: [] }),
+      matrixMarks:      new ArrayField(new StringField(), { initial: () => [] }),
       linkLocked:       new BooleanField({ initial: false }),
       astralMode:       new StringField({ initial: '' }),
       magicTradition:   new StringField({ initial: '' }),
@@ -394,9 +394,9 @@ export class AgentData extends foundry.abstract.TypeDataModel {
       hostSecurityTier: new StringField({ initial: 'Green' }),
       operatorActorId:  new StringField({ initial: '' }),
       activeHostId:     new StringField({ initial: '' }),
-      additionalSkills: new ArrayField(new ObjectField(), { initial: [] }),
-      utilities:        new ArrayField(new ObjectField(), { initial: [] }),
-      specialAbilities: new ArrayField(new ObjectField(), { initial: [] }),
+      additionalSkills: new ArrayField(new ObjectField(), { initial: () => [] }),
+      utilities:        new ArrayField(new ObjectField(), { initial: () => [] }),
+      specialAbilities: new ArrayField(new ObjectField(), { initial: () => [] }),
       woundValue:       new NumberField({ integer: true, initial: 0, min: 0 }),
       notes:            new HTMLField({ initial: '', required: false }),
     };

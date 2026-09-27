@@ -179,6 +179,14 @@ export async function run(t) {
   t.ok('a duplicate with an empty ledger needs no write', !L.inherited({ system: { ledger: [] }, _stats: { duplicateSource: 'Actor.abc' } }));
   t.ok('the preCreateActor hook clears an inherited ledger',
     /Ledger\.inherited\(_data\)\)\s*document\.updateSource\(\{\s*'system\.ledger':\s*\[\]/.test(read('scripts/sr3e.js')));
+  // ⚠ TODO 197: a literal `initial: []` is ONE array shared by every document created without the
+  // field, and Foundry commits an update into it in place — one character's ledger entry appeared on
+  // every other character without one (Buzzz and Velvet, 2026-09-27). Every array default is a factory.
+  const literal = ['scripts/data/ActorDataModels.js', 'scripts/data/ItemDataModels.js']
+    .flatMap(f => [...read(f).matchAll(/initial:\s*(\[|\{)/g)].map(() => f));
+  t.is(`no data-model field has a literal array/object default${literal.length ? ` — ${literal.join(', ')}` : ''}`, literal.length, 0);
+  t.ok('the ledger default is a factory',
+    /ledger:\s+new ArrayField\(new ObjectField\(\), \{ initial: \(\) => \[\] \}\)/.test(read('scripts/data/ActorDataModels.js')));
   t.ok('the GM copy verb clears the ledger (it deletes _stats, so the hook cannot see a copy)',
     /delete data\._stats;[\s\S]{0,300}data\.system\.ledger = \[\]/.test(read('scripts/SR3EQuery.js')));
 }

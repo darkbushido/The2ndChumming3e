@@ -71,6 +71,10 @@ under **📒 Ledger** on the Bio tab.
   showed the source's history as its own. `Ledger.inherited` (`_stats.duplicateSource`) in `preCreateActor`,
   and the `sr3e.actor.create` copy branch clears it itself (it deletes `_stats`). A **compendium import keeps**
   its history. Mutant `ledger-duplicate-inherits-history`.
+- 🔴 **Array defaults are FACTORIES — `initial: () => []`, never `initial: []`** (TODO 197). A literal is one
+  array shared by every document created without the field, and Foundry commits updates into it in place: one
+  character's ledger entry appeared on every character without one, and was saved for real on their next write.
+  `tests/ledger.test.mjs` fails on any literal array/object default in the data models.
 
 ### Buying gear  · *SR3 pp.272-273* — TODO 82
 Rules `scripts/data/purchasing.mjs` (pure); flow `scripts/SR3EPurchase.js` (**🛒 Buy gear…**, Bio tab):
