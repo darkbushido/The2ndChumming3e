@@ -403,7 +403,16 @@ export async function createTestActor(gmPage, {
 
     const actor = await Actor.create({ name: n, type: ty2, ownership, system: sys });
     if (!actor) return { error: `Actor.create returned nothing for "${n}".` };
-    if (its.length) await actor.createEmbeddedDocuments('Item', its);
+    if (its.length) {
+      const made = await actor.createEmbeddedDocuments('Item', its);
+      // A weapon arrives on a character put away (TODO 135, the `preCreateItem` hook), whatever
+      // `system.ready` it was created with. A spec that states `ready: true` means it drawn —
+      // otherwise `rollWeapon` stops at the "not ready" prompt and the spec times out on the
+      // dialog after it, which reads as a targeting fault.
+      const drawn = made.filter((it, i) => its[i]?.system?.ready === true && it.system.ready !== true);
+      if (drawn.length) await actor.updateEmbeddedDocuments('Item',
+        drawn.map(it => ({ _id: it.id, 'system.ready': true })));
+    }
 
     // ⚠ A token is not decoration — without one the actor cannot be TARGETED.
     //

@@ -67,6 +67,8 @@ const pistol = {
     // Set regardless of the `trackAmmo` world setting: when it is ON, `rollWeapon` bails at
     // the top on an empty magazine, and the spec would fail for a reason unrelated to it.
     loadedAmmoType: 'regular', loadedRounds: 15,
+    // Drawn: a weapon arrives put away (TODO 135) and would stop at the Ready Weapon prompt.
+    ready: true,
   },
 };
 

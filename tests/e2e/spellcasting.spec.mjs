@@ -89,9 +89,10 @@ test.describe('spellcasting — caster and target act on their own halves', () =
   });
 
   test('the caster cannot roll the target\'s resistance, and vice versa',
-    async ({ player2, player3 }) => {
+    async ({ player2, player3, janitor }) => {
     const caster = player2;
     const victim = player3;
+    const gm     = janitor;
 
     const before = await actorState(caster.page, CASTER);
 
@@ -102,7 +103,9 @@ test.describe('spellcasting — caster and target act on their own halves', () =
       await s.rollSpell();
     `);
 
-    // Three dialogs, all on the caster: Force/damage level, target, spell pool.
+    // Three dialogs on the caster — Force/damage level, target, spell pool — and between the
+    // last two the GM's cover/visibility window on the GM (every non-touch spell since 0.6.2,
+    // SR3 p.182). Its default TN is the victim's Willpower; set it unchanged.
     //
     // ⚠ The Force dialog's button is labelled "Next", not Confirm — its `action` is
     // 'confirm' but that is not what `getByRole` matches on. A wrong name here does not
@@ -111,6 +114,7 @@ test.describe('spellcasting — caster and target act on their own halves', () =
     // been closed" and points at teardown rather than at the selector.
     await answerDialog(caster.page, /Cast Manabolt/i, /^next$/i);
     await selectTarget(caster.page, VICTIM);
+    await answerDialog(gm.page, /^GM — /, /set target number/i, 30_000);
     await answerDialog(caster.page, /Spell Pool/i, /confirm/i);
 
     // The result card carries both halves. There is no `data-twocorner` here — this is not
