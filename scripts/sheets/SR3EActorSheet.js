@@ -18,6 +18,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /*  Static configuration                                                */
   /* ------------------------------------------------------------------ */
 
+  /** How many 📒 Ledger rows the Bio tab shows before pointing at the Ledger tab · TODO 153. */
+  static BIO_LEDGER_ROWS = 8;
+
   static DEFAULT_OPTIONS = {
     classes: ['sr3e', 'sheet', 'actor'],
     tag: 'form',
@@ -53,6 +56,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       applyStress:      SR3EActorSheet._onApplyStress,        // TODO 109
       woundEffects:     SR3EActorSheet._onWoundEffects,        // TODO 129
       buyGear:          SR3EActorSheet._onBuyGear,             // TODO 82
+      deleteLedgerEntry: SR3EActorSheet._onDeleteLedgerEntry,  // TODO 153
       toggleTlex:       SR3EActorSheet._onToggleTlex,         // TODO 110
       toggleCybermancy: SR3EActorSheet._onToggleCybermancy,   // TODO 111
       toggleCds:        SR3EActorSheet._onToggleCds,          // TODO 111
@@ -578,6 +582,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           ${this._tabCyber(actor, sys)}
           ${this._tabMatrix(actor, sys)}
           ${this._tabStored(actor)}
+          ${this._tabLedger(actor)}
         </div>
       </div>`;
   }
@@ -815,6 +820,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ['matrix',      'Matrix'],
       ['stored',      'Storage'],
       ['contacts',    'Contacts'],
+      ['ledger',      '📒 Ledger'],
     ];
     return `<nav class="sheet-tabs">
       ${tabs.map(([id, label]) =>
@@ -3224,31 +3230,74 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * ⚠ **A record, not a gate.** The numbers above it stay editable; an unexplained edit simply
    * lands here with an empty reason. Everyone who can see the sheet can read it (it is their own
    * history), and `_preUpdate` is what stops a player rewriting it.
-   * ⚠ **Newest first, and capped in the UI** — the whole array is on the document, so a campaign's
-   * worth of entries must not render as a campaign's worth of rows.
+   * ⚠ **Two views** (TODO 153): the Bio tab shows the latest `BIO_LEDGER_ROWS` and links to the
+   * 📒 Ledger tab, which shows every entry with from → to, who, and the GM's ✕. The whole array is
+   * on the document, capped at `Ledger.MAX_ENTRIES`, so the full view is bounded.
+   * ⚠ **The ✕ is GM-only and removes history, never the totals** (`Ledger.without`, which refuses a
+   * row the sheet drew before another write moved the entries).
    */
-  _ledgerTable(actor) {
+  _ledgerTable(actor, { full = false } = {}) {
     const L = game.sr3e.Ledger;
     const all = L.of(actor.system);
-    if (!all.length) return '';
-    const rows = L.recent(all, { limit: 30 });
+    if (!all.length) return full ? '<p class="sr-roll-meta" style="color:var(--sr-muted)">No karma or nuyen changes recorded yet.</p>' : '';
+    const rows = L.rows(all, { limit: full ? null : SR3EActorSheet.BIO_LEDGER_ROWS });
+    const gm = full && game.user.isGM;
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const when = ms => { const d = new Date(Number(ms) || 0);
-      return Number.isFinite(d.getTime()) ? d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''; };
+      if (!Number.isFinite(d.getTime())) return '';
+      return full ? d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+        : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); };
     const colour = d => (Number(d) < 0 ? 'var(--sr-red)' : 'var(--sr-green)');
+    const amount = (kind, n) => `${kind === 'nuyen' ? '¥' : ''}${Number(n || 0).toLocaleString('en-US')}`;
+    const cols = full ? `92px 74px 74px 120px 1fr 80px${gm ? ' 22px' : ''}` : '52px 74px 74px 1fr';
     return `
-      <h3 class="section-hdr" style="margin-top:1rem" title="Every change to Good Karma, Nuyen and the Karma Pool. Append-only — the totals above stay editable, and an unexplained edit is logged with no reason.">📒 Ledger</h3>
-      <div class="list-header" style="grid-template-columns:52px 74px 74px 1fr">
-        <span>When</span><span>What</span><span>Change</span><span>Why</span>
+      <h3 class="section-hdr" style="margin-top:1rem" title="Every change to Good Karma, Nuyen and the Karma Pool. Append-only — the totals stay editable, and an unexplained edit is logged with no reason.">📒 Ledger</h3>
+      <div class="list-header" style="grid-template-columns:${cols}">
+        <span>When</span><span>What</span><span>Change</span>${full ? '<span>From → To</span>' : ''}<span>Why</span>${full ? '<span>By</span>' : ''}${gm ? '<span></span>' : ''}
       </div>
-      ${rows.map(e => `
-        <div class="item-row" style="grid-template-columns:52px 74px 74px 1fr">
+      ${rows.map(({ entry: e, idx }) => `
+        <div class="item-row sr-ledger-row" style="grid-template-columns:${cols}">
           <span style="font-size:10px;color:var(--sr-muted)">${esc(when(e.when))}</span>
           <span style="font-size:11px">${esc(L.TRACKED[e.kind === 'pool' ? 'karmaPool' : e.kind]?.label ?? e.kind)}</span>
           <span style="font-size:11px;color:${colour(e.delta)}">${esc(L.formatDelta(e.kind, e.delta))}</span>
+          ${full ? `<span style="font-size:11px;color:var(--sr-muted)">${esc(amount(e.kind, e.from))} → ${esc(amount(e.kind, e.to))}</span>` : ''}
           <span style="font-size:11px;color:var(--sr-muted)" title="${esc(e.by ? `by ${e.by}` : '')}">${esc(e.reason || '—')}</span>
+          ${full ? `<span style="font-size:11px;color:var(--sr-muted)">${esc(e.by || '—')}</span>` : ''}
+          ${gm ? `<button type="button" class="btn-xs" data-action="deleteLedgerEntry" data-idx="${idx}" data-entry="${esc(JSON.stringify(e))}"
+                   title="GM: remove this entry from the history. The totals are not changed.">✕</button>` : ''}
         </div>`).join('')}
-      ${all.length > rows.length ? `<div class="sr-roll-meta" style="font-size:10px;color:var(--sr-dim)">… and ${all.length - rows.length} older</div>` : ''}`;
+      ${!full && all.length > rows.length ? `<div class="sr-roll-meta" style="font-size:10px;color:var(--sr-dim)">… and ${all.length - rows.length} older —
+        <a data-action="switchTab" data-tab="ledger" style="cursor:pointer;color:var(--sr-accent)">see the 📒 Ledger tab</a></div>` : ''}`;
+  }
+
+  /** The 📒 Ledger tab · TODO 153 — every entry, with the GM's ✕. */
+  _tabLedger(actor) {
+    return `<div class="tab ${this._activeTab === 'ledger' ? 'active' : ''}" data-tab="ledger" style="overflow-y:auto">
+      ${this._ledgerTable(actor, { full: true })}
+    </div>`;
+  }
+
+  /**
+   * GM ✕ on a ledger row · TODO 153. Removes the entry from the history after a confirm; the karma /
+   * nuyen totals are NOT changed (say so in the dialog — a GM who wants the number back edits it).
+   */
+  static async _onDeleteLedgerEntry(_event, target) {
+    if (!game.user.isGM) return;
+    const actor = this.actor;
+    const idx = Number(target.dataset.idx);
+    let expected = null;
+    try { expected = JSON.parse(target.dataset.entry ?? 'null'); } catch { expected = null; }
+    const L = game.sr3e.Ledger;
+    const next = L.without(L.of(actor.system), idx, expected);
+    if (!next) { ui.notifications.warn('The ledger changed since the sheet was drawn — nothing was removed. Try again.'); return; }
+    const e = expected ?? {};
+    const ok = await foundry.applications.api.DialogV2.confirm({
+      window: { title: `Remove a ledger entry — ${actor.name}` },
+      content: `<p>Remove <strong>${L.formatDelta(e.kind, e.delta)}</strong> (${String(e.reason || 'no reason').replace(/[&<>"]/g, '')}, by ${String(e.by || '—').replace(/[&<>"]/g, '')}) from ${actor.name}'s history?</p>
+        <p style="color:var(--sr-muted);font-size:11px">Only the record goes. Their ${e.kind === 'nuyen' ? 'nuyen' : 'karma'} stays as it is.</p>`,
+    });
+    if (!ok) return;
+    await actor.update({ 'system.ledger': next });
   }
 
   /**

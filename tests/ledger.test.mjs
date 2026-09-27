@@ -189,4 +189,27 @@ export async function run(t) {
     /ledger:\s+new ArrayField\(new ObjectField\(\), \{ initial: \(\) => \[\] \}\)/.test(read('scripts/data/ActorDataModels.js')));
   t.ok('the GM copy verb clears the ledger (it deletes _stats, so the hook cannot see a copy)',
     /delete data\._stats;[\s\S]{0,300}data\.system\.ledger = \[\]/.test(read('scripts/SR3EQuery.js')));
+
+  /* ── The 📒 Ledger tab and the GM's ✕ · TODO 153 ─────────────────────────── */
+  const hist3 = [L.entry({ kind: 'karma', delta: 3, when: 10 }), L.entry({ kind: 'nuyen', delta: 50, when: 30 }),
+                 L.entry({ kind: 'nuyen', delta: -5, when: 20 })];
+  t.eq('rows are newest first and carry their STORED index', L.rows(hist3).map(r => r.idx), [1, 2, 0]);
+  t.eq('…and the Bio view takes only the latest', L.rows(hist3, { limit: 2 }).map(r => r.idx), [1, 2]);
+  t.eq('the ✕ removes exactly that entry', L.without(hist3, 2, hist3[2]).map(e => e.delta), [3, 50]);
+  t.ok('…and returns a new array, leaving the old one alone', L.without(hist3, 2, hist3[2]) !== hist3 && hist3.length === 3);
+  t.is('a stale click (the entry at that index changed) removes nothing', L.without(hist3, 2, hist3[0]), null);
+  t.is('an index off the end removes nothing', L.without(hist3, 7, hist3[0]), null);
+
+  const sheet = read('scripts/sheets/SR3EActorSheet.js');
+  t.ok('the sheet has a 📒 Ledger tab', /\['ledger',\s+'📒 Ledger'\]/.test(sheet) && /\$\{this\._tabLedger\(actor\)\}/.test(sheet));
+  t.ok('the Bio tab shows only BIO_LEDGER_ROWS, between 5 and 10',
+    (() => { const n = Number(sheet.match(/static BIO_LEDGER_ROWS = (\d+);/)?.[1]); return n >= 5 && n <= 10; })()
+    && /limit: full \? null : SR3EActorSheet\.BIO_LEDGER_ROWS/.test(sheet));
+  t.ok('…and links to the Ledger tab when there are more', /data-action="switchTab" data-tab="ledger"/.test(sheet));
+  t.ok('the ✕ is drawn for the GM only, on the full view', /const gm = full && game\.user\.isGM;/.test(sheet));
+  t.ok('…its handler refuses a player too', /_onDeleteLedgerEntry\(_event, target\) \{\s*if \(!game\.user\.isGM\) return;/.test(sheet));
+  t.ok('…goes through Ledger.without, and asks first', /L\.without\(L\.of\(actor\.system\), idx, expected\)/.test(sheet)
+    && /DialogV2\.confirm\(\{\s*window: \{ title: `Remove a ledger entry/.test(sheet));
+  t.ok('…and writes only the ledger, never the totals',
+    /await actor\.update\(\{ 'system\.ledger': next \}\);/.test(sheet));
 }

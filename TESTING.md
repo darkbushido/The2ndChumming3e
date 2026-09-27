@@ -2565,3 +2565,19 @@ already on a character (the migration reaches those), and a fresh drag from each
 - [ ] An **owned** weapon with a stock picture switches after one reload (the 0.6.2 pictures migration); one
       whose picture you chose yourself does **not** change.
 - [ ] Drag a weapon onto a character whose item list shows icons → the drawn icon appears, not a texture.
+
+## 43. The 📒 Ledger tab and the GM's ✕ (TODO 153, `feature/ledger-tab`)
+
+**Prerequisites:** a character with more than 8 ledger entries (change nuyen or karma by hand a few times),
+owned by Player2. JS only — reload the tab, no restart.
+
+- [ ] The sheet has a **📒 Ledger** tab at the end of the tab bar. It lists **every** entry, newest first,
+      with date and time, From → To and By.
+- [ ] The **Bio** tab shows only the latest **8**, then "… and N older — see the 📒 Ledger tab"; the link
+      switches to the tab.
+- [ ] As the **GM**, each row on the Ledger tab has a ✕. Click one → a confirm names the change, its reason
+      and who made it, and says the totals stay. Confirm → the row is gone; **Nuyen / Good Karma unchanged**.
+- [ ] Cancel the confirm → nothing changes.
+- [ ] As **Player2** on the same sheet: the Ledger tab shows the rows **without** ✕.
+- [ ] Stale click: GM opens the Ledger tab, Player2 then changes their nuyen, GM clicks ✕ on a row before the
+      sheet redraws → "The ledger changed since the sheet was drawn — nothing was removed."
