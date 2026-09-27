@@ -42,6 +42,12 @@ const record = (name, ok, detail = '', hint = '') => {
   end(ok);
   return ok;
 };
+// ⚠ A gate that did not run is SKIP, never PASS — a green line must mean the check happened.
+const skip = (name, detail) => {
+  results.push({ name, ok: true, skipped: true, detail, hint: '' });
+  end(true);
+  return true;
+};
 
 /* Progress — so a long gate is visibly working, not frozen. `begin` announces a gate and a
    heartbeat prints every 10 s until `record` closes it. When the gate's command prints "[n/N] …"
@@ -133,7 +139,7 @@ if (!FAST) {
   const m = r.out.match(/(\d+)\/(\d+) mutants killed/);
   record('mutants', r.ok, m ? m[0] : tail(r.out, 12),
     'A surviving mutant means a rule has no test. node tests/mutate.mjs names it.');
-} else record('mutants', true, 'skipped (--fast)');
+} else skip('mutants', 'skipped (--fast)');
 
 /* ── 4. The work list ────────────────────────────────────────────────────────── */
 {
@@ -168,7 +174,7 @@ if (!FAST) {
 /* ── 7. The guides site: it must build, and its links must resolve ───────────── */
 if (!FAST) {
   const guides = path.join(ROOT, 'guides');
-  if (!existsSync(guides)) record('guides', true, 'no guides/ in this checkout — skipped');
+  if (!existsSync(guides)) skip('guides', 'no guides/ in this checkout');
   else {
     begin('guides build (jekyll)');
     const build = await run('bundle', ['exec', 'jekyll', 'build'], { timeout: 10 * 60_000, shell: true, cwd: guides });
@@ -185,7 +191,7 @@ if (!FAST) {
         'Every internal href and #anchor must resolve. The output names each bad link.');
     }
   }
-} else record('guides', true, 'skipped (--fast)');
+} else skip('guides', 'skipped (--fast)');
 
 /* ── 8. Playwright — needs a RUNNING Foundry with the test world loaded ──────── */
 if (WANT_E2E && !FAST) {
@@ -207,7 +213,7 @@ if (WANT_E2E && !FAST) {
       'npx playwright test. A failure that dies in milliseconds usually means a client had not '
       + 'joined yet — re-run alone before treating it as a code fault.');
   }
-} else record('e2e (Playwright)', true, WANT_E2E ? 'skipped (--fast)' : 'not requested (pass --e2e)');
+} else skip('e2e (Playwright)', WANT_E2E ? 'skipped (--fast)' : 'not requested (pass --e2e)');
 
 /* ── 9. Version, tag and release notes — only when cutting a release ─────────── */
 if (VERSION) {
@@ -273,7 +279,7 @@ if (VERSION) {
     dirty.out.trim() ? tail(dirty.out, 8) : 'nothing uncommitted',
     'Commit or revert before tagging, so the tag names exactly what was verified.');
 } else {
-  record('version / notes / rules check', true, 'not requested (pass --version v0.6.0)');
+  skip('version / notes / rules check', 'not requested (pass --version v0.6.0)');
 }
 
 /* ── Verdict ─────────────────────────────────────────────────────────────────── */
@@ -281,7 +287,7 @@ const failed = results.filter(r => !r.ok);
 const width  = Math.max(...results.map(r => r.name.length));
 console.log('\nRelease preflight\n' + '─'.repeat(60));
 for (const r of results) {
-  console.log(`${r.ok ? 'PASS' : 'FAIL'}  ${r.name.padEnd(width)}  ${r.detail.split('\n')[0]}`);
+  console.log(`${r.skipped ? 'SKIP' : r.ok ? 'PASS' : 'FAIL'}  ${r.name.padEnd(width)}  ${r.detail.split('\n')[0]}`);
   if (!r.ok) {
     for (const line of r.detail.split('\n').slice(1)) console.log(`        │ ${line}`);
     if (r.hint) console.log(`        → ${r.hint}`);
@@ -293,7 +299,10 @@ if (failed.length) {
   console.log('Nothing was changed. Fix the gates above and run it again.');
   process.exit(1);
 }
-console.log(`all ${results.length} gates passed.`);
+const skipped = results.filter(r => r.skipped);
+if (skipped.length) {
+  console.log(`${results.length - skipped.length} gates passed, ${skipped.length} SKIPPED (not verified): ${skipped.map(r => r.name).join(', ')}.`);
+} else console.log(`all ${results.length} gates passed.`);
 if (VERSION) {
   console.log('\n⚠ Still the maintainer\'s, and not this script\'s:');
   console.log('  · the TODO 121 rules check itself (the gate only proves a record exists)');

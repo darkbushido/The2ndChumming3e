@@ -74,6 +74,10 @@ export async function run(t) {
   t.ok('the PARTIAL warning reads the record\'s status line, not every caveat inside an entry',
     /const partial = \/[^\n]*\/i\.test\(statusLine\)/.test(pre) && !/\.test\(auditText\)/.test(pre));
 
+  t.ok('a gate that did not run reports SKIP, never PASS',
+    /const skip = /.test(pre) && !/record\([^)]*,\s*true,\s*'[^']*(skipped|not requested)/.test(pre)
+    && /r\.skipped \? 'SKIP'/.test(pre) && /SKIPPED \(not verified\)/.test(pre));
+
   /* ── release-notes ─────────────────────────────────────────────────────────── */
   t.ok('an unmatched commit subject lands in Other rather than being dropped',
     /buckets\.other\.push\(c\)/.test(notes));
