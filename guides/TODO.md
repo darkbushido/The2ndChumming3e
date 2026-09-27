@@ -20,6 +20,22 @@ printed page, verify against the PDF, and put non-book material in a `.house` bo
    thresholds, Stress. The cyberware grades page links here in prose only.
 6. **Called shots, Full Defense and knockdown** could each go on the combat page. All have
    SR3 citations in the Foundry repo's CLAUDE.md to start from.
+16. **Contacts: keeping them and raising their level** (probably `street/contacts.md`).
+    SR3 has no rule for this: contacts are gained and deepened only through roleplaying
+    (SR3 p.254), and the level benefits are on p.254–256 (Level 2: +1 die on Etiquette and
+    resists with Willpower (5); Level 3: +2 dice and Willpower (6)). The rules are in the
+    *Shadowrun Companion*, "Improving Contact Levels" (p.60). Improving a contact through
+    roleplaying is at the GM's call. The optional Karma route costs twice the new level
+    (4 Karma for Level 2, 6 for Level 3), one level at a time, and the GM approves it. There
+    is an annual upkeep (the Contact Upkeep Table), and neglect drops a level. The Companion
+    also covers losing contacts (Bad Reputation, Hung Out to Dry) and Friends of a Friend
+    (p.62). ⚠ The Companion is image-only (item 9). The figures above come from a rough OCR,
+    so check every number and the printed page against the scans before publishing.
+    The page must also **explain Loyalty and Connection** better (the maintainer, 2026-09-27):
+    what each measures, what a higher rating does at the table, and how they relate to the
+    contact's level. The system's contact item has both as 1–6 ratings. Find which book
+    defines them and cite its printed page. Don't assume the core book does, since SR3 core
+    describes contacts by level (p.254).
 
 ## Accuracy follow-ups
 
