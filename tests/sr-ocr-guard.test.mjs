@@ -20,7 +20,8 @@ export async function run(t) {
   const tracked = execFileSync('git', ['ls-files', '--', 'SR-OCR'], { cwd: root, encoding: 'utf8' }).trim();
   t.is('NOTHING under SR-OCR/ is tracked by git', tracked, '');
 
-  t.ok('.gitignore ignores /SR-OCR/', /^\/SR-OCR\/\s*$/m.test(read('.gitignore')));
+  // The OCR now lives beside the repo (Documents\SR-OCR), so .gitignore no longer names it; the hook and
+  // the tracked-files check above still stop a copy dropped back inside the checkout.
 
   const hookPath = new URL('.githooks/pre-commit', root);
   t.ok('the pre-commit hook exists', existsSync(hookPath));

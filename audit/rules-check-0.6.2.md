@@ -10,11 +10,11 @@ below is the maintainer's to decide.
 
 | Verdict | Units |
 | :--- | ---: |
-| match | 509 |
+| match | 515 |
 | diverges | 1 |
 | guide-differs | 0 |
-| not-implemented | 166 |
-| unverifiable | 144 |
+| not-implemented | 170 |
+| unverifiable | 134 |
 | no-rule-claim | 407 |
 | unchecked | 0 |
 
@@ -31,7 +31,7 @@ Code: `packs-src/sr3e-sr3-gear/spare-clip.27d3735181b12497.json:21`, `scripts/da
 The 5¥ cost matches (a generic 'Spare Clip' gear item at cost 5), but it is not functionally linked to the reload system — nothing ties it to a specific gun's capacity. The 'not interchangeable from weapon to weapon even within the same class' restriction is not modelled: AmmoStock.fits() matches any reload of the same loading mechanism to any gun taking that mechanism, deliberately (see #35's house-rule note, which documents this as the table's simplification).
 
 
-## Real rules the code does not implement (166)
+## Real rules the code does not implement (170)
 
 ### hiring/combat-mage.md#3
 
@@ -133,6 +133,26 @@ Guide: | Permit (possess / possess and transport) | 5% / 10% of the item's price
 
 Searched: `/permit (test|cost)|Etiquette[^\n]*permit|possess and transport/` — no matches.
 
+### hiring/index.md#11
+
+Guide: ### Baseline Shadowrun Payment Table  *(SRComp p.100)*
+
+> "BASELINE SHADOWRUN PAYMENT TABLE" — Shadowrun 3e - Shadowrun Companion {FASA7905} [no-text].pdf, printed p.100
+
+Searched: `/bottom-line fee|baseline.{0,12}payment|Smuggling Run/` — no matches.
+
+The Baseline Shadowrun Payment Table heading. Shadowrun Companion, printed p.100 (PDF p.101 of the scan). The scan is image-only and the OCR loses the shaded fee column, so the heading is the OCR evidence; the 13 rows and fees were read from the page images (SR-OCR/supplements, Shadowrun Companion - Payment and Reward) and the maintainer confirmed them against the book on 2026-09-26. The system has no payment table, so the guide states a book rule the code does not implement.
+
+### hiring/index.md#13
+
+Guide: | Assassination | 5,000¥ |
+
+> "BASELINE SHADOWRUN PAYMENT TABLE" — Shadowrun 3e - Shadowrun Companion {FASA7905} [no-text].pdf, printed p.100
+
+Searched: `/bottom-line fee|baseline.{0,12}payment|Smuggling Run/` — no matches.
+
+Assassination 5,000¥ — a row of the Baseline Shadowrun Payment Table. Shadowrun Companion, printed p.100 (PDF p.101 of the scan). The scan is image-only and the OCR loses the shaded fee column, so the heading is the OCR evidence; the 13 rows and fees were read from the page images (SR-OCR/supplements, Shadowrun Companion - Payment and Reward) and the maintainer confirmed them against the book on 2026-09-26. The system has no payment table, so the guide states a book rule the code does not implement.
+
 ### hiring/index.md#51
 
 Guide: | Ward maintenance (freelance or firm) | about 100¥ an hour, per magician | SR3 p.174 |
@@ -158,6 +178,26 @@ Guide: | Fake ID, Rating 1–4 | Rating × Rating × 1,000¥ | SR3 p.239 |
 > "Availability Rating/24 hours Rating/72 hours Rating/14 days Rating/30 days Street Index 1 1 1 1" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.239
 
 Searched: `/credstick|criminal SIN|forged (credstick|ID)|fake SIN/` — no matches.
+
+### hiring/index.md#71
+
+Guide: | [Combat Mage](combat-mage/) | Security: 200¥ a day; destruction or assassination: 5,000¥ |
+
+> "BASELINE SHADOWRUN PAYMENT TABLE" — Shadowrun 3e - Shadowrun Companion {FASA7905} [no-text].pdf, printed p.100
+
+Searched: `/bottom-line fee|baseline.{0,12}payment|Smuggling Run/` — no matches.
+
+Pairs Combat Mage with the Companion's Security 200¥/day and destruction/assassination 5,000¥ rows; the figures match the table, the pairing itself is the guide's judgement. Shadowrun Companion, printed p.100 (PDF p.101 of the scan). The scan is image-only and the OCR loses the shaded fee column, so the heading is the OCR evidence; the 13 rows and fees were read from the page images (SR-OCR/supplements, Shadowrun Companion - Payment and Reward) and the maintainer confirmed them against the book on 2026-09-26. The system has no payment table, so the guide states a book rule the code does not implement.
+
+### hiring/index.md#73
+
+Guide: | [Physical Adept](physical-adept/) | Bodyguard: 200¥ a day; assassination: 5,000¥ |
+
+> "BASELINE SHADOWRUN PAYMENT TABLE" — Shadowrun 3e - Shadowrun Companion {FASA7905} [no-text].pdf, printed p.100
+
+Searched: `/bottom-line fee|baseline.{0,12}payment|Smuggling Run/` — no matches.
+
+Pairs Physical Adept with the Companion's Bodyguard 200¥/day and assassination 5,000¥ rows; the figures match the table, the pairing itself is the guide's judgement. Shadowrun Companion, printed p.100 (PDF p.101 of the scan). The scan is image-only and the OCR loses the shaded fee column, so the heading is the OCR evidence; the 13 rows and fees were read from the page images (SR-OCR/supplements, Shadowrun Companion - Payment and Reward) and the maintainer confirmed them against the book on 2026-09-26. The system has no payment table, so the guide states a book rule the code does not implement.
 
 ### hiring/infiltrator.md#11
 
@@ -1721,7 +1761,7 @@ Guide: - On the Local Fines and Punishment Table, **(T) Class E Magic** covers
 Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 
 
-## Could not be verified (144)
+## Could not be verified (134)
 
 - **hiring/combat-mage.md#6** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — the table sits on a grey shaded panel with no OCR text layer, so pdftotext finds nothing. Read from the rendered page image: the Security Duty row is 200¥/day, agreeing with this unit.
 - **hiring/combat-mage.md#7** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
@@ -1732,12 +1772,6 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **hiring/decker.md#6** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Hacking row is 1,000¥ x Host's Security Value, agreeing with this unit.
 - **hiring/decker.md#7** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Datasteal row is 20% value of data, agreeing with this unit.
 - **hiring/decker.md#8** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Encryption/Decryption row is 200¥ per MP, agreeing with this unit.
-- **hiring/decker.md#12** — 'Decks are expensive (SR3 p.304)': the deck price table is on the cyberdeck pages; the row-by-row figures are in the next units.
-- **hiring/decker.md#14** — Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass.
-- **hiring/decker.md#15** — Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass.
-- **hiring/decker.md#16** — Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass.
-- **hiring/decker.md#17** — Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass.
-- **hiring/decker.md#18** — Stock cyberdeck prices (Allegiance Sigma 70,000¥, Sony CTY-360-D 125,000¥, Novatech Hyperdeck-6 250,000¥, Renraku Kraftwerk-8 600,000¥, Novatech Slimcase-10 1,500,000¥ — SR3 p.304). The deck table columns cannot be read row by row from the text layer; the shipped Orthodox cyberdeck pack was not compared to the guide's figures in this pass.
 - **hiring/decker.md#35** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
 - **hiring/decker.md#42** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
 - **hiring/face.md#3** — Composite errata callout. Commanding Voice (SOTA64 p.64-65) and Kinesics (p.66) exist and 'Authoritative Voice' is absent from the core text; a Rating 4 fake ID costs 16,000¥ and Rating 6 costs 30,000¥ by the Creating a Credstick Table (p.239, agrees); Corporate Download is not in the library. Fake IDs are not modelled in the system.
@@ -1750,8 +1784,6 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **hiring/index.md#8** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
 - **hiring/index.md#9** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
 - **hiring/index.md#10** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
-- **hiring/index.md#11** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
-- **hiring/index.md#13** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
 - **hiring/index.md#14** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Bodyguard/Security Duty row is 200¥/day, agreeing with this unit.
 - **hiring/index.md#15** — Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart.
 - **hiring/index.md#16** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — image-only table, no text layer. Read from the page image: the Courier Run row is 1,000¥, agreeing with this unit.
@@ -1784,9 +1816,7 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **hiring/index.md#66** — Guide's own suggestion (fixers' 10-30% finder's fee, 'an equal share' for top freelancers); the books set no percentage. The Companion guidance that the fee is per runner is on SRComp p.99 (no text layer).
 - **hiring/index.md#69** — Pairs each specialist with the 'nearest Companion baseline' — Shadowrun Companion p.100 figures (no text layer); the pairing itself is the guide's judgement.
 - **hiring/index.md#70** — Pairs each specialist with the 'nearest Companion baseline' — Shadowrun Companion p.100 figures (no text layer); the pairing itself is the guide's judgement.
-- **hiring/index.md#71** — Pairs each specialist with the 'nearest Companion baseline' — Shadowrun Companion p.100 figures (no text layer); the pairing itself is the guide's judgement.
 - **hiring/index.md#72** — Pairs each specialist with the 'nearest Companion baseline' — Shadowrun Companion p.100 figures (no text layer); the pairing itself is the guide's judgement.
-- **hiring/index.md#73** — Pairs each specialist with the 'nearest Companion baseline' — Shadowrun Companion p.100 figures (no text layer); the pairing itself is the guide's judgement.
 - **hiring/index.md#74** — Pairs each specialist with the 'nearest Companion baseline' — Shadowrun Companion p.100 figures (no text layer); the pairing itself is the guide's judgement.
 - **hiring/index.md#75** — Pairs each specialist with the 'nearest Companion baseline' — Shadowrun Companion p.100 figures (no text layer); the pairing itself is the guide's judgement.
 - **hiring/index.md#76** — Pairs each specialist with the 'nearest Companion baseline' — Shadowrun Companion p.100 figures (no text layer); the pairing itself is the guide's judgement.
@@ -1868,7 +1898,7 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **street/sins.md#46** — Legal background with no code counterpart. Checked against MitS printed p.11: Force 3 or higher magic is regulated in the UCAS and CAS with permits available, and a felony committed with magic is always premeditated. The guide agrees.
 - **street/sins.md#48** — Legal background with no code counterpart. Checked against MitS printed p.11: reading astral signatures has the same status as fingerprinting or DNA testing in forensic science. The guide agrees.
 
-## Matches (509)
+## Matches (515)
 
 Each carries its quote and code location in the ledger; not repeated here.
 

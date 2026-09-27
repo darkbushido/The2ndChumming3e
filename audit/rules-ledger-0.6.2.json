@@ -1868,8 +1868,23 @@
       ],
       "hash": "83fe7deca1",
       "text": "### Baseline Shadowrun Payment Table  *(SRComp p.100)*",
-      "verdict": "unverifiable",
-      "reason": "Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart."
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Shadowrun Companion {FASA7905} [no-text].pdf",
+          "pdfPage": 101,
+          "printedPage": 100,
+          "ocrPrinted": "too Shadowrun Companion",
+          "quote": "BASELINE SHADOWRUN PAYMENT TABLE"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "bottom-line fee|baseline.{0,12}payment|Smuggling Run",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Baseline Shadowrun Payment Table heading. Shadowrun Companion, printed p.100 (PDF p.101 of the scan). The scan is image-only and the OCR loses the shaded fee column, so the heading is the OCR evidence; the 13 rows and fees were read from the page images (SR-OCR/supplements, Shadowrun Companion - Payment and Reward) and the maintainer confirmed them against the book on 2026-09-26. The system has no payment table, so the guide states a book rule the code does not implement."
     },
     {
       "id": "hiring/index.md#12",
@@ -1892,8 +1907,23 @@
       ],
       "hash": "5c04ccc8d6",
       "text": "| Assassination | 5,000¥ |",
-      "verdict": "unverifiable",
-      "reason": "Shadowrun Companion pp.99-100 (Setting the fee, the Baseline Shadowrun Payment Table and how to use it). The PDF is 'no-text' and the SR-OCR dump of it is too garbled to confirm individual figures (it does show the table's rows, the '200¥/day' bodyguard line and the amoral-campaign and windfall passages). No code counterpart."
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Shadowrun Companion {FASA7905} [no-text].pdf",
+          "pdfPage": 101,
+          "printedPage": 100,
+          "ocrPrinted": "too Shadowrun Companion",
+          "quote": "BASELINE SHADOWRUN PAYMENT TABLE"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "bottom-line fee|baseline.{0,12}payment|Smuggling Run",
+          "path": "scripts"
+        }
+      ],
+      "note": "Assassination 5,000¥ — a row of the Baseline Shadowrun Payment Table. Shadowrun Companion, printed p.100 (PDF p.101 of the scan). The scan is image-only and the OCR loses the shaded fee column, so the heading is the OCR evidence; the 13 rows and fees were read from the page images (SR-OCR/supplements, Shadowrun Companion - Payment and Reward) and the maintainer confirmed them against the book on 2026-09-26. The system has no payment table, so the guide states a book rule the code does not implement."
     },
     {
       "id": "hiring/index.md#14",
@@ -2790,8 +2820,23 @@
       ],
       "hash": "4c21dcfa53",
       "text": "| [Combat Mage](combat-mage/) | Security: 200¥ a day; destruction or assassination: 5,000¥ |",
-      "verdict": "unverifiable",
-      "reason": "Pairs each specialist with the 'nearest Companion baseline' — Shadowrun Companion p.100 figures (no text layer); the pairing itself is the guide's judgement."
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Shadowrun Companion {FASA7905} [no-text].pdf",
+          "pdfPage": 101,
+          "printedPage": 100,
+          "ocrPrinted": "too Shadowrun Companion",
+          "quote": "BASELINE SHADOWRUN PAYMENT TABLE"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "bottom-line fee|baseline.{0,12}payment|Smuggling Run",
+          "path": "scripts"
+        }
+      ],
+      "note": "Pairs Combat Mage with the Companion's Security 200¥/day and destruction/assassination 5,000¥ rows; the figures match the table, the pairing itself is the guide's judgement. Shadowrun Companion, printed p.100 (PDF p.101 of the scan). The scan is image-only and the OCR loses the shaded fee column, so the heading is the OCR evidence; the 13 rows and fees were read from the page images (SR-OCR/supplements, Shadowrun Companion - Payment and Reward) and the maintainer confirmed them against the book on 2026-09-26. The system has no payment table, so the guide states a book rule the code does not implement."
     },
     {
       "id": "hiring/index.md#72",
@@ -2814,8 +2859,23 @@
       ],
       "hash": "e1c6fca022",
       "text": "| [Physical Adept](physical-adept/) | Bodyguard: 200¥ a day; assassination: 5,000¥ |",
-      "verdict": "unverifiable",
-      "reason": "Pairs each specialist with the 'nearest Companion baseline' — Shadowrun Companion p.100 figures (no text layer); the pairing itself is the guide's judgement."
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Shadowrun Companion {FASA7905} [no-text].pdf",
+          "pdfPage": 101,
+          "printedPage": 100,
+          "ocrPrinted": "too Shadowrun Companion",
+          "quote": "BASELINE SHADOWRUN PAYMENT TABLE"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "bottom-line fee|baseline.{0,12}payment|Smuggling Run",
+          "path": "scripts"
+        }
+      ],
+      "note": "Pairs Physical Adept with the Companion's Bodyguard 200¥/day and assassination 5,000¥ rows; the figures match the table, the pairing itself is the guide's judgement. Shadowrun Companion, printed p.100 (PDF p.101 of the scan). The scan is image-only and the OCR loses the shaded fee column, so the heading is the OCR evidence; the 13 rows and fees were read from the page images (SR-OCR/supplements, Shadowrun Companion - Payment and Reward) and the maintainer confirmed them against the book on 2026-09-26. The system has no payment table, so the guide states a book rule the code does not implement."
     },
     {
       "id": "hiring/index.md#74",

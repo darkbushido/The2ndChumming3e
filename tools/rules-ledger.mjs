@@ -20,7 +20,8 @@
  *   no-rule-claim   reason                      prose that states no rule; rejected if it cites a page or a modifier
  *
  * Evidence formats:
- *   pdf:    { file, pdfPage, printedPage, quote, ocrQuote? }   `quote` must appear in that page's text (whitespace-normalised);
+ *   pdf:    { file, pdfPage, printedPage, quote, ocrQuote?, ocrPrinted? }   `quote` must appear in that page's text (whitespace-normalised);
+ *           `ocrPrinted`, when set, is the footer as the OCR misprints it, checked in place of `printedPage`;
  *           `ocrQuote`, when set, is what the OCR source checks instead (a table the OCR layout prints in another order)
  *           — read from the OCR text (SR-OCR/, else the Shadowrun-OCR checkout beside this repo), else the
  *           PDFs; SR3_BOOK_SOURCE=pdf reads the PDFs first (SR3_PDF_DIR / SR3_OCR_DIR override the paths). Copy quotes from the layout text, one column at
@@ -37,11 +38,12 @@ import { bookPages, wordsOnPage } from './lib/book-pages.mjs';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const GUIDES = path.join(ROOT, 'guides');
 const PDF_DIR = process.env.SR3_PDF_DIR ?? 'C:\\Users\\lance\\Documents\\Shadowrun 3rd Edition PDFs';
-// The book text is the OCR text (tools/lib/book-pages.mjs) — the untracked SR-OCR/ in this checkout, else
-// the Shadowrun-OCR checkout beside it — and the PDFs only without it, or with SR3_BOOK_SOURCE=pdf.
+// The book text is the OCR text (tools/lib/book-pages.mjs) — the SR-OCR folder BESIDE this repo (the one
+// copy; it is not kept inside the checkout), else the Shadowrun-OCR checkout beside it — and the PDFs only
+// without it, or with SR3_BOOK_SOURCE=pdf.
 const OCR_DIR = process.env.SR3_OCR_DIR
-  ?? [path.join(ROOT, 'SR-OCR'), path.join(ROOT, '..', 'Shadowrun-OCR')].find(existsSync)
-  ?? path.join(ROOT, '..', 'Shadowrun-OCR');
+  ?? [path.join(ROOT, '..', 'SR-OCR'), path.join(ROOT, '..', 'Shadowrun-OCR')].find(existsSync)
+  ?? path.join(ROOT, '..', 'SR-OCR');
 const SKIP = new Set(['CLAUDE.md', 'TODO.md', 'README.md']);
 const VERDICTS = ['match', 'diverges', 'guide-differs', 'not-implemented', 'unverifiable', 'no-rule-claim'];
 
@@ -147,7 +149,12 @@ function faults(e, current) {
         if (pg.source === 'ocr' && wordsOnPage(quote, t)) looseQuotes.push(`${e.id}  pdf page ${p.pdfPage}: "${quote.slice(0, 60)}…"`);
         else f.push(`pdf quote NOT FOUND on ${p.file} pdf page ${p.pdfPage}: "${quote.slice(0, 60)}…"`);
       }
-      if (!new RegExp(`(^|\\D)${p.printedPage}(\\D|$)`).test(t)) f.push(`printed page ${p.printedPage} not found on pdf page ${p.pdfPage}`);
+      // `ocrPrinted`: how the OCR misprints the page footer (Companion p.100 reads "too Shadowrun Companion") —
+      // the footer text itself, so it still has to be on that page; only used when the OCR is the source.
+      const printedOk = pg.source === 'ocr' && p.ocrPrinted
+        ? norm(t).includes(norm(p.ocrPrinted))
+        : new RegExp(`(^|\\D)${p.printedPage}(\\D|$)`).test(t);
+      if (!printedOk) f.push(`printed page ${p.printedPage} not found on pdf page ${p.pdfPage}`);
     } catch (err) { f.push(`pdf check failed: ${err.message.split('\n')[0]}`); }
   }
   if (needCode && !(e.code?.length)) f.push('needs code[] evidence');

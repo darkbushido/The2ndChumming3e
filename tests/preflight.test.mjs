@@ -71,6 +71,9 @@ export async function run(t) {
     /There is no `major` keyword/.test(bump));
   t.ok('it does not commit or tag either', !/execFileSync|spawn/.test(bump));
 
+  t.ok('the PARTIAL warning reads the record\'s status line, not every caveat inside an entry',
+    /const partial = \/[^\n]*\/i\.test\(statusLine\)/.test(pre) && !/\.test\(auditText\)/.test(pre));
+
   /* ── release-notes ─────────────────────────────────────────────────────────── */
   t.ok('an unmatched commit subject lands in Other rather than being dropped',
     /buckets\.other\.push\(c\)/.test(notes));

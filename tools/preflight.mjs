@@ -250,7 +250,9 @@ if (VERSION) {
   const statusLine = auditText.split(/\r?\n/).find(l => /^\s*\*\*Status[: ]/i.test(l))
     ?? auditText.split(/\r?\n/).find(l => l.trim() && !l.startsWith('#'))
     ?? '';
-  const partial = /first pass|not exhaustive|incomplete|were not (checked|covered)/i.test(auditText);
+  // ⚠ The STATUS line only — a caveat inside one entry ("I did not exhaustively search") is not a
+  // partial record, and matching the whole file flagged the complete 0.6.2 record as PARTIAL.
+  const partial = /first pass|not exhaustive|incomplete|were not (checked|covered)/i.test(statusLine);
   if (existsSync(audit)) {
     console.log(`      rules-check record says: ${statusLine.replace(/\*\*/g, '').trim().slice(0, 100)}`);
     if (partial) {
