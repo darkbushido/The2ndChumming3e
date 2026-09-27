@@ -32,13 +32,13 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**52 open.** 142 done — see [TODO-DONE.md](TODO-DONE.md).
+**53 open.** 142 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 🔴 Confirmed bugs, still open | [137](#137) The damage chat card assigns damage again after the player already assigned it through the popup<br>[151](#151) Cyber weapons don't show up in the weapons list, and cannot be used in combat<br>[161](#161) Flechette weapons — the two things the book does not settle<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[193](#193) The 📒 Ledger records entries on the wrong character |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[195](#195) A concealment view — what someone is carrying, and how well it is hidden |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[189](#189) Vehicle collisions — with a character, another vehicle, or a barrier<br>[195](#195) A concealment view — what someone is carrying, and how well it is hidden |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[177](#177) Astral damage: a dual being's natural armour reduces the Power<br>[191](#191) Buff spells on yourself or an ally should not need to hit |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings" |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -603,6 +603,95 @@ row cannot be done properly until accessories are structured data.
 - **Quick Draw is explicitly out of scope** — *"we will need some way for someone to quick draw a
   one-handed weapon if the need arises but that's a problem for another day."* It is specified in
   #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
+
+## 189. Vehicle collisions — with a character, another vehicle, or a barrier — **asked 2026-09-27**
+
+The maintainer wants one way for a vehicle to **collide with an actor, another vehicle, or some kind
+of barrier** — deliberately (a ram) or by accident (the driver was trying to stop). This is a
+feature, so it goes on a branch.
+
+**What exists today:**
+- **Vehicle → vehicle, deliberate:** the Chase Scene's **Ramming** action
+  (`SR3EVehicleChase._actionRamming`, `SR3EActor._buildRamDamageHtml`) — but only between two chase
+  participants, and only as a ram.
+- **Vehicle → nothing in particular:** the 💥 Crash tool (`SR3EVehicleSheet.runCrash`) damages the
+  vehicle and its occupants (`collisionPassengerDamage`); what it hit is not modelled.
+- **Vehicle → character:** nothing. Done by hand today: a 🎲 Success Test for the driver, the
+  arithmetic below, then the pedestrian's 🛡 Resist Damage (Attributes tab).
+- **Vehicle → barrier:** nothing. The **Barrier Damage** GM tool (`computeBarrierEffect`, the
+  material / Barrier Rating table, p.124) covers weapons and blasts against barriers, not vehicles.
+
+**Wanted:** one **💥 Collision** entry point (Chase Scene, the vehicle sheet, Vehicle Tools HUD)
+that asks *what was hit* — **a character/npc**, **another vehicle** (in the chase or not), or **a
+barrier** (material → Barrier Rating) — and *how* — **ram** (Ramming Test, p.143) or **accident**
+(Braking Test first, below) — then posts the right card for each side.
+
+**The common case is an ACCIDENT — the driver is trying to stop, not ramming** (maintainer,
+2026-09-27). The book has no "emergency stop" rule; the pieces are:
+- **Braking, SR3 p.142** — Driving Test vs **Handling** (Accelerating/Braking Modifiers Table);
+  speed drops by **Acceleration Rating × successes**. Decelerating more than **Acceleration × 4**
+  forces a **Crash Test** (p.147). Whatever speed is left when the car reaches the person is the
+  collision speed — the GM judges whether the braking happened in time (the book gives no
+  stopping-distance rule; don't invent one, show the numbers).
+- **Swerving instead** is a Driving Test (p.134); failure → Crash Test, and *"Individual gamemasters
+  determine exactly which objects crashing vehicles strike"* (p.148) — it may still hit them.
+- Then the collision below, at the remaining speed.
+
+**The rules** (core PDF, printed pages):
+- **Ramming, SR3 p.143** — the ramming manoeuvre covers *"another vehicle or a pedestrian"*.
+  Distance must be under the vehicle's Acceleration Rating (else accelerate first, p.142). Ramming
+  Test: Driving Skill vs **Handling**, Ramming Modifiers Table (p.143). Success = collision.
+- **Vehicle-Pedestrian Collisions, SR3 p.148** — Power = **vehicle speed ÷ 10**; Level = **one stage
+  higher** than the Impact Damage Levels Table (p.147) gives for that speed (1–20 m/turn → M); if
+  that would be past Deadly, Power **+ half, rounded down**. The pedestrian makes a standard Damage
+  Resistance Test, **may use Combat Pool**, and **impact armour reduces the damage**. The vehicle
+  resists collision damage **one stage lower** than the table (1–20 m/turn → none; 21–60 → L).
+  Worked example p.149: 60 m/turn → **6S**.
+- **Vehicle vs vehicle, SR3 p.143 / p.147** — Power = **difference in speeds ÷ 10, rounded up**;
+  Level from the Impact Damage Levels Table at that difference. The rammer reduces the Power *it*
+  faces by **Body × Ramming Test successes**; the target's is not reduced (worked example p.147:
+  15S, rammer faces 2S). Both resist with **Body + Control Pool** (up to the Vehicle Skill), TN =
+  Power, **no armour**; every 2 successes stage down one level. Either vehicle damaged → **Crash
+  Test**. Occupants: p.147, already built (`collisionPassengerDamage`). ⚠ The book gives vehicle
+  collisions only as a *ram*; an accidental two-car collision has no rule of its own — ask whether
+  to use the ram formula without the rammer's Body × successes reduction.
+- **Walls and Barriers, SR3 p.148** — compare speed with **Barrier Rating × 20** (ratings p.124):
+  - speed **≤ BR × 20** → the vehicle **stops**; resolve it as a standard **crash** (p.147) — the
+    existing 💥 Crash tool.
+  - speed **> BR × 20** → the barrier **collapses** and the vehicle carries on, **losing BR × 20**
+    speed. Collision Power = **the Barrier Rating**; Level from the **speed lost** on the Impact
+    Damage Levels Table. Restrained passengers take **no** damage; unrestrained ones resist as
+    passengers in an impact, **staged down one**.
+  - Worked example p.148: 300 m/turn into Heavy Structural (BR 16): 320 > 300, so the car stops.
+- ⚠ Open question for the maintainer: p.143 lets the rammer's successes × Body reduce the Power
+  *the rammer* faces (vehicle vs vehicle). Whether that applies to the vehicle's side of a
+  pedestrian ram is not stated on p.148 — ask, quoting both pages, before building it.
+
+**Shape** (warn, never refuse; offer, never apply):
+1. A pure `scripts/data/collisions.mjs`: `pedestrianCollision(speed)` →
+   `{ pedestrian: {power, level}, vehicle: {power, level|null} }`; `vehicleCollision(speedA, speedB,
+   { ramSuccesses, ramBody })`; `barrierCollision(speed, barrierRating)` →
+   `{ breaksThrough, speedAfter, power, level }`. Unit-tested against the worked examples (p.149 6S;
+   p.147 15S → 2S; p.148 BR 16 at 300 stops) and every band edge; a mutant per rule. The Impact
+   Damage Levels Table stays in one place (`SR3EActor.crashDamage`).
+2. **"Hit a pedestrian" from the Accel / Brake action and the 💥 Crash tool first** (the accident):
+   speed before → Braking Test → speed left → pedestrian collision card; a Crash Test offered if
+   the braking exceeded Acceleration × 4. Then the deliberate version:
+   the Ramming dialog accepts a **character/npc token** as the target (`isLiveActor`, `sceneFirst`),
+   with the pedestrian's Power/Level shown and GM-editable.
+3. On a hit, the card offers the pedestrian a 🛡 Resist Damage button (impact armour, Combat Pool —
+   the existing soak card) and the vehicle its collision soak + Crash Test (p.147 triggers), and the
+   vehicle's occupants only if the vehicle took damage. Also offer it from the 💥 Crash tool
+   ("hit a pedestrian"). New waiting buttons go in `STEP_BUTTONS`.
+4. **Another vehicle** outside a chase: pick any vehicle actor (`isLiveActor`, `sceneFirst`), speeds
+   entered by the GM; reuse the Ramming card and soak buttons rather than a second copy.
+5. **A barrier:** material dropdown from the Barrier Damage tool's table (BR editable); the card says
+   *stopped* (→ the Crash flow) or *broke through, now N m/turn* (→ vehicle soak at BR / level, and
+   passengers staged down one unless belted). Damaging the barrier itself is the Barrier Damage
+   tool's job — offer it, don't apply it.
+6. A dodge for a pedestrian is **not** in the book; don't add one silently — ask.
+7. Tests: the pure module's unit tests and mutants; a source-level check that the Collision dialog
+   uses `wait()`'s `render` option; a TESTING.md step for each target in a live Foundry.
 
 ## 195. A concealment view — what someone is carrying, and how well it is hidden — **requested 2026-09-27**
 
