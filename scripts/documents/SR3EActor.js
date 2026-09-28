@@ -9,6 +9,7 @@ import { Ledger } from '../data/ledger.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
 import { OpenSteps } from '../data/open-steps.mjs';
+import { RiggerShock, DISORIENT_MOD, DISORIENT_TN, DISORIENT_TURNS } from '../data/rigger-shock.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -1120,29 +1121,69 @@ export class SR3EActor extends Actor {
   async rollDumpshock() {
     const isVRHot = (this.system.matrixUserMode ?? '') === 'VR-Hot';
     const isStun  = !isVRHot;
+    const inVR    = ['VR-Hot', 'VR-Cold'].includes(this.system.matrixUserMode ?? '');
+
+    // Who is being dumped. A rigger's dump shock is its own rule (SR3 p.156, TODO 198): pick the
+    // likely case from what the sheet knows — jacked into a VCR vehicle, else an RC deck on file.
+    const veh = game.actors.find(a => a.type === 'vehicle' && a.system?.driverActorId === this.id
+      && a.system?.controlMode === 'vcr');
+    const rcDeck   = this.system.ew?.deckRating ?? 0;
+    const kindInit = inVR ? 'matrix' : veh ? 'vehicle' : rcDeck > 0 ? 'network' : 'matrix';
 
     const hostActors = game.actors.filter(a => a.type === 'host' && game.sr3e.isLiveActor(a));
     const hostOptions = hostActors.length
       ? hostActors.map(a => `<option value="${a.system.systemRating ?? 6}">${a.name} (Sys ${a.system.systemRating ?? 6})</option>`).join('')
       : `<option value="6">Manual (default 6)</option>`;
 
-    let power     = 6;
-    let confirmed = false;
+    let result = null;
+    const sel = k => kindInit === k ? 'selected' : '';
+    const wireDumpshock = (_app, html) => {
+      const kind = html.querySelector('#ds-kind');
+      const show = () => html.querySelectorAll('[data-ds-kind]').forEach(el => {
+        el.style.display = el.dataset.dsKind === kind.value ? '' : 'none';
+      });
+      kind?.addEventListener('change', show);
+      // Picking a host fills the Power box; the box is what is read, so a typed Power still wins.
+      html.querySelector('#ds-host')?.addEventListener('change', e => {
+        const p = html.querySelector('#ds-power');
+        if (p) p.value = e.target.value;
+      });
+      show();
+    };
 
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${this.name}: Dumpshock` },
       content: `
         <div style="padding:8px 0">
-          <p style="margin:0 0 8px">
-            Mode: <strong>${this.system.matrixUserMode || 'Unknown'}</strong> → damage type: <strong>${isStun ? 'Stun' : 'Physical'}</strong>
-          </p>
-          ${hostActors.length ? `<label style="display:block;margin-bottom:8px">
-            Host (sets Power):
-            <select id="ds-host" style="width:100%;margin-top:4px">${hostOptions}</select>
-          </label>` : ''}
-          <label>Dumpshock Power (System Rating):
-            <input type="number" id="ds-power" value="6" min="1" style="width:60px;margin-left:4px">
+          <label style="display:block;margin-bottom:8px">Dumped from:
+            <select id="ds-kind" style="width:100%;margin-top:4px">
+              <option value="matrix"  ${sel('matrix')}>The Matrix (decker)</option>
+              <option value="network" ${sel('network')}>A remote-control network (rigger)</option>
+              <option value="vehicle" ${sel('vehicle')}>A vehicle, jacked out involuntarily (rigger)</option>
+            </select>
           </label>
+          <div data-ds-kind="matrix">
+            <p style="margin:0 0 8px">
+              Mode: <strong>${this.system.matrixUserMode || 'Unknown'}</strong> → damage type: <strong>${isStun ? 'Stun' : 'Physical'}</strong>
+            </p>
+            ${hostActors.length ? `<label style="display:block;margin-bottom:8px">
+              Host (sets Power):
+              <select id="ds-host" style="width:100%;margin-top:4px">${hostOptions}</select>
+            </label>` : ''}
+            <label>Dumpshock Power (System Rating):
+              <input type="number" id="ds-power" value="${hostActors[0]?.system.systemRating ?? 6}" min="1" style="width:60px;margin-left:4px">
+            </label>
+          </div>
+          <div data-ds-kind="network">
+            <label>RC deck Rating:
+              <input type="number" id="ds-deck" value="${rcDeck}" min="0" style="width:60px;margin-left:4px">
+            </label>
+            <p style="margin:6px 0 0;font-size:11px;color:var(--sr-muted)">(Rating + 4)S Stun, resisted with Willpower — SR3 p.156.</p>
+          </div>
+          <div data-ds-kind="vehicle">
+            <p style="margin:0;font-size:11px;color:var(--sr-muted)">5S Stun, resisted with Willpower — SR3 p.156.
+              A vehicle's <em>destruction</em> is rigger damage instead (6S Physical, p.145).</p>
+          </div>
         </div>`,
       buttons: [
         {
@@ -1150,18 +1191,20 @@ export class SR3EActor extends Actor {
           action: 'confirm',
           default: true,
           callback: (_e, _b, dlg) => {
-            confirmed = true;
-            const hostSel = dlg.element.querySelector('#ds-host');
-            if (hostSel) power = parseInt(hostSel.value) || 6;
-            const manualPower = parseInt(dlg.element.querySelector('#ds-power')?.value);
-            if (!isNaN(manualPower) && manualPower > 0) power = manualPower;
+            const el   = dlg.element;
+            const kind = el.querySelector('#ds-kind')?.value ?? 'matrix';
+            const n    = (id, d) => { const v = parseInt(el.querySelector(id)?.value); return Number.isNaN(v) ? d : v; };
+            result = { kind, power: Math.max(1, n('#ds-power', 6)), deck: Math.max(0, n('#ds-deck', rcDeck)) };
           },
         },
         { label: 'Cancel', action: 'cancel' },
       ],
+      render: (_event, dialog) => wireDumpshock(dialog, dialog.element),
     });
 
-    if (!confirmed) return;
+    if (!result) return;
+    if (result.kind !== 'matrix') return this._postRiggerDumpshock(result.kind, result.deck);
+    const power = result.power;
 
     const trackLabel = isStun ? 'Stun' : 'Physical';
     const soakCtx = JSON.stringify({
@@ -1187,6 +1230,86 @@ export class SR3EActor extends Actor {
           </div>
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  /**
+   * A rigger's dump shock — SR3 p.156, TODO 198. Always Stun, resisted with Willpower, no armour:
+   * (RC deck Rating + 4)S from a remote-control network, 5S jacked out of a vehicle. Plus +2 to every
+   * Success Test for ten Combat Turns, which a Willpower (TN 4) Test shortens. Offered, never applied.
+   *
+   * @param {'network'|'vehicle'} kind
+   * @param {number} [deckRating]
+   */
+  async _postRiggerDumpshock(kind, deckRating = 0) {
+    const d = RiggerShock.dumpShock(kind, deckRating);
+    if (!d) return;
+    const soakCtx = JSON.stringify({
+      attackerActorId: null,
+      targetActorId:   this.id,
+      isMelee:         false,
+      stagedPower:     d.power,
+      stagedLevel:     d.level,
+      isStun:          true,
+      rawDamage:       `${d.power}${d.level}`,
+      resistAttr:      d.resistAttr,
+      noArmor:         true,
+      noArmorNote:     'Neural biofeedback — no armour applies',
+      noKnockdown:     true,
+    }).replace(/'/g, '&#39;');
+    const disorientCtx = JSON.stringify({ actorId: this.id }).replace(/'/g, '&#39;');
+    const from = kind === 'network' ? `the remote-control network (RC deck ${deckRating} + 4)` : 'the vehicle';
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      content: `
+        <div class="sr-roll-card">
+          <div class="sr-roll-header" style="color:var(--sr-red)">⚡ Rigger Dump Shock — ${this.name}</div>
+          <div class="sr-staging-result">
+            Dumped from ${from}: <strong>${d.power}${d.level} Stun</strong>, resisted with Willpower (${d.page})
+          </div>
+          <div class="sr-roll-meta" style="font-size:11px">
+            Disoriented: <strong>+${DISORIENT_MOD}</strong> to all Success Tests for ${DISORIENT_TURNS} Combat Turns.
+            A Willpower Test (TN ${DISORIENT_TN}) shortens it: 30 ÷ successes (round up) seconds, ÷ 3 (round up) Combat Turns.
+          </div>
+          <div class="sr-soak-action">
+            <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${this.name}: Resist Dump Shock (Willpower)</button>
+          </div>
+          <div class="sr-soak-action">
+            <button class="sr-rigger-disorient-btn" data-payload='${disorientCtx}'>🎲 ${this.name}: Willpower Test (TN ${DISORIENT_TN}) — shorten disorientation</button>
+          </div>
+        </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  /** The disorientation Willpower Test (SR3 p.156) — its result card states how long it lasts. */
+  static async handleRiggerDisorientClick(btn) {
+    const p     = JSON.parse(btn.dataset.payload ?? '{}');
+    const actor = game.actors.get(p.actorId);
+    if (!actor) return;
+    const wp = actor.system.attributes?.willpower;
+    const pool = Math.max(1, wp?.value ?? wp?.base ?? 1);
+    await SR3EActor.rollThen(actor, pool, DISORIENT_TN, {
+      label:    `${actor.name}: Willpower — dump shock disorientation`,
+      followUp: { kind: 'riggerDisorient', ctx: { actorId: actor.id } },
+    });
+  }
+
+  /** `rollThen` follow-up: post how long the disorientation lasts. */
+  static async _riggerDisorientOutcome(ctx, res) {
+    const actor = game.actors.get(ctx.actorId);
+    const { seconds, turns } = RiggerShock.disorientation(res.successes);
+    await ChatMessage.create({
+      speaker: actor ? ChatMessage.getSpeaker({ actor }) : undefined,
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">🌀 ${actor?.name ?? 'Rigger'} — Disorientation</div>
+        <div class="sr-staging-result">${res.successes} success${res.successes === 1 ? '' : 'es'} →
+          <strong>+${DISORIENT_MOD}</strong> to all Success Tests for <strong>${turns} Combat Turn${turns === 1 ? '' : 's'}</strong>
+          (${seconds} seconds; SR3 p.156)</div>
+        <div class="sr-roll-meta" style="font-size:11px">Willpower vs TN ${DISORIENT_TN}: ${(res.dice ?? []).map(d => d.total).join(', ')}</div>
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
   }
 
@@ -4221,13 +4344,13 @@ _prepareCharacter(sys, attr) {
               🩸 Assign ${SR3EActor._woundName(finalLevel)} ${trackLabel} Wound to ${soakTargetName}
             </button>
           </div>
-          <div class="sr-soak-action">
+          ${sp.noKnockdown ? '' : `<div class="sr-soak-action">
             <button class="sr-knockdown-btn" data-payload='${kdPayload}'>
               ${finalLevel === 'D'
                 ? `💥 ${soakTargetName} — Deadly wound: knocked down automatically (p.124)`
                 : `💥 ${soakTargetName} — Knockdown Test`}
             </button>
-          </div>
+          </div>`}
         `;
       }
     }
@@ -4570,6 +4693,7 @@ _prepareCharacter(sys, attr) {
     'miji.footprint':  ['SR3EMIJI', '_footprintRolled'],
     quickDraw:         ['SR3EItem', '_quickDrawRolled'],   // TODO 47 — Reaction (4), p.107
     purchaseSourced:   ['SR3EPurchase', 'onSourced'],       // TODO 82 — Etiquette vs Availability, p.272
+    riggerDisorient:   ['SR3EActor', '_riggerDisorientOutcome'], // TODO 198 — Willpower (4), p.156
   };
 
   static _registryFn([cls, fn] = [], what) {
@@ -8498,7 +8622,11 @@ _prepareCharacter(sys, attr) {
 
     // Ensure derived data is current — prepareDerivedData now guarantees sys.attributes exists
     this.prepareDerivedData();
-    const bodyAttr = this.system.attributes?.body;
+    // Most damage is resisted with Body. A rigger's dump shock and feedback are resisted with Willpower
+    // (SR3 p.156, p.145 — TODO 198/199); the payload names the attribute when it is not Body.
+    const resistAttr = payload.resistAttr === 'willpower' ? 'willpower' : 'body';
+    const resistName = resistAttr === 'willpower' ? 'Willpower' : 'Body';
+    const bodyAttr = this.system.attributes?.[resistAttr];
     const body     = Math.max(bodyAttr?.value ?? 0, bodyAttr?.base ?? 0, 1);
 
     // Body dice are free; Combat Pool dice are not, so they are separate fields — one merged
@@ -8508,7 +8636,8 @@ _prepareCharacter(sys, attr) {
     // failed dodge arrives here with less, and p.113's worked example turns on exactly that —
     // Snot spends all five dodging and then has "no dice remaining in his Combat Pool with
     // which to increase his odds of survival." Showing 0 left is the trade being visible.
-    const availPool = this.type === 'vehicle' ? 0 : (this.system.derived?.availableCombatPool ?? 0);
+    // `noPools`: "Neither Combat nor Control Pool dice can be used for this test" (SR3 p.145, TODO 199).
+    const availPool = (this.type === 'vehicle' || payload.noPools) ? 0 : (this.system.derived?.availableCombatPool ?? 0);
 
     // Worn armour plus implant armour (Bone Lacing, Dermal Sheath, Orthoskin — cumulative,
     // SR3 p.300 / M&M p.27-28, p.68). Vehicles use their Armor attribute. TODO 75.
@@ -8642,6 +8771,9 @@ _prepareCharacter(sys, attr) {
       carriedSuccesses: payload.carriedSuccesses ?? 0,
       // p.113: the result is staged by the NET of the attacker's and this target's successes.
       net:             payload.net ? { ...payload.net, baseLevel: netBaseLevel } : undefined,
+      resistAttr,
+      noPools:         payload.noPools === true,
+      noKnockdown:     payload.noKnockdown === true,
     }).replace(/'/g, '&#39;');
 
     await ChatMessage.create({
@@ -8656,10 +8788,14 @@ _prepareCharacter(sys, attr) {
           ${adeptArmorNotes.length ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">✨ ${adeptArmorNotes.join(' · ')}</div>` : ''}
           <div class="sr-soak-fields">
             <label class="sr-soak-label">
-              Body dice:
+              ${resistName} dice:
               <input type="number" class="sr-soak-body" value="${body}" min="0" max="30" style="width:55px"/>
             </label>
-            ${availPool > 0
+            ${payload.noPools
+              ? `<div class="sr-roll-meta" style="font-size:11px;color:var(--sr-amber)">
+                   No Combat or Control Pool dice on this test (SR3 p.145).
+                 </div>`
+              : availPool > 0
               ? `<label class="sr-soak-label">
                    Combat Pool (<strong>${availPool}</strong> left):
                    <input type="number" class="sr-soak-cp" value="0" min="0" max="${availPool}" style="width:55px"/>
@@ -8710,12 +8846,13 @@ _prepareCharacter(sys, attr) {
     // have. `spendCombatPool` clamps again authoritatively — this is presentation only.
     actor.prepareDerivedData();
     const availCP = actor.system.derived?.availableCombatPool ?? 0;
-    const useCP   = Math.min(wantCP, availCP);
+    const useCP   = payload.noPools ? 0 : Math.min(wantCP, availCP);
     const pool    = Math.max(1, body + useCP);
+    const attrName = payload.resistAttr === 'willpower' ? 'Willpower' : 'Body';
 
     const effectiveTN = Math.max(2, tn);
     const label       = useCP > 0
-      ? `🛡 ${actor.name} resists (${body} Body + ${useCP} Combat Pool)`
+      ? `🛡 ${actor.name} resists (${body} ${attrName} + ${useCP} Combat Pool)`
       : `🛡 ${actor.name} resists`;
 
     let dice, ones, glitch;

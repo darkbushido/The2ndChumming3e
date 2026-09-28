@@ -2203,6 +2203,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span style="font-size:12px">IVIS Pool: <strong>${ivisVal}</strong> / ${ivisMax}</span>
         <button type="button" class="btn-xs" data-action="ivisSpend" ${ivisVal > 0 ? '' : 'disabled'} title="Spend 1 IVIS Pool die">−1</button>
         <button type="button" class="btn-xs" data-action="ivisClear" ${ivisMax > 0 ? '' : 'disabled'} title="Expire the IVIS Pool (task complete / new task)">Clear</button>
+        <button type="button" class="btn-sm" data-action="rollDumpshock"
+                style="border-color:var(--sr-amber);color:var(--sr-amber)"
+                title="Rigger dump shock — dumped from the RC network or jacked out of a vehicle (SR3 p.156)">⚡ Dump Shock</button>
       </div>
       <div style="font-size:11px;color:var(--sr-muted)">Electronics (Electronic Warfare) skill drives all MIJI rolls. ECM/ECCM and the Signal Monitor live on the controlled vehicle. The IVIS Pool is shared by the drone group and refreshes each Combat Turn.</div>`;
   }

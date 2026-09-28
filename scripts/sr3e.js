@@ -2601,6 +2601,20 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
+  // Rigger dump shock — the disorientation Willpower Test (SR3 p.156, TODO 198). It ROLLS, so one user.
+  html.querySelectorAll('.sr-rigger-disorient-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'riggerdisorient', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDecider(pl)) return _denyBtn(btn, 'Only the rigger\'s player (or the GM) rolls this test.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'riggerdisorient', i)) return;
+      btn.disabled = true;
+      await SR3EActor.handleRiggerDisorientClick(btn);
+    });
+  });
+
   // Dodge roll button — triggered by player after seeing attack hits
   // Post-roll defence declaration (SR3 sequence step 4). The defender decides
   // AFTER seeing the attack successes — dodge, or save the pool for the Damage

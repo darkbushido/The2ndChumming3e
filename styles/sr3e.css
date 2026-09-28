@@ -217,6 +217,7 @@ background-color: var(--sr-surface) !important;
 
 /* ── Chat action buttons — shared base ──────────────────────── */
 .sr-soak-btn,
+.sr-rigger-disorient-btn,
 .sr-soak-roll-btn,
 .sr-dodge-roll-btn,
 .sr-drain-btn,
@@ -266,6 +267,7 @@ background-color: var(--sr-surface) !important;
 
 /* gold — soak / drain / resist */
 .sr-soak-btn,
+.sr-rigger-disorient-btn,
 .sr-soak-roll-btn,
 .sr-drain-btn,
 .sr-drain-roll-btn,
@@ -289,6 +291,7 @@ background-color: var(--sr-surface) !important;
 }
 
 .sr-soak-btn:hover:not(:disabled),
+.sr-rigger-disorient-btn:hover:not(:disabled),
 .sr-soak-roll-btn:hover:not(:disabled),
 .sr-drain-btn:hover:not(:disabled),
 .sr-drain-roll-btn:hover:not(:disabled),
@@ -469,6 +472,7 @@ background-color: var(--sr-surface) !important;
 }
 
 .sr-soak-btn:disabled,
+.sr-rigger-disorient-btn:disabled,
 .sr-soak-roll-btn:disabled,
 .sr-dodge-roll-btn:disabled,
 .sr-dodge-declare-btn:disabled,

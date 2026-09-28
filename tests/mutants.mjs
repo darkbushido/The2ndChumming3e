@@ -61,6 +61,20 @@ export const MUTANTS = [
     impl:   () => null,
   },
   {
+    id:     'rigger-dumpshock-as-decker',
+    suite:  'rigger-shock',
+    module: '../scripts/data/rigger-shock.mjs', klass: 'RiggerShock', method: 'dumpShock',
+    was:    'a rigger\'s dump shock was a decker\'s — a host\'s System Rating, Body to resist, the track by user mode — not (RC deck + 4)S or 5S Stun with Willpower (SR3 p.156, TODO 198)',
+    impl:   () => ({ power: 6, level: 'S', isStun: true, resistAttr: 'body', page: 'SR3 p.156' }),
+  },
+  {
+    id:     'rigger-disorient-no-round-up',
+    suite:  'rigger-shock',
+    module: '../scripts/data/rigger-shock.mjs', klass: 'RiggerShock', method: 'disorientation',
+    was:    'disorientation rounded down — "Divide the number of successes into 30 (round up)" (SR3 p.156, TODO 198)',
+    impl:   (s) => { const n = Math.max(1, s | 0); const seconds = Math.floor(30 / n); return { seconds, turns: Math.floor(seconds / 3) }; },
+  },
+  {
     id:     'open-steps-fold-on-finish',
     suite:  'open-steps',
     module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'shouldFold',
