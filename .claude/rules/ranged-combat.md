@@ -195,7 +195,8 @@ SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it w
   CLASS** — SR3 p.279, TODO 173: `system.gunClass` on ammunition is a Weapon Range Table category
   (`AmmoStock.gunClass` folds MaPist/MPist → LPist, VHP → HPist, Carb/LCarb → AsRf); **blank = not stated**, fits
   anything, and the first gun to load from it stamps its class; a reload only its mechanism; arrows/bolts only
-  their bow/crossbow; a flechette weapon takes nothing else) and applies `AmmoStock.reloadPlan`,
+  their bow/crossbow; a flechette weapon takes nothing else). ⚠ **HOUSE RULE (TODO 203):** a spare clip fits
+  any gun of its mechanism; SR3 p.281 says clips are not interchangeable between weapons even of one class and applies `AmmoStock.reloadPlan`,
   reporting losses and cost (`reloadActions`). `trackAmmo` off → only sets the type.
 - **Firing** decrements `loadedRounds` when tracking (warns when empty).
 - **Type rules**: Explosive +1 / EX +2 Power; Gel −2 Power + Stun; Shot (above). APDS halves ballistic.

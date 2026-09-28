@@ -145,6 +145,9 @@ export const AmmoStock = {
    * break actions — with nothing to load (found checking TODO 23, 2026-09-15).
    * ⚠ Arrows and bolts are the exception both ways: a bow takes only arrows, a crossbow only bolts,
    * and neither fits a gun.
+   * ⚠ **HOUSE RULE (TODO 203): a clip fits any gun of its mechanism.** SR3 p.281: spare clips *"are not
+   * interchangeable from weapon to weapon even within the same class"*. Ruled a house rule for now by
+   * the maintainer, 2026-09-28, until clips are tied to the weapon they were bought for.
    */
   fits(sys, gunMech, gunClass = null) {
     if (!AmmoStock.classFits(sys, gunClass)) return false;

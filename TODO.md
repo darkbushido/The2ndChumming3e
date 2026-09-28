@@ -225,6 +225,21 @@ cannot reach. If time is short, do these.
 
 ### 📕 Rules not implemented
 
+## 203. Spare clips belong to one weapon — **found in the 0.6.3 rules check, 2026-09-28**
+
+**SR3 p.281:** spare clips *"hold the maximum rounds available for the weapon, and are not interchangeable
+from weapon to weapon even within the same class."* The system lets a reload (clip, drum, belt) go into any
+gun that takes its mechanism (`AmmoStock.fits`, `scripts/data/ammo-stock.mjs`), and TODO 173 shares loose
+rounds across a gun class. The 0.6.3 rules check flagged it (`rules/reloading.md#34`).
+
+**The maintainer, 2026-09-28:** a house rule for now, marked as one in the code and the rules file. They want
+it fixed properly.
+
+Wanted: a clip is bought for, and keyed to, one weapon (the gun on the sheet, or its exact model). Reloading
+offers only that weapon's clips, and a clip's capacity is its weapon's. Loose rounds stay shared by class
+(p.279). This needs an item link and the purchase and reload flows, so it's a feature and goes on a branch,
+with a migration for existing clips (unkeyed clips fit anything until they're assigned).
+
 ## 47. Ready Weapon is unmodelled — you can attack with a weapon you never drew
 
 > **Built 2026-09-15 on `feature/action-economy`** (0.6; not merged). `ready` on every weapon (initial
