@@ -7007,6 +7007,48 @@ defaults are factories now, and `tests/ledger.test.mjs` fails on a literal.
 character's own field. Ledgers already saved with another character's entries stay that way until a GM
 clears them.
 
+## 198. ✅ 🐛 Rigger dump shock doesn't follow the book — **found 2026-09-27** (writing the rigging guide, TODO 194) · fixed `447994fb`
+
+The ⚡ Dumpshock tool treats riggers like deckers: you pick a host or type a Power, the damage track
+follows `matrixUserMode` (VR-Cold Stun, VR-Hot Physical), and the soak button says *"Resist Dumpshock
+(Body)"* (`SR3EActor.js:1186`, `:1312`, `:12515`). A rigger's dump shock *(SR3 p.156)* is different in
+every respect:
+
+- **Always Stun, resisted with Willpower.**
+- **Power:** a rigger dumped from a remote-control network resists **(RC deck Rating + 4)S**. A rigger
+  involuntarily jacked out of a vehicle, *other than by its destruction*, resists **5S**. Destruction is
+  the separate p.145 case ([#199](#199)).
+- **Disorientation:** +2 to all Success Tests for ten Combat Turns. A Willpower Test (TN 4) shortens it:
+  30 ÷ successes, rounded up, is seconds; ÷ 3, rounded up, is Combat Turns.
+
+Wanted: a rigger branch in the Dumpshock dialog (network or vehicle), announcing the book's Power with a
+Willpower soak, and stating the disorientation. Offer, never apply. Also check the decker path's
+**Body** label against SR3's own dump shock text (p.230–231) and MDF p.27, which doesn't name Body.
+This is a bug fix. Guide: `guides/rules/rigging.md` has a note on this gap; remove it when fixed.
+
+**Done 2026-09-27 (`447994fb`).** The Dumpshock dialog asks what the character was dumped from. The
+rigger cases post the book's Power with a Willpower soak (no armour, no knockdown), state the
+disorientation, and offer the Willpower (4) Test (`scripts/data/rigger-shock.mjs`). There is a
+Dump Shock button in the rigger panel. Tests: `tests/rigger-shock.test.mjs`, two mutants, and
+`tests/e2e/rigger-dumpshock.spec.mjs`. The decker **Body** label is still open: it's now [#201](TODO.md#201).
+
+## 199. ✅ 🐛 No rigger feedback damage when a rigged vehicle is badly hurt — **found 2026-09-27** (TODO 194) · fixed `853a7019`
+
+*(SR3 p.145)*: when a vehicle a rigger is jacked into takes **Serious** damage, the rigger resists **6M**
+Physical. If it's **destroyed**, **6S**. The test is made with **Willpower**, with **no Combat or Control
+Pool**, and includes any dump shock effects (p.156, [#198](#198)). This is separate from the
+passenger-style collision damage the rigger also takes. Nothing offers this roll today: no code path
+checks a VCR-mode vehicle's damage against its pilot.
+
+Wanted: when a VCR-mode vehicle's condition reaches Serious or Destroyed, post a card offering the
+pilot the 6M/6S Willpower resistance. Offer, never apply. The GM clicks the wound. This is a bug fix.
+Guide: `guides/rules/rigging.md` has a note on this gap; remove it when fixed.
+
+**Done 2026-09-27 (`853a7019`).** A `preUpdateActor` hook in `sr3e.js` watches VCR vehicles. When
+damage rises into Serious or Destroyed, the client that caused it posts a 6M or 6S Physical
+Willpower card, with no pools and no armour. The guide note is rewritten. Tests:
+`tests/rigger-shock.test.mjs`, a mutant, and `tests/e2e/rigger-feedback.spec.mjs`.
+
 ## 200. ✅ Matrix Defragged IC sheet puts five agents in the wrong grade — **found 2026-09-27** (TODO 194) · fixed `6254b072`
 
 > **Done 2026-09-27 on `fix/ic-agent-grades`.** `IC_AGENTS` now follows MDF p.34 (checked against the PDF),
