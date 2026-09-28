@@ -28,7 +28,9 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | [7](#7) | More test coverage for combat, initiative and pools | nice to have |
 | [127](#127) | Tagged releases | the maintainer's last steps: hand the players the guides URL, archive the old `sr3-guides` repo |
 
-**Next — 0.6.2, bug fixes on `main`:** the trial session's reports under *🔴 Confirmed bugs, still open*.
+**0.6.2 is released** (tag `v0.6.2`). **Next is 0.6.3, bug fixes on `main`:** every confirmed bug is fixed as of
+2026-09-28. That covers #137, #151, #161, #177 and #198–#202, on `fix/rigger-dumpshock` and awaiting release.
+164 and 176 are feature work and sit under *Rules not implemented*.
 
 ## Contents
 
@@ -37,8 +39,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 🔴 Confirmed bugs, still open | [164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[189](#189) Vehicle collisions — with a character, another vehicle, or a barrier<br>[195](#195) A concealment view — what someone is carrying, and how well it is hidden |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[189](#189) Vehicle collisions — with a character, another vehicle, or a barrier<br>[195](#195) A concealment view — what someone is carrying, and how well it is hidden |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[191](#191) Buff spells on yourself or an ally should not need to hit |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings" |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -221,51 +222,6 @@ cannot reach. If time is short, do these.
   pre-selection the GM can change, never a locked value. Worn goggles are not detected.
 
 <a id="94"></a>
-
-### 🔴 Confirmed bugs, still open
-
-## 164. Non-damaging area grenades: how to show and use their area
-
-Follow-up to [#155](TODO-DONE.md#155), which lands gas, smoke and flash grenades and marks a coloured Region that ends with its Combat Turns. What it does **not** do yet, and what has to be decided:
-
-1. **The marker has not been seen.** It was checked only as far as the chat card; the Region itself and its two-round expiry need a scene with a canvas. A live step: throw a smoke grenade, see the grey region, advance two
-   rounds, see it go, and try the 🧹 button. It also needs a look at how it reads on a busy map — opacity, the label, and whether a Region shows to players who cannot see that spot.
-2. **A better graphic** than a flat coloured circle: a smoke texture or animated fill, and a different look for infra-red smoke, gas and a flash. Regions can carry a texture; nothing chooses one yet.
-3. **Visibility modifiers for smoke.** The card only says *"apply the visibility modifiers"*. The table (SR3 p.112) depends on the vision the viewer uses — normal, low-light, thermographic — and the marker could offer
-   the number to the GM's TN window when an attacker or target stands inside it. Infra-red smoke is the case that changes the row for thermographic vision. Needs the tokens inside the region tested against the attack, which the ranged
-   flow does not do today.
-4. **Gas.** *"The gas cloud affects everything within a 10-meter radius"* — Neuro-Stun VII is a toxin (SR3 p.250 names VIII, p.283's row says VII; see the note on the item). Offering each token inside a resistance card, as
-   the drugs flow does for a dose, is the obvious shape, and would need the Neuro-Stun rules read first.
-5. **Flash-Pak** has no area at all: *"Anyone facing a flash-pak"* is a facing rule. It could mark a cone or ask the GM to tick who is looking; today it only states +4 (+2 with flare compensation) and +2 from the strobe.
-6. **Wind** — *"less in windy areas, at the gamemaster's discretion"* — is stated on the card and not modelled; the expiry is a fixed 2 Combat Turns. A GM cannot shorten one except by clearing the marker.
-7. **Thermal Smoke** and the other non-core no-damage grenades (the 2nd-edition ones are parked in `archive/sr2/`) would use the same two fields once their packs return.
-
-## 176. Rules check 0.6.1 — Rules the guides state that the code does not implement
-
-The full list is in `audit/rules-check-0.6.1.md` (167 units, "Real rules the code does not implement"). Grouped:
-
-- **Magic:** ritual sorcery (MitS pp.34-37); spell, spirit, power and sustaining foci; elemental services and
-  library / circle / materials; the Object Resistance Table; several spells in one action (+2 Drain each); the
-  Spell Pool cap (no more than Sorcery dice) and Hacking Pool cap; Spell Defense subjects and range; limited
-  spells (fetish / exclusive); permanent-spell base time in the Sorcery flow; willing targets; detection spells
-  rolled by the GM; touch-range spells; astral projection as an Exclusive Complex Action, 1 Essence per hour,
-  astral movement; nature-spirit domain and sunrise/sunset; missing spirit types (Hearth, Prairie, Mist, Storm,
-  Lake, Sea).
-- **Matrix:** black IC (lethal / non-lethal, Hardening, jack-out), Tar Pit IC, tortoise immunity, cold / hot ASIST,
-  Hacking Pool restrictions.
-- **Combat:** movement rates, the Change Position test, Shift Perception, laser-sight range and weather, rigger
-  damage (6M / 6S), grenade timing (next Combat Phase), minigrenade arming, chunky-salsa wall strength, the optional
-  grenade damage rule, crossbow Strength Minimum.
-- **Street:** Legality Codes and the Local Fines table, permits, SINs and credsticks, fake IDs, fencing,
-  Concealability searches, weapon and cyberware scanners, belt / extra-round ammunition price adjustments,
-  matching cyberware grades, removal Stress, betaware unavailable to starting characters.
-
-- **Remainders from the 0.6.1 fixes (2026-09-24):** vehicles adapted for rigger control (SR3 p.134, from #167);
-  a rigger's Control Pool dodge against Handling and Control Pool dice on a vehicle's Damage Resistance Test
-  (p.149, from #168); spare clips that fit one gun only (p.281, from #173).
-
-Each needs its own item if the maintainer wants it built; several (SINs, fencing, permits, credsticks) are a small
-feature set on their own. They are features, so they are built on branches, not in a 0.6.x bug-fix release.
 
 ### 📕 Rules not implemented
 
@@ -555,6 +511,49 @@ row cannot be done properly until accessories are structured data.
 - **Quick Draw is explicitly out of scope** — *"we will need some way for someone to quick draw a
   one-handed weapon if the need arises but that's a problem for another day."* It is specified in
   #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
+
+## 164. Non-damaging area grenades: how to show and use their area
+
+Follow-up to [#155](TODO-DONE.md#155), which lands gas, smoke and flash grenades and marks a coloured Region that ends with its Combat Turns. What it does **not** do yet, and what has to be decided:
+
+1. **The marker has not been seen.** It was checked only as far as the chat card; the Region itself and its two-round expiry need a scene with a canvas. A live step: throw a smoke grenade, see the grey region, advance two
+   rounds, see it go, and try the 🧹 button. It also needs a look at how it reads on a busy map — opacity, the label, and whether a Region shows to players who cannot see that spot.
+2. **A better graphic** than a flat coloured circle: a smoke texture or animated fill, and a different look for infra-red smoke, gas and a flash. Regions can carry a texture; nothing chooses one yet.
+3. **Visibility modifiers for smoke.** The card only says *"apply the visibility modifiers"*. The table (SR3 p.112) depends on the vision the viewer uses — normal, low-light, thermographic — and the marker could offer
+   the number to the GM's TN window when an attacker or target stands inside it. Infra-red smoke is the case that changes the row for thermographic vision. Needs the tokens inside the region tested against the attack, which the ranged
+   flow does not do today.
+4. **Gas.** *"The gas cloud affects everything within a 10-meter radius"* — Neuro-Stun VII is a toxin (SR3 p.250 names VIII, p.283's row says VII; see the note on the item). Offering each token inside a resistance card, as
+   the drugs flow does for a dose, is the obvious shape, and would need the Neuro-Stun rules read first.
+5. **Flash-Pak** has no area at all: *"Anyone facing a flash-pak"* is a facing rule. It could mark a cone or ask the GM to tick who is looking; today it only states +4 (+2 with flare compensation) and +2 from the strobe.
+6. **Wind** — *"less in windy areas, at the gamemaster's discretion"* — is stated on the card and not modelled; the expiry is a fixed 2 Combat Turns. A GM cannot shorten one except by clearing the marker.
+7. **Thermal Smoke** and the other non-core no-damage grenades (the 2nd-edition ones are parked in `archive/sr2/`) would use the same two fields once their packs return.
+
+## 176. Rules check 0.6.1 — Rules the guides state that the code does not implement
+
+The full list is in `audit/rules-check-0.6.1.md` (167 units, "Real rules the code does not implement"). Grouped:
+
+- **Magic:** ritual sorcery (MitS pp.34-37); spell, spirit, power and sustaining foci; elemental services and
+  library / circle / materials; the Object Resistance Table; several spells in one action (+2 Drain each); the
+  Spell Pool cap (no more than Sorcery dice) and Hacking Pool cap; Spell Defense subjects and range; limited
+  spells (fetish / exclusive); permanent-spell base time in the Sorcery flow; willing targets; detection spells
+  rolled by the GM; touch-range spells; astral projection as an Exclusive Complex Action, 1 Essence per hour,
+  astral movement; nature-spirit domain and sunrise/sunset; missing spirit types (Hearth, Prairie, Mist, Storm,
+  Lake, Sea).
+- **Matrix:** black IC (lethal / non-lethal, Hardening, jack-out), Tar Pit IC, tortoise immunity, cold / hot ASIST,
+  Hacking Pool restrictions.
+- **Combat:** movement rates, the Change Position test, Shift Perception, laser-sight range and weather, ~~rigger
+  damage (6M / 6S)~~ (done: [#199](TODO-DONE.md#199)), grenade timing (next Combat Phase), minigrenade arming, chunky-salsa wall strength, the optional
+  grenade damage rule, crossbow Strength Minimum.
+- **Street:** Legality Codes and the Local Fines table, permits, SINs and credsticks, fake IDs, fencing,
+  Concealability searches, weapon and cyberware scanners, belt / extra-round ammunition price adjustments,
+  matching cyberware grades, removal Stress, betaware unavailable to starting characters.
+
+- **Remainders from the 0.6.1 fixes (2026-09-24):** vehicles adapted for rigger control (SR3 p.134, from #167);
+  a rigger's Control Pool dodge against Handling and Control Pool dice on a vehicle's Damage Resistance Test
+  (p.149, from #168); spare clips that fit one gun only (p.281, from #173).
+
+Each needs its own item if the maintainer wants it built; several (SINs, fencing, permits, credsticks) are a small
+feature set on their own. They are features, so they are built on branches, not in a 0.6.x bug-fix release.
 
 ## 189. Vehicle collisions — with a character, another vehicle, or a barrier — **asked 2026-09-27**
 
