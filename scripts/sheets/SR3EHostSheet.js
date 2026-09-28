@@ -75,7 +75,7 @@ const DEFAULT_NODE_PROMPTS = {
     { name:'Configure I/O Ports',      action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Alter pathways, authorize I/O Port connections.' },
     { name:'Configure Passcodes',      action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Create or modify passcodes for any node.' },
     { name:'Configure Security Sheaf', action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Activate/deactivate Alerts, reassign IC to Trigger Steps.' },
-    { name:'Reboot Node',              action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:true, grantsAccess:false, description:'Power down a node. Dumps users inside.' },
+    { name:'Reboot Node',              action:'Complex', test:'Passcodes or Hacking vs Sys/Sec', requiresMark:true, overwatchOnFail:false, grantsAccess:false, description:'Power down a node. Dumps users inside.' },
   ],
   'I/O': [
     { ..._ACCESS_PROMPT },

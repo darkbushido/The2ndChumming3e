@@ -946,12 +946,10 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           <label class="act-field act-full">Maneuver vs Opponent
             <select id="act-opponent">${this._opponentSelectHtml(defaultPid)}</select>
           </label>
-          <label class="act-field act-full">Fleeing from Multiple Vehicles
-            <select id="act-flee">
-              <option value="0">None (0)</option>
-              <option value="1">2 vehicles (+1 TN)</option>
-              <option value="2">3+ vehicles (+2 TN)</option>
-            </select>
+          <label class="act-field act-full">Vehicles being fled from
+            <input id="act-flee" type="number" value="1" min="1" max="20"
+              style="background:#1c2030;color:#dde1f0;border:1px solid #3a9fd6;border-radius:3px;padding:2px 5px;width:100%;box-sizing:border-box;"/>
+            <small style="color:#7880a0;font-size:10px;">+1 TN per additional vehicle, no cap (SR3 p.142)</small>
           </label>
           <label class="act-field act-full">Terrain
             <select id="act-terrain">${terrainOpts}</select>
@@ -990,7 +988,8 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           const info    = pid ? this._getParticipantInfo(pid) : null;
           const oppInfo = oppPid ? this._getParticipantInfo(oppPid) : null;
           const mnvMod  = this._maneuverMod(info?.maneuver ?? null, oppInfo?.maneuver ?? null);
-          const flee    = parseInt(el.querySelector('#act-flee')?.value ?? 0);
+          // p.142: "+1 per additional vehicle" — no cap (the dropdown stopped at +2 until 0.6.3).
+          const flee    = Math.max(0, (parseInt(el.querySelector('#act-flee')?.value) || 1) - 1);
           const terrain = parseInt(el.querySelector('#act-terrain')?.value ?? 0);
           const exceed  = el.querySelector('#act-exceed')?.checked ? 1 : 0;
           const autonav = el.querySelector('#act-autonav')?.checked ? (info?.autonav ?? 0) : 0;
@@ -1407,6 +1406,8 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       attackerSpeed:            atkP.speed ?? 0,
       defenderSpeed:            defP?.speed ?? 0,
       attackerSoakPool:         atkSoakPool,
+      // p.143: the rammer's own Power drops by its vehicle's Body × successes.
+      attackerBody:             atkVehicle?.system?.attributes?.body?.base ?? 0,
       defenderSoakPool:         defSoakPool,
       attackerPassengerActorIds: atkP.passengerActorIds ?? [],
       defenderPassengerActorIds: defP?.passengerActorIds ?? [],
@@ -1585,9 +1586,10 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     this._warnDamage(info0);
 
     // Hiding terrain modifiers differ from other actions
-    const terrainMods = { open: 1, normal: 2, restricted: 0, tight: -2 };
+    // Hiding Target Modifiers Table, SR3 p.144: Open +4 / Normal +2 / Restricted 0 / Tight −2 (Open was +1 until 0.6.3).
+    const terrainMods = { open: 4, normal: 2, restricted: 0, tight: -2 };
     const terrainOpts = [
-      ['open',      'Open (+1)'],
+      ['open',      'Open (+4)'],
       ['normal',    'Normal (+2)'],
       ['restricted','Restricted (0)'],
       ['tight',     'Tight (−2)'],

@@ -321,10 +321,12 @@ own, matching the book's treatment of IC as an extension of the host defending i
 ### Dumpshock
 
 Beyond the automatic trigger when your Matrix Condition Monitor fills, a **Dumpshock** button on
-the Matrix tab lets a GM or player fire it manually for any other reason the story calls for — it
-opens a small dialog to set Power (defaulting to a connected host's Security Value) and posts the
-Stun-or-Physical announcement with a resist button, the same as the automatic version. Either way,
-the system only announces the damage; the GM still applies it.
+the Matrix tab lets a GM or player fire it manually for any other reason the story calls for. Its
+dialog takes the host's **Security Code** and **Security Value** (filled in from the connected host)
+and posts the book's damage: **Stun**, Power equal to the Security Value, and a level from the Dump
+Shock Damage Levels table (Blue Light, Green Moderate, Orange Serious, Red Deadly) — the same as the
+automatic version. The resist card rolls **Willpower** with no armor (a house ruling: the book names
+no attribute). Either way, the system only announces the damage; the GM still applies it.
 
 {: .note }
 > Hardening is tracked on the sheet and its tooltip describes the book's effect, but nothing in

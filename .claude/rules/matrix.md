@@ -129,9 +129,10 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
 
 ### Matrix Condition Monitor
 - 10 boxes, click-to-toggle; *"When an icon achieves 10 boxes of Overload Damage, it crashes"* (p.26).
-- 🔴 **THE THRESHOLDS ARE UNVERIFIED.** We use 3/6/8/10 → +1/+2/+3/crash. MDF p.12's table is a graphic whose
-  labels read `Icon | +1 TN | +2 TN | +3 TN | +4 TN` — four steps — but the box counts don't extract. One
-  look at p.12 settles it (TODO 119).
+- **Penalties: +1 TN from box 1, +2 from box 3, +3 from box 6, +4 at box 10** — MDF p.12's table, read from
+  the page image in the 0.6.3 rules check (`MdfRules.matrixCMPenalty`). Until 0.6.3 the code used 3/6/8.
+- **Hacking Pool is Intelligence + ⌊MPCP ÷ 3⌋** (MDF p.11, `MdfRules.hackingPool`) — ⚠ not SR3 core's
+  ⌊(INT + MPCP) ÷ 3⌋, which only the Orthodox pool uses.
 - Not yet a separate track on the host sheet.
 
 ### Sys/Sec modifiers  · *MDF p.14*

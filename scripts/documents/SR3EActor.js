@@ -10,6 +10,7 @@ import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
 import { OpenSteps } from '../data/open-steps.mjs';
 import { RiggerShock, DISORIENT_MOD, DISORIENT_TN, DISORIENT_TURNS } from '../data/rigger-shock.mjs';
+import { MdfRules } from '../data/mdf-rules.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -174,10 +175,7 @@ export class SR3EActor extends Actor {
     if (!deckId) return 0;
     const deck  = this.items.get(deckId);
     const boxes = deck?.system?.damage?.matrixConditionMonitor?.current ?? 0;
-    if (boxes >= 8) return 3;
-    if (boxes >= 6) return 2;
-    if (boxes >= 3) return 1;
-    return 0;
+    return MdfRules.matrixCMPenalty(boxes);   // MDF p.12: +1 at box 1, +2 at 3, +3 at 6, +4 at 10
   }
 
   async rollCybercombat() {
@@ -1128,7 +1126,13 @@ export class SR3EActor extends Actor {
     const veh = game.actors.find(a => a.type === 'vehicle' && a.system?.driverActorId === this.id
       && a.system?.controlMode === 'vcr');
     const rcDeck   = this.system.ew?.deckRating ?? 0;
-    const kindInit = inVR ? 'matrix' : veh ? 'vehicle' : rcDeck > 0 ? 'network' : 'matrix';
+    // SR3 core (Orthodox) Matrix: dump shock is Stun, Power = the host's Security Value, level by its
+    // Security Code (p.226-227) — not the Defragged rule below (0.6.3 rules check).
+    const ortho    = (() => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox'; } catch { return false; } })();
+    const oHost    = ortho ? game.actors.get(this.system.orthodoxRunState?.currentHostId ?? '') : null;
+    const oCode    = oHost?.system?.orthodoxSecurityCode ?? 'Green';
+    const oValue   = oHost?.system?.orthodoxSecurityValue ?? 6;
+    const kindInit = (inVR || oHost) ? 'matrix' : veh ? 'vehicle' : rcDeck > 0 ? 'network' : 'matrix';
 
     const hostActors = game.actors.filter(a => a.type === 'host' && game.sr3e.isLiveActor(a));
     const hostOptions = hostActors.length
@@ -1162,7 +1166,17 @@ export class SR3EActor extends Actor {
               <option value="vehicle" ${sel('vehicle')}>A vehicle, jacked out involuntarily (rigger)</option>
             </select>
           </label>
-          <div data-ds-kind="matrix">
+          ${ortho ? `<div data-ds-kind="matrix">
+            <label style="display:block;margin-bottom:8px">Host Security Code${oHost ? ` (${oHost.name})` : ''}:
+              <select id="ds-code" style="width:100%;margin-top:4px">
+                ${['Blue', 'Green', 'Orange', 'Red'].map(c => `<option value="${c}" ${c === oCode ? 'selected' : ''}>${c}</option>`).join('')}
+              </select>
+            </label>
+            <label>Security Value (Power):
+              <input type="number" id="ds-secval" value="${oValue}" min="1" style="width:60px;margin-left:4px">
+            </label>
+            <p style="margin:6px 0 0;font-size:11px;color:var(--sr-muted)">Stun; Blue L, Green M, Orange S, Red D — SR3 p.226-227.</p>
+          </div>` : `<div data-ds-kind="matrix">
             <p style="margin:0 0 8px">
               Mode: <strong>${this.system.matrixUserMode || 'Unknown'}</strong> → damage type: <strong>${isStun ? 'Stun' : 'Physical'}</strong>
             </p>
@@ -1173,7 +1187,7 @@ export class SR3EActor extends Actor {
             <label>Dumpshock Power (System Rating):
               <input type="number" id="ds-power" value="${hostActors[0]?.system.systemRating ?? 6}" min="1" style="width:60px;margin-left:4px">
             </label>
-          </div>
+          </div>`}
           <div data-ds-kind="network">
             <label>RC deck Rating:
               <input type="number" id="ds-deck" value="${rcDeck}" min="0" style="width:60px;margin-left:4px">
@@ -1194,7 +1208,8 @@ export class SR3EActor extends Actor {
             const el   = dlg.element;
             const kind = el.querySelector('#ds-kind')?.value ?? 'matrix';
             const n    = (id, d) => { const v = parseInt(el.querySelector(id)?.value); return Number.isNaN(v) ? d : v; };
-            result = { kind, power: Math.max(1, n('#ds-power', 6)), deck: Math.max(0, n('#ds-deck', rcDeck)) };
+            result = { kind, power: Math.max(1, n('#ds-power', 6)), deck: Math.max(0, n('#ds-deck', rcDeck)),
+              code: el.querySelector('#ds-code')?.value ?? oCode, secValue: Math.max(1, n('#ds-secval', oValue)) };
           },
         },
         { label: 'Cancel', action: 'cancel' },
@@ -1204,6 +1219,7 @@ export class SR3EActor extends Actor {
 
     if (!result) return;
     if (result.kind !== 'matrix') return this._postRiggerDumpshock(result.kind, result.deck);
+    if (ortho) return this._postOrthoDumpshock(result.code, result.secValue);
     const power = result.power;
 
     const trackLabel = isStun ? 'Stun' : 'Physical';
@@ -1227,6 +1243,41 @@ export class SR3EActor extends Actor {
           <div class="sr-roll-header" style="color:var(--sr-red)">⚡ Dumpshock — ${this.name}</div>
           <div class="sr-staging-result">
             Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${power}S ${trackLabel}</strong>
+          </div>
+          <div class="sr-soak-action">
+            <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${this.name}: Resist Dumpshock (Willpower)</button>
+          </div>
+        </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  /**
+   * An SR3 core (Orthodox) decker's dump shock, fired by hand — SR3 p.226-227 (0.6.3 rules check).
+   * Stun, Power = the host's Security Value, level by its Security Code (`orthoDumpShock`), resisted
+   * with Willpower and no armour (the maintainer's rulings). The automatic crash card uses the same rule.
+   */
+  async _postOrthoDumpshock(code, value) {
+    const ds = SR3EActor.orthoDumpShock(code, value);
+    const soakCtx = JSON.stringify({
+      attackerActorId: null,
+      targetActorId:   this.id,
+      isMelee:         false,
+      stagedPower:     ds.power,
+      stagedLevel:     ds.level,
+      isStun:          true,
+      rawDamage:       `${ds.power}${ds.level}`,
+      resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)
+      noArmor:         true,          // no armour against dump shock — the maintainer's ruling, 2026-09-28
+      noArmorNote:     'Dump shock — no armour applies',
+    }).replace(/'/g, '&#39;');
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      content: `
+        <div class="sr-roll-card">
+          <div class="sr-roll-header" style="color:var(--sr-red)">⚡ Dumpshock — ${this.name}</div>
+          <div class="sr-staging-result">
+            Dump shock (${code} host): <strong>${ds.power}${ds.level} Stun</strong> (SR3 p.226-227)
           </div>
           <div class="sr-soak-action">
             <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${this.name}: Resist Dumpshock (Willpower)</button>
@@ -2481,8 +2532,9 @@ _prepareCharacter(sys, attr) {
 
   const deckItem        = sys.equippedCyberdeck ? this.items?.get(sys.equippedCyberdeck) : null;
   const mpcp            = deckItem?.system?.attributes?.mpcp?.base ?? null;
+  // MDF p.11: Intelligence + ⌊MPCP ÷ 3⌋ — not SR3 core's ⌊(INT + MPCP) ÷ 3⌋, which the Orthodox pool below keeps.
   const hackingPoolBase = mpcp !== null
-    ? Math.max(0, Math.floor(((attr.intelligence?.value ?? 0) + mpcp) / 3))
+    ? MdfRules.hackingPool(attr.intelligence?.value ?? 0, mpcp)
     : null;
   // Orthodox SR3 hacking pool: derived from actor-stored deck stats (same formula, different source)
   const orthodoxMccp         = sys.orthodoxDeck?.mccp ?? 0;
@@ -4987,19 +5039,36 @@ _prepareCharacter(sys, attr) {
   /*  Ramming damage resolution                                           */
   /* ------------------------------------------------------------------ */
 
+  /**
+   * A ram's collision damage · *SR3 p.143*, worked on p.147 — 0.6.3 rules check.
+   *
+   * > "To determine the Power of the Damage Code, calculate the difference in speed between the two
+   * > vehicles; then divide the result by 10 and round that number up … The attacker reduces the Power
+   * > of the collision damage by his vehicle's Body Rating, multiplied by the number of successes on his
+   * > test. For the Damage Level, use the level corresponding to the difference in speed"
+   *
+   * p.147: Rigger X's 5 successes × Body 3 take 15S to "2S" — *"Target numbers cannot be reduced below
+   * 2"*. ⚠ The rammer's POWER drops; its LEVEL does not (until 0.6.3 the code staged the level down
+   * one per two successes and kept the full Power). ⚠ The target's code is never reduced.
+   *
+   * @returns {{ power:number, level:'L'|'M'|'S'|'D', rammerPower:number }}
+   */
+  static ramCollision({ speedDiff = 0, successes = 0, rammerBody = 0 } = {}) {
+    const diff  = Math.abs(Number(speedDiff) || 0);
+    const power = Math.max(1, Math.ceil(diff / 10));
+    const level = diff >= 201 ? 'D' : diff >= 61 ? 'S' : diff >= 21 ? 'M' : 'L';
+    const cut   = Math.max(0, Math.trunc(Number(rammerBody) || 0)) * Math.max(0, Math.trunc(Number(successes) || 0));
+    return { power, level, rammerPower: Math.min(power, Math.max(2, power - cut)) };
+  }
+
   static _buildRamDamageHtml(successes, ctx) {
+    // p.143: "If the test succeeds, the vehicle collides with the target."
+    if (!(successes > 0)) {
+      return `<div class="sr-staging-result sr-soak-blocked">💨 No successes — the ram misses (SR3 p.143).</div>`;
+    }
     // speeds in km/ct; standard SR3 impact table in km/ct
     const speedDiff = Math.abs((ctx.attackerSpeed ?? 0) - (ctx.defenderSpeed ?? 0));
-    const power     = Math.max(1, Math.ceil(speedDiff / 10));
-    const STAGES    = ['L', 'M', 'S', 'D'];
-    const baseLevel = speedDiff >= 201 ? 'D' : speedDiff >= 61 ? 'S' : speedDiff >= 21 ? 'M' : 'L';
-
-    // Attacker benefits: stage DOWN by floor(successes/2)
-    let atkIdx    = STAGES.indexOf(baseLevel);
-    const stageDn = Math.floor(successes / 2);
-    atkIdx = Math.max(-1, atkIdx - stageDn);
-
-    const atkDamage = atkIdx >= 0 ? `${power}${STAGES[atkIdx]} Physical` : 'No damage (completely staged off)';
+    const { power, level: baseLevel, rammerPower } = SR3EActor.ramCollision({ speedDiff, successes, rammerBody: ctx.attackerBody ?? 0 });
 
     const _ctx = (soakPool, power, level, isAtk) => JSON.stringify({
       vehicleActorId:    isAtk ? ctx.attackerVehicleActorId : ctx.defenderVehicleActorId,
@@ -5016,17 +5085,15 @@ _prepareCharacter(sys, attr) {
         💥 Speed difference: ${Math.round(speedDiff * 1.2)} km/h (${speedDiff.toFixed(1)} km/ct) → Base damage: <strong>${power}${baseLevel} Physical</strong>
       </div>
       <div class="sr-staging-result">
-        Attacker ${successes} success${successes !== 1 ? 'es' : ''}: −${stageDn} stage${stageDn !== 1 ? 's' : ''} → <strong>${atkDamage}</strong>
+        Rammer: ${successes} success${successes !== 1 ? 'es' : ''} × Body ${ctx.attackerBody ?? 0} off the Power → <strong>${rammerPower}${baseLevel} Physical</strong> (TN floor 2, SR3 p.143)
       </div>`;
 
-    if (atkIdx >= 0) {
-      html += `
+    html += `
       <div class="sr-soak-action">
-        <button class="sr-ram-vehicle-soak-btn" data-payload='${_ctx(ctx.attackerSoakPool ?? 4, power, STAGES[atkIdx], true)}'>
-          🚗 ${ctx.attackerVehicleName}: Soak Damage (${power}${STAGES[atkIdx]}, TN ${power})
+        <button class="sr-ram-vehicle-soak-btn" data-payload='${_ctx(ctx.attackerSoakPool ?? 4, rammerPower, baseLevel, true)}'>
+          🚗 ${ctx.attackerVehicleName}: Soak Damage (${rammerPower}${baseLevel}, TN ${Math.max(2, rammerPower)})
         </button>
       </div>`;
-    }
 
     html += `
       <div class="sr-soak-action">
@@ -12102,6 +12169,11 @@ _prepareCharacter(sys, attr) {
    * @param {number} value  the host's `orthodoxSecurityValue`
    * @returns {{ power:number, level:'L'|'M'|'S'|'D', isStun:true, onTable:boolean }}
    */
+  /** Subsystem rating bonus for an Orthodox host's alert — SR3 p.211: +2 from passive alert on. */
+  static orthoAlertSubsystemMod(alertLevel) {
+    return alertLevel === 'passive' || alertLevel === 'active' ? 2 : 0;
+  }
+
   static orthoDumpShock(code, value) {
     const level = ({ Blue: 'L', Green: 'M', Orange: 'S', Red: 'D' })[code];
     return { power: Math.max(1, Number(value) || 0), level: level ?? 'S', isStun: true, onTable: !!level };
@@ -12143,7 +12215,9 @@ _prepareCharacter(sys, attr) {
     })();
 
     const alertLevel = run.alertLevel ?? 'none';
-    const alertMod   = alertLevel === 'passive' ? 2 : 0;
+    // SR3 p.211: "When a system goes on passive alert status, increase all Subsystem Ratings by 2" — and
+    // nothing takes it away at active alert, which follows passive (0.6.3 rules check; was passive-only).
+    const alertMod   = SR3EActor.orthoAlertSubsystemMod(alertLevel);
 
     const subsOpts = [
       ['access',  'Access',  subs.access  ?? 0],

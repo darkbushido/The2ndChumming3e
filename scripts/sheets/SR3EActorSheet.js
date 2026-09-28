@@ -1069,7 +1069,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           d.hackingPool ?? 0,
           d.hackingPoolBase ?? 0,
           'system.hackingPoolSpent', null,
-          `floor((INT ${intl} + MPCP) / 3) = ${d.hackingPoolBase ?? 0}`) : ''}
+          `INT ${intl} + floor(MPCP / 3) = ${d.hackingPoolBase ?? 0} (MDF p.11)`) : ''}
       </div>
     </div>
 
@@ -2354,6 +2354,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <button type="button" class="btn-roll" data-action="rollOrthodoxCybercombat"
                 title="Attack deployed IC on the current host (attack utility vs Cybercombat TN; IC soaks with Security Value)"
                 ${!currentHost ? 'disabled' : ''}>⚔ Cybercombat</button>
+        <button type="button" class="btn-roll" data-action="rollDumpshock"
+                style="background:var(--sr-surface);border-color:var(--sr-amber);color:var(--sr-amber)"
+                title="Dump shock — crashed off or jacked out without a Graceful Logoff (SR3 p.227)">⚡ Dumpshock</button>
       </div>
       ${!currentHost ? `<div style="font-size:11px;color:var(--sr-muted);margin-bottom:8px">Log on to a host to enable matrix actions.</div>` : ''}
 
@@ -2468,7 +2471,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         </div>
       </div>
       <div style="font-size:11px;color:var(--sr-muted);margin-bottom:10px">
-        Damage: 3/6/8/10 boxes = +1/+2/+3 TN or crash. Click boxes or use L/M/S/D buttons to apply damage.
+        Damage: +1 TN from box 1, +2 from 3, +3 from 6, +4 at 10 (MDF p.12); 10 boxes crashes. Click boxes or use L/M/S/D buttons to apply damage.
       </div>`;
   }
 

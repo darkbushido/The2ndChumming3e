@@ -1910,6 +1910,37 @@ export const MUTANTS = [
     impl:   ({ power = 0 } = {}) => Math.max(2, Number(power) || 0),
   },
   {
+    id:     'mdf-hacking-pool-core-formula',
+    suite:  'rules-check-063',
+    module: '../scripts/data/mdf-rules.mjs', klass: 'MdfRules', method: 'hackingPool',
+    was:    'the Defragged Hacking Pool used SR3 core\'s floor((INT + MPCP) / 3); MDF p.11 is INT + floor(MPCP / 3) (0.6.3 rules check)',
+    impl:   (i, m) => Math.floor(((Number(i) || 0) + (Number(m) || 0)) / 3),
+  },
+  {
+    id:     'mdf-matrix-cm-3-6-8',
+    suite:  'rules-check-063',
+    module: '../scripts/data/mdf-rules.mjs', klass: 'MdfRules', method: 'matrixCMPenalty',
+    was:    'the Matrix Condition Monitor penalised from box 3 (+1/+2/+3 at 3/6/8); MDF p.12 is +1 at 1, +2 at 3, +3 at 6, +4 at 10 (0.6.3 rules check)',
+    impl:   (b) => (b >= 8 ? 3 : b >= 6 ? 2 : b >= 3 ? 1 : 0),
+  },
+  {
+    id:     'rammer-power-unreduced',
+    suite:  'rules-check-063',
+    ...ACTOR, method: 'ramCollision',
+    was:    'a rammer\'s own damage kept the full Power (the level was staged down instead); SR3 p.143 takes Body x successes off the Power, floor 2 (0.6.3 rules check)',
+    impl:   ({ speedDiff = 0 } = {}) => {
+      const d = Math.abs(Number(speedDiff) || 0), power = Math.max(1, Math.ceil(d / 10));
+      return { power, level: d >= 201 ? 'D' : d >= 61 ? 'S' : d >= 21 ? 'M' : 'L', rammerPower: power };
+    },
+  },
+  {
+    id:     'ortho-alert-passive-only',
+    suite:  'rules-check-063',
+    ...ACTOR, method: 'orthoAlertSubsystemMod',
+    was:    'the passive alert\'s +2 to subsystems fell away at active alert; SR3 p.211 never removes it (0.6.3 rules check)',
+    impl:   (a) => (a === 'passive' ? 2 : 0),
+  },
+  {
     id:     'flechette-coded-ignores-dermal',
     suite:  'flechette-weapons',
     ...ACTOR, method: 'flechetteCodedDrop',

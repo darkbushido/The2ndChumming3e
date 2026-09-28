@@ -6,9 +6,9 @@
  * assertion that this was not independent verification. It is now: every number below is quoted from the
  * PDF in `audit/matrix-defragged-audit.md`, with its page.
  *
- * ⚠ **The Matrix Condition Monitor's thresholds are NOT here.** That table (p.12) is a graphic; its
- * labels extract as four penalty steps (+1…+4) and the box counts do not extract at all. Asserting our
- * 3/6/8/10 would be asserting a guess.
+ * The Matrix Condition Monitor's thresholds (p.12, a graphic) were read from the page image in the 0.6.3
+ * rules check: +1 at box 1, +2 at 3, +3 at 6, +4 at 10. They and the Hacking Pool are pinned in
+ * `tests/mdf-rules.test.mjs`.
  */
 import { readFileSync } from 'node:fs';
 import { installGlobals, installGame } from './helpers/foundry.mjs';
@@ -78,8 +78,8 @@ export async function run(t) {
   t.eq('Black: Ripper and Sparky', grade('Black'), ['Ripper', 'Sparky']);
 
   /* ── What the audit could not settle ─────────────────────────────────────── */
-  t.ok('the Condition Monitor thresholds are flagged unverified, not quietly asserted',
-    /🔴 \*\*THE THRESHOLDS ARE UNVERIFIED\.\*\*/.test(claude));
+  t.ok('the Condition Monitor thresholds are recorded as read from the page (0.6.3 rules check)',
+    /\+1 TN from box 1, \+2 from box 3, \+3 from box 6, \+4 at box 10/.test(claude));
   t.ok('the crash trigger for Overwatch is named as missing (TODO 128)', /TODO 128/.test(claude));
   t.ok('the audit itself is committed', /Audited 2026-09-16/.test(read('audit/matrix-defragged-audit.md')));
 }

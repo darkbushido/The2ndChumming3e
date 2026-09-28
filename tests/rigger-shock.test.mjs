@@ -73,12 +73,13 @@ export async function run(t) {
 
   /* ── A decker's dump shock: Willpower, the maintainer's ruling (TODO 201) ──────────
    * SR3 p.227 and MDF p.27 name no attribute; ruled Willpower 2026-09-27 ("it's a mental issue").
-   * Three cards: the ⚡ Dumpshock tool, Convergence, and the Orthodox deck crash. */
+   * Four cards: the ⚡ Dumpshock tool (Defragged and, since 0.6.3, Orthodox), Convergence, and the Orthodox
+   * deck crash. */
   t.is('every decker dump shock card resists with Willpower',
-    (actor.match(/resistAttr:\s+'willpower',\s+\/\/ the maintainer's ruling, 2026-09-27 \(TODO 201\)/g) ?? []).length, 3);
+    (actor.match(/resistAttr:\s+'willpower',\s+\/\/ the maintainer's ruling, 2026-09-27 \(TODO 201\)/g) ?? []).length, 4);
   t.ok('…and no button still says Body', !/Resist Dumpshock \(Body/.test(actor));
   t.is('…and no worn armour lowers it — the maintainer\'s ruling, 2026-09-28',
-    (actor.match(/noArmor:\s+true,\s+\/\/ no armour against dump shock — the maintainer's ruling, 2026-09-28/g) ?? []).length, 3);
+    (actor.match(/noArmor:\s+true,\s+\/\/ no armour against dump shock — the maintainer's ruling, 2026-09-28/g) ?? []).length, 4);
 
   /* ── Rigger damage trigger, SR3 p.145 (TODO 199) ───────────────────────────────── */
   const stage = RiggerShock.feedbackStage;
