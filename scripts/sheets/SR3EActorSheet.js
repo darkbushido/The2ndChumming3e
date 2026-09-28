@@ -2356,7 +2356,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 ${!currentHost ? 'disabled' : ''}>⚔ Cybercombat</button>
         <button type="button" class="btn-roll" data-action="rollDumpshock"
                 style="background:var(--sr-surface);border-color:var(--sr-amber);color:var(--sr-amber)"
-                title="Dump shock — crashed off or jacked out without a Graceful Logoff (SR3 p.227)">⚡ Dumpshock</button>
+                title="Dump shock — crashed off, or jacked out without a clean logoff (SR3 p.227)">⚡ Dumpshock</button>
       </div>
       ${!currentHost ? `<div style="font-size:11px;color:var(--sr-muted);margin-bottom:8px">Log on to a host to enable matrix actions.</div>` : ''}
 
