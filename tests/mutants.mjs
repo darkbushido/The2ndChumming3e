@@ -75,6 +75,13 @@ export const MUTANTS = [
     impl:   (s) => { const n = Math.max(1, s | 0); const seconds = Math.floor(30 / n); return { seconds, turns: Math.floor(seconds / 3) }; },
   },
   {
+    id:     'rigger-feedback-never',
+    suite:  'rigger-shock',
+    module: '../scripts/data/rigger-shock.mjs', klass: 'RiggerShock', method: 'feedbackStage',
+    was:    'no code path checked a VCR-rigged vehicle\'s damage against its rigger — no 6M/6S Willpower card at Serious or Destroyed (SR3 p.145, TODO 199)',
+    impl:   () => null,
+  },
+  {
     id:     'open-steps-fold-on-finish',
     suite:  'open-steps',
     module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'shouldFold',

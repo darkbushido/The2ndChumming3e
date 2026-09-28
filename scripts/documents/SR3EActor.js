@@ -1283,6 +1283,56 @@ export class SR3EActor extends Actor {
     });
   }
 
+  /**
+   * Rigger damage — SR3 p.145, TODO 199. A VCR-rigged vehicle just reached Serious (6M) or was
+   * destroyed (6S): the jacked-in rigger resists Physical damage with Willpower, no Combat or Control
+   * Pool, no armour. Posted by the client that damaged the vehicle (the `preUpdateActor` hook in
+   * sr3e.js); the rigger's soak and 🩸 Assign are theirs to click.
+   *
+   * @param {Actor} vehicle
+   * @param {'serious'|'destroyed'} stage
+   */
+  static async postRiggerFeedbackCard(vehicle, stage) {
+    const f      = RiggerShock.feedback(stage);
+    const rigger = game.actors.get(vehicle?.system?.driverActorId ?? '');
+    if (!f || !rigger) return;
+    const soakCtx = JSON.stringify({
+      attackerActorId: null,
+      // ⚠ No vehicleActorId: `_payloadActorId` resolves it before targetActorId, and the button is the rigger's.
+      targetActorId:   rigger.id,
+      isMelee:         false,
+      stagedPower:     f.power,
+      stagedLevel:     f.level,
+      isStun:          false,
+      rawDamage:       `${f.power}${f.level}`,
+      resistAttr:      f.resistAttr,
+      noPools:         true,
+      noArmor:         true,
+      noArmorNote:     'Neural feedback through the rig — no armour applies',
+      noKnockdown:     true,
+    }).replace(/'/g, '&#39;');
+    const what = stage === 'destroyed' ? 'was destroyed' : 'took Serious damage';
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: rigger }),
+      content: `
+        <div class="sr-roll-card">
+          <div class="sr-roll-header" style="color:var(--sr-red)">🚗 Rigger Damage — ${rigger.name}</div>
+          <div class="sr-staging-result">
+            ${vehicle.name} ${what}: <strong>${f.power}${f.level} Physical</strong>, resisted with Willpower —
+            no Combat or Control Pool (${f.page})
+          </div>
+          <div class="sr-roll-meta" style="font-size:11px">
+            Include any dump shock effects (p.156). Collision damage to the rigger as a passenger is separate.
+          </div>
+          <div class="sr-soak-action">
+            <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${rigger.name}: Resist Rigger Damage (Willpower)</button>
+          </div>
+        </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
   /** The disorientation Willpower Test (SR3 p.156) — its result card states how long it lasts. */
   static async handleRiggerDisorientClick(btn) {
     const p     = JSON.parse(btn.dataset.payload ?? '{}');

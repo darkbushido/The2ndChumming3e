@@ -452,18 +452,21 @@ attribute default, with no special case for a rigger's +2.
 
 ### Dump shock, and rigger damage from a destroyed vehicle
 
-{: .note }
-> The system has a manual ⚡ Dumpshock tool (the GM applies it by hand),
-> shared between deckers and riggers. It asks for a Power and rolls a
-> Stun-or-Physical Damage Resistance Test based on the actor's Matrix mode
-> rather than the rigger-specific rule above — it doesn't model either the
-> network-dump formula (deck Rating + 4) or the flat 5S jacked-out case,
-> and has no ten-turn disorientation effect at all. Its soak button also
-> resists with Body rather than the Willpower the book calls for. There's
-> also no automatic trigger for a jacked-in rigger's vehicle reaching
-> Serious or Destroyed; a GM applying the book's fixed 6M/6S
-> rigger-feedback damage currently rolls it as an ordinary 🎲 Success Test
-> by hand.
+- **⚡ Dump Shock** is a button in the character sheet's *Rigger —
+  Electronic Warfare* panel (and beside the Matrix tools when in VR). Its
+  dialog asks what the character was dumped from: the Matrix (a decker),
+  a **remote-control network**, which uses the RC deck Rating from the
+  panel, or a **vehicle** they were jacked out of. The rigger cases post
+  the book's Power, **(Rating + 4)S** or **5S** Stun. The resist card rolls
+  **Willpower**, with no armor. The card also states the ten turns of
+  **+2** disorientation and offers the **Willpower (4) Test** that
+  shortens it; that roll's result card says how many Combat Turns it lasts.
+- **Rigger damage is offered automatically.** When a vehicle a rigger is
+  jacked into (VCR mode) reaches **Serious**, a card offers the rigger the
+  **6M** Physical resistance, and when it is **Destroyed**, **6S**. The
+  roll is Willpower with no Combat or Control Pool and no armor. Nothing
+  is applied: the rigger rolls, and the wound goes on only when someone
+  clicks 🩸 Assign.
 
 ### The Chase Scene (combat tracker)
 

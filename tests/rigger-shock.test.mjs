@@ -70,4 +70,28 @@ export async function run(t) {
   const ewAt = sheet.indexOf('_riggerEWBlock(sys) {');
   const ew = sheet.slice(ewAt, sheet.indexOf('// ── Orthodox SR3 Matrix Tab', ewAt));
   t.ok('the rigger panel has a Dump Shock button (riggers are not in VR)', /data-action="rollDumpshock"/.test(ew));
+
+  /* ── Rigger damage trigger, SR3 p.145 (TODO 199) ───────────────────────────────── */
+  const stage = RiggerShock.feedbackStage;
+  t.is('Moderate → Serious: the 6M case', stage('M', 'S'), 'serious');
+  t.is('undamaged → Serious in one hit', stage(null, 'S'), 'serious');
+  t.is('Serious → Destroyed: the 6S case', stage('S', 'D'), 'destroyed');
+  t.is('Moderate → Destroyed is destroyed only, not both', stage('M', 'D'), 'destroyed');
+  t.is('more boxes inside Serious: nothing new', stage('S', 'S'), null);
+  t.is('Light → Moderate: nothing', stage('L', 'M'), null);
+  t.is('repairs: nothing', stage('D', 'S'), null);
+
+  const hooks = sr3e.slice(sr3e.indexOf('A rigged vehicle reached Serious or Destroyed'), sr3e.indexOf('Re-render combat tracker when a vehicle'));
+  t.ok('the trigger reads the OLD boxes in preUpdate and needs a jacked-in (VCR) rigger',
+    /preUpdateActor/.test(hooks) && /controlMode !== 'vcr'/.test(hooks) && /driverActorId/.test(hooks)
+    && /RiggerShock\.feedbackStage\(/.test(hooks) && /vehicleDamageLevel\(actor\.system\.damage\?\.value/.test(hooks));
+  t.ok('…and only the client that made the change posts the card',
+    /userId === game\.user\.id\)[\s\S]{0,80}postRiggerFeedbackCard/.test(hooks));
+
+  const fb = actor.slice(actor.indexOf('static async postRiggerFeedbackCard('), actor.indexOf('static async handleRiggerDisorientClick('));
+  t.ok('the card resists RiggerShock.feedback with Willpower, no pools, no armour, Physical',
+    /RiggerShock\.feedback\(stage\)/.test(fb) && /resistAttr:\s*f\.resistAttr/.test(fb) && /noPools:\s*true/.test(fb)
+    && /noArmor:\s*true/.test(fb) && /isStun:\s*false/.test(fb));
+  t.ok('…and the soak button belongs to the rigger, not the vehicle\'s owner (no vehicleActorId key)',
+    !/^\s*vehicleActorId:/m.test(fb) && /targetActorId:\s*rigger\.id/.test(fb));
 }

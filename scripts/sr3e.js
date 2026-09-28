@@ -47,6 +47,7 @@ import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3EOpenSteps } from './SR3EOpenSteps.js';
 import { OpenSteps } from './data/open-steps.mjs';
 import { CyberWeapons } from './data/cyber-weapons.mjs';
+import { RiggerShock } from './data/rigger-shock.mjs';
 import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
 import * as Sustaining from './data/sustaining.mjs';
@@ -2053,6 +2054,24 @@ Hooks.on('preUpdateActor', (actor, changes, options) => {
 });
 Hooks.on('updateActor', (actor, _changes, options, userId) => {
   if (options?.sr3eSustainCheck && userId === game.user.id) SR3EActor.postSustainCheckCard(actor);
+});
+
+// A rigged vehicle reached Serious or Destroyed → its jacked-in rigger resists 6M / 6S Physical with
+// Willpower (SR3 p.145, TODO 199). Same shape as the sustaining check: preUpdate sees the old boxes,
+// and the client making the change posts the card. Offered, never applied.
+Hooks.on('preUpdateActor', (actor, changes, options) => {
+  if (actor.type !== 'vehicle') return;
+  const next = changes.system?.damage?.value;
+  if (next === undefined || actor.system?.controlMode !== 'vcr' || !actor.system?.driverActorId) return;
+  const max   = actor.system.derived?.damageMax ?? ((actor.system.attributes?.body?.base ?? 4) * 2);
+  const stage = RiggerShock.feedbackStage(
+    SR3EActor.vehicleDamageLevel(actor.system.damage?.value ?? 0, max), SR3EActor.vehicleDamageLevel(next, max));
+  if (stage) options.sr3eRiggerFeedback = stage;
+});
+Hooks.on('updateActor', (actor, _changes, options, userId) => {
+  if (options?.sr3eRiggerFeedback && userId === game.user.id) {
+    SR3EActor.postRiggerFeedbackCard(actor, options.sr3eRiggerFeedback);
+  }
 });
 
 // Re-render combat tracker when a vehicle actor's control mode changes so the

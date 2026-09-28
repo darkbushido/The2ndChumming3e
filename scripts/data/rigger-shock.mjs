@@ -65,4 +65,21 @@ export const RiggerShock = {
     if (!level) return null;
     return { power: 6, level, isStun: false, resistAttr: 'willpower', noPools: true, page: FEEDBACK_PAGE };
   },
+
+  /**
+   * Did this change of a vehicle's damage level just reach Serious or Destroyed? Only a RISE into the
+   * band counts — more boxes inside Serious, or repairs, post nothing. A jump from below Serious
+   * straight to Destroyed is the destroyed case (6S), not both.
+   * @param {'L'|'M'|'S'|'D'|null} before  `SR3EActor.vehicleDamageLevel` before the change
+   * @param {'L'|'M'|'S'|'D'|null} after   …and after it
+   * @returns {'serious'|'destroyed'|null}
+   */
+  feedbackStage(before, after) {
+    const rank = l => ({ L: 1, M: 2, S: 3, D: 4 })[l] ?? 0;
+    const b = rank(before), a = rank(after);
+    if (a <= b) return null;
+    if (a === 4) return 'destroyed';
+    if (a === 3) return 'serious';
+    return null;
+  },
 };
