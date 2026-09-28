@@ -16389,9 +16389,9 @@
         98,
         98
       ],
-      "hash": "9f0d5cbda2",
-      "text": "| CAS | 6 | Green (3) |",
-      "verdict": "guide-differs",
+      "hash": "54c8157861",
+      "text": "| CAS | 6 | Green (2) |",
+      "verdict": "not-implemented",
       "pdf": [
         {
           "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
@@ -16400,7 +16400,13 @@
           "quote": "RTG SYS/SEC TABLE CAS 6 Green (2)"
         }
       ],
-      "note": "The book lists CAS at System 6, Green (2) (page image, p.15). The guide prints \"Green (3)\"; Green's threshold is 2."
+      "search": [
+        {
+          "pattern": "Aztlan|Tsimshian|California Free State",
+          "path": "packs-src/sr3e-mdf-hosts"
+        }
+      ],
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check. The RTG table is not shipped; the GM enters a grid as a host actor."
     },
     {
       "id": "rules/decking-defragged.md#42",
@@ -16874,9 +16880,9 @@
         133,
         133
       ],
-      "hash": "896ed87c0d",
-      "text": "| Crack Protections | Passcode/Hacking vs Sys/Sec of the protection | | |",
-      "verdict": "guide-differs",
+      "hash": "6728fa844b",
+      "text": "| Crack Protections | Passcode/Hacking vs Sys/Sec of the protection | ✗ | |",
+      "verdict": "not-implemented",
       "pdf": [
         {
           "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
@@ -16885,7 +16891,13 @@
           "quote": "disable a Databomb, respectively. Failing this test"
         }
       ],
-      "note": "Crack Protections: \"Failing this test increases the user's Overwatch by 1 point\" (p.16). The guide's row has no ✗ in the Overwatch column. (The prompt is not in the system's list.)"
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ],
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check. The prompt is not in the system's list."
     },
     {
       "id": "rules/decking-defragged.md#63",
@@ -20783,11 +20795,11 @@
       "file": "rules/decking.md",
       "lines": [
         30,
-        34
+        35
       ],
-      "hash": "7698ed3c90",
-      "text": "A deck also carries **Hardening**, which blunts damage from the nastiest IC; **Active** and\n**Storage Memory**, which limit how many utility programs can run at once versus just be carried;\nan **I/O Speed** for moving data; and **Response Increase**, the Matrix's answer to wired\nreflexes — each point adds to Reaction and to Matrix Initiative, capped at 3 points and by the\ndeck's own MPCP. *(SR3 p.206–207)*",
-      "verdict": "guide-differs",
+      "hash": "e33ecb171e",
+      "text": "A deck also carries **Hardening**, which blunts damage from the nastiest IC; **Active** and\n**Storage Memory**, which limit how many utility programs can run at once versus just be carried;\nan **I/O Speed** for moving data; and **Response Increase**, the Matrix's answer to wired\nreflexes — each point adds +2 to Reaction and +1D6 to Matrix Initiative. A deck supports at most\n3 points, and no more than its MPCP ÷ 4 (round down), so a deck of MPCP 3 or less can't run any.\n*(SR3 p.206–207)*",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -20802,14 +20814,21 @@
           "quote": "A deck can support only 3 points of Response Increase."
         }
       ],
-      "note": "The book caps Response Increase at 3 and at MPCP ÷ 4 (round down); a deck of MPCP 3 or less gets none. The guide says \"capped at 3 points and by the deck's own MPCP\", which reads as MPCP itself. The code uses MPCP ÷ 4 (SR3EActorSheet.js:2237), as the book does."
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2237,
+          "snippet": "const respMax       = mccp > 0 ? Math.floor(mccp / 4) : 0;"
+        }
+      ],
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check. The sheet warns above MPCP ÷ 4, which is never more than 3 for a deck of MPCP 12 or less."
     },
     {
       "id": "rules/decking.md#8",
       "file": "rules/decking.md",
       "lines": [
-        36,
-        38
+        37,
+        39
       ],
       "hash": "15343af98c",
       "text": "Most ordinary Matrix users aren't running a full cyberdeck at all — they're on a **cyberterminal**\n(\"tortoise\" in decker slang), a cheaper, weaker rig capped at a low MPCP. The upside: tortoise\nusers can't be hurt by black IC or Dumpshock. *(SR3 p.207–208)*",
@@ -20834,8 +20853,8 @@
       "id": "rules/decking.md#9",
       "file": "rules/decking.md",
       "lines": [
-        40,
-        40
+        41,
+        41
       ],
       "hash": "f5ff161ce4",
       "text": "### Hacking Pool *(SR3 p.207)*",
@@ -20860,8 +20879,8 @@
       "id": "rules/decking.md#10",
       "file": "rules/decking.md",
       "lines": [
-        42,
-        45
+        43,
+        46
       ],
       "hash": "fbabbf6f2e",
       "text": "**Hacking Pool = ⌊(Intelligence + deck MPCP) ÷ 3⌋.** It works like any other dice pool and can\nhelp almost any Matrix test — logons, attacks, defenses, maneuvers — but it can't be spent\nresisting damage from gray or black IC; only Karma Pool or the decker's own enhancements help\nthere.",
@@ -20892,8 +20911,8 @@
       "id": "rules/decking.md#11",
       "file": "rules/decking.md",
       "lines": [
-        47,
-        47
+        48,
+        48
       ],
       "hash": "9e2d456456",
       "text": "### Matrix Initiative *(SR3 p.209, p.223)*",
@@ -20918,8 +20937,8 @@
       "id": "rules/decking.md#12",
       "file": "rules/decking.md",
       "lines": [
-        49,
-        54
+        50,
+        55
       ],
       "hash": "10d1cb5c4f",
       "text": "Outside combat, a decker's number of actions per turn comes from their Reaction divided by 10\n(rounded up), plus one extra action per bonus Initiative die from Response Increase. In\ncybercombat, it works like ordinary SR3 Initiative: base Reaction plus 1D6, with each point of\nResponse Increase adding +2 Reaction and another die. Reflex boosts that only affect the physical\nbody — wired reflexes, magic, vehicle rigs — don't carry over into the Matrix. Staying in live\nvoice or text contact with the outside world while decking costs a die of Initiative.",
@@ -20950,8 +20969,8 @@
       "id": "rules/decking.md#13",
       "file": "rules/decking.md",
       "lines": [
-        56,
-        56
+        57,
+        57
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -20962,8 +20981,8 @@
       "id": "rules/decking.md#14",
       "file": "rules/decking.md",
       "lines": [
-        58,
-        58
+        59,
+        59
       ],
       "hash": "2d302284cd",
       "text": "## Hosts, grids, and getting in",
@@ -20974,8 +20993,8 @@
       "id": "rules/decking.md#15",
       "file": "rules/decking.md",
       "lines": [
-        60,
-        65
+        61,
+        66
       ],
       "hash": "5c7f6690cc",
       "text": "Every host or grid carries an overall **Security Rating** — a colour code plus a number — and\nfive **subsystem ratings**: **Access**, **Control**, **Index**, **Files**, and **Slave**. Each\nsubsystem is the TN for a specific kind of illegitimate action against it: getting in at all uses\nAccess, kicking a user off or reprogramming something uses Control, searching for data uses\nIndex, reading or writing files uses Files, and operating a connected physical device (a camera, a\nmaglock) uses Slave. *(SR3 p.205–206)*",
@@ -21000,8 +21019,8 @@
       "id": "rules/decking.md#16",
       "file": "rules/decking.md",
       "lines": [
-        67,
-        70
+        68,
+        71
       ],
       "hash": "2c98db6365",
       "text": "The colour code — **Blue** (barely any security), **Green** (average), **Orange** (a system worth\nprotecting), or **Red** (the kind that shoots first) — gives a rough sense of what to expect\nbefore a decker even rolls anything, and unofficially there's a level above Red that deckers call\n\"Ultra-Violet.\" *(SR3 p.205)*",
@@ -21032,12 +21051,12 @@
       "id": "rules/decking.md#17",
       "file": "rules/decking.md",
       "lines": [
-        72,
-        76
+        73,
+        77
       ],
-      "hash": "914b88ffc9",
-      "text": "A **System Test** is always a Success Contest: the decker's Computer skill (plus any Hacking Pool\ncommitted) against the relevant subsystem rating, opposed by the host's own Security Value rolled\nagainst the decker's **Detection Factor** — the average of their Masking Rating and any Sleaze\nutility they're running (or half their Masking if they aren't). Whoever nets more successes wins;\na tie favours the host. *(SR3 p.207, p.209–210)*",
-      "verdict": "guide-differs",
+      "hash": "56a4c4f28a",
+      "text": "A **System Test** is always a Success Contest: the decker's Computer skill (plus any Hacking Pool\ncommitted) against the relevant subsystem rating, opposed by the host's own Security Value rolled\nagainst the decker's **Detection Factor** — the average of their Masking Rating and any Sleaze\nutility they're running (or half their Masking if they aren't). Whoever nets more successes wins;\na tie goes to the decker. *(SR3 p.207, p.209–210)*",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -21052,14 +21071,21 @@
           "quote": "the decker's Detection Factor."
         }
       ],
-      "note": "SR3 p.210: the decker wins on MORE OR EQUAL successes — a tie goes to the decker. The guide says a tie favours the host. The code has the book's rule (SR3EActor.js:12286, dHits >= hHits). The rest (Computer vs subsystem, Security Value vs Detection Factor, Detection Factor the average of Masking and Sleaze, half Masking without Sleaze) matches."
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12360,
+          "snippet": "const won   = dHits >= hHits;"
+        }
+      ],
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check."
     },
     {
       "id": "rules/decking.md#18",
       "file": "rules/decking.md",
       "lines": [
-        78,
-        81
+        79,
+        82
       ],
       "hash": "76e255f5a0",
       "text": "Getting from grid to host works through **System Access Nodes**, and hosts can be arranged in\ndifferent topologies — a simple open connection straight off a public grid, tiered behind a\ngatekeeper host, linked host-to-host, or tucked away on a private corporate grid entirely — which\nmostly changes what a decker has to fight through to reach the target. *(SR3 p.203–204)*",
@@ -21085,8 +21111,8 @@
       "id": "rules/decking.md#19",
       "file": "rules/decking.md",
       "lines": [
-        83,
-        83
+        84,
+        84
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -21097,8 +21123,8 @@
       "id": "rules/decking.md#20",
       "file": "rules/decking.md",
       "lines": [
-        85,
-        85
+        86,
+        86
       ],
       "hash": "2ece5137dc",
       "text": "## Security tally, alerts, and the Security Sheaf *(SR3 p.210–211)*",
@@ -21123,8 +21149,8 @@
       "id": "rules/decking.md#21",
       "file": "rules/decking.md",
       "lines": [
-        87,
-        90
+        88,
+        91
       ],
       "hash": "724051d1e3",
       "text": "Every success the host scores against a decker — win or lose the contest — adds to that decker's\nrunning **security tally** on that system, for as long as they stay logged on. A **security\nsheaf** is the GM's plan for what that tally triggers: a list of thresholds (\"trigger steps\"),\neach one arming some mix of IC and raising the system's **alert status**.",
@@ -21156,8 +21182,8 @@
       "id": "rules/decking.md#22",
       "file": "rules/decking.md",
       "lines": [
-        92,
-        96
+        93,
+        97
       ],
       "hash": "e2323f5512",
       "text": "Systems start with **no alert**. Enough tally reaches a **passive alert**, which typically starts\nthrowing proactive IC at the decker and adds **+2 to every subsystem rating**; enough more reaches\nan **active alert**, tightening things further. How dense the trigger steps are, and how much\ntally each one takes, is entirely the GM's call — a high-security system stacks its triggers close\ntogether, a relaxed one spreads them out.",
@@ -21194,8 +21220,8 @@
       "id": "rules/decking.md#23",
       "file": "rules/decking.md",
       "lines": [
-        98,
-        98
+        99,
+        99
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -21206,8 +21232,8 @@
       "id": "rules/decking.md#24",
       "file": "rules/decking.md",
       "lines": [
-        100,
-        100
+        101,
+        101
       ],
       "hash": "131e2df49a",
       "text": "## System operations *(SR3 p.214–219)*",
@@ -21232,8 +21258,8 @@
       "id": "rules/decking.md#25",
       "file": "rules/decking.md",
       "lines": [
-        102,
-        105
+        103,
+        106
       ],
       "hash": "529c04b6d3",
       "text": "Deckers act on a host through **system operations** — named commands with their own test,\nutility, and action type. Every one of them is really the same System Test underneath (Computer\nskill against a subsystem, opposed by the host's Security Value against your Detection Factor);\nthe operation just tells you which subsystem to use and how big an action it costs.",
@@ -21263,8 +21289,8 @@
       "id": "rules/decking.md#26",
       "file": "rules/decking.md",
       "lines": [
-        107,
-        107
+        108,
+        108
       ],
       "hash": "e84bbb858c",
       "text": "| Operation | Subsystem tested | Helpful utility | Action |",
@@ -21275,8 +21301,8 @@
       "id": "rules/decking.md#27",
       "file": "rules/decking.md",
       "lines": [
-        109,
-        109
+        110,
+        110
       ],
       "hash": "40442398a6",
       "text": "| Analyze Host | Control | Analyze | Complex |",
@@ -21301,8 +21327,8 @@
       "id": "rules/decking.md#28",
       "file": "rules/decking.md",
       "lines": [
-        110,
-        110
+        111,
+        111
       ],
       "hash": "cbb3a430d0",
       "text": "| Analyze IC | Control | Analyze | Free |",
@@ -21327,8 +21353,8 @@
       "id": "rules/decking.md#29",
       "file": "rules/decking.md",
       "lines": [
-        111,
-        111
+        112,
+        112
       ],
       "hash": "f67cca640d",
       "text": "| Analyze Icon | Control | Analyze | Free |",
@@ -21353,8 +21379,8 @@
       "id": "rules/decking.md#30",
       "file": "rules/decking.md",
       "lines": [
-        112,
-        112
+        113,
+        113
       ],
       "hash": "ffe8ae16eb",
       "text": "| Analyze Security | Control | Analyze | Simple |",
@@ -21379,8 +21405,8 @@
       "id": "rules/decking.md#31",
       "file": "rules/decking.md",
       "lines": [
-        113,
-        113
+        114,
+        114
       ],
       "hash": "132236e363",
       "text": "| Analyze Subsystem | Targeted subsystem | Analyze | Simple |",
@@ -21405,8 +21431,8 @@
       "id": "rules/decking.md#32",
       "file": "rules/decking.md",
       "lines": [
-        114,
-        114
+        115,
+        115
       ],
       "hash": "b63bc5a9c3",
       "text": "| Control Slave | Slave | Spoof | Complex |",
@@ -21431,8 +21457,8 @@
       "id": "rules/decking.md#33",
       "file": "rules/decking.md",
       "lines": [
-        115,
-        115
+        116,
+        116
       ],
       "hash": "764a9f7943",
       "text": "| Decrypt Access | Access | Decrypt | Simple |",
@@ -21457,8 +21483,8 @@
       "id": "rules/decking.md#34",
       "file": "rules/decking.md",
       "lines": [
-        116,
-        116
+        117,
+        117
       ],
       "hash": "00549006a4",
       "text": "| Decrypt File | Files | Decrypt | Simple |",
@@ -21483,8 +21509,8 @@
       "id": "rules/decking.md#35",
       "file": "rules/decking.md",
       "lines": [
-        117,
-        117
+        118,
+        118
       ],
       "hash": "087ee9e484",
       "text": "| Decrypt Slave | Slave | Decrypt | Simple |",
@@ -21509,8 +21535,8 @@
       "id": "rules/decking.md#36",
       "file": "rules/decking.md",
       "lines": [
-        118,
-        118
+        119,
+        119
       ],
       "hash": "09cd9681c4",
       "text": "| Download Data | Files | Read/Write | Simple |",
@@ -21535,8 +21561,8 @@
       "id": "rules/decking.md#37",
       "file": "rules/decking.md",
       "lines": [
-        119,
-        119
+        120,
+        120
       ],
       "hash": "b5c0a65459",
       "text": "| Edit File | Files | Read/Write | Simple |",
@@ -21561,8 +21587,8 @@
       "id": "rules/decking.md#38",
       "file": "rules/decking.md",
       "lines": [
-        120,
-        120
+        121,
+        121
       ],
       "hash": "76920cd91a",
       "text": "| Edit Slave | Slave | Spoof | Complex |",
@@ -21587,8 +21613,8 @@
       "id": "rules/decking.md#39",
       "file": "rules/decking.md",
       "lines": [
-        121,
-        121
+        122,
+        122
       ],
       "hash": "2b60f920e5",
       "text": "| Graceful Logoff | Access | Deception | Complex |",
@@ -21613,8 +21639,8 @@
       "id": "rules/decking.md#40",
       "file": "rules/decking.md",
       "lines": [
-        122,
-        122
+        123,
+        123
       ],
       "hash": "e1ae6c04ff",
       "text": "| Locate Access Node | Index | Browse | Complex |",
@@ -21639,8 +21665,8 @@
       "id": "rules/decking.md#41",
       "file": "rules/decking.md",
       "lines": [
-        123,
-        123
+        124,
+        124
       ],
       "hash": "b56b236282",
       "text": "| Locate Decker | Index | Scanner | Complex |",
@@ -21665,8 +21691,8 @@
       "id": "rules/decking.md#42",
       "file": "rules/decking.md",
       "lines": [
-        124,
-        124
+        125,
+        125
       ],
       "hash": "7f424fae5c",
       "text": "| Locate File | Index | Browse | Complex |",
@@ -21691,8 +21717,8 @@
       "id": "rules/decking.md#43",
       "file": "rules/decking.md",
       "lines": [
-        125,
-        125
+        126,
+        126
       ],
       "hash": "a53d287e81",
       "text": "| Locate IC | Index | Analyze | Complex |",
@@ -21717,8 +21743,8 @@
       "id": "rules/decking.md#44",
       "file": "rules/decking.md",
       "lines": [
-        126,
-        126
+        127,
+        127
       ],
       "hash": "61da098520",
       "text": "| Locate Slave | Index | Browse | Complex |",
@@ -21743,8 +21769,8 @@
       "id": "rules/decking.md#45",
       "file": "rules/decking.md",
       "lines": [
-        127,
-        127
+        128,
+        128
       ],
       "hash": "38a9013853",
       "text": "| Logon to Host | Access | Deception | Complex |",
@@ -21769,8 +21795,8 @@
       "id": "rules/decking.md#46",
       "file": "rules/decking.md",
       "lines": [
-        128,
-        128
+        129,
+        129
       ],
       "hash": "e5af11364e",
       "text": "| Logon to LTG | Access | Deception | Complex |",
@@ -21795,8 +21821,8 @@
       "id": "rules/decking.md#47",
       "file": "rules/decking.md",
       "lines": [
-        129,
-        129
+        130,
+        130
       ],
       "hash": "93e1ab3fb2",
       "text": "| Logon to RTG | Access | Deception | Complex |",
@@ -21821,8 +21847,8 @@
       "id": "rules/decking.md#48",
       "file": "rules/decking.md",
       "lines": [
-        130,
-        130
+        131,
+        131
       ],
       "hash": "251fd091d5",
       "text": "| Make Comcall | Files | Commlink | Complex |",
@@ -21847,8 +21873,8 @@
       "id": "rules/decking.md#49",
       "file": "rules/decking.md",
       "lines": [
-        131,
-        131
+        132,
+        132
       ],
       "hash": "86540d7dfc",
       "text": "| Monitor Slave | Slave | Spoof | Simple |",
@@ -21873,8 +21899,8 @@
       "id": "rules/decking.md#50",
       "file": "rules/decking.md",
       "lines": [
-        132,
-        132
+        133,
+        133
       ],
       "hash": "6873f8f293",
       "text": "| Null Operation | Control | Deception | Complex |",
@@ -21899,8 +21925,8 @@
       "id": "rules/decking.md#51",
       "file": "rules/decking.md",
       "lines": [
-        133,
-        133
+        134,
+        134
       ],
       "hash": "94823b9c72",
       "text": "| Swap Memory | — | — | Simple |",
@@ -21925,8 +21951,8 @@
       "id": "rules/decking.md#52",
       "file": "rules/decking.md",
       "lines": [
-        134,
-        134
+        135,
+        135
       ],
       "hash": "ddc61c32a3",
       "text": "| Tap Comcall | (special) | Commlink | Complex |",
@@ -21951,8 +21977,8 @@
       "id": "rules/decking.md#53",
       "file": "rules/decking.md",
       "lines": [
-        135,
-        135
+        136,
+        136
       ],
       "hash": "a9abf3e2b9",
       "text": "| Upload Data | Files | Read/Write | Simple |",
@@ -21977,8 +22003,8 @@
       "id": "rules/decking.md#54",
       "file": "rules/decking.md",
       "lines": [
-        137,
-        144
+        138,
+        145
       ],
       "hash": "c5ae2c715b",
       "text": "A few in words: **Logon to Host/LTG/RTG** get you into a host or grid and start your security\ntally there. **Locate** operations are \"interrogations\" — you can repeat them, narrowing your\nsearch each time, to track down a file, a slave device, another decker, or IC. **Download/Upload\nData** and **Swap Memory** move data or programs and take real time to finish, running in the\nbackground once started. **Control Slave**, **Edit Slave**, **Monitor Slave**, **Make Comcall**,\nand **Tap Comcall** are \"monitored\" operations — you spend a Free Action every Initiative Pass to\nkeep them going, or they abort. **Graceful Logoff** is the clean way out, avoiding Dump Shock and\nwiping your tracks; jacking out any other way risks it.",
@@ -22015,8 +22041,8 @@
       "id": "rules/decking.md#55",
       "file": "rules/decking.md",
       "lines": [
-        146,
-        146
+        147,
+        147
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -22027,8 +22053,8 @@
       "id": "rules/decking.md#56",
       "file": "rules/decking.md",
       "lines": [
-        148,
-        148
+        149,
+        149
       ],
       "hash": "341a65e181",
       "text": "## Cybercombat *(SR3 p.222–224)*",
@@ -22053,8 +22079,8 @@
       "id": "rules/decking.md#57",
       "file": "rules/decking.md",
       "lines": [
-        150,
-        151
+        151,
+        152
       ],
       "hash": "b9ece2e8da",
       "text": "Cybercombat runs on the same bones as ordinary SR3 combat — roll Initiative, then act in order —\njust compressed into 3-second Combat Turns like everywhere else. A few Matrix-specific wrinkles:",
@@ -22079,8 +22105,8 @@
       "id": "rules/decking.md#58",
       "file": "rules/decking.md",
       "lines": [
-        153,
-        154
+        154,
+        155
       ],
       "hash": "284a4c8046",
       "text": "- **An icon has to be visible or located before you can attack it.** Attacking automatically\n  makes your own icon visible unless you pull off a maneuver to hide it.",
@@ -22106,8 +22132,8 @@
       "id": "rules/decking.md#59",
       "file": "rules/decking.md",
       "lines": [
-        155,
-        157
+        156,
+        158
       ],
       "hash": "6b6f5e6beb",
       "text": "- **Attacks are Simple Actions**, rolled with an offensive utility program (plus any Hacking Pool)\n  against a target number set by whether the target is Legitimate or an Intruder and by the\n  host's security code:",
@@ -22132,8 +22158,8 @@
       "id": "rules/decking.md#60",
       "file": "rules/decking.md",
       "lines": [
-        159,
-        159
+        160,
+        160
       ],
       "hash": "80d61826d7",
       "text": "  | Host security code | TN to hit an Intruding icon | TN to hit a Legitimate icon |",
@@ -22144,8 +22170,8 @@
       "id": "rules/decking.md#61",
       "file": "rules/decking.md",
       "lines": [
-        161,
-        161
+        162,
+        162
       ],
       "hash": "bcc90a3a97",
       "text": "  | Blue | 6 | 3 |",
@@ -22175,8 +22201,8 @@
       "id": "rules/decking.md#62",
       "file": "rules/decking.md",
       "lines": [
-        162,
-        162
+        163,
+        163
       ],
       "hash": "d7cff8855c",
       "text": "  | Green | 5 | 4 |",
@@ -22206,8 +22232,8 @@
       "id": "rules/decking.md#63",
       "file": "rules/decking.md",
       "lines": [
-        163,
-        163
+        164,
+        164
       ],
       "hash": "78ea9aecf2",
       "text": "  | Orange | 4 | 5 |",
@@ -22237,8 +22263,8 @@
       "id": "rules/decking.md#64",
       "file": "rules/decking.md",
       "lines": [
-        164,
-        164
+        165,
+        165
       ],
       "hash": "7a39003cdd",
       "text": "  | Red | 3 | 6 |",
@@ -22268,8 +22294,8 @@
       "id": "rules/decking.md#65",
       "file": "rules/decking.md",
       "lines": [
-        166,
-        167
+        167,
+        168
       ],
       "hash": "3d2d16ae99",
       "text": "  A hotter host makes its own defenders easier to hit and intruders harder — the numbers flip\n  depending which side of the law your target is on. *(SR3 p.224)*",
@@ -22299,8 +22325,8 @@
       "id": "rules/decking.md#66",
       "file": "rules/decking.md",
       "lines": [
-        168,
-        170
+        169,
+        171
       ],
       "hash": "c4137df141",
       "text": "- **Net successes stage damage** exactly like a firearm hit: two successes per step up for the\n  attacker, two per step down for the defender's resistance roll (made with the icon's Bod Rating,\n  or the host's Security Value for an IC program).",
@@ -22331,8 +22357,8 @@
       "id": "rules/decking.md#67",
       "file": "rules/decking.md",
       "lines": [
-        171,
-        174
+        172,
+        175
       ],
       "hash": "028304f72e",
       "text": "- **Icons only have one condition track** — no separate Stun — and filling all 10 boxes crashes\n  the icon. For a decker's persona, that means getting dumped from the Matrix (and risking\n  Dumpshock, below); it doesn't disconnect them if black IC did it — it just makes frying their\n  brain that much easier.",
@@ -22363,8 +22389,8 @@
       "id": "rules/decking.md#68",
       "file": "rules/decking.md",
       "lines": [
-        175,
-        177
+        176,
+        178
       ],
       "hash": "7212ef4ffd",
       "text": "- **Simsense overload**: getting hit by white or gray IC can bleed a little Stun damage into the\n  decker's real body through the ASIST link. A failed Willpower test against a TN set by how badly\n  the icon was hurt means a light Stun wound.",
@@ -22395,8 +22421,8 @@
       "id": "rules/decking.md#69",
       "file": "rules/decking.md",
       "lines": [
-        179,
-        182
+        180,
+        183
       ],
       "hash": "5c57e0a011",
       "text": "Utility programs round the picture out on both sides: things like Armor (soaks incoming damage),\nCloak and Lock-On (help or hurt evasive maneuvers), and Medic (patches an icon back up) all work\nby adding or subtracting their own rating from the relevant roll — check each utility's own\nwrite-up for the exact math.",
@@ -22422,8 +22448,8 @@
       "id": "rules/decking.md#70",
       "file": "rules/decking.md",
       "lines": [
-        184,
-        184
+        185,
+        185
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -22434,8 +22460,8 @@
       "id": "rules/decking.md#71",
       "file": "rules/decking.md",
       "lines": [
-        186,
-        186
+        187,
+        187
       ],
       "hash": "3c707c1d31",
       "text": "## Intrusion Countermeasures (IC) *(SR3 p.227–230)*",
@@ -22460,8 +22486,8 @@
       "id": "rules/decking.md#72",
       "file": "rules/decking.md",
       "lines": [
-        188,
-        188
+        189,
+        189
       ],
       "hash": "984d2afaa4",
       "text": "IC comes in three grades:",
@@ -22472,8 +22498,8 @@
       "id": "rules/decking.md#73",
       "file": "rules/decking.md",
       "lines": [
-        190,
-        190
+        191,
+        191
       ],
       "hash": "ad0315b03d",
       "text": "| Grade | Can reach | Named examples |",
@@ -22484,11 +22510,11 @@
       "id": "rules/decking.md#74",
       "file": "rules/decking.md",
       "lines": [
-        192,
-        192
+        193,
+        193
       ],
-      "hash": "4d9cf75746",
-      "text": "| **White** | Only the decker's on-line icon — attribute damage, dumping, or scrambled data | Cripplers, Probe, Scramble |",
+      "hash": "310b2b4efa",
+      "text": "| **White** | Only the decker's on-line icon — attribute damage, dumping, or scrambled data | Cripplers, Killer, Probe, Scramble, Tar Baby |",
       "verdict": "match",
       "pdf": [
         {
@@ -22496,27 +22522,39 @@
           "pdfPage": 229,
           "printedPage": 227,
           "quote": "White IC affects only the decker's on-"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 230,
+          "printedPage": 228,
+          "quote": "Killer IC is proactive IC that causes damage to icons in"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 230,
+          "printedPage": 228,
+          "quote": "Tar baby is reactive IC that attempts to crash deckers' utility"
         }
       ],
       "code": [
         {
           "file": "scripts/sheets/SR3EICSheetOrthodox.js",
-          "line": 17,
-          "snippet": "const INIT_DICE = { Blue: 1, Green: 2, Orange: 3, Red: 4 };"
+          "line": 26,
+          "snippet": "'Probe', 'Trace', 'Blaster', 'Crippler', 'Tar Baby',"
         }
       ],
-      "note": "Crippler, Probe and Scramble are white IC (p.227–228); the book also lists Killer and Tar Baby as white."
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check. The IC sheet offers the names; it does not grade them."
     },
     {
       "id": "rules/decking.md#75",
       "file": "rules/decking.md",
       "lines": [
-        193,
-        193
+        194,
+        194
       ],
-      "hash": "522709d235",
-      "text": "| **Gray** | The decker's actual cyberdeck and utilities, permanently, on top of cybercombat | Blaster, Tar Baby |",
-      "verdict": "guide-differs",
+      "hash": "1294a74ae3",
+      "text": "| **Gray** | The decker's actual cyberdeck and utilities, permanently, on top of cybercombat | Blaster, Ripper, Sparky, Tar Pit |",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -22526,39 +22564,58 @@
         },
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
-          "pdfPage": 230,
-          "printedPage": 228,
-          "quote": "Tar baby is reactive IC that attempts to crash deckers' utility"
+          "pdfPage": 231,
+          "printedPage": 229,
+          "quote": "The proactive IC called sparky IC attacks in the same"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 231,
+          "printedPage": 229,
+          "quote": "The reactive IC known as tar pit IC operates and attacks in"
         }
       ],
-      "note": "Blaster is gray IC, but Tar Baby is listed under WHITE IC in the book (p.228, between Scramble and the GRAY IC heading). The guide names it as a gray example."
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheetOrthodox.js",
+          "line": 27,
+          "snippet": "'Scramble', 'Killer', 'Ripper', 'Marker', 'Sparky',"
+        }
+      ],
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check. Ripper, Sparky and Tar Pit are listed under GRAY IC (p.229)."
     },
     {
       "id": "rules/decking.md#76",
       "file": "rules/decking.md",
       "lines": [
-        194,
-        194
+        195,
+        195
       ],
-      "hash": "37f834b1c5",
-      "text": "| **Black** | The decker's real body, directly and legally | Killer |",
-      "verdict": "guide-differs",
+      "hash": "634d277895",
+      "text": "| **Black** | The decker's real body, directly and legally | Lethal and non-lethal black IC |",
+      "verdict": "not-implemented",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
-          "pdfPage": 230,
-          "printedPage": 228,
-          "quote": "Killer IC is proactive IC that causes damage to icons in"
+          "pdfPage": 232,
+          "printedPage": 230,
+          "quote": "Non-lethal black IC functions in the same manner as lethal"
         }
       ],
-      "note": "Killer is WHITE IC in the book (p.228, under WHITE IC); black IC is \"lethal\" and \"non-lethal\" black IC (p.230). The guide names Killer as the black example."
+      "search": [
+        {
+          "pattern": "lethalBlack|blackIC|black IC|Black IC",
+          "path": "scripts/documents"
+        }
+      ],
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check. Black IC is not modelled (TODO 176)."
     },
     {
       "id": "rules/decking.md#77",
       "file": "rules/decking.md",
       "lines": [
-        196,
-        197
+        197,
+        198
       ],
       "hash": "cf11f05528",
       "text": "Killer IC's damage stages off its Rating, with the **Damage Level set by the host's own security\ncode**:",
@@ -22583,8 +22640,8 @@
       "id": "rules/decking.md#78",
       "file": "rules/decking.md",
       "lines": [
-        199,
-        199
+        200,
+        200
       ],
       "hash": "ab9b5dd805",
       "text": "| Host security code | IC Damage Level |",
@@ -22595,8 +22652,8 @@
       "id": "rules/decking.md#79",
       "file": "rules/decking.md",
       "lines": [
-        201,
-        201
+        202,
+        202
       ],
       "hash": "2de2a60388",
       "text": "| Blue | Moderate |",
@@ -22621,8 +22678,8 @@
       "id": "rules/decking.md#80",
       "file": "rules/decking.md",
       "lines": [
-        202,
-        202
+        203,
+        203
       ],
       "hash": "371f0a6155",
       "text": "| Green | Moderate |",
@@ -22647,8 +22704,8 @@
       "id": "rules/decking.md#81",
       "file": "rules/decking.md",
       "lines": [
-        203,
-        203
+        204,
+        204
       ],
       "hash": "3177f1d743",
       "text": "| Orange | Serious |",
@@ -22673,8 +22730,8 @@
       "id": "rules/decking.md#82",
       "file": "rules/decking.md",
       "lines": [
-        204,
-        204
+        205,
+        205
       ],
       "hash": "3a21cd1076",
       "text": "| Red | Serious |",
@@ -22699,8 +22756,8 @@
       "id": "rules/decking.md#83",
       "file": "rules/decking.md",
       "lines": [
-        206,
-        206
+        207,
+        207
       ],
       "hash": "665a9aba8d",
       "text": "*(SR3 p.224)*",
@@ -22725,8 +22782,8 @@
       "id": "rules/decking.md#84",
       "file": "rules/decking.md",
       "lines": [
-        208,
-        210
+        209,
+        211
       ],
       "hash": "dfeb477d75",
       "text": "Facing lethal black IC means resisting with **Body** (Hardening helps; Hacking Pool doesn't —\nonly Karma Pool or the decker's own enhancements can help here), and getting free of it after\nbeing hit takes a Complex Action and a Willpower test against the IC's own Rating.",
@@ -22751,8 +22808,8 @@
       "id": "rules/decking.md#85",
       "file": "rules/decking.md",
       "lines": [
-        212,
-        212
+        213,
+        213
       ],
       "hash": "82014b8f6c",
       "text": "An IC program's own **Initiative** scales with the host's security code, not any stat of its own:",
@@ -22777,8 +22834,8 @@
       "id": "rules/decking.md#86",
       "file": "rules/decking.md",
       "lines": [
-        214,
-        214
+        215,
+        215
       ],
       "hash": "e6f88a493a",
       "text": "| Host security code | IC Initiative |",
@@ -22789,8 +22846,8 @@
       "id": "rules/decking.md#87",
       "file": "rules/decking.md",
       "lines": [
-        216,
-        216
+        217,
+        217
       ],
       "hash": "0a8bfae24f",
       "text": "| Blue | 1D6 + IC Rating |",
@@ -22815,8 +22872,8 @@
       "id": "rules/decking.md#88",
       "file": "rules/decking.md",
       "lines": [
-        217,
-        217
+        218,
+        218
       ],
       "hash": "730682b8a9",
       "text": "| Green | 2D6 + IC Rating |",
@@ -22841,8 +22898,8 @@
       "id": "rules/decking.md#89",
       "file": "rules/decking.md",
       "lines": [
-        218,
-        218
+        219,
+        219
       ],
       "hash": "ca32a92b0a",
       "text": "| Orange | 3D6 + IC Rating |",
@@ -22867,8 +22924,8 @@
       "id": "rules/decking.md#90",
       "file": "rules/decking.md",
       "lines": [
-        219,
-        219
+        220,
+        220
       ],
       "hash": "6a010d0022",
       "text": "| Red | 4D6 + IC Rating |",
@@ -22893,8 +22950,8 @@
       "id": "rules/decking.md#91",
       "file": "rules/decking.md",
       "lines": [
-        221,
-        221
+        222,
+        222
       ],
       "hash": "dbe84f5cff",
       "text": "*(SR3 p.223)*",
@@ -22919,8 +22976,8 @@
       "id": "rules/decking.md#92",
       "file": "rules/decking.md",
       "lines": [
-        223,
-        224
+        224,
+        225
       ],
       "hash": "711aeecaa3",
       "text": "Tortoise (cyberterminal) users are entirely immune to black IC and Dumpshock, which is part of why\nthey're the safer — if slower — way to touch the Matrix.",
@@ -22944,8 +23001,8 @@
       "id": "rules/decking.md#93",
       "file": "rules/decking.md",
       "lines": [
-        226,
-        226
+        227,
+        227
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -22956,8 +23013,8 @@
       "id": "rules/decking.md#94",
       "file": "rules/decking.md",
       "lines": [
-        228,
-        228
+        229,
+        229
       ],
       "hash": "45a680fe10",
       "text": "## Dump Shock *(SR3 p.227)*",
@@ -22982,8 +23039,8 @@
       "id": "rules/decking.md#95",
       "file": "rules/decking.md",
       "lines": [
-        230,
-        232
+        231,
+        233
       ],
       "hash": "d503e5144a",
       "text": "Getting crashed off the Matrix, or jacking out without a clean logoff, risks **Dump Shock**: Stun\ndamage with **Power equal to the host's Security Value**, and a Damage Level set by the host's\nsecurity code:",
@@ -23014,8 +23071,8 @@
       "id": "rules/decking.md#96",
       "file": "rules/decking.md",
       "lines": [
-        234,
-        234
+        235,
+        235
       ],
       "hash": "5fc793f720",
       "text": "| Host security code | Dump Shock Damage Level |",
@@ -23026,8 +23083,8 @@
       "id": "rules/decking.md#97",
       "file": "rules/decking.md",
       "lines": [
-        236,
-        236
+        237,
+        237
       ],
       "hash": "63749d3c44",
       "text": "| Blue | Light |",
@@ -23052,8 +23109,8 @@
       "id": "rules/decking.md#98",
       "file": "rules/decking.md",
       "lines": [
-        237,
-        237
+        238,
+        238
       ],
       "hash": "371f0a6155",
       "text": "| Green | Moderate |",
@@ -23078,8 +23135,8 @@
       "id": "rules/decking.md#99",
       "file": "rules/decking.md",
       "lines": [
-        238,
-        238
+        239,
+        239
       ],
       "hash": "3177f1d743",
       "text": "| Orange | Serious |",
@@ -23104,8 +23161,8 @@
       "id": "rules/decking.md#100",
       "file": "rules/decking.md",
       "lines": [
-        239,
-        239
+        240,
+        240
       ],
       "hash": "acc895f89a",
       "text": "| Red | Deadly |",
@@ -23130,8 +23187,8 @@
       "id": "rules/decking.md#101",
       "file": "rules/decking.md",
       "lines": [
-        241,
-        245
+        242,
+        246
       ],
       "hash": "9a4e66866f",
       "text": "Also worth knowing: getting hit by white or gray IC risks a little simsense bleed-through even\nbefore any of that — a Willpower test against a fairly low TN (2 for Light icon damage, 3 for\nModerate, 5 for Serious) keeps it off, and failing means a single light Stun wound. There's no\nTN for Deadly icon damage, because **taking Deadly damage crashes the icon outright** and exposes\nits user to Dump Shock instead. *(SR3 p.226–227)*",
@@ -23162,8 +23219,8 @@
       "id": "rules/decking.md#102",
       "file": "rules/decking.md",
       "lines": [
-        247,
-        247
+        248,
+        248
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -23174,8 +23231,8 @@
       "id": "rules/decking.md#103",
       "file": "rules/decking.md",
       "lines": [
-        249,
-        249
+        250,
+        250
       ],
       "hash": "e199415193",
       "text": "## Hot and Cold ASIST *(Matrix p.18)*",
@@ -23201,8 +23258,8 @@
       "id": "rules/decking.md#104",
       "file": "rules/decking.md",
       "lines": [
-        251,
-        251
+        252,
+        252
       ],
       "hash": "5c46ca1867",
       "text": "How a decker's cyberdeck talks to their brain matters:",
@@ -23213,8 +23270,8 @@
       "id": "rules/decking.md#105",
       "file": "rules/decking.md",
       "lines": [
-        253,
-        256
+        254,
+        257
       ],
       "hash": "8e96997862",
       "text": "- **Cold ASIST** is the standard, legal interface — the kind that ships on cyberterminals and most\n  decks. It caps the intensity of the simsense feed, which means it can't be pushed to lethal\n  levels: black IC that would otherwise deal lethal damage is treated as non-lethal against a cold\n  ASIST user.",
@@ -23246,8 +23303,8 @@
       "id": "rules/decking.md#106",
       "file": "rules/decking.md",
       "lines": [
-        257,
-        261
+        258,
+        262
       ],
       "hash": "1151ae0a27",
       "text": "- **Hot ASIST** cranks that ceiling off. It's what actually lets a decker take advantage of\n  Response Increase and Hacking Pool in the first place, and it enables an extra speed bonus for\n  running fully hands-free (\"pure DNI\"). The price is that black IC becomes genuinely lethal\n  against a hot ASIST user, and — as if that weren't enough — hot ASIST interfaces are illegal in\n  their own right.",
@@ -23280,8 +23337,8 @@
       "id": "rules/decking.md#107",
       "file": "rules/decking.md",
       "lines": [
-        263,
-        263
+        264,
+        264
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -23292,8 +23349,8 @@
       "id": "rules/decking.md#108",
       "file": "rules/decking.md",
       "lines": [
-        265,
-        265
+        266,
+        266
       ],
       "hash": "b57eaf6c24",
       "text": "## Doing it in The 2nd Chumming (Foundry)",
@@ -23304,8 +23361,8 @@
       "id": "rules/decking.md#109",
       "file": "rules/decking.md",
       "lines": [
-        267,
-        267
+        268,
+        268
       ],
       "hash": "49af45c821",
       "text": "### Choosing the ruleset",
@@ -23316,8 +23373,8 @@
       "id": "rules/decking.md#110",
       "file": "rules/decking.md",
       "lines": [
-        269,
-        272
+        270,
+        273
       ],
       "hash": "58e10c22db",
       "text": "A world setting, **Matrix Ruleset** (in Foundry's Configure Settings), switches between\n**\"Matrix Defragged v2\"** (the default) and **\"Orthodox SR3 Matrix\"** — this page's rules.\nChanging it needs a full Foundry restart, and the GM sees a warning that switching mid-campaign\ncould break things, so it's a session-zero decision.",
@@ -23328,8 +23385,8 @@
       "id": "rules/decking.md#111",
       "file": "rules/decking.md",
       "lines": [
-        274,
-        274
+        275,
+        275
       ],
       "hash": "39984e6364",
       "text": "### Deck and persona",
@@ -23340,8 +23397,8 @@
       "id": "rules/decking.md#112",
       "file": "rules/decking.md",
       "lines": [
-        276,
-        285
+        277,
+        286
       ],
       "hash": "b73df51911",
       "text": "On a character or NPC's **Matrix** tab under the Orthodox ruleset, your cyberdeck's stats live\ndirectly on your sheet rather than as a separate item: **Model**, **MPCP**, **Hardening**,\n**Active/Storage Memory**, **I/O Speed**, and **Response** (Response Increase). A **Browse\nCyberdecks** button opens a picker over the system's cyberdeck compendium and loads a chosen\nmodel's stats onto your sheet in one click. Your four persona programs — **Bod**, **Evasion**,\n**Masking**, **Sensor** — are editable fields the sheet checks against your MPCP: it flags a\nwarning if any single program exceeds MPCP, or if they add up past three times MPCP. A **Sleaze**\nrating field and a **Loaded Programs** list (each with its own rating and computed memory cost,\nfilled from a similar **Browse Programs** picker) round out your utilities. The sheet computes\nyour **Hacking Pool**, **Detection Factor**, and **Matrix Initiative** for you from these numbers.",
@@ -23366,8 +23423,8 @@
       "id": "rules/decking.md#113",
       "file": "rules/decking.md",
       "lines": [
-        287,
-        287
+        288,
+        288
       ],
       "hash": "87a3c82b01",
       "text": "### Jacking in and running",
@@ -23378,34 +23435,46 @@
       "id": "rules/decking.md#114",
       "file": "rules/decking.md",
       "lines": [
-        289,
-        294
+        290,
+        295
       ],
-      "hash": "b4c1ce7313",
-      "text": "A **Log On To Host** control picks which host actor you're connected to (and resets your\nsecurity tally and alert level when you log on or off), and separate buttons set the host's\n**alert level** — No Alert, Passive Alert, or Active Alert. A **Matrix Condition Monitor** — 10\nclickable boxes, plus quick buttons for Light/Moderate/Serious/Deadly damage or healing one box —\ntracks your icon's health; filling it triggers Dumpshock automatically (Power drawn from the\nconnected host's Security Value, Stun or Physical depending on your Matrix mode).",
-      "verdict": "guide-differs",
+      "hash": "de937cbc36",
+      "text": "A **Log On To Host** control picks which host actor you're connected to (and resets your\nsecurity tally and alert level when you log on or off), and separate buttons set the host's\n**alert level** — No Alert, Passive Alert, or Active Alert. A **Matrix Condition Monitor** — 10\nclickable boxes, plus quick buttons for Light/Moderate/Serious/Deadly damage or healing one box —\ntracks your icon's health; filling it triggers Dumpshock automatically: **Stun**, Power equal to\nthe connected host's Security Value, and a level from its Security Code (see Dump Shock above).",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
           "pdfPage": 229,
           "printedPage": 227,
-          "quote": "Matrix or jacks out without performing a"
+          "quote": "Graceful Logoff operation, he risks Stun"
         },
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
           "pdfPage": 229,
           "printedPage": 227,
-          "quote": "Graceful Logoff operation, he risks Stun"
+          "quote": "by the host's Security Code, as shown on"
         }
       ],
-      "note": "The guide says a full Matrix Condition Monitor triggers dump shock \"Stun or Physical depending on your Matrix mode\". SR3 p.227 makes it Stun, level by Security Code; since 0.6.3 the code does that (SR3EActor.orthoDumpShock, TODO 202), so the guide is out of date."
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12807,
+          "snippet": "if (newVal >= 10 && cur < 10) {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12812,
+          "snippet": "const ds        = SR3EActor.orthoDumpShock(secCode, host?.system?.orthodoxSecurityValue ?? 6);"
+        }
+      ],
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check."
     },
     {
       "id": "rules/decking.md#115",
       "file": "rules/decking.md",
       "lines": [
-        296,
-        296
+        297,
+        297
       ],
       "hash": "a74b1389ce",
       "text": "### System Tests and cybercombat",
@@ -23416,8 +23485,8 @@
       "id": "rules/decking.md#116",
       "file": "rules/decking.md",
       "lines": [
-        298,
-        305
+        299,
+        306
       ],
       "hash": "bb6d888ff6",
       "text": "A **System Test** button opens a dialog naming the connected host, your Computer skill and\nHacking Pool, your Detection Factor, and a dropdown to pick which subsystem — **Access, Control,\nIndex, Files, or Slave** — the action uses; each option shows that subsystem's rating (raised\nautomatically if the host is on Passive Alert), and you can name the action and adjust the TN for\nany utility you're running. Rolling it posts a two-sided chat card — your dice and TN on one side,\nthe host's Security Value and Detection Factor TN on the other — that resolves as a Success\nContest exactly as described above. Any hits the host scores add straight to your tracked\n**security tally**, regardless of who wins the overall contest.",
@@ -23459,8 +23528,8 @@
       "id": "rules/decking.md#117",
       "file": "rules/decking.md",
       "lines": [
-        307,
-        308
+        308,
+        309
       ],
       "hash": "6eff5fe589",
       "text": "A **Cybercombat** button works the same way against IC deployed on the connected host, posting its\nown two-sided card for the exchange.",
@@ -23471,8 +23540,8 @@
       "id": "rules/decking.md#118",
       "file": "rules/decking.md",
       "lines": [
-        310,
-        310
+        311,
+        311
       ],
       "hash": "6908b0603c",
       "text": "### IC and the host sheet",
@@ -23483,8 +23552,8 @@
       "id": "rules/decking.md#119",
       "file": "rules/decking.md",
       "lines": [
-        312,
-        319
+        313,
+        320
       ],
       "hash": "4860089586",
       "text": "A host actor under this ruleset sets its **Security Code** (Blue/Green/Orange/Red/Black) and\n**Alert** level (Passive/Active/Shutdown) at the top of its sheet, with its five **subsystem\nratings** and overall **Security Value** editable below. Its IC tab lists IC actors assigned to\nit — each with a type drawn from a fixed roster of classic IC names, a Proactive/Reactive toggle,\nand a note for which alert level deploys it — and a deploy button that brings assigned IC into the\ncurrent encounter. An IC actor's own sheet is mostly just a **Rating**; its attack pool and the\ndamage it can absorb both draw from its host's Security Value rather than from any stat of its\nown, matching the book's treatment of IC as an extension of the host defending it.",
@@ -23510,8 +23579,8 @@
       "id": "rules/decking.md#120",
       "file": "rules/decking.md",
       "lines": [
-        321,
-        321
+        322,
+        322
       ],
       "hash": "1cd04603f8",
       "text": "### Dumpshock",
@@ -23522,8 +23591,8 @@
       "id": "rules/decking.md#121",
       "file": "rules/decking.md",
       "lines": [
-        323,
-        329
+        324,
+        330
       ],
       "hash": "1089557d13",
       "text": "Beyond the automatic trigger when your Matrix Condition Monitor fills, a **Dumpshock** button on\nthe Matrix tab lets a GM or player fire it manually for any other reason the story calls for. Its\ndialog takes the host's **Security Code** and **Security Value** (filled in from the connected host)\nand posts the book's damage: **Stun**, Power equal to the Security Value, and a level from the Dump\nShock Damage Levels table (Blue Light, Green Moderate, Orange Serious, Red Deadly) — the same as the\nautomatic version. The resist card rolls **Willpower** with no armor (a house ruling: the book names\nno attribute). Either way, the system only announces the damage; the GM still applies it.",
@@ -23560,8 +23629,8 @@
       "id": "rules/decking.md#122",
       "file": "rules/decking.md",
       "lines": [
-        331,
-        340
+        332,
+        341
       ],
       "hash": "41d9f5a763",
       "text": "{: .note }\n> Hardening is tracked on the sheet and its tooltip describes the book's effect, but nothing in\n> this system's dice-rolling code currently reads that field — it doesn't yet reduce black IC\n> damage or raise gray IC's attack TN the way SR3 p.206 describes. Treat it as informational until\n> that's wired up.\n<!-- UNVERIFIED-CODE: Hardening is stored on the Orthodox cyberdeck data model and shown in the UI\n     with a tooltip describing its SR3 p.206 effect, but no code in scripts/documents/SR3EActor.js\n     currently reads system.orthodoxDeck.hardening when resolving cybercombat, IC attacks, or\n     resistance tests. This is a code gap, not a rules-verification question — reported for the\n     maintainer, not something to fix here. -->",
@@ -23586,8 +23655,8 @@
       "id": "rules/decking.md#123",
       "file": "rules/decking.md",
       "lines": [
-        342,
-        342
+        343,
+        343
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -23598,8 +23667,8 @@
       "id": "rules/decking.md#124",
       "file": "rules/decking.md",
       "lines": [
-        344,
-        344
+        345,
+        345
       ],
       "hash": "ecda77397d",
       "text": "## Worked example",
@@ -23610,8 +23679,8 @@
       "id": "rules/decking.md#125",
       "file": "rules/decking.md",
       "lines": [
-        346,
-        349
+        347,
+        350
       ],
       "hash": "59436d844f",
       "text": "**Delgado** runs a deck with **MPCP 6**, split **Bod 5 / Evasion 6 / Masking 4 / Sensor 3** (18\npoints total — right at 3× his MPCP), and Computer 5. His Intelligence is 4, so his **Hacking\nPool** is ⌊(4 + 6) ÷ 3⌋ = **3**. Running a Sleaze-5 utility, his **Detection Factor** is\n⌈(4 + 5) ÷ 2⌉ = **5**.",
@@ -23648,8 +23717,8 @@
       "id": "rules/decking.md#126",
       "file": "rules/decking.md",
       "lines": [
-        351,
-        352
+        352,
+        353
       ],
       "hash": "008c23095c",
       "text": "He's hitting a **Green** host with an **Access Rating of 8**, running a Decryption-3 utility to\nsoften the target number.",
@@ -23660,8 +23729,8 @@
       "id": "rules/decking.md#127",
       "file": "rules/decking.md",
       "lines": [
-        354,
-        355
+        355,
+        356
       ],
       "hash": "d22579d196",
       "text": "1. **Logon.** He rolls Computer 5 plus 2 Hacking Pool dice (saving 1 for later) = 7 dice against a\n   TN of 8 − 3 (his Decryption utility) = **5**. He nets 3 successes.",
@@ -23687,8 +23756,8 @@
       "id": "rules/decking.md#128",
       "file": "rules/decking.md",
       "lines": [
-        356,
-        357
+        357,
+        358
       ],
       "hash": "fd1764f1dd",
       "text": "2. **The host resists.** The GM rolls the host's Security Value (say, 6 dice for this Green\n   system) against Delgado's Detection Factor of 5, and gets 1 success.",
@@ -23713,8 +23782,8 @@
       "id": "rules/decking.md#129",
       "file": "rules/decking.md",
       "lines": [
-        358,
-        359
+        359,
+        360
       ],
       "hash": "a653c2ce6e",
       "text": "3. **Result.** 3 beats 1, so Delgado logs on cleanly. The host's 1 success still adds to his\n   **security tally** on this system — a small price for getting in.",
@@ -23740,8 +23809,8 @@
       "id": "rules/decking.md#130",
       "file": "rules/decking.md",
       "lines": [
-        360,
-        364
+        361,
+        365
       ],
       "hash": "5bebedc883",
       "text": "4. **Later**, Delgado trips a Trigger Step and a Killer IC (Rating 6) attacks him in cybercombat.\n   Its Attack Test nets 4 successes against his Evasion-based defense of 2 successes — 2 net\n   successes, enough to step its damage up one level. Since this is a Green host, Killer IC there\n   deals Moderate damage before staging, so Delgado is now facing **Serious** damage, resisted\n   with his Bod Rating against the attack's Power.",
@@ -23773,8 +23842,8 @@
       "id": "rules/decking.md#131",
       "file": "rules/decking.md",
       "lines": [
-        365,
-        367
+        366,
+        368
       ],
       "hash": "1e728d7af8",
       "text": "5. **If that hit had crashed his icon instead**, Delgado would be dumped and would need to resist\n   **Dump Shock** — Stun damage at a Power equal to the host's Security Value, with a Damage\n   Level set by the host's Green security code.",
@@ -32793,9 +32862,9 @@
         247,
         247
       ],
-      "hash": "13e56a7d45",
-      "text": "| Light | +1 | — | none |",
-      "verdict": "guide-differs",
+      "hash": "ce17e36932",
+      "text": "| Light | +1 | −1 | none |",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -32804,7 +32873,14 @@
           "quote": "Damage Level Modifier Light +1"
         }
       ],
-      "note": "Page image, p.147: Light is +1 TN, −1 Initiative, no speed reduction. The guide gives no Initiative penalty for Light; the code (SR3EActor.js:5115) matches the book."
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5182,
+          "snippet": "case 'L': return { tn: 1, initiative: -1, speedReduction: 0    };"
+        }
+      ],
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check. Page image, p.147: Light +1 TN, −1 Initiative, no speed reduction."
     },
     {
       "id": "rules/rigging.md#105",
@@ -32813,9 +32889,9 @@
         248,
         248
       ],
-      "hash": "b7a3c774f3",
-      "text": "| Moderate | +2 | −1 | 25% |",
-      "verdict": "guide-differs",
+      "hash": "60201262d3",
+      "text": "| Moderate | +2 | −2 | 25% |",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -32824,7 +32900,14 @@
           "quote": "Light +1 Moderate +2 Serious +3"
         }
       ],
-      "note": "Page image, p.147: Moderate is +2 TN, −2 Initiative, 25 percent. The guide has −1; the code (SR3EActor.js:5116) matches the book."
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5183,
+          "snippet": "case 'M': return { tn: 2, initiative: -2, speedReduction: 0.25 };"
+        }
+      ],
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check. Page image, p.147: Moderate +2, −2, 25 percent."
     },
     {
       "id": "rules/rigging.md#106",
@@ -32833,9 +32916,9 @@
         249,
         249
       ],
-      "hash": "6efa72e2a1",
-      "text": "| Serious | +3 | −2 | 50% |",
-      "verdict": "guide-differs",
+      "hash": "60ab7322dc",
+      "text": "| Serious | +3 | −3 | 50% |",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -32844,18 +32927,25 @@
           "quote": "Moderate +2 Serious +3 Initiative Penalty"
         }
       ],
-      "note": "Page image, p.147: Serious is +3 TN, −3 Initiative, 50 percent. The guide has −2; the code (SR3EActor.js:5117) matches the book."
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5184,
+          "snippet": "case 'S': return { tn: 3, initiative: -3, speedReduction: 0.5  };"
+        }
+      ],
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check. Page image, p.147: Serious +3, −3, 50 percent."
     },
     {
       "id": "rules/rigging.md#107",
       "file": "rules/rigging.md",
       "lines": [
-        250,
-        250
+        251,
+        251
       ],
-      "hash": "2d5190b9c1",
-      "text": "| Destroyed | — | −3 | vehicle inoperable |",
-      "verdict": "guide-differs",
+      "hash": "90420b49a5",
+      "text": "A vehicle that reaches **Destroyed** is no longer operable. *(SR3 p.149)*",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -32864,14 +32954,21 @@
           "quote": "Vehicles that reach Destroyed are no longer operable"
         }
       ],
-      "note": "The table (page image, p.147) has three rows, Light to Serious, and no Destroyed row; the guide adds one with −3 Initiative, which is the book's Serious value shifted down. That a Destroyed vehicle is inoperable is p.149's rule."
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 141,
+          "snippet": "? `<span class=\"veh-status-badge veh-status-destroyed\">⚠ DESTROYED</span>`"
+        }
+      ],
+      "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check."
     },
     {
       "id": "rules/rigging.md#108",
       "file": "rules/rigging.md",
       "lines": [
-        252,
-        253
+        253,
+        254
       ],
       "hash": "4d549cfcaa",
       "text": "The Power of a crash or a ram is the relevant speed, in meters per Combat\nTurn, divided by ten and rounded up.",
@@ -32896,8 +32993,8 @@
       "id": "rules/rigging.md#109",
       "file": "rules/rigging.md",
       "lines": [
-        255,
-        255
+        256,
+        256
       ],
       "hash": "41c979e295",
       "text": "#### Impact Damage Levels Table  *(SR3 p.147)*",
@@ -32922,8 +33019,8 @@
       "id": "rules/rigging.md#110",
       "file": "rules/rigging.md",
       "lines": [
-        257,
-        257
+        258,
+        258
       ],
       "hash": "70ebe04d0e",
       "text": "| Vehicle speed (m/turn) | Damage Level |",
@@ -32934,8 +33031,8 @@
       "id": "rules/rigging.md#111",
       "file": "rules/rigging.md",
       "lines": [
-        259,
-        259
+        260,
+        260
       ],
       "hash": "c8836d2b26",
       "text": "| 1–20 | Light |",
@@ -32960,8 +33057,8 @@
       "id": "rules/rigging.md#112",
       "file": "rules/rigging.md",
       "lines": [
-        260,
-        260
+        261,
+        261
       ],
       "hash": "21687c7018",
       "text": "| 21–60 | Moderate |",
@@ -32986,8 +33083,8 @@
       "id": "rules/rigging.md#113",
       "file": "rules/rigging.md",
       "lines": [
-        261,
-        261
+        262,
+        262
       ],
       "hash": "a3c285192e",
       "text": "| 61–200 | Serious |",
@@ -33012,8 +33109,8 @@
       "id": "rules/rigging.md#114",
       "file": "rules/rigging.md",
       "lines": [
-        262,
-        262
+        263,
+        263
       ],
       "hash": "22528cc317",
       "text": "| 201+ | Destroyed |",
@@ -33038,8 +33135,8 @@
       "id": "rules/rigging.md#115",
       "file": "rules/rigging.md",
       "lines": [
-        264,
-        269
+        265,
+        270
       ],
       "hash": "910f7a01bf",
       "text": "A **Crash Test** — a Driving Test against Handling — comes up whenever a\nvehicle takes Serious damage in one hit, gets rammed and hurt by it,\nbottoms out its Condition Monitor, or brakes far harder than its\nAcceleration allows. Both the autonav bonus and Control Pool dice can help\nhere. Failing it means the vehicle stops dead and has to resist the\nimpact on top of whatever caused the crash in the first place.",
@@ -33071,8 +33168,8 @@
       "id": "rules/rigging.md#116",
       "file": "rules/rigging.md",
       "lines": [
-        271,
-        271
+        272,
+        272
       ],
       "hash": "c8355e9644",
       "text": "#### Crash Test Modifiers Table  *(SR3 p.148)*",
@@ -33097,8 +33194,8 @@
       "id": "rules/rigging.md#117",
       "file": "rules/rigging.md",
       "lines": [
-        273,
-        273
+        274,
+        274
       ],
       "hash": "43dd6ecc13",
       "text": "| Condition | Modifier |",
@@ -33109,8 +33206,8 @@
       "id": "rules/rigging.md#118",
       "file": "rules/rigging.md",
       "lines": [
-        275,
-        275
+        276,
+        276
       ],
       "hash": "fd85b8b36a",
       "text": "| Driver wounded | + the wound's damage modifier |",
@@ -33135,8 +33232,8 @@
       "id": "rules/rigging.md#119",
       "file": "rules/rigging.md",
       "lines": [
-        276,
-        276
+        277,
+        277
       ],
       "hash": "dd1d2a2f86",
       "text": "| Vehicle already damaged | + the vehicle's own damage modifier |",
@@ -33161,8 +33258,8 @@
       "id": "rules/rigging.md#120",
       "file": "rules/rigging.md",
       "lines": [
-        277,
-        277
+        278,
+        278
       ],
       "hash": "743bfad8d9",
       "text": "| Terrain: open / normal / restricted / tight | −1 / 0 / +2 / +4 |",
@@ -33187,8 +33284,8 @@
       "id": "rules/rigging.md#121",
       "file": "rules/rigging.md",
       "lines": [
-        278,
-        278
+        279,
+        279
       ],
       "hash": "ea62087518",
       "text": "| Speed less than driver's Reaction × 20 | 0 |",
@@ -33213,8 +33310,8 @@
       "id": "rules/rigging.md#122",
       "file": "rules/rigging.md",
       "lines": [
-        279,
-        279
+        280,
+        280
       ],
       "hash": "1e48b55f04",
       "text": "| Speed less than Reaction × 30 | +1 |",
@@ -33239,8 +33336,8 @@
       "id": "rules/rigging.md#123",
       "file": "rules/rigging.md",
       "lines": [
-        280,
-        280
+        281,
+        281
       ],
       "hash": "aa944b084d",
       "text": "| Speed less than Reaction × 40 | +2 |",
@@ -33265,8 +33362,8 @@
       "id": "rules/rigging.md#124",
       "file": "rules/rigging.md",
       "lines": [
-        281,
-        281
+        282,
+        282
       ],
       "hash": "18a81663ec",
       "text": "| Speed more than Reaction × 40 | +4 |",
@@ -33291,8 +33388,8 @@
       "id": "rules/rigging.md#125",
       "file": "rules/rigging.md",
       "lines": [
-        283,
-        292
+        284,
+        293
       ],
       "hash": "3b0fffb3d1",
       "text": "**Ramming**: the ramming vehicle rolls a Ramming Test (Driving Skill\nagainst Handling, modified by the table above). On a success, **both**\nvehicles resist a collision at a Power equal to their speed difference ÷\n10, rounded up, at the Damage Level the Impact table gives that speed\ndifference. The rammer's own successes on the Ramming Test reduce the\n**Power of the collision** — for the rammer's own resistance roll only —\nby their vehicle's Body Rating times those successes, floored so the\nresulting target number never drops below 2. The **target's** Damage Code\nis untouched by that reduction. Either side that ends up taking damage\nfrom the collision then owes its own Crash Test.",
@@ -33330,8 +33427,8 @@
       "id": "rules/rigging.md#126",
       "file": "rules/rigging.md",
       "lines": [
-        294,
-        299
+        295,
+        300
       ],
       "hash": "8f7101bfee",
       "text": "**Everyone aboard shares the hit.** Whenever the vehicle takes damage —\ncrash, ram, or gunfire — the driver and every passenger resist the same\nPower the vehicle faced, but at whatever Level the vehicle actually ended\nup taking after its own soak, not the raw Level before that. A seat belt\nknocks that Level down one further step, and only impact armor (never\nBallistic) counts against it.",
@@ -33368,8 +33465,8 @@
       "id": "rules/rigging.md#127",
       "file": "rules/rigging.md",
       "lines": [
-        301,
-        305
+        302,
+        306
       ],
       "hash": "589f881f8f",
       "text": "**A jacked-in rigger takes a second, separate hit.** Beyond what their\nbody feels as a passenger, the neural feedback of a Serious hit to \"their\"\nvehicle forces a Willpower-resisted Physical Damage Resistance Test — no\nCombat or Control Pool allowed — against a fixed 6M; if the vehicle is\ndestroyed outright, that becomes 6S *(SR3 p.145)*.",
@@ -33400,8 +33497,8 @@
       "id": "rules/rigging.md#128",
       "file": "rules/rigging.md",
       "lines": [
-        307,
-        307
+        308,
+        308
       ],
       "hash": "8551f9588f",
       "text": "### Dump shock for a rigger  *(SR3 p.156)*",
@@ -33426,8 +33523,8 @@
       "id": "rules/rigging.md#129",
       "file": "rules/rigging.md",
       "lines": [
-        309,
-        313
+        310,
+        314
       ],
       "hash": "07d6a30194",
       "text": "Getting forcibly kicked out of a rigged connection hits a rigger harder\nthan the equivalent shock hits a decker, because the VCR link runs deeper\ninto the nervous system. There are two distinct triggers, and vehicle\n**destruction is not one of them** — that case is the fixed 6S Physical\nhit above, from p.145:",
@@ -33452,8 +33549,8 @@
       "id": "rules/rigging.md#130",
       "file": "rules/rigging.md",
       "lines": [
-        315,
-        319
+        316,
+        320
       ],
       "hash": "b2f2e6d7aa",
       "text": "- **Dumped from a remote-control network**: resist a Stun Damage\n  Resistance Test with Willpower, at a Power equal to **the deck's own\n  Rating + 4**. On top of that, the rigger suffers ten Combat Turns of\n  disorientation, adding **+2** to every Success Test they make during\n  that window.",
@@ -33484,8 +33581,8 @@
       "id": "rules/rigging.md#131",
       "file": "rules/rigging.md",
       "lines": [
-        320,
-        322
+        321,
+        323
       ],
       "hash": "dc73b3f6a8",
       "text": "- **Involuntarily jacked out of a vehicle, other than by its\n  destruction** (forced out some other way, mid-scene): resist a flat\n  **5S** Stun instead, plus the same ten turns of disorientation.",
@@ -33510,8 +33607,8 @@
       "id": "rules/rigging.md#132",
       "file": "rules/rigging.md",
       "lines": [
-        324,
-        327
+        325,
+        328
       ],
       "hash": "786a5437f0",
       "text": "The disorientation can be shortened: a Willpower Test against target\nnumber 4, then divide **30 by the successes (round up)** for the number of\nseconds disoriented, then divide that by **3 (round up)** for how many\nCombat Turns the effect actually lasts.",
@@ -33547,8 +33644,8 @@
       "id": "rules/rigging.md#133",
       "file": "rules/rigging.md",
       "lines": [
-        329,
-        329
+        330,
+        330
       ],
       "hash": "1bae0640c1",
       "text": "### Autonav and Pilot for drones  *(SR3 p.132–133, p.157)*",
@@ -33573,8 +33670,8 @@
       "id": "rules/rigging.md#134",
       "file": "rules/rigging.md",
       "lines": [
-        331,
-        336
+        332,
+        337
       ],
       "hash": "da3f5e35b8",
       "text": "A driverless drone substitutes its own **Pilot Rating** for whatever skill\nor attribute the test would otherwise use. Giving it anything more\nspecific than a standing order is a **Drone Comprehension** test: the\nPilot Rating rolled against a target number the GM sets by how complicated\nthe instruction is — one success gets it followed, more successes buy the\ndrone some leeway in how it's carried out *(SR3 p.157)*.",
@@ -33605,8 +33702,8 @@
       "id": "rules/rigging.md#135",
       "file": "rules/rigging.md",
       "lines": [
-        338,
-        342
+        339,
+        343
       ],
       "hash": "b483198f87",
       "text": "Electronic warfare against a rigger or their drones — jamming, signal\ndegradation, intrusion and the rest — is a large enough topic that it gets\nsummarised on the Decking page rather than repeated here; see\n[Decking](../decking-defragged/) and, for what this system actually\nimplements, Part 2 below.",
@@ -33617,8 +33714,8 @@
       "id": "rules/rigging.md#136",
       "file": "rules/rigging.md",
       "lines": [
-        344,
-        344
+        345,
+        345
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -33629,8 +33726,8 @@
       "id": "rules/rigging.md#137",
       "file": "rules/rigging.md",
       "lines": [
-        346,
-        346
+        347,
+        347
       ],
       "hash": "46cb8ef28d",
       "text": "## Part 2: doing it in The 2nd Chumming (Foundry)",
@@ -33641,8 +33738,8 @@
       "id": "rules/rigging.md#138",
       "file": "rules/rigging.md",
       "lines": [
-        348,
-        352
+        349,
+        353
       ],
       "hash": "5087a24adb",
       "text": "The system never applies vehicle damage automatically, same as everywhere\nelse: it rolls dice, stages damage, and posts a button — the GM clicks the\nwound boxes. Not everyone behind the wheel is rigging, either — see\n[Driving without rigging, in Foundry](#driving-without-rigging-in-foundry)\nbelow for the ordinary case.",
@@ -33653,8 +33750,8 @@
       "id": "rules/rigging.md#139",
       "file": "rules/rigging.md",
       "lines": [
-        354,
-        354
+        355,
+        355
       ],
       "hash": "4ef9c447c0",
       "text": "### Getting a vehicle onto a character's sheet",
@@ -33665,8 +33762,8 @@
       "id": "rules/rigging.md#140",
       "file": "rules/rigging.md",
       "lines": [
-        356,
-        357
+        357,
+        358
       ],
       "hash": "283c385da5",
       "text": "A vehicle is its own **actor**, with its own sheet (Stats / Weapons / Mods\n/ Electronic Warfare / Notes tabs). To give a character a vehicle:",
@@ -33677,8 +33774,8 @@
       "id": "rules/rigging.md#141",
       "file": "rules/rigging.md",
       "lines": [
-        359,
-        364
+        360,
+        365
       ],
       "hash": "b1dc969eec",
       "text": "- **Drag the vehicle actor onto the character sheet.** Dragging a\n  compendium vehicle **deploys a working copy** and sets that character as\n  its driver; dragging an existing world vehicle **links** it to that\n  character instead. Both routes run through the GM so the character ends\n  up with **owner** permission on the new or linked vehicle actor, whether\n  or not a Player has permission to create actors directly.",
@@ -33689,8 +33786,8 @@
       "id": "rules/rigging.md#142",
       "file": "rules/rigging.md",
       "lines": [
-        365,
-        367
+        366,
+        368
       ],
       "hash": "bbb488aa4e",
       "text": "- Or, on the character sheet's **Vehicles** tab, click **+ Add Vehicle**,\n  which opens the same dialog with three sources: link an existing world\n  vehicle, create a blank one, or pull one from a compendium.",
@@ -33701,8 +33798,8 @@
       "id": "rules/rigging.md#143",
       "file": "rules/rigging.md",
       "lines": [
-        368,
-        371
+        369,
+        372
       ],
       "hash": "39aadd9a40",
       "text": "- The Vehicles tab lists every vehicle whose pilot is this character, with\n  its Handling/Speed/Body/Armor/Pilot/Sensor at a glance, a link to open\n  its sheet, and per-vehicle **VCR / RCD / Auto** mode buttons plus a ✕ to\n  unlink it (the vehicle itself isn't deleted — it can be added back).",
@@ -33713,8 +33810,8 @@
       "id": "rules/rigging.md#144",
       "file": "rules/rigging.md",
       "lines": [
-        372,
-        375
+        373,
+        376
       ],
       "hash": "64061486ae",
       "text": "- On the vehicle's own sheet, the **Pilot** dropdown sets who drives it,\n  and **Passengers** (add/remove tags in the header) tracks who else is\n  aboard — this is the roster a crash or ram reaches, without needing a\n  Chase Scene open.",
@@ -33725,8 +33822,8 @@
       "id": "rules/rigging.md#145",
       "file": "rules/rigging.md",
       "lines": [
-        377,
-        377
+        378,
+        378
       ],
       "hash": "843e2e97ac",
       "text": "### Jacking in: VCR / RCD / Auto",
@@ -33737,8 +33834,8 @@
       "id": "rules/rigging.md#146",
       "file": "rules/rigging.md",
       "lines": [
-        379,
-        380
+        380,
+        381
       ],
       "hash": "efb2f8e983",
       "text": "Each vehicle has one of three control modes, toggled from either the\nvehicle sheet's header or the character sheet's Vehicles tab:",
@@ -33749,8 +33846,8 @@
       "id": "rules/rigging.md#147",
       "file": "rules/rigging.md",
       "lines": [
-        382,
-        389
+        383,
+        390
       ],
       "hash": "3debd18d4c",
       "text": "- **VCR** — the pilot is jacked in with a Vehicle Control Rig. The system\n  reads the rigger's own VCR item (a cyberware item with \"VCR\" or \"vehicle\n  control rig\" in its name) for its level, and uses Reaction (base,\n  unaugmented) plus twice that level for both Initiative and Control Pool\n  — wired reflexes and magical Reaction boosts are excluded, matching the\n  book. **VCR is exclusive**: setting one vehicle to VCR automatically\n  drops any other vehicle that character was VCR-driving to RCD, and turns\n  off VR Matrix modes on the character (VCR and VR can't both be active).",
@@ -33786,8 +33883,8 @@
       "id": "rules/rigging.md#148",
       "file": "rules/rigging.md",
       "lines": [
-        390,
-        391
+        391,
+        392
       ],
       "hash": "f66142891e",
       "text": "- **RCD** — remote control deck: the rigger's plain Reaction and normal\n  Initiative dice, no VCR bonus, and no Control Pool.",
@@ -33812,8 +33909,8 @@
       "id": "rules/rigging.md#149",
       "file": "rules/rigging.md",
       "lines": [
-        392,
-        394
+        393,
+        395
       ],
       "hash": "6ce1d39e39",
       "text": "- **Auto** — nobody is piloting; the vehicle rolls its own Initiative from\n  its Pilot Rating, and clearing this mode also clears the vehicle's\n  pilot.",
@@ -33824,8 +33921,8 @@
       "id": "rules/rigging.md#150",
       "file": "rules/rigging.md",
       "lines": [
-        396,
-        397
+        397,
+        398
       ],
       "hash": "0c9c88a3ce",
       "text": "A vehicle in VCR or RCD mode copies its rigger's Initiative for Combat\nTurn ordering rather than rolling its own.",
@@ -33836,8 +33933,8 @@
       "id": "rules/rigging.md#151",
       "file": "rules/rigging.md",
       "lines": [
-        399,
-        404
+        400,
+        405
       ],
       "hash": "e60b5c8011",
       "text": "{: .note }\n> The book's VCR-specific default reduction (Reaction at +2 instead of the\n> usual +4, above) isn't modeled: the Default Table a driver with no\n> Vehicle Skill sees is the same generic one used everywhere else in the\n> system, with no VCR-aware discount. This is tracked in the codebase as\n> TODO 106.",
@@ -33862,8 +33959,8 @@
       "id": "rules/rigging.md#152",
       "file": "rules/rigging.md",
       "lines": [
-        406,
-        407
+        407,
+        408
       ],
       "hash": "fa29459e16",
       "text": "### Driving without rigging, in Foundry\n{: #driving-without-rigging-in-foundry }",
@@ -33874,8 +33971,8 @@
       "id": "rules/rigging.md#153",
       "file": "rules/rigging.md",
       "lines": [
-        409,
-        421
+        410,
+        422
       ],
       "hash": "c45dff968a",
       "text": "A character with no VCR item at all — the ordinary case — still uses the\nsame 🚗 Driving Test dialog described just below. The \"Using VCR\" option\nin it only shows up once the system finds VCR cyberware on the driver;\nwithout one, the pool simply builds as Vehicle Skill plus Autonav, with no\nControl Pool line at all, since the underlying Control Pool calculation\nreturns zero for anyone without a VCR rating. The vehicle's control-mode\nbutton is normally left on **RCD** for this case: mechanically, \"no VCR\nbonus\" is one path whether the driver is remote-piloting a drone or simply\nsitting behind the wheel, so the same Reaction-based Initiative and pool\nmath cover both, and the mode buttons are shared between them. Defaulting\nwith no matching Vehicle Skill opens the same Default Table dialog\ndescribed in the note above — it always offers the ordinary +4-to-an-\nattribute default, with no special case for a rigger's +2.",
@@ -33912,8 +34009,8 @@
       "id": "rules/rigging.md#154",
       "file": "rules/rigging.md",
       "lines": [
-        423,
-        423
+        424,
+        424
       ],
       "hash": "f6ade0f5ac",
       "text": "### Driving Tests and Crash Tests",
@@ -33924,8 +34021,8 @@
       "id": "rules/rigging.md#155",
       "file": "rules/rigging.md",
       "lines": [
-        425,
-        434
+        426,
+        435
       ],
       "hash": "cfe12f3198",
       "text": "- **🚗 Driving Test**, from the vehicle sheet's Stats tab (only shown once\n  a pilot is set) or the **Rollable Tables** sidebar tab (available to\n  everyone, not just the GM), asks for the vehicle and driver, then builds\n  the pool automatically: Vehicle Skill plus Autonav normally, or Vehicle\n  Skill plus Control Pool dice (capped at the skill) once \"Using VCR\" is\n  selected for a jacked-in rigger. The target number starts at Handling\n  and offers the standard dropdowns — unfamiliar, stressful, size,\n  weather, terrain, combat, datajack, and the VCR reduction. No Vehicle\n  Skill on the driver opens the Default Table dialog instead of refusing\n  the roll.",
@@ -33961,8 +34058,8 @@
       "id": "rules/rigging.md#156",
       "file": "rules/rigging.md",
       "lines": [
-        435,
-        444
+        436,
+        445
       ],
       "hash": "a28c98b0a5",
       "text": "- **💥 Crash**, from the same Stats tab menu (or the Vehicle Tools HUD on a\n  token, or the 💥 button offered after a failed Driving Test), gives two\n  ways in: rolling the Crash Test as the driver, so a failure posts the\n  crash automatically, or posting crash damage directly for when the\n  accident has already happened and there's no test left to make. Either\n  way it ends at the same damage builder: speed (asked in km/h and\n  converted to meters per Combat Turn for the table), a Power and Level\n  that follow the vehicle's speed until the GM edits them by hand, and a\n  checklist of who's aboard (seeded from the vehicle's pilot/passenger\n  roster) to resist afterward.",
@@ -33992,8 +34089,8 @@
       "id": "rules/rigging.md#157",
       "file": "rules/rigging.md",
       "lines": [
-        445,
-        451
+        446,
+        452
       ],
       "hash": "f5ca4a5266",
       "text": "- **Ramming and collisions** post the same occupant-resistance chain: after\n  the vehicle's own soak roll, the driver and every passenger get a\n  resist-collision-damage button, which opens a small dialog asking for\n  their Body dice, their impact armor (pre-filled from worn and implanted\n  armor), and whether they were belted in, and shows the resulting\n  Power/Level/target number live before they roll. If the vehicle itself\n  took no damage, the card says so and nobody rolls.",
@@ -34024,8 +34121,8 @@
       "id": "rules/rigging.md#158",
       "file": "rules/rigging.md",
       "lines": [
-        453,
-        453
+        454,
+        454
       ],
       "hash": "0841ef8039",
       "text": "### Dump shock, and rigger damage from a destroyed vehicle",
@@ -34036,8 +34133,8 @@
       "id": "rules/rigging.md#159",
       "file": "rules/rigging.md",
       "lines": [
-        455,
-        463
+        456,
+        464
       ],
       "hash": "d3e6ce7224",
       "text": "- **⚡ Dump Shock** is a button in the character sheet's *Rigger —\n  Electronic Warfare* panel (and beside the Matrix tools when in VR). Its\n  dialog asks what the character was dumped from: the Matrix (a decker),\n  a **remote-control network**, which uses the RC deck Rating from the\n  panel, or a **vehicle** they were jacked out of. The rigger cases post\n  the book's Power, **(Rating + 4)S** or **5S** Stun. The resist card rolls\n  **Willpower**, with no armor. The card also states the ten turns of\n  **+2** disorientation and offers the **Willpower (4) Test** that\n  shortens it; that roll's result card says how many Combat Turns it lasts.",
@@ -34073,8 +34170,8 @@
       "id": "rules/rigging.md#160",
       "file": "rules/rigging.md",
       "lines": [
-        464,
-        469
+        465,
+        470
       ],
       "hash": "cf2e8678ad",
       "text": "- **Rigger damage is offered automatically.** When a vehicle a rigger is\n  jacked into (VCR mode) reaches **Serious**, a card offers the rigger the\n  **6M** Physical resistance, and when it is **Destroyed**, **6S**. The\n  roll is Willpower with no Combat or Control Pool and no armor. Nothing\n  is applied: the rigger rolls, and the wound goes on only when someone\n  clicks 🩸 Assign.",
@@ -34105,8 +34202,8 @@
       "id": "rules/rigging.md#161",
       "file": "rules/rigging.md",
       "lines": [
-        471,
-        471
+        472,
+        472
       ],
       "hash": "53a41de6d0",
       "text": "### The Chase Scene (combat tracker)",
@@ -34117,8 +34214,8 @@
       "id": "rules/rigging.md#162",
       "file": "rules/rigging.md",
       "lines": [
-        473,
-        485
+        474,
+        486
       ],
       "hash": "dd663b9fcc",
       "text": "The 🚗 Chase Scene tool, opened from the Rollable Tables sidebar tab (open\nto every player, not just the GM), implements the book's vehicle-combat\nmaneuver system rather than standing in for it with something simpler: it\ntracks each participant's vehicle type, terrain and speed, computes their\nManeuver Score, and offers dedicated action buttons for Accel/Brake,\nPositioning, Ramming, Hiding and Relocating, each opening a dialog with\nthe relevant modifiers pre-filled and live target-number and pool math.\nOne participant can be flagged **Quarry** — everyone else's distance is\nthen tracked relative to it (positive behind, negative ahead), and at the\nend of each turn the tool updates every pursuer's distance from the speed\ndifference automatically, reporting who's closing and who's falling\nbehind. Driver Points get the same reroll-on-6 handling as every other\nopen-ended roll in the system.",
@@ -34154,8 +34251,8 @@
       "id": "rules/rigging.md#163",
       "file": "rules/rigging.md",
       "lines": [
-        487,
-        487
+        488,
+        488
       ],
       "hash": "2c5b54b130",
       "text": "### Drones and remote control",
@@ -34166,8 +34263,8 @@
       "id": "rules/rigging.md#164",
       "file": "rules/rigging.md",
       "lines": [
-        489,
-        496
+        490,
+        497
       ],
       "hash": "65ba368e49",
       "text": "A vehicle actor typed as a drone works the same way as any other vehicle —\nPilot dropdown, VCR/RCD/Auto modes — except its natural state is Auto,\nrunning on its own Pilot Rating. **📡 Drone Comprehension** (Stats tab, or\nthe Vehicle Tools HUD) rolls Pilot Rating dice, no pool, against a GM-set\ntarget number, with any Command-channel electronic-warfare degradation\nfolded in automatically. Zero successes means the drone does nothing\nuseful; one gets the order followed literally; two or more gives it some\nleeway.",
@@ -34198,8 +34295,8 @@
       "id": "rules/rigging.md#165",
       "file": "rules/rigging.md",
       "lines": [
-        498,
-        498
+        499,
+        499
       ],
       "hash": "c44eae945d",
       "text": "### Electronic warfare, briefly",
@@ -34210,8 +34307,8 @@
       "id": "rules/rigging.md#166",
       "file": "rules/rigging.md",
       "lines": [
-        500,
-        504
+        501,
+        505
       ],
       "hash": "54dbe7a31a",
       "text": "Jamming, Flux/Footprint, ECM/ECCM, MIJI attacks and signal degradation on\na rigger or their drones live on the vehicle sheet's Electronic Warfare\ntab and the ⚡ MIJI Attack / 📶 IVIS Test tools; they aren't repeated here.\nAsk the GM what's actually running at your table, or see\n[Decking](../decking-defragged/) for the related Matrix rules.",
@@ -34222,8 +34319,8 @@
       "id": "rules/rigging.md#167",
       "file": "rules/rigging.md",
       "lines": [
-        506,
-        506
+        507,
+        507
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -34234,8 +34331,8 @@
       "id": "rules/rigging.md#168",
       "file": "rules/rigging.md",
       "lines": [
-        508,
-        508
+        509,
+        509
       ],
       "hash": "e9cf26772d",
       "text": "## Worked example: a ramming attempt",
@@ -34246,8 +34343,8 @@
       "id": "rules/rigging.md#169",
       "file": "rules/rigging.md",
       "lines": [
-        510,
-        515
+        511,
+        516
       ],
       "hash": "91fa5a1e40",
       "text": "Dex is jacked into his **step-van** (Handling 4, Body 8) with Car Skill 5\nand a Rating-2 VCR, chasing a **patrol car** (Handling 4, Body 3) driven by\nan unrigged cop with Car Skill 4. Dex's van is doing 96 meters a turn to\nthe patrol car's 60. For this Combat Turn, assume Dex's Maneuver Score\ncame out to 42 against the patrol car's 28 — a gap of more than 10 in\nDex's favor.",
@@ -34258,8 +34355,8 @@
       "id": "rules/rigging.md#170",
       "file": "rules/rigging.md",
       "lines": [
-        517,
-        519
+        518,
+        520
       ],
       "hash": "814777f1f2",
       "text": "1. **Control Pool.** Reaction 5 plus twice his VCR level (2) gives Dex a\n   Control Pool of 9 dice, though any one test can only draw up to his 5\n   Car Skill dice from it.",
@@ -34290,8 +34387,8 @@
       "id": "rules/rigging.md#171",
       "file": "rules/rigging.md",
       "lines": [
-        520,
-        525
+        521,
+        526
       ],
       "hash": "7013b0b7e4",
       "text": "2. **The Ramming Test.** Base target number is his van's Handling, 4. His\n   Maneuver Score beats the patrol car's by more than 10 (−4); terrain is\n   normal (0); his VCR knocks off a further 2 × his Rating 2 (−4). Total\n   modifier −8 against a base of 4 gives a target number of −4, floored at\n   the rule's minimum of 2. He rolls his 5 Car Skill dice (no Control Pool\n   needed at this target number) and gets 3 successes: the ram connects.",
@@ -34328,8 +34425,8 @@
       "id": "rules/rigging.md#172",
       "file": "rules/rigging.md",
       "lines": [
-        526,
-        528
+        527,
+        529
       ],
       "hash": "fa27a66dd6",
       "text": "3. **Working out the Power.** The two vehicles are 36 meters a turn apart\n   in speed; divided by ten and rounded up, that's a Power of 4, landing\n   as Moderate on the Impact Damage Levels Table (21–60 m/turn).",
@@ -34361,8 +34458,8 @@
       "id": "rules/rigging.md#173",
       "file": "rules/rigging.md",
       "lines": [
-        529,
-        534
+        530,
+        535
       ],
       "hash": "058324d1a7",
       "text": "4. **Dex's own resistance.** Because he was the one ramming, his 3\n   Ramming successes reduce the **Power** of the collision for his own\n   resistance test by his Body (8) times those successes — 24 points,\n   which would take Power below zero, so his target number floors at 2.\n   Rolling Body 8 (plus Control Pool if he wanted it, though he doesn't\n   need it here) against target number 2, his van shrugs the impact off.",
@@ -34394,8 +34491,8 @@
       "id": "rules/rigging.md#174",
       "file": "rules/rigging.md",
       "lines": [
-        535,
-        537
+        536,
+        538
       ],
       "hash": "5fb1ac40d0",
       "text": "5. **The patrol car's resistance** isn't reduced by anything Dex rolled:\n   it faces the full Moderate hit at Power 4, resisting with its own Body\n   3 dice (no VCR, so no Control Pool for the cop) against target number",
@@ -34421,8 +34518,8 @@
       "id": "rules/rigging.md#175",
       "file": "rules/rigging.md",
       "lines": [
-        538,
-        541
+        539,
+        542
       ],
       "hash": "77309b869a",
       "text": "   4. Say the gamemaster rolls 1 success — not enough to stage a Moderate\n   hit down a level, which needs 2 — so the car takes the Moderate wound\n   outright, and because it took damage from a ram, its driver now owes a\n   Crash Test.",
@@ -34454,8 +34551,8 @@
       "id": "rules/rigging.md#176",
       "file": "rules/rigging.md",
       "lines": [
-        542,
-        545
+        543,
+        546
       ],
       "hash": "38ae5ff684",
       "text": "6. **The cop.** Riding in the car that just got hit, the driver resists\n   the same Power at the same Level the car ended up taking — Moderate at\n   Power 4 — reduced further by whatever impact armor he's wearing and by\n   a seat belt if he has one buckled.",
