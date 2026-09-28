@@ -53,6 +53,8 @@ export async function run(t) {
   const script = consoleScript();
   t.ok('the console script carries the tested function verbatim', script.includes(classifyLedgers.toString()));
   t.ok('…is a dry run unless APPLY is set', /const APPLY = false;/.test(script) && /if \(!APPLY\) return/.test(script));
+  t.ok('…shows a blank reason as "By hand", never "(none)" or a dash',
+    /\|\| 'By hand'/.test(script) && !/'\(none\)'/.test(script));
   t.ok('…refuses to run for a player', /if \(!game\.user\.isGM\) return/.test(script));
   t.ok('…parses', (() => { try { new Function(script.replace(/^\/\/.*\n/, '')); return true; } catch { return false; } })());
 }

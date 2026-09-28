@@ -27,7 +27,7 @@ ${classifyLedgers.toString()}
   for (const r of result) for (const row of r.rows) if (row.verdict !== 'keep' || !APPLY) show.push({
     character: r.name, verdict: row.verdict, when: new Date(row.entry.when).toLocaleString(),
     kind: row.entry.kind, change: row.entry.delta, from: row.entry.from, to: row.entry.to,
-    why: row.entry.reason || '(none)', by: row.entry.by, because: row.why,
+    why: String(row.entry.reason ?? '').trim() || 'By hand', by: row.entry.by, because: row.why,
   });
   console.table(show);
   const total = result.reduce((s, r) => s + r.remove.length, 0);
