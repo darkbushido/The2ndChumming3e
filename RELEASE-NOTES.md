@@ -2,6 +2,36 @@
 
 What changed, for the people running games with it. Newest first.
 
+## 0.6.3 — unreleased
+
+A bug-fix release: dump shock for riggers and deckers, rigger damage from a wrecked vehicle, natural armour in astral combat, flechette against dermal armour, and the Matrix Defragged IC list.
+
+### Before you upgrade
+
+- **Fully restart Foundry** after updating, not just refresh the browser: characters and NPCs have a new *Natural armor (astral)* field.
+
+### Rules that now resolve differently
+
+**Dump shock**
+
+- **A rigger's dump shock follows the rigger rules** (SR3 p.156). The ⚡ Dumpshock dialog now asks what the character was dumped from. A rigger dumped from a remote-control network resists **(RC deck Rating + 4)S Stun**, and one jacked out of a vehicle resists **5S Stun**. Both are resisted with **Willpower**, with no armour. The card states the **+2 to all Success Tests for ten Combat Turns** of disorientation, and offers the **Willpower (4) Test** that shortens it; its result says how many turns it lasts. There is a new *Dump Shock* button in the character sheet's rigger panel. Before, a rigger was treated as a decker: the Power came from a host, the track from the Matrix mode, and the roll was Body.
+- **Every dump shock is resisted with Willpower, and worn armour doesn't count.** Neither SR3 p.227 nor Matrix Defragged p.27 says which attribute resists a decker's dump shock; only the rigger rule does (p.156). **House ruling:** Willpower for deckers too, since it's a mental shock, and no armour, since it comes through the jack. Before, deckers rolled Body, and their worn armour lowered the target number.
+- **Orthodox (SR3 core) dump shock uses the book's table** (SR3 p.226–227). It is always **Stun**, the Power is the host's Security Value, and the level comes from the host's Security Code: **Blue Light, Green Moderate, Orange Serious, Red Deadly**. That is the Dump Shock Damage Levels table, not the IC damage table next to it. Before, a crashed Orthodox deck was always Serious and Physical in VR-Hot, which is the Matrix Defragged rule. Matrix Defragged dump shock is unchanged: Serious, Power = System Rating, track by user mode (MDF p.27).
+
+**Rigging**
+
+- **A rigger takes damage when their vehicle is badly hurt** (SR3 p.145). When a vehicle a rigger is jacked into (VCR) reaches **Serious**, a card offers the rigger **6M Physical**. If it's **destroyed**, the card offers **6S**. The roll is Willpower, with no Combat or Control Pool and no armour. Nothing is applied automatically: the rigger rolls, and the wound goes on when someone clicks 🩸 Assign. Before, nothing offered this roll.
+
+**Combat and magic**
+
+- **Dermal armour takes a level off an `(f)` weapon** (SR3 p.116: *"Dermal armor negates the Damage Level increase of flechette ammunition"*). A weapon whose Damage Code has the `(f)` note already includes flechette's level increase, so against a target with dermal armour (a troll's hide, dermal plating, a dermal sheath), its damage drops one level, and the card says why. **House ruling:** this is for dermal armour only. An `(f)` weapon against worn armour keeps its code. Before, the card left this to the GM.
+- **A dual being's natural armour protects in astral combat** (SR3 p.175: *"the Power of the attack is reduced by the target's natural armor"*). Set a critter's Armor power in the new **Natural armor (astral)** field (Magic tab, Astral). The astral resist card takes it off the Power for a dual being, on top of Mystic Armor, and names it on the card. An actor on the Astral Plane gets no deduction. Worn armour still never counts, and a troll's dermal armour is already in its Body.
+
+### Fixes
+
+- **Matrix Defragged IC sheet:** five agents were listed under the wrong IC grade. They now follow MDF p.34's *Available Agents* table.
+- **Dumpshock dialog:** choosing a host now sets the Power. The typed default of 6 used to override it.
+
 ## 0.6.2 — 2026-09-26
 
 A bug-fix release, mostly from the 2026-09-23 trial session: ammunition and clips, weapons that start put away, implanted weapons you can actually use, a wound that could be assigned twice, and ↺ Undo on the first press. Two rules now resolve differently: spells take cover and visibility, and dual beings resist astral damage with Body.
