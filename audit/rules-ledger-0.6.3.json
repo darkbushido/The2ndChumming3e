@@ -26808,7 +26808,22 @@
       ],
       "hash": "a54e0ff138",
       "text": "### Vehicle combat and the Maneuver Score  *(SR3 p.138–144)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 140,
+          "printedPage": 138,
+          "quote": "The Maneuver Score is determined by adding together a"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 260,
+          "snippet": "const speedScore   = Math.floor(p.speed / 10);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#48",
@@ -26819,7 +26834,33 @@
       ],
       "hash": "af3953ed7e",
       "text": "Once a chase or a fight turns into an actual vehicle-combat scene, the\nbook layers on a **Maneuver Score**: a number rebuilt every Combat Turn\nfrom the vehicle's type (nimble vehicles like motorcycles score well,\nlumbering ones like heavy trucks score poorly), the terrain, roughly how\nfast the vehicle is going, and **Driver Points** — an **Open Test** (every\n6 is rerolled and added, as many times as it keeps coming up) using the\nVehicle Skill, plus any Control Pool dice the rigger allocates for it.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 140,
+          "printedPage": 138,
+          "quote": "vehicle's Vehicle Points, Terrain Points, Speed Points and Driver"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 142,
+          "printedPage": 140,
+          "quote": "an Open Test using the relevant Vehi-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 260,
+          "snippet": "const speedScore   = Math.floor(p.speed / 10);"
+        },
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 3,
+          "snippet": "import { openTestFirstWave"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#49",
@@ -26830,7 +26871,22 @@
       ],
       "hash": "0530f23b51",
       "text": "Each driver then picks one Complex Action per turn from a short list, each\nwith its own modifier table:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 143,
+          "printedPage": 141,
+          "quote": "form the following vehicle actions. All are considered Complex"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 828,
+          "snippet": "if (diff > 10)   return -4;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#50",
@@ -26841,7 +26897,22 @@
       ],
       "hash": "3be936f847",
       "text": "- **Accelerating or braking** — a Driving Test against Handling; success\n  changes speed by Acceleration times the successes rolled.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 144,
+          "printedPage": 142,
+          "quote": "decrease is equal to the vehicle's Acceleration Rating, multiplied"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 992,
+          "snippet": "const mnvMod  = this._maneuverMod(info?.maneuver ?? null, oppInfo?.maneuver ?? null);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#51",
@@ -26852,7 +26923,22 @@
       ],
       "hash": "80cc1c6358",
       "text": "- **Positioning** — banks successes as a bonus to *next* turn's Maneuver\n  Score, buying a better tactical spot.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 144,
+          "printedPage": 142,
+          "quote": "generated on the test and add this value to the driver's Driver"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1131,
+          "snippet": "const autonav = el.querySelector('#act-autonav')?.checked ? (info?.autonav ?? 0) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#52",
@@ -26863,7 +26949,8 @@
       ],
       "hash": "5473c86127",
       "text": "- **Ramming** — see below.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "cross-reference to the ramming rules below; states no rule"
     },
     {
       "id": "rules/rigging.md#53",
@@ -26874,7 +26961,22 @@
       ],
       "hash": "397e97311e",
       "text": "- **Hiding** — breaking contact with a pursuer, whose successes make it\n  harder for the follower to relocate the hider next turn.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "other vehicles and also receives an Escape Bonus equal to the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1669,
+          "snippet": "const mnvMod   = hidingManeuverMod(info?.maneuver ?? null, oppInfo?.maneuver ?? null);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#54",
@@ -26885,7 +26987,22 @@
       ],
       "hash": "75e4407abb",
       "text": "- **Relocating** — the pursuer's answer to a vehicle that just hid.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "vehicle must add the number of successes in"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1839,
+          "snippet": "const hiding  = parseInt(el.querySelector('#act-hiding-succ')?.value) || 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#55",
@@ -26896,7 +27013,23 @@
       ],
       "hash": "4468b15411",
       "text": "- Or simply doing something that isn't driving — firing a personal weapon,\n  working the electronics, and so on — as an ordinary action instead.",
-      "verdict": null
+      "verdict": "match",
+      "note": "A non-driving action is an ordinary character action; the chase tool offers only the five vehicle actions.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 143,
+          "printedPage": 141,
+          "quote": "include firing personal weapons, using onboard elec-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 828,
+          "snippet": "if (diff > 10)   return -4;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#56",
@@ -26907,7 +27040,22 @@
       ],
       "hash": "fbdb49bc28",
       "text": "#### Accelerating/Braking Target Modifiers Table  *(SR3 p.141)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 143,
+          "printedPage": 141,
+          "quote": "ACCELERATING/BRAKING TARGET MODIFIERS TABLE"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 828,
+          "snippet": "if (diff > 10)   return -4;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#57",
@@ -26918,7 +27066,8 @@
       ],
       "hash": "43dd6ecc13",
       "text": "| Condition | Modifier |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/rigging.md#58",
@@ -26929,7 +27078,22 @@
       ],
       "hash": "c4adb12213",
       "text": "| Own Maneuver Score exceeds opponent's by 10 or less | −2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 143,
+          "printedPage": 141,
+          "quote": "Vehicle's Maneuver Score exceeds opponent's score by 10 or less -2"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 830,
+          "snippet": "if (diff > 0)    return -2;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#59",
@@ -26940,7 +27104,22 @@
       ],
       "hash": "e0582ce9d5",
       "text": "| Own Maneuver Score exceeds opponent's by more than 10 | −4 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 143,
+          "printedPage": 141,
+          "quote": "Vehicle's Maneuver Score exceeds opponent's score by more than 10 -4"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 828,
+          "snippet": "if (diff > 10)   return -4;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#60",
@@ -26951,7 +27130,22 @@
       ],
       "hash": "cbae408277",
       "text": "| Opponent's Maneuver Score exceeds own by 10 or less | +2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 143,
+          "printedPage": 141,
+          "quote": "Opponent's Maneuver Score exceeds vehicle's score by 10 or less +2"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 832,
+          "snippet": "if (diff >= -10) return  2;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#61",
@@ -26962,7 +27156,22 @@
       ],
       "hash": "d928b9272f",
       "text": "| Opponent's Maneuver Score exceeds own by more than 10 | +4 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 143,
+          "printedPage": 141,
+          "quote": "Opponent's Maneuver Score exceeds vehicle's score by more than 10 +4"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 833,
+          "snippet": "return 4;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#62",
@@ -26973,7 +27182,23 @@
       ],
       "hash": "738672ced3",
       "text": "| Fleeing more than one vehicle | +1 per additional vehicle |",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "The book gives +1 per additional vehicle with no cap; the Accel/Brake dialog offers None / 2 vehicles (+1) / \"3+ vehicles (+2)\", so fleeing four or more vehicles is under-counted (four should be +3). The Hiding dialog counts pursuers without a cap (SR3EVehicleChase.js:1670).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 144,
+          "printedPage": 142,
+          "quote": "attempting to flee from two or more vehicles, apply a +1 tar-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 953,
+          "snippet": "<option value=\"2\">3+ vehicles (+2 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#63",
@@ -26984,7 +27209,22 @@
       ],
       "hash": "27446d5ca0",
       "text": "| Vehicle exceeds its Speed Rating | +1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 143,
+          "printedPage": 141,
+          "quote": "Vehicle exceeds its Speed Rating +1"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 995,
+          "snippet": "const exceed  = el.querySelector('#act-exceed')?.checked ? 1 : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#64",
@@ -26995,7 +27235,22 @@
       ],
       "hash": "450055496d",
       "text": "| Autonav active | + Autonav Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 144,
+          "printedPage": 142,
+          "quote": "apply a target number modifier equal to the vehicle's Autonav"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 996,
+          "snippet": "const autonav = el.querySelector('#act-autonav')?.checked ? (info?.autonav ?? 0) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#65",
@@ -27006,7 +27261,22 @@
       ],
       "hash": "688068968f",
       "text": "| Terrain: open / normal / restricted / tight | −1 / 0 / +1 / +3 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 143,
+          "printedPage": 141,
+          "quote": "Terrain Open Normal Restricted Tight"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 930,
+          "snippet": "['restricted','1','Restricted (+1)'], ['tight','3','Tight (+3)'],"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#66",
@@ -27017,7 +27287,22 @@
       ],
       "hash": "cdb74f7391",
       "text": "| Driver has a VCR implant | −(VCR Rating × 2) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 144,
+          "printedPage": 142,
+          "quote": "vehicle, reduce the target number by an amount equal to twice"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 997,
+          "snippet": "const vcr     = el.querySelector('#act-vcr')?.checked ? -((info?.vcrRating ?? 0) * 2) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#67",
@@ -27028,7 +27313,22 @@
       ],
       "hash": "1cd14e9157",
       "text": "#### Positioning Modifiers Table  *(SR3 p.142–143)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "POSITIONING MODIFIERS TABLE"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1133,
+          "snippet": "const vcr     = el.querySelector('#act-vcr')?.checked ? -((info?.vcrRating ?? 0) * 2) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#68",
@@ -27039,7 +27339,8 @@
       ],
       "hash": "43dd6ecc13",
       "text": "| Condition | Modifier |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/rigging.md#69",
@@ -27050,7 +27351,22 @@
       ],
       "hash": "27446d5ca0",
       "text": "| Vehicle exceeds its Speed Rating | +1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "Vehicle exceeds its Speed Rating +1"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1130,
+          "snippet": "const exceed  = el.querySelector('#act-exceed')?.checked ? 1 : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#70",
@@ -27061,7 +27377,22 @@
       ],
       "hash": "450055496d",
       "text": "| Autonav active | + Autonav Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "Terrain + Autonav Rating Open -1 Normal 0"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1131,
+          "snippet": "const autonav = el.querySelector('#act-autonav')?.checked ? (info?.autonav ?? 0) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#71",
@@ -27072,7 +27403,22 @@
       ],
       "hash": "688068968f",
       "text": "| Terrain: open / normal / restricted / tight | −1 / 0 / +1 / +3 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "Restricted +1 Tight +3 Driver has VCR implant"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1073,
+          "snippet": "['restricted','1','Restricted (+1)'], ['tight','3','Tight (+3)'],"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#72",
@@ -27083,7 +27429,22 @@
       ],
       "hash": "cdb74f7391",
       "text": "| Driver has a VCR implant | −(VCR Rating × 2) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "Driver has VCR implant - (VCR Rating x 2)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1133,
+          "snippet": "const vcr     = el.querySelector('#act-vcr')?.checked ? -((info?.vcrRating ?? 0) * 2) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#73",
@@ -27094,7 +27455,22 @@
       ],
       "hash": "3a1faa9f2a",
       "text": "#### Ramming Modifiers Table  *(SR3 p.143)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "Ramming vehicle's Maneuver Score"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1306,
+          "snippet": "const mnvMod  = this._maneuverMod(info?.maneuver ?? null, oppInfo?.maneuver ?? null);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#74",
@@ -27105,7 +27481,8 @@
       ],
       "hash": "43dd6ecc13",
       "text": "| Condition | Modifier |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/rigging.md#75",
@@ -27116,7 +27493,22 @@
       ],
       "hash": "b13064bd13",
       "text": "| Ramming vehicle's Maneuver Score exceeds target's by 10 or less | −2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "exceeds target's score by 10 or less"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1306,
+          "snippet": "const mnvMod  = this._maneuverMod(info?.maneuver ?? null, oppInfo?.maneuver ?? null);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#76",
@@ -27127,7 +27519,22 @@
       ],
       "hash": "ea64ff6932",
       "text": "| Ramming vehicle's Maneuver Score exceeds target's by more than 10 | −4 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "exceeds target's score by more than 10"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1306,
+          "snippet": "const mnvMod  = this._maneuverMod(info?.maneuver ?? null, oppInfo?.maneuver ?? null);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#77",
@@ -27138,7 +27545,22 @@
       ],
       "hash": "14c29226fd",
       "text": "| Target's Maneuver Score exceeds ramming vehicle's by 10 or less | +2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "ramming vehicle's score by 10 or less"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1306,
+          "snippet": "const mnvMod  = this._maneuverMod(info?.maneuver ?? null, oppInfo?.maneuver ?? null);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#78",
@@ -27149,7 +27571,22 @@
       ],
       "hash": "290f05d4b6",
       "text": "| Target's Maneuver Score exceeds ramming vehicle's by more than 10 | +4 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "ramming vehicle's score by more than 10"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1306,
+          "snippet": "const mnvMod  = this._maneuverMod(info?.maneuver ?? null, oppInfo?.maneuver ?? null);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#79",
@@ -27160,7 +27597,23 @@
       ],
       "hash": "27446d5ca0",
       "text": "| Vehicle exceeds its Speed Rating | +1 |",
-      "verdict": null
+      "verdict": "match",
+      "note": "Rows read from the page image: +1 for exceeding the Speed Rating (the OCR layout misaligns this table).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "Vehicle exceeds its Speed Rating 0 Vehicle's autonav is active +1"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1307,
+          "snippet": "const exceed  = el.querySelector('#act-exceed')?.checked ? 1 : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#80",
@@ -27171,7 +27624,22 @@
       ],
       "hash": "cc470aaa6f",
       "text": "| Autonav active | + (Autonav Rating + 2) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "Target's Maneuver Score exceeds + (Rating + 2)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1308,
+          "snippet": "const autonav = el.querySelector('#act-autonav')?.checked ? ((info?.autonav ?? 0) + 2) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#81",
@@ -27182,7 +27650,22 @@
       ],
       "hash": "f201393c23",
       "text": "| Terrain: open / normal / restricted / tight | −1 / 0 / +1 / +2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "Terrain Open Normal Restricted Tight VCR implant"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1205,
+          "snippet": "['restricted','1','Restricted (+1)'], ['tight','2','Tight (+2)'],"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#82",
@@ -27193,7 +27676,22 @@
       ],
       "hash": "cdb74f7391",
       "text": "| Driver has a VCR implant | −(VCR Rating × 2) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "Attacker has a Level 2 VCR -4"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1310,
+          "snippet": "const vcr     = el.querySelector('#act-vcr')?.checked ? -((info?.vcrRating ?? 0) * 2) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#83",
@@ -27204,7 +27702,22 @@
       ],
       "hash": "dbb6aeedff",
       "text": "#### Hiding Target Modifiers Table  *(SR3 p.144)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "HIDING TARGET MODIFIERS TABLE"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1669,
+          "snippet": "const mnvMod   = hidingManeuverMod(info?.maneuver ?? null, oppInfo?.maneuver ?? null);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#84",
@@ -27215,7 +27728,8 @@
       ],
       "hash": "43dd6ecc13",
       "text": "| Condition | Modifier |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/rigging.md#85",
@@ -27226,7 +27740,22 @@
       ],
       "hash": "d8ddd825bb",
       "text": "| Hiding vehicle's Maneuver Score exceeds opponent's by 10 or less | −2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "Hiding vehicle's Maneuver Score exceeds opponent's score by 10 or less"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1658,
+          "snippet": "if (diff > 0)    return -2;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#86",
@@ -27237,7 +27766,22 @@
       ],
       "hash": "16777ccc60",
       "text": "| Hiding vehicle's Maneuver Score exceeds opponent's by more than 10 | −4 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "Hiding vehicle's Maneuver Score exceeds opponent's score by more than 10"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1657,
+          "snippet": "if (diff > 10)   return -4;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#87",
@@ -27248,7 +27792,22 @@
       ],
       "hash": "fe557414bb",
       "text": "| Opponent's Maneuver Score exceeds hiding vehicle's by 10 or less | +3 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "exceeds hiding vehicle's score by 10 or less"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1660,
+          "snippet": "if (diff >= -10) return  3;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#88",
@@ -27259,7 +27818,22 @@
       ],
       "hash": "fca3c8e342",
       "text": "| Opponent's Maneuver Score exceeds hiding vehicle's by more than 10 | +6 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "exceeds hiding vehicle's score by more than 10"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1661,
+          "snippet": "return 6;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#89",
@@ -27270,7 +27844,22 @@
       ],
       "hash": "5aa9a0aaa2",
       "text": "| Vehicle exceeds its Speed Rating | +2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "The Mach 6 is exceeding its Speed Rating +2"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1671,
+          "snippet": "const exceed   = el.querySelector('#act-exceed')?.checked ? 2 : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#90",
@@ -27281,7 +27870,22 @@
       ],
       "hash": "450055496d",
       "text": "| Autonav active | + Autonav Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "Vehicle's autonav is active + Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1673,
+          "snippet": "const autonav  = el.querySelector('#act-autonav')?.checked ? (info?.autonav ?? 0) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#91",
@@ -27292,7 +27896,22 @@
       ],
       "hash": "2410a0bb5c",
       "text": "| Escaping more than one vehicle | +1 per additional vehicle |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "Escaping from more than one vehicle +1 per additional vehicle"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1670,
+          "snippet": "const pursuers = Math.max(0, (parseInt(el.querySelector('#act-pursuers')?.value) || 1) - 1);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#92",
@@ -27303,7 +27922,23 @@
       ],
       "hash": "e8bb258286",
       "text": "| Terrain: open / normal / restricted / tight | +4 / +2 / 0 / −2 |",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "The Hiding Target Modifiers Table (page image, p.144) gives Open +4, Normal +2, Restricted 0, Tight −2; the guide agrees. The Hiding dialog has Open +1 (its label says \"Open (+1)\"), three too low.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "Terrain Open Normal Restricted Tight VCR implant"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1588,
+          "snippet": "const terrainMods = { open: 1, normal: 2, restricted: 0, tight: -2 };"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#93",
@@ -27314,7 +27949,22 @@
       ],
       "hash": "cdb74f7391",
       "text": "| Driver has a VCR implant | −(VCR Rating × 2) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "Rigger X has a Level 2 VCR -4"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1674,
+          "snippet": "const vcr      = el.querySelector('#act-vcr')?.checked ? -((info?.vcrRating ?? 0) * 2) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#94",
@@ -27325,7 +27975,28 @@
       ],
       "hash": "d6c8df168d",
       "text": "A successful Hiding Test also earns an **Escape Bonus** equal to its\nsuccesses, added to Driver Points each turn until the pursuer relocates\nthe hider (a **Relocating Test** — a Sensor or Perception Test against the\nhider's Signature, made harder by the hider's own Hiding successes and by\na similar set of Maneuver Score and terrain modifiers, in reverse).",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The Relocating Test is implemented (its TN takes the Hiding successes, SR3EVehicleChase.js:1839); the Escape Bonus added to the hider's Driver Points each turn is not.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "other vehicles and also receives an Escape Bonus equal to the"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "the other vehicle relocates the hiding vehicle (see Relocating)"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "escapeBonus|Escape Bonus|escape bonus",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#95",
@@ -27336,7 +28007,22 @@
       ],
       "hash": "23bf37a6ec",
       "text": "Vehicle armor is **hardened**: a hit whose Power (after the vehicle-mass\nhalving below) doesn't exceed the Armor Rating does nothing at all;\notherwise Armor reduces Power like ordinary armor.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 151,
+          "printedPage": 149,
+          "quote": "does not exceed the armor's rating, the weapons fire does no"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8834,
+          "snippet": "if (this.type === 'vehicle' && stagedPower <= defaultArmor) {"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#96",
@@ -27347,7 +28033,22 @@
       ],
       "hash": "4fbbe6bf45",
       "text": "### Shooting a vehicle, and shooting from one  *(SR3 p.149)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 151,
+          "printedPage": 149,
+          "quote": "If a character is shooting at a vehicle, the weapon's Power"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4306,
+          "snippet": "return { damage: { ...damage, power: Math.floor(damage.power / 2), level: levelDown[damage.level] ?? damage.level },"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#97",
@@ -27358,7 +28059,39 @@
       ],
       "hash": "ac282fbbb6",
       "text": "A vehicle's size works in its favour against gunfire: an attack aimed at\nthe vehicle itself has its Power halved and its Damage Level dropped a\nstep **before** the vehicle's own Armor is applied, and a weapon too weak\nto do more than Light damage can't scratch a vehicle at all without\nspecial ammunition. Anti-vehicle ammunition skips that halving, and only\nloses half the Armor Rating rather than the whole thing.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 151,
+          "printedPage": 149,
+          "quote": "is reduced by half (round down) and the Damage Level is"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 151,
+          "printedPage": 149,
+          "quote": "Damage cannot affect the vehicle unless the attacker uses spe-"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 151,
+          "printedPage": 149,
+          "quote": "tions is reduced by half the Armor Rating (round down the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4306,
+          "snippet": "return { damage: { ...damage, power: Math.floor(damage.power / 2), level: levelDown[damage.level] ?? damage.level },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8763,
+          "snippet": "if (ammoRules.armorEffect === 'antiVehicle' && this.type === 'vehicle') {"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#98",
@@ -27369,7 +28102,28 @@
       ],
       "hash": "fb2b59b55c",
       "text": "The vehicle resists with Body dice plus any Control Pool a jacked-in\nrigger can add (capped at their skill), against the reduced Power. A\nrigger may dodge instead of soaking, spending Control Pool against\nHandling in place of Combat Pool.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The vehicle resists with Body dice (the soak card); adding Control Pool to that roll, and a rigger's Control Pool dodge against Handling, are not modelled (TODO 176 remainder, p.149).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 151,
+          "printedPage": 149,
+          "quote": "combat attack using Control Pool instead of Combat Pool dice"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 151,
+          "printedPage": 149,
+          "quote": "vehicle's Body Rating, plus any available Control Pool dice up"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "controlPoolDodge|dodgeWithControl|Control Pool instead of Combat Pool",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#99",
@@ -27380,7 +28134,33 @@
       ],
       "hash": "b72d74e485",
       "text": "Shooting **passengers** inside the vehicle is harder than shooting the\nvehicle itself: the shot loses Power equal to whichever of the vehicle's\nArmor or Body is higher, and if that wipes the Power out entirely nobody\ninside can be hurt by it. Passengers only get half their usual Combat Pool\nfor Dodge or resistance, and a rigger who is jacked in — their attention\nis in the vehicle, not their own body — can't dodge at all and takes a\ntarget-number penalty on their own resistance roll.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 151,
+          "printedPage": 149,
+          "quote": "the vehicle's Armor or Body Rating, whichever is higher, from"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 151,
+          "printedPage": 149,
+          "quote": "Pool dice (round down) for Dodge or Damage Resistance Tests."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 151,
+          "printedPage": 149,
+          "quote": "+3 target number modifier to his Damage Resistance Tests. (A"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "shootPassenger|passengerShot|armorOrBody|halfCombatPool",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#100",
@@ -27391,7 +28171,22 @@
       ],
       "hash": "4216cbc3b9",
       "text": "### Vehicle damage, Crash Tests, and ramming  *(SR3 p.145–148)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "speed divided by 10 and rounded up; the Power of a ramming"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5170,
+          "snippet": "const power = Math.max(1, Math.ceil(speed / 10));"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#101",
@@ -27402,7 +28197,22 @@
       ],
       "hash": "adee47ea28",
       "text": "Vehicles only track physical damage, staged Light through Destroyed the\nsame way a character stages Light through Deadly, each level adding its\nown target-number penalty, Initiative penalty and Speed reduction.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 147,
+          "printedPage": 145,
+          "quote": "Vehicles do not take Stun damage, so they have only a physical damage track"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5115,
+          "snippet": "case 'L': return { tn: 1, initiative: -1, speedReduction: 0    };"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#102",
@@ -27413,7 +28223,22 @@
       ],
       "hash": "3dc592dbe7",
       "text": "#### Vehicle Damage Modifiers Table  *(SR3 p.147)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "VEHICLE DAMAGE MODIFIERS TABLE"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5115,
+          "snippet": "case 'L': return { tn: 1, initiative: -1, speedReduction: 0    };"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#103",
@@ -27424,7 +28249,8 @@
       ],
       "hash": "6b9f962129",
       "text": "| Damage Level | Target number modifier | Initiative penalty | Speed reduction |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/rigging.md#104",
@@ -27435,7 +28261,16 @@
       ],
       "hash": "13e56a7d45",
       "text": "| Light | +1 | — | none |",
-      "verdict": null
+      "verdict": "guide-differs",
+      "note": "Page image, p.147: Light is +1 TN, −1 Initiative, no speed reduction. The guide gives no Initiative penalty for Light; the code (SR3EActor.js:5115) matches the book.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "Damage Level Modifier Light +1"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#105",
@@ -27446,7 +28281,16 @@
       ],
       "hash": "b7a3c774f3",
       "text": "| Moderate | +2 | −1 | 25% |",
-      "verdict": null
+      "verdict": "guide-differs",
+      "note": "Page image, p.147: Moderate is +2 TN, −2 Initiative, 25 percent. The guide has −1; the code (SR3EActor.js:5116) matches the book.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "Light +1 Moderate +2 Serious +3"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#106",
@@ -27457,7 +28301,16 @@
       ],
       "hash": "6efa72e2a1",
       "text": "| Serious | +3 | −2 | 50% |",
-      "verdict": null
+      "verdict": "guide-differs",
+      "note": "Page image, p.147: Serious is +3 TN, −3 Initiative, 50 percent. The guide has −2; the code (SR3EActor.js:5117) matches the book.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "Moderate +2 Serious +3 Initiative Penalty"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#107",
@@ -27468,7 +28321,16 @@
       ],
       "hash": "2d5190b9c1",
       "text": "| Destroyed | — | −3 | vehicle inoperable |",
-      "verdict": null
+      "verdict": "guide-differs",
+      "note": "The table (page image, p.147) has three rows, Light to Serious, and no Destroyed row; the guide adds one with −3 Initiative, which is the book's Serious value shifted down. That a Destroyed vehicle is inoperable is p.149's rule.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 151,
+          "printedPage": 149,
+          "quote": "Vehicles that reach Destroyed are no longer operable"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#108",
@@ -27479,7 +28341,22 @@
       ],
       "hash": "4d549cfcaa",
       "text": "The Power of a crash or a ram is the relevant speed, in meters per Combat\nTurn, divided by ten and rounded up.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "speed divided by 10 and rounded up; the Power of a ramming"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5170,
+          "snippet": "const power = Math.max(1, Math.ceil(speed / 10));"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#109",
@@ -27490,7 +28367,22 @@
       ],
       "hash": "41c979e295",
       "text": "#### Impact Damage Levels Table  *(SR3 p.147)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "IMPACT DAMAGE LEVELS TABLE"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5171,
+          "snippet": "const level = speed >= 201 ? 'D' : speed >= 61 ? 'S' : speed >= 21 ? 'M' : 'L';"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#110",
@@ -27501,7 +28393,8 @@
       ],
       "hash": "70ebe04d0e",
       "text": "| Vehicle speed (m/turn) | Damage Level |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/rigging.md#111",
@@ -27512,7 +28405,22 @@
       ],
       "hash": "c8836d2b26",
       "text": "| 1–20 | Light |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "1-20 Light (L) 21-60 Moderate (M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5171,
+          "snippet": "const level = speed >= 201 ? 'D' : speed >= 61 ? 'S' : speed >= 21 ? 'M' : 'L';"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#112",
@@ -27523,7 +28431,22 @@
       ],
       "hash": "21687c7018",
       "text": "| 21–60 | Moderate |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "21-60 Moderate (M) 61-200 Serious (S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5171,
+          "snippet": "const level = speed >= 201 ? 'D' : speed >= 61 ? 'S' : speed >= 21 ? 'M' : 'L';"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#113",
@@ -27534,7 +28457,22 @@
       ],
       "hash": "a3c285192e",
       "text": "| 61–200 | Serious |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "61-200 Serious (S) 201+ Destroyed (D)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5171,
+          "snippet": "const level = speed >= 201 ? 'D' : speed >= 61 ? 'S' : speed >= 21 ? 'M' : 'L';"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#114",
@@ -27545,7 +28483,22 @@
       ],
       "hash": "22528cc317",
       "text": "| 201+ | Destroyed |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "IMPACT DAMAGE LEVELS TABLE 201+ Destroyed (D)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5171,
+          "snippet": "const level = speed >= 201 ? 'D' : speed >= 61 ? 'S' : speed >= 21 ? 'M' : 'L';"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#115",
@@ -27556,7 +28509,29 @@
       ],
       "hash": "910f7a01bf",
       "text": "A **Crash Test** — a Driving Test against Handling — comes up whenever a\nvehicle takes Serious damage in one hit, gets rammed and hurt by it,\nbottoms out its Condition Monitor, or brakes far harder than its\nAcceleration allows. Both the autonav bonus and Control Pool dice can help\nhere. Failing it means the vehicle stops dead and has to resist the\nimpact on top of whatever caused the crash in the first place.",
-      "verdict": null
+      "verdict": "match",
+      "note": "The Crash Test and its failure are implemented (the 💥 Crash tool); when one is owed is the GM's call — nothing prompts it after a Serious hit or a ram.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "Vehicle takes Serious damage in a single attack (including"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 150,
+          "printedPage": 148,
+          "quote": "If the test fails, the vehicle crashes. It comes to a complete"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1133,
+          "snippet": "const spd      = game.sr3e.SR3EActor.crashSpeedModifier(speedMct, reaction);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#116",
@@ -27567,7 +28542,22 @@
       ],
       "hash": "c8355e9644",
       "text": "#### Crash Test Modifiers Table  *(SR3 p.148)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 150,
+          "printedPage": 148,
+          "quote": "CRASH TEST MODIFIERS TABLE"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1133,
+          "snippet": "const spd      = game.sr3e.SR3EActor.crashSpeedModifier(speedMct, reaction);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#117",
@@ -27578,7 +28568,8 @@
       ],
       "hash": "43dd6ecc13",
       "text": "| Condition | Modifier |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/rigging.md#118",
@@ -27589,7 +28580,22 @@
       ],
       "hash": "fd85b8b36a",
       "text": "| Driver wounded | + the wound's damage modifier |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 150,
+          "printedPage": 148,
+          "quote": "Driver wounded + Damage Modifier"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1124,
+          "snippet": "Its rows: driver wounded (already in every roll's TN via the wound modifier), vehicle"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#119",
@@ -27600,7 +28606,22 @@
       ],
       "hash": "dd1d2a2f86",
       "text": "| Vehicle already damaged | + the vehicle's own damage modifier |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 150,
+          "printedPage": 148,
+          "quote": "Vehicle damaged + Damage Modifier"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1168,
+          "snippet": "<select id=\"drv-vdamage\" style=\"${INPUT_S}\">"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#120",
@@ -27611,7 +28632,22 @@
       ],
       "hash": "743bfad8d9",
       "text": "| Terrain: open / normal / restricted / tight | −1 / 0 / +2 / +4 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 150,
+          "printedPage": 148,
+          "quote": "Open -1 Normal 0 Restricted +2 Tight +4"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1139,
+          "snippet": "<option value=\"2\">Restricted (+2 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#121",
@@ -27622,7 +28658,22 @@
       ],
       "hash": "ea62087518",
       "text": "| Speed less than driver's Reaction × 20 | 0 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 150,
+          "printedPage": 148,
+          "quote": "Less than driver's Reaction x 20 0"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5191,
+          "snippet": "if (s < r * 20) return 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#122",
@@ -27633,7 +28684,22 @@
       ],
       "hash": "1e48b55f04",
       "text": "| Speed less than Reaction × 30 | +1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 150,
+          "printedPage": 148,
+          "quote": "Less than Reaction x 30 +1"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5192,
+          "snippet": "if (s < r * 30) return 1;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#123",
@@ -27644,7 +28710,22 @@
       ],
       "hash": "aa944b084d",
       "text": "| Speed less than Reaction × 40 | +2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 150,
+          "printedPage": 148,
+          "quote": "Less than Reaction x 40 +2"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5193,
+          "snippet": "if (s < r * 40) return 2;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#124",
@@ -27655,7 +28736,22 @@
       ],
       "hash": "18a81663ec",
       "text": "| Speed more than Reaction × 40 | +4 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 150,
+          "printedPage": 148,
+          "quote": "More than Reaction x 40 +4"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5194,
+          "snippet": "return 4;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#125",
@@ -27666,7 +28762,40 @@
       ],
       "hash": "3b0fffb3d1",
       "text": "**Ramming**: the ramming vehicle rolls a Ramming Test (Driving Skill\nagainst Handling, modified by the table above). On a success, **both**\nvehicles resist a collision at a Power equal to their speed difference ÷\n10, rounded up, at the Damage Level the Impact table gives that speed\ndifference. The rammer's own successes on the Ramming Test reduce the\n**Power of the collision** — for the rammer's own resistance roll only —\nby their vehicle's Body Rating times those successes, floored so the\nresulting target number never drops below 2. The **target's** Damage Code\nis untouched by that reduction. Either side that ends up taking damage\nfrom the collision then owes its own Crash Test.",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "The book (p.143, worked on p.147: 5 successes × Body 3 takes 15S to 2S) reduces the rammer's POWER by Body × successes, floor TN 2, level unchanged. The code instead stages the rammer's LEVEL down one per two successes and keeps the full Power as the TN (_buildRamDamageHtml). The guide matches the book. The target's code is unreduced in both. The Crash Test owed by a damaged side is not prompted.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "attacker reduces the Power of the collision"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "age by his vehicle's Body Rating, multiplied by"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "Mach 6 pulls away with nothing more than a scratch or two"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 4999,
+          "snippet": "const stageDn = Math.floor(successes / 2);"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 4993,
+          "snippet": "const power     = Math.max(1, Math.ceil(speedDiff / 10));"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#126",
@@ -27677,7 +28806,34 @@
       ],
       "hash": "8f7101bfee",
       "text": "**Everyone aboard shares the hit.** Whenever the vehicle takes damage —\ncrash, ram, or gunfire — the driver and every passenger resist the same\nPower the vehicle faced, but at whatever Level the vehicle actually ended\nup taking after its own soak, not the raw Level before that. A seat belt\nknocks that Level down one further step, and only impact armor (never\nBallistic) counts against it.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "characters resist damage from an attack with a Power equal to"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "down the damage by an additional level."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "Only impact armor protects against"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5350,
+          "snippet": "const idx = STAGES.indexOf(level) - (belted ? 1 : 0);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#127",
@@ -27688,7 +28844,28 @@
       ],
       "hash": "589f881f8f",
       "text": "**A jacked-in rigger takes a second, separate hit.** Beyond what their\nbody feels as a passenger, the neural feedback of a Serious hit to \"their\"\nvehicle forces a Willpower-resisted Physical Damage Resistance Test — no\nCombat or Control Pool allowed — against a fixed 6M; if the vehicle is\ndestroyed outright, that becomes 6S *(SR3 p.145)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 147,
+          "printedPage": 145,
+          "quote": "the controlling rigger must make a Damage Resistance Test against 6M Physical damage"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 147,
+          "printedPage": 145,
+          "quote": "Neither Combat nor Control Pool dice can be used for this test"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 67,
+          "snippet": "return { power: 6, level, isStun: false, resistAttr: 'willpower', noPools: true, page: FEEDBACK_PAGE };"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#128",
@@ -27699,7 +28876,22 @@
       ],
       "hash": "8551f9588f",
       "text": "### Dump shock for a rigger  *(SR3 p.156)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "Any time a rigger is dumped from a remote control"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 38,
+          "snippet": "if (source === 'network') {"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#129",
@@ -27710,7 +28902,22 @@
       ],
       "hash": "07d6a30194",
       "text": "Getting forcibly kicked out of a rigged connection hits a rigger harder\nthan the equivalent shock hits a decker, because the VCR link runs deeper\ninto the nervous system. There are two distinct triggers, and vehicle\n**destruction is not one of them** — that case is the fixed 6S Physical\nhit above, from p.145:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "If involuntarily jacked out of a vehicle (other than from"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 42,
+          "snippet": "if (source === 'vehicle') return { power: 5, level: 'S', isStun: true, resistAttr: 'willpower', page: DUMP_PAGE };"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#130",
@@ -27721,7 +28928,28 @@
       ],
       "hash": "b2f2e6d7aa",
       "text": "- **Dumped from a remote-control network**: resist a Stun Damage\n  Resistance Test with Willpower, at a Power equal to **the deck's own\n  Rating + 4**. On top of that, the rigger suffers ten Combat Turns of\n  disorientation, adding **+2** to every Success Test they make during\n  that window.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "The rigger must also resist (RC deck Rating + 4)S Stun"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "During the ten turns, all of the rigger"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 38,
+          "snippet": "if (source === 'network') {"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#131",
@@ -27732,7 +28960,22 @@
       ],
       "hash": "dc73b3f6a8",
       "text": "- **Involuntarily jacked out of a vehicle, other than by its\n  destruction** (forced out some other way, mid-scene): resist a flat\n  **5S** Stun instead, plus the same ten turns of disorientation.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "the rigger must resist 5S Stun damage from"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 42,
+          "snippet": "if (source === 'vehicle') return { power: 5, level: 'S', isStun: true, resistAttr: 'willpower', page: DUMP_PAGE };"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#132",
@@ -27743,7 +28986,33 @@
       ],
       "hash": "786a5437f0",
       "text": "The disorientation can be shortened: a Willpower Test against target\nnumber 4, then divide **30 by the successes (round up)** for the number of\nseconds disoriented, then divide that by **3 (round up)** for how many\nCombat Turns the effect actually lasts.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "effects by making a Willpower Test against a Target Number 4."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "Divide the number of successes into 30 (round up) to deter-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 55,
+          "snippet": "const seconds = Math.ceil(30 / s);"
+        },
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 56,
+          "snippet": "return { seconds, turns: Math.ceil(seconds / 3) };"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#133",
@@ -27754,7 +29023,22 @@
       ],
       "hash": "1bae0640c1",
       "text": "### Autonav and Pilot for drones  *(SR3 p.132–133, p.157)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "Pilot Rating for the rigger's relevant skill for any required test"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 757,
+          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#134",
@@ -27765,7 +29049,28 @@
       ],
       "hash": "da3f5e35b8",
       "text": "A driverless drone substitutes its own **Pilot Rating** for whatever skill\nor attribute the test would otherwise use. Giving it anything more\nspecific than a standing order is a **Drone Comprehension** test: the\nPilot Rating rolled against a target number the GM sets by how complicated\nthe instruction is — one success gets it followed, more successes buy the\ndrone some leeway in how it's carried out *(SR3 p.157)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "rolling a number of dice equal to the drone's Pilot Rating against"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "the drone comprehends the command and executes it. However,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 757,
+          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#135",
@@ -27776,7 +29081,8 @@
       ],
       "hash": "b483198f87",
       "text": "Electronic warfare against a rigger or their drones — jamming, signal\ndegradation, intrusion and the rest — is a large enough topic that it gets\nsummarised on the Decking page rather than repeated here; see\n[Decking](../decking-defragged/) and, for what this system actually\nimplements, Part 2 below.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "navigation: points to the decking page for electronic warfare; states no rule"
     },
     {
       "id": "rules/rigging.md#136",
@@ -27787,7 +29093,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/rigging.md#137",
@@ -27798,7 +29105,8 @@
       ],
       "hash": "46cb8ef28d",
       "text": "## Part 2: doing it in The 2nd Chumming (Foundry)",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/rigging.md#138",
@@ -27809,7 +29117,8 @@
       ],
       "hash": "5087a24adb",
       "text": "The system never applies vehicle damage automatically, same as everywhere\nelse: it rolls dice, stages damage, and posts a button — the GM clicks the\nwound boxes. Not everyone behind the wheel is rigging, either — see\n[Driving without rigging, in Foundry](#driving-without-rigging-in-foundry)\nbelow for the ordinary case.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's design (dice and buttons, the GM applies damage); states no book rule"
     },
     {
       "id": "rules/rigging.md#139",
@@ -27820,7 +29129,8 @@
       ],
       "hash": "4ef9c447c0",
       "text": "### Getting a vehicle onto a character's sheet",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/rigging.md#140",
@@ -27831,7 +29141,8 @@
       ],
       "hash": "283c385da5",
       "text": "A vehicle is its own **actor**, with its own sheet (Stats / Weapons / Mods\n/ Electronic Warfare / Notes tabs). To give a character a vehicle:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/rigging.md#141",
@@ -27842,7 +29153,8 @@
       ],
       "hash": "b1dc969eec",
       "text": "- **Drag the vehicle actor onto the character sheet.** Dragging a\n  compendium vehicle **deploys a working copy** and sets that character as\n  its driver; dragging an existing world vehicle **links** it to that\n  character instead. Both routes run through the GM so the character ends\n  up with **owner** permission on the new or linked vehicle actor, whether\n  or not a Player has permission to create actors directly.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/rigging.md#142",
@@ -27853,7 +29165,8 @@
       ],
       "hash": "bbb488aa4e",
       "text": "- Or, on the character sheet's **Vehicles** tab, click **+ Add Vehicle**,\n  which opens the same dialog with three sources: link an existing world\n  vehicle, create a blank one, or pull one from a compendium.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/rigging.md#143",
@@ -27864,7 +29177,8 @@
       ],
       "hash": "39aadd9a40",
       "text": "- The Vehicles tab lists every vehicle whose pilot is this character, with\n  its Handling/Speed/Body/Armor/Pilot/Sensor at a glance, a link to open\n  its sheet, and per-vehicle **VCR / RCD / Auto** mode buttons plus a ✕ to\n  unlink it (the vehicle itself isn't deleted — it can be added back).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/rigging.md#144",
@@ -27875,7 +29189,8 @@
       ],
       "hash": "64061486ae",
       "text": "- On the vehicle's own sheet, the **Pilot** dropdown sets who drives it,\n  and **Passengers** (add/remove tags in the header) tracks who else is\n  aboard — this is the roster a crash or ram reaches, without needing a\n  Chase Scene open.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/rigging.md#145",
@@ -27886,7 +29201,8 @@
       ],
       "hash": "843e2e97ac",
       "text": "### Jacking in: VCR / RCD / Auto",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/rigging.md#146",
@@ -27897,7 +29213,8 @@
       ],
       "hash": "efb2f8e983",
       "text": "Each vehicle has one of three control modes, toggled from either the\nvehicle sheet's header or the character sheet's Vehicles tab:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/rigging.md#147",
@@ -27908,7 +29225,33 @@
       ],
       "hash": "3debd18d4c",
       "text": "- **VCR** — the pilot is jacked in with a Vehicle Control Rig. The system\n  reads the rigger's own VCR item (a cyberware item with \"VCR\" or \"vehicle\n  control rig\" in its name) for its level, and uses Reaction (base,\n  unaugmented) plus twice that level for both Initiative and Control Pool\n  — wired reflexes and magical Reaction boosts are excluded, matching the\n  book. **VCR is exclusive**: setting one vehicle to VCR automatically\n  drops any other vehicle that character was VCR-driving to RCD, and turns\n  off VR Matrix modes on the character (VCR and VR can't both be active).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 303,
+          "printedPage": 301,
+          "quote": "adds +2 to the user's Reaction and +1D6 Initiative dice while"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 142,
+          "printedPage": 140,
+          "quote": "Bonuses for boosted and wired reflexes,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 29,
+          "snippet": "return whole(reactionBase) + 2 * whole(vcrLevel);"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 39,
+          "snippet": "return whole(vcrLevel) > 0 ? Rigging.vcrReaction(reactionBase, vcrLevel) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#148",
@@ -27919,7 +29262,22 @@
       ],
       "hash": "f66142891e",
       "text": "- **RCD** — remote control deck: the rigger's plain Reaction and normal\n  Initiative dice, no VCR bonus, and no Control Pool.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 46,
+          "printedPage": 44,
+          "quote": "she is not currently rigged into, she cannot use Control Pool for"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 501,
+          "snippet": "const vcr = p.vcrActive ? (p.vcrRating ?? 0) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#149",
@@ -27930,7 +29288,8 @@
       ],
       "hash": "6ce1d39e39",
       "text": "- **Auto** — nobody is piloting; the vehicle rolls its own Initiative from\n  its Pilot Rating, and clearing this mode also clears the vehicle's\n  pilot.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/rigging.md#150",
@@ -27941,7 +29300,8 @@
       ],
       "hash": "0c9c88a3ce",
       "text": "A vehicle in VCR or RCD mode copies its rigger's Initiative for Combat\nTurn ordering rather than rolling its own.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/rigging.md#151",
@@ -27952,7 +29312,22 @@
       ],
       "hash": "e60b5c8011",
       "text": "{: .note }\n> The book's VCR-specific default reduction (Reaction at +2 instead of the\n> usual +4, above) isn't modeled: the Default Table a driver with no\n> Vehicle Skill sees is the same generic one used everywhere else in the\n> system, with no VCR-aware discount. This is tracked in the codebase as\n> TODO 106.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The guide states this itself (TODO 106).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 303,
+          "printedPage": 301,
+          "quote": "to default to Reaction for any Vehicle Skill at a +2 modifier, as opposed to the usual +4"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "vcrDefault|defaultVCR|VCR.{0,40}\\+2 modifier",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#152",
@@ -27963,7 +29338,8 @@
       ],
       "hash": "fa29459e16",
       "text": "### Driving without rigging, in Foundry\n{: #driving-without-rigging-in-foundry }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/rigging.md#153",
@@ -27974,7 +29350,34 @@
       ],
       "hash": "c45dff968a",
       "text": "A character with no VCR item at all — the ordinary case — still uses the\nsame 🚗 Driving Test dialog described just below. The \"Using VCR\" option\nin it only shows up once the system finds VCR cyberware on the driver;\nwithout one, the pool simply builds as Vehicle Skill plus Autonav, with no\nControl Pool line at all, since the underlying Control Pool calculation\nreturns zero for anyone without a VCR rating. The vehicle's control-mode\nbutton is normally left on **RCD** for this case: mechanically, \"no VCR\nbonus\" is one path whether the driver is remote-piloting a drone or simply\nsitting behind the wheel, so the same Reaction-based Initiative and pool\nmath cover both, and the mode buttons are shared between them. Defaulting\nwith no matching Vehicle Skill opens the same Default Table dialog\ndescribed in the note above — it always offers the ordinary +4-to-an-\nattribute default, with no special case for a rigger's +2.",
-      "verdict": null
+      "verdict": "match",
+      "note": "The VCR's +2 default is not modelled (see #20, #151).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 46,
+          "printedPage": 44,
+          "quote": "Vehicle Control Rig (see p. 301) can use a Control Pool"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "the vehicle's Autonav Rating (assuming the autonav is turned"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1162,
+          "snippet": "infoRow('Autonav', `${autonav} (added out of combat)`)"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 39,
+          "snippet": "return whole(vcrLevel) > 0 ? Rigging.vcrReaction(reactionBase, vcrLevel) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#154",
@@ -27985,7 +29388,8 @@
       ],
       "hash": "f6ade0f5ac",
       "text": "### Driving Tests and Crash Tests",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/rigging.md#155",
@@ -27996,7 +29400,33 @@
       ],
       "hash": "cfe12f3198",
       "text": "- **🚗 Driving Test**, from the vehicle sheet's Stats tab (only shown once\n  a pilot is set) or the **Rollable Tables** sidebar tab (available to\n  everyone, not just the GM), asks for the vehicle and driver, then builds\n  the pool automatically: Vehicle Skill plus Autonav normally, or Vehicle\n  Skill plus Control Pool dice (capped at the skill) once \"Using VCR\" is\n  selected for a jacked-in rigger. The target number starts at Handling\n  and offers the standard dropdowns — unfamiliar, stressful, size,\n  weather, terrain, combat, datajack, and the VCR reduction. No Vehicle\n  Skill on the driver opens the Default Table dialog instead of refusing\n  the roll.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "The base target number for the test is the vehicle's Handling"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "character can add a number of Control Pool dice equal to his or"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1163,
+          "snippet": "infoRow('Handling (base TN)', handling)"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1119,
+          "snippet": "<option value=\"${-vcrRating}\">Using VCR"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#156",
@@ -28007,7 +29437,27 @@
       ],
       "hash": "a28c98b0a5",
       "text": "- **💥 Crash**, from the same Stats tab menu (or the Vehicle Tools HUD on a\n  token, or the 💥 button offered after a failed Driving Test), gives two\n  ways in: rolling the Crash Test as the driver, so a failure posts the\n  crash automatically, or posting crash damage directly for when the\n  accident has already happened and there's no test left to make. Either\n  way it ends at the same damage builder: speed (asked in km/h and\n  converted to meters per Combat Turn for the table), a Power and Level\n  that follow the vehicle's speed until the GM edits them by hand, and a\n  checklist of who's aboard (seeded from the vehicle's pilot/passenger\n  roster) to resist afterward.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "speed divided by 10 and rounded up; the Power of a ramming"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5207,
+          "snippet": "const speedKmct = Math.max(0, Number(kmh) || 0) / 1.2;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5171,
+          "snippet": "const level = speed >= 201 ? 'D' : speed >= 61 ? 'S' : speed >= 21 ? 'M' : 'L';"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#157",
@@ -28018,7 +29468,28 @@
       ],
       "hash": "f5ca4a5266",
       "text": "- **Ramming and collisions** post the same occupant-resistance chain: after\n  the vehicle's own soak roll, the driver and every passenger get a\n  resist-collision-damage button, which opens a small dialog asking for\n  their Body dice, their impact armor (pre-filled from worn and implanted\n  armor), and whether they were belted in, and shows the resulting\n  Power/Level/target number live before they roll. If the vehicle itself\n  took no damage, the card says so and nobody rolls.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "characters resist damage from an attack with a Power equal to"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "Only impact armor protects against"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5350,
+          "snippet": "const idx = STAGES.indexOf(level) - (belted ? 1 : 0);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#158",
@@ -28029,7 +29500,8 @@
       ],
       "hash": "0841ef8039",
       "text": "### Dump shock, and rigger damage from a destroyed vehicle",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/rigging.md#159",
@@ -28040,7 +29512,33 @@
       ],
       "hash": "d3e6ce7224",
       "text": "- **⚡ Dump Shock** is a button in the character sheet's *Rigger —\n  Electronic Warfare* panel (and beside the Matrix tools when in VR). Its\n  dialog asks what the character was dumped from: the Matrix (a decker),\n  a **remote-control network**, which uses the RC deck Rating from the\n  panel, or a **vehicle** they were jacked out of. The rigger cases post\n  the book's Power, **(Rating + 4)S** or **5S** Stun. The resist card rolls\n  **Willpower**, with no armor. The card also states the ten turns of\n  **+2** disorientation and offers the **Willpower (4) Test** that\n  shortens it; that roll's result card says how many Combat Turns it lasts.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "The rigger must also resist (RC deck Rating + 4)S Stun"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "effects by making a Willpower Test against a Target Number 4."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 38,
+          "snippet": "if (source === 'network') {"
+        },
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 42,
+          "snippet": "if (source === 'vehicle') return { power: 5, level: 'S', isStun: true, resistAttr: 'willpower', page: DUMP_PAGE };"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#160",
@@ -28051,7 +29549,28 @@
       ],
       "hash": "cf2e8678ad",
       "text": "- **Rigger damage is offered automatically.** When a vehicle a rigger is\n  jacked into (VCR mode) reaches **Serious**, a card offers the rigger the\n  **6M** Physical resistance, and when it is **Destroyed**, **6S**. The\n  roll is Willpower with no Combat or Control Pool and no armor. Nothing\n  is applied: the rigger rolls, and the wound goes on only when someone\n  clicks 🩸 Assign.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 147,
+          "printedPage": 145,
+          "quote": "the controlling rigger must make a Damage Resistance Test against 6M Physical damage"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 147,
+          "printedPage": 145,
+          "quote": "Neither Combat nor Control Pool dice can be used for this test"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 67,
+          "snippet": "return { power: 6, level, isStun: false, resistAttr: 'willpower', noPools: true, page: FEEDBACK_PAGE };"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#161",
@@ -28062,7 +29581,8 @@
       ],
       "hash": "53a41de6d0",
       "text": "### The Chase Scene (combat tracker)",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/rigging.md#162",
@@ -28073,7 +29593,33 @@
       ],
       "hash": "dd663b9fcc",
       "text": "The 🚗 Chase Scene tool, opened from the Rollable Tables sidebar tab (open\nto every player, not just the GM), implements the book's vehicle-combat\nmaneuver system rather than standing in for it with something simpler: it\ntracks each participant's vehicle type, terrain and speed, computes their\nManeuver Score, and offers dedicated action buttons for Accel/Brake,\nPositioning, Ramming, Hiding and Relocating, each opening a dialog with\nthe relevant modifiers pre-filled and live target-number and pool math.\nOne participant can be flagged **Quarry** — everyone else's distance is\nthen tracked relative to it (positive behind, negative ahead), and at the\nend of each turn the tool updates every pursuer's distance from the speed\ndifference automatically, reporting who's closing and who's falling\nbehind. Driver Points get the same reroll-on-6 handling as every other\nopen-ended roll in the system.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 140,
+          "printedPage": 138,
+          "quote": "vehicle's Vehicle Points, Terrain Points, Speed Points and Driver"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 142,
+          "printedPage": 140,
+          "quote": "an Open Test using the relevant Vehi-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 260,
+          "snippet": "const speedScore   = Math.floor(p.speed / 10);"
+        },
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 3,
+          "snippet": "import { openTestFirstWave"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#163",
@@ -28084,7 +29630,8 @@
       ],
       "hash": "2c5b54b130",
       "text": "### Drones and remote control",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/rigging.md#164",
@@ -28095,7 +29642,28 @@
       ],
       "hash": "65ba368e49",
       "text": "A vehicle actor typed as a drone works the same way as any other vehicle —\nPilot dropdown, VCR/RCD/Auto modes — except its natural state is Auto,\nrunning on its own Pilot Rating. **📡 Drone Comprehension** (Stats tab, or\nthe Vehicle Tools HUD) rolls Pilot Rating dice, no pool, against a GM-set\ntarget number, with any Command-channel electronic-warfare degradation\nfolded in automatically. Zero successes means the drone does nothing\nuseful; one gets the order followed literally; two or more gives it some\nleeway.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "rolling a number of dice equal to the drone's Pilot Rating against"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "the more successes the test generates, the more leeway the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 757,
+          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#165",
@@ -28106,7 +29674,8 @@
       ],
       "hash": "c44eae945d",
       "text": "### Electronic warfare, briefly",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/rigging.md#166",
@@ -28117,7 +29686,8 @@
       ],
       "hash": "54dbe7a31a",
       "text": "Jamming, Flux/Footprint, ECM/ECCM, MIJI attacks and signal degradation on\na rigger or their drones live on the vehicle sheet's Electronic Warfare\ntab and the ⚡ MIJI Attack / 📶 IVIS Test tools; they aren't repeated here.\nAsk the GM what's actually running at your table, or see\n[Decking](../decking-defragged/) for the related Matrix rules.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "points to the electronic-warfare tools; states no rule"
     },
     {
       "id": "rules/rigging.md#167",
@@ -28128,7 +29698,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/rigging.md#168",
@@ -28139,7 +29710,8 @@
       ],
       "hash": "e9cf26772d",
       "text": "## Worked example: a ramming attempt",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/rigging.md#169",
@@ -28150,7 +29722,8 @@
       ],
       "hash": "91fa5a1e40",
       "text": "Dex is jacked into his **step-van** (Handling 4, Body 8) with Car Skill 5\nand a Rating-2 VCR, chasing a **patrol car** (Handling 4, Body 3) driven by\nan unrigged cop with Car Skill 4. Dex's van is doing 96 meters a turn to\nthe patrol car's 60. For this Combat Turn, assume Dex's Maneuver Score\ncame out to 42 against the patrol car's 28 — a gap of more than 10 in\nDex's favor.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "worked-example setup; states no rule"
     },
     {
       "id": "rules/rigging.md#170",
@@ -28161,7 +29734,28 @@
       ],
       "hash": "814777f1f2",
       "text": "1. **Control Pool.** Reaction 5 plus twice his VCR level (2) gives Dex a\n   Control Pool of 9 dice, though any one test can only draw up to his 5\n   Car Skill dice from it.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Reaction 5 + 2 × VCR 2 = 9, capped at Car 5 per test: checks.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 46,
+          "printedPage": 44,
+          "quote": "A rigger's Control Pool is equal to the character's Reaction,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 39,
+          "snippet": "return whole(vcrLevel) > 0 ? Rigging.vcrReaction(reactionBase, vcrLevel) : 0;"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 44,
+          "snippet": "return Math.min(whole(available), whole(skillDice));"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#171",
@@ -28172,7 +29766,34 @@
       ],
       "hash": "7013b0b7e4",
       "text": "2. **The Ramming Test.** Base target number is his van's Handling, 4. His\n   Maneuver Score beats the patrol car's by more than 10 (−4); terrain is\n   normal (0); his VCR knocks off a further 2 × his Rating 2 (−4). Total\n   modifier −8 against a base of 4 gives a target number of −4, floored at\n   the rule's minimum of 2. He rolls his 5 Car Skill dice (no Control Pool\n   needed at this target number) and gets 3 successes: the ram connects.",
-      "verdict": null
+      "verdict": "match",
+      "note": "TN 4 − 4 (Maneuver) − 4 (VCR 2 × 2) = −4, floored at 2: checks.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "Attacker has a Level 2 VCR -4"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 146,
+          "printedPage": 144,
+          "quote": "The final Target Number is 3 - 8, or -5, which rounds"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1310,
+          "snippet": "const vcr     = el.querySelector('#act-vcr')?.checked ? -((info?.vcrRating ?? 0) * 2) : 0;"
+        },
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 828,
+          "snippet": "if (diff > 10)   return -4;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#172",
@@ -28183,7 +29804,29 @@
       ],
       "hash": "fa27a66dd6",
       "text": "3. **Working out the Power.** The two vehicles are 36 meters a turn apart\n   in speed; divided by ten and rounded up, that's a Power of 4, landing\n   as Moderate on the Impact Damage Levels Table (21–60 m/turn).",
-      "verdict": null
+      "verdict": "match",
+      "note": "96 − 60 = 36 m/turn → Power 4, Moderate: checks.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "speed divided by 10 and rounded up; the Power of a ramming"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "21-60 Moderate (M) 61-200 Serious (S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 4993,
+          "snippet": "const power     = Math.max(1, Math.ceil(speedDiff / 10));"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#173",
@@ -28194,7 +29837,29 @@
       ],
       "hash": "058324d1a7",
       "text": "4. **Dex's own resistance.** Because he was the one ramming, his 3\n   Ramming successes reduce the **Power** of the collision for his own\n   resistance test by his Body (8) times those successes — 24 points,\n   which would take Power below zero, so his target number floors at 2.\n   Rolling Body 8 (plus Control Pool if he wanted it, though he doesn't\n   need it here) against target number 2, his van shrugs the impact off.",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "The example follows the book (Body 8 × 3 successes off the Power, TN floored at 2). The code would stage Dex's LEVEL down one (3 successes ÷ 2) and leave the TN at the full Power 4 — see #125.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "attacker reduces the Power of the collision"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 145,
+          "printedPage": 143,
+          "quote": "age by his vehicle's Body Rating, multiplied by"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 4999,
+          "snippet": "const stageDn = Math.floor(successes / 2);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#174",
@@ -28205,7 +29870,23 @@
       ],
       "hash": "5fb1ac40d0",
       "text": "5. **The patrol car's resistance** isn't reduced by anything Dex rolled:\n   it faces the full Moderate hit at Power 4, resisting with its own Body\n   3 dice (no VCR, so no Control Pool for the cop) against target number",
-      "verdict": null
+      "verdict": "match",
+      "note": "The target's code is unreduced; Body 3 against TN 4: checks.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "of the ramming attempt, so the Damage Code of 15S is"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5249,
+          "snippet": "while (remaining >= 2 && idx >= 0) { remaining -= 2; idx--; }"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#175",
@@ -28216,7 +29897,29 @@
       ],
       "hash": "77309b869a",
       "text": "   4. Say the gamemaster rolls 1 success — not enough to stage a Moderate\n   hit down a level, which needs 2 — so the car takes the Moderate wound\n   outright, and because it took damage from a ram, its driver now owes a\n   Crash Test.",
-      "verdict": null
+      "verdict": "match",
+      "note": "One success stages nothing (two per level); a rammed vehicle that took damage owes a Crash Test (not prompted, see #115).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "Power. For every 2 successes rolled on the test, reduce the Dam-"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "Vehicle takes damage during a ramming action"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5249,
+          "snippet": "while (remaining >= 2 && idx >= 0) { remaining -= 2; idx--; }"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#176",
@@ -28227,7 +29930,28 @@
       ],
       "hash": "38ae5ff684",
       "text": "6. **The cop.** Riding in the car that just got hit, the driver resists\n   the same Power at the same Level the car ended up taking — Moderate at\n   Power 4 — reduced further by whatever impact armor he's wearing and by\n   a seat belt if he has one buckled.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "characters resist damage from an attack with a Power equal to"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 149,
+          "printedPage": 147,
+          "quote": "down the damage by an additional level."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5350,
+          "snippet": "const idx = STAGES.indexOf(level) - (belted ? 1 : 0);"
+        }
+      ]
     },
     {
       "id": "sources.md#1",
