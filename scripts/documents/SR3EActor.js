@@ -12060,6 +12060,25 @@ _prepareCharacter(sys, attr) {
   /** Damage level IC programs inflict (SR3 p.224). */
   static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };
 
+  /**
+   * Orthodox dump shock · SR3 p.227, the Dump Shock Damage Levels table p.226 — TODO 202.
+   *
+   * > "he risks Stun damage from dump shock. The Power of the damage equals the host's Security Value …
+   * > The Damage Level is determined by the host's Security Code"
+   *
+   * ⚠ **Not the IC table** (`_orthoICDmgLevel`): dump shock is one step off it at both ends — Blue is
+   * Light, Red is Deadly. ⚠ **Always Stun**, whatever the user mode (that is MDF's rule, p.27, which
+   * the Defragged cards keep). A code off the table (e.g. Black) stays Serious and says so.
+   *
+   * @param {string} code   the host's `orthodoxSecurityCode`
+   * @param {number} value  the host's `orthodoxSecurityValue`
+   * @returns {{ power:number, level:'L'|'M'|'S'|'D', isStun:true, onTable:boolean }}
+   */
+  static orthoDumpShock(code, value) {
+    const level = ({ Blue: 'L', Green: 'M', Orange: 'S', Red: 'D' })[code];
+    return { power: Math.max(1, Number(value) || 0), level: level ?? 'S', isStun: true, onTable: !!level };
+  }
+
   // ── Orthodox System Test ────────────────────────────────────────────────────
 
   async rollOrthodoxSystemTest() {
@@ -12686,18 +12705,17 @@ _prepareCharacter(sys, attr) {
     if (newVal >= 10 && cur < 10) {
       // Cyberdeck just crashed — trigger dumpshock
       const host      = ctx.hostActorId ? game.actors.get(ctx.hostActorId) : null;
-      const secVal    = host?.system?.orthodoxSecurityValue ?? 6;
-      const isVRHot   = (deckerActor.system.matrixUserMode ?? '') === 'VR-Hot';
-      const isStun    = !isVRHot;
-      const trackLabel = isStun ? 'Stun' : 'Physical';
+      const secCode   = host?.system?.orthodoxSecurityCode ?? 'Green';
+      // SR3 p.226-227: Stun, Power = Security Value, level by Security Code (TODO 202).
+      const ds        = SR3EActor.orthoDumpShock(secCode, host?.system?.orthodoxSecurityValue ?? 6);
       const soakCtx    = JSON.stringify({
         attackerActorId: null,
         targetActorId:   ctx.deckerActorId,
         isMelee:         false,
-        stagedPower:     secVal,
-        stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
-        isStun,
-        rawDamage:       `${secVal}S`,
+        stagedPower:     ds.power,
+        stagedLevel:     ds.level,
+        isStun:          true,
+        rawDamage:       `${ds.power}${ds.level}`,
         resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)
       }).replace(/'/g, '&#39;');
 
@@ -12707,8 +12725,10 @@ _prepareCharacter(sys, attr) {
           <div class="sr-roll-header" style="color:var(--sr-red)">⚡ Cyberdeck Crashed — ${ctx.deckerName}</div>
           <div class="sr-staging-result">
             Matrix CM full — ${ctx.deckerName} is forcibly disconnected.
-            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${secVal}S ${trackLabel}</strong>
+            Dump shock (${secCode} host): <strong>${ds.power}${ds.level} Stun</strong> (SR3 p.226-227)
           </div>
+          ${ds.onTable ? '' : `<div class="sr-roll-meta" style="font-size:11px;color:var(--sr-amber)">
+            ${secCode} is not on the Dump Shock Damage Levels table (Blue–Red) — Serious shown; adjust by hand.</div>`}
           <div class="sr-soak-action">
             <button class="sr-soak-btn" data-payload='${soakCtx}'>
               🛡 ${ctx.deckerName}: Resist Dumpshock (Willpower)

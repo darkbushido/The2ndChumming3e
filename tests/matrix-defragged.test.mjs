@@ -36,7 +36,8 @@ export async function run(t) {
   /* ── Dumpshock is SERIOUS, MDF p.27 ──────────────────────────────────────── */
   // "The user must immediately resist Serious Biofeedback Damage. The attack's Power is equal to the
   //  System Rating of the grid or host that dumped the user."
-  t.is('every dumpshock card stages Serious', (actor.match(/stagedLevel:     'S',   \/\/ Serious — MDF p\.27/g) ?? []).length, 3);
+  // Two cards: the ⚡ tool and Convergence. The Orthodox deck crash follows SR3 p.226-227 (TODO 202).
+  t.is('both Defragged dumpshock cards stage Serious', (actor.match(/stagedLevel:     'S',   \/\/ Serious — MDF p\.27/g) ?? []).length, 2);
   t.is('…and none of them still says Moderate', (actor.match(/Dumpshock[^\n]*\$\{(power|secVal|systemRating)\}M /g) ?? []).length, 0);
   t.ok('…including the IC-initiated one', /const damageCode    = `\$\{systemRating\}S`;/.test(actor));
 

@@ -1910,6 +1910,15 @@ export const MUTANTS = [
     impl:   ({ power = 0 } = {}) => Math.max(2, Number(power) || 0),
   },
   {
+    id:     'orthodox-dumpshock-uses-ic-table',
+    suite:  'tables',
+    ...ACTOR, method: 'orthoDumpShock',
+    was:    'the Orthodox deck crash posted a flat Serious on a track by user mode (MDF\'s rule); SR3 p.226-227 is Stun, '
+          + 'Blue L / Green M / Orange S / Red D — and the IC table beside it (Blue M, Red S) is the easy one to misread (TODO 202)',
+    impl:   (code, value) => ({ power: Math.max(1, Number(value) || 0),
+      level: ({ Blue: 'M', Green: 'M', Orange: 'S', Red: 'S' })[code] ?? 'S', isStun: true, onTable: true }),
+  },
+  {
     id:     'natural-armor-left-out-of-astral',
     suite:  'astral-soak',
     ...ACTOR, method: 'astralSoakTN',

@@ -707,4 +707,20 @@ function weaponCategorySkills(t, fs) {
   const missing = [...new Set(Object.values(map).map(v => v.skill))].filter(s => !known.has(s));
   t.is(missing.length ? `skills named but not in SR3ESkills: ${missing.join(', ')}`
                       : 'every mapped skill exists in SR3ESkills', missing.length, 0);
+
+  /* ── Orthodox dump shock — SR3 p.226 (the Dump Shock Damage Levels table), p.227 (TODO 202) ──
+   * "he risks Stun damage from dump shock. The Power of the damage equals the host's Security Value …
+   *  The Damage Level is determined by the host's Security Code". NOT the IC table beside it. */
+  const ds = code => SR3EActor.orthoDumpShock(code, 7);
+  t.eq('Dump Shock Damage Levels: Blue L, Green M, Orange S, Red D',
+    ['Blue', 'Green', 'Orange', 'Red'].map(c => ds(c).level), ['L', 'M', 'S', 'D']);
+  t.eq('…which is not the IC damage table (Blue/Green Moderate, Orange/Red Serious)',
+    ['Blue', 'Red'].map(c => SR3EActor._orthoICDmgLevel[c]), ['Moderate', 'Serious']);
+  t.ok('dump shock is always Stun', ['Blue', 'Green', 'Orange', 'Red'].every(c => ds(c).isStun === true));
+  t.is('Power = the Security Value', ds('Orange').power, 7);
+  t.eq('a code off the table stays Serious and is flagged', [ds('Black').level, ds('Black').onTable], ['S', false]);
+  const actorSrc = fs.readFileSync(new URL('../scripts/documents/SR3EActor.js', import.meta.url), 'utf8');
+  const crash = actorSrc.slice(actorSrc.indexOf('Cyberdeck just crashed'), actorSrc.indexOf('Cyberdeck just crashed') + 2500);
+  t.ok('the Orthodox deck-crash card uses the table, on the Stun track',
+    /SR3EActor\.orthoDumpShock\(secCode,/.test(crash) && /isStun:\s+true/.test(crash) && !/matrixUserMode/.test(crash));
 }
