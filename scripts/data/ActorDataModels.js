@@ -186,6 +186,8 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       matrixMarks:             new ArrayField(new StringField(), { initial: () => [] }),
       linkLocked:              new BooleanField({ initial: false }),
       astralMode:              new StringField({ initial: '' }),
+      // A dual being's natural armour — a critter's Armor power. Reduces astral damage's Power (SR3 p.175, TODO 177).
+      naturalArmor:            new NumberField({ integer: true, initial: 0, min: 0 }),
       magicTradition:          new StringField({ initial: '' }),
       magicType:               new StringField({ initial: '' }),
       magicTotem:              new StringField({ initial: '' }),
@@ -296,6 +298,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       matrixMarks:      new ArrayField(new StringField(), { initial: () => [] }),
       linkLocked:       new BooleanField({ initial: false }),
       astralMode:       new StringField({ initial: '' }),
+      naturalArmor:     new NumberField({ integer: true, initial: 0, min: 0 }),   // SR3 p.175, TODO 177
       magicTradition:   new StringField({ initial: '' }),
       magicType:        new StringField({ initial: '' }),
       magicTotem:       new StringField({ initial: '' }),

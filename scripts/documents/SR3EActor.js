@@ -11197,9 +11197,13 @@ _prepareCharacter(sys, attr) {
    * ordinary soak card added Mystic Armor from the start; this one, the place p.170 names, never did.
    * ⚠ A troll's "natural armor" (p.172) is SR3's Dermal Armor, **+1 Body** (p.56) — already in Body,
    * so it is not a second deduction here.
+   * ⚠ **Natural armour as a rating** (a critter's Armor power) has no other home, so it is the stored
+   * `system.naturalArmor` (TODO 177), deducted like Mystic Armor — **for a dual being only**; the card
+   * passes 0 for an astral being, since p.175 grants it to "Dual beings with natural physical armor".
    */
-  static astralSoakTN({ power = 0, mysticArmor = 0 } = {}) {
-    return Math.max(2, (Number(power) || 0) - Math.max(0, Number(mysticArmor) || 0));
+  static astralSoakTN({ power = 0, mysticArmor = 0, naturalArmor = 0 } = {}) {
+    return Math.max(2, (Number(power) || 0) - Math.max(0, Number(mysticArmor) || 0)
+      - Math.max(0, Number(naturalArmor) || 0));
   }
 
   /**
@@ -11247,7 +11251,9 @@ _prepareCharacter(sys, attr) {
     // TN = Power of the attack — must reflect any weapon-focus bonus baked into stagedPower,
     // not just the winner's raw Charisma (which ignores that bonus entirely) — less Mystic Armor.
     const mysticArmor = Math.max(0, this.system.derived?.mysticArmor ?? 0);
-    const soakTN  = SR3EActor.astralSoakTN({ power: stagedPower ?? winnerCha, mysticArmor });
+    // p.175: natural armour counts for a DUAL being (Body resists) — never for an astral one. TODO 177.
+    const naturalArmor = resist.key === 'body' ? Math.max(0, Number(this.system.naturalArmor) || 0) : 0;
+    const soakTN  = SR3EActor.astralSoakTN({ power: stagedPower ?? winnerCha, mysticArmor, naturalArmor });
 
     const soakPayload = JSON.stringify({
       actorId:         this.id,
@@ -11278,8 +11284,11 @@ _prepareCharacter(sys, attr) {
           ${mysticArmor > 0 ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">
             ✨ Mystic Armor −${mysticArmor} Power — it protects in astral combat; worn armour does not (SR3 p.170, p.175)
           </div>` : ''}
+          ${naturalArmor > 0 ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">
+            🛡 Natural armor −${naturalArmor} Power — a dual being's natural armor counts in astral combat (SR3 p.175)
+          </div>` : ''}
             <label class="sr-soak-label">
-              TN (Power of the attack${mysticArmor > 0 ? ` − Mystic Armor ${mysticArmor}` : ''} — ${soakTN}):
+              TN (Power of the attack${mysticArmor > 0 ? ` − Mystic Armor ${mysticArmor}` : ''}${naturalArmor > 0 ? ` − natural armor ${naturalArmor}` : ''} — ${soakTN}):
               <input type="number" class="sr-astral-soak-tn" value="${soakTN}" min="2" max="30" style="width:55px"/>
             </label>
           </div>

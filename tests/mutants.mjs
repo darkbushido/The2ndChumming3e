@@ -1910,6 +1910,14 @@ export const MUTANTS = [
     impl:   ({ power = 0 } = {}) => Math.max(2, Number(power) || 0),
   },
   {
+    id:     'natural-armor-left-out-of-astral',
+    suite:  'astral-soak',
+    ...ACTOR, method: 'astralSoakTN',
+    was:    'SR3 p.175 - "the Power of the attack is reduced by the target\'s natural armor". Only Mystic '
+          + 'Armor was deducted; a critter\'s natural armour had no field, and the GM lowered the TN by hand (TODO 177)',
+    impl:   ({ power = 0, mysticArmor = 0 } = {}) => Math.max(2, (Number(power) || 0) - Math.max(0, Number(mysticArmor) || 0)),
+  },
+  {
     id:     'dual-beings-resist-astral-with-willpower',
     suite:  'astral-soak',
     ...ACTOR, method: 'astralResistPool',

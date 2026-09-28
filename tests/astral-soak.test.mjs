@@ -27,6 +27,11 @@ export async function run(t) {
   t.is('…and against Mystic Armor 2 is TN 3 — the Power is reduced (p.175)', tn({ power: 5, mysticArmor: 2 }), 3);
   t.is('no TN falls below 2 (p.112)', tn({ power: 4, mysticArmor: 4 }), 2);
   t.is('a negative figure cannot raise the TN', tn({ power: 5, mysticArmor: -3 }), 5);
+  // TODO 177 — a dual being's natural armour (a critter's Armor power) reduces the Power (p.175).
+  t.is('natural armour 3 takes a 7-Power hit to TN 4', tn({ power: 7, naturalArmor: 3 }), 4);
+  t.is('…cumulative with Mystic Armor', tn({ power: 7, mysticArmor: 1, naturalArmor: 3 }), 3);
+  t.is('…still floored at TN 2', tn({ power: 4, naturalArmor: 5 }), 2);
+  t.is('…and a negative figure cannot raise the TN', tn({ power: 5, naturalArmor: -2 }), 5);
 
   // TODO 132 — p.175: "Willpower or Force for astral beings, or Body for dual beings"; p.174: dual
   // beings use "their normal physical Attributes, skills and Combat Pool in astral combat".
@@ -50,7 +55,16 @@ export async function run(t) {
   t.ok('the astral soak card reads the defender\'s Mystic Armor',
     /this\.system\.derived\?\.mysticArmor/.test(card));
   t.ok('…and builds its TN through astralSoakTN',
-    /SR3EActor\.astralSoakTN\(\{ power: stagedPower \?\? winnerCha, mysticArmor \}\)/.test(card));
+    /SR3EActor\.astralSoakTN\(\{ power: stagedPower \?\? winnerCha, mysticArmor, naturalArmor \}\)/.test(card));
+  // TODO 177 — p.175: "the Power of the attack is reduced by the target's natural armor", for DUAL beings.
+  t.ok('the card deducts natural armour for a dual being (Body resists) only',
+    /const naturalArmor = resist\.key === 'body' \? Math\.max\(0, Number\(this\.system\.naturalArmor\) \|\| 0\) : 0/.test(card));
+  t.ok('…and says so on the card', /Natural armor −\$\{naturalArmor\} Power/.test(card));
+  const models = readFileSync(new URL('../scripts/data/ActorDataModels.js', import.meta.url), 'utf8');
+  t.is('natural armour is a stored field on characters and NPCs',
+    (models.match(/naturalArmor:\s+new NumberField\(\{ integer: true, initial: 0, min: 0 \}\)/g) ?? []).length, 2);
+  const sheet = readFileSync(new URL('../scripts/sheets/SR3EActorSheet.js', import.meta.url), 'utf8');
+  t.ok('the Magic tab edits it', /name="system\.naturalArmor"/.test(sheet));
   t.ok('the card takes its pool from astralResistPool, not a hard-coded Willpower',
     /SR3EActor\.astralResistPool\(/.test(card) && !/attributes\?\.willpower/.test(card));
   const roll = src.slice(src.indexOf('static async handleAstralSoakRoll('), src.indexOf('static async handleAstralSoakRoll(') + 3000);

@@ -2817,6 +2817,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                     style="width:auto;margin:0;border-style:solid;border-color:var(--sr-border-hi);color:var(--sr-border-hi)">🛡 Cast Ward</button>
           </div>
         </div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;margin-top:6px"
+               title="A dual being's natural armor, e.g. a critter's Armor power. It reduces the Power of astral damage (SR3 p.175). Worn armor never counts, and a troll's dermal armor is already in its Body.">
+          Natural armor (astral)
+          <input type="number" name="system.naturalArmor" value="${sys.naturalArmor ?? 0}" min="0" style="width:50px;font-size:12px"/>
+        </label>
       </div>
       ${isAdept ? (() => {
         const powers  = actor.items.filter(i => i.type === 'adeptpower')
