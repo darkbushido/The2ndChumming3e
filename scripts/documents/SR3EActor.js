@@ -1216,6 +1216,8 @@ export class SR3EActor extends Actor {
       isStun,
       rawDamage:       `${power}S`,
       resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)
+      noArmor:         true,          // no armour against dump shock — the maintainer's ruling, 2026-09-28
+      noArmorNote:     'Dump shock — no armour applies',
     }).replace(/'/g, '&#39;');
 
     await ChatMessage.create({
@@ -1472,6 +1474,8 @@ export class SR3EActor extends Actor {
       isStun,
       rawDamage:       damageCode,
       resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)
+      noArmor:         true,          // no armour against dump shock — the maintainer's ruling, 2026-09-28
+      noArmorNote:     'Dump shock — no armour applies',
     }).replace(/'/g, '&#39;');
 
     await ChatMessage.create({
@@ -7537,6 +7541,21 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * An `(f)` Damage Code against dermal armor · *SR3 p.116* — TODO 161.
+   *
+   * > *"Dermal armor negates the Damage Level increase of flechette ammunition."*
+   *
+   * An `(f)` code already contains that one-level increase, so negating it drops the level one step.
+   * Ruled by the maintainer, 2026-09-28, with or without worn armour. ⚠ **Dermal armor only**: an `(f)`
+   * weapon against worn armour keeps its code (also ruled 2026-09-28) — p.116 names dermal armor alone.
+   *
+   * @returns {0|1} the levels to drop
+   */
+  static flechetteCodedDrop({ dermalArmor = 0 } = {}) {
+    return dermalArmor > 0 ? 1 : 0;
+  }
+
+  /**
    * An imported character's finished attribute ratings · *SR3 p.56* — the importer's rule.
    *
    * The Shadowrun Character Generator exports a character's attributes in TWO parts: the points
@@ -8754,9 +8773,18 @@ _prepareCharacter(sys, attr) {
       ammoNote  = `APDS — ballistic armour halved (now ${ballistic})`;
     } else if (ammoRules.armorEffect === 'flechette') {
       const dermal = this.type === 'vehicle' ? [] : SR3EActor.dermalArmorSources(this);
+      // An (f) code has the increase built in; dermal armor negates it, so the level drops one (TODO 161).
+      let dermalNote = '';
+      if (ammoRules.levelBaked && SR3EActor.flechetteCodedDrop({ dermalArmor: dermal.length })) {
+        const STAGES = ['L', 'M', 'S', 'D'];
+        const li = STAGES.indexOf(effStagedLevel);
+        if (li >= 0) effStagedLevel = STAGES[Math.max(0, li - 1)];
+        const bi = STAGES.indexOf(netBaseLevel);
+        if (bi >= 0) netBaseLevel = STAGES[Math.max(0, bi - 1)];
+        dermalNote = `; dermal armor (${dermal.join(', ')}) negates the (f) level increase — level dropped to ${effStagedLevel} (p.116)`;
+      }
       if (ammoRules.levelBaked && (Math.max(ballistic, impact) <= 0)) {
-        ammoNote = 'Flechette (f) — the level increase is already in the Damage Code (p.116)'
-                 + (dermal.length ? `; dermal armor (${dermal.join(', ')}) — whether it takes that level back is the GM's call` : '');
+        ammoNote = 'Flechette (f) — the level increase is already in the Damage Code (p.116)' + dermalNote;
       } else if (SR3EActor.flechetteRaisesLevel({ ballistic, impact, dermalArmor: dermal.length })) {
         // Unarmoured target — damage level stages up one
         const STAGES = ['L', 'M', 'S', 'D'];
@@ -8772,7 +8800,7 @@ _prepareCharacter(sys, attr) {
       } else {
         const eff = SR3EActor.flechetteArmor({ ballistic, impact });
         ammoNote  = `Flechette vs armour — effective armour ${eff} `
-                  + `(max of Impact ${impact}×2 and Ballistic ${ballistic}, p.116)`;
+                  + `(max of Impact ${impact}×2 and Ballistic ${ballistic}, p.116)` + dermalNote;
         ballistic = eff;
         impact    = eff;
       }
@@ -12717,6 +12745,8 @@ _prepareCharacter(sys, attr) {
         isStun:          true,
         rawDamage:       `${ds.power}${ds.level}`,
         resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)
+        noArmor:         true,          // no armour against dump shock — the maintainer's ruling, 2026-09-28
+        noArmorNote:     'Dump shock — no armour applies',
       }).replace(/'/g, '&#39;');
 
       await ChatMessage.create({

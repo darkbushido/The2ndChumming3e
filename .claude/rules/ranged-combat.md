@@ -207,7 +207,9 @@ SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it w
   firearm/projectile/thrown, or `(f)` after its Damage Code (p.116). `SR3EItem.flechetteAmmo`: `(f)` →
   `flechette-coded` (level already in the code, armour rule only); a ticked plain code (core AP grenades, p.119) →
   `flechette`. ⚠ **A flechette weapon takes NO other ammunition** (`SR3EItem.weaponAcceptsAmmoType`, TODO 161).
-  Open: whether dermal armour takes an `(f)` code's level back.
+  ⚠ **Dermal armour drops an `(f)` code one level** (`SR3EActor.flechetteCodedDrop`, TODO 161 — the maintainer,
+  2026-09-28): the code carries the increase, dermal armour negates it. **Dermal only** — worn armour alone
+  leaves an `(f)` code as it is.
   Anti-Vehicle sets `weaponOpts.avMunition` (bypasses vehicle Power/2; the vehicle's soak card halves its armour
   instead, p.149). Tracer: FA only, raises Level not Power, TN bonus is a manual note.
 - **Shooting a vehicle** — `SR3EItem.vehicleTargetDamage` (p.149, TODO 168): Power ÷ 2 **round down**, level −1,

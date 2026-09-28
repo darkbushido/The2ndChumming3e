@@ -88,6 +88,14 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
   included), no Response.
 - Tortoise: +2 TN to all Matrix actions. VR-Cold: overflow past the stun track → physical.
 - **Dumpshock is SERIOUS**, Power = the System Rating of the grid/host that dumped the user (p.27).
+- **Every dump shock is resisted with Willpower and no armour** — the maintainer's rulings, 2026-09-27/28
+  (TODO 201): SR3 p.227 and MDF p.27 name no attribute; SR3 p.156 says Willpower for riggers. Payloads
+  carry `resistAttr: 'willpower'`, `noArmor: true`.
+- ⚠ **Orthodox is different** (TODO 202, `SR3EActor.orthoDumpShock`): SR3 p.227 — always **Stun**, Power =
+  Security Value, level by Security Code from the **Dump Shock Damage Levels** table (p.226: Blue L, Green M,
+  Orange S, Red D). **Not the IC table** beside it (`_orthoICDmgLevel`: Blue/Green M, Orange/Red S).
+- **Riggers** (TODO 198/199, `scripts/data/rigger-shock.mjs`): dump shock (RC deck + 4)S or 5S Stun + disorientation
+  (p.156); rigger damage 6M/6S Physical, no pools, when a VCR vehicle reaches Serious/Destroyed (p.145).
 
 ### Hacking procedure
 1. Declare a node prompt (e.g. Duplicate/Download on DS).

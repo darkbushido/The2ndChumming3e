@@ -1910,6 +1910,14 @@ export const MUTANTS = [
     impl:   ({ power = 0 } = {}) => Math.max(2, Number(power) || 0),
   },
   {
+    id:     'flechette-coded-ignores-dermal',
+    suite:  'flechette-weapons',
+    ...ACTOR, method: 'flechetteCodedDrop',
+    was:    'an (f) Damage Code kept its built-in level increase against dermal armour, which "negates the Damage Level '
+          + 'increase of flechette ammunition" (SR3 p.116) - the card left it to the GM (TODO 161)',
+    impl:   () => 0,
+  },
+  {
     id:     'orthodox-dumpshock-uses-ic-table',
     suite:  'tables',
     ...ACTOR, method: 'orthoDumpShock',

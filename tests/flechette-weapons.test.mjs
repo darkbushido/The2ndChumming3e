@@ -59,6 +59,22 @@ export async function run(t) {
   t.ok('…while armoured targets still get the p.116 armour rule', /flechetteArmor\(\{ ballistic, impact \}\)/.test(actor));
   t.ok('`flechette-coded` is not a registered ammunition type (it would appear in every ammo picker)', !('flechette-coded' in SR3E.ammoTypes));
 
+  // TODO 161 — "Dermal armor negates the Damage Level increase of flechette ammunition" (p.116). An (f) code
+  // has the increase built in, so dermal armour drops it one level. Ruled by the maintainer, 2026-09-28:
+  // dermal armour only — worn armour alone leaves an (f) code as it is.
+  const { SR3EActor } = await import('../scripts/documents/SR3EActor.js');
+  t.is('dermal armour drops an (f) code one level', SR3EActor.flechetteCodedDrop({ dermalArmor: 1 }), 1);
+  t.is('…one level however many sources', SR3EActor.flechetteCodedDrop({ dermalArmor: 2 }), 1);
+  t.is('no dermal armour: no drop', SR3EActor.flechetteCodedDrop({ dermalArmor: 0 }), 0);
+  t.is('no argument: no drop', SR3EActor.flechetteCodedDrop(), 0);
+  const fl = actor.slice(actor.indexOf("ammoRules.armorEffect === 'flechette') {"), actor.indexOf('Elemental Manipulation · SR3 p.196'));
+  t.ok('the soak card drops the level (and the net base) for an (f) code against dermal armour',
+    /ammoRules\.levelBaked && SR3EActor\.flechetteCodedDrop\(\{ dermalArmor: dermal\.length \}\)/.test(fl)
+    && /effStagedLevel = STAGES\[Math\.max\(0, li - 1\)\]/.test(fl) && /netBaseLevel = STAGES\[Math\.max\(0, bi - 1\)\]/.test(fl));
+  t.ok('…says so on the unarmoured card and the armoured one',
+    /already in the Damage Code \(p\.116\)' \+ dermalNote/.test(fl) && /Ballistic \$\{ballistic\}, p\.116\)` \+ dermalNote/.test(fl));
+  t.ok('…and no longer leaves it to the GM', !/whether it takes that level back is the GM's call/.test(actor));
+
   // The sheet and data model.
   const models = read('scripts/data/ItemDataModels.js');
   t.is('firearm, projectile, thrown and ammunition (AP mini-grenades, TODO 163) carry the checkbox', (models.match(/flechette:\s+new BooleanField/g) ?? []).length, 4);
