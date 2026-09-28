@@ -15079,7 +15079,8 @@
       ],
       "hash": "070abc4ab2",
       "text": "Full rules and how to do it in the system: [Decking (Matrix Defragged)](../decking-defragged/),\nthis table's ruleset, or [Decking (SR3 core)](../decking/) for the Orthodox rules.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "navigation: links to the decking pages; states no rule"
     },
     {
       "id": "rules/combat.md#151",
@@ -15415,7 +15416,8 @@
       ],
       "hash": "5011e1a96e",
       "text": "Full rules: [Rigging](../rigging/).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "navigation: links to the rigging page; states no rule"
     },
     {
       "id": "rules/decking-defragged.md#1",
@@ -25640,7 +25642,8 @@
       ],
       "hash": "8a05b13f11",
       "text": "# Rigging: rules and how to do it in the system\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title"
     },
     {
       "id": "rules/rigging.md#2",
@@ -25651,7 +25654,8 @@
       ],
       "hash": "82952b500d",
       "text": "Vehicles, drones, jacking in and vehicle combat — the rules from the core\nbook, and how a player actually runs them at this table.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page introduction; states no rule"
     },
     {
       "id": "rules/rigging.md#3",
@@ -25662,7 +25666,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table of contents"
     },
     {
       "id": "rules/rigging.md#4",
@@ -25673,7 +25678,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/rigging.md#5",
@@ -25684,7 +25690,8 @@
       ],
       "hash": "8bba8c1ab9",
       "text": "## Part 1: the rules",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/rigging.md#6",
@@ -25695,7 +25702,22 @@
       ],
       "hash": "e12872d4d7",
       "text": "### Vehicle Attributes  *(SR3 p.130–133)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 132,
+          "printedPage": 130,
+          "quote": "The basic vehicle Attributes are Handling, Speed,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1163,
+          "snippet": "infoRow('Handling (base TN)', handling)"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#7",
@@ -25706,7 +25728,8 @@
       ],
       "hash": "cf44d4d8f8",
       "text": "Vehicles have their own Attribute Ratings, the way characters have\nAttributes. The ones that come up at the table:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "introduces the vehicle attributes; states no rule"
     },
     {
       "id": "rules/rigging.md#8",
@@ -25717,7 +25740,28 @@
       ],
       "hash": "62c329d752",
       "text": "- **Handling** — how easy the vehicle is to control. Confusingly, a\n  *higher* Handling is *worse*: it's the base target number for Driving\n  Tests.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 132,
+          "printedPage": 130,
+          "quote": "higher the rating, the more difficult a vehicle is to control"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 132,
+          "printedPage": 130,
+          "quote": "The Handling Rating functions as the base target number for"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1163,
+          "snippet": "infoRow('Handling (base TN)', handling)"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#9",
@@ -25728,7 +25772,29 @@
       ],
       "hash": "abdb0a6398",
       "text": "- **Speed** and **Acceleration** — top safe speed (meters per Combat Turn)\n  and how fast that speed can change on a successful Driving Test. Pushing\n  past 1.5× Speed, or braking too hard, gets punished elsewhere in these\n  rules.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Acceleration × successes and the 1.5× cap are the chase tool's (Accel/Brake); the code evidence is the speed feeding the Maneuver Score.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 134,
+          "printedPage": 132,
+          "quote": "Vehicles may exceed their Speed Ratings by up to 1.5 times the"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 134,
+          "printedPage": 132,
+          "quote": "increases the vehicle's Speed by its Acceleration Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 260,
+          "snippet": "const speedScore   = Math.floor(p.speed / 10);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#10",
@@ -25739,7 +25805,28 @@
       ],
       "hash": "cc96df6f24",
       "text": "- **Body** and **Armor** — how much punishment the vehicle takes before it\n  won't take any more, and how much of an incoming hit's Power gets\n  stopped outright or reduced. Vehicle armor is hardened: it blocks a hit\n  completely if that hit's Power (after the mass reduction below) doesn't\n  clear the rating.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 134,
+          "printedPage": 132,
+          "quote": "Vehicle armor is hardened armor, meaning that it can"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 134,
+          "printedPage": 132,
+          "quote": "deflect all damage from weapons with a Power (modified by"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8834,
+          "snippet": "if (this.type === 'vehicle' && stagedPower <= defaultArmor) {"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#11",
@@ -25750,7 +25837,23 @@
       ],
       "hash": "0cb07be83f",
       "text": "- **Signature** — the target number sensors and missiles need to lock the\n  vehicle; ordinary gunfire aimed by eye ignores it.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Signature is the Relocating (sensor) test's target in the chase tool; ordinary gunfire uses the standard ranged rules, as the book says for target designators.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "number for sensor and missile to-hit tests made against the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1746,
+          "snippet": "const sensorOf = (pid) => {"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#12",
@@ -25761,7 +25864,28 @@
       ],
       "hash": "1d8d7bfc95",
       "text": "- **Autonav** — the onboard autopilot's rating. It helps outside combat and\n  gets in the way during it (see the vehicle-combat actions below).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "extra dice a character can add to Driving Tests made while"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "impedes the controlling character's ability to perform combat"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1162,
+          "snippet": "infoRow('Autonav', `${autonav} (added out of combat)`)"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#13",
@@ -25772,7 +25896,22 @@
       ],
       "hash": "560fcdfcce",
       "text": "- **Pilot** — a drone's own decision-making rating, used in place of a\n  skill when nobody is driving it.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "Pilot Rating for the rigger's relevant skill for any required test"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 757,
+          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#14",
@@ -25783,7 +25922,28 @@
       ],
       "hash": "2edb6df0b7",
       "text": "- **Sensor** — the vehicle's Perception dice, and a small boost to Gunnery.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "Sensor Rating determines the base number of dice used for the"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "add dice to Gunnery Tests for attacks with certain types of"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4281,
+          "snippet": "static sensorGunneryDice(sensor) {"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#15",
@@ -25794,7 +25954,8 @@
       ],
       "hash": "298809f648",
       "text": "- A handful of others (Cargo Factor, Load, Seating, Entry Points) are\n  bookkeeping rather than dice.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "names the remaining vehicle attributes as bookkeeping; states no test rule"
     },
     {
       "id": "rules/rigging.md#16",
@@ -25805,7 +25966,33 @@
       ],
       "hash": "1dfa21b3a9",
       "text": "### Riggers, jacking in, and Control Pool  *(SR3 p.44, p.130, p.140, p.301)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 303,
+          "printedPage": 301,
+          "quote": "adds +2 to the user's Reaction and +1D6 Initiative dice while"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 142,
+          "printedPage": 140,
+          "quote": "Bonuses for boosted and wired reflexes,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 29,
+          "snippet": "return whole(reactionBase) + 2 * whole(vcrLevel);"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 34,
+          "snippet": "return 1 + whole(vcrLevel);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#17",
@@ -25816,7 +26003,23 @@
       ],
       "hash": "cae2f4cbf2",
       "text": "A **rigger** carries a **Vehicle Control Rig (VCR)**, cyberware that lets\nthem drive a suitably wired vehicle through a neural link instead of a\nwheel or yoke. Jacked in this way, a rigger gets several things an\nordinary driver doesn't:",
-      "verdict": null
+      "verdict": "match",
+      "note": "Introductory; the specifics are in the next units.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 303,
+          "printedPage": 301,
+          "quote": "adds +2 to the user's Reaction and +1D6 Initiative dice while"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 29,
+          "snippet": "return whole(reactionBase) + 2 * whole(vcrLevel);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#18",
@@ -25827,7 +26030,33 @@
       ],
       "hash": "b5f6809812",
       "text": "- **A better Initiative.** Each VCR level is worth **+2 Reaction and one\n  extra Initiative die** while rigging *(SR3 p.301)*. This is a\n  replacement, not a stack: wired reflexes, boosted reflexes, and magical\n  or adept increases to Reaction or Initiative **do not apply** for a\n  rigger determining Initiative this way *(SR3 p.140)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 303,
+          "printedPage": 301,
+          "quote": "adds +2 to the user's Reaction and +1D6 Initiative dice while"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 142,
+          "printedPage": 140,
+          "quote": "Bonuses for boosted and wired reflexes,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 29,
+          "snippet": "return whole(reactionBase) + 2 * whole(vcrLevel);"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 34,
+          "snippet": "return 1 + whole(vcrLevel);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#19",
@@ -25838,7 +26067,33 @@
       ],
       "hash": "b1fc066aba",
       "text": "- **A Control Pool.** This works like Combat Pool or Spell Pool but is\n  spent only on tests to control the rigged vehicle: driving, dodging\n  incoming fire, and resisting collision damage. Its size is simply the\n  rigger's own Reaction plus twice their VCR level — nothing else adds to\n  it — and any single test can only draw as many Control Pool dice as it\n  has base skill dice *(SR3 p.44)*. **No VCR means no Control Pool at\n  all**, even for a rigger driving a vehicle they aren't currently jacked\n  into.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 46,
+          "printedPage": 44,
+          "quote": "A rigger's Control Pool is equal to the character's Reaction,"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 46,
+          "printedPage": 44,
+          "quote": "modified only by his or her vehicle control rig (VCR) cyberware."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 39,
+          "snippet": "return whole(vcrLevel) > 0 ? Rigging.vcrReaction(reactionBase, vcrLevel) : 0;"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 44,
+          "snippet": "return Math.min(whole(available), whole(skillDice));"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#20",
@@ -25849,7 +26104,22 @@
       ],
       "hash": "986e906a5f",
       "text": "- **An easier default.** A VCR lets its user default to Reaction for any\n  Vehicle Skill test at only **+2** to the target number, instead of the\n  usual +4 for defaulting to an unrelated attribute *(SR3 p.301)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The guide itself says this is not modelled (TODO 106).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 303,
+          "printedPage": 301,
+          "quote": "to default to Reaction for any Vehicle Skill at a +2 modifier, as"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "vcrDefault|defaultVCR|VCR.{0,40}\\+2 modifier",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#21",
@@ -25860,7 +26130,22 @@
       ],
       "hash": "63dfe44dd6",
       "text": "- Riggers can alternatively jack into a **remote control deck** to run\n  drones from a distance instead of riding in them. Left with no driver at\n  all, a drone falls back on its own **Pilot Rating** in place of a skill.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 132,
+          "printedPage": 130,
+          "quote": "Riggers can also jack into remote control decks, which allow them to command multiple"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 757,
+          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#22",
@@ -25871,7 +26156,33 @@
       ],
       "hash": "304d0537c7",
       "text": "### The Driving Test  *(SR3 p.134)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "The base target number for the test is the vehicle's Handling"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "the vehicle's Autonav Rating (assuming the autonav is turned"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1163,
+          "snippet": "infoRow('Handling (base TN)', handling)"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1119,
+          "snippet": "<option value=\"${-vcrRating}\">Using VCR"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#23",
@@ -25882,7 +26193,33 @@
       ],
       "hash": "4b6292d1a1",
       "text": "Ordinary vehicle handling — a difficult maneuver, not vehicle combat — is a\n**Complex Action**: the appropriate Vehicle Skill against a base target\nnumber equal to the vehicle's Handling. An active autonav adds dice equal\nto its own rating outside combat; a jacked-in rigger can add Control Pool\ndice (up to their skill rating) instead of the autonav bonus, on top of\nreducing the target number by their VCR level.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "The base target number for the test is the vehicle's Handling"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "the vehicle's Autonav Rating (assuming the autonav is turned"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1163,
+          "snippet": "infoRow('Handling (base TN)', handling)"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1119,
+          "snippet": "<option value=\"${-vcrRating}\">Using VCR"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#24",
@@ -25893,7 +26230,22 @@
       ],
       "hash": "c8e7ede036",
       "text": "#### Driving Test Modifiers Table  *(SR3 p.134)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "Modifiers Table to determine the final target number."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1179,
+          "snippet": "<option value=\"1\">Yes (+1 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#25",
@@ -25904,7 +26256,8 @@
       ],
       "hash": "1c6c1318d4",
       "text": "| Condition | Target number modifier |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/rigging.md#26",
@@ -25915,7 +26268,22 @@
       ],
       "hash": "91dad3708a",
       "text": "| Unfamiliar vehicle | +1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "Unfamiliar vehicle: If a character is operating a type of"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1179,
+          "snippet": "<option value=\"1\">Yes (+1 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#27",
@@ -25926,7 +26294,22 @@
       ],
       "hash": "7eca1f2bfd",
       "text": "| Non-stressful situation | −1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "DRIVING TEST MODIFIERS TABLE"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1184,
+          "snippet": "<option value=\"-1\">Relaxed (−1 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#28",
@@ -25937,7 +26320,23 @@
       ],
       "hash": "f3ca3227be",
       "text": "| Stressful situation | GM discretion |",
-      "verdict": null
+      "verdict": "match",
+      "note": "The book says usually +1 to +3; the dialog offers +1 to +5, the GM choosing.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "gamemaster decides how large a modifier to apply, usually"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1186,
+          "snippet": "<option value=\"1\">Stressed (+1 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#29",
@@ -25948,7 +26347,22 @@
       ],
       "hash": "ac5a527fc4",
       "text": "| Large vehicle of type | +2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "the large vehicle modifier would apply if a character"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1196,
+          "snippet": "<option value=\"2\">Large (+2 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#30",
@@ -25959,7 +26373,22 @@
       ],
       "hash": "c9f8fee449",
       "text": "| Very large vehicle of type | +3 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "vehicle modifier would apply. The gamemaster determines"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1197,
+          "snippet": "<option value=\"3\">Very Large (+3 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#31",
@@ -25970,7 +26399,22 @@
       ],
       "hash": "62b09f3fdc",
       "text": "| Weather: bad | +2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "Weather conditions: Rain, snow, heavy winds and other"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1203,
+          "snippet": "<option value=\"2\">Bad (+2 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#32",
@@ -25981,7 +26425,22 @@
       ],
       "hash": "e4691e3401",
       "text": "| Weather: terrible | +4 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "canes, blizzards, thunderstorms (for aircraft) and other severe"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1204,
+          "snippet": "<option value=\"4\">Terrible (+4 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#33",
@@ -25992,7 +26451,22 @@
       ],
       "hash": "2fe755c527",
       "text": "| Terrain: open | −1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "Open terrain for aircraft is"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1209,
+          "snippet": "<option value=\"-1\">Open (−1 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#34",
@@ -26003,7 +26477,22 @@
       ],
       "hash": "d8a7db7f37",
       "text": "| Terrain: normal | 0 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "refers to typical countryside"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1210,
+          "snippet": "<option value=\"0\" selected>Normal (0)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#35",
@@ -26014,7 +26503,22 @@
       ],
       "hash": "9cca0c9ac3",
       "text": "| Terrain: restricted | +1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "Restricted terrain refers"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1211,
+          "snippet": "<option value=\"1\">Restricted (+1 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#36",
@@ -26025,7 +26529,22 @@
       ],
       "hash": "e7067c4e1b",
       "text": "| Terrain: tight | +3 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "rain refers to urban mazes, badlands and dense woods"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1212,
+          "snippet": "<option value=\"3\">Tight (+3 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#37",
@@ -26036,7 +26555,22 @@
       ],
       "hash": "0534969b8a",
       "text": "| Action performed during combat | +2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "Actions performed during combat: This modifier applies"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1218,
+          "snippet": "<option value=\"2\">Yes (+2 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#38",
@@ -26047,7 +26581,22 @@
       ],
       "hash": "0ee168506c",
       "text": "| Non-rigger driving using a datajack | −1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "Non-rigger driving using a datajack: This modifier"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1111,
+          "snippet": "<option value=\"-1\">Yes (−1 TN)</option>"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#39",
@@ -26058,7 +26607,22 @@
       ],
       "hash": "acc04e04df",
       "text": "| Rigger in control | −VCR Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "Rigger in control: This modifier applies if the driving char-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1119,
+          "snippet": "<option value=\"${-vcrRating}\">Using VCR"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#40",
@@ -26069,7 +26633,22 @@
       ],
       "hash": "4de7bc8036",
       "text": "### Driving without rigging  *(SR3 p.130, p.134)*\n{: #driving-without-rigging }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 46,
+          "printedPage": 44,
+          "quote": "Vehicle Control Rig (see p. 301) can use a Control Pool"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 39,
+          "snippet": "return whole(vcrLevel) > 0 ? Rigging.vcrReaction(reactionBase, vcrLevel) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#41",
@@ -26080,7 +26659,8 @@
       ],
       "hash": "7c514e30f7",
       "text": "Most drivers at the table aren't riggers at all — a street samurai taking\nthe wheel, a face on a motorcycle. Nothing above changes for them except\nthat the rigger-only pieces simply don't apply:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "introduces the non-rigger case; states no rule of its own"
     },
     {
       "id": "rules/rigging.md#42",
@@ -26091,7 +26671,22 @@
       ],
       "hash": "7623689213",
       "text": "- They still make an ordinary Driving Test — Vehicle Skill against the\n  vehicle's Handling — and still get an active autonav's dice outside\n  combat. They never have a **Control Pool** to add on top, because that\n  pool only exists for someone jacked into a VCR.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 46,
+          "printedPage": 44,
+          "quote": "Vehicle Control Rig (see p. 301) can use a Control Pool"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 39,
+          "snippet": "return whole(vcrLevel) > 0 ? Rigging.vcrReaction(reactionBase, vcrLevel) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#43",
@@ -26102,7 +26697,23 @@
       ],
       "hash": "075fdcd9be",
       "text": "- With no Vehicle Skill at all, they use the **same Default Table**\n  everyone else defaults from: typically falling back on Reaction at the\n  ordinary **+4** target-number penalty for defaulting to an unrelated\n  attribute. The VCR's +2 discount above is specific to a rigger with that\n  cyberware and doesn't extend to anyone else.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Everyone defaults through the same Default Table; the VCR discount is not modelled (see #20).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 303,
+          "printedPage": 301,
+          "quote": "to default to Reaction for any Vehicle Skill at a +2 modifier, as opposed to the usual +4"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 39,
+          "snippet": "return whole(vcrLevel) > 0 ? Rigging.vcrReaction(reactionBase, vcrLevel) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#44",
@@ -26113,7 +26724,28 @@
       ],
       "hash": "a2a43a10cb",
       "text": "- Driving through a **datajack without a VCR** — or a VCR-equipped rigger\n  driving a vehicle that isn't itself wired for rigger control — gets a\n  small **−1** break on the target number (the datajack row on the table\n  above), but still earns no Control Pool.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The datajack −1 row is offered only to a driver with no VCR (SR3EVehicleSheet.js:1107); a vehicle's adaptation for rigger control is not modelled, so a VCR rigger in an unadapted vehicle cannot take it (TODO 176 remainder, p.134).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "have a vehicle control rig. The modifier also applies if a rigger"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 136,
+          "printedPage": 134,
+          "quote": "is driving a vehicle not adapted for rigger control. If a vehicle"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "riggerAdapted|adaptedForRigger|rigger-adapted|adapted for rigger",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#45",
@@ -26124,7 +26756,22 @@
       ],
       "hash": "7717e46e80",
       "text": "- Their **Initiative** is rolled the ordinary way for their character, with\n  none of a rigger's VCR bonus, whether or not they happen to be driving\n  that turn.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 142,
+          "printedPage": 140,
+          "quote": "es from a vehicle control rig apply only"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 34,
+          "snippet": "return 1 + whole(vcrLevel);"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#46",
@@ -26135,7 +26782,22 @@
       ],
       "hash": "99a45ab69a",
       "text": "- **Crash Tests, ramming, and the driver/passenger collision-damage rules**\n  below apply to them exactly the same as to a rigger. The only things\n  rigging adds there are Control Pool dice to soften the hit and the\n  separate p.145 rigger-feedback damage — neither of which touches someone\n  driving by hand.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 147,
+          "printedPage": 145,
+          "quote": "When a vehicle takes Serious damage, the controlling rigger must"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 67,
+          "snippet": "return { power: 6, level, isStun: false, resistAttr: 'willpower', noPools: true, page: FEEDBACK_PAGE };"
+        }
+      ]
     },
     {
       "id": "rules/rigging.md#47",
@@ -27660,7 +28322,8 @@
       ],
       "hash": "07cee66933",
       "text": "| **MDF** | *The Matrix Defragged v2* (fan-made replacement for the core Matrix chapter) |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "source abbreviation list entry (MDF); states no rule"
     },
     {
       "id": "sources.md#9",
