@@ -17837,7 +17837,8 @@
       ],
       "hash": "7f44d6f75f",
       "text": "# Decking (SR3 core)\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title"
     },
     {
       "id": "rules/decking.md#2",
@@ -17848,7 +17849,23 @@
       ],
       "hash": "8f8b577b58",
       "text": "This page covers the **core rulebook's own Matrix chapter** (SR3 p.199–232), plus the hot/cold\nASIST rules from the *Matrix* sourcebook. This system calls this ruleset **\"Orthodox SR3 Matrix\"**\nto distinguish it from **Matrix Defragged**, a fan-made simplified ruleset this table can run\ninstead — see [Decking (Matrix Defragged)](../decking-defragged/) if that's what your GM chose.\nThe two rulesets are mechanically incompatible; this page only covers Orthodox.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Introduction; names the core rulebook's Matrix chapter and the Matrix sourcebook.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 208,
+          "printedPage": 206,
+          "quote": "The MPCP Rating is the central value for cyberdecks. The"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2236,
+          "snippet": "const personaMax    = mccp * 3;"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#3",
@@ -17859,7 +17876,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table of contents"
     },
     {
       "id": "rules/decking.md#4",
@@ -17870,7 +17888,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking.md#5",
@@ -17881,7 +17900,8 @@
       ],
       "hash": "11916d3129",
       "text": "## The pieces",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking.md#6",
@@ -17892,7 +17912,29 @@
       ],
       "hash": "c429b45085",
       "text": "A decker's **cyberdeck** defines everything about their persona in the Matrix. Its central\nnumber is the **MPCP Rating** — think of it as the deck's overall processing muscle. Three times\nthe MPCP Rating is the total the decker can spread across four **persona programs**: **Bod**,\n**Evasion**, **Masking**, and **Sensor**, none of which can individually exceed the MPCP itself.\nThese four act as the persona's \"attributes\" whenever something in the Matrix tests against the\ndecker directly. *(SR3 p.206)*",
-      "verdict": null
+      "verdict": "match",
+      "note": "The sheet warns when the persona total exceeds MPCP × 3; it does not flag a single program above MPCP (see #112).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 208,
+          "printedPage": 206,
+          "quote": "MPCP Rating multiplied by 3 equals the maximum total of the"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 208,
+          "printedPage": 206,
+          "quote": "exceed the MPCP Rating, and the maximum value for utility"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2236,
+          "snippet": "const personaMax    = mccp * 3;"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#7",
@@ -17903,7 +17945,22 @@
       ],
       "hash": "7698ed3c90",
       "text": "A deck also carries **Hardening**, which blunts damage from the nastiest IC; **Active** and\n**Storage Memory**, which limit how many utility programs can run at once versus just be carried;\nan **I/O Speed** for moving data; and **Response Increase**, the Matrix's answer to wired\nreflexes — each point adds to Reaction and to Matrix Initiative, capped at 3 points and by the\ndeck's own MPCP. *(SR3 p.206–207)*",
-      "verdict": null
+      "verdict": "guide-differs",
+      "note": "The book caps Response Increase at 3 and at MPCP ÷ 4 (round down); a deck of MPCP 3 or less gets none. The guide says \"capped at 3 points and by the deck's own MPCP\", which reads as MPCP itself. The code uses MPCP ÷ 4 (SR3EActorSheet.js:2237), as the book does.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "MPCP Rating divided by 4, rounding fractions down (so a"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "A deck can support only 3 points of Response Increase."
+        }
+      ]
     },
     {
       "id": "rules/decking.md#8",
@@ -17914,7 +17971,22 @@
       ],
       "hash": "15343af98c",
       "text": "Most ordinary Matrix users aren't running a full cyberdeck at all — they're on a **cyberterminal**\n(\"tortoise\" in decker slang), a cheaper, weaker rig capped at a low MPCP. The upside: tortoise\nusers can't be hurt by black IC or Dumpshock. *(SR3 p.207–208)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The Orthodox ruleset has no cyberterminal mode; the dump shock and IC cards do not exempt a tortoise user.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 210,
+          "printedPage": 208,
+          "quote": "positive side, tortoise users cannot be hurt by black IC or dump"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "orthodox.{0,40}(tortoise|cyberterminal)|cyberterminal.{0,40}dump ?shock",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#9",
@@ -17925,7 +17997,22 @@
       ],
       "hash": "f5ff161ce4",
       "text": "### Hacking Pool *(SR3 p.207)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Hacking Pool, add the decker's Intelligence Rating and her"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2227,
+          "snippet": "const hackingPool    = mccp > 0 ? Math.floor((intl + mccp) / 3) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#10",
@@ -17936,7 +18023,28 @@
       ],
       "hash": "fbabbf6f2e",
       "text": "**Hacking Pool = ⌊(Intelligence + deck MPCP) ÷ 3⌋.** It works like any other dice pool and can\nhelp almost any Matrix test — logons, attacks, defenses, maneuvers — but it can't be spent\nresisting damage from gray or black IC; only Karma Pool or the decker's own enhancements help\nthere.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "deck's MPCP Rating, divide the total by 3 and round down."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Hacking Pool dice cannot be used in Body or Willpower"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2227,
+          "snippet": "const hackingPool    = mccp > 0 ? Math.floor((intl + mccp) / 3) : 0;"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#11",
@@ -17947,7 +18055,22 @@
       ],
       "hash": "9e2d456456",
       "text": "### Matrix Initiative *(SR3 p.209, p.223)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 225,
+          "printedPage": 223,
+          "quote": "on the Reaction Attribute of the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 10549,
+          "snippet": "base = reactionBase + wm + (resp * 2);"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#12",
@@ -17958,7 +18081,28 @@
       ],
       "hash": "10d1cb5c4f",
       "text": "Outside combat, a decker's number of actions per turn comes from their Reaction divided by 10\n(rounded up), plus one extra action per bonus Initiative die from Response Increase. In\ncybercombat, it works like ordinary SR3 Initiative: base Reaction plus 1D6, with each point of\nResponse Increase adding +2 Reaction and another die. Reflex boosts that only affect the physical\nbody — wired reflexes, magic, vehicle rigs — don't carry over into the Matrix. Staying in live\nvoice or text contact with the outside world while decking costs a die of Initiative.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Cybercombat Initiative is implemented (base Reaction + 2 per Response Increase, 1 + Response dice, physical boosts excluded: SR3EActor.js:10549). The non-combat action count (Reaction ÷ 10, round up) and the −1D6 for talking to the physical world are not.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 211,
+          "printedPage": 209,
+          "quote": "Initiative. Instead, divide the decker's Reaction Attribute (aug-"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 225,
+          "printedPage": 223,
+          "quote": "enhancements that increase the Reaction Attribute of a deck-"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "nonCombatActions|actionsPerTurn|Reaction.{0,30}/ ?10",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#13",
@@ -17969,7 +18113,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking.md#14",
@@ -17980,7 +18125,8 @@
       ],
       "hash": "2d302284cd",
       "text": "## Hosts, grids, and getting in",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking.md#15",
@@ -17991,7 +18137,22 @@
       ],
       "hash": "5c7f6690cc",
       "text": "Every host or grid carries an overall **Security Rating** — a colour code plus a number — and\nfive **subsystem ratings**: **Access**, **Control**, **Index**, **Files**, and **Slave**. Each\nsubsystem is the TN for a specific kind of illegitimate action against it: getting in at all uses\nAccess, kicking a user off or reprogramming something uses Control, searching for data uses\nIndex, reading or writing files uses Files, and operating a connected physical device (a camera, a\nmaglock) uses Slave. *(SR3 p.205–206)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 207,
+          "printedPage": 205,
+          "quote": "Rating and five subsystem ratings--Access, Control, Index,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12149,
+          "snippet": "['access',  'Access',  subs.access  ?? 0],"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#16",
@@ -18002,7 +18163,28 @@
       ],
       "hash": "2c98db6365",
       "text": "The colour code — **Blue** (barely any security), **Green** (average), **Orange** (a system worth\nprotecting), or **Red** (the kind that shoots first) — gives a rough sense of what to expect\nbefore a decker even rolls anything, and unofficially there's a level above Red that deckers call\n\"Ultra-Violet.\" *(SR3 p.205)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 207,
+          "printedPage": 205,
+          "quote": "The four security codes are Blue (little or no security), Green"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 207,
+          "printedPage": 205,
+          "quote": "slang calls these Ultra-Violet, UV, or black systems."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 442,
+          "snippet": "orthodoxSecurityCode:  new StringField({ initial: 'Green' }), // Blue/Green/Orange/Red/Black"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#17",
@@ -18013,7 +18195,22 @@
       ],
       "hash": "914b88ffc9",
       "text": "A **System Test** is always a Success Contest: the decker's Computer skill (plus any Hacking Pool\ncommitted) against the relevant subsystem rating, opposed by the host's own Security Value rolled\nagainst the decker's **Detection Factor** — the average of their Masking Rating and any Sleaze\nutility they're running (or half their Masking if they aren't). Whoever nets more successes wins;\na tie favours the host. *(SR3 p.207, p.209–210)*",
-      "verdict": null
+      "verdict": "guide-differs",
+      "note": "SR3 p.210: the decker wins on MORE OR EQUAL successes — a tie goes to the decker. The guide says a tie favours the host. The code has the book's rule (SR3EActor.js:12286, dHits >= hHits). The rest (Computer vs subsystem, Security Value vs Detection Factor, Detection Factor the average of Masking and Sleaze, half Masking without Sleaze) matches.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 212,
+          "printedPage": 210,
+          "quote": "If the decker achieves more or an equal amount of suc-"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 212,
+          "printedPage": 210,
+          "quote": "the decker's Detection Factor."
+        }
+      ]
     },
     {
       "id": "rules/decking.md#18",
@@ -18024,7 +18221,23 @@
       ],
       "hash": "76e255f5a0",
       "text": "Getting from grid to host works through **System Access Nodes**, and hosts can be arranged in\ndifferent topologies — a simple open connection straight off a public grid, tiered behind a\ngatekeeper host, linked host-to-host, or tucked away on a private corporate grid entirely — which\nmostly changes what a decker has to fight through to reach the target. *(SR3 p.203–204)*",
-      "verdict": null
+      "verdict": "match",
+      "note": "Grid topology is description; the system logs a decker on to a host actor directly.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 206,
+          "printedPage": 204,
+          "quote": "In the Tiered Access Diagram, only Host A is connected"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12149,
+          "snippet": "['access',  'Access',  subs.access  ?? 0],"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#19",
@@ -18035,7 +18248,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking.md#20",
@@ -18046,7 +18260,22 @@
       ],
       "hash": "2ece5137dc",
       "text": "## Security tally, alerts, and the Security Sheaf *(SR3 p.210–211)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 213,
+          "printedPage": 211,
+          "quote": "A system's security sheaf lists the system's trigger steps"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12291,
+          "snippet": "await deckerActor.update({ 'system.orthodoxRunState.securityTally': curTally + hHits });"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#21",
@@ -18057,7 +18286,29 @@
       ],
       "hash": "724051d1e3",
       "text": "Every success the host scores against a decker — win or lose the contest — adds to that decker's\nrunning **security tally** on that system, for as long as they stay logged on. A **security\nsheaf** is the GM's plan for what that tally triggers: a list of thresholds (\"trigger steps\"),\neach one arming some mix of IC and raising the system's **alert status**.",
-      "verdict": null
+      "verdict": "match",
+      "note": "The tally is kept (every host success added); the sheaf's trigger steps are the GM's — not automated (TODO 128).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 212,
+          "printedPage": 210,
+          "quote": "Regardless of the test outcome, the gamemaster records"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 213,
+          "printedPage": 211,
+          "quote": "A system's security sheaf lists the system's trigger steps"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12291,
+          "snippet": "await deckerActor.update({ 'system.orthodoxRunState.securityTally': curTally + hHits });"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#22",
@@ -18068,7 +18319,29 @@
       ],
       "hash": "e2323f5512",
       "text": "Systems start with **no alert**. Enough tally reaches a **passive alert**, which typically starts\nthrowing proactive IC at the decker and adds **+2 to every subsystem rating**; enough more reaches\nan **active alert**, tightening things further. How dense the trigger steps are, and how much\ntally each one takes, is entirely the GM's call — a high-security system stacks its triggers close\ntogether, a relaxed one spreads them out.",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "The book raises every subsystem by 2 when the system goes on passive alert and says nothing of removing it at active alert. The System Test adds the +2 only while the alert is exactly \"passive\" — at active alert it drops back to +0. The guide agrees with the book.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 213,
+          "printedPage": 211,
+          "quote": "When a system goes on passive alert status, increase all"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 213,
+          "printedPage": 211,
+          "quote": "In a typical security sheaf, the third or fourth trigger step"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12146,
+          "snippet": "const alertMod   = alertLevel === 'passive' ? 2 : 0;"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#23",
@@ -18079,7 +18352,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking.md#24",
@@ -18090,7 +18364,22 @@
       ],
       "hash": "131e2df49a",
       "text": "## System operations *(SR3 p.214–219)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 216,
+          "printedPage": 214,
+          "quote": "gories: interrogations, ongoing operations, and monitored"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12149,
+          "snippet": "['access',  'Access',  subs.access  ?? 0],"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#25",
@@ -18101,7 +18390,27 @@
       ],
       "hash": "529c04b6d3",
       "text": "Deckers act on a host through **system operations** — named commands with their own test,\nutility, and action type. Every one of them is really the same System Test underneath (Computer\nskill against a subsystem, opposed by the host's Security Value against your Detection Factor);\nthe operation just tells you which subsystem to use and how big an action it costs.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 212,
+          "printedPage": 210,
+          "quote": "System Tests are always resolved as a Success Contest"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12149,
+          "snippet": "['access',  'Access',  subs.access  ?? 0],"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12286,
+          "snippet": "const won   = dHits >= hHits;"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#26",
@@ -18112,7 +18421,8 @@
       ],
       "hash": "e84bbb858c",
       "text": "| Operation | Subsystem tested | Helpful utility | Action |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking.md#27",
@@ -18123,7 +18433,22 @@
       ],
       "hash": "40442398a6",
       "text": "| Analyze Host | Control | Analyze | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 217,
+          "printedPage": 215,
+          "quote": "Analyze Host Test: Control Utility: Analyze Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#28",
@@ -18134,7 +18459,22 @@
       ],
       "hash": "cbb3a430d0",
       "text": "| Analyze IC | Control | Analyze | Free |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 217,
+          "printedPage": 215,
+          "quote": "Analyze IC Test: Control Utility: Analyze Action: Free"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#29",
@@ -18145,7 +18485,22 @@
       ],
       "hash": "f67cca640d",
       "text": "| Analyze Icon | Control | Analyze | Free |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 217,
+          "printedPage": 215,
+          "quote": "Analyze Icon Test: Control Utility: Analyze Action: Free"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#30",
@@ -18156,7 +18511,22 @@
       ],
       "hash": "ffe8ae16eb",
       "text": "| Analyze Security | Control | Analyze | Simple |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 217,
+          "printedPage": 215,
+          "quote": "Analyze Security Test: Control Utility: Analyze Action: Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#31",
@@ -18167,7 +18537,22 @@
       ],
       "hash": "132236e363",
       "text": "| Analyze Subsystem | Targeted subsystem | Analyze | Simple |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 217,
+          "printedPage": 215,
+          "quote": "Analyze Subsystem Test: Targeted Subsystem Utility: Analyze Action: Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#32",
@@ -18178,7 +18563,22 @@
       ],
       "hash": "b63bc5a9c3",
       "text": "| Control Slave | Slave | Spoof | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 217,
+          "printedPage": 215,
+          "quote": "Control Slave Test: Slave Utility: Spoof Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#33",
@@ -18189,7 +18589,22 @@
       ],
       "hash": "764a9f7943",
       "text": "| Decrypt Access | Access | Decrypt | Simple |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 218,
+          "printedPage": 216,
+          "quote": "Decrypt Access Test: Access Utility: Decrypt Action: Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#34",
@@ -18200,7 +18615,22 @@
       ],
       "hash": "00549006a4",
       "text": "| Decrypt File | Files | Decrypt | Simple |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 218,
+          "printedPage": 216,
+          "quote": "Decrypt File Test: Files Utility: Decrypt Action: Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#35",
@@ -18211,7 +18641,22 @@
       ],
       "hash": "087ee9e484",
       "text": "| Decrypt Slave | Slave | Decrypt | Simple |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 218,
+          "printedPage": 216,
+          "quote": "Decrypt Slave Test: Slave Utility: Decrypt Action: Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#36",
@@ -18222,7 +18667,22 @@
       ],
       "hash": "09cd9681c4",
       "text": "| Download Data | Files | Read/Write | Simple |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 218,
+          "printedPage": 216,
+          "quote": "Download Data Test: Files Utility: Read/Write Action: Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#37",
@@ -18233,7 +18693,22 @@
       ],
       "hash": "b5c0a65459",
       "text": "| Edit File | Files | Read/Write | Simple |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 218,
+          "printedPage": 216,
+          "quote": "Edit File Test: Files Utility: Read/Write Action: Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#38",
@@ -18244,7 +18719,22 @@
       ],
       "hash": "76920cd91a",
       "text": "| Edit Slave | Slave | Spoof | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 218,
+          "printedPage": 216,
+          "quote": "Edit Slave Test: Slave Utilities: Spoof Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#39",
@@ -18255,7 +18745,22 @@
       ],
       "hash": "2b60f920e5",
       "text": "| Graceful Logoff | Access | Deception | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 219,
+          "printedPage": 217,
+          "quote": "Graceful Logoff Test: Access Utility: Deception Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#40",
@@ -18266,7 +18771,22 @@
       ],
       "hash": "e1ae6c04ff",
       "text": "| Locate Access Node | Index | Browse | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 219,
+          "printedPage": 217,
+          "quote": "Locate Access Node Test: Index Utility: Browse Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#41",
@@ -18277,7 +18797,22 @@
       ],
       "hash": "b56b236282",
       "text": "| Locate Decker | Index | Scanner | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 219,
+          "printedPage": 217,
+          "quote": "Locate Decker Test: Index Utility: Scanner Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#42",
@@ -18288,7 +18823,22 @@
       ],
       "hash": "7f424fae5c",
       "text": "| Locate File | Index | Browse | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 219,
+          "printedPage": 217,
+          "quote": "Locate File Test: Index Utility: Browse Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#43",
@@ -18299,7 +18849,22 @@
       ],
       "hash": "a53d287e81",
       "text": "| Locate IC | Index | Analyze | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 219,
+          "printedPage": 217,
+          "quote": "Locate IC Test: Index Utility: Analyze Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#44",
@@ -18310,7 +18875,22 @@
       ],
       "hash": "61da098520",
       "text": "| Locate Slave | Index | Browse | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 219,
+          "printedPage": 217,
+          "quote": "Locate Slave Test: Index Utility: Browse Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#45",
@@ -18321,7 +18901,22 @@
       ],
       "hash": "38a9013853",
       "text": "| Logon to Host | Access | Deception | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 219,
+          "printedPage": 217,
+          "quote": "Test: Access Utility: Deception Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#46",
@@ -18332,7 +18927,22 @@
       ],
       "hash": "e5af11364e",
       "text": "| Logon to LTG | Access | Deception | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 220,
+          "printedPage": 218,
+          "quote": "Test: Access Utility: Deception Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#47",
@@ -18343,7 +18953,22 @@
       ],
       "hash": "93e1ab3fb2",
       "text": "| Logon to RTG | Access | Deception | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 220,
+          "printedPage": 218,
+          "quote": "Test: Access Utility: Deception Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#48",
@@ -18354,7 +18979,22 @@
       ],
       "hash": "251fd091d5",
       "text": "| Make Comcall | Files | Commlink | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 220,
+          "printedPage": 218,
+          "quote": "Make Comcall Test: Files Utility: Commlink Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#49",
@@ -18365,7 +19005,22 @@
       ],
       "hash": "86540d7dfc",
       "text": "| Monitor Slave | Slave | Spoof | Simple |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 220,
+          "printedPage": 218,
+          "quote": "Monitor Slave Test: Slave Utility: Spoof Action: Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#50",
@@ -18376,7 +19031,22 @@
       ],
       "hash": "6873f8f293",
       "text": "| Null Operation | Control | Deception | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 220,
+          "printedPage": 218,
+          "quote": "Null Operation Test: Control Utility: Deception Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#51",
@@ -18387,7 +19057,22 @@
       ],
       "hash": "94823b9c72",
       "text": "| Swap Memory | — | — | Simple |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 221,
+          "printedPage": 219,
+          "quote": "Swap Memory Test: None Utility: None Action: Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#52",
@@ -18398,7 +19083,22 @@
       ],
       "hash": "ddc61c32a3",
       "text": "| Tap Comcall | (special) | Commlink | Complex |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 221,
+          "printedPage": 219,
+          "quote": "Tap Comcall Test: Special Utility: Commlink Action: Complex"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#53",
@@ -18409,7 +19109,22 @@
       ],
       "hash": "a9abf3e2b9",
       "text": "| Upload Data | Files | Read/Write | Simple |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The System Test offers the five subsystems and a free-text action name; the book's per-operation list (which subsystem, which utility, which action) is not encoded — the player picks the subsystem and adjusts the TN for the utility.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 221,
+          "printedPage": 219,
+          "quote": "Upload Data Test: Files Utility: Read/Write Action: Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#54",
@@ -18420,7 +19135,34 @@
       ],
       "hash": "c5ae2c715b",
       "text": "A few in words: **Logon to Host/LTG/RTG** get you into a host or grid and start your security\ntally there. **Locate** operations are \"interrogations\" — you can repeat them, narrowing your\nsearch each time, to track down a file, a slave device, another decker, or IC. **Download/Upload\nData** and **Swap Memory** move data or programs and take real time to finish, running in the\nbackground once started. **Control Slave**, **Edit Slave**, **Monitor Slave**, **Make Comcall**,\nand **Tap Comcall** are \"monitored\" operations — you spend a Free Action every Initiative Pass to\nkeep them going, or they abort. **Graceful Logoff** is the clean way out, avoiding Dump Shock and\nwiping your tracks; jacking out any other way risks it.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Interrogations, ongoing and monitored operations are described correctly; none is tracked by the system (see the operations note on #27).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 216,
+          "printedPage": 214,
+          "quote": "A decker may have to repeat an interrogation operation"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 217,
+          "printedPage": 215,
+          "quote": "Action to maintain the operation each Initiative Pass. If he fails"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "Matrix or jacks out without performing a"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Analyze Host|Locate Access Node|Graceful Logoff|Logon to LTG|Decrypt Slave",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#55",
@@ -18431,7 +19173,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking.md#56",
@@ -18442,7 +19185,22 @@
       ],
       "hash": "341a65e181",
       "text": "## Cybercombat *(SR3 p.222–224)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 224,
+          "printedPage": 222,
+          "quote": "Cybercombat in the Matrix follows much the same"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12084,
+          "snippet": "intruding:  { Blue: 6, Green: 5, Orange: 4, Red: 3 },"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#57",
@@ -18453,7 +19211,22 @@
       ],
       "hash": "b9ece2e8da",
       "text": "Cybercombat runs on the same bones as ordinary SR3 combat — roll Initiative, then act in order —\njust compressed into 3-second Combat Turns like everywhere else. A few Matrix-specific wrinkles:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 224,
+          "printedPage": 222,
+          "quote": "Combat Turns in the Matrix are 3 seconds long, the same"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12084,
+          "snippet": "intruding:  { Blue: 6, Green: 5, Orange: 4, Red: 3 },"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#58",
@@ -18464,7 +19237,23 @@
       ],
       "hash": "284a4c8046",
       "text": "- **An icon has to be visible or located before you can attack it.** Attacking automatically\n  makes your own icon visible unless you pull off a maneuver to hide it.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Visibility is the players' and GM's to track; the card does not check it.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 225,
+          "printedPage": 223,
+          "quote": "A decker may initiate combat with any icon that is \"visible\""
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12084,
+          "snippet": "intruding:  { Blue: 6, Green: 5, Orange: 4, Red: 3 },"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#59",
@@ -18475,7 +19264,22 @@
       ],
       "hash": "6b6f5e6beb",
       "text": "- **Attacks are Simple Actions**, rolled with an offensive utility program (plus any Hacking Pool)\n  against a target number set by whether the target is Legitimate or an Intruder and by the\n  host's security code:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "All cybercombat attacks are Simple Actions. To make an"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12084,
+          "snippet": "intruding:  { Blue: 6, Green: 5, Orange: 4, Red: 3 },"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#60",
@@ -18486,7 +19290,8 @@
       ],
       "hash": "80d61826d7",
       "text": "  | Host security code | TN to hit an Intruding icon | TN to hit a Legitimate icon |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking.md#61",
@@ -18497,7 +19302,27 @@
       ],
       "hash": "bcc90a3a97",
       "text": "  | Blue | 6 | 3 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 226,
+          "printedPage": 224,
+          "quote": "Security Code Intruding Icon Legitimate Icon Blue 6 3"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12084,
+          "snippet": "intruding:  { Blue: 6, Green: 5, Orange: 4, Red: 3 },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12085,
+          "snippet": "legitimate: { Blue: 3, Green: 4, Orange: 5, Red: 6 },"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#62",
@@ -18508,7 +19333,27 @@
       ],
       "hash": "d7cff8855c",
       "text": "  | Green | 5 | 4 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 226,
+          "printedPage": 224,
+          "quote": "Target Number to Hit Target Number to Hit Green 5 4"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12084,
+          "snippet": "intruding:  { Blue: 6, Green: 5, Orange: 4, Red: 3 },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12085,
+          "snippet": "legitimate: { Blue: 3, Green: 4, Orange: 5, Red: 6 },"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#63",
@@ -18519,7 +19364,27 @@
       ],
       "hash": "78ea9aecf2",
       "text": "  | Orange | 4 | 5 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 226,
+          "printedPage": 224,
+          "quote": "Security Code Intruding Icon Legitimate Icon Orange 4 5"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12084,
+          "snippet": "intruding:  { Blue: 6, Green: 5, Orange: 4, Red: 3 },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12085,
+          "snippet": "legitimate: { Blue: 3, Green: 4, Orange: 5, Red: 6 },"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#64",
@@ -18530,7 +19395,27 @@
       ],
       "hash": "7a39003cdd",
       "text": "  | Red | 3 | 6 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 226,
+          "printedPage": 224,
+          "quote": "Security Code Intruding Icon Legitimate Icon Red 3 6"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12084,
+          "snippet": "intruding:  { Blue: 6, Green: 5, Orange: 4, Red: 3 },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12085,
+          "snippet": "legitimate: { Blue: 3, Green: 4, Orange: 5, Red: 6 },"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#65",
@@ -18541,7 +19426,27 @@
       ],
       "hash": "3d2d16ae99",
       "text": "  A hotter host makes its own defenders easier to hit and intruders harder — the numbers flip\n  depending which side of the law your target is on. *(SR3 p.224)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "the target icon's status--Legitimate or Intruding--and the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12084,
+          "snippet": "intruding:  { Blue: 6, Green: 5, Orange: 4, Red: 3 },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12085,
+          "snippet": "legitimate: { Blue: 3, Green: 4, Orange: 5, Red: 6 },"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#66",
@@ -18552,7 +19457,28 @@
       ],
       "hash": "c4137df141",
       "text": "- **Net successes stage damage** exactly like a firearm hit: two successes per step up for the\n  attacker, two per step down for the defender's resistance roll (made with the icon's Bod Rating,\n  or the host's Security Value for an IC program).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "attacker achieved more, for every 2 net successes stage up by"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "using its Bod Rating against a target number equal to the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12089,
+          "snippet": "static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#67",
@@ -18563,7 +19489,28 @@
       ],
       "hash": "028304f72e",
       "text": "- **Icons only have one condition track** — no separate Stun — and filling all 10 boxes crashes\n  the icon. For a decker's persona, that means getting dumped from the Matrix (and risking\n  Dumpshock, below); it doesn't disconnect them if black IC did it — it just makes frying their\n  brain that much easier.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "All icons use the standard Shadowrun Condition Monitor"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "no Stun damage done to icons. Damaged icons suffer target"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12733,
+          "snippet": "if (newVal >= 10 && cur < 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#68",
@@ -18574,7 +19521,28 @@
       ],
       "hash": "7212ef4ffd",
       "text": "- **Simsense overload**: getting hit by white or gray IC can bleed a little Stun damage into the\n  decker's real body through the ASIST link. A failed Willpower test against a TN set by how badly\n  the icon was hurt means a light Stun wound.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "No simsense overload test is offered after white or gray IC damage.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "gray IC, the decker's physical"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "If the Willpower Test fails, the decker"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "simsenseOverload|overloadTN|Simsense Overload",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#69",
@@ -18585,7 +19553,23 @@
       ],
       "hash": "5c57e0a011",
       "text": "Utility programs round the picture out on both sides: things like Armor (soaks incoming damage),\nCloak and Lock-On (help or hurt evasive maneuvers), and Medic (patches an icon back up) all work\nby adding or subtracting their own rating from the relevant roll — check each utility's own\nwrite-up for the exact math.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Utilities are typed into the card's TN or Power by hand.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 224,
+          "printedPage": 222,
+          "quote": "The armor utility reduces the Power of damage inflicted on"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12084,
+          "snippet": "intruding:  { Blue: 6, Green: 5, Orange: 4, Red: 3 },"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#70",
@@ -18596,7 +19580,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking.md#71",
@@ -18607,7 +19592,22 @@
       ],
       "hash": "3c707c1d31",
       "text": "## Intrusion Countermeasures (IC) *(SR3 p.227–230)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "forms of white, gray, and black IC and"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12089,
+          "snippet": "static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#72",
@@ -18618,7 +19618,8 @@
       ],
       "hash": "984d2afaa4",
       "text": "IC comes in three grades:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "introduces the IC grades table; states no rule of its own"
     },
     {
       "id": "rules/decking.md#73",
@@ -18629,7 +19630,8 @@
       ],
       "hash": "ad0315b03d",
       "text": "| Grade | Can reach | Named examples |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking.md#74",
@@ -18640,7 +19642,23 @@
       ],
       "hash": "4d9cf75746",
       "text": "| **White** | Only the decker's on-line icon — attribute damage, dumping, or scrambled data | Cripplers, Probe, Scramble |",
-      "verdict": null
+      "verdict": "match",
+      "note": "Crippler, Probe and Scramble are white IC (p.227–228); the book also lists Killer and Tar Baby as white.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "White IC affects only the decker's on-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheetOrthodox.js",
+          "line": 17,
+          "snippet": "const INIT_DICE = { Blue: 1, Green: 2, Orange: 3, Red: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#75",
@@ -18651,7 +19669,22 @@
       ],
       "hash": "522709d235",
       "text": "| **Gray** | The decker's actual cyberdeck and utilities, permanently, on top of cybercombat | Blaster, Tar Baby |",
-      "verdict": null
+      "verdict": "guide-differs",
+      "note": "Blaster is gray IC, but Tar Baby is listed under WHITE IC in the book (p.228, between Scramble and the GRAY IC heading). The guide names it as a gray example.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 230,
+          "printedPage": 228,
+          "quote": "Gray IC programs attack a decker's cyberdeck and utilities"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 230,
+          "printedPage": 228,
+          "quote": "Tar baby is reactive IC that attempts to crash deckers' utility"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#76",
@@ -18662,7 +19695,16 @@
       ],
       "hash": "37f834b1c5",
       "text": "| **Black** | The decker's real body, directly and legally | Killer |",
-      "verdict": null
+      "verdict": "guide-differs",
+      "note": "Killer is WHITE IC in the book (p.228, under WHITE IC); black IC is \"lethal\" and \"non-lethal\" black IC (p.230). The guide names Killer as the black example.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 230,
+          "printedPage": 228,
+          "quote": "Killer IC is proactive IC that causes damage to icons in"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#77",
@@ -18673,7 +19715,22 @@
       ],
       "hash": "cf11f05528",
       "text": "Killer IC's damage stages off its Rating, with the **Damage Level set by the host's own security\ncode**:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 230,
+          "printedPage": 228,
+          "quote": "cybercombat. All killer IC has a Damage Code and its Power is"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12089,
+          "snippet": "static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#78",
@@ -18684,7 +19741,8 @@
       ],
       "hash": "ab9b5dd805",
       "text": "| Host security code | IC Damage Level |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking.md#79",
@@ -18695,7 +19753,22 @@
       ],
       "hash": "2de2a60388",
       "text": "| Blue | Moderate |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 226,
+          "printedPage": 224,
+          "quote": "IC DAMAGE TABLE Host Security Code IC Damage Level Blue Moderate"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12089,
+          "snippet": "static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#80",
@@ -18706,7 +19779,22 @@
       ],
       "hash": "371f0a6155",
       "text": "| Green | Moderate |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 226,
+          "printedPage": 224,
+          "quote": "Host Security Code IC Damage Level Green Moderate"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12089,
+          "snippet": "static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#81",
@@ -18717,7 +19805,22 @@
       ],
       "hash": "3177f1d743",
       "text": "| Orange | Serious |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 226,
+          "printedPage": 224,
+          "quote": "Host Security Code IC Damage Level Orange Serious"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12089,
+          "snippet": "static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#82",
@@ -18728,7 +19831,22 @@
       ],
       "hash": "3a21cd1076",
       "text": "| Red | Serious |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 226,
+          "printedPage": 224,
+          "quote": "Host Security Code IC Damage Level Serious Red"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12089,
+          "snippet": "static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#83",
@@ -18739,7 +19857,22 @@
       ],
       "hash": "665a9aba8d",
       "text": "*(SR3 p.224)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 226,
+          "printedPage": 224,
+          "quote": "IC DAMAGE TABLE Host Security Code IC Damage Level"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12089,
+          "snippet": "static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#84",
@@ -18750,7 +19883,22 @@
       ],
       "hash": "dfeb477d75",
       "text": "Facing lethal black IC means resisting with **Body** (Hardening helps; Hacking Pool doesn't —\nonly Karma Pool or the decker's own enhancements can help here), and getting free of it after\nbeing hit takes a Complex Action and a Willpower test against the IC's own Rating.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Black IC — the Body resistance, Hardening, and the Willpower jack-out test — is not modelled in the rules code (TODO 176); only a skill name and a Hardening tooltip mention it.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Hacking Pool dice cannot be used in Body or Willpower"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "lethalBlack|blackIC|black IC|Black IC",
+          "path": "scripts/documents"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#85",
@@ -18761,7 +19909,22 @@
       ],
       "hash": "82014b8f6c",
       "text": "An IC program's own **Initiative** scales with the host's security code, not any stat of its own:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 225,
+          "printedPage": 223,
+          "quote": "When calculating the Initiative of an IC program, use the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheetOrthodox.js",
+          "line": 17,
+          "snippet": "const INIT_DICE = { Blue: 1, Green: 2, Orange: 3, Red: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#86",
@@ -18772,7 +19935,8 @@
       ],
       "hash": "e6f88a493a",
       "text": "| Host security code | IC Initiative |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking.md#87",
@@ -18783,7 +19947,22 @@
       ],
       "hash": "0a8bfae24f",
       "text": "| Blue | 1D6 + IC Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 225,
+          "printedPage": 223,
+          "quote": "IC INITIATIVE TABLE Host Security Code Blue 1D6 + IC Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheetOrthodox.js",
+          "line": 17,
+          "snippet": "const INIT_DICE = { Blue: 1, Green: 2, Orange: 3, Red: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#88",
@@ -18794,7 +19973,22 @@
       ],
       "hash": "730682b8a9",
       "text": "| Green | 2D6 + IC Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 225,
+          "printedPage": 223,
+          "quote": "IC INITIATIVE TABLE Green 2D6 + IC Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheetOrthodox.js",
+          "line": 17,
+          "snippet": "const INIT_DICE = { Blue: 1, Green: 2, Orange: 3, Red: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#89",
@@ -18805,7 +19999,22 @@
       ],
       "hash": "ca32a92b0a",
       "text": "| Orange | 3D6 + IC Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 225,
+          "printedPage": 223,
+          "quote": "IC INITIATIVE TABLE Orange 3D6 + IC Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheetOrthodox.js",
+          "line": 17,
+          "snippet": "const INIT_DICE = { Blue: 1, Green: 2, Orange: 3, Red: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#90",
@@ -18816,7 +20025,22 @@
       ],
       "hash": "6a010d0022",
       "text": "| Red | 4D6 + IC Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 225,
+          "printedPage": 223,
+          "quote": "IC INITIATIVE TABLE Red 4D6 + IC Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheetOrthodox.js",
+          "line": 17,
+          "snippet": "const INIT_DICE = { Blue: 1, Green: 2, Orange: 3, Red: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#91",
@@ -18827,7 +20051,22 @@
       ],
       "hash": "dbe84f5cff",
       "text": "*(SR3 p.223)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 225,
+          "printedPage": 223,
+          "quote": "When calculating the Initiative of an IC program, use the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheetOrthodox.js",
+          "line": 17,
+          "snippet": "const INIT_DICE = { Blue: 1, Green: 2, Orange: 3, Red: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#92",
@@ -18838,7 +20077,21 @@
       ],
       "hash": "711aeecaa3",
       "text": "Tortoise (cyberterminal) users are entirely immune to black IC and Dumpshock, which is part of why\nthey're the safer — if slower — way to touch the Matrix.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 210,
+          "printedPage": 208,
+          "quote": "positive side, tortoise users cannot be hurt by black IC or dump"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "orthodox.{0,40}(tortoise|cyberterminal)|cyberterminal.{0,40}dump ?shock",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#93",
@@ -18849,7 +20102,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking.md#94",
@@ -18860,7 +20114,22 @@
       ],
       "hash": "45a680fe10",
       "text": "## Dump Shock *(SR3 p.227)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "When a decker is crashed off the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12106,
+          "snippet": "const level = ({ Blue: 'L', Green: 'M', Orange: 'S', Red: 'D' })[code];"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#95",
@@ -18871,7 +20140,28 @@
       ],
       "hash": "d503e5144a",
       "text": "Getting crashed off the Matrix, or jacking out without a clean logoff, risks **Dump Shock**: Stun\ndamage with **Power equal to the host's Security Value**, and a Damage Level set by the host's\nsecurity code:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "Matrix or jacks out without performing a"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "the damage equals the host's Security"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12106,
+          "snippet": "const level = ({ Blue: 'L', Green: 'M', Orange: 'S', Red: 'D' })[code];"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#96",
@@ -18882,7 +20172,8 @@
       ],
       "hash": "5fc793f720",
       "text": "| Host security code | Dump Shock Damage Level |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking.md#97",
@@ -18893,7 +20184,22 @@
       ],
       "hash": "63749d3c44",
       "text": "| Blue | Light |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "DUMP SHOCK DAMAGE LEVELS Host Security Code Blue Light"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12106,
+          "snippet": "const level = ({ Blue: 'L', Green: 'M', Orange: 'S', Red: 'D' })[code];"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#98",
@@ -18904,7 +20210,22 @@
       ],
       "hash": "371f0a6155",
       "text": "| Green | Moderate |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "DUMP SHOCK DAMAGE LEVELS Green Moderate"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12106,
+          "snippet": "const level = ({ Blue: 'L', Green: 'M', Orange: 'S', Red: 'D' })[code];"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#99",
@@ -18915,7 +20236,22 @@
       ],
       "hash": "3177f1d743",
       "text": "| Orange | Serious |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "DUMP SHOCK DAMAGE LEVELS Orange Serious"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12106,
+          "snippet": "const level = ({ Blue: 'L', Green: 'M', Orange: 'S', Red: 'D' })[code];"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#100",
@@ -18926,7 +20262,22 @@
       ],
       "hash": "acc895f89a",
       "text": "| Red | Deadly |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "DUMP SHOCK DAMAGE LEVELS Red Deadly"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12106,
+          "snippet": "const level = ({ Blue: 'L', Green: 'M', Orange: 'S', Red: 'D' })[code];"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#101",
@@ -18937,7 +20288,28 @@
       ],
       "hash": "9a4e66866f",
       "text": "Also worth knowing: getting hit by white or gray IC risks a little simsense bleed-through even\nbefore any of that — a Willpower test against a fairly low TN (2 for Light icon damage, 3 for\nModerate, 5 for Serious) keeps it off, and failing means a single light Stun wound. There's no\nTN for Deadly icon damage, because **taking Deadly damage crashes the icon outright** and exposes\nits user to Dump Shock instead. *(SR3 p.226–227)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "No simsense overload test; the Deadly-crashes-the-icon part is in the Condition Monitor (a full track dumps the decker).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "gray IC, the decker's physical"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "Deadly damage crashes automatically and"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "simsenseOverload|overloadTN|Simsense Overload",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#102",
@@ -18948,7 +20320,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking.md#103",
@@ -18959,7 +20332,23 @@
       ],
       "hash": "e199415193",
       "text": "## Hot and Cold ASIST *(Matrix p.18)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Hot and cold ASIST are not modelled in the Orthodox ruleset.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Matrix.pdf",
+          "pdfPage": 19,
+          "printedPage": 18,
+          "quote": "Treat lethal black IC as non-lethal black IC (p. 230, SR3) for",
+          "ocrPrinted": "1s M atrjx"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hotAsist|coldAsist|hot ASIST|cold ASIST",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#104",
@@ -18970,7 +20359,8 @@
       ],
       "hash": "5c46ca1867",
       "text": "How a decker's cyberdeck talks to their brain matters:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "introduces the ASIST section; states no rule"
     },
     {
       "id": "rules/decking.md#105",
@@ -18981,7 +20371,29 @@
       ],
       "hash": "8e96997862",
       "text": "- **Cold ASIST** is the standard, legal interface — the kind that ships on cyberterminals and most\n  decks. It caps the intensity of the simsense feed, which means it can't be pushed to lethal\n  levels: black IC that would otherwise deal lethal damage is treated as non-lethal against a cold\n  ASIST user.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Matrix.pdf",
+          "pdfPage": 19,
+          "printedPage": 18,
+          "quote": "Treat lethal black IC as non-lethal black IC (p. 230, SR3) for",
+          "ocrPrinted": "1s M atrjx"
+        },
+        {
+          "file": "Shadowrun 3e - Matrix.pdf",
+          "pdfPage": 19,
+          "printedPage": 18,
+          "quote": "taking lethal damage from black IC, because the interface can-",
+          "ocrPrinted": "1s M atrjx"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hotAsist|coldAsist|hot ASIST|cold ASIST",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#106",
@@ -18992,7 +20404,30 @@
       ],
       "hash": "1151ae0a27",
       "text": "- **Hot ASIST** cranks that ceiling off. It's what actually lets a decker take advantage of\n  Response Increase and Hacking Pool in the first place, and it enables an extra speed bonus for\n  running fully hands-free (\"pure DNI\"). The price is that black IC becomes genuinely lethal\n  against a hot ASIST user, and — as if that weren't enough — hot ASIST interfaces are illegal in\n  their own right.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The code gives every Orthodox decker Response Increase and Hacking Pool regardless of interface.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Matrix.pdf",
+          "pdfPage": 19,
+          "printedPage": 18,
+          "quote": "allows the user to take advantage of Response Increase.",
+          "ocrPrinted": "1s M atrjx"
+        },
+        {
+          "file": "Shadowrun 3e - Matrix.pdf",
+          "pdfPage": 19,
+          "printedPage": 18,
+          "quote": "ASlST interfaces are also illegal, and so the user risks legal",
+          "ocrPrinted": "1s M atrjx"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hotAsist|coldAsist|hot ASIST|cold ASIST",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#107",
@@ -19003,7 +20438,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking.md#108",
@@ -19014,7 +20450,8 @@
       ],
       "hash": "b57eaf6c24",
       "text": "## Doing it in The 2nd Chumming (Foundry)",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking.md#109",
@@ -19025,7 +20462,8 @@
       ],
       "hash": "49af45c821",
       "text": "### Choosing the ruleset",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking.md#110",
@@ -19036,7 +20474,8 @@
       ],
       "hash": "58e10c22db",
       "text": "A world setting, **Matrix Ruleset** (in Foundry's Configure Settings), switches between\n**\"Matrix Defragged v2\"** (the default) and **\"Orthodox SR3 Matrix\"** — this page's rules.\nChanging it needs a full Foundry restart, and the GM sees a warning that switching mid-campaign\ncould break things, so it's a session-zero decision.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/decking.md#111",
@@ -19047,7 +20486,8 @@
       ],
       "hash": "39984e6364",
       "text": "### Deck and persona",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking.md#112",
@@ -19058,7 +20498,22 @@
       ],
       "hash": "b73df51911",
       "text": "On a character or NPC's **Matrix** tab under the Orthodox ruleset, your cyberdeck's stats live\ndirectly on your sheet rather than as a separate item: **Model**, **MPCP**, **Hardening**,\n**Active/Storage Memory**, **I/O Speed**, and **Response** (Response Increase). A **Browse\nCyberdecks** button opens a picker over the system's cyberdeck compendium and loads a chosen\nmodel's stats onto your sheet in one click. Your four persona programs — **Bod**, **Evasion**,\n**Masking**, **Sensor** — are editable fields the sheet checks against your MPCP: it flags a\nwarning if any single program exceeds MPCP, or if they add up past three times MPCP. A **Sleaze**\nrating field and a **Loaded Programs** list (each with its own rating and computed memory cost,\nfilled from a similar **Browse Programs** picker) round out your utilities. The sheet computes\nyour **Hacking Pool**, **Detection Factor**, and **Matrix Initiative** for you from these numbers.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The sheet warns when the persona total exceeds MPCP × 3 (SR3EActorSheet.js:2236) but not when one program exceeds MPCP, which the guide says it does. Hacking Pool, Detection Factor and Matrix Initiative are computed as the book says.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 208,
+          "printedPage": 206,
+          "quote": "exceed the MPCP Rating, and the maximum value for utility"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Exceeds MPCP \\(|single persona|persona program exceeds|> mccp\\b",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#113",
@@ -19069,7 +20524,8 @@
       ],
       "hash": "87a3c82b01",
       "text": "### Jacking in and running",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking.md#114",
@@ -19080,7 +20536,22 @@
       ],
       "hash": "b4c1ce7313",
       "text": "A **Log On To Host** control picks which host actor you're connected to (and resets your\nsecurity tally and alert level when you log on or off), and separate buttons set the host's\n**alert level** — No Alert, Passive Alert, or Active Alert. A **Matrix Condition Monitor** — 10\nclickable boxes, plus quick buttons for Light/Moderate/Serious/Deadly damage or healing one box —\ntracks your icon's health; filling it triggers Dumpshock automatically (Power drawn from the\nconnected host's Security Value, Stun or Physical depending on your Matrix mode).",
-      "verdict": null
+      "verdict": "guide-differs",
+      "note": "The guide says a full Matrix Condition Monitor triggers dump shock \"Stun or Physical depending on your Matrix mode\". SR3 p.227 makes it Stun, level by Security Code; since 0.6.3 the code does that (SR3EActor.orthoDumpShock, TODO 202), so the guide is out of date.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "Matrix or jacks out without performing a"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "Graceful Logoff operation, he risks Stun"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#115",
@@ -19091,7 +20562,8 @@
       ],
       "hash": "a74b1389ce",
       "text": "### System Tests and cybercombat",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking.md#116",
@@ -19102,7 +20574,39 @@
       ],
       "hash": "bb6d888ff6",
       "text": "A **System Test** button opens a dialog naming the connected host, your Computer skill and\nHacking Pool, your Detection Factor, and a dropdown to pick which subsystem — **Access, Control,\nIndex, Files, or Slave** — the action uses; each option shows that subsystem's rating (raised\nautomatically if the host is on Passive Alert), and you can name the action and adjust the TN for\nany utility you're running. Rolling it posts a two-sided chat card — your dice and TN on one side,\nthe host's Security Value and Detection Factor TN on the other — that resolves as a Success\nContest exactly as described above. Any hits the host scores add straight to your tracked\n**security tally**, regardless of who wins the overall contest.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Passive alert's +2 is applied; see #22 for active alert.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 212,
+          "printedPage": 210,
+          "quote": "System Tests are always resolved as a Success Contest"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 213,
+          "printedPage": 211,
+          "quote": "When a system goes on passive alert status, increase all"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12149,
+          "snippet": "['access',  'Access',  subs.access  ?? 0],"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12286,
+          "snippet": "const won   = dHits >= hHits;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12291,
+          "snippet": "await deckerActor.update({ 'system.orthodoxRunState.securityTally': curTally + hHits });"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#117",
@@ -19113,7 +20617,8 @@
       ],
       "hash": "6eff5fe589",
       "text": "A **Cybercombat** button works the same way against IC deployed on the connected host, posting its\nown two-sided card for the exchange.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/decking.md#118",
@@ -19124,7 +20629,8 @@
       ],
       "hash": "6908b0603c",
       "text": "### IC and the host sheet",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking.md#119",
@@ -19135,7 +20641,23 @@
       ],
       "hash": "4860089586",
       "text": "A host actor under this ruleset sets its **Security Code** (Blue/Green/Orange/Red/Black) and\n**Alert** level (Passive/Active/Shutdown) at the top of its sheet, with its five **subsystem\nratings** and overall **Security Value** editable below. Its IC tab lists IC actors assigned to\nit — each with a type drawn from a fixed roster of classic IC names, a Proactive/Reactive toggle,\nand a note for which alert level deploys it — and a deploy button that brings assigned IC into the\ncurrent encounter. An IC actor's own sheet is mostly just a **Rating**; its attack pool and the\ndamage it can absorb both draw from its host's Security Value rather than from any stat of its\nown, matching the book's treatment of IC as an extension of the host defending it.",
-      "verdict": null
+      "verdict": "match",
+      "note": "IC resist with the host's Security Value (p.226); its Initiative from the security code (p.223).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "For IC programs that take damage, make"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheetOrthodox.js",
+          "line": 17,
+          "snippet": "const INIT_DICE = { Blue: 1, Green: 2, Orange: 3, Red: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#120",
@@ -19146,7 +20668,8 @@
       ],
       "hash": "1cd04603f8",
       "text": "### Dumpshock",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking.md#121",
@@ -19157,7 +20680,29 @@
       ],
       "hash": "23bfa1e921",
       "text": "Beyond the automatic trigger when your Matrix Condition Monitor fills, a **Dumpshock** button on\nthe Matrix tab lets a GM or player fire it manually for any other reason the story calls for — it\nopens a small dialog to set Power (defaulting to a connected host's Security Value) and posts the\nStun-or-Physical announcement with a resist button, the same as the automatic version. Either way,\nthe system only announces the damage; the GM still applies it.",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "The manual ⚡ Dumpshock tool runs the Matrix Defragged rule for everyone: Serious, Power from a host's System Rating, Stun or Physical by user mode. For an Orthodox decker SR3 p.227 wants Stun, Power = Security Value, level by Security Code — which only the automatic crash card applies (TODO 202). The guide describes the tool as it is.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "Graceful Logoff operation, he risks Stun"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "by the host's Security Code, as shown on"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1218,
+          "snippet": "resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#122",
@@ -19168,7 +20713,22 @@
       ],
       "hash": "41d9f5a763",
       "text": "{: .note }\n> Hardening is tracked on the sheet and its tooltip describes the book's effect, but nothing in\n> this system's dice-rolling code currently reads that field — it doesn't yet reduce black IC\n> damage or raise gray IC's attack TN the way SR3 p.206 describes. Treat it as informational until\n> that's wired up.\n<!-- UNVERIFIED-CODE: Hardening is stored on the Orthodox cyberdeck data model and shown in the UI\n     with a tooltip describing its SR3 p.206 effect, but no code in scripts/documents/SR3EActor.js\n     currently reads system.orthodoxDeck.hardening when resolving cybercombat, IC attacks, or\n     resistance tests. This is a code gap, not a rules-verification question — reported for the\n     maintainer, not something to fix here. -->",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Only the data model and the sheet carry Hardening; no roll reads it. The guide says so itself.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 208,
+          "printedPage": 206,
+          "quote": "For every point of Hardening, reduce the Power of any"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hardening",
+          "path": "scripts/documents"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#123",
@@ -19179,7 +20739,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking.md#124",
@@ -19190,7 +20751,8 @@
       ],
       "hash": "ecda77397d",
       "text": "## Worked example",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking.md#125",
@@ -19201,7 +20763,34 @@
       ],
       "hash": "59436d844f",
       "text": "**Delgado** runs a deck with **MPCP 6**, split **Bod 5 / Evasion 6 / Masking 4 / Sensor 3** (18\npoints total — right at 3× his MPCP), and Computer 5. His Intelligence is 4, so his **Hacking\nPool** is ⌊(4 + 6) ÷ 3⌋ = **3**. Running a Sleaze-5 utility, his **Detection Factor** is\n⌈(4 + 5) ÷ 2⌉ = **5**.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Hacking Pool ⌊(4 + 6) ÷ 3⌋ = 3; Detection Factor ⌈(4 + 5) ÷ 2⌉ = 5; 5 + 6 + 4 + 3 = 18 = 3 × MPCP: checks.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Hacking Pool, add the decker's Intelligence Rating and her"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 209,
+          "printedPage": 207,
+          "quote": "Detection Factor, calculate the average (round up) of the deck-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2227,
+          "snippet": "const hackingPool    = mccp > 0 ? Math.floor((intl + mccp) / 3) : 0;"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2229,
+          "snippet": "? Math.ceil((masking + sleaze) / 2)"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#126",
@@ -19212,7 +20801,8 @@
       ],
       "hash": "008c23095c",
       "text": "He's hitting a **Green** host with an **Access Rating of 8**, running a Decryption-3 utility to\nsoften the target number.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "worked-example setup; states no rule"
     },
     {
       "id": "rules/decking.md#127",
@@ -19223,7 +20813,23 @@
       ],
       "hash": "d22579d196",
       "text": "1. **Logon.** He rolls Computer 5 plus 2 Hacking Pool dice (saving 1 for later) = 7 dice against a\n   TN of 8 − 3 (his Decryption utility) = **5**. He nets 3 successes.",
-      "verdict": null
+      "verdict": "match",
+      "note": "8 − 3 = TN 5 with Computer 5 + 2 Hacking Pool: checks.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 212,
+          "printedPage": 210,
+          "quote": "target number for these tests may be modified by appropriate"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12149,
+          "snippet": "['access',  'Access',  subs.access  ?? 0],"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#128",
@@ -19234,7 +20840,22 @@
       ],
       "hash": "fd1764f1dd",
       "text": "2. **The host resists.** The GM rolls the host's Security Value (say, 6 dice for this Green\n   system) against Delgado's Detection Factor of 5, and gets 1 success.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 212,
+          "printedPage": 210,
+          "quote": "Test, rolling its Security Value against a target number equal to"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12286,
+          "snippet": "const won   = dHits >= hHits;"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#129",
@@ -19245,7 +20866,23 @@
       ],
       "hash": "a653c2ce6e",
       "text": "3. **Result.** 3 beats 1, so Delgado logs on cleanly. The host's 1 success still adds to his\n   **security tally** on this system — a small price for getting in.",
-      "verdict": null
+      "verdict": "match",
+      "note": "3 against 1 wins; the host's success still goes on the tally: checks.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 212,
+          "printedPage": 210,
+          "quote": "Regardless of the test outcome, the gamemaster records"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12291,
+          "snippet": "await deckerActor.update({ 'system.orthodoxRunState.securityTally': curTally + hHits });"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#130",
@@ -19256,7 +20893,29 @@
       ],
       "hash": "5bebedc883",
       "text": "4. **Later**, Delgado trips a Trigger Step and a Killer IC (Rating 6) attacks him in cybercombat.\n   Its Attack Test nets 4 successes against his Evasion-based defense of 2 successes — 2 net\n   successes, enough to step its damage up one level. Since this is a Green host, Killer IC there\n   deals Moderate damage before staging, so Delgado is now facing **Serious** damage, resisted\n   with his Bod Rating against the attack's Power.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Killer-6 on Green: 6M, staged up one by 2 net successes to 6S, resisted with Bod: checks. (The example calls it \"Evasion-based defense\"; p.226 has the icon resist with Bod after an Attack Test at the table's TN.)",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 230,
+          "printedPage": 228,
+          "quote": "does Medium damage; killer IC on Orange and Red systems"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 228,
+          "printedPage": 226,
+          "quote": "attacker achieved more, for every 2 net successes stage up by"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12089,
+          "snippet": "static _orthoICDmgLevel = { Blue: 'Moderate', Green: 'Moderate', Orange: 'Serious', Red: 'Serious' };"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#131",
@@ -19267,7 +20926,28 @@
       ],
       "hash": "1e728d7af8",
       "text": "5. **If that hit had crashed his icon instead**, Delgado would be dumped and would need to resist\n   **Dump Shock** — Stun damage at a Power equal to the host's Security Value, with a Damage\n   Level set by the host's Green security code.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "the damage equals the host's Security"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 229,
+          "printedPage": 227,
+          "quote": "by the host's Security Code, as shown on"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12106,
+          "snippet": "const level = ({ Blue: 'L', Green: 'M', Orange: 'S', Red: 'D' })[code];"
+        }
+      ]
     },
     {
       "id": "rules/grenades.md#1",
