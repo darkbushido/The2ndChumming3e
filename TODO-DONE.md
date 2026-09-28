@@ -7030,7 +7030,7 @@ This is a bug fix. Guide: `guides/rules/rigging.md` has a note on this gap; remo
 rigger cases post the book's Power with a Willpower soak (no armour, no knockdown), state the
 disorientation, and offer the Willpower (4) Test (`scripts/data/rigger-shock.mjs`). There is a
 Dump Shock button in the rigger panel. Tests: `tests/rigger-shock.test.mjs`, two mutants, and
-`tests/e2e/rigger-dumpshock.spec.mjs`. The decker **Body** label is still open: it's now [#201](TODO.md#201).
+`tests/e2e/rigger-dumpshock.spec.mjs`. The decker **Body** label is still open: it's now [#201](#201).
 
 ## 199. ✅ 🐛 No rigger feedback damage when a rigged vehicle is badly hurt — **found 2026-09-27** (TODO 194) · fixed `853a7019`
 
@@ -7069,3 +7069,22 @@ add a test that pins the table. A world IC actor that already holds one of these
 stored grade. Decide whether a migration should touch it (fill blanks, never overwrite). The
 Orthodox lists (`SR3EICSheetOrthodox.js`, `SR3EHostSheet.js:26`) follow SR3 core and are out of
 scope. `guides/rules/decking-defragged.md` already follows the book. This is a bug fix.
+
+## 201. ✅ A decker's dump shock: which attribute resists it? — **found 2026-09-27** (fixing #198) · fixed `a0139771`
+
+Every decker dump shock card says *"Resist Dumpshock (Body)"* (the ⚡ tool, Convergence, and the
+Orthodox deck crash; `SR3EActor.js`). **No book names an attribute for a decker.**
+- **SR3 p.227**, *Dump Shock*: *"he risks Stun damage from dump shock. The Power of the damage equals
+  the host's Security Value … The Damage Level is determined by the host's Security Code"* (Dump Shock
+  Damage Levels table, p.226: Blue L, Green M, Orange S, Red D).
+- **MDF p.27**, *Dumpshock*: *"The user must immediately resist Serious Biofeedback Damage. The
+  attack's Power is equal to the System Rating"*, Stun for VR-Cold and Physical for VR-Hot.
+- Only the **rigger** text (SR3 p.156) says *"with Willpower"*. The maintainer checked on
+  2026-09-27 and found no other attribute given.
+
+Needs the maintainer's ruling: Body, Willpower, or the GM's choice on the card. The soak card already
+takes `resistAttr` (#198).
+
+**Ruled 2026-09-27, the maintainer: Willpower** (*"it's a mental issue"*). This matches the rigger
+rule on p.156. All three decker cards now pass `resistAttr: 'willpower'` (`a0139771`), and
+`tests/rigger-shock.test.mjs` checks each one. The Orthodox level and track question is now [#202](TODO.md#202).
