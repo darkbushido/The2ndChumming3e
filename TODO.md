@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**48 open.** 154 done — see [TODO-DONE.md](TODO-DONE.md).
+**49 open.** 154 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[189](#189) Vehicle collisions — with a character, another vehicle, or a barrier<br>[195](#195) A concealment view — what someone is carrying, and how well it is hidden |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[189](#189) Vehicle collisions — with a character, another vehicle, or a barrier<br>[195](#195) A concealment view — what someone is carrying, and how well it is hidden<br>[203](#203) Spare clips belong to one weapon |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[191](#191) Buff spells on yourself or an ally should not need to hit |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings" |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -224,21 +224,6 @@ cannot reach. If time is short, do these.
 <a id="94"></a>
 
 ### 📕 Rules not implemented
-
-## 203. Spare clips belong to one weapon — **found in the 0.6.3 rules check, 2026-09-28**
-
-**SR3 p.281:** spare clips *"hold the maximum rounds available for the weapon, and are not interchangeable
-from weapon to weapon even within the same class."* The system lets a reload (clip, drum, belt) go into any
-gun that takes its mechanism (`AmmoStock.fits`, `scripts/data/ammo-stock.mjs`), and TODO 173 shares loose
-rounds across a gun class. The 0.6.3 rules check flagged it (`rules/reloading.md#34`).
-
-**The maintainer, 2026-09-28:** a house rule for now, marked as one in the code and the rules file. They want
-it fixed properly.
-
-Wanted: a clip is bought for, and keyed to, one weapon (the gun on the sheet, or its exact model). Reloading
-offers only that weapon's clips, and a clip's capacity is its weapon's. Loose rounds stay shared by class
-(p.279). This needs an item link and the purchase and reload flows, so it's a feature and goes on a branch,
-with a migration for existing clips (unkeyed clips fit anything until they're assigned).
 
 ## 47. Ready Weapon is unmodelled — you can attack with a weapon you never drew
 
@@ -666,6 +651,21 @@ Wanted: a tool that lists what a character carries that can be seen (weapons, ar
 cyberware) with each item's Concealability, so the GM can show it to the table. The book's
 Concealability rules (the searches and the table) are to be quoted with their page before building.
 This is a feature, so it goes on a branch.
+
+## 203. Spare clips belong to one weapon — **found in the 0.6.3 rules check, 2026-09-28**
+
+**SR3 p.281:** spare clips *"hold the maximum rounds available for the weapon, and are not interchangeable
+from weapon to weapon even within the same class."* The system lets a reload (clip, drum, belt) go into any
+gun that takes its mechanism (`AmmoStock.fits`, `scripts/data/ammo-stock.mjs`), and TODO 173 shares loose
+rounds across a gun class. The 0.6.3 rules check flagged it (`rules/reloading.md#34`).
+
+**The maintainer, 2026-09-28:** a house rule for now, marked as one in the code and the rules file. They want
+it fixed properly.
+
+Wanted: a clip is bought for, and keyed to, one weapon (the gun on the sheet, or its exact model). Reloading
+offers only that weapon's clips, and a clip's capacity is its weapon's. Loose rounds stay shared by class
+(p.279). This needs an item link and the purchase and reload flows, so it's a feature and goes on a branch,
+with a migration for existing clips (unkeyed clips fit anything until they're assigned).
 
 ### 🪄 Spells & drugs
 
