@@ -32,12 +32,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**50 open.** 152 done — see [TODO-DONE.md](TODO-DONE.md).
+**49 open.** 153 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 🔴 Confirmed bugs, still open | [161](#161) Flechette weapons — the two things the book does not settle<br>[164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
+| 🔴 Confirmed bugs, still open | [164](#164) Non-damaging area grenades: how to show and use their area<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[189](#189) Vehicle collisions — with a character, another vehicle, or a barrier<br>[195](#195) A concealment view — what someone is carrying, and how well it is hidden |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects<br>[177](#177) Astral damage: a dual being's natural armour reduces the Power<br>[191](#191) Buff spells on yourself or an ally should not need to hit |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings" |
@@ -223,17 +223,6 @@ cannot reach. If time is short, do these.
 <a id="94"></a>
 
 ### 🔴 Confirmed bugs, still open
-
-## 161. Flechette weapons — the two things the book does not settle
-
-1. **Dermal armour and an `(f)` code.** p.116: *"Dermal armor negates the Damage Level increase of flechette ammunition."* An `(f)` code has that increase
-   baked in, so it is unclear whether dermal armour should take a level back. Today the card only says so and leaves it to the GM.
-2. ~~A flechette weapon firing other ammunition.~~ **Ruled 2026-09-24 (`a810e8d7`), the maintainer: a flechette weapon cannot load other ammunition types.** The reload list offers a weapon carrying the flechette rules only ordinary rounds.
-
-Also not covered: `(f)` on `ammunition` items (Anti-Personnel HRR Grenade, AP Mortar Round B, the AP minigrenades, Directional A-P Mine) and on the
-`vehicleweapon` Flechette Gun — they are not weapons carrying the box, and their loaded type is handled by ammunition rules.
-
-**Still open:** item 1 — the maintainer is reading the flechette rules (SR3 p.116) before ruling on dermal armour.
 
 ## 164. Non-damaging area grenades: how to show and use their area
 

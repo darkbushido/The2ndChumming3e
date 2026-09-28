@@ -6768,7 +6768,7 @@ on a weapon interacts with a loaded ammunition type. ~24 shipped documents carry
 New `flechette` checkbox on firearm, projectile and thrown items. SR3 p.116: *"Guns with flechette ammo already figured into their Damage Code have
 an (f) notation following the Damage Code"* — so an `(f)` code already has the level increase and gets the armour rule only (`flechette-coded`);
 the box ticked on a plain code (the core AP grenades, p.119) gets all of it. Other loaded ammunition wins. Ticked on the 12 shipped weapons;
-data-model change, full restart. What is left is [#161](TODO.md#161).
+data-model change, full restart. What is left is [#161](#161).
 
 ## 157. ✅ Bows, crossbows and slings roll a firearm skill — `356da37a`
 
@@ -6810,6 +6810,21 @@ prints Commercial −3/m, Plastic IV −6/m and XII −12/m per kilo as explosiv
 table's Rating, cost, weight, availability and index all correct — what was missing was the p.283 **Blast** and **Legal** columns. They now ride in each description (Commercial –3/m, Plastic IV –6/m,
 Plastic XII –12/m, *"(Rating)D per kilogram"*, and the accessories' legality), SR3 book only. A **launcher** carries no falloff of its own on purpose: the blast belongs to what it FIRES, and a
 launcher grenade is an ammunition item — see [#163](#163).
+
+## 161. ✅ Flechette weapons — the two things the book does not settle · fixed `7c631625`
+
+1. **Dermal armour and an `(f)` code.** p.116: *"Dermal armor negates the Damage Level increase of flechette ammunition."* An `(f)` code has that increase
+   baked in, so it is unclear whether dermal armour should take a level back. Today the card only says so and leaves it to the GM.
+2. ~~A flechette weapon firing other ammunition.~~ **Ruled 2026-09-24 (`a810e8d7`), the maintainer: a flechette weapon cannot load other ammunition types.** The reload list offers a weapon carrying the flechette rules only ordinary rounds.
+
+Also not covered: `(f)` on `ammunition` items (Anti-Personnel HRR Grenade, AP Mortar Round B, the AP minigrenades, Directional A-P Mine) and on the
+`vehicleweapon` Flechette Gun — they are not weapons carrying the box, and their loaded type is handled by ammunition rules.
+
+~~**Still open:** item 1 — the maintainer is reading the flechette rules (SR3 p.116) before ruling on dermal armour.~~
+**Item 1 ruled 2026-09-28 (`7c631625`), the maintainer:** dermal armour drops an `(f)` code one level. The code
+already contains flechette's increase, and dermal armour *"negates the Damage Level increase"* (p.116). This is
+**dermal armour only**: an `(f)` weapon against worn armour keeps its code. See `SR3EActor.flechetteCodedDrop`,
+`tests/flechette-weapons.test.mjs` and the mutant `flechette-coded-ignores-dermal`.
 
 ## 162. ✅ Installed packs carry broken `_id: null` documents from older builds — `ca516641`
 
