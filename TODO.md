@@ -769,6 +769,14 @@ no numeric field anywhere, so nothing is deducted and the GM lowers the TN on th
 the Power on the astral resist card for **dual beings only** (`astralResistPool(...).key === 'body'`),
 alongside Mystic Armor, floored at TN 2. Worn armour stays out.
 
+**Fixed in `e3e5b0cc`, live check pending: it needs a full Foundry restart** (a new data-model field).
+There is a new `system.naturalArmor` (Magic tab → Astral → *Natural armor (astral)*). The astral resist
+card deducts it for a dual being only (Body resists) and names it on the card. Tests:
+`tests/astral-soak.test.mjs` and the mutant `natural-armor-left-out-of-astral`.
+- 🧪 Live, after the restart: give an NPC Natural armor 3 and Dual Natured, then lose an astral combat
+  against it at Power 7. Its resist card reads *Natural armor −3 Power* with TN 4. Set the NPC to
+  Astral Plane and the deduction is gone (TN 7).
+
 ## 191. Buff spells on yourself or an ally should not need to hit — **requested 2026-09-27**
 
 Casting a beneficial spell (Invisibility, for example) on yourself or a willing ally runs the same
