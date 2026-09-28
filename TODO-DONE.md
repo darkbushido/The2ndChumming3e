@@ -6569,6 +6569,16 @@ a grenade always showed ✋. A `preCreateItem` hook now puts any weapon created 
 (`ReadyWeapon.putAwayOnCreate`; body weapons, `hands: 0` cyberguns and vehicle mounts excepted) and takes new
 armour off. Mutant `new-weapons-arrive-in-hand`; live check in TESTING.md §40.
 
+## 137. ✅ The damage chat card assigns damage again after the player already assigned it through the popup · fixed `89104472`
+
+**Fixed in `89104472`; live check passed 2026-09-27 — `tests/e2e/assign-once.spec.mjs`.** Cause (from the code, not reproduced live): the 🩸 Assign
+button was guarded only by `_usedButtons`, which knows one browser. The same card in the chat log on the GM's client, or
+the player's own after a reload, stayed live, and `_applyDamageBoxes` adds boxes. Now the click names the card and its
+step key; the GM checks the card's `acted` ledger, applies and records in one queued write (`SR3EActor._applyCardDamage`,
+`OpenSteps.runOnce`), and every copy renders the button spent. A GM ✕ in the ⏳ panel also closes it.
+- 🧪 Live: player assigns a wound from the chat pop-up; the GM's chat log shows it spent; the GM (and the player after F5)
+  cannot assign it again; the wound track moved once.
+
 ## 138. ✅ The healing button moves when a character is unconscious or damaged — `6af59ead`
 
 The wound status text (TN/Init modifier, "unconscious", ☠ DEAD) sat before the 🩹 Healing button in the header's wrapping row, so the
@@ -6711,6 +6721,16 @@ worked example has a defensive grenade at 3 m doing 4S (10S − 6) and nothing a
 `system.blast` on projectile and thrown items (the book's `-1/m`, `-1/.5m`; blank = −1/m) is read by
 `scripts/data/blast.mjs`; the blast radius follows it too. Data-model change: full Foundry restart, no
 migration. The Chunky Salsa path is [#159](#159).
+
+## 151. ✅ Cyber weapons don't show up in the weapons list, and cannot be used in combat · fixed `89104472`
+
+**Fixed in `89104472`; live check passed 2026-09-27 — `tests/e2e/cyber-weapons.spec.mjs`.** The implant (`cyberware`, category Cyberweapons) carried
+Essence and cost only; the attack needed a separate `melee` item and cyberguns had none. Installing one now makes its
+weapon entry (`scripts/data/cyber-weapons.mjs`): a `melee` CYB item, or a `firearm` for a cybergun with M&M p.41's mode and
+internal magazine. Removing the implant removes it. Implants fitted earlier are offered on the weapons tab (+ Add weapon).
+Body weapons (CYB/UNA) now appear in the attack picker without an Equip.
+- 🧪 Live: drag Spur(CYB) onto a character → a Spur row under Cyber & Unarmed, attack with it; drag CyGun Heavy(HPist)(CYB)
+  → a firearm, reload and fire; delete the implant → its weapon goes; an older actor shows the + Add weapon offer.
 
 ## 152. ✅ Undoing an action only works on the second try — `c264b6d3`
 
