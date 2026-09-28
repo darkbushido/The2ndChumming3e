@@ -16,16 +16,30 @@ A bug-fix release: dump shock for riggers and deckers, rigger damage from a wrec
 
 - **A rigger's dump shock follows the rigger rules** (SR3 p.156). The ⚡ Dumpshock dialog now asks what the character was dumped from. A rigger dumped from a remote-control network resists **(RC deck Rating + 4)S Stun**, and one jacked out of a vehicle resists **5S Stun**. Both are resisted with **Willpower**, with no armour. The card states the **+2 to all Success Tests for ten Combat Turns** of disorientation, and offers the **Willpower (4) Test** that shortens it; its result says how many turns it lasts. There is a new *Dump Shock* button in the character sheet's rigger panel. Before, a rigger was treated as a decker: the Power came from a host, the track from the Matrix mode, and the roll was Body.
 - **Every dump shock is resisted with Willpower, and worn armour doesn't count.** Neither SR3 p.227 nor Matrix Defragged p.27 says which attribute resists a decker's dump shock; only the rigger rule does (p.156). **House ruling:** Willpower for deckers too, since it's a mental shock, and no armour, since it comes through the jack. Before, deckers rolled Body, and their worn armour lowered the target number.
-- **Orthodox (SR3 core) dump shock uses the book's table** (SR3 p.226–227). It is always **Stun**, the Power is the host's Security Value, and the level comes from the host's Security Code: **Blue Light, Green Moderate, Orange Serious, Red Deadly**. That is the Dump Shock Damage Levels table, not the IC damage table next to it. Before, a crashed Orthodox deck was always Serious and Physical in VR-Hot, which is the Matrix Defragged rule. Matrix Defragged dump shock is unchanged: Serious, Power = System Rating, track by user mode (MDF p.27).
+- **Orthodox (SR3 core) dump shock uses the book's table** (SR3 p.226–227). It is always **Stun**, the Power is the host's Security Value, and the level comes from the host's Security Code: **Blue Light, Green Moderate, Orange Serious, Red Deadly**. That is the Dump Shock Damage Levels table, not the IC damage table next to it. This applies both when a deck crashes and to the ⚡ Dumpshock button, which the Orthodox Matrix tab now has too. Before, both used the Matrix Defragged rule: always Serious, and Physical in VR-Hot. Matrix Defragged dump shock is unchanged: Serious, Power = System Rating, track by user mode (MDF p.27).
 
 **Rigging**
 
+- **Ramming: the rammer's successes cut its own Power, not its damage level** (SR3 p.143, worked on p.147). The rammer resists the collision's Power minus its vehicle's Body × its Ramming successes, never below 2, at the full Damage Level. The rammed vehicle's damage is not reduced. A Ramming Test with no successes now misses. Before, the rammer's level dropped one step per two successes and its TN stayed at the full Power, so the book's Mach 6 resisted 15M against TN 15 instead of 2S against TN 2.
+- **Hiding in Open terrain is +4** (Hiding Target Modifiers Table, SR3 p.144). It was +1.
+- **Fleeing several vehicles adds +1 per additional vehicle, with no cap** (SR3 p.142). The Accelerating/Braking dialog now takes a number of vehicles; its dropdown stopped at +2.
 - **A rigger takes damage when their vehicle is badly hurt** (SR3 p.145). When a vehicle a rigger is jacked into (VCR) reaches **Serious**, a card offers the rigger **6M Physical**. If it's **destroyed**, the card offers **6S**. The roll is Willpower, with no Combat or Control Pool and no armour. Nothing is applied automatically: the rigger rolls, and the wound goes on when someone clicks 🩸 Assign. Before, nothing offered this roll.
+
+**The Matrix**
+
+- **Matrix Defragged Hacking Pool is Intelligence + MPCP ÷ 3 (round down)** (MDF p.11). The system used SR3 core's (Intelligence + MPCP) ÷ 3, so a decker with Intelligence 4 and MPCP 8 had 4 dice instead of 6. The Orthodox pool is unchanged; SR3 core's formula is right for it.
+- **The Matrix Condition Monitor penalises from the first box** (MDF p.12): +1 TN from box 1, +2 from box 3, +3 from box 6, +4 at box 10. It was +1 from box 3, +2 from 6, +3 from 8.
+- **Orthodox hosts keep the passive alert's +2 to every subsystem at active alert** (SR3 p.211). It dropped back to +0 at active alert.
+- **Reboot Node no longer adds Overwatch when it fails** (MDF p.19). The book gives it no such line.
 
 **Combat and magic**
 
 - **Dermal armour takes a level off an `(f)` weapon** (SR3 p.116: *"Dermal armor negates the Damage Level increase of flechette ammunition"*). A weapon whose Damage Code has the `(f)` note already includes flechette's level increase, so against a target with dermal armour (a troll's hide, dermal plating, a dermal sheath), its damage drops one level, and the card says why. **House ruling:** this is for dermal armour only. An `(f)` weapon against worn armour keeps its code. Before, the card left this to the GM.
 - **A dual being's natural armour protects in astral combat** (SR3 p.175: *"the Power of the attack is reduced by the target's natural armor"*). Set a critter's Armor power in the new **Natural armor (astral)** field (Magic tab, Astral). The astral resist card takes it off the Power for a dual being, on top of Mystic Armor, and names it on the card. An actor on the Astral Plane gets no deduction. Worn armour still never counts, and a troll's dermal armour is already in its Body.
+
+### Known differences from the book
+
+- **Spare clips fit any gun that takes them** (house rule). SR3 p.281 says a spare clip holds its weapon's capacity and is *"not interchangeable from weapon to weapon even within the same class"*. The system lets a clip go into any gun with the same loading mechanism. Tracked as TODO 203 to be fixed properly.
 
 ### Fixes
 
