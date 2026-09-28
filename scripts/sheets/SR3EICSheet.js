@@ -20,11 +20,11 @@ export class SR3EICSheet extends foundry.applications.sheets.ActorSheetV2 {
     },
   };
 
-  // Official IC/Agent types from Matrix Defragged, grouped by grading
+  // Official IC/Agent types by IC grading — Matrix Defragged p.34, "Available Agents" (TODO 200)
   static IC_AGENTS = {
-    White: ['ARis','Authenticator','Looper','Mr. Medkit','Scrambler'],
-    Gray:  ['Blaster','Crippler','Dataworm','Gemini','Hydra','Sparky','Tar Baby','Tracker'],
-    Black: ['Killer','Ripper'],
+    White: ['ARis','Authenticator','Crippler','Gemini','Looper','Mr. Medkit','Scrambler','Tracker'],
+    Gray:  ['Blaster','Dataworm','Hydra','Killer','Tar Baby'],
+    Black: ['Ripper','Sparky'],
   };
 
   static SEC_TIERS = ['Ivory','Blue','Green','Orange','Red','Black','Ultraviolet'];

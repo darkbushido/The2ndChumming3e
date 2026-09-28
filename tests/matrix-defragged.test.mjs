@@ -66,6 +66,16 @@ export async function run(t) {
   t.ok('the Matrix rules carry the book\'s four Sys/Sec rows, including the circumstantial one',
     /Circumstantial — Matrix noise, jamming, wound modifiers \| ±1-4/.test(claude));
 
+  /* ── Available Agents by IC grading, MDF p.34 (TODO 200) ─────────────────── */
+  const icSheet = read('scripts/sheets/SR3EICSheet.js');
+  const block = icSheet.match(/static IC_AGENTS = \{([\s\S]*?)\};/)?.[1] ?? '';
+  const grade = g => (block.match(new RegExp(String.raw`${g}:\s*\[([^\]]*)\]`))?.[1] ?? '')
+    .split(',').map(x => x.trim().replace(/^'|'$/g, '')).filter(Boolean);
+  t.eq('White: the eight agents the book grades White',
+    grade('White'), ['ARis', 'Authenticator', 'Crippler', 'Gemini', 'Looper', 'Mr. Medkit', 'Scrambler', 'Tracker']);
+  t.eq('Gray: Blaster, Dataworm, Hydra, Killer, Tar Baby', grade('Gray'), ['Blaster', 'Dataworm', 'Hydra', 'Killer', 'Tar Baby']);
+  t.eq('Black: Ripper and Sparky', grade('Black'), ['Ripper', 'Sparky']);
+
   /* ── What the audit could not settle ─────────────────────────────────────── */
   t.ok('the Condition Monitor thresholds are flagged unverified, not quietly asserted',
     /🔴 \*\*THE THRESHOLDS ARE UNVERIFIED\.\*\*/.test(claude));
