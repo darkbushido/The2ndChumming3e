@@ -2,7 +2,7 @@
 
 What changed, for the people running games with it. Newest first.
 
-## 0.6.3 — unreleased
+## 0.6.3 — 2026-09-28
 
 A bug-fix release: dump shock for riggers and deckers, rigger damage from a wrecked vehicle, natural armour in astral combat, flechette against dermal armour, and the Matrix Defragged IC list.
 
