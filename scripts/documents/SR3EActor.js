@@ -1215,6 +1215,7 @@ export class SR3EActor extends Actor {
       stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
       isStun,
       rawDamage:       `${power}S`,
+      resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)
     }).replace(/'/g, '&#39;');
 
     await ChatMessage.create({
@@ -1226,7 +1227,7 @@ export class SR3EActor extends Actor {
             Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${power}S ${trackLabel}</strong>
           </div>
           <div class="sr-soak-action">
-            <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${this.name}: Resist Dumpshock (Body)</button>
+            <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${this.name}: Resist Dumpshock (Willpower)</button>
           </div>
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
@@ -1470,6 +1471,7 @@ export class SR3EActor extends Actor {
       stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
       isStun,
       rawDamage:       damageCode,
+      resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)
     }).replace(/'/g, '&#39;');
 
     await ChatMessage.create({
@@ -1482,7 +1484,7 @@ export class SR3EActor extends Actor {
           </div>
           <div class="sr-soak-action">
             <button class="sr-soak-btn" data-payload='${soakCtx}'>
-              🛡 ${attackerName}: Resist Dumpshock (Body, TN ${systemRating})
+              🛡 ${attackerName}: Resist Dumpshock (Willpower, TN ${systemRating})
             </button>
           </div>
         </div>`,
@@ -12696,6 +12698,7 @@ _prepareCharacter(sys, attr) {
         stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
         isStun,
         rawDamage:       `${secVal}S`,
+        resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)
       }).replace(/'/g, '&#39;');
 
       await ChatMessage.create({
@@ -12708,7 +12711,7 @@ _prepareCharacter(sys, attr) {
           </div>
           <div class="sr-soak-action">
             <button class="sr-soak-btn" data-payload='${soakCtx}'>
-              🛡 ${ctx.deckerName}: Resist Dumpshock (Body)
+              🛡 ${ctx.deckerName}: Resist Dumpshock (Willpower)
             </button>
           </div>
         </div>`,

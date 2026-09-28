@@ -71,6 +71,13 @@ export async function run(t) {
   const ew = sheet.slice(ewAt, sheet.indexOf('// ── Orthodox SR3 Matrix Tab', ewAt));
   t.ok('the rigger panel has a Dump Shock button (riggers are not in VR)', /data-action="rollDumpshock"/.test(ew));
 
+  /* ── A decker's dump shock: Willpower, the maintainer's ruling (TODO 201) ──────────
+   * SR3 p.227 and MDF p.27 name no attribute; ruled Willpower 2026-09-27 ("it's a mental issue").
+   * Three cards: the ⚡ Dumpshock tool, Convergence, and the Orthodox deck crash. */
+  t.is('every decker dump shock card resists with Willpower',
+    (actor.match(/resistAttr:\s+'willpower',\s+\/\/ the maintainer's ruling, 2026-09-27 \(TODO 201\)/g) ?? []).length, 3);
+  t.ok('…and no button still says Body', !/Resist Dumpshock \(Body/.test(actor));
+
   /* ── Rigger damage trigger, SR3 p.145 (TODO 199) ───────────────────────────────── */
   const stage = RiggerShock.feedbackStage;
   t.is('Moderate → Serious: the 6M case', stage('M', 'S'), 'serious');

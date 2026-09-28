@@ -15,7 +15,8 @@
  * Pool dice can be used for this test."*
  *
  * ⚠ A DECKER's dump shock is not here. SR3 p.227 and MDF p.27 name no resisting attribute; only the
- * rigger text (p.156) does. Pure: no Foundry globals.
+ * rigger text (p.156) does. The maintainer ruled Willpower for deckers too, 2026-09-27: it is a mental
+ * shock (TODO 201) — the decker cards in SR3EActor.js pass `resistAttr: 'willpower'`. Pure: no Foundry globals.
  */
 
 export const DUMP_PAGE     = 'SR3 p.156';
