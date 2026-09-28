@@ -6968,6 +6968,12 @@ Where to look, from a read of the code (unconfirmed):
 
 This is a bug, so the fix goes on `main`.
 
+## 194. ✅ Guides: how to do rigging and decking — **requested 2026-09-27** · done `574212b9`
+
+Players need a walkthrough of rigging and of decking — the rules and how to do each in the system.
+`guides/TODO.md` items 3 (full decking page) and 4 (full rigging page) cover the rules side; this
+adds the how-to. This is guide work, not a code change.
+
 ## 197. ✅ Ledger entries appear on other characters — **reported 2026-09-27** · fixed `1726af72`
 
 The real cause of the report in [#193](#193): Buzzz and Velvet carried every one of each
