@@ -15428,7 +15428,8 @@
       ],
       "hash": "5abcfa277e",
       "text": "# Decking (Matrix Defragged)\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title"
     },
     {
       "id": "rules/decking-defragged.md#2",
@@ -15439,7 +15440,23 @@
       ],
       "hash": "d3fd9c7210",
       "text": "This table plays **Matrix Defragged v2**, a fan-made replacement for the core rulebook's Matrix\nchapter (SR3 p.199–232). It isn't an official Shadowrun supplement — it's a fan rewrite by\nBrinoceros, built to run faster at the table — but it's cited here the same way as any other\nsourcebook: `*(MDF p.NN)*`, printed page.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Introduction: names the book and its citation style.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "This section walks users through the basic process"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sr3e.js",
+          "line": 216,
+          "snippet": "game.settings.register('The2ndChumming3e', 'matrixRuleset', {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#3",
@@ -15450,7 +15467,8 @@
       ],
       "hash": "c63e232c5c",
       "text": "This system can run either ruleset — Defragged or the core rulebook's own Matrix chapter,\n\"Orthodox SR3\" — as a per-world setting. If your table runs Orthodox instead, see\n[Decking (SR3 core)](../decking/). The two rulesets don't mix; this page covers Defragged only.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/decking-defragged.md#4",
@@ -15461,7 +15479,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table of contents"
     },
     {
       "id": "rules/decking-defragged.md#5",
@@ -15472,7 +15491,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking-defragged.md#6",
@@ -15483,7 +15503,8 @@
       ],
       "hash": "80ab7f410e",
       "text": "## The Matrix in three ideas",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#7",
@@ -15494,7 +15515,22 @@
       ],
       "hash": "b8e6d500df",
       "text": "- Every Matrix-capable device — a host, a cyberdeck, a commlink, a maglock — has a **System\n  Rating**. That number is the TN for anyone trying to act against it. *(MDF p.12)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "which determines the TN for users attempting"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 889,
+          "snippet": "const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#8",
@@ -15505,7 +15541,22 @@
       ],
       "hash": "36069771f8",
       "text": "- Every such device also sits at a **Security Tier**: a colour and a **Security Threshold**\n  number that measures how hard it is to actually get past. System Rating plus Security Tier is\n  a device's **Sys/Sec**. *(MDF p.12)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "Taken together, the System Rating and Security Tier"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 890,
+          "snippet": "const defaultThresh    = primaryHost?.system.securityTierThreshold ?? 1;"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#9",
@@ -15516,7 +15567,27 @@
       ],
       "hash": "0fdff09ba1",
       "text": "- **Hacking** boils down to one test: roll against the System Rating, then check whether you\n  cleared the Threshold. Fall short, and the system logs a point against you — **Overwatch**.\n  *(MDF p.23)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "number of successes are equal-to or greater, the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 889,
+          "snippet": "const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 4578,
+          "snippet": "if (successes < hac.securityThreshold) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#10",
@@ -15527,7 +15598,22 @@
       ],
       "hash": "da20f74a47",
       "text": "### Security Tiers *(MDF p.11–12)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "Every Security Tier is represented by both a color, and"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 4,
+          "snippet": "Ivory:       { color: '#e8e4d4', threshold: 0 },"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#11",
@@ -15538,7 +15624,8 @@
       ],
       "hash": "a3886fb91e",
       "text": "| Tier | Threshold | What typically runs at this level |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#12",
@@ -15549,7 +15636,22 @@
       ],
       "hash": "062040d3fe",
       "text": "| Ivory | 0 | No Matrix security at all — toys, minor devices |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "Ivory 0 No Matrix security. Toys and"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 4,
+          "snippet": "Ivory:       { color: '#e8e4d4', threshold: 0 },"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#13",
@@ -15560,7 +15662,22 @@
       ],
       "hash": "a689bf6453",
       "text": "| Blue | 1 | Low security — public comm booths, bus ticket kiosks, news services, libraries |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "Blue 1 Low Security. Public comm"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 5,
+          "snippet": "Blue:        { color: '#3377cc', threshold: 1 },"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#14",
@@ -15571,7 +15688,22 @@
       ],
       "hash": "0f09cf638b",
       "text": "| Green | 2 | Average security — small shops, petty criminal outfits, the public Matrix |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "Green 2 Average Security. Small"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 6,
+          "snippet": "Green:       { color: '#00aa44', threshold: 2 },"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#15",
@@ -15582,7 +15714,22 @@
       ],
       "hash": "043190c5aa",
       "text": "| Orange | 3 | Challenging security — sensitive data at mid-size businesses and corp offices |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "Orange 3 Challenging Security. Sensitive data, such as"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 7,
+          "snippet": "Orange:      { color: '#dd6600', threshold: 3 },"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#16",
@@ -15593,7 +15740,22 @@
       ],
       "hash": "ac9c2f5fb2",
       "text": "| Red | 4 | Threatening security — classified sites agencies will kill to protect |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "Red 4 Threatening Security. Highly secure matrix sites,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 8,
+          "snippet": "Red:         { color: '#cc2222', threshold: 4 },"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#17",
@@ -15604,7 +15766,22 @@
       ],
       "hash": "5f47aafbae",
       "text": "| Black | 5 | Dangerous security — top military, corporate, or government projects |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "Black 5 Dangerous security. Top Military, corporate, or"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 9,
+          "snippet": "Black:       { color: '#222222', threshold: 5 },"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#18",
@@ -15615,7 +15792,22 @@
       ],
       "hash": "17d7c37525",
       "text": "| Ultraviolet | 6 | Deadly security — the Sixth World's greatest secrets |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "Ultraviolet 6 Deadly security. The Sixth"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 10,
+          "snippet": "Ultraviolet: { color: '#8800dd', threshold: 6 },"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#19",
@@ -15626,7 +15818,22 @@
       ],
       "hash": "79263e047c",
       "text": "A cyberdeck's own tier comes from its Firewall Rating, not from a GM assignment. *(MDF p.12)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "Firewall Rating to determine their Security Tier."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 381,
+          "snippet": "const deckFirewall = deck?.system?.attributes?.firewall?.base ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#20",
@@ -15637,7 +15844,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking-defragged.md#21",
@@ -15648,7 +15856,8 @@
       ],
       "hash": "a6de9d1b0f",
       "text": "## Getting on the Matrix",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#22",
@@ -15659,7 +15868,22 @@
       ],
       "hash": "99b519f4cb",
       "text": "### User Modes *(MDF p.10)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 10,
+          "printedPage": 10,
+          "quote": "Described below are the various User Modes, by"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1560,
+          "snippet": "matrixUserModes: ["
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#23",
@@ -15670,7 +15894,8 @@
       ],
       "hash": "f998c0c3fa",
       "text": "How you jack in changes your Initiative and what damage can reach your real body:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "introduces the user-mode table"
     },
     {
       "id": "rules/decking-defragged.md#24",
@@ -15681,7 +15906,8 @@
       ],
       "hash": "7866e22b5f",
       "text": "| Mode | Initiative | If your icon overloads |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#25",
@@ -15692,7 +15918,28 @@
       ],
       "hash": "99353a0933",
       "text": "| **Tortoise Terminal (TRM)** | Meat-world Initiative; no Response, but Hacking Pool still works | Immune to biofeedback |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 10,
+          "printedPage": 10,
+          "quote": "Tortoise users rely on their meat world Initiative;"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 10,
+          "printedPage": 10,
+          "quote": "Matrix, and so are immune to Biofeedback"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 10508,
+          "snippet": "const useMatrixJacked = matrixMode === 'TRM' || matrixMode === 'AR' || matrixMode === 'VR-Cold';"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#26",
@@ -15703,7 +15950,28 @@
       ],
       "hash": "b2be253c67",
       "text": "| **Augmented Reality (AR)** | Meat-world Initiative; no Response, but Hacking Pool still works | Immune to biofeedback |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 10,
+          "printedPage": 10,
+          "quote": "AR users rely on their meat world Initiative;"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 10,
+          "printedPage": 10,
+          "quote": "AR users have no direct connection to the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 10508,
+          "snippet": "const useMatrixJacked = matrixMode === 'TRM' || matrixMode === 'AR' || matrixMode === 'VR-Cold';"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#27",
@@ -15714,7 +15982,33 @@
       ],
       "hash": "2d6dcb32ad",
       "text": "| **VR-Cold** | Meat-world Initiative; no Response, but Hacking Pool still works | Stun damage |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 10,
+          "printedPage": 10,
+          "quote": "VR-Cold users rely on their meat world"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 10,
+          "printedPage": 10,
+          "quote": "the user's Stun Damage track as Biofeedback"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 10508,
+          "snippet": "const useMatrixJacked = matrixMode === 'TRM' || matrixMode === 'AR' || matrixMode === 'VR-Cold';"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1588,
+          "snippet": "biofeedbackType: 'Stun',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#28",
@@ -15725,7 +16019,33 @@
       ],
       "hash": "b1fbda23f6",
       "text": "| **VR-Hot** | Its own **Matrix Initiative**, boosted by Response | Physical damage |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 10,
+          "printedPage": 10,
+          "quote": "VR-Hot users may rely on their Matrix Initiative,"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 10,
+          "printedPage": 10,
+          "quote": "user's Physical Damage track as Biofeedback"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1595,
+          "snippet": "initiative: 'matrix',"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1599,
+          "snippet": "biofeedbackType: 'Physical',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#29",
@@ -15736,7 +16056,22 @@
       ],
       "hash": "91a82e65e4",
       "text": "Tortoise adds **+2 TN** to every Matrix test and cybercombat roll. Only VR-Hot gets true Matrix\nInitiative and benefits from Response — the other three run on whatever Initiative dice you'd\nroll in the meat world, full stop. *(MDF p.10)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "User-mode Initiative is modelled (SR3EActor.js:10508); the Tortoise +2 TN is only a description in config (CF matrixUserModes.tnModifier), never added to a roll.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 10,
+          "printedPage": 10,
+          "quote": "Tortoise users add +2 to the TN for all tests to"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "TRM.{0,80}\\+ ?2|tortoiseTN|tnModifier",
+          "path": "scripts/documents"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#30",
@@ -15747,7 +16082,22 @@
       ],
       "hash": "e781607f34",
       "text": "### Skills *(MDF p.11)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 11,
+          "printedPage": 11,
+          "quote": "The Matrix Defragged makes use of the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 155,
+          "snippet": "name: \"Hacking\",      linkedAttribute: \"intelligence\""
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#31",
@@ -15758,7 +16108,28 @@
       ],
       "hash": "edf03a36dc",
       "text": "Four Intelligence-linked skills cover the Matrix: **Computer** (legitimate use — logons, moving\naround, ordinary prompts; defaults from Electronics), **Hacking** (illegal or scrutinized action,\nopposed by the target's Sys/Sec; defaults from Computer), **Cybercombat** (fighting other icons;\ndefaults from Computer), and **Programming** (writing or fixing utilities, skillsofts and agents;\ndefaults from Computer).",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The four skills exist, linked to Intelligence (config.js:153-156); the MDF default chain (Computer from Electronics, the rest from Computer) is not encoded — defaulting runs the generic Default Table.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 11,
+          "printedPage": 11,
+          "quote": "This skill is essential to any character who needs"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 11,
+          "printedPage": 11,
+          "quote": "opposed by the host's Sys/Sec rating. Failing to"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Default: Electronics|defaultsFrom|defaultFrom",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#32",
@@ -15769,7 +16140,23 @@
       ],
       "hash": "399fec64af",
       "text": "### Hacking Pool *(MDF p.11)*",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "MDF p.11: Hacking Pool = Intelligence + ⌊MPCP ÷ 3⌋. The code (the equipped-deck pool used by the Defragged flow) computes ⌊(Intelligence + MPCP) ÷ 3⌋ — the SR3 core formula. For INT 4, MPCP 8 the book gives 6, the code 4. The guide matches the book.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 11,
+          "printedPage": 11,
+          "quote": "Intelligence + (MPCP Rating /3 rounded"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2485,
+          "snippet": "? Math.max(0, Math.floor(((attr.intelligence?.value ?? 0) + mpcp) / 3))"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#33",
@@ -15780,7 +16167,29 @@
       ],
       "hash": "16823b4661",
       "text": "**Hacking Pool = Intelligence + ⌊MPCP ÷ 3⌋.** It behaves like any other dice pool (SR3 p.43):\nrefreshes each Combat Turn, and you split it freely across Hacking, Cybercombat, or whatever else\nyou're rolling in the Matrix that turn.",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "See #32.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 11,
+          "printedPage": 11,
+          "quote": "Intelligence + (MPCP Rating /3 rounded"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 11,
+          "printedPage": 11,
+          "quote": "Concepts, Page-43. The Hacking Pool is calculated"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2485,
+          "snippet": "? Math.max(0, Math.floor(((attr.intelligence?.value ?? 0) + mpcp) / 3))"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#34",
@@ -15791,7 +16200,22 @@
       ],
       "hash": "e910c56c14",
       "text": "### Response *(MDF p.14)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 14,
+          "printedPage": 14,
+          "quote": "Response (formerly Response Increase) is the Matrix"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 10549,
+          "snippet": "base = reactionBase + wm + (resp * 2);"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#35",
@@ -15802,7 +16226,28 @@
       ],
       "hash": "380d2f2a73",
       "text": "**Response** on a deck is the Matrix's version of wired reflexes: each point adds **+2 Reaction**\nand **+1D6 Matrix Initiative**, but only while you're running **VR-Hot**. A deck's Response can't\nexceed **⌊MPCP ÷ 3⌋** (minimum 1).",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Response adds +2 Reaction and +1D6 only in VR-Hot (SR3EActor.js, the VR-Hot initiative branch); the cap of ⌊MPCP ÷ 3⌋ (minimum 1) is not checked — the deck item takes any Response.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 14,
+          "printedPage": 14,
+          "quote": "Response cannot exceed the deck's MPCP rating/3"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 14,
+          "printedPage": 14,
+          "quote": "available to the decker while operating in VR-Hot"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Math.floor\\(mpcp ?/ ?3\\)|responseMax|mpcp / 3",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#36",
@@ -15813,7 +16258,28 @@
       ],
       "hash": "35f57baa7f",
       "text": "### Logon and getting around *(MDF p.8, p.15)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "determine their User Mode and utilize the Logon"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "While operating in the Open Matrix, tests are made"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 889,
+          "snippet": "const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#37",
@@ -15824,7 +16290,23 @@
       ],
       "hash": "9acdb53d4e",
       "text": "Pick your User Mode, then log on to your local grid — or jack straight into a host through a\nphysical port. While you're loose in the open Matrix (not yet inside a host), tests use the local\ngrid's own Sys/Sec numbers as a stand-in host. A few examples:",
-      "verdict": null
+      "verdict": "match",
+      "note": "An RTG is entered as a host actor with its System Rating and tier; the system has no RTG list (see #39).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "using the Sys/Sec numbers of the parent RTG"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 889,
+          "snippet": "const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#38",
@@ -15835,7 +16317,8 @@
       ],
       "hash": "bccaf6af06",
       "text": "| Regional grid | System Rating | Security Tier |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#39",
@@ -15846,7 +16329,22 @@
       ],
       "hash": "15dbd759cd",
       "text": "| Aztlan | 8 | Orange (3) |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The RTG Sys/Sec Table is not shipped; the GM enters a grid as a host actor.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "RTG SYS/SEC TABLE Aztlan 8 Orange (3)"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Aztlan|Tsimshian|California Free State",
+          "path": "packs-src/sr3e-mdf-hosts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#40",
@@ -15857,7 +16355,22 @@
       ],
       "hash": "80c09ad3d9",
       "text": "| California Free State | 6 | Green (2) |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The RTG Sys/Sec Table is not shipped; the GM enters a grid as a host actor.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "California Free State 6 Green (2)"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Aztlan|Tsimshian|California Free State",
+          "path": "packs-src/sr3e-mdf-hosts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#41",
@@ -15868,7 +16381,16 @@
       ],
       "hash": "9f0d5cbda2",
       "text": "| CAS | 6 | Green (3) |",
-      "verdict": null
+      "verdict": "guide-differs",
+      "note": "The book lists CAS at System 6, Green (2) (page image, p.15). The guide prints \"Green (3)\"; Green's threshold is 2.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "RTG SYS/SEC TABLE CAS 6 Green (2)"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#42",
@@ -15879,7 +16401,22 @@
       ],
       "hash": "f27c43c92f",
       "text": "| Québec | 6 | Green (2) |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The RTG Sys/Sec Table is not shipped; the GM enters a grid as a host actor. Québec 6 / Green (2) read from the page image (the OCR drops the accent line).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "RTG SYS/SEC TABLE RTG SYSTEM RATING"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Aztlan|Tsimshian|California Free State",
+          "path": "packs-src/sr3e-mdf-hosts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#43",
@@ -15890,7 +16427,22 @@
       ],
       "hash": "bf91525b66",
       "text": "| Tir Tairngire | 7 | Orange (3) |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The RTG Sys/Sec Table is not shipped; the GM enters a grid as a host actor. Tir Tairngire 7 / Orange (3) read from the page image.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "SYSTEM SECURITY RATING TIER"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Aztlan|Tsimshian|California Free State",
+          "path": "packs-src/sr3e-mdf-hosts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#44",
@@ -15901,7 +16453,22 @@
       ],
       "hash": "ba5f24be30",
       "text": "| Tsimshian | 8 | Orange (3) |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The RTG Sys/Sec Table is not shipped; the GM enters a grid as a host actor. Tsimshian 8 / Orange (3) read from the page image.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "RTG SYSTEM SECURITY RATING TIER"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Aztlan|Tsimshian|California Free State",
+          "path": "packs-src/sr3e-mdf-hosts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#45",
@@ -15912,7 +16479,22 @@
       ],
       "hash": "acb6cc284f",
       "text": "| UCAS | 6 | Green (2) |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The RTG Sys/Sec Table is not shipped; the GM enters a grid as a host actor. UCAS 6 / Green (2) read from the page image.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "Aztlan 8 Orange (3) California Free State 6 Green (2)"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Aztlan|Tsimshian|California Free State",
+          "path": "packs-src/sr3e-mdf-hosts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#46",
@@ -15923,7 +16505,22 @@
       ],
       "hash": "9aae06971b",
       "text": "*(MDF p.15 — a partial list; the book covers every North American and several overseas grids.)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Citation for the table above.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "Aztlan 8 Orange (3) California Free State 6 Green (2)"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Aztlan|Tsimshian|California Free State",
+          "path": "packs-src/sr3e-mdf-hosts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#47",
@@ -15934,7 +16531,8 @@
       ],
       "hash": "c5fef9a95b",
       "text": "### Nodes and their prompts",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#48",
@@ -15945,7 +16543,22 @@
       ],
       "hash": "546edc798b",
       "text": "Once inside a host, five kinds of node exist, and each offers its own set of prompts. *(MDF p.8,\np.16–21)* A handful of prompts work anywhere (**General**), listed separately below.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 18,
+          "printedPage": 18,
+          "quote": "CPUs are represented by a double-walled"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 31,
+          "snippet": "{ abbreviation:'SAN', name:'System Access Node',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#49",
@@ -15956,7 +16569,8 @@
       ],
       "hash": "15c24371b0",
       "text": "| Node | Represents | Icon shape |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#50",
@@ -15967,7 +16581,22 @@
       ],
       "hash": "e58991a423",
       "text": "| **System Access Node (SAN)** | The host's public front door | Rectangle |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "System Access Node (SAN) and may utilize its"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 31,
+          "snippet": "{ abbreviation:'SAN', name:'System Access Node',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#51",
@@ -15978,7 +16607,22 @@
       ],
       "hash": "0902ba8ec3",
       "text": "| **Central Processing Unit (CPU)** | Sysop-level control: the Security Sheaf, passcodes, the system map, pathways | Double-walled hexagon (has its own barrier) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 18,
+          "printedPage": 18,
+          "quote": "hexagon map icon, due to their built in barrier (see"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 39,
+          "snippet": "{ abbreviation:'CPU', name:'Central Processing Unit',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#52",
@@ -15989,7 +16633,22 @@
       ],
       "hash": "8ab16dab76",
       "text": "| **Data Store (DS)** | Files, records, and archives | Square |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 19,
+          "printedPage": 19,
+          "quote": "evidence. Data stores are represented by a square"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 35,
+          "snippet": "{ abbreviation:'DS',  name:'Data Store',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#53",
@@ -16000,7 +16659,23 @@
       ],
       "hash": "f0f9c3d57d",
       "text": "| **Slave Node (SN)** | Controls real-world devices — cameras, maglocks, subscribed drones/vehicles | Circle |",
-      "verdict": null
+      "verdict": "match",
+      "note": "The Slave Node's circle icon is read from the node table's map key.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 20,
+          "printedPage": 20,
+          "quote": "This prompt allows the user to issue a command"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 37,
+          "snippet": "{ abbreviation:'SN',  name:'Slave Node',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#54",
@@ -16011,7 +16686,22 @@
       ],
       "hash": "a1bdced95a",
       "text": "| **Sub-Processing Unit (SPU)** | Task routing and scheduling — user lists, project data | Hexagon |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 21,
+          "printedPage": 21,
+          "quote": "This prompt allows the user to call up an index of"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 33,
+          "snippet": "{ abbreviation:'SPU', name:'Sub-Processing Unit',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#55",
@@ -16022,7 +16712,22 @@
       ],
       "hash": "f58964a269",
       "text": "A legitimate passcode lets you use a node's prompts as an ordinary Computer test. Without one,\nyou need a mark on that node — usually gained through the **Access Node** prompt with Hacking —\nbefore its other prompts open up, unless the node is public. Getting caught doing something you\nshouldn't (an ✗ below) costs a point of Overwatch; some successful prompts also hand you a mark\n(✓) on top of whatever else they do.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "Once a user has successfully acquired a mark on a"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 46,
+          "snippet": "const _ACCESS_PROMPT = { name:'Access Node', action:'Hacking', test:'Hacking vs Sys/Sec', requiresMark:false, overwatchOnFail:true, grantsAccess:true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#56",
@@ -16033,7 +16738,8 @@
       ],
       "hash": "18770b67b4",
       "text": "**General prompts** (any node, any zone):",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "introduces the general prompts table"
     },
     {
       "id": "rules/decking-defragged.md#57",
@@ -16044,7 +16750,8 @@
       ],
       "hash": "f683beeae0",
       "text": "| Prompt | Test | Adds Overwatch on failure | Grants a mark |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#58",
@@ -16055,7 +16762,22 @@
       ],
       "hash": "1f06d71f01",
       "text": "| Access Node | Passcode, or Hacking vs Sys/Sec | ✗ | ✓ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 16,
+          "printedPage": 16,
+          "quote": "falsified mark on the node, allowing the user access"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 46,
+          "snippet": "const _ACCESS_PROMPT = { name:'Access Node', action:'Hacking', test:'Hacking vs Sys/Sec', requiresMark:false, overwatchOnFail:true, grantsAccess:true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#59",
@@ -16066,7 +16788,22 @@
       ],
       "hash": "13c32a0a93",
       "text": "| Attack an Icon | Cybercombat vs Cybercombat | | |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 16,
+          "printedPage": 16,
+          "quote": "This prompt allows the user to target a Visible icon"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 388,
+          "snippet": "skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.standingTN(actor),"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#60",
@@ -16077,7 +16814,22 @@
       ],
       "hash": "ddc98022fa",
       "text": "| Boot Utility | Computer vs Utility Rating | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Programs are loaded into slots by drag and drop, with no roll; the Boot Utility test is not modelled.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 16,
+          "printedPage": 16,
+          "quote": "This prompt allows the user to load or overwrite a"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#61",
@@ -16088,7 +16840,22 @@
       ],
       "hash": "1439573294",
       "text": "| Configure Protections | Computer vs System Rating | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The general prompts other than Access Node are not in the system's prompt list (SR3EHostSheet.js); cybercombat has its own button.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 16,
+          "printedPage": 16,
+          "quote": "This prompt targets an icon (usually a datafile or"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#62",
@@ -16099,7 +16866,16 @@
       ],
       "hash": "896ed87c0d",
       "text": "| Crack Protections | Passcode/Hacking vs Sys/Sec of the protection | | |",
-      "verdict": null
+      "verdict": "guide-differs",
+      "note": "Crack Protections: \"Failing this test increases the user's Overwatch by 1 point\" (p.16). The guide's row has no ✗ in the Overwatch column. (The prompt is not in the system's list.)",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 16,
+          "printedPage": 16,
+          "quote": "disable a Databomb, respectively. Failing this test"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#63",
@@ -16110,7 +16886,22 @@
       ],
       "hash": "5c6b28eab4",
       "text": "| Jam Signal | Computer vs System Rating | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The general prompts other than Access Node are not in the system's prompt list (SR3EHostSheet.js); cybercombat has its own button.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 16,
+          "printedPage": 16,
+          "quote": "This prompt targets a Visible icon, filling its PAN"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#64",
@@ -16121,7 +16912,22 @@
       ],
       "hash": "fdcd2a5fe0",
       "text": "| Jump Grid/Host | Computer vs System Rating | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The general prompts other than Access Node are not in the system's prompt list (SR3EHostSheet.js); cybercombat has its own button.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 16,
+          "printedPage": 16,
+          "quote": "This prompt allows the user to jump from their"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#65",
@@ -16132,7 +16938,22 @@
       ],
       "hash": "9e341340ba",
       "text": "| Logon to System | Computer vs System Rating | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Logging on is the User Mode button and host choice, with no roll.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 17,
+          "printedPage": 17,
+          "quote": "This prompt connects users to their Regional"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#66",
@@ -16143,7 +16964,22 @@
       ],
       "hash": "7a17dd0957",
       "text": "| Repair an Icon | Computer vs System Rating | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The general prompts other than Access Node are not in the system's prompt list (SR3EHostSheet.js); cybercombat has its own button.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 17,
+          "printedPage": 17,
+          "quote": "This prompt repairs Overload Damage dealt to a"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#67",
@@ -16154,7 +16990,22 @@
       ],
       "hash": "11fc4a0625",
       "text": "| Scrub Datastream | Hacking vs Sys/Sec | ✗ | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The general prompts other than Access Node are not in the system's prompt list (SR3EHostSheet.js); cybercombat has its own button.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 17,
+          "printedPage": 17,
+          "quote": "This prompt allows the user to clean up the digital"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#68",
@@ -16165,7 +17016,22 @@
       ],
       "hash": "26d6f524b0",
       "text": "| Search and Render | Computer vs System Rating | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The general prompts other than Access Node are not in the system's prompt list (SR3EHostSheet.js); cybercombat has its own button.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 17,
+          "printedPage": 17,
+          "quote": "This prompt allows the user to inspect their virtual"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#69",
@@ -16176,7 +17042,22 @@
       ],
       "hash": "f8c78e9ab5",
       "text": "| Send Transmission | Computer vs System Rating | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The general prompts other than Access Node are not in the system's prompt list (SR3EHostSheet.js); cybercombat has its own button.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 17,
+          "printedPage": 17,
+          "quote": "This prompt allows the user to transmit and/"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#70",
@@ -16187,7 +17068,22 @@
       ],
       "hash": "56a2aa8aa0",
       "text": "| Terminate Session | Computer vs 4 (Willpower vs 10 if Link-Locked) | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The general prompts other than Access Node are not in the system's prompt list (SR3EHostSheet.js); cybercombat has its own button.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 17,
+          "printedPage": 17,
+          "quote": "A single success on a basic Computer test is all that's"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#71",
@@ -16198,7 +17094,22 @@
       ],
       "hash": "c55c7a21d4",
       "text": "| Toggle Visibility | Computer vs System Rating | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The general prompts other than Access Node are not in the system's prompt list (SR3EHostSheet.js); cybercombat has its own button.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 17,
+          "printedPage": 17,
+          "quote": "Utilizing this prompt allows the user to toggle"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Crack Protections|Scrub Datastream|Jam Signal|Toggle Visibility|Search and Render",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#72",
@@ -16209,7 +17120,8 @@
       ],
       "hash": "5e1a25a254",
       "text": "**CPU prompts:**",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#73",
@@ -16220,7 +17132,8 @@
       ],
       "hash": "3944cb4e02",
       "text": "| Prompt | Test | Adds Overwatch on failure |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#74",
@@ -16231,7 +17144,22 @@
       ],
       "hash": "ed75624ed0",
       "text": "| Configure I/O Ports and Pathways | Passcode/Hacking vs Sys/Sec | ✗ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 18,
+          "printedPage": 18,
+          "quote": "This prompt is used to alter the configuration of"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 75,
+          "snippet": "{ name:'Configure I/O Ports',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#75",
@@ -16242,7 +17170,22 @@
       ],
       "hash": "a6d5c7cdd5",
       "text": "| Configure Passcodes | Passcode/Hacking vs Sys/Sec | ✗ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 18,
+          "printedPage": 18,
+          "quote": "This prompt allows the user to configure passcodes,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 76,
+          "snippet": "{ name:'Configure Passcodes',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#76",
@@ -16253,7 +17196,22 @@
       ],
       "hash": "b30bc554b0",
       "text": "| Configure Security Sheaf | Passcode/Hacking vs Sys/Sec | ✗ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 18,
+          "printedPage": 18,
+          "quote": "This prompt allows a user to reconfigure the host's"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 77,
+          "snippet": "{ name:'Configure Security Sheaf',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#77",
@@ -16264,7 +17222,23 @@
       ],
       "hash": "a2ae25c7b5",
       "text": "| Reboot Node | Passcode/Hacking vs Sys/Sec | |",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "The book gives Reboot Node no Overwatch on failure, and the guide agrees; the system's prompt list sets overwatchOnFail: true for it.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 19,
+          "printedPage": 19,
+          "quote": "This prompt allows the user to Reboot any node"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 78,
+          "snippet": "{ name:'Reboot Node',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#78",
@@ -16275,7 +17249,8 @@
       ],
       "hash": "c138cb8f24",
       "text": "**Data Store prompts:**",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#79",
@@ -16286,7 +17261,8 @@
       ],
       "hash": "3944cb4e02",
       "text": "| Prompt | Test | Adds Overwatch on failure |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#80",
@@ -16297,7 +17273,22 @@
       ],
       "hash": "d12537d96d",
       "text": "| Access Datafile | Computer vs System Rating | |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 19,
+          "printedPage": 19,
+          "quote": "This prompt allows the user to read a specific"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 60,
+          "snippet": "{ name:'Access Datafile',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#81",
@@ -16308,7 +17299,22 @@
       ],
       "hash": "ae1536eec0",
       "text": "| Duplicate/Download Datafile | Passcode/Hacking vs Sys/Sec | ✗ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 19,
+          "printedPage": 19,
+          "quote": "This prompt allows a user to duplicate or"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 61,
+          "snippet": "{ name:'Duplicate / Download',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#82",
@@ -16319,7 +17325,22 @@
       ],
       "hash": "3c7f8464eb",
       "text": "| Edit/Upload Datafile | Passcode/Hacking vs Sys/Sec | ✗ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 19,
+          "printedPage": 19,
+          "quote": "This prompt allows a user to alter the contents"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 62,
+          "snippet": "{ name:'Edit / Upload Datafile',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#83",
@@ -16330,7 +17351,22 @@
       ],
       "hash": "318c4a26e8",
       "text": "| Index Data Store | Computer vs System Rating | |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 19,
+          "printedPage": 19,
+          "quote": "This prompt calls up an ARO index of all datafiles"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 63,
+          "snippet": "{ name:'Index Data Store',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#84",
@@ -16341,7 +17377,22 @@
       ],
       "hash": "a3bb118fa0",
       "text": "| Siphon Paydata | Hacking vs Sys/Sec | ✗ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 20,
+          "printedPage": 20,
+          "quote": "Like a Matrix shopping spree, this prompt allows"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 64,
+          "snippet": "{ name:'Siphon Paydata',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#85",
@@ -16352,7 +17403,8 @@
       ],
       "hash": "0c1e0c435c",
       "text": "**Slave Node prompts:**",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#86",
@@ -16363,7 +17415,8 @@
       ],
       "hash": "3944cb4e02",
       "text": "| Prompt | Test | Adds Overwatch on failure |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#87",
@@ -16374,7 +17427,22 @@
       ],
       "hash": "0e14ce2c27",
       "text": "| Control Device | Computer (or another applicable skill) vs System Rating | |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 20,
+          "printedPage": 20,
+          "quote": "This prompt allows the user to issue a command"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 68,
+          "snippet": "{ name:'Control Device',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#88",
@@ -16385,7 +17453,22 @@
       ],
       "hash": "09777d9d4d",
       "text": "| Index Subscribed Devices | Computer vs System Rating | |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 20,
+          "printedPage": 20,
+          "quote": "This prompt allows the user to call up an ARO"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 69,
+          "snippet": "{ name:'Index Devices',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#89",
@@ -16396,7 +17479,22 @@
       ],
       "hash": "34b6d06ad5",
       "text": "| Spoof Datastream | Hacking vs Sys/Sec | ✗ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 20,
+          "printedPage": 20,
+          "quote": "This prompt is used to inject or feed edited, false, or"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 70,
+          "snippet": "{ name:'Spoof Datastream',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#90",
@@ -16407,7 +17505,22 @@
       ],
       "hash": "e28509a2a7",
       "text": "| Tap Datastream | Hacking vs Sys/Sec | ✗ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 20,
+          "printedPage": 20,
+          "quote": "This prompt allows users to capture an unprotected"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 71,
+          "snippet": "{ name:'Tap Datastream',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#91",
@@ -16418,7 +17531,8 @@
       ],
       "hash": "9129b39833",
       "text": "**SPU prompts:**",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#92",
@@ -16429,7 +17543,8 @@
       ],
       "hash": "3944cb4e02",
       "text": "| Prompt | Test | Adds Overwatch on failure |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#93",
@@ -16440,7 +17555,22 @@
       ],
       "hash": "7842f985e4",
       "text": "| Index Users and Scheduling | Computer vs System Rating | |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 21,
+          "printedPage": 21,
+          "quote": "This prompt allows the user to call up an index of"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 55,
+          "snippet": "{ name:'Index Users and Scheduling',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#94",
@@ -16451,7 +17581,22 @@
       ],
       "hash": "04dd6cbff5",
       "text": "| System Map | Computer vs System Rating | |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 21,
+          "printedPage": 21,
+          "quote": "This prompt allows the user to call up an ARO,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 56,
+          "snippet": "{ name:'System Map',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#95",
@@ -16462,7 +17607,29 @@
       ],
       "hash": "0598d8e0b1",
       "text": "A CPU is additionally shielded by its own **barrier icon**, rated equal to the CPU itself — you\ncan't falsify a mark there without crashing that barrier in cybercombat first, unless you're\nrunning a Sleaze utility rated high enough to pass through it. *(MDF p.18)*",
-      "verdict": null
+      "verdict": "match",
+      "note": "The CPU node is flagged barrier-protected; the barrier fight and the Sleaze bypass are the GM's to run.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 18,
+          "printedPage": 18,
+          "quote": "All CPUs are protected by a barrier icon equal"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 18,
+          "printedPage": 18,
+          "quote": "to falsify a mark on a CPU without first crashing"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 39,
+          "snippet": "{ abbreviation:'CPU', name:'Central Processing Unit',"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#96",
@@ -16473,7 +17640,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking-defragged.md#97",
@@ -16484,7 +17652,27 @@
       ],
       "hash": "43caf73614",
       "text": "## Hacking *(MDF p.23)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "To resolve Hacking or other illegal prompting within"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 889,
+          "snippet": "const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 4578,
+          "snippet": "if (successes < hac.securityThreshold) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#98",
@@ -16495,7 +17683,22 @@
       ],
       "hash": "503b2f81ef",
       "text": "1. **Roll it.** Hacking skill plus any Hacking Pool you commit, against **TN = the host's System\n   Rating**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Roll the user's Hacking skill dice, augmented by"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 889,
+          "snippet": "const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#99",
@@ -16506,7 +17709,28 @@
       ],
       "hash": "fbacd66013",
       "text": "2. **Check the Threshold.** Meet or beat the host's Security Threshold and you succeed — a tied\n   result favours the hacker. Come up short, and it's a failure.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "number of successes are equal-to or greater, the"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "action is successful. A tie goes in favor of the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 4578,
+          "snippet": "if (successes < hac.securityThreshold) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#100",
@@ -16517,7 +17741,27 @@
       ],
       "hash": "009b70e56a",
       "text": "3. **What happens.** Success on a legitimate or falsified logon gets you a mark on that node,\n   opening its prompts. Failure adds a point to your **Overwatch** on that host (below).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "attempting to falsify a mark, they obtain a mark"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 46,
+          "snippet": "const _ACCESS_PROMPT = { name:'Access Node', action:'Hacking', test:'Hacking vs Sys/Sec', requiresMark:false, overwatchOnFail:true, grantsAccess:true,"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1373,
+          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#101",
@@ -16528,7 +17772,23 @@
       ],
       "hash": "2a026bdb35",
       "text": "### What changes the TN *(MDF p.14)*",
-      "verdict": null
+      "verdict": "match",
+      "note": "The guide cites p.14; the table is on p.15.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "Hardlined via a datajack or trodes -2"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 889,
+          "snippet": "const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#102",
@@ -16539,7 +17799,8 @@
       ],
       "hash": "75a55c955a",
       "text": "| Condition | TN modifier |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#103",
@@ -16550,7 +17811,22 @@
       ],
       "hash": "7c0cd1da77",
       "text": "| Hardlined via a datajack or trodes | −2 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The Sys/Sec modifiers are typed into the TN by hand; none is applied automatically.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "Hardlined via a datajack or trodes -2"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hardline|Hardlined|datajack.{0,30}-2",
+          "path": "scripts/documents"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#104",
@@ -16561,7 +17837,22 @@
       ],
       "hash": "53f2eced34",
       "text": "| Operating from a Tortoise Terminal | +2 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "See #29.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "Operating in a Tortoise Terminal +2"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "TRM.{0,80}\\+ ?2|tortoiseTN|tnModifier",
+          "path": "scripts/documents"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#105",
@@ -16572,7 +17863,22 @@
       ],
       "hash": "9e67f320be",
       "text": "| Maintaining real-time contact with people outside the Matrix | +1 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Not applied automatically.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "Maintaining real-time communication with meat world associates +1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "realTime|meatWorldContact|real-time",
+          "path": "scripts/documents"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#106",
@@ -16583,7 +17889,23 @@
       ],
       "hash": "fee600bb61",
       "text": "| Circumstantial — Matrix noise, jamming, defensive utilities, cover, wound penalties | ±1–4 |",
-      "verdict": null
+      "verdict": "match",
+      "note": "Wounds are added to the attacker's cybercombat TN; the rest is the GM's ±1–4.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "Circumstantial modifiers such as Matrix noise, jamming, defensive utilities, cover, clever positioning, or wound modifiers."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 388,
+          "snippet": "skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.standingTN(actor),"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#107",
@@ -16594,7 +17916,22 @@
       ],
       "hash": "ecb2c43d0c",
       "text": "### Overwatch and the Security Sheaf *(MDF p.23–24)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Overwatch is tracked on the Security Sheaf of"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1373,
+          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#108",
@@ -16605,7 +17942,34 @@
       ],
       "hash": "3ff643a90c",
       "text": "Every host tracks **Overwatch** on its own 10-box **Security Sheaf**. You gain a point for\nfailing a Hacking Test, or for crashing an icon without running the Suppression utility to cover\nyour tracks. **Filling the tenth box is Convergence** (below).",
-      "verdict": null
+      "verdict": "match",
+      "note": "Only the first trigger is automated; crashing without Suppression is the GM's (TODO 128).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Failing a test using the Hacking skill."
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "of the Overwatch track, suffers Convergence as"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1373,
+          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId) {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#109",
@@ -16616,7 +17980,29 @@
       ],
       "hash": "80447b8ca7",
       "text": "The GM plans out **Trigger Steps** ahead of time — specific Overwatch totals where IC or an\nalert kicks in. A triggered IC joins initiative at the top of the next Combat Phase, losing\nInitiative for any phase that's already gone by. Here's the book's own example layout for a\nSystem Rating 6 / Green host, to show how a sheaf is typically built:",
-      "verdict": null
+      "verdict": "match",
+      "note": "Trigger Steps are the GM's to stock and fire (TODO 128).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "into initiative) at the top of the next Combat Phase"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "(-10 from an ICs Initiative for each phase that has"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#110",
@@ -16627,7 +18013,8 @@
       ],
       "hash": "36b4939acc",
       "text": "| Overwatch box | What fires |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#111",
@@ -16638,7 +18025,22 @@
       ],
       "hash": "688ff22c61",
       "text": "| 1 | System Sweep |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Trigger Step 1 System Sweep"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#112",
@@ -16649,7 +18051,22 @@
       ],
       "hash": "6fabb7ce5e",
       "text": "| 2 | Authenticator (Rating 4) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Trigger Step 2 Authenticator-(4)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#113",
@@ -16660,7 +18077,22 @@
       ],
       "hash": "51115ed537",
       "text": "| 3 | Alert |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Trigger Step 3 Alert Trigger Step 4"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#114",
@@ -16671,7 +18103,22 @@
       ],
       "hash": "cb16f03f99",
       "text": "| 5 | Barrier (Rating 6), Tracker (Rating 4) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Trigger Step 5 Barrier-(6), Tracker-(4)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#115",
@@ -16682,7 +18129,22 @@
       ],
       "hash": "02aaa70672",
       "text": "| 6 | System Sweep |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Trigger Step 6 System Sweep"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#116",
@@ -16693,7 +18155,22 @@
       ],
       "hash": "36b27ce9da",
       "text": "| 7 | Alert, Killer (Rating 6) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Trigger Step 7 Alert, Killer-(6)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#117",
@@ -16704,7 +18181,22 @@
       ],
       "hash": "373cf9ad7b",
       "text": "| 9 | Data Worm (Rating 6) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Trigger Step 9 Data Worm-(6)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#118",
@@ -16715,7 +18207,22 @@
       ],
       "hash": "9efa4d000c",
       "text": "| 10 | Convergence |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Convergence Crash icon (with resulting Dumpshock)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#119",
@@ -16726,7 +18233,22 @@
       ],
       "hash": "c8fa7eb5d9",
       "text": "*(MDF p.23)* — every host's actual sheaf is the GM's own design; this is just one example of how\ndense and varied it can get.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "like, assigning IC to any step. GMs may decided to"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#120",
@@ -16737,7 +18259,22 @@
       ],
       "hash": "cde356437a",
       "text": "A decker who crashes an enemy icon while running the **Suppression** utility can degrade it\ninstead of taking the usual Overwatch hit for the crash. *(MDF p.26)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The Suppression utility ships as a program item; nothing in the rules code reads it (TODO 128).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "in an active utility slot, may degrade 1 point of the"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "suppression|Suppression",
+          "path": "scripts/documents"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#121",
@@ -16748,7 +18285,22 @@
       ],
       "hash": "c8145d4cda",
       "text": "{: .note }\n> The book gives hosts two ways to gain Overwatch and a full sheaf of scripted Trigger Steps with\n> Suppression as the counter-play. This system currently only automates the first trigger — a\n> failed Hacking Test. See *Doing it in The 2nd Chumming*, below, for what's automated today.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The guide's note says the same.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Crashing an icon without Suppressing it"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "suppression|Suppression",
+          "path": "scripts/documents"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#122",
@@ -16759,7 +18311,22 @@
       ],
       "hash": "8749616e73",
       "text": "### Convergence *(MDF p.23–24)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "Convergence occurs when a user's Overwatch"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#123",
@@ -16770,7 +18337,28 @@
       ],
       "hash": "3fc739786f",
       "text": "At 10 boxes of Overwatch, the decker's connection gets traced back to their real body. The GM can\nrespond with any mix of: dumping the decker (triggering Dumpshock, below), leaking pieces of\ntheir session to the authorities (what their icon looked like, their handle, their gear, and\nroughly where they're jacked in from), and sending a physical security response their way.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "The user is dumped from the Matrix, and"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "The GPS coordinates or I/O address of the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1391,
+          "snippet": "if (newOW >= 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#124",
@@ -16781,7 +18369,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking-defragged.md#125",
@@ -16792,7 +18381,22 @@
       ],
       "hash": "a92755e2ee",
       "text": "## Cybercombat *(MDF p.26)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "An icon may initiate a cyberattack on any Visible"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 388,
+          "snippet": "skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.standingTN(actor),"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#126",
@@ -16803,7 +18407,28 @@
       ],
       "hash": "068ddf8445",
       "text": "Any icon can attack any other icon it can see sharing the same node or zone. Attacking\nautomatically reveals your own icon if it wasn't visible already.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "icon in which it shares access with the target's"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "represented as an ARO. Icons initiating cybercombat,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 388,
+          "snippet": "skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.standingTN(actor),"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#127",
@@ -16814,7 +18439,22 @@
       ],
       "hash": "4c507065f5",
       "text": "1. **Attacker rolls** Cybercombat plus Hacking Pool against a **base TN of 4**, adjusted for\n   circumstances.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "Pool, against a base target number 4, modified"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 388,
+          "snippet": "skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.standingTN(actor),"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#128",
@@ -16825,7 +18465,22 @@
       ],
       "hash": "a9f171d7ec",
       "text": "2. **Defender rolls** the same way, same base TN.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "Roll the defending icon's base Cybercombat skill"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 388,
+          "snippet": "skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.standingTN(actor),"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#129",
@@ -16836,7 +18491,22 @@
       ],
       "hash": "6eadd5de6f",
       "text": "3. **Compare successes.** Whoever has more hits their target — **a tie favours the defender**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "are resolved in favor of the defender."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 620,
+          "snippet": "🤝 Tie! ${atkHits} vs ${defHits} — no damage dealt."
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#130",
@@ -16847,7 +18517,28 @@
       ],
       "hash": "63872adea7",
       "text": "4. **Stage the damage.** The winner's Damage Level rises one step for every two net successes;\n   past Deadly, extra net successes add to Power instead.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "The winning icon can increase the Damage"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "can be used to increase the Power of the attack,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 629,
+          "snippet": "const loserFirewall = atkWins ? (ctx.defFirewall ?? 0) : (ctx.atkFirewall ?? 0);"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#131",
@@ -16858,7 +18549,28 @@
       ],
       "hash": "13c20193f5",
       "text": "5. **Resist.** The target rolls its **System Rating (or MPCP)** against a TN equal to the\n   **attack's Power minus its own Security Threshold or Firewall** — those numbers work as\n   armour here. Every two successes drops the Damage Level by one. Utilities like Armor,\n   Biofeedback Filtering, and Shield can chip in too.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "Roll the target icon's System Rating (or"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "Security Threshold or Firewall (which"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 629,
+          "snippet": "const loserFirewall = atkWins ? (ctx.defFirewall ?? 0) : (ctx.atkFirewall ?? 0);"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#132",
@@ -16869,7 +18581,28 @@
       ],
       "hash": "dd6194ae2e",
       "text": "An icon's own **Matrix Condition Monitor** is 10 boxes; filling it crashes the icon and — for a\npersona — dumps its user. Damage that overflows the user's Matrix CM becomes real **Biofeedback**\ndamage, Stun or Physical depending on their User Mode, the same split as Dumpshock below.\n*(MDF p.26)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "All icons have a Matrix Condition Monitor"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "user's personal condition monitor, based on their"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12733,
+          "snippet": "if (newVal >= 10 && cur < 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#133",
@@ -16880,7 +18613,33 @@
       ],
       "hash": "2f7a1b01e3",
       "text": "As it fills, the Matrix Condition Monitor penalises the icon's tests the same way a character's\nwounds do: **+1 TN** from the 1st box, **+2** from the 3rd, **+3** from the 6th, and **+4** at the\n10th. *(MDF p.12)*",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "Read from the page image (p.12): +1 TN at box 1, +2 at box 3, +3 at box 6, +4 at box 10 — which settles TODO 119's open question. The guide has it right. The code (_matrixTNPenalty) gives +1 from box 3, +2 from 6, +3 from 8: one box late at the first step, a step low from box 6, and no +4.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 12,
+          "printedPage": 12,
+          "quote": "MATRIX CONDITION MONITOR Icon +1 +2 +3 +4 TN TN TN TN"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 177,
+          "snippet": "if (boxes >= 8) return 3;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 178,
+          "snippet": "if (boxes >= 6) return 2;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 179,
+          "snippet": "if (boxes >= 3) return 1;"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#134",
@@ -16891,7 +18650,29 @@
       ],
       "hash": "f7e9473305",
       "text": "Two more Matrix hazards worth knowing: a decker can permanently or temporarily disable a\nreal-world Matrix device by finding its icon and crashing it in cybercombat, and an aggressive\nicon can **Link-Lock** a target so it can't go hidden and needs a Willpower test just to log off\ncleanly — failing that test causes Dumpshock. *(MDF p.27)*",
-      "verdict": null
+      "verdict": "match",
+      "note": "Bricking and Link-Lock are described; the sheet has a Link-Locked flag, the tests are the GM's.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "Bricking a device refers to rendering a real world"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "The Link-Locked icon must achieve at least one"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 12733,
+          "snippet": "if (newVal >= 10 && cur < 10) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#135",
@@ -16902,7 +18683,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking-defragged.md#136",
@@ -16913,7 +18695,22 @@
       ],
       "hash": "9f618561a5",
       "text": "## Dumpshock *(MDF p.27)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "When a persona icon is crashed and abruptly"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1215,
+          "snippet": "stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#137",
@@ -16924,7 +18721,22 @@
       ],
       "hash": "dd9ec32ccf",
       "text": "Getting yanked off the Matrix without a clean logoff hits you with Dumpshock:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "user failed to execute a successful Terminate Session"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1215,
+          "snippet": "stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#138",
@@ -16935,7 +18747,34 @@
       ],
       "hash": "c99db89533",
       "text": "- You immediately resist **Serious** biofeedback damage, with **Power equal to the System Rating\n  of whatever dumped you**.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Resisted with Willpower and no armour — the maintainer's ruling (the book names no attribute).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "The user must immediately resist Serious"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "equal to the System Rating of the grid or host"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1215,
+          "snippet": "stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1218,
+          "snippet": "resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#139",
@@ -16946,7 +18785,29 @@
       ],
       "hash": "6d5c775888",
       "text": "- Tortoise and AR users don't feel it at all. **VR-Cold** takes it as Stun; **VR-Hot** takes it as\n  Physical.",
-      "verdict": null
+      "verdict": "match",
+      "note": "The ⚡ button is offered only in VR; Tortoise and AR are not dumped.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "are immune to this damage; VR-Cold users"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "VR-Hot users to Physical. The Biofeedback"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1121,
+          "snippet": "const isVRHot = (this.system.matrixUserMode ?? '') === 'VR-Hot';"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#140",
@@ -16957,7 +18818,28 @@
       ],
       "hash": "b96224f7b4",
       "text": "- You're also rattled for the next 10 minutes — everything you do carries a **+2 TN** penalty\n  until it wears off.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The Defragged dump shock card states no +2 for ten minutes (the rigger card states its own p.156 disorientation).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "The user applies a +2 to all target"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "numbers for the next 10 minutes. In"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "next 10 minutes|dumpshockDisorient|mdfDisorient",
+          "path": "scripts/documents"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#141",
@@ -16968,7 +18850,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking-defragged.md#142",
@@ -16979,7 +18862,22 @@
       ],
       "hash": "a3558ac76b",
       "text": "## IC and Agents *(MDF p.24, p.36)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "Grading IC (White, Gray, Black)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheet.js",
+          "line": 25,
+          "snippet": "White: ['ARis','Authenticator','Crippler','Gemini','Looper','Mr. Medkit','Scrambler','Tracker'],"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#143",
@@ -16990,7 +18888,8 @@
       ],
       "hash": "f4d225214c",
       "text": "IC (and Agents, which work the same way mechanically) come in three grades:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "introduces the IC grades"
     },
     {
       "id": "rules/decking-defragged.md#144",
@@ -17001,7 +18900,29 @@
       ],
       "hash": "1a7adb2904",
       "text": "- **White** — nuisance-tier defenses. Can't do more than Moderate damage to an icon, and can't\n  touch a decker's real body at all. Every host can field it.",
-      "verdict": null
+      "verdict": "match",
+      "note": "The book forbids White IC direct Biofeedback damage; Overload overflow can still reach a VR user (p.12).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "White - IC used for basic defense of cybernetic"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "equipped to deal more than Moderate"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheet.js",
+          "line": 25,
+          "snippet": "White: ['ARis','Authenticator','Crippler','Gemini','Looper','Mr. Medkit','Scrambler','Tracker'],"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#145",
@@ -17012,7 +18933,28 @@
       ],
       "hash": "ec962acdec",
       "text": "- **Gray** — full cybercombat capability, and can permanently damage a decker's actual deck (burn\n  MPCP or utility slots). Still can't reach the decker's body directly. Needs the host's\n  Mainframe Support module.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "Gray - IC fully capable of engaging other"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "module is required to include Gray, or Black IC (see"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheet.js",
+          "line": 26,
+          "snippet": "Gray:  ['Blaster','Dataworm','Hydra','Killer','Tar Baby'],"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#146",
@@ -17023,7 +18965,22 @@
       ],
       "hash": "fa7c191de9",
       "text": "- **Black** — the only grade that can hurt the decker's real body directly, and it's legally\n  allowed to. Also needs Mainframe Support.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "Black - IC capable of dealing direct (possibly"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheet.js",
+          "line": 27,
+          "snippet": "Black: ['Ripper','Sparky'],"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#147",
@@ -17034,7 +18991,24 @@
       ],
       "hash": "a273c9233a",
       "text": "A sample of named agents from the book, by grade *(MDF p.34)*:",
-      "verdict": null
+      "verdict": "match",
+      "note": "MDF p.34 prints no page footer in either text layer; the page image shows p.34, and the table is headed \"AVAILABLE AGENTS\", which stands in for the footer here.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 34,
+          "printedPage": 34,
+          "quote": "ARis White Authenticator White",
+          "ocrPrinted": "AVAILABLE AGENTS"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheet.js",
+          "line": 25,
+          "snippet": "White: ['ARis','Authenticator','Crippler','Gemini','Looper','Mr. Medkit','Scrambler','Tracker'],"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#148",
@@ -17045,7 +19019,8 @@
       ],
       "hash": "a682d6bfba",
       "text": "| Grade | Examples |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#149",
@@ -17056,7 +19031,24 @@
       ],
       "hash": "94cc3ffc4d",
       "text": "| White | ARis, Authenticator, Crippler, Gemini, Looper, Mr. Medkit, Scrambler, Tracker |",
-      "verdict": null
+      "verdict": "match",
+      "note": "Checked against p.34 (TODO 200). MDF p.34 prints no page footer in either text layer; the page image shows p.34, and the table is headed \"AVAILABLE AGENTS\", which stands in for the footer here.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 34,
+          "printedPage": 34,
+          "quote": "ARis White Authenticator White",
+          "ocrPrinted": "AVAILABLE AGENTS"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheet.js",
+          "line": 25,
+          "snippet": "White: ['ARis','Authenticator','Crippler','Gemini','Looper','Mr. Medkit','Scrambler','Tracker'],"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#150",
@@ -17067,7 +19059,24 @@
       ],
       "hash": "c52f42b1dd",
       "text": "| Gray | Blaster, Dataworm, Hydra, Killer, Tar Baby |",
-      "verdict": null
+      "verdict": "match",
+      "note": "MDF p.34 prints no page footer in either text layer; the page image shows p.34, and the table is headed \"AVAILABLE AGENTS\", which stands in for the footer here.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 34,
+          "printedPage": 34,
+          "quote": "Blaster Gray Crippler White Dataworm Gray",
+          "ocrPrinted": "AVAILABLE AGENTS"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheet.js",
+          "line": 26,
+          "snippet": "Gray:  ['Blaster','Dataworm','Hydra','Killer','Tar Baby'],"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#151",
@@ -17078,7 +19087,24 @@
       ],
       "hash": "29e8b80b68",
       "text": "| Black | Ripper, Sparky |",
-      "verdict": null
+      "verdict": "match",
+      "note": "MDF p.34 prints no page footer in either text layer; the page image shows p.34, and the table is headed \"AVAILABLE AGENTS\", which stands in for the footer here.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 34,
+          "printedPage": 34,
+          "quote": "Ripper Black Scrambler White Sparky Black",
+          "ocrPrinted": "AVAILABLE AGENTS"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EICSheet.js",
+          "line": 27,
+          "snippet": "Black: ['Ripper','Sparky'],"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#152",
@@ -17089,7 +19115,22 @@
       ],
       "hash": "68a0c74762",
       "text": "**Initiative** for IC and Agents comes from the *host's* Security Tier, not their own stats:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 36,
+          "printedPage": 36,
+          "quote": "Initiative = Host's Security Tier"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 120,
+          "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#153",
@@ -17100,7 +19141,8 @@
       ],
       "hash": "bada7e7466",
       "text": "| Host Security Tier | Initiative |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#154",
@@ -17111,7 +19153,22 @@
       ],
       "hash": "d9280022a4",
       "text": "| Ivory | Agent's Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 36,
+          "printedPage": 36,
+          "quote": "Initiative = Host's Security Tier Ivory = Agent's Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 120,
+          "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#155",
@@ -17122,7 +19179,22 @@
       ],
       "hash": "9c6bb6e114",
       "text": "| Blue | 1D6 + Agent's Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 36,
+          "printedPage": 36,
+          "quote": "Ivory = Agent's Rating Blue = 1d6 +Agent's Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 120,
+          "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#156",
@@ -17133,7 +19205,22 @@
       ],
       "hash": "f4ffe942b1",
       "text": "| Green | 2D6 + Agent's Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 36,
+          "printedPage": 36,
+          "quote": "Blue = 1d6 +Agent's Rating Green = 2d6 +Agent's Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 120,
+          "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#157",
@@ -17144,7 +19231,22 @@
       ],
       "hash": "cf24dd397b",
       "text": "| Orange | 3D6 + Agent's Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 36,
+          "printedPage": 36,
+          "quote": "Green = 2d6 +Agent's Rating Orange = 3d6 +Agent's Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 120,
+          "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#158",
@@ -17155,7 +19257,22 @@
       ],
       "hash": "614786edea",
       "text": "| Red and above | 4D6 + Agent's Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 36,
+          "printedPage": 36,
+          "quote": "Orange = 3d6 +Agent's Rating Red+ = 4d6 +Agent's Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 120,
+          "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#159",
@@ -17166,7 +19283,22 @@
       ],
       "hash": "e0309e6abd",
       "text": "*(MDF p.36)* Their **Firewall equals their host's Security Threshold** — there's no separate IC\nstat for it. Agents automatically know Computer and Cybercombat at their own Rating and share\ntheir host's memory and active utilities.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 36,
+          "printedPage": 36,
+          "quote": "Firewall = Host/Device's Security"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 152,
+          "snippet": "return host.system.securityTierThreshold ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#160",
@@ -17177,7 +19309,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking-defragged.md#161",
@@ -17188,7 +19321,22 @@
       ],
       "hash": "1b66a2a4e0",
       "text": "## Utilities *(MDF p.29–32)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 28,
+          "printedPage": 28,
+          "quote": "Utilities are specialized programs that can be booted"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/analyze.sr3e-prog-0002.json",
+          "line": 11,
+          "snippet": "\"category\": \"Offensive\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#162",
@@ -17199,7 +19347,28 @@
       ],
       "hash": "721ff3efb6",
       "text": "Utilities load into a deck's numbered utility slots, and most either lower a target number for\nthe user or raise one for whoever's targeting them; **degradable** utilities lose a point of\nrating every time they're actually used, and eventually need reloading.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 29,
+          "printedPage": 29,
+          "quote": "Programs marked as Degradable can be utilized"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 29,
+          "printedPage": 29,
+          "quote": "so reduces the active program's rating by 1 (or"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/armor.sr3e-prog-0003.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#163",
@@ -17210,7 +19379,8 @@
       ],
       "hash": "e29bbc2026",
       "text": "| Utility | Type | What it does |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/decking-defragged.md#164",
@@ -17221,7 +19391,22 @@
       ],
       "hash": "846fca0aa2",
       "text": "| Analyze | Offensive | Lowers your TN on Search and Render |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 30,
+          "printedPage": 30,
+          "quote": "An Analyze program decreases the user's target"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/analyze.sr3e-prog-0002.json",
+          "line": 11,
+          "snippet": "\"category\": \"Offensive\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#165",
@@ -17232,7 +19417,22 @@
       ],
       "hash": "d939fe22b6",
       "text": "| Armor | Operational, degradable | Soaks Overload Damage instead of your Matrix CM |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 30,
+          "printedPage": 30,
+          "quote": "An Armor program may be used to soak Overload"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/armor.sr3e-prog-0003.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#166",
@@ -17243,7 +19443,22 @@
       ],
       "hash": "7004e67931",
       "text": "| Attack | Combat | Deals Overload (or, for the nastiest versions, direct Biofeedback) damage in cybercombat |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 30,
+          "printedPage": 30,
+          "quote": "Attack programs are Operational combat programs"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/attack.sr3e-prog-0004.json",
+          "line": 11,
+          "snippet": "\"category\": \"Combat\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#167",
@@ -17254,7 +19469,22 @@
       ],
       "hash": "7b9e51c1a6",
       "text": "| Baby Monitor | Operational, degradable | Lets you check your own Overwatch level via Scrub Datastream |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 30,
+          "printedPage": 30,
+          "quote": "Baby Monitor is an operational program designed"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/baby-monitor.sr3e-prog-0005.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#168",
@@ -17265,7 +19495,22 @@
       ],
       "hash": "f99613417d",
       "text": "| Biofeedback Filtering | Operational, degradable | Soaks Biofeedback damage instead of your real condition monitor |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 30,
+          "printedPage": 30,
+          "quote": "A Biofeedback Filtering program may be used to"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/biofeedback-filtering.sr3e-prog-0006.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#169",
@@ -17276,7 +19521,22 @@
       ],
       "hash": "2bf019fb20",
       "text": "| Browse | Offensive | Lowers your TN on any Index prompt |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 30,
+          "printedPage": 30,
+          "quote": "A Browse program decreases the user's target number"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/browse.sr3e-prog-0007.json",
+          "line": 11,
+          "snippet": "\"category\": \"Offensive\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#170",
@@ -17287,7 +19547,22 @@
       ],
       "hash": "cc5a04c6b9",
       "text": "| Decrypt | Offensive | Lowers your TN cracking Encryption |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 30,
+          "printedPage": 30,
+          "quote": "A Decrypt program decreases the user's target number"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/decrypt.sr3e-prog-0008.json",
+          "line": 11,
+          "snippet": "\"category\": \"Offensive\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#171",
@@ -17298,7 +19573,22 @@
       ],
       "hash": "093aa84b0f",
       "text": "| Encrypt | Operational | Lets you Encrypt a target file or datastream |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 31,
+          "printedPage": 31,
+          "quote": "An Encrypt program is an operational program"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/encrypt.sr3e-prog-0009.json",
+          "line": 11,
+          "snippet": "\"category\": \"Operational\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#172",
@@ -17309,7 +19599,22 @@
       ],
       "hash": "57fff16219",
       "text": "| Evasion | Operational, degradable | Lets you go Hidden even while Link-Locked |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 31,
+          "printedPage": 31,
+          "quote": "An Evasion program allows the user to utilize the"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/evasion.sr3e-prog-0010.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#173",
@@ -17320,7 +19625,22 @@
       ],
       "hash": "2e4475ff2f",
       "text": "| Exploit | Offensive, degradable | Lowers your TN on Access Node |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 31,
+          "printedPage": 31,
+          "quote": "An Exploit program decreases the user's target"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/exploit.sr3e-prog-0011.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#174",
@@ -17331,7 +19651,22 @@
       ],
       "hash": "b190990a59",
       "text": "| Jackpot | Offensive, degradable | Lowers your TN on Siphon Paydata |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 31,
+          "printedPage": 31,
+          "quote": "A Jackpot program decreases the user's target number"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/jackpot.sr3e-prog-0012.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#175",
@@ -17342,7 +19677,22 @@
       ],
       "hash": "ada63d8032",
       "text": "| Jamboree | Offensive | Lowers your TN on Jam Signal |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 31,
+          "printedPage": 31,
+          "quote": "A Jamboree program decreases the user's target"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/jamboree.sr3e-prog-0013.json",
+          "line": 11,
+          "snippet": "\"category\": \"Offensive\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#176",
@@ -17353,7 +19703,22 @@
       ],
       "hash": "29d52dc4df",
       "text": "| Kill Switch | Offensive | Lowers your TN disarming a Databomb |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 31,
+          "printedPage": 31,
+          "quote": "A Kill Switch program decreases the user's target"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/kill-switch.sr3e-prog-0014.json",
+          "line": 11,
+          "snippet": "\"category\": \"Offensive\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#177",
@@ -17364,7 +19729,23 @@
       ],
       "hash": "f1b5c63a01",
       "text": "| Lock-On | Offensive, operational | Lowers your TN on Trace Signal; a single success starts a Link-Lock |",
-      "verdict": null
+      "verdict": "match",
+      "note": "The book marks it Offensive and Operational; the pack carries Offensive.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 31,
+          "printedPage": 31,
+          "quote": "The Lock-On program decreases the user's target"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/lock-on.sr3e-prog-0015.json",
+          "line": 11,
+          "snippet": "\"category\": \"Offensive\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#178",
@@ -17375,7 +19756,22 @@
       ],
       "hash": "f9566809cd",
       "text": "| Medic | Offensive, degradable | Lowers your TN repairing another icon's Matrix CM |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 31,
+          "printedPage": 31,
+          "quote": "A Medic program decreases the user's target numbers"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/medic.sr3e-prog-0016.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#179",
@@ -17386,7 +19782,23 @@
       ],
       "hash": "842f458419",
       "text": "| Mirrors | — degradable | Lowers your TN resisting a System Sweep or an agent's Authenticate ability |",
-      "verdict": null
+      "verdict": "match",
+      "note": "The book gives Mirrors no type; the pack files it as Defensive.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 31,
+          "printedPage": 31,
+          "quote": "A Mirrors program decreases the user's target"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/mirrors.sr3e-prog-0017.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#180",
@@ -17397,7 +19809,22 @@
       ],
       "hash": "745d5ed280",
       "text": "| Read/Write | Offensive | Lowers your TN on datafile prompts (Access, Duplicate/Download, Edit/Upload) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 31,
+          "printedPage": 31,
+          "quote": "The Read/Write program decreases the user's target"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/read-write.sr3e-prog-0018.json",
+          "line": 11,
+          "snippet": "\"category\": \"Offensive\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#181",
@@ -17408,7 +19835,22 @@
       ],
       "hash": "995aefd6ac",
       "text": "| Redirect | Defensive, degradable | Raises the TN for anyone Trace Signal-ing you |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 31,
+          "printedPage": 31,
+          "quote": "A Redirect program increases the target number by its"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/redirect.sr3e-prog-0019.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#182",
@@ -17419,7 +19861,22 @@
       ],
       "hash": "7106e5dc47",
       "text": "| Saboteur | Operational | Lets you plant a Databomb on a target |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 32,
+          "printedPage": 32,
+          "quote": "A Saboteur program is an operational program"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/saboteur.sr3e-prog-0020.json",
+          "line": 11,
+          "snippet": "\"category\": \"Operational\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#183",
@@ -17430,7 +19887,22 @@
       ],
       "hash": "a8c9fdf742",
       "text": "| Shield | Operational, degradable | Soaks hardware-damaging IC attacks instead of your actual deck |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 32,
+          "printedPage": 32,
+          "quote": "A Shield program may be used to mitigate the"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/shield.sr3e-prog-0021.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#184",
@@ -17441,7 +19913,22 @@
       ],
       "hash": "8d3bf15312",
       "text": "| Signal Booster | Offensive | Lowers your TN on Send Transmission |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 32,
+          "printedPage": 32,
+          "quote": "Signal Booster program decreases the user's"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/signal-booster.sr3e-prog-0022.json",
+          "line": 11,
+          "snippet": "\"category\": \"Offensive\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#185",
@@ -17452,7 +19939,22 @@
       ],
       "hash": "01712e8016",
       "text": "| Sleaze | Operational, degradable | Passes harmlessly through a barrier at or below its rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 32,
+          "printedPage": 32,
+          "quote": "A Sleaze program allows the user to harmlessly pass-"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/sleaze.sr3e-prog-0023.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#186",
@@ -17463,7 +19965,22 @@
       ],
       "hash": "d8aa5e6d51",
       "text": "| Slow | Combat | Drains an enemy icon's Initiative instead of dealing damage |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 32,
+          "printedPage": 32,
+          "quote": "Slow is a specialized combat program designed to bog"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/slow.sr3e-prog-0024.json",
+          "line": 11,
+          "snippet": "\"category\": \"Combat\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#187",
@@ -17474,7 +19991,22 @@
       ],
       "hash": "3bfc5489c0",
       "text": "| Smoke Screen | Defensive, degradable | Raises the TN for anyone Search and Render-ing you |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 32,
+          "printedPage": 32,
+          "quote": "A Smoke Screen program increases the target number"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/smoke-screen.sr3e-prog-0025.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#188",
@@ -17485,7 +20017,22 @@
       ],
       "hash": "5896f1e814",
       "text": "| Snoop | Offensive | Lowers your TN on Tap Datastream or Spoof Datastream |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 32,
+          "printedPage": 32,
+          "quote": "A Snoop program decreases the user's target numbers"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/snoop.sr3e-prog-0026.json",
+          "line": 11,
+          "snippet": "\"category\": \"Offensive\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#189",
@@ -17496,7 +20043,22 @@
       ],
       "hash": "b823b60d18",
       "text": "| Suppression | Operational, degradable | Lets you crash an icon without gaining Overwatch for it |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 32,
+          "printedPage": 32,
+          "quote": "The Suppression program may be utilized whenever"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/suppression.sr3e-prog-0027.json",
+          "line": 14,
+          "snippet": "\"degradable\": true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#190",
@@ -17507,7 +20069,28 @@
       ],
       "hash": "ccb8bc6779",
       "text": "Beyond programs, two other utility types exist: **passcodes**, which grant automatic, no-roll\nmarks on whatever they're keyed to, and **protocols**, unusual GM-defined applications (the book\ngives a few examples, like one that purges an infiltrating agent or one that buys a convergent\ndecker extra time before the trace lands).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 28,
+          "printedPage": 28,
+          "quote": "Passcodes allow users to access PLTGs, Private"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 29,
+          "printedPage": 29,
+          "quote": "Protocols represent unorthodox applications"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mdf-programs/passcode.sr3e-prog-0001.json",
+          "line": 10,
+          "snippet": "\"type\": \"Passcode\","
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#191",
@@ -17518,7 +20101,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking-defragged.md#192",
@@ -17529,7 +20113,8 @@
       ],
       "hash": "b57eaf6c24",
       "text": "## Doing it in The 2nd Chumming (Foundry)",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#193",
@@ -17540,7 +20125,8 @@
       ],
       "hash": "49af45c821",
       "text": "### Choosing the ruleset",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#194",
@@ -17551,7 +20137,8 @@
       ],
       "hash": "5d2de6e74a",
       "text": "A world setting, **Matrix Ruleset** (under Foundry's Configure Settings), switches between\n**\"Matrix Defragged v2\"** (the default, described on this page) and **\"Orthodox SR3 Matrix\"**.\nChanging it needs a full Foundry restart, and the GM sees a warning that switching mid-campaign\ncould break things — this is a session-zero decision, not a mid-run one.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/decking-defragged.md#195",
@@ -17562,7 +20149,8 @@
       ],
       "hash": "a6b48c540f",
       "text": "### Getting on the Matrix",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#196",
@@ -17573,7 +20161,8 @@
       ],
       "hash": "10132e4464",
       "text": "On the **Matrix** tab of a character or NPC sheet:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/decking-defragged.md#197",
@@ -17584,7 +20173,8 @@
       ],
       "hash": "304d883c10",
       "text": "- **User Mode buttons** — `TRM`, `AR`, `VR-Cold`, `VR-Hot` — set your Matrix mode. Clicking one\n  opens an \"Enter Matrix\" dialog to pick which **host actor** you're connecting to; confirming\n  sets both the mode and your active host. Clicking the same mode again disconnects you and\n  drops you from that host's roster. Switching into either VR mode while driving a vehicle in\n  rigger-control mode automatically kicks the vehicle back to remote control, since the two are\n  mutually exclusive.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/decking-defragged.md#198",
@@ -17595,7 +20185,8 @@
       ],
       "hash": "db12cfeae1",
       "text": "- **Cyberdecks** are items in your inventory. The Matrix tab lists yours (name, MPCP, Firewall,\n  Response) with an **Equip** toggle. The equipped deck shows its full stat block — MPCP,\n  Firewall, Response, memory used/total, free utility slots, transfer rate, Flux rating, your\n  Hacking Pool bonus, and your Matrix Initiative — plus its own 10-box Matrix condition track.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/decking-defragged.md#199",
@@ -17606,7 +20197,8 @@
       ],
       "hash": "6221052709",
       "text": "- **Programs** are also items; drag one onto a numbered utility slot on your deck to load it. A\n  slot can be marked **burned** if an attack knocks it out, or ejected to swap the program out.\n  Loaded programs are rolled straight from their slot (hold Shift for physical dice).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/decking-defragged.md#200",
@@ -17617,7 +20209,8 @@
       ],
       "hash": "73f1037cc4",
       "text": "### Node tracking and prompts",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#201",
@@ -17628,7 +20221,22 @@
       ],
       "hash": "445def1bce",
       "text": "While connected to a host, the Matrix tab shows which node you're in, a **Link-Locked** flag, and\nyour current marks as removable chips — plus a manual \"add a mark\" option for anything the GM\nrules outside the normal roll. Picking a node lists that node's available prompts, each flagged\nfor whether failing it raises Overwatch and whether succeeding grants a mark, with a one-click\n**Use** button that rolls it.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 15,
+          "printedPage": 15,
+          "quote": "Once a user has successfully acquired a mark on a"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EHostSheet.js",
+          "line": 46,
+          "snippet": "const _ACCESS_PROMPT = { name:'Access Node', action:'Hacking', test:'Hacking vs Sys/Sec', requiresMark:false, overwatchOnFail:true, grantsAccess:true,"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#202",
@@ -17639,7 +20247,8 @@
       ],
       "hash": "1b4a54904b",
       "text": "### Rolling a hacking action",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#203",
@@ -17650,7 +20259,38 @@
       ],
       "hash": "526b667507",
       "text": "A **Hacking Action** button (visible once you're connected) opens a dialog pre-filled with your\nHacking or Computer rating, your available Hacking Pool, the connected host, a default TN drawn\nfrom the host's System Rating (plus any deck-damage or host-alert penalty already in effect), its\nSecurity Threshold, a field to allocate Hacking Pool dice, and a checkbox — on by default — to\nraise Overwatch automatically if you miss the threshold. Rolling it compares your successes to\nthe threshold exactly as described above; falling short with that box checked posts an Overwatch\nwarning against the host and bumps its tracked total by one. No Hacking or Computer skill at all\nroutes you through the system's usual Default Table first.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Roll the user's Hacking skill dice, augmented by"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "number of successes are equal-to or greater, the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 889,
+          "snippet": "const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 890,
+          "snippet": "const defaultThresh    = primaryHost?.system.securityTierThreshold ?? 1;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 4578,
+          "snippet": "if (successes < hac.securityThreshold) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#204",
@@ -17661,7 +20301,8 @@
       ],
       "hash": "d39eba31c5",
       "text": "### Cybercombat",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#205",
@@ -17672,7 +20313,22 @@
       ],
       "hash": "4123f22ffe",
       "text": "A **Cybercombat** button lets you target anyone sharing your host connection — other connected\ndeckers, deployed IC, or agents — and posts a two-sided card for the exchange. Each side's own\nhalf shows their skill, available Hacking Pool, TN, and damage code, editable only by that side; a\nGM-only resolve button settles things if someone goes AFK. Resolving the card charges each side's\nHacking Pool properly (both attacker and defender, through the same GM-routed pool spend used\nelsewhere in this system, so it works correctly even from a non-owning client) and rolls only the\ndice actually paid for. A degradable attack program used in the exchange loses a point of rating\neach time, and crashes outright once it would drop below 1.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "Pool, against a base target number 4, modified"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 388,
+          "snippet": "skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.standingTN(actor),"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#206",
@@ -17683,7 +20339,8 @@
       ],
       "hash": "1cd04603f8",
       "text": "### Dumpshock",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#207",
@@ -17694,7 +20351,29 @@
       ],
       "hash": "bc22a23016",
       "text": "A **Dumpshock** button (shown while in either VR mode) is a manual trigger for a GM or player to\nuse whenever the fiction calls for an abrupt disconnection — a reboot, a cut connection, a power\nloss. It opens a small dialog to pick a connected host (which fills in Power from that host's\nSystem Rating) or set Power by hand, then posts a Serious biofeedback announcement — Physical for\nVR-Hot, Stun for VR-Cold — with a resist button. As everywhere else in this system, the roll only\nannounces the damage; the GM still clicks the wound boxes.",
-      "verdict": null
+      "verdict": "match",
+      "note": "The resist roll is Willpower with no armour — the maintainer's ruling.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "The user must immediately resist Serious"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "VR-Hot users to Physical. The Biofeedback"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1215,
+          "snippet": "stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#208",
@@ -17705,7 +20384,8 @@
       ],
       "hash": "061ffa4d7e",
       "text": "### Host sheets, Security Sheaf, and IC",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#209",
@@ -17716,7 +20396,22 @@
       ],
       "hash": "edaa1d45cc",
       "text": "A **host** is its own actor type with a dedicated sheet covering its node layout, its Security\nSheaf, its I/O ports, and its roster of connected users and agents. The Security Sheaf tab sets\nthe host's Security Tier (which fills in the matching Threshold automatically) and shows its\n10-box Overwatch track; the GM can seed a standard set of Trigger Steps, assign specific IC to\neach one, and deploy that IC into the current encounter when a step fires. **IC** and **Agent**\nactors get their own sheet type, tracking Rating, grade (White/Gray/Black), and their own Matrix\ncondition track — an Agent additionally names the actor operating it, whose loaded attack program\nsupplies its damage. Any IC flagged as deployed to a host becomes a valid cybercombat target for\neveryone connected there.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "module is required to include Gray, or Black IC (see"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 120,
+          "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#210",
@@ -17727,7 +20422,22 @@
       ],
       "hash": "aee9dc2bca",
       "text": "{: .note }\n> Right now, only the first Overwatch trigger — a failed Hacking Test — raises the tracker\n> automatically. Crashing an icon without Suppression, live Trigger Step countdowns, and the\n> Suppression utility itself are still manual, GM-adjudicated calls from the Security Sheaf tab\n> (tracked as open work, TODO 128).",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "The guide's note says the same (TODO 128).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Crashing an icon without Suppressing it"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "suppression|Suppression",
+          "path": "scripts/documents"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#211",
@@ -17738,7 +20448,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/decking-defragged.md#212",
@@ -17749,7 +20460,8 @@
       ],
       "hash": "ecda77397d",
       "text": "## Worked example",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading"
     },
     {
       "id": "rules/decking-defragged.md#213",
@@ -17760,7 +20472,23 @@
       ],
       "hash": "aa53eb5e4a",
       "text": "**Voss** decks with Intelligence 4 and a cyberdeck running **MPCP 8, Firewall 4, Response 1**,\nand Hacking 5. Her Hacking Pool is Intelligence 4 + ⌊8 ÷ 3⌋ = 4 + 2 = **6**. She's running\n**VR-Hot**, so her Matrix Initiative gets the Response bonus: +2 Reaction and one extra die on\ntop of her usual 1D6.",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "The example follows the book: INT 4 + ⌊8 ÷ 3⌋ = 6. The system would give Voss ⌊(4 + 8) ÷ 3⌋ = 4 (see #32). The VR-Hot Response part is right.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 11,
+          "printedPage": 11,
+          "quote": "Intelligence + (MPCP Rating /3 rounded"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2485,
+          "snippet": "? Math.max(0, Math.floor(((attr.intelligence?.value ?? 0) + mpcp) / 3))"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#214",
@@ -17771,7 +20499,8 @@
       ],
       "hash": "5f80138d5c",
       "text": "She jacks into a corporate research host: **System Rating 7, Security Tier Red (Threshold 4)**.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "worked-example setup; states no rule"
     },
     {
       "id": "rules/decking-defragged.md#215",
@@ -17782,7 +20511,22 @@
       ],
       "hash": "e160526ca5",
       "text": "1. **First hack.** She commits 3 Hacking Pool dice to her Hacking 5, rolling 8 dice against\n   **TN 7** (the host's System Rating), and gets 5 successes.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "Roll the user's Hacking skill dice, augmented by"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 889,
+          "snippet": "const defaultTN        = (primaryHost?.system.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#216",
@@ -17793,7 +20537,22 @@
       ],
       "hash": "9b58528619",
       "text": "2. **Check the Threshold.** 5 is at or above 4, so she succeeds and picks up a mark on the node\n   she's targeting. No Overwatch gained.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "number of successes are equal-to or greater, the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 4578,
+          "snippet": "if (successes < hac.securityThreshold) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#217",
@@ -17804,7 +20563,27 @@
       ],
       "hash": "5aeef0eb0e",
       "text": "3. **Second hack, pushing further** in the same Combat Turn, committing her remaining 3 Hacking\n   Pool dice: 8 dice against TN 7 nets her only 3 successes this time — short of the Red host's\n   Threshold 4. The hack fails, and her **Overwatch** on this host rises from 0 to **1**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 23,
+          "printedPage": 23,
+          "quote": "hack they accrue a point of Overwatch. The"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 4578,
+          "snippet": "if (successes < hac.securityThreshold) {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1373,
+          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId) {"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#218",
@@ -17815,7 +20594,28 @@
       ],
       "hash": "92d254f816",
       "text": "4. **If her Overwatch ever reached 10**, Convergence would follow: the GM might trigger\n   Dumpshock at Power 7 (the host's System Rating) — Physical for her, since she's in VR-Hot —\n   leak pieces of her session, and send security to her jackpoint.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 24,
+          "printedPage": 24,
+          "quote": "The user is dumped from the Matrix, and"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 27,
+          "printedPage": 27,
+          "quote": "equal to the System Rating of the grid or host"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1215,
+          "snippet": "stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)"
+        }
+      ]
     },
     {
       "id": "rules/decking-defragged.md#219",
@@ -17826,7 +20626,34 @@
       ],
       "hash": "ab07b0e376",
       "text": "**If instead an IC engaged her in cybercombat:** say a Gray IC (Rating 5) attacks. Both sides roll\nCybercombat plus Hacking Pool against the base TN 4. If Voss nets 3 successes over the IC's\ntotal, her attack utility's Damage Level steps up once (two successes per step). The IC then\nresists with its own Rating against a TN equal to her attack's Power minus its Firewall (its\nhost's Security Threshold — 4 here), soaking off Damage Levels two successes at a time.",
-      "verdict": null
+      "verdict": "match",
+      "note": "The IC resists with its Rating against the attack's Power less its Firewall (the host's threshold): matches p.26 and p.36.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "Pool, against a base target number 4, modified"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "Roll the target icon's System Rating (or"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 388,
+          "snippet": "skillDice: ccRating, hackPoolAvail, tn: 4 + mcmPenalty + defTnMod + (attacking ? SR3EActor.woundTN(actor) : 0) + SR3EActor.standingTN(actor),"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 152,
+          "snippet": "return host.system.securityTierThreshold ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/decking.md#1",
