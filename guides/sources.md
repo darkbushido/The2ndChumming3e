@@ -13,6 +13,7 @@ nav_order: 99
 | **M&M** | *Man & Machine: Cyberware* |
 | **MitS** | *Magic in the Shadows* |
 | **Matrix** | *Matrix* |
+| **MDF** | *The Matrix Defragged v2* (fan-made replacement for the core Matrix chapter) |
 | **R3** | *Rigger 3 Revised* |
 | **SRComp** | *Shadowrun Companion* |
 | **MJLBB** | *Mr. Johnson's Little Black Book* |

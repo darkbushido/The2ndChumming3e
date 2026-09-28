@@ -67,6 +67,7 @@ This folder has no game code, and none of it ships in the system's zip. It's Mar
 | M&M | Man & Machine: Cyberware | yes | **2** |
 | MitS | Magic in the Shadows | yes | **1** |
 | Matrix | Matrix | yes | **1** |
+| MDF | The Matrix Defragged v2 (fan-made) | yes | **0** |
 | MJLBB | Mr. Johnson's Little Black Book | yes | **1** |
 | SOTA64 | State of the Art 2064 (in `Supplements\`) | yes | **1** |
 | R3 | Rigger 3 Revised | poor OCR | check each page |

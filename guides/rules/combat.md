@@ -318,6 +318,9 @@ Casting a spell is a **Complex Action**. *(SR3 p.107)*
   and **hot ASIST**, which you need for Response Increase and Hacking Pool.
   *(Matrix p.18)*
 
+Full rules and how to do it in the system: [Decking (Matrix Defragged)](../decking-defragged/),
+this table's ruleset, or [Decking (SR3 core)](../decking/) for the Orthodox rules.
+
 ---
 
 ## Vehicle combat & rigging  *(summary)*
@@ -346,3 +349,5 @@ Casting a spell is a **Complex Action**. *(SR3 p.107)*
 - **Rigger damage**: if the vehicle takes Serious damage, the jacked-in
   rigger resists **6M** Physical. If it's destroyed, **6S**. This is resisted
   with **Willpower**, and no pool dice can be used. *(SR3 p.145)*
+
+Full rules: [Rigging](../rigging/).
