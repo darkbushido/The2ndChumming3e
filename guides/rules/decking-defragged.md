@@ -95,7 +95,7 @@ grid's own Sys/Sec numbers as a stand-in host. A few examples:
 | :--- | :---: | :--- |
 | Aztlan | 8 | Orange (3) |
 | California Free State | 6 | Green (2) |
-| CAS | 6 | Green (3) |
+| CAS | 6 | Green (2) |
 | Québec | 6 | Green (2) |
 | Tir Tairngire | 7 | Orange (3) |
 | Tsimshian | 8 | Orange (3) |
@@ -130,7 +130,7 @@ shouldn't (an ✗ below) costs a point of Overwatch; some successful prompts als
 | Attack an Icon | Cybercombat vs Cybercombat | | |
 | Boot Utility | Computer vs Utility Rating | | |
 | Configure Protections | Computer vs System Rating | | |
-| Crack Protections | Passcode/Hacking vs Sys/Sec of the protection | | |
+| Crack Protections | Passcode/Hacking vs Sys/Sec of the protection | ✗ | |
 | Jam Signal | Computer vs System Rating | | |
 | Jump Grid/Host | Computer vs System Rating | | |
 | Logon to System | Computer vs System Rating | | |

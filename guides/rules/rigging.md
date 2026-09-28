@@ -244,10 +244,11 @@ own target-number penalty, Initiative penalty and Speed reduction.
 
 | Damage Level | Target number modifier | Initiative penalty | Speed reduction |
 | :--- | :---: | :---: | :---: |
-| Light | +1 | — | none |
-| Moderate | +2 | −1 | 25% |
-| Serious | +3 | −2 | 50% |
-| Destroyed | — | −3 | vehicle inoperable |
+| Light | +1 | −1 | none |
+| Moderate | +2 | −2 | 25% |
+| Serious | +3 | −3 | 50% |
+
+A vehicle that reaches **Destroyed** is no longer operable. *(SR3 p.149)*
 
 The Power of a crash or a ram is the relevant speed, in meters per Combat
 Turn, divided by ten and rounded up.

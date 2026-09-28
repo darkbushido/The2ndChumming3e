@@ -30,8 +30,9 @@ decker directly. *(SR3 p.206)*
 A deck also carries **Hardening**, which blunts damage from the nastiest IC; **Active** and
 **Storage Memory**, which limit how many utility programs can run at once versus just be carried;
 an **I/O Speed** for moving data; and **Response Increase**, the Matrix's answer to wired
-reflexes — each point adds to Reaction and to Matrix Initiative, capped at 3 points and by the
-deck's own MPCP. *(SR3 p.206–207)*
+reflexes — each point adds +2 to Reaction and +1D6 to Matrix Initiative. A deck supports at most
+3 points, and no more than its MPCP ÷ 4 (round down), so a deck of MPCP 3 or less can't run any.
+*(SR3 p.206–207)*
 
 Most ordinary Matrix users aren't running a full cyberdeck at all — they're on a **cyberterminal**
 ("tortoise" in decker slang), a cheaper, weaker rig capped at a low MPCP. The upside: tortoise
@@ -73,7 +74,7 @@ A **System Test** is always a Success Contest: the decker's Computer skill (plus
 committed) against the relevant subsystem rating, opposed by the host's own Security Value rolled
 against the decker's **Detection Factor** — the average of their Masking Rating and any Sleaze
 utility they're running (or half their Masking if they aren't). Whoever nets more successes wins;
-a tie favours the host. *(SR3 p.207, p.209–210)*
+a tie goes to the decker. *(SR3 p.207, p.209–210)*
 
 Getting from grid to host works through **System Access Nodes**, and hosts can be arranged in
 different topologies — a simple open connection straight off a public grid, tiered behind a
@@ -189,9 +190,9 @@ IC comes in three grades:
 
 | Grade | Can reach | Named examples |
 | :--- | :--- | :--- |
-| **White** | Only the decker's on-line icon — attribute damage, dumping, or scrambled data | Cripplers, Probe, Scramble |
-| **Gray** | The decker's actual cyberdeck and utilities, permanently, on top of cybercombat | Blaster, Tar Baby |
-| **Black** | The decker's real body, directly and legally | Killer |
+| **White** | Only the decker's on-line icon — attribute damage, dumping, or scrambled data | Cripplers, Killer, Probe, Scramble, Tar Baby |
+| **Gray** | The decker's actual cyberdeck and utilities, permanently, on top of cybercombat | Blaster, Ripper, Sparky, Tar Pit |
+| **Black** | The decker's real body, directly and legally | Lethal and non-lethal black IC |
 
 Killer IC's damage stages off its Rating, with the **Damage Level set by the host's own security
 code**:
@@ -290,8 +291,8 @@ A **Log On To Host** control picks which host actor you're connected to (and res
 security tally and alert level when you log on or off), and separate buttons set the host's
 **alert level** — No Alert, Passive Alert, or Active Alert. A **Matrix Condition Monitor** — 10
 clickable boxes, plus quick buttons for Light/Moderate/Serious/Deadly damage or healing one box —
-tracks your icon's health; filling it triggers Dumpshock automatically (Power drawn from the
-connected host's Security Value, Stun or Physical depending on your Matrix mode).
+tracks your icon's health; filling it triggers Dumpshock automatically: **Stun**, Power equal to
+the connected host's Security Value, and a level from its Security Code (see Dump Shock above).
 
 ### System Tests and cybercombat
 
