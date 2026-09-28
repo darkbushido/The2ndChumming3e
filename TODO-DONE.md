@@ -7087,4 +7087,20 @@ takes `resistAttr` (#198).
 
 **Ruled 2026-09-27, the maintainer: Willpower** (*"it's a mental issue"*). This matches the rigger
 rule on p.156. All three decker cards now pass `resistAttr: 'willpower'` (`a0139771`), and
-`tests/rigger-shock.test.mjs` checks each one. The Orthodox level and track question is now [#202](TODO.md#202).
+`tests/rigger-shock.test.mjs` checks each one. The Orthodox level and track question is now [#202](#202).
+
+## 202. ✅ Orthodox deck crash: dump shock's level and track — **found 2026-09-27** (fixing #198) · fixed `f40046dc`
+
+The **Orthodox** deck-crash card (SR3 core Matrix) posts the host's Security Value at a flat
+**Serious**, on a track chosen by user mode (VR-Cold Stun, VR-Hot Physical). That is MDF p.27's shape.
+**SR3 p.227**, *Dump Shock*: *"he risks Stun damage from dump shock. The Power of the damage equals the
+host's Security Value … The Damage Level is determined by the host's Security Code"*. The Dump Shock
+Damage Levels table (p.226) gives Blue L, Green M, Orange S, Red D. So under the core rules the damage
+is always **Stun**, and its level comes from the Security Code. The code is at `SR3EActor.js`, the
+`orthodoxMatrixCM` crash branch, and it is pinned to Serious by `tests/matrix-defragged.test.mjs`
+(TODO 119). Needs the maintainer's ruling before changing, since TODO 119 chose Serious for all three cards.
+
+**Ruled 2026-09-28, the maintainer: follow the book's table** (they pasted it: Blue Light, Green
+Moderate, Orange Serious, Red Deadly). The crash card is now always Stun, with the level from
+`SR3EActor.orthoDumpShock` (`f40046dc`). The two Matrix Defragged cards keep MDF's flat Serious.
+Tests: `tests/tables.test.mjs` and the mutant `orthodox-dumpshock-uses-ic-table`.
