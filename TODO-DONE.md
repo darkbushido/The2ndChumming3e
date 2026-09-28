@@ -6980,6 +6980,29 @@ prints (read with `pdftotext -raw`/`-table`, which keep the row). The audit comp
 - `awakened-primer.md`: the mage description ("a discipline of formulae and elements") is the hermetic text on
   p.158, not pp.163-165; the "Land of Promise in Sperethiel" gloss is not on p.321.
 
+## 177. ✅ Astral damage: a dual being's natural armour reduces the Power — **found fixing #132, 2026-09-26** · fixed `e3e5b0cc`
+
+**The book, SR3 p.175:** *"Dual beings with natural physical armor gain the benefits of their armor in
+astral combat; the Power of the attack is reduced by the target's natural armor. Physical armor worn by
+a character has no effect in astral combat."*
+
+**The code:** `SR3EActor.astralSoakTN` deducts **Mystic Armor only**. A troll's natural armour is SR3's
+Dermal Armor, +1 Body (p.56), so it is already in the Body roll and must not be deducted twice. But a
+critter whose natural armour is a rating (the Armor power, e.g. a dual-natured critter with Armor 3) has
+no numeric field anywhere, so nothing is deducted and the GM lowers the TN on the card by hand.
+
+**Wanted:** a stored natural-armour figure for critters (or a parse of the Armor power), deducted from
+the Power on the astral resist card for **dual beings only** (`astralResistPool(...).key === 'body'`),
+alongside Mystic Armor, floored at TN 2. Worn armour stays out.
+
+**Fixed in `e3e5b0cc`; live check passed 2026-09-28 after the restart — `tests/e2e/astral-natural-armor.spec.mjs`.**
+There is a new `system.naturalArmor` (Magic tab → Astral → *Natural armor (astral)*). The astral resist
+card deducts it for a dual being only (Body resists) and names it on the card. Tests:
+`tests/astral-soak.test.mjs` and the mutant `natural-armor-left-out-of-astral`.
+- 🧪 Live, after the restart: give an NPC Natural armor 3 and Dual Natured, then lose an astral combat
+  against it at Power 7. Its resist card reads *Natural armor −3 Power* with TN 4. Set the NPC to
+  Astral Plane and the deduction is gone (TN 7).
+
 ## 193. ✅ The 📒 Ledger records entries on the wrong character — **reported 2026-09-27** · fixed `b42fdbae`
 
 **Cause, confirmed live 2026-09-27:** Foundry's Duplicate (and the GM copy verb `sr3e.actor.create`
