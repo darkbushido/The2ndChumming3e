@@ -6986,3 +6986,24 @@ defaults are factories now, and `tests/ledger.test.mjs` fails on a literal.
 ⚠ **Only the history was wrong, never the numbers**: `system.karma` / `system.nuyen` are each
 character's own field. Ledgers already saved with another character's entries stay that way until a GM
 clears them.
+
+## 200. ✅ Matrix Defragged IC sheet puts five agents in the wrong grade — **found 2026-09-27** (TODO 194) · fixed `6254b072`
+
+> **Done 2026-09-27 on `fix/ic-agent-grades`.** `IC_AGENTS` now follows MDF p.34 (checked against the PDF),
+> and `tests/matrix-defragged.test.mjs` pins all three grades. No migration: no IC has been used in
+> production yet (Lance), so no stored actor carries an old grade.
+
+`SR3EICSheet.IC_AGENTS` (`scripts/sheets/SR3EICSheet.js:24-27`), which fills the agent dropdown by
+grade, disagrees with MDF p.34's "Available Agents" table:
+
+| Agent | Code | MDF p.34 |
+| :--- | :--- | :--- |
+| Crippler, Gemini, Tracker | Gray | **White** |
+| Sparky | Gray | **Black** |
+| Killer | Black | **Gray** |
+
+So a GM fielding White IC can't pick Crippler, Gemini or Tracker. Move them to the book's grades, and
+add a test that pins the table. A world IC actor that already holds one of these names keeps its
+stored grade. Decide whether a migration should touch it (fill blanks, never overwrite). The
+Orthodox lists (`SR3EICSheetOrthodox.js`, `SR3EHostSheet.js:26`) follow SR3 core and are out of
+scope. `guides/rules/decking-defragged.md` already follows the book. This is a bug fix.

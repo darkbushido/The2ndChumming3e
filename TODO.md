@@ -32,7 +32,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**55 open.** 145 done — see [TODO-DONE.md](TODO-DONE.md).
+**54 open.** 146 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -44,7 +44,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [153](#153) Give the 📒 Ledger its own tab on the character sheet<br>[154](#154) 🛒 Buy gear: search the compendium, or drag an item in<br>[190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[192](#192) 💴 Make changing funds easier — a ± button, and giving money to another player<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[198](#198) 🐛 Rigger dump shock doesn't follow the book<br>[199](#199) 🐛 No rigger feedback damage when a rigged vehicle is badly hurt<br>[200](#200) 🐛 Matrix Defragged IC sheet puts five agents in the wrong grade |
+| 🗂 Unsorted | [153](#153) Give the 📒 Ledger its own tab on the character sheet<br>[154](#154) 🛒 Buy gear: search the compendium, or drag an item in<br>[190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[192](#192) 💴 Make changing funds easier — a ± button, and giving money to another player<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[198](#198) 🐛 Rigger dump shock doesn't follow the book<br>[199](#199) 🐛 No rigger feedback damage when a rigged vehicle is badly hurt |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2576,23 +2576,6 @@ checks a VCR-mode vehicle's damage against its pilot.
 Wanted: when a VCR-mode vehicle's condition reaches Serious or Destroyed, post a card offering the
 pilot the 6M/6S Willpower resistance. Offer, never apply. The GM clicks the wound. This is a bug fix.
 Guide: `guides/rules/rigging.md` has a note on this gap; remove it when fixed.
-
-## 200. 🐛 Matrix Defragged IC sheet puts five agents in the wrong grade — **found 2026-09-27** (TODO 194)
-
-`SR3EICSheet.IC_AGENTS` (`scripts/sheets/SR3EICSheet.js:24-27`), which fills the agent dropdown by
-grade, disagrees with MDF p.34's "Available Agents" table:
-
-| Agent | Code | MDF p.34 |
-| :--- | :--- | :--- |
-| Crippler, Gemini, Tracker | Gray | **White** |
-| Sparky | Gray | **Black** |
-| Killer | Black | **Gray** |
-
-So a GM fielding White IC can't pick Crippler, Gemini or Tracker. Move them to the book's grades, and
-add a test that pins the table. A world IC actor that already holds one of these names keeps its
-stored grade. Decide whether a migration should touch it (fill blanks, never overwrite). The
-Orthodox lists (`SR3EICSheetOrthodox.js`, `SR3EHostSheet.js:26`) follow SR3 core and are out of
-scope. `guides/rules/decking-defragged.md` already follows the book. This is a bug fix.
 
 ### 📌 Notes & parked
 
