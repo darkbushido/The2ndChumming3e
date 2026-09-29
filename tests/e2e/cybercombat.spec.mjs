@@ -32,6 +32,9 @@ import {
   clickCardButton, newestCardId, CHAT_LOG, actedLedger, clearChatAll, actorState,
 } from './foundry.mjs';
 
+// MDF p.11: Hacking Pool = Intelligence + ⌊MPCP ÷ 3⌋ — INT 5, MPCP 6 → 7 (0.6.3; was ⌊(5 + 6) ÷ 3⌋ = 3).
+const POOL = 5 + Math.floor(6 / 3);
+
 const ATTACKER = '__TEST Decker Atk';   // Player2
 const DEFENDER = '__TEST Decker Def';   // Player3
 
@@ -98,8 +101,8 @@ test.describe('cybercombat two-corner card', () => {
     // is a precondition rather than setup — assert it took.
     const ap = await equipDeck(janitor.page, ATTACKER);
     const dp = await equipDeck(janitor.page, DEFENDER);
-    expect(ap.hackingPool, 'attacker must have a Hacking Pool to spend').toBe(3);
-    expect(dp.hackingPool, 'defender must have a Hacking Pool to spend').toBe(3);
+    expect(ap.hackingPool, 'attacker must have a Hacking Pool to spend').toBe(POOL);
+    expect(dp.hackingPool, 'defender must have a Hacking Pool to spend').toBe(POOL);
   });
 
   test.afterEach(async ({ janitor }) => {
@@ -196,7 +199,7 @@ test.describe('cybercombat two-corner card', () => {
 
     // Charged the whole pool and no more — never 99, and never negative available.
     await expect.poll(async () => (await actorState(atk.page, ATTACKER)).hackingPoolSpent,
-      { timeout: 25_000 }).toBe(3);
+      { timeout: 25_000 }).toBe(POOL);
     const defAfter = await actorState(atk.page, DEFENDER);
     expect(defAfter.hackingPoolSpent, 'a side submitting 0 pool pays nothing').toBe(0);
   });
