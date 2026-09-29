@@ -120,14 +120,14 @@
   },"17": {
     "doc": "Actions & Combat",
     "title": "Decking  (summary)",
-    "content": ". | Hacking Pool = (Intelligence + MPCP) ÷ 3, rounded down. You can add at most your skill dice from it to a test. It can’t be used on Body or Willpower tests against gray or black IC, or on Etiquette (Matrix). (SR3 p.44) | Matrix Initiative: your persona’s Reaction + 1D6. Each point of Response Increase adds +2 Reaction and +1D6, up to 3 points and no more than MPCP ÷ 4. Wired reflexes and other physical boosts don’t apply. (SR3 p.207, p.223) | Icons get the same Free / Simple / Complex actions. (SR3 p.223) | System Tests: you roll Computer against the relevant subsystem rating (Access, Control, Index, Files, Slave). The host rolls its Security Value against your Detection Factor, and its successes build your security tally, which triggers alerts and IC. (SR3 p.209–210) | Security codes: Blue, Green, Orange, Red. Deckers call the ones off the chart “UV”. (SR3 p.205) | IC (SR3 p.227–230) . | White affects only your icon: crippler, killer, probe, scramble, tar baby. | Gray attacks your deck and utilities: blaster, ripper, sparky, tar pit. | Black attacks you. Against lethal black IC you resist with Body, reduced by Hardening. Hacking Pool can’t be used; Karma Pool can. After black IC hits you, jacking out takes a Complex Action and a Willpower (IC Rating) Test. (SR3 p.230) | . | Tortoises (cyberterminals) can’t be hurt by black IC or dump shock. (SR3 p.208) | Matrix adds cold ASIST, which treats lethal black IC as non-lethal, and hot ASIST, which you need for Response Increase and Hacking Pool. (Matrix p.18) | . ",
+    "content": ". | Hacking Pool = (Intelligence + MPCP) ÷ 3, rounded down. You can add at most your skill dice from it to a test. It can’t be used on Body or Willpower tests against gray or black IC, or on Etiquette (Matrix). (SR3 p.44) | Matrix Initiative: your persona’s Reaction + 1D6. Each point of Response Increase adds +2 Reaction and +1D6, up to 3 points and no more than MPCP ÷ 4. Wired reflexes and other physical boosts don’t apply. (SR3 p.207, p.223) | Icons get the same Free / Simple / Complex actions. (SR3 p.223) | System Tests: you roll Computer against the relevant subsystem rating (Access, Control, Index, Files, Slave). The host rolls its Security Value against your Detection Factor, and its successes build your security tally, which triggers alerts and IC. (SR3 p.209–210) | Security codes: Blue, Green, Orange, Red. Deckers call the ones off the chart “UV”. (SR3 p.205) | IC (SR3 p.227–230) . | White affects only your icon: crippler, killer, probe, scramble, tar baby. | Gray attacks your deck and utilities: blaster, ripper, sparky, tar pit. | Black attacks you. Against lethal black IC you resist with Body, reduced by Hardening. Hacking Pool can’t be used; Karma Pool can. After black IC hits you, jacking out takes a Complex Action and a Willpower (IC Rating) Test. (SR3 p.230) | . | Tortoises (cyberterminals) can’t be hurt by black IC or dump shock. (SR3 p.208) | Matrix adds cold ASIST, which treats lethal black IC as non-lethal, and hot ASIST, which you need for Response Increase and Hacking Pool. (Matrix p.18) | . Full rules and how to do it in the system: Decking (Matrix Defragged), this table’s ruleset, or Decking (SR3 core) for the Orthodox rules. ",
     "url": "/The2ndChumming3e/latest/rules/combat/#decking--summary",
     
     "relUrl": "/rules/combat/#decking--summary"
   },"18": {
     "doc": "Actions & Combat",
     "title": "Vehicle combat &amp; rigging  (summary)",
-    "content": ". | Vehicle Control Rig: each level gives +2 Reaction and +1D6 Initiative while rigging. (SR3 p.301) | Control Pool = Reaction as modified by the VCR. (SR3 p.44) It only works in a vehicle adapted for rigger control. (SR3 p.134) | Driving Tests use the vehicle’s Handling as base TN. A jacked-in rigger subtracts the VCR rating. Vehicle-combat maneuver tables subtract 2 × VCR rating. (SR3 p.134, p.142–144) | Gunnery: mounted weapons use the Gunnery skill and the ordinary ranged-combat rules. Sensor-enhanced gunnery adds half the Sensor rating in dice. (SR3 p.151–152) | Shooting a vehicle: halve the weapon’s Power and drop its Damage Level one step, then subtract vehicle armor. If what’s left doesn’t beat the armor, no damage. Anti-vehicle munitions skip the halving and subtract only half the armor. (SR3 p.149) | Vehicle Damage Resistance: vehicle Body plus Control Pool dice up to the Driving skill, against the modified Power. Riggers may dodge with Control Pool against the vehicle’s Handling. (SR3 p.149) | Crash Tests are required when a vehicle takes Serious damage in a single attack, reaches Destroyed, takes damage from a ram, or brakes harder than Acceleration × 4. The test is a Driving Test against Handling. (SR3 p.147) | Rigger damage: if the vehicle takes Serious damage, the jacked-in rigger resists 6M Physical. If it’s destroyed, 6S. This is resisted with Willpower, and no pool dice can be used. (SR3 p.145) | . ",
+    "content": ". | Vehicle Control Rig: each level gives +2 Reaction and +1D6 Initiative while rigging. (SR3 p.301) | Control Pool = Reaction as modified by the VCR. (SR3 p.44) It only works in a vehicle adapted for rigger control. (SR3 p.134) | Driving Tests use the vehicle’s Handling as base TN. A jacked-in rigger subtracts the VCR rating. Vehicle-combat maneuver tables subtract 2 × VCR rating. (SR3 p.134, p.142–144) | Gunnery: mounted weapons use the Gunnery skill and the ordinary ranged-combat rules. Sensor-enhanced gunnery adds half the Sensor rating in dice. (SR3 p.151–152) | Shooting a vehicle: halve the weapon’s Power and drop its Damage Level one step, then subtract vehicle armor. If what’s left doesn’t beat the armor, no damage. Anti-vehicle munitions skip the halving and subtract only half the armor. (SR3 p.149) | Vehicle Damage Resistance: vehicle Body plus Control Pool dice up to the Driving skill, against the modified Power. Riggers may dodge with Control Pool against the vehicle’s Handling. (SR3 p.149) | Crash Tests are required when a vehicle takes Serious damage in a single attack, reaches Destroyed, takes damage from a ram, or brakes harder than Acceleration × 4. The test is a Driving Test against Handling. (SR3 p.147) | Rigger damage: if the vehicle takes Serious damage, the jacked-in rigger resists 6M Physical. If it’s destroyed, 6S. This is resisted with Willpower, and no pool dice can be used. (SR3 p.145) | . Full rules: Rigging. ",
     "url": "/The2ndChumming3e/latest/rules/combat/#vehicle-combat--rigging--summary",
     
     "relUrl": "/rules/combat/#vehicle-combat--rigging--summary"
@@ -223,706 +223,888 @@
     
     "relUrl": "/hiring/decker/"
   },"32": {
+    "doc": "Decking (Matrix Defragged)",
+    "title": "Decking (Matrix Defragged)",
+    "content": "This table plays Matrix Defragged v2, a fan-made replacement for the core rulebook’s Matrix chapter (SR3 p.199–232). It isn’t an official Shadowrun supplement — it’s a fan rewrite by Brinoceros, built to run faster at the table — but it’s cited here the same way as any other sourcebook: *(MDF p.NN)*, printed page. This system can run either ruleset — Defragged or the core rulebook’s own Matrix chapter, “Orthodox SR3” — as a per-world setting. If your table runs Orthodox instead, see Decking (SR3 core). The two rulesets don’t mix; this page covers Defragged only. | The Matrix in three ideas . | Security Tiers (MDF p.11–12) | . | Getting on the Matrix . | User Modes (MDF p.10) | Skills (MDF p.11) | Hacking Pool (MDF p.11) | Response (MDF p.14) | Logon and getting around (MDF p.8, p.15) | Nodes and their prompts | . | Hacking (MDF p.23) . | What changes the TN (MDF p.14) | Overwatch and the Security Sheaf (MDF p.23–24) | Convergence (MDF p.23–24) | . | Cybercombat (MDF p.26) | Dumpshock (MDF p.27) | IC and Agents (MDF p.24, p.36) | Utilities (MDF p.29–32) | Doing it in The 2nd Chumming (Foundry) . | Choosing the ruleset | Getting on the Matrix | Node tracking and prompts | Rolling a hacking action | Cybercombat | Dumpshock | Host sheets, Security Sheaf, and IC | . | Worked example | . ",
+    "url": "/The2ndChumming3e/latest/rules/decking-defragged/",
+    
+    "relUrl": "/rules/decking-defragged/"
+  },"33": {
+    "doc": "Decking (Matrix Defragged)",
+    "title": "The Matrix in three ideas",
+    "content": ". | Every Matrix-capable device — a host, a cyberdeck, a commlink, a maglock — has a System Rating. That number is the TN for anyone trying to act against it. (MDF p.12) | Every such device also sits at a Security Tier: a colour and a Security Threshold number that measures how hard it is to actually get past. System Rating plus Security Tier is a device’s Sys/Sec. (MDF p.12) | Hacking boils down to one test: roll against the System Rating, then check whether you cleared the Threshold. Fall short, and the system logs a point against you — Overwatch. (MDF p.23) | . Security Tiers (MDF p.11–12) . | Tier | Threshold | What typically runs at this level | . | Ivory | 0 | No Matrix security at all — toys, minor devices | . | Blue | 1 | Low security — public comm booths, bus ticket kiosks, news services, libraries | . | Green | 2 | Average security — small shops, petty criminal outfits, the public Matrix | . | Orange | 3 | Challenging security — sensitive data at mid-size businesses and corp offices | . | Red | 4 | Threatening security — classified sites agencies will kill to protect | . | Black | 5 | Dangerous security — top military, corporate, or government projects | . | Ultraviolet | 6 | Deadly security — the Sixth World’s greatest secrets | . A cyberdeck’s own tier comes from its Firewall Rating, not from a GM assignment. (MDF p.12) . ",
+    "url": "/The2ndChumming3e/latest/rules/decking-defragged/#the-matrix-in-three-ideas",
+    
+    "relUrl": "/rules/decking-defragged/#the-matrix-in-three-ideas"
+  },"34": {
+    "doc": "Decking (Matrix Defragged)",
+    "title": "Getting on the Matrix",
+    "content": "User Modes (MDF p.10) . How you jack in changes your Initiative and what damage can reach your real body: . | Mode | Initiative | If your icon overloads | . | Tortoise Terminal (TRM) | Meat-world Initiative; no Response, but Hacking Pool still works | Immune to biofeedback | . | Augmented Reality (AR) | Meat-world Initiative; no Response, but Hacking Pool still works | Immune to biofeedback | . | VR-Cold | Meat-world Initiative; no Response, but Hacking Pool still works | Stun damage | . | VR-Hot | Its own Matrix Initiative, boosted by Response | Physical damage | . Tortoise adds +2 TN to every Matrix test and cybercombat roll. Only VR-Hot gets true Matrix Initiative and benefits from Response — the other three run on whatever Initiative dice you’d roll in the meat world, full stop. (MDF p.10) . Skills (MDF p.11) . Four Intelligence-linked skills cover the Matrix: Computer (legitimate use — logons, moving around, ordinary prompts; defaults from Electronics), Hacking (illegal or scrutinized action, opposed by the target’s Sys/Sec; defaults from Computer), Cybercombat (fighting other icons; defaults from Computer), and Programming (writing or fixing utilities, skillsofts and agents; defaults from Computer). Hacking Pool (MDF p.11) . Hacking Pool = Intelligence + ⌊MPCP ÷ 3⌋. It behaves like any other dice pool (SR3 p.43): refreshes each Combat Turn, and you split it freely across Hacking, Cybercombat, or whatever else you’re rolling in the Matrix that turn. Response (MDF p.14) . Response on a deck is the Matrix’s version of wired reflexes: each point adds +2 Reaction and +1D6 Matrix Initiative, but only while you’re running VR-Hot. A deck’s Response can’t exceed ⌊MPCP ÷ 3⌋ (minimum 1). Logon and getting around (MDF p.8, p.15) . Pick your User Mode, then log on to your local grid — or jack straight into a host through a physical port. While you’re loose in the open Matrix (not yet inside a host), tests use the local grid’s own Sys/Sec numbers as a stand-in host. A few examples: . | Regional grid | System Rating | Security Tier | . | Aztlan | 8 | Orange (3) | . | California Free State | 6 | Green (2) | . | CAS | 6 | Green (2) | . | Québec | 6 | Green (2) | . | Tir Tairngire | 7 | Orange (3) | . | Tsimshian | 8 | Orange (3) | . | UCAS | 6 | Green (2) | . (MDF p.15 — a partial list; the book covers every North American and several overseas grids.) . Nodes and their prompts . Once inside a host, five kinds of node exist, and each offers its own set of prompts. (MDF p.8, p.16–21) A handful of prompts work anywhere (General), listed separately below. | Node | Represents | Icon shape | . | System Access Node (SAN) | The host’s public front door | Rectangle | . | Central Processing Unit (CPU) | Sysop-level control: the Security Sheaf, passcodes, the system map, pathways | Double-walled hexagon (has its own barrier) | . | Data Store (DS) | Files, records, and archives | Square | . | Slave Node (SN) | Controls real-world devices — cameras, maglocks, subscribed drones/vehicles | Circle | . | Sub-Processing Unit (SPU) | Task routing and scheduling — user lists, project data | Hexagon | . A legitimate passcode lets you use a node’s prompts as an ordinary Computer test. Without one, you need a mark on that node — usually gained through the Access Node prompt with Hacking — before its other prompts open up, unless the node is public. Getting caught doing something you shouldn’t (an ✗ below) costs a point of Overwatch; some successful prompts also hand you a mark (✓) on top of whatever else they do. General prompts (any node, any zone): . | Prompt | Test | Adds Overwatch on failure | Grants a mark | . | Access Node | Passcode, or Hacking vs Sys/Sec | ✗ | ✓ | . | Attack an Icon | Cybercombat vs Cybercombat |   |   | . | Boot Utility | Computer vs Utility Rating |   |   | . | Configure Protections | Computer vs System Rating |   |   | . | Crack Protections | Passcode/Hacking vs Sys/Sec of the protection | ✗ |   | . | Jam Signal | Computer vs System Rating |   |   | . | Jump Grid/Host | Computer vs System Rating |   |   | . | Logon to System | Computer vs System Rating |   |   | . | Repair an Icon | Computer vs System Rating |   |   | . | Scrub Datastream | Hacking vs Sys/Sec | ✗ |   | . | Search and Render | Computer vs System Rating |   |   | . | Send Transmission | Computer vs System Rating |   |   | . | Terminate Session | Computer vs 4 (Willpower vs 10 if Link-Locked) |   |   | . | Toggle Visibility | Computer vs System Rating |   |   | . CPU prompts: . | Prompt | Test | Adds Overwatch on failure | . | Configure I/O Ports and Pathways | Passcode/Hacking vs Sys/Sec | ✗ | . | Configure Passcodes | Passcode/Hacking vs Sys/Sec | ✗ | . | Configure Security Sheaf | Passcode/Hacking vs Sys/Sec | ✗ | . | Reboot Node | Passcode/Hacking vs Sys/Sec |   | . Data Store prompts: . | Prompt | Test | Adds Overwatch on failure | . | Access Datafile | Computer vs System Rating |   | . | Duplicate/Download Datafile | Passcode/Hacking vs Sys/Sec | ✗ | . | Edit/Upload Datafile | Passcode/Hacking vs Sys/Sec | ✗ | . | Index Data Store | Computer vs System Rating |   | . | Siphon Paydata | Hacking vs Sys/Sec | ✗ | . Slave Node prompts: . | Prompt | Test | Adds Overwatch on failure | . | Control Device | Computer (or another applicable skill) vs System Rating |   | . | Index Subscribed Devices | Computer vs System Rating |   | . | Spoof Datastream | Hacking vs Sys/Sec | ✗ | . | Tap Datastream | Hacking vs Sys/Sec | ✗ | . SPU prompts: . | Prompt | Test | Adds Overwatch on failure | . | Index Users and Scheduling | Computer vs System Rating |   | . | System Map | Computer vs System Rating |   | . A CPU is additionally shielded by its own barrier icon, rated equal to the CPU itself — you can’t falsify a mark there without crashing that barrier in cybercombat first, unless you’re running a Sleaze utility rated high enough to pass through it. (MDF p.18) . ",
+    "url": "/The2ndChumming3e/latest/rules/decking-defragged/#getting-on-the-matrix",
+    
+    "relUrl": "/rules/decking-defragged/#getting-on-the-matrix"
+  },"35": {
+    "doc": "Decking (Matrix Defragged)",
+    "title": "Hacking (MDF p.23)",
+    "content": ". | Roll it. Hacking skill plus any Hacking Pool you commit, against TN = the host’s System Rating. | Check the Threshold. Meet or beat the host’s Security Threshold and you succeed — a tied result favours the hacker. Come up short, and it’s a failure. | What happens. Success on a legitimate or falsified logon gets you a mark on that node, opening its prompts. Failure adds a point to your Overwatch on that host (below). | . What changes the TN (MDF p.14) . | Condition | TN modifier | . | Hardlined via a datajack or trodes | −2 | . | Operating from a Tortoise Terminal | +2 | . | Maintaining real-time contact with people outside the Matrix | +1 | . | Circumstantial — Matrix noise, jamming, defensive utilities, cover, wound penalties | ±1–4 | . Overwatch and the Security Sheaf (MDF p.23–24) . Every host tracks Overwatch on its own 10-box Security Sheaf. You gain a point for failing a Hacking Test, or for crashing an icon without running the Suppression utility to cover your tracks. Filling the tenth box is Convergence (below). The GM plans out Trigger Steps ahead of time — specific Overwatch totals where IC or an alert kicks in. A triggered IC joins initiative at the top of the next Combat Phase, losing Initiative for any phase that’s already gone by. Here’s the book’s own example layout for a System Rating 6 / Green host, to show how a sheaf is typically built: . | Overwatch box | What fires | . | 1 | System Sweep | . | 2 | Authenticator (Rating 4) | . | 3 | Alert | . | 5 | Barrier (Rating 6), Tracker (Rating 4) | . | 6 | System Sweep | . | 7 | Alert, Killer (Rating 6) | . | 9 | Data Worm (Rating 6) | . | 10 | Convergence | . (MDF p.23) — every host’s actual sheaf is the GM’s own design; this is just one example of how dense and varied it can get. A decker who crashes an enemy icon while running the Suppression utility can degrade it instead of taking the usual Overwatch hit for the crash. (MDF p.26) . The book gives hosts two ways to gain Overwatch and a full sheaf of scripted Trigger Steps with Suppression as the counter-play. This system currently only automates the first trigger — a failed Hacking Test. See Doing it in The 2nd Chumming, below, for what’s automated today. Convergence (MDF p.23–24) . At 10 boxes of Overwatch, the decker’s connection gets traced back to their real body. The GM can respond with any mix of: dumping the decker (triggering Dumpshock, below), leaking pieces of their session to the authorities (what their icon looked like, their handle, their gear, and roughly where they’re jacked in from), and sending a physical security response their way. ",
+    "url": "/The2ndChumming3e/latest/rules/decking-defragged/#hacking-mdf-p23",
+    
+    "relUrl": "/rules/decking-defragged/#hacking-mdf-p23"
+  },"36": {
+    "doc": "Decking (Matrix Defragged)",
+    "title": "Cybercombat (MDF p.26)",
+    "content": "Any icon can attack any other icon it can see sharing the same node or zone. Attacking automatically reveals your own icon if it wasn’t visible already. | Attacker rolls Cybercombat plus Hacking Pool against a base TN of 4, adjusted for circumstances. | Defender rolls the same way, same base TN. | Compare successes. Whoever has more hits their target — a tie favours the defender. | Stage the damage. The winner’s Damage Level rises one step for every two net successes; past Deadly, extra net successes add to Power instead. | Resist. The target rolls its System Rating (or MPCP) against a TN equal to the attack’s Power minus its own Security Threshold or Firewall — those numbers work as armour here. Every two successes drops the Damage Level by one. Utilities like Armor, Biofeedback Filtering, and Shield can chip in too. | . An icon’s own Matrix Condition Monitor is 10 boxes; filling it crashes the icon and — for a persona — dumps its user. Damage that overflows the user’s Matrix CM becomes real Biofeedback damage, Stun or Physical depending on their User Mode, the same split as Dumpshock below. (MDF p.26) . As it fills, the Matrix Condition Monitor penalises the icon’s tests the same way a character’s wounds do: +1 TN from the 1st box, +2 from the 3rd, +3 from the 6th, and +4 at the 10th. (MDF p.12) . Two more Matrix hazards worth knowing: a decker can permanently or temporarily disable a real-world Matrix device by finding its icon and crashing it in cybercombat, and an aggressive icon can Link-Lock a target so it can’t go hidden and needs a Willpower test just to log off cleanly — failing that test causes Dumpshock. (MDF p.27) . ",
+    "url": "/The2ndChumming3e/latest/rules/decking-defragged/#cybercombat-mdf-p26",
+    
+    "relUrl": "/rules/decking-defragged/#cybercombat-mdf-p26"
+  },"37": {
+    "doc": "Decking (Matrix Defragged)",
+    "title": "Dumpshock (MDF p.27)",
+    "content": "Getting yanked off the Matrix without a clean logoff hits you with Dumpshock: . | You immediately resist Serious biofeedback damage, with Power equal to the System Rating of whatever dumped you. | Tortoise and AR users don’t feel it at all. VR-Cold takes it as Stun; VR-Hot takes it as Physical. | You’re also rattled for the next 10 minutes — everything you do carries a +2 TN penalty until it wears off. | . ",
+    "url": "/The2ndChumming3e/latest/rules/decking-defragged/#dumpshock-mdf-p27",
+    
+    "relUrl": "/rules/decking-defragged/#dumpshock-mdf-p27"
+  },"38": {
+    "doc": "Decking (Matrix Defragged)",
+    "title": "IC and Agents (MDF p.24, p.36)",
+    "content": "IC (and Agents, which work the same way mechanically) come in three grades: . | White — nuisance-tier defenses. Can’t do more than Moderate damage to an icon, and can’t touch a decker’s real body at all. Every host can field it. | Gray — full cybercombat capability, and can permanently damage a decker’s actual deck (burn MPCP or utility slots). Still can’t reach the decker’s body directly. Needs the host’s Mainframe Support module. | Black — the only grade that can hurt the decker’s real body directly, and it’s legally allowed to. Also needs Mainframe Support. | . A sample of named agents from the book, by grade (MDF p.34): . | Grade | Examples | . | White | ARis, Authenticator, Crippler, Gemini, Looper, Mr. Medkit, Scrambler, Tracker | . | Gray | Blaster, Dataworm, Hydra, Killer, Tar Baby | . | Black | Ripper, Sparky | . Initiative for IC and Agents comes from the host’s Security Tier, not their own stats: . | Host Security Tier | Initiative | . | Ivory | Agent’s Rating | . | Blue | 1D6 + Agent’s Rating | . | Green | 2D6 + Agent’s Rating | . | Orange | 3D6 + Agent’s Rating | . | Red and above | 4D6 + Agent’s Rating | . (MDF p.36) Their Firewall equals their host’s Security Threshold — there’s no separate IC stat for it. Agents automatically know Computer and Cybercombat at their own Rating and share their host’s memory and active utilities. ",
+    "url": "/The2ndChumming3e/latest/rules/decking-defragged/#ic-and-agents-mdf-p24-p36",
+    
+    "relUrl": "/rules/decking-defragged/#ic-and-agents-mdf-p24-p36"
+  },"39": {
+    "doc": "Decking (Matrix Defragged)",
+    "title": "Utilities (MDF p.29–32)",
+    "content": "Utilities load into a deck’s numbered utility slots, and most either lower a target number for the user or raise one for whoever’s targeting them; degradable utilities lose a point of rating every time they’re actually used, and eventually need reloading. | Utility | Type | What it does | . | Analyze | Offensive | Lowers your TN on Search and Render | . | Armor | Operational, degradable | Soaks Overload Damage instead of your Matrix CM | . | Attack | Combat | Deals Overload (or, for the nastiest versions, direct Biofeedback) damage in cybercombat | . | Baby Monitor | Operational, degradable | Lets you check your own Overwatch level via Scrub Datastream | . | Biofeedback Filtering | Operational, degradable | Soaks Biofeedback damage instead of your real condition monitor | . | Browse | Offensive | Lowers your TN on any Index prompt | . | Decrypt | Offensive | Lowers your TN cracking Encryption | . | Encrypt | Operational | Lets you Encrypt a target file or datastream | . | Evasion | Operational, degradable | Lets you go Hidden even while Link-Locked | . | Exploit | Offensive, degradable | Lowers your TN on Access Node | . | Jackpot | Offensive, degradable | Lowers your TN on Siphon Paydata | . | Jamboree | Offensive | Lowers your TN on Jam Signal | . | Kill Switch | Offensive | Lowers your TN disarming a Databomb | . | Lock-On | Offensive, operational | Lowers your TN on Trace Signal; a single success starts a Link-Lock | . | Medic | Offensive, degradable | Lowers your TN repairing another icon’s Matrix CM | . | Mirrors | — degradable | Lowers your TN resisting a System Sweep or an agent’s Authenticate ability | . | Read/Write | Offensive | Lowers your TN on datafile prompts (Access, Duplicate/Download, Edit/Upload) | . | Redirect | Defensive, degradable | Raises the TN for anyone Trace Signal-ing you | . | Saboteur | Operational | Lets you plant a Databomb on a target | . | Shield | Operational, degradable | Soaks hardware-damaging IC attacks instead of your actual deck | . | Signal Booster | Offensive | Lowers your TN on Send Transmission | . | Sleaze | Operational, degradable | Passes harmlessly through a barrier at or below its rating | . | Slow | Combat | Drains an enemy icon’s Initiative instead of dealing damage | . | Smoke Screen | Defensive, degradable | Raises the TN for anyone Search and Render-ing you | . | Snoop | Offensive | Lowers your TN on Tap Datastream or Spoof Datastream | . | Suppression | Operational, degradable | Lets you crash an icon without gaining Overwatch for it | . Beyond programs, two other utility types exist: passcodes, which grant automatic, no-roll marks on whatever they’re keyed to, and protocols, unusual GM-defined applications (the book gives a few examples, like one that purges an infiltrating agent or one that buys a convergent decker extra time before the trace lands). ",
+    "url": "/The2ndChumming3e/latest/rules/decking-defragged/#utilities-mdf-p2932",
+    
+    "relUrl": "/rules/decking-defragged/#utilities-mdf-p2932"
+  },"40": {
+    "doc": "Decking (Matrix Defragged)",
+    "title": "Doing it in The 2nd Chumming (Foundry)",
+    "content": "Choosing the ruleset . A world setting, Matrix Ruleset (under Foundry’s Configure Settings), switches between “Matrix Defragged v2” (the default, described on this page) and “Orthodox SR3 Matrix”. Changing it needs a full Foundry restart, and the GM sees a warning that switching mid-campaign could break things — this is a session-zero decision, not a mid-run one. Getting on the Matrix . On the Matrix tab of a character or NPC sheet: . | User Mode buttons — TRM, AR, VR-Cold, VR-Hot — set your Matrix mode. Clicking one opens an “Enter Matrix” dialog to pick which host actor you’re connecting to; confirming sets both the mode and your active host. Clicking the same mode again disconnects you and drops you from that host’s roster. Switching into either VR mode while driving a vehicle in rigger-control mode automatically kicks the vehicle back to remote control, since the two are mutually exclusive. | Cyberdecks are items in your inventory. The Matrix tab lists yours (name, MPCP, Firewall, Response) with an Equip toggle. The equipped deck shows its full stat block — MPCP, Firewall, Response, memory used/total, free utility slots, transfer rate, Flux rating, your Hacking Pool bonus, and your Matrix Initiative — plus its own 10-box Matrix condition track. | Programs are also items; drag one onto a numbered utility slot on your deck to load it. A slot can be marked burned if an attack knocks it out, or ejected to swap the program out. Loaded programs are rolled straight from their slot (hold Shift for physical dice). | . Node tracking and prompts . While connected to a host, the Matrix tab shows which node you’re in, a Link-Locked flag, and your current marks as removable chips — plus a manual “add a mark” option for anything the GM rules outside the normal roll. Picking a node lists that node’s available prompts, each flagged for whether failing it raises Overwatch and whether succeeding grants a mark, with a one-click Use button that rolls it. Rolling a hacking action . A Hacking Action button (visible once you’re connected) opens a dialog pre-filled with your Hacking or Computer rating, your available Hacking Pool, the connected host, a default TN drawn from the host’s System Rating (plus any deck-damage or host-alert penalty already in effect), its Security Threshold, a field to allocate Hacking Pool dice, and a checkbox — on by default — to raise Overwatch automatically if you miss the threshold. Rolling it compares your successes to the threshold exactly as described above; falling short with that box checked posts an Overwatch warning against the host and bumps its tracked total by one. No Hacking or Computer skill at all routes you through the system’s usual Default Table first. Cybercombat . A Cybercombat button lets you target anyone sharing your host connection — other connected deckers, deployed IC, or agents — and posts a two-sided card for the exchange. Each side’s own half shows their skill, available Hacking Pool, TN, and damage code, editable only by that side; a GM-only resolve button settles things if someone goes AFK. Resolving the card charges each side’s Hacking Pool properly (both attacker and defender, through the same GM-routed pool spend used elsewhere in this system, so it works correctly even from a non-owning client) and rolls only the dice actually paid for. A degradable attack program used in the exchange loses a point of rating each time, and crashes outright once it would drop below 1. Dumpshock . A Dumpshock button (shown while in either VR mode) is a manual trigger for a GM or player to use whenever the fiction calls for an abrupt disconnection — a reboot, a cut connection, a power loss. It opens a small dialog to pick a connected host (which fills in Power from that host’s System Rating) or set Power by hand, then posts a Serious biofeedback announcement — Physical for VR-Hot, Stun for VR-Cold — with a resist button. As everywhere else in this system, the roll only announces the damage; the GM still clicks the wound boxes. Host sheets, Security Sheaf, and IC . A host is its own actor type with a dedicated sheet covering its node layout, its Security Sheaf, its I/O ports, and its roster of connected users and agents. The Security Sheaf tab sets the host’s Security Tier (which fills in the matching Threshold automatically) and shows its 10-box Overwatch track; the GM can seed a standard set of Trigger Steps, assign specific IC to each one, and deploy that IC into the current encounter when a step fires. IC and Agent actors get their own sheet type, tracking Rating, grade (White/Gray/Black), and their own Matrix condition track — an Agent additionally names the actor operating it, whose loaded attack program supplies its damage. Any IC flagged as deployed to a host becomes a valid cybercombat target for everyone connected there. Right now, only the first Overwatch trigger — a failed Hacking Test — raises the tracker automatically. Crashing an icon without Suppression, live Trigger Step countdowns, and the Suppression utility itself are still manual, GM-adjudicated calls from the Security Sheaf tab (tracked as open work, TODO 128). ",
+    "url": "/The2ndChumming3e/latest/rules/decking-defragged/#doing-it-in-the-2nd-chumming-foundry",
+    
+    "relUrl": "/rules/decking-defragged/#doing-it-in-the-2nd-chumming-foundry"
+  },"41": {
+    "doc": "Decking (Matrix Defragged)",
+    "title": "Worked example",
+    "content": "Voss decks with Intelligence 4 and a cyberdeck running MPCP 8, Firewall 4, Response 1, and Hacking 5. Her Hacking Pool is Intelligence 4 + ⌊8 ÷ 3⌋ = 4 + 2 = 6. She’s running VR-Hot, so her Matrix Initiative gets the Response bonus: +2 Reaction and one extra die on top of her usual 1D6. She jacks into a corporate research host: System Rating 7, Security Tier Red (Threshold 4). | First hack. She commits 3 Hacking Pool dice to her Hacking 5, rolling 8 dice against TN 7 (the host’s System Rating), and gets 5 successes. | Check the Threshold. 5 is at or above 4, so she succeeds and picks up a mark on the node she’s targeting. No Overwatch gained. | Second hack, pushing further in the same Combat Turn, committing her remaining 3 Hacking Pool dice: 8 dice against TN 7 nets her only 3 successes this time — short of the Red host’s Threshold 4. The hack fails, and her Overwatch on this host rises from 0 to 1. | If her Overwatch ever reached 10, Convergence would follow: the GM might trigger Dumpshock at Power 7 (the host’s System Rating) — Physical for her, since she’s in VR-Hot — leak pieces of her session, and send security to her jackpoint. | . If instead an IC engaged her in cybercombat: say a Gray IC (Rating 5) attacks. Both sides roll Cybercombat plus Hacking Pool against the base TN 4. If Voss nets 3 successes over the IC’s total, her attack utility’s Damage Level steps up once (two successes per step). The IC then resists with its own Rating against a TN equal to her attack’s Power minus its Firewall (its host’s Security Threshold — 4 here), soaking off Damage Levels two successes at a time. ",
+    "url": "/The2ndChumming3e/latest/rules/decking-defragged/#worked-example",
+    
+    "relUrl": "/rules/decking-defragged/#worked-example"
+  },"42": {
+    "doc": "Decking (SR3 core)",
+    "title": "Decking (SR3 core)",
+    "content": "This page covers the core rulebook’s own Matrix chapter (SR3 p.199–232), plus the hot/cold ASIST rules from the Matrix sourcebook. This system calls this ruleset “Orthodox SR3 Matrix” to distinguish it from Matrix Defragged, a fan-made simplified ruleset this table can run instead — see Decking (Matrix Defragged) if that’s what your GM chose. The two rulesets are mechanically incompatible; this page only covers Orthodox. | The pieces . | Hacking Pool (SR3 p.207) | Matrix Initiative (SR3 p.209, p.223) | . | Hosts, grids, and getting in | Security tally, alerts, and the Security Sheaf (SR3 p.210–211) | System operations (SR3 p.214–219) | Cybercombat (SR3 p.222–224) | Intrusion Countermeasures (IC) (SR3 p.227–230) | Dump Shock (SR3 p.227) | Hot and Cold ASIST (Matrix p.18) | Doing it in The 2nd Chumming (Foundry) . | Choosing the ruleset | Deck and persona | Jacking in and running | System Tests and cybercombat | IC and the host sheet | Dumpshock | . | Worked example | . ",
+    "url": "/The2ndChumming3e/latest/rules/decking/",
+    
+    "relUrl": "/rules/decking/"
+  },"43": {
+    "doc": "Decking (SR3 core)",
+    "title": "The pieces",
+    "content": "A decker’s cyberdeck defines everything about their persona in the Matrix. Its central number is the MPCP Rating — think of it as the deck’s overall processing muscle. Three times the MPCP Rating is the total the decker can spread across four persona programs: Bod, Evasion, Masking, and Sensor, none of which can individually exceed the MPCP itself. These four act as the persona’s “attributes” whenever something in the Matrix tests against the decker directly. (SR3 p.206) . A deck also carries Hardening, which blunts damage from the nastiest IC; Active and Storage Memory, which limit how many utility programs can run at once versus just be carried; an I/O Speed for moving data; and Response Increase, the Matrix’s answer to wired reflexes — each point adds +2 to Reaction and +1D6 to Matrix Initiative. A deck supports at most 3 points, and no more than its MPCP ÷ 4 (round down), so a deck of MPCP 3 or less can’t run any. (SR3 p.206–207) . Most ordinary Matrix users aren’t running a full cyberdeck at all — they’re on a cyberterminal (“tortoise” in decker slang), a cheaper, weaker rig capped at a low MPCP. The upside: tortoise users can’t be hurt by black IC or Dumpshock. (SR3 p.207–208) . Hacking Pool (SR3 p.207) . Hacking Pool = ⌊(Intelligence + deck MPCP) ÷ 3⌋. It works like any other dice pool and can help almost any Matrix test — logons, attacks, defenses, maneuvers — but it can’t be spent resisting damage from gray or black IC; only Karma Pool or the decker’s own enhancements help there. Matrix Initiative (SR3 p.209, p.223) . Outside combat, a decker’s number of actions per turn comes from their Reaction divided by 10 (rounded up), plus one extra action per bonus Initiative die from Response Increase. In cybercombat, it works like ordinary SR3 Initiative: base Reaction plus 1D6, with each point of Response Increase adding +2 Reaction and another die. Reflex boosts that only affect the physical body — wired reflexes, magic, vehicle rigs — don’t carry over into the Matrix. Staying in live voice or text contact with the outside world while decking costs a die of Initiative. ",
+    "url": "/The2ndChumming3e/latest/rules/decking/#the-pieces",
+    
+    "relUrl": "/rules/decking/#the-pieces"
+  },"44": {
+    "doc": "Decking (SR3 core)",
+    "title": "Hosts, grids, and getting in",
+    "content": "Every host or grid carries an overall Security Rating — a colour code plus a number — and five subsystem ratings: Access, Control, Index, Files, and Slave. Each subsystem is the TN for a specific kind of illegitimate action against it: getting in at all uses Access, kicking a user off or reprogramming something uses Control, searching for data uses Index, reading or writing files uses Files, and operating a connected physical device (a camera, a maglock) uses Slave. (SR3 p.205–206) . The colour code — Blue (barely any security), Green (average), Orange (a system worth protecting), or Red (the kind that shoots first) — gives a rough sense of what to expect before a decker even rolls anything, and unofficially there’s a level above Red that deckers call “Ultra-Violet.” (SR3 p.205) . A System Test is always a Success Contest: the decker’s Computer skill (plus any Hacking Pool committed) against the relevant subsystem rating, opposed by the host’s own Security Value rolled against the decker’s Detection Factor — the average of their Masking Rating and any Sleaze utility they’re running (or half their Masking if they aren’t). Whoever nets more successes wins; a tie goes to the decker. (SR3 p.207, p.209–210) . Getting from grid to host works through System Access Nodes, and hosts can be arranged in different topologies — a simple open connection straight off a public grid, tiered behind a gatekeeper host, linked host-to-host, or tucked away on a private corporate grid entirely — which mostly changes what a decker has to fight through to reach the target. (SR3 p.203–204) . ",
+    "url": "/The2ndChumming3e/latest/rules/decking/#hosts-grids-and-getting-in",
+    
+    "relUrl": "/rules/decking/#hosts-grids-and-getting-in"
+  },"45": {
+    "doc": "Decking (SR3 core)",
+    "title": "Security tally, alerts, and the Security Sheaf (SR3 p.210–211)",
+    "content": "Every success the host scores against a decker — win or lose the contest — adds to that decker’s running security tally on that system, for as long as they stay logged on. A security sheaf is the GM’s plan for what that tally triggers: a list of thresholds (“trigger steps”), each one arming some mix of IC and raising the system’s alert status. Systems start with no alert. Enough tally reaches a passive alert, which typically starts throwing proactive IC at the decker and adds +2 to every subsystem rating; enough more reaches an active alert, tightening things further. How dense the trigger steps are, and how much tally each one takes, is entirely the GM’s call — a high-security system stacks its triggers close together, a relaxed one spreads them out. ",
+    "url": "/The2ndChumming3e/latest/rules/decking/#security-tally-alerts-and-the-security-sheaf-sr3-p210211",
+    
+    "relUrl": "/rules/decking/#security-tally-alerts-and-the-security-sheaf-sr3-p210211"
+  },"46": {
+    "doc": "Decking (SR3 core)",
+    "title": "System operations (SR3 p.214–219)",
+    "content": "Deckers act on a host through system operations — named commands with their own test, utility, and action type. Every one of them is really the same System Test underneath (Computer skill against a subsystem, opposed by the host’s Security Value against your Detection Factor); the operation just tells you which subsystem to use and how big an action it costs. | Operation | Subsystem tested | Helpful utility | Action | . | Analyze Host | Control | Analyze | Complex | . | Analyze IC | Control | Analyze | Free | . | Analyze Icon | Control | Analyze | Free | . | Analyze Security | Control | Analyze | Simple | . | Analyze Subsystem | Targeted subsystem | Analyze | Simple | . | Control Slave | Slave | Spoof | Complex | . | Decrypt Access | Access | Decrypt | Simple | . | Decrypt File | Files | Decrypt | Simple | . | Decrypt Slave | Slave | Decrypt | Simple | . | Download Data | Files | Read/Write | Simple | . | Edit File | Files | Read/Write | Simple | . | Edit Slave | Slave | Spoof | Complex | . | Graceful Logoff | Access | Deception | Complex | . | Locate Access Node | Index | Browse | Complex | . | Locate Decker | Index | Scanner | Complex | . | Locate File | Index | Browse | Complex | . | Locate IC | Index | Analyze | Complex | . | Locate Slave | Index | Browse | Complex | . | Logon to Host | Access | Deception | Complex | . | Logon to LTG | Access | Deception | Complex | . | Logon to RTG | Access | Deception | Complex | . | Make Comcall | Files | Commlink | Complex | . | Monitor Slave | Slave | Spoof | Simple | . | Null Operation | Control | Deception | Complex | . | Swap Memory | — | — | Simple | . | Tap Comcall | (special) | Commlink | Complex | . | Upload Data | Files | Read/Write | Simple | . A few in words: Logon to Host/LTG/RTG get you into a host or grid and start your security tally there. Locate operations are “interrogations” — you can repeat them, narrowing your search each time, to track down a file, a slave device, another decker, or IC. Download/Upload Data and Swap Memory move data or programs and take real time to finish, running in the background once started. Control Slave, Edit Slave, Monitor Slave, Make Comcall, and Tap Comcall are “monitored” operations — you spend a Free Action every Initiative Pass to keep them going, or they abort. Graceful Logoff is the clean way out, avoiding Dump Shock and wiping your tracks; jacking out any other way risks it. ",
+    "url": "/The2ndChumming3e/latest/rules/decking/#system-operations-sr3-p214219",
+    
+    "relUrl": "/rules/decking/#system-operations-sr3-p214219"
+  },"47": {
+    "doc": "Decking (SR3 core)",
+    "title": "Cybercombat (SR3 p.222–224)",
+    "content": "Cybercombat runs on the same bones as ordinary SR3 combat — roll Initiative, then act in order — just compressed into 3-second Combat Turns like everywhere else. A few Matrix-specific wrinkles: . | An icon has to be visible or located before you can attack it. Attacking automatically makes your own icon visible unless you pull off a maneuver to hide it. | Attacks are Simple Actions, rolled with an offensive utility program (plus any Hacking Pool) against a target number set by whether the target is Legitimate or an Intruder and by the host’s security code: . | Host security code | TN to hit an Intruding icon | TN to hit a Legitimate icon | . | Blue | 6 | 3 | . | Green | 5 | 4 | . | Orange | 4 | 5 | . | Red | 3 | 6 | . A hotter host makes its own defenders easier to hit and intruders harder — the numbers flip depending which side of the law your target is on. (SR3 p.224) . | Net successes stage damage exactly like a firearm hit: two successes per step up for the attacker, two per step down for the defender’s resistance roll (made with the icon’s Bod Rating, or the host’s Security Value for an IC program). | Icons only have one condition track — no separate Stun — and filling all 10 boxes crashes the icon. For a decker’s persona, that means getting dumped from the Matrix (and risking Dumpshock, below); it doesn’t disconnect them if black IC did it — it just makes frying their brain that much easier. | Simsense overload: getting hit by white or gray IC can bleed a little Stun damage into the decker’s real body through the ASIST link. A failed Willpower test against a TN set by how badly the icon was hurt means a light Stun wound. | . Utility programs round the picture out on both sides: things like Armor (soaks incoming damage), Cloak and Lock-On (help or hurt evasive maneuvers), and Medic (patches an icon back up) all work by adding or subtracting their own rating from the relevant roll — check each utility’s own write-up for the exact math. ",
+    "url": "/The2ndChumming3e/latest/rules/decking/#cybercombat-sr3-p222224",
+    
+    "relUrl": "/rules/decking/#cybercombat-sr3-p222224"
+  },"48": {
+    "doc": "Decking (SR3 core)",
+    "title": "Intrusion Countermeasures (IC) (SR3 p.227–230)",
+    "content": "IC comes in three grades: . | Grade | Can reach | Named examples | . | White | Only the decker’s on-line icon — attribute damage, dumping, or scrambled data | Cripplers, Killer, Probe, Scramble, Tar Baby | . | Gray | The decker’s actual cyberdeck and utilities, permanently, on top of cybercombat | Blaster, Ripper, Sparky, Tar Pit | . | Black | The decker’s real body, directly and legally | Lethal and non-lethal black IC | . Killer IC’s damage stages off its Rating, with the Damage Level set by the host’s own security code: . | Host security code | IC Damage Level | . | Blue | Moderate | . | Green | Moderate | . | Orange | Serious | . | Red | Serious | . (SR3 p.224) . Facing lethal black IC means resisting with Body (Hardening helps; Hacking Pool doesn’t — only Karma Pool or the decker’s own enhancements can help here), and getting free of it after being hit takes a Complex Action and a Willpower test against the IC’s own Rating. An IC program’s own Initiative scales with the host’s security code, not any stat of its own: . | Host security code | IC Initiative | . | Blue | 1D6 + IC Rating | . | Green | 2D6 + IC Rating | . | Orange | 3D6 + IC Rating | . | Red | 4D6 + IC Rating | . (SR3 p.223) . Tortoise (cyberterminal) users are entirely immune to black IC and Dumpshock, which is part of why they’re the safer — if slower — way to touch the Matrix. ",
+    "url": "/The2ndChumming3e/latest/rules/decking/#intrusion-countermeasures-ic-sr3-p227230",
+    
+    "relUrl": "/rules/decking/#intrusion-countermeasures-ic-sr3-p227230"
+  },"49": {
+    "doc": "Decking (SR3 core)",
+    "title": "Dump Shock (SR3 p.227)",
+    "content": "Getting crashed off the Matrix, or jacking out without a clean logoff, risks Dump Shock: Stun damage with Power equal to the host’s Security Value, and a Damage Level set by the host’s security code: . | Host security code | Dump Shock Damage Level | . | Blue | Light | . | Green | Moderate | . | Orange | Serious | . | Red | Deadly | . Also worth knowing: getting hit by white or gray IC risks a little simsense bleed-through even before any of that — a Willpower test against a fairly low TN (2 for Light icon damage, 3 for Moderate, 5 for Serious) keeps it off, and failing means a single light Stun wound. There’s no TN for Deadly icon damage, because taking Deadly damage crashes the icon outright and exposes its user to Dump Shock instead. (SR3 p.226–227) . ",
+    "url": "/The2ndChumming3e/latest/rules/decking/#dump-shock-sr3-p227",
+    
+    "relUrl": "/rules/decking/#dump-shock-sr3-p227"
+  },"50": {
+    "doc": "Decking (SR3 core)",
+    "title": "Hot and Cold ASIST (Matrix p.18)",
+    "content": "How a decker’s cyberdeck talks to their brain matters: . | Cold ASIST is the standard, legal interface — the kind that ships on cyberterminals and most decks. It caps the intensity of the simsense feed, which means it can’t be pushed to lethal levels: black IC that would otherwise deal lethal damage is treated as non-lethal against a cold ASIST user. | Hot ASIST cranks that ceiling off. It’s what actually lets a decker take advantage of Response Increase and Hacking Pool in the first place, and it enables an extra speed bonus for running fully hands-free (“pure DNI”). The price is that black IC becomes genuinely lethal against a hot ASIST user, and — as if that weren’t enough — hot ASIST interfaces are illegal in their own right. | . ",
+    "url": "/The2ndChumming3e/latest/rules/decking/#hot-and-cold-asist-matrix-p18",
+    
+    "relUrl": "/rules/decking/#hot-and-cold-asist-matrix-p18"
+  },"51": {
+    "doc": "Decking (SR3 core)",
+    "title": "Doing it in The 2nd Chumming (Foundry)",
+    "content": "Choosing the ruleset . A world setting, Matrix Ruleset (in Foundry’s Configure Settings), switches between “Matrix Defragged v2” (the default) and “Orthodox SR3 Matrix” — this page’s rules. Changing it needs a full Foundry restart, and the GM sees a warning that switching mid-campaign could break things, so it’s a session-zero decision. Deck and persona . On a character or NPC’s Matrix tab under the Orthodox ruleset, your cyberdeck’s stats live directly on your sheet rather than as a separate item: Model, MPCP, Hardening, Active/Storage Memory, I/O Speed, and Response (Response Increase). A Browse Cyberdecks button opens a picker over the system’s cyberdeck compendium and loads a chosen model’s stats onto your sheet in one click. Your four persona programs — Bod, Evasion, Masking, Sensor — are editable fields the sheet checks against your MPCP: it flags a warning if any single program exceeds MPCP, or if they add up past three times MPCP. A Sleaze rating field and a Loaded Programs list (each with its own rating and computed memory cost, filled from a similar Browse Programs picker) round out your utilities. The sheet computes your Hacking Pool, Detection Factor, and Matrix Initiative for you from these numbers. Jacking in and running . A Log On To Host control picks which host actor you’re connected to (and resets your security tally and alert level when you log on or off), and separate buttons set the host’s alert level — No Alert, Passive Alert, or Active Alert. A Matrix Condition Monitor — 10 clickable boxes, plus quick buttons for Light/Moderate/Serious/Deadly damage or healing one box — tracks your icon’s health; filling it triggers Dumpshock automatically: Stun, Power equal to the connected host’s Security Value, and a level from its Security Code (see Dump Shock above). System Tests and cybercombat . A System Test button opens a dialog naming the connected host, your Computer skill and Hacking Pool, your Detection Factor, and a dropdown to pick which subsystem — Access, Control, Index, Files, or Slave — the action uses; each option shows that subsystem’s rating (raised automatically if the host is on Passive Alert), and you can name the action and adjust the TN for any utility you’re running. Rolling it posts a two-sided chat card — your dice and TN on one side, the host’s Security Value and Detection Factor TN on the other — that resolves as a Success Contest exactly as described above. Any hits the host scores add straight to your tracked security tally, regardless of who wins the overall contest. A Cybercombat button works the same way against IC deployed on the connected host, posting its own two-sided card for the exchange. IC and the host sheet . A host actor under this ruleset sets its Security Code (Blue/Green/Orange/Red/Black) and Alert level (Passive/Active/Shutdown) at the top of its sheet, with its five subsystem ratings and overall Security Value editable below. Its IC tab lists IC actors assigned to it — each with a type drawn from a fixed roster of classic IC names, a Proactive/Reactive toggle, and a note for which alert level deploys it — and a deploy button that brings assigned IC into the current encounter. An IC actor’s own sheet is mostly just a Rating; its attack pool and the damage it can absorb both draw from its host’s Security Value rather than from any stat of its own, matching the book’s treatment of IC as an extension of the host defending it. Dumpshock . Beyond the automatic trigger when your Matrix Condition Monitor fills, a Dumpshock button on the Matrix tab lets a GM or player fire it manually for any other reason the story calls for. Its dialog takes the host’s Security Code and Security Value (filled in from the connected host) and posts the book’s damage: Stun, Power equal to the Security Value, and a level from the Dump Shock Damage Levels table (Blue Light, Green Moderate, Orange Serious, Red Deadly) — the same as the automatic version. The resist card rolls Willpower with no armor (a house ruling: the book names no attribute). Either way, the system only announces the damage; the GM still applies it. Hardening is tracked on the sheet and its tooltip describes the book’s effect, but nothing in this system’s dice-rolling code currently reads that field — it doesn’t yet reduce black IC damage or raise gray IC’s attack TN the way SR3 p.206 describes. Treat it as informational until that’s wired up. ",
+    "url": "/The2ndChumming3e/latest/rules/decking/#doing-it-in-the-2nd-chumming-foundry",
+    
+    "relUrl": "/rules/decking/#doing-it-in-the-2nd-chumming-foundry"
+  },"52": {
+    "doc": "Decking (SR3 core)",
+    "title": "Worked example",
+    "content": "Delgado runs a deck with MPCP 6, split Bod 5 / Evasion 6 / Masking 4 / Sensor 3 (18 points total — right at 3× his MPCP), and Computer 5. His Intelligence is 4, so his Hacking Pool is ⌊(4 + 6) ÷ 3⌋ = 3. Running a Sleaze-5 utility, his Detection Factor is ⌈(4 + 5) ÷ 2⌉ = 5. He’s hitting a Green host with an Access Rating of 8, running a Decryption-3 utility to soften the target number. | Logon. He rolls Computer 5 plus 2 Hacking Pool dice (saving 1 for later) = 7 dice against a TN of 8 − 3 (his Decryption utility) = 5. He nets 3 successes. | The host resists. The GM rolls the host’s Security Value (say, 6 dice for this Green system) against Delgado’s Detection Factor of 5, and gets 1 success. | Result. 3 beats 1, so Delgado logs on cleanly. The host’s 1 success still adds to his security tally on this system — a small price for getting in. | Later, Delgado trips a Trigger Step and a Killer IC (Rating 6) attacks him in cybercombat. Its Attack Test nets 4 successes against his Evasion-based defense of 2 successes — 2 net successes, enough to step its damage up one level. Since this is a Green host, Killer IC there deals Moderate damage before staging, so Delgado is now facing Serious damage, resisted with his Bod Rating against the attack’s Power. | If that hit had crashed his icon instead, Delgado would be dumped and would need to resist Dump Shock — Stun damage at a Power equal to the host’s Security Value, with a Damage Level set by the host’s Green security code. | . ",
+    "url": "/The2ndChumming3e/latest/rules/decking/#worked-example",
+    
+    "relUrl": "/rules/decking/#worked-example"
+  },"53": {
     "doc": "Face",
     "title": "Hiring a Face",
     "content": ". | What the books give you . | What their cover costs | . | House rates . | Base day rate, by Negotiation or other social skill | Threat multiplier | Hazard pay and expenses | . | Worked examples | . | There’s no adept power called “Authoritative Voice”. The SR3 powers are Commanding Voice and Kinesics. (SOTA64 p.64–66) | A Rating 4–6 fake ID doesn’t cost “1,000–10,000¥”. By the Creating a Credstick Table it’s 16,000¥ at Rating 4 and 30,000¥ at Rating 6. (SR3 p.239) | Corporate Download is a real SR3 book, but it isn’t in the library used for checking. Nothing on this page depends on it. | . ",
     "url": "/The2ndChumming3e/latest/hiring/face/#hiring-a-face",
     
     "relUrl": "/hiring/face/#hiring-a-face"
-  },"33": {
+  },"54": {
     "doc": "Face",
     "title": "What the books give you",
     "content": "|   |   | Source | . | Investigation (legwork) | 200¥/day | SRComp p.100 | . | Distraction | 1,000¥ | SRComp p.100 | . | Fencing | the face’s Negotiation moves the price 5% per net success | SR3 p.238 | . | Buying gear | also 5% per net success | SR3 p.273 | . A face earns their fee at the Negotiation table. Each net success is worth 5% on a fence deal or a black-market purchase (SR3 p.238, p.273), and Mr. Johnson always opens low and leaves room to bargain (MJLBB p.20–21). What their cover costs . | Item | Cost | Source | . | Fake ID, Rating 4 | 16,000¥ | SR3 p.239 | . | Fake ID, Rating 6 | 30,000¥ | SR3 p.239 | . | Permit (possess / possess and transport) | 5% / 10% of the item’s price; needs a valid SIN | SR3 p.274 | . | Tailored pheromones | bioware | M&amp;M p.71 | . ",
     "url": "/The2ndChumming3e/latest/hiring/face/#what-the-books-give-you",
     
     "relUrl": "/hiring/face/#what-the-books-give-you"
-  },"34": {
+  },"55": {
     "doc": "Face",
     "title": "House rates",
     "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by Negotiation or other social skill . | Tier | Skill | Base day rate | Typical kit | . | Hustler | 1–3 | 300–600¥ | Street contacts and simple bluffs | . | Professional | 4–5 | 1,500–3,000¥ | Tailored pheromones, a Rating 4 fake ID, mid-level contacts | . | Veteran | 6–7 | 4,500–9,000¥ | Strong pheromones or Kinesics, high-tier corporate contacts | . | Elite | 8+ | 15,000¥ and up | A global network and flawless impersonation | . Threat multiplier . | Work | Multiplier | . | Legwork, contract negotiation, fence deals | ×1 | . | Impersonation inside a corporate facility | ×2–3 | . | Undercover in a yakuza, triad or mafia operation, or a black site | ×4–5 | . Hazard pay and expenses . | Off-site negotiation: no hazard pay. | On-site, talking the team past checkpoints: +50% to +100%. | The employer pays for venues, clothing, gifts and bribes. | Burned identity deposit: enough to replace the fake ID at its rating (see the table above). | . ",
     "url": "/The2ndChumming3e/latest/hiring/face/#house-rates",
     
     "relUrl": "/hiring/face/#house-rates"
-  },"35": {
+  },"56": {
     "doc": "Face",
     "title": "Worked examples",
     "content": "| Job | House rate | Companion baseline | . | Negotiating a Johnson contract, professional (base 2,000¥), ×1 | 2,000¥, or 5–10% of the bonus they win | Investigation: 200¥ a day | . | Posing as staff in a corporate office, veteran (base 6,000¥), ×2, plus a Rating 4 fake ID | 12,000 + 16,000 = 28,000¥ | Distraction: 1,000¥; investigation: 200¥ a day | . | Undercover in a yakuza operation, veteran (base 8,000¥), ×4 | 8,000 × 4 = 32,000¥ plus bribes and burned IDs | Investigation: 200¥ a day | . ",
     "url": "/The2ndChumming3e/latest/hiring/face/#worked-examples",
     
     "relUrl": "/hiring/face/#worked-examples"
-  },"36": {
+  },"57": {
     "doc": "Face",
     "title": "Face",
     "content": " ",
     "url": "/The2ndChumming3e/latest/hiring/face/",
     
     "relUrl": "/hiring/face/"
-  },"37": {
+  },"58": {
     "doc": "Buying Gear & Fencing",
     "title": "Buying Gear &amp; Fencing",
     "content": "Availability, Street Index and Legality Codes; buying through contacts; and selling stolen goods to a fence. All rules are from the core rulebook, (SR3 p.237–238, p.270–274). | Reading a gear entry (SR3 p.270–272) | Buying on the street (SR3 p.272–273) . | The book’s example (SR3 p.273) | Example: an Ares Predator | . | Legality Codes (SR3 p.273–274) . | Categories (SR3 p.274) | . | Fencing the loot (SR3 p.237–238) . | 1. Find a fence (SR3 p.237) . | Finding a Fence Table (SR3 p.238) | . | 2. Spend your successes (SR3 p.237–238) | 3. The meet (SR3 p.238) | Example: five HK227 SMGs | . | . Original gist: “Gear Availability, Acquisition, &amp; Fencing Guide”. | SR3 Legality Codes look like 6P-E, not “R” or “F”. The number is the restriction level, P means a permit is available, and the letter is the category. | Successes on the acquisition test divide the base time. They don’t cut it by 25–50% each. | Paying to hurry a search costs +2 days and +0.1 Street Index for each −1 to the Availability TN. It’s not “+25–50% per die”. | The price is negotiated: Negotiation against Intelligence, 5% per net success. | Fencing: the 30% base and 5% per net success were right, but the limits are a 10% floor and a 50% ceiling, not 60%. The “chop shop 10–15%” rate and the hot, encrypted and scarce percentage modifiers were invented. The book handles risk through the Finding a Fence TN instead. | The Ares Predator III isn’t in the core rulebook. The examples below use the core Ares Predator (450¥, Availability 3/24 hrs, Street Index .5). | . ",
     "url": "/The2ndChumming3e/latest/street/gear-and-fencing/#buying-gear--fencing",
     
     "relUrl": "/street/gear-and-fencing/#buying-gear--fencing"
-  },"38": {
+  },"59": {
     "doc": "Buying Gear & Fencing",
     "title": "Reading a gear entry  (SR3 p.270–272)",
     "content": "| Statistic | Meaning | . | Concealability | TN for Perception Tests to spot it. Searches use half. | . | Availability | Two numbers: TN / base time, for example 3/24 hrs. | . | Cost | The legal retail price in nuyen. | . | Street Index | The black-market multiplier on Cost. | . | Legality | Restriction level, permit availability, and category. | . At character creation, no gear may have a Device Rating above 6 or an Availability above 8. (SR3 p.270) Gear modified for a dwarf costs +10%, and for a troll +25%. (SR3 p.272) . ",
     "url": "/The2ndChumming3e/latest/street/gear-and-fencing/#reading-a-gear-entry--sr3-p270272",
     
     "relUrl": "/street/gear-and-fencing/#reading-a-gear-entry--sr3-p270272"
-  },"39": {
+  },"60": {
     "doc": "Buying Gear & Fencing",
     "title": "Buying on the street  (SR3 p.272–273)",
     "content": ". | Find a source. Contact a fixer or other suitable contact and make an Etiquette Test against the Availability TN. Contacts differ: a talismonger is great for magical goods and poor for guns. | Wait. Base time ÷ successes is how long it takes the source to find the item. | No successes? The contact can’t or won’t find it. At the GM’s discretion you can put the word out: for each −1 to the Availability TN, add 2 days to the wait and +0.1 to the Street Index. (SR3 p.273) | Negotiate. Halfway through the wait you meet the source. The asking price is Cost × Street Index, plus any increase from step 3. You and the source each roll Negotiation against the other’s Intelligence. The winner moves the price 5% per net success in their favor. (SR3 p.273) | Pick up. If you won’t pay, the deal is off, and the GM may raise the Availability TN next time you use that contact. (SR3 p.273) | . The book’s example (SR3 p.273) . Cheshire wants a monofilament whip: Availability 24/14 days, Street Index 3, Cost 3,000¥. None of her contacts come close to TN . | She puts the word out, cutting the TN to 12. That adds 24 days (2 × 12) and +1.2 Street Index. She rolls 2 successes: (24 + 14) ÷ 2 = 19 days. The price is 3,000 × 4.2 = 12,600¥. She wins the negotiation by 4, which is 20% off, and pays 10,080¥. | . Example: an Ares Predator . | Ares Predator: 9M, SA, Availability 3/24 hrs, Cost 450¥, Street Index .5, Legality 6P-E. (SR3 p.278) | An Etiquette Test against TN 3 scores 2 successes, so the pistol turns up in 12 hours. | The asking price is 450 × .5 = 225¥ before negotiation. Its Street Index is below 1, so heavy pistols are cheaper on the street than in a store. | . ",
     "url": "/The2ndChumming3e/latest/street/gear-and-fencing/#buying-on-the-street--sr3-p272273",
     
     "relUrl": "/street/gear-and-fencing/#buying-on-the-street--sr3-p272273"
-  },"40": {
+  },"61": {
     "doc": "Buying Gear & Fencing",
     "title": "Legality Codes  (SR3 p.273–274)",
     "content": "A code like 6P-E reads as follows: . | 6 is the restriction level. The lower the number, the more tightly it’s controlled. When an officer notices the item, they roll their Security or Police Procedures skill against this number. With 1 success they know and may warn you. With more, they ask for a permit or arrest you. A low-enforcement area adds up to +3; a high-enforcement area subtracts up to −3, to a minimum of 2. | P means a permit is available. See SINs &amp; the SINless. | E is the category on the Local Fines and Punishment Table. | . Legal items have no code. They can be bought over the counter, but only in your own name, which leaves a data trail. (SR3 p.273) . Categories (SR3 p.274) . |   |   |   |   | . | A Small blade | F Rifle | L Military armor | S Class D Matrix (unregistered decks and software) | . | B Large blade | G Automatic weapon | M Military ammunition | T Class E Magic (unregistered spells, spirits, foci) | . | C Blunt weapon | H Heavy weapon | N Class A cyberware (paralegal) | U / V / W Class A / B / C equipment | . | D Projectile | J Explosives | Q Class B cyberware (security grade) | X / Y / Z Class A / B / C controlled substances | . | E Pistol | K Military weapon | R Class C cyberware (military grade) |   | . The table also lists fines and prison terms for possession, transport, threat, use and intent in each category. ",
     "url": "/The2ndChumming3e/latest/street/gear-and-fencing/#legality-codes--sr3-p273274",
     
     "relUrl": "/street/gear-and-fencing/#legality-codes--sr3-p273274"
-  },"41": {
+  },"62": {
     "doc": "Buying Gear & Fencing",
     "title": "Fencing the loot  (SR3 p.237–238)",
     "content": "If the job came with an agreed way to dispose of the loot, these rules don’t apply. Otherwise, you need a fence. 1. Find a fence (SR3 p.237) . Make an Etiquette (Street) Test against TN 4, modified as below. A team rolls the average Etiquette (Street) of the group plus one die per member, and everyone who contributes must attend the meet. Finding a Fence Table (SR3 p.238) . | Situation | Modifier | . | Using a regular contact | −1 | . | Disposing of standard gear | −1 | . | Disposing of hi-tech or other important loot | +1 | . | Disposing of hot loot | +3 | . | Being sought by the police | +1 | . | Being sought by a corp or organized crime | +2 | . | Magical loot (foci, spell formulae and so on) | +2 | . Fences prefer, in this order: standard gear (weapons, armor, vehicles, jewelry, money), then high-tech loot (ordinary data, equipment, research), then hot loot (one-of-a-kind items, prototypes, secret files, magical items). (SR3 p.237) . 2. Spend your successes (SR3 p.237–238) . You can split them between two uses: . | Hurry it along: finding a fence takes a base 10 days, and each success allocated takes a day off, down to a minimum of 1 day. At the end of each day the GM rolls dice equal to the days spent so far against TN 6. Any success means the former owners have found out. | Finance the fence: the GM secretly rolls 2D6 × 100,000¥ and multiplies it by the successes allocated. That’s the most money the fence brings to the meet. | . 3. The meet (SR3 p.238) . | One character and the fence each roll Negotiation against the other’s Intelligence, +2 because both sides are suspicious. | The base price is 30% of the item’s listed value. The winner shifts it 5% per extra success. | The fence can’t push it below 10%, and the team can’t push it above 50%. | The fence will bring muscle. If the former owners are hunting the loot, they may turn up too. | . Example: five HK227 SMGs . | The Heckler &amp; Koch HK227 costs 1,500¥ each, so five are worth 7,500¥ at list. (SR3 p.278) | The fence’s base offer is 30%, which is 2,250¥. | The team’s face wins by 3 successes: +15%, for 45%, or 3,375¥. | Winning by 5 would reach 55%, but the ceiling holds it at 50%, which is 3,750¥. | . ",
     "url": "/The2ndChumming3e/latest/street/gear-and-fencing/#fencing-the-loot",
     
     "relUrl": "/street/gear-and-fencing/#fencing-the-loot"
-  },"42": {
+  },"63": {
     "doc": "Buying Gear & Fencing",
     "title": "Buying Gear & Fencing",
     "content": " ",
     "url": "/The2ndChumming3e/latest/street/gear-and-fencing/",
     
     "relUrl": "/street/gear-and-fencing/"
-  },"43": {
+  },"64": {
     "doc": "Grenades",
     "title": "Grenades",
     "content": "Throwing or launching a grenade, where it lands, when it goes off, and what the blast does. All rules are from the core rulebook, (SR3 p.118–119). | 1. Hitting the target (SR3 p.118) . | Grenade Range Table (SR3 p.119) | . | 2. Scatter (SR3 p.118–119) | 3. When it goes off (SR3 p.118) | 4. The blast (SR3 p.119) . | Grenade Damage Table (SR3 p.119) | . | 5. Barriers and confined spaces (SR3 p.119) | . Original gist: “Grenade Throwing Rules Reference”. | The range table was invented. Grenades have their own range table, with base TNs 4 / 5 / 8 / 9, not 4 / 5 / 6 / 9, and bands of STR × 3 / 5 / 10 / 20 for a standard grenade. | Scatter is 1D6 m (standard), 2D6 m (aerodynamic) or 3D6 m (launcher). Each success removes 2 m (standard) or 4 m (aerodynamic and launcher), not 2D6 m less 1 m per success. | Grenades go off in your next Combat Phase, not at the end of the Combat Turn. There are no fuse types in the core rules. | Offensive grenades are 10S, −1 Power per meter. Defensive grenades are 10S, −1 per half meter. Concussion grenades are 12M Stun, −1 per meter. There is no “12D HE”. | All blast damage is resisted with Impact armor. | The chunky salsa effect adds the combined Power of each pass of the wave. It is not a series of separate damage rolls. | . ",
     "url": "/The2ndChumming3e/latest/rules/grenades/",
     
     "relUrl": "/rules/grenades/"
-  },"44": {
+  },"65": {
     "doc": "Grenades",
     "title": "1. Hitting the target  (SR3 p.118)",
     "content": ". | Pick the target point. | Make the attack test with Throwing Weapons for a thrown grenade, or Launch Weapons for a grenade launcher. (SR3 p.86) Throwing Weapons is linked to Strength and defaults to Strength. You may add Combat Pool dice. (SR3 p.86, p.118) | Base TN comes from the Grenade Range Table below. Apply the usual ranged combat modifiers (see Actions &amp; Combat). (SR3 p.118) | . Grenade Range Table (SR3 p.119) . | Type | Short (TN 4) | Medium (TN 5) | Long (TN 8) | Extreme (TN 9) | Scatter | . | Standard | 0 – STR × 3 | to STR × 5 | to STR × 10 | to STR × 20 | 1D6 m | . | Aerodynamic | 0 – STR × 3 | to STR × 5 | to STR × 20 | to STR × 30 | 2D6 m | . | Grenade launcher | 5 – 50 m | 51 – 100 m | 101 – 150 m | 151 – 300 m | 3D6 m | . Launcher minigrenades don’t arm until they’ve traveled about 5 meters. Disabling that safety takes an Electronics B/R (6) Test and 5 minutes. (SR3 p.118) . ",
     "url": "/The2ndChumming3e/latest/rules/grenades/#1-hitting-the-target--sr3-p118",
     
     "relUrl": "/rules/grenades/#1-hitting-the-target--sr3-p118"
-  },"45": {
+  },"66": {
     "doc": "Grenades",
     "title": "2. Scatter  (SR3 p.118–119)",
     "content": "Every grenade scatters to some degree. | Direction: roll 1D6 and read the Scatter Diagram. The arrow points in the direction of the throw. 1 means the grenade carried on past the target, 4 means it bounced back toward the thrower. | Distance: roll the dice from the Scatter column, then subtract 2 m per success for a standard grenade, or 4 m per success for an aerodynamic grenade or launcher. | At 0 or less, the grenade goes off exactly on target. Otherwise it goes off the remaining distance away in the rolled direction. | . ",
     "url": "/The2ndChumming3e/latest/rules/grenades/#2-scatter--sr3-p118119",
     
     "relUrl": "/rules/grenades/#2-scatter--sr3-p118119"
-  },"46": {
+  },"67": {
     "doc": "Grenades",
     "title": "3. When it goes off  (SR3 p.118)",
     "content": "A grenade goes off in the next Combat Phase of the character who threw or fired it. | If they have no more Combat Phases this turn, it goes off at the end of the next Initiative Pass. | If it was thrown in the last Initiative Pass of the turn, it goes off at the end of that Combat Turn. | . ",
     "url": "/The2ndChumming3e/latest/rules/grenades/#3-when-it-goes-off--sr3-p118",
     
     "relUrl": "/rules/grenades/#3-when-it-goes-off--sr3-p118"
-  },"47": {
+  },"68": {
     "doc": "Grenades",
     "title": "4. The blast  (SR3 p.119)",
     "content": "Grenade Damage Table (SR3 p.119) . | Type | Damage Code | Power reduction | . | Offensive | 10S | −1 per meter | . | Defensive | 10S | −1 per half meter | . | Concussion | 12M Stun | −1 per meter | . Each target resists with Body plus any Combat Pool dice, against TN = Power at their distance − Impact armor. Compare their successes with the thrower’s: every 2 more for the thrower stage the damage up one level, and every 2 more for the target stage it down one level. (SR3 p.119) . The book’s own example: a target 3 m from an offensive grenade faces 7S (10 − 3). A target 3 m from a defensive grenade faces 4S (10 − 6). At 6 m, the defensive grenade does nothing. (SR3 p.119) . Anti-personnel (AP) grenades are offensive or defensive grenades with heavy fragmentation. Their damage uses the flechette rules. (SR3 p.119, p.116) . Optional rule, grenade damage: instead of staging with the thrower’s successes, roll dice equal to half the grenade’s Power (round up) against TN 4, and stage up with those successes. (SR3 p.119) . ",
     "url": "/The2ndChumming3e/latest/rules/grenades/#4-the-blast--sr3-p119",
     
     "relUrl": "/rules/grenades/#4-the-blast--sr3-p119"
-  },"48": {
+  },"69": {
     "doc": "Grenades",
     "title": "5. Barriers and confined spaces  (SR3 p.119)",
     "content": "Blast against a barrier: compare the blast’s remaining Power with twice the Barrier Rating and use the Barrier Effect Table (p.124). If the barrier falls, the blast carries on with its Power reduced by the original Barrier Rating. If it holds, the blast may be channeled. Blast in a confined space (the “chunky salsa” effect): . | Check whether the walls held, using the barrier rules above. If they didn’t, resolve the blast normally. | If they held, the shock wave reflects back the way it came. | Anyone the rebounding wave still reaches is hit again. The Power of that second hit is the combined Power of both waves. For example, 6 on the way out and 2 on the rebound makes an effective Power of 8. | In a small, solid room the wave can rebound off every wall, and the effective Power climbs far above the grenade’s own. | . ",
     "url": "/The2ndChumming3e/latest/rules/grenades/#5-barriers-and-confined-spaces--sr3-p119",
     
     "relUrl": "/rules/grenades/#5-barriers-and-confined-spaces--sr3-p119"
-  },"49": {
+  },"70": {
     "doc": "Healing",
     "title": "Healing",
     "content": "What happens after someone gets hurt, step by step and in the order you do it at the table: who rolls, what they roll, and what it achieves. All rules are from the core rulebook, (SR3 p.125–129) and (SR3 p.162, p.193–194). | Who’s involved | The sequence at a glance | Step 0: The wound (SR3 p.125–126) | Step 1: Stabilize a dying character (SR3 p.129) | Step 2: First aid (SR3 p.129) . | First Aid Table (SR3 p.129) | . | Step 3: Magical healing (SR3 p.127, p.193–194) | Step 4: Deadly-wound aftermath (SR3 p.127–129) | Step 5: Do you need a doctor? (SR3 p.126–127) | Step 6: Heal over time (SR3 p.127–128) . | Healing Table (SR3 p.127) | Doctoring Table (SR3 p.128) | What it costs (SR3 p.128) | . | Stun damage (SR3 p.126) | Worked example | . Original gist: “Healing Rules Reference”. | Stun: TN is 2 plus your injury modifiers, not 2 plus the number of boxes filled. Recovering one box takes 60 minutes ÷ successes. You roll the higher of Body or Willpower; that’s the rule, not a GM option. | First aid: TN is 4 / 6 / 8 / 10 by wound level. One success lowers the wound one Damage Level, never more. It doesn’t heal a box per success, and there is no “capped by medkit rating”. | Heal / Treat: TN is 10 − the patient’s Essence, not the number of boxes filled. Each success heals one box, up to the spell’s Force. Heal has no +2 penalty after an hour. | Natural healing uses the Healing Table (TN 4 / 6 / 8 / 10), and the base time is divided by your successes. The “nurse / hospital / DocWagon” modifiers in the original were invented. The real ones are on the Doctoring Table below. | The fourth level is Deadly, not “Lethal”. | . ",
     "url": "/The2ndChumming3e/latest/rules/healing/",
     
     "relUrl": "/rules/healing/"
-  },"50": {
+  },"71": {
     "doc": "Healing",
     "title": "Who’s involved",
     "content": "| Role | Who they are | What they roll | . | Patient | The wounded character | Body (natural Body, no cyberware) for most healing tests; Body or Willpower for Stun | . | Medic | Anyone with Biotech skill, ideally with a medkit | Biotech for first aid and stabilizing | . | Magician | A spellcaster who knows Heal or Treat | Sorcery (+ Spell Pool), then Willpower for Drain | . | Doctor | Someone with a real medical degree, not just Biotech skill | Nothing; they give the patient the Doctoring Table modifiers | . | GM |   | Judges conditions (bad, terrible), lifestyle, and interruptions | . Gear that matters: a medkit (first aid without one is +4 TN), a trauma patch for a dying patient, and a hospital for intensive care. (SR3 p.128–129) . ",
     "url": "/The2ndChumming3e/latest/rules/healing/#whos-involved",
     
     "relUrl": "/rules/healing/#whos-involved"
-  },"51": {
+  },"72": {
     "doc": "Healing",
     "title": "The sequence at a glance",
     "content": "| # | Step | When | Who rolls | Roll | Effect | . | 1 | Stabilize | Deadly wound, right away | Medic, then patient | Biotech vs 10; if that fails, Body vs 10 | Stops the bleeding; heals nothing | . | 2 | First aid | Within 1 hour, before any magic | Medic | Biotech vs 4 / 6 / 8 | Wound drops one level | . | 3 | Magical healing | Treat within 1 hour; Heal any time | Magician | Sorcery vs 10 − Essence | Heals 1 box per success, up to Force | . | 4 | Deadly-wound aftermath | After a Deadly wound | Patient | Body vs 4; 2D6 for Magic loss if Awakened | May lose an organ, limb or attribute point, or Magic | . | 5 | Need a doctor? | After steps 2 and 3 | Patient | Body vs 2 / 4 / 6 | Decides whether you heal on your own | . | 6 | Heal over time | Each wound level, one at a time | Patient | Body vs 4 / 6 / 8 / 10 | Base time ÷ successes to drop one level | . | — | Stun recovery | Any time you can rest | Patient | Body or Willpower vs 2 | 60 min ÷ successes per box | . The order matters for two reasons. First aid can’t help once magical healing has been applied, so do first aid first. And first aid and magic both have to happen before the “need a doctor?” test. (SR3 p.127, p.129) . ",
     "url": "/The2ndChumming3e/latest/rules/healing/#the-sequence-at-a-glance",
     
     "relUrl": "/rules/healing/#the-sequence-at-a-glance"
-  },"52": {
+  },"73": {
     "doc": "Healing",
     "title": "Step 0: The wound  (SR3 p.125–126)",
     "content": "Physical and Stun each have 10 boxes. The Light / Moderate / Serious / Deadly thresholds are 1 / 3 / 6 / 10 boxes, and they add +1 / +2 / +3 to target numbers and −1 / −2 / −3 to Initiative. At 10 boxes you’re unconscious. | Stun past 10 boxes spills into the Physical track, and you’re knocked out. | Physical past 10 boxes: you can survive overflow up to your Body rating. Until someone stabilizes you, you take another box every (Body) Combat Turns. Past Body in overflow, you’re dead. | . See Actions &amp; Combat for the full table. ",
     "url": "/The2ndChumming3e/latest/rules/healing/#step-0-the-wound--sr3-p125126",
     
     "relUrl": "/rules/healing/#step-0-the-wound--sr3-p125126"
-  },"53": {
+  },"74": {
     "doc": "Healing",
     "title": "Step 1: Stabilize a dying character  (SR3 p.129)",
     "content": "Only for a Deadly wound. First aid can stabilize a Deadly wound but can’t reduce it. | Medic rolls Biotech against TN 10, with the modifiers from the First Aid Table in step 2. One success stabilizes the patient: the extra box every (Body) Combat Turns stops. | If that fails, the patient rolls natural Body against TN 10. With a success they stabilize on their own. If that fails too, they die once the damage exceeds their Body rating. | Trauma patch (optional, last resort): the patient gets an extra Body Test to stabilize, against TN 4 + the rating of any dermal armor or blood filters. Success stops the overflow damage. It makes permanent damage more likely: +2 to the step 4 test. | When professional help arrives, such as a hospital or a DocWagon paramedic with better Biotech, it makes another Biotech Test and Body Test. | . ",
     "url": "/The2ndChumming3e/latest/rules/healing/#step-1-stabilize-a-dying-character",
     
     "relUrl": "/rules/healing/#step-1-stabilize-a-dying-character"
-  },"54": {
+  },"75": {
     "doc": "Healing",
     "title": "Step 2: First aid  (SR3 p.129)",
     "content": ". | Who: the medic, rolling Biotech. | When: within one hour of the injury, and before any magical healing. Once magic has been used on the wound, first aid can’t help. | Effect: at least one success lowers the wound one Damage Level. It never drops it by more than one level, and it only helps Physical damage. | Time: treatment time ÷ successes, in uninterrupted Combat Turns. A serious interruption means starting over. | . First Aid Table (SR3 p.129) . | Damage level | TN | Treatment time | . | Light | 4 | 5 Combat Turns | . | Moderate | 6 | 10 Combat Turns | . | Serious | 8 | 15 Combat Turns | . | Deadly | 10 | Special: stabilize only (step 1) | . | Situation | Modifier | . | Patient is Awakened | +2 | . | Bad conditions (a city street) | +1 | . | Terrible conditions (the same street in a firefight in the rain) | +3 | . | Patient’s Body 1–3 / 4–6 / 7–9 / 10+ | +0 / −1 / −2 / −3 | . | No medkit available | +4 | . Awakened patients. The +2 isn’t optional. If a medic treats an Awakened patient without applying it (using gear and drugs that risk their magic), the patient rolls 2D6; on a result at or below their Magic, they permanently lose 1 Magic. (SR3 p.129) . ",
     "url": "/The2ndChumming3e/latest/rules/healing/#step-2-first-aid",
     
     "relUrl": "/rules/healing/#step-2-first-aid"
-  },"55": {
+  },"76": {
     "doc": "Healing",
     "title": "Step 3: Magical healing  (SR3 p.127, p.193–194)",
     "content": ". | Who: a magician who knows the spell, touching the patient. (SR3 p.193) | Roll: Sorcery plus up to as many Spell Pool dice as Sorcery dice, against TN 10 − the patient’s Essence. (SR3 p.194; p.44) | . | Spell | Type | TN | When | Drain | . | Treat | Mana | 10 − Essence | Within 1 hour of the injury | −1(Wound Level) | . | Heal | Mana | 10 − Essence | Any time | (Wound Level) | . | Effect: each success heals one box of Physical damage, up to the spell’s Force. You can instead spend successes to divide the base time before the spell becomes permanent, or split them between the two. Treat becomes permanent in half the normal time. (SR3 p.194) | Drain: Power = Force ÷ 2 (+0 for Heal, −1 for Treat). The Damage Level is the patient’s wound level when the spell is cast. The magician resists with Willpower. (SR3 p.162, p.194) | Once only: a character can be magically healed once for a single set of injuries. A successful Heal or Treat rules out further healing spells and first aid. (SR3 p.127, p.194) | Drain can’t be healed by magic. Physical damage from Drain heals only with rest and medical care. (SR3 p.162) | . ",
     "url": "/The2ndChumming3e/latest/rules/healing/#step-3-magical-healing",
     
     "relUrl": "/rules/healing/#step-3-magical-healing"
-  },"56": {
+  },"77": {
     "doc": "Healing",
     "title": "Step 4: Deadly-wound aftermath  (SR3 p.127–129)",
     "content": "Only after a Deadly wound. Permanent damage. The patient rolls Body against TN 4. Dermal armor counts for this test, and use of a trauma patch adds +2. (SR3 p.127–128) . | Successes | Result | . | 0 | A vital organ or system is gravely damaged. The patient needs continuous care from someone with Biotech, the whole healing time doubles, and a transplant is needed. Roll 1D6 for the attribute permanently lost: 1 Body, 2 Strength, 3 Quickness, 4 Intelligence, 5 Willpower, 6 Reaction. | . | 1 | An eye or limb is lost and must be replaced, either natural or cyber. Base healing time +50%. Roll 1D6: 1 right arm, 2 left arm, 3 right leg, 4 left leg, 5 an ear, 6 an eye. | . | 2+ | No lasting damage. | . Magic loss. An Awakened patient with a Deadly wound rolls 2D6. At or below their Magic, they permanently lose 1 point. If the Deadly wound was also treated without the +2 Awakened modifier, they roll twice. (SR3 p.129) . ",
     "url": "/The2ndChumming3e/latest/rules/healing/#step-4-deadly-wound-aftermath",
     
     "relUrl": "/rules/healing/#step-4-deadly-wound-aftermath"
-  },"57": {
+  },"78": {
     "doc": "Healing",
     "title": "Step 5: Do you need a doctor?  (SR3 p.126–127)",
     "content": "Once first aid and magic are done, the patient makes a Body Test (natural Body, no cyberware) against the TN for their current wound: . | Wound level | TN | . | Light | 2 | . | Moderate | 4 | . | Serious | 6 | . | Deadly | Always needs medical attention | . | Any successes: you’ll heal without medical attention. | No successes: you won’t heal at all until you get medical attention, meaning a doctor, clinic or hospital. | . You can make this test any time, but doing it in combat costs your whole next Combat Turn. (SR3 p.126) . ",
     "url": "/The2ndChumming3e/latest/rules/healing/#step-5-do-you-need-a-doctor",
     
     "relUrl": "/rules/healing/#step-5-do-you-need-a-doctor"
-  },"58": {
+  },"79": {
     "doc": "Healing",
     "title": "Step 6: Heal over time  (SR3 p.127–128)",
     "content": "Physical damage heals one Damage Level at a time: Deadly to Serious, Serious to Moderate, and so on. When a level heals, the track drops to the lowest box of the next level. A Serious wound that heals to Moderate leaves exactly 3 boxes filled. For each level: . | The patient rolls Body against the TN on the Healing Table below. Add Doctoring Table modifiers if a doctor is involved. | Base time ÷ successes = how long that level takes to heal. It can never be shorter than the minimum time. | When the level heals, repeat for the next level down. | . Healing Table (SR3 p.127) . | Damage level | Base time | Minimum time | TN | Minimum lifestyle | . | Deadly | 30 days | 3 days | 10 | Hospitalized | . | Serious | 20 days | 2 days | 8 | High | . | Moderate | 10 days | 1 day | 6 | Middle | . | Light | 24 hours | 2 hours | 4 | Low | . If the patient can’t support the minimum lifestyle while healing, the GM may add modifiers. Lifestyle can be paid by the day: the monthly cost ÷ 30. (SR3 p.127) . Doctoring Table (SR3 p.128) . Use this when a real doctor is looking after the patient. | Situation | Modifier | . | Intensive care (hospital only) | −2 | . | Long-term magical care | −2 | . | Conditions (apply only one): |   | . | Not in a hospital or clinic | +2 | . | Bad conditions | +3 | . | Terrible conditions | +4 | . | Patient is a magician | +2 | . | Patient’s natural Body 1–3 / 4–6 / 7–9 / 10+ | +0 / −1 / −2 / −3 | . | Patient’s natural Willpower 1–3 / 4–6 / 7–9 / 10+ | +0 / −1 / −2 / −3 | . What it costs (SR3 p.128) . | Service | Deadly | Serious | Moderate | Light | . | Paramedic first aid | 400¥ | 200¥ | 100¥ | 50¥ | . | Doctor’s services, per day | 400¥ | 200¥ | 100¥ | 50¥ | . A hospitalization lifestyle is 500¥ a day, including the doctor. Intensive care, for Deadly wounds only, is 1,000¥ a day. ",
     "url": "/The2ndChumming3e/latest/rules/healing/#step-6-heal-over-time",
     
     "relUrl": "/rules/healing/#step-6-heal-over-time"
-  },"59": {
+  },"80": {
     "doc": "Healing",
     "title": "Stun damage  (SR3 p.126)",
     "content": "Stun runs on its own track and recovers much faster. No medicine or known spell helps; you just rest. | The patient rolls Body or Willpower, whichever is higher, against TN 2, plus current Stun and Physical injury modifiers. | Recovering one box takes 60 minutes ÷ successes. Erase the box, then roll again for the next one. | The patient must be resting completely. If they’re interrupted, they start over, and the new roll can’t beat the first one. | . A character knocked out by Deadly Stun doesn’t wake up until the Stun is back down to Serious. Stim patches only mask Stun, at a price. (SR3 p.126, p.305) . ",
     "url": "/The2ndChumming3e/latest/rules/healing/#stun-damage",
     
     "relUrl": "/rules/healing/#stun-damage"
-  },"60": {
+  },"81": {
     "doc": "Healing",
     "title": "Worked example",
     "content": "Snot takes a Serious Physical wound (6 boxes) from a Predator. | Stabilize: not needed; it isn’t Deadly. | First aid, within the hour. Teammate Doc has Biotech 4 and a medkit, and it’s a city street (+1). The TN is 8 + 1 = 9, less 1 for Snot’s Body 5 = 8. Doc gets 1 success: the wound drops to Moderate (3 boxes). Treatment takes 15 ÷ 1 = 15 Combat Turns. | Magic. The team mage casts Treat, still within the hour, against 10 − Snot’s Essence 6 = TN 4, and gets 2 successes. Two boxes heal, leaving 1 box: Light. Drain is resisted at Moderate, Snot’s wound level when the spell was cast. Nobody can use first aid or healing magic on this wound again. | Aftermath: not needed; it wasn’t Deadly. | Need a doctor? Snot rolls Body 5 against TN 2 for a Light wound and succeeds. He’ll heal on his own. | Heal over time. Body 5 against TN 4 gets 2 successes: 24 hours ÷ 2 = 12 hours, above the 2-hour minimum. He needs at least a Low lifestyle for that time. | . ",
     "url": "/The2ndChumming3e/latest/rules/healing/#worked-example",
     
     "relUrl": "/rules/healing/#worked-example"
-  },"61": {
+  },"82": {
     "doc": "Hiring & Service Costs",
     "title": "Hiring &amp; Service Costs",
     "content": "What the books say about paying shadowrunners, and a house-rule framework for pricing individual specialists. The eight specialist pages below build on this one. | What the books say . | Setting the fee (SRComp p.99) | Baseline Shadowrun Payment Table (SRComp p.100) | How Mr. Johnson pays (MJLBB p.20–21) | What living costs (SR3 p.240) | Services with book prices | . | The house-rule framework | The specialists | . About the original eight hiring gists. They credited their rates to a core-rulebook section called “Spells, Contacts, and Services”. No such section exists, and no SR3 book prices specialists by skill rating. The books price jobs: see the Baseline Payment Table below. The day rates on the specialist pages are kept, marked as house rules, with the example arithmetic corrected. Several of the original examples didn’t add up. ",
     "url": "/The2ndChumming3e/latest/hiring/#hiring--service-costs",
     
     "relUrl": "/hiring/#hiring--service-costs"
-  },"62": {
+  },"83": {
     "doc": "Hiring & Service Costs",
     "title": "What the books say",
     "content": "Setting the fee (SRComp p.99) . | Player characters average about one shadowrun a month. | A good starting fee for each runner is one month’s living expenses plus the cost of the gear the run needs. If the team’s lifestyles differ, use the average. | The GM decides in the end, based on the risk, what the employer can and will pay, and the runners’ reputations. | . Baseline Shadowrun Payment Table (SRComp p.100) . | Run | Bottom-line Fee | . | Assassination | 5,000¥ | . | Bodyguard/Security Duty | 200¥/day | . | Burglary | 2,000¥ | . | Courier Run | 1,000¥ | . | Datasteal | 20% value of data | . | Distraction | 1,000¥ | . | Destruction | 5,000¥ | . | Enforcement | 1,000¥ | . | Encryption/Decryption | 200¥ per MP | . | Extraction | 20,000¥ | . | Hacking | 1,000¥ x Host’s Security Value | . | Investigation | 200¥/day | . | Smuggling Run | 5,000¥ | . How to use it (SRComp p.99–100): . | These are low-end rates for the task alone. More work, more risk, a tougher target or higher-caliber runners should all push them up. | Bigger teams can generally expect more. The rates don’t account for team size. | The rates don’t include expenses, hazard pay or “death benefits”. | In an amoral campaign, where the runners care more about money than doing the right thing, double the base fees and windfalls. | A rare windfall should come to roughly six months of the character’s lifestyle. | Pay doesn’t have to be cash. Valuable data, equipment, paid expenses, time in a magical research facility, Matrix access and SINs all work. | . How Mr. Johnson pays (MJLBB p.20–21) . | Pay is fluid, and should suit the danger and the style of game. Johnson has a budget he won’t go over, and he lowballs his first offer so there’s room to haggle. | The more information and support Johnson provides, the less he’ll pay. | Johnson normally covers miscellaneous expenses such as travel and visa fees, if they’re negotiated. Runners who forget to ask may be out of luck. | Up-front money: never more than half, and rarely more than a third. | Paying in gear: a corporate Johnson can usually afford up to 25% over budget if he pays in equipment. That gear may be tagged, trackable, or a prototype. | . What living costs (SR3 p.240) . | Lifestyle | Per month | . | Street | Free | . | Squatter | 100¥ | . | Low | 1,000¥ | . | Middle | 5,000¥ | . | High | 10,000¥ | . | Luxury | 100,000¥ and up | . | Hospitalized | 500¥ per day (1,000¥ in intensive care) | . So by the Companion’s rule, a Low-lifestyle runner’s fee starts near 1,000¥ plus gear for a run, and a High-lifestyle runner’s near 10,000¥ plus gear. Services with book prices . | Service | Price | Source | . | Ward maintenance (freelance or firm) | about 100¥ an hour, per magician | SR3 p.174 | . | Elemental conjuring materials | Force × 1,000¥ | SR3 p.186; MitS p.169 | . | Renting an enchanting shop | 100¥ a day, plus materials | MitS p.40 | . | Paramedic first aid | 50¥ (Light) to 400¥ (Deadly) | SR3 p.128 | . | Doctor | 50¥ to 400¥ a day, by wound | SR3 p.128 | . | Fake ID, Rating 1–4 | Rating × Rating × 1,000¥ | SR3 p.239 | . ",
     "url": "/The2ndChumming3e/latest/hiring/#what-the-books-say",
     
     "relUrl": "/hiring/#what-the-books-say"
-  },"63": {
+  },"84": {
     "doc": "Hiring & Service Costs",
     "title": "The house-rule framework",
     "content": "The specialist pages use this structure. It came from the original gists. The numbers are not from any SR3 book, and are much higher than the Companion’s baselines. For example, a “professional” bodyguard at 1,500¥ a night compares with the book’s 200¥ a day. They fit a high-paying campaign. Scale them to your table. Fee = base day rate × threat multiplier, plus hazard pay (a percentage of that), plus expenses. | Base day rate is set by the specialist’s tier in their main skill (1–3, 4–5, 6–7, 8+). | Threat multiplier, from about ×1 for routine work to ×3–×6 for heavy opposition. | Hazard pay for being on-site rather than working remotely, usually +50% to +100%. | Expenses and deposits: ammunition, reagents, fake IDs, drone and deck repairs. By the book, Johnson covers expenses only if they’re negotiated (MJLBB p.20–21). | . Fixers take a finder’s fee, which the books don’t quantify. The original gists suggested 10–30% depending on how rare the specialist is. Many top-tier freelancers will ask instead for an equal share of the team’s payout. That fits the Companion’s guidance that the fee is per runner (SRComp p.99). ",
     "url": "/The2ndChumming3e/latest/hiring/#the-house-rule-framework",
     
     "relUrl": "/hiring/#the-house-rule-framework"
-  },"64": {
+  },"85": {
     "doc": "Hiring & Service Costs",
     "title": "The specialists",
     "content": "| Specialist | Nearest Companion baseline | . | Decker | Hacking: 1,000¥ × Security Value; datasteal: 20% of the data’s value | . | Rigger | Courier run: 1,000¥; smuggling run: 5,000¥ | . | Combat Mage | Security: 200¥ a day; destruction or assassination: 5,000¥ | . | Shaman | Investigation: 200¥ a day; security: 200¥ a day | . | Physical Adept | Bodyguard: 200¥ a day; assassination: 5,000¥ | . | Street Samurai | Bodyguard: 200¥ a day; enforcement: 1,000¥ | . | Face | Investigation: 200¥ a day; distraction: 1,000¥ | . | Infiltrator | Burglary: 2,000¥; extraction: 20,000¥ | . ",
     "url": "/The2ndChumming3e/latest/hiring/#the-specialists",
     
     "relUrl": "/hiring/#the-specialists"
-  },"65": {
+  },"86": {
     "doc": "Hiring & Service Costs",
     "title": "Hiring & Service Costs",
     "content": " ",
     "url": "/The2ndChumming3e/latest/hiring/",
     
     "relUrl": "/hiring/"
-  },"66": {
+  },"87": {
     "doc": "Rules",
     "title": "Rules",
     "content": "Combat, grenades and healing, from the Shadowrun, Third Edition core rulebook. ",
     "url": "/The2ndChumming3e/latest/rules/",
     
     "relUrl": "/rules/"
-  },"67": {
+  },"88": {
     "doc": "The Street",
     "title": "The Street",
     "content": "Identity, buying and selling gear, and secondhand chrome. ",
     "url": "/The2ndChumming3e/latest/street/",
     
     "relUrl": "/street/"
-  },"68": {
+  },"89": {
     "doc": "Magic",
     "title": "Magic",
     "content": "Spellcasting, conjuring and astral space for new Awakened characters. ",
     "url": "/The2ndChumming3e/latest/magic/",
     
     "relUrl": "/magic/"
-  },"69": {
+  },"90": {
     "doc": "Home",
     "title": "SR3 Table Reference",
     "content": "Quick-reference pages for Shadowrun, Third Edition: combat, healing, grenades, magic, life with and without a SIN, buying and fencing gear, cyberware grades, and what it costs to hire a specialist. These pages began as fifteen Gemini-generated gists. Every rule has since been checked against the rulebooks, and each one now carries a citation like (SR3 p.113) so you can check it at the table. Abbreviations are on Source books &amp; method. ",
     "url": "/The2ndChumming3e/latest/#sr3-table-reference",
     
     "relUrl": "/#sr3-table-reference"
-  },"70": {
+  },"91": {
     "doc": "Home",
     "title": "How to read the markers",
     "content": "Show corrections, the checkbox at the top of every page, turns on yellow boxes listing what was wrong in the original gist and has been corrected. The originals got a lot wrong: invented tables, rules from other editions, and numbers that appear in no book. The boxes are hidden by default, and the setting is remembered in your browser. This is what a correction box looks like. A purple box marks material that is not in any SR3 book. The hiring rates are the main example. It’s kept because it’s useful at the table, but treat it as a house rule and change it freely. Anything without a citation or a purple box is general description, not a rule. ",
     "url": "/The2ndChumming3e/latest/#how-to-read-the-markers",
     
     "relUrl": "/#how-to-read-the-markers"
-  },"71": {
+  },"92": {
     "doc": "Home",
     "title": "Pages",
     "content": "| Section | Pages | . | Rules | Actions &amp; Combat · Reloading · Grenades · Healing | . | Magic | Primer for the Awakened · Spellcasting, Resistance &amp; Drain | . | The Street | SINs &amp; the SINless · Buying Gear &amp; Fencing · Cyberware Grades &amp; Used Chrome | . | Hiring | What the Books Say · Decker · Rigger · Combat Mage · Shaman · Physical Adept · Street Samurai · Face · Infiltrator | . ",
     "url": "/The2ndChumming3e/latest/#pages",
     
     "relUrl": "/#pages"
-  },"72": {
+  },"93": {
     "doc": "Home",
     "title": "Home",
     "content": " ",
     "url": "/The2ndChumming3e/latest/",
     
     "relUrl": "/"
-  },"73": {
+  },"94": {
     "doc": "Infiltrator",
     "title": "Hiring an Infiltrator",
     "content": ". | What the books give you . | What they’re up against | . | House rates . | Base day rate, by Stealth, Electronics and similar skills | Threat multiplier | Hazard pay and expenses | . | Worked examples | . | “Spurlock &amp; Sprawl” isn’t a Shadowrun book. The citation has been removed. | “Neural Silence gear” and “cyber-matures” appear in no book and have been removed. “Synthetic muscle” is muscle replacement. (SR3 p.302) | Chameleon camouflage in SR3 uses ruthenium polymers. (M&amp;M) | The Scenario C total was wrong: 12,000 × 4, then +50%, is 72,000¥, not 54,000–60,000¥. | . ",
     "url": "/The2ndChumming3e/latest/hiring/infiltrator/#hiring-an-infiltrator",
     
     "relUrl": "/hiring/infiltrator/#hiring-an-infiltrator"
-  },"74": {
+  },"95": {
     "doc": "Infiltrator",
     "title": "What the books give you",
     "content": "|   |   | Source | . | Burglary | 2,000¥ | SRComp p.100 | . | Extraction (kidnapping) | 20,000¥ | SRComp p.100 | . | Plant an object | not priced. The nearest baseline is burglary. | SRComp p.101 | . | Retrieval of an object | not priced. The nearest baseline is burglary. | SRComp p.101 | . What they’re up against . | Weapon detection: MAD scanners are rated 1–4 hand-held and 4–9 built into doorways. The scanner rolls its rating against the weapon’s Concealability. (SR3 p.237) | Cyberware scanners are rated 3–9, against TN 3, or 6 for alphaware. (SR3 p.237) | Astral security: bound spirits, wards and dual-natured watch critters. (SR3 p.237) | . ",
     "url": "/The2ndChumming3e/latest/hiring/infiltrator/#what-the-books-give-you",
     
     "relUrl": "/hiring/infiltrator/#what-the-books-give-you"
-  },"75": {
+  },"96": {
     "doc": "Infiltrator",
     "title": "House rates",
     "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by Stealth, Electronics and similar skills . | Tier | Skill | Base day rate | Typical kit | . | Cat burglar | 1–3 | 250–500¥ | Lockpicks and climbing gear | . | Professional | 4–5 | 1,500–3,000¥ | Maglock passkey, sequencer, voice modulator, dermal sheath | . | Veteran | 6–7 | 4,000–8,000¥ | High-grade electronics, muscle replacement, retractable climbing claws | . | Elite | 8+ | 12,000¥ and up | Ruthenium-polymer camouflage and a full stealth suite | . Threat multiplier . | Target | Multiplier | . | Commercial or residential: locks, basic maglocks, cameras | ×1 | . | Corporate facility: patrols, pressure and laser sensors, better maglocks | ×2–3 | . | Black site or military storage: monowire, turrets, wards, instant response | ×4–5 | . Hazard pay and expenses . | Solo entry, or opening the door for the team: no hazard pay. | Leading the team through the sensors under fire: +50% to +100%. | The employer pays for consumables such as bypass cards, thermite and fiber-optic cameras. | A gear deposit of 25–50% of the value of expensive kit taken into high-danger areas. | . ",
     "url": "/The2ndChumming3e/latest/hiring/infiltrator/#house-rates",
     
     "relUrl": "/hiring/infiltrator/#house-rates"
-  },"76": {
+  },"97": {
     "doc": "Infiltrator",
     "title": "Worked examples",
     "content": "| Job | House rate | Companion baseline | . | Cracking a commercial storage unit, professional (base 1,500¥), ×1 | 1,500¥ | Burglary: 2,000¥ | . | Stealing a prototype from a corporate R&amp;D office, veteran (base 5,000¥), ×2 | 5,000 × 2 = 10,000¥ | Burglary: 2,000¥ | . | Getting into a military bunker, elite (base 12,000¥), ×4, leading the team +50% | 12,000 × 4 × 1.5 = 72,000¥ | Extraction: 20,000¥ | . ",
     "url": "/The2ndChumming3e/latest/hiring/infiltrator/#worked-examples",
     
     "relUrl": "/hiring/infiltrator/#worked-examples"
-  },"77": {
+  },"98": {
     "doc": "Infiltrator",
     "title": "Infiltrator",
     "content": " ",
     "url": "/The2ndChumming3e/latest/hiring/infiltrator/",
     
     "relUrl": "/hiring/infiltrator/"
-  },"78": {
+  },"99": {
     "doc": "Physical Adept",
     "title": "Hiring a Physical Adept",
     "content": ". | What the books give you . | Powers an employer might pay for | . | House rates . | Base day rate, by combat skill and initiation | Threat multiplier | Hazard pay | . | Worked examples | . | The power is Improved Reflexes (levels 1–3, +1D6 to +3D6 Initiative), not “Increased Reflexes”. Its bonus can’t be combined with wired reflexes or other technological or magical boosts. (SR3 p.169) | Initiative dice aren’t Initiative Passes. The number of passes comes from the Initiative score, which drops by 10 each pass. (SR3 p.104) | There are no adept powers called “Invisibility” or “Silence”. For stealth, look at Traceless Walk (MitS p.151) and Melanin Control (SOTA64 p.67–68). | “Wall-walking” is Wall Running. “Bushido / Way powers” isn’t an SR3 term, so it’s been removed. | The Scenario C total was wrong: 18,000 × 4, then +50%, is 108,000¥, not 81,000¥. | . ",
     "url": "/The2ndChumming3e/latest/hiring/physical-adept/#hiring-a-physical-adept",
     
     "relUrl": "/hiring/physical-adept/#hiring-a-physical-adept"
-  },"79": {
+  },"100": {
     "doc": "Physical Adept",
     "title": "What the books give you",
     "content": "|   |   | Source | . | Bodyguard / security duty | 200¥/day | SRComp p.100 | . | Assassination | 5,000¥ | SRComp p.100 | . | Extraction | 20,000¥ | SRComp p.100 | . Powers an employer might pay for . | Power | What it does | Source | . | Improved Reflexes 1–3 | +1D6 to +3D6 Initiative; doesn’t stack with cyberware | SR3 p.169 | . | Killing Hands | Unarmed attacks do Physical damage; works on the astral | SR3 p.170, p.175 | . | Mystic Armor | Impact armor that also counts in astral combat | SR3 p.170, p.175 | . | Astral Perception | Lets the adept see and fight on the astral | SR3 p.169 | . | Traceless Walk, Missile Mastery | Stealth; catching and throwing missiles | MitS p.150–151 | . | Wall Running, Melanin Control | Mobility; camouflage | SOTA64 p.67–68 | . | Kinesics | Control of body language: easier social tests, harder to read | SOTA64 p.66 | . | A weapon focus or Killing Hands lets an adept hurt spirits and projecting magicians. That’s why “spirit hunter” work pays well. (SR3 p.174–175) | Adepts can take Magic Loss from Deadly wounds, just as magicians do. (SR3 p.129) | . ",
     "url": "/The2ndChumming3e/latest/hiring/physical-adept/#what-the-books-give-you",
     
     "relUrl": "/hiring/physical-adept/#what-the-books-give-you"
-  },"80": {
+  },"101": {
     "doc": "Physical Adept",
     "title": "House rates",
     "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by combat skill and initiation . | Tier | Skill and grade | Base day rate | Typical powers | . | Street athlete | Skill 1–3 | 400–800¥ | Improved Reflexes 1, a movement power | . | Professional | Skill 4–5 | 2,000–4,000¥ | Improved Reflexes 1–2, Killing Hands, a Force 2–3 weapon focus, Astral Perception | . | Veteran | Skill 6–7, grade 1–3 | 5,000–10,000¥ | Improved Reflexes 2–3, Mystic Armor, a Force 4+ weapon focus, Missile Mastery | . | Master | Skill 8+, grade 4+ | 18,000¥ and up | Spirit-killing melee and near-undetectable movement | . Threat multiplier . | Work | Multiplier | . | Bodyguarding, stealth recon, static security | ×1 | . | Assaulting a perimeter, close-quarters fights with corporate guards | ×2 | . | Security mages, dual-natured critters, strong spirits | ×3–5 | . Hazard pay . | Silent infiltration or overwatch: no hazard pay. | Point man or breacher: +50% to +100%. | . ",
     "url": "/The2ndChumming3e/latest/hiring/physical-adept/#house-rates",
     
     "relUrl": "/hiring/physical-adept/#house-rates"
-  },"81": {
+  },"102": {
     "doc": "Physical Adept",
     "title": "Worked examples",
     "content": "| Job | House rate | Companion baseline | . | Nightclub bodyguard, professional (base 2,500¥), ×1 | 2,500¥ a night | 200¥ a day | . | Hunting a spirit, veteran with a weapon focus (base 7,000¥), ×3 | 7,000 × 3 = 21,000¥ | Assassination: 5,000¥ | . | Infiltration and point on a corporate assault, master (base 18,000¥), ×4, +50% | 18,000 × 4 × 1.5 = 108,000¥ | A share of the extraction or destruction fee | . ",
     "url": "/The2ndChumming3e/latest/hiring/physical-adept/#worked-examples",
     
     "relUrl": "/hiring/physical-adept/#worked-examples"
-  },"82": {
+  },"103": {
     "doc": "Physical Adept",
     "title": "Physical Adept",
     "content": " ",
     "url": "/The2ndChumming3e/latest/hiring/physical-adept/",
     
     "relUrl": "/hiring/physical-adept/"
-  },"83": {
+  },"104": {
     "doc": "Reloading",
     "title": "Reloading",
     "content": "How each kind of gun is reloaded, what it costs in actions, and buying and sharing ammunition. The core rule is the Ammo Reloading Table, (SR3 p.280). | Reading the ammo code (SR3 p.280) | Ammo Reloading Table (SR3 p.280) | Clips: the two-step swap (SR3 p.105–107) | Guns without clips (SR3 p.108, p.280) | Belt-fed weapons (SR3 p.280) | Bows and crossbows (SR3 p.107, p.118) | Examples | Buying and sharing ammunition (SR3 p.279, p.281) . | Ammunition, per 10 rounds (SR3 p.281) | . | . ",
     "url": "/The2ndChumming3e/latest/rules/reloading/",
     
     "relUrl": "/rules/reloading/"
-  },"84": {
+  },"105": {
     "doc": "Reloading",
     "title": "Reading the ammo code  (SR3 p.280)",
     "content": "Every firearm’s Ammo entry is a capacity followed by a letter in brackets. The letter is how the gun is reloaded. | Code | Method | How it works | Example (SR3 p.278–279) | . | (c) | Removable clip | A detachable clip holding many rounds. The most common method. | Ares Predator, 15 (c) | . | (b) | Break action | The gun hinges open and rounds go in by hand. | Walther Palm Pistol, 2 (b) | . | (m) | Internal magazine | Rounds are pushed into a port inside the gun. | Remington Roomsweeper, 8 (m) | . | (cy) | Cylinder | A pop-out cylinder, loaded by hand or with a speed loader. | Ruger Super Warhawk, 6 (cy) | . | (belt) | Belt feed | A long belt of linked rounds fed continuously. | Ingram Valiant LMG, 50 (c)/Belt | . ",
     "url": "/The2ndChumming3e/latest/rules/reloading/#reading-the-ammo-code--sr3-p280",
     
     "relUrl": "/rules/reloading/#reading-the-ammo-code--sr3-p280"
-  },"85": {
+  },"106": {
     "doc": "Reloading",
     "title": "Ammo Reloading Table  (SR3 p.280)",
     "content": "| Reloading method | Action required | Result | . | Removable clip (c) | Simple Action | Remove or insert a clip | . |   | Complex Action | Load (Quickness) rounds into a clip | . | Break action (b) | Complex Action | Load 2 rounds | . | Internal magazine (m) | Complex Action | Load (Quickness) rounds | . | Cylinder (cy) | Complex Action | Load (Quickness) rounds | . |   | Complex Action | Use a speed loader | . | Belt feed (belt) | Complex Action | Insert a belt | . |   | Complex Action | Load (Quickness × 2) rounds into a belt | . “(Quickness) rounds” means as many rounds as your Quickness per action. A character with Quickness 5 loads 5 rounds with each Complex Action. ",
     "url": "/The2ndChumming3e/latest/rules/reloading/#ammo-reloading-table--sr3-p280",
     
     "relUrl": "/rules/reloading/#ammo-reloading-table--sr3-p280"
-  },"86": {
+  },"107": {
     "doc": "Reloading",
     "title": "Clips: the two-step swap  (SR3 p.105–107)",
     "content": "Changing a clip is two actions: take the old one out, then put a new one in. You can’t insert a clip until the old one is out. (SR3 p.106) . | Action | Type | Notes | . | Remove Clip | Simple | Takes the old clip out of a ready gun. (p.107) | . | Eject Smartgun Clip | Free | Only for a smartgun linked to your smartlink: a cybernetic command drops the clip. (p.105, p.107) | . | Insert Clip | Simple | Grabs a fresh clip and slams it home. (p.106) | . So a full clip change costs: . | Without a smartlink: Remove Clip + Insert Clip, both Simple Actions. That’s your whole Combat Phase, and you shoot next phase. | With a smartlink and smartgun: eject as a Free Action, insert as a Simple Action, and you still have one Simple Action left to fire. | . The book doesn’t say what happens to the rounds left in a removed clip. Spare clips cost 5¥ each, unloaded. Each holds the gun’s full capacity, and they don’t swap between guns, even guns of the same class. (SR3 p.281) . How The 2nd Chumming handles it: swapping in a pre-filled clip, speed loader or belt loses the rounds left in the old one; loading loose rounds by hand never loses a round (unfired rounds of another type go back into stock). A reload fits guns by loading mechanism, not by the individual gun, so the “don’t swap between guns” part of spare clips is left to the table. Refilling empty clips is the slow part: a Complex Action per (Quickness) rounds. Do it between fights. ",
     "url": "/The2ndChumming3e/latest/rules/reloading/#clips-the-two-step-swap--sr3-p105107",
     
     "relUrl": "/rules/reloading/#clips-the-two-step-swap--sr3-p105107"
-  },"87": {
+  },"108": {
     "doc": "Reloading",
     "title": "Guns without clips  (SR3 p.108, p.280)",
     "content": "Break-action guns, internal magazines and cylinders are reloaded with the Reload Firearm Complex Action. (SR3 p.108) Each action loads only part of the gun: . | Break action: 2 rounds per Complex Action. | Internal magazine: (Quickness) rounds per Complex Action. | Cylinder: (Quickness) rounds per Complex Action, or the whole cylinder in one Complex Action with a speed loader. | . ",
     "url": "/The2ndChumming3e/latest/rules/reloading/#guns-without-clips--sr3-p108-p280",
     
     "relUrl": "/rules/reloading/#guns-without-clips--sr3-p108-p280"
-  },"88": {
+  },"109": {
     "doc": "Reloading",
     "title": "Belt-fed weapons  (SR3 p.280)",
     "content": ". | Inserting a belt is a Complex Action. | Loading rounds into a belt is a Complex Action per (Quickness × 2) rounds. | A 100-round belt costs 4,250¥ and weighs 12.5 kg. Its Concealability is listed as “yeah, right”. (SR3 p.281) | . ",
     "url": "/The2ndChumming3e/latest/rules/reloading/#belt-fed-weapons--sr3-p280",
     
     "relUrl": "/rules/reloading/#belt-fed-weapons--sr3-p280"
-  },"89": {
+  },"110": {
     "doc": "Reloading",
     "title": "Bows and crossbows  (SR3 p.107, p.118)",
     "content": ". | Nocking an arrow or bolt is the Ready Weapon Simple Action. Firing it is a separate Fire Weapon action. (SR3 p.106–107) | A character below a crossbow’s Strength Minimum needs one extra Ready Weapon action per point short to reload it. (SR3 p.118) | Small throwing weapons, such as knives and shuriken, are readied ½ Quickness at a time per Ready Weapon action. (SR3 p.107) | . ",
     "url": "/The2ndChumming3e/latest/rules/reloading/#bows-and-crossbows--sr3-p107-p118",
     
     "relUrl": "/rules/reloading/#bows-and-crossbows--sr3-p107-p118"
-  },"90": {
+  },"111": {
     "doc": "Reloading",
     "title": "Examples",
     "content": "Ares Predator, no smartlink. Liam empties his Predator (15 rounds). Next Combat Phase he spends a Simple Action on Remove Clip and another on Insert Clip. His phase is gone, but he’s loaded for the next one. Ares Predator with a smartlink. Same situation. Liam ejects with a Free Action, inserts the new clip with a Simple Action, and fires with his second Simple Action, all in the same phase. Refilling after the fight. Liam has Quickness 5 and two empty 15-round clips. Each clip takes 15 ÷ 5 = 3 Complex Actions, so 6 for both. Ruger Super Warhawk. The six-shot revolver is empty. With Quickness 4 and no speed loader, that’s 2 Complex Actions: 4 rounds, then 2. With a speed loader, it’s one Complex Action. Remington Roomsweeper. Eight rounds in an internal magazine, Quickness 4: 2 Complex Actions. ",
     "url": "/The2ndChumming3e/latest/rules/reloading/#examples",
     
     "relUrl": "/rules/reloading/#examples"
-  },"91": {
+  },"112": {
     "doc": "Reloading",
     "title": "Buying and sharing ammunition  (SR3 p.279, p.281)",
     "content": "Ammo is shared by gun class, using the categories on the Weapon Range Table (SR3 p.111). Any light pistol can fire any light-pistol ammo, any assault rifle any assault-rifle ammo, and so on. All shotguns, pistol or rifle, share ammunition. (SR3 p.279) . Ammunition, per 10 rounds (SR3 p.281) . | Type | Availability | Cost | Street Index | Legality | . | Regular ammo | 2/24 hrs | 20¥ | .75 | As weapon | . | Gel rounds | 4/48 hrs | 30¥ | 1 | As weapon | . | Explosive rounds | 3/36 hrs | 50¥ | .8 | As weapon | . | Taser dart | 6/36 hrs | 50¥ | 1.5 | As weapon | . | Tracer | 3/24 hrs | 75¥ | 1 | As weapon | . | EX explosive | 6/72 hrs | 100¥ | 1.5 | As weapon | . | Flechette rounds | 3/36 hrs | 100¥ | .8 | As weapon | . | APDS | 14/14 days | 70¥ | 4 | 3-M | . | Assault cannon | 5/3 days | 450¥ | 2 | As weapon | . Ammunition is Concealability 8 (assault-cannon rounds and taser darts 3), and −1 Concealability for every extra 10 rounds. For belted ammo, add (rounds ÷ 100) to the Availability. (SR3 p.281) . For what each round type does in combat (APDS, explosive, flechette, gel, tracer), see Ammunition (SR3 p.116). For how to buy on the street, see Buying Gear &amp; Fencing. ",
     "url": "/The2ndChumming3e/latest/rules/reloading/#buying-and-sharing-ammunition--sr3-p279-p281",
     
     "relUrl": "/rules/reloading/#buying-and-sharing-ammunition--sr3-p279-p281"
-  },"92": {
+  },"113": {
     "doc": "Rigger",
     "title": "Hiring a Rigger",
     "content": ". | What the books give you . | What the rigger is risking | . | House rates . | Base day rate, by vehicle or gunnery skill and VCR | Threat multiplier | Hazard pay and expenses | . | Worked examples | . | The Defiance T-250 is a shotgun (SR3 p.278), not a rotorcraft. “Ares Duelist” and “Fly-Spy” drones don’t appear in any book checked, so they’ve been removed. | A jumped-in rigger doesn’t feel every hit. Damage carries over only when the vehicle takes Serious damage (6M) or is destroyed (6S). It’s resisted with Willpower. (SR3 p.145) | The Scenario C total was 30,000¥, not 25,000–30,000¥. | . ",
     "url": "/The2ndChumming3e/latest/hiring/rigger/#hiring-a-rigger",
     
     "relUrl": "/hiring/rigger/#hiring-a-rigger"
-  },"93": {
+  },"114": {
     "doc": "Rigger",
     "title": "What the books give you",
     "content": "|   |   | Source | . | Courier run | 1,000¥ | SRComp p.100 | . | Smuggling run | 5,000¥ | SRComp p.100 | . What the rigger is risking . | Their body. A jumped-in rigger resists 6M Physical when the vehicle takes Serious damage and 6S when it’s destroyed, using Willpower with no pool dice. (SR3 p.145) | Their implants. A Vehicle Control Rig costs (SR3 p.302): | . | VCR | Essence | Cost | . | Level 1 | 2 | 12,000¥ | . | Level 2 | 3 | 60,000¥ | . | Level 3 | 5 | 300,000¥ | . | Their vehicles. Whatever is shot down comes out of the rigger’s pocket unless the contract says otherwise. | . ",
     "url": "/The2ndChumming3e/latest/hiring/rigger/#what-the-books-give-you",
     
     "relUrl": "/hiring/rigger/#what-the-books-give-you"
-  },"94": {
+  },"115": {
     "doc": "Rigger",
     "title": "House rates",
     "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by vehicle or gunnery skill and VCR . | Tier | Skill and VCR | Base day rate | Typical hardware | . | Amateur | Skill 1–3, no VCR or VCR 1 | 300–600¥ | An ordinary ground vehicle; no combat drones | . | Professional | Skill 4–5, VCR 1–2 | 1,500–3,000¥ | An upgraded getaway car and one or two surveillance drones | . | Veteran | Skill 6–7, VCR 2–3 | 4,000–8,000¥ | An armored vehicle, a remote control deck, and combat drones such as a Doberman or Steel Lynx | . | Elite | Skill 8+, VCR 3 | 12,000¥ and up | Security or military aircraft, heavy weapons, a drone swarm | . Threat multiplier . | Work | Multiplier | . | Transport or recon, avoiding trouble | ×1 | . | Combat support or a getaway under fire | ×2 | . | Heavy combat, anti-vehicle fire or assault | ×4–6 | . Hazard pay and expenses . | Remote (deck or autonav): no hazard pay. | Jumped in with a VCR: +50%, because the rigger feels Serious and Destroyed damage. | The employer pays for ammunition, fuel and expended countermeasures. | For high-threat work, a deposit of 25–50% of each drone’s replacement value. | . ",
     "url": "/The2ndChumming3e/latest/hiring/rigger/#house-rates",
     
     "relUrl": "/hiring/rigger/#house-rates"
-  },"95": {
+  },"116": {
     "doc": "Rigger",
     "title": "Worked examples",
     "content": "| Job | House rate | Companion baseline | . | Getaway driver, professional (base 1,500¥), ×2 | 1,500 × 2 = 3,000¥ plus fuel | Courier run: 1,000¥ | . | Drone surveillance, veteran (base 5,000¥), remote, ×1 | 5,000¥ plus lost drones | Investigation: 200¥ a day | . | Fire support on an assault, veteran, ×4, jumped in +50% | 5,000 × 4 × 1.5 = 30,000¥ | A share of the destruction or extraction fee | . ",
     "url": "/The2ndChumming3e/latest/hiring/rigger/#worked-examples",
     
     "relUrl": "/hiring/rigger/#worked-examples"
-  },"96": {
+  },"117": {
     "doc": "Rigger",
     "title": "Rigger",
     "content": " ",
     "url": "/The2ndChumming3e/latest/hiring/rigger/",
     
     "relUrl": "/hiring/rigger/"
-  },"97": {
+  },"118": {
+    "doc": "Rigging",
+    "title": "Rigging: rules and how to do it in the system",
+    "content": "Vehicles, drones, jacking in and vehicle combat — the rules from the core book, and how a player actually runs them at this table. | Part 1: the rules . | Vehicle Attributes (SR3 p.130–133) | Riggers, jacking in, and Control Pool (SR3 p.44, p.130, p.140, p.301) | The Driving Test (SR3 p.134) . | Driving Test Modifiers Table (SR3 p.134) | . | Driving without rigging (SR3 p.130, p.134) | Vehicle combat and the Maneuver Score (SR3 p.138–144) . | Accelerating/Braking Target Modifiers Table (SR3 p.141) | Positioning Modifiers Table (SR3 p.142–143) | Ramming Modifiers Table (SR3 p.143) | Hiding Target Modifiers Table (SR3 p.144) | . | Shooting a vehicle, and shooting from one (SR3 p.149) | Vehicle damage, Crash Tests, and ramming (SR3 p.145–148) . | Vehicle Damage Modifiers Table (SR3 p.147) | Impact Damage Levels Table (SR3 p.147) | Crash Test Modifiers Table (SR3 p.148) | . | Dump shock for a rigger (SR3 p.156) | Autonav and Pilot for drones (SR3 p.132–133, p.157) | . | Part 2: doing it in The 2nd Chumming (Foundry) . | Getting a vehicle onto a character’s sheet | Jacking in: VCR / RCD / Auto | Driving without rigging, in Foundry | Driving Tests and Crash Tests | Dump shock, and rigger damage from a destroyed vehicle | The Chase Scene (combat tracker) | Drones and remote control | Electronic warfare, briefly | . | Worked example: a ramming attempt | . ",
+    "url": "/The2ndChumming3e/latest/rules/rigging/#rigging-rules-and-how-to-do-it-in-the-system",
+    
+    "relUrl": "/rules/rigging/#rigging-rules-and-how-to-do-it-in-the-system"
+  },"119": {
+    "doc": "Rigging",
+    "title": "Part 1: the rules",
+    "content": "Vehicle Attributes (SR3 p.130–133) . Vehicles have their own Attribute Ratings, the way characters have Attributes. The ones that come up at the table: . | Handling — how easy the vehicle is to control. Confusingly, a higher Handling is worse: it’s the base target number for Driving Tests. | Speed and Acceleration — top safe speed (meters per Combat Turn) and how fast that speed can change on a successful Driving Test. Pushing past 1.5× Speed, or braking too hard, gets punished elsewhere in these rules. | Body and Armor — how much punishment the vehicle takes before it won’t take any more, and how much of an incoming hit’s Power gets stopped outright or reduced. Vehicle armor is hardened: it blocks a hit completely if that hit’s Power (after the mass reduction below) doesn’t clear the rating. | Signature — the target number sensors and missiles need to lock the vehicle; ordinary gunfire aimed by eye ignores it. | Autonav — the onboard autopilot’s rating. It helps outside combat and gets in the way during it (see the vehicle-combat actions below). | Pilot — a drone’s own decision-making rating, used in place of a skill when nobody is driving it. | Sensor — the vehicle’s Perception dice, and a small boost to Gunnery. | A handful of others (Cargo Factor, Load, Seating, Entry Points) are bookkeeping rather than dice. | . Riggers, jacking in, and Control Pool (SR3 p.44, p.130, p.140, p.301) . A rigger carries a Vehicle Control Rig (VCR), cyberware that lets them drive a suitably wired vehicle through a neural link instead of a wheel or yoke. Jacked in this way, a rigger gets several things an ordinary driver doesn’t: . | A better Initiative. Each VCR level is worth +2 Reaction and one extra Initiative die while rigging (SR3 p.301). This is a replacement, not a stack: wired reflexes, boosted reflexes, and magical or adept increases to Reaction or Initiative do not apply for a rigger determining Initiative this way (SR3 p.140). | A Control Pool. This works like Combat Pool or Spell Pool but is spent only on tests to control the rigged vehicle: driving, dodging incoming fire, and resisting collision damage. Its size is simply the rigger’s own Reaction plus twice their VCR level — nothing else adds to it — and any single test can only draw as many Control Pool dice as it has base skill dice (SR3 p.44). No VCR means no Control Pool at all, even for a rigger driving a vehicle they aren’t currently jacked into. | An easier default. A VCR lets its user default to Reaction for any Vehicle Skill test at only +2 to the target number, instead of the usual +4 for defaulting to an unrelated attribute (SR3 p.301). | Riggers can alternatively jack into a remote control deck to run drones from a distance instead of riding in them. Left with no driver at all, a drone falls back on its own Pilot Rating in place of a skill. | . The Driving Test (SR3 p.134) . Ordinary vehicle handling — a difficult maneuver, not vehicle combat — is a Complex Action: the appropriate Vehicle Skill against a base target number equal to the vehicle’s Handling. An active autonav adds dice equal to its own rating outside combat; a jacked-in rigger can add Control Pool dice (up to their skill rating) instead of the autonav bonus, on top of reducing the target number by their VCR level. Driving Test Modifiers Table (SR3 p.134) . | Condition | Target number modifier | . | Unfamiliar vehicle | +1 | . | Non-stressful situation | −1 | . | Stressful situation | GM discretion | . | Large vehicle of type | +2 | . | Very large vehicle of type | +3 | . | Weather: bad | +2 | . | Weather: terrible | +4 | . | Terrain: open | −1 | . | Terrain: normal | 0 | . | Terrain: restricted | +1 | . | Terrain: tight | +3 | . | Action performed during combat | +2 | . | Non-rigger driving using a datajack | −1 | . | Rigger in control | −VCR Rating | . Driving without rigging (SR3 p.130, p.134) . Most drivers at the table aren’t riggers at all — a street samurai taking the wheel, a face on a motorcycle. Nothing above changes for them except that the rigger-only pieces simply don’t apply: . | They still make an ordinary Driving Test — Vehicle Skill against the vehicle’s Handling — and still get an active autonav’s dice outside combat. They never have a Control Pool to add on top, because that pool only exists for someone jacked into a VCR. | With no Vehicle Skill at all, they use the same Default Table everyone else defaults from: typically falling back on Reaction at the ordinary +4 target-number penalty for defaulting to an unrelated attribute. The VCR’s +2 discount above is specific to a rigger with that cyberware and doesn’t extend to anyone else. | Driving through a datajack without a VCR — or a VCR-equipped rigger driving a vehicle that isn’t itself wired for rigger control — gets a small −1 break on the target number (the datajack row on the table above), but still earns no Control Pool. | Their Initiative is rolled the ordinary way for their character, with none of a rigger’s VCR bonus, whether or not they happen to be driving that turn. | Crash Tests, ramming, and the driver/passenger collision-damage rules below apply to them exactly the same as to a rigger. The only things rigging adds there are Control Pool dice to soften the hit and the separate p.145 rigger-feedback damage — neither of which touches someone driving by hand. | . Vehicle combat and the Maneuver Score (SR3 p.138–144) . Once a chase or a fight turns into an actual vehicle-combat scene, the book layers on a Maneuver Score: a number rebuilt every Combat Turn from the vehicle’s type (nimble vehicles like motorcycles score well, lumbering ones like heavy trucks score poorly), the terrain, roughly how fast the vehicle is going, and Driver Points — an Open Test (every 6 is rerolled and added, as many times as it keeps coming up) using the Vehicle Skill, plus any Control Pool dice the rigger allocates for it. Each driver then picks one Complex Action per turn from a short list, each with its own modifier table: . | Accelerating or braking — a Driving Test against Handling; success changes speed by Acceleration times the successes rolled. | Positioning — banks successes as a bonus to next turn’s Maneuver Score, buying a better tactical spot. | Ramming — see below. | Hiding — breaking contact with a pursuer, whose successes make it harder for the follower to relocate the hider next turn. | Relocating — the pursuer’s answer to a vehicle that just hid. | Or simply doing something that isn’t driving — firing a personal weapon, working the electronics, and so on — as an ordinary action instead. | . Accelerating/Braking Target Modifiers Table (SR3 p.141) . | Condition | Modifier | . | Own Maneuver Score exceeds opponent’s by 10 or less | −2 | . | Own Maneuver Score exceeds opponent’s by more than 10 | −4 | . | Opponent’s Maneuver Score exceeds own by 10 or less | +2 | . | Opponent’s Maneuver Score exceeds own by more than 10 | +4 | . | Fleeing more than one vehicle | +1 per additional vehicle | . | Vehicle exceeds its Speed Rating | +1 | . | Autonav active | + Autonav Rating | . | Terrain: open / normal / restricted / tight | −1 / 0 / +1 / +3 | . | Driver has a VCR implant | −(VCR Rating × 2) | . Positioning Modifiers Table (SR3 p.142–143) . | Condition | Modifier | . | Vehicle exceeds its Speed Rating | +1 | . | Autonav active | + Autonav Rating | . | Terrain: open / normal / restricted / tight | −1 / 0 / +1 / +3 | . | Driver has a VCR implant | −(VCR Rating × 2) | . Ramming Modifiers Table (SR3 p.143) . | Condition | Modifier | . | Ramming vehicle’s Maneuver Score exceeds target’s by 10 or less | −2 | . | Ramming vehicle’s Maneuver Score exceeds target’s by more than 10 | −4 | . | Target’s Maneuver Score exceeds ramming vehicle’s by 10 or less | +2 | . | Target’s Maneuver Score exceeds ramming vehicle’s by more than 10 | +4 | . | Vehicle exceeds its Speed Rating | +1 | . | Autonav active | + (Autonav Rating + 2) | . | Terrain: open / normal / restricted / tight | −1 / 0 / +1 / +2 | . | Driver has a VCR implant | −(VCR Rating × 2) | . Hiding Target Modifiers Table (SR3 p.144) . | Condition | Modifier | . | Hiding vehicle’s Maneuver Score exceeds opponent’s by 10 or less | −2 | . | Hiding vehicle’s Maneuver Score exceeds opponent’s by more than 10 | −4 | . | Opponent’s Maneuver Score exceeds hiding vehicle’s by 10 or less | +3 | . | Opponent’s Maneuver Score exceeds hiding vehicle’s by more than 10 | +6 | . | Vehicle exceeds its Speed Rating | +2 | . | Autonav active | + Autonav Rating | . | Escaping more than one vehicle | +1 per additional vehicle | . | Terrain: open / normal / restricted / tight | +4 / +2 / 0 / −2 | . | Driver has a VCR implant | −(VCR Rating × 2) | . A successful Hiding Test also earns an Escape Bonus equal to its successes, added to Driver Points each turn until the pursuer relocates the hider (a Relocating Test — a Sensor or Perception Test against the hider’s Signature, made harder by the hider’s own Hiding successes and by a similar set of Maneuver Score and terrain modifiers, in reverse). Vehicle armor is hardened: a hit whose Power (after the vehicle-mass halving below) doesn’t exceed the Armor Rating does nothing at all; otherwise Armor reduces Power like ordinary armor. Shooting a vehicle, and shooting from one (SR3 p.149) . A vehicle’s size works in its favour against gunfire: an attack aimed at the vehicle itself has its Power halved and its Damage Level dropped a step before the vehicle’s own Armor is applied, and a weapon too weak to do more than Light damage can’t scratch a vehicle at all without special ammunition. Anti-vehicle ammunition skips that halving, and only loses half the Armor Rating rather than the whole thing. The vehicle resists with Body dice plus any Control Pool a jacked-in rigger can add (capped at their skill), against the reduced Power. A rigger may dodge instead of soaking, spending Control Pool against Handling in place of Combat Pool. Shooting passengers inside the vehicle is harder than shooting the vehicle itself: the shot loses Power equal to whichever of the vehicle’s Armor or Body is higher, and if that wipes the Power out entirely nobody inside can be hurt by it. Passengers only get half their usual Combat Pool for Dodge or resistance, and a rigger who is jacked in — their attention is in the vehicle, not their own body — can’t dodge at all and takes a target-number penalty on their own resistance roll. Vehicle damage, Crash Tests, and ramming (SR3 p.145–148) . Vehicles only track physical damage, staged Light through Destroyed the same way a character stages Light through Deadly, each level adding its own target-number penalty, Initiative penalty and Speed reduction. Vehicle Damage Modifiers Table (SR3 p.147) . | Damage Level | Target number modifier | Initiative penalty | Speed reduction | . | Light | +1 | −1 | none | . | Moderate | +2 | −2 | 25% | . | Serious | +3 | −3 | 50% | . A vehicle that reaches Destroyed is no longer operable. (SR3 p.149) . The Power of a crash or a ram is the relevant speed, in meters per Combat Turn, divided by ten and rounded up. Impact Damage Levels Table (SR3 p.147) . | Vehicle speed (m/turn) | Damage Level | . | 1–20 | Light | . | 21–60 | Moderate | . | 61–200 | Serious | . | 201+ | Destroyed | . A Crash Test — a Driving Test against Handling — comes up whenever a vehicle takes Serious damage in one hit, gets rammed and hurt by it, bottoms out its Condition Monitor, or brakes far harder than its Acceleration allows. Both the autonav bonus and Control Pool dice can help here. Failing it means the vehicle stops dead and has to resist the impact on top of whatever caused the crash in the first place. Crash Test Modifiers Table (SR3 p.148) . | Condition | Modifier | . | Driver wounded | + the wound’s damage modifier | . | Vehicle already damaged | + the vehicle’s own damage modifier | . | Terrain: open / normal / restricted / tight | −1 / 0 / +2 / +4 | . | Speed less than driver’s Reaction × 20 | 0 | . | Speed less than Reaction × 30 | +1 | . | Speed less than Reaction × 40 | +2 | . | Speed more than Reaction × 40 | +4 | . Ramming: the ramming vehicle rolls a Ramming Test (Driving Skill against Handling, modified by the table above). On a success, both vehicles resist a collision at a Power equal to their speed difference ÷ 10, rounded up, at the Damage Level the Impact table gives that speed difference. The rammer’s own successes on the Ramming Test reduce the Power of the collision — for the rammer’s own resistance roll only — by their vehicle’s Body Rating times those successes, floored so the resulting target number never drops below 2. The target’s Damage Code is untouched by that reduction. Either side that ends up taking damage from the collision then owes its own Crash Test. Everyone aboard shares the hit. Whenever the vehicle takes damage — crash, ram, or gunfire — the driver and every passenger resist the same Power the vehicle faced, but at whatever Level the vehicle actually ended up taking after its own soak, not the raw Level before that. A seat belt knocks that Level down one further step, and only impact armor (never Ballistic) counts against it. A jacked-in rigger takes a second, separate hit. Beyond what their body feels as a passenger, the neural feedback of a Serious hit to “their” vehicle forces a Willpower-resisted Physical Damage Resistance Test — no Combat or Control Pool allowed — against a fixed 6M; if the vehicle is destroyed outright, that becomes 6S (SR3 p.145). Dump shock for a rigger (SR3 p.156) . Getting forcibly kicked out of a rigged connection hits a rigger harder than the equivalent shock hits a decker, because the VCR link runs deeper into the nervous system. There are two distinct triggers, and vehicle destruction is not one of them — that case is the fixed 6S Physical hit above, from p.145: . | Dumped from a remote-control network: resist a Stun Damage Resistance Test with Willpower, at a Power equal to the deck’s own Rating + 4. On top of that, the rigger suffers ten Combat Turns of disorientation, adding +2 to every Success Test they make during that window. | Involuntarily jacked out of a vehicle, other than by its destruction (forced out some other way, mid-scene): resist a flat 5S Stun instead, plus the same ten turns of disorientation. | . The disorientation can be shortened: a Willpower Test against target number 4, then divide 30 by the successes (round up) for the number of seconds disoriented, then divide that by 3 (round up) for how many Combat Turns the effect actually lasts. Autonav and Pilot for drones (SR3 p.132–133, p.157) . A driverless drone substitutes its own Pilot Rating for whatever skill or attribute the test would otherwise use. Giving it anything more specific than a standing order is a Drone Comprehension test: the Pilot Rating rolled against a target number the GM sets by how complicated the instruction is — one success gets it followed, more successes buy the drone some leeway in how it’s carried out (SR3 p.157). Electronic warfare against a rigger or their drones — jamming, signal degradation, intrusion and the rest — is a large enough topic that it gets summarised on the Decking page rather than repeated here; see Decking and, for what this system actually implements, Part 2 below. ",
+    "url": "/The2ndChumming3e/latest/rules/rigging/#part-1-the-rules",
+    
+    "relUrl": "/rules/rigging/#part-1-the-rules"
+  },"120": {
+    "doc": "Rigging",
+    "title": "Part 2: doing it in The 2nd Chumming (Foundry)",
+    "content": "The system never applies vehicle damage automatically, same as everywhere else: it rolls dice, stages damage, and posts a button — the GM clicks the wound boxes. Not everyone behind the wheel is rigging, either — see Driving without rigging, in Foundry below for the ordinary case. Getting a vehicle onto a character’s sheet . A vehicle is its own actor, with its own sheet (Stats / Weapons / Mods / Electronic Warfare / Notes tabs). To give a character a vehicle: . | Drag the vehicle actor onto the character sheet. Dragging a compendium vehicle deploys a working copy and sets that character as its driver; dragging an existing world vehicle links it to that character instead. Both routes run through the GM so the character ends up with owner permission on the new or linked vehicle actor, whether or not a Player has permission to create actors directly. | Or, on the character sheet’s Vehicles tab, click + Add Vehicle, which opens the same dialog with three sources: link an existing world vehicle, create a blank one, or pull one from a compendium. | The Vehicles tab lists every vehicle whose pilot is this character, with its Handling/Speed/Body/Armor/Pilot/Sensor at a glance, a link to open its sheet, and per-vehicle VCR / RCD / Auto mode buttons plus a ✕ to unlink it (the vehicle itself isn’t deleted — it can be added back). | On the vehicle’s own sheet, the Pilot dropdown sets who drives it, and Passengers (add/remove tags in the header) tracks who else is aboard — this is the roster a crash or ram reaches, without needing a Chase Scene open. | . Jacking in: VCR / RCD / Auto . Each vehicle has one of three control modes, toggled from either the vehicle sheet’s header or the character sheet’s Vehicles tab: . | VCR — the pilot is jacked in with a Vehicle Control Rig. The system reads the rigger’s own VCR item (a cyberware item with “VCR” or “vehicle control rig” in its name) for its level, and uses Reaction (base, unaugmented) plus twice that level for both Initiative and Control Pool — wired reflexes and magical Reaction boosts are excluded, matching the book. VCR is exclusive: setting one vehicle to VCR automatically drops any other vehicle that character was VCR-driving to RCD, and turns off VR Matrix modes on the character (VCR and VR can’t both be active). | RCD — remote control deck: the rigger’s plain Reaction and normal Initiative dice, no VCR bonus, and no Control Pool. | Auto — nobody is piloting; the vehicle rolls its own Initiative from its Pilot Rating, and clearing this mode also clears the vehicle’s pilot. | . A vehicle in VCR or RCD mode copies its rigger’s Initiative for Combat Turn ordering rather than rolling its own. The book’s VCR-specific default reduction (Reaction at +2 instead of the usual +4, above) isn’t modeled: the Default Table a driver with no Vehicle Skill sees is the same generic one used everywhere else in the system, with no VCR-aware discount. This is tracked in the codebase as TODO 106. Driving without rigging, in Foundry . A character with no VCR item at all — the ordinary case — still uses the same 🚗 Driving Test dialog described just below. The “Using VCR” option in it only shows up once the system finds VCR cyberware on the driver; without one, the pool simply builds as Vehicle Skill plus Autonav, with no Control Pool line at all, since the underlying Control Pool calculation returns zero for anyone without a VCR rating. The vehicle’s control-mode button is normally left on RCD for this case: mechanically, “no VCR bonus” is one path whether the driver is remote-piloting a drone or simply sitting behind the wheel, so the same Reaction-based Initiative and pool math cover both, and the mode buttons are shared between them. Defaulting with no matching Vehicle Skill opens the same Default Table dialog described in the note above — it always offers the ordinary +4-to-an- attribute default, with no special case for a rigger’s +2. Driving Tests and Crash Tests . | 🚗 Driving Test, from the vehicle sheet’s Stats tab (only shown once a pilot is set) or the Rollable Tables sidebar tab (available to everyone, not just the GM), asks for the vehicle and driver, then builds the pool automatically: Vehicle Skill plus Autonav normally, or Vehicle Skill plus Control Pool dice (capped at the skill) once “Using VCR” is selected for a jacked-in rigger. The target number starts at Handling and offers the standard dropdowns — unfamiliar, stressful, size, weather, terrain, combat, datajack, and the VCR reduction. No Vehicle Skill on the driver opens the Default Table dialog instead of refusing the roll. | 💥 Crash, from the same Stats tab menu (or the Vehicle Tools HUD on a token, or the 💥 button offered after a failed Driving Test), gives two ways in: rolling the Crash Test as the driver, so a failure posts the crash automatically, or posting crash damage directly for when the accident has already happened and there’s no test left to make. Either way it ends at the same damage builder: speed (asked in km/h and converted to meters per Combat Turn for the table), a Power and Level that follow the vehicle’s speed until the GM edits them by hand, and a checklist of who’s aboard (seeded from the vehicle’s pilot/passenger roster) to resist afterward. | Ramming and collisions post the same occupant-resistance chain: after the vehicle’s own soak roll, the driver and every passenger get a resist-collision-damage button, which opens a small dialog asking for their Body dice, their impact armor (pre-filled from worn and implanted armor), and whether they were belted in, and shows the resulting Power/Level/target number live before they roll. If the vehicle itself took no damage, the card says so and nobody rolls. | . Dump shock, and rigger damage from a destroyed vehicle . | ⚡ Dump Shock is a button in the character sheet’s Rigger — Electronic Warfare panel (and beside the Matrix tools when in VR). Its dialog asks what the character was dumped from: the Matrix (a decker), a remote-control network, which uses the RC deck Rating from the panel, or a vehicle they were jacked out of. The rigger cases post the book’s Power, (Rating + 4)S or 5S Stun. The resist card rolls Willpower, with no armor. The card also states the ten turns of +2 disorientation and offers the Willpower (4) Test that shortens it; that roll’s result card says how many Combat Turns it lasts. | Rigger damage is offered automatically. When a vehicle a rigger is jacked into (VCR mode) reaches Serious, a card offers the rigger the 6M Physical resistance, and when it is Destroyed, 6S. The roll is Willpower with no Combat or Control Pool and no armor. Nothing is applied: the rigger rolls, and the wound goes on only when someone clicks 🩸 Assign. | . The Chase Scene (combat tracker) . The 🚗 Chase Scene tool, opened from the Rollable Tables sidebar tab (open to every player, not just the GM), implements the book’s vehicle-combat maneuver system rather than standing in for it with something simpler: it tracks each participant’s vehicle type, terrain and speed, computes their Maneuver Score, and offers dedicated action buttons for Accel/Brake, Positioning, Ramming, Hiding and Relocating, each opening a dialog with the relevant modifiers pre-filled and live target-number and pool math. One participant can be flagged Quarry — everyone else’s distance is then tracked relative to it (positive behind, negative ahead), and at the end of each turn the tool updates every pursuer’s distance from the speed difference automatically, reporting who’s closing and who’s falling behind. Driver Points get the same reroll-on-6 handling as every other open-ended roll in the system. Drones and remote control . A vehicle actor typed as a drone works the same way as any other vehicle — Pilot dropdown, VCR/RCD/Auto modes — except its natural state is Auto, running on its own Pilot Rating. 📡 Drone Comprehension (Stats tab, or the Vehicle Tools HUD) rolls Pilot Rating dice, no pool, against a GM-set target number, with any Command-channel electronic-warfare degradation folded in automatically. Zero successes means the drone does nothing useful; one gets the order followed literally; two or more gives it some leeway. Electronic warfare, briefly . Jamming, Flux/Footprint, ECM/ECCM, MIJI attacks and signal degradation on a rigger or their drones live on the vehicle sheet’s Electronic Warfare tab and the ⚡ MIJI Attack / 📶 IVIS Test tools; they aren’t repeated here. Ask the GM what’s actually running at your table, or see Decking for the related Matrix rules. ",
+    "url": "/The2ndChumming3e/latest/rules/rigging/#part-2-doing-it-in-the-2nd-chumming-foundry",
+    
+    "relUrl": "/rules/rigging/#part-2-doing-it-in-the-2nd-chumming-foundry"
+  },"121": {
+    "doc": "Rigging",
+    "title": "Worked example: a ramming attempt",
+    "content": "Dex is jacked into his step-van (Handling 4, Body 8) with Car Skill 5 and a Rating-2 VCR, chasing a patrol car (Handling 4, Body 3) driven by an unrigged cop with Car Skill 4. Dex’s van is doing 96 meters a turn to the patrol car’s 60. For this Combat Turn, assume Dex’s Maneuver Score came out to 42 against the patrol car’s 28 — a gap of more than 10 in Dex’s favor. | Control Pool. Reaction 5 plus twice his VCR level (2) gives Dex a Control Pool of 9 dice, though any one test can only draw up to his 5 Car Skill dice from it. | The Ramming Test. Base target number is his van’s Handling, 4. His Maneuver Score beats the patrol car’s by more than 10 (−4); terrain is normal (0); his VCR knocks off a further 2 × his Rating 2 (−4). Total modifier −8 against a base of 4 gives a target number of −4, floored at the rule’s minimum of 2. He rolls his 5 Car Skill dice (no Control Pool needed at this target number) and gets 3 successes: the ram connects. | Working out the Power. The two vehicles are 36 meters a turn apart in speed; divided by ten and rounded up, that’s a Power of 4, landing as Moderate on the Impact Damage Levels Table (21–60 m/turn). | Dex’s own resistance. Because he was the one ramming, his 3 Ramming successes reduce the Power of the collision for his own resistance test by his Body (8) times those successes — 24 points, which would take Power below zero, so his target number floors at 2. Rolling Body 8 (plus Control Pool if he wanted it, though he doesn’t need it here) against target number 2, his van shrugs the impact off. | The patrol car’s resistance isn’t reduced by anything Dex rolled: it faces the full Moderate hit at Power 4, resisting with its own Body 3 dice (no VCR, so no Control Pool for the cop) against target number . | Say the gamemaster rolls 1 success — not enough to stage a Moderate hit down a level, which needs 2 — so the car takes the Moderate wound outright, and because it took damage from a ram, its driver now owes a Crash Test. | . | The cop. Riding in the car that just got hit, the driver resists the same Power at the same Level the car ended up taking — Moderate at Power 4 — reduced further by whatever impact armor he’s wearing and by a seat belt if he has one buckled. | . ",
+    "url": "/The2ndChumming3e/latest/rules/rigging/#worked-example-a-ramming-attempt",
+    
+    "relUrl": "/rules/rigging/#worked-example-a-ramming-attempt"
+  },"122": {
+    "doc": "Rigging",
+    "title": "Rigging",
+    "content": " ",
+    "url": "/The2ndChumming3e/latest/rules/rigging/",
+    
+    "relUrl": "/rules/rigging/"
+  },"123": {
     "doc": "Shaman",
     "title": "Hiring a Shaman",
     "content": ". | What the books give you . | Why domain matters | . | House rates . | Base day rate, by Conjuring or Sorcery | Threat multiplier | Hazard pay and expenses | . | Worked examples | . | Shamans summon nature spirits of Man, Land, Sky and Waters, not “domain spirits”. They can only summon inside the spirit’s domain, and a nature spirit can’t leave its domain. (SR3 p.184, p.266–267) | A spirit gives one service per success on the Conjuring Test, and nature spirits vanish at sunrise and sunset. So “bring pre-summoned spirits to the job” has a hard time limit. (SR3 p.186) | The Scenario C total was wrong: 8,000 × 3, then +50% and +100%, is 60,000¥, not 36,000–44,000¥. | . ",
     "url": "/The2ndChumming3e/latest/hiring/shaman/#hiring-a-shaman",
     
     "relUrl": "/hiring/shaman/#hiring-a-shaman"
-  },"98": {
+  },"124": {
     "doc": "Shaman",
     "title": "What the books give you",
     "content": "|   |   | Source | . | Investigation (astral scouting, divination) | 200¥/day | SRComp p.100 | . | Security duty | 200¥/day | SRComp p.100 | . | Ward maintenance | about 100¥ an hour per magician | SR3 p.174 | . | Shamanic lodge materials | (Rating × Rating) × 1,000¥ | MitS p.169 | . Why domain matters . | No domain, no spirit. A shaman inside a building can only summon a hearth spirit. In the middle of a parking garage there may be nothing to call at all. (SR3 p.184) | Totem modifiers add dice to some spells and spirits and take them from others. Bear, for example, gets +2 dice for health spells and forest spirits. (SR3 p.163–165) | Nature spirits disappear at sunrise and sunset, taking their unused services with them. (SR3 p.186) | . ",
     "url": "/The2ndChumming3e/latest/hiring/shaman/#what-the-books-give-you",
     
     "relUrl": "/hiring/shaman/#what-the-books-give-you"
-  },"99": {
+  },"125": {
     "doc": "Shaman",
     "title": "House rates",
     "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by Conjuring or Sorcery . | Tier | Skill | Base day rate | Typical capability | . | Hedge shaman | 1–3 | 400–800¥ | Force 1–3 spirits, basic detection and healing | . | Sprawl shaman | 4–5 | 2,500–5,000¥ | Force 4–6 city, hearth and storm spirits, a medicine lodge | . | Spirit talker | 6–7 | 7,000–13,000¥ | An initiate (grade 1–3) with masking, centering and invoking | . | Elite | 8+ | 22,000¥ and up | A high-grade initiate commanding powerful spirits | . Threat multiplier . | Work | Multiplier | . | Concealment, healing, assensing, spirit scouting | ×1 | . | Combat spells, hostile wards, mid-Force spirits in a fight | ×2–3 | . | Security mages, high-Force spirits, working outside a helpful domain | ×4–6 | . Hazard pay and expenses . | Off-site, working from the lodge: no hazard pay. | On-site with the team: +100%. | Wrong-domain surcharge: +50% when the job keeps the shaman away from spirits their totem favors. | Spirit services for the team: 1,500–4,000¥ per service. | . ",
     "url": "/The2ndChumming3e/latest/hiring/shaman/#house-rates",
     
     "relUrl": "/hiring/shaman/#house-rates"
-  },"100": {
+  },"126": {
     "doc": "Shaman",
     "title": "Worked examples",
     "content": "| Job | House rate | Companion baseline | . | Astral scouting plus a concealment spell, sprawl shaman (base 3,000¥), ×1 | 3,000¥ | Investigation: 200¥ a day | . | A Force 6 city spirit on facility overwatch, spirit talker (base 8,000¥), ×2, plus one service at 3,000¥ | 16,000 + 3,000 = 19,000¥ | Security: 200¥ a day | . | On-site assault in an underground facility, ×3, +50% domain, +100% on-site | 8,000 × 3 × 2.5 = 60,000¥ | A share of the destruction or extraction fee | . ",
     "url": "/The2ndChumming3e/latest/hiring/shaman/#worked-examples",
     
     "relUrl": "/hiring/shaman/#worked-examples"
-  },"101": {
+  },"127": {
     "doc": "Shaman",
     "title": "Shaman",
     "content": " ",
     "url": "/The2ndChumming3e/latest/hiring/shaman/",
     
     "relUrl": "/hiring/shaman/"
-  },"102": {
+  },"128": {
     "doc": "SINs & the SINless",
     "title": "SINs &amp; the SINless",
     "content": "What a System Identification Number gets you, what life without one looks like, and how fake IDs work in SR3. | What a SIN is (SR3 p.238) | Life with a SIN (SR3 p.238–239) | Life without one (SR3 p.238) | Credsticks (SR3 p.238–239) | Fake IDs: forging credsticks (SR3 p.239) . | Creating a Credstick Table (SR3 p.239) | . | Permits and licenses (SR3 p.273–274) . | Magic and the law | . | . Original gist: “Life with a SIN vs. Living SINless”. | The Fake SIN price table was invented. In SR3 a fake ID is a forged credstick, and its rating sets its price: Rating × Rating × 1,000¥ at ratings 1–4, rising steeply after that. The table is below. | A SIN is not a “12-digit alphanumeric code”. The book says the number is generated from personal data, and police can read your birth date, state of origin and initials from it. | “30–40% of the population is SINless” appears in no SR3 book checked. | There’s no “Lesser / Greater Magical Permit”. In the UCAS and CAS, magic of Force 3 or more is regulated and needs a permit. Unregistered spells, spirits and foci fall under legality category (T) Class E Magic. | Permits require a valid SIN, and a fake one must beat a Rating 6 verification system. | . ",
     "url": "/The2ndChumming3e/latest/street/sins/#sins--the-sinless",
     
     "relUrl": "/street/sins/#sins--the-sinless"
-  },"103": {
+  },"129": {
     "doc": "SINs & the SINless",
     "title": "What a SIN is  (SR3 p.238)",
     "content": ". | The UCAS introduced SINs in 2036, requiring every citizen to register. People living in the UCAS without one are “probationary citizens”: they can’t vote and have few or no civil rights. | A SIN is normally registered at birth, if the birth happens in a standard hospital. Anyone born elsewhere is SINless unless they register later, and registering means proving to the government that you’re worth admitting. | Most governments use SINs or something like them, and they share databases. Corporations issue corporate SINs to their employees. | The number is generated from personal data. Police can work out your birth date, state of origin and initials from it. | . ",
     "url": "/The2ndChumming3e/latest/street/sins/#what-a-sin-is--sr3-p238",
     
     "relUrl": "/street/sins/#what-a-sin-is--sr3-p238"
-  },"104": {
+  },"130": {
     "doc": "SINs & the SINless",
     "title": "Life with a SIN  (SR3 p.238–239)",
     "content": "You need a SIN to get a legal job, open a bank account, own property, go to school, rent an apartment, set up utilities, and travel legally, which includes buying a bus ticket. Your credstick carries your ID, licenses and permits, and can hold your fingerprints, palmprints and retinal prints. The cost is a data trail. Every legal purchase leaves credit records and inventory, and possibly video footage, and stores that realize they sold to shadowrunners will hand those records to the police. (SR3 p.273) . ",
     "url": "/The2ndChumming3e/latest/street/sins/#life-with-a-sin--sr3-p238239",
     
     "relUrl": "/street/sins/#life-with-a-sin--sr3-p238239"
-  },"105": {
+  },"131": {
     "doc": "SINs & the SINless",
     "title": "Life without one  (SR3 p.238)",
     "content": ". | You officially don’t exist, which makes you hard to trace. | If you’re arrested, you may be abused, locked away or “disappeared”, with no data trail to prove you existed. More often you’re issued a criminal SIN, which is yours for life and is stored in police databases with your photograph, fingerprints and perhaps more. | Legal work, housing and travel are all closed to you. | . Players decide at character creation whether their character has a SIN. (SR3 p.238) . ",
     "url": "/The2ndChumming3e/latest/street/sins/#life-without-one--sr3-p238",
     
     "relUrl": "/street/sins/#life-without-one--sr3-p238"
-  },"106": {
+  },"132": {
     "doc": "SINs & the SINless",
     "title": "Credsticks  (SR3 p.238–239)",
     "content": "A credstick is a pen-sized tube that serves as ID and credit card together. | Credstick | Transaction limit | ID required | . | Standard | 1–5,000¥ | Passcode | . | Silver | 1–20,000¥ | Fingerprint | . | Gold | 1–200,000¥ | Voiceprint | . | Platinum | 1–1,000,000¥ | Retinal scan | . | Ebony | Unlimited | Cellular scan | . A certified credstick is registered to no one. It’s worth what’s loaded on it, needs no ID, and can’t be used as ID. It’s the shadowrunner’s usual way to get paid. (SR3 p.239) . ",
     "url": "/The2ndChumming3e/latest/street/sins/#credsticks--sr3-p238239",
     
     "relUrl": "/street/sins/#credsticks--sr3-p238239"
-  },"107": {
+  },"133": {
     "doc": "SINs & the SINless",
     "title": "Fake IDs: forging credsticks  (SR3 p.239)",
     "content": "Faking an identity means inserting a believable credit history into databases all over the world. Only well-connected forgery outfits, often based in data havens, can do it. At least half the cost is paid up front to the fixer. Creating a Credstick Table (SR3 p.239) . | Stick rating | Cost | Availability | Street Index | . | 1–4 | Rating × Rating × 1,000¥ | Rating / 24 hours | 1 | . | 5–8 | Rating × 5,000¥ | Rating / 72 hours | 1 | . | 9–12 | Rating × 10,000¥ | Rating / 14 days | 1 | . | 13+ | Rating × 50,000¥ | Rating / 30 days | 1 | . For example, a Rating 4 ID costs 16,000¥, a Rating 6 costs 30,000¥, and a Rating 10 costs 100,000¥. Using a fake: make an Opposed Test of the stick’s rating against the rating of the verification system. The side with more successes wins. On a tie, the operator is told to question the bearer about their history, and one wrong answer gets the ID rejected. (SR3 p.239) . ",
     "url": "/The2ndChumming3e/latest/street/sins/#fake-ids-forging-credsticks--sr3-p239",
     
     "relUrl": "/street/sins/#fake-ids-forging-credsticks--sr3-p239"
-  },"108": {
+  },"134": {
     "doc": "SINs & the SINless",
     "title": "Permits and licenses  (SR3 p.273–274)",
     "content": ". | Gear whose Legality Code includes a “P” can be legally permitted. Applying takes a valid SIN, and may need proof of employment and a good reason. (SR3 p.274) | Test Etiquette against the item’s Availability + 2. The base time is the item’s, divided by your successes. (SR3 p.274) | A permit to possess usually costs 5% of the item’s price. A permit to possess and transport costs 10%. (SR3 p.274) | Criminal-SIN holders and the SINless can’t get permits. Applying with a fake ID means it must beat a Rating 6 verification system. (SR3 p.274) | Holding the right permit gives −2 to the item’s Availability when you’re buying on the street. (SR3 p.274) | . Magic and the law . | In the UCAS and CAS, any spell, spirit, focus or other magical effect of Force 3 or higher is legally regulated, though permits can be had. A felony committed with magic always counts as premeditated. (MitS p.11) | On the Local Fines and Punishment Table, (T) Class E Magic covers unregistered spells, spirits and foci. (SR3 p.274) | Reading astral signatures is accepted forensic evidence, like fingerprints or DNA. (MitS p.11) | . Runner practice. Carrying several fake IDs for different purposes is common in play: one for the safehouse lease, one carrying permits, one to burn. The book doesn’t require it, but a burned ID is expensive to replace, so spreading the risk makes sense. ",
     "url": "/The2ndChumming3e/latest/street/sins/#permits-and-licenses",
     
     "relUrl": "/street/sins/#permits-and-licenses"
-  },"109": {
+  },"135": {
     "doc": "SINs & the SINless",
     "title": "SINs & the SINless",
     "content": " ",
     "url": "/The2ndChumming3e/latest/street/sins/",
     
     "relUrl": "/street/sins/"
-  },"110": {
+  },"136": {
     "doc": "Source Books & Method",
     "title": "Source books &amp; method",
     "content": " ",
     "url": "/The2ndChumming3e/latest/sources/#source-books--method",
     
     "relUrl": "/sources/#source-books--method"
-  },"111": {
+  },"137": {
     "doc": "Source Books & Method",
     "title": "Abbreviations",
-    "content": "| Code | Book | . | SR3 | Shadowrun, Third Edition core rulebook | . | M&amp;M | Man &amp; Machine: Cyberware | . | MitS | Magic in the Shadows | . | Matrix | Matrix | . | R3 | Rigger 3 Revised | . | SRComp | Shadowrun Companion | . | MJLBB | Mr. Johnson’s Little Black Book | . | SOTA64 | State of the Art: 2064 | . Page numbers are the printed page numbers, not PDF page numbers. In several PDFs the two differ by one or two pages. ",
+    "content": "| Code | Book | . | SR3 | Shadowrun, Third Edition core rulebook | . | M&amp;M | Man &amp; Machine: Cyberware | . | MitS | Magic in the Shadows | . | Matrix | Matrix | . | MDF | The Matrix Defragged v2 (fan-made replacement for the core Matrix chapter) | . | R3 | Rigger 3 Revised | . | SRComp | Shadowrun Companion | . | MJLBB | Mr. Johnson’s Little Black Book | . | SOTA64 | State of the Art: 2064 | . Page numbers are the printed page numbers, not PDF page numbers. In several PDFs the two differ by one or two pages. ",
     "url": "/The2ndChumming3e/latest/sources/#abbreviations",
     
     "relUrl": "/sources/#abbreviations"
-  },"112": {
+  },"138": {
     "doc": "Source Books & Method",
     "title": "How the pages were checked",
     "content": "Each gist was split into its individual claims, and each claim was looked up in the book it concerns: the text layer of each PDF was searched, and the page was read in full around every match. Tables were taken directly from the book, not paraphrased. Where the gist gave a number and the book gives a different one, the page uses the book’s number and says so in a yellow box. The Shadowrun Companion PDF has no text layer. Its payment guidance (SRComp p.99–100) was read from the page images directly. ",
     "url": "/The2ndChumming3e/latest/sources/#how-the-pages-were-checked",
     
     "relUrl": "/sources/#how-the-pages-were-checked"
-  },"113": {
+  },"139": {
     "doc": "Source Books & Method",
     "title": "What could not be verified",
     "content": ". | Specialist hiring rates. No SR3 book prices specialists by skill rating. The books give per-job baselines instead (SRComp p.100), and the hiring pages are built on those. The per-archetype day rates are marked as house rules. | Fixer “finder’s fee” percentages. The books say fixers act as middlemen (SR3 p.272) but set no percentage. | Corporate Download is cited by one original gist but is not in the library used for checking. Nothing on these pages depends on it. | Some named gear in the originals does not appear in any book checked, and has been removed: “Ares Duelist” drones, “Neural Silence gear”, and the book “Spurlock &amp; Sprawl”, which does not exist. | . ",
     "url": "/The2ndChumming3e/latest/sources/#what-could-not-be-verified",
     
     "relUrl": "/sources/#what-could-not-be-verified"
-  },"114": {
+  },"140": {
     "doc": "Source Books & Method",
     "title": "Rules from other editions",
     "content": "The original gists mixed in rules and terms from other editions. These have been removed or replaced throughout: . | Appeared in the gists | What SR3 actually uses | . | Magic Pool | Spell Pool, (INT + WIL + MAG) ÷ 3 (SR3 p.44) | . | Sympathetic link | Material link (MitS p.37) | . | Legality codes “R” / “F” | Legality Code such as 6P-E: restriction level, optional P for permit, category letter (SR3 p.273) | . | “Yellow” security systems | Security codes are Blue, Green, Orange, Red, plus unofficial “UV” (SR3 p.205) | . | Drain codes like “5H” | Drain is written +1(M): Power = Force ÷ 2 + modifier, then a Damage Level (SR3 p.162) | . | Increased Reflexes (adept power) | Improved Reflexes (SR3 p.169). Increase Reflexes is a spell. | . ",
     "url": "/The2ndChumming3e/latest/sources/#rules-from-other-editions",
     
     "relUrl": "/sources/#rules-from-other-editions"
-  },"115": {
+  },"141": {
     "doc": "Source Books & Method",
     "title": "Source Books & Method",
     "content": " ",
     "url": "/The2ndChumming3e/latest/sources/",
     
     "relUrl": "/sources/"
-  },"116": {
+  },"142": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "Spellcasting, Resistance &amp; Drain",
     "content": "How a spell is cast, step by step and in the order the book gives: who rolls, what they roll, and what happens. All rules are from the core rulebook, (SR3 p.178–185, p.191). | Who rolls what | The sequence at a glance (SR3 p.181) | Step 1: Preparation (SR3 p.178, p.181, p.191) | Step 2: Targeting (SR3 p.181–182) | Step 3: Sorcery Test (SR3 p.182–183) . | Target number . | Object Resistance Table (SR3 p.182) | . | Modifiers to the Sorcery TN (SR3 p.182–183) | Results | . | Step 4: Spell Resistance (SR3 p.183) . | The target resists | A magician blocks it: Spell Defense (SR3 p.183) | . | Step 5: Spell Effect (SR3 p.183, p.191) . | Combat spells: armor doesn’t help (SR3 p.191) | Elemental spells work like guns (SR3 p.183, p.196) | . | Step 6: Drain (SR3 p.162, p.180, p.183, p.191) . | Reading a Drain code (SR3 p.191) | Adding up the TN | The roll | Stun or Physical? (SR3 p.162, p.183) | . | Sustaining spells (SR3 p.178) | Worked example: Manabolt | . ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/#spellcasting-resistance--drain",
     
     "relUrl": "/magic/spellcasting/#spellcasting-resistance--drain"
-  },"117": {
+  },"143": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "Who rolls what",
     "content": "| Role | Roll | Against | When | . | Caster | Sorcery + Spell Pool (no more pool dice than Sorcery dice) | The target’s attribute, or the spell’s listed TN | Step 3 | . | Target | The spell’s target attribute: Willpower, Body or Intelligence | The spell’s Force | Step 4 | . | A protecting magician | Spell Defense dice: Sorcery + Spell Pool set aside earlier | The spell’s Force | Step 4 | . | Caster | Willpower + any number of Spell Pool dice | Drain Power: Force ÷ 2 + modifier | Step 6 | . | GM | Rolls the Sorcery Test secretly for detection spells |   | Step 3 | . Spell Pool = (Intelligence + Willpower + Magic) ÷ 3, rounded down. It refreshes every Combat Turn and is shared between casting, Spell Defense and Drain. (SR3 p.44, p.180) . ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/#who-rolls-what",
     
     "relUrl": "/magic/spellcasting/#who-rolls-what"
-  },"118": {
+  },"144": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "The sequence at a glance  (SR3 p.181)",
     "content": "The book’s own six steps, all within your one Complex Action: . | # | Step | What you decide or roll | . | 1 | Preparation | Spell, Force, Damage Level, dice split, area radius | . | 2 | Targeting | Can you see it? Is it on your plane? | . | 3 | Sorcery Test | Caster: Sorcery + Spell Pool vs the target number | . | 4 | Spell Resistance | Target: attribute vs Force; plus any Spell Defense | . | 5 | Spell Effect | Net successes decide the effect | . | 6 | Drain | Caster: Willpower + Spell Pool vs Drain Power | . ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/#the-sequence-at-a-glance--sr3-p181",
     
     "relUrl": "/magic/spellcasting/#the-sequence-at-a-glance--sr3-p181"
-  },"119": {
+  },"145": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "Step 1: Preparation  (SR3 p.178, p.181, p.191)",
     "content": "Decide all of these before rolling. | The spell and its Force. You can cast at the Force you learned it at or lower, never higher. The minimum is Force 1. (SR3 p.178) Higher Force is harder to resist and produces more Drain. | Damage Level, for combat and elemental spells. You choose L, M, S or D when you cast. That choice is both the spell’s base damage and its base Drain Level. (SR3 p.191, p.196) | How many Sorcery dice go into this spell, and how many Spell Pool dice. You can’t add more pool dice than Sorcery dice. (SR3 p.180) | More than one spell? You can split Sorcery and Spell Pool dice to cast several spells in one Complex Action, up to your Sorcery rating in spells, with at least 1 Sorcery die each. Each spell then gets +2 to its Drain TN for every extra spell. Two spells means +2 on each Drain Test; three means +4 on each. (SR3 p.181) | Sustaining anything? Choose whether to keep or drop spells you’re already sustaining. Each one you keep costs +2 to all your tests, including this Sorcery Test and its Drain Test. (SR3 p.178) | Area spells: the base radius is your Magic in meters, and it hits everyone valid inside, including you and your friends. Withhold Sorcery dice to change it: every 2 dice withheld shrink it by 1 m, or every 1 die withheld widens it by 1 m. (SR3 p.181) | . ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/#step-1-preparation",
     
     "relUrl": "/magic/spellcasting/#step-1-preparation"
-  },"120": {
+  },"146": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "Step 2: Targeting  (SR3 p.181–182)",
     "content": ". | You must see the target, and be on the same plane (physical or astral). Glasses, mirrors, fiber optics and cybereyes are fine. Any digital image, such as a camera feed, simsense or a vision-altering spell like Clairvoyance, is not. (SR3 p.181) | Glass doesn’t stop most spells, because the effect happens at the target and nothing travels. An opaque barrier blocks the spell. (SR3 p.182) | Touch-range spells skip cover and visibility modifiers, but you must touch the target first with an Unarmed Combat attack at −1 TN, as part of the same action. One net success is enough. (SR3 p.178, p.183) | From the astral, you can only cast mana spells, and only at astral targets. Astrally perceiving casters can target both planes, but can be attacked from both. (SR3 p.182) | . ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/#step-2-targeting",
     
     "relUrl": "/magic/spellcasting/#step-2-targeting"
-  },"121": {
+  },"147": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "Step 3: Sorcery Test  (SR3 p.182–183)",
     "content": "The caster rolls Sorcery dice plus Spell Pool dice. Target number . | Target | Base TN | . | A living being, mana spell | The target’s Willpower | . | A living being, physical spell | The target’s Body | . | An object | The Object Resistance Table, below | . | Spells with a fixed number | As listed in the spell, e.g. “Target: 4” | . Object Resistance Table (SR3 p.182) . | Material | TN | . | Natural objects: trees, soil, unprocessed water | 3 | . | Low-tech manufactured: brick, leather, simple plastics | 5 | . | High-tech manufactured: advanced plastics, alloys, electronics | 8 | . | Highly processed: computers, complex toxic waste | 10+ | . To affect an object at all, the spell’s Force must be at least half its Object Resistance, rounded down. Vehicles add their Body and half their armor to Object Resistance before halving. (SR3 p.182) . Modifiers to the Sorcery TN (SR3 p.182–183) . | Cover and visibility, as for Perception. | Injury modifiers (+1 / +2 / +3). | +2 per spell you’re sustaining. | An astral barrier you’re casting across, such as a ward, hermetic circle or shamanic lodge, adds its Force. Its creator is exempt. | . Results . | No successes: the spell fails. | All 1s: it fails and your Drain TN goes up by +2. (SR3 p.182) | Area spells: roll once and compare the dice against each target’s TN separately. Each target then resists separately. (SR3 p.182) | Detection spells: the GM rolls in secret. On all 1s, the GM gives you false information. (SR3 p.182) | . ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/#step-3-sorcery-test",
     
     "relUrl": "/magic/spellcasting/#step-3-sorcery-test"
-  },"122": {
+  },"148": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "Step 4: Spell Resistance  (SR3 p.183)",
     "content": "Two different things can reduce the caster’s successes here. Both can happen against the same spell. The target resists . | Any living target that isn’t willing makes a Spell Resistance Test: its targeted attribute (usually Body, Intelligence or Willpower) against TN = the spell’s Force. | No modifiers apply unless the spell says so. That includes the target’s wounds. (SR3 p.183) | Non-living, non-magical targets don’t resist. | . How The 2nd Chumming reads it: a target who is sustaining spells still takes +2 per spell on this test. The book says both “no target modifiers apply to this test” (SR3 p.183) and that sustaining costs +2 on “all tests, including Drain Resistance Tests (but not normal Damage Resistance Tests)” (SR3 p.178). The maintainer ruled that p.178’s “all tests” wins (2026-09-14). Wounds still don’t apply. A magician blocks it: Spell Defense (SR3 p.183) . | At some earlier point, a magician set aside Sorcery and Spell Pool dice for defense. That’s a Free Action. | They can protect up to their Sorcery rating in subjects, all within Magic × 100 m and on the same plane. Protecting yourself counts as one. | When a protected subject is targeted, the defender senses it and may roll any of those dice against TN = the spell’s Force. It takes no action. | Every success subtracts one success from the caster’s Sorcery Test. If that takes the caster to 0 or less, the spell fails. | Dice used are gone until the next Combat Turn. | . ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/#step-4-spell-resistance",
     
     "relUrl": "/magic/spellcasting/#step-4-spell-resistance"
-  },"123": {
+  },"149": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "Step 5: Spell Effect  (SR3 p.183, p.191)",
     "content": "Compare the caster’s remaining successes with the target’s resistance successes. | Target ties or wins: no effect. A tie goes to the target. | Caster wins: the net successes (caster − target) measure the effect. The spell’s description says what they buy. | No resistance roll (an object, or a willing subject): all the caster’s successes count, and 1 success always gives some effect. | Damaging spells: the chosen Damage Level stages up one level per 2 net successes, up to Deadly. | . Combat spells: armor doesn’t help (SR3 p.191) . Combat spells (Manabolt, Powerbolt, Stunbolt and their ball versions) damage the target directly and bypass armor. The Spell Resistance Test is the target’s only defense, so there’s no Damage Resistance Test. Mana spells are resisted with Willpower and affect only living and magical targets. Physical spells are resisted with Body and can hit objects too. | Spell | Type | Resisted by | Drain | Damage | . | Stunbolt / Stunball | Mana | Willpower | −1(Damage Level) / −1(Damage Level +1) | Stun | . | Manabolt / Manaball | Mana | Willpower | (Damage Level) / (Damage Level +1) | Physical | . | Powerbolt / Powerball | Physical | Body | +1(Damage Level) / +1(Damage Level +1) | Physical | . | Death Touch | Mana | Willpower | (Damage Level −1) | Physical, by touch | . Elemental spells work like guns (SR3 p.183, p.196) . Fireball, Flamethrower, Lightning Bolt, Acid Stream and similar spells make real fire, lightning or acid. They follow the ranged combat rules, so steps 3 to 5 change: . | Sorcery is the ranged combat skill. The base TN is 4 at any range if you can see the target, plus cover, visibility, injury and sustaining modifiers. Spell Pool dice can be added. (SR3 p.183) | The target can dodge with Combat Pool. (SR3 p.183) | Instead of a Spell Resistance Test, the target makes a Damage Resistance Test with Body plus Combat Pool dice, and Impact armor at half its rating (rounded down) protects. (SR3 p.183, p.196) | The chosen Damage Level stages up 2 successes per level for the caster and down for the target, as in ordinary ranged combat. (SR3 p.183) | Secondary effects can still set fires, cook off ammunition or melt material, even if the primary damage is staged to nothing. (SR3 p.196) | . Glass and walls do block elemental spells, which have to break through like bullets. Targets hidden behind cover inside a Fireball’s radius still get hit. Spell Defense and astral barriers still work against them. (SR3 p.182) . The damage Power of an elemental spell. The core book gives the spell’s Damage Code but never states its Power in so many words. The usual reading is that the Power is the spell’s Force, so a Force 6 Fireball cast at Moderate is 6M before staging. ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/#step-5-spell-effect",
     
     "relUrl": "/magic/spellcasting/#step-5-spell-effect"
-  },"124": {
+  },"150": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "Step 6: Drain  (SR3 p.162, p.180, p.183, p.191)",
     "content": "Right after casting, in the same action, whether or not the spell worked, the caster resists Drain. Reading a Drain code (SR3 p.191) . A spell’s Drain looks like +1(M) or -1(Damage Level +1): . | The number outside the brackets modifies the Power, which is the target number: Drain Power = Force ÷ 2, rounded down, + that modifier. | The part inside the brackets is the Drain Level, the damage you take before resisting. For combat and elemental spells it’s the Damage Level you chose, adjusted by any modifier written with it. | If a modifier would push the Drain Level above Deadly, add +2 Drain Power per level above instead. | . Adding up the TN . | Source | Change | . | Base | Force ÷ 2 (round down) + the spell’s modifier | . | Each spell you’re sustaining | +2 (p.178, p.180) | . | Each extra spell cast in the same action | +2 (p.181) | . | The Sorcery Test came up all 1s | +2 (p.182) | . Otherwise, no modifiers apply, including wounds. (SR3 p.183) . The roll . The caster rolls Willpower plus any number of Spell Pool dice. There’s no cap here, unlike the Sorcery Test. Every 2 successes lower the Drain Level one step. Below Light, you take nothing. (SR3 p.44, p.183) . Stun or Physical? (SR3 p.162, p.183) . | Stun normally. | Physical if the Force is higher than your Magic, or if you’re astrally projecting, whatever the Force. | A limited spell (fetish −1, exclusive −2) can lower the Force for Drain purposes, both for the TN and for this Stun-or-Physical check. (SR3 p.180) | Physical damage from Drain can’t be healed by magic, only by rest and medical care. (SR3 p.162) | . ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/#step-6-drain",
     
     "relUrl": "/magic/spellcasting/#step-6-drain"
-  },"125": {
+  },"151": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "Sustaining spells  (SR3 p.178)",
     "content": "| Duration | What it means | . | Instant (I) | Takes effect and ends at once. The results, such as wounds, stay. Combat spells work this way. | . | Sustained (S) | Lasts while you concentrate, which takes no action. | . | Permanent (P) | Must be sustained for a base time, then becomes permanent. Sorcery successes can be spent dividing that time instead of on the effect. | . While sustaining: . | +2 to all your tests per sustained spell, including Drain Resistance but not ordinary Damage Resistance. | You can sustain up to your Sorcery rating in spells at once. | If you take damage, roll Sorcery against the spell’s Force (plus injury modifiers) to keep it going. | Dropping a spell is a Free Action. Being knocked out or falling asleep drops them all. | An Exclusive Action means dropping every sustained spell first. | . A sustaining focus holds a spell for you, and the +2 doesn’t apply to you. (SR3 p.191) . ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/#sustaining-spells--sr3-p178",
     
     "relUrl": "/magic/spellcasting/#sustaining-spells--sr3-p178"
-  },"126": {
+  },"152": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "Worked example: Manabolt",
     "content": "Kestrel has Magic 6, Sorcery 5, and a Spell Pool of 4 (Intelligence 5, Willpower 5, Magic 6 → 16 ÷ 3 = 5, and she spent 1 earlier this turn). She casts Manabolt at Force 5, choosing Serious, at a guard with Willpower 4. She isn’t sustaining anything. | Preparation. Force 5, Serious, 5 Sorcery dice plus 3 Spell Pool dice. That leaves 1 pool die for Drain. | Targeting. She can see him and they’re both on the physical plane. | Sorcery Test. 8 dice against TN 4 (his Willpower). She gets 4 successes. | Resistance. The guard rolls Willpower 4 against TN 5 (the Force) and gets 1. Nobody is running Spell Defense for him. | Effect. 4 − 1 = 3 net successes. Two of them stage Serious up to Deadly; the third is left over. Combat spells ignore armor, so the guard takes a Deadly Physical wound. | Drain. Manabolt’s Drain is (Damage Level). Power is 5 ÷ 2 = 2, and the level is Serious, the level she chose, not the staged one. She rolls Willpower 5 plus her last Spell Pool die, 6 dice against TN 2, and gets 3 successes. Two of them take Serious down to Moderate. Force 5 isn’t higher than her Magic 6, so it’s Moderate Stun. | . If she had cast at Force 7 (assuming she’d learned it that high): Drain Power would be 3, and the Drain would be Physical, because 7 is higher than her Magic. If a mage were protecting the guard with Spell Defense and rolled 2 successes against TN 5, Kestrel’s 4 would drop to 2. The guard’s 1 resistance success would leave 1 net success: not enough to stage up, so he’d take Serious. ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/#worked-example-manabolt",
     
     "relUrl": "/magic/spellcasting/#worked-example-manabolt"
-  },"127": {
+  },"153": {
     "doc": "Spellcasting, Resistance & Drain",
     "title": "Spellcasting, Resistance & Drain",
     "content": " ",
     "url": "/The2ndChumming3e/latest/magic/spellcasting/",
     
     "relUrl": "/magic/spellcasting/"
-  },"128": {
+  },"154": {
     "doc": "Street Samurai",
     "title": "Hiring a Street Samurai",
     "content": ". | What the books give you . | What their chrome costs (SR3 p.302) | . | House rates . | Base day rate, by combat skill and augmentation | Threat multiplier | Hazard pay and expenses | . | Worked examples | . | Wired reflexes give Initiative dice, not passes. Levels 1/2/3 are +2/+4/+6 Reaction and +1D6/+2D6/+3D6 Initiative. The number of passes comes from the Initiative score. (SR3 p.104, p.302) | “Booster” means boosted reflexes, and “move booster” means move-by-wire. (SR3 p.302; M&amp;M p.60) | SR3 has dermal plating and dermal sheath; “subdermal plating” is a later-edition name. (SR3 p.302; M&amp;M) | The Scenario B and C totals were wrong. The correct figures are 15,000¥ and 42,000¥. | . ",
     "url": "/The2ndChumming3e/latest/hiring/street-samurai/#hiring-a-street-samurai",
     
     "relUrl": "/hiring/street-samurai/#hiring-a-street-samurai"
-  },"129": {
+  },"155": {
     "doc": "Street Samurai",
     "title": "What the books give you",
     "content": "|   |   | Source | . | Bodyguard / security duty | 200¥/day | SRComp p.100 | . | Enforcement | 1,000¥ | SRComp p.100 | . | Assassination | 5,000¥ | SRComp p.100 | . | Extraction | 20,000¥ | SRComp p.100 | . What their chrome costs (SR3 p.302) . | Implant | Essence | Cost | . | Smartlink | .5 | 2,500¥ | . | Wired Reflexes 1 / 2 / 3 | 2 / 3 / 5 | 55,000 / 165,000 / 500,000¥ | . | Boosted Reflexes 1 / 2 / 3 | .5 / 1.25 / 2.8 | 15,000 / 40,000 / 90,000¥ | . | Dermal Plating 1 / 2 / 3 | .5 / 1 / 1.5 | 6,000 / 15,000 / 45,000¥ | . | Titanium bone lacing | 2.25 | 75,000¥ | . A samurai who carries used or alphaware chrome prices it differently. See Cyberware Grades. ",
     "url": "/The2ndChumming3e/latest/hiring/street-samurai/#what-the-books-give-you",
     
     "relUrl": "/hiring/street-samurai/#what-the-books-give-you"
-  },"130": {
+  },"156": {
     "doc": "Street Samurai",
     "title": "House rates",
     "content": "These rates aren’t from any SR3 book. They are the original gist’s numbers, kept for convenience. Base day rate, by combat skill and augmentation . | Tier | Skill and chrome | Base day rate | Typical kit | . | Street tough | Skill 1–3, little or no chrome | 200–500¥ | A heavy pistol or shotgun | . | Professional | Skill 4–5, Wired 1 or Boosted 1–2 | 1,000–2,500¥ | Smartlink, SMG or assault rifle, dermal plating | . | Veteran | Skill 6–7, Wired 2 | 3,500–7,000¥ | Alpha or bioware suite, muscle replacement or augmentation, heavy armor | . | Elite | Skill 8+, Wired 3 or move-by-wire | 10,000¥ and up | Alpha or betaware, bone lacing, anti-vehicle weapons | . Threat multiplier . | Work | Multiplier | . | Bodyguarding, bouncing, static guard duty | ×1 | . | A standard run: perimeter breach, corporate guards, gang turf | ×2 | . | High-threat response teams, combat drones, heavy weapons, combat mages | ×3–5 | . Hazard pay and expenses . | Overwatch or sniper: no hazard pay. | Point man or breacher: +50% to +100%. | The employer supplies special ammunition (APDS, EX, gel), grenades and disposable launchers, and covers medical bills. | A medical and chrome deposit of 2,500–10,000¥ is reasonable against armor-piercing or explosive fire. | . ",
     "url": "/The2ndChumming3e/latest/hiring/street-samurai/#house-rates",
     
     "relUrl": "/hiring/street-samurai/#house-rates"
-  },"131": {
+  },"157": {
     "doc": "Street Samurai",
     "title": "Worked examples",
     "content": "| Job | House rate | Companion baseline | . | Nightclub bodyguard, professional (base 1,500¥), ×1 | 1,500¥ a night | 200¥ a day | . | Counter-gang hit, veteran (base 5,000¥), ×2, point man +50% | 5,000 × 2 × 1.5 = 15,000¥ plus ammunition | Enforcement: 1,000¥; assassination: 5,000¥ | . | Breach against a high-threat response team, veteran-plus (base 7,000¥), ×4, breacher +50% | 7,000 × 4 × 1.5 = 42,000¥ plus ammunition and medical | A share of the extraction fee | . ",
     "url": "/The2ndChumming3e/latest/hiring/street-samurai/#worked-examples",
     
     "relUrl": "/hiring/street-samurai/#worked-examples"
-  },"132": {
+  },"158": {
     "doc": "Street Samurai",
     "title": "Street Samurai",
     "content": " ",

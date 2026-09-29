@@ -1,0 +1,1527 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.3/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.6.3/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(5)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(5) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(2) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(5) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list > li.nav-list-item:nth-child(5) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.6.3/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.6.3/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Decking (Matrix Defragged) | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Decking (Matrix Defragged)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.6.3/rules/decking-defragged/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.6.3/rules/decking-defragged/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Decking (Matrix Defragged)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"Decking (Matrix Defragged)","url":"https://darkbushido.github.io/The2ndChumming3e/v0.6.3/rules/decking-defragged/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.6.3/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.3/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/rules/healing/" class="nav-list-link">Healing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/rules/decking-defragged/" class="nav-list-link">Decking (Matrix Defragged)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/rules/decking/" class="nav-list-link">Decking (SR3 core)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/rules/rigging/" class="nav-list-link">Rigging</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.3/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.3/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.6.3/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.6.3/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.6.3</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.6.3/rules/">Rules</a></li>
+    <li class="breadcrumb-nav-list-item"><span>Decking (Matrix Defragged)</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="decking-matrix-defragged">
+  
+  
+    <a href="#decking-matrix-defragged" class="anchor-heading" aria-labelledby="decking-matrix-defragged"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Decking (Matrix Defragged)
+  
+  
+</h1>
+    
+
+<p>This table plays <strong>Matrix Defragged v2</strong>, a fan-made replacement for the core rulebook’s Matrix
+chapter (SR3 p.199–232). It isn’t an official Shadowrun supplement — it’s a fan rewrite by
+Brinoceros, built to run faster at the table — but it’s cited here the same way as any other
+sourcebook: <code class="language-plaintext highlighter-rouge">*(MDF p.NN)*</code>, printed page.</p>
+
+<p>This system can run either ruleset — Defragged or the core rulebook’s own Matrix chapter,
+“Orthodox SR3” — as a per-world setting. If your table runs Orthodox instead, see
+<a href="../decking/">Decking (SR3 core)</a>. The two rulesets don’t mix; this page covers Defragged only.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#the-matrix-in-three-ideas" id="markdown-toc-the-matrix-in-three-ideas">The Matrix in three ideas</a>    <ol>
+      <li><a href="#security-tiers-mdf-p1112" id="markdown-toc-security-tiers-mdf-p1112">Security Tiers <em>(MDF p.11–12)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#getting-on-the-matrix" id="markdown-toc-getting-on-the-matrix">Getting on the Matrix</a>    <ol>
+      <li><a href="#user-modes-mdf-p10" id="markdown-toc-user-modes-mdf-p10">User Modes <em>(MDF p.10)</em></a></li>
+      <li><a href="#skills-mdf-p11" id="markdown-toc-skills-mdf-p11">Skills <em>(MDF p.11)</em></a></li>
+      <li><a href="#hacking-pool-mdf-p11" id="markdown-toc-hacking-pool-mdf-p11">Hacking Pool <em>(MDF p.11)</em></a></li>
+      <li><a href="#response-mdf-p14" id="markdown-toc-response-mdf-p14">Response <em>(MDF p.14)</em></a></li>
+      <li><a href="#logon-and-getting-around-mdf-p8-p15" id="markdown-toc-logon-and-getting-around-mdf-p8-p15">Logon and getting around <em>(MDF p.8, p.15)</em></a></li>
+      <li><a href="#nodes-and-their-prompts" id="markdown-toc-nodes-and-their-prompts">Nodes and their prompts</a></li>
+    </ol>
+  </li>
+  <li><a href="#hacking-mdf-p23" id="markdown-toc-hacking-mdf-p23">Hacking <em>(MDF p.23)</em></a>    <ol>
+      <li><a href="#what-changes-the-tn-mdf-p14" id="markdown-toc-what-changes-the-tn-mdf-p14">What changes the TN <em>(MDF p.14)</em></a></li>
+      <li><a href="#overwatch-and-the-security-sheaf-mdf-p2324" id="markdown-toc-overwatch-and-the-security-sheaf-mdf-p2324">Overwatch and the Security Sheaf <em>(MDF p.23–24)</em></a></li>
+      <li><a href="#convergence-mdf-p2324" id="markdown-toc-convergence-mdf-p2324">Convergence <em>(MDF p.23–24)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#cybercombat-mdf-p26" id="markdown-toc-cybercombat-mdf-p26">Cybercombat <em>(MDF p.26)</em></a></li>
+  <li><a href="#dumpshock-mdf-p27" id="markdown-toc-dumpshock-mdf-p27">Dumpshock <em>(MDF p.27)</em></a></li>
+  <li><a href="#ic-and-agents-mdf-p24-p36" id="markdown-toc-ic-and-agents-mdf-p24-p36">IC and Agents <em>(MDF p.24, p.36)</em></a></li>
+  <li><a href="#utilities-mdf-p2932" id="markdown-toc-utilities-mdf-p2932">Utilities <em>(MDF p.29–32)</em></a></li>
+  <li><a href="#doing-it-in-the-2nd-chumming-foundry" id="markdown-toc-doing-it-in-the-2nd-chumming-foundry">Doing it in The 2nd Chumming (Foundry)</a>    <ol>
+      <li><a href="#choosing-the-ruleset" id="markdown-toc-choosing-the-ruleset">Choosing the ruleset</a></li>
+      <li><a href="#getting-on-the-matrix-1" id="markdown-toc-getting-on-the-matrix-1">Getting on the Matrix</a></li>
+      <li><a href="#node-tracking-and-prompts" id="markdown-toc-node-tracking-and-prompts">Node tracking and prompts</a></li>
+      <li><a href="#rolling-a-hacking-action" id="markdown-toc-rolling-a-hacking-action">Rolling a hacking action</a></li>
+      <li><a href="#cybercombat" id="markdown-toc-cybercombat">Cybercombat</a></li>
+      <li><a href="#dumpshock" id="markdown-toc-dumpshock">Dumpshock</a></li>
+      <li><a href="#host-sheets-security-sheaf-and-ic" id="markdown-toc-host-sheets-security-sheaf-and-ic">Host sheets, Security Sheaf, and IC</a></li>
+    </ol>
+  </li>
+  <li><a href="#worked-example" id="markdown-toc-worked-example">Worked example</a></li>
+</ol><hr />
+<h2 id="the-matrix-in-three-ideas">
+  
+  
+    <a href="#the-matrix-in-three-ideas" class="anchor-heading" aria-labelledby="the-matrix-in-three-ideas"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Matrix in three ideas
+  
+  
+</h2>
+    
+
+<ul>
+  <li>Every Matrix-capable device — a host, a cyberdeck, a commlink, a maglock — has a <strong>System
+Rating</strong>. That number is the TN for anyone trying to act against it. <em>(MDF p.12)</em></li>
+  <li>Every such device also sits at a <strong>Security Tier</strong>: a colour and a <strong>Security Threshold</strong>
+number that measures how hard it is to actually get past. System Rating plus Security Tier is
+a device’s <strong>Sys/Sec</strong>. <em>(MDF p.12)</em></li>
+  <li><strong>Hacking</strong> boils down to one test: roll against the System Rating, then check whether you
+cleared the Threshold. Fall short, and the system logs a point against you — <strong>Overwatch</strong>.
+<em>(MDF p.23)</em></li>
+</ul>
+<h3 id="security-tiers-mdf-p1112">
+  
+  
+    <a href="#security-tiers-mdf-p1112" class="anchor-heading" aria-labelledby="security-tiers-mdf-p1112"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Security Tiers <em>(MDF p.11–12)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Tier</th>
+      <th style="text-align: center">Threshold</th>
+      <th style="text-align: left">What typically runs at this level</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Ivory</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: left">No Matrix security at all — toys, minor devices</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Blue</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">Low security — public comm booths, bus ticket kiosks, news services, libraries</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Green</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: left">Average security — small shops, petty criminal outfits, the public Matrix</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Orange</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: left">Challenging security — sensitive data at mid-size businesses and corp offices</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Red</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: left">Threatening security — classified sites agencies will kill to protect</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Black</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: left">Dangerous security — top military, corporate, or government projects</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ultraviolet</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left">Deadly security — the Sixth World’s greatest secrets</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>A cyberdeck’s own tier comes from its Firewall Rating, not from a GM assignment. <em>(MDF p.12)</em></p><hr />
+<h2 id="getting-on-the-matrix">
+  
+  
+    <a href="#getting-on-the-matrix" class="anchor-heading" aria-labelledby="getting-on-the-matrix"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Getting on the Matrix
+  
+  
+</h2>
+    
+<h3 id="user-modes-mdf-p10">
+  
+  
+    <a href="#user-modes-mdf-p10" class="anchor-heading" aria-labelledby="user-modes-mdf-p10"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> User Modes <em>(MDF p.10)</em>
+  
+  
+</h3>
+    
+
+<p>How you jack in changes your Initiative and what damage can reach your real body:</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Mode</th>
+      <th style="text-align: left">Initiative</th>
+      <th style="text-align: left">If your icon overloads</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Tortoise Terminal (TRM)</strong></td>
+      <td style="text-align: left">Meat-world Initiative; no Response, but Hacking Pool still works</td>
+      <td style="text-align: left">Immune to biofeedback</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Augmented Reality (AR)</strong></td>
+      <td style="text-align: left">Meat-world Initiative; no Response, but Hacking Pool still works</td>
+      <td style="text-align: left">Immune to biofeedback</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>VR-Cold</strong></td>
+      <td style="text-align: left">Meat-world Initiative; no Response, but Hacking Pool still works</td>
+      <td style="text-align: left">Stun damage</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>VR-Hot</strong></td>
+      <td style="text-align: left">Its own <strong>Matrix Initiative</strong>, boosted by Response</td>
+      <td style="text-align: left">Physical damage</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>Tortoise adds <strong>+2 TN</strong> to every Matrix test and cybercombat roll. Only VR-Hot gets true Matrix
+Initiative and benefits from Response — the other three run on whatever Initiative dice you’d
+roll in the meat world, full stop. <em>(MDF p.10)</em></p>
+<h3 id="skills-mdf-p11">
+  
+  
+    <a href="#skills-mdf-p11" class="anchor-heading" aria-labelledby="skills-mdf-p11"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Skills <em>(MDF p.11)</em>
+  
+  
+</h3>
+    
+
+<p>Four Intelligence-linked skills cover the Matrix: <strong>Computer</strong> (legitimate use — logons, moving
+around, ordinary prompts; defaults from Electronics), <strong>Hacking</strong> (illegal or scrutinized action,
+opposed by the target’s Sys/Sec; defaults from Computer), <strong>Cybercombat</strong> (fighting other icons;
+defaults from Computer), and <strong>Programming</strong> (writing or fixing utilities, skillsofts and agents;
+defaults from Computer).</p>
+<h3 id="hacking-pool-mdf-p11">
+  
+  
+    <a href="#hacking-pool-mdf-p11" class="anchor-heading" aria-labelledby="hacking-pool-mdf-p11"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Hacking Pool <em>(MDF p.11)</em>
+  
+  
+</h3>
+    
+
+<p><strong>Hacking Pool = Intelligence + ⌊MPCP ÷ 3⌋.</strong> It behaves like any other dice pool (SR3 p.43):
+refreshes each Combat Turn, and you split it freely across Hacking, Cybercombat, or whatever else
+you’re rolling in the Matrix that turn.</p>
+<h3 id="response-mdf-p14">
+  
+  
+    <a href="#response-mdf-p14" class="anchor-heading" aria-labelledby="response-mdf-p14"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Response <em>(MDF p.14)</em>
+  
+  
+</h3>
+    
+
+<p><strong>Response</strong> on a deck is the Matrix’s version of wired reflexes: each point adds <strong>+2 Reaction</strong>
+and <strong>+1D6 Matrix Initiative</strong>, but only while you’re running <strong>VR-Hot</strong>. A deck’s Response can’t
+exceed <strong>⌊MPCP ÷ 3⌋</strong> (minimum 1).</p>
+<h3 id="logon-and-getting-around-mdf-p8-p15">
+  
+  
+    <a href="#logon-and-getting-around-mdf-p8-p15" class="anchor-heading" aria-labelledby="logon-and-getting-around-mdf-p8-p15"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Logon and getting around <em>(MDF p.8, p.15)</em>
+  
+  
+</h3>
+    
+
+<p>Pick your User Mode, then log on to your local grid — or jack straight into a host through a
+physical port. While you’re loose in the open Matrix (not yet inside a host), tests use the local
+grid’s own Sys/Sec numbers as a stand-in host. A few examples:</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Regional grid</th>
+      <th style="text-align: center">System Rating</th>
+      <th style="text-align: left">Security Tier</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Aztlan</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: left">Orange (3)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">California Free State</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left">Green (2)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">CAS</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left">Green (2)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Québec</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left">Green (2)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Tir Tairngire</td>
+      <td style="text-align: center">7</td>
+      <td style="text-align: left">Orange (3)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Tsimshian</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: left">Orange (3)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">UCAS</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left">Green (2)</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><em>(MDF p.15 — a partial list; the book covers every North American and several overseas grids.)</em></p>
+<h3 id="nodes-and-their-prompts">
+  
+  
+    <a href="#nodes-and-their-prompts" class="anchor-heading" aria-labelledby="nodes-and-their-prompts"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Nodes and their prompts
+  
+  
+</h3>
+    
+
+<p>Once inside a host, five kinds of node exist, and each offers its own set of prompts. <em>(MDF p.8,
+p.16–21)</em> A handful of prompts work anywhere (<strong>General</strong>), listed separately below.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Node</th>
+      <th style="text-align: left">Represents</th>
+      <th style="text-align: left">Icon shape</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>System Access Node (SAN)</strong></td>
+      <td style="text-align: left">The host’s public front door</td>
+      <td style="text-align: left">Rectangle</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Central Processing Unit (CPU)</strong></td>
+      <td style="text-align: left">Sysop-level control: the Security Sheaf, passcodes, the system map, pathways</td>
+      <td style="text-align: left">Double-walled hexagon (has its own barrier)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Data Store (DS)</strong></td>
+      <td style="text-align: left">Files, records, and archives</td>
+      <td style="text-align: left">Square</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Slave Node (SN)</strong></td>
+      <td style="text-align: left">Controls real-world devices — cameras, maglocks, subscribed drones/vehicles</td>
+      <td style="text-align: left">Circle</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Sub-Processing Unit (SPU)</strong></td>
+      <td style="text-align: left">Task routing and scheduling — user lists, project data</td>
+      <td style="text-align: left">Hexagon</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>A legitimate passcode lets you use a node’s prompts as an ordinary Computer test. Without one,
+you need a mark on that node — usually gained through the <strong>Access Node</strong> prompt with Hacking —
+before its other prompts open up, unless the node is public. Getting caught doing something you
+shouldn’t (an ✗ below) costs a point of Overwatch; some successful prompts also hand you a mark
+(✓) on top of whatever else they do.</p>
+
+<p><strong>General prompts</strong> (any node, any zone):</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Prompt</th>
+      <th style="text-align: left">Test</th>
+      <th style="text-align: center">Adds Overwatch on failure</th>
+      <th style="text-align: center">Grants a mark</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Access Node</td>
+      <td style="text-align: left">Passcode, or Hacking vs Sys/Sec</td>
+      <td style="text-align: center">✗</td>
+      <td style="text-align: center">✓</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Attack an Icon</td>
+      <td style="text-align: left">Cybercombat vs Cybercombat</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Boot Utility</td>
+      <td style="text-align: left">Computer vs Utility Rating</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Configure Protections</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Crack Protections</td>
+      <td style="text-align: left">Passcode/Hacking vs Sys/Sec of the protection</td>
+      <td style="text-align: center">✗</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Jam Signal</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Jump Grid/Host</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Logon to System</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Repair an Icon</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Scrub Datastream</td>
+      <td style="text-align: left">Hacking vs Sys/Sec</td>
+      <td style="text-align: center">✗</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Search and Render</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Send Transmission</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Terminate Session</td>
+      <td style="text-align: left">Computer vs 4 (Willpower vs 10 if Link-Locked)</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Toggle Visibility</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>CPU prompts:</strong></p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Prompt</th>
+      <th style="text-align: left">Test</th>
+      <th style="text-align: center">Adds Overwatch on failure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Configure I/O Ports and Pathways</td>
+      <td style="text-align: left">Passcode/Hacking vs Sys/Sec</td>
+      <td style="text-align: center">✗</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Configure Passcodes</td>
+      <td style="text-align: left">Passcode/Hacking vs Sys/Sec</td>
+      <td style="text-align: center">✗</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Configure Security Sheaf</td>
+      <td style="text-align: left">Passcode/Hacking vs Sys/Sec</td>
+      <td style="text-align: center">✗</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Reboot Node</td>
+      <td style="text-align: left">Passcode/Hacking vs Sys/Sec</td>
+      <td style="text-align: center"> </td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Data Store prompts:</strong></p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Prompt</th>
+      <th style="text-align: left">Test</th>
+      <th style="text-align: center">Adds Overwatch on failure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Access Datafile</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Duplicate/Download Datafile</td>
+      <td style="text-align: left">Passcode/Hacking vs Sys/Sec</td>
+      <td style="text-align: center">✗</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Edit/Upload Datafile</td>
+      <td style="text-align: left">Passcode/Hacking vs Sys/Sec</td>
+      <td style="text-align: center">✗</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Index Data Store</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Siphon Paydata</td>
+      <td style="text-align: left">Hacking vs Sys/Sec</td>
+      <td style="text-align: center">✗</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Slave Node prompts:</strong></p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Prompt</th>
+      <th style="text-align: left">Test</th>
+      <th style="text-align: center">Adds Overwatch on failure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Control Device</td>
+      <td style="text-align: left">Computer (or another applicable skill) vs System Rating</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Index Subscribed Devices</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Spoof Datastream</td>
+      <td style="text-align: left">Hacking vs Sys/Sec</td>
+      <td style="text-align: center">✗</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Tap Datastream</td>
+      <td style="text-align: left">Hacking vs Sys/Sec</td>
+      <td style="text-align: center">✗</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>SPU prompts:</strong></p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Prompt</th>
+      <th style="text-align: left">Test</th>
+      <th style="text-align: center">Adds Overwatch on failure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Index Users and Scheduling</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">System Map</td>
+      <td style="text-align: left">Computer vs System Rating</td>
+      <td style="text-align: center"> </td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>A CPU is additionally shielded by its own <strong>barrier icon</strong>, rated equal to the CPU itself — you
+can’t falsify a mark there without crashing that barrier in cybercombat first, unless you’re
+running a Sleaze utility rated high enough to pass through it. <em>(MDF p.18)</em></p><hr />
+<h2 id="hacking-mdf-p23">
+  
+  
+    <a href="#hacking-mdf-p23" class="anchor-heading" aria-labelledby="hacking-mdf-p23"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Hacking <em>(MDF p.23)</em>
+  
+  
+</h2>
+    
+
+<ol>
+  <li><strong>Roll it.</strong> Hacking skill plus any Hacking Pool you commit, against <strong>TN = the host’s System
+Rating</strong>.</li>
+  <li><strong>Check the Threshold.</strong> Meet or beat the host’s Security Threshold and you succeed — a tied
+result favours the hacker. Come up short, and it’s a failure.</li>
+  <li><strong>What happens.</strong> Success on a legitimate or falsified logon gets you a mark on that node,
+opening its prompts. Failure adds a point to your <strong>Overwatch</strong> on that host (below).</li>
+</ol>
+<h3 id="what-changes-the-tn-mdf-p14">
+  
+  
+    <a href="#what-changes-the-tn-mdf-p14" class="anchor-heading" aria-labelledby="what-changes-the-tn-mdf-p14"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> What changes the TN <em>(MDF p.14)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Condition</th>
+      <th style="text-align: center">TN modifier</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Hardlined via a datajack or trodes</td>
+      <td style="text-align: center">−2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Operating from a Tortoise Terminal</td>
+      <td style="text-align: center">+2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Maintaining real-time contact with people outside the Matrix</td>
+      <td style="text-align: center">+1</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Circumstantial — Matrix noise, jamming, defensive utilities, cover, wound penalties</td>
+      <td style="text-align: center">±1–4</td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="overwatch-and-the-security-sheaf-mdf-p2324">
+  
+  
+    <a href="#overwatch-and-the-security-sheaf-mdf-p2324" class="anchor-heading" aria-labelledby="overwatch-and-the-security-sheaf-mdf-p2324"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Overwatch and the Security Sheaf <em>(MDF p.23–24)</em>
+  
+  
+</h3>
+    
+
+<p>Every host tracks <strong>Overwatch</strong> on its own 10-box <strong>Security Sheaf</strong>. You gain a point for
+failing a Hacking Test, or for crashing an icon without running the Suppression utility to cover
+your tracks. <strong>Filling the tenth box is Convergence</strong> (below).</p>
+
+<p>The GM plans out <strong>Trigger Steps</strong> ahead of time — specific Overwatch totals where IC or an
+alert kicks in. A triggered IC joins initiative at the top of the next Combat Phase, losing
+Initiative for any phase that’s already gone by. Here’s the book’s own example layout for a
+System Rating 6 / Green host, to show how a sheaf is typically built:</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Overwatch box</th>
+      <th style="text-align: left">What fires</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">System Sweep</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: left">Authenticator (Rating 4)</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: left">Alert</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: left">Barrier (Rating 6), Tracker (Rating 4)</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left">System Sweep</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">7</td>
+      <td style="text-align: left">Alert, Killer (Rating 6)</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">9</td>
+      <td style="text-align: left">Data Worm (Rating 6)</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">10</td>
+      <td style="text-align: left">Convergence</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><em>(MDF p.23)</em> — every host’s actual sheaf is the GM’s own design; this is just one example of how
+dense and varied it can get.</p>
+
+<p>A decker who crashes an enemy icon while running the <strong>Suppression</strong> utility can degrade it
+instead of taking the usual Overwatch hit for the crash. <em>(MDF p.26)</em></p>
+
+<blockquote class="note">
+  <p>The book gives hosts two ways to gain Overwatch and a full sheaf of scripted Trigger Steps with
+Suppression as the counter-play. This system currently only automates the first trigger — a
+failed Hacking Test. See <em>Doing it in The 2nd Chumming</em>, below, for what’s automated today.</p>
+</blockquote>
+<h3 id="convergence-mdf-p2324">
+  
+  
+    <a href="#convergence-mdf-p2324" class="anchor-heading" aria-labelledby="convergence-mdf-p2324"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Convergence <em>(MDF p.23–24)</em>
+  
+  
+</h3>
+    
+
+<p>At 10 boxes of Overwatch, the decker’s connection gets traced back to their real body. The GM can
+respond with any mix of: dumping the decker (triggering Dumpshock, below), leaking pieces of
+their session to the authorities (what their icon looked like, their handle, their gear, and
+roughly where they’re jacked in from), and sending a physical security response their way.</p><hr />
+<h2 id="cybercombat-mdf-p26">
+  
+  
+    <a href="#cybercombat-mdf-p26" class="anchor-heading" aria-labelledby="cybercombat-mdf-p26"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Cybercombat <em>(MDF p.26)</em>
+  
+  
+</h2>
+    
+
+<p>Any icon can attack any other icon it can see sharing the same node or zone. Attacking
+automatically reveals your own icon if it wasn’t visible already.</p>
+
+<ol>
+  <li><strong>Attacker rolls</strong> Cybercombat plus Hacking Pool against a <strong>base TN of 4</strong>, adjusted for
+circumstances.</li>
+  <li><strong>Defender rolls</strong> the same way, same base TN.</li>
+  <li><strong>Compare successes.</strong> Whoever has more hits their target — <strong>a tie favours the defender</strong>.</li>
+  <li><strong>Stage the damage.</strong> The winner’s Damage Level rises one step for every two net successes;
+past Deadly, extra net successes add to Power instead.</li>
+  <li><strong>Resist.</strong> The target rolls its <strong>System Rating (or MPCP)</strong> against a TN equal to the
+<strong>attack’s Power minus its own Security Threshold or Firewall</strong> — those numbers work as
+armour here. Every two successes drops the Damage Level by one. Utilities like Armor,
+Biofeedback Filtering, and Shield can chip in too.</li>
+</ol>
+
+<p>An icon’s own <strong>Matrix Condition Monitor</strong> is 10 boxes; filling it crashes the icon and — for a
+persona — dumps its user. Damage that overflows the user’s Matrix CM becomes real <strong>Biofeedback</strong>
+damage, Stun or Physical depending on their User Mode, the same split as Dumpshock below.
+<em>(MDF p.26)</em></p>
+
+<p>As it fills, the Matrix Condition Monitor penalises the icon’s tests the same way a character’s
+wounds do: <strong>+1 TN</strong> from the 1st box, <strong>+2</strong> from the 3rd, <strong>+3</strong> from the 6th, and <strong>+4</strong> at the
+10th. <em>(MDF p.12)</em></p>
+
+<p>Two more Matrix hazards worth knowing: a decker can permanently or temporarily disable a
+real-world Matrix device by finding its icon and crashing it in cybercombat, and an aggressive
+icon can <strong>Link-Lock</strong> a target so it can’t go hidden and needs a Willpower test just to log off
+cleanly — failing that test causes Dumpshock. <em>(MDF p.27)</em></p><hr />
+<h2 id="dumpshock-mdf-p27">
+  
+  
+    <a href="#dumpshock-mdf-p27" class="anchor-heading" aria-labelledby="dumpshock-mdf-p27"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Dumpshock <em>(MDF p.27)</em>
+  
+  
+</h2>
+    
+
+<p>Getting yanked off the Matrix without a clean logoff hits you with Dumpshock:</p>
+
+<ul>
+  <li>You immediately resist <strong>Serious</strong> biofeedback damage, with <strong>Power equal to the System Rating
+of whatever dumped you</strong>.</li>
+  <li>Tortoise and AR users don’t feel it at all. <strong>VR-Cold</strong> takes it as Stun; <strong>VR-Hot</strong> takes it as
+Physical.</li>
+  <li>You’re also rattled for the next 10 minutes — everything you do carries a <strong>+2 TN</strong> penalty
+until it wears off.</li>
+</ul><hr />
+<h2 id="ic-and-agents-mdf-p24-p36">
+  
+  
+    <a href="#ic-and-agents-mdf-p24-p36" class="anchor-heading" aria-labelledby="ic-and-agents-mdf-p24-p36"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> IC and Agents <em>(MDF p.24, p.36)</em>
+  
+  
+</h2>
+    
+
+<p>IC (and Agents, which work the same way mechanically) come in three grades:</p>
+
+<ul>
+  <li><strong>White</strong> — nuisance-tier defenses. Can’t do more than Moderate damage to an icon, and can’t
+touch a decker’s real body at all. Every host can field it.</li>
+  <li><strong>Gray</strong> — full cybercombat capability, and can permanently damage a decker’s actual deck (burn
+MPCP or utility slots). Still can’t reach the decker’s body directly. Needs the host’s
+Mainframe Support module.</li>
+  <li><strong>Black</strong> — the only grade that can hurt the decker’s real body directly, and it’s legally
+allowed to. Also needs Mainframe Support.</li>
+</ul>
+
+<p>A sample of named agents from the book, by grade <em>(MDF p.34)</em>:</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Grade</th>
+      <th style="text-align: left">Examples</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">White</td>
+      <td style="text-align: left">ARis, Authenticator, Crippler, Gemini, Looper, Mr. Medkit, Scrambler, Tracker</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Gray</td>
+      <td style="text-align: left">Blaster, Dataworm, Hydra, Killer, Tar Baby</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Black</td>
+      <td style="text-align: left">Ripper, Sparky</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Initiative</strong> for IC and Agents comes from the <em>host’s</em> Security Tier, not their own stats:</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Host Security Tier</th>
+      <th style="text-align: left">Initiative</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Ivory</td>
+      <td style="text-align: left">Agent’s Rating</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Blue</td>
+      <td style="text-align: left">1D6 + Agent’s Rating</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Green</td>
+      <td style="text-align: left">2D6 + Agent’s Rating</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Orange</td>
+      <td style="text-align: left">3D6 + Agent’s Rating</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Red and above</td>
+      <td style="text-align: left">4D6 + Agent’s Rating</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><em>(MDF p.36)</em> Their <strong>Firewall equals their host’s Security Threshold</strong> — there’s no separate IC
+stat for it. Agents automatically know Computer and Cybercombat at their own Rating and share
+their host’s memory and active utilities.</p><hr />
+<h2 id="utilities-mdf-p2932">
+  
+  
+    <a href="#utilities-mdf-p2932" class="anchor-heading" aria-labelledby="utilities-mdf-p2932"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Utilities <em>(MDF p.29–32)</em>
+  
+  
+</h2>
+    
+
+<p>Utilities load into a deck’s numbered utility slots, and most either lower a target number for
+the user or raise one for whoever’s targeting them; <strong>degradable</strong> utilities lose a point of
+rating every time they’re actually used, and eventually need reloading.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Utility</th>
+      <th style="text-align: left">Type</th>
+      <th style="text-align: left">What it does</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Analyze</td>
+      <td style="text-align: left">Offensive</td>
+      <td style="text-align: left">Lowers your TN on Search and Render</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Armor</td>
+      <td style="text-align: left">Operational, degradable</td>
+      <td style="text-align: left">Soaks Overload Damage instead of your Matrix CM</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Attack</td>
+      <td style="text-align: left">Combat</td>
+      <td style="text-align: left">Deals Overload (or, for the nastiest versions, direct Biofeedback) damage in cybercombat</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Baby Monitor</td>
+      <td style="text-align: left">Operational, degradable</td>
+      <td style="text-align: left">Lets you check your own Overwatch level via Scrub Datastream</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Biofeedback Filtering</td>
+      <td style="text-align: left">Operational, degradable</td>
+      <td style="text-align: left">Soaks Biofeedback damage instead of your real condition monitor</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Browse</td>
+      <td style="text-align: left">Offensive</td>
+      <td style="text-align: left">Lowers your TN on any Index prompt</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Decrypt</td>
+      <td style="text-align: left">Offensive</td>
+      <td style="text-align: left">Lowers your TN cracking Encryption</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Encrypt</td>
+      <td style="text-align: left">Operational</td>
+      <td style="text-align: left">Lets you Encrypt a target file or datastream</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Evasion</td>
+      <td style="text-align: left">Operational, degradable</td>
+      <td style="text-align: left">Lets you go Hidden even while Link-Locked</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Exploit</td>
+      <td style="text-align: left">Offensive, degradable</td>
+      <td style="text-align: left">Lowers your TN on Access Node</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Jackpot</td>
+      <td style="text-align: left">Offensive, degradable</td>
+      <td style="text-align: left">Lowers your TN on Siphon Paydata</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Jamboree</td>
+      <td style="text-align: left">Offensive</td>
+      <td style="text-align: left">Lowers your TN on Jam Signal</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Kill Switch</td>
+      <td style="text-align: left">Offensive</td>
+      <td style="text-align: left">Lowers your TN disarming a Databomb</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Lock-On</td>
+      <td style="text-align: left">Offensive, operational</td>
+      <td style="text-align: left">Lowers your TN on Trace Signal; a single success starts a Link-Lock</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Medic</td>
+      <td style="text-align: left">Offensive, degradable</td>
+      <td style="text-align: left">Lowers your TN repairing another icon’s Matrix CM</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Mirrors</td>
+      <td style="text-align: left">— degradable</td>
+      <td style="text-align: left">Lowers your TN resisting a System Sweep or an agent’s Authenticate ability</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Read/Write</td>
+      <td style="text-align: left">Offensive</td>
+      <td style="text-align: left">Lowers your TN on datafile prompts (Access, Duplicate/Download, Edit/Upload)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Redirect</td>
+      <td style="text-align: left">Defensive, degradable</td>
+      <td style="text-align: left">Raises the TN for anyone Trace Signal-ing you</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Saboteur</td>
+      <td style="text-align: left">Operational</td>
+      <td style="text-align: left">Lets you plant a Databomb on a target</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Shield</td>
+      <td style="text-align: left">Operational, degradable</td>
+      <td style="text-align: left">Soaks hardware-damaging IC attacks instead of your actual deck</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Signal Booster</td>
+      <td style="text-align: left">Offensive</td>
+      <td style="text-align: left">Lowers your TN on Send Transmission</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Sleaze</td>
+      <td style="text-align: left">Operational, degradable</td>
+      <td style="text-align: left">Passes harmlessly through a barrier at or below its rating</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Slow</td>
+      <td style="text-align: left">Combat</td>
+      <td style="text-align: left">Drains an enemy icon’s Initiative instead of dealing damage</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Smoke Screen</td>
+      <td style="text-align: left">Defensive, degradable</td>
+      <td style="text-align: left">Raises the TN for anyone Search and Render-ing you</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Snoop</td>
+      <td style="text-align: left">Offensive</td>
+      <td style="text-align: left">Lowers your TN on Tap Datastream or Spoof Datastream</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Suppression</td>
+      <td style="text-align: left">Operational, degradable</td>
+      <td style="text-align: left">Lets you crash an icon without gaining Overwatch for it</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>Beyond programs, two other utility types exist: <strong>passcodes</strong>, which grant automatic, no-roll
+marks on whatever they’re keyed to, and <strong>protocols</strong>, unusual GM-defined applications (the book
+gives a few examples, like one that purges an infiltrating agent or one that buys a convergent
+decker extra time before the trace lands).</p><hr />
+<h2 id="doing-it-in-the-2nd-chumming-foundry">
+  
+  
+    <a href="#doing-it-in-the-2nd-chumming-foundry" class="anchor-heading" aria-labelledby="doing-it-in-the-2nd-chumming-foundry"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Doing it in The 2nd Chumming (Foundry)
+  
+  
+</h2>
+    
+<h3 id="choosing-the-ruleset">
+  
+  
+    <a href="#choosing-the-ruleset" class="anchor-heading" aria-labelledby="choosing-the-ruleset"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Choosing the ruleset
+  
+  
+</h3>
+    
+
+<p>A world setting, <strong>Matrix Ruleset</strong> (under Foundry’s Configure Settings), switches between
+<strong>“Matrix Defragged v2”</strong> (the default, described on this page) and <strong>“Orthodox SR3 Matrix”</strong>.
+Changing it needs a full Foundry restart, and the GM sees a warning that switching mid-campaign
+could break things — this is a session-zero decision, not a mid-run one.</p>
+<h3 id="getting-on-the-matrix-1">
+  
+  
+    <a href="#getting-on-the-matrix-1" class="anchor-heading" aria-labelledby="getting-on-the-matrix-1"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Getting on the Matrix
+  
+  
+</h3>
+    
+
+<p>On the <strong>Matrix</strong> tab of a character or NPC sheet:</p>
+
+<ul>
+  <li><strong>User Mode buttons</strong> — <code class="language-plaintext highlighter-rouge">TRM</code>, <code class="language-plaintext highlighter-rouge">AR</code>, <code class="language-plaintext highlighter-rouge">VR-Cold</code>, <code class="language-plaintext highlighter-rouge">VR-Hot</code> — set your Matrix mode. Clicking one
+opens an “Enter Matrix” dialog to pick which <strong>host actor</strong> you’re connecting to; confirming
+sets both the mode and your active host. Clicking the same mode again disconnects you and
+drops you from that host’s roster. Switching into either VR mode while driving a vehicle in
+rigger-control mode automatically kicks the vehicle back to remote control, since the two are
+mutually exclusive.</li>
+  <li><strong>Cyberdecks</strong> are items in your inventory. The Matrix tab lists yours (name, MPCP, Firewall,
+Response) with an <strong>Equip</strong> toggle. The equipped deck shows its full stat block — MPCP,
+Firewall, Response, memory used/total, free utility slots, transfer rate, Flux rating, your
+Hacking Pool bonus, and your Matrix Initiative — plus its own 10-box Matrix condition track.</li>
+  <li><strong>Programs</strong> are also items; drag one onto a numbered utility slot on your deck to load it. A
+slot can be marked <strong>burned</strong> if an attack knocks it out, or ejected to swap the program out.
+Loaded programs are rolled straight from their slot (hold Shift for physical dice).</li>
+</ul>
+<h3 id="node-tracking-and-prompts">
+  
+  
+    <a href="#node-tracking-and-prompts" class="anchor-heading" aria-labelledby="node-tracking-and-prompts"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Node tracking and prompts
+  
+  
+</h3>
+    
+
+<p>While connected to a host, the Matrix tab shows which node you’re in, a <strong>Link-Locked</strong> flag, and
+your current marks as removable chips — plus a manual “add a mark” option for anything the GM
+rules outside the normal roll. Picking a node lists that node’s available prompts, each flagged
+for whether failing it raises Overwatch and whether succeeding grants a mark, with a one-click
+<strong>Use</strong> button that rolls it.</p>
+<h3 id="rolling-a-hacking-action">
+  
+  
+    <a href="#rolling-a-hacking-action" class="anchor-heading" aria-labelledby="rolling-a-hacking-action"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Rolling a hacking action
+  
+  
+</h3>
+    
+
+<p>A <strong>Hacking Action</strong> button (visible once you’re connected) opens a dialog pre-filled with your
+Hacking or Computer rating, your available Hacking Pool, the connected host, a default TN drawn
+from the host’s System Rating (plus any deck-damage or host-alert penalty already in effect), its
+Security Threshold, a field to allocate Hacking Pool dice, and a checkbox — on by default — to
+raise Overwatch automatically if you miss the threshold. Rolling it compares your successes to
+the threshold exactly as described above; falling short with that box checked posts an Overwatch
+warning against the host and bumps its tracked total by one. No Hacking or Computer skill at all
+routes you through the system’s usual Default Table first.</p>
+<h3 id="cybercombat">
+  
+  
+    <a href="#cybercombat" class="anchor-heading" aria-labelledby="cybercombat"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Cybercombat
+  
+  
+</h3>
+    
+
+<p>A <strong>Cybercombat</strong> button lets you target anyone sharing your host connection — other connected
+deckers, deployed IC, or agents — and posts a two-sided card for the exchange. Each side’s own
+half shows their skill, available Hacking Pool, TN, and damage code, editable only by that side; a
+GM-only resolve button settles things if someone goes AFK. Resolving the card charges each side’s
+Hacking Pool properly (both attacker and defender, through the same GM-routed pool spend used
+elsewhere in this system, so it works correctly even from a non-owning client) and rolls only the
+dice actually paid for. A degradable attack program used in the exchange loses a point of rating
+each time, and crashes outright once it would drop below 1.</p>
+<h3 id="dumpshock">
+  
+  
+    <a href="#dumpshock" class="anchor-heading" aria-labelledby="dumpshock"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Dumpshock
+  
+  
+</h3>
+    
+
+<p>A <strong>Dumpshock</strong> button (shown while in either VR mode) is a manual trigger for a GM or player to
+use whenever the fiction calls for an abrupt disconnection — a reboot, a cut connection, a power
+loss. It opens a small dialog to pick a connected host (which fills in Power from that host’s
+System Rating) or set Power by hand, then posts a Serious biofeedback announcement — Physical for
+VR-Hot, Stun for VR-Cold — with a resist button. As everywhere else in this system, the roll only
+announces the damage; the GM still clicks the wound boxes.</p>
+<h3 id="host-sheets-security-sheaf-and-ic">
+  
+  
+    <a href="#host-sheets-security-sheaf-and-ic" class="anchor-heading" aria-labelledby="host-sheets-security-sheaf-and-ic"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Host sheets, Security Sheaf, and IC
+  
+  
+</h3>
+    
+
+<p>A <strong>host</strong> is its own actor type with a dedicated sheet covering its node layout, its Security
+Sheaf, its I/O ports, and its roster of connected users and agents. The Security Sheaf tab sets
+the host’s Security Tier (which fills in the matching Threshold automatically) and shows its
+10-box Overwatch track; the GM can seed a standard set of Trigger Steps, assign specific IC to
+each one, and deploy that IC into the current encounter when a step fires. <strong>IC</strong> and <strong>Agent</strong>
+actors get their own sheet type, tracking Rating, grade (White/Gray/Black), and their own Matrix
+condition track — an Agent additionally names the actor operating it, whose loaded attack program
+supplies its damage. Any IC flagged as deployed to a host becomes a valid cybercombat target for
+everyone connected there.</p>
+
+<blockquote class="note">
+  <p>Right now, only the first Overwatch trigger — a failed Hacking Test — raises the tracker
+automatically. Crashing an icon without Suppression, live Trigger Step countdowns, and the
+Suppression utility itself are still manual, GM-adjudicated calls from the Security Sheaf tab
+(tracked as open work, TODO 128).</p>
+</blockquote><hr />
+<h2 id="worked-example">
+  
+  
+    <a href="#worked-example" class="anchor-heading" aria-labelledby="worked-example"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Worked example
+  
+  
+</h2>
+    
+
+<p><strong>Voss</strong> decks with Intelligence 4 and a cyberdeck running <strong>MPCP 8, Firewall 4, Response 1</strong>,
+and Hacking 5. Her Hacking Pool is Intelligence 4 + ⌊8 ÷ 3⌋ = 4 + 2 = <strong>6</strong>. She’s running
+<strong>VR-Hot</strong>, so her Matrix Initiative gets the Response bonus: +2 Reaction and one extra die on
+top of her usual 1D6.</p>
+
+<p>She jacks into a corporate research host: <strong>System Rating 7, Security Tier Red (Threshold 4)</strong>.</p>
+
+<ol>
+  <li><strong>First hack.</strong> She commits 3 Hacking Pool dice to her Hacking 5, rolling 8 dice against
+<strong>TN 7</strong> (the host’s System Rating), and gets 5 successes.</li>
+  <li><strong>Check the Threshold.</strong> 5 is at or above 4, so she succeeds and picks up a mark on the node
+she’s targeting. No Overwatch gained.</li>
+  <li><strong>Second hack, pushing further</strong> in the same Combat Turn, committing her remaining 3 Hacking
+Pool dice: 8 dice against TN 7 nets her only 3 successes this time — short of the Red host’s
+Threshold 4. The hack fails, and her <strong>Overwatch</strong> on this host rises from 0 to <strong>1</strong>.</li>
+  <li><strong>If her Overwatch ever reached 10</strong>, Convergence would follow: the GM might trigger
+Dumpshock at Power 7 (the host’s System Rating) — Physical for her, since she’s in VR-Hot —
+leak pieces of her session, and send security to her jackpoint.</li>
+</ol>
+
+<p><strong>If instead an IC engaged her in cybercombat:</strong> say a Gray IC (Rating 5) attacks. Both sides roll
+Cybercombat plus Hacking Pool against the base TN 4. If Voss nets 3 successes over the IC’s
+total, her attack utility’s Damage Level steps up once (two successes per step). The IC then
+resists with its own Rating against a TN equal to her attack’s Power minus its Firewall (its
+host’s Security Threshold — 4 here), soaking off Damage Levels two successes at a time.</p>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+
