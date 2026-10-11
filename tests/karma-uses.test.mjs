@@ -158,6 +158,12 @@ export async function run(t) {
   t.eq('the plan: refund the spend, and set Body back', Ledger.revertPlan(spend[0]),
     { refund: 10, actor: [{ path: 'system.attributes.body.base', value: 4 }], items: [], deleteItems: [] });
   t.is('an undone line has no plan', Ledger.revertPlan(marked[1]), null);
+  // ⚠ Found live: Foundry expands dotted keys in update OPTIONS, so the record arrives nested.
+  const nested = Ledger.entry({ kind: 'karma', delta: -20, revert: { actor: { system: { powerPointsBought: 0 } },
+    items: [{ id: 's', name: 'Pistols', update: { system: { rating: 3, specialisations: [{ name: 'Ares', level: 1 }] } } }] } });
+  t.eq('a nested record is read back as field paths', Ledger.revertPlan(nested).actor, [{ path: 'system.powerPointsBought', value: 0 }]);
+  t.eq('…items too, with an array kept whole as one value', Ledger.revertPlan(nested).items[0].update,
+    { 'system.rating': 3, 'system.specialisations': [{ name: 'Ares', level: 1 }] });
 
   /* ── The wiring (source-level: sheets and cards cannot run without Foundry) ── */
   const actorSrc = read('scripts/documents/SR3EActor.js');
@@ -208,6 +214,9 @@ export async function run(t) {
   t.is('every purchase that spends karma records how to undo it',
     (calc.match(/ledgerRevert:/g) ?? []).length, (calc.match(/'system\.karma': karma - /g) ?? []).length);
   t.ok('the ledger passes the reversal through', /revert:\s+options\?\.ledgerRevert/.test(actorSrc));
+  // Found live: weapons carry no rating, so a weapon focus was never offered at all.
+  t.ok('a focus whose Force is unknown is still offered, with the Force asked next',
+    /row\(`focus:\$\{it\.id\}:ask`/.test(calc) && /parts\[2\] === 'ask'/.test(calc) && /id="fc-force"/.test(calc));
   t.ok('the ↺ is the GM\'s', /game\.user\.isGM && L\.undoable\(e\)/.test(sheetSrc));
   t.ok('Power Points bought count toward the adept\'s total',
     /ppTotal\s+= \(actor\.system\.attributes\?\.magic\?\.value \?\? 0\) \+ ppBought/.test(sheetSrc));

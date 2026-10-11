@@ -126,12 +126,26 @@ export const Ledger = {
   revertPlan(e) {
     if (!Ledger.undoable(e)) return null;
     const r = e.revert ?? {};
+    // ⚠ Foundry EXPANDS dotted keys in update options, so `{ 'system.x': 1 }` comes back as
+    // `{ system: { x: 1 } }` (found live, 2026-10-11). Flatten to paths again so each row names its field.
     return {
       refund:      Math.abs(num(e.delta)),
-      actor:       Object.entries(r.actor ?? {}).map(([path, value]) => ({ path, value })),
-      items:       (Array.isArray(r.items) ? r.items : []).filter(x => x?.id && x.update && typeof x.update === 'object'),
+      actor:       Object.entries(Ledger.flatten(r.actor ?? {})).map(([path, value]) => ({ path, value })),
+      items:       (Array.isArray(r.items) ? r.items : []).filter(x => x?.id && x.update && typeof x.update === 'object')
+        .map(x => ({ ...x, update: Ledger.flatten(x.update) })),
       deleteItems: (Array.isArray(r.deleteItems) ? r.deleteItems : []).filter(x => x?.id),
     };
+  },
+
+  /** `{ system: { a: { b: 1 } } }` → `{ 'system.a.b': 1 }`. Arrays and null are values, not branches. */
+  flatten(obj, prefix = '') {
+    const out = {};
+    for (const [k, v] of Object.entries(obj ?? {})) {
+      const path = prefix ? `${prefix}.${k}` : k;
+      if (v && typeof v === 'object' && !Array.isArray(v)) Object.assign(out, Ledger.flatten(v, path));
+      else out[path] = v;
+    }
+    return out;
   },
 
   /** Append, oldest trimmed first. Returns a NEW array — never mutates what it was given. */

@@ -5686,10 +5686,14 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         if (!type || type.key === 'expendable') continue;
         const bonded = it.type === 'melee' ? !!it.system.focusActive : !!it.getFlag('The2ndChumming3e', 'bonded');
         if (bonded) continue;
-        const force = GK.focusForce(it, game.sr3e.ItemRating.itemRating(it));
+        // ⚠ Weapons carry no rating, so a weapon focus's Force is usually unknown (found live,
+        // 2026-10-11: a Bo Staff focus was never offered). Unknown → offered at Force 1's price, Force asked next.
+        const rated = it.type === 'melee' ? null : game.sr3e.ItemRating.itemRating(it);
+        const force = GK.focusForce(it, rated);
         const cost  = GK.bondingCost(type.key, force, it.system?.reach ?? 0);
         magicHtml.push(cost === null
-          ? `<div style="font-size:11px;color:var(--sr-muted);padding:3px 4px">Bond ${it.name} — set its Force (rating) first</div>`
+          ? row(`focus:${it.id}:ask`, `Bond ${it.name}`, `${type.label}, Force ? — asked next`,
+              GK.bondingCost(type.key, 1, it.system?.reach ?? 0), GK.bondingCost(type.key, 1, it.system?.reach ?? 0) <= karma)
           : row(`focus:${it.id}`, `Bond ${it.name}`, `${type.label}, Force ${force}`, cost, cost <= karma));
       }
     }
@@ -5826,14 +5830,32 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const focus = actor.items.get(parts[1]);
       if (!focus) return;
       const isMelee = focus.type === 'melee';
+      let cost = chosenCost, forceNote = '';
+      if (parts[2] === 'ask') {
+        let force = null;
+        await foundry.applications.api.DialogV2.wait({
+          window: { title: `Bond a focus — ${focus.name}` },
+          content: `<div style="padding:8px;font-size:12px;display:flex;flex-direction:column;gap:6px">
+            <label>Force <input type="number" id="fc-force" value="1" min="1" style="width:50px"/></label>
+            <div style="color:var(--sr-muted)">${GK.focusType(focus)?.label ?? 'Focus'}: Karma from the Focus Bonding Table (SR3 p.190). You have ${karma}.</div></div>`,
+          buttons: [
+            { label: 'Bond', action: 'bond', default: true, callback: (_e, _b, d) => { force = Math.max(1, parseInt(d.element.querySelector('#fc-force')?.value) || 1); } },
+            { label: 'Cancel', action: 'cancel' },
+          ],
+        });
+        if (!force) return;
+        cost = GK.bondingCost(GK.focusType(focus)?.key, force, focus.system?.reach ?? 0) ?? 0;
+        if (cost > karma) { ui.notifications.warn(`Not enough karma — Force ${force} costs ${cost}.`); return; }
+        forceNote = ` at Force ${force}`;
+      }
       const was     = isMelee ? !!focus.system.focusActive : !!focus.getFlag('The2ndChumming3e', 'bonded');
       if (isMelee) await focus.update({ 'system.focusActive': true });
       else         await focus.setFlag('The2ndChumming3e', 'bonded', true);
-      await actor.update({ 'system.karma': karma - chosenCost },
-        { ledgerReason: `Bonded ${focus.name}`,
+      await actor.update({ 'system.karma': karma - cost },
+        { ledgerReason: `Bonded ${focus.name}${forceNote}`,
           ledgerRevert: { items: [{ id: focus.id, name: focus.name,
             update: isMelee ? { 'system.focusActive': was } : { 'flags.The2ndChumming3e.bonded': was } }] } });
-      ui.notifications.info(`${focus.name} bonded (${chosenCost} karma spent).`);
+      ui.notifications.info(`${focus.name} bonded (${cost} karma spent).`);
       return;
     }
 

@@ -71,10 +71,21 @@ named for their type, bonded = flag `bonded`; weapon foci are melee `isFocus`, b
   karma write; `recordLedger` puts it on the Good Karma line. The ↺ lists the refund and each change as
   untickable rows, refunds as a NEW line ("↺ Undid: …") and marks the original `reverted`.
   `tests/karma-uses.test.mjs` asserts every karma-spending write in the calculator carries one.
-- Magic in the Shadows' Good Karma uses (initiation, groups, quickening, anchoring, allies, spirits) are TODO 219. Pure statics on `SR3EActor` (the sheet can't be
-imported without Foundry): `karmaSkillCost`, `karmaSpecCost`, `karmaNewSkillCost`, `karmaAttributeCost`,
-`karmaAttributeMaximum`, `karmaMaxSpecialisations`, `karmaSpecTargetRating`, `karmaAward`,
-`karmaPoolForTotal`. `tests/karma.test.mjs` + a mutant per rule.
+  ⚠ **Foundry expands dotted keys in update OPTIONS** — the record arrives nested; `Ledger.revertPlan`
+  flattens it back to field paths (`Ledger.flatten`; arrays stay whole values). Found live, 2026-10-11.
+- ⚠ **A weapon focus has no rating** (weapons carry none), so its Force is usually unknown: the row is
+  offered at Force 1's price with "Force ? — asked next", and the Force is asked before charging.
+- Magic in the Shadows' Good Karma uses (initiation, groups, quickening, anchoring, allies, spirits) are TODO 219.
+
+Pure statics on `SR3EActor` (the sheet can't be imported without Foundry): `karmaSkillCost`, `karmaSpecCost`,
+`karmaNewSkillCost`, `karmaAttributeCost`, `karmaAttributeMaximum`, `karmaMaxSpecialisations`,
+`karmaSpecTargetRating`, `karmaAward`, `karmaPoolForTotal`. `tests/karma.test.mjs` + a mutant per rule.
+The rest are on `GoodKarma` / `KarmaPool` in `scripts/data/karma-uses.mjs`; e2e `tests/e2e/karma.spec.mjs`.
+
+**Importing from the Character Generator** (TODO 217): its `karma` is Good Karma EARNED — the import takes
+`karma − karmaSpent`, sets `totalKarma` from the `log` of `addKarma` awards (else earned + pool points), takes
+`karmaPool − karmaPoolBurned`, and brings `purchasedPowerPoints` across. Without Total Karma the next award
+re-crossed the pool threshold from 0 and granted points twice.
 
 **Skill Improvement Cost Table** (p.245) — × the **new** rating, **round fractions DOWN**:
 
