@@ -7142,3 +7142,41 @@ is always **Stun**, and its level comes from the Security Code. The code is at `
 Moderate, Orange Serious, Red Deadly). The crash card is now always Stun, with the level from
 `SR3EActor.orthoDumpShock` (`f40046dc`). The two Matrix Defragged cards keep MDF's flat Serious.
 Tests: `tests/tables.test.mjs` and the mutant `orthodox-dumpshock-uses-ic-table`.
+
+## 205. ✅ Chunky Salsa's Power box shows 10 instead of the grenade's Power — **reported in play, 2026-10-11** · fixed `3d218466`
+
+The `#cs-power` input in `_openChunkySalsaCalculator` (`scripts/sr3e.js`) is hard-coded
+`value="10"`, but the `power` the tool computes with is seeded from `opts.power`. Opened by the
+grenade flow, the box reads 10 while the damage labels and the result use the grenade's real Power.
+Typing in the box then replaces the grenade's value. The level `<select>` has the same problem: `S`
+is hard-coded as `selected` while `level` comes from `opts.level`. Fix: render both from `power` /
+`level`. Test: a source-level check that the inputs are templated from the seeded values. This is a
+bug fix, so it goes on `main`.
+
+## 206. ✅ A second Initiative Pass doesn't reset the actions — **reported in play, 2026-10-11** · fixed `3d218466`
+
+Observed: when a character gets a second activation (their next Initiative Pass), their actions are
+not reset. The tracker carries over from the earlier pass and shows them as having already taken
+2 Simple Actions. Expected: each pass starts with a fresh action allowance. Not investigated yet;
+reproduce first. This is a bug fix, so it goes on `main`.
+
+## 207. ✅ Healing can't target downed NPCs — **reported in play, 2026-10-11** · fixed `3d218466`
+
+Observed: you can't heal an NPC who has been downed. Expected: a downed NPC can be healed like
+anyone else. Not investigated yet; reproduce first, and check whether the patient list filters the
+NPC out or the heal itself refuses. This is a bug fix, so it goes on `main`.
+
+## 210. ✅ Throwing a grenade asks for the firearms skill — **reported in play, 2026-10-11** · fixed `3d218466`
+
+Observed: throwing a grenade wants a firearms skill. Expected: a thrown grenade uses Throwing Weapons.
+Check the book for the exact skill and page before fixing; a grenade launcher is a separate case and
+uses Grenade Launchers. Repro: the **Offensive AP grenade**, thrown from the **Attack** button. Not
+investigated yet. This is a bug fix, so it goes on `main`.
+
+## 214. ✅ 🧹 Clear blast marker button is black on black — **reported in play, 2026-10-11** · fixed `3d218466`
+
+Observed: the chat card's **🧹 Clear blast marker** button is hard to read, with black text on a black
+background. The markup is `SR3EActor._clearBlastButton` (`class="sr3e-clear-blast-btn btn-sm"`,
+inline style sets only font-size and padding), so it gets no system colours. Expected: readable like
+the other card buttons, using the `--sr-*` tokens. Check the disabled "🧹 Cleared" state too. Not
+investigated further. This is a bug fix, so it goes on `main`.

@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**66 open.** 154 done — see [TODO-DONE.md](TODO-DONE.md).
+**61 open.** 159 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [153](#153) Give the 📒 Ledger its own tab on the character sheet<br>[154](#154) 🛒 Buy gear: search the compendium, or drag an item in<br>[190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[192](#192) 💴 Make changing funds easier — a ± button, and giving money to another player<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[205](#205) Chunky Salsa's Power box shows 10 instead of the grenade's Power<br>[206](#206) A second Initiative Pass doesn't reset the actions<br>[207](#207) Healing can't target downed NPCs<br>[208](#208) Healing patient list: players first, hostile NPCs last<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[210](#210) Throwing a grenade asks for the firearms skill<br>[211](#211) Action tracker reads as three actions — show it as "Complex OR two Simples"<br>[212](#212) GM undo for a Karma spend<br>[213](#213) Show why Combat Pool is lower — the gyro halving it<br>[214](#214) 🧹 Clear blast marker button is black on black<br>[215](#215) Rules guide: explain Good Karma and the Karma Pool<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[218](#218) Karma Pool editable by the GM only<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses` |
+| 🗂 Unsorted | [153](#153) Give the 📒 Ledger its own tab on the character sheet<br>[154](#154) 🛒 Buy gear: search the compendium, or drag an item in<br>[190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[192](#192) 💴 Make changing funds easier — a ± button, and giving money to another player<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[208](#208) Healing patient list: players first, hostile NPCs last<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[211](#211) Action tracker reads as three actions — show it as "Complex OR two Simples"<br>[212](#212) GM undo for a Karma spend<br>[213](#213) Show why Combat Pool is lower — the gyro halving it<br>[215](#215) Rules guide: explain Good Karma and the Karma Pool<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[218](#218) Karma Pool editable by the GM only<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses` |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2536,34 +2536,11 @@ scene-to-metres conversion and the wall clipping in a pure module under `scripts
 be tested. Decide with the maintainer which wall types count (doors, windows, terrain walls).
 Related: "chunky-salsa wall strength" in [#176](#176). The tool has walls but no barrier ratings.
 
-## 205. Chunky Salsa's Power box shows 10 instead of the grenade's Power — **reported in play, 2026-10-11**
-
-The `#cs-power` input in `_openChunkySalsaCalculator` (`scripts/sr3e.js`) is hard-coded
-`value="10"`, but the `power` the tool computes with is seeded from `opts.power`. Opened by the
-grenade flow, the box reads 10 while the damage labels and the result use the grenade's real Power.
-Typing in the box then replaces the grenade's value. The level `<select>` has the same problem: `S`
-is hard-coded as `selected` while `level` comes from `opts.level`. Fix: render both from `power` /
-`level`. Test: a source-level check that the inputs are templated from the seeded values. This is a
-bug fix, so it goes on `main`.
-
-## 206. A second Initiative Pass doesn't reset the actions — **reported in play, 2026-10-11**
-
-Observed: when a character gets a second activation (their next Initiative Pass), their actions are
-not reset. The tracker carries over from the earlier pass and shows them as having already taken
-2 Simple Actions. Expected: each pass starts with a fresh action allowance. Not investigated yet;
-reproduce first. This is a bug fix, so it goes on `main`.
-
-## 207. Healing can't target downed NPCs — **reported in play, 2026-10-11**
-
-Observed: you can't heal an NPC who has been downed. Expected: a downed NPC can be healed like
-anyone else. Not investigated yet; reproduce first, and check whether the patient list filters the
-NPC out or the heal itself refuses. This is a bug fix, so it goes on `main`.
-
 ## 208. Healing patient list: players first, hostile NPCs last — **requested in play, 2026-10-11**
 
 Order the 🩹 Healing patient list with the player characters at the top
 (`SR3EQuery.isPlayerCharacter`), then other NPCs, and hostile NPCs at the bottom (token disposition
-HOSTILE). Every actor stays in the list; this only changes the order. Pairs with [#207](#207)
+HOSTILE). Every actor stays in the list; this only changes the order. Pairs with [#207](TODO-DONE.md#207)
 (downed NPCs can't be healed). This is a request, so it is a feature and goes on a branch, separate
 from #207's fix.
 
@@ -2600,13 +2577,6 @@ afterwards. Wanted:
 Related: [#204](#204) (Chunky Salsa reads map walls) and "chunky-salsa wall strength" in
 [#176](#176). This is a feature, so it goes on a branch.
 
-## 210. Throwing a grenade asks for the firearms skill — **reported in play, 2026-10-11**
-
-Observed: throwing a grenade wants a firearms skill. Expected: a thrown grenade uses Throwing Weapons.
-Check the book for the exact skill and page before fixing; a grenade launcher is a separate case and
-uses Grenade Launchers. Repro: the **Offensive AP grenade**, thrown from the **Attack** button. Not
-investigated yet. This is a bug fix, so it goes on `main`.
-
 ## 211. Action tracker reads as three actions — show it as "Complex OR two Simples" — **requested in play, 2026-10-11**
 
 At the table, the tracker on the active combatant's row (`SR3EActionLedger.renderTracker`) was read
@@ -2616,7 +2586,7 @@ to two Simple, plus one Free (SR3 p.105, p.107; `ActionEconomy.fits`). Wanted: a
 the choice, e.g. **[Complex] or [Simple][Simple]**, with the Free pip set apart (`+ Free`). Pips and
 buttons both. No change to the rules or the buttons' behaviour (Complex and the second Simple still
 end the turn). Test: a source-level check that the tracker markup has the "or" grouping. Add a
-Foundry checklist step to look at it on a live row. Unrelated to [#206](#206) (the actions don't reset on a
+Foundry checklist step to look at it on a live row. Unrelated to [#206](TODO-DONE.md#206) (the actions don't reset on a
 second pass), which also makes the pips look wrong. This is a feature, so it goes on a branch.
 
 ## 212. GM undo for a Karma spend — **requested in play, 2026-10-11**
@@ -2640,14 +2610,6 @@ with the breakdown. Better still, give the whole breakdown: base (Q+I+W)/2, Comb
 penalty (p.285), manual modifier, gyro, spent. The armour penalty is just as invisible today. Test: a
 source-level check that the sheet reads `combatPoolBeforeGyro`. Add a Foundry checklist step with a
 gyro in and out of Storage. This is a feature, so it goes on a branch.
-
-## 214. 🧹 Clear blast marker button is black on black — **reported in play, 2026-10-11**
-
-Observed: the chat card's **🧹 Clear blast marker** button is hard to read, with black text on a black
-background. The markup is `SR3EActor._clearBlastButton` (`class="sr3e-clear-blast-btn btn-sm"`,
-inline style sets only font-size and padding), so it gets no system colours. Expected: readable like
-the other card buttons, using the `--sr-*` tokens. Check the disabled "🧹 Cleared" state too. Not
-investigated further. This is a bug fix, so it goes on `main`.
 
 ## 215. Rules guide: explain Good Karma and the Karma Pool — **requested in play, 2026-10-11**
 
@@ -2677,6 +2639,13 @@ Observed: Ploder shows **Karma Pool 9** having been awarded **34 Karma** in tota
 **4** if human (1 + 3), **2** otherwise (1 + 1). Not investigated yet. Check Ploder's 📒 Ledger
 for where the pool points came from (awards, manual edits, import, a refresh that adds instead of
 resetting) and their `totalKarma` and metatype. This is a bug fix, so it goes on `main`.
+
+**Partly fixed, `3d218466`:** the character importer was a likely source. It never set Total Karma, so
+the system's next award re-crossed the pool threshold from 0 and granted points again; it also took
+Good Karma without spending and brought burned pool back. Fixed for new imports. **Still open:**
+confirm Ploder's actual cause from their 📒 Ledger and `totalKarma`, and set their numbers by hand;
+existing imports keep their old figures. On prod, delete the world's "Import … character" macro so
+the system recreates it with the fix.
 
 ## 218. Karma Pool editable by the GM only — **requested in play, 2026-10-11**
 
