@@ -70,6 +70,7 @@ This folder has no game code, and none of it ships in the system's zip. It's Mar
 | MDF | The Matrix Defragged v2 (fan-made) | yes | **0** |
 | MJLBB | Mr. Johnson's Little Black Book | yes | **1** |
 | SOTA64 | State of the Art 2064 (in `Supplements\`) | yes | **1** |
+| NS | New Seattle | yes | **2** |
 | R3 | Rigger 3 Revised | poor OCR | check each page |
 | SRComp | Shadowrun Companion (in `Supplements\`) | **no** | image index = page |
 
@@ -109,7 +110,8 @@ Jekyll 4 with the **Just the Docs** theme gem (0.12), built by GitHub Actions.
 | `rules/` | combat, reloading, grenades, healing |
 | `magic/` | the Awakened primer |
 | `street/` | SINs, buying gear and fencing, cyberware grades |
-| `hiring/` | book payment rules (`index.md`) plus eight specialist pages |
+| `hiring/` | book payment rules (`index.md`) plus nine specialist pages |
+| `world/` | the factions: megacorps and the Corporate Court, syndicates, police, policlubs, nations |
 | `_config.yml` | site settings, callout types, `permalink: pretty`, default layout |
 | `_includes/head_custom.html` | fonts, digital-rain script, corrections-toggle CSS |
 | `_includes/header_custom.html` | the *Show corrections* checkbox |

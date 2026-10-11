@@ -8,7 +8,7 @@ has_children: true
 {: .no_toc }
 
 What the books say about paying shadowrunners, and a house-rule framework
-for pricing individual specialists. The eight specialist pages below build
+for pricing individual specialists. The nine specialist pages below build
 on this one.
 
 1. TOC
@@ -153,3 +153,4 @@ runner *(SRComp p.99)*.
 | [Street Samurai](street-samurai/) | Bodyguard: 200¥ a day; enforcement: 1,000¥ |
 | [Face](face/) | Investigation: 200¥ a day; distraction: 1,000¥ |
 | [Infiltrator](infiltrator/) | Burglary: 2,000¥; extraction: 20,000¥ |
+| [Combat Medic](combat-medic/) | Security: 200¥ a day; or per patient, 50–400¥ a wound (SR3 p.128) |

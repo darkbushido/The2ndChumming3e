@@ -8,7 +8,8 @@ nav_order: 1
 
 Quick-reference pages for **Shadowrun, Third Edition**: combat, healing,
 grenades, magic, life with and without a SIN, buying and fencing gear,
-cyberware grades, and what it costs to hire a specialist.
+cyberware grades, what it costs to hire a specialist, and the factions
+that run the Sixth World.
 
 These pages began as fifteen Gemini-generated gists. Every rule has since
 been checked against the rulebooks, and each one now carries a citation
@@ -41,4 +42,5 @@ rule.
 | **Rules** | [Actions & Combat](rules/combat/) · [Reloading](rules/reloading/) · [Grenades](rules/grenades/) · [Healing](rules/healing/) |
 | **Magic** | [Primer for the Awakened](magic/awakened-primer/) · [Spellcasting, Resistance & Drain](magic/spellcasting/) |
 | **The Street** | [SINs & the SINless](street/sins/) · [Buying Gear & Fencing](street/gear-and-fencing/) · [Cyberware Grades & Used Chrome](street/cyberware-grades/) |
-| **Hiring** | [What the Books Say](hiring/) · [Decker](hiring/decker/) · [Rigger](hiring/rigger/) · [Combat Mage](hiring/combat-mage/) · [Shaman](hiring/shaman/) · [Physical Adept](hiring/physical-adept/) · [Street Samurai](hiring/street-samurai/) · [Face](hiring/face/) · [Infiltrator](hiring/infiltrator/) |
+| **Hiring** | [What the Books Say](hiring/) · [Decker](hiring/decker/) · [Rigger](hiring/rigger/) · [Combat Mage](hiring/combat-mage/) · [Shaman](hiring/shaman/) · [Physical Adept](hiring/physical-adept/) · [Street Samurai](hiring/street-samurai/) · [Face](hiring/face/) · [Infiltrator](hiring/infiltrator/) · [Combat Medic](hiring/combat-medic/) |
+| **The Sixth World** | [Who Runs It](world/) · [Megacorporations](world/megacorporations/) · [The Underworld](world/underworld/) · [Politics, Police & Policlubs](world/politics-and-security/) |

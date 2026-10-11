@@ -18,6 +18,7 @@ nav_order: 99
 | **SRComp** | *Shadowrun Companion* |
 | **MJLBB** | *Mr. Johnson's Little Black Book* |
 | **SOTA64** | *State of the Art: 2064* |
+| **NS** | *New Seattle* |
 
 **Page numbers are the printed page numbers**, not PDF page numbers. In
 several PDFs the two differ by one or two pages.
