@@ -7180,3 +7180,14 @@ background. The markup is `SR3EActor._clearBlastButton` (`class="sr3e-clear-blas
 inline style sets only font-size and padding), so it gets no system colours. Expected: readable like
 the other card buttons, using the `--sr-*` tokens. Check the disabled "🧹 Cleared" state too. Not
 investigated further. This is a bug fix, so it goes on `main`.
+
+## 215. ✅ Rules guide: explain Good Karma and the Karma Pool — **requested in play, 2026-10-11** · fixed `b7807823`
+
+The guides' rules section (`guides/rules/`: combat, grenades, healing, reloading, rigging, decking)
+has no page on Karma. Wanted: a `guides/rules/karma.md` explaining **Good Karma** (spent on
+advancement) and the **Karma Pool** (spent in play: rerolls, extra dice, avoiding a disaster, and
+how it refreshes), and how an award splits between them. Every twentieth point (tenth for humans)
+goes to the Pool instead of Good Karma (SR3 p.244, p.246; `SR3EActor.karmaAward`). Also cover what
+the sheet shows and where the 📒 Ledger records it. Every rule is checked in the PDF and cited by printed
+page. Follow `guides/CLAUDE.md`, link it from `guides/rules/index.md`, then `node tools/linkcheck.mjs`.
+Guide content, so it goes on a branch.
