@@ -30,7 +30,13 @@ export const TRACKED = {
   karma:      { label: 'Good Karma', kind: 'karma',  path: 'system.karma' },
   nuyen:      { label: 'Nuyen',      kind: 'nuyen',  path: 'system.nuyen' },
   karmaPool:  { label: 'Karma Pool', kind: 'pool',   path: 'system.karmaPool' },
+  // Karma Pool spent since the GM's refresh (SR3 p.246). Its own line, because a spend comes back
+  // and a burn (a drop in `karmaPool`) does not — the ledger has to tell them apart.
+  karmaPoolSpent: { label: 'Pool spent', kind: 'poolSpent', path: 'system.karmaPoolSpent' },
 };
+
+/** The TRACKED spec for an entry's `kind` ('pool' → karmaPool), or undefined. */
+export const specForKind = kind => Object.values(TRACKED).find(s => s.kind === kind);
 
 /** Room for a long campaign, but not unbounded — see the note above. */
 export const MAX_ENTRIES = 500;
@@ -39,7 +45,7 @@ const num = n => (Number.isFinite(Number(n)) ? Number(n) : 0);
 const str = s => String(s ?? '');
 
 export const Ledger = {
-  PAGE, TRACKED, MAX_ENTRIES,
+  PAGE, TRACKED, MAX_ENTRIES, specForKind,
 
   /** The entries on an actor's system data. Always an array. */
   of(sys) {
@@ -52,10 +58,12 @@ export const Ledger = {
    * rather than an id, because the id is meaningless once that user is deleted and the whole point
    * is to still be readable a year later.
    */
-  entry({ kind, delta, from, to, reason = '', by = '', when = Date.now() } = {}) {
+  entry({ kind, delta, from, to, reason = '', by = '', when = Date.now(), revert = null } = {}) {
     return {
       when: num(when), kind: str(kind), delta: num(delta),
       from: num(from), to: num(to), reason: str(reason).slice(0, 200), by: str(by).slice(0, 64),
+      // How to take a Good Karma purchase back (TODO 212) — see `revertPlan`. Plain JSON, or absent.
+      ...(revert && typeof revert === 'object' ? { revert: JSON.parse(JSON.stringify(revert)) } : {}),
     };
   },
 
@@ -66,16 +74,64 @@ export const Ledger = {
    * ⚠ **A delta of 0 is NOT an entry.** Foundry re-sends unchanged fields on a form submit, so
    * logging every write would bury the real ones in noise within one session.
    */
-  diff(before, after, { reason = '', by = '', when = Date.now() } = {}) {
+  diff(before, after, { reason = '', by = '', when = Date.now(), revert = null } = {}) {
     const out = [];
     for (const [key, spec] of Object.entries(TRACKED)) {
       if (!(key in (after ?? {}))) continue;
       const from = num(before?.[key]);
       const to   = num(after[key]);
       if (from === to) continue;
-      out.push(Ledger.entry({ kind: spec.kind, delta: to - from, from, to, reason, by, when }));
+      // A purchase's reversal rides on the Good Karma line only: that is the line that was SPENT.
+      out.push(Ledger.entry({ kind: spec.kind, delta: to - from, from, to, reason, by, when,
+        revert: spec.kind === 'karma' && to < from ? revert : null }));
     }
     return out;
+  },
+
+  /* ── The GM's undo for a Good Karma purchase · TODO 212 ─────────────────────────────────────
+   *
+   * Reported in play (2026-10-11): a GM had no way to take back a karma spend. The Spend Karma
+   * calculator now writes, beside each purchase's karma line, `revert`:
+   *   { actor: { path: oldValue, … }, items: [{ id, name, update: { path: oldValue } }],
+   *     deleteItems: [{ id, name }] }
+   * — what to set back, and anything the purchase created. The ↺ on that ledger line refunds the
+   * karma and applies what the GM leaves ticked, then marks the line `reverted` so it is undone once.
+   *
+   * ⚠ **Reversal, not deletion.** The refund is a NEW line ("↺ Undid: …"); the original stays,
+   * marked. The ledger is a history, and an undo is part of it.
+   */
+
+  /** Can this entry be undone? A Good Karma spend that carries its reversal and was not undone yet. */
+  undoable(e) {
+    return !!e && e.kind === 'karma' && num(e.delta) < 0 && !!e.revert && !e.reverted;
+  },
+
+  /** The entry an undo button names, by its time and reason (positions shift when old ones are trimmed). */
+  find(entries, when, reason = null) {
+    const list = Array.isArray(entries) ? entries : [];
+    return list.findIndex(e => num(e?.when) === num(when) && e?.kind === 'karma'
+      && (reason === null || str(e.reason) === str(reason)));
+  },
+
+  /** A NEW ledger with entry `index` marked reverted. Never mutates what it was given. */
+  markReverted(entries, index) {
+    const list = Array.isArray(entries) ? entries : [];
+    return list.map((e, i) => (i === index ? { ...e, reverted: true } : e));
+  },
+
+  /**
+   * What undoing `e` would do, as rows the GM can untick: the refund first, then each field and item.
+   * `refund` is the karma given back (the spend's size). Pure — the sheet applies it.
+   */
+  revertPlan(e) {
+    if (!Ledger.undoable(e)) return null;
+    const r = e.revert ?? {};
+    return {
+      refund:      Math.abs(num(e.delta)),
+      actor:       Object.entries(r.actor ?? {}).map(([path, value]) => ({ path, value })),
+      items:       (Array.isArray(r.items) ? r.items : []).filter(x => x?.id && x.update && typeof x.update === 'object'),
+      deleteItems: (Array.isArray(r.deleteItems) ? r.deleteItems : []).filter(x => x?.id),
+    };
   },
 
   /** Append, oldest trimmed first. Returns a NEW array — never mutates what it was given. */

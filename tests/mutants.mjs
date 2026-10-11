@@ -37,6 +37,8 @@ const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
+const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
+const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
 
 export const MUTANTS = [
   {
@@ -1981,5 +1983,65 @@ export const MUTANTS = [
     was:    'every weapon created on a character read as ready (the field\'s initial true), so new characters '
           + 'started with their whole kit, grenades included, in hand (TODO 135/136)',
     impl:   () => false,
+  },
+  /* ── The Karma Pool and Good Karma · SR3 p.168, p.180, p.190, p.246-248 (the audit of 2026-10-11) ── */
+  {
+    id:     'karma-spend-lowers-the-pool',
+    suite:  'karma-uses',
+    ...KARMA, method: 'spend',
+    was:    'a Karma Pool spend lowered `karmaPool` itself (the only re-roll code did `karmaPool - amount`), so a '
+          + 'spent point never came back — SR3 p.246: spent pools refresh; only BURNED points are gone for ever',
+    impl:   (sys, n) => ({ update: { karmaPool: Math.max(0, (sys?.karmaPool ?? 0) - n) }, over: false }),
+  },
+  {
+    id:     'karma-reroll-flat-price',
+    suite:  'karma-uses',
+    ...KARMA, method: 'rerollCost',
+    was:    'the old re-roll charged a flat point (per die) — SR3 p.246: "1 Karma Pool die to re-roll failures '
+          + 'once, 2 Karma Pool dice (for a total of 3) to re-roll failures again"',
+    impl:   () => 1,
+  },
+  {
+    id:     'karma-reroll-an-oops-roll',
+    suite:  'karma-uses',
+    ...KARMA, method: 'options',
+    was:    'a plausible misreading: re-rolling a Rule of One — SR3 p.246: "A player may not spend additional '
+          + 'Karma to re-roll failed dice on an \'oops\' roll"',
+    impl:   ({ successes, failures, glitch }) => ({ reroll: failures > 0, avoidDisaster: !!glitch, buySuccesses: successes > 0 }),
+  },
+  {
+    id:     'karma-extra-dice-flat-price',
+    suite:  'karma-uses',
+    ...KARMA, method: 'extraDiceCost',
+    was:    'a plausible misreading: a point a die — SR3 p.246 prices them incrementally ("2 more Karma Pool for '
+          + 'a second die, 3 more Karma Pool for a third")',
+    impl:   (n) => Math.max(0, n | 0),
+  },
+  {
+    id:     'hooper-nelson-no-floor',
+    suite:  'karma-uses',
+    ...KARMA, method: 'hooperNelson',
+    was:    'a plausible misreading: no floor — SR3 p.248: "The lowest a target number can be reduced to using '
+          + 'this option is 8"',
+    impl:   (tn, burn) => ({ tn: tn - burn, burned: burn, recommended: tn >= 12 }),
+  },
+  {
+    id:     'weapon-focus-ignores-reach',
+    suite:  'karma-uses',
+    ...GOODKARMA, method: 'bondingCost',
+    was:    'a plausible misreading: a weapon focus at 3 × Force — the Focus Bonding Table (SR3 p.190) says '
+          + '"(3 + Weapon Reach) x Force"',
+    impl:   (key, force) => {
+      const per = { specific: 1, category: 3, spirit: 2, power: 5, sustaining: 1, expendable: 0, weapon: 3 }[key];
+      return per === undefined || !(force > 0) ? null : per * force;
+    },
+  },
+  {
+    id:     'spec-ceiling-without-the-exception',
+    suite:  'karma-uses',
+    ...GOODKARMA, method: 'specCeiling',
+    was:    'a plausible misreading: twice the base, always — SR3 p.84 excepts "a Rating 1 base skill with a '
+          + 'Rating 3 specialization"',
+    impl:   (b) => 2 * Math.max(0, b | 0),
   },
 ];

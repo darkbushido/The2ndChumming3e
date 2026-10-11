@@ -11,6 +11,7 @@ import { AreaEffect } from '../data/area-effect.mjs';
 import { OpenSteps } from '../data/open-steps.mjs';
 import { RiggerShock, DISORIENT_MOD, DISORIENT_TN, DISORIENT_TURNS } from '../data/rigger-shock.mjs';
 import { MdfRules } from '../data/mdf-rules.mjs';
+import { KarmaPool } from '../data/karma-uses.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -2647,6 +2648,8 @@ _prepareCharacter(sys, attr) {
     combatPool,
     availableCombatPool,
     karmaPool:          Math.max(0, sys.karmaPool ?? 0),
+    // What is left of it since the GM's last refresh (SR3 p.246) — spending raises karmaPoolSpent.
+    availableKarmaPool: KarmaPool.available(sys),
     spellPoolBase,
     spellPool,
     availableSpellPool,
@@ -2712,10 +2715,36 @@ _prepareCharacter(sys, attr) {
     // scope — so it is `standingTN`, and a dialog that pre-applied that passes `skipSustainMod`.
     const sustainMod   = options.skipSustainMod ? 0 : SR3EActor.standingTN(this);
     if (sustainMod) label = `${label} (${SR3EActor.standingNote(this)})`;
-    const effectiveTN  = options.skipWoundMod
+    let effectiveTN    = options.skipWoundMod
       ? Math.max(2, tn + signalMod + sustainMod)
       : Math.max(2, tn - (this.system.woundMod ?? 0) + signalMod + sustainMod);
     const woundDisplay = (options.skipWoundMod ? 0 : -(this.system.woundMod ?? 0)) + signalMod + sustainMod;
+
+    /* 🍀 Karma Pool before the roll (p.246, p.248), from the roll dialog's row. Charged here, once,
+     * whichever dialog asked — the dialogs only collect the numbers. */
+    if (SR3EActor.hasKarmaPool(this)) {
+      const k = Math.max(0, parseInt(options.karmaDice) || 0);
+      if (k > 0) {
+        // "up to … however many skill, Attribute or rating dice he is currently using (not including
+        // dice from other pools)" — the flow's own count when it has one, else the pool as given.
+        const cap = KarmaPool.extraDiceCap(options.karmaDiceCap ?? pool);
+        if (k > cap) ui.notifications.warn(`${this.name}: ${k} Karma dice is more than the ${cap} base dice allow (SR3 p.246) — rolled anyway.`);
+        await this.spendKarmaPool(KarmaPool.extraDiceCost(k), `${k} extra ${k === 1 ? 'die' : 'dice'} — ${label}`);
+        pool  += k;
+        label  = `${label} (+${k} 🍀)`;
+      }
+      const hn = Math.max(0, parseInt(options.hooperNelson) || 0);
+      if (hn > 0) {
+        const r = KarmaPool.hooperNelson(effectiveTN, hn);
+        if (!r.recommended) ui.notifications.warn(`Hooper-Nelson is meant for TN 12 or higher (SR3 p.248); this TN is ${effectiveTN}.`);
+        if (r.burned > 0) {
+          await this.burnKarmaPool(r.burned, `Hooper-Nelson: TN ${effectiveTN} → ${r.tn} — ${label}`);
+          label = `${label} (🍀 TN ${effectiveTN} → ${r.tn})`;
+          effectiveTN = r.tn;
+        }
+      }
+    }
+    const karmaHold = !!(options.karmaHold ?? options.karmaReroll) && KarmaPool.available(this.system) > 0;
 
     if (options.physicalDice) {
       const successes = await SR3EActor._promptPhysicalSuccesses(pool, effectiveTN, label, tn, woundDisplay);
@@ -2811,6 +2840,7 @@ _prepareCharacter(sys, attr) {
       dice,
       ones,
       glitch,
+      karmaHold,
       isWeaponRoll:          options.isWeaponRoll          ?? false,
       isMelee:               options.isMelee               ?? false,
       isAoE:                 options.isAoE                 ?? false,
@@ -3309,9 +3339,18 @@ _prepareCharacter(sys, attr) {
           else                      cls.push('sr-exploding');
           if (d.isOne)              cls.push('sr-one');
 
+          // 🍀 A success bought with Karma Pool (p.246) — a die with no faces that always hits.
+          if (d.karma) return `<span class="${cls.join(' ')}" title="Bought with Karma Pool">🍀</span>`;
           const title = d.faces.length > 1 ? `${d.faces.join(' + ')} = ${d.total}` : `${d.total}`;
-          return `<span class="${cls.join(' ')}" title="${title}">${d.total}</span>`;
+          return `<span class="${cls.join(' ')}" title="${title}${d.karmaRerolled ? ' (Karma re-roll)' : ''}">${d.total}</span>`;
         }).join('');
+
+    /* 🍀 Held for Karma (p.246): the roller ticked "Hold the roll for Karma", so the finished dice
+     * stop HERE, before anything resolves, and wait on the 🍀 card. ✔ Done comes back through this
+     * function with `karmaHold: false`. Physical dice are typed in, not rolled, so they never hold. */
+    if (allDone && state.karmaHold && !state.physicalDice) {
+      return SR3EActor._postKarmaHoldCard(this, state, successes, diceHtml);
+    }
 
     // Result block — only shown when all dice are resolved.
     let resultHtml = '';
@@ -4200,6 +4239,11 @@ _prepareCharacter(sys, attr) {
         opposed:                   state.opposed                   ?? null,
         // A single roller's next step (`rollThen`) — dropped, the dialog or result never comes.
         followUp:                  state.followUp                  ?? null,
+        // 🍀 Karma Pool (p.246). Dropped, a held roll whose dice explode would resolve without its
+        // 🍀 card, and a re-roll's count (which prices the next one) would reset to free.
+        karmaHold:                 state.karmaHold                 ?? false,
+        karmaRerolls:              state.karmaRerolls              ?? 0,
+        karmaDisasterAverted:      state.karmaDisasterAverted      ?? false,
       }).replace(/'/g, '&#39;');
       explodeBtn = `
         <div class="sr-explode-action">
@@ -5503,68 +5547,187 @@ _prepareCharacter(sys, attr) {
       });
   }
 
-  /**
-   * Karma reroll — available after all explosions are resolved.
-   * Replaces up to `amount` failed dice with fresh single-face rolls;
-   * any of those that show 6 and are still below TN start a new chain.
-   * Karma rerolls never contribute to the glitch count.
+  /* ------------------------------------------------------------------ */
+  /*  🍀 Karma Pool — SR3 p.246 (rules: data/karma-uses.mjs)               */
+  /* ------------------------------------------------------------------ */
+  /*
+   * The pool is a size (`karmaPool`) and a count spent since the GM's refresh (`karmaPoolSpent`).
+   * SPENDING raises the count and comes back; BURNING lowers the size and never does. Every write
+   * goes through `actor.update`, so the 📒 Ledger records it (a spend as "Pool spent", a burn as
+   * "Karma Pool"). ⚠ Over-spending warns and is recorded, never refused.
+   *
+   * On a roll the pool is used two ways:
+   *  - BEFORE: extra dice and Hooper-Nelson ride the roll options into `rollPool`.
+   *  - AFTER: a roll made with "Hold for Karma" ticked stops at its final wave on a 🍀 card
+   *    (`_postKarmaHoldCard`) — re-roll failures, avoid a disaster, buy successes — and resolves only
+   *    on ✔ Done. ⚠ It holds BEFORE the final-wave branch because that branch has side effects
+   *    (blast markers, dodge and soak cards); re-running it after a re-roll would post them twice.
    */
-  async _handleKarmaReroll(dice, tn, ones, glitch, pool, label) {
-    const failures = dice.filter(d => !d.success);
-    if (failures.length === 0) {
-      ui.notifications.info('No failures to re-roll with Karma.');
-      return;
+
+  /** Does this actor carry a Karma Pool at all? NPCs have no field (TODO 83), so nothing is offered. */
+  static hasKarmaPool(actor) { return actor?.system?.karmaPool !== undefined; }
+
+  /** Spend `n` from the pool. Returns what was charged. */
+  async spendKarmaPool(n, reason = '') {
+    const k = Math.max(0, parseInt(n) || 0);
+    if (!k || !SR3EActor.hasKarmaPool(this)) return 0;
+    const r = KarmaPool.spend(this.system, k);
+    if (r.over) ui.notifications.warn(`${this.name}: ${k} Karma Pool is more than the ${KarmaPool.available(this.system)} left — recorded anyway.`);
+    await this.update({ 'system.karmaPoolSpent': r.update.karmaPoolSpent }, { ledgerReason: reason });
+    return k;
+  }
+
+  /** Burn `n` from the pool — gone for ever (p.246). Returns what was burned. */
+  async burnKarmaPool(n, reason = '') {
+    const k = Math.max(0, parseInt(n) || 0);
+    if (!k || !SR3EActor.hasKarmaPool(this)) return 0;
+    const r = KarmaPool.burn(this.system, k);
+    if (r.over) ui.notifications.warn(`${this.name}: burning ${k} Karma Pool, more than the ${KarmaPool.available(this.system)} left — recorded anyway.`);
+    await this.update({ 'system.karmaPool': r.update.karmaPool }, { ledgerReason: reason });
+    return k;
+  }
+
+  /** The GM's refresh (p.246: "on an abstract basis, determined by the gamemaster"). */
+  async refreshKarmaPool(reason = 'Karma Pool refreshed') {
+    if (!SR3EActor.hasKarmaPool(this)) return;
+    await this.update({ 'system.karmaPoolSpent': KarmaPool.refresh().karmaPoolSpent }, { ledgerReason: reason });
+  }
+
+  /**
+   * The 🍀 row every roll-options dialog shows (p.246, p.248). `baseDice` caps the extra dice when
+   * the dialog knows it; otherwise `rollPool` measures against the pool it is given. Empty for an
+   * actor with no pool or nothing left — and nothing to show for Hooper-Nelson then either.
+   */
+  static karmaRollRow(actor, { baseDice = null } = {}) {
+    if (!SR3EActor.hasKarmaPool(actor)) return '';
+    const { size, available } = KarmaPool.state(actor.system);
+    if (available <= 0) return `<div class="sr-karma-row" style="grid-column:1/-1;font-size:11px;color:var(--sr-muted)">🍀 Karma Pool: none left of ${size} — the GM refreshes it.</div>`;
+    const cap = Number.isFinite(baseDice) ? KarmaPool.extraDiceCap(baseDice) : null;
+    return `
+      <div class="sr-karma-row" style="grid-column:1/-1;display:flex;flex-direction:column;gap:3px;margin-top:4px;padding:4px 6px;border:1px solid var(--sr-border);border-radius:var(--r);font-size:12px">
+        <div>🍀 <strong>Karma Pool</strong>: ${available} left of ${size} <span style="color:var(--sr-muted);font-size:11px">(SR3 p.246)</span></div>
+        <label><input type="checkbox" id="sr-karma"/> Hold the roll for Karma — re-roll failures, buy successes, avoid a disaster</label>
+        <label title="1 die costs 1, 2 dice 3, 3 dice 6 — up to your skill, attribute or rating dice, not dice from other pools">
+          Buy extra dice <input type="number" id="sr-karma-dice" value="0" min="0"${cap !== null ? ` max="${cap}"` : ''} style="width:44px"/>
+          <span style="color:var(--sr-muted);font-size:11px">1 → 1, 2 → 3, 3 → 6${cap !== null ? `; at most ${cap}` : ''}</span>
+        </label>
+        <label title="The Hooper-Nelson rule, a GM's option (SR3 p.248): burn Karma Pool, one point per point of TN. Recommended only at TN 12+; never below 8.">
+          Hooper-Nelson: burn <input type="number" id="sr-karma-hn" value="0" min="0" style="width:44px"/> to lower the TN
+          <span style="color:var(--sr-muted);font-size:11px">GM's option · TN 12+ · not below 8 · burned for ever</span>
+        </label>
+      </div>`;
+  }
+
+  /** Read the 🍀 row back: `{ karmaHold, karmaDice, hooperNelson }` (all off when the row is absent). */
+  static readKarmaRollRow(el) {
+    const n = sel => Math.max(0, parseInt(el?.querySelector?.(sel)?.value) || 0);
+    return {
+      karmaHold:    !!el?.querySelector?.('#sr-karma')?.checked,
+      karmaDice:    n('#sr-karma-dice'),
+      hooperNelson: n('#sr-karma-hn'),
+    };
+  }
+
+  /**
+   * The 🍀 hold card: the finished dice, and what the pool can still do with them. The whole roll
+   * state rides on the MESSAGE (a flag), not a button payload, so nothing has to be hand-carried —
+   * `handleKarmaHold` rebuilds the roll from it exactly as the 💥 handler does from its payload.
+   */
+  static async _postKarmaHoldCard(actor, state, successes, diceHtml) {
+    const failures = state.dice.filter(d => !d.success).length;
+    const opts     = KarmaPool.options({ successes, failures, glitch: state.glitch, disasterAverted: state.karmaDisasterAverted });
+    const { size, available } = KarmaPool.state(actor.system);
+    const rerollCost = KarmaPool.rerollCost(state.karmaRerolls ?? 0);
+    const btn = (action, text, title) =>
+      `<button type="button" class="sr-karma-btn" data-karma="${action}" title="${title}">${text}</button>`;
+    const payload = JSON.stringify({ actorId: actor.id }).replace(/'/g, '&#39;');
+    const rows = [
+      opts.reroll ? btn('reroll', `🎲 Re-roll ${failures} failure${failures !== 1 ? 's' : ''} — ${rerollCost} Karma`,
+        'Re-roll every die that failed (p.246). The first re-roll of a test costs 1, the next 2 more, then 3 more.') : '',
+      opts.avoidDisaster ? btn('avoid', '🛟 Avoid the disaster — 1 Karma',
+        'Every die came up 1 (p.38). 1 Karma turns the disaster into a simple failure; it cannot then be re-rolled (p.246).') : '',
+      opts.buySuccesses ? `<span style="display:inline-flex;gap:4px;align-items:center">
+          <input type="number" class="sr-karma-buy-n" value="1" min="1" style="width:40px"/>
+          ${btn('buy', '✨ Buy successes — burned', 'Burn 1 Karma Pool per success; needs one success rolled. Burned points never come back (p.246).')}
+        </span>` : '',
+    ].filter(Boolean).join('');
+    const note = state.karmaDisasterAverted ? '<div class="sr-roll-meta">🛟 Disaster averted — a simple failure.</div>' : '';
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `
+        <div class="sr-roll-card sr-karma-hold">
+          <div class="sr-roll-header">🍀 ${state.label}</div>
+          <div class="sr-roll-meta">TN ${state.tn} · ${state.dice.length} dice${state.karmaRerolls ? ` · re-rolled ${state.karmaRerolls}×` : ''}</div>
+          <div class="sr-roll-dice">${diceHtml}</div>
+          <div class="sr-roll-stats"><span class="sr-stat">🎲 ${successes} success${successes !== 1 ? 'es' : ''}</span>
+            <span class="sr-stat">🍀 ${available} of ${size} left</span></div>
+          ${note}
+          <div class="sr-karma-actions" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">${rows}</div>
+          <div class="sr-soak-action">
+            <button type="button" class="sr-karma-done-btn" data-payload='${payload}'
+                    title="Resolve the roll with these dice — nothing more from the Karma Pool">✔ Done — resolve the roll</button>
+          </div>
+        </div>`,
+      flags: { 'The2ndChumming3e': { karmaHold: JSON.parse(JSON.stringify(state)) } },
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
+  /**
+   * A 🍀 button on a hold card. `state` is the roll as it stood (the card's flag). Re-roll and Buy post
+   * a fresh hold card (a re-rolled 6 may need its 💥 first — `karmaHold` is carried through); Avoid and
+   * Done resolve the roll. Returns false when nothing was done, so the caller can free the button.
+   */
+  static async handleKarmaHold(state, action, { n = 1 } = {}) {
+    const actor = game.actors.get(state?.actorId);
+    if (!actor || !state?.dice) return false;
+    const dice      = state.dice;
+    const successes = dice.filter(d => d.success).length;
+    const failIdx   = dice.map((d, i) => (d.success ? -1 : i)).filter(i => i >= 0);
+    const opts      = KarmaPool.options({ successes, failures: failIdx.length, glitch: state.glitch, disasterAverted: state.karmaDisasterAverted });
+
+    if (action === 'done') {
+      await actor._postWaveCard({ ...state, karmaHold: false });
+      return true;
     }
 
-    const maxKarma = Math.min(this.system.karmaPool, failures.length);
+    if (action === 'reroll') {
+      if (!opts.reroll) { ui.notifications.warn('Nothing to re-roll — no failures, or a Rule of One (p.246).'); return false; }
+      const done = state.karmaRerolls ?? 0;
+      await actor.spendKarmaPool(KarmaPool.rerollCost(done), `Re-rolled failures — ${state.label}`);
+      // Fresh first-wave dice in the failures' places (a success may not be re-rolled, p.246). A 6
+      // below TN explodes as ever, through the 💥 card; `isOne` on a re-roll is display only —
+      // the Rule of One belongs to the original roll.
+      const fresh = actor._rollWave(failIdx.length, state.tn, true);
+      const next  = dice.map(d => ({ ...d, faces: [...(d.faces ?? [])] }));
+      failIdx.forEach((idx, j) => { next[idx] = { ...fresh[j], index: idx, karmaRerolled: true }; });
+      await actor._postWaveCard({ ...state, dice: next, karmaRerolls: done + 1 });
+      return true;
+    }
 
-    return foundry.applications.api.DialogV2.wait({
-      window: { title: 'Use Karma Pool' },
-      content: `
-        <p>You have ${this.system.karmaPool} Karma available.</p>
-        <p>${failures.length} dice failed. How many Karma points to spend?</p>
-        <input type="number" id="karma-amount" min="1" max="${maxKarma}" value="1" style="width:80px"/>
-      `,
-      buttons: [
-        {
-          label: 'Re-roll',
-          action: 'reroll',
-          default: true,
-          callback: async (_event, _button, dialog) => {
-            const amount = parseInt(dialog.element.querySelector('#karma-amount')?.value) || 0;
-            if (amount <= 0) return;
+    if (action === 'avoid') {
+      if (!opts.avoidDisaster) return false;
+      await actor.spendKarmaPool(KarmaPool.AVOID_DISASTER_COST, `Avoided a disaster — ${state.label}`);
+      // Nothing else is allowed on an "oops" roll, so it resolves now, as a plain failure.
+      await actor._postWaveCard({ ...state, glitch: false, karmaDisasterAverted: true, karmaHold: false,
+        label: `${state.label} (🛟 disaster averted)` });
+      return true;
+    }
 
-            await this.update({ 'system.karmaPool': this.system.karmaPool - amount });
-
-            const newDice = [...dice];
-            let replaced  = 0;
-            for (let i = 0; i < newDice.length && replaced < amount; i++) {
-              if (!newDice[i].success) {
-                const face  = Math.floor(Math.random() * 6) + 1;
-                const total = face;
-                newDice[i] = {
-                  ...newDice[i],
-                  total,
-                  faces:          [face],
-                  isOne:          false,
-                  needsExplosion: face === 6 && total < tn,
-                  done:           !(face === 6 && total < tn),
-                  success:        total >= tn,
-                };
-                replaced++;
-              }
-            }
-            await this._postWaveCard({
-              actorId: this.id,
-              label:   `${label} (Karma re-roll)`,
-              tn, pool, wave: 0, dice: newDice, ones, glitch,
-              isWeaponRoll: false,
-            });
-          }
-        },
-        { label: 'Cancel', action: 'cancel' },
-      ],
-    });
+    if (action === 'buy') {
+      if (!opts.buySuccesses) { ui.notifications.warn('Successes can only be bought on a roll with at least one success (p.246).'); return false; }
+      const k = Math.max(1, parseInt(n) || 1);
+      await actor.burnKarmaPool(KarmaPool.buySuccessesCost(k), `Bought ${k} success${k !== 1 ? 'es' : ''} — ${state.label}`);
+      // A bought success is a die that always hits: total 99 so every reader that compares a die
+      // with a TN (`hitsAgainst`) counts it, and `karma` so the card shows 🍀 rather than 99.
+      const bought = Array.from({ length: k }, (_, j) => ({
+        index: dice.length + j, total: 99, faces: [], isOne: false,
+        needsExplosion: false, done: true, success: true, karma: true,
+      }));
+      await actor._postWaveCard({ ...state, dice: [...dice, ...bought] });
+      return true;
+    }
+    return false;
   }
 
   // ---------------------------------------------------------------------------
@@ -9495,6 +9658,8 @@ _prepareCharacter(sys, attr) {
     const entries = Ledger.diff(actor?.system ?? {}, after, {
       reason: options?.ledgerReason ?? '',
       by:     options?.ledgerBy ?? user?.name ?? globalThis.game?.user?.name ?? '',
+      // How to take a Good Karma purchase back — the GM's ↺ on the ledger line (TODO 212).
+      revert: options?.ledgerRevert ?? null,
     });
     if (!entries.length) return;   // a form re-submitting the same number is not an entry
 

@@ -39,6 +39,7 @@ import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
 import { SR3EActionLedger } from './SR3EActionLedger.js';
 import { Ledger } from './data/ledger.mjs';
+import { KarmaPool, GoodKarma } from './data/karma-uses.mjs';
 import { SR3EPurchase } from './SR3EPurchase.js';
 import { Purchasing } from './data/purchasing.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
@@ -116,7 +117,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma };
 
   // When THIS client loaded the system's code.
   //
@@ -522,6 +523,54 @@ Hooks.on('preCreateActor', (document, _data, options, _userId) => {
     } });
   }
 });
+
+/**
+ * 🍀 Refresh Karma Pools — the GM's call (SR3 p.246): *"Karma Pools refresh on an abstract basis,
+ * determined by the gamemaster … roughly every new 'scene' … In most cases, Karma Pool should refresh
+ * at the beginning of each gaming session"*. Everything SPENT comes back; burned points left the
+ * pool's size and stay gone. Player characters only, nobody ticked to start (TODO 96), "All" ticks them.
+ */
+async function _openKarmaRefreshDialog() {
+  const pcs = game.actors.filter(a => a.type === 'character' && game.sr3e.isLiveActor(a)
+    && game.sr3e.SR3EQuery.isPlayerCharacter(a));
+  if (!pcs.length) {
+    ui.notifications.warn('No player characters found — assign a character to a player, or give a player Owner of it.');
+    return;
+  }
+  const rows = pcs.map(a => {
+    const { size, spent } = KarmaPool.state(a.system);
+    return `<label style="display:flex;align-items:center;gap:8px;margin:3px 0;cursor:pointer;">
+      <input type="checkbox" data-actor-id="${a.id}"/>
+      <span>${a.name}</span>
+      <span style="color:var(--sr-muted);font-size:11px">(${size - spent} of ${size} left${spent ? `, ${spent} to come back` : ''})</span>
+    </label>`;
+  }).join('');
+  let ids = null;
+  await foundry.applications.api.DialogV2.wait({
+    window: { title: '🍀 Refresh Karma Pools' },
+    content: `
+      <div style="padding:8px 0">
+        <p style="margin:0 0 6px;font-size:12px">Give back every Karma Pool point SPENT. Burned points stay gone (SR3 p.246).</p>
+        <p style="margin:0 0 6px;font-size:11px;color:var(--sr-muted)">Refresh:
+          <label style="margin-left:10px;cursor:pointer"><input type="checkbox" id="sr-kp-all"/> All</label></p>
+        <div>${rows}</div>
+      </div>`,
+    render: (_event, dialog) => {
+      const all = dialog.element.querySelector('#sr-kp-all');
+      const boxes = [...dialog.element.querySelectorAll('[data-actor-id]')];
+      all?.addEventListener('change', () => boxes.forEach(cb => { cb.checked = all.checked; }));
+    },
+    buttons: [
+      { label: 'Refresh', action: 'refresh', default: true,
+        callback: (_e, _b, dialog) => { ids = [...dialog.element.querySelectorAll('[data-actor-id]:checked')].map(cb => cb.dataset.actorId); } },
+      { label: 'Cancel', action: 'cancel' },
+    ],
+  });
+  if (!ids) return;
+  if (!ids.length) { ui.notifications.warn('Refresh Karma Pools: nobody was ticked, so nothing changed.'); return; }
+  for (const id of ids) await game.actors.get(id)?.refreshKarmaPool();
+  ui.notifications.info(`Karma Pool refreshed for ${ids.length} character${ids.length !== 1 ? 's' : ''}.`);
+}
 
 async function _openSessionRewardDialog() {
   // F2 (reported in play, 2026-09-14): PLAYER characters only. `isLiveActor` alone listed every
@@ -1821,6 +1870,7 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
   mk('sr3e-clocks-btn',  '🕐 Threat Clocks',   () => game.sr3e.SR3EClocks.open(), false);
   mk('sr3e-heal-btn',    '🩹 Healing',         () => SR3EHealing.openPicker(),    false);
   mk('sr3e-reward-btn',  '🎖 Session Rewards', _openSessionRewardDialog,     true);
+  mk('sr3e-karma-refresh-btn', '🍀 Refresh Karma Pools', _openKarmaRefreshDialog, true);
   mk('sr3e-salsa-btn',   '💥 Chunky Salsa',    _openChunkySalsaCalculator,   true);
   mk('sr3e-barrier-btn', '🧱 Barrier Damage',  _openBarrierDamageCalculator, true);
   mk('sr3e-falling-btn', '🪂 Falling Damage',  _openFallingDamageCalculator, true);
@@ -2570,6 +2620,35 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       await SR3EActor.handleExplosionClick(payload);
     });
   });
+
+  /* 🍀 A roll held for Karma Pool (SR3 p.246) — re-roll failures, avoid a disaster, buy successes,
+   * or ✔ Done. The roll is the card's `karmaHold` flag. ONE claim covers every button on the card:
+   * whichever is clicked first ends this card (a re-roll or a buy posts a fresh one), recorded on the
+   * message like a 💥 so a reload or a second client cannot spend the same roll twice. Re-rolling is
+   * rolling, so only the roller decides (`_isDeciderId`, the GM included). */
+  {
+    const held = message.getFlag?.('The2ndChumming3e', 'karmaHold');
+    const kBtns = [...html.querySelectorAll('.sr-karma-btn, .sr-karma-done-btn')];
+    if (held && kBtns.length) {
+      const spent = () => kBtns.forEach(b => { b.disabled = true; b.title = 'Already decided — see the card below.'; });
+      if (_explosionRolled(message, 'karmahold', 0) || !_checkBtn(kBtns[0], mid, 'karmahold', 0)) spent();
+      else if (!_isDeciderId(held.actorId)) kBtns.forEach(b => _denyBtn(b, 'Only the roller decides how their Karma Pool is spent.'));
+      else kBtns.forEach(btn => btn.addEventListener('click', async event => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (!_claimBtn(kBtns[0], mid, 'karmahold', 0)) return;
+        spent();
+        if (!await _claimExplosion(mid, 'karmahold', 0)) return;
+        const action = btn.classList.contains('sr-karma-done-btn') ? 'done' : btn.dataset.karma;
+        const n = parseInt(html.querySelector('.sr-karma-buy-n')?.value) || 1;
+        await SR3EActor.handleKarmaHold(held, action, { n });
+        // Any choice settles this card's ⏳ step, not only ✔ Done (whose own click records it).
+        if (action !== 'done') {
+          await SR3EOpenSteps.mark(mid, OpenSteps.key('sr-karma-done-btn', 0), 'Karma Pool used');
+        }
+      }));
+    }
+  }
 
   // Chase Scene Driver Points — an Open Test's 💥 (SR3 p.40). The chase's state lives in the
   // window of the user who rolled, so only that user's click can land it.

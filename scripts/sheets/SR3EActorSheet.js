@@ -71,6 +71,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         banishSpirit:   SR3EActorSheet._onBanishSpirit,
         summonSpirit:   SR3EActorSheet._onSummonSpirit,
         resetAllPools:     SR3EActorSheet._onResetAllPools,
+        refreshKarmaPool:  SR3EActorSheet._onRefreshKarmaPool,
+        undoKarmaSpend:    SR3EActorSheet._onUndoKarmaSpend,
         rollAstralCombat:  SR3EActorSheet._onRollAstralCombat,
         toggleFocus:       SR3EActorSheet._onToggleFocus,
         toggleFocusActive: SR3EActorSheet._onToggleFocusActive,
@@ -1045,8 +1047,18 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           'system.combatPoolSpent', 'system.combatPoolMod',
           `floor((QUI ${qui} + INT ${intl} + WIL ${wil}) / 2) = ${d.combatPoolBase ?? 0}`
             + ((d.armorPoolPenalty ?? 0) > 0 ? ` − ${d.armorPoolPenalty} armour (B ${d.armorSumBallistic} / I ${d.armorSumImpact} worn vs Quickness ${qui}, SR3 p.285)` : ''))}
-        ${this._derivedBlock('Karma Pool',
-          `<input type="number" name="system.karmaPool" value="${sys.karmaPool ?? 0}" class="pool-input" style="width:45px"/>`)}
+        ${/* 🍀 Karma Pool (SR3 p.246): left / size. The left box writes `karmaPoolSpent`; the size box
+            * writes `karmaPool` itself (base 0, so the "mod" IS the size). ⚠ It does NOT refresh with
+            * the other pools ("does not refresh every Combat Turn") — the GM's 🍀 button does. */ ''}
+        ${this._poolBlock('Karma Pool',
+          d.availableKarmaPool ?? sys.karmaPool ?? 0,
+          sys.karmaPool ?? 0,
+          0,
+          'system.karmaPoolSpent', 'system.karmaPool',   // data-field names: the pool inputs' handler writes them through actor.update
+          'Left / size. Spent comes back when the GM refreshes; burned points leave the size for ever (SR3 p.246).')}
+        ${game.user.isGM && (sys.karmaPoolSpent ?? 0) > 0
+          ? `<button type="button" class="btn-sm" data-action="refreshKarmaPool" title="Refresh the Karma Pool — the GM's call, roughly once a scene or session (SR3 p.246)">🍀 Refresh</button>`
+          : ''}
         ${d.spellPool !== null && d.spellPool !== undefined
           ? this._poolBlock('Spell Pool',
               d.availableSpellPool ?? d.spellPool ?? 0,
@@ -2834,8 +2846,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           const lvl   = p.system.hasLevels ? (p.system.level ?? 1) : 1;
           return sum + cost * lvl;
         }, 0) * 100) / 100;
-        const ppTotal = actor.system.attributes?.magic?.value ?? 0;
-        const ppOver  = ppUsed > ppTotal;
+        // Magic, plus any Power Points bought with Good Karma (20 each, SR3 p.168).
+        const ppBought = actor.system.powerPointsBought ?? 0;
+        const ppTotal  = (actor.system.attributes?.magic?.value ?? 0) + ppBought;
+        const ppOver   = ppUsed > ppTotal;
         const boostState = actor.system.derived?.attributeBoost ?? {};
         const pwRows  = powers.length ? powers.map(p => {
           const lvl      = p.system.hasLevels ? (p.system.level ?? 1) : '—';
@@ -2904,10 +2918,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">
           <h3 class="section-hdr" style="margin:0">Adept Powers</h3>
           <span style="font-size:12px;color:${ppOver ? 'var(--sr-red)' : 'var(--sr-muted)'}">
-            Power Points: <strong>${ppUsed} / ${ppTotal}</strong>
+            Power Points: <strong>${ppUsed} / ${ppTotal}</strong>${ppBought ? ` <span title="Magic ${ppTotal - ppBought} + ${ppBought} bought with Good Karma (SR3 p.168)">(${ppBought} bought)</span>` : ''}
           </span>
         </div>
-        ${ppOver ? `<div class="sr-alert sr-alert--danger" style="margin-bottom:6px">⚠ Power points exceed Magic rating</div>` : ''}
+        ${ppOver ? `<div class="sr-alert sr-alert--danger" style="margin-bottom:6px">⚠ Power points exceed Magic${ppBought ? ' plus those bought' : ' rating'}</div>` : ''}
         <div class="list-header">
           <span>Power</span><span>Cost/Lvl</span><span>Level</span><span>Total</span><span></span>
         </div>
@@ -3255,9 +3269,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${rows.map(e => `
         <div class="item-row" style="grid-template-columns:52px 74px 74px 1fr">
           <span style="font-size:10px;color:var(--sr-muted)">${esc(when(e.when))}</span>
-          <span style="font-size:11px">${esc(L.TRACKED[e.kind === 'pool' ? 'karmaPool' : e.kind]?.label ?? e.kind)}</span>
+          <span style="font-size:11px">${esc(L.specForKind(e.kind)?.label ?? e.kind)}</span>
           <span style="font-size:11px;color:${colour(e.delta)}">${esc(L.formatDelta(e.kind, e.delta))}</span>
-          <span style="font-size:11px;color:var(--sr-muted)" title="${esc(e.by ? `by ${e.by}` : '')}">${esc(e.reason || '—')}</span>
+          <span style="font-size:11px;color:var(--sr-muted)" title="${esc(e.by ? `by ${e.by}` : '')}">${esc(e.reason || '—')}${e.reverted ? ' <em>(undone)</em>' : ''}${
+            game.user.isGM && L.undoable(e)
+              ? ` <button type="button" class="btn-xs" data-action="undoKarmaSpend" data-when="${e.when}" title="GM: undo this purchase — refund the karma and put back what it bought (TODO 212)">↺</button>`
+              : ''}</span>
         </div>`).join('')}
       ${all.length > rows.length ? `<div class="sr-roll-meta" style="font-size:10px;color:var(--sr-dim)">… and ${all.length - rows.length} older</div>` : ''}`;
   }
@@ -3981,6 +3998,73 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       'system.spellPoolSpent':  0,
       'system.astralPoolSpent': 0,
     });
+  }
+
+  /**
+   * GM: undo a Good Karma purchase from its 📒 Ledger line (TODO 212). Reported in play, 2026-10-11:
+   * there was no way to take a spend back. Lists the refund and everything the purchase changed,
+   * each row untickable (as the action tracker's ↺ does) — something may have moved on since, and
+   * the GM decides. Then refunds as a NEW ledger line and marks the original undone.
+   */
+  static async _onUndoKarmaSpend(_ev, target) {
+    if (!game.user.isGM) return;
+    const actor = this.actor;
+    const L     = game.sr3e.Ledger;
+    const all   = L.of(actor.system);
+    const idx   = L.find(all, Number(target?.dataset?.when));
+    const entry = all[idx];
+    const plan  = L.revertPlan(entry);
+    if (!plan) { ui.notifications.warn('That line cannot be undone — it was undone already, or it carries no record of what it bought.'); return; }
+    const esc  = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const show = v => esc(Array.isArray(v) ? `${v.length} specialisation${v.length !== 1 ? 's' : ''}` : JSON.stringify(v));
+    const rowsHtml = [
+      `<label><input type="checkbox" class="undo-refund" checked/> Refund ${plan.refund} Good Karma</label>`,
+      ...plan.actor.map((a, i) => `<label><input type="checkbox" class="undo-actor" data-i="${i}" checked/> ${esc(a.path.replace(/^system\./, ''))} → ${show(a.value)}</label>`),
+      ...plan.items.map((it, i) => {
+        const gone = !actor.items.get(it.id);
+        return gone
+          ? `<div style="color:var(--sr-muted)"><em>${esc(it.name)} was deleted since — nothing to put back.</em></div>`
+          : `<label><input type="checkbox" class="undo-item" data-i="${i}" checked/> ${esc(it.name)}: ${Object.entries(it.update).map(([k, v]) => `${esc(k.split('.').pop())} → ${show(v)}`).join(', ')}</label>`;
+      }),
+      ...plan.deleteItems.map((it, i) => `<label><input type="checkbox" class="undo-delete" data-i="${i}" checked/> Remove ${esc(it.name)}</label>`),
+    ].join('');
+    let picked = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `Undo — ${entry.reason || 'karma spend'}` },
+      content: `<div style="display:flex;flex-direction:column;gap:4px;padding:6px;font-size:12px">${rowsHtml}</div>`,
+      buttons: [
+        { label: '↺ Undo', action: 'undo', default: true, callback: (_e, _b, d) => {
+          const el  = d.element;
+          const idx = cls => [...el.querySelectorAll(`.${cls}:checked`)].map(x => Number(x.dataset.i));
+          picked = { refund: !!el.querySelector('.undo-refund')?.checked,
+                     actor: idx('undo-actor'), items: idx('undo-item'), deletes: idx('undo-delete') };
+        } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!picked) return;
+
+    for (const i of picked.items) {
+      const it = plan.items[i];
+      await actor.items.get(it.id)?.update(it.update);
+    }
+    const toDelete = picked.deletes.map(i => plan.deleteItems[i].id).filter(id => actor.items.get(id));
+    if (toDelete.length) await actor.deleteEmbeddedDocuments('Item', toDelete);
+    const upd = {};
+    for (const i of picked.actor) upd[plan.actor[i].path] = plan.actor[i].value;
+    if (picked.refund) upd['system.karma'] = (actor.system.karma ?? 0) + plan.refund;
+    if (Object.keys(upd).length) await actor.update(upd, { ledgerReason: `↺ Undid: ${entry.reason || 'karma spend'}` });
+    // Mark the original line, found again by its time — the refund above appended a line.
+    const now = L.of(actor.system);
+    const at  = L.find(now, entry.when, entry.reason);
+    if (at >= 0) await actor.update({ 'system.ledger': L.markReverted(now, at) });
+    ui.notifications.info(`${actor.name}: undid "${entry.reason || 'karma spend'}".`);
+  }
+
+  /** GM: give back everything spent from the Karma Pool (SR3 p.246). Burned points stay burned. */
+  static async _onRefreshKarmaPool(_ev, _target) {
+    if (!game.user.isGM) return;
+    await this.actor.refreshKarmaPool();
   }
 
   static async _onRollAstralCombat(ev, _target) {
@@ -5079,7 +5163,6 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * The result then carries `label`, and `selectedAttr` is `''` for a plain pool.
    */
   static async _promptRollOptions(actor, { defaultPool = null, poolNote = '', physicalDice = false, rollAttr = null, custom = false } = {}) {
-    const karmaPool    = actor?.system.karmaPool ?? 0;
     const woundPenalty = -(actor?.system.woundMod ?? 0);
     // Sustained spells, +2 each on all tests (p.178) — pre-applied beside the wound, and `rollPool` skips both.
     const sustainTN    = game.sr3e.SR3EActor.standingTN(actor);
@@ -5155,7 +5238,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             ${armorNote}
             <span></span>
             ${toxinRow}
-            ${karmaPool > 0 ? `<label class="roll-opts-karma"><input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)</label>` : ''}
+            ${game.sr3e.SR3EActor.karmaRollRow(actor)}
             ${physicalDice ? `<p class="roll-opts-physical">📋 Physical dice mode</p>` : ''}
           </div>
         `,
@@ -5167,14 +5250,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             callback: (_e, _b, dialog) => {
               const html       = dialog.element;
               const tn         = parseInt(html.querySelector('#sr-tn')?.value) || 4;
-              const useKarma   = html.querySelector('#sr-karma')?.checked ?? false;
               const poolEl     = html.querySelector('#sr-pool');
               const attrEl     = html.querySelector('#sr-attr');
               const toxinOn    = !!html.querySelector('#sr-toxin')?.checked && attrEl?.value === 'body';
               resolve({
                 tn:           Math.max(2, tn),
-                useKarma,
-                karmaReroll:  useKarma,
+                // 🍀 { karmaHold, karmaDice, hooperNelson } — charged by rollPool (SR3 p.246).
+                ...game.sr3e.SR3EActor.readKarmaRollRow(html),
                 // 0 is kept (TODO 102) — rollPool refuses it with "dice pool is 0" rather than
                 // this dialog quietly rolling one die the character does not have.
                 pool:         poolEl ? Math.max(0, parseInt(poolEl.value) || 0) : null,
@@ -5238,7 +5320,6 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /* ------------------------------------------------------------------ */
 
   static async _promptSkillRollOptions(actor, defaultItem, { physicalDice = false } = {}) {
-    const karmaPool    = actor?.system.karmaPool ?? 0;
     const woundPenalty = -(actor?.system.woundMod ?? 0);
     const sustainTN    = game.sr3e.SR3EActor.standingTN(actor);   // p.178, pre-applied like the wound
     // No isAdept check: skillBonusDice is only populated for actors who earned the dice,
@@ -5379,11 +5460,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             ${sustainTN > 0 ? `<div style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px">🔒 ${game.sr3e.SR3EActor.standingNote(actor)} (pre-applied)</div>` : ''}
             ${armorQTN > 0 ? `<div id="sr-armor-note" style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px;display:${qtnFor(defSkill) ? 'block' : 'none'}">🛡 Layered armour TN +${armorQTN} (Quickness-linked skill, SR3 p.285, pre-applied)</div>` : ''}
             <div id="sr-default-note" style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px;display:${defS.rating ? 'none' : 'block'}">↩ No skill — you'll <strong>choose how to default</strong> (specialization / skill / attribute) when you roll.</div>
-            ${karmaPool > 0 ? `
-              <label class="skill-opts-karma">
-                <input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)
-              </label>
-            ` : ''}
+            ${game.sr3e.SR3EActor.karmaRollRow(actor)}
             ${physicalDice ? `<p class="skill-opts-physical">📋 Physical dice mode</p>` : ''}
           </div>
         `,
@@ -5395,13 +5472,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             callback: (_e, _b, dialog) => {
               const html           = dialog.element;
               const tn             = parseInt(html.querySelector('#sr-tn')?.value) || 4;
-              const useKarma       = html.querySelector('#sr-karma')?.checked ?? false;
               const poolEl         = html.querySelector('#sr-pool');
               const selectedSkillId = html.querySelector('#sr-skill')?.value ?? defaultId;
               resolve({
                 tn:            Math.max(2, tn),
-                useKarma,
-                karmaReroll:   useKarma,
+                // 🍀 { karmaHold, karmaDice, hooperNelson } — charged by rollPool (SR3 p.246).
+                ...game.sr3e.SR3EActor.readKarmaRollRow(html),
                 pool:          poolEl ? Math.max(1, parseInt(poolEl.value) || 1) : defPool,
                 selectedSkillId,
                 physicalDice,
@@ -5536,6 +5612,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       return row(`attr:${a.key}`, a.label, `${cur} → ${next}${note}`, cost, cost <= karma);
     }).join('');
 
+    const GK = game.sr3e.GoodKarma;   // the Good Karma rules beyond attributes and skills (data/karma-uses.mjs)
     const skillHtml = [];
     for (const sk of skills) {
       const s          = sk.system;
@@ -5561,11 +5638,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       /* Add a new specialisation. ⚠ The cap is the LINKED ATTRIBUTE's rating (p.245), not the
        * skill's — this gated on `rating` until 2026-08-31 and diverged in both directions. */
       const specCap = game.sr3e.SR3EActor.karmaMaxSpecialisations(attrRating);
+      /* p.84 / p.245: "A specialization rating may not be more than twice its base skill rating (with
+       * the exception of base skills of 1 with specializations of 3)". Warned, never refused. */
+      const overSpec = n => (GK.specOverCeiling(rating, n)
+        ? ` <span style="color:var(--sr-amber)" title="SR3 p.84: no more than twice the base skill (3 on a base of 1) — raise ${sk.name} first">over ${GK.specCeiling(rating)}</span>` : '');
       if (specs.length < specCap) {
         const specRating = game.sr3e.SR3EActor.karmaSpecTargetRating(rating, 0);
         const cost = SR3EActorSheet._specCost(specRating, attrRating);
         skillHtml.push(row(`skill:${sk.id}:addspec`, `${sk.name} + specialisation`,
-          `new (${specRating} dice, ${specs.length + 1}/${specCap})`, cost, cost <= karma));
+          `new (${specRating} dice, ${specs.length + 1}/${specCap})${overSpec(specRating)}`, cost, cost <= karma));
       }
 
       /* ⚠ Specialisations are NOT capped at level 2 — "to improve the specialization beyond
@@ -5576,8 +5657,41 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         const specRating = game.sr3e.SR3EActor.karmaSpecTargetRating(rating, lvl);
         const cost = SR3EActorSheet._specCost(specRating, attrRating);
         skillHtml.push(row(`skill:${sk.id}:improvespec:${specIdx}`, `${sk.name} — ${sp.name}`,
-          `${rating + lvl} → ${specRating} dice`, cost, cost <= karma));
+          `${rating + lvl} → ${specRating} dice${overSpec(specRating)}`, cost, cost <= karma));
       });
+    }
+
+    /* ── Magic (TODO 212's audit, 2026-10-11) ───────────────────────────────────────────────
+     * Power Points, learning spells and bonding foci all cost Good Karma, and none was offered here.
+     * Initiation and the rest of Magic in the Shadows are TODO 219. */
+    const magicHtml = [];
+    const awakened  = (attrs.magic?.base ?? attrs.magic?.value ?? 0) > 0 || !!sys.magicType;
+    if ((sys.magicType ?? '') === 'Adept') {
+      // p.168: "adepts may purchase additional Power Points at a cost of 20 Good Karma Points per Power Point".
+      const have = (attrs.magic?.value ?? 0) + (sys.powerPointsBought ?? 0);
+      const cost = GK.powerPointCost(1);
+      magicHtml.push(row('pp:buy', 'Power Point', `${have} → ${have + 1}`, cost, cost <= karma));
+    }
+    if (awakened) {
+      // p.180: Karma = the desired Force (less a limit's modifier, p.181) — the Force is asked next.
+      for (const sp of actor.items.filter(i => i.type === 'spell').sort((a, b) => a.name.localeCompare(b.name))) {
+        const f    = sp.system.force;
+        const next = Number.isInteger(f) ? f + 1 : 1;
+        magicHtml.push(row(`spell:${sp.id}`, `Spell: ${sp.name}`,
+          Number.isInteger(f) ? `Force ${f} → ?` : 'learn at Force ?', GK.spellCost(next), GK.spellCost(next) <= karma));
+      }
+      // p.190: the Focus Bonding Table. Already bonded foci are not offered; an unpriceable one says why.
+      for (const it of actor.items) {
+        const type = GK.focusType(it);
+        if (!type || type.key === 'expendable') continue;
+        const bonded = it.type === 'melee' ? !!it.system.focusActive : !!it.getFlag('The2ndChumming3e', 'bonded');
+        if (bonded) continue;
+        const force = GK.focusForce(it, game.sr3e.ItemRating.itemRating(it));
+        const cost  = GK.bondingCost(type.key, force, it.system?.reach ?? 0);
+        magicHtml.push(cost === null
+          ? `<div style="font-size:11px;color:var(--sr-muted);padding:3px 4px">Bond ${it.name} — set its Force (rating) first</div>`
+          : row(`focus:${it.id}`, `Bond ${it.name}`, `${type.label}, Force ${force}`, cost, cost <= karma));
+      }
     }
 
     /* p.245: "New skills can be purchased at a skill rating of 1, by paying a cost of 1 in
@@ -5603,6 +5717,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             ${learnRow}
             ${skillHtml.join('') || '<p style="color:var(--sr-muted);font-size:12px">No improvable skills.</p>'}
           </div>
+          ${magicHtml.length ? `
+          <h4 style="margin:10px 0 4px;color:var(--sr-accent);font-size:12px;text-transform:uppercase;letter-spacing:.05em">Magic</h4>
+          <div style="display:flex;flex-direction:column;gap:1px">${magicHtml.join('')}</div>` : ''}
         </div>`,
       buttons: [
         {
@@ -5634,11 +5751,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ui.notifications.warn(`${def.name} is already known at rating ${existing.system.rating}.`);
         return;
       }
+      let created = null;
       if (existing) await existing.update({ 'system.rating': 1 });
-      else          await SR3EActorSheet._createSkillItem(actor, def, 1);
+      else          created = await SR3EActorSheet._createSkillItem(actor, def, 1);
       // The ledger's "why" column (TODO 79) — the spend is recorded either way, but this is what
-      // makes it answer "where did that 40 karma go?" a month later.
-      await actor.update({ 'system.karma': karma - chosenCost }, { ledgerReason: `Learned ${def.name}` });
+      // makes it answer "where did that 40 karma go?" a month later. `ledgerRevert` is the GM's ↺ (TODO 212).
+      await actor.update({ 'system.karma': karma - chosenCost }, { ledgerReason: `Learned ${def.name}`,
+        ledgerRevert: existing
+          ? { items: [{ id: existing.id, name: existing.name, update: { 'system.rating': 0 } }] }
+          : created?.id ? { deleteItems: [{ id: created.id, name: created.name }] } : null });
       ui.notifications.info(`${def.name} learned at rating 1 (${chosenCost} karma spent).`);
       return;
     }
@@ -5647,8 +5768,72 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const key  = parts[1];
       const cur  = attrs[key]?.base ?? 0;
       await actor.update({ [`system.attributes.${key}.base`]: cur + 1, 'system.karma': karma - chosenCost },
-        { ledgerReason: `${key[0].toUpperCase()}${key.slice(1)} ${cur} → ${cur + 1}` });
+        { ledgerReason: `${key[0].toUpperCase()}${key.slice(1)} ${cur} → ${cur + 1}`,
+          ledgerRevert: { actor: { [`system.attributes.${key}.base`]: cur } } });
       ui.notifications.info(`${actor.name}: ${key} raised to ${cur + 1} (${chosenCost} karma spent).`);
+      return;
+    }
+
+    // An adept's Power Point · SR3 p.168, 20 Good Karma each.
+    if (type === 'pp') {
+      const had = sys.powerPointsBought ?? 0;
+      await actor.update({ 'system.powerPointsBought': had + 1, 'system.karma': karma - chosenCost },
+        { ledgerReason: `Power Point (${had + 1} bought)`,
+          ledgerRevert: { actor: { 'system.powerPointsBought': had } } });
+      ui.notifications.info(`${actor.name}: a Power Point bought (${chosenCost} karma spent).`);
+      return;
+    }
+
+    /* Learning a spell · SR3 p.180: "Learning spells also costs Good Karma … equal to the desired
+     * Force." A limit (p.181) may lower the cost by its modifier instead of lowering Drain. The
+     * Sorcery Test and the days of study are the GM's (p.180, and Training, p.245). */
+    if (type === 'spell') {
+      const spell = actor.items.get(parts[1]);
+      if (!spell) return;
+      const was = spell.system.force;
+      let force = null, limit = 0;
+      await foundry.applications.api.DialogV2.wait({
+        window: { title: `Learn a spell — ${spell.name}` },
+        content: `
+          <div style="padding:8px;display:flex;flex-direction:column;gap:6px;font-size:12px">
+            <label>Learn at Force <input type="number" id="sp-force" value="${Number.isInteger(was) ? was + 1 : 1}" min="1" style="width:50px"/></label>
+            <label title="A fetish or exclusive limit (SR3 p.181) can lower the Karma and difficulty to learn, instead of lowering Drain">
+              Limit modifier taken off the cost <input type="number" id="sp-limit" value="0" min="0" style="width:50px"/></label>
+            <div style="color:var(--sr-muted)">Costs Good Karma equal to the Force, less the limit (SR3 p.180-181). You have ${karma}.</div>
+          </div>`,
+        buttons: [
+          { label: 'Learn', action: 'learn', default: true, callback: (_e, _b, d) => {
+            force = Math.max(1, parseInt(d.element.querySelector('#sp-force')?.value) || 1);
+            limit = Math.max(0, parseInt(d.element.querySelector('#sp-limit')?.value) || 0);
+          } },
+          { label: 'Cancel', action: 'cancel' },
+        ],
+      });
+      if (!force) return;
+      const cost = GK.spellCost(force, limit);
+      if (cost > karma) { ui.notifications.warn(`Not enough karma — Force ${force} costs ${cost}.`); return; }
+      await spell.update({ 'system.force': force });
+      await actor.update({ 'system.karma': karma - cost },
+        { ledgerReason: `Learned ${spell.name} at Force ${force}${limit ? ` (limit −${limit})` : ''}`,
+          ledgerRevert: { items: [{ id: spell.id, name: spell.name, update: { 'system.force': was ?? null } }] } });
+      ui.notifications.info(`${spell.name} learned at Force ${force} (${cost} karma spent).`);
+      return;
+    }
+
+    /* Bonding a focus · SR3 p.190, the Focus Bonding Table. A weapon focus is a melee item flagged
+     * `isFocus`, bonded = `focusActive`; any other focus is gear, bonded = a system flag. */
+    if (type === 'focus') {
+      const focus = actor.items.get(parts[1]);
+      if (!focus) return;
+      const isMelee = focus.type === 'melee';
+      const was     = isMelee ? !!focus.system.focusActive : !!focus.getFlag('The2ndChumming3e', 'bonded');
+      if (isMelee) await focus.update({ 'system.focusActive': true });
+      else         await focus.setFlag('The2ndChumming3e', 'bonded', true);
+      await actor.update({ 'system.karma': karma - chosenCost },
+        { ledgerReason: `Bonded ${focus.name}`,
+          ledgerRevert: { items: [{ id: focus.id, name: focus.name,
+            update: isMelee ? { 'system.focusActive': was } : { 'flags.The2ndChumming3e.bonded': was } }] } });
+      ui.notifications.info(`${focus.name} bonded (${chosenCost} karma spent).`);
       return;
     }
 
@@ -5657,18 +5842,22 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const action  = parts[2];
       const skill   = actor.items.get(skillId);
       if (!skill) return;
+      // What the GM's ↺ puts back (TODO 212): this skill's rating and specialisations as they were.
+      const undoSkill = { items: [{ id: skill.id, name: skill.name, update: {
+        'system.rating': skill.system.rating ?? 0,
+        'system.specialisations': foundry.utils.deepClone(skill.system.specialisations ?? []) } }] };
 
       if (action === 'learn') {
         // p.245: a new skill is purchased AT rating 1 for a flat 1 karma.
         await skill.update({ 'system.rating': 1 });
-        await actor.update({ 'system.karma': karma - chosenCost }, { ledgerReason: `Learned ${skill.name}` });
+        await actor.update({ 'system.karma': karma - chosenCost }, { ledgerReason: `Learned ${skill.name}`, ledgerRevert: undoSkill });
         ui.notifications.info(`${skill.name} learned at rating 1 (${chosenCost} karma spent).`);
 
       } else if (action === 'rating') {
         const newRating = (skill.system.rating ?? 0) + 1;
         await skill.update({ 'system.rating': newRating });
         await actor.update({ 'system.karma': karma - chosenCost },
-          { ledgerReason: `${skill.name} → ${newRating}` });
+          { ledgerReason: `${skill.name} → ${newRating}`, ledgerRevert: undoSkill });
         ui.notifications.info(`${skill.name} raised to ${newRating} (${chosenCost} karma spent).`);
 
       } else if (action === 'addspec') {
@@ -5712,7 +5901,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         specs.push({ name: specName, level: 1 });
         await skill.update({ 'system.specialisations': specs });
         await actor.update({ 'system.karma': karma - chosenCost },
-          { ledgerReason: `${skill.name}: "${specName}"` });
+          { ledgerReason: `${skill.name}: "${specName}"`, ledgerRevert: undoSkill });
         ui.notifications.info(`${skill.name}: "${specName}" added (${chosenCost} karma spent).`);
 
       } else if (action === 'improvespec') {
@@ -5725,7 +5914,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         specs[specIdx] = { ...specs[specIdx], level: newLevel };
         await skill.update({ 'system.specialisations': specs });
         await actor.update({ 'system.karma': karma - chosenCost },
-          { ledgerReason: `${skill.name} "${specName}" → +${newLevel}` });
+          { ledgerReason: `${skill.name} "${specName}" → +${newLevel}`, ledgerRevert: undoSkill });
         ui.notifications.info(
           `${skill.name} "${specName}" raised to ${(skill.system.rating ?? 0) + newLevel} dice `
           + `(${chosenCost} karma spent).`);
