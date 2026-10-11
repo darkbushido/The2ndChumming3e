@@ -48,8 +48,18 @@ export const ACTIONS = {
 export const ActionEconomy = {
   ACTIONS,
 
-  /** The key of the Combat Phase in progress — one per slot of the combat queue. */
-  phaseKey(round, turn) { return `${Number(round) || 0}|${Number(turn) || 0}`; },
+  /**
+   * The key of the Combat Phase in progress — one per slot of the combat queue.
+   * ⚠ TODO 206 (reported 2026-10-11): `turn` is Foundry's index of the COMBATANT, and the same
+   * character acting in a second Initiative Pass points the tracker at the same combatant — the same
+   * `round|turn` — so their second phase read their first phase's two Simple Actions. `slot` is the
+   * position in the combat's own queue (`queueIndex`), different for every pass; it joins the key
+   * whenever there is one.
+   */
+  phaseKey(round, turn, slot = null) {
+    const base = `${Number(round) || 0}|${Number(turn) || 0}`;
+    return Number.isInteger(slot) ? `${base}|${slot}` : base;
+  },
 
   empty(phase = '') { return { phase, simple: 0, complex: 0, free: 0, log: [] }; },
 

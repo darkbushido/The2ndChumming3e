@@ -3728,8 +3728,14 @@ static weaponSkillFor(code, type) {
     return SR3EItem.WEAPON_SKILL_MAP[code].skill;
   }
 
-  // Fallback based on item type
-  if (type === 'thrown' || (type === 'projectile' && game.sr3e.SR3E.thrownCategories.includes(code ?? ''))) return 'Throwing Weapons';
+  /* Fallback based on item type. ⚠ TODO 210 (reported 2026-10-11): a projectile is thrown unless it
+   * is a bow, crossbow or sling — SR3 p.86, "Throwing Weapons governs the use of any item thrown by
+   * the user". Only the listed thrown codes used to reach here, so a grenade with a blank category, or
+   * an older copy named "… (AP)" (the name's bracket reads as its code), asked for a firearm skill. */
+  if (type === 'thrown') return 'Throwing Weapons';
+  if (type === 'projectile') {
+    return game.sr3e.SR3E.bowCategories.includes(code ?? '') ? 'Projectile Weapons' : 'Throwing Weapons';
+  }
   if (type === 'firearm') return 'Firearms';
   if (type === 'melee') return 'Armed Combat';
   if (type === 'bow') return 'Projectile Weapons';
@@ -3752,6 +3758,8 @@ _getDefaultAttribute() {
   if (this.type === 'firearm') return 'quickness';
   if (this.type === 'melee') return 'strength';
   if (this.type === 'bow') return 'strength';
+  // Throwing Weapons (Strength) and Projectile Weapons (Strength) — SR3 p.86 (TODO 210).
+  if (this.type === 'projectile' || this.type === 'thrown') return 'strength';
 
   return 'quickness';
 }

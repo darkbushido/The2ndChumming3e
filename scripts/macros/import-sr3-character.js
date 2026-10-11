@@ -530,6 +530,21 @@ const trad    = typeof tradObj === 'string' ? tradObj : (_str(tradObj?.name));
 
 const notesText = (cj.notes ? `<p>${cj.notes}</p>` : '') + _edgesFlawsNotes(cj);
 
+/* Karma · SR3 p.244-246 (TODO 217, reported on prod 2026-10-11: a Karma Pool of 9 after 34 Karma).
+ * The generator keeps `karma` as everything EARNED into Good Karma, spending in `karmaSpent`, the
+ * pool's size in `karmaPool` and what was burned in `karmaPoolBurned`; awards are in `log`. The
+ * import took `karma` and `karmaPool` raw, so:
+ *  - Good Karma came in without what had been spent;
+ *  - Total Karma was never set — the system's next award then crossed the every-10th/20th threshold
+ *    again from 0 and granted Pool points the character had already been given;
+ *  - burned Karma Pool came back. */
+const _karmaLog    = Array.isArray(cj.log) ? cj.log.filter(l => l?.Type === 'addKarma') : [];
+const _karmaPool   = Math.max(0, _int(cj.karmaPool, 1) - _int(cj.karmaPoolBurned));
+const _totalKarma  = _karmaLog.length
+  ? _karmaLog.reduce((s, l) => s + _int(l.Amount), 0)
+  : _int(cj.karma) + Math.max(0, _int(cj.karmaPool, 1) - 1);   // no log: Good Karma earned + the pool points it lost
+const _goodKarma   = _int(cj.karma) - _int(cj.karmaSpent);
+
 const actorData = {
   name: (_str(cj.street_name) || _str(cj.name) || 'Imported Character').trim(),
   type: 'character',
@@ -537,8 +552,11 @@ const actorData = {
     age:       _str(cj.age),
     metatype:  (_str(cj.race) || 'human').toLowerCase(),
     nuyen,
-    karma:     _int(cj.karma),
-    karmaPool: _int(cj.karmaPool),
+    karma:      _goodKarma,
+    totalKarma: _totalKarma,
+    karmaPool:  _karmaPool,
+    // Adept Power Points bought with Good Karma (SR3 p.168) — on top of Magic.
+    powerPointsBought: Math.max(0, _int(cj.purchasedPowerPoints)),
     notes:     notesText,
     biography: cj.description ? `<p>${cj.description}</p>` : '',
     attributes: {

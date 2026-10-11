@@ -1984,6 +1984,38 @@ export const MUTANTS = [
           + 'started with their whole kit, grenades included, in hand (TODO 135/136)',
     impl:   () => false,
   },
+  {
+    id:     'healing-ignores-scene-tokens',
+    suite:  'healing',
+    ...HEAL, method: 'patientsFor',
+    was:    'the healing picker listed world actors only, so a downed NPC — an unlinked token whose base actor '
+          + 'is a compendium template — could not be picked at all (TODO 207)',
+    impl:   (user, actors) => actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)
+      && (user.isGM || a.isOwner || game.sr3e.SR3EQuery.isPlayerCharacter(a) || a.testUserPermission?.(user, 1))),
+  },
+  {
+    id:     'phase-key-ignores-the-pass',
+    suite:  'action-economy',
+    module: '../scripts/data/action-economy.mjs', klass: 'ActionEconomy', method: 'phaseKey',
+    was:    'the phase key was round|turn only, and a second Initiative Pass is the same combatant in the same '
+          + 'round, so it showed the first pass\'s two Simple Actions as already taken (TODO 206)',
+    impl:   (round, turn) => `${Number(round) || 0}|${Number(turn) || 0}`,
+  },
+  {
+    id:     'thrown-only-by-listed-code',
+    suite:  'grenade-skill',
+    ...ITEM, method: 'weaponSkillFor',
+    was:    'a projectile reached Throwing Weapons only through a listed thrown code, so a grenade with a blank '
+          + 'category or an "(AP)" in its name asked for a firearm skill — SR3 p.86: Throwing Weapons governs '
+          + '"any item thrown by the user" (TODO 210)',
+    impl:   function (code, type) {   // a function, not an arrow: called through the class, `this` is SR3EItem
+      const m = this.WEAPON_SKILL_MAP[code];
+      if (code && m) return m.skill;
+      if (type === 'thrown' || (type === 'projectile' && ['TK', 'SH', 'Imp', 'Ctrp', 'GR', 'BOL', 'THR', 'other'].includes(code ?? ''))) return 'Throwing Weapons';
+      if (type === 'firearm') return 'Firearms';
+      return 'Firearms';
+    },
+  },
   /* ── The Karma Pool and Good Karma · SR3 p.168, p.180, p.190, p.246-248 (the audit of 2026-10-11) ── */
   {
     id:     'karma-spend-lowers-the-pool',

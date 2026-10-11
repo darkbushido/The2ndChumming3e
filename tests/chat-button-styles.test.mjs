@@ -128,4 +128,9 @@ export async function run(t) {
         + colourless.join(', ')
       : 'every chat button also belongs to a colour group',
     colourless.length, 0);
+
+  // TODO 214 (reported 2026-10-11): 🧹 Clear blast marker read black on black. It was named
+  // `sr3e-clear-blast-btn`, outside this test's `sr-*-btn` net, so nothing noticed it had no colour.
+  t.ok('the 🧹 Clear blast marker button is one of the checked chat buttons', used.has('sr-clear-blast-btn'));
+  t.ok('…and no card uses the old, unchecked class', !sources().some(f => /sr3e-clear-blast-btn/.test(fs.readFileSync(f, 'utf8'))));
 }

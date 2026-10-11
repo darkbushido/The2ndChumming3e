@@ -149,4 +149,14 @@ export async function run(t) {
   t.ok('…with an All box instead', /id="sr-reward-all"/.test(main));
   t.ok('Chunky Salsa starts unticked unless the grenade flow passed who was caught',
     /checked: !!opts\.actorIds\?\.length/.test(main) && !/checked: true \}/.test(main));
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  205 — Chunky Salsa's Power and Level boxes show the grenade's own (reported 2026-10-11)
+   * ════════════════════════════════════════════════════════════════════════════ */
+  t.ok('the Power box is seeded from the blast, not hard-coded 10',
+    /id="cs-power" value="\$\{power\}"/.test(main) && !/id="cs-power" value="10"/.test(main));
+  t.ok('the Level box selects the blast\'s level, not always S',
+    /l === level \? ' selected' : ''/.test(main) && !/<option value="S" selected>S<\/option>/.test(main));
+  t.ok('…and both seeds come from the grenade flow\'s options',
+    /let power = opts\.power \?\? 10, level = opts\.level \?\? 'S';/.test(main));
 }

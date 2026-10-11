@@ -446,15 +446,38 @@ export class SR3EHealing {
    * people — every other player's character and anyone they can see. Only owned patients used to
    * be listed, so player A could not treat player B (reported in play). Hidden NPCs stay hidden.
    */
-  static patientsFor(user, actors) {
+  static patientsFor(user, actors, tokenActors = []) {
     const LIMITED = globalThis.CONST?.DOCUMENT_OWNERSHIP_LEVELS?.LIMITED ?? 1;
-    return actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)
-      && (user.isGM || a.isOwner || game.sr3e.SR3EQuery.isPlayerCharacter(a) || a.testUserPermission?.(user, LIMITED)));
+    const may  = a => user.isGM || a.isOwner || game.sr3e.SR3EQuery.isPlayerCharacter(a) || a.testUserPermission?.(user, LIMITED);
+    const kind = a => a.type === 'character' || a.type === 'npc';
+    /* ⚠ TODO 207 (reported 2026-10-11): downed NPCs could not be healed. An NPC dragged from a compendium
+     * is a TEMPLATE (`isLiveActor` false), and the one that was hurt is its UNLINKED TOKEN on the scene,
+     * with its own wounds — which `game.actors` does not hold. So the scene's unlinked tokens are listed
+     * too, and are live by being on a scene, whatever their base actor's template flag says. */
+    return [...actors.filter(a => kind(a) && game.sr3e.isLiveActor(a) && may(a)),
+            ...tokenActors.filter(a => a?.isToken && kind(a) && may(a))];
+  }
+
+  /** The unlinked tokens' actors on the viewed scene — each its own patient (TODO 207). */
+  static sceneTokenActors() {
+    return (globalThis.canvas?.scene?.tokens?.contents ?? [])
+      .filter(t => !t.actorLink && t.actor && !t.hidden).map(t => t.actor);
+  }
+
+  /**
+   * How a healing card names a patient (TODO 207): an unlinked token by its UUID — it shares its base
+   * actor's id, so an id would heal the wrong one — and anyone else by actor id, as cards always have.
+   * `actor(ref)` reads either back.
+   */
+  static ref(actor) { return actor?.isToken ? actor.uuid : (actor?.id ?? null); }
+  static actor(ref) {
+    if (!ref) return null;
+    return game.sr3e?.SR3EQuery?.resolve?.(ref) ?? game.actors?.get?.(ref) ?? null;
   }
 
   /** The GM-tools entry (and "Treat someone else…"): pick a patient first. */
   static async openPicker() {
-    const actors = SR3EHealing.patientsFor(game.user, game.actors.contents ?? [...game.actors])
+    const actors = SR3EHealing.patientsFor(game.user, game.actors.contents ?? [...game.actors], SR3EHealing.sceneTokenActors())
       .sort((a, b) => Number(b.isOwner) - Number(a.isOwner) || a.name.localeCompare(b.name));
     if (!actors.length) { ui.notifications.warn('No characters you can heal.'); return; }
     let id = null;
@@ -462,12 +485,12 @@ export class SR3EHealing {
       window: { title: '🩹 Healing — who is hurt?' },
       content: `<select id="sr-heal-who" style="width:100%">${actors.map(a => {
         const s = SR3EHealing._state(a);
-        return `<option value="${a.id}">${esc(a.name)} — Physical ${s.physical}${s.overflow ? `+${s.overflow}` : ''}, Stun ${s.stun}</option>`;
+        return `<option value="${SR3EHealing.ref(a)}">${esc(a.name)}${a.isToken ? ' (token on this scene)' : ''} — Physical ${s.physical}${s.overflow ? `+${s.overflow}` : ''}, Stun ${s.stun}</option>`;
       }).join('')}</select>`,
       buttons: [{ label: 'Next', action: 'ok', default: true, callback: (_e, _b, d) => { id = d.element.querySelector('#sr-heal-who').value; } },
                 { label: 'Cancel', action: 'cancel' }],
     });
-    const a = id ? game.actors.get(id) : null;
+    const a = id ? SR3EHealing.actor(id) : null;
     if (a) await SR3EHealing.open(a, { fromPicker: true });
   }
 
@@ -541,7 +564,7 @@ export class SR3EHealing {
     // Whoever is on the scene — a medic works at the patient's side (F2) — and always the one
     // already chosen, so a default from off the canvas is never silently dropped.
     let list = game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a) && filterFn(a)));
-    const chosen = selectedId ? game.actors.get(selectedId) : null;
+    const chosen = selectedId ? SR3EHealing.actor(selectedId) : null;
     if (chosen && !list.includes(chosen)) list = [chosen, ...list];
     if (sortFn) list = list.sort(sortFn);
     return list.map(a => `<option value="${a.id}" ${a.id === selectedId ? 'selected' : ''}>${esc(a.name)}</option>`).join('');
@@ -576,7 +599,7 @@ export class SR3EHealing {
       case 'stun': {
         const r = H.stunRecovery({ body: s.body, willpower: s.willpower, woundMod: s.woundMod });
         return H._post(patient, {
-          step, rollerId: patient.id, pool: r.dice, tn: r.tn, skipWoundMod: true,
+          step, rollerId: SR3EHealing.ref(patient), pool: r.dice, tn: r.tn, skipWoundMod: true,
           title: `😴 Recover Stun — ${patient.name}`, rollLabel: `Roll ${r.attribute}`,
           lines: [H._timeBox('60 minutes ÷ successes', `for each box of Stun · ${s.stun} to recover · complete rest (p.126)`),
                   `${r.attribute} ${r.dice} (the higher of Body or Willpower) vs TN 2 + injury modifiers ${-Math.min(0, s.woundMod)} = <strong>${r.tn}</strong>`,
@@ -587,10 +610,10 @@ export class SR3EHealing {
       case 'firstaid': {
         // Treating someone else's character: the medic is, by default, your own character.
         const mine = game.user.isGM ? null : game.user.character;
-        const defMedic = mine && mine.id !== patient.id ? mine.id
+        const defMedic = mine && mine !== patient ? mine.id
           : game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))
-            .sort((a, b) => biotechOf(b) - biotechOf(a))[0]?.id ?? patient.id;
-        const medkit = H.findEquipment([patient, game.actors.get(defMedic)], 'medkit');
+            .sort((a, b) => biotechOf(b) - biotechOf(a))[0]?.id ?? SR3EHealing.ref(patient);
+        const medkit = H.findEquipment([patient, SR3EHealing.actor(defMedic)], 'medkit');
         const f = await H._form(`🩹 First aid — ${patient.name}`, `
           ${row('Medic', `<select data-f="medicId">${H._actorOptions(() => true, defMedic, (a, b) => biotechOf(b) - biotechOf(a))}</select>`)}
           <div style="font-size:12px;margin:4px 0">Wound: <strong>${LEVEL_NAME[s.level]}</strong>${s.level === 'D' ? ' — first aid can only <strong>stabilize</strong> it (p.129)' : ''}</div>
@@ -601,7 +624,7 @@ export class SR3EHealing {
           ${chk('paramedic', `Paid paramedic (${yen(H.MEDICAL_COSTS.paramedic[s.level] ?? 0)})`, false, 'Medical Costs Table')}
           ${s.record.magicHealed ? '<div style="color:var(--sr-amber);font-size:11px">⚠ Magic has already been used on these injuries — Biotech cannot help (p.129).</div>' : ''}`);
         if (!f) return;
-        const medic = game.actors.get(f.medicId);
+        const medic = SR3EHealing.actor(f.medicId);
         const sk = H._skill(medic, /^biotech/i);
         const medkitNow = f.medkit ? (H.findEquipment([medic, patient], 'medkit') ?? medkit) : null;
         const kitRating = medkitNow ? (medkitNow.rating || H.MEDKIT_BIOTECH) : 0;
@@ -643,7 +666,7 @@ export class SR3EHealing {
           Physical damage from Drain cannot be healed by magic (p.162).</div>
           ${s.record.magicHealed ? '<div style="color:var(--sr-amber);font-size:11px">⚠ Already magically healed — a second healing spell has no effect (p.194).</div>' : ''}`);
         if (!f) return;
-        const c = game.actors.get(f.casterId);
+        const c = SR3EHealing.actor(f.casterId);
         const sorc = H._skill(c, /^sorcery/i)?.rating ?? 0;
         const force = Math.max(1, parseInt(f.force) || 1);
         return H._post(patient, {
@@ -665,7 +688,7 @@ export class SR3EHealing {
         if (H.attentionTN(s.level) === null) {
           return H._postAction(patient, `🩺 ${s.level === 'D' ? 'Needs medical attention' : 'No Physical wound'} — ${patient.name}`,
             [s.level === 'D' ? 'A Deadly wound always needs medical attention — there is no test (p.127).' : 'Nothing to test.'],
-            [s.level === 'D' ? { act: 'next', ownerId: patient.id, step: 'stage', label: '🛏 Heal one stage' } : null], { color: s.level === 'D' ? 'var(--sr-red)' : '' });
+            [s.level === 'D' ? { act: 'next', ownerId: SR3EHealing.ref(patient), step: 'stage', label: '🛏 Heal one stage' } : null], { color: s.level === 'D' ? 'var(--sr-red)' : '' });
         }
         const unit = H.findEquipment([patient], 'stabilization');
         const f = await H._form(`🩺 Does it need a doctor? — ${patient.name}`, `
@@ -675,7 +698,7 @@ export class SR3EHealing {
         if (!f) return;
         const tn = H.attentionTN(s.level, { stabilizationUnit: f.unit });
         return H._post(patient, {
-          step, rollerId: patient.id, pool: s.bodyNatural + hd.dice, tn, skipWoundMod: true, level: s.level,
+          step, rollerId: SR3EHealing.ref(patient), pool: s.bodyNatural + hd.dice, tn, skipWoundMod: true, level: s.level,
           title: `🩺 Does it need a doctor? — ${patient.name}`, rollLabel: 'Roll natural Body',
           lines: [`Natural Body ${s.bodyNatural}${hdText} vs TN <strong>${tn}</strong>${f.unit ? ' (stabilization unit −2)' : ''}`,
                   'Any success: heals without medical attention. None: needs medical attention to heal at all.'],
@@ -708,7 +731,7 @@ export class SR3EHealing {
           magician: s.awakened, body: s.bodyNatural, willpower: s.willNatural }) : { mod: 0, parts: [] };
         const tn = H.stageTN(lvl, { doctorMod: dm.mod, stabilizationUnit: f.unit });
         return H._post(patient, {
-          step, rollerId: patient.id, pool: s.bodyNatural + hd.dice, tn, skipWoundMod: true, level: lvl, care: f.care,
+          step, rollerId: SR3EHealing.ref(patient), pool: s.bodyNatural + hd.dice, tn, skipWoundMod: true, level: lvl, care: f.care,
           baseMultiplier: s.record.baseMultiplier ?? 1, timeMultiplier: s.record.timeMultiplier ?? 1,
           title: `🛏 Healing ${LEVEL_NAME[lvl]} → ${LEVEL_NAME[NEXT_DOWN[lvl]] ?? 'healed'} — ${patient.name}`, rollLabel: 'Roll natural Body',
           lines: [(() => {
@@ -731,7 +754,7 @@ export class SR3EHealing {
         if (!f) return;
         const tn = H.permanentDamageTN({ traumaPatch: f.traumaUsed });
         return H._post(patient, {
-          step, rollerId: patient.id, pool: s.bodyNatural + dermal + hd.dice, tn, skipWoundMod: true,
+          step, rollerId: SR3EHealing.ref(patient), pool: s.bodyNatural + dermal + hd.dice, tn, skipWoundMod: true,
           awakened: s.awakened,
           title: `💀 Deadly wound — permanent damage? ${patient.name}`, rollLabel: 'Roll Body',
           lines: [`Natural Body ${s.bodyNatural}${dermal ? ` + dermal armor ${dermal}` : ''}${hdText} vs TN <strong>${tn}</strong>${f.traumaUsed ? ' (trauma patch +2)' : ''}`,
@@ -748,7 +771,7 @@ export class SR3EHealing {
         const n = H.magicLossRolls({ awakened: true, deadly: f.deadly, treatedWithoutMod: f.withoutMod });
         if (!n) { ui.notifications.info('No Magic loss roll is owed.'); return; }
         return H._postAction(patient, `🔮 Magic loss check — ${patient.name}`,
-          [`${n} × 2D6 against Magic ${s.magic}.`], [{ act: 'magic-loss', label: `🎲 Roll ${n} × 2D6`, ownerId: patient.id, n }]);
+          [`${n} × 2D6 against Magic ${s.magic}.`], [{ act: 'magic-loss', label: `🎲 Roll ${n} × 2D6`, ownerId: SR3EHealing.ref(patient), n }]);
       }
 
       case 'stabilize': {
@@ -770,7 +793,7 @@ export class SR3EHealing {
         if (f.how === 'unit') {
           return H._postAction(patient, `🚑 Stabilization unit — ${patient.name}`,
             ['Stabilization units automatically stabilize any person placed inside (p.305); healing tests while in it get −2.'],
-            [{ act: 'stabilized', label: '✔ Mark stabilized', ownerId: patient.id }]);
+            [{ act: 'stabilized', label: '✔ Mark stabilized', ownerId: SR3EHealing.ref(patient) }]);
         }
         if (f.how === 'firstaid') return H.setup(patient, 'firstaid');
         if (f.how === 'spell') {
@@ -780,7 +803,7 @@ export class SR3EHealing {
             ${row('Caster', `<select data-f="casterId">${casters.map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select>`)}
             ${row('Force', `<input type="number" data-f="force" value="${Math.max(1, s.overflow)}" min="1" style="width:60px"/>`)}`);
           if (!g) return;
-          const c = game.actors.get(g.casterId), force = Math.max(1, parseInt(g.force) || 1);
+          const c = SR3EHealing.actor(g.casterId), force = Math.max(1, parseInt(g.force) || 1);
           const st = H.stabilizeSpell({ force, overflow: s.overflow, minutes: parseInt(f.minutes) || 0 });
           return H._post(patient, {
             step: 'stabspell', rollerId: c.id, pool: H._skill(c, /^sorcery/i)?.rating ?? 0, tn: st.tn, force,
@@ -794,7 +817,7 @@ export class SR3EHealing {
         const dermal = H.dermalArmorRating(patient);
         const tn = f.how === 'trauma' ? H.traumaPatchTN({ dermalArmor: dermal }) : 10;
         return H._post(patient, {
-          step: 'selfstab', rollerId: patient.id, pool: s.bodyNatural + bonus, tn, skipWoundMod: true, trauma: f.how === 'trauma',
+          step: 'selfstab', rollerId: SR3EHealing.ref(patient), pool: s.bodyNatural + bonus, tn, skipWoundMod: true, trauma: f.how === 'trauma',
           title: `🚑 ${f.how === 'trauma' ? 'Trauma patch' : 'Self-stabilization'} — ${patient.name}`, rollLabel: 'Roll natural Body',
           lines: [`Natural Body ${s.bodyNatural}${bonus ? ` + antidote patch ${bonus}` : ''} vs TN <strong>${tn}</strong>`
                     + (f.how === 'trauma' && dermal ? ` (4 + dermal armor ${dermal})` : ''),
@@ -836,8 +859,8 @@ export class SR3EHealing {
 
   /** A roll card: the numbers, editable pool and TN, and a Roll button for whoever rolls. */
   static async _post(patient, ctx) {
-    const roller = game.actors.get(ctx.rollerId);
-    const p = { ...ctx, patientId: patient.id, label: ctx.title };
+    const roller = SR3EHealing.actor(ctx.rollerId);
+    const p = { ...ctx, patientId: SR3EHealing.ref(patient), label: ctx.title };
     const content = `<div class="sr-roll-card sr-heal-card" data-heal-step="${esc(ctx.step)}">
       <div class="sr-roll-header">${esc(ctx.title)}</div>
       ${SR3EHealing._lines(ctx.lines)}
@@ -898,7 +921,7 @@ export class SR3EHealing {
     let tn   = game.user.isGM ? parseInt(card?.querySelector('.sr-heal-tn')?.value) : NaN;
     if (!Number.isFinite(pool)) pool = saved.pool ?? p.pool;
     if (!Number.isFinite(tn))   tn = saved.tn ?? p.tn;
-    const roller = game.actors.get(p.rollerId);
+    const roller = SR3EHealing.actor(p.rollerId);
     if (!roller) { ui.notifications.warn('That character no longer exists.'); return; }
     if (p.defaulting && pool <= 0) {
       const def = await game.sr3e.SR3EItem.promptDefaultChoice(roller, {
@@ -923,7 +946,7 @@ export class SR3EHealing {
   /** Called by `_postWaveCard` on the final wave. Posts the result card for this step. */
   static async onRolled(ctx, successes) {
     const H = SR3EHealing;
-    const patient = game.actors.get(ctx.patientId);
+    const patient = SR3EHealing.actor(ctx.patientId);
     if (!patient) return;
     const s = H._state(patient);
     const n = Number(successes) || 0;
@@ -931,10 +954,10 @@ export class SR3EHealing {
     // `byId`: whoever made this roll (the medic, the caster) may press what it produced, as well as
     // the patient's owner — a medic treating another player's character (reported in play).
     const by = ctx.rollerId;
-    const lower = { act: 'lower', ownerId: patient.id, byId: by, label: `✔ Lower the wound to ${LEVEL_NAME[H.woundLevel(nextBoxes)] ?? 'healed'} (Physical ${s.physical} → ${nextBoxes})` };
-    const next  = (step, label) => ({ act: 'next', ownerId: patient.id, byId: by, step, label });
-    const stabilized = { act: 'stabilized', ownerId: patient.id, byId: by, label: '✔ Mark stabilized' };
-    const charge = (amount, what, payerId = patient.id) => amount > 0
+    const lower = { act: 'lower', ownerId: SR3EHealing.ref(patient), byId: by, label: `✔ Lower the wound to ${LEVEL_NAME[H.woundLevel(nextBoxes)] ?? 'healed'} (Physical ${s.physical} → ${nextBoxes})` };
+    const next  = (step, label) => ({ act: 'next', ownerId: SR3EHealing.ref(patient), byId: by, step, label });
+    const stabilized = { act: 'stabilized', ownerId: SR3EHealing.ref(patient), byId: by, label: '✔ Mark stabilized' };
+    const charge = (amount, what, payerId = SR3EHealing.ref(patient)) => amount > 0
       ? { act: 'charge', ownerId: payerId, amount, what, label: `💴 Charge ${yen(amount)} — ${what}` } : null;
     const good = 'var(--sr-green)', bad = 'var(--sr-red)';
 
@@ -947,7 +970,7 @@ export class SR3EHealing {
                : H._timeBox('No recovery this rest', 'no successes — rest and roll again'),
            min ? `${n} success${n === 1 ? '' : 'es'}: <strong>1 box</strong> of Stun returns after ${H.formatHours(min / 60)}.` : '',
            'If the rest is interrupted, roll again: the new result can never be better than the first (p.126).'],
-          [min ? { act: 'erase-stun', ownerId: patient.id, label: '✔ Erase 1 Stun box' } : null,
+          [min ? { act: 'erase-stun', ownerId: SR3EHealing.ref(patient), label: '✔ Erase 1 Stun box' } : null,
            s.stun > (min ? 1 : 0) ? next('stun', min ? '😴 Roll for the next box' : '😴 Rest and roll again') : null], { color: min ? good : bad });
       }
 
@@ -969,7 +992,7 @@ export class SR3EHealing {
           if (out.lowered) actions.push(lower);
         }
         if (ctx.medkit) actions.push({ act: 'medkit', ownerId: ctx.rollerId, medkit: ctx.medkit, label: `🎲 Medkit supplies check (1D6) — ${ctx.medkit.name}` });
-        if (loss) actions.push({ act: 'magic-loss', ownerId: patient.id, n: loss, label: `🔮 Magic loss: roll ${loss} × 2D6 (p.129)` });
+        if (loss) actions.push({ act: 'magic-loss', ownerId: SR3EHealing.ref(patient), n: loss, label: `🔮 Magic loss: roll ${loss} × 2D6 (p.129)` });
         actions.push(charge(ctx.paramedic, 'paramedic first aid'));
         if (ctx.level !== 'D') actions.push(next('attention', '🩺 Next: does it need a doctor?'));
         return H._postAction(patient, `🩹 First aid result — ${patient.name}`, lines, actions,
@@ -980,7 +1003,7 @@ export class SR3EHealing {
         const noEffect = s.record.magicHealed || (ctx.spell === 'treat' && !ctx.withinHour);
         const need = s.physical + s.overflow;
         const r = H.healSpell({ spell: ctx.spell, successes: n, toHealing: Math.min(n, ctx.force, need), force: ctx.force, level: ctx.level || 'L' });
-        const caster = game.actors.get(ctx.rollerId);
+        const caster = SR3EHealing.actor(ctx.rollerId);
         if (caster) {
           await caster._postDrainCard({ drainTNOverride: r.drainTN, drainLevel: r.drainLevel || 'L',
             drainIsPhysical: ctx.force > (caster.system?.attributes?.magic?.value ?? 0),
@@ -999,7 +1022,7 @@ export class SR3EHealing {
            (${H.PERMANENT_SPELL_TURNS[ctx.level || 'L']} turns base${ctx.spell === 'treat' ? ', halved for Treat' : ''}, ÷ the rest).`,
           `As suggested: <strong>${r.boxes}</strong> box${r.boxes === 1 ? '' : 'es'}, permanent after <strong>${r.turns}</strong> Combat Turns of sustaining.`,
           'Precludes any further healing spell and first aid for these injuries.'],
-          [{ act: 'heal-boxes', ownerId: patient.id, byId: by, label: '✔ Heal these boxes', input: { label: 'Boxes', value: r.boxes, max: Math.min(n, ctx.force) } }],
+          [{ act: 'heal-boxes', ownerId: SR3EHealing.ref(patient), byId: by, label: '✔ Heal these boxes', input: { label: 'Boxes', value: r.boxes, max: Math.min(n, ctx.force) } }],
           { color: good });
       }
 
@@ -1041,22 +1064,22 @@ export class SR3EHealing {
         const parts = H.BODY_PARTS;
         const costLine = k => `${parts[k].label}: ${parts[k].weeks} weeks to grow, ${yen(parts[k].cost)}`;
         if (res === 'none') return H._postAction(patient, `💀 No lasting damage — ${patient.name}`,
-          [`${n} successes: no limb or organ damage (p.128).`], [loss ? { act: 'magic-loss', ownerId: patient.id, n: loss, label: '🔮 Magic loss: roll 2D6 (Deadly wound)' } : null], { color: good });
+          [`${n} successes: no limb or organ damage (p.128).`], [loss ? { act: 'magic-loss', ownerId: SR3EHealing.ref(patient), n: loss, label: '🔮 Magic loss: roll 2D6 (Deadly wound)' } : null], { color: good });
         if (res === 'limb') return H._postAction(patient, `💀 An eye or limb is lost — ${patient.name}`, [
           '1 success: an eye or limb is mangled beyond healing and must be replaced. Base healing time +50% (p.128).',
           `${costLine('small')} · ${costLine('hand')} · ${costLine('limb')} (Body Part Types, p.128).`,
           ctx.awakened ? '⚠ Awakened: a part not cloned from their own tissue lowers Magic by 1 (p.129).' : ''],
-          [{ act: 'd6', table: 'limb', ownerId: patient.id, label: '🎲 Roll 1D6 — which?' },
-           { act: 'record', ownerId: patient.id, key: 'baseMultiplier', value: 1.5, label: '✔ Record: base healing time ×1.5' },
-           loss ? { act: 'magic-loss', ownerId: patient.id, n: loss, label: '🔮 Magic loss: roll 2D6 (Deadly wound)' } : null], { color: bad });
+          [{ act: 'd6', table: 'limb', ownerId: SR3EHealing.ref(patient), label: '🎲 Roll 1D6 — which?' },
+           { act: 'record', ownerId: SR3EHealing.ref(patient), key: 'baseMultiplier', value: 1.5, label: '✔ Record: base healing time ×1.5' },
+           loss ? { act: 'magic-loss', ownerId: SR3EHealing.ref(patient), n: loss, label: '🔮 Magic loss: roll 2D6 (Deadly wound)' } : null], { color: bad });
         return H._postAction(patient, `💀 A vital organ is gravely damaged — ${patient.name}`, [
           '0 successes: continuous Biotech care even once stabilized; the whole healing time doubles; a transplant is needed; one Attribute point is lost for good (p.127-128).',
           `${costLine('small')} · ${costLine('large')} (Body Part Types, p.128).`,
           'A lost point also lowers that Attribute\'s Racial Modified Limit by 1.',
           ctx.awakened ? '⚠ Awakened: a donor organ not cloned from their own tissue lowers Magic by 1 (p.129).' : ''],
-          [{ act: 'd6', table: 'organ', ownerId: patient.id, label: '🎲 Roll 1D6 — which Attribute?' },
-           { act: 'record', ownerId: patient.id, key: 'timeMultiplier', value: 2, label: '✔ Record: healing time ×2' },
-           loss ? { act: 'magic-loss', ownerId: patient.id, n: loss, label: '🔮 Magic loss: roll 2D6 (Deadly wound)' } : null], { color: bad });
+          [{ act: 'd6', table: 'organ', ownerId: SR3EHealing.ref(patient), label: '🎲 Roll 1D6 — which Attribute?' },
+           { act: 'record', ownerId: SR3EHealing.ref(patient), key: 'timeMultiplier', value: 2, label: '✔ Record: healing time ×2' },
+           loss ? { act: 'magic-loss', ownerId: SR3EHealing.ref(patient), n: loss, label: '🔮 Magic loss: roll 2D6 (Deadly wound)' } : null], { color: bad });
       }
 
       case 'selfstab':
@@ -1066,7 +1089,7 @@ export class SR3EHealing {
           { color: n > 0 ? good : bad });
 
       case 'stabspell': {
-        const caster = game.actors.get(ctx.rollerId);
+        const caster = SR3EHealing.actor(ctx.rollerId);
         if (caster) await caster._postDrainCard({ drainTNOverride: Math.max(2, Math.floor(ctx.force / 2) + 1), drainLevel: 'M',
           drainIsPhysical: ctx.force > (caster.system?.attributes?.magic?.value ?? 0), spellName: 'Stabilize', force: ctx.force, sorceryRating: ctx.pool });
         const ok = n > 0 && ctx.effective;
@@ -1136,7 +1159,7 @@ export class SR3EHealing {
 
   static async act(btn, p) {
     const H = SR3EHealing;
-    const patient = game.actors.get(p.ownerId);
+    const patient = SR3EHealing.actor(p.ownerId);
     if (!patient) { ui.notifications.warn('That character no longer exists.'); return false; }
     // Wounds and the record go through applyToPatient, so a medic can treat another player's
     // character: their own client cannot write to it, the GM does (reported in play).
@@ -1177,7 +1200,7 @@ export class SR3EHealing {
       case 'medkit': {
         const d = await H._d('1d6');
         const out = H.medkitSuppliesOut(d.total);
-        const owner = game.actors.get(p.medkit?.actorId);
+        const owner = SR3EHealing.actor(p.medkit?.actorId);
         const item = owner?.items.get(p.medkit?.itemId);
         if (out && item) await item.setFlag(FLAG, 'suppliesOut', true);
         return H._postAction(owner ?? patient, `🎲 Medkit supplies — ${p.medkit?.name ?? 'medkit'}`,
@@ -1193,7 +1216,7 @@ export class SR3EHealing {
         const lost = rolls.filter(r => H.magicLost(r, magic)).length;
         return H._postAction(patient, `🔮 Magic loss — ${patient.name}`,
           [`${rolls.map(r => `2D6 = <strong>${r}</strong>`).join(' · ')} against Magic ${magic}: ${lost ? `<strong>${lost}</strong> point${lost === 1 ? '' : 's'} lost, permanently.` : 'no loss.'}`],
-          [lost ? { act: 'lose-magic', ownerId: patient.id, n: lost, label: `✔ Lower Magic by ${lost}` } : null],
+          [lost ? { act: 'lose-magic', ownerId: SR3EHealing.ref(patient), n: lost, label: `✔ Lower Magic by ${lost}` } : null],
           { color: lost ? 'var(--sr-red)' : 'var(--sr-green)' });
       }
       case 'lose-magic': {
@@ -1207,7 +1230,7 @@ export class SR3EHealing {
           const key = H.ORGAN_TABLE[d.total];
           return H._postAction(patient, `💀 1D6 = ${d.total} — ${key[0].toUpperCase() + key.slice(1)}`,
             [`${esc(patient.name)} permanently loses <strong>1 point of ${key}</strong> (p.128). It cannot be recovered, only replaced by cyber or other means.`],
-            [{ act: 'lose-attr', ownerId: patient.id, key, label: `✔ Lower ${key} by 1` }], { color: 'var(--sr-red)' });
+            [{ act: 'lose-attr', ownerId: SR3EHealing.ref(patient), key, label: `✔ Lower ${key} by 1` }], { color: 'var(--sr-red)' });
         }
         let what = H.LIMB_TABLE[d.total];
         if (d.total >= 5) what += ` (${(await H._d('1d6')).total <= 3 ? 'right' : 'left'})`;

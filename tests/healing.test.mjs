@@ -251,7 +251,27 @@ export async function run(t) {
     t.is('a player may treat their own, other players\' characters and anyone they can see — not hidden NPCs',
       H.patientsFor({ isGM: false }, cast).map(a => a.name).join(', '), 'Mine, Other PC, Seen NPC');
     t.is('a GM may treat anyone (but not a vehicle)', H.patientsFor({ isGM: true }, cast).length, 4);
+
+    // TODO 207 (reported 2026-10-11): downed NPCs could not be healed. A compendium NPC is a TEMPLATE
+    // world actor; the hurt one is its unlinked token, which `game.actors` does not hold.
+    game.sr3e = { ...prevSr3e, isLiveActor: a => !a.template, SR3EQuery: { isPlayerCharacter: a => !!a.pc } };
+    const template = { name: 'Ganger', type: 'npc', isOwner: true, template: true };
+    const downed   = { name: 'Ganger', type: 'npc', isOwner: true, template: true, isToken: true, uuid: 'Scene.s.Token.t.Actor.g', id: 'g' };
+    const list = H.patientsFor({ isGM: true }, [template], [downed]);
+    t.ok('the downed token NPC is offered, though its base actor is a template', list.includes(downed));
+    t.ok('…and the template itself is still not', !list.includes(template));
+    t.ok('a hidden player sees no token they could not see', H.patientsFor({ isGM: false }, [],
+      [{ ...downed, isOwner: false, testUserPermission: () => false }]).length === 0);
+    t.is('a token patient is named by its UUID — it shares its base actor\'s id', H.ref(downed), 'Scene.s.Token.t.Actor.g');
+    t.is('anyone else by their actor id, as cards always have been', H.ref({ id: 'pc1', isToken: false }), 'pc1');
+    game.sr3e = { ...prevSr3e, SR3EQuery: { resolve: r => (r === 'Scene.s.Token.t.Actor.g' ? downed : null) } };
+    t.is('…and the card reads the token back from it', H.actor('Scene.s.Token.t.Actor.g'), downed);
   } finally { game.sr3e = prevSr3e; }
+
+  // Every patient lookup goes through the resolver, so no card heals the base actor by mistake.
+  const healSrc207 = readFileSync(new URL('../scripts/SR3EHealing.js', import.meta.url), 'utf8');
+  t.ok('SR3EHealing never looks a patient up by bare id (TODO 207)', !/game\.actors\.get\(/.test(healSrc207) && !/patient\.id\b/.test(healSrc207));
+  t.ok('the picker lists the scene\'s unlinked tokens', /patientsFor\(game\.user, game\.actors\.contents \?\? \[\.\.\.game\.actors\], SR3EHealing\.sceneTokenActors\(\)\)/.test(healSrc207));
 
   /* ── Rapid Healing reaches the patient's Body tests (TODO 76) ──────────────────── */
   const adept = { system: { derived: { situationalBonuses: [

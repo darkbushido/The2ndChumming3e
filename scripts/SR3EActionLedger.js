@@ -21,7 +21,10 @@ const KEY  = 'actions';
 export class SR3EActionLedger {
   static rules = ActionEconomy;
 
-  static phase(combat) { return ActionEconomy.phaseKey(combat?.round, combat?.turn); }
+  /** This Combat Phase's key: round, combatant, and the queue SLOT — a second pass is a new phase (TODO 206). */
+  static phase(combat) {
+    return ActionEconomy.phaseKey(combat?.round, combat?.turn, combat?.flags?.The2ndChumming3e?.queueIndex ?? null);
+  }
 
   /** This phase's ledger for a combatant (an empty one if the stored ledger is from another phase). */
   static ledgerOf(combatant) {

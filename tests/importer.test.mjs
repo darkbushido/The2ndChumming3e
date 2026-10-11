@@ -152,4 +152,24 @@ export async function run(t) {
   t.ok('…and warns that nothing was applied',
     odd.notes.some(([l, m]) => l === 'warn' && /not in the Racial Modifications Table/.test(m)));
   t.is('…keeping the race it was given as the metatype', odd.created.system.metatype, 'hobgoblin');
+
+  /* ── Karma (SR3 p.244-246) — TODO 217 ──────────────────────────────────────────────────
+   * Reported on prod: a Karma Pool of 9 after 34 Karma. The generator keeps Good Karma EARNED in
+   * `karma`, spending in `karmaSpent`, burned pool in `karmaPoolBurned` and the awards in `log`; the
+   * import took `karma` and `karmaPool` raw and never set Total Karma, so the next award re-crossed
+   * the every-10th threshold from 0 and granted pool points a second time.
+   * A played human: 34 Karma in two awards → pool 1 + 3 = 4 and Good Karma 31; 6 spent; 1 burned. */
+  const played = await runImport({ ...troll, race: 'Human', karma: 31, karmaSpent: 6, karmaPool: 4, karmaPoolBurned: 1,
+    purchasedPowerPoints: 1, log: [{ Type: 'addKarma', Amount: '20' }, { Type: 'addNuyen', Amount: '500' }, { Type: 'addKarma', Amount: '14' }] });
+  const ps = played.created.system;
+  t.is('Total Karma comes from the awards (20 + 14)', ps.totalKarma, 34);
+  t.is('…so the next award counts on from 34, not 0 — the human\'s next pool point is at 40',
+    SR3EActor.karmaAward(ps.totalKarma, 6, ps.metatype).poolGained, 1);
+  t.is('Good Karma is what is left: 31 earned − 6 spent', ps.karma, 25);
+  t.is('the Karma Pool keeps what was burned off it: 4 − 1', ps.karmaPool, 3);
+  t.is('bought Power Points come across', ps.powerPointsBought, 1);
+  const noLog = (await runImport({ ...troll, race: 'Elf', karma: 59, karmaPool: 4, log: [] })).created.system;
+  t.is('with no award log, Total = Good Karma earned + the pool points (Shetani, p.244: 59 + 3 = 62)', noLog.totalKarma, 62);
+  const fresh = r.created.system;
+  t.ok('a fresh character still imports at 0 Karma, pool 1', fresh.totalKarma === 0 && fresh.karma === 0 && fresh.karmaPool === 1);
 }

@@ -3305,7 +3305,7 @@ _prepareCharacter(sys, attr) {
     const attrs = regionId
       ? `data-region-id="${regionId}" data-scene-id="${canvas.scene?.id ?? ''}"`
       : `data-marker-id="${markerId}"`;
-    return `<div style="margin-top:5px"><button type="button" class="sr3e-clear-blast-btn btn-sm" ${attrs} style="font-size:11px;padding:1px 8px">🧹 Clear blast marker</button></div>`;
+    return `<div style="margin-top:5px"><button type="button" class="sr-clear-blast-btn" ${attrs}>🧹 Clear blast marker</button></div>`;
   }
 
   /** Damage-level letter → wound name (L→Light, M→Moderate, S→Serious, D→Deadly).

@@ -255,6 +255,7 @@ background-color: var(--sr-surface) !important;
 .sr-blast-wall-btn,
 .sr-karma-btn,
 .sr-karma-done-btn,
+.sr-clear-blast-btn,
 .sr-prone-btn {
   width: 100%;
   height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
@@ -293,6 +294,19 @@ background-color: var(--sr-surface) !important;
   border: 1px solid var(--sr-gold);
   color: var(--sr-gold);
 }
+
+/* 🧹 Clear blast marker — a housekeeping button, so neutral rather than a colour group's call to act.
+ * TODO 214: it had only core's button style and read black on black in the dark chat log. */
+.sr-clear-blast-btn {
+  background: var(--sr-surface);
+  border: 1px solid var(--sr-border-hi);
+  color: var(--sr-text);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+}
+.sr-clear-blast-btn:hover:not(:disabled) { border-color: var(--sr-accent); color: var(--sr-accent); }
+.sr-clear-blast-btn:disabled { color: var(--sr-muted); opacity: 0.7; cursor: default; }
 
 /* 🍀 Karma Pool hold card (SR3 p.246): the spend buttons share a row and size to their labels. */
 .sr-karma-actions .sr-karma-btn { width: auto; flex: 1 1 auto; }

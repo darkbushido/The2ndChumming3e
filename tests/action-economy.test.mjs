@@ -42,6 +42,16 @@ export async function run(t) {
   /* ── A ledger belongs to one phase ─────────────────────────────────────────── */
   t.eq('a ledger from another phase reads as empty — nothing has to clear it', E.ledgerFor(two, '1|1'), E.empty('1|1'));
   t.is('…and this phase\'s reads back', E.ledgerFor(two, '1|0').simple, 2);
+
+  // TODO 206 (reported 2026-10-11): a character's second Initiative Pass is the SAME combatant (the
+  // same `turn`) in the same round, so it read the first pass's two Simple Actions. The queue slot
+  // makes it a different phase.
+  const pass1 = E.phaseKey(1, 0, 0), pass2 = E.phaseKey(1, 0, 3);
+  t.ok('the same combatant in a later pass is a different phase', pass1 !== pass2);
+  const spent = E.charge(E.charge(E.empty(pass1), 'simpleAction').ledger, 'simpleAction').ledger;
+  t.is('…so their second pass starts with no actions taken', E.ledgerFor(spent, pass2).simple, 0);
+  t.is('…while the first pass still reads its own two', E.ledgerFor(spent, pass1).simple, 2);
+  t.is('no queue yet (a combat not started) keeps the plain key', E.phaseKey(2, 1), '2|1');
   t.is('uncharge frees the slot', E.uncharge(two, 1).simple, 1);
 
 
@@ -103,6 +113,8 @@ export async function run(t) {
   t.ok('the dodge, soak and resistance handlers never charge', !/charge\(/.test(
     ['static async handleDodgeDeclare', 'static async handleSoakRollClick'].map(h => {
       const a = read('scripts/documents/SR3EActor.js'); const i = a.indexOf(h); return i < 0 ? '' : a.slice(i, i + 3000); }).join('')));
+  t.ok('the phase key carries the combat queue\'s slot, so each pass is its own phase (TODO 206)',
+    /phaseKey\(combat\?\.round, combat\?\.turn, combat\?\.flags\?\.The2ndChumming3e\?\.queueIndex \?\? null\)/.test(led));
   t.ok('the undo is GM only, a ticked list, and frees the slot', /static async openUndo[\s\S]{0,120}if \(!game\.user\.isGM\) return;/.test(led)
     && /class="sr3e-undo-val"[^>]*checked/.test(led) && /ActionEconomy\.uncharge\(SR3EActionLedger\.ledgerOf\(cbt\), chosen\.idx\)/.test(led));
 }

@@ -33,6 +33,14 @@ export async function run(t) {
     SR3E.bowCategories.filter(c => skill(c) !== 'Projectile Weapons').join(), '');
   t.is('…and is not mistaken for a throwing skill', skill('LCB'), 'Projectile Weapons');
 
+  // TODO 210 (reported 2026-10-11): the Offensive AP grenade, from the Attack button, asked for a
+  // firearm skill. A projectile is thrown unless it is a bow — whatever its category says.
+  t.is('a projectile grenade with a BLANK category rolls Throwing Weapons', skill(null), 'Throwing Weapons');
+  t.is('…or with a code read from its name, "(AP)"', skill('AP'), 'Throwing Weapons');
+  t.is('…or any category the map does not name', skill('Grenade'), 'Throwing Weapons');
+  t.is('a crossbow with that same treatment is still Projectile Weapons', skill('HCB'), 'Projectile Weapons');
+  t.is('a firearm of an unknown code is not dragged into throwing', skill('XYZ', 'firearm'), 'Firearms');
+
   // Every shipped grenade and thrown weapon agrees with its own `skill` field.
   const root = new URL('../packs-src/', import.meta.url);
   const bad = [];

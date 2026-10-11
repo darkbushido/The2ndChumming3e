@@ -998,12 +998,13 @@ async function _openChunkySalsaCalculator(opts = {}) {
       <div style="padding:4px 0">
         <div style="display:flex;gap:14px;align-items:center;margin-bottom:6px;">
           <label style="display:flex;align-items:center;gap:6px;font-size:13px;">Power:
-            <input type="number" id="cs-power" value="10" min="1" max="30" style="width:58px;"/>
+            ${/* TODO 205: seeded from the grenade (opts.power / opts.level), not hard-coded — the box
+                * read 10 while the damage used the grenade's own Power, and typing replaced it. */ ''}
+            <input type="number" id="cs-power" value="${power}" min="1" max="30" style="width:58px;"/>
           </label>
           <label style="display:flex;align-items:center;gap:6px;font-size:13px;">Level:
             <select id="cs-level">
-              <option value="L">L</option><option value="M">M</option>
-              <option value="S" selected>S</option><option value="D">D</option>
+              ${['L', 'M', 'S', 'D'].map(l => `<option value="${l}"${l === level ? ' selected' : ''}>${l}</option>`).join('')}
             </select>
           </label>
           <span style="font-size:10px;color:var(--sr-muted);line-height:1.3;">Drag actors · click to draw walls<br/>Right-click wall to delete</span>
@@ -2574,7 +2575,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   //    (Region is NOT deprecated, so this is warning-free).
   //  • data-marker-id → a local non-persisted placeable (fallback); destroyed via PIXI.
   // Idempotent; harmless no-op on clients that don't hold the target.
-  html.querySelectorAll('.sr3e-clear-blast-btn').forEach(btn => {
+  html.querySelectorAll('.sr-clear-blast-btn').forEach(btn => {
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
