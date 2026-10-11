@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**49 open.** 154 done — see [TODO-DONE.md](TODO-DONE.md).
+**66 open.** 154 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [153](#153) Give the 📒 Ledger its own tab on the character sheet<br>[154](#154) 🛒 Buy gear: search the compendium, or drag an item in<br>[190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[192](#192) 💴 Make changing funds easier — a ± button, and giving money to another player<br>[196](#196) Healing takes time — record the result, apply it when the time has passed |
+| 🗂 Unsorted | [153](#153) Give the 📒 Ledger its own tab on the character sheet<br>[154](#154) 🛒 Buy gear: search the compendium, or drag an item in<br>[190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[192](#192) 💴 Make changing funds easier — a ± button, and giving money to another player<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[205](#205) Chunky Salsa's Power box shows 10 instead of the grenade's Power<br>[206](#206) A second Initiative Pass doesn't reset the actions<br>[207](#207) Healing can't target downed NPCs<br>[208](#208) Healing patient list: players first, hostile NPCs last<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[210](#210) Throwing a grenade asks for the firearms skill<br>[211](#211) Action tracker reads as three actions — show it as "Complex OR two Simples"<br>[212](#212) GM undo for a Karma spend<br>[213](#213) Show why Combat Pool is lower — the gyro halving it<br>[214](#214) 🧹 Clear blast marker button is black on black<br>[215](#215) Rules guide: explain Good Karma and the Karma Pool<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[218](#218) Karma Pool editable by the GM only<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses` |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2513,6 +2513,243 @@ Today guided healing (`SR3EHealing`) can be done all at once: the
 roll gives a healing time and the wound can be lowered straight away. Handy, but the GM needs a way
 to say *"this is the result, and it lands when that much time has gone by"* — the heal is pending
 until time passes. Pairs with [#190](#190) (a month going by). This is a feature, so it goes on a branch.
+
+## 204. Chunky Salsa ignores the map — asks the GM to draw walls the scene already has — **reported in play, 2026-10-11**
+
+A grenade thrown in a confined space opens the Chunky Salsa tool, which then asks the GM to draw the
+walls even though the scene has them. The cause: `_openChunkySalsaCalculator` (`scripts/sr3e.js`)
+is a standalone sketchpad that never reads the canvas.
+- **Walls start empty** (`const walls = []`); the only way to add one is clicking on its own
+  420×420 canvas (25 px/m). It never reads the scene's wall documents.
+- **Actors are placed in a ring 3 m from the centre**, not at their token positions, so they have
+  to be dragged into place too.
+- **The blast centre is not where the grenade landed.** The grenade flow
+  (`SR3EActor._postWaveCard`, the `state.aoeChunky` branch) passes only `power`, `level`,
+  `actorIds`, `returnOnly` and `falloff`. It does not pass the scatter point, the token positions
+  or the walls, even though it knows them.
+
+Wanted: when opened from a grenade on a scene, seed the tool from the canvas. Use the scatter
+point as the centre, put the actors at their token offsets in metres, and pre-fill the scene walls
+within the blast radius. All of it stays draggable and deletable (the stats stay editable, per the
+ethos). Opened from the sidebar with no grenade, it keeps working as today. Put the
+scene-to-metres conversion and the wall clipping in a pure module under `scripts/data/` so they can
+be tested. Decide with the maintainer which wall types count (doors, windows, terrain walls).
+Related: "chunky-salsa wall strength" in [#176](#176). The tool has walls but no barrier ratings.
+
+## 205. Chunky Salsa's Power box shows 10 instead of the grenade's Power — **reported in play, 2026-10-11**
+
+The `#cs-power` input in `_openChunkySalsaCalculator` (`scripts/sr3e.js`) is hard-coded
+`value="10"`, but the `power` the tool computes with is seeded from `opts.power`. Opened by the
+grenade flow, the box reads 10 while the damage labels and the result use the grenade's real Power.
+Typing in the box then replaces the grenade's value. The level `<select>` has the same problem: `S`
+is hard-coded as `selected` while `level` comes from `opts.level`. Fix: render both from `power` /
+`level`. Test: a source-level check that the inputs are templated from the seeded values. This is a
+bug fix, so it goes on `main`.
+
+## 206. A second Initiative Pass doesn't reset the actions — **reported in play, 2026-10-11**
+
+Observed: when a character gets a second activation (their next Initiative Pass), their actions are
+not reset. The tracker carries over from the earlier pass and shows them as having already taken
+2 Simple Actions. Expected: each pass starts with a fresh action allowance. Not investigated yet;
+reproduce first. This is a bug fix, so it goes on `main`.
+
+## 207. Healing can't target downed NPCs — **reported in play, 2026-10-11**
+
+Observed: you can't heal an NPC who has been downed. Expected: a downed NPC can be healed like
+anyone else. Not investigated yet; reproduce first, and check whether the patient list filters the
+NPC out or the heal itself refuses. This is a bug fix, so it goes on `main`.
+
+## 208. Healing patient list: players first, hostile NPCs last — **requested in play, 2026-10-11**
+
+Order the 🩹 Healing patient list with the player characters at the top
+(`SR3EQuery.isPlayerCharacter`), then other NPCs, and hostile NPCs at the bottom (token disposition
+HOSTILE). Every actor stays in the list; this only changes the order. Pairs with [#207](#207)
+(downed NPCs can't be healed). This is a request, so it is a feature and goes on a branch, separate
+from #207's fix.
+
+## 209. Barrier Ratings on map walls, and blasts that open ½-metre holes — **requested 2026-10-11**
+
+Map walls stop a grenade today (`SR3EActor._wallBetween`, TODO 149), but they have no Barrier
+Rating. The 🧱 "wall fell" dialog asks the GM for one each time, and nothing changes the wall
+afterwards. Wanted:
+
+- **A Barrier Rating per wall.** Store it in a system flag on the WallDocument
+  (`flags.The2ndChumming3e.barrierRating`, plus the material), with a field added to Foundry's wall
+  config dialog through its render hook. Add a bulk set: select walls, pick a material from the
+  Barrier Rating Table (SR3 p.124, `SR3E.barrierRatings`). Add a scene default for walls nobody set.
+- **Read it, don't ask.** The 🧱 "wall fell" dialog (`handleBlastWallFell`) and Chunky Salsa
+  ([#204](#204)) take the rating from the wall that blocked the blast. It stays editable in the
+  dialog.
+- **Apply the Barrier Effect Table (SR3 p.124) to the wall, by GM click.** Offer, never apply: the
+  card offers the result and the GM clicks.
+  - Power ≥ ½ the rating: the wall is damaged. Write rating − 1 back to the wall.
+  - Power > the rating: for every increment of ½ the rating by which Power exceeds it, open a
+    **½-metre hole** and reduce the rating by 1. Make the hole by **splitting the wall segment**
+    around the impact point (the collision point `_wallBetween` returns) into two walls with a
+    gap. Don't delete or disable the whole wall. Several increments widen the one hole.
+  - Make it reversible: record the original segment on the new walls' flags so the GM can restore it.
+- Wall writes are GM-only; the 🧱 button already is.
+- Put the pure parts in `scripts/data/`: the effect-table outcome (holes, new rating), and the
+  segment split (impact point, hole width in scene units, clamping at the wall's ends, a wall
+  shorter than the hole). Unit-test them and add mutants; the live split goes in a Foundry
+  checklist step.
+- **Ask the maintainer:** whether doors and windows take a rating; what happens when the hole
+  reaches a wall's end or a wall is shorter than ½ m; and whether a hole lets later blasts and
+  line of sight through (it should, as walls are just gone there).
+
+Related: [#204](#204) (Chunky Salsa reads map walls) and "chunky-salsa wall strength" in
+[#176](#176). This is a feature, so it goes on a branch.
+
+## 210. Throwing a grenade asks for the firearms skill — **reported in play, 2026-10-11**
+
+Observed: throwing a grenade wants a firearms skill. Expected: a thrown grenade uses Throwing Weapons.
+Check the book for the exact skill and page before fixing; a grenade launcher is a separate case and
+uses Grenade Launchers. Repro: the **Offensive AP grenade**, thrown from the **Attack** button. Not
+investigated yet. This is a bug fix, so it goes on `main`.
+
+## 211. Action tracker reads as three actions — show it as "Complex OR two Simples" — **requested in play, 2026-10-11**
+
+At the table, the tracker on the active combatant's row (`SR3EActionLedger.renderTracker`) was read
+as everyone getting three actions. The GM buttons are **Complex · Simple · Simple · ↺** and the pips
+are **Complex · Simple · Simple · Free**, laid out side by side. The rule is one Complex **or** up
+to two Simple, plus one Free (SR3 p.105, p.107; `ActionEconomy.fits`). Wanted: a layout that shows
+the choice, e.g. **[Complex] or [Simple][Simple]**, with the Free pip set apart (`+ Free`). Pips and
+buttons both. No change to the rules or the buttons' behaviour (Complex and the second Simple still
+end the turn). Test: a source-level check that the tracker markup has the "or" grouping. Add a
+Foundry checklist step to look at it on a live row. Unrelated to [#206](#206) (the actions don't reset on a
+second pass), which also makes the pips look wrong. This is a feature, so it goes on a branch.
+
+## 212. GM undo for a Karma spend — **requested in play, 2026-10-11**
+
+Observed: a GM has no way to undo a character spending Karma (raising a skill or attribute, etc.).
+Today the GM fixes it by hand: put the Karma back and lower the stat on the sheet. Wanted: a GM ↺ on
+a Karma spend in the 📒 Ledger ([#79](TODO-DONE.md#79)) that puts back the Karma **and** reverts what
+it bought, recorded in the ledger as a reversal (not deleted). It should follow the action tracker's
+↺ pattern (`SR3EActionLedger.openUndo`): list what will change, every row untickable. Not
+investigated beyond confirming there's no undo today. This is a feature, so it goes on a branch.
+
+## 213. Show why Combat Pool is lower — the gyro halving it — **requested in play, 2026-10-11**
+
+Reported on prod: Ploder's Combat Pool showed **2** with Quickness 4, Intelligence 4 and Willpower 2,
+and nothing on the sheet said why. The cause was a Gyro Mount gear item not in Storage. That counts
+as worn, and a worn gyro halves Combat Pool (SR3 p.282, TODO 18): ⌊5 ÷ 2⌋ = 2. The figure is
+already computed: `derived.combatPoolBeforeGyro` (`SR3EActor.js`, `prepareDerivedData`) is set to the
+full pool whenever a gyro is worn. But nothing in `scripts/` reads it, so the sheet never shows it.
+Wanted: the Combat Pool display says it's reduced, e.g. `2 (5, halved: Gyro Mount)` or a tooltip
+with the breakdown. Better still, give the whole breakdown: base (Q+I+W)/2, Combat Sense, armour
+penalty (p.285), manual modifier, gyro, spent. The armour penalty is just as invisible today. Test: a
+source-level check that the sheet reads `combatPoolBeforeGyro`. Add a Foundry checklist step with a
+gyro in and out of Storage. This is a feature, so it goes on a branch.
+
+## 214. 🧹 Clear blast marker button is black on black — **reported in play, 2026-10-11**
+
+Observed: the chat card's **🧹 Clear blast marker** button is hard to read, with black text on a black
+background. The markup is `SR3EActor._clearBlastButton` (`class="sr3e-clear-blast-btn btn-sm"`,
+inline style sets only font-size and padding), so it gets no system colours. Expected: readable like
+the other card buttons, using the `--sr-*` tokens. Check the disabled "🧹 Cleared" state too. Not
+investigated further. This is a bug fix, so it goes on `main`.
+
+## 215. Rules guide: explain Good Karma and the Karma Pool — **requested in play, 2026-10-11**
+
+The guides' rules section (`guides/rules/`: combat, grenades, healing, reloading, rigging, decking)
+has no page on Karma. Wanted: a `guides/rules/karma.md` explaining **Good Karma** (spent on
+advancement) and the **Karma Pool** (spent in play: rerolls, extra dice, avoiding a disaster, and
+how it refreshes), and how an award splits between them. Every twentieth point (tenth for humans)
+goes to the Pool instead of Good Karma (SR3 p.244, p.246; `SR3EActor.karmaAward`). Also cover what
+the sheet shows and where the 📒 Ledger records it. Every rule is checked in the PDF and cited by printed
+page. Follow `guides/CLAUDE.md`, link it from `guides/rules/index.md`, then `node tools/linkcheck.mjs`.
+Guide content, so it goes on a branch.
+
+## 216. Adding Karma Pool to a roll didn't add any dice — **reported in play, 2026-10-11**
+
+Observed: ticking Karma Pool for a roll ("Use Karma Pool (N available)" in the roll options) rolled no
+extra dice. RAW does allow it. SR3 p.246, *Buying Additional Dice*: *"A player may spend 1 point of
+Karma to buy an additional die for use in a test, up to a maximum of however many skill, Attribute
+or rating dice he is currently using (not including dice from other pools)"*, at an incremental cost
+(1, then 2 more, then 3 more…). The other p.246 uses (re-roll failures, avoid a disaster,
+buy successes) are separate. Not investigated yet. Reproduce first, note which roll it was, and check
+what the checkbox is meant to do. This is a bug fix, so it goes on `main`.
+
+## 217. Ploder's Karma Pool is 9 after only 34 Karma — **reported on prod, 2026-10-11**
+
+Observed: Ploder shows **Karma Pool 9** having been awarded **34 Karma** in total. Expected (SR3 p.244:
+*"each character starts with 1 Karma Pool"*, plus every twentieth point, tenth for humans):
+**4** if human (1 + 3), **2** otherwise (1 + 1). Not investigated yet. Check Ploder's 📒 Ledger
+for where the pool points came from (awards, manual edits, import, a refresh that adds instead of
+resetting) and their `totalKarma` and metatype. This is a bug fix, so it goes on `main`.
+
+## 218. Karma Pool editable by the GM only — **requested in play, 2026-10-11**
+
+The maintainer: players should not be able to edit their Karma Pool. Make the field read-only on
+the sheet for non-GM users. Spending it through the roll options (re-roll, extra dice, buy
+successes) must still work for the player, and the GM can still type any value. Decide with the
+maintainer whether Good Karma and Total Karma get the same lock. Note the design ethos says every
+stat stays editable; this narrows that to the GM for this field, which still fits the trusted-GM
+rule. Make it a render-time lock, not a data-model one, so GM writes and the GM-routed spend verbs are
+untouched. Check whether a player's own sheet submit could still write it (the form submits every
+named input). Test: a source-level check that the field is GM-gated, plus a Foundry checklist
+step as a player. Related: [#217](#217) (Ploder's pool reads 9). This is a feature, so it goes on a branch.
+
+## 219. Magic in the Shadows: the Good Karma uses — **requested 2026-10-11, from the Karma audit**
+
+The audit of 2026-10-11 (branch `feature/karma-uses`, [#220](#220)) built the core book's Good Karma
+uses: Power Points (p.168), learning spells (p.180), bonding foci (p.190). Magic in the Shadows adds
+many more, none of them modelled. Each needs its rule checked in the MitS PDF and cited by printed
+page (the page numbers below are PDF pages, found by a text search, not yet verified):
+
+- **Initiation**: the Karma cost by grade, reduced by ordeals and by a magical group (PDF ~59-64).
+  `initiateGrade` already exists on characters and NPCs.
+- **Magical groups**: 3 Karma to join (PDF ~66).
+- **Quickening** and **anchoring** spells: Karma to make them permanent (PDF ~37, ~71-73, ~78-79).
+- **Foci beyond the core table**: enchanted first bonding, anchoring foci, shielding foci (4 × Force)
+  (PDF ~43-46).
+- **Spirits**: watchers (Karma per week), binding by paying Karma equal to Force (PDF ~89, ~99-101),
+  ally spirits (the ally formula and its Karma cost, PDF ~108-113), and Good Karma given to free
+  spirits (PDF ~115-121).
+
+They belong in the Spend Karma calculator's **Magic** section beside the core ones, with
+`ledgerRevert` so the GM's ↺ ([#212](#212)) can undo them. Pure costs go in
+`scripts/data/karma-uses.mjs` (`GoodKarma`). This is a feature, so it goes on a branch.
+
+## 220. 🧪 Test in Foundry — everything on branch `feature/karma-uses`
+
+The Karma audit, built 2026-10-11: [#216](#216) (Karma Pool on rolls), [#212](#212) (GM undo for a
+Karma spend), and the core book's missing Good Karma uses. Unit tests and mutants cover the rules
+(`tests/karma-uses.test.mjs`); these are the parts only a live client can show.
+
+**Before testing**
+1. ⚠ **Restart Foundry fully** (not F5): two new character fields, `karmaPoolSpent` and
+   `powerPointsBought`.
+2. The install's `scripts/` junction points at the main checkout, not this worktree. Test with the
+   branch checked out there.
+
+**Karma Pool (SR3 p.246-248)**
+1. Attributes tab: Karma Pool shows **left / size**. Typing in "left" spends; typing in "size" sets the size.
+2. ↺ Reset All Pools does **not** touch Karma Pool. As GM, **🍀 Refresh** on the sheet gives back what was
+   spent; **🍀 Refresh Karma Pools** (GM tools) does it for ticked PCs, nobody ticked to start.
+3. Any roll dialog (attribute, skill, firearm, grenade): the 🍀 row shows. **Buy 2 extra dice**: the card
+   rolls 2 more dice, the label says (+2 🍀), and 3 is spent. On a firearm with Combat Pool, the cap
+   ignores the Combat Pool dice.
+4. **Hold the roll for Karma**: the roll stops on a 🍀 card. **Re-roll** re-rolls only the failures
+   (1 spent); a second re-roll costs 2. A re-rolled 6 at TN 7+ needs its 💥 first, then comes back to the
+   🍀 card. **Buy successes** adds 🍀 dice and burns (the size drops). **✔ Done** then resolves as
+   normal: a firearm attack goes on to its dodge; a grenade scatters and draws ONE blast marker.
+5. A Rule of One roll held for Karma offers only **Avoid the disaster**, and then resolves as a failure.
+6. The 🍀 buttons are greyed for everyone but the roller (and the GM); after one click the card's
+   buttons are spent on every client and after a reload. The ⏳ panel lists a held roll until decided.
+7. **Hooper-Nelson**: at TN 14, burning 4 rolls at TN 10; at TN 9, burning 3 warns and rolls at TN 8.
+8. The 📒 Ledger shows "Pool spent" for spends and "Karma Pool" for burns.
+
+**Good Karma (Spend Karma…)**
+9. An adept sees **Power Point** (20). After buying, the Adept Powers header shows "(1 bought)" and the
+   total rises.
+10. A magician sees each spell: choose a Force and a limit; Karma = Force − limit; the spell's Force is set.
+11. A gear "Power Focus (Rating 2)" offers **Bond** at 10; a melee weapon flagged Focus? with Reach 1 at
+    Force 2 offers 8; a focus with no rating says to set its Force. A bonded focus is not offered again.
+12. A specialisation over twice its base shows an amber "over N".
+13. As GM, each purchase's ledger line has a **↺**. It lists the refund and every change, each
+    untickable; undoing refunds as a new "↺ Undid: …" line, marks the old one "(undone)", and puts the
+    stat back. Undo "Learned <new skill>": the skill item is removed. Players see no ↺.
 
 ### 📌 Notes & parked
 

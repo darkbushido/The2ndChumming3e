@@ -170,6 +170,14 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       // ⚠ SR3 p.244: "each character starts with 1 Karma Pool". This was 0 until
       // 2026-08-31; migration 0.4.5.7 corrects actors already in play. See TODO 80.
       karmaPool:               new NumberField({ integer: true, initial: 1, min: 0 }),
+      /* Karma Pool SPENT since the GM's last refresh · SR3 p.246. `karmaPool` is the pool's size
+       * (awards raise it, burning lowers it); spending raises this and a refresh zeroes it, as with
+       * Combat Pool. Before 2026-10-11 a spend lowered `karmaPool` itself, so a spent point never came
+       * back. Rules: scripts/data/karma-uses.mjs (KarmaPool). */
+      karmaPoolSpent:          new NumberField({ integer: true, initial: 0, min: 0 }),
+      /* Adept Power Points bought with Good Karma in play, on top of Magic · SR3 p.168: "adepts may
+       * purchase additional Power Points at a cost of 20 Good Karma Points per Power Point". */
+      powerPointsBought:       new NumberField({ integer: true, initial: 0, min: 0 }),
       /* Professional Rating · SR3 NPC stat, and the reason TODO 83 exists: all 62 actors in
        * `sr3e-mr-johnsons-contacts` carry theirs as PROSE in `notes` because there was no
        * field to put it in. 0 = not an archetype / not stated. */

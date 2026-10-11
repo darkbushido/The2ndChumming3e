@@ -117,7 +117,7 @@ export const ActionEconomy = {
 
   /** Actor fields an action can spend. */
   SNAP_ACTOR: ['combatPoolSpent', 'spellPoolSpent', 'astralPoolSpent', 'hackingPoolSpent', 'roundsFiredThisPhase', 'karmaPool',
-               'targetsThisPhase'],
+               'karmaPoolSpent', 'targetsThisPhase'],
   /** Object fields, copied and compared by VALUE — who was shot at this phase (TODO 56.2). */
   SNAP_OBJECT: { targetsThisPhase: v => PhaseTargets.normalize(v) },
   /** Item fields an action can spend — rounds in a gun, a thrown stack, an ammunition stock. */

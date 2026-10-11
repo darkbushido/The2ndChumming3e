@@ -88,8 +88,8 @@ the GM via **`sr3e.action.charge`**.
 - Not yet: Take Aim across phases; one Simple for two guns, recoil crossover.
 
 ### GM tools — Rollable Tables sidebar
-Chase Scene, Driving Test, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage, Escape Artist
-live on the Rollable Tables tab (`renderRollTableDirectory`). Chase and Driving Test are for all; the
+Chase Scene, Driving Test, Session Rewards, 🍀 Refresh Karma Pools, Chunky Salsa, Barrier Damage, Falling Damage,
+Escape Artist live on the Rollable Tables tab (`renderRollTableDirectory`). Chase and Driving Test are for all; the
 rest GM-only. Driving Test from there (`SR3EVehicleSheet.promptVehicleDrivingTest` → `runDrivingTest`)
 asks for vehicle + driver.
 

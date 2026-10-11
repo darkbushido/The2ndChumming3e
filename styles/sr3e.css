@@ -253,6 +253,8 @@ background-color: var(--sr-surface) !important;
 .sr-fd-dodge-btn,
 .sr-charge-quickness-btn,
 .sr-blast-wall-btn,
+.sr-karma-btn,
+.sr-karma-done-btn,
 .sr-prone-btn {
   width: 100%;
   height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
@@ -284,11 +286,18 @@ background-color: var(--sr-surface) !important;
 .sr-buy-negotiate-btn,
 .sr-buy-pay-btn,
 .sr-charge-quickness-btn,
-.sr-blast-wall-btn {
+.sr-blast-wall-btn,
+.sr-karma-btn,
+.sr-karma-done-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-gold) 15%, transparent) 0%, color-mix(in srgb, var(--sr-gold) 5%, transparent) 100%);
   border: 1px solid var(--sr-gold);
   color: var(--sr-gold);
 }
+
+/* 🍀 Karma Pool hold card (SR3 p.246): the spend buttons share a row and size to their labels. */
+.sr-karma-actions .sr-karma-btn { width: auto; flex: 1 1 auto; }
+.sr-karma-btn:disabled,
+.sr-karma-done-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .sr-soak-btn:hover:not(:disabled),
 .sr-rigger-disorient-btn:hover:not(:disabled),

@@ -1130,8 +1130,7 @@ export class SR3EItem extends Item {
     if (!weaponOpts) return null;
 
     let   tn                 = weaponOpts.tn;
-    options.useKarma         = weaponOpts.useKarma;
-    options.karmaReroll      = weaponOpts.karmaReroll;
+    Object.assign(options, weaponOpts.karma ?? {});   // 🍀 extra dice, hold, Hooper-Nelson
     const effectiveRawDamage = weaponOpts.damageCode;
     const damageBase         = SR3EItem.parseDamageCode(effectiveRawDamage, actor);
     if (!damageBase && !areaEffect) {
@@ -1181,6 +1180,8 @@ export class SR3EItem extends Item {
 
     // Combat pool allowed unless defaulting to an attribute, and capped by the
     // Default Table at half the rating being defaulted from (SR3 p.84-85).
+    // Bought Karma dice are capped by the skill/attribute dice, not Combat Pool's (SR3 p.246).
+    const karmaDiceCap = pool;
     const availableCombatPool = Math.min(
       actor.system.derived?.availableCombatPool ?? 0, defPoolCap);
     // Unlike the single-target path this KEEPS the `> 0` guard, deliberately. The
@@ -1225,7 +1226,7 @@ export class SR3EItem extends Item {
     game.sr3e.SR3EActionLedger?.charge(actor, this._isConsumable() ? 'throwWeapon' : 'fireWeapon', this.name);
     await this._consumeThrown();
     await this._spendLaunchedRound();
-    return actor.rollPool(pool, tn, label, options);
+    return actor.rollPool(pool, tn, label, { ...options, karmaDiceCap });
   }
 
   // ── Single-target path ─────────────────────────────────────────────────────
@@ -1480,8 +1481,7 @@ export class SR3EItem extends Item {
   if (ammoType === 'antiVehicle') weaponOpts.avMunition = true;
 
   let tn = weaponOpts.tn;
-  options.useKarma    = weaponOpts.useKarma;
-  options.karmaReroll = weaponOpts.karmaReroll;
+  Object.assign(options, weaponOpts.karma ?? {});   // 🍀 extra dice, hold, Hooper-Nelson
 
   // Resolve final damage (vehicle modifier unless AV munition)
   let effectiveRawDamage = weaponOpts.damageCode;
@@ -1553,10 +1553,14 @@ export class SR3EItem extends Item {
   // it cannot know the Default Table's pool cap at offer time. The cap is enforced
   // here instead, at the point of actually spending — clamping what was requested
   // rather than what was offered (SR3 p.84-85: half the rating defaulted from).
+  let karmaDiceCap = null;
   {
     const requested  = (skill || defAllowPool)
       ? Math.min(Math.max(0, weaponOpts.poolDice ?? 0), defPoolCap)
       : 0;
+    // Bought Karma dice are capped by the skill/attribute dice, "not including dice from other
+    // pools" (SR3 p.246) — so the ceiling is the pool BEFORE Combat Pool joins it.
+    karmaDiceCap = pool;
     const combatDice = requested > 0 ? await actor.spendCombatPool(requested) : 0;
     if (combatDice > 0) {
       pool  += combatDice;
@@ -1653,7 +1657,7 @@ export class SR3EItem extends Item {
   if (!options.quickDrawn) game.sr3e.SR3EActionLedger?.charge(actor, this._isConsumable() ? 'throwWeapon' : game.sr3e.SR3EActionLedger.rules.fireAction(fireModeResult?.mode),
     `${this.name}${fireModeResult?.mode ? ` (${fireModeResult.mode})` : ''}`);
   await this._consumeThrown();
-  return actor.rollPool(pool, tn, label, options);
+  return actor.rollPool(pool, tn, label, { ...options, karmaDiceCap });
 }
 
   /**
@@ -2430,7 +2434,7 @@ export class SR3EItem extends Item {
    * Roll options for a thrown / launched AoE weapon: TN (auto range mod by grenade type),
    * damage code, grenade type, and a Confined Space (Chunky Salsa) tickbox. Targets and
    * scatter are resolved AFTER the throw roll. opts.throwDistance = thrower→nominated metres.
-   * Returns { tn, damageCode, grenadeType, useSalsaGUI, useKarma, karmaReroll } or null.
+   * Returns { tn, damageCode, grenadeType, useSalsaGUI, karma } or null.
    */
   /**
    * The attacker-side modifiers a thrown AoE weapon's TN carries before range — pure.
@@ -2454,7 +2458,6 @@ export class SR3EItem extends Item {
 
   static async _promptWeaponRollOptionsAoE(rawDamage, actor, opts = {}) {
     const SR3E       = game.sr3e.SR3E;
-    const karmaPool  = actor?.system.karmaPool ?? 0;
     const throwDist  = opts.throwDistance ?? null;
     // Wound (and layered armour) — pre-applied, since the throw skips rollPool's wound modifier.
     const pre        = opts.pre ?? { mod: 0, parts: [] };
@@ -2522,7 +2525,7 @@ export class SR3EItem extends Item {
             ${pre.parts.length ? `<div style="font-size:11px;color:var(--sr-amber);margin-top:4px">⚡ TN modifiers: ${pre.parts.join(", ")} (pre-applied)</div>` : ''}</div>
           <div style="margin-bottom:10px"><label>Damage Code:
             <input type="text" id="sr-damage" value="${rawDamage}" style="width:80px;margin-left:8px"/></label></div>
-          ${karmaPool > 0 ? `<div style="margin-bottom:10px"><label><input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)</label></div>` : ''}
+          ${game.sr3e.SR3EActor.karmaRollRow(actor)}
           <div style="margin-bottom:8px;padding:6px 8px;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r)">
             <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:bold">
               <input type="checkbox" id="salsa-toggle"/> 💥 Confined Space (Chunky Salsa)?
@@ -2539,14 +2542,13 @@ export class SR3EItem extends Item {
           default: true,
           callback: (_e, _b, dialog) => {
             const el = dialog.element;
-            const useKarma = el.querySelector('#sr-karma')?.checked ?? false;
             result = {
               tn:          Math.max(2, parseInt(el.querySelector('#sr-tn')?.value) || 4),
               damageCode:  el.querySelector('#sr-damage')?.value.trim() || rawDamage,
               grenadeType: el.querySelector('#sr-grenade-type')?.value ?? initType,
               useSalsaGUI: el.querySelector('#salsa-toggle')?.checked ?? false,
-              useKarma,
-              karmaReroll: useKarma,
+              // 🍀 { karmaHold, karmaDice, hooperNelson } — charged by rollPool (SR3 p.246).
+              karma:       game.sr3e.SR3EActor.readKarmaRollRow(el),
             };
           }
         },
@@ -2558,7 +2560,6 @@ export class SR3EItem extends Item {
 
   static async _promptWeaponRollOptions(targetActor, rawDamage, actor, totalTNMod = 0, modBreakdown = null, rangeInfo = null, calledShotAllowed = true, gmCtx = {}) {
     const isVehicle  = targetActor.type === 'vehicle';
-    const karmaPool  = actor?.system.karmaPool ?? 0;
     const rangeTNarr = game.sr3e.SR3E.rangeTN ?? [0, 1, 2, 5];
     const rangeLabels = ['Short', 'Medium', 'Long', 'Extreme'];
 
@@ -2697,11 +2698,7 @@ export class SR3EItem extends Item {
               <div style="color:var(--sr-accent);font-size:11px">⚠ Vehicle target: Power ÷2 (round up), Stage −1 will be applied <span style="color:var(--sr-muted)">(load Anti-Vehicle ammo to bypass)</span></div>
             </div>
           ` : ''}
-          ${karmaPool > 0 ? `
-            <div style="margin-bottom:10px">
-              <label><input type="checkbox" id="sr-karma"/> Use Karma Pool (${karmaPool} available)</label>
-            </div>
-          ` : ''}
+          ${game.sr3e.SR3EActor.karmaRollRow(actor)}
           <div style="margin:10px 0;padding:8px;background:var(--sr-surface);border-radius:var(--r)">
             <label>🎲 Combat Pool dice:
               <input type="number" id="sr-pool" value="0" min="0" max="${availPool}"
@@ -2728,7 +2725,6 @@ export class SR3EItem extends Item {
             const tn = Math.max(2, parseInt(html.querySelector('#sr-tn')?.value) || 4);
             const poolDice = Math.min(Math.max(0, parseInt(html.querySelector('#sr-pool')?.value) || 0), availPool);
             let damageCode = html.querySelector('#sr-damage')?.value.trim() || rawDamage;
-            const useKarma   = html.querySelector('#sr-karma')?.checked ?? false;
             // Called shot: the TN penalty is already folded into #sr-tn above; here we
             // apply the "stage up one level" damage option and capture the sub-target.
             const calledShot       = html.querySelector('#sr-called')?.value ?? 'none';
@@ -2748,7 +2744,7 @@ export class SR3EItem extends Item {
              * Missile Parry's TN (p.170), which is 10 minus this band's base TN. */
             const bandSel  = dialog.element.querySelector('#sr-range');
             const rangeBandIdx = bandSel ? (parseInt(bandSel.value) ?? null) : (rangeInfo?.bandIdx ?? null);
-            result = { tn, damageCode, avMunition: false, useKarma, karmaReroll: useKarma,
+            result = { tn, damageCode, avMunition: false, karma: game.sr3e.SR3EActor.readKarmaRollRow(html),
                        calledShot, calledShotTarget, poolDice,
                        rangeBandIdx: Number.isInteger(rangeBandIdx) ? rangeBandIdx : null };
           }

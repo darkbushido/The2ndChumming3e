@@ -1,5 +1,7 @@
 ---
 paths:
+  - "scripts/data/karma-uses.mjs"
+  - "tests/karma-uses.test.mjs"
   - "scripts/SR3EPurchase.js"
   - "scripts/data/ledger.mjs"
   - "scripts/data/purchasing.mjs"
@@ -17,9 +19,38 @@ paths:
 |---|---|---|
 | `system.totalKarma` | career odometer | only grows |
 | `system.karma` | **Good Karma** — the advancement currency | awards add, purchases subtract |
-| `system.karmaPool` | a **dice pool**: rerolls, buying off Rule of One, Hand of God · p.246 | refreshes per scene (GM's call); burned points never return |
+| `system.karmaPool` | the Karma Pool's **size** · p.246 | awards raise it; **burning** lowers it, for ever |
+| `system.karmaPoolSpent` | Karma Pool **spent** since the GM's refresh | spending raises it; the GM's 🍀 Refresh zeroes it |
+| `system.powerPointsBought` | adept Power Points bought with Good Karma, on top of Magic · p.168 | the Spend calculator |
 
-Karma Pool shows on the **Attributes** tab; Good/Total Karma on **Bio → Resources**.
+Karma Pool shows on the **Attributes** tab (left / size, like Combat Pool); Good/Total Karma on **Bio → Resources**.
+
+### The Karma Pool in play  · *SR3 p.246-248* — TODO 216 and the audit of 2026-10-11
+Rules `scripts/data/karma-uses.mjs` (`KarmaPool`, pure); actor side `spendKarmaPool` / `burnKarmaPool` /
+`refreshKarmaPool`, `karmaRollRow` / `readKarmaRollRow`, `_postKarmaHoldCard`, `handleKarmaHold` on `SR3EActor`.
+⚠ **Until 2026-10-11 none of it worked**: the dialogs' "Use Karma Pool" box was read by nothing, the one
+re-roll function was never called, and a spend lowered the pool's size so the point never came back.
+- ⚠ **Spent ≠ burned.** Spend (re-roll, extra dice, avoid a disaster) → `karmaPoolSpent`, back on a refresh.
+  Burn (buy successes, Hooper-Nelson) → `karmaPool` drops for ever. Mutant `karma-spend-lowers-the-pool`.
+- ⚠ **It does not refresh with the other pools** — "Reset All Pools" and the Combat Turn leave it alone.
+  The GM refreshes: 🍀 on the sheet, or **🍀 Refresh Karma Pools** (GM tools; PCs, unticked, "All").
+- **Before the roll** — the 🍀 row in all four roll dialogs (attribute, skill, weapon, AoE throw) → `rollPool`:
+  extra dice cost 1, 3, 6… capped at the skill/attribute dice **without other pools** (the weapon flows pass
+  `karmaDiceCap`, the pool before Combat Pool); Hooper-Nelson (p.248, GM's option) burns 1 per TN point,
+  never below 8, warned under TN 12.
+- **After the roll** — "Hold the roll for Karma" ticked: the final wave stops on a 🍀 card **before the
+  result block** (that block posts dodge/soak cards and draws blast markers — re-running it would post them
+  twice). Re-roll failures (1, then 2 more, then 3 more — mutant `karma-reroll-flat-price`; successes never
+  re-rolled), avoid a disaster (Rule of One only, and that roll may not be re-rolled — mutant
+  `karma-reroll-an-oops-roll`), buy successes (burned; needs one rolled; a `karma: true` die, total 99).
+  ✔ Done resolves via `_postWaveCard({ ...state, karmaHold: false })`.
+  - The roll state rides on the **message flag** `karmaHold`, not a payload; `karmaHold`/`karmaRerolls`/
+    `karmaDisasterAverted` are in the 💥 carry so a re-rolled 6 explodes and comes back to the hold.
+  - The buttons are `_isDeciderId` (the roller), claimed once on the message (`karmahold`), and
+    `sr-karma-done-btn` is a ⏳ step.
+- Not modelled: Karma on opposed rolls (melee, astral, contested — they roll through `_rollWave`), on
+  rolls with no dialog (soak, Drain), on physical dice; Open Test re-rolls (`openTestRerollCost` is ready);
+  Extended actions (p.248). NPCs have no pool field (TODO 83), so nothing is offered to them.
 
 **Awarding** — **Award Karma…** (GM, Bio → Resources, one character) and **🎖 Session Rewards** (GM, Rollable
 Tables: karma, nuyen, a gear note to ticked PCs) both go through `SR3EActor.karmaAward(totalKarma, amount, metatype)`.
@@ -31,7 +62,16 @@ Tables: karma, nuyen, a gear note to ticked PCs) both go through `SR3EActor.karm
   metatype-aware — pinned to `⌊total / 20⌋ + 1`, matching only Pools exactly equal to the old formula's.
 
 **Spending** (`_onSpendKarmaCalculator`) lists every affordable purchase: attributes, skill increases, new
-skills, new specialisations, specialisation increases. Pure statics on `SR3EActor` (the sheet can't be
+skills, new specialisations, specialisation increases, and under **Magic**: an adept's Power Point (20, p.168),
+learning a spell at a Force (Karma = Force, less a limit's modifier, p.180-181 — asked in a sub-dialog), and
+bonding a focus (Focus Bonding Table, p.190 — `GoodKarma.focusType`/`focusForce`/`bondingCost`; foci are gear
+named for their type, bonded = flag `bonded`; weapon foci are melee `isFocus`, bonded = `focusActive`).
+⚠ A specialisation over **twice the base** (3 on a base of 1, p.84) is **warned**, not refused.
+- **↺ Undo (TODO 212, GM).** Every purchase passes `ledgerRevert` (`{ actor, items, deleteItems }`) with its
+  karma write; `recordLedger` puts it on the Good Karma line. The ↺ lists the refund and each change as
+  untickable rows, refunds as a NEW line ("↺ Undid: …") and marks the original `reverted`.
+  `tests/karma-uses.test.mjs` asserts every karma-spending write in the calculator carries one.
+- Magic in the Shadows' Good Karma uses (initiation, groups, quickening, anchoring, allies, spirits) are TODO 219. Pure statics on `SR3EActor` (the sheet can't be
 imported without Foundry): `karmaSkillCost`, `karmaSpecCost`, `karmaNewSkillCost`, `karmaAttributeCost`,
 `karmaAttributeMaximum`, `karmaMaxSpecialisations`, `karmaSpecTargetRating`, `karmaAward`,
 `karmaPoolForTotal`. `tests/karma.test.mjs` + a mutant per rule.
@@ -58,8 +98,8 @@ imported without Foundry): `karmaSkillCost`, `karmaSpecCost`, `karmaNewSkillCost
   skill/attribute one apart, so `ceil` vs `floor` and skill- vs attribute-gated caps both pass them.
 
 ### The ledger  · TODO 79
-`scripts/data/ledger.mjs`. `system.ledger`: `{ when, kind: 'karma'|'nuyen'|'pool', delta, from, to, reason, by }`,
-under **📒 Ledger** on the Bio tab.
+`scripts/data/ledger.mjs`. `system.ledger`: `{ when, kind: 'karma'|'nuyen'|'pool'|'poolSpent', delta, from, to,
+reason, by, revert?, reverted? }`, under **📒 Ledger** on the Bio tab. Labels by `specForKind(kind)`.
 - ⚠ **Derived from the WRITE** in `SR3EActor.recordLedger` (called by `_preUpdate`), **never from call sites**.
   `tests/ledger.test.mjs` ratchets writers that bypass `actor.update`.
 - ⚠ **Rides along in the same update** (no second write, no GM relay), in the caller's spelling (flat or nested).
