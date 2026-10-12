@@ -3223,6 +3223,16 @@ _prepareCharacter(sys, attr) {
     return SR3EActor._signalTierMod(vehicle?.system?.signalMonitor?.simsense ?? 0);
   }
 
+  /** A rigger's VCR level: the active rig if one is chosen, else any VCR cyberware; 0 without one.
+   *  ⚠ `vcrLevelOf`, not `system.rating`: the shipped rigs store 0 with the level in the name. */
+  static riggerVcrLevel(rigger) {
+    if (!rigger?.items) return 0;
+    const activeVCRId = rigger.system?.activeVCRItemId ?? '';
+    const level = activeVCRId ? vcrLevelOf(rigger.items.get(activeVCRId)) : 0;
+    return level || vcrLevelOf(rigger.items.find(i =>
+      i.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(i.name)));
+  }
+
   // For a rigger jumped into a VCR drone, the Simsense degradation acts exactly like a wound
   // modifier (R3 p.145): +N to ALL their target numbers and −N to initiative. Returns +N (0 if
   // not jacked in or no degradation). The VCR is exclusive, so at most one drone applies.
@@ -10627,23 +10637,18 @@ _prepareCharacter(sys, attr) {
         if (rigger) {
           const d = rigger.system.derived ?? {};
 
-          if (controlMode === 'vcr') {
-            // VCR: Rigger's reaction BASE (no wired reflexes) + 2 × vcrLevel + woundMod, (1 + vcrLevel)d6 · SR3 p.301
-            let vcrLevel = 0;
-            const activeVCRId = rigger.system.activeVCRItemId ?? '';
-            if (activeVCRId) vcrLevel = vcrLevelOf(rigger.items.get(activeVCRId));
-            if (!vcrLevel) {
-              // ⚠ `vcrLevelOf`, not `system.rating`: the shipped rigs store 0 with the level in the name.
-              vcrLevel = vcrLevelOf(rigger.items.find(i =>
-                i.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(i.name)
-              ));
-            }
+          const vcrLevel = SR3EActor.riggerVcrLevel(rigger);
+          if (Rigging.usesVcrInitiative(controlMode, vcrLevel)) {
+            // VCR: Rigger's reaction BASE (no wired reflexes) + 2 × vcrLevel + woundMod, (1 + vcrLevel)d6 · SR3 p.301.
+            // RCD with a VCR is the captain's chair, which keeps the same bonus (p.154, Rigger X).
+            const jumpedIn = controlMode === 'vcr';
 
             // Wired reflexes excluded in VCR — use reaction.base not reaction.value
             const wm          = rigger.system.woundMod ?? 0;
             const reactionBase = rigger.system.attributes?.reaction?.base ?? 0;
-            // Simsense jamming on this drone lowers the jacked rigger's initiative (wound-like).
-            const jam = SR3EActor._vehicleSimsenseMod(this);
+            // Simsense jamming on this drone lowers the jacked rigger's initiative (wound-like) —
+            // only when jumped into it.
+            const jam = jumpedIn ? SR3EActor._vehicleSimsenseMod(this) : 0;
             const base = Rigging.vcrReaction(reactionBase, vcrLevel) + wm - jam;
             const dice = Rigging.vcrInitiativeDice(vcrLevel);
 
@@ -10659,7 +10664,7 @@ _prepareCharacter(sys, attr) {
               content: `
                 <div class="sr-roll-card">
                   <div class="sr-roll-header">⚡ Initiative — ${this.name}
-                    <span style="font-size:11px;font-weight:normal;color:var(--sr-accent)"> VCR: ${rigger.name}</span>
+                    <span style="font-size:11px;font-weight:normal;color:var(--sr-accent)"> ${jumpedIn ? 'VCR' : "RCD (captain's chair), VCR"}: ${rigger.name}</span>
                   </div>
                   <div class="sr-roll-meta">REA base ${reactionBase}${vcrPart}${wmPart}${jamPart} = ${base} base (${rigger.name}) + ${dice}d6</div>
                   <div class="sr-roll-dice">${diceHtml}</div>
@@ -10671,7 +10676,7 @@ _prepareCharacter(sys, attr) {
             });
             return score;
           } else {
-            // RCD: Rigger's Reaction + normal dice, no modifiers.
+            // RCD without a VCR (a datajack and a deck, p.154): Rigger's Reaction + normal dice.
             // ⚠ This is RIGGING, so Enhanced Articulation's +1 Reaction does not apply
             // (M&M p.66). Jumped-in VCR above already avoids it by reading reaction.BASE;
             // remote control reads the derived value, so it needs the corrected one.
@@ -10743,28 +10748,24 @@ _prepareCharacter(sys, attr) {
     let base, dice, modeNote;
 
     // VCR (jumped-in): rigger uses reaction BASE + 2 × VCR level (wired reflexes excluded) · SR3 p.301, p.140.
-    const vcrVehicle = game.actors?.find(a =>
-      a.type === 'vehicle' &&
-      a.system?.driverActorId === this.id &&
-      a.system?.controlMode === 'vcr'
-    );
-    if (vcrVehicle) {
-      let vcrLevel = 0;
-      const activeVCRId = this.system.activeVCRItemId ?? '';
-      if (activeVCRId) vcrLevel = vcrLevelOf(this.items.get(activeVCRId));
-      if (!vcrLevel) {
-        // ⚠ `vcrLevelOf`, not `system.rating`: the shipped rigs store 0 with the level in the name.
-        vcrLevel = vcrLevelOf(this.items.find(i =>
-          i.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(i.name)
-        ));
-      }
+    // A rigger with a VCR running drones from the deck (RCD, the captain's chair) keeps the same
+    // Initiative: "Even though he is in captain's chair mode, Rigger X receives his usual Initiative
+    // bonus" (p.154). Jumped in wins if both apply — it is the one with the Simsense jam.
+    const riggedVehicles = game.actors?.filter(a =>
+      a.type === 'vehicle' && a.system?.driverActorId === this.id) ?? [];
+    const vcrVehicle = riggedVehicles.find(a => a.system?.controlMode === 'vcr')
+      ?? riggedVehicles.find(a => a.system?.controlMode === 'rcd');
+    const vcrLevel = vcrVehicle ? SR3EActor.riggerVcrLevel(this) : 0;
+    if (vcrVehicle && Rigging.usesVcrInitiative(vcrVehicle.system.controlMode, vcrLevel)) {
+      const jumpedIn = vcrVehicle.system.controlMode === 'vcr';
       const wm = this.system.woundMod ?? 0;
       const reactionBase = this.system.attributes?.reaction?.base ?? 0;
-      // Simsense jamming on the jumped-in drone lowers initiative (wound-like).
-      const jam = SR3EActor._vehicleSimsenseMod(vcrVehicle);
+      // Simsense jamming on the jumped-in drone lowers initiative (wound-like). The captain's chair
+      // isn't seeing through any one drone, so no drone's jam applies.
+      const jam = jumpedIn ? SR3EActor._vehicleSimsenseMod(vcrVehicle) : 0;
       base = Rigging.vcrReaction(reactionBase, vcrLevel) + wm - jam;
       dice = Rigging.vcrInitiativeDice(vcrLevel);
-      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🎮 VCR Lv${vcrLevel} — REA base ${reactionBase}${vcrLevel ? ` + VCR ${vcrLevel} (+${2 * vcrLevel})` : ''}${jam ? ` − Simsense jam (${jam})` : ''}</div>`;
+      modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🎮 ${jumpedIn ? 'VCR' : "Captain's chair (RCD), VCR"} Lv${vcrLevel} — REA base ${reactionBase}${vcrLevel ? ` + VCR ${vcrLevel} (+${2 * vcrLevel})` : ''}${jam ? ` − Simsense jam (${jam})` : ''}</div>`;
     } else if (useAstral) {
       // Astral initiative: Intelligence + 20 + 1d6
       const intel = this.system.attributes?.intelligence?.value ?? 0;

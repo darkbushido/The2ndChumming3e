@@ -49,4 +49,27 @@ export async function run(t) {
   t.ok('chase: no Control Pool without an active VCR', /if \(!vcr\) return 0;/.test(chase));
   t.ok('chase: VCR initiative from the rule', /Rigging\.vcrReaction\(actor\.system\.attributes\?\.reaction\?\.base/.test(chase)
     && !/derived\?\.initiative \?\? 0\) \+ vcrLevel/.test(chase));
+
+  /* ── Drones from a remote-control deck · SR3 p.154 ─────────────────────────────────────────────
+   * "Success Tests for drones in secondary mode are made with the drones' Pilot Ratings rather than
+   *  the rigger's Skill or Attribute Ratings. Combat or Control Pool dice may not be added"
+   * "Even though he is in captain's chair mode, Rigger X receives his usual Initiative bonus"
+   * RCD rolled the rigger's skills for the drone and dropped the VCR Initiative (2026-10-12). */
+  t.is('jumped in (VCR): the rigger rolls', Rigging.droneTestRoller('vcr', true), 'rigger');
+  t.is("captain's chair / secondary (RCD): the drone's Pilot rolls", Rigging.droneTestRoller('rcd', true), 'pilot');
+  t.is('no rigger: the Pilot rolls', Rigging.droneTestRoller('vcr', false), 'pilot');
+  t.ok('VCR mode: VCR Initiative', Rigging.usesVcrInitiative('vcr', 2));
+  t.ok('RCD with a VCR keeps the VCR Initiative (Rigger X, p.154)', Rigging.usesVcrInitiative('rcd', 2));
+  t.ok('RCD with only a datajack and a deck: ordinary Initiative', !Rigging.usesVcrInitiative('rcd', 0));
+  t.ok('Auto: no rigger Initiative', !Rigging.usesVcrInitiative('', 3));
+
+  t.ok("the rigger's Initiative reads the rule, for a vehicle in RCD as well as VCR",
+    /Rigging\.usesVcrInitiative\(vcrVehicle\.system\.controlMode, vcrLevel\)/.test(actor)
+    && /riggedVehicles\.find\(a => a\.system\?\.controlMode === 'rcd'\)/.test(actor));
+  t.ok('…and so does a vehicle rolling for its rigger', /Rigging\.usesVcrInitiative\(controlMode, vcrLevel\)/.test(actor));
+  t.ok("…and only a jumped-in drone's Simsense jam counts", (actor.match(/jumpedIn \? SR3EActor\._vehicleSimsenseMod/g) ?? []).length === 2);
+  t.ok('gunnery: only a jumped-in rigger rolls their Gunnery', /if \(pilotActor && roller === 'rigger'\)/.test(item)
+    && /Rigging\.droneTestRoller\(controlMode, !!pilotActor\)/.test(item));
+  t.ok('Driving Test: an RCD drone rolls its Pilot, on itself', /Rigging\.droneTestRoller\(sys\.controlMode/.test(sheet)
+    && /skillDice   = pilotRating;/.test(sheet) && (sheet.match(/await tester\.rollPool\(/g) ?? []).length === 2);
 }

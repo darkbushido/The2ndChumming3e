@@ -43,4 +43,30 @@ export class Rigging {
   static controlPoolDice(available, skillDice) {
     return Math.min(whole(available), whole(skillDice));
   }
+
+  /* ── Drones run from a remote-control deck · SR3 p.154 ─────────────────────────────────────────
+   * > "A rigger may operate only one drone in his or her network in primary mode. This mode enables
+   * > the rigger to control the drone as if he or she were directly jacked into it. The rigger may
+   * > use Combat and Control Pool dice … and receives all rigger bonuses for those tests. Success
+   * > Tests for drones in secondary mode are made with the drones' Pilot Ratings rather than the
+   * > rigger's Skill or Attribute Ratings. Combat or Control Pool dice may not be added"
+   * > "Even though he is in captain's chair mode, Rigger X receives his usual Initiative bonus"
+   *
+   * The system's modes map onto the book's: **VCR** = jumped into the primary drone (one vehicle per
+   * character, as the book allows one primary); **RCD** = a secondary drone, or the captain's chair;
+   * **Auto** = no rigger at all.
+   * ⚠ RCD used to roll the RIGGER's Gunnery and Driving skill for the drone, and dropped the rigger's
+   * VCR Initiative — both the opposite of p.154 (found writing the Drones guide, 2026-10-12).
+   */
+
+  /** Who supplies the dice for a drone's own test: `'rigger'` (jumped in) or `'pilot'` (Pilot Rating). */
+  static droneTestRoller(controlMode, hasRigger) {
+    return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';
+  }
+
+  /** Does the rigger roll VCR Initiative? Jumped in always; in the captain's chair (RCD) only with a VCR. */
+  static usesVcrInitiative(controlMode, vcrLevel) {
+    if (controlMode === 'vcr') return true;
+    return controlMode === 'rcd' && whole(vcrLevel) > 0;
+  }
 }

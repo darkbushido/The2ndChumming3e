@@ -1664,8 +1664,8 @@ export class SR3EItem extends Item {
    * Vehicle / drone weapon attack flow.
    *
    * Pool:
-   *   VCR / RCR mode (driverActorId set): pilot actor's Gunnery skill + wound mod
-   *   Autonomous (no driverActorId):      vehicle's Pilot rating
+   *   VCR (jumped in):                    pilot actor's Gunnery skill + wound mod, Control Pool
+   *   RCD or Autonomous:                  vehicle's Pilot rating, no pools (SR3 p.154)
    *
    * TN: target Sig + range modifier (editable)
    * Fire Control: bonus dice added to pool (vehicle mod)
@@ -1696,8 +1696,11 @@ export class SR3EItem extends Item {
     let   gunneryDefPoolCap   = Infinity;
 
     let vcrLevel = 0;
-    if (pilotActor) {
-      const modeLabel  = vcrMode ? 'VCR' : 'RCD';
+    // Jumped in (VCR) the rigger rolls their own Gunnery; a secondary drone or the captain's chair
+    // (RCD) rolls the drone's Pilot Rating, with no pools (SR3 p.154).
+    const roller = Rigging.droneTestRoller(controlMode, !!pilotActor);
+    if (pilotActor && roller === 'rigger') {
+      const modeLabel  = 'VCR';
       const gunnery    = pilotActor.items.find(i => i.type === 'skill' && /gunnery/i.test(i.name));
       if (gunnery) {
         // Improved Ability / augmentation dice on the gunner's Gunnery skill.
@@ -1746,7 +1749,9 @@ export class SR3EItem extends Item {
     } else {
       const pilotRating = actor.system.attributes?.pilot?.base ?? 0;
       pool      = pilotRating;
-      poolLabel = `Autonomous: Pilot ${pilotRating}`;
+      poolLabel = pilotActor
+        ? `RCD (${pilotActor.name}, captain's chair): Pilot ${pilotRating}`
+        : `Autonomous: Pilot ${pilotRating}`;
     }
 
     // Control Pool for gunnery: VCR only — Reaction base + 2 × VCR, at most the skill dice (SR3 p.44).

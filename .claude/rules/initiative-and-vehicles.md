@@ -42,8 +42,17 @@ Both end the round and prompt the GM to re-roll.
   `Rigging.vcrReaction` / `vcrInitiativeDice`, SR3 p.301 (*"Each level adds +2 to the user's Reaction and +1D6
   Initiative dice"*); wired reflexes and magic don't apply (p.140). ⚠ **+2, not +1**, on every path incl. the
   chase (TODO 167). ⚠ There is no verified flat "−2 TN per VCR level on skill tests" (TODO 106).
-- RCD (remote): rigger's `Reaction + woundMod` + `initiativeDice`d6
+- RCD (remote, the **captain's chair**): a rigger **with a VCR** keeps the VCR Initiative above, minus no
+  drone's Simsense jam; without one (a datajack and a deck), `Reaction + woundMod` + `initiativeDice`d6 —
+  SR3 p.154, *"Even though he is in captain's chair mode, Rigger X receives his usual Initiative bonus"*.
 - Auto (no pilot): `Pilot rating` + 2d6
+
+**Drones from a deck · SR3 p.154** (`Rigging.droneTestRoller` / `usesVcrInitiative`). VCR = jumped into the
+**primary** drone (one per character, as VCR is exclusive): the rigger's skills, Combat and Control Pool.
+**RCD = secondary drone / captain's chair: the drone rolls its own Pilot Rating, no pools** — vehicle gunnery
+(`rollVehicleWeapon`) and the Driving/Crash Test (`runDrivingTest`, rolled on the vehicle, Pilot standing in
+for Reaction on the speed row). A hand-picked driver (the GM tool) still drives. ⚠ RCD rolled the rigger's
+Gunnery and vehicle skill until 2026-10-12. Not modelled: subscriber lists, affiliation.
 - VCR is exclusive: activating it sets the rigger's other linked vehicles to Auto (editable after).
 
 ### Action economy — the action ledger  · *SR3 pp.105-108* — TODO 48

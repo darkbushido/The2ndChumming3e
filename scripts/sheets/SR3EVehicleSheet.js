@@ -1008,10 +1008,18 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async runDrivingTest(actor, driverOverride = null, { crash = null } = {}) {
     const sys        = actor.system;
     const driver = driverOverride ?? game.actors.get(sys.driverActorId?.trim() ?? '');
-    if (!driver) {
+    /* A drone the rigger isn't jumped into rolls its own Pilot Rating, with no pools: a secondary
+     * drone or the captain's chair (RCD), or a drone on its own (SR3 p.154, Rigging.droneTestRoller).
+     * A driver picked by hand (the GM tool) drives. */
+    const pilotRating = sys.attributes?.pilot?.base ?? 0;
+    const droneRolls  = !driverOverride
+      && Rigging.droneTestRoller(sys.controlMode ?? '', !!driver) === 'pilot'
+      && (driver ? sys.controlMode === 'rcd' : pilotRating > 0);
+    if (!driver && !droneRolls) {
       ui.notifications.warn('No driver set for this vehicle — select one.');
       return;
     }
+    const tester = droneRolls ? actor : driver;
 
     // Map vehicle type → skill name keywords
     const TYPE_KEYWORDS = {
@@ -1028,7 +1036,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const vType    = sys.vehicleType ?? 'car';
     const keywords = TYPE_KEYWORDS[vType] ?? [];
-    const skills   = driver.items.filter(i => i.type === 'skill');
+    const skills   = droneRolls ? [] : driver.items.filter(i => i.type === 'skill');
 
     let matchedSkill     = null;
     let useSpecialisation = false;
@@ -1046,7 +1054,11 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     let skillDice, skillRating, poolLabel;
     const isDefaulting = !matchedSkill;
     let defTnMod = 0;
-    if (matchedSkill) {
+    if (droneRolls) {
+      skillDice   = pilotRating;
+      skillRating = 0;   // no Control Pool for a drone rolling for itself
+      poolLabel   = `Pilot ${pilotRating}${driver ? ` (RCD — ${driver.name} in the captain's chair)` : ' (drone on its own)'}`;
+    } else if (matchedSkill) {
       const rating    = matchedSkill.system.rating ?? 1;
       const specBonus = useSpecialisation ? 2 : 0;
       skillDice   = rating + specBonus;
@@ -1086,7 +1098,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const basePool = skillDice + autonav;
 
     // Check for VCR cyberware
-    const vcrItem   = driver.items.find(i =>
+    const vcrItem   = droneRolls ? null : driver.items.find(i =>
       i.type === 'cyberware' &&
       (i.name.toLowerCase().includes('vcr') || i.name.toLowerCase().includes('vehicle control rig'))
     );
@@ -1095,7 +1107,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const vcrRating = vcrLevel(vcrItem);
     // Control Pool dice a rigger may add (SR3 p.44, p.134, p.147): the pool is Reaction + 2 × VCR,
     // and one test takes at most the skill's dice. It is NOT the skill itself (TODO 167).
-    const controlPool = Rigging.controlPool(driver.system?.attributes?.reaction?.base ?? 0, vcrRating);
+    const controlPool = Rigging.controlPool(tester.system?.attributes?.reaction?.base ?? 0, vcrRating);
     const cpDice      = Rigging.controlPoolDice(controlPool, skillRating);
 
     // Inline styles — DialogV2 does not reliably apply an injected <style> block.
@@ -1128,7 +1140,9 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     let crashRows = '';
     let crashPool = null;
     if (crash) {
-      const reaction = driver.system?.attributes?.reaction?.value ?? driver.system?.attributes?.reaction?.base ?? 0;
+      // A drone's Pilot Rating stands in for "the rigger's Skill or Attribute Ratings" (p.154).
+      const reaction = droneRolls ? pilotRating
+        : (driver.system?.attributes?.reaction?.value ?? driver.system?.attributes?.reaction?.base ?? 0);
       const speedMct = Number(crash.speedKmct) || 0;
       const spd      = game.sr3e.SR3EActor.crashSpeedModifier(speedMct, reaction);
       crashRows = `
@@ -1157,7 +1171,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       position: { width: 460 },
       content: `
         <div style="background:#1c2030;border-radius:4px;padding:8px;margin-bottom:10px;font-size:12px;">
-          ${infoRow('Driver', driver.name)}
+          ${infoRow('Driver', droneRolls ? `${actor.name} itself (Pilot ${pilotRating})` : driver.name)}
           ${infoRow('Skill', poolLabel)}
           ${infoRow('Autonav', `${autonav} (added out of combat)`)}
           ${infoRow('Handling (base TN)', handling)}
@@ -1297,12 +1311,12 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     if (!result) return;
     if (crash) {
-      await driver.rollPool(result.pool, result.tn, `Crash Test — ${actor.name}`, {
+      await tester.rollPool(result.pool, result.tn, `Crash Test — ${actor.name}`, {
         isCrashRoll: true, crashContext: crash,
       });
       return;
     }
-    await driver.rollPool(result.pool, result.tn, `Driving Test — ${actor.name}`, {
+    await tester.rollPool(result.pool, result.tn, `Driving Test — ${actor.name}`, {
       crashOnFailVehicleId: actor.id,
     });
   }

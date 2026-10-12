@@ -193,6 +193,20 @@ export const MUTANTS = [
     impl:   (base, vcr) => (Number(base) || 0) + 2 * (Number(vcr) || 0),
   },
   {
+    id:     'rcd-drone-rolls-the-riggers-skill',
+    suite:  'rigging',
+    ...RIG, method: 'droneTestRoller',
+    was:    "a drone in RCD rolled the rigger's Gunnery and Driving skills; SR3 p.154: secondary drones use their Pilot Ratings",
+    impl:   (_mode, hasRigger) => hasRigger ? 'rigger' : 'pilot',
+  },
+  {
+    id:     'captains-chair-loses-vcr-initiative',
+    suite:  'rigging',
+    ...RIG, method: 'usesVcrInitiative',
+    was:    `a rigger in RCD rolled ordinary Initiative; SR3 p.154: in the captain's chair Rigger X "receives his usual Initiative bonus"`,
+    impl:   mode => mode === 'vcr',
+  },
+  {
     id:     'mana-spells-deal-stun',
     suite:  'spell-damage',
     ...ITEM, method: 'spellDealsStun',

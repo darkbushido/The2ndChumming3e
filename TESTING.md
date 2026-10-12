@@ -370,9 +370,16 @@ Formula: `Rigger REA + VCR level + woundMod` base + `(1 + VCR)d6`
 **In:** REA 5, VCR 2 → base `7`, dice `3d6` → result 10–25.
 
 ### RCD (Vehicle — remote control) - failed - passed
-Formula: `Rigger REA + woundMod` base + `1d6`
+Formula, rigger **without** a VCR: `Rigger REA + woundMod` base + `1d6`
 
 **In:** REA 5 → **Out:** `5 + 1d6`, result 6–11.
+
+### RCD with a VCR — the captain's chair (SR3 p.154) - not yet tested
+A rigger with a VCR keeps the VCR Initiative when running a drone in RCD: base REA 5, VCR 2 → base `9`,
+`3d6`, and the card says "Captain's chair (RCD)". With that drone in RCD, its **vehicle weapon** attack
+and its **Driving Test** roll the drone's **Pilot Rating**, with no Control Pool row, and the Driving
+Test card is posted by the drone, not the rigger. Switch the drone to **VCR**: both go back to the
+rigger's Gunnery / vehicle skill plus Control Pool.
 
 ### Auto / Pilot (Vehicle — no rigger) - passed
 Formula: `Pilot rating` base + `2d6`
@@ -1447,7 +1454,7 @@ Confirm the correct formula fires based on `vcrMode` / `controlledBy` fields on 
 | Mode | Expected formula |
 |---|---|
 | VCR (jumped-in) | Rigger REA + VCR level, (1+VCR)d6 |
-| RCD (remote) | Rigger REA, 1d6 |
+| RCD (remote) | Rigger REA, 1d6 — or the VCR formula when the rigger has a VCR (captain's chair, SR3 p.154) |
 | Auto (no pilot) | Pilot rating, 2d6 |
 
 ### Mode sync — actor sheet and vehicle sheet must agree
