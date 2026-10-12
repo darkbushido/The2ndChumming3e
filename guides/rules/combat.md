@@ -147,6 +147,7 @@ dice against TN **5** (9 − 4) and gets **1**. Snot's total is **3**, Liam's is
 ---
 
 ## Melee combat  *(SR3 p.120–123)*
+{: #melee-combat }
 
 Melee is a **Complex Action**. It is an **opposed** test: both sides roll.
 *(SR3 p.108, p.122)*

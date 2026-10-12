@@ -107,8 +107,8 @@ Jekyll 4 with the **Just the Docs** theme gem (0.12), built by GitHub Actions.
 | Path | What |
 | :--- | :--- |
 | `index.md`, `sources.md` | Home, and abbreviations / method / what couldn't be verified |
-| `rules/` | combat, reloading, grenades, healing, karma, decking, rigging |
-| `magic/` | the Awakened primer |
+| `rules/` | combat, weapons, reloading, grenades, healing, karma, decking, rigging, vehicles, drones |
+| `magic/` | the Awakened primer, spellcasting, spells (learning and the Street Grimoire), physical adepts, initiation |
 | `street/` | SINs, buying gear and fencing, cyberware grades |
 | `hiring/` | book payment rules (`index.md`) plus nine specialist pages |
 | `world/` | the factions, **as of October 2059** (the maintainer's campaign date): megacorps and the Corporate Court, syndicates, police, policlubs, nations. Later events go in the system's GM-only pack, never here — `tests/gm-sixth-world.test.mjs` |

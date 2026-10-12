@@ -7192,6 +7192,27 @@ the sheet shows and where the 📒 Ledger records it. Every rule is checked in t
 page. Follow `guides/CLAUDE.md`, link it from `guides/rules/index.md`, then `node tools/linkcheck.mjs`.
 Guide content, so it goes on a branch.
 
+## 222. ✅ Guide pages: physical adepts, spells, initiation, weapons, vehicles, drones — **requested 2026-10-11** · `b7129853`
+
+The maintainer asked for six new pages on the SR3 Table Reference (`guides/`), each written like the
+existing ones (`guides/CLAUDE.md`): every rule checked in the PDF and cited by printed page, tables
+transcribed from the book, worked examples with checked arithmetic, and a "Doing it in The 2nd
+Chumming (Foundry)" section. Build and run `node tools/linkcheck.mjs` before each commit.
+
+- **Physical adepts** — Power Points, the powers (SR3 p.168–171; MitS), buying Power Points with
+  Good Karma (p.168), and how the sheet tracks them.
+- **Spells** — learning (p.180), Force, Drain, categories, Spell Pool, sustaining, the core spell
+  list (SR3 p.178–198); the system's cast flow.
+- **How to initiate** — grades, the Karma cost, ordeals, groups, metamagic (MitS). Pairs with
+  [#219](TODO.md#219), which builds the same rules into the system.
+- **Weapons** — firearm classes, the Weapon Range Table, ammunition, accessories, melee (SR3
+  p.276–284); some of it is already on `rules/combat.md` and `rules/reloading.md`, so link, don't repeat.
+- **Vehicles** — vehicle stats, Driving Tests, crashes, vehicle combat (SR3 p.134–150; R3).
+- **Drones** — rigging drones, the Control Pool, remote control and jumping in (SR3 p.44, p.301; R3);
+  `rules/rigging.md` exists, so extend or link.
+
+Guide content, so each goes on a branch.
+
 ## 224. ✅ Drones in RCD ignore SR3 p.154 — **found 2026-10-12** (writing the Drones guide, #222) · fixed `28a4ccdc`
 
 The captain's chair (RCD) dropped a VCR rigger's Initiative bonus, and RCD drones rolled the rigger's
