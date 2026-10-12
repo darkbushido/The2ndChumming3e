@@ -10,6 +10,10 @@ nav_order: 8
 Vehicles, drones, jacking in and vehicle combat — the rules from the core
 book, and how a player actually runs them at this table.
 
+The vehicles and drones themselves, with their statistics, rigger gear
+and drone networks, are on [Vehicles](../vehicles/) and
+[Drones](../drones/).
+
 1. TOC
 {:toc}
 
@@ -18,6 +22,7 @@ book, and how a player actually runs them at this table.
 ## Part 1: the rules
 
 ### Vehicle Attributes  *(SR3 p.130–133)*
+{: #vehicle-attributes }
 
 Vehicles have their own Attribute Ratings, the way characters have
 Attributes. The ones that come up at the table:
@@ -45,6 +50,7 @@ Attributes. The ones that come up at the table:
   bookkeeping rather than dice.
 
 ### Riggers, jacking in, and Control Pool  *(SR3 p.44, p.130, p.140, p.301)*
+{: #riggers-and-control-pool }
 
 A **rigger** carries a **Vehicle Control Rig (VCR)**, cyberware that lets
 them drive a suitably wired vehicle through a neural link instead of a
@@ -306,6 +312,7 @@ Combat or Control Pool allowed — against a fixed 6M; if the vehicle is
 destroyed outright, that becomes 6S *(SR3 p.145)*.
 
 ### Dump shock for a rigger  *(SR3 p.156)*
+{: #dump-shock-for-a-rigger }
 
 Getting forcibly kicked out of a rigged connection hits a rigger harder
 than the equivalent shock hits a decker, because the VCR link runs deeper
