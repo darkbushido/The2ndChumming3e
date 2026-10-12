@@ -8,4 +8,4 @@ has_children: true
 
 Spellcasting, the spells themselves, conjuring and astral space for new
 Awakened characters, and
-the powers of physical adepts.
+the powers of physical adepts and how to initiate.
