@@ -8,8 +8,8 @@ nav_order: 3
 {: .no_toc }
 
 Who enforces the law, who lobbies and bombs for a cause, and how Seattle
-deals with its neighbours. These are the powers that aren't megacorps or
-syndicates, but deal with both.
+deals with its neighbours, as of October 2059. These are the powers that
+aren't megacorps or syndicates, but deal with both.
 
 1. TOC
 {:toc}
@@ -29,26 +29,22 @@ Police work is now "a business like any other" *(NS p.76)*.
 | **Knight Errant** | Ares (Damien Knight's own project), Detroit | Second-largest provider. It holds private contracts and has a training academy in Renton. Its image is elite, while Lone Star's is "beat cops" *(NS p.77)*. |
 | **Eagle Security, Hard Corps, Wolverine** and others | Various | At least twenty firms in all. They may act only on their client's property, and must hold a suspect there until Lone Star arrives *(NS p.78)*. |
 
-- **The contract is always contested.** Lone Star's contract is up for
-  renewal. Knight Errant wants it, and so does the Sioux-based Eagle
-  Security, though the city is unlikely to trust a NAN corp
+- **The contract is always contested.** Knight Errant wants Lone Star's
+  contract, and so does the Sioux-based Eagle Security, though the city is
+  unlikely to trust a NAN corp *(NS p.76)*.
+- **The police hire runners too.** Lone Star Seattle's **Shadowriders** are
+  a covert unit that hires freelance runners for not-quite-legal jobs against
+  the syndicates, and has people ready to take the blame if a job goes wrong
   *(NS p.76)*.
-- **The police hire runners too.** Lone Star Seattle has revived the
-  **Shadowriders**, a covert unit that hires freelance runners for
-  not-quite-legal jobs against the syndicates, and has people ready to take
-  the blame if a job goes wrong *(NS p.76)*.
 - **The "Dips"**, Lone Star's magical investigation division (DPI), read
   crime scenes astrally and **license Seattle's legal magicians**. That
   gives them leverage over above-ground magic *(NS p.77)*.
 
-### The military  *(NS p.78)*
+### The Metroplex Guard  *(NS p.78)*
 
-After the Renraku arcology shutdown, the UCAS sent **Joint Task Force
-Seattle**, 5,000 troops under Brigadier General Angela Colloton. She
-outranks the local **Metroplex Guard**'s commander, who resents her. The
-Guard has quietly excluded metahumans, and **Humanis** recruits from it.
-Colloton has purged officers with ties to hate groups, which has made
-enemies of both the Guard and Humanis.
+Seattle's own military is the **Metroplex Guard**. It has quietly kept
+metahumans out of its ranks, and it's an open secret that **Humanis**
+recruits from it: some Guard officers and senior NCOs hold posts in Humanis.
 
 ---
 
@@ -89,13 +85,13 @@ allowed to send its own envoys abroad *(NS p.80)*. Its position goes back
 to the Treaty of Denver, which kept cities like Seattle as extraterritorial
 extensions of their governments *(SR3 p.27)*.
 
-| Neighbour | Relations, 2060  *(NS p.81)* |
+| Neighbour | Relations  *(NS p.81)* |
 | :--- | :--- |
 | **Aztlan** | Cool but cordial. Seattle is Aztechnology's main West Coast market, which gives Aztlan leverage. Aztlan once tried to dock a warship in Everett. |
 | **California Free State** | Mixed. CalFree sees Seattle as an ally against the Tir, and its spies use Seattle as a base for operations there. |
-| **Japanese Imperial State** | Losing ground to the Pacific Prosperity Group, and lost shadow assets when the Seattle yakuza seceded. |
+| **Japanese Imperial State** | Losing ground to the Pacific Prosperity Group. |
 | **Korea** | Growing ties through the PPG and Wuxing. |
-| **NAN / Salish-Shidhe** | Tense. The extra UCAS troops have revived old hostilities. Some in the NAN want Seattle for themselves. |
+| **NAN / Salish-Shidhe** | Tense. Some in the NAN want Seattle for themselves. |
 | **Tir Tairngire** | Strained since Dunkelzahn's death, but the Tir needs Seattle as a trade pipeline and a place to send its dissidents. |
 
 ### How the nations got here  *(SR3 p.27–30)*

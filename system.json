@@ -196,6 +196,18 @@
   },
   "packs": [
     {
+      "name": "sr3e-gm-sixth-world",
+      "label": "GM: The Sixth World after October 2059",
+      "path": "packs/sr3e-gm-sixth-world",
+      "type": "JournalEntry",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "NONE",
+        "TRUSTED": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
       "name": "sr3e-mr-johnsons-contacts",
       "label": "Mr. Johnson's Contacts",
       "path": "packs/sr3e-mr-johnsons-contacts",
@@ -1641,6 +1653,13 @@
           "sorting": "a",
           "packs": [
             "sr3e-mr-johnsons-contacts"
+          ]
+        },
+        {
+          "name": "GM Only",
+          "sorting": "a",
+          "packs": [
+            "sr3e-gm-sixth-world"
           ]
         }
       ]

@@ -1,0 +1,157 @@
+{
+  "_key": "!journal!faeb7c568e988090",
+  "doc": {
+    "_id": "faeb7c568e988090",
+    "name": "The Sixth World after October 2059 (GM only)",
+    "pages": [
+      "d70a5b8ad971bab2",
+      "fff21353f33c8843",
+      "fab05aa88541f10e",
+      "179fbd69c28fe493"
+    ],
+    "folder": null,
+    "sort": 0,
+    "ownership": {
+      "default": 0
+    },
+    "flags": {
+      "The2ndChumming3e": {
+        "gmOnly": true
+      }
+    },
+    "categories": [],
+    "_stats": {
+      "coreVersion": "14.365",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.6.3",
+      "createdTime": 1791800000000,
+      "modifiedTime": 1791800000000,
+      "lastModifiedBy": null,
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    }
+  },
+  "embedded": {
+    "!journal.pages!faeb7c568e988090.179fbd69c28fe493": {
+      "_id": "179fbd69c28fe493",
+      "name": "The Seattle underworld",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "content": "<p><em>New Seattle</em> gives no year for these two changes. It reports them in posts dated 2060. They\nfollow O'Malley's death on New Year's Day 2058 <em>(NS p.97)</em>, so place them where your campaign\nneeds them.</p>\n<h2>The Mafia: Bigio becomes capo</h2>\n<p>After O'Malley's death, his daughter Rowena took the Finnigan Family and the families fought for\ncontrol. The Commissione put Don Leo McCaskill of Milwaukee in charge of the situation. When the dust\nsettled, on McCaskill's advice it appointed <strong>Maurice \"Butcher\" Bigio</strong> capo of Seattle\n<em>(NS p.97)</em>. Vince Ciarniello sided with Bigio <em>(NS p.100)</em>; Rowena O'Malley, with \"Uncle\nAl\" Cavalieri behind her, may yet challenge him <em>(NS p.100)</em>.</p>\n<h2>The yakuza break with Japan</h2>\n<p>Hanzo Shotozumi declared the Seattle yakuza independent of the Watada-rengo in Japan, as the\n<strong>Shotozumi-rengo</strong>. Akira Watada and the loyalist clans in California are angered, and a\nnew shadow war is expected, though there have been no reprisals yet <em>(NS p.101)</em>. His\nwakagashira-hosa, Miko Ishikawa, spies for the Watada-rengo <em>(NS p.101)</em>.</p>\n<ul>\n<li><strong>Mitsuhama</strong> loses the yakuza help it relied on and hires more shadowrunners instead\n<em>(NS p.92–93)</em>.</li>\n<li><strong>Japan</strong> loses shadow assets in Seattle, and a yakuza civil war is possible\n<em>(NS p.81)</em>.</li>\n<li>Runners predict a temporary <strong>Triad–Shotozumi alliance</strong> against Mitsuhama and the\nJapan-loyal yakuza <em>(NS p.96)</em>.</li>\n</ul>",
+        "format": 1
+      },
+      "sort": 400000,
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "system": {},
+      "_stats": {
+        "coreVersion": "14.365",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.6.3",
+        "createdTime": 1791800000000,
+        "modifiedTime": 1791800000000,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!journal.pages!faeb7c568e988090.d70a5b8ad971bab2": {
+      "_id": "d70a5b8ad971bab2",
+      "name": "Read me first",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "content": "<p><strong>GM only.</strong> This compendium is hidden from players. The public guide's World pages\ndescribe the Sixth World as of <strong>October 2059</strong>. Everything here happens after that,\nas the SR3 core book (set in 2060) and <em>New Seattle</em> (posts dated 2060) describe it.</p>\n<p>Reveal it when your campaign reaches it, or change it: it's your world.</p>\n<p><em>Hidden, not secret:</em> players don't see this compendium in Foundry, but the system is public, so\na determined player could find it in the system's files or from the browser console.</p>\n<p>Where a book gives only a year, this journal says so. The core book's history and\n<em>New Seattle</em>'s Shadowland posts are in-character sources: treat \"runners claim\" as rumour.</p>",
+        "format": 1
+      },
+      "sort": 100000,
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "system": {},
+      "_stats": {
+        "coreVersion": "14.365",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.6.3",
+        "createdTime": 1791800000000,
+        "modifiedTime": 1791800000000,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!journal.pages!faeb7c568e988090.fab05aa88541f10e": {
+      "_id": "fab05aa88541f10e",
+      "name": "Fuchi, Novatech and the Court",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "content": "<h2>2060: Fuchi is dissolved</h2>\n<p>By October 2059, Richard Villiers has already formed <strong>Novatech</strong> and is quietly\nbuying his Fuchi North America holdings into it <em>(SR3 p.35)</em>. In 2060 the corp war claimed Fuchi:\nVilliers took his part to Novatech, and the other two factions bought and married into\n<strong>Renraku</strong> and <strong>Shiawase</strong>, which absorbed the rest until Fuchi was\nofficially dissolved <em>(SR3 p.35)</em>. The core book's narrator says the Big Eight have become\n\"the Big-No-One-Knows-How-Many\" <em>(SR3 p.35)</em>.</p>\n<ul>\n<li><strong>The Court hasn't ruled</strong> on Fuchi's subsidiaries: Novatech, Renraku and Shiawase all\nclaim them, and each works to make its claim the strongest <em>(NS p.95)</em>.</li>\n<li><strong>Renraku</strong> survives on its alliance with the Nakatomi family's part of Fuchi\n<em>(NS p.94)</em>.</li>\n<li><strong>Shiawase</strong> moves into cyberware with former Fuchi assets <em>(NS p.95–96)</em>.</li>\n<li><strong>Pacific Rim Communications</strong> buys up the telecomm contracts Fuchi lost\n<em>(NS p.87)</em>.</li>\n</ul>\n<h2>Novatech in Seattle</h2>\n<ul>\n<li>Villiers's ex-wife <strong>Samantha Villiers</strong> runs Novatech Seattle from the former Fuchi\ncompound downtown, stripped of every Fuchi logo <em>(NS p.93–94)</em>.</li>\n<li><strong>William Ager</strong>, Fuchi's old \"resources adjuster\", now runs Novatech's black ops in\nSeattle and hires runners as needed <em>(NS p.94)</em>.</li>\n<li>The shadow war between Novatech downtown and Renraku in Bellevue has already begun\n<em>(NS p.94)</em>.</li>\n</ul>\n<h2>2060: Cross takes Renraku's seat</h2>\n<p>After Renraku's representative died in the New Delhi bombing, <strong>Cross Applied\nTechnologies</strong> was given Renraku's seat on the Corporate Court, which the core book says must\nhave made Damien Knight furious <em>(SR3 p.35)</em>. (Wuxing had already taken Fuchi's seat in 2059.)</p>",
+        "format": 1
+      },
+      "sort": 300000,
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "system": {},
+      "_stats": {
+        "coreVersion": "14.365",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.6.3",
+        "createdTime": 1791800000000,
+        "modifiedTime": 1791800000000,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!journal.pages!faeb7c568e988090.fff21353f33c8843": {
+      "_id": "fff21353f33c8843",
+      "name": "The Renraku Arcology shutdown",
+      "type": "text",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "text": {
+        "content": "<h2>December 2059: the arcology goes dark</h2>\n<p>On an evening just before Christmas 2059, the Renraku Arcology's systems went off-line, and\nRenraku sealed it from the public with no comment <em>(SR3 p.35; NS p.30)</em>. The UCAS military had\nstepped in by January 2060 <em>(SR3 p.35)</em>. More than 100,000 people were sealed inside, among\nthem <strong>Governor Schultz</strong>, who had gone there for a meeting. <strong>Charles\nLindstrom</strong> took charge of the metroplex and promised to protect those trapped; runners doubt he\nwants her back <em>(NS p.30, p.76)</em>.</p>\n<h2>Joint Task Force Seattle</h2>\n<ul>\n<li>The UCAS sent <strong>Joint Task Force Seattle</strong>: five thousand soldiers and airmen under\n<strong>Brigadier General Angela Colloton</strong> <em>(NS p.78)</em>.</li>\n<li>Humanis recruits from the <strong>Metroplex Guard</strong>, and some Guard officers hold Humanis\nposts. After Guardsmen were arrested for racially motivated attacks on metahuman soldiers, Colloton\npurged officers from the Guard. Both the Guard and Humanis now look for ways to get her removed\n<em>(NS p.78)</em>.</li>\n<li>The extra UCAS troops revived old hostilities with the NAN and the Salish-Shidhe <em>(NS p.81)</em>.</li>\n</ul>\n<h2>Renraku afterwards</h2>\n<ul>\n<li>Renraku's president, <strong>Inazo Aneki</strong>, is on indefinite leave. <strong>Tadashi\nMarushige</strong>, a troubleshooter with a reputation for making heads roll, is acting director of\nRenraku North America <em>(NS p.94)</em>.</li>\n<li>Renraku Seattle works from a <strong>new compound in Bellevue</strong>. Its once laid-back\nsecurity is now aggressive, and its Matrix security \"double-ultra-paranoid\", with cascading black ice\n<em>(NS p.94)</em>.</li>\n<li>In 2060 Renraku's Corporate Court representative was killed in a terrorist bombing in New Delhi\n<em>(SR3 p.35)</em>; see <em>Fuchi, Novatech and the Court</em>.</li>\n</ul>",
+        "format": 1
+      },
+      "sort": 200000,
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "system": {},
+      "_stats": {
+        "coreVersion": "14.365",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.6.3",
+        "createdTime": 1791800000000,
+        "modifiedTime": 1791800000000,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    }
+  }
+}

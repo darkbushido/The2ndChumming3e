@@ -111,7 +111,7 @@ Jekyll 4 with the **Just the Docs** theme gem (0.12), built by GitHub Actions.
 | `magic/` | the Awakened primer |
 | `street/` | SINs, buying gear and fencing, cyberware grades |
 | `hiring/` | book payment rules (`index.md`) plus nine specialist pages |
-| `world/` | the factions: megacorps and the Corporate Court, syndicates, police, policlubs, nations |
+| `world/` | the factions, **as of October 2059** (the maintainer's campaign date): megacorps and the Corporate Court, syndicates, police, policlubs, nations. Later events go in the system's GM-only pack, never here — `tests/gm-sixth-world.test.mjs` |
 | `_config.yml` | site settings, callout types, `permalink: pretty`, default layout |
 | `_includes/head_custom.html` | fonts, digital-rain script, corrections-toggle CSS |
 | `_includes/header_custom.html` | the *Show corrections* checkbox |

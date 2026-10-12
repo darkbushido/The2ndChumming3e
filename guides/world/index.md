@@ -15,13 +15,13 @@ where shadowruns come from.
 {:toc}
 
 {: .note }
-> **When this describes.** These pages describe the world as of **2060–61**,
-> the date of the SR3 core book and *New Seattle*. Later books move things on.
-> By *State of the Art: 2064* the top corps are spoken of as "the Big Ten"
-> *(SOTA64 p.21)*. Much of *New Seattle* is written as posts by
-> shadowrunners on the Shadowland BBS, so it's rumor as much as fact. These
-> pages say **"runners claim"** or **"rumor"** when the book does. Anything
-> stated as fact here is stated as fact in the book.
+> **When this describes.** These pages describe the world as of **October
+> 2059**. The SR3 core book and *New Seattle* carry the story on into 2060–61;
+> gamemasters will find those later events in the system's **GM Only**
+> compendium. Much of *New Seattle* is written as posts by shadowrunners on the
+> Shadowland BBS, so it's rumor as much as fact. These pages say **"runners
+> claim"** or **"rumor"** when the book does. Anything stated as fact here is
+> stated as fact in the book.
 
 ---
 
@@ -53,10 +53,7 @@ megacorp:
 
 The rest follows from those two rulings. A corp facility is a sovereign
 enclave with its own army, so the police can't simply walk in, and no
-government can easily make a corp answer for anything. Nations still find
-ways to push back. The Confederated American States keeps a registry of
-extraterritorial property and an "eviction clause" it has used only once
-*(SOTA64 p.21)*.
+government can easily make a corp answer for anything.
 
 The SR3 introduction sums up the result. Megacorps are "a law unto
 themselves", the nuyen is the world's currency, and when a corp wants a job
@@ -82,14 +79,11 @@ which they sit on themselves.
   Pan-Corporate Zone under the Court's authority *(SR3 p.31)*.
 - **A seat on it is fiercely contested.** Yamatetsu spent 2041 fighting for
   a seat on the Court and on the Zurich-Orbital board. When it won, the
-  "Big Seven" became the **Big Eight** *(SR3 p.31)*. When the Fuchi and
-  Renraku representatives died in 2059–60, both seats went to newcomers,
-  **Wuxing** and **Cross Applied Technologies**, rather than to Big Eight
-  corps *(SR3 p.35)*.
-- **It decides who owns what.** After Fuchi broke up, Novatech, Renraku and
-  Shiawase all claimed its subsidiaries, and the Court had not yet ruled.
-  In the meantime, each corp worked to make its own claim the strongest
-  *(NS p.95)*.
+  "Big Seven" became the **Big Eight** *(SR3 p.31)*. In 2059 suborbital
+  **Flight 1118** from Tokyo crashed into the Redmond Barrens, killing
+  Fuchi's Court representative, David Hague. His seat went not to a Big
+  Eight corp but to **Wuxing**, a family corp made rich by Dunkelzahn's will
+  *(SR3 p.35)*.
 
 **What that means for runners:** the Court keeps corp-on-corp fighting
 **deniable**. An open war risks the others ganging up on you, as they did on
@@ -105,21 +99,30 @@ Aztlan. A shadowrun that nobody can trace doesn't.
   accounts, keeps his employer secret, and knows he'll be disowned if he's
   exposed *(MJLBB p.17–18)*. Corporate Johnsons are the most common kind
   *(MJLBB p.17)*.
-- **Raids on rivals' people and research.** The defining example of the
-  period is the war between **Fuchi and Renraku**. In 2058, Dunkelzahn's
-  will gave Fuchi's security chief, Miles Lanier, a seat on Renraku's board.
-  Fuchi split into three warring factions, and by 2060 it had broken apart.
-  Villiers took his third to **Novatech**, and the other two were absorbed
-  by Renraku and Shiawase *(SR3 p.34–35)*.
-- **Keeping newcomers out.** The Big Eight worked to crush smaller corps
-  that Dunkelzahn's will had made rich, "with much resulting business for
+- **Raids on rivals' people and research.** The defining fight of the
+  moment is **Fuchi against Renraku** *(SR3 p.34–35)*:
+  - In 2058, Dunkelzahn's will gave Fuchi's security chief, **Miles
+    Lanier**, a seat on Renraku's board, and he left Fuchi for Renraku.
+    Months later, Renraku began producing remarkable technological
+    advances.
+  - Fuchi was already split into **three internal factions**, and the
+    infighting got worse.
+  - Around **mid-2059**, Fuchi formally accused Renraku of industrial
+    espionage with Lanier's help. The charges were dropped, but Lanier left
+    Renraku and sold his Renraku stock to the Zurich-Orbital bank.
+  - At about the same time, **Richard Villiers** of Fuchi formed
+    **Novatech** and began quietly buying up his Fuchi North America
+    holdings through it, expecting the rival factions to force him out. He
+    offered Lanier the job of head of security.
+- **Keeping newcomers out.** The Big Eight work to crush smaller corps
+  that Dunkelzahn's will made rich, "with much resulting business for
   shadowrunners". Lucien Cross of Cross Applied Technologies survived
   three assassination attempts in 2058 alone *(SR3 p.35)*.
 - **Infighting within a corp.** Most corps fight themselves as well.
   Shiawase's divisions compete for head-office money, and some of that
   rivalry ends in shadowruns *(NS p.95)*. The Telestrian family is split
-  into factions *(NS p.88)*. Yamatetsu's traditionalists resist its ork
-  chairman *(NS p.96)*.
+  into factions *(NS p.88)*. Yamatetsu's traditionalists resist its new ork
+  chairman *(SR3 p.35; NS p.96)*.
 
 ### Corps in one city: the United Corporate Council  *(NS p.83)*
 
@@ -136,9 +139,8 @@ openly risks the rest ganging up on it, so they hire runners for
 
 ### Corps and syndicates
 
-- **Hired muscle.** Mitsuhama used to call on the Seattle yakuza for
-  "special problems". After the yakuza there broke with Japan, Mitsuhama
-  had to hire more shadowrunners instead *(NS p.92–93)*.
+- **Hired muscle.** Mitsuhama calls on the Seattle yakuza for its
+  "special problems" *(NS p.92–93)*.
 - **The yakuza inside the boardroom.** The yakuza's *sokaiya* branch
   combines stock purchases with blackmail to steer corporations and skim
   their money *(NS p.102)*.
@@ -197,10 +199,11 @@ for the campaigns of at least six district mayors *(NS p.83–84)*. See
   hurting another. Before a run, decide who the Johnson really works for,
   which rival is the real target, and who else is watching. The Johnson
   types are covered in *(MJLBB p.17–18)*.
-- **Use the rivalries listed above.** Fuchi's leftovers (Novatech, Renraku
-  and Shiawase), the Seattle yakuza's split from Japan, the Mafia's
-  succession fight, and Humanis against the Empowerment Coalition are all
-  open conflicts in 2060–61, and each one hires runners.
+- **Use the rivalries listed above.** Fuchi against Renraku, Fuchi's three
+  factions against each other (and Villiers's new Novatech), the Seattle
+  Mafia's fight over who succeeds O'Malley, and Humanis against the
+  Empowerment Coalition are all open in late 2059, and each one hires
+  runners.
 - **Expect retaliation.** Mitsuhama, runners say, "makes examples of runners
   who double-cross them" *(NS p.93)*. Cross Corp tags intruding deckers and
   comes to collect favours weeks later *(NS p.91)*.

@@ -8,8 +8,8 @@ nav_order: 2
 {: .no_toc }
 
 The crime syndicates that run the shadow economy, how they fight each
-other, and what they want from runners. Seattle in 2060 is the example the
-books give in most detail.
+other, and what they want from runners, as of October 2059. Seattle is the
+example the books give in most detail.
 
 1. TOC
 {:toc}
@@ -42,17 +42,19 @@ offer protection, illegal services or extra bodies *(MJLBB p.18)*.
 | 2032 | The yakuza in Japan send **Korean bosses** to rebuild the Seattle organisation *(SR3 p.35)*. |
 | 2042–44 | The Japanese yakuza bosses purge the Korean bosses they had sent to rebuild Seattle. The survivors form the **Seoulpa Rings** *(SR3 p.35; NS p.101)*. *The sources disagree on the year: SR3 says 2042, NS p.101 says 2043, and NS p.104 says 2044.* |
 | 2044 | **Hanzo Shotozumi** is made oyabun of Seattle. His strong-arm tactics bring the Mafia's **James O'Malley** back to fight him *(SR3 p.35)*. |
-| 2058 | Don O'Malley is shot outside his home. An all-out mob war follows between the Mafia, Yakuza, Triads and Rings *(SR3 p.35)*. NS says the killer worked for an organisation called **Chimera** *(NS p.97)*. |
-| After 2058 | Shotozumi declares the Seattle yakuza **independent of Japan**. Maurice "Butcher" Bigio becomes Mafia capo of Seattle *(NS p.97, p.101)*. |
+| 2058 | Don O'Malley is shot outside his home on New Year's Day. An all-out mob war follows between the Mafia, Yakuza, Triads and Rings *(SR3 p.35; NS p.97)*. NS says the killer worked for an organisation called **Chimera** *(NS p.97)*. |
+| 2058–59 | The yakuza seize large parts of Seattle's criminal markets in the confusion *(NS p.101)*. The Mafia families fight over who will lead Seattle, and the Commissione sends **Don Leo "the Lion" McCaskill** of Milwaukee to oversee the situation *(NS p.97)*. |
 
 ---
 
 ## The Mafia  *(NS p.97–100)*
 
 It began on Seattle's docks and in its labour unions, and was run from
-Chicago. In 2060 the **Commissione** appointed **Maurice "Butcher" Bigio**
-capo of Seattle. The O'Malley camp believes Bigio arranged O'Malley's
-death.
+Chicago. Since O'Malley's death, **who will be capo of Seattle** is the
+question of the moment. His daughter **Rowena O'Malley** took over the
+Finnigan Family within days and made a strong bid for it; **Maurice
+"Butcher" Bigio** is the other contender. The O'Malley camp believes Bigio
+arranged O'Malley's death *(NS p.97, p.100)*.
 
 | Family | Leader | Territory and business |
 | :--- | :--- | :--- |
@@ -61,29 +63,28 @@ death.
 | **Ciarniello** | Vince "Numbers" Ciarniello | Everett and Snohomish: gambling at Casino Corner, smuggling on the Everett docks. He sides with whoever looks safest. |
 
 **Conflicts:** the families fight the yakuza first and each other second.
-Runners suggest the Finnigans might work **with** the yakuza to bring Bigio
-down *(NS p.98)*. An ambitious lieutenant might hire runners to do things
-the rest of the Family mustn't know about *(MJLBB p.53–54)*.
+An ambitious lieutenant might hire runners to do things the rest of the
+Family mustn't know about *(MJLBB p.53–54)*.
 
 ---
 
 ## The Yakuza  *(NS p.100–102)*
 
-The yakuza followed the Japanese corps to Seattle. Since 2060 the Seattle
-clans have been the **Shotozumi-rengo**, answerable only to Hanzo
-Shotozumi and no longer to the **Watada-rengo** in Japan. That has angered
-Japan and the loyalist clans in California, and a shadow war between them
-is expected.
+The yakuza followed the Japanese corps to Seattle. The Seattle clans answer
+to **Hanzo Shotozumi**, who was made oyabun of Seattle by **Akira Watada**
+of the powerful **Watada-rengo** in Japan and told to rebuild a traditional,
+loyal organisation. Since O'Malley's death they have become the most
+powerful syndicate in the Pacific Northwest, and Shotozumi's ambition has
+grown with them *(NS p.101)*.
 
 | Group | Leader | Notes |
 | :--- | :--- | :--- |
-| **Shotozumi-rengo** | Hanzo Shotozumi | Downtown and Tacoma: smuggling, gambling, computer crime. Its **sokaiya** branch works on corporations through stock purchases and blackmail. Runners claim its third in command spies for Japan. |
-| **Nishidon-gumi** | Isao Nishidon | The oldest clan. Smuggling in Puyallup and Redmond, and the Barrens chip trade. Shotozumi's main rival inside the rengo. |
+| **Shotozumi's organisation** | Hanzo Shotozumi | Downtown and Tacoma: smuggling, gambling, computer crime. Its **sokaiya** branch works on corporations through stock purchases and blackmail. |
+| **Nishidon-gumi** | Isao Nishidon | The oldest clan. Smuggling in Puyallup and Redmond, and the Barrens chip trade. Shotozumi's main rival among the Seattle clans. |
 | **Shigeda-gumi** | Takeo Shigeda | The smallest clan. Everett, Snohomish, and parts of Redmond. It is progressive, and admits more magicians and women. |
 
-**Conflicts:** the secession cut **Mitsuhama** off from yakuza help
-*(NS p.92–93)*. Japan "lost a lot of shadow assets", and a yakuza civil war
-is possible *(NS p.81)*. The *sokaiya* target corps in the **Pacific
+**Conflicts:** **Mitsuhama** calls on the yakuza for its "special
+problems" *(NS p.92–93)*. The *sokaiya* target corps in the **Pacific
 Prosperity Group**, which brings them into conflict with the Triads
 *(NS p.102)*.
 
@@ -102,9 +103,6 @@ readily than other syndicates do *(NS p.102; MJLBB p.54)*.
 | **Yellow Lotus** | Lodgemaster Zheng Li Kwan, an initiated adept | The largest. It recruits orks heavily and is strong in Puyallup. Runners fear its incense master, Su Cheng. |
 | **Eighty-Eights** | Rick Wu | Modern, and heavily cybered. Gambling and vice in Everett, Bellevue and Puyallup. Allied with the **Tigers** gang. |
 | **Octagon** | David Gao | The weakest. It has allied with the Yellow Lotus. Its incense master, **Chen Kwan-Ti**, is rumoured to work for the great dragon **Lung**. |
-
-**Conflicts:** runners predict a temporary **Triad–Shotozumi alliance**
-against Mitsuhama and the yakuza loyal to Japan *(NS p.96)*.
 
 ---
 

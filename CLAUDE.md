@@ -369,7 +369,7 @@ static defineSchema() {
 system.json                ← manifest + documentTypes
 lang/en.json · styles/sr3e.css (all styles, CSS custom properties)
 guides/                    ← the SR3 Table Reference site (Jekyll) — NOT shipped in the zip
-packs/ · packs-src/        ← 79 compendium packs, all SR3 or system (build output · source of truth)
+packs/ · packs-src/        ← 80 compendium packs, all SR3 or system (one GM-only journal) (build output · source of truth)
 archive/                   ← non-sr3-content/ (split-out documents) · sr2/ (the parked SR2 packs)
 SR-OCR/                    ← rulebook OCR, local only — NEVER committed (below)
 rawdata/                   ← source data, not loaded by Foundry (ODM-* = Orthodox SR3 Matrix; MDF-* = Matrix

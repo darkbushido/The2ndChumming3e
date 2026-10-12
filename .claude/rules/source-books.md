@@ -16,8 +16,18 @@ paths:
 # Source books & compendium filtering
 
 One pack per source book, `sr3e-<book>-<type>`, each declaring `flags.The2ndChumming3e.book` in `system.json`.
-Packs without the flag are system content (exactly three: `sr3e-skills`, `sr3e-example-characters`,
-`sr3e-mr-johnsons-contacts`). **79 packs ship**, all SR3 or system.
+Packs without the flag are system content (exactly four: `sr3e-skills`, `sr3e-example-characters`,
+`sr3e-mr-johnsons-contacts`, and the GM-only journal `sr3e-gm-sixth-world`). **80 packs ship**, all SR3 or system.
+
+### The GM-only journal — `sr3e-gm-sixth-world` (2026-10-11)
+The public guide's World pages (`guides/world/`) stop at **October 2059**, the maintainer's campaign date; what
+the core book and *New Seattle* say happens after is in this JournalEntry pack, declared **`PLAYER: NONE`,
+`TRUSTED: NONE`** in a "GM Only" sidebar folder. Built by `tools/build-gm-sixth-world.mjs` (our own words,
+printed pages, derived ids) → `npm run packs:build`. `tests/gm-sixth-world.test.mjs` pins the ownership, the
+source/builder parity, and that no World page names a later event.
+- ⚠ **Hidden, not secret** (verified live): `PLAYER: NONE` keeps it out of a player's sidebar, but a player can
+  still read it with `pack.getDocument()` in the console — and it's in the public repo and zip. The maintainer
+  chose this over a private module, knowingly.
 
 ### ⚠ SR2 is PARKED — 25 packs in `archive/sr2/` (TODO 158)
 The maintainer: *"we will be adding sr2 stuff back in the future but I need sr3 working now without confusion."*
