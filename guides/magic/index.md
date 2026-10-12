@@ -6,5 +6,6 @@ has_children: true
 
 # Magic
 
-Spellcasting, conjuring and astral space for new Awakened characters, and
+Spellcasting, the spells themselves, conjuring and astral space for new
+Awakened characters, and
 the powers of physical adepts.

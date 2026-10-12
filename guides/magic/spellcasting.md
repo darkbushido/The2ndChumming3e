@@ -201,6 +201,7 @@ objects too.
 | Death Touch | Mana | Willpower | (Damage Level −1) | Physical, by touch |
 
 ### Elemental spells work like guns  *(SR3 p.183, p.196)*
+{: #elemental-spells }
 
 Fireball, Flamethrower, Lightning Bolt, Acid Stream and similar spells make
 **real fire, lightning or acid**. They follow the ranged combat rules,
@@ -279,6 +280,7 @@ one step.** Below Light, you take nothing. *(SR3 p.44, p.183)*
 ---
 
 ## Sustaining spells  *(SR3 p.178)*
+{: #sustaining-spells }
 
 | Duration | What it means |
 | :--- | :--- |
