@@ -107,7 +107,7 @@ Jekyll 4 with the **Just the Docs** theme gem (0.12), built by GitHub Actions.
 | Path | What |
 | :--- | :--- |
 | `index.md`, `sources.md` | Home, and abbreviations / method / what couldn't be verified |
-| `rules/` | combat, reloading, grenades, healing, karma, decking, rigging |
+| `rules/` | combat, weapons, reloading, grenades, healing, karma, decking, rigging |
 | `magic/` | the Awakened primer, spellcasting, spells (learning and the Street Grimoire), physical adepts, initiation |
 | `street/` | SINs, buying gear and fencing, cyberware grades |
 | `hiring/` | book payment rules (`index.md`) plus nine specialist pages |
