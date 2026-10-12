@@ -395,8 +395,11 @@ vehicle sheet's header or the character sheet's Vehicles tab:
   book. **VCR is exclusive**: setting one vehicle to VCR automatically
   drops any other vehicle that character was VCR-driving to RCD, and turns
   off VR Matrix modes on the character (VCR and VR can't both be active).
-- **RCD** — remote control deck: the rigger's plain Reaction and normal
-  Initiative dice, no VCR bonus, and no Control Pool.
+- **RCD** — remote control deck, the book's **captain's chair**: a
+  rigger with a VCR keeps the VCR Initiative, one without uses their
+  ordinary Reaction and Initiative dice. The drone's own tests (weapons,
+  Driving and Crash Tests) roll its **Pilot Rating**, with no pools
+  *(SR3 p.154)*. See [Drones](../drones/).
 - **Auto** — nobody is piloting; the vehicle rolls its own Initiative from
   its Pilot Rating, and clearing this mode also clears the vehicle's
   pilot.

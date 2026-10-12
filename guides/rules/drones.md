@@ -221,14 +221,15 @@ control modes are on [Rigging](../rigging/#drones-and-remote-control):
   HUD) rolls the Pilot Rating against the TN the GM sets from the table
   above, with any electronic-warfare degradation on the command channel
   added in.
-- **RCD** gives the rigger's plain Reaction and Initiative, and no Control
-  Pool. That matches the **captain's chair**.
+- **VCR** is jumped into the **primary** drone: the rigger rolls their own
+  skills, with Combat and Control Pool. VCR is one vehicle at a time per
+  character, the same as a primary drone.
+- **RCD** is a **secondary** drone, or the **captain's chair**: the drone's
+  weapon attacks, Driving Tests and Crash Tests roll its own **Pilot
+  Rating**, with no pools. A rigger with a VCR keeps their VCR Initiative,
+  as Rigger X does *(SR3 p.154)*; one with only a datajack and a deck rolls
+  ordinary Initiative.
 
 {: .note }
-> The system doesn't track subscriber lists, affiliation, or which drone is
-> primary: the GM keeps count. A rigger **jumped into** a primary drone
-> gets their pools and rigger bonuses by the book *(SR3 p.154)*, which in
-> the system is the drone's **VCR** mode; VCR is one vehicle at a time per
-> character, the same as a primary drone. The book's captain's-chair example
-> also keeps the rigger's usual Initiative bonus, which RCD mode doesn't
-> give.
+> The system doesn't track subscriber lists or affiliation: the GM keeps
+> count of how many drones the deck is controlling.
