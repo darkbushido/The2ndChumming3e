@@ -7191,3 +7191,24 @@ goes to the Pool instead of Good Karma (SR3 p.244, p.246; `SR3EActor.karmaAward`
 the sheet shows and where the 📒 Ledger records it. Every rule is checked in the PDF and cited by printed
 page. Follow `guides/CLAUDE.md`, link it from `guides/rules/index.md`, then `node tools/linkcheck.mjs`.
 Guide content, so it goes on a branch.
+
+## 222. ✅ Guide pages: physical adepts, spells, initiation, weapons, vehicles, drones — **requested 2026-10-11** · `b7129853`
+
+The maintainer asked for six new pages on the SR3 Table Reference (`guides/`), each written like the
+existing ones (`guides/CLAUDE.md`): every rule checked in the PDF and cited by printed page, tables
+transcribed from the book, worked examples with checked arithmetic, and a "Doing it in The 2nd
+Chumming (Foundry)" section. Build and run `node tools/linkcheck.mjs` before each commit.
+
+- **Physical adepts** — Power Points, the powers (SR3 p.168–171; MitS), buying Power Points with
+  Good Karma (p.168), and how the sheet tracks them.
+- **Spells** — learning (p.180), Force, Drain, categories, Spell Pool, sustaining, the core spell
+  list (SR3 p.178–198); the system's cast flow.
+- **How to initiate** — grades, the Karma cost, ordeals, groups, metamagic (MitS). Pairs with
+  [#219](TODO.md#219), which builds the same rules into the system.
+- **Weapons** — firearm classes, the Weapon Range Table, ammunition, accessories, melee (SR3
+  p.276–284); some of it is already on `rules/combat.md` and `rules/reloading.md`, so link, don't repeat.
+- **Vehicles** — vehicle stats, Driving Tests, crashes, vehicle combat (SR3 p.134–150; R3).
+- **Drones** — rigging drones, the Control Pool, remote control and jumping in (SR3 p.44, p.301; R3);
+  `rules/rigging.md` exists, so extend or link.
+
+Guide content, so each goes on a branch.
