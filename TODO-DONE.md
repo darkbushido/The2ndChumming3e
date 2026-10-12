@@ -7191,3 +7191,9 @@ goes to the Pool instead of Good Karma (SR3 p.244, p.246; `SR3EActor.karmaAward`
 the sheet shows and where the 📒 Ledger records it. Every rule is checked in the PDF and cited by printed
 page. Follow `guides/CLAUDE.md`, link it from `guides/rules/index.md`, then `node tools/linkcheck.mjs`.
 Guide content, so it goes on a branch.
+
+## 224. ✅ Drones in RCD ignore SR3 p.154 — **found 2026-10-12** (writing the Drones guide, #222) · fixed `28a4ccdc`
+
+The captain's chair (RCD) dropped a VCR rigger's Initiative bonus, and RCD drones rolled the rigger's
+Gunnery and vehicle skill instead of their own Pilot Rating. Fixed in `Rigging.droneTestRoller` /
+`usesVcrInitiative`; live check in TESTING.md, *RCD with a VCR — the captain's chair*.
