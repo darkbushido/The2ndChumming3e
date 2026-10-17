@@ -2572,3 +2572,15 @@ already on a character (the migration reaches those), and a fresh drag from each
 - [ ] An **owned** weapon with a stock picture switches after one reload (the 0.6.2 pictures migration); one
       whose picture you chose yourself does **not** change.
 - [ ] Drag a weapon onto a character whose item list shows icons → the drawn icon appears, not a texture.
+
+## 43. Full Defense declares once (TODO 221)
+
+**Prerequisites:** a world with an attacker and a target that has **Full Defense** on (🛡 on its sheet, pool
+reserved). One client is enough; repeat once with the pop-up and the chat log both showing.
+
+- [ ] Attack the Full Defense target. The attack card is followed by **one** "🛡 … Full Defense (N dice
+      auto-committed)" card and **one** "🎯 … dodges" card — not two of each.
+- [ ] The target's Combat Pool is charged N once, and Full Defense is switched off afterwards.
+- [ ] The attack card's button reads spent/"already acted" in both the pop-up and the log; clicking it again as GM
+      does nothing and posts nothing ("✓ Defence already declared").
+- [ ] Only one soak button follows the dodge.

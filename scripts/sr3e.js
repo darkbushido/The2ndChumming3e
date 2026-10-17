@@ -2169,7 +2169,10 @@ Hooks.on('updateActor', async (actor, changes, options) => {
 // Prevents a button from firing twice when both the Foundry pop-up notification
 // and the main chat log render the same card with live buttons simultaneously.
 // Key = messageId|class|index. In-memory only; clears on page reload.
-const _usedButtons = new Set();
+// ⚠ TODO 221: kept on `globalThis`, not just in this module. A module evaluated twice (a hot
+// reload during a play-test) registers its hooks again; with a Set of its own each copy would
+// believe it was the first to see a button and both would act. Shared, the second one stands down.
+const _usedButtons = (globalThis.__sr3eUsedButtons ??= new Set());
 
 // ── Unsubmitted corner edits, held across re-renders ─────────────────────────
 // A two-corner card is rebuilt from its payload every time the message updates — and the
@@ -2358,7 +2361,7 @@ function _isTheDecider(p) {
  * it as *already offered*. `renderChatMessageHTML` fires for both the pop-up
  * notification and the chat log, so without this the same decision opens twice.
  */
-const _autoOpened = new Set();
+const _autoOpened = (globalThis.__sr3eAutoOpened ??= new Set());   // shared across module copies — TODO 221
 function _claimAuto(key) {
   if (_autoOpened.has(key)) return false;
   _autoOpened.add(key);
@@ -2828,8 +2831,19 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       // Tell the table BEFORE the dialog opens. Declaring a defence involves a human
       // deciding how much pool to burn, which is exactly the interval the GM was
       // previously unable to distinguish from nobody having noticed the card.
-      await _markActed(mid, 'defender',
+      // ⚠ TODO 221: this claim is also the ONE-SHOT for the declaration itself. `sr3e.card.mark`
+      // is append-only and GM-serialised, so the first claim stands and every later one comes
+      // back `already` — from a second copy of the card, a second client, or a second
+      // registration of this hook. `_usedButtons` knows only this module instance in this
+      // browser; on Full Defense (no dialog to wait on) a second run announced the auto-commit,
+      // spent the reserve and rolled the dodge again. Null = the GM could not be reached:
+      // declare anyway — bookkeeping never blocks the action.
+      const claimed = await _markActed(mid, 'defender',
         game.actors.get(_payloadActorId(_p))?.name ?? 'Defender');
+      if (claimed?.already) {
+        btn.textContent = '✓ Defence already declared';
+        return;
+      }
       await SR3EActor.handleDodgeDeclare(_p);
     });
 
