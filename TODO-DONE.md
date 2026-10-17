@@ -7003,6 +7003,16 @@ card deducts it for a dual being only (Body resists) and names it on the card. T
   against it at Power 7. Its resist card reads *Natural armor −3 Power* with TN 4. Set the NPC to
   Astral Plane and the deduction is gone (TN 7).
 
+## 191. ✅ Buff spells on yourself or an ally should not need to hit — `dfb91371`
+
+Casting a beneficial spell (Invisibility, for example) on yourself or a willing ally runs the same
+flow as an attack: a target to hit and a resistance test. It should not. Check the book for how
+spells cast on a willing subject resolve before building it. The unmerged branch
+`origin/spell-self-target` (spells castable on the caster) may cover part of this — see *Housekeeping*.
+This is a feature, so it goes on a branch.
+
+**Done 2026-10-17 (`dfb91371`, `feature/spells-grenades`).** SR3 p.183: *"Living targets may always make a Spell Resistance Test against spells, unless the target of the spell is willing"*; with no test, *"all the successes from the Sorcery Test are used … to determine the spell's effect"*. The cast (Sorcery Test, TN the targeted Attribute, Drain) is unchanged — the book gives a willing subject no lower TN — but a non-damaging spell now asks which targets are willing (self, party and friendly tokens ticked by default; always editable) and a ticked target gets a line stating the effect instead of a Resist Spell button. Combat and Elemental spells keep their flow. Self-casting itself was already on main (`_promptTarget` `allowSelf`); `origin/spell-self-target` is fully superseded.
+
 ## 193. ✅ The 📒 Ledger records entries on the wrong character — **reported 2026-09-27** · fixed `b42fdbae`
 
 **Cause, confirmed live 2026-09-27:** Foundry's Duplicate (and the GM copy verb `sr3e.actor.create`
