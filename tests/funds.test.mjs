@@ -34,12 +34,34 @@ export async function run(t) {
 
   /* ── giving: one calculation for both sides, nuyen conserved ── */
   const g = F.give(1000, 200, 300);
-  t.eq('a gift moves the amount', [g.moved, g.payerTo, g.recipientTo, g.short], [300, 700, 500, false]);
+  t.eq('a gift moves the amount', [g.ok, g.moved, g.payerTo, g.recipientTo], [true, 300, 700, 500]);
+  t.is('…and nuyen is conserved', g.payerTo + g.recipientTo, 1000 + 200);
+  t.eq('giving exactly the whole balance is allowed', [F.give(300, 0, 300).ok, F.give(300, 0, 300).payerTo], [true, 0]);
+  // Ruled 2026-10-17: a gift is BLOCKED, never trimmed to what the payer has.
   const s = F.give(300, 200, 500);
-  t.eq('a short payer gives what they have, and the recipient gets exactly that',
-    [s.moved, s.payerTo, s.recipientTo, s.short, s.shortBy], [300, 0, 500, true, 200]);
-  t.is('…so the total across both is unchanged', s.payerTo + s.recipientTo, 300 + 200);
-  t.is('a broke payer moves nothing', F.give(0, 200, 50).moved, 0);
+  t.eq('more than you have is BLOCKED: nothing moves', [s.ok, s.moved, s.payerTo, s.recipientTo], [false, 0, 300, 200]);
+  t.ok('…and the reason says you cannot give more than you have', /cannot give more than you have/.test(s.reason));
+  t.ok('a broke payer cannot give anything', F.give(0, 200, 50).ok === false && F.give(0, 200, 50).moved === 0);
+  const neg = F.give(1000, 0, -50);
+  t.eq('a negative gift is BLOCKED (it would take money from the recipient)', [neg.ok, neg.moved, neg.recipientTo], [false, 0, 0]);
+  t.ok('…as a negative amount', /negative/.test(neg.reason));
+  t.is('a negative NUMBER (as the verb receives it) is blocked too', F.validateGift(-5, 1000).ok, false);
+  t.is('zero is blocked', F.validateGift(0, 1000).ok, false);
+  t.is('a fractional gift is blocked, not floored', F.validateGift('2.5', 1000).ok, false);
+  t.ok('…as a whole-number reason', /whole number/.test(F.validateGift('2.5', 1000).reason));
+  t.is('words are blocked', F.validateGift('lots', 1000).ok, false);
+  t.is('¥ and commas are fine', F.validateGift('¥1,000', 1000).amount, 1000);
+  t.is('a numeric amount is fine', F.validateGift(250, 1000).amount, 250);
+
+  /* ── a gift is only between two player characters ── */
+  const pcs = new Set(['p1', 'p2']);
+  const isPC = a => pcs.has(a.id);
+  const P1 = { id: 'p1', type: 'character' }, P2 = { id: 'p2', type: 'character' }, NPC = { id: 'n1', type: 'character' }, VAN = { id: 'v', type: 'vehicle' };
+  t.is('PC to PC is allowed', F.giftParties(P1, P2, isPC).ok, true);
+  t.is('an NPC cannot give', F.giftParties(NPC, P2, isPC).ok, false);
+  t.is('nobody can give to an NPC', F.giftParties(P1, NPC, isPC).ok, false);
+  t.is('nor to a vehicle', F.giftParties(P1, VAN, () => true).ok, false);
+  t.is('nor to yourself', F.giftParties(P1, P1, isPC).ok, false);
 
   /* ── ledger wording ── */
   t.is('± with no reason is empty (the ledger reads "By hand")', F.reason({ side: 'adjust' }), '');
@@ -56,6 +78,8 @@ export async function run(t) {
   ];
   t.eq('other live characters, by name — not yourself, vehicles, NPCs or templates',
     F.recipients(actors, 'me', a => a.id !== 't').map(o => o.id), ['a', 'b']);
+  t.eq('…and only PLAYER characters (ruled 2026-10-17): a non-player character is left out',
+    F.recipients(actors, 'me', a => a.id !== 't', a => a.id !== 'b').map(o => o.id), ['a']);
 
   /* ── may pay out ── */
   const owns = (_a, u) => u.owner === true;
@@ -72,15 +96,23 @@ export async function run(t) {
   t.ok('…asserts it is the active GM, and dedupes with once()', /assertActiveGM\(\)/.test(body) && /SR3EQuery\.once\(\s*rid/.test(body));
   t.ok('…refuses a payer the requester does not own (no minting nuyen)', /Funds\.mayPayFrom\(payer, requester/.test(body));
   t.ok('…debits the payer AND credits the recipient from the live balances',
-    /Funds\.give\(payer\.system\?\.nuyen, recipient\.system\?\.nuyen/.test(body)
+    /Funds\.give\(payer\.system\?\.nuyen, recipient\.system\?\.nuyen, amount\)/.test(body)
     && /payer\.update\(\{ 'system\.nuyen': r\.payerTo \}/.test(body) && /recipient\.update\(\{ 'system\.nuyen': r\.recipientTo \}/.test(body));
   t.ok('…puts both sides in the 📒 Ledger with the giver as By', (body.match(/ledgerBy: by/g) ?? []).length >= 2 && /side: 'give'/.test(body) && /side: 'receive'/.test(body));
   t.ok('…puts the debit back if the credit fails', /Refund: the payment failed/.test(body));
   t.ok('…serialised under ONE key (A→B and B→A cannot deadlock)', /SR3EQueue\.run\('sr3e:money'/.test(body));
   t.ok('the sheet offers ± Funds beside Nuyen', /data-action="adjustFunds"/.test(sheet) && /adjustFunds:\s+SR3EActorSheet\._onAdjustFunds/.test(sheet));
   t.ok('the dialog is wired through DialogV2.wait\'s render option', /async _onAdjustFunds[\s\S]{0,3500}render: \(_event, dialog\) => wireDialog\(dialog, dialog\.element\)/.test(sheet));
-  t.ok('the recipient list hides templates and goes through Funds.recipients',
-    /Funds\.recipients\(game\.actors\.filter\(a => a\.type === 'character' && game\.sr3e\.isLiveActor\(a\)\)/.test(sheet));
+  t.ok('the recipient list hides templates and goes through Funds.recipients, player characters only',
+    /Funds\.recipients\(game\.actors\.filter\(a => a\.type === 'character' && game\.sr3e\.isLiveActor\(a\)\), actor\.id, \(\) => true, isPC\)/.test(sheet)
+    && /isPC = a => game\.sr3e\.SR3EQuery\.isPlayerCharacter\(a\)/.test(sheet));
+  t.ok('the verb rejects non-player parties and any blocked gift (no trimming)',
+    /Funds\.giftParties\(payer, recipient, SR3EQuery\.isPlayerCharacter\)/.test(body) && /if \(!r\.ok\) throw new Error/.test(body)
+    && !/r\.short|Math\.min/.test(body));
+  t.ok('the dialog disables Confirm with the reason when a gift is blocked',
+    /Funds\.validateGift\(amt\.value, have\)/.test(sheet) && /ok\.disabled = give && \(blocked/.test(sheet));
+  t.ok('…and re-checks against the live balance after the dialog',
+    /Funds\.giftParties\(actor, target, isPC\)/.test(sheet) && /Funds\.give\(have, target\.system\?\.nuyen, chosen\.raw\)/.test(sheet));
   t.ok('a gift goes through the GM verb', /asGM\('sr3e\.money\.give'/.test(sheet));
   t.ok('± records a ledger reason and warns on a shortfall instead of refusing',
     /ledgerReason: Funds\.reason\(\{ side: 'adjust'/.test(sheet) && /nuyen stops at ¥0/.test(sheet));

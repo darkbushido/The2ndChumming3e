@@ -147,10 +147,14 @@ reason, by, revert?, reverted? }`, on the **📒 Ledger** tab (every entry; From
 ### ± Funds and giving money  · TODO 192
 `scripts/data/funds.mjs` (`Funds`, pure) · the **± Funds…** button beside Nuyen (`_onAdjustFunds`) · verb `sr3e.money.give`.
 - **± adds or takes away** an amount with an optional reason (`ledgerReason`, so the 📒 reads it; empty → "By hand").
-  **Give** pays another LIVE `character` (`Funds.recipients` — world-wide, not the scene).
-- ⚠ **Warn, never refuse.** `system.nuyen` floors at 0, so a sum above the balance is flagged live in the dialog and
-  again on confirm, and only what is there moves. In a gift the recipient gets exactly what left the payer (nuyen
-  is never made up). Mutants `funds-gift-creates-nuyen`, `funds-subtract-goes-negative`, `funds-short-is-silent`.
+  **Give** pays another LIVE **player character** (`Funds.recipients` with `SR3EQuery.isPlayerCharacter` — world-wide, not the scene).
+- ⚠ **± warns, never refuses; a GIFT is blocked** (ruled 2026-10-17 by the maintainer). `system.nuyen` floors at 0, so a
+  Take away above the balance is flagged and stops at 0. A **gift** more than the payer has, negative, zero or
+  fractional (`Funds.validateGift`) is BLOCKED: the dialog's Confirm is disabled with the reason and the verb throws. A gift
+  is only between two player characters (`Funds.giftParties`; the verb rejects an NPC either side). What the recipient gets
+  is exactly what left the payer. Mutants `funds-gift-creates-nuyen`, `funds-gift-pays-what-you-have`,
+  `funds-gift-negative-allowed`, `funds-gift-fraction-floored`, `funds-gift-to-non-player`,
+  `funds-recipients-include-non-players`, `funds-subtract-goes-negative`, `funds-short-is-silent`.
 - ⚠ **A gift is ONE GM verb that writes BOTH characters** — a player cannot write another's actor, and a
   credit-only verb would let anyone mint nuyen. The GM checks the requester OWNS the payer (`Funds.mayPayFrom`),
   works from LIVE balances, debits then credits (putting the debit back if the credit fails), and the giver's

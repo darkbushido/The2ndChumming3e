@@ -2573,12 +2573,61 @@ export const MUTANTS = [
     suite:  'funds',
     ...FUNDS, method: 'give',
     was:    'a plausible slip (TODO 192): crediting the recipient the amount ASKED when the payer was short, so a gift of '
-          + '¥500 from a payer holding ¥300 made ¥200 out of nothing — what arrives must be what left',
+          + '¥500 from a payer holding ¥300 made ¥200 out of nothing — what arrives must be what left (and since the '
+          + '2026-10-17 ruling a gift over the balance is blocked outright)',
     impl:   (payerHave, recipientHave, amount) => {
       const have = Math.max(0, Math.floor(payerHave)), n = Math.max(0, Math.floor(amount)), moved = Math.min(have, n);
-      return { amount: n, moved, short: n > have, shortBy: Math.max(0, n - have), payerFrom: have, payerTo: have - moved,
+      return { ok: true, reason: '', amount: n, moved, payerFrom: have, payerTo: have - moved,
         recipientFrom: recipientHave, recipientTo: recipientHave + n };
     },
+  },
+  {
+    id:     'funds-gift-pays-what-you-have',
+    suite:  'funds',
+    ...FUNDS, method: 'give',
+    was:    'the OLD shortfall behaviour for gifts (TODO 192, replaced 2026-10-17): a gift larger than the balance goes through '
+          + 'trimmed to what the payer has. The maintainer ruled it is BLOCKED: you cannot give more than you have',
+    impl:   (payerHave, recipientHave, amount) => {
+      const have = Math.max(0, Math.floor(payerHave)), n = Math.max(0, Math.floor(Number(amount) || 0)), moved = Math.min(have, n);
+      return { ok: moved > 0, reason: '', amount: moved, moved, payerFrom: have, payerTo: have - moved,
+        recipientFrom: recipientHave, recipientTo: recipientHave + moved };
+    },
+  },
+  {
+    id:     'funds-gift-negative-allowed',
+    suite:  'funds',
+    ...FUNDS, method: 'validateGift',
+    was:    'a negative gift accepted (2026-10-17 ruling): "giving" -¥50 takes nuyen from the recipient',
+    impl:   (raw, payerHave) => {
+      const n = Math.trunc(Number(String(raw).replace(/[¥,\s]/g, '')));
+      return Number.isFinite(n) && n <= Math.max(0, payerHave) ? { ok: true, amount: n, reason: '' } : { ok: false, amount: 0, reason: 'no' };
+    },
+  },
+  {
+    id:     'funds-gift-fraction-floored',
+    suite:  'funds',
+    ...FUNDS, method: 'validateGift',
+    was:    'a fractional gift quietly floored (2026-10-17 ruling: non-integer amounts are blocked, not rounded)',
+    impl:   (raw, payerHave) => {
+      const n = Math.floor(Number(String(raw).replace(/[¥,\s]/g, '')));
+      return n > 0 && n <= Math.max(0, payerHave) ? { ok: true, amount: n, reason: '' } : { ok: false, amount: 0, reason: 'no' };
+    },
+  },
+  {
+    id:     'funds-gift-to-non-player',
+    suite:  'funds',
+    ...FUNDS, method: 'giftParties',
+    was:    'a gift to (or from) a non-player character allowed (2026-10-17 ruling: gifts are between player characters only)',
+    impl:   (payer, recipient) => ({ ok: !!payer && !!recipient && payer.id !== recipient.id, reason: '' }),
+  },
+  {
+    id:     'funds-recipients-include-non-players',
+    suite:  'funds',
+    ...FUNDS, method: 'recipients',
+    was:    'the Give list showing every live character instead of only player characters (2026-10-17 ruling)',
+    impl:   (actors, payerId, isLive = () => true) => [...(actors ?? [])]
+      .filter(a => a && a.id !== payerId && a.type === 'character' && isLive(a))
+      .map(a => ({ id: a.id, name: String(a.name ?? '') })).sort((a, b) => a.name.localeCompare(b.name)),
   },
   {
     id:     'funds-subtract-goes-negative',

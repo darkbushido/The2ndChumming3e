@@ -7144,6 +7144,8 @@ A **+/− money** control on the sheet: type N, add or subtract it, with an opti
 both sides recorded. A player cannot write another player's actor, so the transfer goes through a
 GM-routed verb. This is a feature, so it goes on a branch.
 
+**Ruled 2026-10-17 by the maintainer:** (1) you cannot give more than you have — the gift is BLOCKED (Give disabled with the reason; the verb `sr3e.money.give` rejects it), replacing the old "pay what you have" behaviour; (2) a negative, zero or non-integer amount is blocked the same way; (3) gifts are only between player characters (`SR3EQuery.isPlayerCharacter`; the recipient list and the verb enforce it). Add / Take away on your own sheet are unchanged. `Funds.validateGift` / `giftParties`.
+
 ## 193. ✅ The 📒 Ledger records entries on the wrong character — **reported 2026-09-27** · fixed `b42fdbae`
 
 **Cause, confirmed live 2026-09-27:** Foundry's Duplicate (and the GM copy verb `sr3e.actor.create`

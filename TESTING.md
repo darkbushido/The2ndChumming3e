@@ -2703,12 +2703,16 @@ the seats first if running Playwright.
 - [ ] **Take away** `400` with no reason → 850; the Ledger "Why" reads **By hand**.
 - [ ] **Take away** `5000`: while typing, the dialog shows "only ¥850 available — it stops at ¥0" in red; Confirm →
       a warning toast, Nuyen 0, nothing refused. Put some back with Add.
-- [ ] **Give to another character** lists Bravo (and other live characters), NOT Alpha, vehicles, NPCs or
-      templates (check a template exists and is absent). Give Bravo `300` "cut of the run" → toast; Alpha 550,
+- [ ] **Give to another player character** lists Bravo (and other live PLAYER characters), NOT Alpha, vehicles,
+      NPCs (any character no player owns or has assigned) or templates (check an NPC and a template exist and are absent). Give Bravo `300` "cut of the run" → toast; Alpha 550,
       Bravo (on Player3's sheet, no refresh needed) 500. Alpha's Ledger: "Gave to Bravo: cut of the run" −¥300;
       Bravo's: "Received from Alpha: cut of the run" +¥300, By Player2. A whispered 💴 chat line shows to the owners and GM.
-- [ ] **Short gift:** Alpha (¥550) gives Bravo `900` → dialog warns "only ¥550 available — ¥550 will be given";
-      Alpha ends at 0, Bravo gains exactly ¥550 (not 900).
+- [ ] **Blocked gifts (ruled 2026-10-17):** Alpha (¥550) gives Bravo `900` → the dialog shows a red "you cannot give
+      more than you have" and **Confirm is disabled**; nothing moves. The same for `-50` ("negative"), `0`, and `2.5`
+      ("whole number"). `550` exactly is allowed (Alpha 0, Bravo +550). From the console
+      `game.sr3e.SR3EQuery.asGM('sr3e.money.give', {payerUuid: <Alpha>, recipientUuid: <Bravo>, amount: 9999})` and `amount: -5` are
+      rejected by the GM verb; so is a recipient that is an NPC.
+- [ ] An **NPC's** sheet: ± Funds → the Give option is disabled ("only player characters can give").
 - [ ] As **GM**, give from Alpha to Bravo works the same; with the GM tab closed and a player giving, the
       toast reads a "no GM connected" error and nobody's nuyen changed.
 - [ ] Player3 cannot give *from* Alpha (the button isn't on a sheet they cannot edit; from the console
