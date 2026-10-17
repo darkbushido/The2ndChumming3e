@@ -1050,9 +1050,9 @@
         59,
         59
       ],
-      "hash": "807ef32ca7",
-      "text": "| Stabilization unit (Rating 2) | 10,000¥ | Adds its rating in dice to stabilization tests. |",
-      "verdict": "guide-differs",
+      "hash": "a94a4d0b6a",
+      "text": "| Stabilization unit (Rating 2) | 10,000¥ | Automatically stabilizes anyone placed inside, and the patient gets **−2** on healing tests while in it *(SR3 p.305)*. |",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -1067,7 +1067,24 @@
           "quote": "patient receives a -2 tar-"
         }
       ],
-      "note": "The guide says a stabilization unit \"adds its rating in dice to stabilization tests\". SR3 p.305 says the unit automatically stabilizes anyone placed inside, and the patient gets −2 TN on healing tests made to recover. Rating-in-dice on stabilization is the ANTIDOTE patch (p.305). The code follows the book (SR3EHealing.js:817 automatic stabilization; attentionTN/stageTN −2). Price 10,000¥ is right."
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-medical/stabilization-unit.1ef1d37316e155fb.json",
+          "line": 20,
+          "snippet": "\"cost\": 10000,"
+        },
+        {
+          "file": "scripts/SR3EHealing.js",
+          "line": 817,
+          "snippet": "Stabilization units automatically stabilize any person placed inside (p.305)"
+        },
+        {
+          "file": "scripts/SR3EHealing.js",
+          "line": 192,
+          "snippet": "return tn === undefined ? null : Math.max(2, tn - (stabilizationUnit ? 2 : 0));"
+        }
+      ],
+      "note": "Fixed in the guide during the 0.7.0 check (it was guide-differs: the antidote patch's rating-in-dice had been given to the unit)."
     },
     {
       "id": "hiring/combat-medic.md#22",
