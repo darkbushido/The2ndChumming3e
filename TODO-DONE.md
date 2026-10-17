@@ -7178,6 +7178,19 @@ Check the book for the exact skill and page before fixing; a grenade launcher is
 uses Grenade Launchers. Repro: the **Offensive AP grenade**, thrown from the **Attack** button. Not
 investigated yet. This is a bug fix, so it goes on `main`.
 
+## 213. ✅ Show why Combat Pool is lower — the gyro halving it — **requested in play, 2026-10-11** · `e9360f15`
+
+Reported on prod: Ploder's Combat Pool showed **2** with Quickness 4, Intelligence 4 and Willpower 2,
+and nothing on the sheet said why. The cause was a Gyro Mount gear item not in Storage. That counts
+as worn, and a worn gyro halves Combat Pool (SR3 p.282, TODO 18): ⌊5 ÷ 2⌋ = 2. The figure is
+already computed: `derived.combatPoolBeforeGyro` (`SR3EActor.js`, `prepareDerivedData`) is set to the
+full pool whenever a gyro is worn. But nothing in `scripts/` reads it, so the sheet never shows it.
+Wanted: the Combat Pool display says it's reduced, e.g. `2 (5, halved: Gyro Mount)` or a tooltip
+with the breakdown. Better still, give the whole breakdown: base (Q+I+W)/2, Combat Sense, armour
+penalty (p.285), manual modifier, gyro, spent. The armour penalty is just as invisible today. Test: a
+source-level check that the sheet reads `combatPoolBeforeGyro`. Add a Foundry checklist step with a
+gyro in and out of Storage. This is a feature, so it goes on a branch.
+
 ## 214. ✅ 🧹 Clear blast marker button is black on black — **reported in play, 2026-10-11** · fixed `3d218466`
 
 Observed: the chat card's **🧹 Clear blast marker** button is hard to read, with black text on a black
