@@ -2618,3 +2618,17 @@ owned by Player2. JS only — reload the tab, no restart.
 - [ ] As **Player2** on the same sheet: the Ledger tab shows the rows **without** ✕.
 - [ ] Stale click: GM opens the Ledger tab, Player2 then changes their nuyen, GM clicks ✕ on a row before the
       sheet redraws → "The ledger changed since the sheet was drawn — nothing was removed."
+
+## 46. Sheet quality of life (TODO 218, 213, 192 — `feature/sheet-qol`)
+
+**Prerequisites:** a character owned by Player2 with some Good Karma, Total Karma, a Karma Pool and a few
+nuyen; a second live character owned by Player3. JS/CSS only — reload the tabs, no restart.
+
+### Karma fields are the GM's (TODO 218)
+
+- [ ] As **Player2**: on the sheet, Good Karma and Total Karma (Bio → Resources) and both Karma Pool boxes
+      (Attributes) are greyed and cannot be typed into; the tooltip says only the GM edits them.
+- [ ] Still as Player2: edit **Nuyen** → it saves and the 📒 Ledger line appears (the sheet submit still works,
+      and Good Karma / Karma Pool did not change).
+- [ ] Roll a skill, tick **Use Karma Pool**, add a die → the pool's "left" box drops and the roll gets the die.
+- [ ] As the **GM** on the same sheet all four boxes are editable; type a Karma Pool → it saves.

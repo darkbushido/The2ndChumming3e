@@ -7197,6 +7197,18 @@ the sheet shows and where the 📒 Ledger records it. Every rule is checked in t
 page. Follow `guides/CLAUDE.md`, link it from `guides/rules/index.md`, then `node tools/linkcheck.mjs`.
 Guide content, so it goes on a branch.
 
+## 218. ✅ Karma Pool editable by the GM only — **requested in play, 2026-10-11** · `1a4c47bc`
+
+The maintainer: players should not be able to edit their Karma Pool. Make the field read-only on
+the sheet for non-GM users. Spending it through the roll options (re-roll, extra dice, buy
+successes) must still work for the player, and the GM can still type any value. Decide with the
+maintainer whether Good Karma and Total Karma get the same lock. Note the design ethos says every
+stat stays editable; this narrows that to the GM for this field, which still fits the trusted-GM
+rule. Make it a render-time lock, not a data-model one, so GM writes and the GM-routed spend verbs are
+untouched. Check whether a player's own sheet submit could still write it (the form submits every
+named input). Test: a source-level check that the field is GM-gated, plus a Foundry checklist
+step as a player. Related: [#217](TODO.md#217) (Ploder's pool reads 9). This is a feature, so it goes on a branch.
+
 ## 221. ✅ Full Defense posts its auto-commit card and rolls the dodge twice — **found 2026-10-11** (testing #220) — closed in 1d2b7fe8
 
 Found live in the test world while checking the Karma hold, then reproduced **without** Karma: an
