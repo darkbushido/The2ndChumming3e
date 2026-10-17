@@ -1,8 +1,8 @@
 {
-  "_key": "!items!69d303d6ed43a02e",
+  "_key": "!items!971ccd0d9d119891",
   "doc": {
-    "_id": "69d303d6ed43a02e",
-    "name": "Gas Grenade (Neuro-Stun VII)",
+    "_id": "971ccd0d9d119891",
+    "name": "Gas Grenade (Neuro-Stun VIII)",
     "type": "projectile",
     "system": {
       "category": "GR",
@@ -17,7 +17,7 @@
       "streetIndex": "2",
       "legal": false,
       "bookPage": "sr3.283",
-      "notes": "<p>Instead of exploding, these cylindrical grenades release a cloud of stun gas — commonly Neuro-Stun VIII (see p.250), although they may be filled with other chemicals. The gas cloud affects everything within a 10-metre radius, and lasts for 2 Combat Turns (less in windy areas, at the gamemaster's discretion).</p><p>SR3 p.283 — Legality 3-J. No blast.</p>",
+      "notes": "<p>Instead of exploding, these cylindrical grenades release a cloud of stun gas — commonly Neuro-Stun VIII (see p.250), although they may be filled with other chemicals. The gas cloud affects everything within a 10-metre radius, and lasts for 2 Combat Turns (less in windy areas, at the gamemaster's discretion).</p><p>The p.283 Explosives Table row prints \"Neuro-Stun VII\"; the book's text and the toxin entry (p.250) are VIII, so this item is named VIII (the maintainer's ruling, 2026-10-17).</p><p>SR3 p.283 — Legality 3-J. No blast.</p>",
       "isAoE": true,
       "blast": "",
       "areaRadius": 10,

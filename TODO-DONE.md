@@ -6752,6 +6752,8 @@ across the gear compendiums, and dragging an item from a compendium onto the dia
 respect the source-book filter (`SR3ESourceBooks.packAllowed`). This is a feature, so it goes on
 a branch.
 
+**Ruled 2026-10-17 by the maintainer:** a drop from a switched-off book, or of a non-buyable item type, **warns (naming why) and still fills the form**; the search still respects the book filter. A non-Item drop (an actor, a scene) still does nothing. `GearSearch.dropWarnings`.
+
 ## 155. ✅ Grenades with no damage code cannot be thrown — `5df18568`
 
 Smoke, gas, Flash-Pak and thermal smoke carry `--`, `Special`, `gas`, `-` and so on, which
@@ -6888,6 +6890,8 @@ Follow-up to [#155](#155), which lands gas, smoke and flash grenades and marks a
 5. **Flash-Pak** has no area at all: *"Anyone facing a flash-pak"* is a facing rule. It could mark a cone or ask the GM to tick who is looking; today it only states +4 (+2 with flare compensation) and +2 from the strobe.
 6. **Wind** — *"less in windy areas, at the gamemaster's discretion"* — is stated on the card and not modelled; the expiry is a fixed 2 Combat Turns. A GM cannot shorten one except by clearing the marker.
 7. **Thermal Smoke** and the other non-core no-damage grenades (the 2nd-edition ones are parked in `archive/sr2/`) would use the same two fields once their packs return.
+
+**Ruled 2026-10-17 by the maintainer:** ordinary smoke offers *Heavy Smoke/Fog/Rain* (confirmed, no longer an open question). The gas grenade is **Neuro-Stun VIII** (p.250 and p.283's text; the p.283 table row prints VII): the core Gas Grenade and Gas Mini-grenade items were renamed and rebuilt from `tools/build-core-grenades.mjs`; no migration (new copies from the compendium only; an older copy still named VII keeps the card's note). No other Neuro-Stun grenade exists in the packs (the Neuro-stun IX and X entries are drugs, Mil. Tech. M&M; the SR2 versions are parked in `archive/`).
 
 ## 165. ✅ Rules check 0.6.1 — damage staging is not the book's net comparison — `a597f2a0`
 
@@ -7039,6 +7043,8 @@ The maintainer wants one way for a vehicle to **collide with an actor, another v
 of barrier** — deliberately (a ram) or by accident (the driver was trying to stop). This is a
 feature, so it goes on a branch.
 
+**Ruled 2026-10-17 by the maintainer:** a pedestrian hit by a vehicle also gets the **Knockdown Test** ("getting hit by a car is going to suck") — the core rule, SR3 p.124 (*"When struck, the character must make a Body Test. Against ranged attacks, the target is equal to one-half the Power of the attack, rounding down"*), applied to the collision's Power and labelled as such because the book gives none specific to collisions. Offered on the pedestrian's soak card after damage resistance via the shared `sr-knockdown-btn` (so it is a ⏳ step). The head-on negative-speed convenience is unchanged. `Collisions.pedestrianSoakFlags`.
+
 **What exists today:**
 - **Vehicle → vehicle, deliberate:** the Chase Scene's **Ramming** action
   (`SR3EVehicleChase._actionRamming`, `SR3EActor._buildRamDamageHtml`) — but only between two chase
@@ -7133,12 +7139,16 @@ This is a feature, so it goes on a branch.
 
 **Done 2026-10-17 (`dfb91371`, `feature/spells-grenades`).** SR3 p.183: *"Living targets may always make a Spell Resistance Test against spells, unless the target of the spell is willing"*; with no test, *"all the successes from the Sorcery Test are used … to determine the spell's effect"*. The cast (Sorcery Test, TN the targeted Attribute, Drain) is unchanged — the book gives a willing subject no lower TN — but a non-damaging spell now asks which targets are willing (self, party and friendly tokens ticked by default; always editable) and a ticked target gets a line stating the effect instead of a Resist Spell button. Combat and Elemental spells keep their flow. Self-casting itself was already on main (`_promptTarget` `allowSelf`); `origin/spell-self-target` is fully superseded.
 
+**Ruled 2026-10-17 by the maintainer:** keep the Sorcery Test target number unchanged for a willing subject (the targeted Attribute, as the book gives no lower TN). No code change.
+
 ## 192. ✅ 💴 Make changing funds easier — a ± button, and giving money to another player — **requested 2026-09-27** · `41c6c13d`
 
 A **+/− money** control on the sheet: type N, add or subtract it, with an optional reason for the
 📒 Ledger ([#79](#79)). Maybe also a **give money** action: one character pays another,
 both sides recorded. A player cannot write another player's actor, so the transfer goes through a
 GM-routed verb. This is a feature, so it goes on a branch.
+
+**Ruled 2026-10-17 by the maintainer:** (1) you cannot give more than you have — the gift is BLOCKED (Give disabled with the reason; the verb `sr3e.money.give` rejects it), replacing the old "pay what you have" behaviour; (2) a negative, zero or non-integer amount is blocked the same way; (3) gifts are only between player characters (`SR3EQuery.isPlayerCharacter`; the recipient list and the verb enforce it). Add / Take away on your own sheet are unchanged. `Funds.validateGift` / `giftParties`.
 
 ## 193. ✅ The 📒 Ledger records entries on the wrong character — **reported 2026-09-27** · fixed `b42fdbae`
 
@@ -7182,6 +7192,8 @@ armour and outward implants least concealed first, posts the list to chat, and r
 (SR3 p.45, p.231-232, p.236-237, p.270). ⚠ **Open for the 0.6.x rules record:** p.270 says a search's target number is
 *half* the Concealability (rounding down); p.237's manual search uses the Concealability whole with the Physical Search
 Modifiers Table. The tool offers both and picks neither — the maintainer chooses a default.
+
+**Ruled 2026-10-17 by the maintainer:** a search uses the **full** Concealability plus the Physical Search Modifiers Table (SR3 p.237, table p.236); p.270's "half the Concealability" is not used and the mode is removed from the tool (`SEARCH_HALF` gone; two modes, noticing and searching). Noticing stays the whole number (p.45, p.231). Code note: `scripts/data/concealment.mjs`.
 
 ## 197. ✅ Ledger entries appear on other characters — **reported 2026-09-27** · fixed `1726af72`
 

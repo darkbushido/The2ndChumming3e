@@ -624,8 +624,9 @@ export class SR3EQuery {
      * actor, and a verb that only credited the recipient would let anyone mint nuyen. So the GM checks that
      * the requester OWNS the payer, works the amounts out from LIVE balances (`Funds.give`), debits the
      * payer, credits the recipient, and puts the pair in both 📒 Ledgers (`ledgerReason`/`ledgerBy`).
-     * ⚠ A payer short of the amount pays what they have (nuyen floors at 0): the sheet warned beforehand,
-     * and what the recipient gets is exactly what left the payer.
+     * ⚠ Ruled 2026-10-17: a gift is BLOCKED (this verb throws), never trimmed, when it is more than the payer
+     * has, negative, zero or fractional (`Funds.validateGift`), or when either side is not a player character
+     * (`Funds.giftParties`). What the recipient gets is exactly what left the payer.
      * ⚠ Serialised under ONE key, not per actor: A→B and B→A at once would otherwise each wait on the other.
      * ⚠ If the credit fails the debit is put back.
      */
@@ -635,15 +636,14 @@ export class SR3EQuery {
         const payer = SR3EQuery.resolve(payerUuid), recipient = SR3EQuery.resolve(recipientUuid);
         if (payer?.type !== 'character') throw new Error(`SR3E | money.give: '${payerUuid}' is not a character`);
         if (recipient?.type !== 'character') throw new Error(`SR3E | money.give: '${recipientUuid}' is not a character`);
-        if (payer.id === recipient.id) throw new Error('SR3E | money.give: a character cannot pay themselves');
+        const parties = Funds.giftParties(payer, recipient, SR3EQuery.isPlayerCharacter);
+        if (!parties.ok) throw new Error(`SR3E | money.give: ${parties.reason}`);
         const requester = game.users.get(_requesterId);
         if (!Funds.mayPayFrom(payer, requester, (a, u) => a.testUserPermission(u, 'OWNER'))) {
           throw new Error(`SR3E | money.give: ${requester?.name ?? 'that user'} does not own ${payer.name}`);
         }
-        const n = Funds.parseAmount(amount);
-        if (!n) throw new Error('SR3E | money.give: the amount must be a positive number');
-        const r = Funds.give(payer.system?.nuyen, recipient.system?.nuyen, n);
-        if (!r.moved) return { ...r, ok: true };
+        const r = Funds.give(payer.system?.nuyen, recipient.system?.nuyen, amount);
+        if (!r.ok) throw new Error(`SR3E | money.give: ${r.reason}`);
         const by = requester?.name ?? '';
         await payer.update({ 'system.nuyen': r.payerTo },
           { ledgerBy: by, ledgerReason: Funds.reason({ side: 'give', other: recipient.name, text }) });
@@ -658,8 +658,7 @@ export class SR3EQuery {
         const esc = v => foundry.utils.escapeHTML?.(String(v ?? '')) ?? String(v ?? '');
         await ChatMessage.create({
           whisper: game.users.filter(u => u.isGM || payer.testUserPermission(u, 'OWNER') || recipient.testUserPermission(u, 'OWNER')).map(u => u.id),
-          content: `<div class="sr-roll-card"><div class="sr-roll-result">💴 ${esc(payer.name)} gave ${yen(r.moved)} to ${esc(recipient.name)}${
-            r.short ? ` (asked for ${yen(r.amount)} — only ${yen(r.moved)} was there)` : ''}${text ? ` — ${esc(text)}` : ''}.</div></div>`,
+          content: `<div class="sr-roll-card"><div class="sr-roll-result">💴 ${esc(payer.name)} gave ${yen(r.moved)} to ${esc(recipient.name)}${text ? ` — ${esc(text)}` : ''}.</div></div>`,
         });
         return { ...r, ok: true };
       }));

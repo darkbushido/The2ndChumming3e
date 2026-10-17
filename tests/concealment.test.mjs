@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs';
 import { installGlobals, installGame, makeActor } from './helpers/foundry.mjs';
 installGlobals();
 globalThis.foundry.utils.escapeHTML ??= s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const { Concealment, NOTICE, SEARCH_HALF, SEARCH_FULL, SEARCH_TABLE } = await import('../scripts/data/concealment.mjs');
+const { Concealment, MODES, NOTICE, SEARCH_FULL, SEARCH_TABLE } = await import('../scripts/data/concealment.mjs');
 const { SR3EConcealment } = await import('../scripts/SR3EConcealment.js');
 
 export const name = 'concealment';
@@ -29,10 +29,11 @@ export async function run(t) {
   /* ── The target number · p.45, p.231, p.270, p.237 ──────────────────────────────── */
   const TN = (c, m, mod) => Concealment.targetNumber(c, m, mod);
   t.is('noticing: the Perception Test is against the Concealability itself (p.231)', TN(8, NOTICE), 8);
-  t.is('a p.270 search: HALF, rounded down — Concealability 7 → 3', TN(7, SEARCH_HALF), 3);
-  t.is('…and 8 → 4', TN(8, SEARCH_HALF), 4);
-  t.is('a p.237 manual search: the whole Concealability', TN(7, SEARCH_FULL), 7);
-  t.is('no target number is below 2 (p.112): half of 3 is 1, read as 2', TN(3, SEARCH_HALF), 2);
+  t.is('a p.237 search: the WHOLE Concealability, never the p.270 half (ruled out 2026-10-17)', TN(7, SEARCH_FULL), 7);
+  t.is('…8 stays 8, not 4', TN(8, SEARCH_FULL), 8);
+  t.is('a search with the Physical Search table (p.236): Concealability 7, amateur +2, cursory +2 → 11', TN(7, SEARCH_FULL, 4), 11);
+  t.eq('only two modes exist: noticing and searching', Object.keys(MODES), [NOTICE, SEARCH_FULL]);
+  t.is('no target number is below 2 (p.112): Concealability 1 reads as 2', TN(1, SEARCH_FULL), 2);
   t.is('modifiers add on: Concealability 8 with a distracted perceiver (+2)', TN(8, NOTICE, 2), 10);
   t.is('…and subtract, to the floor', TN(3, NOTICE, -4), 2);
 
@@ -131,7 +132,6 @@ export async function run(t) {
   t.ok('entry points: the Rollable Tables GM tools and the character sheet (GM only)',
     /mk\('sr3e-conceal-btn', '👁 Concealment',\s+\(\) => SR3EConcealment\.open\(\), true\)/.test(sr3e)
     && /data-action="concealment"/.test(sheet) && /game\.user\.isGM \? `<button type="button" class="btn-sm" data-action="concealment"/.test(sheet));
-  t.ok('all three readings of a search\'s target number are offered, never one picked silently', Object.keys({ NOTICE, SEARCH_HALF, SEARCH_FULL }).length === 3
-    && /Object\.entries\(MODES\)/.test(tool));
+  t.ok('the dialog offers noticing and the p.237 search only (p.270 half-rating ruled out)', !/SEARCH_HALF|search-half|halved/.test(tool) && /Object\.entries\(MODES\)/.test(tool));
   t.ok('nothing is written back to an item', !/\.update\(|updateEmbedded|setFlag/.test(tool));
 }

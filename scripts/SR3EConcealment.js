@@ -1,4 +1,4 @@
-import { Concealment, MODES, NOTICE, SEARCH_HALF, SEARCH_FULL, SEARCH_TABLE } from './data/concealment.mjs';
+import { Concealment, MODES, NOTICE, SEARCH_FULL, SEARCH_TABLE } from './data/concealment.mjs';
 
 /**
  * 👁 Concealment — what a character carries that can be seen, and how well it is hidden · TODO 195.
@@ -150,8 +150,8 @@ export class SR3EConcealment {
   /* ------------------------------------------------------------------ */
 
   /**
-   * Roll the Perception Test the book gives against one item. Three readings of the target number are offered
-   * because p.270 and p.237 disagree about a search (see `Concealment`); the GM picks.
+   * Roll the Perception Test the book gives against one item. Noticing uses the whole Concealability; a search
+   * uses it whole too, plus the Physical Search Modifiers Table (p.236-237; p.270's half-rating was ruled out).
    * @param {{actorId:string, name:string, conceal:number|null}} item  actorId = whose item
    */
   static async testDialog({ actorId = '', name = 'the item', conceal = null } = {}) {
@@ -175,7 +175,7 @@ export class SR3EConcealment {
         const c = parseInt(q('#cn-c').value);
         q('#cn-out').textContent = m === SEARCH_FULL && s.found
           ? 'A strip search finds the weapon — no test (SR3 p.236).'
-          : Number.isFinite(c) ? `Target number ${Concealment.targetNumber(c, m, extra)} (Concealability ${c}${m === SEARCH_HALF ? ', halved' : ''}${extra ? `, ${extra > 0 ? '+' : ''}${extra}` : ''})` : 'Enter the Concealability.';
+          : Number.isFinite(c) ? `Target number ${Concealment.targetNumber(c, m, extra)} (Concealability ${c}${extra ? `, ${extra > 0 ? '+' : ''}${extra}` : ''})` : 'Enter the Concealability.';
       };
       q('#cn-observer').addEventListener('change', () => {
         const a = game.actors.get(q('#cn-observer').value);
@@ -204,7 +204,7 @@ export class SR3EConcealment {
           <label style="${FIELD}" title="Perception Test Modifiers Table (p.232): distracted +2, partially hidden +2, brightly coloured −2, light and weather …">Other modifiers
             <input id="cn-mod" type="number" step="1" value="0"/></label>
         </div>
-        <div style="margin:8px 0 2px;font-size:12px;color:var(--sr-muted)">How the target number is read — the book gives two for a search:</div>
+        <div style="margin:8px 0 2px;font-size:12px;color:var(--sr-muted)">How the target number is read:</div>
         ${Object.entries(MODES).map(([k, m]) => `
           <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;margin:2px 0">
             <input type="radio" name="cn-mode" value="${k}"${k === NOTICE ? ' checked' : ''}/> ${esc(m.label)} <span style="color:var(--sr-muted)">(${esc(m.page)})</span></label>`).join('')}

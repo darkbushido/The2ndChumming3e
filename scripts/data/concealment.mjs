@@ -8,8 +8,8 @@
  *    guns, make the Perception Test against the relevant number."* A Perception Test rolls Intelligence dice;
  *    one success means *"someone has noticed something"* (the Perception Success Table, p.232).
  *  - p.270: *"Concealability measures how concealable the weapon is. This rating is used as the target number
- *    for Perception Tests directed at noticing the weapon. Searches have a target number of half the regular
- *    Concealability Rating (rounding down)."*
+ *    for Perception Tests directed at noticing the weapon."* (Its next sentence, that searches use half the
+ *    rating, was RULED OUT by the maintainer 2026-10-17 — see below.)
  *  - p.237, Weapon Detection → Manual Detection: *"In all cases, make a standard Perception Test against the
  *    Concealability of the weapon in question. Apply the modifiers in the Physical Search Modifiers Table,
  *    p. 236."*
@@ -21,9 +21,9 @@
  *    searches."* Obvious cyberlimbs *"will also draw the attention of security personnel"* (p.301), and
  *    *"cyber replacement of the ears typically features an obvious prosthesis"* (p.299).
  *
- * ⚠ **p.270 and p.237 disagree about a search.** p.270 halves the Concealability for a search; p.237's manual
- * search uses it whole, with the table's modifiers. The tool OFFERS all three readings and never picks —
- * `NOTICE`, `SEARCH_HALF` (p.270) and `SEARCH_FULL` (p.237) — and the 0.6.x rules record carries the question.
+ * ⚠ **A search uses the FULL Concealability plus the Physical Search Modifiers Table (p.237, table p.236).**
+ * p.270's "half the Concealability, rounded down" for searches was ruled out by the maintainer (2026-10-17) and
+ * is not in the code. Two modes remain: `NOTICE` (p.45, p.231) and `SEARCH_FULL` (p.237).
  *
  * ⚠ **A LOWER Concealability is the WORSE hidden one**: it is the target number, so the item is easier to spot.
  * "Least concealed first" therefore sorts ascending, with things that need no test at all (in hand, obvious
@@ -47,14 +47,13 @@ export const PAGES = {
 };
 
 /** How a Perception Test against an item is aimed. */
-export const NOTICE      = 'notice';        // p.45, p.231, p.270 — the full Concealability
-export const SEARCH_HALF = 'search-half';   // p.270 — half, rounded down
+export const NOTICE      = 'notice';        // p.45, p.231 — the full Concealability
 export const SEARCH_FULL = 'search-full';   // p.237 — the full Concealability, plus the Physical Search table
+// p.270's half-rating for searches was ruled out by the maintainer (2026-10-17): there is no half mode.
 
 export const MODES = {
-  [NOTICE]:      { label: 'Noticing it on someone (Concealability)',                     page: 'SR3 p.45, p.231, p.270' },
-  [SEARCH_HALF]: { label: 'A search — half the Concealability, rounded down',            page: 'SR3 p.270' },
-  [SEARCH_FULL]: { label: 'A manual search — the Concealability, with the search table', page: 'SR3 p.237' },
+  [NOTICE]:      { label: 'Noticing it on someone (Concealability)',                     page: 'SR3 p.45, p.231' },
+  [SEARCH_FULL]: { label: 'A search — the Concealability, with the search table',        page: 'SR3 p.236-237' },
 };
 
 /** Physical Search Modifiers Table · SR3 p.236. `found` = no test: the weapon is found. */
@@ -96,13 +95,12 @@ export const Concealment = {
    * The target number of a Perception Test against Concealability `c`, by `mode`. Floored at 2: *"no target
    * number can ever be less than 2"* (p.112).
    * @param {number} c
-   * @param {string} [mode]  NOTICE | SEARCH_HALF | SEARCH_FULL
+   * @param {string} [mode]  NOTICE | SEARCH_FULL (both use the whole Concealability; the search's table rides in `mod`)
    * @param {number} [mod]   modifiers on top (the search table, the Perception Test Modifiers Table)
    */
   targetNumber(c, mode = NOTICE, mod = 0) {
-    const base = Math.max(0, clampInt(c));
-    const tn = mode === SEARCH_HALF ? Math.floor(base / 2) : base;
-    return Math.max(2, tn + clampInt(mod));
+    void mode;   // both modes use the whole Concealability
+    return Math.max(2, Math.max(0, clampInt(c)) + clampInt(mod));
   },
 
   /**

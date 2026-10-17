@@ -148,7 +148,7 @@ pedestrian…). Rules: `scripts/data/collisions.mjs` (pure) — **`SR3EActor.cra
 Levels Table** and is handed in as `table`; `ramCollision` delegates to it.
 - **Pedestrian (p.148):** Power = speed ÷ 10 (rounded up); the pedestrian takes the table's level **one stage higher**
   (past Destroyed: Power **+ half, rounded down**); the vehicle one stage **lower** (1-20 m/turn → none). Worked: 60 m/turn → 6S.
-  The pedestrian resists with the ordinary `.sr-soak-btn` card (`useImpact`, Combat Pool allowed, `noKnockdown`).
+  The pedestrian resists with the ordinary `.sr-soak-btn` card (`useImpact`, Combat Pool allowed). **Knockdown is offered** after the resistance (`Collisions.pedestrianSoakFlags`): the core rule, *SR3 p.124* ("Characters struck in ranged or melee combat may be knocked back or possibly down by the blow… Against ranged attacks, the target is equal to one-half the Power of the attack, rounding down"), applied to the collision's Power — the book gives none specific to collisions (ruled 2026-10-17, TODO 189). It is the shared `.sr-knockdown-btn`, so it is a ⏳ step.
 - **Vehicle (p.143, p.147):** speed difference ÷ 10 up; level from the table. A **ram** reduces only the rammer's Power
   (Body × successes, floor 2); an **accident** reduces nobody's (maintainer, 2026-10-17); the card is the existing
   Ramming card (`_buildRamDamageHtml`, `ctx.accident`). A pedestrian ram gives the vehicle **no** reduction either.

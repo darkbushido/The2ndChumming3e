@@ -5632,13 +5632,19 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * ± Funds · TODO 192 — add nuyen, take it away, or give it to another character, with an optional reason
    * for the 📒 Ledger. The arithmetic and ledger wording are `Funds` (pure, tested); a gift is one GM-routed
    * verb (`sr3e.money.give`) that writes BOTH characters, because a player cannot write another's actor.
-   * Warn, never refuse: a sum larger than the balance is flagged, and only what is there moves.
+   * Add / Take away warn, never refuse (a Take away stops at ¥0). A GIFT is blocked (ruled 2026-10-17): the
+   * Confirm button is disabled with the reason when it is more than you have, negative, zero or fractional, and
+   * only player characters appear as recipients (and only a player character can give).
    */
   static async _onAdjustFunds() {
     const actor = this.actor;
     const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const yen = v => `¥${Number(v || 0).toLocaleString('en-US')}`;
-    const others = Funds.recipients(game.actors.filter(a => a.type === 'character' && game.sr3e.isLiveActor(a)), actor.id, () => true);
+    const isPC = a => game.sr3e.SR3EQuery.isPlayerCharacter(a);
+    const payerIsPC = isPC(actor);
+    const others = payerIsPC
+      ? Funds.recipients(game.actors.filter(a => a.type === 'character' && game.sr3e.isLiveActor(a)), actor.id, () => true, isPC)
+      : [];
     let chosen = null;
 
     const wireDialog = (_app, html) => {
@@ -5649,15 +5655,22 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         who.forEach(el => { el.style.display = give ? '' : 'none'; });
         const n = Funds.parseAmount(amt.value);
         const have = actor.system.nuyen ?? 0;
-        let msg = '';
-        if (n === null || n === 0) msg = '';
+        const ok = html.querySelector('button[data-action="ok"]');
+        let msg = '', blocked = false;
+        if (give) {
+          // A gift is blocked, not trimmed: the reason shows and Confirm is disabled (ruled 2026-10-17).
+          const v = Funds.validateGift(amt.value, have);
+          blocked = !v.ok;
+          msg = amt.value.trim() === '' ? '' : v.ok
+            ? `${yen(have)} → ${yen(have - v.amount)}`
+            : `<span style="color:var(--sr-red)">⛔ ${esc(v.reason)}</span>`;
+        } else if (n === null || n === 0) msg = '';
         else if (mode.value === 'add') msg = `${yen(have)} → ${yen(Funds.change(have, n, 'add').to)}`;
         else {
-          const r = mode.value === 'give' ? Funds.give(have, 0, n) : Funds.change(have, n, 'subtract');
-          const to = r.payerTo ?? r.to;
-          msg = `${yen(have)} → ${yen(to)}${r.short ? ` <span style="color:var(--sr-red)">⚠ only ${yen(have)} available — ${
-            give ? `${yen(Math.min(have, n))} will be given` : 'it stops at ¥0'}</span>` : ''}`;
+          const r = Funds.change(have, n, 'subtract');
+          msg = `${yen(have)} → ${yen(r.to)}${r.short ? ` <span style="color:var(--sr-red)">⚠ only ${yen(have)} available — it stops at ¥0</span>` : ''}`;
         }
+        if (ok) ok.disabled = give && (blocked || !who[1].value);
         warn.innerHTML = msg;
       };
       mode.addEventListener('change', refresh);
@@ -5676,7 +5689,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           <select id="fund-mode">
             <option value="add">Add nuyen</option>
             <option value="subtract">Take away nuyen</option>
-            <option value="give"${others.length ? '' : ' disabled'}>Give to another character${others.length ? '' : ' (nobody to give to)'}</option>
+            <option value="give"${others.length ? '' : ' disabled'}>Give to another player character${others.length ? '' : payerIsPC ? ' (no other player character)' : ' (only player characters can give)'}</option>
           </select>
           <label for="fund-amount">Amount (¥)</label>
           <input id="fund-amount" type="text" inputmode="numeric" placeholder="e.g. 1500" autocomplete="off"/>
@@ -5690,25 +5703,27 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         { label: 'Confirm', action: 'ok', default: true,
           callback: (_e, _b, dlg) => {
             const q = id => dlg.element.querySelector(id);
-            chosen = { mode: q('#fund-mode').value, amount: Funds.parseAmount(q('#fund-amount').value),
+            chosen = { mode: q('#fund-mode').value, amount: Funds.parseAmount(q('#fund-amount').value), raw: q('#fund-amount').value,
               who: q('#fund-who')?.value ?? '', text: q('#fund-why').value.trim() };
           } },
         { label: 'Cancel', action: 'cancel' },
       ],
     });
     if (!chosen) return;
-    if (!chosen.amount) return ui.notifications.warn('Type an amount of nuyen first.');
+    if (chosen.mode !== 'give' && !chosen.amount) return ui.notifications.warn('Type an amount of nuyen first.');
 
     const have = actor.system.nuyen ?? 0;     // read AFTER the dialog: a gift may have landed while it was open
     if (chosen.mode === 'give') {
       const target = game.actors.get(chosen.who);
       if (!target) return ui.notifications.warn('Pick who to give it to.');
-      const r = Funds.give(have, target.system?.nuyen, chosen.amount);
-      if (r.short) ui.notifications.warn(`${actor.name} only has ${yen(have)} — giving ${yen(r.moved)}, not ${yen(chosen.amount)}.`);
-      if (!r.moved) return;
+      const parties = Funds.giftParties(actor, target, isPC);
+      if (!parties.ok) return ui.notifications.warn(parties.reason);
+      // Re-checked against the LIVE balance: it may have changed while the dialog was open. Blocked, not trimmed.
+      const r = Funds.give(have, target.system?.nuyen, chosen.raw);
+      if (!r.ok) return ui.notifications.warn(r.reason);
       try {
         await game.sr3e.SR3EQuery.asGM('sr3e.money.give', { payerUuid: actor.uuid, recipientUuid: target.uuid,
-          amount: chosen.amount, text: chosen.text });
+          amount: r.amount, text: chosen.text });
         ui.notifications.info(`${actor.name} gave ${yen(r.moved)} to ${target.name}.`);
       } catch (err) {
         console.error('SR3E | money.give failed', err);

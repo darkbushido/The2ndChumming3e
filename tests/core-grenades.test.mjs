@@ -40,7 +40,7 @@ const BOOK = [
   ['Defensive HE Grenade', '6', '10S', '-1/.5m', '.25', '4/4 days', 30, '2', false, 'Defensive (HE or AP)'],
   ['Defensive AP Grenade', '6', '10S', '-1/.5m', '.25', '4/4 days', 30, '2', false, 'Defensive (HE or AP)'],
   ['Concussion Grenade',   '6', '12M Stun', '-1/m', '.25', '5/4 days', 30, '2', false, 'Concussion'],
-  ['Gas Grenade (Neuro-Stun VII)', '5', 'Special', '', '.25', '8/4 days', 60, '2', false, 'Gas (Neuro-Stun VII)'],
+  ['Gas Grenade (Neuro-Stun VIII)', '5', 'Special', '', '.25', '8/4 days', 60, '2', false, 'Gas (Neuro-Stun VII)'],
   ['Smoke Grenade',        '6', '--', '', '.25', '3/24 hrs', 30, '2', false, 'Smoke'],
   ['Smoke (IR) Grenade',   '6', '--', '', '.25', '4/48 hrs', 40, '2', false, 'Smoke (IR)'],
   ['Flash-Pak',           '12', 'Special', '', '.2', '3/36 hrs', 250, '1', true, 'Flash-Pak'],

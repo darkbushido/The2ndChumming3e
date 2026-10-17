@@ -12,6 +12,7 @@ installGlobals();
 globalThis.foundry.utils.escapeHTML ??= s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const { SR3E } = await import('../scripts/config.js');
 const { Collisions } = await import('../scripts/data/collisions.mjs');
+const { STEP_BUTTONS } = await import('../scripts/data/open-steps.mjs');
 const { SR3EActor } = await import('../scripts/documents/SR3EActor.js');
 const { SR3ECollision } = await import('../scripts/SR3ECollision.js');
 
@@ -34,6 +35,12 @@ export async function run(t) {
   t.ok('…so the Power is NOT yet increased by half', P(200).pedestrian.power === 20 && P(200).pedestrian.pastDeadly === false);
   t.is('201 m/turn: Destroyed on the table → Power +½ (21 → 31), still Deadly', code(P(201).pedestrian), '31D');
   t.ok('…flagged as past Deadly', P(201).pedestrian.pastDeadly);
+
+  /* ── The pedestrian gets the core Knockdown rule (p.124) — ruled 2026-10-17 ─────────────────── */
+  const flags = Collisions.pedestrianSoakFlags();
+  t.is('the pedestrian resists on Impact armour (p.148)', flags.useImpact, true);
+  t.ok('…and it is the same Knockdown button every attack card uses, so ⏳ Waiting-on lists it', 'sr-knockdown-btn' in STEP_BUTTONS);
+  t.is('…and the Knockdown Test is NOT suppressed: "getting hit by a car is going to suck" (core rule p.124)', flags.noKnockdown, false);
   t.is('…and the vehicle, one below Destroyed, resists 21S', code(P(201).vehicle), '21S');
   t.is('the half rounds DOWN: Power 25 → 25 + 12 = 37', P(250).pedestrian.power, 37);
   t.is('a standstill still has Power 1 (the table\'s floor)', P(0).pedestrian.power, 1);
@@ -129,8 +136,10 @@ export async function run(t) {
   let html = SR3ECollision.cardHtml(ctxOf('pedestrian'));
   t.ok('pedestrian card: 50 m/turn → 5M on the table, 5S for the pedestrian', /5S Physical/.test(html));
   const soak = payloads(html, 'sr-soak-btn')[0];
-  t.ok('…a Resist Damage button for the pedestrian, on Impact armour, with no Knockdown step',
-    soak?.targetActorId === 'walk' && soak.stagedPower === 5 && soak.stagedLevel === 'S' && soak.useImpact === true && soak.noKnockdown === true && soak.isStun === false);
+  t.ok('…a Resist Damage button for the pedestrian, on Impact armour, with the Knockdown step left ON (ruled 2026-10-17)',
+    soak?.targetActorId === 'walk' && soak.stagedPower === 5 && soak.stagedLevel === 'S' && soak.useImpact === true && !soak.noKnockdown && soak.isStun === false);
+  t.ok('…the card labels the Knockdown Test as the core rule (p.124) applied to a collision, since the book gives none for collisions',
+    /Knockdown Test<\/strong> \(SR3 p\.124\)/.test(html) && /no Knockdown rule specific to collisions/.test(html));
   t.ok('…no dodge button unless the GM left the box ticked', !/sr-dodge-declare-btn/.test(html));
   const vs = payloads(html, 'sr-ram-vehicle-soak-btn')[0];
   t.ok('…the car resists 5L (one stage below the table\'s Moderate), with its occupants and a Crash Test offered',
@@ -138,6 +147,7 @@ export async function run(t) {
   // pedestrian with the house-rule dodge
   html = SR3ECollision.cardHtml(ctxOf('pedestrian', { pedDodge: true, pedBeat: '' }));
   const dodge = payloads(html, 'sr-dodge-declare-btn')[0];
+  t.ok('…the dodge path hands the Knockdown step on to the soak card too (noKnockdown is not set)', dodge && !dodge.noKnockdown);
   t.ok('with the dodge on: a Dodge-or-take-it button, and the Resist button is NOT also offered', dodge && !/class="sr-soak-btn"/.test(html));
   t.ok('…it must beat 1 hit for an accident, and carries the damage into the soak', dodge.attackSuccesses === 1 && dodge.stagedPower === 5 && dodge.stagedLevel === 'S' && dodge.useImpact === true);
   t.ok('…the card says plainly that it is a HOUSE RULE and that the book has none', /HOUSE RULE/.test(html) && /gives a pedestrian no dodge/.test(html));

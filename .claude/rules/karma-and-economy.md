@@ -147,10 +147,14 @@ reason, by, revert?, reverted? }`, on the **📒 Ledger** tab (every entry; From
 ### ± Funds and giving money  · TODO 192
 `scripts/data/funds.mjs` (`Funds`, pure) · the **± Funds…** button beside Nuyen (`_onAdjustFunds`) · verb `sr3e.money.give`.
 - **± adds or takes away** an amount with an optional reason (`ledgerReason`, so the 📒 reads it; empty → "By hand").
-  **Give** pays another LIVE `character` (`Funds.recipients` — world-wide, not the scene).
-- ⚠ **Warn, never refuse.** `system.nuyen` floors at 0, so a sum above the balance is flagged live in the dialog and
-  again on confirm, and only what is there moves. In a gift the recipient gets exactly what left the payer (nuyen
-  is never made up). Mutants `funds-gift-creates-nuyen`, `funds-subtract-goes-negative`, `funds-short-is-silent`.
+  **Give** pays another LIVE **player character** (`Funds.recipients` with `SR3EQuery.isPlayerCharacter` — world-wide, not the scene).
+- ⚠ **± warns, never refuses; a GIFT is blocked** (ruled 2026-10-17 by the maintainer). `system.nuyen` floors at 0, so a
+  Take away above the balance is flagged and stops at 0. A **gift** more than the payer has, negative, zero or
+  fractional (`Funds.validateGift`) is BLOCKED: the dialog's Confirm is disabled with the reason and the verb throws. A gift
+  is only between two player characters (`Funds.giftParties`; the verb rejects an NPC either side). What the recipient gets
+  is exactly what left the payer. Mutants `funds-gift-creates-nuyen`, `funds-gift-pays-what-you-have`,
+  `funds-gift-negative-allowed`, `funds-gift-fraction-floored`, `funds-gift-to-non-player`,
+  `funds-recipients-include-non-players`, `funds-subtract-goes-negative`, `funds-short-is-silent`.
 - ⚠ **A gift is ONE GM verb that writes BOTH characters** — a player cannot write another's actor, and a
   credit-only verb would let anyone mint nuyen. The GM checks the requester OWNS the payer (`Funds.mayPayFrom`),
   works from LIVE balances, debits then credits (putting the debit back if the credit fails), and the giver's
@@ -172,7 +176,8 @@ card: delivery N, meet at N/2, price → 🤝 Negotiate (`rollOpposedPair` → `
 - **Finding the item (TODO 154, `scripts/data/gear-search.mjs`)**: a 🔎 search over the gear packs' **indexes**
   (`pack.getIndex({ fields })`, never `getDocuments`) and a drop onto the dialog fill the same fields through one
   `take()`. ⚠ **Both go through `SR3ESourceBooks.packAllowed`** (`gearPacks()` / `resolveDrop`); a book switched
-  off is neither searched nor accepted from. Enter in the box is `preventDefault`ed. Mutants `gear-search-*`.
+  off is not searched, but a **drop** from one (or of a non-buyable type) now only **warns and still fills the form**
+  (`GearSearch.dropWarnings`, ruled 2026-10-17); a non-Item drop fills nothing. Enter in the box is `preventDefault`ed. Mutants `gear-search-*`.
 - Not modelled: Legality/permits (p.273), the Etiquette specialisation. `tests/purchasing.test.mjs` pins
   Cheshire: 38 days, 19 days, ¥12,600, ¥10,080.
 
@@ -202,9 +207,9 @@ character's Attributes tab). Rules and the heuristic: `scripts/data/concealment.
   (`SR3EActor.wornArmorItems`). **Implants** only when category and name mark an outward part (`classifyImplant`): obvious
   cyberlimbs/cyberskull/torso/Kid Stealth and cyberears (no test); **synthetic** limbs (**8**, p.303; +3 under clothing,
   p.301) and an Induction Datajack (**10**, M&M p.21) are disguised; cybereyes and a plain datajack are the GM's call.
-- ⚠ **A search's target number has TWO readings in the book:** p.270 *"Searches have a target number of half the regular
-  Concealability Rating (rounding down)"*; p.237 *"make a standard Perception Test against the Concealability … Apply the
-  modifiers in the Physical Search Modifiers Table"*. The test dialog OFFERS all three (`NOTICE`, `SEARCH_HALF`,
-  `SEARCH_FULL`) and picks none; the question is with the maintainer. A 6-10 minute strip search finds the weapon, no roll.
+- **A search's target number is the FULL Concealability plus the Physical Search Modifiers Table** · p.237 *"make a standard
+  Perception Test against the Concealability … Apply the modifiers in the Physical Search Modifiers Table"* (table p.236).
+  **Ruled 2026-10-17 by the maintainer:** p.270's "half the regular Concealability Rating (rounding down)" for searches is
+  NOT used. Two modes (`NOTICE`, `SEARCH_FULL`). A 6-10 minute strip search finds the weapon, no roll.
 - The roll is `rollPool` + `FOLLOW_UPS.concealPerception`, which reads the Perception Success Table (p.232). Nothing is
   written back to an item; typed Concealability numbers affect that card only.

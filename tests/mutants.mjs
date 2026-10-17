@@ -1637,6 +1637,14 @@ export const MUTANTS = [
 
   /* ── Vehicle collisions · TODO 189 (SR3 p.142, p.143, p.147, p.148) ───────────────────────────── */
   {
+    id:     'pedestrian-collision-has-no-knockdown',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'pedestrianSoakFlags',
+    was:    'the pedestrian struck by a vehicle gets no Knockdown Test (the original build suppressed it as "the book gives none for '
+          + 'a collision"). The maintainer ruled 2026-10-17 that the core Knockdown rule (p.124) applies: being hit by a car is going to suck',
+    impl:   () => ({ useImpact: true, noKnockdown: true }),
+  },
+  {
     id:     'pedestrian-level-not-raised',
     suite:  'collisions',
     ...COLLISIONS, method: 'pedestrian',
@@ -1809,26 +1817,27 @@ export const MUTANTS = [
 
   /* ── The Concealment view · TODO 195 (SR3 p.45, p.231, p.236, p.237, p.270, p.301-303) ─────────── */
   {
-    id:     'conceal-search-not-halved',
+    id:     'conceal-search-halved',
     suite:  'concealment',
     ...CONCEAL, method: 'targetNumber',
-    was:    'p.270 - "Searches have a target number of HALF the regular Concealability Rating (rounding down)". '
-          + 'Rolling a search against the whole number makes every pat-down twice as hard to win as the gear table says',
-    impl:   (c, _mode, mod = 0) => Math.max(2, Math.trunc(c) + Math.trunc(mod)),
+    was:    'the p.270 half-rating reading of a search, ruled OUT by the maintainer (2026-10-17): p.237 searches against the whole '
+          + 'Concealability, plus the Physical Search Modifiers Table. Halving it makes every pat-down twice as easy to win',
+    impl:   (c, mode, mod = 0) => Math.max(2, (mode === 'search-full' ? Math.floor(c / 2) : Math.trunc(c)) + Math.trunc(mod)),
   },
   {
-    id:     'conceal-search-half-rounds-up',
+    id:     'conceal-search-drops-table-modifier',
     suite:  'concealment',
     ...CONCEAL, method: 'targetNumber',
-    was:    'p.270 - half the Concealability "(rounding DOWN)": Concealability 7 searches at 3, not 4',
-    impl:   (c, mode, mod = 0) => Math.max(2, (mode === 'search-half' ? Math.ceil(c / 2) : Math.trunc(c)) + Math.trunc(mod)),
+    was:    'p.237 - a manual search applies the Physical Search Modifiers Table (p.236) on top of the Concealability; '
+          + 'a search that ignores the modifier total is the same number whether it takes a second or ten minutes',
+    impl:   (c, mode, mod = 0) => Math.max(2, Math.trunc(c) + (mode === 'search-full' ? 0 : Math.trunc(mod))),
   },
   {
     id:     'conceal-no-floor-of-two',
     suite:  'concealment',
     ...CONCEAL, method: 'targetNumber',
-    was:    'p.112 - "no target number can ever be less than 2": half of Concealability 3 is 1, which must read as 2',
-    impl:   (c, mode, mod = 0) => (mode === 'search-half' ? Math.floor(c / 2) : Math.trunc(c)) + Math.trunc(mod),
+    was:    'p.112 - "no target number can ever be less than 2": Concealability 1 must read as 2',
+    impl:   (c, _mode, mod = 0) => Math.trunc(c) + Math.trunc(mod),
   },
   {
     id:     'conceal-sorted-most-concealed-first',
@@ -2423,6 +2432,23 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'gear-drop-from-switched-off-book-is-silent',
+    suite:  'gear-search',
+    ...GSEARCH, method: 'dropWarnings',
+    was:    'a drop from a switched-off book fills the form with no word said (2026-10-17 ruling: warn, but fill anyway)',
+    impl:   function ({ name = 'That item', type = '' } = {}, buyable) {
+      return this.isBuyable(type, buyable) ? [] : [`${name} is a ${type}, which is not normally bought here — filled in anyway.`];
+    },
+  },
+  {
+    id:     'gear-drop-of-unbuyable-type-is-silent',
+    suite:  'gear-search',
+    ...GSEARCH, method: 'dropWarnings',
+    was:    'a drop of a spell or skill fills the form with no word said (2026-10-17 ruling: warn naming why, but fill anyway)',
+    impl:   ({ name = 'That item', packAllowed = true } = {}) =>
+      packAllowed ? [] : [`${name} is from a book that is switched off (Configure Source Books) — filled in anyway.`],
+  },
+  {
     id:     'gear-search-blank-lists-everything',
     suite:  'gear-search',
     ...GSEARCH, method: 'matches',
@@ -2572,12 +2598,61 @@ export const MUTANTS = [
     suite:  'funds',
     ...FUNDS, method: 'give',
     was:    'a plausible slip (TODO 192): crediting the recipient the amount ASKED when the payer was short, so a gift of '
-          + '¥500 from a payer holding ¥300 made ¥200 out of nothing — what arrives must be what left',
+          + '¥500 from a payer holding ¥300 made ¥200 out of nothing — what arrives must be what left (and since the '
+          + '2026-10-17 ruling a gift over the balance is blocked outright)',
     impl:   (payerHave, recipientHave, amount) => {
       const have = Math.max(0, Math.floor(payerHave)), n = Math.max(0, Math.floor(amount)), moved = Math.min(have, n);
-      return { amount: n, moved, short: n > have, shortBy: Math.max(0, n - have), payerFrom: have, payerTo: have - moved,
+      return { ok: true, reason: '', amount: n, moved, payerFrom: have, payerTo: have - moved,
         recipientFrom: recipientHave, recipientTo: recipientHave + n };
     },
+  },
+  {
+    id:     'funds-gift-pays-what-you-have',
+    suite:  'funds',
+    ...FUNDS, method: 'give',
+    was:    'the OLD shortfall behaviour for gifts (TODO 192, replaced 2026-10-17): a gift larger than the balance goes through '
+          + 'trimmed to what the payer has. The maintainer ruled it is BLOCKED: you cannot give more than you have',
+    impl:   (payerHave, recipientHave, amount) => {
+      const have = Math.max(0, Math.floor(payerHave)), n = Math.max(0, Math.floor(Number(amount) || 0)), moved = Math.min(have, n);
+      return { ok: moved > 0, reason: '', amount: moved, moved, payerFrom: have, payerTo: have - moved,
+        recipientFrom: recipientHave, recipientTo: recipientHave + moved };
+    },
+  },
+  {
+    id:     'funds-gift-negative-allowed',
+    suite:  'funds',
+    ...FUNDS, method: 'validateGift',
+    was:    'a negative gift accepted (2026-10-17 ruling): "giving" -¥50 takes nuyen from the recipient',
+    impl:   (raw, payerHave) => {
+      const n = Math.trunc(Number(String(raw).replace(/[¥,\s]/g, '')));
+      return Number.isFinite(n) && n <= Math.max(0, payerHave) ? { ok: true, amount: n, reason: '' } : { ok: false, amount: 0, reason: 'no' };
+    },
+  },
+  {
+    id:     'funds-gift-fraction-floored',
+    suite:  'funds',
+    ...FUNDS, method: 'validateGift',
+    was:    'a fractional gift quietly floored (2026-10-17 ruling: non-integer amounts are blocked, not rounded)',
+    impl:   (raw, payerHave) => {
+      const n = Math.floor(Number(String(raw).replace(/[¥,\s]/g, '')));
+      return n > 0 && n <= Math.max(0, payerHave) ? { ok: true, amount: n, reason: '' } : { ok: false, amount: 0, reason: 'no' };
+    },
+  },
+  {
+    id:     'funds-gift-to-non-player',
+    suite:  'funds',
+    ...FUNDS, method: 'giftParties',
+    was:    'a gift to (or from) a non-player character allowed (2026-10-17 ruling: gifts are between player characters only)',
+    impl:   (payer, recipient) => ({ ok: !!payer && !!recipient && payer.id !== recipient.id, reason: '' }),
+  },
+  {
+    id:     'funds-recipients-include-non-players',
+    suite:  'funds',
+    ...FUNDS, method: 'recipients',
+    was:    'the Give list showing every live character instead of only player characters (2026-10-17 ruling)',
+    impl:   (actors, payerId, isLive = () => true) => [...(actors ?? [])]
+      .filter(a => a && a.id !== payerId && a.type === 'character' && isLive(a))
+      .map(a => ({ id: a.id, name: String(a.name ?? '') })).sort((a, b) => a.name.localeCompare(b.name)),
   },
   {
     id:     'funds-subtract-goes-negative',
@@ -2662,8 +2737,8 @@ export const MUTANTS = [
     id:     'gas-card-silent-on-the-vii-viii-split',
     suite:  'area-cloud',
     ...AREAEFFECT, method: 'gasToxin',
-    was:    'the card quietly uses VIII for a grenade labelled VII — the book contradicts itself (p.283 row vs p.250/p.283 text) '
-          + 'and the maintainer asked for the discrepancy to be NOTED, not picked silently',
+    was:    'the card quietly uses VIII for an older copy still named VII (the p.283 table row prints VII; p.250/p.283 text say VIII) '
+          + 'and the discrepancy should be NOTED on that card, not picked silently',
     impl:   () => ({ name: 'Neuro-Stun VIII', damage: '6S', speed: 'the end of the following Combat Turn', disorientation: 2, labelled: '', discrepancy: '' }),
   },
   {

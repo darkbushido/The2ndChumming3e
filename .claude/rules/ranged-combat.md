@@ -292,9 +292,10 @@ however the Region ends.
   polygon); no wall in reach → the plain circle. "In the area" still uses `_wallBetween`.
 - **Wind**: GM-only `.sr-wind-btn` (−1 / +1 Combat Turn) → `SR3EActor.shiftCloud`; none left deletes the cloud.
 - **Smoke row offered** to the ranged and spell TN windows (`SR3EActor.smokeOffer` → `ctx.smoke`, preselected in
-  `_promptGMAttackWindow`): Heavy Smoke/Fog/Rain; infra-red → Thermal Smoke; the viewer's worst row. ⚠ Which row an ordinary
-  smoke grenade means is not in the book — editable.
-- **Gas**: one `postGasExposureCard` per token in the cloud, `.sr-gas-resist-btn` → Body soak card, `noArmor`. ⚠ The grenade is
-  labelled **VII** (p.283 row); p.250 and p.283's text say **VIII** (6S, the only one with numbers) — noted on the card.
+  `_promptGMAttackWindow`): Heavy Smoke/Fog/Rain; infra-red → Thermal Smoke; the viewer's worst row. Ordinary smoke = Heavy Smoke/Fog/Rain is confirmed
+  (maintainer, 2026-10-17); the offer stays editable.
+- **Gas**: one `postGasExposureCard` per token in the cloud, `.sr-gas-resist-btn` → Body soak card, `noArmor`. The grenade is
+  **Neuro-Stun VIII** (p.250, p.283 text; the p.283 table row prints VII — maintainer ruled VIII, 2026-10-17). A copy still
+  named VII (older world) is noted on the card; no migration.
 - **Flash-Pak**: GM-only `.sr-flash-btn` tick list → `postFlashCard` (+4, +2 with flare compensation, +2 strobe). Both new
   owed buttons are in `STEP_BUTTONS`.

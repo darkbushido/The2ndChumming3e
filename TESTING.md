@@ -2641,9 +2641,10 @@ book (say `sota2`) switched OFF. Open **🛒 Buy gear…** from the Bio tab with
 - [ ] Search for something that exists only in the switched-off book: **no hit**, "Nothing in the allowed books
       matches". Switch the book on in Configure Source Books and reopen: it is found.
 - [ ] Open the Compendium sidebar and drag a gear item onto the open dialog: the same fields fill in.
-- [ ] Drag a **spell** (or an Actor) onto the dialog: a warning, nothing changes.
+- [ ] Drag a **spell** onto the dialog: a warning names the type ("not normally bought here — filled in anyway") and the
+      form **still fills** (ruled 2026-10-17). Drag an **Actor** or a scene: nothing changes.
 - [ ] With the book off, its packs are hidden in the sidebar; if one is still reachable (an item's link in a
-      journal), dragging it warns "from a book that is switched off" and fills nothing.
+      journal), dragging it warns "from a book that is switched off … filled in anyway" and **fills the form**.
 - [ ] Find a source for a searched item, negotiate and **💴 Pay**: the item lands on the sheet, price in the ledger.
 - [ ] Open Buy gear from an item's own row: it still pre-fills from that item; searching replaces it.
 - [ ] The medkit **Buy Medkit Supplies** button still fills the form and still refills the medkit on payment.
@@ -2703,12 +2704,16 @@ the seats first if running Playwright.
 - [ ] **Take away** `400` with no reason → 850; the Ledger "Why" reads **By hand**.
 - [ ] **Take away** `5000`: while typing, the dialog shows "only ¥850 available — it stops at ¥0" in red; Confirm →
       a warning toast, Nuyen 0, nothing refused. Put some back with Add.
-- [ ] **Give to another character** lists Bravo (and other live characters), NOT Alpha, vehicles, NPCs or
-      templates (check a template exists and is absent). Give Bravo `300` "cut of the run" → toast; Alpha 550,
+- [ ] **Give to another player character** lists Bravo (and other live PLAYER characters), NOT Alpha, vehicles,
+      NPCs (any character no player owns or has assigned) or templates (check an NPC and a template exist and are absent). Give Bravo `300` "cut of the run" → toast; Alpha 550,
       Bravo (on Player3's sheet, no refresh needed) 500. Alpha's Ledger: "Gave to Bravo: cut of the run" −¥300;
       Bravo's: "Received from Alpha: cut of the run" +¥300, By Player2. A whispered 💴 chat line shows to the owners and GM.
-- [ ] **Short gift:** Alpha (¥550) gives Bravo `900` → dialog warns "only ¥550 available — ¥550 will be given";
-      Alpha ends at 0, Bravo gains exactly ¥550 (not 900).
+- [ ] **Blocked gifts (ruled 2026-10-17):** Alpha (¥550) gives Bravo `900` → the dialog shows a red "you cannot give
+      more than you have" and **Confirm is disabled**; nothing moves. The same for `-50` ("negative"), `0`, and `2.5`
+      ("whole number"). `550` exactly is allowed (Alpha 0, Bravo +550). From the console
+      `game.sr3e.SR3EQuery.asGM('sr3e.money.give', {payerUuid: <Alpha>, recipientUuid: <Bravo>, amount: 9999})` and `amount: -5` are
+      rejected by the GM verb; so is a recipient that is an NPC.
+- [ ] An **NPC's** sheet: ± Funds → the Give option is disabled ("only player characters can give").
 - [ ] As **GM**, give from Alpha to Bravo works the same; with the GM tab closed and a player giving, the
       toast reads a "no GM connected" error and nobody's nuyen changed.
 - [ ] Player3 cannot give *from* Alpha (the button isn't on a sheet they cannot edit; from the console
@@ -2770,9 +2775,9 @@ could not be laid) — the Region still works.
 - [ ] Both fighters outside any cloud: nothing is preselected. A cast spell shows the same offer.
 
 **Gas (item 4)**
-- [ ] Throw the **Gas Grenade**: each token inside (not behind a wall) gets its own "☣ in the cloud" card with
-      **Resist Neuro-Stun VIII (6S)**, the speed, the +2 disorientation and the repeat-test-at-+4 rule, and an
-      amber note that the grenade says **VII** but p.250 and the grenade's own text say **VIII**. Only the
+- [ ] Drag the **Gas Grenade (Neuro-Stun VIII)** from the Projectiles pack (and the Gas Mini-grenade from Ammunition): both are named VIII (maintainer ruling 2026-10-17; the p.283 table row prints VII). Throw the **Gas Grenade**: each token inside (not behind a wall) gets its own "☣ in the cloud" card with
+      **Resist Neuro-Stun VIII (6S)**, the speed, the +2 disorientation and the repeat-test-at-+4 rule, and no VII/VIII
+      note on a grenade named VIII (an older world copy still named VII shows the amber note). Only the
       character's owner (or the GM) can press it; it opens a Body soak card with **no armour**, Power 6.
 - [ ] The Waiting-on panel lists the gas buttons as steps; ✕ clears one.
 
@@ -2819,7 +2824,10 @@ menu, the Chase Scene (💥 Collision) and the 💥 Crash tool (🧍 Hit a pedes
       🛡 Resist Damage button, no dodge.
 - [ ] The pedestrian's player is the only one (besides the GM) who can press their button. Dodge with 2+ successes →
       "Dodge Successful"; with 1 → "Dodge Failed (a tie goes to the attacker)", the hit carried into the soak.
-- [ ] The soak card's **armour type defaults to Impact**; the roll then offers Assign Wound — and **no Knockdown** button.
+- [ ] The soak card's **armour type defaults to Impact**; the roll then offers Assign Wound **and a 💥 Knockdown Test** (ruled
+      2026-10-17: the core Knockdown rule, SR3 p.124, applied to the collision's Power; the card says the book gives none for
+      collisions). Roll it: TN = half the collision's Power, rounded down; a Deadly wound is "knocked down automatically". The
+      Knockdown button shows as a step in the combat tracker's **⏳ Waiting-on** panel until pressed. A fully soaked hit offers none.
 - [ ] 1-20 m/turn (e.g. 20 km/h): the pedestrian takes **2M**; the car "takes no damage" and has no soak button.
 - [ ] 250 m/turn (300 km/h): the pedestrian **37D** (Power 25 + half, rounded down); the card says "past Deadly".
 - [ ] Type **9** in Power and **D** in Level before rolling: the card shows 9D and "set by the GM; the rule gives …".
@@ -2869,9 +2877,10 @@ looker. Log in as the GM; F5 once (new follow-up kind and button class).
       carrying" without it; changing a number changes the card only — the item is unchanged.
 - [ ] The card tells the table that a lower number is easier to spot. A player sees the 🔍 Test buttons **greyed**.
 - [ ] 🔍 (in the dialog, or on the card as GM) opens a Perception dialog: observer, dice = their Intelligence, the
-      Concealability, **three readings** — Noticing (full), Search p.270 (half, rounded down), Search p.237 (full + the
-      Physical Search table). The "Target number" line updates live; half of 7 is 3; nothing goes below 2.
-- [ ] The p.237 reading shows the three search selects; **Strip search (6-10 minutes)** rolls nothing and posts "finds
+      Concealability, **two readings** — Noticing (full) and A search (p.237: the full Concealability + the Physical
+      Search table). There is **no** half-rating option (p.270's was ruled out 2026-10-17). The "Target number" line
+      updates live; Concealability 7 searches at 7 (+ the table); nothing goes below 2.
+- [ ] The search reading shows the three search selects; **Strip search (6-10 minutes)** rolls nothing and posts "finds
       the weapon". Otherwise **Roll** makes the roll and, after any 💥, a card gives the successes against the TN and the
       **Perception Success Table** line (1: "Something is there" … 4+: "knows what it is, but no specifics").
 - [ ] Nothing is written to any item in any of the above.
