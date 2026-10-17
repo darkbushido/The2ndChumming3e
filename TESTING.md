@@ -2794,3 +2794,84 @@ could not be laid) — the Region still works.
 - [ ] Put the gyro in Storage: the box shows the full pool; type **4** and it reads **4** with a modifier of
       the plain difference (base 5 → −1) — behaviour without a gyro is unchanged.
 - [ ] Karma Pool and Spell Pool total boxes still accept a typed total as before.
+
+## 51. Vehicle collisions (TODO 189, SR3 p.142-148)
+
+**Prerequisites:** a world with a car (Body 3, Acceleration 14, a driver and one passenger aboard on the vehicle
+sheet), a second vehicle, a pedestrian NPC with some impact armour, and a Combat Pool. Three clients if you can
+(GM, the driver's player, the pedestrian's player); one will do. JS hot-reloads, but **press F5 once** — the Braking
+Test is a new follow-up kind. The dialog is the same from the vehicle sheet (🚗 Collision), the Vehicle Tools HUD
+menu, the Chase Scene (💥 Collision) and the 💥 Crash tool (🧍 Hit a pedestrian…).
+
+**A. Hit a pedestrian — accident** (the common case)
+- [ ] 🚗 Collision, accident, 🧍, the pedestrian, 120 km/h. The preview line reads "100 m/turn → pedestrian 10D"
+      (Serious on the table → Deadly) and the vehicle "10M". **Roll the test (driver)**.
+- [ ] The Driving Test dialog is titled **Braking Test**; terrain/exceeds-Speed-Rating/autonav/VCR rows and an "Other
+      modifiers" field; the TN is Handling + the rows. Roll it.
+- [ ] A **🛑 Braking** card follows: "N successes … speed drops by Acceleration 14 × N", **120 km/h → X km/h**. With 5+
+      successes it warns of a **Crash Test** (more than Acceleration × 4) and offers 💥. A **Speed at impact** box is
+      pre-filled; only the GM can press **💥 Resolve the collision** (a player sees it greyed).
+- [ ] The ⏳ Waiting-on panel lists "Resolve the collision" for the GM.
+- [ ] Set the box to **60** and press it: a **💥 Collision** card, "60 km/h (50 m/turn)": pedestrian **5S Physical**,
+      the car **5L**, a vehicle soak button and (once it soaks and is damaged) a **Crash Test** button and the occupants'
+      resist buttons. With the dodge box ticked there is a **🎯 Dodge (house rule) or take it?** button, the card
+      says **HOUSE RULE — not in the book**, and the dodge must beat **1 hit** (an accident). Unticked: a plain
+      🛡 Resist Damage button, no dodge.
+- [ ] The pedestrian's player is the only one (besides the GM) who can press their button. Dodge with 2+ successes →
+      "Dodge Successful"; with 1 → "Dodge Failed (a tie goes to the attacker)", the hit carried into the soak.
+- [ ] The soak card's **armour type defaults to Impact**; the roll then offers Assign Wound — and **no Knockdown** button.
+- [ ] 1-20 m/turn (e.g. 20 km/h): the pedestrian takes **2M**; the car "takes no damage" and has no soak button.
+- [ ] 250 m/turn (300 km/h): the pedestrian **37D** (Power 25 + half, rounded down); the card says "past Deadly".
+- [ ] Type **9** in Power and **D** in Level before rolling: the card shows 9D and "set by the GM; the rule gives …".
+
+**B. Hit a pedestrian — ram**
+- [ ] Collision, **Ram**, the pedestrian. The test is a **Ramming Test** (title and rows); on a success the card posts
+      under the dice with the pedestrian's code; the dodge must beat **the Ramming Test's successes**; with 0 successes the
+      card says **the ram misses**.
+- [ ] Chase Scene → **Ramming**: the dialog has a **pedestrian** dropdown and a "dodge — house rule" box; pick one,
+      roll — the same card, and the vehicle is **not** reduced by Body × successes (SR3 p.148).
+- [ ] **Post the collision now** (the second button) posts without any test.
+
+**C. Another vehicle**
+- [ ] Collision, accident, 🚗, speeds 152 and 300 km/h: **15S** soak buttons for **both**; the card says "Accident, not a
+      ram: neither vehicle's Power is reduced". The same as a **Ram** (5 successes, Body 3): the rammer's button reads
+      **2S**, the target's **15S** (SR3 p.147). Each damaged vehicle offers a **Crash Test**; occupants roll only for
+      the level their vehicle actually took.
+- [ ] A negative speed for the other vehicle (head-on) adds the speeds.
+
+**D. A barrier**
+- [ ] Barrier, *Heavy Structural Material* (BR 16), 300 m/turn ≈ 360 km/h: "BR × 20 = 320 … 300 — no faster, so it
+      stops": the **💥 CRASH!** card at 30D (the existing Crash flow).
+- [ ] *Standard Glass* (BR 2), 120 km/h (100 m/turn): breaks through, "carries on at 72 km/h, lost 40", **2M** soak
+      for the car, and its occupants' buttons: **belted → no damage**, **unbelted → one level lower** (the dialog's
+      checkbox text changes for a breakthrough). A **🧱 Open the Barrier Damage tool** button opens that tool (GM only)
+      and applies nothing.
+
+**E. Entry points and refusals**
+- [ ] Each of the four entry points opens the dialog with its vehicle/speed filled (the Chase Scene's from the
+      participant's speed). No driver aboard: it warns and posts without a test. Cancel posts nothing.
+- [ ] No template actors appear in the pedestrian or vehicle lists; the scene's tokens come first.
+
+## 52. The Concealment view (TODO 195, SR3 p.45, p.231-232, p.236-237, p.270)
+
+**Prerequisites:** a character with a few weapons (one in hand, two ✋-toggled away with Concealabilities such as 5
+and 8), a worn armour piece with a Concealability, a spare armour piece **not** worn, an Obvious Cyberarm and a
+Synthetic Cyberarm installed, Eyes Cyber Replacement, and Wired Reflexes (internal). A second character as the
+looker. Log in as the GM; F5 once (new follow-up kind and button class).
+
+- [ ] The **Rollable Tables** tab has **👁 Concealment** (GM only — a player does not see it). The character's
+      Attributes tab has **👁 Concealment** beside Success Test (GM only).
+- [ ] The dialog lists, **least concealed first**: the weapon in hand ("in hand") and the Obvious Cyberarm ("obvious")
+      at the top with their number box greyed; then ascending by number (the Synthetic Cyberarm is **8**, with a note
+      about clothing +3); the GM's-call rows ("Eyes, Cyber Replacement") after the rated; unrated rows last.
+      **Not listed:** the unworn jacket, fists, the Wired Reflexes, anything in storage.
+- [ ] Changing the actor dropdown redraws the list. Unticking a row and **📣 Post to chat** posts a card "What <name> is
+      carrying" without it; changing a number changes the card only — the item is unchanged.
+- [ ] The card tells the table that a lower number is easier to spot. A player sees the 🔍 Test buttons **greyed**.
+- [ ] 🔍 (in the dialog, or on the card as GM) opens a Perception dialog: observer, dice = their Intelligence, the
+      Concealability, **three readings** — Noticing (full), Search p.270 (half, rounded down), Search p.237 (full + the
+      Physical Search table). The "Target number" line updates live; half of 7 is 3; nothing goes below 2.
+- [ ] The p.237 reading shows the three search selects; **Strip search (6-10 minutes)** rolls nothing and posts "finds
+      the weapon". Otherwise **Roll** makes the roll and, after any 💥, a card gives the successes against the TN and the
+      **Perception Success Table** line (1: "Something is there" … 4+: "knows what it is, but no specifics").
+- [ ] Nothing is written to any item in any of the above.

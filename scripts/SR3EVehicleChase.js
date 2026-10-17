@@ -128,6 +128,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     el.querySelector('#chase-action-position')?.addEventListener('click', () => this._actionPositioning());
     el.querySelector('#chase-action-ram')?.addEventListener('click',      () => this._actionRamming());
     el.querySelector('#chase-action-crash')?.addEventListener('click',    () => this._actionCrash());
+    el.querySelector('#chase-action-collision')?.addEventListener('click', () => this._actionCollision());
     el.querySelector('#chase-action-hiding')?.addEventListener('click',     () => this._actionHiding());
     el.querySelector('#chase-action-relocate')?.addEventListener('click',  () => this._actionRelocating());
 
@@ -308,6 +309,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           <button id="chase-action-position" type="button" class="btn-sm">Positioning</button>
           <button id="chase-action-ram"      type="button" class="btn-sm">Ramming</button>
           <button id="chase-action-crash"    type="button" class="btn-sm">Crash</button>
+          <button id="chase-action-collision" type="button" class="btn-sm" title="Hit a person, another vehicle or a barrier — by accident or as a ram (SR3 p.142-148)">💥 Collision</button>
           <button id="chase-action-hiding"    type="button" class="btn-sm">Hiding</button>
           <button id="chase-action-relocate" type="button" class="btn-sm">Relocating</button>
         </div>
@@ -1232,6 +1234,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
         </div>`;
     };
 
+    const people = game.sr3e.SR3ECollision.people();   // never templates, the scene's tokens first
     let result = null;
 
     await foundry.applications.api.DialogV2.wait({
@@ -1276,6 +1279,13 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           <select id="act-opponent">${this._opponentSelectHtml(defaultPid)}</select>
         </label>
         <div id="act-def-info-wrap">${buildDefInfo(withDrivers.find(p => p.id !== defaultPid)?.id ?? null)}</div>
+        <label class="act-field act-full" style="margin-top:6px;" title="SR3 p.143: a ram may be at a pedestrian. Powers: p.148 (TODO 189)">…or a pedestrian (character / NPC) — overrides the vehicle above
+          <select id="act-ped"><option value="">— none —</option>${people.map(a => `<option value="${a.id}">${foundry.utils.escapeHTML(a.name)}</option>`).join('')}</select>
+        </label>
+        <div class="act-check-row act-full">
+          <input type="checkbox" id="act-ped-dodge" checked/>
+          <label for="act-ped-dodge">Offer the pedestrian a dodge — <strong>house rule</strong>, not in the book</label>
+        </div>
         <div class="act-section-label" style="margin-top:8px;">ROLL</div>
         <div class="act-grid">
           <label class="act-field act-full">Terrain
@@ -1396,7 +1406,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const atkSoakPool = parseInt(result.querySelector('#act-atk-soak')?.value ?? 0);
     const defSoakPool = parseInt(result.querySelector('#act-def-soak')?.value ?? 0);
 
-    const rammingContext = {
+    const vehicleRamContext = {
       attackerVehicleActorId:   atkP.vehicleActorId,
       defenderVehicleActorId:   defP?.vehicleActorId ?? null,
       attackerDriverActorId:    atkP.driverActorId,
@@ -1415,15 +1425,35 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       defenderPid: defP?.id ?? null,
     };
 
+    // A pedestrian target (SR3 p.143 "or a pedestrian"; the collision is p.148) replaces the vehicle one.
+    const pedId = result.querySelector('#act-ped')?.value;
+    const rammingContext = pedId
+      ? { collision: game.sr3e.SR3ECollision.rammerAtPedestrian({
+          vehicle: atkVehicle, driverId: atkP.driverActorId, passengerIds: atkP.passengerActorIds ?? [],
+          speedMct: atkP.speed ?? 0, soakPool: atkSoakPool, pedestrianId: pedId,
+          pedDodge: !!result.querySelector('#act-ped-dodge')?.checked }) }
+      : vehicleRamContext;
+
     const pool   = parseInt(result.querySelector('#act-pool')?.value ?? 0);
     const baseTN = parseInt(result.querySelector('#act-tn')?.value ?? 4);
     const mod    = parseInt(result.querySelector('#act-mod-total')?.value ?? 0);
     const tn     = Math.max(2, baseTN + mod);
 
-    await atkInfo.driver.rollPool(pool, tn, `Ramming — ${rammingContext.attackerVehicleName}`, {
+    await atkInfo.driver.rollPool(pool, tn, `Ramming — ${vehicleRamContext.attackerVehicleName}`, {
       isRammingRoll: true,
       rammingContext,
     });
+  }
+
+  /**
+   * 💥 Collision (TODO 189) — the shared tool, seeded with this chase's vehicles and speeds
+   * (km/ct × 1.2 = km/h), so a car that hits a pedestrian mid-chase starts from the speed it has.
+   */
+  _actionCollision() {
+    const speeds = {};
+    for (const p of this._participants) if (p.vehicleActorId) speeds[p.vehicleActorId] = Math.round((p.speed ?? 0) * 1.2);
+    const first = this._participants.find(p => p.vehicleActorId && p.driverActorId) ?? this._participants.find(p => p.vehicleActorId);
+    return game.sr3e.SR3ECollision.open({ vehicle: first ? game.actors.get(first.vehicleActorId) : null, chaseSpeeds: speeds });
   }
 
   /* ------------------------------------------------------------------ */

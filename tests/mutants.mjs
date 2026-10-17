@@ -49,6 +49,9 @@ const AREAEFFECT = { module: '../scripts/data/area-effect.mjs', klass: 'AreaEffe
 const AREASHAPE = { module: '../scripts/data/area-shape.mjs', klass: 'AreaShape' };
 const WILLING = { module: '../scripts/data/willing-target.mjs', klass: 'WillingTarget' };
 
+const COLLISIONS = { module: '../scripts/data/collisions.mjs', klass: 'Collisions' };
+const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment' };
+
 export const MUTANTS = [
   {
     id:     'wound-assigned-twice',
@@ -1630,6 +1633,265 @@ export const MUTANTS = [
           + 'armor protects against crash damage". Occupants rolled Body against the full Power '
           + 'at the vehicle\'s level with neither, until 2026-09-13 (TODO 74)',
     impl:   ({ power = 0, level = 'L' } = {}) => ({ power, level, tn: Math.max(2, power) }),
+  },
+
+  /* ── Vehicle collisions · TODO 189 (SR3 p.142, p.143, p.147, p.148) ───────────────────────────── */
+  {
+    id:     'pedestrian-level-not-raised',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'pedestrian',
+    was:    'p.148 - the pedestrian suffers the level ONE STAGE HIGHER than the Impact Damage Levels Table. '
+          + 'Reading the table straight undersells every car-on-person collision (Rex Karz\'s 60 m/turn is 6S, not 6M)',
+    impl:   ({ speed = 0, table } = {}) => {
+      const b = table(Math.max(0, Number(speed) || 0));
+      return { speed, pedestrian: { power: b.power, level: b.level, pastDeadly: false }, vehicle: { power: b.power, level: null } };
+    },
+  },
+  {
+    id:     'pedestrian-vehicle-level-not-lowered',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'pedestrian',
+    was:    'p.148 - the VEHICLE resists the level one stage LOWER than the table ("a vehicle moving between 1 and 20 '
+          + 'meters per turn would take no damage"). Giving it the table\'s level makes every low-speed bump hurt the car',
+    impl:   ({ speed = 0, table } = {}) => {
+      const b = table(Math.max(0, Number(speed) || 0));
+      const up = { L: 'M', M: 'S', S: 'D', D: 'D' }[b.level];
+      return { speed, pedestrian: { power: b.power, level: up, pastDeadly: b.level === 'D' }, vehicle: { power: b.power, level: b.level } };
+    },
+  },
+  {
+    id:     'pedestrian-past-deadly-capped',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'pedestrian',
+    was:    'p.148 - "If the corresponding Damage Level … is Destroyed, the Power of the collision increases by half '
+          + 'of its original value, rounded down". Capping the level and dropping the extra Power makes a 250 m/turn '
+          + 'impact no worse than a 70 m/turn one',
+    impl:   ({ speed = 0, table } = {}) => {
+      const b = table(Math.max(0, Number(speed) || 0));
+      const up = { L: 'M', M: 'S', S: 'D', D: 'D' }[b.level];
+      const down = { L: null, M: 'L', S: 'M', D: 'S' }[b.level];
+      return { speed, pedestrian: { power: b.power, level: up, pastDeadly: b.level === 'D' }, vehicle: { power: b.power, level: down } };
+    },
+  },
+  {
+    id:     'collision-target-power-reduced',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'vehicle',
+    was:    'p.143 / p.147 - only the RAMMER reduces the Power it faces by Body x successes; "the Damage Code of 15S '
+          + 'is not reduced" for the target. Applying it to both halves the damage every rammed vehicle takes',
+    impl:   ({ speedA = 0, speedB = 0, speedDiff = null, ram = null, table } = {}) => {
+      const diff = speedDiff == null ? Math.abs(speedA - speedB) : speedDiff;
+      const t = table(diff);
+      const cut = ram ? (ram.body | 0) * (ram.successes | 0) : 0;
+      const p = Math.min(t.power, Math.max(2, t.power - cut));
+      return { diff, power: t.power, level: t.level, first: { power: p }, other: { power: p } };
+    },
+  },
+  {
+    id:     'collision-accident-reduces-rammer',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'vehicle',
+    was:    'the maintainer\'s ruling (2026-10-17): an ACCIDENTAL collision uses the ram formula WITHOUT the rammer\'s Body x '
+          + 'successes reduction. Treating every collision as a ram halves what the car in an accident takes',
+    impl:   ({ speedA = 0, speedB = 0, speedDiff = null, ram = null, table } = {}) => {
+      const diff = speedDiff == null ? Math.abs(speedA - speedB) : speedDiff;
+      const t = table(diff);
+      const cut = (ram?.body ?? 3) * (ram?.successes ?? 3);
+      return { diff, power: t.power, level: t.level, first: { power: Math.min(t.power, Math.max(2, t.power - cut)) }, other: { power: t.power } };
+    },
+  },
+  {
+    id:     'collision-power-floor-dropped',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'vehicle',
+    was:    'p.147 - "Target numbers cannot be reduced below 2": the book\'s Mach 6 faces 2S, not 0S',
+    impl:   ({ speedA = 0, speedB = 0, speedDiff = null, ram = null, table } = {}) => {
+      const diff = speedDiff == null ? Math.abs(speedA - speedB) : speedDiff;
+      const t = table(diff);
+      const cut = ram ? (ram.body | 0) * (ram.successes | 0) : 0;
+      return { diff, power: t.power, level: t.level, first: { power: Math.max(0, t.power - cut) }, other: { power: t.power } };
+    },
+  },
+  {
+    id:     'barrier-stops-only-below',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'barrier',
+    was:    'p.148 - "less than OR EQUAL to the Barrier Rating multiplied by 20, the vehicle comes to a halt". '
+          + 'Strict "<" lets a car at exactly BR x 20 smash through',
+    impl:   ({ speed = 0, rating = 0, table } = {}) => {
+      const th = rating * 20;
+      if (speed < th) return { rating, threshold: th, breaksThrough: false, speedAfter: 0, lost: speed, power: null, level: null };
+      return { rating, threshold: th, breaksThrough: true, speedAfter: speed - th, lost: th, power: rating, level: table(th).level };
+    },
+  },
+  {
+    id:     'barrier-level-from-impact-speed',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'barrier',
+    was:    'p.148 - "Use the LOSS IN SPEED on the Impact Damage Levels Table to determine the Damage Level". '
+          + 'Reading the speed the car hit at turns a glass pane into a Deadly collision',
+    impl:   ({ speed = 0, rating = 0, table } = {}) => {
+      const th = rating * 20;
+      if (speed <= th) return { rating, threshold: th, breaksThrough: false, speedAfter: 0, lost: speed, power: null, level: null };
+      return { rating, threshold: th, breaksThrough: true, speedAfter: speed - th, lost: th, power: rating, level: table(speed).level };
+    },
+  },
+  {
+    id:     'barrier-power-from-speed',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'barrier',
+    was:    'p.148 - "The Power of the collision damage equals the Barrier Rating of the wall". Using speed / 10 (the '
+          + 'crash rule) ignores what the car went through',
+    impl:   ({ speed = 0, rating = 0, table } = {}) => {
+      const th = rating * 20;
+      if (speed <= th) return { rating, threshold: th, breaksThrough: false, speedAfter: 0, lost: speed, power: null, level: null };
+      return { rating, threshold: th, breaksThrough: true, speedAfter: speed - th, lost: th, power: Math.ceil(speed / 10), level: table(th).level };
+    },
+  },
+  {
+    id:     'barrier-keeps-its-speed',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'barrier',
+    was:    'p.148 - the vehicle "loses speed after such a collision, however, equal to the Barrier Rating multiplied by 20"',
+    impl:   ({ speed = 0, rating = 0, table } = {}) => {
+      const th = rating * 20;
+      if (speed <= th) return { rating, threshold: th, breaksThrough: false, speedAfter: 0, lost: speed, power: null, level: null };
+      return { rating, threshold: th, breaksThrough: true, speedAfter: speed, lost: th, power: rating, level: table(th).level };
+    },
+  },
+  {
+    id:     'braking-crash-at-the-limit',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'braking',
+    was:    'p.142 - "If a vehicle decelerates MORE THAN its Acceleration Rating x 4, it must make a Crash Test". '
+          + 'Exactly x 4 is not more than',
+    impl:   ({ speed = 0, acceleration = 0, successes = 0 } = {}) => {
+      const reduction = Math.min(speed, acceleration * successes);
+      return { speedAfter: speed - reduction, reduction, crashTest: reduction >= acceleration * 4 };
+    },
+  },
+  {
+    id:     'braking-below-standstill',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'braking',
+    was:    'p.142 - speed changes by Acceleration x successes, but a car cannot go below a standstill (negative speed '
+          + 'would read as a collision at a made-up speed)',
+    impl:   ({ speed = 0, acceleration = 0, successes = 0 } = {}) => {
+      const reduction = acceleration * successes;
+      return { speedAfter: speed - reduction, reduction, crashTest: reduction > acceleration * 4 };
+    },
+  },
+  {
+    id:     'accident-dodge-needs-zero',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'dodgeToBeat',
+    was:    'the pedestrian\'s optional dodge (a house rule): an accident has no successes, so the weakest hit (1) is '
+          + 'assumed - 0 would let a single lucky die dodge a speeding car, and a tie must still go to the vehicle (p.113)',
+    impl:   ({ how = 'accident', ramSuccesses = 0, override = null } = {}) => {
+      const typed = override === '' || override == null ? null : Number(override);
+      if (typed != null && Number.isFinite(typed)) return Math.max(0, Math.trunc(typed));
+      return how === 'ram' ? Math.max(1, ramSuccesses | 0) : 0;
+    },
+  },
+  {
+    id:     'breakthrough-belt-stages-one',
+    suite:  'collisions',
+    ...ACTOR, method: 'collisionPassengerDamage',
+    was:    'p.148 - through a barrier a restrained passenger takes NO damage and the UNRESTRAINED stage down one; the '
+          + 'ordinary crash rule (p.147: a belt stages one level) must not be applied there',
+    impl:   ({ power = 0, level = 'L', impact = 0, belted = false } = {}) => {
+      const S = ['L', 'M', 'S', 'D'];
+      const p = Math.max(0, power - impact);
+      const idx = S.indexOf(level) - (belted ? 1 : 0);
+      return { power: p, level: idx >= 0 ? S[idx] : null, tn: Math.max(2, p) };
+    },
+  },
+
+  /* ── The Concealment view · TODO 195 (SR3 p.45, p.231, p.236, p.237, p.270, p.301-303) ─────────── */
+  {
+    id:     'conceal-search-not-halved',
+    suite:  'concealment',
+    ...CONCEAL, method: 'targetNumber',
+    was:    'p.270 - "Searches have a target number of HALF the regular Concealability Rating (rounding down)". '
+          + 'Rolling a search against the whole number makes every pat-down twice as hard to win as the gear table says',
+    impl:   (c, _mode, mod = 0) => Math.max(2, Math.trunc(c) + Math.trunc(mod)),
+  },
+  {
+    id:     'conceal-search-half-rounds-up',
+    suite:  'concealment',
+    ...CONCEAL, method: 'targetNumber',
+    was:    'p.270 - half the Concealability "(rounding DOWN)": Concealability 7 searches at 3, not 4',
+    impl:   (c, mode, mod = 0) => Math.max(2, (mode === 'search-half' ? Math.ceil(c / 2) : Math.trunc(c)) + Math.trunc(mod)),
+  },
+  {
+    id:     'conceal-no-floor-of-two',
+    suite:  'concealment',
+    ...CONCEAL, method: 'targetNumber',
+    was:    'p.112 - "no target number can ever be less than 2": half of Concealability 3 is 1, which must read as 2',
+    impl:   (c, mode, mod = 0) => (mode === 'search-half' ? Math.floor(c / 2) : Math.trunc(c)) + Math.trunc(mod),
+  },
+  {
+    id:     'conceal-sorted-most-concealed-first',
+    suite:  'concealment',
+    ...CONCEAL, method: 'sort', needsOriginal: '_sortOriginal',
+    was:    'Concealability is the Perception Test\'s target number, so the LOWEST is the easiest to spot: the list reads '
+          + 'least concealed first. Sorting the other way shows the table the best-hidden gear at the top',
+    impl:   function (rows) { return this._sortOriginal(rows).reverse(); },
+  },
+  {
+    id:     'conceal-search-table-signs-flipped',
+    suite:  'concealment',
+    ...CONCEAL, method: 'searchModifier', needsOriginal: '_searchOriginal',
+    was:    'p.236 - a LONGER, more professional search is a lower target number (Detailed -1, Deliberate -2); a cursory '
+          + 'one by an amateur is higher. Flipping the signs makes careful searches easier to beat',
+    impl:   function (o) { const r = this._searchOriginal(o); return { ...r, mod: -r.mod }; },
+  },
+  {
+    id:     'conceal-strip-search-needs-a-roll',
+    suite:  'concealment',
+    ...CONCEAL, method: 'searchModifier', needsOriginal: '_searchOriginal2',
+    was:    'p.236 - a 6-10 minute strip search: "Weapon found" - no test is rolled at all',
+    impl:   function (o) { return { ...this._searchOriginal2(o), found: false }; },
+  },
+  {
+    id:     'conceal-synthetic-limb-obvious',
+    suite:  'concealment',
+    ...CONCEAL, method: 'classifyImplant', needsOriginal: '_classifyOriginal',
+    was:    'p.301/p.303 - a SYNTHETIC cyberlimb is disguised, with Concealability 8; only an obvious one is plain sight. '
+          + 'Treating both alike hides the one the table can roll against',
+    impl:   function (item) {
+      const k = this._classifyOriginal(item);
+      return k && k.state === 'disguised' && k.conceal === 8 ? { ...k, state: 'obvious', conceal: null } : k;
+    },
+  },
+  {
+    id:     'conceal-limb-enhancement-shown',
+    suite:  'concealment',
+    ...CONCEAL, method: 'classifyImplant', needsOriginal: '_classifyOriginal2',
+    was:    'the Cyberlimbs category also holds the enhancements and accessories ("Quickness [5] w/Torso", "Induction Pad"); '
+          + 'listing them as limbs would show the table chrome the character does not wear on the outside',
+    impl:   function (item) {
+      const k = this._classifyOriginal2(item);
+      return k ?? (item?.system?.cyberwareCategory === 'Cyberlimbs' ? { state: 'obvious', conceal: null, note: '' } : null);
+    },
+  },
+  {
+    id:     'conceal-stored-implant-shown',
+    suite:  'concealment',
+    ...CONCEAL, method: 'classifyImplant', needsOriginal: '_classifyOriginal3',
+    was:    'an implant in the stash is carried, not fitted - it is not on the character\'s body for anyone to see',
+    impl:   function (item) {
+      return this._classifyOriginal3({ ...item, flags: undefined });
+    },
+  },
+  {
+    id:     'conceal-unworn-armour-shown',
+    suite:  'concealment',
+    ...CONCEAL, method: 'rows', needsOriginal: '_rowsOriginal',
+    was:    'only armour actually WORN can be seen: a spare jacket in the kit bag is not on anybody',
+    impl:   function (items, o = {}) {
+      return this._rowsOriginal(items, { ...o, wornIds: items.filter(i => i.type === 'armor').map(i => i.id) });
+    },
   },
 
   {

@@ -15,6 +15,7 @@ import { RiggerShock, DISORIENT_MOD, DISORIENT_TN, DISORIENT_TURNS } from '../da
 import { MdfRules } from '../data/mdf-rules.mjs';
 import { KarmaPool } from '../data/karma-uses.mjs';
 import { CombatPool } from '../data/combat-pool.mjs';
+import { Collisions } from '../data/collisions.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -2810,6 +2811,7 @@ _prepareCharacter(sys, attr) {
         isAuraReadingRoll:   options.isAuraReadingRoll  ?? false,
         auraReadingContext:  options.auraReadingContext  ?? null,
         isRammingRoll:       options.isRammingRoll      ?? false,
+        followUp:            options.followUp           ?? null,   // a single roll, then FOLLOW_UPS[kind] (TODO 189's Braking Test)
         rammingContext:      options.rammingContext      ?? null,
         isCrashRoll:         options.isCrashRoll         ?? false,
         crashContext:        options.crashContext         ?? null,
@@ -2891,6 +2893,7 @@ _prepareCharacter(sys, attr) {
       isAuraReadingRoll:     options.isAuraReadingRoll     ?? false,
       auraReadingContext:    options.auraReadingContext     ?? null,
       isRammingRoll:         options.isRammingRoll         ?? false,
+      followUp:              options.followUp              ?? null,
       rammingContext:        options.rammingContext        ?? null,
       isCrashRoll:           options.isCrashRoll           ?? false,
       crashContext:          options.crashContext           ?? null,
@@ -4926,6 +4929,8 @@ _prepareCharacter(sys, attr) {
     quickDraw:         ['SR3EItem', '_quickDrawRolled'],   // TODO 47 — Reaction (4), p.107
     purchaseSourced:   ['SR3EPurchase', 'onSourced'],       // TODO 82 — Etiquette vs Availability, p.272
     riggerDisorient:   ['SR3EActor', '_riggerDisorientOutcome'], // TODO 198 — Willpower (4), p.156
+    collisionBraking:  ['SR3ECollision', 'brakingRolled'],      // TODO 189 — the Braking Test, p.142
+    concealPerception: ['SR3EConcealment', 'perceptionRolled'],  // TODO 195 — Perception vs Concealability, p.231
   };
 
   static _registryFn([cls, fn] = [], what) {
@@ -5178,20 +5183,26 @@ _prepareCharacter(sys, attr) {
    * @returns {{ power:number, level:'L'|'M'|'S'|'D', rammerPower:number }}
    */
   static ramCollision({ speedDiff = 0, successes = 0, rammerBody = 0 } = {}) {
-    const diff  = Math.abs(Number(speedDiff) || 0);
-    const power = Math.max(1, Math.ceil(diff / 10));
-    const level = diff >= 201 ? 'D' : diff >= 61 ? 'S' : diff >= 21 ? 'M' : 'L';
-    const cut   = Math.max(0, Math.trunc(Number(rammerBody) || 0)) * Math.max(0, Math.trunc(Number(successes) || 0));
-    return { power, level, rammerPower: Math.min(power, Math.max(2, power - cut)) };
+    // The rule lives in scripts/data/collisions.mjs; the Impact Damage Levels Table stays in
+    // `crashDamage` (TODO 189 — this used to carry its own copy of the level bands).
+    const r = Collisions.vehicle({ speedDiff: Math.abs(Number(speedDiff) || 0),
+      ram: { successes, body: rammerBody }, table: SR3EActor.crashDamage });
+    return { power: r.power, level: r.level, rammerPower: r.first.power };
   }
 
   static _buildRamDamageHtml(successes, ctx) {
+    // A person or a barrier, from the 💥 Collision tool or the Chase Scene's Ramming dialog (TODO 189).
+    if (ctx.collision) return game.sr3e.SR3ECollision.cardHtml(ctx.collision, { successes });
+    // An ACCIDENT between two vehicles: no Ramming Test, so there is nothing to miss, and the caller sets
+    // `attackerBody: 0` so nobody's Power is reduced (TODO 189, the maintainer's ruling).
+    const accident = ctx.accident === true;
+    if (accident) successes = Math.max(1, successes);
     // p.143: "If the test succeeds, the vehicle collides with the target."
     if (!(successes > 0)) {
       return `<div class="sr-staging-result sr-soak-blocked">💨 No successes — the ram misses (SR3 p.143).</div>`;
     }
     // speeds in km/ct; standard SR3 impact table in km/ct
-    const speedDiff = Math.abs((ctx.attackerSpeed ?? 0) - (ctx.defenderSpeed ?? 0));
+    const speedDiff = ctx.speedDiff ?? Math.abs((ctx.attackerSpeed ?? 0) - (ctx.defenderSpeed ?? 0));
     const { power, level: baseLevel, rammerPower } = SR3EActor.ramCollision({ speedDiff, successes, rammerBody: ctx.attackerBody ?? 0 });
 
     const _ctx = (soakPool, power, level, isAtk) => JSON.stringify({
@@ -5202,6 +5213,8 @@ _prepareCharacter(sys, attr) {
       power,
       level,
       passengerActorIds: isAtk ? (ctx.attackerPassengerActorIds ?? []) : (ctx.defenderPassengerActorIds ?? []),
+      // p.143 / p.147: a vehicle that takes damage in a ram makes a Crash Test — offered on the soak result.
+      offerCrash:        true,
     }).replace(/'/g, '&#39;');
 
     let html = `
@@ -5209,7 +5222,9 @@ _prepareCharacter(sys, attr) {
         💥 Speed difference: ${Math.round(speedDiff * 1.2)} km/h (${speedDiff.toFixed(1)} km/ct) → Base damage: <strong>${power}${baseLevel} Physical</strong>
       </div>
       <div class="sr-staging-result">
-        Rammer: ${successes} success${successes !== 1 ? 'es' : ''} × Body ${ctx.attackerBody ?? 0} off the Power → <strong>${rammerPower}${baseLevel} Physical</strong> (TN floor 2, SR3 p.143)
+        ${accident
+          ? `Accident, not a ram: neither vehicle's Power is reduced (the book gives only the ram; the maintainer's ruling)`
+          : `Rammer: ${successes} success${successes !== 1 ? 'es' : ''} × Body ${ctx.attackerBody ?? 0} off the Power → <strong>${rammerPower}${baseLevel} Physical</strong> (TN floor 2, SR3 p.143)`}
       </div>`;
 
     html += `
@@ -5469,6 +5484,16 @@ _prepareCharacter(sys, attr) {
      * ramming (Cruiser #2's cops). Ramming used to hand passengers the ORIGINAL level, and still
      * made them roll after the vehicle had soaked the hit to nothing. TODO 74. */
     const resistLevel = idx >= 0 ? STAGES[idx] : null;
+    /* A collision that damaged the vehicle calls for a Crash Test · SR3 p.143 (ramming), p.147 (*"Vehicle takes
+     * damage during a ramming action"*) — TODO 189. Offered, never rolled for anyone: the GM reads the scene. */
+    if (resistLevel && ctx.offerCrash && ctx.vehicleActorId) {
+      html += `
+        <div class="sr-soak-action">
+          <button class="sr-crash-open-btn" data-vehicle-id="${ctx.vehicleActorId}">
+            💥 ${ctx.vehicleName}: took damage — Crash Test (SR3 p.147)
+          </button>
+        </div>`;
+    }
     const resistLabel = resistLevel ? `${ctx.power}${resistLevel}` : 'No damage';
     if (!resistLevel && (ctx.driverActorId || (ctx.passengerActorIds ?? []).length)) {
       html += `<div class="sr-soak-result" style="font-size:11px;color:var(--sr-muted)">
@@ -5479,7 +5504,7 @@ _prepareCharacter(sys, attr) {
     const driverActor = game.actors.get(ctx.driverActorId);
     if (driverActor && resistLevel) {
       const body = driverActor.system?.attributes?.body?.value ?? driverActor.system?.attributes?.body?.base ?? 3;
-      const dCtx = JSON.stringify({ passengerActorId: driverActor.id, passengerName: driverActor.name, power: ctx.power, level: resistLevel, body }).replace(/'/g, '&#39;');
+      const dCtx = JSON.stringify({ passengerActorId: driverActor.id, passengerName: driverActor.name, power: ctx.power, level: resistLevel, body, breakthrough: ctx.breakthrough === true || undefined }).replace(/'/g, '&#39;');
       html += `
         <div class="sr-soak-action">
           <button class="sr-ram-passenger-resist-btn" data-payload='${dCtx}'>
@@ -5492,7 +5517,7 @@ _prepareCharacter(sys, attr) {
       const pActor = game.actors.get(pid);
       if (!pActor || !resistLevel) continue;
       const body = pActor.system?.attributes?.body?.value ?? pActor.system?.attributes?.body?.base ?? 3;
-      const pCtx = JSON.stringify({ passengerActorId: pid, passengerName: pActor.name, power: ctx.power, level: resistLevel, body }).replace(/'/g, '&#39;');
+      const pCtx = JSON.stringify({ passengerActorId: pid, passengerName: pActor.name, power: ctx.power, level: resistLevel, body, breakthrough: ctx.breakthrough === true || undefined }).replace(/'/g, '&#39;');
       html += `
         <div class="sr-soak-action">
           <button class="sr-ram-passenger-resist-btn" data-payload='${pCtx}'>
@@ -5535,9 +5560,19 @@ _prepareCharacter(sys, attr) {
    * ⚠ Power floors at 0 and the TN at 2 — *"Target numbers cannot be reduced below 2"*.
    * @returns {{ power: number, level: string|null, tn: number }}
    */
-  static collisionPassengerDamage({ power = 0, level = 'L', impact = 0, belted = false } = {}) {
+  static collisionPassengerDamage({ power = 0, level = 'L', impact = 0, belted = false, breakthrough = false } = {}) {
     const STAGES = ['L', 'M', 'S', 'D'];
     const p   = Math.max(0, Math.trunc(Number(power) || 0) - Math.max(0, Math.trunc(Number(impact) || 0)));
+    /* Through a barrier · SR3 p.148 (TODO 189): *"passengers do not take damage if they are restrained by
+     * some kind of safety gear. If they are not restrained, but the vehicle breaks through, they make a
+     * standard Damage Resistance Test as a passenger in a vehicle impact, but stage the Damage Level down
+     * by one."* The belt is therefore ALL-or-nothing here (no damage), and it is the UNBELTED who stage
+     * down — the reverse of a crash, where the belt takes one level off (p.147). */
+    if (breakthrough) {
+      if (belted) return { power: p, level: null, tn: Math.max(2, p) };
+      const lower = STAGES.indexOf(level) - 1;
+      return { power: p, level: lower >= 0 ? STAGES[lower] : null, tn: Math.max(2, p) };
+    }
     const idx = STAGES.indexOf(level) - (belted ? 1 : 0);
     return { power: p, level: idx >= 0 ? STAGES[idx] : null, tn: Math.max(2, p) };
   }
@@ -5569,7 +5604,9 @@ _prepareCharacter(sys, attr) {
                  title="Only impact armour protects against crash damage (SR3 p.147). Worn + implant armour.">Impact armour
             <input id="cp-impact" type="number" value="${impact}" min="0" max="30"/></label>
           <label style="grid-column:1/-1;display:flex;align-items:center;gap:6px;cursor:pointer">
-            <input id="cp-belt" type="checkbox"/> Seat belt or other restraint — stage down one level</label>
+            <input id="cp-belt" type="checkbox"/> ${ctx.breakthrough
+              ? 'Seat belt or other restraint — none through a barrier (p.148); unrestrained stage down one level'
+              : 'Seat belt or other restraint — stage down one level'}</label>
           <div id="cp-out" style="grid-column:1/-1;color:var(--sr-gold)"></div>
         </div>`,
       render: (_e, dialog) => {
@@ -5577,10 +5614,12 @@ _prepareCharacter(sys, attr) {
         const show = () => {
           const r = SR3EActor.collisionPassengerDamage({
             power: ctx.power, level: ctx.level,
-            impact: el.querySelector('#cp-impact').value, belted: el.querySelector('#cp-belt').checked });
+            impact: el.querySelector('#cp-impact').value, belted: el.querySelector('#cp-belt').checked,
+            breakthrough: ctx.breakthrough === true });
           el.querySelector('#cp-out').textContent = r.level
             ? `→ resist ${r.power}${r.level} with Body against TN ${r.tn}`
-            : '→ no damage: the belt stages Light damage away entirely';
+            : (ctx.breakthrough ? '→ no damage: restrained passengers are unhurt when the vehicle breaks through (p.148)'
+                                : '→ no damage: the belt stages Light damage away entirely');
         };
         el.querySelectorAll('input').forEach(i => { i.addEventListener('input', show); i.addEventListener('change', show); });
         show();
@@ -5605,8 +5644,11 @@ _prepareCharacter(sys, attr) {
     const pActor = game.actors.get(ctx.passengerActorId);
     if (!pActor) { ui.notifications.warn('Passenger actor not found.'); return; }
     const c = choice ?? { body: ctx.body ?? 3, impact: 0, belted: false };
-    const r = SR3EActor.collisionPassengerDamage({ power: ctx.power, level: ctx.level, impact: c.impact, belted: c.belted });
-    const notes = [c.belted ? 'seat belt −1 level' : '', c.impact ? `impact armour −${c.impact} Power` : '']
+    const r = SR3EActor.collisionPassengerDamage({ power: ctx.power, level: ctx.level, impact: c.impact, belted: c.belted,
+      breakthrough: ctx.breakthrough === true });
+    const notes = [ctx.breakthrough ? (c.belted ? 'restrained — none through a barrier' : 'unrestrained through a barrier −1 level')
+                                    : (c.belted ? 'seat belt −1 level' : ''),
+                   c.impact ? `impact armour −${c.impact} Power` : '']
       .filter(Boolean).join(', ');
 
     if (!r.level) {
@@ -6626,6 +6668,9 @@ _prepareCharacter(sys, attr) {
       carriedSuccesses: payload.carriedSuccesses ?? 0,
       // An elemental spell (p.183) — the soak card halves Impact for it (p.196).
       elemental:       payload.elemental === true || undefined,
+      // A vehicle hit a person (p.148, TODO 189): resisted on Impact armour, and no Knockdown test is offered.
+      useImpact:       payload.useImpact === true || undefined,
+      noKnockdown:     payload.noKnockdown === true || undefined,
       // The attacker's successes and the unstaged code, for the net comparison (p.113, TODO 165).
       net:             payload.net ?? undefined,
     }).replace(/'/g, '&#39;');
@@ -9338,7 +9383,7 @@ _prepareCharacter(sys, attr) {
     // except gel rounds, which are a ranged attack the rules resist with Impact. That
     // exception is declared on the ammo type (config.js) rather than hard-coded here, so it
     // sits with the rest of the ammo-armour rules instead of hiding in the selection.
-    const usesImpact   = isMelee || ammoRules.armorEffect === 'gel' || payload.elemental === true;
+    const usesImpact   = isMelee || ammoRules.armorEffect === 'gel' || payload.elemental === true || payload.useImpact === true;
     const defaultArmor = usesImpact ? impact : ballistic;
 
     const soakTN = Math.max(2, stagedPower - defaultArmor);
