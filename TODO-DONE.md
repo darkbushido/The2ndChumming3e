@@ -7008,6 +7008,13 @@ card deducts it for a dual being only (Body resists) and names it on the card. T
   against it at Power 7. Its resist card reads *Natural armor −3 Power* with TN 4. Set the NPC to
   Astral Plane and the deduction is gone (TN 7).
 
+## 192. ✅ 💴 Make changing funds easier — a ± button, and giving money to another player — **requested 2026-09-27** · `41c6c13d`
+
+A **+/− money** control on the sheet: type N, add or subtract it, with an optional reason for the
+📒 Ledger ([#79](#79)). Maybe also a **give money** action: one character pays another,
+both sides recorded. A player cannot write another player's actor, so the transfer goes through a
+GM-routed verb. This is a feature, so it goes on a branch.
+
 ## 193. ✅ The 📒 Ledger records entries on the wrong character — **reported 2026-09-27** · fixed `b42fdbae`
 
 **Cause, confirmed live 2026-09-27:** Foundry's Duplicate (and the GM copy verb `sr3e.actor.create`
