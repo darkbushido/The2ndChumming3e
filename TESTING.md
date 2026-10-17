@@ -2713,3 +2713,71 @@ the seats first if running Playwright.
       toast reads a "no GM connected" error and nobody's nuyen changed.
 - [ ] Player3 cannot give *from* Alpha (the button isn't on a sheet they cannot edit; from the console
       `game.sr3e.SR3EQuery.asGM('sr3e.money.give', {payerUuid: <Alpha>, recipientUuid: <Bravo>, amount: 5})` is rejected: "does not own").
+
+## 48. Spells on a willing subject (TODO 191, SR3 p.178, p.183)
+
+**Prerequisites:** an Awakened character (Sorcery) with a non-damaging spell (Increase Reflexes or Invisibility)
+and a Combat spell (Manabolt), and a second actor on the scene. No restart needed (no new data fields).
+
+- [ ] Cast **Increase Reflexes** and pick **yourself**: a "willing targets?" dialog follows the target pick, with
+      yourself **ticked** ("the caster"). Cast. The card shows the success count and **no Resist Spell button**:
+      a line says "is willing — no Spell Resistance Test (p.183). All N successes set the effect". The Drain
+      button is still there.
+- [ ] Cast the same spell at another **player's character** (or a Friendly-disposition token): ticked by default.
+      Cast it at a hostile NPC: **unticked**; tick it by hand and it skips the test; untick yourself and it
+      resists as before.
+- [ ] A cast with **zero successes** on a willing subject says the spell fails; Drain is still owed.
+- [ ] A **touch** spell on a willing subject adds "No Unarmed Combat Test is needed" (p.178).
+- [ ] **Manabolt** (Combat) and an Elemental spell cast at yourself or an ally: **no** willing dialog appears and
+      the usual Resist Spell / dodge flow runs.
+- [ ] An **area** non-damaging spell lists every target in the radius (the caster included) with its own tick.
+- [ ] Press **Cancel** or Esc on the willing dialog: the cast is cancelled and no Spell Pool is spent.
+
+## 49. Smoke, gas and flash clouds (TODO 164, SR3 p.112, p.249-250, p.283)
+
+**Prerequisites:** a scene with a canvas (the in-app Browser pane can't draw one — use a real client), a few
+tokens, **at least one movement wall** (and a door you can open and close) near where you will throw, and a
+running combat. Gas / Smoke / Smoke (IR) / Flash-Pak grenades from the Projectiles pack on a thrower. No restart.
+The texture files are `styles/regions/*.svg`; if a cloud shows only the coloured outline, note it (the Drawing
+could not be laid) — the Region still works.
+
+**Marker, expiry, 🧹 (items 0 and 1)**
+- [ ] Throw a **Smoke Grenade** in the open: a grey **textured** cloud (a Drawing under a grey Region outline), 10 m
+      radius, on every client. Advance **two rounds**: both the Region and the texture disappear.
+- [ ] Throw another and press **🧹 Clear blast marker**: both go at once. Delete the Region by hand from the
+      Regions layer: the texture goes too.
+- [ ] Throw it with a **wall** 3-4 m from the blast point: the cloud **stops at the wall** (a clipped polygon, not
+      a circle) and the card says "The cloud stops at the walls". A token behind the wall is not listed in the area.
+- [ ] Throw it in a **small closed room**: the cloud fills the room only. **Open the door**, throw again: the cloud
+      passes through the doorway. Close it: it does not.
+- [ ] Players who can't see the spot still see the marker (the Region is visible to all).
+
+**Looks (item 2)**
+- [ ] Smoke is grey and dense, **Smoke (IR)** reads rose/warm, **Gas** a thin green haze, **Flash-Pak** a bright white
+      wash with strobe spokes. Check each on a busy map and on both a light and a dark scene.
+
+**Wind (items 2 and 6)**
+- [ ] As **GM**, the smoke card has **🌬 GM wind: −1 Combat Turn** and **+1**. −1 on a fresh 2-turn cloud: the
+      Region's name now says "1 Combat Turn left", a chat line announces it, and it vanishes one round sooner.
+      −1 again on a cloud with one turn left: it is blown away. +1 extends it by a round.
+- [ ] A **player's** view of the same card shows no wind buttons.
+
+**Smoke visibility (item 3)**
+- [ ] A player inside a smoke cloud attacks a token outside it (or the reverse). The GM's TN window opens with
+      **Heavy Smoke/Fog/Rain** preselected, an amber line "… stands in smoke — … offered", and the TN already
+      includes it. The GM can change or clear the row.
+- [ ] Same inside **Smoke (IR)**: **Thermal Smoke** is offered; a thermographic attacker's modifier is +8/+6.
+- [ ] Both fighters outside any cloud: nothing is preselected. A cast spell shows the same offer.
+
+**Gas (item 4)**
+- [ ] Throw the **Gas Grenade**: each token inside (not behind a wall) gets its own "☣ in the cloud" card with
+      **Resist Neuro-Stun VIII (6S)**, the speed, the +2 disorientation and the repeat-test-at-+4 rule, and an
+      amber note that the grenade says **VII** but p.250 and the grenade's own text say **VIII**. Only the
+      character's owner (or the GM) can press it; it opens a Body soak card with **no armour**, Power 6.
+- [ ] The Waiting-on panel lists the gas buttons as steps; ✕ clears one.
+
+**Flash-Pak (item 5)**
+- [ ] Throw a **Flash-Pak**: the GM sees **⚡ GM: who was facing the flash?**; players see it disabled. It lists
+      every token, nearest first, with flare compensation pre-ticked for anyone carrying a Flare Comp item.
+      Tick two and post: each gets a card with **+4 (+2 with flare compensation)** and the pak's **+2** strobe,
+      total +6 (+4), and "nothing is applied". Cancel / tick no one: the button comes back.

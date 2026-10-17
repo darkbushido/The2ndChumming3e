@@ -130,3 +130,10 @@ actor to `SR3EQuery.deciderFor(actor)`; the handler opens `promptSpellDefenseFor
    `resistAttr:'charisma'`, `bonusDice`). Physical if Force > Magic.
 4. `confirmSummoning` creates the spirit with *successes* services; added to the tracker **only if a combat is
    already started** — summoning never starts combat.
+
+- **Willing targets** (p.183, TODO 191; `scripts/data/willing-target.mjs`): *"Living targets may always make a Spell Resistance
+  Test against spells, unless the target of the spell is willing."* A non-damaging spell (not Combat/Elemental) asks, after
+  targeting, which targets are willing (`SR3EItem._promptWillingTargets`; self, party and friendly tokens ticked by default,
+  always editable). A ticked target gets a line stating the effect from `_spellResistButton` instead of a Resist Spell button
+  (`spellContext.willingTargetIds`). ⚠ The Sorcery Test still rolls at the targeted Attribute — the book gives a willing subject
+  no lower TN. Touch on a willing subject needs no Unarmed Combat Test (p.178).

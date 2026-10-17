@@ -29,7 +29,7 @@ export async function run(t) {
     /\(unrecognised\)/.test(species));
 
   /* ── Vision pre-selection (TODO 36): follows the condition until the GM touches it ────── */
-  t.ok('ranged window pre-selects via bestVisionKey',       /bestVisionKey\(vision, ''\)/.test(item));
+  t.ok('ranged window pre-selects via bestVisionKey',       /bestVisionKey\(vision, smokeCond\)/.test(item));   // '' unless smoke is on the map (TODO 164)
   t.ok('…and only a human change stops the following',      /visTouched = true/.test(item) && /!visTouched/.test(item));
   t.ok('melee window has one vision dropdown PER FIGHTER',  /gmm-vis-type-\$\{side\}/.test(item));
 

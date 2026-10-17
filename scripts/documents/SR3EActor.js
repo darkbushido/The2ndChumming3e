@@ -9,6 +9,8 @@ import { Ledger } from '../data/ledger.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
 import { OpenSteps } from '../data/open-steps.mjs';
+import { WillingTarget } from '../data/willing-target.mjs';
+import { AreaShape } from '../data/area-shape.mjs';
 import { RiggerShock, DISORIENT_MOD, DISORIENT_TN, DISORIENT_TURNS } from '../data/rigger-shock.mjs';
 import { MdfRules } from '../data/mdf-rules.mjs';
 import { KarmaPool } from '../data/karma-uses.mjs';
@@ -3272,23 +3274,57 @@ _prepareCharacter(sys, attr) {
    * caller lacks Region-create permission. `radiusM` is in scene metres.
    * Returns { regionId, markerId } — feed both to the chat 🧹 Clear button (sr3e.js handles each).
    */
-  static async _drawBlastArea(center, radiusM, { name = 'Blast', color = '#cc3300', expiresRound = null } = {}) {
-    const out = { regionId: null, markerId: null };
+  static async _drawBlastArea(center, radiusM, { name = 'Blast', color = '#cc3300', expiresRound = null, kind = '', baseName = null, clipToWalls = false } = {}) {
+    const out = { regionId: null, markerId: null, clipped: false };
     if (!canvas?.ready || !center) return out;
     const pxPerM   = canvas.dimensions.size / canvas.dimensions.distance;
     const radiusPx = Math.max(1, radiusM * pxPerM);
     const hex      = Number(`0x${color.replace('#', '')}`);
+    /* A cloud does not pass a wall (TODO 164): clip the circle to what the blast point reaches in a straight
+     * line without crossing a movement wall (`AreaShape.clipCircle`; open doors are no wall). No wall in the
+     * way → the plain circle, as before. */
+    const clip = clipToWalls ? AreaShape.clipCircle(center, radiusPx, SR3EActor._wallSegments(center, radiusPx)) : null;
+    out.clipped = !!clip;
+    // The look (TODO 164, item 2): a pattern-filled Drawing under the Region — Regions carry no texture.
+    const look = AreaEffect.look(kind);
+    let decorId = null;
+    if (look) {
+      try {
+        const pts = clip ?? AreaShape.circlePoints(center, radiusPx);
+        const box = AreaShape.relativeBox(pts);
+        const [drawing] = await canvas.scene.createEmbeddedDocuments('Drawing', [{
+          x: box.x, y: box.y,
+          shape: { type: 'p', width: Math.ceil(box.width), height: Math.ceil(box.height), points: box.points },
+          fillType: CONST.DRAWING_FILL_TYPES?.PATTERN ?? 2,
+          fillColor: look.color, fillAlpha: look.fillAlpha,
+          texture: look.texture,
+          strokeWidth: 0, strokeAlpha: 0,
+          locked: true,
+          flags: { 'The2ndChumming3e': { blastDecor: true, areaKind: kind } },
+        }]);
+        decorId = drawing?.id ?? null;
+      } catch (err) { console.warn('SR3E | could not lay the cloud texture (the Region still marks it)', err); }
+    }
     try {
       const [region] = await canvas.scene.createEmbeddedDocuments('Region', [{
         name,
         color,
         visibility: CONST.REGION_VISIBILITY?.ALWAYS ?? 2,
-        shapes: [{ type: 'circle', x: center.x, y: center.y, radius: radiusPx, hole: false }],
-        flags: { 'The2ndChumming3e': { blastResult: true, ...(Number.isFinite(expiresRound) ? { expiresRound, combatId: game.combat?.id ?? null } : {}) } },
+        shapes: [clip
+          ? { type: 'polygon', points: clip, hole: false }
+          : { type: 'circle', x: center.x, y: center.y, radius: radiusPx, hole: false }],
+        flags: { 'The2ndChumming3e': {
+          blastResult: true,
+          ...(Number.isFinite(expiresRound) ? { expiresRound, combatId: game.combat?.id ?? null } : {}),
+          ...(kind ? { areaKind: kind, baseName: baseName ?? name } : {}),
+          ...(decorId ? { decorDrawingId: decorId } : {}),
+        } },
       }]);
       out.regionId = region?.id ?? null;
     } catch {
-      // No create permission — local PIXI circle so the caster at least sees it.
+      // No create permission — local PIXI circle so the caster at least sees it. (No Region to carry the
+      // texture, so the Drawing laid for it goes too.)
+      if (decorId) canvas.scene.deleteEmbeddedDocuments('Drawing', [decorId]).catch(() => {});
       try {
         const layer = canvas.interface ?? canvas.primary ?? canvas.stage;
         const g = new PIXI.Graphics();
@@ -3444,12 +3480,14 @@ _prepareCharacter(sys, attr) {
 
           // Show where it actually went off, visible to ALL players (Region, with a local
           // PIXI fallback if the thrower lacks Region-create permission).
-          const { regionId: resultRegionId, markerId: resultMarkerId } =
-            await SR3EActor._drawBlastArea(center, state.aoeRadius, state.aoeEffect
+          const blastDrawn = await SR3EActor._drawBlastArea(center, state.aoeRadius, state.aoeEffect
               ? { name: `${state.aoeEffect.name}${state.aoeEffect.turns ? ` (${state.aoeEffect.turns} Combat Turns)` : ''}`,
                   color: AreaEffect.color(state.aoeEffect.name),
-                  expiresRound: AreaEffect.expiresRound(game.combat?.started ? game.combat.round : NaN, state.aoeEffect.turns) }
+                  expiresRound: AreaEffect.expiresRound(game.combat?.started ? game.combat.round : NaN, state.aoeEffect.turns),
+                  // The cloud's kind picks its look and its smoke row; its shape stops at the walls (TODO 164).
+                  kind: AreaEffect.kind(state.aoeEffect.name), baseName: state.aoeEffect.name, clipToWalls: true }
               : { name: 'Grenade Blast' });
+          const { regionId: resultRegionId, markerId: resultMarkerId } = blastDrawn;
 
           // Re-detect everyone caught in the (scattered) blast — the thrower can be hit.
           // ⚠ A token with a wall between it and the blast point is NOT caught (TODO 149): the blast
@@ -3543,7 +3581,29 @@ _prepareCharacter(sys, attr) {
               + (state.aoeEffect.text ? `<div style="margin-top:4px">${state.aoeEffect.text}</div>` : '')
               + `<div style="margin-top:4px;font-size:11px"><strong>In the area:</strong> ${inArea}</div>`
               + `<div style="margin-top:3px;font-size:11px;color:var(--sr-muted)">Nothing is applied — the GM decides what it does to whom (SR3 p.283).</div>`
-              + `${clearBtn}</div>`;
+              + (blastDrawn.clipped ? `<div style="margin-top:3px;font-size:11px;color:var(--sr-amber)">🧱 The cloud stops at the walls — the marker is clipped to what the blast point reaches.</div>` : '')
+              + `${clearBtn}`
+              + (state.aoeEffect.turns ? SR3EActor._windButtons(resultRegionId) : '')
+              + `</div>`;
+
+            const cloudKind = AreaEffect.kind(state.aoeEffect.name);
+            // ☣ Gas (TODO 164, item 4) — each token inside gets its own resistance card, offered, never applied.
+            if (cloudKind === 'gas') {
+              const toxin = AreaEffect.gasToxin(state.aoeEffect.name);
+              for (const h of hits) afterCard.push(() => SR3EActor.postGasExposureCard(h.actor, toxin, state.aoeEffect.name));
+            }
+            // ⚡ Flash-Pak (item 5) — the GM ticks who was facing it. The list is every token on the scene, nearest
+            // first: the book gives the Flash-Pak no area, only "anyone facing" it.
+            if (cloudKind === 'flash') {
+              const everyone = (canvas?.tokens?.placeables ?? []).filter(t => t.actor && t.actor.type !== 'vehicle').map(t => {
+                let d; try { d = canvas.grid.measurePath([center, t.center])?.distance ?? Infinity; } catch { d = Infinity; }
+                return { actorId: t.actor.id, name: t.actor.name, dist: Math.round(d),
+                         walled: !!SR3EActor._wallBetween(center, t.center) };
+              }).sort((a, b) => a.dist - b.dist);
+              const flashPayload = JSON.stringify({ name: state.aoeEffect.name, tokens: everyone }).replace(/'/g, '&#39;');
+              postRollHtml += `<div class="sr-soak-action"><button class="sr-flash-btn" data-payload='${flashPayload}'
+                title="SR3 p.283: anyone facing a flash-pak">⚡ GM: who was facing the flash?</button></div>`;
+            }
           } else {
             stagingHtml = `<div class="sr-staging-result">💥 ${basePower}${level}${isStun ? ' Stun' : ''} grenade — ${successes} hit${successes !== 1 ? 's' : ''}<div style="margin-top:3px">${scatterDesc}</div>${hitLines}${clearBtn}</div>`;
           }
@@ -8454,6 +8514,210 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * The scene's walls that stop a cloud, as plain segments near a blast point (TODO 164, item 0): movement
+   * walls that are not an open door — the same walls `_wallBetween` stops a grenade at. Empty when there is
+   * no canvas. Only walls whose box meets the circle are returned.
+   */
+  static _wallSegments(center, radiusPx) {
+    try {
+      const NONE = CONST.WALL_MOVEMENT_TYPES?.NONE ?? 0;
+      const out = [];
+      for (const w of (canvas?.walls?.placeables ?? [])) {
+        const d = w.document;
+        if (!d || d.move === NONE) continue;
+        if (w.isOpen === true) continue;
+        const [x0, y0, x1, y1] = d.c;
+        if (Math.max(x0, x1) < center.x - radiusPx || Math.min(x0, x1) > center.x + radiusPx
+         || Math.max(y0, y1) < center.y - radiusPx || Math.min(y0, y1) > center.y + radiusPx) continue;
+        out.push({ a: { x: x0, y: y0 }, b: { x: x1, y: y1 } });
+      }
+      return out;
+    } catch {
+      return [];
+    }
+  }
+
+  /** The clouds (Regions a grenade laid) on the scene, with their shapes as plain data. */
+  static _clouds() {
+    const NS = 'The2ndChumming3e';
+    return [...(canvas?.scene?.regions ?? [])]
+      .filter(r => r.getFlag(NS, 'areaKind'))
+      .map(r => ({
+        region: r,
+        kind: r.getFlag(NS, 'areaKind'),
+        shapes: [...r.shapes].map(s => ({ type: s.type, x: s.x, y: s.y, radius: s.radius, points: [...(s.points ?? [])], hole: !!s.hole })),
+      }));
+  }
+
+  /** The scene points an actor's tokens stand on (centres). */
+  static _tokenPoints(actor) {
+    return (actor?.getActiveTokens?.() ?? []).map(t => t.center).filter(Boolean);
+  }
+
+  /**
+   * Smoke between the fighters (TODO 164, item 3). When the attacker or a target stands inside a smoke
+   * cloud, offer the GM's TN window the Visibility Table row for it — *"Smoke obscures vision, applying
+   * visibility modifiers to relevant tests. Infra-red smoke contains hot particles that obscure thermographic
+   * vision."* (SR3 p.283; the table, p.112). Only an offer: the window preselects it and the GM may change it.
+   * Returns `{ condition, note }` or null.
+   */
+  static async smokeOffer(attacker, targets = []) {
+    if (!canvas?.ready) return null;
+    const clouds = SR3EActor._clouds().filter(c => AreaEffect.visibilityCondition(c.kind));
+    if (!clouds.length) return null;
+    const kinds = [], who = [];
+    for (const a of [attacker, ...targets].filter(Boolean)) {
+      for (const c of clouds) {
+        if (SR3EActor._tokenPoints(a).some(p => AreaShape.contains(c.shapes, p))) { kinds.push(c.kind); who.push(a.name); }
+      }
+    }
+    if (!kinds.length) return null;
+    const { visibilityModifier, detectVision, bestVisionKey } = await import('../SR3ECombatModifiers.js');
+    const vision = attacker ? detectVision(attacker) : null;
+    const condition = AreaEffect.pickCondition(kinds,
+      c => visibilityModifier(c, vision ? bestVisionKey(vision, c) : 'normal'));
+    if (!condition) return null;
+    const infra = kinds.includes('irsmoke');
+    return {
+      condition,
+      note: `💨 ${[...new Set(who)].join(' and ')} ${new Set(who).size > 1 ? 'stand' : 'stands'} in ${infra ? 'infra-red ' : ''}smoke — `
+        + `${condition} offered (SR3 p.112, p.283); the grenade text does not say which row, so change it if it is thinner or thicker.`,
+    };
+  }
+
+  /**
+   * Wind · GM: make a cloud last more or fewer Combat Turns (TODO 164, item 2). SR3 p.283: *"lasts for 2
+   * Combat Turns (less in windy areas, at the gamemaster's discretion)"*. Moves the Region's end round; at
+   * none left the cloud goes. GM client only.
+   */
+  static async shiftCloud(regionId, sceneId, delta) {
+    const NS = 'The2ndChumming3e';
+    const scene  = game.scenes?.get(sceneId) ?? canvas?.scene;
+    const region = scene?.regions?.get(regionId);
+    if (!region) { ui.notifications.warn('That cloud is already gone.'); return null; }
+    const round = game.combat?.started ? game.combat.round : NaN;
+    if (!Number.isFinite(round)) {
+      ui.notifications.info('No combat is running — the cloud has no Combat Turns to shorten; clear it with 🧹 instead.');
+      return null;
+    }
+    const res = AreaEffect.shiftExpiry(region.getFlag(NS, 'expiresRound'), delta, round);
+    const base = region.getFlag(NS, 'baseName') ?? region.name;
+    if (res.ended) {
+      await region.delete();
+      await ChatMessage.create({ speaker: { alias: 'GM' }, content: `<div class="sr-roll-card"><div class="sr-roll-meta">🌬 Wind: ${base} is blown away.</div></div>` });
+      return res;
+    }
+    await region.update({ name: AreaEffect.label(base, res.remaining), [`flags.${NS}.expiresRound`]: res.expires });
+    await ChatMessage.create({ speaker: { alias: 'GM' }, content: `<div class="sr-roll-card"><div class="sr-roll-meta">🌬 Wind: ${base} now lasts ${res.remaining} more Combat Turn${res.remaining === 1 ? '' : 's'} (SR3 p.283, at the gamemaster's discretion).</div></div>` });
+    return res;
+  }
+
+  /**
+   * ☣ A token inside a gas cloud (TODO 164, item 4): its own resistance card. Offered, never applied.
+   * SR3 p.249-250: *"The Body Test to resist diseases and toxins uses the Power of the attack as the target
+   * number. Every 2 successes reduces the Damage Level."* Neuro-Stun VIII: *"Damage: 6S Stun · Speed: End of
+   * the following Combat Turn … Even if he resists this, he suffers disorientation for about an hour, adding
+   * +2 to all target numbers."* *"If he or she is still in contact with the toxin … when the relevant time
+   * period elapses again, the character must make another Body Test with a target number modifier of +4."*
+   */
+  static async postGasExposureCard(actor, toxin, grenadeName) {
+    if (!actor) return;
+    const payload = JSON.stringify({ actorId: actor.id, damage: toxin.damage, toxin: toxin.name }).replace(/'/g, '&#39;');
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">☣ ${actor.name} — in the ${grenadeName} cloud</div>
+        <div class="sr-roll-meta" style="font-size:11px">
+          <strong>${toxin.name}</strong> — ${toxin.damage} Stun (SR3 p.250). <strong>Body Test</strong> at TN = the Power;
+          every 2 successes lower the Damage Level (p.250). It takes effect at ${toxin.speed}.
+          Even if resisted, <strong>disorientation: +${toxin.disorientation} to all target numbers</strong> for about an hour (p.250).
+          Still in the gas when the period comes round again: another Body Test at +4 (p.249).
+          Gas masks, sealed armour and the like are the GM's call. Nothing is applied until it is rolled.
+          ${toxin.discrepancy ? `<div style="margin-top:3px;color:var(--sr-amber)">⚠ ${toxin.discrepancy}</div>` : ''}
+        </div>
+        <div class="sr-soak-action"><button class="sr-gas-resist-btn" data-payload='${payload}'>☣ ${actor.name}: Resist ${toxin.name} (${toxin.damage})</button></div>
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
+  /** ☣ The gas card's button: open the soak card for the toxin — Body, no armour (it is breathed or absorbed). */
+  static async handleGasResist(btn) {
+    const p = JSON.parse(btn.dataset.payload ?? '{}');
+    const actor = game.actors.get(p.actorId);
+    const d = SR3EItem.parseDamageCode(p.damage);
+    if (!actor || !d?.power) return false;
+    await actor._postSoakCard({
+      stagedPower: d.power, stagedLevel: d.level, isStun: d.isStun, rawDamage: p.damage, targetActorId: actor.id,
+      noArmor: true, noArmorNote: `${p.toxin} — resisted with Body; armour does not apply (SR3 p.249-250)`,
+    });
+    return true;
+  }
+
+  /**
+   * ⚡ Flash-Pak (TODO 164, item 5). The book gives it no area, only a facing rule — *"Anyone facing a
+   * flash-pak receives a +4 target number modifier (+2 if the target has flare compensation). The pak also
+   * negates modifiers from poor or no lighting, but imposes its own +2 modifier because of the strobing
+   * flashes."* (SR3 p.283). The GM ticks who was facing it; each ticked token gets a card with the numbers.
+   */
+  static async handleFlashTick(btn) {
+    const p = JSON.parse(btn.dataset.payload ?? '{}');
+    const tokens = p.tokens ?? [];
+    const hasFlare = id => (game.actors.get(id)?.items ?? []).some(i => /flare/i.test(i.name));
+    const rows = tokens.map(t => `<div style="display:flex;gap:10px;align-items:center;padding:1px 0">
+        <label style="flex:1;display:flex;gap:6px;align-items:center">
+          <input type="checkbox" class="sr-flash-face" value="${t.actorId}" style="appearance:auto;-webkit-appearance:checkbox"/>
+          <span>${t.name} <span style="font-size:10px;color:var(--sr-muted)">${t.dist} m${t.walled ? ' · wall between' : ''}</span></span>
+        </label>
+        <label style="font-size:11px;display:flex;gap:4px;align-items:center" title="Flare compensation: +2 instead of +4">
+          <input type="checkbox" class="sr-flash-flare" data-id="${t.actorId}" ${hasFlare(t.actorId) ? 'checked' : ''} style="appearance:auto;-webkit-appearance:checkbox"/> flare comp
+        </label></div>`).join('');
+    let picked = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `GM — ${p.name}: who was facing it?` },
+      content: `<p style="font-size:12px;margin:0 0 6px">Tick each token that was <strong>facing</strong> the flash-pak (SR3 p.283). Flare compensation is
+        pre-ticked from the character's gear and editable.</p><div style="max-height:50vh;overflow-y:auto">${rows || '<em>No tokens on the scene.</em>'}</div>`,
+      buttons: [
+        { label: 'Post cards', action: 'ok', default: true,
+          callback: (_e, _b, dlg) => {
+            picked = [...dlg.element.querySelectorAll('.sr-flash-face:checked')].map(i => ({
+              id: i.value, flare: !!dlg.element.querySelector(`.sr-flash-flare[data-id="${i.value}"]`)?.checked }));
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!picked?.length) return false;
+    for (const { id, flare } of picked) await SR3EActor.postFlashCard(game.actors.get(id), flare, p.name);
+    return true;
+  }
+
+  /** One ticked token's flash card: the +4 (+2 with flare compensation) and the +2 strobe. Stated, not applied. */
+  static async postFlashCard(actor, flare, packName = 'Flash-Pak') {
+    if (!actor) return;
+    const m = AreaEffect.flashMods(flare);
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">⚡ ${actor.name} — was facing the ${packName}</div>
+        <div class="sr-roll-meta" style="font-size:11px">
+          <strong>+${m.facing}</strong> to target numbers${m.flare ? ' (flare compensation: +2 instead of +4)' : ' (+2 with flare compensation)'}, and the pak's own
+          <strong>+${m.strobe}</strong> for the strobing flashes — <strong>+${m.total}</strong> in all (SR3 p.283). The pak also negates modifiers from poor or no lighting.
+          The book gives no duration; how long it lasts, and whether the strobe touches those not facing it, is the GM's call. Nothing is applied.
+        </div></div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
+  /** Markup for the GM's wind buttons on a cloud's card (hidden from players at render). */
+  static _windButtons(regionId) {
+    if (!regionId) return '';
+    const sid = canvas.scene?.id ?? '';
+    const b = (d, t) => `<button type="button" class="sr-wind-btn" data-region-id="${regionId}" data-scene-id="${sid}" data-delta="${d}">${t}</button>`;
+    return `<div class="sr-wind-row" style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap" title="SR3 p.283: less in windy areas, at the gamemaster's discretion">`
+      + `${b(-1, '🌬 GM wind: −1 Combat Turn')}${b(1, '🌬 +1 Combat Turn')}</div>`;
+  }
+
+  /**
    * The Barrier Rating and Barrier Effect Tables (SR3 p.124) as a small HTML table — the tooltip on the
    * grenade card's "wall fell" button and the body of its dialog (the maintainer asked for the book's
    * ratings to be to hand). One source: `SR3E.barrierRatings` / `barrierEffects`.
@@ -10291,6 +10555,16 @@ _prepareCharacter(sys, attr) {
   static _spellResistButton(sc, targetId, attackSuccesses) {
     const tActor = game.actors.get(targetId);
     if (!tActor) return '';
+
+    /* ── A willing subject · SR3 p.183 (TODO 191) ─────────────────────────────────────────────
+     * > "If the target makes no Spell Resistance Test, all the successes from the Sorcery Test are used,
+     * > according to the spell's description, to determine the spell's effect."
+     * No Resist button: a line states the effect. Both sites that hand out spell buttons come through
+     * here, so counterspelling (which lowers `attackSuccesses` first) still applies. */
+    if (WillingTarget.resolvesUnresisted(sc, targetId)) {
+      return `<div class="sr-roll-meta" style="font-size:11px">🤝 ${WillingTarget.effectLine({
+        targetName: tActor.name, spellName: sc.spellName ?? 'The spell', successes: attackSuccesses, touch: !!sc.touch })}</div>`;
+    }
 
     /* ── Elemental Manipulation · SR3 p.183 ─────────────────────────────────────────────────
      *

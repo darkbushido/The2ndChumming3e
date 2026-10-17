@@ -281,3 +281,20 @@ Requires a scene.
 - **Shared blast marker**: `SR3EActor._drawBlastArea(center, radiusM, {name,color})` → `{regionId, markerId}`
   and `SR3EActor._clearBlastButton(...)` — used by grenades and **spell AoE** (purple; no scatter or falloff,
   `SR3EItem._actorsInRadius` picks targets at cast; each resists at full Force).
+
+### Clouds — smoke, gas, flash  · *SR3 p.283, p.250, p.112* — TODO 164
+`scripts/data/area-effect.mjs` (`kind`, `look`, wind `shiftExpiry`, `gasToxin`, `flashMods`) and
+`scripts/data/area-shape.mjs` (`clipCircle`, `contains`) — pure. A grenade with no Damage Code leaves a **Region**
+(`flags.areaKind`, `baseName`, `expiresRound`, `decorDrawingId`) plus a **pattern-filled Drawing** textured by
+`styles/regions/<kind>.svg` — ⚠ Foundry v14 Regions carry no texture. A `deleteRegion` hook (active GM) removes the Drawing
+however the Region ends.
+- ⚠ **Clipped to walls**: `SR3EActor._wallSegments` (movement walls, not open doors) → `AreaShape.clipCircle` (visibility
+  polygon); no wall in reach → the plain circle. "In the area" still uses `_wallBetween`.
+- **Wind**: GM-only `.sr-wind-btn` (−1 / +1 Combat Turn) → `SR3EActor.shiftCloud`; none left deletes the cloud.
+- **Smoke row offered** to the ranged and spell TN windows (`SR3EActor.smokeOffer` → `ctx.smoke`, preselected in
+  `_promptGMAttackWindow`): Heavy Smoke/Fog/Rain; infra-red → Thermal Smoke; the viewer's worst row. ⚠ Which row an ordinary
+  smoke grenade means is not in the book — editable.
+- **Gas**: one `postGasExposureCard` per token in the cloud, `.sr-gas-resist-btn` → Body soak card, `noArmor`. ⚠ The grenade is
+  labelled **VII** (p.283 row); p.250 and p.283's text say **VIII** (6S, the only one with numbers) — noted on the card.
+- **Flash-Pak**: GM-only `.sr-flash-btn` tick list → `postFlashCard` (+4, +2 with flare compensation, +2 strobe). Both new
+  owed buttons are in `STEP_BUTTONS`.
