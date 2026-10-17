@@ -2658,3 +2658,27 @@ menu, the Chase Scene (💥 Collision) and the 💥 Crash tool (🧍 Hit a pedes
 - [ ] Each of the four entry points opens the dialog with its vehicle/speed filled (the Chase Scene's from the
       participant's speed). No driver aboard: it warns and posts without a test. Cancel posts nothing.
 - [ ] No template actors appear in the pedestrian or vehicle lists; the scene's tokens come first.
+
+## 46. The Concealment view (TODO 195, SR3 p.45, p.231-232, p.236-237, p.270)
+
+**Prerequisites:** a character with a few weapons (one in hand, two ✋-toggled away with Concealabilities such as 5
+and 8), a worn armour piece with a Concealability, a spare armour piece **not** worn, an Obvious Cyberarm and a
+Synthetic Cyberarm installed, Eyes Cyber Replacement, and Wired Reflexes (internal). A second character as the
+looker. Log in as the GM; F5 once (new follow-up kind and button class).
+
+- [ ] The **Rollable Tables** tab has **👁 Concealment** (GM only — a player does not see it). The character's
+      Attributes tab has **👁 Concealment** beside Success Test (GM only).
+- [ ] The dialog lists, **least concealed first**: the weapon in hand ("in hand") and the Obvious Cyberarm ("obvious")
+      at the top with their number box greyed; then ascending by number (the Synthetic Cyberarm is **8**, with a note
+      about clothing +3); the GM's-call rows ("Eyes, Cyber Replacement") after the rated; unrated rows last.
+      **Not listed:** the unworn jacket, fists, the Wired Reflexes, anything in storage.
+- [ ] Changing the actor dropdown redraws the list. Unticking a row and **📣 Post to chat** posts a card "What <name> is
+      carrying" without it; changing a number changes the card only — the item is unchanged.
+- [ ] The card tells the table that a lower number is easier to spot. A player sees the 🔍 Test buttons **greyed**.
+- [ ] 🔍 (in the dialog, or on the card as GM) opens a Perception dialog: observer, dice = their Intelligence, the
+      Concealability, **three readings** — Noticing (full), Search p.270 (half, rounded down), Search p.237 (full + the
+      Physical Search table). The "Target number" line updates live; half of 7 is 3; nothing goes below 2.
+- [ ] The p.237 reading shows the three search selects; **Strip search (6-10 minutes)** rolls nothing and posts "finds
+      the weapon". Otherwise **Roll** makes the roll and, after any 💥, a card gives the successes against the TN and the
+      **Perception Success Table** line (1: "Something is there" … 4+: "knows what it is, but no specifics").
+- [ ] Nothing is written to any item in any of the above.

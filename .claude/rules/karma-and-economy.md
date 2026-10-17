@@ -1,6 +1,9 @@
 ---
 paths:
   - "scripts/data/karma-uses.mjs"
+  - "scripts/data/concealment.mjs"
+  - "scripts/SR3EConcealment.js"
+  - "tests/concealment.test.mjs"
   - "tests/karma-uses.test.mjs"
   - "scripts/SR3EPurchase.js"
   - "scripts/data/ledger.mjs"
@@ -157,3 +160,21 @@ installed cyber/bioware weigh nothing; stacks × `quantity`; ammo × rounds/relo
 | heavier | passes out from exertion |
 
 ⚠ Each bound is **"up to"** (exactly × 5 is free). Movement penalties stated, not modelled; the Stun is the GM's.
+
+### 👁 Concealment — what a character carries that shows  · *SR3 p.45, p.231-232, p.236-237, p.270* — TODO 195
+`SR3EConcealment.open(actor)` (`scripts/SR3EConcealment.js`; GM-only — the Rollable Tables sidebar and a button on a
+character's Attributes tab). Rules and the heuristic: `scripts/data/concealment.mjs` (pure).
+- **Concealability is the TARGET NUMBER of the Perception Test to notice the item** (p.45, p.231, p.270), so a **lower**
+  number is easier to spot: the list sorts **least concealed first** — in-hand weapons and obvious chrome (no test), then
+  ascending, the GM's-call rows, the unrated last.
+- **Shown:** weapons (`firearm`/`melee`/`projectile`/`thrown`, not fists, not stored): in hand (`ready`) = plain sight, no
+  test; stowed = its Concealability; an implanted weapon (`CYB`/`hands: 0`) is listed as the weapon. **Worn** armour only
+  (`SR3EActor.wornArmorItems`). **Implants** only when category and name mark an outward part (`classifyImplant`): obvious
+  cyberlimbs/cyberskull/torso/Kid Stealth and cyberears (no test); **synthetic** limbs (**8**, p.303; +3 under clothing,
+  p.301) and an Induction Datajack (**10**, M&M p.21) are disguised; cybereyes and a plain datajack are the GM's call.
+- ⚠ **A search's target number has TWO readings in the book:** p.270 *"Searches have a target number of half the regular
+  Concealability Rating (rounding down)"*; p.237 *"make a standard Perception Test against the Concealability … Apply the
+  modifiers in the Physical Search Modifiers Table"*. The test dialog OFFERS all three (`NOTICE`, `SEARCH_HALF`,
+  `SEARCH_FULL`) and picks none; the question is with the maintainer. A 6-10 minute strip search finds the weapon, no roll.
+- The roll is `rollPool` + `FOLLOW_UPS.concealPerception`, which reads the Perception Success Table (p.232). Nothing is
+  written back to an item; typed Concealability numbers affect that card only.
