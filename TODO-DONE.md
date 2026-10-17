@@ -7231,6 +7231,39 @@ Chumming (Foundry)" section. Build and run `node tools/linkcheck.mjs` before eac
 
 Guide content, so each goes on a branch.
 
+## 223. ✅ Limited spells: a limit taken off Drain instead of off the learning cost — **found 2026-10-12** (writing the Spells guide, #222) — closed in 27d5e14a
+
+SR3 p.180–181: a fetish (−1) or exclusive (−2) limit *"may either reduce the Force of a spell for
+purposes of Drain, or reduce the Karma cost and difficulty to learn the spell, by its modifier. The
+player chooses which when the spell is learned. The reduction in Force for Drain purposes also affects
+whether or not the caster suffers stun or physical Drain damage."* The book's example: Grandfather
+Bones, Magic 6, learns Fireball at Force 8 with the exclusive limit taken off Drain, so it Drains as
+Force 6 and stays Stun.
+
+The system has only the cost half: the Spend Karma calculator's *Learn a spell* dialog takes a limit
+modifier off the Karma (`SR3EActorSheet`, the `spell:` branch; `GoodKarma.spellCost(force, limit)`),
+and nothing records which way the limit was taken. The cast flow (`SR3EItem.rollSpell`) computes the
+Drain Power and the Stun/Physical switch (Force > Magic, SR3 p.180) from the full Force.
+
+- Record the limit on the spell: `system.limit` (`''` / `fetish` / `exclusive` / both, which p.180
+  allows "separate in purpose") and which side each one is taken off (Drain or learning).
+- When it's taken off Drain, the cast subtracts it from the Force **before** both the Drain Power
+  (half the Force, plus the spell's modifier) and the Force-versus-Magic check. The learning-side
+  limit stays as it is.
+- Say so on the cast card, and warn (never refuse) when a fetish-limited spell is cast — the fetish
+  must be touching the caster — and that an exclusive one is an Exclusive Action (p.160).
+- Unit tests for the Drain Force with each limit, a mutant for the full Force, a source check that
+  the cast reads the spell's limit, and a TESTING.md step.
+
+**Fixed (27d5e14a).** `system.limitFetish` / `system.limitExclusive` (`''`/`'drain'`/`'learning'`) on the spell; the Learn-a-spell
+dialog asks where each limit is taken (the old free number is gone); `SpellLimits` (`scripts/data/spell-limits.mjs`) gives the
+Drain Force and the learning reduction; the cast drains as the reduced Force (Stun/Physical test, Drain Power, Drain card) and
+warns, never refuses. No migration: old spells default to unlimited. Tests `tests/spell-limits.test.mjs`, mutants
+`limited-spell-drains-at-full-force` and `limit-off-the-cost-also-cuts-drain`; TESTING.md section 44. Not modelled: the
+reduction on Dispel/other Drain sources, and Exclusive Actions forcing a drop.
+
+This is a feature, so it goes on a branch.
+
 ## 224. ✅ Drones in RCD ignore SR3 p.154 — **found 2026-10-12** (writing the Drones guide, #222) · fixed `28a4ccdc`
 
 The captain's chair (RCD) dropped a VCR rigger's Initiative bonus, and RCD drones rolled the rigger's
