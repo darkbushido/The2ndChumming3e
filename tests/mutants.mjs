@@ -2424,6 +2424,23 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'gear-drop-from-switched-off-book-is-silent',
+    suite:  'gear-search',
+    ...GSEARCH, method: 'dropWarnings',
+    was:    'a drop from a switched-off book fills the form with no word said (2026-10-17 ruling: warn, but fill anyway)',
+    impl:   function ({ name = 'That item', type = '' } = {}, buyable) {
+      return this.isBuyable(type, buyable) ? [] : [`${name} is a ${type}, which is not normally bought here — filled in anyway.`];
+    },
+  },
+  {
+    id:     'gear-drop-of-unbuyable-type-is-silent',
+    suite:  'gear-search',
+    ...GSEARCH, method: 'dropWarnings',
+    was:    'a drop of a spell or skill fills the form with no word said (2026-10-17 ruling: warn naming why, but fill anyway)',
+    impl:   ({ name = 'That item', packAllowed = true } = {}) =>
+      packAllowed ? [] : [`${name} is from a book that is switched off (Configure Source Books) — filled in anyway.`],
+  },
+  {
     id:     'gear-search-blank-lists-everything',
     suite:  'gear-search',
     ...GSEARCH, method: 'matches',

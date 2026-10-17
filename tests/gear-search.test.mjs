@@ -59,6 +59,13 @@ export async function run(t) {
   t.ok('an Actor drop is not', !G.parseDrop({ type: 'Actor', uuid: 'Actor.1' }).ok);
   t.ok('a drop with no uuid is not, and says why', !G.parseDrop({ type: 'Item' }).ok && !!G.parseDrop({ type: 'Item' }).why);
   t.ok('nothing dropped is not', !G.parseDrop(null).ok && !G.parseDrop(undefined).ok);
+  // Ruled 2026-10-17: a switched-off book or a non-buyable type WARNS and still fills; only a non-Item drop fills nothing.
+  t.eq('an ordinary buyable drop warns about nothing', G.dropWarnings({ name: 'Medkit', type: 'medical', packAllowed: true }, BUY), []);
+  const offBook = G.dropWarnings({ name: 'Medkit', type: 'medical', packAllowed: false }, BUY);
+  t.ok('a drop from a switched-off book warns, naming why, and says it is filled anyway', offBook.length === 1 && /switched off/.test(offBook[0]) && /anyway/.test(offBook[0]));
+  const spell = G.dropWarnings({ name: 'Manabolt', type: 'spell', packAllowed: true }, BUY);
+  t.ok('a non-buyable type warns, naming the type', spell.length === 1 && /spell/.test(spell[0]) && /anyway/.test(spell[0]));
+  t.is('both concerns are both reported', G.dropWarnings({ name: 'X', type: 'spell', packAllowed: false }, BUY).length, 2);
   t.ok('a type is buyable only if the list has it', G.isBuyable('firearm', BUY) && !G.isBuyable('spell', BUY) && !G.isBuyable('gear', undefined));
 
   /* ── Wiring: both paths respect the source-book filter ─────────────────────── */
@@ -69,6 +76,10 @@ export async function run(t) {
   const drop  = between('async resolveDrop', 'contacts(actor)');
   t.ok('the search reads packs only through gearPacks(), which asks packAllowed', /SR3EPurchase\.gearPacks\(\)/.test(idxFn) && /SR3ESourceBooks\?\.packAllowed\(p\)/.test(packs));
   t.ok('a drop is checked against packAllowed for the pack it came from', /game\.packs\.get\(dropped\.pack\)/.test(drop) && /SR3ESourceBooks\?\.packAllowed\(pack\)/.test(drop));
+  t.ok('a drop FILLS even when warned: resolveDrop returns the fields after the warnings, with no early return for book or type',
+    drop.includes('dropWarnings(')
+    && drop.indexOf('dropWarnings(') < drop.indexOf('return { ...GearSearch.fields(dropped)')
+    && (drop.match(/return null/g) ?? []).length === 2);
   t.ok('the search uses pack indexes, not full documents', /pack\.getIndex\(\{ fields: GearSearch\.INDEX_FIELDS \}\)/.test(idxFn) && !/getDocuments?\(/.test(idxFn));
   t.ok('only Item packs holding a buyable type are searched', /documentName !== 'Item'/.test(packs) && /itemTypes/.test(packs) && /BUYABLE\.includes/.test(packs));
   const keydown = src.slice(src.indexOf("search?.addEventListener('keydown'"), src.indexOf("hitsEl?.addEventListener('click'"));

@@ -111,6 +111,19 @@ export const GearSearch = {
     return uuid ? { ok: true, uuid } : { ok: false, why: 'That item has no address to look it up by.' };
   },
 
+  /**
+   * What to WARN about when an item is dropped on the dialog — ruled 2026-10-17 by the maintainer: warn, but
+   * fill the form anyway (the GM is trusted). Only a non-Item drop (`parseDrop`) fills nothing.
+   * @param {{name:string, type:string, packAllowed:boolean}} item
+   * @returns {string[]}  a message per concern; empty when the drop is unremarkable
+   */
+  dropWarnings({ name = 'That item', type = '', packAllowed = true } = {}, buyable) {
+    const out = [];
+    if (!packAllowed) out.push(`${name} is from a book that is switched off (Configure Source Books) — filled in anyway.`);
+    if (!GearSearch.isBuyable(type, buyable)) out.push(`${name} is a ${type}, which is not normally bought here — filled in anyway.`);
+    return out;
+  },
+
   /** Is this item type one a character can shop for? */
   isBuyable(type, buyable) { return (buyable ?? []).includes(type); },
 };

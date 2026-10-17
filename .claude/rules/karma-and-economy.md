@@ -176,7 +176,8 @@ card: delivery N, meet at N/2, price → 🤝 Negotiate (`rollOpposedPair` → `
 - **Finding the item (TODO 154, `scripts/data/gear-search.mjs`)**: a 🔎 search over the gear packs' **indexes**
   (`pack.getIndex({ fields })`, never `getDocuments`) and a drop onto the dialog fill the same fields through one
   `take()`. ⚠ **Both go through `SR3ESourceBooks.packAllowed`** (`gearPacks()` / `resolveDrop`); a book switched
-  off is neither searched nor accepted from. Enter in the box is `preventDefault`ed. Mutants `gear-search-*`.
+  off is not searched, but a **drop** from one (or of a non-buyable type) now only **warns and still fills the form**
+  (`GearSearch.dropWarnings`, ruled 2026-10-17); a non-Item drop fills nothing. Enter in the box is `preventDefault`ed. Mutants `gear-search-*`.
 - Not modelled: Legality/permits (p.273), the Etiquette specialisation. `tests/purchasing.test.mjs` pins
   Cheshire: 38 days, 19 days, ¥12,600, ¥10,080.
 

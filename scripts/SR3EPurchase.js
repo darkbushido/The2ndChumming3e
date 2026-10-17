@@ -50,7 +50,7 @@ export const SR3EPurchase = {
   /**
    * The compendiums a character can shop in: Item packs that hold a buyable type, and that the GM's
    * source-book filter lets through (TODO 154). ⚠ Presentation only, like everywhere else the filter
-   * is used: a book switched off hides its gear from the search and refuses a drop from it, and
+   * is used: a book switched off hides its gear from the search and warns on a drop from it, and
    * nothing is unloaded.
    */
   gearPacks() {
@@ -76,8 +76,9 @@ export const SR3EPurchase = {
   },
 
   /**
-   * An item dropped on the dialog → the fields it fills in, or null with a warning saying why not.
-   * The same book filter as the search: an item from a pack the GM switched off is not taken.
+   * An item dropped on the dialog → the fields it fills in, or null (a non-Item drop, with a warning).
+   * The search respects the book filter; a DROP only warns about a switched-off book or a non-buyable type
+   * and still fills (ruled 2026-10-17).
    */
   async resolveDrop(data) {
     const drop = GearSearch.parseDrop(data);
@@ -85,14 +86,9 @@ export const SR3EPurchase = {
     const dropped = await fromUuid(drop.uuid).catch(() => null);
     if (!dropped || dropped.documentName !== 'Item') { ui.notifications.warn('That is not an item this dialog can find.'); return null; }
     const pack = dropped.pack ? game.packs.get(dropped.pack) : null;
-    if (pack && !(game.sr3e?.SR3ESourceBooks?.packAllowed(pack) ?? true)) {
-      ui.notifications.warn(`${dropped.name} is from a book that is switched off (Configure Source Books).`);
-      return null;
-    }
-    if (!GearSearch.isBuyable(dropped.type, SR3EPurchase.BUYABLE)) {
-      ui.notifications.warn(`${dropped.name} is a ${dropped.type}, which cannot be bought here.`);
-      return null;
-    }
+    // Ruled 2026-10-17: a switched-off book or a non-buyable type WARNS and still fills the form.
+    const packAllowed = !pack || (game.sr3e?.SR3ESourceBooks?.packAllowed(pack) ?? true);
+    for (const w of GearSearch.dropWarnings({ name: dropped.name, type: dropped.type, packAllowed }, SR3EPurchase.BUYABLE)) ui.notifications.warn(w);
     return { ...GearSearch.fields(dropped), name: dropped.name, type: dropped.type, uuid: dropped.uuid };
   },
 

@@ -6752,6 +6752,8 @@ across the gear compendiums, and dragging an item from a compendium onto the dia
 respect the source-book filter (`SR3ESourceBooks.packAllowed`). This is a feature, so it goes on
 a branch.
 
+**Ruled 2026-10-17 by the maintainer:** a drop from a switched-off book, or of a non-buyable item type, **warns (naming why) and still fills the form**; the search still respects the book filter. A non-Item drop (an actor, a scene) still does nothing. `GearSearch.dropWarnings`.
+
 ## 155. ✅ Grenades with no damage code cannot be thrown — `5df18568`
 
 Smoke, gas, Flash-Pak and thermal smoke carry `--`, `Special`, `gas`, `-` and so on, which

@@ -2641,9 +2641,10 @@ book (say `sota2`) switched OFF. Open **🛒 Buy gear…** from the Bio tab with
 - [ ] Search for something that exists only in the switched-off book: **no hit**, "Nothing in the allowed books
       matches". Switch the book on in Configure Source Books and reopen: it is found.
 - [ ] Open the Compendium sidebar and drag a gear item onto the open dialog: the same fields fill in.
-- [ ] Drag a **spell** (or an Actor) onto the dialog: a warning, nothing changes.
+- [ ] Drag a **spell** onto the dialog: a warning names the type ("not normally bought here — filled in anyway") and the
+      form **still fills** (ruled 2026-10-17). Drag an **Actor** or a scene: nothing changes.
 - [ ] With the book off, its packs are hidden in the sidebar; if one is still reachable (an item's link in a
-      journal), dragging it warns "from a book that is switched off" and fills nothing.
+      journal), dragging it warns "from a book that is switched off … filled in anyway" and **fills the form**.
 - [ ] Find a source for a searched item, negotiate and **💴 Pay**: the item lands on the sheet, price in the ledger.
 - [ ] Open Buy gear from an item's own row: it still pre-fills from that item; searching replaces it.
 - [ ] The medkit **Buy Medkit Supplies** button still fills the form and still refills the medkit on payment.
