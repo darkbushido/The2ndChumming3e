@@ -40,6 +40,7 @@ const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon
 const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
 const CPOOL = { module: '../scripts/data/combat-pool.mjs', klass: 'CombatPool' };
+const FUNDS = { module: '../scripts/data/funds.mjs', klass: 'Funds' };
 const GMONLY = { module: '../scripts/data/gm-only-fields.mjs', klass: 'GmOnlyFields' };
 const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellLimits' };
 
@@ -2171,5 +2172,36 @@ export const MUTANTS = [
     impl:   function (p = {}) {
       return this._breakdownOriginal({ ...p, armour: 0 });
     },
+  },
+  {
+    id:     'funds-gift-creates-nuyen',
+    suite:  'funds',
+    ...FUNDS, method: 'give',
+    was:    'a plausible slip (TODO 192): crediting the recipient the amount ASKED when the payer was short, so a gift of '
+          + '¥500 from a payer holding ¥300 made ¥200 out of nothing — what arrives must be what left',
+    impl:   (payerHave, recipientHave, amount) => {
+      const have = Math.max(0, Math.floor(payerHave)), n = Math.max(0, Math.floor(amount)), moved = Math.min(have, n);
+      return { amount: n, moved, short: n > have, shortBy: Math.max(0, n - have), payerFrom: have, payerTo: have - moved,
+        recipientFrom: recipientHave, recipientTo: recipientHave + n };
+    },
+  },
+  {
+    id:     'funds-subtract-goes-negative',
+    suite:  'funds',
+    ...FUNDS, method: 'change',
+    was:    'taking away more than the balance went below zero — `system.nuyen` has a floor of 0, so the write is rejected '
+          + 'rather than warned about (TODO 192)',
+    impl:   (have, amount, mode) => {
+      const from = Number(have) || 0, n = Number(amount) || 0;
+      return mode === 'add' ? { from, to: from + n, delta: n, short: false, shortBy: 0 }
+        : { from, to: from - n, delta: -n, short: n > from, shortBy: Math.max(0, n - from) };
+    },
+  },
+  {
+    id:     'funds-short-is-silent',
+    suite:  'funds',
+    ...FUNDS, method: 'change', needsOriginal: '_changeOriginal',
+    was:    'a shortfall clamped to 0 without saying so — the rule is warn, never refuse, and a silent clamp is neither (TODO 192)',
+    impl:   function (have, amount, mode) { return { ...this._changeOriginal(have, amount, mode), short: false, shortBy: 0 }; },
   },
 ];

@@ -2644,3 +2644,25 @@ nuyen; a second live character owned by Player3. JS/CSS only — reload the tabs
       text has an "Armour −N" line. With both, the hover shows armour then the gyro halving.
 - [ ] Spend some pool (type a lower left value): hover text ends "Spent N → M left of T".
 - [ ] An adept with Combat Sense +3: a "Combat Sense +3 (SR3 p.169)" line. The number itself is unchanged from before.
+
+### ± Funds and giving money (TODO 192)
+
+**Prerequisites:** Player2 owns *Alpha* (¥1,000), Player3 owns *Bravo* (¥200). GM may be a third client. Release
+the seats first if running Playwright.
+
+- [ ] Alpha's **Bio → Resources** has a **± Funds…** button beside Nuyen.
+- [ ] As Player2: ± Funds → **Add nuyen**, amount `¥250`, reason "sold a car" → Confirm. Nuyen reads 1,250; the
+      📒 Ledger line is +¥250, From 1,000 → To 1,250, Why "sold a car", By Player2.
+- [ ] **Take away** `400` with no reason → 850; the Ledger "Why" reads **By hand**.
+- [ ] **Take away** `5000`: while typing, the dialog shows "only ¥850 available — it stops at ¥0" in red; Confirm →
+      a warning toast, Nuyen 0, nothing refused. Put some back with Add.
+- [ ] **Give to another character** lists Bravo (and other live characters), NOT Alpha, vehicles, NPCs or
+      templates (check a template exists and is absent). Give Bravo `300` "cut of the run" → toast; Alpha 550,
+      Bravo (on Player3's sheet, no refresh needed) 500. Alpha's Ledger: "Gave to Bravo: cut of the run" −¥300;
+      Bravo's: "Received from Alpha: cut of the run" +¥300, By Player2. A whispered 💴 chat line shows to the owners and GM.
+- [ ] **Short gift:** Alpha (¥550) gives Bravo `900` → dialog warns "only ¥550 available — ¥550 will be given";
+      Alpha ends at 0, Bravo gains exactly ¥550 (not 900).
+- [ ] As **GM**, give from Alpha to Bravo works the same; with the GM tab closed and a player giving, the
+      toast reads a "no GM connected" error and nobody's nuyen changed.
+- [ ] Player3 cannot give *from* Alpha (the button isn't on a sheet they cannot edit; from the console
+      `game.sr3e.SR3EQuery.asGM('sr3e.money.give', {payerUuid: <Alpha>, recipientUuid: <Bravo>, amount: 5})` is rejected: "does not own").

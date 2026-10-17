@@ -7,6 +7,7 @@ import { BookPage } from '../data/book-page.mjs';
 import { CyberWeapons } from '../data/cyber-weapons.mjs';
 import { SpellLimits } from '../data/spell-limits.mjs';
 import { GmOnlyFields } from '../data/gm-only-fields.mjs';
+import { Funds } from '../data/funds.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -127,6 +128,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         rollProgram:        SR3EActorSheet._onRollProgram,
         refreshHackingPool:      SR3EActorSheet._onRefreshHackingPool,
         awardKarma:              SR3EActorSheet._onAwardKarma,
+        adjustFunds:             SR3EActorSheet._onAdjustFunds,   // TODO 192
         spendKarmaCalculator:    SR3EActorSheet._onSpendKarmaCalculator,
         useNodePrompt:           SR3EActorSheet._onUseNodePrompt,
         removeMatrixMark:        SR3EActorSheet._onRemoveMatrixMark,
@@ -3247,6 +3249,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <h3 class="section-hdr" style="margin-top:1rem">Resources</h3>
       <div class="bio-fields">
         ${this._inlineField('Nuyen (¥)', 'system.nuyen', sys.nuyen, 'number', 100)}
+        <button type="button" class="btn-sm" data-action="adjustFunds" style="align-self:flex-end"
+                title="Add or take away an amount, or give nuyen to another character — each leaves a line in the 📒 Ledger (TODO 192)">± Funds…</button>
         ${this._inlineField('Good Karma', 'system.karma', sys.karma, 'number', 80)}
         ${this._inlineField('Total Karma', 'system.totalKarma', sys.totalKarma, 'number', 80)}
         ${/* ⚠ The Award button is registered in DEFAULT_OPTIONS.actions but was NEVER RENDERED
@@ -5605,6 +5609,100 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static _specCost(newRating, attrRating) {
     return game.sr3e.SR3EActor.karmaSpecCost(newRating, attrRating);
+  }
+
+  /**
+   * ± Funds · TODO 192 — add nuyen, take it away, or give it to another character, with an optional reason
+   * for the 📒 Ledger. The arithmetic and ledger wording are `Funds` (pure, tested); a gift is one GM-routed
+   * verb (`sr3e.money.give`) that writes BOTH characters, because a player cannot write another's actor.
+   * Warn, never refuse: a sum larger than the balance is flagged, and only what is there moves.
+   */
+  static async _onAdjustFunds() {
+    const actor = this.actor;
+    const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const yen = v => `¥${Number(v || 0).toLocaleString('en-US')}`;
+    const others = Funds.recipients(game.actors.filter(a => a.type === 'character' && game.sr3e.isLiveActor(a)), actor.id, () => true);
+    let chosen = null;
+
+    const wireDialog = (_app, html) => {
+      const mode = html.querySelector('#fund-mode'), amt = html.querySelector('#fund-amount');
+      const warn = html.querySelector('#fund-warn'), who = [html.querySelector('#fund-who-row'), html.querySelector('#fund-who')];
+      const refresh = () => {
+        const give = mode.value === 'give';
+        who.forEach(el => { el.style.display = give ? '' : 'none'; });
+        const n = Funds.parseAmount(amt.value);
+        const have = actor.system.nuyen ?? 0;
+        let msg = '';
+        if (n === null || n === 0) msg = '';
+        else if (mode.value === 'add') msg = `${yen(have)} → ${yen(Funds.change(have, n, 'add').to)}`;
+        else {
+          const r = mode.value === 'give' ? Funds.give(have, 0, n) : Funds.change(have, n, 'subtract');
+          const to = r.payerTo ?? r.to;
+          msg = `${yen(have)} → ${yen(to)}${r.short ? ` <span style="color:var(--sr-red)">⚠ only ${yen(have)} available — ${
+            give ? `${yen(Math.min(have, n))} will be given` : 'it stops at ¥0'}</span>` : ''}`;
+        }
+        warn.innerHTML = msg;
+      };
+      mode.addEventListener('change', refresh);
+      amt.addEventListener('input', refresh);
+      amt.addEventListener('keydown', ev => { if (ev.key === 'Enter') ev.preventDefault(); });
+      refresh();
+      requestAnimationFrame(() => amt.focus());
+    };
+
+    await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
+      window: { title: `Funds — ${actor.name}` },
+      content: `
+        <div style="padding:6px;display:grid;grid-template-columns:90px 1fr;gap:6px 8px;align-items:center">
+          <label for="fund-mode">Action</label>
+          <select id="fund-mode">
+            <option value="add">Add nuyen</option>
+            <option value="subtract">Take away nuyen</option>
+            <option value="give"${others.length ? '' : ' disabled'}>Give to another character${others.length ? '' : ' (nobody to give to)'}</option>
+          </select>
+          <label for="fund-amount">Amount (¥)</label>
+          <input id="fund-amount" type="text" inputmode="numeric" placeholder="e.g. 1500" autocomplete="off"/>
+          <label for="fund-who" id="fund-who-row" style="display:none">Give to</label>
+          <select id="fund-who" style="display:none">${others.map(o => `<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select>
+          <label for="fund-why">Reason</label>
+          <input id="fund-why" type="text" maxlength="120" placeholder="optional — goes in the 📒 Ledger" autocomplete="off"/>
+          <span></span><span id="fund-warn" style="font-size:11px;color:var(--sr-muted)"></span>
+        </div>`,
+      buttons: [
+        { label: 'Confirm', action: 'ok', default: true,
+          callback: (_e, _b, dlg) => {
+            const q = id => dlg.element.querySelector(id);
+            chosen = { mode: q('#fund-mode').value, amount: Funds.parseAmount(q('#fund-amount').value),
+              who: q('#fund-who')?.value ?? '', text: q('#fund-why').value.trim() };
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!chosen) return;
+    if (!chosen.amount) return ui.notifications.warn('Type an amount of nuyen first.');
+
+    const have = actor.system.nuyen ?? 0;     // read AFTER the dialog: a gift may have landed while it was open
+    if (chosen.mode === 'give') {
+      const target = game.actors.get(chosen.who);
+      if (!target) return ui.notifications.warn('Pick who to give it to.');
+      const r = Funds.give(have, target.system?.nuyen, chosen.amount);
+      if (r.short) ui.notifications.warn(`${actor.name} only has ${yen(have)} — giving ${yen(r.moved)}, not ${yen(chosen.amount)}.`);
+      if (!r.moved) return;
+      try {
+        await game.sr3e.SR3EQuery.asGM('sr3e.money.give', { payerUuid: actor.uuid, recipientUuid: target.uuid,
+          amount: chosen.amount, text: chosen.text });
+        ui.notifications.info(`${actor.name} gave ${yen(r.moved)} to ${target.name}.`);
+      } catch (err) {
+        console.error('SR3E | money.give failed', err);
+        ui.notifications.error(`Could not give the money: ${err?.message ?? err}. Nothing was changed unless the ledger says so.`);
+      }
+      return;
+    }
+    const r = Funds.change(have, chosen.amount, chosen.mode);
+    if (r.short) ui.notifications.warn(`${actor.name} only has ${yen(have)} — nuyen stops at ¥0.`);
+    if (!r.delta) return;
+    await actor.update({ 'system.nuyen': r.to }, { ledgerReason: Funds.reason({ side: 'adjust', text: chosen.text }) });
   }
 
   static async _onAwardKarma() {

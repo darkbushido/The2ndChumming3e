@@ -4,6 +4,10 @@ paths:
   - "tests/karma-uses.test.mjs"
   - "scripts/SR3EPurchase.js"
   - "scripts/data/ledger.mjs"
+  - "scripts/data/funds.mjs"
+  - "scripts/data/gm-only-fields.mjs"
+  - "tests/funds.test.mjs"
+  - "tests/gm-only-fields.test.mjs"
   - "scripts/data/purchasing.mjs"
   - "scripts/data/carried-load.mjs"
   - "tests/karma.test.mjs"
@@ -135,6 +139,20 @@ reason, by, revert?, reverted? }`, on the **📒 Ledger** tab (every entry; From
   array shared by every document created without the field, and Foundry commits updates into it in place: one
   character's ledger entry appeared on every character without one, and was saved for real on their next write.
   `tests/ledger.test.mjs` fails on any literal array/object default in the data models.
+
+
+### ± Funds and giving money  · TODO 192
+`scripts/data/funds.mjs` (`Funds`, pure) · the **± Funds…** button beside Nuyen (`_onAdjustFunds`) · verb `sr3e.money.give`.
+- **± adds or takes away** an amount with an optional reason (`ledgerReason`, so the 📒 reads it; empty → "By hand").
+  **Give** pays another LIVE `character` (`Funds.recipients` — world-wide, not the scene).
+- ⚠ **Warn, never refuse.** `system.nuyen` floors at 0, so a sum above the balance is flagged live in the dialog and
+  again on confirm, and only what is there moves. In a gift the recipient gets exactly what left the payer (nuyen
+  is never made up). Mutants `funds-gift-creates-nuyen`, `funds-subtract-goes-negative`, `funds-short-is-silent`.
+- ⚠ **A gift is ONE GM verb that writes BOTH characters** — a player cannot write another's actor, and a
+  credit-only verb would let anyone mint nuyen. The GM checks the requester OWNS the payer (`Funds.mayPayFrom`),
+  works from LIVE balances, debits then credits (putting the debit back if the credit fails), and the giver's
+  name is `ledgerBy` on both lines ("Gave to X" / "Received from X"). Serialised under the single key
+  `sr3e:money` — per-actor keys would deadlock A→B with B→A. A whispered 💴 chat line tells the owners and GM.
 
 ### Buying gear  · *SR3 pp.272-273* — TODO 82
 Rules `scripts/data/purchasing.mjs` (pure); flow `scripts/SR3EPurchase.js` (**🛒 Buy gear…**, Bio tab):
