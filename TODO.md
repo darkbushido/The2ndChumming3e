@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**58 open.** 166 done — see [TODO-DONE.md](TODO-DONE.md).
+**57 open.** 167 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [153](#153) Give the 📒 Ledger its own tab on the character sheet<br>[154](#154) 🛒 Buy gear: search the compendium, or drag an item in<br>[190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[192](#192) 💴 Make changing funds easier — a ± button, and giving money to another player<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[213](#213) Show why Combat Pool is lower — the gyro halving it<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[218](#218) Karma Pool editable by the GM only<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses` |
+| 🗂 Unsorted | [153](#153) Give the 📒 Ledger its own tab on the character sheet<br>[190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[192](#192) 💴 Make changing funds easier — a ± button, and giving money to another player<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[213](#213) Show why Combat Pool is lower — the gyro halving it<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[218](#218) Karma Pool editable by the GM only<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses` |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2485,13 +2485,6 @@ target repo on every command.
 
 The karma and nuyen ledger ([#79](TODO-DONE.md#79)) sits at the bottom of the Bio tab today. The
 maintainer wants it on a tab of its own. This is a feature, so it goes on a branch.
-
-## 154. 🛒 Buy gear: search the compendium, or drag an item in — **requested in the trial session, 2026-09-23**
-
-Picking the item in the Buy gear dialog ([#82](TODO-DONE.md#82)) should work in two ways: a search
-across the gear compendiums, and dragging an item from a compendium onto the dialog. It must
-respect the source-book filter (`SR3ESourceBooks.packAllowed`). This is a feature, so it goes on
-a branch.
 
 ## 190. DocWagon and lifestyle expire — track the date and let a month go by — **requested 2026-09-27**
 

@@ -6740,6 +6740,13 @@ The GM's ↺ Undo on the action ledger ([#48](TODO.md#48)) has to be pressed twi
 snapshot to the first charge only; ↺ defaults to the last entry, which had none, so the first press only freed
 the slot. Every charge in a flow now carries the snapshot (`ActionEconomy.pendingSnap`, keyed to the phase).
 
+## 154. ✅ 🛒 Buy gear: search the compendium, or drag an item in — **requested in the trial session, 2026-09-23** — closed in 2759f28b
+
+Picking the item in the Buy gear dialog ([#82](#82)) should work in two ways: a search
+across the gear compendiums, and dragging an item from a compendium onto the dialog. It must
+respect the source-book filter (`SR3ESourceBooks.packAllowed`). This is a feature, so it goes on
+a branch.
+
 ## 155. ✅ Grenades with no damage code cannot be thrown — `5df18568`
 
 Smoke, gas, Flash-Pak and thermal smoke carry `--`, `Special`, `gas`, `-` and so on, which
