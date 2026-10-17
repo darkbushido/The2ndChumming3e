@@ -7173,6 +7173,18 @@ Check the book for the exact skill and page before fixing; a grenade launcher is
 uses Grenade Launchers. Repro: the **Offensive AP grenade**, thrown from the **Attack** button. Not
 investigated yet. This is a bug fix, so it goes on `main`.
 
+## 211. ✅ Action tracker reads as three actions — show it as "Complex OR two Simples" — **requested in play, 2026-10-11** — closed in 5694aeec
+
+At the table, the tracker on the active combatant's row (`SR3EActionLedger.renderTracker`) was read
+as everyone getting three actions. The GM buttons are **Complex · Simple · Simple · ↺** and the pips
+are **Complex · Simple · Simple · Free**, laid out side by side. The rule is one Complex **or** up
+to two Simple, plus one Free (SR3 p.105, p.107; `ActionEconomy.fits`). Wanted: a layout that shows
+the choice, e.g. **[Complex] or [Simple][Simple]**, with the Free pip set apart (`+ Free`). Pips and
+buttons both. No change to the rules or the buttons' behaviour (Complex and the second Simple still
+end the turn). Test: a source-level check that the tracker markup has the "or" grouping. Add a
+Foundry checklist step to look at it on a live row. Unrelated to [#206](#206) (the actions don't reset on a
+second pass), which also makes the pips look wrong. This is a feature, so it goes on a branch.
+
 ## 214. ✅ 🧹 Clear blast marker button is black on black — **reported in play, 2026-10-11** · fixed `3d218466`
 
 Observed: the chat card's **🧹 Clear blast marker** button is hard to read, with black text on a black
