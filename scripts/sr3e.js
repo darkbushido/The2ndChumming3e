@@ -33,6 +33,7 @@ import { SR3ECombat } from './documents/SR3ECombat.js';
 import { SR3ESpiritSummoning } from './documents/SR3ESpiritSummoning.js';
 import { SR3EWard } from './documents/SR3EWard.js';
 import { SR3EVehicleChase } from './SR3EVehicleChase.js';
+import { SR3ECollision } from './SR3ECollision.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
 import { SR3EHealing } from './SR3EHealing.js';
@@ -117,7 +118,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma };
 
   // When THIS client loaded the system's code.
   //
@@ -1985,6 +1986,7 @@ const _sr3eVehicleTools = [
   { label: '🚗 Driving Test',        run: (a) => SR3EVehicleSheet.runDrivingTest(a) },
   { label: '📡 Drone Comprehension', run: (a) => SR3EVehicleSheet.runDroneComprehension(a) },
   { label: '💥 Crash',               run: (a) => SR3EVehicleSheet.runCrash(a) },
+  { label: '🚗 Collision (person, vehicle, barrier)', run: (a) => SR3ECollision.open({ vehicle: a }) },
 ];
 
 async function _sr3eVehicleToolMenu(actor) {
@@ -3488,6 +3490,31 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       if (!vehicle) { ui.notifications.warn('That vehicle no longer exists.'); return; }
       if (!_claimBtn(btn, mid, 'crashopen', i)) return;
       await SR3EVehicleSheet.runCrash(vehicle);
+    });
+  });
+
+  /* 💥 Collision (TODO 189). After an accident's Braking Test the GM confirms the speed the car reaches the
+   * target at — a judgement (the book has no stopping-distance rule) — so the button is the GM's alone, and it
+   * posts onward rather than rolling. It carries no `actorId` key, so ⏳ Waiting-on names the GM. */
+  html.querySelectorAll('.sr-collision-resolve-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'collisionresolve', i)) return;
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM judges whether the car stopped in time and resolves the collision.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'collisionresolve', i)) return;
+      await SR3ECollision.resolveFromCard(btn);
+    });
+  });
+  // "…the targeted object also takes collision damage" (p.148) — opens the Barrier Damage tool; applies nothing.
+  html.querySelectorAll('.sr-collision-barrier-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'collisionbarrier', i)) return;
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM damages a barrier.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'collisionbarrier', i)) return;
+      await _openBarrierDamageCalculator();
     });
   });
 

@@ -38,6 +38,8 @@ export const STEP_BUTTONS = {
   // Records ITSELF, on the GM, in the same queued write as the damage (TODO 137) — see `runOnce`.
   'sr-assign-damage-btn':           { icon: '🩸', label: 'Assign the wound', recordsItself: true },
   'sr-ram-vehicle-soak-btn':        { icon: '🚗', label: 'Vehicle resists the ram' },
+  // The GM owes it: whether the car stopped in time is theirs to judge (TODO 189, SR3 p.142).
+  'sr-collision-resolve-btn':       { icon: '💥', label: 'Resolve the collision' },
   'sr-ram-passenger-resist-btn':    { icon: '🚗', label: 'Occupant resists the crash' },
   'sr-matrix-ic-resist-btn':        { icon: '💻', label: 'Resist Matrix damage' },
   'sr-matrix-ic-resist-roll-btn':   { icon: '💻', label: 'Roll Matrix damage resistance' },

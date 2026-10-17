@@ -26,6 +26,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       rollContested:  SR3EVehicleSheet._onRollContested,
       drivingTest:    SR3EVehicleSheet._onDrivingTest,
       crash:          SR3EVehicleSheet._onCrash,
+      collision:      SR3EVehicleSheet._onCollision,
       addPassenger:    SR3EVehicleSheet._onAddPassenger,
       removePassenger: SR3EVehicleSheet._onRemovePassenger,
       droneComprehension: SR3EVehicleSheet._onDroneComprehension,
@@ -327,6 +328,11 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
                 style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)"
                 title="A crash outside a chase — roll the Crash Test, or post the damage to the vehicle and everyone aboard (SR3 p.145-147)">
           💥 Crash
+        </button>
+        <button type="button" class="btn-sm" data-action="collision"
+                style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)"
+                title="This vehicle hits a person, another vehicle or a barrier — by accident (Braking Test first) or as a ram (SR3 p.142-148)">
+          🚗 Collision
         </button>
       </div>
     </div>`;
@@ -724,6 +730,10 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     return SR3EVehicleSheet.runCrash(this.actor);
   }
 
+  static async _onCollision(_ev, _target) {
+    return game.sr3e.SR3ECollision.open({ vehicle: this.actor });
+  }
+
   /* Passenger roster (TODO 74). The <select> carries no `name`, so the sheet's submit-on-change
    * ignores it; the + button reads it and writes the array itself. */
   static async _onAddPassenger(_ev, _target) {
@@ -957,10 +967,17 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           callback: (_e, _b, d) => { choice = SR3EVehicleSheet._readCrashDialog(d.element, 'test'); } }] : []),
         { label: '💥 Post crash damage', action: 'post', default: !driver,
           callback: (_e, _b, d) => { choice = SR3EVehicleSheet._readCrashDialog(d.element, 'post'); } },
+        // It hit someone, not just something (TODO 189): the Collision tool, at this speed, accident.
+        { label: '🧍 Hit a pedestrian…', action: 'ped',
+          callback: (_e, _b, d) => { choice = SR3EVehicleSheet._readCrashDialog(d.element, 'ped'); } },
         { label: 'Cancel', action: 'cancel' },
       ],
     });
     if (!choice) return;
+    if (choice.mode === 'ped') {
+      return game.sr3e.SR3ECollision.open({ vehicle, kind: 'pedestrian',
+        speedKmh: Math.round(choice.speedKmct * 1.2) });
+    }
 
     const driverAboard = choice.aboard.some(a => a.role === 'Driver');
     const crashContext = {
@@ -1004,8 +1021,13 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
    * rolled so that 0 successes posts the crash damage. Otherwise a failed Driving Test offers a
    * 💥 button into `runCrash` (TODO 74) — the card used to say "0 → GM Crash Test" and give the
    * GM nothing to click.
+   *
+   * `collision` — `{ test: 'ram'|'brake', ctx }` from the 💥 Collision tool (TODO 189): the same dialog
+   * with the **Ramming Modifiers Table** (SR3 p.143) or the **Accelerating/Braking Target Modifiers Table**
+   * (p.141) in place of the Driving Test's. The Maneuver Score rows need both vehicles' scores, so they are one
+   * "other modifiers" field for the GM to fill from the Chase Scene.
    */
-  static async runDrivingTest(actor, driverOverride = null, { crash = null } = {}) {
+  static async runDrivingTest(actor, driverOverride = null, { crash = null, collision = null } = {}) {
     const sys        = actor.system;
     const driver = driverOverride ?? game.actors.get(sys.driverActorId?.trim() ?? '');
     /* A drone the rigger isn't jumped into rolls its own Pilot Rating, with no pools: a secondary
@@ -1164,10 +1186,52 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       crashPool = skillDice + autonav + cpDice;
     }
 
+    /* Collision mode · TODO 189. Ram (p.143): terrain −1/0/+1/+2, exceeding the Speed Rating +1, autonav
+     * +(Rating + 2), VCR −(2 × Rating). Braking (p.141): terrain −1/0/+1/+3, +1, autonav +Rating, VCR −(2 × Rating).
+     * A vehicle action in combat, so Autonav adds to the TN, not dice (p.134), and a rigger adds Control Pool. */
+    let collisionRows = '';
+    let collisionPool = null;
+    if (collision) {
+      const ram     = collision.test === 'ram';
+      const speedRt = sys.attributes?.speed?.base ?? 0;
+      const over    = speedRt > 0 && (collision.ctx?.speed ?? 0) > speedRt;
+      const vcr2 = vcrRating * 2;   // the Ramming and Braking tables read 2 × VCR (p.141, p.143), not the Driving Test's 1 ×
+      collisionRows = `
+          <label style="${FIELD_S}">Terrain (${ram ? 'Ramming' : 'Braking'} table)
+            <select id="drv-terrain" style="${INPUT_S}">
+              <option value="-1">Open (−1 TN)</option>
+              <option value="0" selected>Normal (0)</option>
+              <option value="1">Restricted (+1 TN)</option>
+              <option value="${ram ? 2 : 3}">Tight (+${ram ? 2 : 3} TN)</option>
+            </select>
+          </label>
+          <label style="${FIELD_S}">Vehicle exceeds its Speed Rating (${speedRt})
+            <select id="drv-cexceed" style="${INPUT_S}">
+              <option value="0"${over ? '' : ' selected'}>No (0)</option>
+              <option value="1"${over ? ' selected' : ''}>Yes (+1 TN)</option>
+            </select>
+          </label>
+          <label style="${FIELD_S}">Autonav active (Rating ${autonav})
+            <select id="drv-cautonav" style="${INPUT_S}">
+              <option value="0" selected>Off (0)</option>
+              <option value="${autonav + (ram ? 2 : 0)}">On (+${autonav + (ram ? 2 : 0)} TN)</option>
+            </select>
+          </label>
+          ${vcrRating ? `<label style="${FIELD_S}">Rigger — VCR Rating ${vcrRating}
+            <select id="drv-rigger" style="${INPUT_S}">
+              <option value="0">Not using VCR (0)</option>
+              <option value="${-vcr2}">Using VCR (−${vcr2} TN)</option>
+            </select></label>` : ''}
+          <label style="${FULL_S}" title="Maneuver Scores: the vehicle's exceeding the other's −2 / −4, or the other's exceeding it +2 / +4 (SR3 p.${ram ? '143' : '141'}); fleeing several vehicles +1 each">Other modifiers (Maneuver Scores…)
+            <input id="drv-cother" type="number" value="0" step="1" style="${INPUT_S}"/>
+          </label>`;
+      collisionPool = skillDice;
+    }
+
     let result = null;
 
     await foundry.applications.api.DialogV2.wait({
-      window: { title: `${crash ? 'Crash Test' : 'Driving Test'} — ${actor.name}` },
+      window: { title: `${collision ? (collision.test === 'ram' ? 'Ramming Test' : 'Braking Test') : crash ? 'Crash Test' : 'Driving Test'} — ${actor.name}` },
       position: { width: 460 },
       content: `
         <div style="background:#1c2030;border-radius:4px;padding:8px;margin-bottom:10px;font-size:12px;">
@@ -1187,7 +1251,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
               <option value="3">Serious (+3)</option>
             </select>
           </label>
-          ${crash ? crashRows : `<label style="${FIELD_S}">Unfamiliar Vehicle
+          ${collision ? collisionRows : crash ? crashRows : `<label style="${FIELD_S}">Unfamiliar Vehicle
             <select id="drv-unfamiliar" style="${INPUT_S}">
               <option value="0">No (0)</option>
               <option value="1">Yes (+1 TN)</option>
@@ -1238,12 +1302,12 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
             <input id="drv-tn" type="number" value="${handling}" min="2" max="30" style="${INPUT_S}"/>
           </label>
           <label style="${FULL_S}">Total Pool Dice
-            <input id="drv-pool" type="number" value="${crashPool ?? basePool}" min="1" max="30" style="${INPUT_S}"/>
+            <input id="drv-pool" type="number" value="${collisionPool ?? crashPool ?? basePool}" min="1" max="30" style="${INPUT_S}"/>
           </label>
         </div>
         <div style="margin-top:10px;padding:6px 10px;background:#1c2030;border-radius:4px;display:flex;gap:20px;font-size:12px;color:#7880a0;">
           <span>Final TN: <strong style="color:#dde1f0;" id="drv-tn-out">${handling}</strong></span>
-          <span>Pool: <strong style="color:#dde1f0;" id="drv-pool-out">${crashPool ?? basePool}</strong></span>
+          <span>Pool: <strong style="color:#dde1f0;" id="drv-pool-out">${collisionPool ?? crashPool ?? basePool}</strong></span>
         </div>
       `,
       render: (_ev, dialog) => {
@@ -1255,7 +1319,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
           const basePoolEl = parseInt(el.querySelector('#drv-pool')?.value ?? basePool);
           const selIds     = ['#drv-vdamage','#drv-unfamiliar','#drv-stress','#drv-size',
                               '#drv-weather','#drv-terrain','#drv-combat',
-                              '#drv-datajack','#drv-rigger','#drv-cspeed'];
+                              '#drv-datajack','#drv-rigger','#drv-cspeed','#drv-cexceed','#drv-cautonav','#drv-cother'];
           const mods = selIds.reduce((sum, id) => {
             const node = el.querySelector(id);
             return sum + (node ? parseInt(node.value ?? 0) : 0);
@@ -1273,7 +1337,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         const recomputePool = () => {
           const usingVCR = riggerEl ? (parseInt(riggerEl.value) || 0) !== 0 : false;
           const combatOn = (parseInt(combatEl?.value) || 0) > 0;
-          const bonus    = usingVCR ? cpDice : (combatOn ? 0 : autonav);
+          const bonus    = usingVCR ? cpDice : (combatOn || collision ? 0 : autonav);
           if (poolInp) poolInp.value = Math.max(1, skillDice + bonus);
           update();
         };
@@ -1297,7 +1361,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
             const totalPool = getInt('#drv-pool');
             const selIds   = ['#drv-vdamage','#drv-unfamiliar','#drv-stress','#drv-size',
                               '#drv-weather','#drv-terrain','#drv-combat',
-                              '#drv-datajack','#drv-rigger','#drv-cspeed'];
+                              '#drv-datajack','#drv-rigger','#drv-cspeed','#drv-cexceed','#drv-cautonav','#drv-cother'];
             const mods = selIds.reduce((sum, id) => {
               const node = el.querySelector(id);
               return sum + (node ? parseInt(node.value ?? 0) : 0);
@@ -1310,10 +1374,17 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     });
 
     if (!result) return;
-    if (crash) {
-      await tester.rollPool(result.pool, result.tn, `Crash Test — ${actor.name}`, {
-        isCrashRoll: true, crashContext: crash,
-      });
+    if (crash || collision) {
+      const ctx = collision?.ctx;
+      const ram = collision?.test === 'ram';
+      await tester.rollPool(result.pool, result.tn,
+        collision ? (ram ? `Ramming — ${actor.name}` : `Braking Test — ${actor.name}`) : `Crash Test — ${actor.name}`,
+        collision
+          // The Ramming card (`_buildRamDamageHtml`) is built on the wave card, after any 💥 explosions; the
+          // Braking Test's outcome is a follow-up that runs once the last 💥 is rolled (TODO 189).
+          ? (ram ? { isRammingRoll: true, rammingContext: { collision: ctx } }
+                 : { followUp: { kind: 'collisionBraking', ctx: { cc: ctx, tn: result.tn } } })
+          : { isCrashRoll: true, crashContext: crash });
       return;
     }
     await tester.rollPool(result.pool, result.tn, `Driving Test — ${actor.name}`, {
