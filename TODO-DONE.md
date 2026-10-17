@@ -6740,6 +6740,11 @@ The GM's ↺ Undo on the action ledger ([#48](TODO.md#48)) has to be pressed twi
 snapshot to the first charge only; ↺ defaults to the last entry, which had none, so the first press only freed
 the slot. Every charge in a flow now carries the snapshot (`ActionEconomy.pendingSnap`, keyed to the phase).
 
+## 153. ✅ Give the 📒 Ledger its own tab on the character sheet — **requested in the trial session, 2026-09-23** · `5695cd67`
+
+The karma and nuyen ledger ([#79](#79)) sits at the bottom of the Bio tab today. The
+maintainer wants it on a tab of its own. This is a feature, so it goes on a branch.
+
 ## 154. ✅ 🛒 Buy gear: search the compendium, or drag an item in — **requested in the trial session, 2026-09-23** — closed in 2759f28b
 
 Picking the item in the Buy gear dialog ([#82](#82)) should work in two ways: a search
@@ -7010,6 +7015,13 @@ card deducts it for a dual being only (Body resists) and names it on the card. T
   against it at Power 7. Its resist card reads *Natural armor −3 Power* with TN 4. Set the NPC to
   Astral Plane and the deduction is gone (TN 7).
 
+## 192. ✅ 💴 Make changing funds easier — a ± button, and giving money to another player — **requested 2026-09-27** · `41c6c13d`
+
+A **+/− money** control on the sheet: type N, add or subtract it, with an optional reason for the
+📒 Ledger ([#79](#79)). Maybe also a **give money** action: one character pays another,
+both sides recorded. A player cannot write another player's actor, so the transfer goes through a
+GM-routed verb. This is a feature, so it goes on a branch.
+
 ## 193. ✅ The 📒 Ledger records entries on the wrong character — **reported 2026-09-27** · fixed `b42fdbae`
 
 **Cause, confirmed live 2026-09-27:** Foundry's Duplicate (and the GM copy verb `sr3e.actor.create`
@@ -7200,6 +7212,19 @@ end the turn). Test: a source-level check that the tracker markup has the "or" g
 Foundry checklist step to look at it on a live row. Unrelated to [#206](#206) (the actions don't reset on a
 second pass), which also makes the pips look wrong. This is a feature, so it goes on a branch.
 
+## 213. ✅ Show why Combat Pool is lower — the gyro halving it — **requested in play, 2026-10-11** · `e9360f15`
+
+Reported on prod: Ploder's Combat Pool showed **2** with Quickness 4, Intelligence 4 and Willpower 2,
+and nothing on the sheet said why. The cause was a Gyro Mount gear item not in Storage. That counts
+as worn, and a worn gyro halves Combat Pool (SR3 p.282, TODO 18): ⌊5 ÷ 2⌋ = 2. The figure is
+already computed: `derived.combatPoolBeforeGyro` (`SR3EActor.js`, `prepareDerivedData`) is set to the
+full pool whenever a gyro is worn. But nothing in `scripts/` reads it, so the sheet never shows it.
+Wanted: the Combat Pool display says it's reduced, e.g. `2 (5, halved: Gyro Mount)` or a tooltip
+with the breakdown. Better still, give the whole breakdown: base (Q+I+W)/2, Combat Sense, armour
+penalty (p.285), manual modifier, gyro, spent. The armour penalty is just as invisible today. Test: a
+source-level check that the sheet reads `combatPoolBeforeGyro`. Add a Foundry checklist step with a
+gyro in and out of Storage. This is a feature, so it goes on a branch.
+
 ## 214. ✅ 🧹 Clear blast marker button is black on black — **reported in play, 2026-10-11** · fixed `3d218466`
 
 Observed: the chat card's **🧹 Clear blast marker** button is hard to read, with black text on a black
@@ -7218,6 +7243,18 @@ goes to the Pool instead of Good Karma (SR3 p.244, p.246; `SR3EActor.karmaAward`
 the sheet shows and where the 📒 Ledger records it. Every rule is checked in the PDF and cited by printed
 page. Follow `guides/CLAUDE.md`, link it from `guides/rules/index.md`, then `node tools/linkcheck.mjs`.
 Guide content, so it goes on a branch.
+
+## 218. ✅ Karma Pool editable by the GM only — **requested in play, 2026-10-11** · `1a4c47bc`
+
+The maintainer: players should not be able to edit their Karma Pool. Make the field read-only on
+the sheet for non-GM users. Spending it through the roll options (re-roll, extra dice, buy
+successes) must still work for the player, and the GM can still type any value. Decide with the
+maintainer whether Good Karma and Total Karma get the same lock. Note the design ethos says every
+stat stays editable; this narrows that to the GM for this field, which still fits the trusted-GM
+rule. Make it a render-time lock, not a data-model one, so GM writes and the GM-routed spend verbs are
+untouched. Check whether a player's own sheet submit could still write it (the form submits every
+named input). Test: a source-level check that the field is GM-gated, plus a Foundry checklist
+step as a player. Related: [#217](TODO.md#217) (Ploder's pool reads 9). This is a feature, so it goes on a branch.
 
 ## 221. ✅ Full Defense posts its auto-commit card and rolls the dodge twice — **found 2026-10-11** (testing #220) — closed in 1d2b7fe8
 

@@ -4,6 +4,10 @@ paths:
   - "tests/karma-uses.test.mjs"
   - "scripts/SR3EPurchase.js"
   - "scripts/data/ledger.mjs"
+  - "scripts/data/funds.mjs"
+  - "scripts/data/gm-only-fields.mjs"
+  - "tests/funds.test.mjs"
+  - "tests/gm-only-fields.test.mjs"
   - "scripts/data/purchasing.mjs"
   - "scripts/data/carried-load.mjs"
   - "tests/karma.test.mjs"
@@ -24,6 +28,11 @@ paths:
 | `system.powerPointsBought` | adept Power Points bought with Good Karma, on top of Magic · p.168 | the Spend calculator |
 
 Karma Pool shows on the **Attributes** tab (left / size, like Combat Pool); Good/Total Karma on **Bio → Resources**.
+- ⚠ **Karma Pool, Good Karma and Total Karma are typeable by the GM only** (TODO 218, `data/gm-only-fields.mjs`).
+  A **render-time** lock: the inputs are `readonly disabled` and **unnamed** for a player, `_prepareSubmitData`
+  strips the keys (Foundry hands it the *expanded* form), and `_onFieldChange` refuses them. Spending (roll options,
+  the Spend calculator, GM-routed verbs) writes through `actor.update` and is untouched. A new GM-only sheet field
+  goes in `GmOnlyFields.FIELDS`. Mutants `karma-lock-strips-flat-keys-only`, `karma-lock-only-karma-pool`.
 
 ### The Karma Pool in play  · *SR3 p.246-248* — TODO 216 and the audit of 2026-10-11
 Rules `scripts/data/karma-uses.mjs` (`KarmaPool`, pure); actor side `spendKarmaPool` / `burnKarmaPool` /
@@ -111,7 +120,10 @@ re-crossed the pool threshold from 0 and granted points twice.
 
 ### The ledger  · TODO 79
 `scripts/data/ledger.mjs`. `system.ledger`: `{ when, kind: 'karma'|'nuyen'|'pool'|'poolSpent', delta, from, to,
-reason, by, revert?, reverted? }`, under **📒 Ledger** on the Bio tab. Labels by `specForKind(kind)`.
+reason, by, revert?, reverted? }`, on the **📒 Ledger** tab (every entry; From → To, By; GM-only ✕) with the latest
+`BIO_LEDGER_ROWS` (8) on the Bio tab (TODO 153). Labels by `specForKind(kind)`.
+- ⚠ **The GM's ✕ removes history, never the totals**, through `Ledger.without`, which returns null when the entry at
+  that index is not the one the sheet drew (a stale click). Mutant `ledger-delete-ignores-a-stale-row`.
 - ⚠ **Derived from the WRITE** in `SR3EActor.recordLedger` (called by `_preUpdate`), **never from call sites**.
   `tests/ledger.test.mjs` ratchets writers that bypass `actor.update`.
 - ⚠ **Rides along in the same update** (no second write, no GM relay), in the caller's spelling (flat or nested).
@@ -127,6 +139,20 @@ reason, by, revert?, reverted? }`, under **📒 Ledger** on the Bio tab. Labels 
   array shared by every document created without the field, and Foundry commits updates into it in place: one
   character's ledger entry appeared on every character without one, and was saved for real on their next write.
   `tests/ledger.test.mjs` fails on any literal array/object default in the data models.
+
+
+### ± Funds and giving money  · TODO 192
+`scripts/data/funds.mjs` (`Funds`, pure) · the **± Funds…** button beside Nuyen (`_onAdjustFunds`) · verb `sr3e.money.give`.
+- **± adds or takes away** an amount with an optional reason (`ledgerReason`, so the 📒 reads it; empty → "By hand").
+  **Give** pays another LIVE `character` (`Funds.recipients` — world-wide, not the scene).
+- ⚠ **Warn, never refuse.** `system.nuyen` floors at 0, so a sum above the balance is flagged live in the dialog and
+  again on confirm, and only what is there moves. In a gift the recipient gets exactly what left the payer (nuyen
+  is never made up). Mutants `funds-gift-creates-nuyen`, `funds-subtract-goes-negative`, `funds-short-is-silent`.
+- ⚠ **A gift is ONE GM verb that writes BOTH characters** — a player cannot write another's actor, and a
+  credit-only verb would let anyone mint nuyen. The GM checks the requester OWNS the payer (`Funds.mayPayFrom`),
+  works from LIVE balances, debits then credits (putting the debit back if the credit fails), and the giver's
+  name is `ledgerBy` on both lines ("Gave to X" / "Received from X"). Serialised under the single key
+  `sr3e:money` — per-actor keys would deadlock A→B with B→A. A whispered 💴 chat line tells the owners and GM.
 
 ### Buying gear  · *SR3 pp.272-273* — TODO 82
 Rules `scripts/data/purchasing.mjs` (pure); flow `scripts/SR3EPurchase.js` (**🛒 Buy gear…**, Bio tab):

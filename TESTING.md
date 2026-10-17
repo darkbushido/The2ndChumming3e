@@ -2648,3 +2648,68 @@ book (say `sota2`) switched OFF. Open **🛒 Buy gear…** from the Bio tab with
 - [ ] Open Buy gear from an item's own row: it still pre-fills from that item; searching replaces it.
 - [ ] The medkit **Buy Medkit Supplies** button still fills the form and still refills the medkit on payment.
 
+
+## 46. The 📒 Ledger tab and the GM's ✕ (TODO 153, `feature/ledger-tab`)
+
+**Prerequisites:** a character with more than 8 ledger entries (change nuyen or karma by hand a few times),
+owned by Player2. JS only — reload the tab, no restart.
+
+- [ ] The sheet has a **📒 Ledger** tab at the end of the tab bar. It lists **every** entry, newest first,
+      with date and time, From → To and By.
+- [ ] Type a new Nuyen value in the box → its row's **Why** reads **By hand**, never a dash (both tabs).
+- [ ] The **Bio** tab shows only the latest **8**, then "… and N older — see the 📒 Ledger tab"; the link
+      switches to the tab.
+- [ ] As the **GM**, each row on the Ledger tab has a ✕. Click one → a confirm names the change, its reason
+      and who made it, and says the totals stay. Confirm → the row is gone; **Nuyen / Good Karma unchanged**.
+- [ ] Cancel the confirm → nothing changes.
+- [ ] As **Player2** on the same sheet: the Ledger tab shows the rows **without** ✕.
+- [ ] Stale click: GM opens the Ledger tab, Player2 then changes their nuyen, GM clicks ✕ on a row before the
+      sheet redraws → "The ledger changed since the sheet was drawn — nothing was removed."
+
+## 47. Sheet quality of life (TODO 218, 213, 192 — `feature/sheet-qol`)
+
+**Prerequisites:** a character owned by Player2 with some Good Karma, Total Karma, a Karma Pool and a few
+nuyen; a second live character owned by Player3. JS/CSS only — reload the tabs, no restart.
+
+### Karma fields are the GM's (TODO 218)
+
+- [ ] As **Player2**: on the sheet, Good Karma and Total Karma (Bio → Resources) and both Karma Pool boxes
+      (Attributes) are greyed and cannot be typed into; the tooltip says only the GM edits them.
+- [ ] Still as Player2: edit **Nuyen** → it saves and the 📒 Ledger line appears (the sheet submit still works,
+      and Good Karma / Karma Pool did not change).
+- [ ] Roll a skill, tick **Use Karma Pool**, add a die → the pool's "left" box drops and the roll gets the die.
+- [ ] As the **GM** on the same sheet all four boxes are editable; type a Karma Pool → it saves.
+
+### Why Combat Pool is lower (TODO 213)
+
+- [ ] Character with Quickness 4, Intelligence 4, Willpower 2 and **no** armour or gyro: Attributes → Combat Pool
+      shows 5 / 5, no note; the hover text starts "Base ⌊(Quickness + Intelligence + Willpower) ÷ 2⌋ … = 5".
+- [ ] Add a **Gyro Mount** (Gear tab, not in Storage): the pool reads 2 / 2 and the block says **"5 halved by gyro ·
+      Gyro Mount"**; the hover text has "Gyro harness (Gyro Mount): only half the pool … ⌊5 ÷ 2⌋ = 2 (SR3 p.282…)".
+- [ ] Send the Gyro Mount to **Storage**: back to 5 / 5, note gone.
+- [ ] Wear armour heavy enough to cost dice (SR3 p.285): the note reads "N lost to armour (…)" and the hover
+      text has an "Armour −N" line. With both, the hover shows armour then the gyro halving.
+- [ ] Spend some pool (type a lower left value): hover text ends "Spent N → M left of T".
+- [ ] An adept with Combat Sense +3: a "Combat Sense +3 (SR3 p.169)" line. The number itself is unchanged from before.
+
+### ± Funds and giving money (TODO 192)
+
+**Prerequisites:** Player2 owns *Alpha* (¥1,000), Player3 owns *Bravo* (¥200). GM may be a third client. Release
+the seats first if running Playwright.
+
+- [ ] Alpha's **Bio → Resources** has a **± Funds…** button beside Nuyen.
+- [ ] As Player2: ± Funds → **Add nuyen**, amount `¥250`, reason "sold a car" → Confirm. Nuyen reads 1,250; the
+      📒 Ledger line is +¥250, From 1,000 → To 1,250, Why "sold a car", By Player2.
+- [ ] **Take away** `400` with no reason → 850; the Ledger "Why" reads **By hand**.
+- [ ] **Take away** `5000`: while typing, the dialog shows "only ¥850 available — it stops at ¥0" in red; Confirm →
+      a warning toast, Nuyen 0, nothing refused. Put some back with Add.
+- [ ] **Give to another character** lists Bravo (and other live characters), NOT Alpha, vehicles, NPCs or
+      templates (check a template exists and is absent). Give Bravo `300` "cut of the run" → toast; Alpha 550,
+      Bravo (on Player3's sheet, no refresh needed) 500. Alpha's Ledger: "Gave to Bravo: cut of the run" −¥300;
+      Bravo's: "Received from Alpha: cut of the run" +¥300, By Player2. A whispered 💴 chat line shows to the owners and GM.
+- [ ] **Short gift:** Alpha (¥550) gives Bravo `900` → dialog warns "only ¥550 available — ¥550 will be given";
+      Alpha ends at 0, Bravo gains exactly ¥550 (not 900).
+- [ ] As **GM**, give from Alpha to Bravo works the same; with the GM tab closed and a player giving, the
+      toast reads a "no GM connected" error and nobody's nuyen changed.
+- [ ] Player3 cannot give *from* Alpha (the button isn't on a sheet they cannot edit; from the console
+      `game.sr3e.SR3EQuery.asGM('sr3e.money.give', {payerUuid: <Alpha>, recipientUuid: <Bravo>, amount: 5})` is rejected: "does not own").

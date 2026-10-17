@@ -41,6 +41,9 @@ const GSEARCH = { module: '../scripts/data/gear-search.mjs', klass: 'GearSearch'
 const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
+const CPOOL = { module: '../scripts/data/combat-pool.mjs', klass: 'CombatPool' };
+const FUNDS = { module: '../scripts/data/funds.mjs', klass: 'Funds' };
+const GMONLY = { module: '../scripts/data/gm-only-fields.mjs', klass: 'GmOnlyFields' };
 const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellLimits' };
 
 export const MUTANTS = [
@@ -1813,6 +1816,16 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'ledger-delete-ignores-a-stale-row',
+    suite:  'ledger',
+    ...LEDGER, method: 'without',
+    was:    'a GM delete that trusts the row index alone (TODO 153). The sheet is drawn, a player '
+          + 'spends karma, the entries move, and the GM click removes a different line from the '
+          + 'one they read',
+    impl:   (entries, idx) => (Array.isArray(entries) && idx >= 0 && idx < entries.length
+      ? entries.filter((_e, i) => i !== idx) : null),
+  },
+  {
     id:     'ledger-duplicate-inherits-history',
     suite:  'ledger',
     ...LEDGER, method: 'inherited',
@@ -2169,5 +2182,87 @@ export const MUTANTS = [
     ...GSEARCH, method: 'rank',
     was:    'every hit ranked alike, so typing "jacket" listed "Trench Jacket Liner" above "Jacket"',
     impl:   () => 0,
+  },
+  {
+    id:     'karma-lock-strips-flat-keys-only',
+    suite:  'gm-only-fields',
+    ...GMONLY, method: 'strip',
+    was:    'a plausible slip (TODO 218): the submit strip deleted `data["system.karma"]` but Foundry hands '
+          + '_prepareSubmitData the EXPANDED form (`{ system: { karma } }`), so a player sheet submit still wrote Karma Pool',
+    impl:   (data, isGM) => {
+      if (isGM || !data) return data;
+      const out = JSON.parse(JSON.stringify(data));
+      for (const k of ['system.karma', 'system.totalKarma', 'system.karmaPool', 'system.karmaPoolSpent']) delete out[k];
+      return out;
+    },
+  },
+  {
+    id:     'karma-lock-only-karma-pool',
+    suite:  'gm-only-fields',
+    ...GMONLY, method: 'canEdit',
+    was:    'locking the Karma Pool but leaving Good Karma and Total Karma typeable — the maintainer decided all three (TODO 218)',
+    impl:   (path, isGM) => !!isGM || !['system.karmaPool', 'system.karmaPoolSpent'].includes(String(path)),
+  },
+  {
+    id:     'combat-pool-gyro-rounds-up',
+    suite:  'combat-pool',
+    ...CPOOL, method: 'figure',
+    was:    'a plausible slip (TODO 213): halving the pool with Math.ceil — the book (SR3 p.282) says "half", this system rounds '
+          + 'down, and the reported 5-dice pool is 2, not 3',
+    impl:   ({ base = 0, mod = 0, sense = 0, armour = 0, gyro = false } = {}) => {
+      const full = Math.max(0, base + mod + sense - armour);
+      return { full, total: gyro ? Math.ceil(full / 2) : full };
+    },
+  },
+  {
+    id:     'combat-pool-gyro-halves-the-base-only',
+    suite:  'combat-pool',
+    ...CPOOL, method: 'figure',
+    was:    'halving only the (Q+I+W)/2 base and then adding Combat Sense, the modifier and armour — the gyro halves the whole pool '
+          + '"after everything else" (SR3 p.282, TODO 18)',
+    impl:   ({ base = 0, mod = 0, sense = 0, armour = 0, gyro = false } = {}) => {
+      const full = Math.max(0, base + mod + sense - armour);
+      return { full, total: Math.max(0, (gyro ? Math.floor(base / 2) : base) + mod + sense - armour) };
+    },
+  },
+  {
+    id:     'combat-pool-breakdown-omits-armour',
+    suite:  'combat-pool',
+    ...CPOOL, method: 'breakdown', needsOriginal: '_breakdownOriginal',
+    was:    'the sheet showed the gyro but the armour penalty (SR3 p.285) stayed as invisible as before (TODO 213)',
+    impl:   function (p = {}) {
+      return this._breakdownOriginal({ ...p, armour: 0 });
+    },
+  },
+  {
+    id:     'funds-gift-creates-nuyen',
+    suite:  'funds',
+    ...FUNDS, method: 'give',
+    was:    'a plausible slip (TODO 192): crediting the recipient the amount ASKED when the payer was short, so a gift of '
+          + '¥500 from a payer holding ¥300 made ¥200 out of nothing — what arrives must be what left',
+    impl:   (payerHave, recipientHave, amount) => {
+      const have = Math.max(0, Math.floor(payerHave)), n = Math.max(0, Math.floor(amount)), moved = Math.min(have, n);
+      return { amount: n, moved, short: n > have, shortBy: Math.max(0, n - have), payerFrom: have, payerTo: have - moved,
+        recipientFrom: recipientHave, recipientTo: recipientHave + n };
+    },
+  },
+  {
+    id:     'funds-subtract-goes-negative',
+    suite:  'funds',
+    ...FUNDS, method: 'change',
+    was:    'taking away more than the balance went below zero — `system.nuyen` has a floor of 0, so the write is rejected '
+          + 'rather than warned about (TODO 192)',
+    impl:   (have, amount, mode) => {
+      const from = Number(have) || 0, n = Number(amount) || 0;
+      return mode === 'add' ? { from, to: from + n, delta: n, short: false, shortBy: 0 }
+        : { from, to: from - n, delta: -n, short: n > from, shortBy: Math.max(0, n - from) };
+    },
+  },
+  {
+    id:     'funds-short-is-silent',
+    suite:  'funds',
+    ...FUNDS, method: 'change', needsOriginal: '_changeOriginal',
+    was:    'a shortfall clamped to 0 without saying so — the rule is warn, never refuse, and a silent clamp is neither (TODO 192)',
+    impl:   function (have, amount, mode) { return { ...this._changeOriginal(have, amount, mode), short: false, shortBy: 0 }; },
   },
 ];

@@ -6,6 +6,8 @@ import { AmmoStock } from '../data/ammo-stock.mjs';
 import { BookPage } from '../data/book-page.mjs';
 import { CyberWeapons } from '../data/cyber-weapons.mjs';
 import { SpellLimits } from '../data/spell-limits.mjs';
+import { GmOnlyFields } from '../data/gm-only-fields.mjs';
+import { Funds } from '../data/funds.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -18,6 +20,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /* ------------------------------------------------------------------ */
   /*  Static configuration                                                */
   /* ------------------------------------------------------------------ */
+
+  /** How many 📒 Ledger rows the Bio tab shows before pointing at the Ledger tab · TODO 153. */
+  static BIO_LEDGER_ROWS = 8;
 
   static DEFAULT_OPTIONS = {
     classes: ['sr3e', 'sheet', 'actor'],
@@ -54,6 +59,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       applyStress:      SR3EActorSheet._onApplyStress,        // TODO 109
       woundEffects:     SR3EActorSheet._onWoundEffects,        // TODO 129
       buyGear:          SR3EActorSheet._onBuyGear,             // TODO 82
+      deleteLedgerEntry: SR3EActorSheet._onDeleteLedgerEntry,  // TODO 153
       toggleTlex:       SR3EActorSheet._onToggleTlex,         // TODO 110
       toggleCybermancy: SR3EActorSheet._onToggleCybermancy,   // TODO 111
       toggleCds:        SR3EActorSheet._onToggleCds,          // TODO 111
@@ -122,6 +128,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         rollProgram:        SR3EActorSheet._onRollProgram,
         refreshHackingPool:      SR3EActorSheet._onRefreshHackingPool,
         awardKarma:              SR3EActorSheet._onAwardKarma,
+        adjustFunds:             SR3EActorSheet._onAdjustFunds,   // TODO 192
         spendKarmaCalculator:    SR3EActorSheet._onSpendKarmaCalculator,
         useNodePrompt:           SR3EActorSheet._onUseNodePrompt,
         removeMatrixMark:        SR3EActorSheet._onRemoveMatrixMark,
@@ -581,6 +588,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           ${this._tabCyber(actor, sys)}
           ${this._tabMatrix(actor, sys)}
           ${this._tabStored(actor)}
+          ${this._tabLedger(actor)}
         </div>
       </div>`;
   }
@@ -735,9 +743,25 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   _inlineField(label, name, value, type = 'text', width = 80) {
+    // TODO 218: a GM-only field (Good/Total Karma) is read-only and UNNAMED for everyone else, so the
+    // sheet's submit — which sends every named input — cannot carry it.
+    if (!GmOnlyFields.canEdit(name, game.user.isGM)) {
+      return `<label class="inline-field">${label}
+      <input type="${type}" value="${value ?? ''}" style="width:${width}px" readonly disabled
+             title="Only the GM edits this. Spending it through the roll options and the Spend Karma calculator still works."/>
+    </label>`;
+    }
     return `<label class="inline-field">${label}
       <input type="${type}" name="${name}" value="${value ?? ''}" style="width:${width}px"/>
     </label>`;
+  }
+
+  /**
+   * Strip the GM-only fields (Karma Pool, Good Karma, Total Karma) from a non-GM's sheet submit · TODO 218.
+   * The inputs are already unnamed for them; this closes the rest of the hole.
+   */
+  _prepareSubmitData(event, form, formData, updateData) {
+    return GmOnlyFields.strip(super._prepareSubmitData(event, form, formData, updateData), game.user.isGM);
   }
 
  /**
@@ -818,6 +842,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       ['matrix',      'Matrix'],
       ['stored',      'Storage'],
       ['contacts',    'Contacts'],
+      ['ledger',      '📒 Ledger'],
     ];
     return `<nav class="sheet-tabs">
       ${tabs.map(([id, label]) =>
@@ -1046,8 +1071,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           // modifier — armour dice lost (TODO 112) and adept dice must not be absorbed into it.
           (d.combatPool ?? 0) - (sys.combatPoolMod ?? 0),
           'system.combatPoolSpent', 'system.combatPoolMod',
-          `floor((QUI ${qui} + INT ${intl} + WIL ${wil}) / 2) = ${d.combatPoolBase ?? 0}`
-            + ((d.armorPoolPenalty ?? 0) > 0 ? ` − ${d.armorPoolPenalty} armour (B ${d.armorSumBallistic} / I ${d.armorSumImpact} worn vs Quickness ${qui}, SR3 p.285)` : ''))}
+          // TODO 213: the whole breakdown (base, Combat Sense, modifier, armour, gyro, spent) — recorded by
+          // prepareDerivedData in `derived.combatPoolBreakdown`; the old line is only a fallback.
+          (d.combatPoolBreakdown?.lines?.join('&#10;').replace(/"/g, '&quot;'))
+            ?? (`floor((QUI ${qui} + INT ${intl} + WIL ${wil}) / 2) = ${d.combatPoolBase ?? 0}`
+              + ((d.armorPoolPenalty ?? 0) > 0 ? ` − ${d.armorPoolPenalty} armour (B ${d.armorSumBallistic} / I ${d.armorSumImpact} worn vs Quickness ${qui}, SR3 p.285)` : '')),
+          // Why it is lower, in view — not only on hover. `combatPoolBeforeGyro` is the pool the gyro halved.
+          d.combatPoolBreakdown?.reduced
+            ? `${d.combatPoolBeforeGyro != null ? `${d.combatPoolBeforeGyro} halved by gyro` : `${d.armorPoolPenalty} lost to armour`}${
+                d.combatPoolBreakdown.gyroName ? ` · ${d.combatPoolBreakdown.gyroName}` : ''}`.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+            : '')}
         ${/* 🍀 Karma Pool (SR3 p.246): left / size. The left box writes `karmaPoolSpent`; the size box
             * writes `karmaPool` itself (base 0, so the "mod" IS the size). ⚠ It does NOT refresh with
             * the other pools ("does not refresh every Combat Turn") — the GM's 🍀 button does. */ ''}
@@ -1144,19 +1177,23 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * baseVal      — derived base before mod (used to compute mod from typed total)
    * spentField   — system field name for "spent" counter, or null if no spent tracking
    * modField     — system field name for the pool mod / bonus
+   * tooltip      — hover text (Combat Pool: the breakdown, TODO 213)
+   * note         — a short line shown under the pool when something has cut it (already HTML-escaped)
    */
-  _poolBlock(label, currentVal, totalVal, baseVal, spentField, modField, tooltip = '') {
+  _poolBlock(label, currentVal, totalVal, baseVal, spentField, modField, tooltip = '', note = '') {
+    // TODO 218: the Karma Pool's boxes are the GM's — read-only for everyone else.
+    const lock = f => (f && !GmOnlyFields.canEdit(f, game.user.isGM) ? ' readonly disabled title="Only the GM edits the Karma Pool"' : '');
     const currentInput = spentField
       ? `<input type="number" class="pool-current-input" style="width:38px"
                data-spent-field="${spentField}"
                data-pool-total="${totalVal}"
-               value="${currentVal}" min="0"/>`
+               value="${currentVal}" min="0"${lock(spentField)}/>`
       : `<span class="pool-current-static">${currentVal}</span>`;
 
     const totalInput = `<input type="number" class="pool-total-input" style="width:38px"
              data-mod-field="${modField}"
              data-pool-base="${baseVal}"
-             value="${totalVal}" min="0"/>`;
+             value="${totalVal}" min="0"${lock(modField)}/>`;
 
     return `<div class="derived-block"${tooltip ? ` title="${tooltip}"` : ''}>
       <span class="derived-label">${label}</span>
@@ -1165,6 +1202,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="pool-sep"> / </span>
         ${totalInput}
       </span>
+      ${note ? `<span class="pool-note" style="font-size:10px;color:var(--sr-amber)">${note}</span>` : ''}
     </div>`;
   }
 
@@ -3211,6 +3249,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       <h3 class="section-hdr" style="margin-top:1rem">Resources</h3>
       <div class="bio-fields">
         ${this._inlineField('Nuyen (¥)', 'system.nuyen', sys.nuyen, 'number', 100)}
+        <button type="button" class="btn-sm" data-action="adjustFunds" style="align-self:flex-end"
+                title="Add or take away an amount, or give nuyen to another character — each leaves a line in the 📒 Ledger (TODO 192)">± Funds…</button>
         ${this._inlineField('Good Karma', 'system.karma', sys.karma, 'number', 80)}
         ${this._inlineField('Total Karma', 'system.totalKarma', sys.totalKarma, 'number', 80)}
         ${/* ⚠ The Award button is registered in DEFAULT_OPTIONS.actions but was NEVER RENDERED
@@ -3250,34 +3290,77 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * ⚠ **A record, not a gate.** The numbers above it stay editable; an unexplained edit simply
    * lands here with an empty reason. Everyone who can see the sheet can read it (it is their own
    * history), and `_preUpdate` is what stops a player rewriting it.
-   * ⚠ **Newest first, and capped in the UI** — the whole array is on the document, so a campaign's
-   * worth of entries must not render as a campaign's worth of rows.
+   * ⚠ **Two views** (TODO 153): the Bio tab shows the latest `BIO_LEDGER_ROWS` and links to the
+   * 📒 Ledger tab, which shows every entry with from → to, who, and the GM's ✕. The whole array is
+   * on the document, capped at `Ledger.MAX_ENTRIES`, so the full view is bounded.
+   * ⚠ **The ✕ is GM-only and removes history, never the totals** (`Ledger.without`, which refuses a
+   * row the sheet drew before another write moved the entries).
    */
-  _ledgerTable(actor) {
+  _ledgerTable(actor, { full = false } = {}) {
     const L = game.sr3e.Ledger;
     const all = L.of(actor.system);
-    if (!all.length) return '';
-    const rows = L.recent(all, { limit: 30 });
+    if (!all.length) return full ? '<p class="sr-roll-meta" style="color:var(--sr-muted)">No karma or nuyen changes recorded yet.</p>' : '';
+    const rows = L.rows(all, { limit: full ? null : SR3EActorSheet.BIO_LEDGER_ROWS });
+    const gm = full && game.user.isGM;
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const when = ms => { const d = new Date(Number(ms) || 0);
-      return Number.isFinite(d.getTime()) ? d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''; };
+      if (!Number.isFinite(d.getTime())) return '';
+      return full ? d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+        : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); };
     const colour = d => (Number(d) < 0 ? 'var(--sr-red)' : 'var(--sr-green)');
+    const amount = (kind, n) => `${kind === 'nuyen' ? '¥' : ''}${Number(n || 0).toLocaleString('en-US')}`;
+    const cols = full ? `92px 74px 74px 120px 1fr 80px${gm ? ' 22px' : ''}` : '52px 74px 74px 1fr';
     return `
-      <h3 class="section-hdr" style="margin-top:1rem" title="Every change to Good Karma, Nuyen and the Karma Pool. Append-only — the totals above stay editable, and an unexplained edit is logged with no reason.">📒 Ledger</h3>
-      <div class="list-header" style="grid-template-columns:52px 74px 74px 1fr">
-        <span>When</span><span>What</span><span>Change</span><span>Why</span>
+      <h3 class="section-hdr" style="margin-top:1rem" title="Every change to Good Karma, Nuyen and the Karma Pool. Append-only — the totals stay editable, and an edit nothing explains reads “By hand”.">📒 Ledger</h3>
+      <div class="list-header" style="grid-template-columns:${cols}">
+        <span>When</span><span>What</span><span>Change</span>${full ? '<span>From → To</span>' : ''}<span>Why</span>${full ? '<span>By</span>' : ''}${gm ? '<span></span>' : ''}
       </div>
-      ${rows.map(e => `
-        <div class="item-row" style="grid-template-columns:52px 74px 74px 1fr">
+      ${rows.map(({ entry: e, idx }) => `
+        <div class="item-row sr-ledger-row" style="grid-template-columns:${cols}">
           <span style="font-size:10px;color:var(--sr-muted)">${esc(when(e.when))}</span>
           <span style="font-size:11px">${esc(L.specForKind(e.kind)?.label ?? e.kind)}</span>
           <span style="font-size:11px;color:${colour(e.delta)}">${esc(L.formatDelta(e.kind, e.delta))}</span>
-          <span style="font-size:11px;color:var(--sr-muted)" title="${esc(e.by ? `by ${e.by}` : '')}">${esc(e.reason || '—')}${e.reverted ? ' <em>(undone)</em>' : ''}${
+          ${full ? `<span style="font-size:11px;color:var(--sr-muted)">${esc(amount(e.kind, e.from))} → ${esc(amount(e.kind, e.to))}</span>` : ''}
+          <span style="font-size:11px;color:var(--sr-muted)" title="${esc(e.by ? `by ${e.by}` : '')}">${esc(L.why(e))}${e.reverted ? ' <em>(undone)</em>' : ''}${
             game.user.isGM && L.undoable(e)
               ? ` <button type="button" class="btn-xs" data-action="undoKarmaSpend" data-when="${e.when}" title="GM: undo this purchase — refund the karma and put back what it bought (TODO 212)">↺</button>`
               : ''}</span>
+          ${full ? `<span style="font-size:11px;color:var(--sr-muted)">${esc(e.by || '—')}</span>` : ''}
+          ${gm ? `<button type="button" class="btn-xs" data-action="deleteLedgerEntry" data-idx="${idx}" data-entry="${esc(JSON.stringify(e))}"
+                   title="GM: remove this entry from the history. The totals are not changed.">✕</button>` : ''}
         </div>`).join('')}
-      ${all.length > rows.length ? `<div class="sr-roll-meta" style="font-size:10px;color:var(--sr-dim)">… and ${all.length - rows.length} older</div>` : ''}`;
+      ${!full && all.length > rows.length ? `<div class="sr-roll-meta" style="font-size:10px;color:var(--sr-dim)">… and ${all.length - rows.length} older —
+        <a data-action="switchTab" data-tab="ledger" style="cursor:pointer;color:var(--sr-accent)">see the 📒 Ledger tab</a></div>` : ''}`;
+  }
+
+  /** The 📒 Ledger tab · TODO 153 — every entry, with the GM's ✕. */
+  _tabLedger(actor) {
+    return `<div class="tab ${this._activeTab === 'ledger' ? 'active' : ''}" data-tab="ledger" style="overflow-y:auto">
+      ${this._ledgerTable(actor, { full: true })}
+    </div>`;
+  }
+
+  /**
+   * GM ✕ on a ledger row · TODO 153. Removes the entry from the history after a confirm; the karma /
+   * nuyen totals are NOT changed (say so in the dialog — a GM who wants the number back edits it).
+   */
+  static async _onDeleteLedgerEntry(_event, target) {
+    if (!game.user.isGM) return;
+    const actor = this.actor;
+    const idx = Number(target.dataset.idx);
+    let expected = null;
+    try { expected = JSON.parse(target.dataset.entry ?? 'null'); } catch { expected = null; }
+    const L = game.sr3e.Ledger;
+    const next = L.without(L.of(actor.system), idx, expected);
+    if (!next) { ui.notifications.warn('The ledger changed since the sheet was drawn — nothing was removed. Try again.'); return; }
+    const e = expected ?? {};
+    const ok = await foundry.applications.api.DialogV2.confirm({
+      window: { title: `Remove a ledger entry — ${actor.name}` },
+      content: `<p>Remove <strong>${L.formatDelta(e.kind, e.delta)}</strong> (${String(L.why(e)).replace(/[&<>"]/g, '')}, by ${String(e.by || '—').replace(/[&<>"]/g, '')}) from ${actor.name}'s history?</p>
+        <p style="color:var(--sr-muted);font-size:11px">Only the record goes. Their ${e.kind === 'nuyen' ? 'nuyen' : 'karma'} stays as it is.</p>`,
+    });
+    if (!ok) return;
+    await actor.update({ 'system.ledger': next });
   }
 
   /**
@@ -3478,6 +3561,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (el.classList.contains('pool-current-input')) {
       const spentField = el.dataset.spentField;
       const total      = parseInt(el.dataset.poolTotal) || 0;
+      if (spentField && !GmOnlyFields.canEdit(spentField, game.user.isGM)) return this.render();   // TODO 218
       const newAvail   = Math.max(0, parseInt(el.value) || 0);
       const spent      = Math.max(0, total - newAvail);
       if (spentField) await this.actor.update({ [spentField]: spent });
@@ -3487,6 +3571,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     // Pool total input: value = desired total, writes mod = total - base
     if (el.classList.contains('pool-total-input')) {
       const modField  = el.dataset.modField;
+      if (modField && !GmOnlyFields.canEdit(modField, game.user.isGM)) return this.render();   // TODO 218
       const base      = parseInt(el.dataset.poolBase) || 0;
       const newTotal  = Math.max(0, parseInt(el.value) || 0);
       const mod       = newTotal - base;
@@ -3499,6 +3584,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 : el.type === 'number'   ? (parseFloat(el.value) || 0)
                 : el.value;
     if (!name) return;
+    if (!GmOnlyFields.canEdit(name, game.user.isGM)) return this.render();   // TODO 218
     await this.actor.update({ [name]: value });
   }
 
@@ -5523,6 +5609,100 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static _specCost(newRating, attrRating) {
     return game.sr3e.SR3EActor.karmaSpecCost(newRating, attrRating);
+  }
+
+  /**
+   * ± Funds · TODO 192 — add nuyen, take it away, or give it to another character, with an optional reason
+   * for the 📒 Ledger. The arithmetic and ledger wording are `Funds` (pure, tested); a gift is one GM-routed
+   * verb (`sr3e.money.give`) that writes BOTH characters, because a player cannot write another's actor.
+   * Warn, never refuse: a sum larger than the balance is flagged, and only what is there moves.
+   */
+  static async _onAdjustFunds() {
+    const actor = this.actor;
+    const esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const yen = v => `¥${Number(v || 0).toLocaleString('en-US')}`;
+    const others = Funds.recipients(game.actors.filter(a => a.type === 'character' && game.sr3e.isLiveActor(a)), actor.id, () => true);
+    let chosen = null;
+
+    const wireDialog = (_app, html) => {
+      const mode = html.querySelector('#fund-mode'), amt = html.querySelector('#fund-amount');
+      const warn = html.querySelector('#fund-warn'), who = [html.querySelector('#fund-who-row'), html.querySelector('#fund-who')];
+      const refresh = () => {
+        const give = mode.value === 'give';
+        who.forEach(el => { el.style.display = give ? '' : 'none'; });
+        const n = Funds.parseAmount(amt.value);
+        const have = actor.system.nuyen ?? 0;
+        let msg = '';
+        if (n === null || n === 0) msg = '';
+        else if (mode.value === 'add') msg = `${yen(have)} → ${yen(Funds.change(have, n, 'add').to)}`;
+        else {
+          const r = mode.value === 'give' ? Funds.give(have, 0, n) : Funds.change(have, n, 'subtract');
+          const to = r.payerTo ?? r.to;
+          msg = `${yen(have)} → ${yen(to)}${r.short ? ` <span style="color:var(--sr-red)">⚠ only ${yen(have)} available — ${
+            give ? `${yen(Math.min(have, n))} will be given` : 'it stops at ¥0'}</span>` : ''}`;
+        }
+        warn.innerHTML = msg;
+      };
+      mode.addEventListener('change', refresh);
+      amt.addEventListener('input', refresh);
+      amt.addEventListener('keydown', ev => { if (ev.key === 'Enter') ev.preventDefault(); });
+      refresh();
+      requestAnimationFrame(() => amt.focus());
+    };
+
+    await foundry.applications.api.DialogV2.wait({
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
+      window: { title: `Funds — ${actor.name}` },
+      content: `
+        <div style="padding:6px;display:grid;grid-template-columns:90px 1fr;gap:6px 8px;align-items:center">
+          <label for="fund-mode">Action</label>
+          <select id="fund-mode">
+            <option value="add">Add nuyen</option>
+            <option value="subtract">Take away nuyen</option>
+            <option value="give"${others.length ? '' : ' disabled'}>Give to another character${others.length ? '' : ' (nobody to give to)'}</option>
+          </select>
+          <label for="fund-amount">Amount (¥)</label>
+          <input id="fund-amount" type="text" inputmode="numeric" placeholder="e.g. 1500" autocomplete="off"/>
+          <label for="fund-who" id="fund-who-row" style="display:none">Give to</label>
+          <select id="fund-who" style="display:none">${others.map(o => `<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select>
+          <label for="fund-why">Reason</label>
+          <input id="fund-why" type="text" maxlength="120" placeholder="optional — goes in the 📒 Ledger" autocomplete="off"/>
+          <span></span><span id="fund-warn" style="font-size:11px;color:var(--sr-muted)"></span>
+        </div>`,
+      buttons: [
+        { label: 'Confirm', action: 'ok', default: true,
+          callback: (_e, _b, dlg) => {
+            const q = id => dlg.element.querySelector(id);
+            chosen = { mode: q('#fund-mode').value, amount: Funds.parseAmount(q('#fund-amount').value),
+              who: q('#fund-who')?.value ?? '', text: q('#fund-why').value.trim() };
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!chosen) return;
+    if (!chosen.amount) return ui.notifications.warn('Type an amount of nuyen first.');
+
+    const have = actor.system.nuyen ?? 0;     // read AFTER the dialog: a gift may have landed while it was open
+    if (chosen.mode === 'give') {
+      const target = game.actors.get(chosen.who);
+      if (!target) return ui.notifications.warn('Pick who to give it to.');
+      const r = Funds.give(have, target.system?.nuyen, chosen.amount);
+      if (r.short) ui.notifications.warn(`${actor.name} only has ${yen(have)} — giving ${yen(r.moved)}, not ${yen(chosen.amount)}.`);
+      if (!r.moved) return;
+      try {
+        await game.sr3e.SR3EQuery.asGM('sr3e.money.give', { payerUuid: actor.uuid, recipientUuid: target.uuid,
+          amount: chosen.amount, text: chosen.text });
+        ui.notifications.info(`${actor.name} gave ${yen(r.moved)} to ${target.name}.`);
+      } catch (err) {
+        console.error('SR3E | money.give failed', err);
+        ui.notifications.error(`Could not give the money: ${err?.message ?? err}. Nothing was changed unless the ledger says so.`);
+      }
+      return;
+    }
+    const r = Funds.change(have, chosen.amount, chosen.mode);
+    if (r.short) ui.notifications.warn(`${actor.name} only has ${yen(have)} — nuyen stops at ¥0.`);
+    if (!r.delta) return;
+    await actor.update({ 'system.nuyen': r.to }, { ledgerReason: Funds.reason({ side: 'adjust', text: chosen.text }) });
   }
 
   static async _onAwardKarma() {

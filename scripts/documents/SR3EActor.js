@@ -12,6 +12,7 @@ import { OpenSteps } from '../data/open-steps.mjs';
 import { RiggerShock, DISORIENT_MOD, DISORIENT_TN, DISORIENT_TURNS } from '../data/rigger-shock.mjs';
 import { MdfRules } from '../data/mdf-rules.mjs';
 import { KarmaPool } from '../data/karma-uses.mjs';
+import { CombatPool } from '../data/combat-pool.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -2520,10 +2521,16 @@ _prepareCharacter(sys, attr) {
   // ⚠ Armour takes Combat Pool dice (p.285) — floored at 0, never negative.
   // ⚠ A worn gyro harness "only allow[s] him to use half his Combat Pool dice" (p.282, TODO 18) —
   // halved after everything else, rounded down.
-  const gyroWorn            = !!SR3EActor.gyroMount(this);
-  const combatPoolFull      = Math.max(0, combatPoolBase + (sys.combatPoolMod ?? 0) + adeptCombatPool - armorPoolPenalty);
-  const combatPool          = gyroWorn ? Math.floor(combatPoolFull / 2) : combatPoolFull;
+  const gyroItem            = SR3EActor.gyroMount(this);
+  const gyroWorn            = !!gyroItem;
+  // TODO 213: the figure comes from the pure module, which also explains it (shown on the sheet).
+  const { full: combatPoolFull, total: combatPool } = CombatPool.figure({
+    base: combatPoolBase, mod: sys.combatPoolMod ?? 0, sense: adeptCombatPool, armour: armorPoolPenalty, gyro: gyroWorn });
   const combatPoolSpent     = sys.combatPoolSpent ?? 0;
+  const combatPoolBreakdown = CombatPool.breakdown({
+    base: combatPoolBase, mod: sys.combatPoolMod ?? 0, sense: adeptCombatPool, armour: armorPoolPenalty,
+    gyro: gyroWorn, gyroName: gyroItem?.name ?? '', spent: combatPoolSpent,
+    parts: `QUI ${attr.quickness?.value ?? 0} + INT ${attr.intelligence?.value ?? 0} + WIL ${attr.willpower?.value ?? 0}` });
   const availableCombatPool = Math.max(0, combatPool - combatPoolSpent);
 
   const spellPoolBase = SR3EActor.spellPoolFor(attr);
@@ -2577,6 +2584,7 @@ _prepareCharacter(sys, attr) {
     // Gyro stabilization (p.113, p.282 — TODO 18): its rating, and the pool it halved (0 = none worn).
     gyroRating:         SR3EActor.gyroRating(this),
     combatPoolBeforeGyro: gyroWorn ? combatPoolFull : null,
+    combatPoolBreakdown,   // TODO 213 — why Combat Pool is the figure it is (data/combat-pool.mjs)
     drugTN:             drugs.tn,
     drugConcentrationTN: drugs.concentration,
     drugSources:        drugs.sources,
