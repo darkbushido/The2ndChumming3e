@@ -7192,6 +7192,24 @@ the sheet shows and where the 📒 Ledger records it. Every rule is checked in t
 page. Follow `guides/CLAUDE.md`, link it from `guides/rules/index.md`, then `node tools/linkcheck.mjs`.
 Guide content, so it goes on a branch.
 
+## 221. ✅ Full Defense posts its auto-commit card and rolls the dodge twice — **found 2026-10-11** (testing #220) — closed in 1d2b7fe8
+
+Found live in the test world while checking the Karma hold, then reproduced **without** Karma: an
+attack roll (`rollPool` with `isWeaponRoll`, a `targetActorId`, 9M) against SWAT Team Member on Full
+Defense (6 dice) posted the attack card, then **two** "🛡 Full Defense (6 dice auto-committed)" cards
+and **two** "🎯 dodges" cards. Only one client was connected (mcp-api, a GM). A dodge declaration on
+Full Defense clicks itself; the likely suspect is that click running once per rendered copy of the
+card (the chat pop-up and the chat log both fire `renderChatMessageHTML`) without the one-shot guard.
+Not investigated further. Check whether the second dodge roll also posts a second soak card. This is
+a bug fix, so it goes on `main`.
+
+**Fixed (1d2b7fe8).** The declare handler's only guard was `_claimBtn`, a Set private to one module instance in
+one browser; it ignored the `already` answer of its own `sr3e.card.mark` claim (GM-serialised, first claim stands).
+It now stands down on `already`, and `_usedButtons`/`_autoOpened` are shared on `globalThis` so a second evaluation
+of sr3e.js (hot reload) cannot act as a first. Foundry was not running, so the exact duplicate path was not
+reproduced live; the soak card follows the dodge once per declaration. Test: `tests/dodge-declare-once.test.mjs`
+(source-level, no mutant possible: sr3e.js is not importable). Live steps: TESTING.md section 43.
+
 ## 222. ✅ Guide pages: physical adepts, spells, initiation, weapons, vehicles, drones — **requested 2026-10-11** · `b7129853`
 
 The maintainer asked for six new pages on the SR3 Table Reference (`guides/`), each written like the
