@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**51 open.** 173 done — see [TODO-DONE.md](TODO-DONE.md).
+**51 open.** 174 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|

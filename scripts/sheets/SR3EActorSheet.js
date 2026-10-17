@@ -8,6 +8,7 @@ import { CyberWeapons } from '../data/cyber-weapons.mjs';
 import { SpellLimits } from '../data/spell-limits.mjs';
 import { GmOnlyFields } from '../data/gm-only-fields.mjs';
 import { Funds } from '../data/funds.mjs';
+import { CombatPool } from '../data/combat-pool.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -1067,9 +1068,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${this._poolBlock('Combat Pool',
           d.availableCombatPool ?? d.combatPool ?? 0,
           d.combatPool ?? 0,
-          // Everything that is NOT the manual modifier, so typing a total stores only the
-          // modifier — armour dice lost (TODO 112) and adept dice must not be absorbed into it.
-          (d.combatPool ?? 0) - (sys.combatPoolMod ?? 0),
+          // Everything that is NOT the manual modifier (base + Combat Sense − armour, TODO 112), so typing a
+          // total stores only the modifier. ⚠ Not the displayed pool minus the modifier: a gyro halves the
+          // display (SR3 p.282) — `CombatPool.modForTotal` inverts it (TODO 225).
+          (d.combatPoolBreakdown ? d.combatPoolBreakdown.base + d.combatPoolBreakdown.sense - d.combatPoolBreakdown.armour
+            : (d.combatPool ?? 0) - (sys.combatPoolMod ?? 0)),
           'system.combatPoolSpent', 'system.combatPoolMod',
           // TODO 213: the whole breakdown (base, Combat Sense, modifier, armour, gyro, spent) — recorded by
           // prepareDerivedData in `derived.combatPoolBreakdown`; the old line is only a fallback.
@@ -1080,7 +1083,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           d.combatPoolBreakdown?.reduced
             ? `${d.combatPoolBeforeGyro != null ? `${d.combatPoolBeforeGyro} halved by gyro` : `${d.armorPoolPenalty} lost to armour`}${
                 d.combatPoolBreakdown.gyroName ? ` · ${d.combatPoolBreakdown.gyroName}` : ''}`.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
-            : '')}
+            : '',
+          !!d.combatPoolBreakdown?.gyro)}
         ${/* 🍀 Karma Pool (SR3 p.246): left / size. The left box writes `karmaPoolSpent`; the size box
             * writes `karmaPool` itself (base 0, so the "mod" IS the size). ⚠ It does NOT refresh with
             * the other pools ("does not refresh every Combat Turn") — the GM's 🍀 button does. */ ''}
@@ -1180,7 +1184,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * tooltip      — hover text (Combat Pool: the breakdown, TODO 213)
    * note         — a short line shown under the pool when something has cut it (already HTML-escaped)
    */
-  _poolBlock(label, currentVal, totalVal, baseVal, spentField, modField, tooltip = '', note = '') {
+  _poolBlock(label, currentVal, totalVal, baseVal, spentField, modField, tooltip = '', note = '', gyro = false) {
     // TODO 218: the Karma Pool's boxes are the GM's — read-only for everyone else.
     const lock = f => (f && !GmOnlyFields.canEdit(f, game.user.isGM) ? ' readonly disabled title="Only the GM edits the Karma Pool"' : '');
     const currentInput = spentField
@@ -1192,7 +1196,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const totalInput = `<input type="number" class="pool-total-input" style="width:38px"
              data-mod-field="${modField}"
-             data-pool-base="${baseVal}"
+             data-pool-base="${baseVal}"${gyro ? ' data-pool-gyro="1"' : ''}
              value="${totalVal}" min="0"${lock(modField)}/>`;
 
     return `<div class="derived-block"${tooltip ? ` title="${tooltip}"` : ''}>
@@ -3573,8 +3577,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const modField  = el.dataset.modField;
       if (modField && !GmOnlyFields.canEdit(modField, game.user.isGM)) return this.render();   // TODO 218
       const base      = parseInt(el.dataset.poolBase) || 0;
-      const newTotal  = Math.max(0, parseInt(el.value) || 0);
-      const mod       = newTotal - base;
+      // TODO 225: under a gyro the displayed total is half the pool — invert that exactly.
+      const inv       = CombatPool.modForTotal({ rest: base, total: parseFloat(el.value), gyro: el.dataset.poolGyro === '1' });
+      const mod       = inv.mod;
+      if (!inv.exact) ui.notifications.warn(`Combat Pool ${el.value} cannot be set exactly — it will read ${inv.total}.`);
       if (modField) await this.actor.update({ [modField]: mod });
       return;
     }

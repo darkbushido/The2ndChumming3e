@@ -2781,3 +2781,16 @@ could not be laid) — the Region still works.
       every token, nearest first, with flare compensation pre-ticked for anyone carrying a Flare Comp item.
       Tick two and post: each gets a card with **+4 (+2 with flare compensation)** and the pak's **+2** strobe,
       total +6 (+4), and "nothing is applied". Cancel / tick no one: the button comes back.
+
+## 50. Typing a Combat Pool total under a gyro (TODO 225, SR3 p.282)
+
+**Prerequisites:** a character with a Gyro Mount worn (not in Storage) and a Combat Pool base of 5
+(Quickness 4, Intelligence 4, Willpower 2), no armour. As GM. JS only — reload the tab.
+
+- [ ] The Combat Pool box shows **2** and the note says it is halved by the gyro.
+- [ ] Type **4** into the total box: after the sheet re-renders it still reads **4** (not 3), and the
+      tooltip's "Manual modifier" line reads **+3**.
+- [ ] Type **2**, then **0**: each reads back exactly.
+- [ ] Put the gyro in Storage: the box shows the full pool; type **4** and it reads **4** with a modifier of
+      the plain difference (base 5 → −1) — behaviour without a gyro is unchanged.
+- [ ] Karma Pool and Spell Pool total boxes still accept a typed total as before.
