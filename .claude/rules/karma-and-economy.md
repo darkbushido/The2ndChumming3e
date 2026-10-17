@@ -111,7 +111,10 @@ re-crossed the pool threshold from 0 and granted points twice.
 
 ### The ledger  · TODO 79
 `scripts/data/ledger.mjs`. `system.ledger`: `{ when, kind: 'karma'|'nuyen'|'pool'|'poolSpent', delta, from, to,
-reason, by, revert?, reverted? }`, under **📒 Ledger** on the Bio tab. Labels by `specForKind(kind)`.
+reason, by, revert?, reverted? }`, on the **📒 Ledger** tab (every entry; From → To, By; GM-only ✕) with the latest
+`BIO_LEDGER_ROWS` (8) on the Bio tab (TODO 153). Labels by `specForKind(kind)`.
+- ⚠ **The GM's ✕ removes history, never the totals**, through `Ledger.without`, which returns null when the entry at
+  that index is not the one the sheet drew (a stale click). Mutant `ledger-delete-ignores-a-stale-row`.
 - ⚠ **Derived from the WRITE** in `SR3EActor.recordLedger` (called by `_preUpdate`), **never from call sites**.
   `tests/ledger.test.mjs` ratchets writers that bypass `actor.update`.
 - ⚠ **Rides along in the same update** (no second write, no GM relay), in the caller's spelling (flat or nested).

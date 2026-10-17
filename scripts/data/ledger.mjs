@@ -206,6 +206,39 @@ export const Ledger = {
       .slice(0, Math.max(0, limit));
   },
 
+  /**
+   * Newest first, each with its index in the STORED array — what a row needs to be deleted by
+   * (TODO 153). `limit` null = all.
+   */
+  rows(entries, { limit = null } = {}) {
+    const all = Ledger.of({ ledger: entries }).map((entry, idx) => ({ entry, idx }))
+      .sort((a, b) => (num(b.entry.when) - num(a.entry.when)) || (b.idx - a.idx));
+    return limit == null ? all : all.slice(0, Math.max(0, limit));
+  },
+
+  /**
+   * The ledger without entry `idx` — the GM's ✕ (TODO 153). Returns a NEW array, or null when the
+   * entry at `idx` is not `expected` (the sheet was drawn before another write moved the entries),
+   * so a stale click never deletes the wrong line.
+   * ⚠ History only: the karma / nuyen totals are not touched.
+   */
+  without(entries, idx, expected) {
+    const list = Ledger.of({ ledger: entries });
+    if (!Number.isInteger(idx) || idx < 0 || idx >= list.length) return null;
+    if (JSON.stringify(list[idx]) !== JSON.stringify(expected)) return null;
+    return list.filter((_e, i) => i !== idx);
+  },
+
+  /**
+   * The "Why" an entry shows (the maintainer, 2026-09-27: never a dash). A write that named no reason
+   * came from someone typing in the box — every tool that changes karma or nuyen passes
+   * `ledgerReason` — so it reads "By hand".
+   */
+  why(entry) {
+    const r = str(entry?.reason).trim();
+    return r || 'By hand';
+  },
+
   /** `+40` / `−1,500` — the sign is the point, so it is never dropped. */
   formatDelta(kind, delta) {
     const d = num(delta);

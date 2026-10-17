@@ -2601,3 +2601,20 @@ with Magic 6, Sorcery, and a Fireball (Combat, Drain `(DL+1)`) with some Good Ka
 - [ ] Same spell with the limit off the **cost**: Drain is **Physical**, F=8, TN 4.
 - [ ] A fetish-limited spell warns that the fetish must be touching the caster; casting is never refused.
 - [ ] The GM's ↺ on the "Learned Fireball" ledger line puts the spell's Force **and both limits** back.
+
+## 45. The 📒 Ledger tab and the GM's ✕ (TODO 153, `feature/ledger-tab`)
+
+**Prerequisites:** a character with more than 8 ledger entries (change nuyen or karma by hand a few times),
+owned by Player2. JS only — reload the tab, no restart.
+
+- [ ] The sheet has a **📒 Ledger** tab at the end of the tab bar. It lists **every** entry, newest first,
+      with date and time, From → To and By.
+- [ ] Type a new Nuyen value in the box → its row's **Why** reads **By hand**, never a dash (both tabs).
+- [ ] The **Bio** tab shows only the latest **8**, then "… and N older — see the 📒 Ledger tab"; the link
+      switches to the tab.
+- [ ] As the **GM**, each row on the Ledger tab has a ✕. Click one → a confirm names the change, its reason
+      and who made it, and says the totals stay. Confirm → the row is gone; **Nuyen / Good Karma unchanged**.
+- [ ] Cancel the confirm → nothing changes.
+- [ ] As **Player2** on the same sheet: the Ledger tab shows the rows **without** ✕.
+- [ ] Stale click: GM opens the Ledger tab, Player2 then changes their nuyen, GM clicks ✕ on a row before the
+      sheet redraws → "The ledger changed since the sheet was drawn — nothing was removed."

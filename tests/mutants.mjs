@@ -1811,6 +1811,16 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'ledger-delete-ignores-a-stale-row',
+    suite:  'ledger',
+    ...LEDGER, method: 'without',
+    was:    'a GM delete that trusts the row index alone (TODO 153). The sheet is drawn, a player '
+          + 'spends karma, the entries move, and the GM click removes a different line from the '
+          + 'one they read',
+    impl:   (entries, idx) => (Array.isArray(entries) && idx >= 0 && idx < entries.length
+      ? entries.filter((_e, i) => i !== idx) : null),
+  },
+  {
     id:     'ledger-duplicate-inherits-history',
     suite:  'ledger',
     ...LEDGER, method: 'inherited',
