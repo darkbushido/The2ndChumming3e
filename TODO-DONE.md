@@ -7135,6 +7135,8 @@ This is a feature, so it goes on a branch.
 
 **Done 2026-10-17 (`dfb91371`, `feature/spells-grenades`).** SR3 p.183: *"Living targets may always make a Spell Resistance Test against spells, unless the target of the spell is willing"*; with no test, *"all the successes from the Sorcery Test are used … to determine the spell's effect"*. The cast (Sorcery Test, TN the targeted Attribute, Drain) is unchanged — the book gives a willing subject no lower TN — but a non-damaging spell now asks which targets are willing (self, party and friendly tokens ticked by default; always editable) and a ticked target gets a line stating the effect instead of a Resist Spell button. Combat and Elemental spells keep their flow. Self-casting itself was already on main (`_promptTarget` `allowSelf`); `origin/spell-self-target` is fully superseded.
 
+**Ruled 2026-10-17 by the maintainer:** keep the Sorcery Test target number unchanged for a willing subject (the targeted Attribute, as the book gives no lower TN). No code change.
+
 ## 192. ✅ 💴 Make changing funds easier — a ± button, and giving money to another player — **requested 2026-09-27** · `41c6c13d`
 
 A **+/− money** control on the sheet: type N, add or subtract it, with an optional reason for the
