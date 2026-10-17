@@ -36,6 +36,7 @@ const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots'
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
+const PORDER = { module: '../scripts/data/patient-order.mjs', klass: 'PatientOrder' };
 const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
@@ -2108,5 +2109,27 @@ export const MUTANTS = [
           + '"the player chooses which when the spell is learned"',
     impl:   (force, spell) => Math.max(0, Math.floor(Number(force) || 0)
       - (spell?.system?.limitFetish ? 1 : 0) - (spell?.system?.limitExclusive ? 2 : 0)),
+  },
+  {
+    id:     'patients-hostile-above-players',
+    suite:  'patient-order',
+    ...PORDER, method: 'tier',
+    was:    'a hostile token outranked the party: a player character on a hostile-disposition token sank to the bottom '
+          + '(TODO 208 asks for players first, hostile NPCs last)',
+    impl:   ({ isPlayer = false, hostile = false } = {}) => (hostile ? 2 : isPlayer ? 0 : 1),
+  },
+  {
+    id:     'patients-hostile-not-last',
+    suite:  'patient-order',
+    ...PORDER, method: 'tier',
+    was:    'hostile NPCs sorted with the other NPCs instead of at the bottom (TODO 208)',
+    impl:   ({ isPlayer = false } = {}) => (isPlayer ? 0 : 1),
+  },
+  {
+    id:     'patients-hostile-dropped',
+    suite:  'patient-order',
+    ...PORDER, method: 'order',
+    was:    'hostile NPCs were filtered out of the list instead of listed last — "every actor stays in the list" (TODO 208)',
+    impl:   function (entries) { return [...entries].filter(e => !e.hostile).sort((a, b) => this.tier(a) - this.tier(b)); },
   },
 ];

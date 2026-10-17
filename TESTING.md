@@ -2616,3 +2616,14 @@ with Magic 6, Sorcery, and a Fireball (Combat, Drain `(DL+1)`) with some Good Ka
 - [ ] A player's client shows the pips with the same grouping and no buttons.
 - [ ] Narrow the sidebar: the row wraps without overlapping the combatant name.
 
+### Healing patient list order (TODO 208)
+
+**Prerequisites:** a scene with a player character, a friendly or neutral NPC token, and a hostile NPC token
+(token disposition Hostile, ideally unlinked); the player character's name sorts last alphabetically.
+
+- [ ] GM tools → 🩹 Healing: the "who is hurt?" list shows the **player characters first**, then the other NPCs,
+      and the **hostile NPC last** — even though the alphabetical order would put them elsewhere.
+- [ ] The hostile NPC is still listed and can be picked and treated.
+- [ ] Turn the hostile token to Neutral and reopen: it moves up into the NPC group.
+- [ ] As a player, "Treat someone else…": your own character and the other players' characters lead the list.
+

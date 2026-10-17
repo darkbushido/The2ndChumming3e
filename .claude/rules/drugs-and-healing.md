@@ -61,6 +61,8 @@ until clicked.**
   go through **`applyToPatient`**: owner writes directly, anyone else sends the INTENT to the GM
   (`sr3e.heal.apply` → `_applyOp` in the actor's queue) — never a box count (wounds are accumulators
   `sr3e.actor.set` refuses). Money, Attribute and Magic loss stay the patient's.
+- **Patient list order** (TODO 208, `scripts/data/patient-order.mjs`): player characters, then other NPCs, then
+  hostile-disposition NPCs; owned first, then by name. Order only — nobody is dropped, and the roster stays world-wide.
 - **⏱ Time boxes** (`_timeBox`, `_roadHtml`, `recoveryRoad`, `formatTurns`; a Combat Turn is 3 s, p.39) lead
   every card; the menu shows the Healing Table road.
 - **`act()` returning `false` = cancelled**: `sr3e.js` hands the one-shot button back.
