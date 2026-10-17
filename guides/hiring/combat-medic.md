@@ -56,7 +56,7 @@ below.
 | Medkit (Rating 3) | 200¥ | Its expert system has Biotech 3. Supplies run out on a 1 on 1D6 after each treatment. |
 | Medkit supplies | 50¥ | A restock. |
 | Trauma patch | 500¥ | One more Body Test to stabilize a dying patient, at TN 4 plus the rating of any dermal armor or blood filters *(SR3 p.129)*. It increases the risk of permanent damage. |
-| Stabilization unit (Rating 2) | 10,000¥ | Adds its rating in dice to stabilization tests. |
+| Stabilization unit (Rating 2) | 10,000¥ | Automatically stabilizes anyone placed inside, and the patient gets **−2** on healing tests while in it *(SR3 p.305)*. |
 | Deluxe stabilization unit (Rating 6) | 20,000¥ | |
 
 ---
