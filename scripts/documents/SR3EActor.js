@@ -4862,6 +4862,7 @@ _prepareCharacter(sys, attr) {
     purchaseSourced:   ['SR3EPurchase', 'onSourced'],       // TODO 82 — Etiquette vs Availability, p.272
     riggerDisorient:   ['SR3EActor', '_riggerDisorientOutcome'], // TODO 198 — Willpower (4), p.156
     collisionBraking:  ['SR3ECollision', 'brakingRolled'],      // TODO 189 — the Braking Test, p.142
+    concealPerception: ['SR3EConcealment', 'perceptionRolled'],  // TODO 195 — Perception vs Concealability, p.231
   };
 
   static _registryFn([cls, fn] = [], what) {

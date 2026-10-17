@@ -41,6 +41,7 @@ const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
 const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellLimits' };
 const COLLISIONS = { module: '../scripts/data/collisions.mjs', klass: 'Collisions' };
+const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment' };
 
 export const MUTANTS = [
   {
@@ -1794,6 +1795,93 @@ export const MUTANTS = [
       const p = Math.max(0, power - impact);
       const idx = S.indexOf(level) - (belted ? 1 : 0);
       return { power: p, level: idx >= 0 ? S[idx] : null, tn: Math.max(2, p) };
+    },
+  },
+
+  /* ── The Concealment view · TODO 195 (SR3 p.45, p.231, p.236, p.237, p.270, p.301-303) ─────────── */
+  {
+    id:     'conceal-search-not-halved',
+    suite:  'concealment',
+    ...CONCEAL, method: 'targetNumber',
+    was:    'p.270 - "Searches have a target number of HALF the regular Concealability Rating (rounding down)". '
+          + 'Rolling a search against the whole number makes every pat-down twice as hard to win as the gear table says',
+    impl:   (c, _mode, mod = 0) => Math.max(2, Math.trunc(c) + Math.trunc(mod)),
+  },
+  {
+    id:     'conceal-search-half-rounds-up',
+    suite:  'concealment',
+    ...CONCEAL, method: 'targetNumber',
+    was:    'p.270 - half the Concealability "(rounding DOWN)": Concealability 7 searches at 3, not 4',
+    impl:   (c, mode, mod = 0) => Math.max(2, (mode === 'search-half' ? Math.ceil(c / 2) : Math.trunc(c)) + Math.trunc(mod)),
+  },
+  {
+    id:     'conceal-no-floor-of-two',
+    suite:  'concealment',
+    ...CONCEAL, method: 'targetNumber',
+    was:    'p.112 - "no target number can ever be less than 2": half of Concealability 3 is 1, which must read as 2',
+    impl:   (c, mode, mod = 0) => (mode === 'search-half' ? Math.floor(c / 2) : Math.trunc(c)) + Math.trunc(mod),
+  },
+  {
+    id:     'conceal-sorted-most-concealed-first',
+    suite:  'concealment',
+    ...CONCEAL, method: 'sort', needsOriginal: '_sortOriginal',
+    was:    'Concealability is the Perception Test\'s target number, so the LOWEST is the easiest to spot: the list reads '
+          + 'least concealed first. Sorting the other way shows the table the best-hidden gear at the top',
+    impl:   function (rows) { return this._sortOriginal(rows).reverse(); },
+  },
+  {
+    id:     'conceal-search-table-signs-flipped',
+    suite:  'concealment',
+    ...CONCEAL, method: 'searchModifier', needsOriginal: '_searchOriginal',
+    was:    'p.236 - a LONGER, more professional search is a lower target number (Detailed -1, Deliberate -2); a cursory '
+          + 'one by an amateur is higher. Flipping the signs makes careful searches easier to beat',
+    impl:   function (o) { const r = this._searchOriginal(o); return { ...r, mod: -r.mod }; },
+  },
+  {
+    id:     'conceal-strip-search-needs-a-roll',
+    suite:  'concealment',
+    ...CONCEAL, method: 'searchModifier', needsOriginal: '_searchOriginal2',
+    was:    'p.236 - a 6-10 minute strip search: "Weapon found" - no test is rolled at all',
+    impl:   function (o) { return { ...this._searchOriginal2(o), found: false }; },
+  },
+  {
+    id:     'conceal-synthetic-limb-obvious',
+    suite:  'concealment',
+    ...CONCEAL, method: 'classifyImplant', needsOriginal: '_classifyOriginal',
+    was:    'p.301/p.303 - a SYNTHETIC cyberlimb is disguised, with Concealability 8; only an obvious one is plain sight. '
+          + 'Treating both alike hides the one the table can roll against',
+    impl:   function (item) {
+      const k = this._classifyOriginal(item);
+      return k && k.state === 'disguised' && k.conceal === 8 ? { ...k, state: 'obvious', conceal: null } : k;
+    },
+  },
+  {
+    id:     'conceal-limb-enhancement-shown',
+    suite:  'concealment',
+    ...CONCEAL, method: 'classifyImplant', needsOriginal: '_classifyOriginal2',
+    was:    'the Cyberlimbs category also holds the enhancements and accessories ("Quickness [5] w/Torso", "Induction Pad"); '
+          + 'listing them as limbs would show the table chrome the character does not wear on the outside',
+    impl:   function (item) {
+      const k = this._classifyOriginal2(item);
+      return k ?? (item?.system?.cyberwareCategory === 'Cyberlimbs' ? { state: 'obvious', conceal: null, note: '' } : null);
+    },
+  },
+  {
+    id:     'conceal-stored-implant-shown',
+    suite:  'concealment',
+    ...CONCEAL, method: 'classifyImplant', needsOriginal: '_classifyOriginal3',
+    was:    'an implant in the stash is carried, not fitted - it is not on the character\'s body for anyone to see',
+    impl:   function (item) {
+      return this._classifyOriginal3({ ...item, flags: undefined });
+    },
+  },
+  {
+    id:     'conceal-unworn-armour-shown',
+    suite:  'concealment',
+    ...CONCEAL, method: 'rows', needsOriginal: '_rowsOriginal',
+    was:    'only armour actually WORN can be seen: a spare jacket in the kit bag is not on anybody',
+    impl:   function (items, o = {}) {
+      return this._rowsOriginal(items, { ...o, wornIds: items.filter(i => i.type === 'armor').map(i => i.id) });
     },
   },
 

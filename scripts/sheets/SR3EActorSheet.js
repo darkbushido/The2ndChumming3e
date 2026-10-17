@@ -81,6 +81,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         castWard:          SR3EActorSheet._onCastWard,
         rollContested:     SR3EActorSheet._onRollContested,
         rollSuccessTest:   SR3EActorSheet._onRollSuccessTest,
+        concealment:       SR3EActorSheet._onConcealment,
         unlinkVehicle:     SR3EActorSheet._onUnlinkVehicle,
         rollResistDamage:  SR3EActorSheet._onRollResistDamage,
         clearVCR:          SR3EActorSheet._onClearVCR,
@@ -1115,6 +1116,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)">
         ⚔ Contested Roll
       </button>
+      ${game.user.isGM ? `<button type="button" class="btn-sm" data-action="concealment"
+              style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)"
+              title="GM: what this character carries that can be seen, with each item's Concealability (SR3 p.45, p.231, p.270)">
+        👁 Concealment
+      </button>` : ''}
       <button type="button" class="btn-sm" data-action="rollResistDamage"
               style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border)"
               title="Shift-click to enter successes manually">
@@ -5080,6 +5086,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     }
 
     await vActor.update({ 'system.controlMode': mode });
+  }
+
+  /** 👁 Concealment (TODO 195) — the GM's list of what this character carries that can be seen. */
+  static async _onConcealment(_ev, _target) {
+    return game.sr3e.SR3EConcealment.open(this.actor);
   }
 
   /**

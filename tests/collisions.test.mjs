@@ -197,7 +197,7 @@ export async function run(t) {
     && (coll.match(/isLiveActor/g) ?? []).length >= 2 && /sceneFirst\(game\.actors\.filter\(a => a\.type === 'vehicle'/.test(coll));
   t.ok('the Braking Test is a follow-up registered on SR3EActor.FOLLOW_UPS', /collisionBraking:\s+\['SR3ECollision', 'brakingRolled'\]/.test(actorSrc));
   t.ok('…and rollPool hands `followUp` to the wave card', (actorSrc.match(/followUp:\s+options\.followUp\s+\?\? null/g) ?? []).length === 2);
-  t.ok('the class is registered on game.sr3e', /SR3EVehicleChase, SR3ECollision, SR3EVehicleSheet,/.test(sr3e));
+  t.ok('the class is registered on game.sr3e', /SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet,/.test(sr3e));
   t.ok('the resolve button is GM-only and one-shot', /sr-collision-resolve-btn[\s\S]{0,400}!game\.user\.isGM\) return _denyBtn[\s\S]{0,400}_claimBtn\(btn, mid, 'collisionresolve', i\)/.test(sr3e));
   t.ok('…the barrier button too', /sr-collision-barrier-btn[\s\S]{0,400}!game\.user\.isGM\) return _denyBtn[\s\S]{0,400}_claimBtn\(btn, mid, 'collisionbarrier', i\)/.test(sr3e));
   t.ok('…and the GM owes the resolve step (no actor key in its payload)', !/(actorId|vehicleActorId)/.test(
