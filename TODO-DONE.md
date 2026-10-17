@@ -7122,6 +7122,20 @@ Players need a walkthrough of rigging and of decking — the rules and how to do
 `guides/TODO.md` items 3 (full decking page) and 4 (full rigging page) cover the rules side; this
 adds the how-to. This is guide work, not a code change.
 
+## 195. ✅ A concealment view — what someone is carrying, and how well it is hidden — **requested 2026-09-27** — closed in 54f67db8
+
+Players are walking around with large arsenals, and the GM needs a way to show why the world reacts.
+Wanted: a tool that lists what a character carries that can be seen (weapons, armour, visible
+cyberware) with each item's Concealability, so the GM can show it to the table. The book's
+Concealability rules (the searches and the table) are to be quoted with their page before building.
+This is a feature, so it goes on a branch.
+
+**Built:** `SR3EConcealment` (GM-only, the Rollable Tables tool and the character's Attributes tab) lists weapons, worn
+armour and outward implants least concealed first, posts the list to chat, and rolls the Perception Test against any row
+(SR3 p.45, p.231-232, p.236-237, p.270). ⚠ **Open for the 0.6.x rules record:** p.270 says a search's target number is
+*half* the Concealability (rounding down); p.237's manual search uses the Concealability whole with the Physical Search
+Modifiers Table. The tool offers both and picks neither — the maintainer chooses a default.
+
 ## 197. ✅ Ledger entries appear on other characters — **reported 2026-09-27** · fixed `1726af72`
 
 The real cause of the report in [#193](#193): Buzzz and Velvet carried every one of each
