@@ -44454,7 +44454,8 @@
       ],
       "hash": "dc5bd1aa53",
       "text": "# Vehicles\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / heading — states no rule"
     },
     {
       "id": "rules/vehicles.md#2",
@@ -44465,7 +44466,28 @@
       ],
       "hash": "da50b57a28",
       "text": "Every vehicle in the core rulebook with its statistics, what it takes to\nrig one, and vehicle weapon mounts. Driving Tests, vehicle combat, damage\nand crashes are on [Rigging](../rigging/); drones have their own page,\n[Drones](../drones/). From the core rulebook *(SR3 p.130–133, p.306–312)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 132,
+          "printedPage": 130,
+          "quote": "The basic vehicle Attributes are Handling, Speed, Acceleration, Body, Armor, Signature, Autonav, Pilot, Sensor, Cargo Factor, Load, Seating and Entry Points"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 513,
+          "snippet": "handling:        _vAttr(3),"
+        },
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 524,
+          "snippet": "load:     _vAttr(0),"
+        }
+      ],
+      "note": "Introduction; its page references (p.130-133 attributes, p.306-312 vehicles, rigging gear and mounts) are resolved in the units below."
     },
     {
       "id": "rules/vehicles.md#3",
@@ -44476,7 +44498,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table of contents marker — states no rule"
     },
     {
       "id": "rules/vehicles.md#4",
@@ -44487,7 +44510,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule — states no rule"
     },
     {
       "id": "rules/vehicles.md#5",
@@ -44498,7 +44522,33 @@
       ],
       "hash": "fa0442d0a1",
       "text": "## Reading a vehicle's statistics  *(SR3 p.130–133)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 132,
+          "printedPage": 130,
+          "quote": "The basic vehicle Attributes are Handling, Speed, Acceleration, Body, Armor, Signature, Autonav, Pilot, Sensor, Cargo Factor, Load, Seating and Entry Points"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 513,
+          "snippet": "handling:        _vAttr(3),"
+        },
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 514,
+          "snippet": "handlingOffRoad: _vAttr(3),"
+        },
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 524,
+          "snippet": "load:     _vAttr(0),"
+        }
+      ],
+      "note": "The vehicle actor stores Handling (road and off-road), Speed, Accel, Body, Armor, Sig, Autonav, Pilot, Sensor, Cargo and Load, the attributes the book lists; Seating and Entry Points are separate fields."
     },
     {
       "id": "rules/vehicles.md#6",
@@ -44509,7 +44559,8 @@
       ],
       "hash": "9e344778c7",
       "text": "| Statistic | What it means |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row — states no rule"
     },
     {
       "id": "rules/vehicles.md#7",
@@ -44520,7 +44571,45 @@
       ],
       "hash": "ff430d1ac5",
       "text": "| **Handling** | The base TN for Driving Tests, so **lower is better**. Most ground vehicles show two: **on road / off road**, as in 3/8. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 132,
+          "printedPage": 130,
+          "quote": "The Handling Rating functions as the base target number for all Driving Tests that use a Vehicle Skill"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 132,
+          "printedPage": 130,
+          "quote": "higher the rating, the more difficult a vehicle is to control"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 132,
+          "printedPage": 130,
+          "quote": "the first represents the vehicle's Handling on a road, the second its Handling in off-road terrain"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1110,
+          "snippet": "const handling = (sys.attributes?.handling?.base ?? 4) + defTnMod;"
+        },
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 817,
+          "snippet": "const handling   = vehicle?.system.attributes?.handling?.base ?? 4;"
+        },
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 514,
+          "snippet": "handlingOffRoad: _vAttr(3),"
+        }
+      ],
+      "note": "Book (p.130): Handling is the base TN for every Driving Test; most ground vehicles have two ratings, the second used \"in off-road terrain\", and a ground vehicle off-road also halves its Speed. Code: the compendium vehicles carry both numbers (`handling`, `handlingOffRoad`) and the guide row is right, but every Driving Test, chase action and Crash Test reads only `handling.base` (SR3EVehicleSheet.js:1110, SR3EVehicleChase.js:817); `handlingOffRoad` is read nowhere in scripts/ (only declared in the data model and the character importer). So the off-road Handling is never used as the base TN, and the off-road Speed halving is not applied either."
     },
     {
       "id": "rules/vehicles.md#8",
@@ -44531,7 +44620,39 @@
       ],
       "hash": "8853e58478",
       "text": "| **Speed** | Maximum safe speed, in **meters per Combat Turn**. A fixed-wing aircraft has two, its minimum and its maximum. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 134,
+          "printedPage": 132,
+          "quote": "The Speed Rating represents the maximum safe speed at which a vehicle can travel for a sustained distance"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 134,
+          "printedPage": 132,
+          "quote": "Fixed-wing aircraft have two Speed Ratings. The higher number is its maximum safe speed; the lower represents the aircraft's stall speed"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 819,
+          "snippet": "const speedAttr  = vehicle?.system.attributes?.speed?.base    ?? 0;"
+        },
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 822,
+          "snippet": "const exceedsSpeed = p.speed > maxSpeedKmct;"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-cargo.sr3e-vehicle-0131.json",
+          "line": 15,
+          "snippet": "\"notes\": \"Alt-mode Speed/Accel: 135(340)/22\","
+        }
+      ],
+      "note": "Book (p.132): fixed-wing aircraft have two Speed Ratings; \"The higher number is its maximum safe speed; the lower represents the aircraft's stall speed\". The meters-per-Combat-Turn definition is implemented (Speed is the cap the chase compares against, and the TN +1 for exceeding it), but the vehicle model has ONE speed field and the compendium stores the LOWER (stall) number in it for the Cessna C750 (135) and GMC Banshee (250); the higher maximum (340 / 1,000) survives only in the notes text. So for fixed-wing aircraft the code treats the stall speed as the maximum safe speed."
     },
     {
       "id": "rules/vehicles.md#9",
@@ -44542,7 +44663,30 @@
       ],
       "hash": "6694836063",
       "text": "| **Accel** | How much each success on a Driving Test can add to Speed in a chase. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 134,
+          "printedPage": 132,
+          "quote": "increases the vehicle's Speed by its Acceleration Rating"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "accel\\w*\\s*\\*\\s*successes",
+          "path": "scripts"
+        },
+        {
+          "pattern": "successes\\s*\\*\\s*accel",
+          "path": "scripts"
+        },
+        {
+          "pattern": "speed\\s*\\+=\\s*.{0,40}accel",
+          "path": "scripts"
+        }
+      ],
+      "note": "Accel is stored and shown, and the Collision tool's Braking Test uses it to slow a vehicle (Acceleration x successes, and the x4 deceleration limit; scripts/data/collisions.mjs `braking`), but the chase's Accel / Brake action only rolls the Driving Test: a success does not add Acceleration to the vehicle's Speed (the Speed in the chase is typed in by hand)."
     },
     {
       "id": "rules/vehicles.md#10",
@@ -44553,7 +44697,32 @@
       ],
       "hash": "bdf06ab4fc",
       "text": "| **Body** | Toughness. It also sets the number of weapon mounts. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 134,
+          "printedPage": 132,
+          "quote": "A vehicle's Body Rating represents its mass and measures how much punishment it can take"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 134,
+          "printedPage": 132,
+          "quote": "A vehicle's Body Rating also indicates how many weapons can be mounted on it"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hardpoint",
+          "path": "scripts"
+        },
+        {
+          "pattern": "firmpoint",
+          "path": "scripts"
+        }
+      ],
+      "note": "Body as toughness is used throughout (damage track, soak, ramming, collisions: e.g. SR3EVehicleChase.js:531, SR3ECollision.js:69), but nothing counts weapon mounts against Body: no hardpoint or firmpoint appears anywhere in scripts/."
     },
     {
       "id": "rules/vehicles.md#11",
@@ -44564,7 +44733,33 @@
       ],
       "hash": "e95f0a4413",
       "text": "| **Armor** | Hardened armor: it stops any hit whose Power (after the vehicle's Body, but not counting burst or autofire) doesn't beat it. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 134,
+          "printedPage": 132,
+          "quote": "deflect all damage from weapons with a Power (modified by the vehicle's Body, but not by burst or autofire) equal to or less than the Armor Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7660,
+          "snippet": "const v = actor.system?.attributes?.armor?.base ?? 0;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 9389,
+          "snippet": "const soakTN = Math.max(2, stagedPower - defaultArmor);"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 9393,
+          "snippet": "if (this.type === 'vehicle' && stagedPower <= defaultArmor) {"
+        }
+      ],
+      "note": "Book (p.132): vehicle armour is hardened: it deflects all damage from weapons with a Power \"(modified by the vehicle's Body, but not by burst or autofire) equal to or less than the Armor Rating\", and above that it reduces Power like ordinary armour. Code: the Armor attribute is read as both Ballistic and Impact armour; the soak card subtracts it from the staged Power and, when the staged Power does not exceed it, prints a \"no damage to the vehicle\" note (the damage is announced, not applied). The test uses the staged Power, which includes burst and full-auto increases; the code's own comment (SR3EActor.js:9390-9392) says \"the card cannot tell a burst's Power from the weapon's own\", so the book's exclusion of burst/autofire is not applied."
     },
     {
       "id": "rules/vehicles.md#12",
@@ -44575,7 +44770,33 @@
       ],
       "hash": "0f00e5156f",
       "text": "| **Sig** | Signature: the TN for sensors and guided weapons to lock on. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "serves as the target number for sensor and missile to-hit tests made against the vehicle"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1773,
+          "snippet": "? (targetActor.system.attributes?.sig?.base ?? 4)"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1832,
+          "snippet": "const defaultTN       = Math.max(2, baseSig);"
+        },
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1899,
+          "snippet": "const sig    = oppV?.system.attributes?.sig?.base ?? 4;"
+        }
+      ],
+      "note": "A vehicle weapon's base TN and the chase's Sensor/targeting tests default to the target vehicle's Sig."
     },
     {
       "id": "rules/vehicles.md#13",
@@ -44586,7 +44807,33 @@
       ],
       "hash": "150b0eeeb9",
       "text": "| **Autonav** | The collision-avoidance and navigation system, a driver's assistant. It can't fire weapons. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "The autonav system serves as a driver's assistant. It can make minor control adjustments to avoid collisions and can navigate a course"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1109,
+          "snippet": "const autonav  = sys.attributes?.autonav?.base ?? 0;"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1120,
+          "snippet": "const basePool = skillDice + autonav;"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1340,
+          "snippet": "const bonus    = usingVCR ? cpDice : (combatOn || collision ? 0 : autonav);"
+        }
+      ],
+      "note": "Autonav adds dice to non-combat Driving Tests only. \"It can't fire weapons\" is the book's description and nothing in the code lets Autonav fire one."
     },
     {
       "id": "rules/vehicles.md#14",
@@ -44597,7 +44844,33 @@
       ],
       "hash": "035ccdc4e5",
       "text": "| **Pilot** | A drone's own brain. Ordinary vehicles have none (—). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "The Pilot Rating indicates a drone's autonomous"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 10962,
+          "snippet": "const pilotRating = this.system.attributes?.pilot?.base ?? 0;"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1036,
+          "snippet": "const pilotRating = sys.attributes?.pilot?.base ?? 0;"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-roadmaster.sr3e-vehicle-0098.json",
+          "line": 52,
+          "snippet": "\"pilot\": {"
+        }
+      ],
+      "note": "Pilot drives a drone's initiative and its own tests; the compendium vehicles store 0 for the book's \"--\"."
     },
     {
       "id": "rules/vehicles.md#15",
@@ -44608,7 +44881,28 @@
       ],
       "hash": "2b3d133607",
       "text": "| **Sensor** | Detection, identification and targeting systems. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "The Sensor Rating represents the vehicle's target-detection (knowing a target exists)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1825,
+          "snippet": "const sensorRating    = weapon.actor?.system.attributes?.sensor?.base ?? 0;"
+        },
+        {
+          "file": "scripts/SR3EVehicleChase.js",
+          "line": 1781,
+          "snippet": "return v?.system.attributes?.sensor?.base ?? 0;"
+        }
+      ],
+      "note": "Sensor is read for sensor-enhanced gunnery and the chase's sensor tests."
     },
     {
       "id": "rules/vehicles.md#16",
@@ -44619,7 +44913,28 @@
       ],
       "hash": "4e7cf17f12",
       "text": "| **Cargo** | Cargo Factor: each point is a cube half a meter on a side. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "half a meter long on each side (0.125 cubic meters)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 523,
+          "snippet": "cargo:    _vAttr(0),"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 284,
+          "snippet": "${_stat('cargo',    'Cargo')}"
+        }
+      ],
+      "note": "Cargo Factor is stored and shown on the vehicle sheet; nothing computes with it."
     },
     {
       "id": "rules/vehicles.md#17",
@@ -44630,7 +44945,28 @@
       ],
       "hash": "0b7f0062d5",
       "text": "| **Load** | What it can carry, in kilograms. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 135,
+          "printedPage": 133,
+          "quote": "Load represents the amount of cargo weight (in kilograms) a vehicle can lift, pull or carry"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 524,
+          "snippet": "load:     _vAttr(0),"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 285,
+          "snippet": "${_stat('load',     'Load')}"
+        }
+      ],
+      "note": "Load is stored and shown on the vehicle sheet; nothing computes with it."
     },
     {
       "id": "rules/vehicles.md#18",
@@ -44641,7 +44977,8 @@
       ],
       "hash": "64772e1d52",
       "text": "The full rules for each are summarized on\n[Rigging](../rigging/#vehicle-attributes).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "cross-reference to the Rigging page — states no rule"
     },
     {
       "id": "rules/vehicles.md#19",
@@ -44652,7 +44989,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule — states no rule"
     },
     {
       "id": "rules/vehicles.md#20",
@@ -44663,7 +45001,29 @@
       ],
       "hash": "f9fde9dea8",
       "text": "## The core rulebook's vehicles  *(SR3 p.307–311)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "This sleek two-seater's low price and heavy advertising campaign"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "This dual-prop craft can carry passengers or serve as a surveillance plane"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-e.sr3e-vehicle-0080.json",
+          "line": 10,
+          "snippet": "\"cost\": 20500,"
+        }
+      ],
+      "note": "Section heading; the vehicles of p.307-311 are resolved row by row below."
     },
     {
       "id": "rules/vehicles.md#21",
@@ -44674,7 +45034,8 @@
       ],
       "hash": "01eb961f26",
       "text": "| Vehicle | Handling | Speed | Accel | Body | Armor | Sig | Autonav | Sensor | Cargo | Load | Cost |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row — states no rule"
     },
     {
       "id": "rules/vehicles.md#22",
@@ -44685,7 +45046,8 @@
       ],
       "hash": "38ca26d812",
       "text": "| *Cars* | | | | | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "vehicle-category label row of the table — states no rule"
     },
     {
       "id": "rules/vehicles.md#23",
@@ -44696,7 +45058,59 @@
       ],
       "hash": "11f88c5e93",
       "text": "| Chrysler-Nissan Jackrabbit (electric) | 3/8 | 80 | 5 | 3 | 0 | 5 | 1 | 0 | 1 | 100 | 20,500¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "Electric 3/8 80 5 3 0 5 1 -- 0 1 100"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "Cost: 20,500¥ (electric)/16,500¥ (methane)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-e.sr3e-vehicle-0080.json",
+          "line": 10,
+          "snippet": "\"cost\": 20500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-e.sr3e-vehicle-0080.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 3, \"base\": 3 }, \"handlingOffRoad\": { \"value\": 8, \"base\": 8 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-e.sr3e-vehicle-0080.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 80, \"base\": 80 }, \"accel\": { \"value\": 5, \"base\": 5 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-e.sr3e-vehicle-0080.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 3, \"base\": 3 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-e.sr3e-vehicle-0080.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 5, \"base\": 5 }, \"autonav\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-e.sr3e-vehicle-0080.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-e.sr3e-vehicle-0080.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 1, \"base\": 1 }, \"load\": { \"value\": 100, \"base\": 100 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#24",
@@ -44707,7 +45121,59 @@
       ],
       "hash": "d753a146f0",
       "text": "| Chrysler-Nissan Jackrabbit (methane) | 3/8 | 90 | 6 | 3 | 0 | 4 | 1 | 0 | 1 | 100 | 16,500¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "Methane 3/8 90 6 3 0 4 1 -- 0 1 100"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "Cost: 20,500¥ (electric)/16,500¥ (methane)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-m.sr3e-vehicle-0081.json",
+          "line": 10,
+          "snippet": "\"cost\": 16500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-m.sr3e-vehicle-0081.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 3, \"base\": 3 }, \"handlingOffRoad\": { \"value\": 8, \"base\": 8 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-m.sr3e-vehicle-0081.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 90, \"base\": 90 }, \"accel\": { \"value\": 6, \"base\": 6 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-m.sr3e-vehicle-0081.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 3, \"base\": 3 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-m.sr3e-vehicle-0081.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 4, \"base\": 4 }, \"autonav\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-m.sr3e-vehicle-0081.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-jackrabbit-m.sr3e-vehicle-0081.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 1, \"base\": 1 }, \"load\": { \"value\": 100, \"base\": 100 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#25",
@@ -44718,7 +45184,59 @@
       ],
       "hash": "35bdce0e81",
       "text": "| Eurocar Westwind 2000 | 3/8 | 210 | 10 | 3 | 0 | 2 | 3 | 1 | 5 | 45 | 57,000¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "Standard 3/8 210 10 3 0 2 3 -- 1 5 45"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "Cost: 57,000¥/77,000¥ Availability: 3/72 hrs"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000.sr3e-vehicle-0071.json",
+          "line": 10,
+          "snippet": "\"cost\": 57000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000.sr3e-vehicle-0071.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 3, \"base\": 3 }, \"handlingOffRoad\": { \"value\": 8, \"base\": 8 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000.sr3e-vehicle-0071.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 210, \"base\": 210 }, \"accel\": { \"value\": 10, \"base\": 10 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000.sr3e-vehicle-0071.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 3, \"base\": 3 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000.sr3e-vehicle-0071.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 2, \"base\": 2 }, \"autonav\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000.sr3e-vehicle-0071.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000.sr3e-vehicle-0071.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 5, \"base\": 5 }, \"load\": { \"value\": 45, \"base\": 45 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#26",
@@ -44729,7 +45247,59 @@
       ],
       "hash": "eac36c8034",
       "text": "| Eurocar Westwind 2000 (turbo) | 3/8 | 240 | 14 | 3 | 0 | 1 | 3 | 1 | 5 | 45 | 77,000¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "Turbo 3/8 240 14 3 0 1 3 -- 1 5 45"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "Cost: 57,000¥/77,000¥ Availability: 3/72 hrs"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000-turbo.sr3e-vehicle-0072.json",
+          "line": 10,
+          "snippet": "\"cost\": 77000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000-turbo.sr3e-vehicle-0072.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 3, \"base\": 3 }, \"handlingOffRoad\": { \"value\": 8, \"base\": 8 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000-turbo.sr3e-vehicle-0072.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 240, \"base\": 240 }, \"accel\": { \"value\": 14, \"base\": 14 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000-turbo.sr3e-vehicle-0072.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 3, \"base\": 3 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000-turbo.sr3e-vehicle-0072.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 1, \"base\": 1 }, \"autonav\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000-turbo.sr3e-vehicle-0072.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/eurocar-westwind-2000-turbo.sr3e-vehicle-0072.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 5, \"base\": 5 }, \"load\": { \"value\": 45, \"base\": 45 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#27",
@@ -44740,7 +45310,59 @@
       ],
       "hash": "8545772679",
       "text": "| Ford Americar | 4/8 | 105 | 8 | 3 | 0 | 2 | 2 | 1 | 12 | 110 | 20,000¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "4/8 105 8 3 0 2 2 -- 1 12 110"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "Cost: 20,000¥ Availability: 2/24 hrs"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-americar.sr3e-vehicle-0052.json",
+          "line": 10,
+          "snippet": "\"cost\": 20000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-americar.sr3e-vehicle-0052.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 4, \"base\": 4 }, \"handlingOffRoad\": { \"value\": 8, \"base\": 8 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-americar.sr3e-vehicle-0052.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 105, \"base\": 105 }, \"accel\": { \"value\": 8, \"base\": 8 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-americar.sr3e-vehicle-0052.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 3, \"base\": 3 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-americar.sr3e-vehicle-0052.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 2, \"base\": 2 }, \"autonav\": { \"value\": 2, \"base\": 2 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-americar.sr3e-vehicle-0052.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-americar.sr3e-vehicle-0052.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 12, \"base\": 12 }, \"load\": { \"value\": 110, \"base\": 110 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#28",
@@ -44751,7 +45373,8 @@
       ],
       "hash": "18e1638f32",
       "text": "| *Bikes* | | | | | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "vehicle-category label row of the table — states no rule"
     },
     {
       "id": "rules/vehicles.md#29",
@@ -44762,7 +45385,59 @@
       ],
       "hash": "c55d75b003",
       "text": "| Dodge Scoot | 3/4 | 60 | 3 | 2 | 0 | 5 | 0 | — | 1 | 10 | 5,900¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "3/4 60 3 2 0 5 0 -- -- 1 10"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "Cost: 5,900¥ Availability: 2/24 hrs"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/dodge-scoot.sr3e-vehicle-0009.json",
+          "line": 10,
+          "snippet": "\"cost\": 5900,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/dodge-scoot.sr3e-vehicle-0009.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 3, \"base\": 3 }, \"handlingOffRoad\": { \"value\": 4, \"base\": 4 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/dodge-scoot.sr3e-vehicle-0009.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 60, \"base\": 60 }, \"accel\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/dodge-scoot.sr3e-vehicle-0009.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 2, \"base\": 2 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/dodge-scoot.sr3e-vehicle-0009.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 5, \"base\": 5 }, \"autonav\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/dodge-scoot.sr3e-vehicle-0009.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/dodge-scoot.sr3e-vehicle-0009.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 1, \"base\": 1 }, \"load\": { \"value\": 10, \"base\": 10 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0. The book prints Sensor \"--\" (none) for the Scoot; the pack stores Sensor 0 (the model has no \"none\" value), the same as the 0 Sensor of the Scorpion and Rapier."
     },
     {
       "id": "rules/vehicles.md#30",
@@ -44773,7 +45448,59 @@
       ],
       "hash": "aa9522acc8",
       "text": "| Harley-Davidson Scorpion | 4/5 | 120 | 6 | 2 | 1 | 2 | 2 | 0 | 4 | 60 | 13,500¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "4/5 120 6 2 1 2 2 -- 0 4 60"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "Cost: 13,500¥ Availability: 2/24 hrs"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/harley-davidson-scorpion.sr3e-vehicle-0002.json",
+          "line": 10,
+          "snippet": "\"cost\": 13500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/harley-davidson-scorpion.sr3e-vehicle-0002.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 4, \"base\": 4 }, \"handlingOffRoad\": { \"value\": 5, \"base\": 5 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/harley-davidson-scorpion.sr3e-vehicle-0002.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 120, \"base\": 120 }, \"accel\": { \"value\": 6, \"base\": 6 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/harley-davidson-scorpion.sr3e-vehicle-0002.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 2, \"base\": 2 }, \"armor\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/harley-davidson-scorpion.sr3e-vehicle-0002.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 2, \"base\": 2 }, \"autonav\": { \"value\": 2, \"base\": 2 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/harley-davidson-scorpion.sr3e-vehicle-0002.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/harley-davidson-scorpion.sr3e-vehicle-0002.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 4, \"base\": 4 }, \"load\": { \"value\": 60, \"base\": 60 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#31",
@@ -44784,7 +45511,59 @@
       ],
       "hash": "75dafc881f",
       "text": "| Yamaha Rapier | 3/6 | 195 | 10 | 2 | 0 | 2 | 1 | 0 | 1 | 40 | 14,200¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "3/6 195 10 2 0 2 1 -- 0 1 40"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 310,
+          "printedPage": 308,
+          "quote": "Cost: 14,200¥ Availability: 2/24 hrs"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/yamaha-rapier.sr3e-vehicle-0008.json",
+          "line": 10,
+          "snippet": "\"cost\": 14200,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/yamaha-rapier.sr3e-vehicle-0008.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 3, \"base\": 3 }, \"handlingOffRoad\": { \"value\": 6, \"base\": 6 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/yamaha-rapier.sr3e-vehicle-0008.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 195, \"base\": 195 }, \"accel\": { \"value\": 10, \"base\": 10 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/yamaha-rapier.sr3e-vehicle-0008.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 2, \"base\": 2 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/yamaha-rapier.sr3e-vehicle-0008.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 2, \"base\": 2 }, \"autonav\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/yamaha-rapier.sr3e-vehicle-0008.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/yamaha-rapier.sr3e-vehicle-0008.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 1, \"base\": 1 }, \"load\": { \"value\": 40, \"base\": 40 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#32",
@@ -44795,7 +45574,8 @@
       ],
       "hash": "eaf19affc2",
       "text": "| *Trucks* | | | | | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "vehicle-category label row of the table — states no rule"
     },
     {
       "id": "rules/vehicles.md#33",
@@ -44806,7 +45586,59 @@
       ],
       "hash": "732bc0665a",
       "text": "| Ares Roadmaster | 4/10 | 90 | 3 | 5 | 0 | 2 | 2 | 0 | 80 | 2,000 | 45,000¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "4/10 90 3 5 0 2 2 -- 0 80 2,000"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "Cost: 45,000¥ Availability: 3/3 days"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-roadmaster.sr3e-vehicle-0098.json",
+          "line": 10,
+          "snippet": "\"cost\": 45000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-roadmaster.sr3e-vehicle-0098.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 4, \"base\": 4 }, \"handlingOffRoad\": { \"value\": 10, \"base\": 10 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-roadmaster.sr3e-vehicle-0098.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 90, \"base\": 90 }, \"accel\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-roadmaster.sr3e-vehicle-0098.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 5, \"base\": 5 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-roadmaster.sr3e-vehicle-0098.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 2, \"base\": 2 }, \"autonav\": { \"value\": 2, \"base\": 2 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-roadmaster.sr3e-vehicle-0098.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-roadmaster.sr3e-vehicle-0098.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 80, \"base\": 80 }, \"load\": { \"value\": 2000, \"base\": 2000 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#34",
@@ -44817,7 +45649,59 @@
       ],
       "hash": "1cbf056e2f",
       "text": "| Ford-Canada Bison | 4/3 | 135 | 6 | 4 | 4 | 2 | 3 | 1 | 67 | 1,918 | 145,000¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "4/3 135 6 4 4 2 3 -- 1 67 1,918"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "Cost: 145,000¥ Availability: 8/8 days"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-canada-bison.sr3e-vehicle-0043.json",
+          "line": 10,
+          "snippet": "\"cost\": 145000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-canada-bison.sr3e-vehicle-0043.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 4, \"base\": 4 }, \"handlingOffRoad\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-canada-bison.sr3e-vehicle-0043.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 135, \"base\": 135 }, \"accel\": { \"value\": 6, \"base\": 6 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-canada-bison.sr3e-vehicle-0043.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 4, \"base\": 4 }, \"armor\": { \"value\": 4, \"base\": 4 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-canada-bison.sr3e-vehicle-0043.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 2, \"base\": 2 }, \"autonav\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-canada-bison.sr3e-vehicle-0043.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ford-canada-bison.sr3e-vehicle-0043.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 67, \"base\": 67 }, \"load\": { \"value\": 1918, \"base\": 1918 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#35",
@@ -44828,7 +45712,8 @@
       ],
       "hash": "4ed8d9cb45",
       "text": "| *Hovercraft* | | | | | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "vehicle-category label row of the table — states no rule"
     },
     {
       "id": "rules/vehicles.md#36",
@@ -44839,7 +45724,34 @@
       ],
       "hash": "44f7206316",
       "text": "| Chrysler-Nissan G12A (passenger) | 4 | 120 | 5 | 4 | 0 | 2 | 2 | 0 | 12 | 250 | 57,000¥ |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "Pass. 4 120 5 4 0 2 2 -- 0 12 250"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "Cost: 57,000¥ (passenger)/62,000¥ (cargo)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-g12a-cargo.sr3e-vehicle-0143.json",
+          "line": 5,
+          "snippet": "\"name\": \"Chrysler-Nissan G12A(cargo)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-g12a-cargo.sr3e-vehicle-0143.json",
+          "line": 10,
+          "snippet": "\"cost\": 62000,"
+        }
+      ],
+      "note": "The book prints two G12A variants (passenger 57,000¥, Cargo 12 / Load 250; and cargo). The vehicle pack sr3e-sr3-vehicles ships only the cargo variant (chrysler-nissan-g12a-cargo, cost 62,000); there is no passenger G12A in it, and a grep of packs-src/*vehicle* for \"G12A\" finds no other file. So the passenger variant row has no compendium vehicle."
     },
     {
       "id": "rules/vehicles.md#37",
@@ -44850,7 +45762,59 @@
       ],
       "hash": "489bb1030f",
       "text": "| Chrysler-Nissan G12A (cargo) | 4 | 120 | 5 | 4 | 0 | 2 | 2 | 0 | 66 | 1,000 | 62,000¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "Cargo 4 120 5 4 0 2 2 -- 0 66 1,000"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "Cost: 57,000¥ (passenger)/62,000¥ (cargo)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-g12a-cargo.sr3e-vehicle-0143.json",
+          "line": 10,
+          "snippet": "\"cost\": 62000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-g12a-cargo.sr3e-vehicle-0143.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 4, \"base\": 4 }, \"handlingOffRoad\": { \"value\": 4, \"base\": 4 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-g12a-cargo.sr3e-vehicle-0143.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 120, \"base\": 120 }, \"accel\": { \"value\": 5, \"base\": 5 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-g12a-cargo.sr3e-vehicle-0143.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 4, \"base\": 4 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-g12a-cargo.sr3e-vehicle-0143.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 2, \"base\": 2 }, \"autonav\": { \"value\": 2, \"base\": 2 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-g12a-cargo.sr3e-vehicle-0143.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-g12a-cargo.sr3e-vehicle-0143.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 66, \"base\": 66 }, \"load\": { \"value\": 1000, \"base\": 1000 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#38",
@@ -44861,7 +45825,8 @@
       ],
       "hash": "3d17d6c801",
       "text": "| *Boats* | | | | | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "vehicle-category label row of the table — states no rule"
     },
     {
       "id": "rules/vehicles.md#39",
@@ -44872,7 +45837,59 @@
       ],
       "hash": "84946aa813",
       "text": "| Samuvani Criscraft Otter | 4 | 45 | 6 | 5 | 0 | 3 | 2 | 1 | 48 | 650 | 32,500¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "4 45 6 5 0 3 2 -- 1 48 650"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "Cost: 32,500¥ Availability: 2/48 hrs"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/samuvani-criscraft-otter.sr3e-vehicle-0022.json",
+          "line": 10,
+          "snippet": "\"cost\": 32500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/samuvani-criscraft-otter.sr3e-vehicle-0022.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 4, \"base\": 4 }, \"handlingOffRoad\": { \"value\": 4, \"base\": 4 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/samuvani-criscraft-otter.sr3e-vehicle-0022.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 45, \"base\": 45 }, \"accel\": { \"value\": 6, \"base\": 6 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/samuvani-criscraft-otter.sr3e-vehicle-0022.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 5, \"base\": 5 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/samuvani-criscraft-otter.sr3e-vehicle-0022.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 3, \"base\": 3 }, \"autonav\": { \"value\": 2, \"base\": 2 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/samuvani-criscraft-otter.sr3e-vehicle-0022.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/samuvani-criscraft-otter.sr3e-vehicle-0022.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 48, \"base\": 48 }, \"load\": { \"value\": 650, \"base\": 650 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#40",
@@ -44883,7 +45900,59 @@
       ],
       "hash": "fc249954c1",
       "text": "| Sendanko Marlin | 3 | 30 | 3 | 3 | 0 | 6 | 0 | 0 | 12 | 150 | 18,750¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "3 30 3 3 0 6 0 -- 0 12 150"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 311,
+          "printedPage": 309,
+          "quote": "Cost: 18,750¥ Availability: 2/2 days"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/sendako-marlin.sr3e-vehicle-0013.json",
+          "line": 10,
+          "snippet": "\"cost\": 18750,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/sendako-marlin.sr3e-vehicle-0013.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 3, \"base\": 3 }, \"handlingOffRoad\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/sendako-marlin.sr3e-vehicle-0013.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 30, \"base\": 30 }, \"accel\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/sendako-marlin.sr3e-vehicle-0013.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 3, \"base\": 3 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/sendako-marlin.sr3e-vehicle-0013.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 6, \"base\": 6 }, \"autonav\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/sendako-marlin.sr3e-vehicle-0013.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/sendako-marlin.sr3e-vehicle-0013.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 12, \"base\": 12 }, \"load\": { \"value\": 150, \"base\": 150 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#41",
@@ -44894,7 +45963,8 @@
       ],
       "hash": "bb4b55b5c6",
       "text": "| *Winged planes* | | | | | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "vehicle-category label row of the table — states no rule"
     },
     {
       "id": "rules/vehicles.md#42",
@@ -44905,7 +45975,59 @@
       ],
       "hash": "2cf0219240",
       "text": "| Cessna C750 | 5 | 135/340 | 22 | 6 | 0 | 4 | 2 | 1 | 48 | 1,100 | 177,000¥ |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "Standard 5 135/340 22 6 0 4 2 -- 1 48 1,100"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "Cost: 177,000¥ (standard)/167,000¥ (passenger)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-cargo.sr3e-vehicle-0131.json",
+          "line": 10,
+          "snippet": "\"cost\": 177000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-cargo.sr3e-vehicle-0131.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 5, \"base\": 5 }, \"handlingOffRoad\": { \"value\": 5, \"base\": 5 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-cargo.sr3e-vehicle-0131.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 135, \"base\": 135 }, \"accel\": { \"value\": 22, \"base\": 22 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-cargo.sr3e-vehicle-0131.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 6, \"base\": 6 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-cargo.sr3e-vehicle-0131.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 4, \"base\": 4 }, \"autonav\": { \"value\": 2, \"base\": 2 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-cargo.sr3e-vehicle-0131.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-cargo.sr3e-vehicle-0131.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 48, \"base\": 48 }, \"load\": { \"value\": 1100, \"base\": 1100 }"
+        }
+      ],
+      "note": "The pack calls this variant \"Cessna C750(Cargo)\" where the book says Standard. All columns and the 177,000¥ cost match EXCEPT the Speed: the book prints 135/340 (stall speed / maximum safe speed, p.132); the pack stores only 135 in `speed` (the notes read \"Alt-mode Speed/Accel: 135(340)/22\"), and the code treats `speed` as the maximum safe speed (see unit 8)."
     },
     {
       "id": "rules/vehicles.md#43",
@@ -44916,7 +46038,59 @@
       ],
       "hash": "cb6814c57f",
       "text": "| Cessna C750 (passenger) | 5 | 135/340 | 22 | 6 | 0 | 4 | 2 | 1 | 36 | 500 | 167,000¥ |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "Passenger 5 135/340 22 6 0 4 2 -- 1 36 500"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "Cost: 177,000¥ (standard)/167,000¥ (passenger)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-passenger.sr3e-vehicle-0132.json",
+          "line": 10,
+          "snippet": "\"cost\": 167000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-passenger.sr3e-vehicle-0132.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 5, \"base\": 5 }, \"handlingOffRoad\": { \"value\": 5, \"base\": 5 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-passenger.sr3e-vehicle-0132.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 135, \"base\": 135 }, \"accel\": { \"value\": 22, \"base\": 22 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-passenger.sr3e-vehicle-0132.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 6, \"base\": 6 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-passenger.sr3e-vehicle-0132.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 4, \"base\": 4 }, \"autonav\": { \"value\": 2, \"base\": 2 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-passenger.sr3e-vehicle-0132.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/cessna-c750-passenger.sr3e-vehicle-0132.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 36, \"base\": 36 }, \"load\": { \"value\": 500, \"base\": 500 }"
+        }
+      ],
+      "note": "All columns and the 167,000¥ cost match the book row EXCEPT the Speed: the book prints 135/340 (stall speed / maximum safe speed, p.132); the pack stores only 135 in `speed` (the notes read \"Alt-mode Speed/Accel: 135(340)/22\"), and the code treats `speed` as the maximum safe speed (see unit 8)."
     },
     {
       "id": "rules/vehicles.md#44",
@@ -44927,7 +46101,8 @@
       ],
       "hash": "db9438abc6",
       "text": "| *Rotorcraft* | | | | | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "vehicle-category label row of the table — states no rule"
     },
     {
       "id": "rules/vehicles.md#45",
@@ -44938,7 +46113,59 @@
       ],
       "hash": "2eca4e341b",
       "text": "| Ares Dragon | 5 | 260 | 10 | 7 | 0 | 3 | 3 | 1 | 95 | 3,250 | 590,000¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "5 260 10 7 0 3 3 -- 1 95 3,250"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "Cost: 590,000¥ Availability: 30/30 days"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-dragon.sr3e-vehicle-0160.json",
+          "line": 10,
+          "snippet": "\"cost\": 590000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-dragon.sr3e-vehicle-0160.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 5, \"base\": 5 }, \"handlingOffRoad\": { \"value\": 5, \"base\": 5 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-dragon.sr3e-vehicle-0160.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 260, \"base\": 260 }, \"accel\": { \"value\": 10, \"base\": 10 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-dragon.sr3e-vehicle-0160.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 7, \"base\": 7 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-dragon.sr3e-vehicle-0160.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 3, \"base\": 3 }, \"autonav\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-dragon.sr3e-vehicle-0160.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-dragon.sr3e-vehicle-0160.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 95, \"base\": 95 }, \"load\": { \"value\": 3250, \"base\": 3250 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#46",
@@ -44949,7 +46176,59 @@
       ],
       "hash": "edca4743dc",
       "text": "| Hughes WK-2 Stallion | 5 | 190 | 14 | 4 | 0 | 3 | 3 | 1 | 72 | 1,250 | 257,500¥ |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "5 190 14 4 0 3 3 -- 1 72 1,250"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "Cost: 257,500¥ Entry Points: 2 + 1 sliding door"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/hughes-wk-2.sr3e-vehicle-0178.json",
+          "line": 10,
+          "snippet": "\"cost\": 257500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/hughes-wk-2.sr3e-vehicle-0178.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 5, \"base\": 5 }, \"handlingOffRoad\": { \"value\": 5, \"base\": 5 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/hughes-wk-2.sr3e-vehicle-0178.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 190, \"base\": 190 }, \"accel\": { \"value\": 14, \"base\": 14 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/hughes-wk-2.sr3e-vehicle-0178.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 4, \"base\": 4 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/hughes-wk-2.sr3e-vehicle-0178.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 3, \"base\": 3 }, \"autonav\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/hughes-wk-2.sr3e-vehicle-0178.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/hughes-wk-2.sr3e-vehicle-0178.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 70, \"base\": 70 }, \"load\": { \"value\": 1250, \"base\": 1250 }"
+        }
+      ],
+      "note": "The pack stores Cargo 70 (hughes-wk-2 `cargo` value) where the book row prints Cargo 72 (printed p.310, read from the page image); Load 1,250, Cost 257,500¥ and the other columns match."
     },
     {
       "id": "rules/vehicles.md#47",
@@ -44960,7 +46239,8 @@
       ],
       "hash": "56ccca7530",
       "text": "| *Security vehicles* | | | | | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "vehicle-category label row of the table — states no rule"
     },
     {
       "id": "rules/vehicles.md#48",
@@ -44971,7 +46251,59 @@
       ],
       "hash": "cd4180c349",
       "text": "| Ares Citymaster | 5/11 | 120 | 3 | 5 | 10 | 1 | 3 | 0 | 41 | 530 | 136,300¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "5/11 120 3 5 10 1 3 -- 0 41 530"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "Cost: 136,300¥ Availability: 13/13 days"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-citymaster.sr3e-vehicle-0096.json",
+          "line": 10,
+          "snippet": "\"cost\": 136300,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-citymaster.sr3e-vehicle-0096.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 5, \"base\": 5 }, \"handlingOffRoad\": { \"value\": 11, \"base\": 11 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-citymaster.sr3e-vehicle-0096.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 120, \"base\": 120 }, \"accel\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-citymaster.sr3e-vehicle-0096.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 5, \"base\": 5 }, \"armor\": { \"value\": 10, \"base\": 10 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-citymaster.sr3e-vehicle-0096.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 1, \"base\": 1 }, \"autonav\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-citymaster.sr3e-vehicle-0096.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-citymaster.sr3e-vehicle-0096.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 41, \"base\": 41 }, \"load\": { \"value\": 530, \"base\": 530 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#49",
@@ -44982,7 +46314,59 @@
       ],
       "hash": "03f1e804ea",
       "text": "| Chrysler-Nissan Patrol-1 | 4/8 | 180 | 12 | 3 | 2 | 1 | 3 | 0 | 11 | 40 | 43,700¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "4/8 180 12 3 2 1 3 -- 0 11 40"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "Cost: 43,700¥ Availability: 10/10 days"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-patrol-1.sr3e-vehicle-0047.json",
+          "line": 10,
+          "snippet": "\"cost\": 43700,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-patrol-1.sr3e-vehicle-0047.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 4, \"base\": 4 }, \"handlingOffRoad\": { \"value\": 8, \"base\": 8 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-patrol-1.sr3e-vehicle-0047.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 180, \"base\": 180 }, \"accel\": { \"value\": 12, \"base\": 12 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-patrol-1.sr3e-vehicle-0047.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 3, \"base\": 3 }, \"armor\": { \"value\": 2, \"base\": 2 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-patrol-1.sr3e-vehicle-0047.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 1, \"base\": 1 }, \"autonav\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-patrol-1.sr3e-vehicle-0047.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/chrysler-nissan-patrol-1.sr3e-vehicle-0047.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 11, \"base\": 11 }, \"load\": { \"value\": 40, \"base\": 40 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#50",
@@ -44993,7 +46377,59 @@
       ],
       "hash": "2cf2114447",
       "text": "| GMC Banshee | 6 | 250/1,000 | 50 | 6 | 18 | 5 | 2 | 7 | 29 | 805 | 2,560,000¥ |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "6 250/1,000 50 6 18 5 2 -- 7 29 805"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "Cost: 2,560,000¥ Availability: NA Street Index: 3"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-banshee.sr3e-vehicle-0196.json",
+          "line": 10,
+          "snippet": "\"cost\": 2560000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-banshee.sr3e-vehicle-0196.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 6, \"base\": 6 }, \"handlingOffRoad\": { \"value\": 6, \"base\": 6 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-banshee.sr3e-vehicle-0196.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 250, \"base\": 250 }, \"accel\": { \"value\": 50, \"base\": 50 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-banshee.sr3e-vehicle-0196.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 6, \"base\": 6 }, \"armor\": { \"value\": 18, \"base\": 18 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-banshee.sr3e-vehicle-0196.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 5, \"base\": 5 }, \"autonav\": { \"value\": 2, \"base\": 2 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-banshee.sr3e-vehicle-0196.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 7, \"base\": 7 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-banshee.sr3e-vehicle-0196.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 29, \"base\": 29 }, \"load\": { \"value\": 805, \"base\": 805 }"
+        }
+      ],
+      "note": "All columns and the 2,560,000¥ cost match the book row EXCEPT the Speed: the book prints 250/1,000 (stall speed / maximum safe speed, p.132); the pack stores only 250 in `speed` (the notes read \"Alt-mode Speed/Accel: 250(1000)/50\"), and the code treats `speed` as the maximum safe speed (see unit 8)."
     },
     {
       "id": "rules/vehicles.md#51",
@@ -45004,7 +46440,59 @@
       ],
       "hash": "4319c5fd4f",
       "text": "| GMC Beachcraft Patroller | 4 | 165 | 9 | 4 | 6 | 1 | 2 | 0 | 65 | 510 | 176,000¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "4 165 9 4 6 1 2 -- 0 65 510"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "Cost: 176,000¥ Availability: 15/15 days"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-beachcraft-patroller.sr3e-vehicle-0145.json",
+          "line": 10,
+          "snippet": "\"cost\": 176000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-beachcraft-patroller.sr3e-vehicle-0145.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 4, \"base\": 4 }, \"handlingOffRoad\": { \"value\": 4, \"base\": 4 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-beachcraft-patroller.sr3e-vehicle-0145.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 165, \"base\": 165 }, \"accel\": { \"value\": 9, \"base\": 9 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-beachcraft-patroller.sr3e-vehicle-0145.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 4, \"base\": 4 }, \"armor\": { \"value\": 6, \"base\": 6 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-beachcraft-patroller.sr3e-vehicle-0145.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 1, \"base\": 1 }, \"autonav\": { \"value\": 2, \"base\": 2 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-beachcraft-patroller.sr3e-vehicle-0145.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/gmc-beachcraft-patroller.sr3e-vehicle-0145.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 65, \"base\": 65 }, \"load\": { \"value\": 510, \"base\": 510 }"
+        }
+      ],
+      "note": "Every column (Handling, Speed, Accel, Body, Armor, Sig, Autonav, Sensor, Cargo, Load) and the Cost read from the pack file and compared with the printed row; the book's Pilot \"--\" is stored as 0."
     },
     {
       "id": "rules/vehicles.md#52",
@@ -45015,7 +46503,59 @@
       ],
       "hash": "2565145578",
       "text": "| DocWagon Osprey II | 5 | 380 | 10 | 5 | 3 | 2 | 3 | 1 | 12 | 300 | 331,000¥ |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "5 380 10 5 3 2 3 -- 1 12 300"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "Cost: 331,000¥ Availability: 23/23 days"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/doc-wagon-osprey-ii.sr3e-vehicle-0166.json",
+          "line": 10,
+          "snippet": "\"cost\": 935000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/doc-wagon-osprey-ii.sr3e-vehicle-0166.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 5, \"base\": 5 }, \"handlingOffRoad\": { \"value\": 5, \"base\": 5 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/doc-wagon-osprey-ii.sr3e-vehicle-0166.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 380, \"base\": 380 }, \"accel\": { \"value\": 10, \"base\": 10 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/doc-wagon-osprey-ii.sr3e-vehicle-0166.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 5, \"base\": 5 }, \"armor\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/doc-wagon-osprey-ii.sr3e-vehicle-0166.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 2, \"base\": 2 }, \"autonav\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/doc-wagon-osprey-ii.sr3e-vehicle-0166.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 1, \"base\": 1 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/doc-wagon-osprey-ii.sr3e-vehicle-0166.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 12, \"base\": 12 }, \"load\": { \"value\": 300, \"base\": 300 }"
+        }
+      ],
+      "note": "The pack prices the Doc Wagon Osprey II at 935,000¥ (bookPage \"sr3.311,r3.184\"); the SR3 core book row prints Cost: 331,000¥ (printed p.311). Every other column matches. The pack cites Rigger 3 p.184 as well; that book's price was not checked (poor OCR)."
     },
     {
       "id": "rules/vehicles.md#53",
@@ -45026,7 +46566,59 @@
       ],
       "hash": "d1298ae437",
       "text": "| Northrup Wasp (PRC-42B variant) | 3 | 130 | 15 | 3 | 0 | 3 | 0 | 2 | 2 | 68 | 54,000¥ |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "3 130 15 3 0 3 0 -- 2 2 68"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "Cost: 54,000¥ Availability: 9/9 days"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/northrup-wasp-prc-42b.sr3e-vehicle-0156.json",
+          "line": 10,
+          "snippet": "\"cost\": 54000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/northrup-wasp-prc-42b.sr3e-vehicle-0156.json",
+          "line": 23,
+          "snippet": "\"handling\": { \"value\": 3, \"base\": 3 }, \"handlingOffRoad\": { \"value\": 3, \"base\": 3 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/northrup-wasp-prc-42b.sr3e-vehicle-0156.json",
+          "line": 31,
+          "snippet": "\"speed\": { \"value\": 130, \"base\": 130 }, \"accel\": { \"value\": 15, \"base\": 15 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/northrup-wasp-prc-42b.sr3e-vehicle-0156.json",
+          "line": 39,
+          "snippet": "\"body\": { \"value\": 3, \"base\": 3 }, \"armor\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/northrup-wasp-prc-42b.sr3e-vehicle-0156.json",
+          "line": 47,
+          "snippet": "\"sig\": { \"value\": 3, \"base\": 3 }, \"autonav\": { \"value\": 0, \"base\": 0 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/northrup-wasp-prc-42b.sr3e-vehicle-0156.json",
+          "line": 55,
+          "snippet": "\"pilot\": { \"value\": 0, \"base\": 0 }, \"sensor\": { \"value\": 2, \"base\": 2 },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/northrup-wasp-prc-42b.sr3e-vehicle-0156.json",
+          "line": 63,
+          "snippet": "\"cargo\": { \"value\": 2, \"base\": 2 }, \"load\": { \"value\": 72, \"base\": 72 }"
+        }
+      ],
+      "note": "The pack stores Load 72 (northrup-wasp `load` value) where the book row prints Load 68 (printed p.311, read from the page layout); Cargo 2, Cost 54,000¥ and the other columns match."
     },
     {
       "id": "rules/vehicles.md#54",
@@ -45037,7 +46629,44 @@
       ],
       "hash": "d622d5a4a0",
       "text": "None of these has a Pilot Rating; the drones are on [Drones](../drones/).\n*Rigger 3* and *State of the Art* add many more, and the system ships them\nin its compendiums.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "Electric 3/8 80 5 3 0 5 1 -- 0 1 100"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 312,
+          "printedPage": 310,
+          "quote": "5 190 14 4 0 3 3 -- 1 72 1,250"
+        }
+      ],
+      "code": [
+        {
+          "file": "system.json",
+          "line": 636,
+          "snippet": "\"name\": \"sr3e-r3-vehicles\","
+        },
+        {
+          "file": "system.json",
+          "line": 690,
+          "snippet": "\"name\": \"sr3e-sota-vehicles\","
+        },
+        {
+          "file": "system.json",
+          "line": 814,
+          "snippet": "\"name\": \"sr3e-sota2-vehicles\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicles/ares-dragon.sr3e-vehicle-0160.json",
+          "line": 52,
+          "snippet": "\"pilot\": {"
+        }
+      ],
+      "note": "Every core row prints Pilot \"--\" and every pack vehicle above stores Pilot 0. The system ships Rigger 3, State of the Art and State of the Art 2064 vehicle packs; that those books \"add many more\" was not counted against the books."
     },
     {
       "id": "rules/vehicles.md#55",
@@ -45048,7 +46677,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule — states no rule"
     },
     {
       "id": "rules/vehicles.md#56",
@@ -45059,7 +46689,28 @@
       ],
       "hash": "b3ff3f37d5",
       "text": "## Rigging a vehicle  *(SR3 p.306)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "Rigger adaptation consists of a \"black box\" that translates machine code into neurological stimuli"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/datajack-port.sr3e-vehiclemod-0036.json",
+          "line": 9,
+          "snippet": "\"cost\": 2500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/rigger-adaptation.sr3e-vehiclemod-0039.json",
+          "line": 5,
+          "snippet": "\"name\": \"Rigger Adaptation\","
+        }
+      ],
+      "note": "Section heading; the three rigger-gear rows are resolved below."
     },
     {
       "id": "rules/vehicles.md#57",
@@ -45070,7 +46721,8 @@
       ],
       "hash": "d55aaefa84",
       "text": "| Gear | Cost | What it does |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row — states no rule"
     },
     {
       "id": "rules/vehicles.md#58",
@@ -45081,7 +46733,36 @@
       ],
       "hash": "9eafbdc0df",
       "text": "| **Datajack port** | 2,500¥ (5,000¥ for a bike) | Drive by datajack: +1 Reaction for Vehicle Tests and vehicle combat. Not enough for a VCR. Uses 1 Cargo Factor and 15 kg of Load. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "VCR to interface with the vehicle, but it does add +1 to the driver's Reaction for Vehicle Tests and vehicle combat"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "A datajack port costs 2,500¥ (5,000¥ for motorcycles), and consumes 1 Cargo Factor and 15kg Load"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "datajack port.{0,80}reaction",
+          "path": "scripts"
+        },
+        {
+          "pattern": "reaction.{0,60}datajack port",
+          "path": "scripts"
+        },
+        {
+          "pattern": "+1.{0,40}reaction.{0,60}vehicle (tests|combat)",
+          "path": "scripts"
+        }
+      ],
+      "note": "The datajack port item exists in the vehicle-mods pack with the book's numbers (cost 2,500 / 5,000 for motorcycles, CF 1, load 15kg: packs-src/sr3e-sr3-vehicle-mods/datajack-port*.json). The EFFECT, +1 to the driver's Reaction for Vehicle Tests and vehicle combat, is not modelled: the only datajack rule in the code is the Driving Test's -1 TN \"Non-Rigger w/ Datajack\" row (SR3EVehicleSheet.js:1141-1146, the p.134 table), which is a different rule."
     },
     {
       "id": "rules/vehicles.md#59",
@@ -45092,7 +46773,32 @@
       ],
       "hash": "adcdd12fbe",
       "text": "| **Remote-control interface** (\"Remote Control Gear\") | 2,500¥ × Body | Lets the vehicle join a rigger's remote-control network as a drone, with a **Pilot Rating of 1**. Needs Sensor 1 or more. Uses no cargo space. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "remote-control interface, the vehicle must have a Sensor Rating of 1 or higher"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "but consumes no cargo space"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "remote.control (interface|gear)",
+          "path": "scripts"
+        },
+        {
+          "pattern": "rem.contr.{0,8}intr",
+          "path": "scripts"
+        }
+      ],
+      "note": "The 2,500¥ x Body item exists in the vehicle-mods pack (Rem-Contr. Intr. Bod[1]..[9]: 2,500 to 22,500, CF 0, packs-src/sr3e-sr3-vehicle-mods/rem-contr-intr-bod-*.json), matching the book. Its effect (the vehicle becomes a drone with Pilot Rating 1; Sensor 1+ required) is not modelled: the item is never read in scripts/, and a vehicle's Pilot is whatever is typed on its sheet."
     },
     {
       "id": "rules/vehicles.md#60",
@@ -45103,7 +46809,39 @@
       ],
       "hash": "37fd418b11",
       "text": "| **Rigger adaptation** (\"Vehicle Control Gear\") | 2,500¥ | The \"black box\" that lets a character with a VCR rig it. Includes a datajack port; needs Sensor 1 or more. Uses 1 Cargo Factor and 10 kg of Load. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "Rigger adaptation costs 2,500¥, and consumes 1 CF and 10kg of Load"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "must have Sensor Rating of 1 or higher"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/rigger-adaptation.sr3e-vehiclemod-0039.json",
+          "line": 9,
+          "snippet": "\"cost\": 2800,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/rigger-adaptation.sr3e-vehiclemod-0039.json",
+          "line": 14,
+          "snippet": "\"cfCost\": \"1\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/rigger-adaptation.sr3e-vehiclemod-0039.json",
+          "line": 15,
+          "snippet": "\"load\": \"10kg\","
+        }
+      ],
+      "note": "Book (p.306): \"Rigger adaptation costs 2,500¥, and consumes 1 CF and 10kg of Load\". The pack prices it at 2,800¥ (CF 1 and 10kg match; the pack cites SR3 p.306 and R3 p.130, whose price was not checked, poor OCR). Nothing in scripts/ reads the item either, so \"the black box that lets a character with a VCR rig it\" is not enforced (a VCR rigger can rig any vehicle)."
     },
     {
       "id": "rules/vehicles.md#61",
@@ -45114,7 +46852,48 @@
       ],
       "hash": "c68f17430d",
       "text": "A **Vehicle Control Rig** itself is cyberware: each level adds +2 Reaction\nand an Initiative die while rigging, and gives the Control Pool *(SR3 p.44,\np.301)*. See [Rigging](../rigging/#riggers-and-control-pool).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 303,
+          "printedPage": 301,
+          "quote": "Each level adds +2 to the user's Reaction and +1D6 Initiative dice while rigging"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 46,
+          "printedPage": 44,
+          "quote": "Only characters with a Vehicle Control Rig (see p. 301) can use a Control Pool"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 28,
+          "snippet": "static vcrReaction(reactionBase, vcrLevel) {"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 29,
+          "snippet": "return whole(reactionBase) + 2 * whole(vcrLevel);"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 34,
+          "snippet": "return 1 + whole(vcrLevel);"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 39,
+          "snippet": "return whole(vcrLevel) > 0 ? Rigging.vcrReaction(reactionBase, vcrLevel) : 0;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 11095,
+          "snippet": "base = Rigging.vcrReaction(reactionBase, vcrLevel) + wm - jam;"
+        }
+      ]
     },
     {
       "id": "rules/vehicles.md#62",
@@ -45125,7 +46904,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule — states no rule"
     },
     {
       "id": "rules/vehicles.md#63",
@@ -45136,7 +46916,28 @@
       ],
       "hash": "c02228ba42",
       "text": "## Weapon mounts  *(SR3 p.307, p.312)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "Fixed mounts fire in a fixed arc, and the weapon is permanently affixed to the mount"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/external-firmpoint.sr3e-vehiclemod-0098.json",
+          "line": 5,
+          "snippet": "\"name\": \"External Firmpoint\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/small-turret.sr3e-vehiclemod-0107.json",
+          "line": 5,
+          "snippet": "\"name\": \"Small Turret\","
+        }
+      ],
+      "note": "Section heading; the mounts exist as gear items in the vehicle-mods pack. The mount RULES (units 64-67) are resolved individually below."
     },
     {
       "id": "rules/vehicles.md#64",
@@ -45147,7 +46948,26 @@
       ],
       "hash": "68682f21c8",
       "text": "- **Hardpoints** carry heavy and vehicle weapons (MMGs and larger);\n  **firmpoints** carry LMGs, assault rifles and smaller.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "Heavy and vehicular weapons (MMGs and larger) must be mounted on hardpoints; smaller arms (LMGs, assault rifles and smaller) may be mounted on firmpoints"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hardpoint",
+          "path": "scripts"
+        },
+        {
+          "pattern": "firmpoint",
+          "path": "scripts"
+        }
+      ],
+      "note": "No hardpoint/firmpoint concept: any weapon item can be added to any vehicle's Weapons tab."
     },
     {
       "id": "rules/vehicles.md#65",
@@ -45158,7 +46978,26 @@
       ],
       "hash": "1045876731",
       "text": "- A vehicle's **Body** sets how many it has: a hardpoint takes 2 points of\n  Body, a firmpoint 1. A Body 4 vehicle could have 2 hardpoints, or a\n  hardpoint and 2 firmpoints, or 4 firmpoints.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "Each hardpoint is worth 2 points of Body, and each firmpoint counts for 1 point"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hardpoint",
+          "path": "scripts"
+        },
+        {
+          "pattern": "firmpoint",
+          "path": "scripts"
+        }
+      ],
+      "note": "Nothing counts mounts against Body; the Body 4 example (2 hardpoints, or a hardpoint and 2 firmpoints, or 4 firmpoints) cannot be checked by the system."
     },
     {
       "id": "rules/vehicles.md#66",
@@ -45169,7 +47008,26 @@
       ],
       "hash": "e2c45c9207",
       "text": "- **Firmpoints** are fixed mounts or pintle mounts; **hardpoints** are\n  fixed mounts or turrets.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "Firmpoints can be a fixed mount or a pintle mount. Hardpoints can be a fixed mount or a turret."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hardpoint",
+          "path": "scripts"
+        },
+        {
+          "pattern": "firmpoint",
+          "path": "scripts"
+        }
+      ],
+      "note": "The fixed mount, pintle mount and turret exist as gear items; the rule that firmpoints take only fixed/pintle and hardpoints only fixed/turret is not modelled."
     },
     {
       "id": "rules/vehicles.md#67",
@@ -45180,7 +47038,42 @@
       ],
       "hash": "2569bfa1e7",
       "text": "- **Fixed mounts** fire in a fixed arc, usually forward or back, and\n  **halve recoil**, which cancels a heavy weapon's doubling. The driving\n  rigger can fire them. A side-firing fixed mount adds its recoil to the\n  vehicle's Handling and forces a Crash Test. External fixed mounts lower\n  the Signature by 1.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "Fixed mounts reduce recoil modifiers by half (negating the double recoil modifier of heavy weapons)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "Side-firing fixed mounts add their recoil to the vehicle's Handling Rating when fired; the driver must also make a Crash Test"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 309,
+          "printedPage": 307,
+          "quote": "External fixed mounts reduce the vehicle's Signature by 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hardpoint",
+          "path": "scripts"
+        },
+        {
+          "pattern": "firmpoint",
+          "path": "scripts"
+        },
+        {
+          "pattern": "side.firing",
+          "path": "scripts"
+        }
+      ],
+      "note": "None of the four effects (recoil halved, side-firing Handling and Crash Test, Signature -1, the rigger firing a fixed mount) is modelled; mounts are plain gear items."
     },
     {
       "id": "rules/vehicles.md#68",
@@ -45191,7 +47084,28 @@
       ],
       "hash": "f004905a2a",
       "text": "| Vehicle Mounts *(SR3 p.312)* | CF Cost | Load | Cost | Legal | RC |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "External Firmpoint Fixed Mount CF Cost Load Availability Cost Street Index Legal RC"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/external-firmpoint.sr3e-vehiclemod-0098.json",
+          "line": 14,
+          "snippet": "\"cfCost\": \"1\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/small-turret.sr3e-vehiclemod-0107.json",
+          "line": 14,
+          "snippet": "\"cfCost\": \"8\","
+        }
+      ],
+      "note": "Table header; rows resolved below."
     },
     {
       "id": "rules/vehicles.md#69",
@@ -45202,7 +47116,33 @@
       ],
       "hash": "13444f7740",
       "text": "| External Firmpoint Fixed Mount | 1 | 10 kg | 750¥ | 3P-V | −1/2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "External Firmpoint Fixed Mount 1 10kg 6/7 days 750¥ 2 3P-V -1/2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/external-firmpoint.sr3e-vehiclemod-0098.json",
+          "line": 9,
+          "snippet": "\"cost\": 750,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/external-firmpoint.sr3e-vehiclemod-0098.json",
+          "line": 14,
+          "snippet": "\"cfCost\": \"1\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/external-firmpoint.sr3e-vehiclemod-0098.json",
+          "line": 15,
+          "snippet": "\"load\": \"10kg+Weapon\","
+        }
+      ],
+      "note": "Cost and CF cost read from the pack item external-firmpoint; the book's Legal and RC columns have no field in the vehiclemod model (no legality, no recoil compensation). CF 1, cost 750 and load 10kg agree (the pack writes the load as \"10kg+Weapon\")."
     },
     {
       "id": "rules/vehicles.md#70",
@@ -45213,7 +47153,33 @@
       ],
       "hash": "56f417700d",
       "text": "| External Hardpoint Fixed Mount | 2 | 10 kg | 2,000¥ | 3P-V | −1/2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "External Hardpoint Fixed Mount 2 10kg 6/7 days 2000¥ 2 3P-V -1/2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/external-hardpoint.sr3e-vehiclemod-0097.json",
+          "line": 9,
+          "snippet": "\"cost\": 2000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/external-hardpoint.sr3e-vehiclemod-0097.json",
+          "line": 14,
+          "snippet": "\"cfCost\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/external-hardpoint.sr3e-vehiclemod-0097.json",
+          "line": 15,
+          "snippet": "\"load\": \"10kg+Weapon\","
+        }
+      ],
+      "note": "Cost and CF cost read from the pack item external-hardpoint; the book's Legal and RC columns have no field in the vehiclemod model (no legality, no recoil compensation). CF 2, cost 2,000 and load 10kg agree (the pack writes the load as \"10kg+Weapon\")."
     },
     {
       "id": "rules/vehicles.md#71",
@@ -45224,7 +47190,33 @@
       ],
       "hash": "d800bd5a23",
       "text": "| Internal Firmpoint Fixed Mount | 5 | 10 kg | 1,500¥ | 3P-V | −1/2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Internal Firmpoint Fixed Mount 5 10kg 6/7 days 1,500¥ 2 3P-V -1/2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/internal-firmpoint.sr3e-vehiclemod-0100.json",
+          "line": 9,
+          "snippet": "\"cost\": 1500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/internal-firmpoint.sr3e-vehiclemod-0100.json",
+          "line": 14,
+          "snippet": "\"cfCost\": \"5\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/internal-firmpoint.sr3e-vehiclemod-0100.json",
+          "line": 15,
+          "snippet": "\"load\": \"10kg+Weapon\","
+        }
+      ],
+      "note": "Cost and CF cost read from the pack item internal-firmpoint; the book's Legal and RC columns have no field in the vehiclemod model (no legality, no recoil compensation). CF 5, cost 1,500 and load 10kg agree (the pack writes the load as \"10kg+Weapon\")."
     },
     {
       "id": "rules/vehicles.md#72",
@@ -45235,7 +47227,33 @@
       ],
       "hash": "a1aae0b8c9",
       "text": "| Internal Hardpoint Fixed Mount | 7 | 10 kg | 3,000¥ | 3P-V | −1/2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Internal Hardpoint Fixed Mount 7 10kg 6/7 days 3,000¥ 2 3P-V -1/2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/internal-hardpoint.sr3e-vehiclemod-0099.json",
+          "line": 9,
+          "snippet": "\"cost\": 3000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/internal-hardpoint.sr3e-vehiclemod-0099.json",
+          "line": 14,
+          "snippet": "\"cfCost\": \"7\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/internal-hardpoint.sr3e-vehiclemod-0099.json",
+          "line": 15,
+          "snippet": "\"load\": \"10kg+Weapon\","
+        }
+      ],
+      "note": "Cost and CF cost read from the pack item internal-hardpoint; the book's Legal and RC columns have no field in the vehiclemod model (no legality, no recoil compensation). CF 7, cost 3,000 and load 10kg agree (the pack writes the load as \"10kg+Weapon\")."
     },
     {
       "id": "rules/vehicles.md#73",
@@ -45246,7 +47264,33 @@
       ],
       "hash": "dbabbf454d",
       "text": "| Pintle Mount | 0 | 0 | 50¥ | Legal | 2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Pintle Mount 0 0 4/96 hrs 50¥ 1.5 Legal 2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/pintle-mount.sr3e-vehiclemod-0103.json",
+          "line": 9,
+          "snippet": "\"cost\": 50,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/pintle-mount.sr3e-vehiclemod-0103.json",
+          "line": 14,
+          "snippet": "\"cfCost\": \"0\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/pintle-mount.sr3e-vehiclemod-0103.json",
+          "line": 15,
+          "snippet": "\"load\": \"\","
+        }
+      ],
+      "note": "Cost and CF cost read from the pack item pintle-mount; the book's Legal and RC columns have no field in the vehiclemod model (no legality, no recoil compensation). CF 0 and cost 50 agree; the pack writes the load blank (book 0) and the recoil compensation as \"-2 Recoil\" in the description (book RC 2). A second duplicate \"Pintle Mount\" item (sr3e-vehiclemod-0278) also exists, with availability \"1/?\"."
     },
     {
       "id": "rules/vehicles.md#74",
@@ -45257,7 +47301,33 @@
       ],
       "hash": "0da1d035b9",
       "text": "| Small Turret | 7 | 100 kg | 7,500¥ | 3P-V | −1/2 |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Small Turret 7 100kg 12/30 days 7,500¥ 3 3P-V -1/2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/small-turret.sr3e-vehiclemod-0107.json",
+          "line": 9,
+          "snippet": "\"cost\": 7500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/small-turret.sr3e-vehiclemod-0107.json",
+          "line": 14,
+          "snippet": "\"cfCost\": \"8\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/small-turret.sr3e-vehiclemod-0107.json",
+          "line": 15,
+          "snippet": "\"load\": \"100kg\","
+        }
+      ],
+      "note": "Book (p.312, read from the page image): Small Turret CF Cost 7, load 100kg, 7,500¥. The pack item has cfCost \"8\" (cost 7,500 and load 100kg match; the pack cites SR3 p.312 and R3 p.139, whose value was not checked). The turret text on p.307 says a turret \"adds 2 CF\", which does not give 8 either."
     },
     {
       "id": "rules/vehicles.md#75",
@@ -45268,7 +47338,33 @@
       ],
       "hash": "1c9e1344dd",
       "text": "| Mini-turret | 6 | 25 kg | 5,000¥ | 3P-V | −1/2 |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Mini-turret 6 25kg 12/30 days 5,000¥ 2 3P-V -1/2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/mini-turret.sr3e-vehiclemod-0106.json",
+          "line": 9,
+          "snippet": "\"cost\": 5000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/mini-turret.sr3e-vehiclemod-0106.json",
+          "line": 14,
+          "snippet": "\"cfCost\": \"7\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-mods/mini-turret.sr3e-vehiclemod-0106.json",
+          "line": 15,
+          "snippet": "\"load\": \"25kg\","
+        }
+      ],
+      "note": "Book (p.312, read from the page image): Mini-turret CF Cost 6, load 25kg, 5,000¥. The pack item has cfCost \"7\" (cost 5,000 and load 25kg match; the pack cites SR3 p.312 and R3 p.139, whose value was not checked)."
     },
     {
       "id": "rules/vehicles.md#76",
@@ -45279,7 +47375,28 @@
       ],
       "hash": "ba78889a1b",
       "text": "| Vehicle Weapons *(SR3 p.312)* | Type | Ammo | Mode | Damage | Cost |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Ares Vermicide Autocannon Type Ammo Mode Damage Weight Cost"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/ares-vermicide-autocannon.sr3e-vehicleweapon-0000.json",
+          "line": 11,
+          "snippet": "\"damage\": \"12D\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/water-cannon.sr3e-vehicleweapon-0029.json",
+          "line": 11,
+          "snippet": "\"damage\": \"6M Stun\","
+        }
+      ],
+      "note": "Table header; rows resolved below."
     },
     {
       "id": "rules/vehicles.md#77",
@@ -45290,7 +47407,48 @@
       ],
       "hash": "d827bc9830",
       "text": "| Ares Vermicide Autocannon | Cannon | 10 (c) | SA | 12D | 12,000¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Ares Vermicide Autocannon Cannon 10 (c) SA 12D 45 12,000¥"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/ares-vermicide-autocannon.sr3e-vehicleweapon-0000.json",
+          "line": 9,
+          "snippet": "\"weaponType\": \"Autocannon\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/ares-vermicide-autocannon.sr3e-vehicleweapon-0000.json",
+          "line": 10,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/ares-vermicide-autocannon.sr3e-vehicleweapon-0000.json",
+          "line": 11,
+          "snippet": "\"damage\": \"12D\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/ares-vermicide-autocannon.sr3e-vehicleweapon-0000.json",
+          "line": 12,
+          "snippet": "\"ammunition\": \"10(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/ares-vermicide-autocannon.sr3e-vehicleweapon-0000.json",
+          "line": 13,
+          "snippet": "\"weight\": 45,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/ares-vermicide-autocannon.sr3e-vehicleweapon-0000.json",
+          "line": 14,
+          "snippet": "\"cost\": 12000,"
+        }
+      ],
+      "note": "Mode SA, Damage 12D, Ammo 10(c), Cost 12,000 agree; the pack types it \"Autocannon\" where the book prints \"Cannon\"."
     },
     {
       "id": "rules/vehicles.md#78",
@@ -45301,7 +47459,48 @@
       ],
       "hash": "77583584c5",
       "text": "| Water Cannon | \"Shotgun\" | \"20\" | \"SA\" | 6M Stun | 20,000¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Water Cannon \"Shotgun\" \"20\" \"SA\" 6M Stun 12 20,000¥"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/water-cannon.sr3e-vehicleweapon-0029.json",
+          "line": 9,
+          "snippet": "\"weaponType\": \"Shotgun\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/water-cannon.sr3e-vehicleweapon-0029.json",
+          "line": 10,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/water-cannon.sr3e-vehicleweapon-0029.json",
+          "line": 11,
+          "snippet": "\"damage\": \"6M Stun\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/water-cannon.sr3e-vehicleweapon-0029.json",
+          "line": 12,
+          "snippet": "\"ammunition\": \"20\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/water-cannon.sr3e-vehicleweapon-0029.json",
+          "line": 13,
+          "snippet": "\"weight\": 12,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/water-cannon.sr3e-vehicleweapon-0029.json",
+          "line": 14,
+          "snippet": "\"cost\": 20000,"
+        }
+      ],
+      "note": "Type \"Shotgun\", Ammo 20, Mode SA, Damage 6M Stun and Cost 20,000 agree, as does the 12 kg weight."
     },
     {
       "id": "rules/vehicles.md#79",
@@ -45312,7 +47511,39 @@
       ],
       "hash": "f71546e6bf",
       "text": "The gamemaster sets the Availability, Legality and Street Index of\nvehicle-grade weapons *(SR3 p.312)*. Firing a mounted weapon uses\n**Gunnery** *(SR3 p.86)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Note that the gamemaster determines the Availability, Legality Code and Street Index for vehicle-grade weapons"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "Gunnery Skill governs the use of all vehicle-mounted weapons, whether in mounts, pintles or turrets"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/ares-vermicide-autocannon.sr3e-vehicleweapon-0000.json",
+          "line": 15,
+          "snippet": "\"availability\": \"GM\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-vehicle-weapons/water-cannon.sr3e-vehicleweapon-0029.json",
+          "line": 16,
+          "snippet": "\"streetIndex\": \"GM\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1708,
+          "snippet": "const gunnery    = pilotActor.items.find(i => i.type === 'skill' && /gunnery/i.test(i.name));"
+        }
+      ],
+      "note": "Both vehicle weapons carry availability \"GM\" and street index \"GM\" (the gamemaster sets them); a mounted weapon is fired with the pilot's Gunnery skill."
     },
     {
       "id": "rules/vehicles.md#80",
@@ -45323,7 +47554,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule — states no rule"
     },
     {
       "id": "rules/vehicles.md#81",
@@ -45334,7 +47566,8 @@
       ],
       "hash": "8e605c4c08",
       "text": "## Doing it in The 2nd Chumming (Foundry)\n{: #doing-it-in-the-2nd-chumming-foundry }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface (links to the Rigging page, where vehicles sit on the sheet), not a book rule"
     },
     {
       "id": "rules/vehicles.md#82",
@@ -45345,7 +47578,8 @@
       ],
       "hash": "9572327697",
       "text": "A vehicle is its own actor with its own sheet. Everything about using one\nis on the Rigging page:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface (links to the Rigging page, where vehicles sit on the sheet), not a book rule"
     },
     {
       "id": "rules/vehicles.md#83",
@@ -45356,7 +47590,8 @@
       ],
       "hash": "267e447e3e",
       "text": "- [Getting a vehicle onto a character's sheet](../rigging/#getting-a-vehicle-onto-a-characters-sheet):\n  drag it from the compendiums (*Vehicles* for *Shadowrun 3rd*, *Rigger 3*\n  and *State of the Art*), or **+ Add Vehicle** on the **Vehicles** tab.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface (links to the Rigging page, where vehicles sit on the sheet), not a book rule"
     },
     {
       "id": "rules/vehicles.md#84",
@@ -45367,7 +47602,8 @@
       ],
       "hash": "490bf26c9a",
       "text": "- [Jacking in: VCR / RCD / Auto](../rigging/#jacking-in-vcr--rcd--auto).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface (links to the Rigging page, where vehicles sit on the sheet), not a book rule"
     },
     {
       "id": "rules/vehicles.md#85",
@@ -45378,7 +47614,8 @@
       ],
       "hash": "618b731dc8",
       "text": "- [Driving without rigging](../rigging/#driving-without-rigging-in-foundry).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface (links to the Rigging page, where vehicles sit on the sheet), not a book rule"
     },
     {
       "id": "rules/vehicles.md#86",
@@ -45389,7 +47626,8 @@
       ],
       "hash": "e9cb8ac211",
       "text": "- [Driving Tests and Crash Tests](../rigging/#driving-tests-and-crash-tests).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface (links to the Rigging page, where vehicles sit on the sheet), not a book rule"
     },
     {
       "id": "rules/vehicles.md#87",
@@ -45400,7 +47638,8 @@
       ],
       "hash": "dc2bcb123f",
       "text": "- [The Chase Scene](../rigging/#the-chase-scene-combat-tracker).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface (links to the Rigging page, where vehicles sit on the sheet), not a book rule"
     },
     {
       "id": "rules/vehicles.md#88",
@@ -45411,7 +47650,8 @@
       ],
       "hash": "6e1a443b06",
       "text": "Mounted weapons go on the vehicle sheet's **Weapons** tab. They don't use\nclips or reloads.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface (links to the Rigging page, where vehicles sit on the sheet), not a book rule"
     },
     {
       "id": "rules/weapons.md#1",
