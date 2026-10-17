@@ -202,9 +202,9 @@ character's Attributes tab). Rules and the heuristic: `scripts/data/concealment.
   (`SR3EActor.wornArmorItems`). **Implants** only when category and name mark an outward part (`classifyImplant`): obvious
   cyberlimbs/cyberskull/torso/Kid Stealth and cyberears (no test); **synthetic** limbs (**8**, p.303; +3 under clothing,
   p.301) and an Induction Datajack (**10**, M&M p.21) are disguised; cybereyes and a plain datajack are the GM's call.
-- ⚠ **A search's target number has TWO readings in the book:** p.270 *"Searches have a target number of half the regular
-  Concealability Rating (rounding down)"*; p.237 *"make a standard Perception Test against the Concealability … Apply the
-  modifiers in the Physical Search Modifiers Table"*. The test dialog OFFERS all three (`NOTICE`, `SEARCH_HALF`,
-  `SEARCH_FULL`) and picks none; the question is with the maintainer. A 6-10 minute strip search finds the weapon, no roll.
+- **A search's target number is the FULL Concealability plus the Physical Search Modifiers Table** · p.237 *"make a standard
+  Perception Test against the Concealability … Apply the modifiers in the Physical Search Modifiers Table"* (table p.236).
+  **Ruled 2026-10-17 by the maintainer:** p.270's "half the regular Concealability Rating (rounding down)" for searches is
+  NOT used. Two modes (`NOTICE`, `SEARCH_FULL`). A 6-10 minute strip search finds the weapon, no roll.
 - The roll is `rollPool` + `FOLLOW_UPS.concealPerception`, which reads the Perception Success Table (p.232). Nothing is
   written back to an item; typed Concealability numbers affect that card only.

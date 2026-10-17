@@ -1809,26 +1809,27 @@ export const MUTANTS = [
 
   /* ── The Concealment view · TODO 195 (SR3 p.45, p.231, p.236, p.237, p.270, p.301-303) ─────────── */
   {
-    id:     'conceal-search-not-halved',
+    id:     'conceal-search-halved',
     suite:  'concealment',
     ...CONCEAL, method: 'targetNumber',
-    was:    'p.270 - "Searches have a target number of HALF the regular Concealability Rating (rounding down)". '
-          + 'Rolling a search against the whole number makes every pat-down twice as hard to win as the gear table says',
-    impl:   (c, _mode, mod = 0) => Math.max(2, Math.trunc(c) + Math.trunc(mod)),
+    was:    'the p.270 half-rating reading of a search, ruled OUT by the maintainer (2026-10-17): p.237 searches against the whole '
+          + 'Concealability, plus the Physical Search Modifiers Table. Halving it makes every pat-down twice as easy to win',
+    impl:   (c, mode, mod = 0) => Math.max(2, (mode === 'search-full' ? Math.floor(c / 2) : Math.trunc(c)) + Math.trunc(mod)),
   },
   {
-    id:     'conceal-search-half-rounds-up',
+    id:     'conceal-search-drops-table-modifier',
     suite:  'concealment',
     ...CONCEAL, method: 'targetNumber',
-    was:    'p.270 - half the Concealability "(rounding DOWN)": Concealability 7 searches at 3, not 4',
-    impl:   (c, mode, mod = 0) => Math.max(2, (mode === 'search-half' ? Math.ceil(c / 2) : Math.trunc(c)) + Math.trunc(mod)),
+    was:    'p.237 - a manual search applies the Physical Search Modifiers Table (p.236) on top of the Concealability; '
+          + 'a search that ignores the modifier total is the same number whether it takes a second or ten minutes',
+    impl:   (c, mode, mod = 0) => Math.max(2, Math.trunc(c) + (mode === 'search-full' ? 0 : Math.trunc(mod))),
   },
   {
     id:     'conceal-no-floor-of-two',
     suite:  'concealment',
     ...CONCEAL, method: 'targetNumber',
-    was:    'p.112 - "no target number can ever be less than 2": half of Concealability 3 is 1, which must read as 2',
-    impl:   (c, mode, mod = 0) => (mode === 'search-half' ? Math.floor(c / 2) : Math.trunc(c)) + Math.trunc(mod),
+    was:    'p.112 - "no target number can ever be less than 2": Concealability 1 must read as 2',
+    impl:   (c, _mode, mod = 0) => Math.trunc(c) + Math.trunc(mod),
   },
   {
     id:     'conceal-sorted-most-concealed-first',

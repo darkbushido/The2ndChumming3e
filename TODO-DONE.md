@@ -7185,6 +7185,8 @@ armour and outward implants least concealed first, posts the list to chat, and r
 *half* the Concealability (rounding down); p.237's manual search uses the Concealability whole with the Physical Search
 Modifiers Table. The tool offers both and picks neither — the maintainer chooses a default.
 
+**Ruled 2026-10-17 by the maintainer:** a search uses the **full** Concealability plus the Physical Search Modifiers Table (SR3 p.237, table p.236); p.270's "half the Concealability" is not used and the mode is removed from the tool (`SEARCH_HALF` gone; two modes, noticing and searching). Noticing stays the whole number (p.45, p.231). Code note: `scripts/data/concealment.mjs`.
+
 ## 197. ✅ Ledger entries appear on other characters — **reported 2026-09-27** · fixed `1726af72`
 
 The real cause of the report in [#193](#193): Buzzz and Velvet carried every one of each

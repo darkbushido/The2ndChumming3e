@@ -2869,9 +2869,10 @@ looker. Log in as the GM; F5 once (new follow-up kind and button class).
       carrying" without it; changing a number changes the card only — the item is unchanged.
 - [ ] The card tells the table that a lower number is easier to spot. A player sees the 🔍 Test buttons **greyed**.
 - [ ] 🔍 (in the dialog, or on the card as GM) opens a Perception dialog: observer, dice = their Intelligence, the
-      Concealability, **three readings** — Noticing (full), Search p.270 (half, rounded down), Search p.237 (full + the
-      Physical Search table). The "Target number" line updates live; half of 7 is 3; nothing goes below 2.
-- [ ] The p.237 reading shows the three search selects; **Strip search (6-10 minutes)** rolls nothing and posts "finds
+      Concealability, **two readings** — Noticing (full) and A search (p.237: the full Concealability + the Physical
+      Search table). There is **no** half-rating option (p.270's was ruled out 2026-10-17). The "Target number" line
+      updates live; Concealability 7 searches at 7 (+ the table); nothing goes below 2.
+- [ ] The search reading shows the three search selects; **Strip search (6-10 minutes)** rolls nothing and posts "finds
       the weapon". Otherwise **Roll** makes the roll and, after any 💥, a card gives the successes against the TN and the
       **Perception Success Table** line (1: "Something is there" … 4+: "knows what it is, but no specifics").
 - [ ] Nothing is written to any item in any of the above.
