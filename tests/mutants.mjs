@@ -40,6 +40,7 @@ const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon
 const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
 const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellLimits' };
+const WILLING = { module: '../scripts/data/willing-target.mjs', klass: 'WillingTarget' };
 
 export const MUTANTS = [
   {
@@ -2108,5 +2109,43 @@ export const MUTANTS = [
           + '"the player chooses which when the spell is learned"',
     impl:   (force, spell) => Math.max(0, Math.floor(Number(force) || 0)
       - (spell?.system?.limitFetish ? 1 : 0) - (spell?.system?.limitExclusive ? 2 : 0)),
+  },
+  {
+    id:     'willing-damaging-spell-skips-resistance',
+    suite:  'willing-target',
+    ...WILLING, method: 'canBeWilling',
+    was:    'a plausible misreading (TODO 191): any spell may be cast on a willing subject, so a ticked Manabolt on a '
+          + 'friend deals its damage with no Resistance Test — p.183 waives the test for "the spell\'s description" '
+          + 'effect, and a Combat spell is meant to hurt; an Elemental one is a Damage Resistance Test',
+    impl:   () => true,
+  },
+  {
+    id:     'willing-target-still-offered-a-resist-button',
+    suite:  'willing-target',
+    ...WILLING, method: 'resolvesUnresisted',
+    was:    'the shipped behaviour before TODO 191: every cast on a willing ally ran the attack flow and offered a '
+          + 'Resist Spell — SR3 p.183: "unless the target of the spell is willing"',
+    impl:   () => false,
+  },
+  {
+    id:     'willing-elemental-skips-damage-resistance',
+    suite:  'willing-target',
+    ...WILLING, method: 'resolvesUnresisted',
+    was:    'a willing tick honoured on an elemental cast (p.183: its Resistance Test is a Damage Resistance Test)',
+    impl:   (sc, id) => Array.isArray(sc?.willingTargetIds) && sc.willingTargetIds.includes(id),
+  },
+  {
+    id:     'willing-everyone-defaults-ticked',
+    suite:  'willing-target',
+    ...WILLING, method: 'defaultWilling',
+    was:    'a default that ticks every target: a hostile NPC would be pre-marked willing and skip its resistance',
+    impl:   () => true,
+  },
+  {
+    id:     'willing-carries-unknown-ids',
+    suite:  'willing-target',
+    ...WILLING, method: 'carriedIds',
+    was:    'carrying whatever the dialog sent, including ids that are not targets of the cast, and on damaging spells',
+    impl:   (_c, _ids, ticked) => [...(ticked ?? [])],
   },
 ];

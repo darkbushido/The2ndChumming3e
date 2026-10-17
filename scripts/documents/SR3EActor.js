@@ -9,6 +9,7 @@ import { Ledger } from '../data/ledger.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
 import { OpenSteps } from '../data/open-steps.mjs';
+import { WillingTarget } from '../data/willing-target.mjs';
 import { RiggerShock, DISORIENT_MOD, DISORIENT_TN, DISORIENT_TURNS } from '../data/rigger-shock.mjs';
 import { MdfRules } from '../data/mdf-rules.mjs';
 import { KarmaPool } from '../data/karma-uses.mjs';
@@ -10283,6 +10284,16 @@ _prepareCharacter(sys, attr) {
   static _spellResistButton(sc, targetId, attackSuccesses) {
     const tActor = game.actors.get(targetId);
     if (!tActor) return '';
+
+    /* ── A willing subject · SR3 p.183 (TODO 191) ─────────────────────────────────────────────
+     * > "If the target makes no Spell Resistance Test, all the successes from the Sorcery Test are used,
+     * > according to the spell's description, to determine the spell's effect."
+     * No Resist button: a line states the effect. Both sites that hand out spell buttons come through
+     * here, so counterspelling (which lowers `attackSuccesses` first) still applies. */
+    if (WillingTarget.resolvesUnresisted(sc, targetId)) {
+      return `<div class="sr-roll-meta" style="font-size:11px">🤝 ${WillingTarget.effectLine({
+        targetName: tActor.name, spellName: sc.spellName ?? 'The spell', successes: attackSuccesses, touch: !!sc.touch })}</div>`;
+    }
 
     /* ── Elemental Manipulation · SR3 p.183 ─────────────────────────────────────────────────
      *

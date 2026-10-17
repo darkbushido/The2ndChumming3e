@@ -2601,3 +2601,22 @@ with Magic 6, Sorcery, and a Fireball (Combat, Drain `(DL+1)`) with some Good Ka
 - [ ] Same spell with the limit off the **cost**: Drain is **Physical**, F=8, TN 4.
 - [ ] A fetish-limited spell warns that the fetish must be touching the caster; casting is never refused.
 - [ ] The GM's ↺ on the "Learned Fireball" ledger line puts the spell's Force **and both limits** back.
+
+## 45. Spells on a willing subject (TODO 191, SR3 p.178, p.183)
+
+**Prerequisites:** an Awakened character (Sorcery) with a non-damaging spell (Increase Reflexes or Invisibility)
+and a Combat spell (Manabolt), and a second actor on the scene. No restart needed (no new data fields).
+
+- [ ] Cast **Increase Reflexes** and pick **yourself**: a "willing targets?" dialog follows the target pick, with
+      yourself **ticked** ("the caster"). Cast. The card shows the success count and **no Resist Spell button**:
+      a line says "is willing — no Spell Resistance Test (p.183). All N successes set the effect". The Drain
+      button is still there.
+- [ ] Cast the same spell at another **player's character** (or a Friendly-disposition token): ticked by default.
+      Cast it at a hostile NPC: **unticked**; tick it by hand and it skips the test; untick yourself and it
+      resists as before.
+- [ ] A cast with **zero successes** on a willing subject says the spell fails; Drain is still owed.
+- [ ] A **touch** spell on a willing subject adds "No Unarmed Combat Test is needed" (p.178).
+- [ ] **Manabolt** (Combat) and an Elemental spell cast at yourself or an ally: **no** willing dialog appears and
+      the usual Resist Spell / dodge flow runs.
+- [ ] An **area** non-damaging spell lists every target in the radius (the caster included) with its own tick.
+- [ ] Press **Cancel** or Esc on the willing dialog: the cast is cancelled and no Spell Pool is spent.

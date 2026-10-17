@@ -8,6 +8,7 @@ import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
 import { MiniGrenade } from '../data/mini-grenade.mjs';
 import { SpellLimits } from '../data/spell-limits.mjs';
+import { WillingTarget } from '../data/willing-target.mjs';
 
 export class SR3EItem extends Item {
 
@@ -3593,6 +3594,49 @@ export class SR3EItem extends Item {
     if (!targetId) return null;
     return game.actors.get(targetId) ?? null;
   }
+
+  /**
+   * "Is the target willing?" — one tick per target of a non-damaging spell · SR3 p.183 (TODO 191).
+   * A willing subject takes no Spell Resistance Test; the defaults come from `WillingTarget.defaultWilling`
+   * (self, an actor the same player owns, a party member, a friendly token) and every one is editable.
+   * Resolves to the ticked actor ids, or `null` when the caster cancels.
+   */
+  static async _promptWillingTargets(caster, targets, spellName) {
+    const Q = game.sr3e.SR3EQuery;
+    const friendly = globalThis.CONST?.TOKEN_DISPOSITIONS?.FRIENDLY ?? 1;
+    const rows = targets.map(t => {
+      const facts = {
+        isSelf:          t.id === caster.id,
+        bothPlayerOwned: !!(Q?.isPlayerCharacter(caster) && Q?.isPlayerCharacter(t)),
+        friendlyToken:   t.getActiveTokens?.().some(tk => tk.document?.disposition === friendly) ?? false,
+      };
+      const on = WillingTarget.defaultWilling(facts);
+      const why = facts.isSelf ? 'the caster' : (facts.bothPlayerOwned ? 'party' : (facts.friendlyToken ? 'friendly token' : ''));
+      return `<label class="sr-target-row" style="display:flex;gap:6px;align-items:center">
+        <input type="checkbox" name="willing" value="${t.id}" ${on ? 'checked' : ''}
+               style="width:13px;height:13px;margin:0;appearance:auto;-webkit-appearance:checkbox"/>
+        <span>${t.name}${why ? ` <span style="font-size:10px;color:var(--sr-muted)">(${why})</span>` : ''}</span>
+      </label>`;
+    }).join('');
+    let picked = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${caster.name} — ${spellName}: willing targets?` },
+      content: `
+        <p style="font-size:12px;margin:0 0 6px">Tick each target that is <strong>willing</strong> — it makes no Spell Resistance Test and
+        every success sets the spell's effect (SR3 p.183). Leave a target unticked and it resists as usual.</p>
+        <div class="sr-target-list">${rows}</div>`,
+      buttons: [
+        {
+          label: 'Cast', action: 'confirm', default: true,
+          callback: (_e, _b, dialog) => {
+            picked = [...dialog.element.querySelectorAll('input[name="willing"]:checked')].map(i => i.value);
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    return picked;
+  }
   /**
  * Mapping from weapon category to skill
  * Based on the codes from the firearms JSON
@@ -4755,6 +4799,16 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       // ARE dodged, then soaked (p.183) — decided after the cast, in `_spellResistButton`.
     }
 
+    /* Willing subjects · SR3 p.183 (TODO 191): *"Living targets may always make a Spell Resistance Test
+     * against spells, unless the target of the spell is willing."* A non-damaging spell offers the choice
+     * per target — defaulted from self / an owned or friendly actor, always the caster's to change. */
+    let willingTargetIds = [];
+    if (WillingTarget.canBeWilling(this.system.category) && targetActors.length) {
+      const picked = await SR3EItem._promptWillingTargets(actor, targetActors, this.name);
+      if (picked === null) return null;   // cancelled
+      willingTargetIds = WillingTarget.carriedIds(this.system.category, targetActors.map(t => t.id), picked);
+    }
+
     // Step 3: the cast TN. SR3 combat spell = opposed test.
     //   Cast:   Sorcery vs TN = the spell's Target attribute on the target (W→Willpower,
     //           B→Body, F→Force, or a fixed number).
@@ -4873,6 +4927,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const spellContext = {
       attackerActorId:   actor.id,
       targetActorIds:    targetActors.map(t => t.id),
+      // Targets that take no Spell Resistance Test (p.183, TODO 191); non-damaging spells only.
+      willingTargetIds,
+      touch:             /^\s*T/i.test(String(this.system.range ?? '')),
       spellId:           this.id,
       spellName:         this.name,
       force,
