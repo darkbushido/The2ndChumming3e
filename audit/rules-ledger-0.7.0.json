@@ -35060,7 +35060,8 @@
       ],
       "hash": "7b8106a75e",
       "text": "# Karma\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / heading — states no rule"
     },
     {
       "id": "rules/karma.md#2",
@@ -35071,7 +35072,45 @@
       ],
       "hash": "4ea0e08e3b",
       "text": "How Karma is earned, how it splits into **Good Karma** and the **Karma Pool**, what each one buys,\nand how the Karma Pool refreshes. From the core rulebook, *(SR3 p.242–248)*, with the magical\npurchases from the Magic chapter *(SR3 p.168, p.180–181, p.190)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "Karma is used to improve Attributes, skills and special resources."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "is what the players use over time to improve their character"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "Karma Pool is used by players during game sessions for saving their character's hoop in tight situations"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 35,
+          "snippet": "Power Points (20 each), learning a spell (Karma = Force), bonding a focus (the Focus Bonding"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 62,
+          "snippet": "spend(sys, n) {"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 72,
+          "snippet": "burn(sys, n) {"
+        }
+      ],
+      "note": "Introduction; its page references (p.242-248 core, p.168/180-181/190 magic) were each resolved in the units below."
     },
     {
       "id": "rules/karma.md#3",
@@ -35082,7 +35121,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table of contents marker — states no rule"
     },
     {
       "id": "rules/karma.md#4",
@@ -35093,7 +35133,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule — states no rule"
     },
     {
       "id": "rules/karma.md#5",
@@ -35104,7 +35145,38 @@
       ],
       "hash": "ea79e4f48f",
       "text": "## Two kinds of Karma  *(SR3 p.242)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "is what the players use over time to improve their character"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "Karma Pool is used by players during game sessions for saving their character's hoop in tight situations"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 168,
+          "snippet": "karma:                   new NumberField({ integer: true, initial: 0 }),"
+        },
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 169,
+          "snippet": "totalKarma:              new NumberField({ integer: true, initial: 0 }),"
+        },
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 172,
+          "snippet": "karmaPool:               new NumberField({ integer: true, initial: 1, min: 0 }),"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#6",
@@ -35115,7 +35187,23 @@
       ],
       "hash": "275fd28bd6",
       "text": "Karma is awarded at the end of an adventure, not necessarily after each session. Once awarded it\nsplits in two:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "Karma is awarded at the end of an adventure, but not"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 3276,
+          "snippet": "data-action=\"awardKarma\""
+        }
+      ],
+      "note": "Nothing in the code times an award: the GM presses Award Karma (or runs Session Rewards) whenever they choose, which is the book's \"gamemaster decides\". "
     },
     {
       "id": "rules/karma.md#7",
@@ -35126,7 +35214,27 @@
       ],
       "hash": "8f49a2d697",
       "text": "- **Good Karma** is spent over time to improve the character: Attributes, skills, spells, foci.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "is what the players use over time to improve their character"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 168,
+          "snippet": "karma:                   new NumberField({ integer: true, initial: 0 }),"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5956,
+          "snippet": "const parts  = chosen.split(':');"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#8",
@@ -35137,7 +35245,27 @@
       ],
       "hash": "23b42d6cc9",
       "text": "- **Karma Pool** is spent during play to get out of trouble: re-rolls, extra dice, avoiding a\n  disaster.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "Karma Pool is used by players during game sessions for saving their character's hoop in tight situations"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 172,
+          "snippet": "karmaPool:               new NumberField({ integer: true, initial: 1, min: 0 }),"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2743,
+          "snippet": "await this.spendKarmaPool(KarmaPool.extraDiceCost(k)"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#9",
@@ -35148,7 +35276,56 @@
       ],
       "hash": "c7d921a5b5",
       "text": "Every point awarded goes to Good Karma **except every twentieth point, which goes to the Karma Pool\ninstead**. **Humans add every tenth point** to their Karma Pool. Every character starts with a Karma\nPool of **1** *(SR3 p.244)*. Track Good Karma, Karma Pool and **Total Karma** (everything ever\nawarded) separately *(SR3 p.242)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "All awarded Karma counts as Good Karma, except for every twentieth point, which is added to the character's Karma Pool. Human characters add every tenth point"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "Brynn is a new human character. She starts with a Karma Pool of 1."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "character starts with 1 Karma Pool) and the rest (59) has"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Shetani, an elf character, has a Total Karma of 62, Good Karma of 10, and Karma Pool of 4"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7323,
+          "snippet": "const poolGained = Math.floor(newTotal / d) - Math.floor(t / d);"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7324,
+          "snippet": "return { newTotal, poolGained, goodKarma: a - poolGained };"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7349,
+          "snippet": "=== 'human' ? 10 : 20;"
+        },
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 172,
+          "snippet": "karmaPool:               new NumberField({ integer: true, initial: 1, min: 0 }),"
+        }
+      ],
+      "note": "Every twentieth (human: tenth) point goes to the Pool instead of Good Karma; Total tracked in its own field; new actors start at Pool 1."
     },
     {
       "id": "rules/karma.md#10",
@@ -35159,7 +35336,40 @@
       ],
       "hash": "d586dff5b8",
       "text": "**Worked example, a human** *(SR3 p.242, p.244)*: Brynn starts with Karma Pool 1. She is awarded\n12 Karma. The tenth point goes to her Pool, which is now **2**, and the other 11 are Good Karma. She\nlater earns 9 more, for a Total of 21. The twentieth point goes to her Pool, which is now **3**, and\nthe other 8 to Good Karma: 11 + 8 = **19**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "Brynn is a new human character. She starts with a Karma Pool of 1."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "point goes into Karma Pool (increasing it to 2), leaving"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "to her Karma Pool (the twentieth). Her Karma Pool is now 3, and her Good Karma is now 19 (11 + 8)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7323,
+          "snippet": "const poolGained = Math.floor(newTotal / d) - Math.floor(t / d);"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7349,
+          "snippet": "=== 'human' ? 10 : 20;"
+        }
+      ],
+      "note": "Worked arithmetic: award 12 at total 0 (divisor 10) -> floor(12/10)-0 = 1 Pool, 11 Good; award 9 at total 12 -> floor(21/10)-floor(12/10) = 1 Pool, 8 Good; Pool 1+1+1 = 3, Good 11+8 = 19."
     },
     {
       "id": "rules/karma.md#11",
@@ -35170,7 +35380,40 @@
       ],
       "hash": "24e9b04d2d",
       "text": "**Worked example, an elf** *(SR3 p.244)*: Shetani has a Total Karma of **62**. Every twentieth\npoint went to the Pool: 20, 40 and 60 are three points, plus the 1 he started with, so his Pool is\n**4**. The other 59 went to Good Karma, of which he has spent 49, leaving **10**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Shetani, an elf character, has a Total Karma of 62, Good Karma of 10, and Karma Pool of 4"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "character starts with 1 Karma Pool) and the rest (59) has"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "gone to Good Karma (of which he has spent 49 points improving his character over time, leaving him with 10)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7323,
+          "snippet": "const poolGained = Math.floor(newTotal / d) - Math.floor(t / d);"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7369,
+          "snippet": "return 1 + Math.floor(Math.max(0, Number(totalKarma) || 0) / d);"
+        }
+      ],
+      "note": "Worked arithmetic: elf total 62 -> floor(62/20) = 3 Pool points, plus the 1 start = 4; Good Karma 62-3 = 59, less 49 spent = 10."
     },
     {
       "id": "rules/karma.md#12",
@@ -35181,7 +35424,34 @@
       ],
       "hash": "ca8462f1ea",
       "text": "## Earning Karma  *(SR3 p.242, p.244)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Karma is awarded to characters who personally advance the story or the overall gaming enjoyment in some way"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "He also makes individual awards to characters whose actions deserve them"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7318,
+          "snippet": "static karmaAward(totalKarma, amount, metatype) {"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5740,
+          "snippet": "static async _onAwardKarma() {"
+        }
+      ],
+      "note": "The code takes a free-typed amount from the GM and splits it (karmaAward); the book's team/individual criteria themselves are resolved in units 13-22 below."
     },
     {
       "id": "rules/karma.md#13",
@@ -35192,7 +35462,36 @@
       ],
       "hash": "a922f741cb",
       "text": "Each surviving member of the team gets Karma for staying alive, for succeeding at the mission and\nfor how dangerous it was. On top of that the gamemaster gives individual awards:",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "Each surviving member of a team gets Karma for staying alive, succeeding at a mission, and for the degree of danger in the mission"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "He also makes individual awards to characters whose actions deserve them"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "staying alive",
+          "path": "scripts"
+        },
+        {
+          "pattern": "surviving member",
+          "path": "scripts"
+        },
+        {
+          "pattern": "degree of danger",
+          "path": "scripts"
+        }
+      ],
+      "note": "The system has no team/mission award; Award Karma and Session Rewards take whatever number the GM types."
     },
     {
       "id": "rules/karma.md#14",
@@ -35203,7 +35502,32 @@
       ],
       "hash": "54a9a449d1",
       "text": "| For | Award *(SR3 p.244)* |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Karma is awarded to characters who personally advance the story or the overall gaming enjoyment in some way"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "He also makes individual awards to characters whose actions deserve them"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "karma award (table|criteria|guideline)",
+          "path": "scripts"
+        },
+        {
+          "pattern": "award.{0,20}criteria",
+          "path": "scripts"
+        }
+      ],
+      "note": "Header row of the award table; no award table exists in the code (the GM types a number). Rows resolved individually below."
     },
     {
       "id": "rules/karma.md#15",
@@ -35214,7 +35538,25 @@
       ],
       "hash": "cba11f119a",
       "text": "| Good roleplaying (mostly stayed in character) | 1; excellent roleplaying 2 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Good roleplaying: Award 1 Karma Point to players who mostly stayed in character. Excellent roleplaying is worth 2"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "excellent roleplaying",
+          "path": "scripts"
+        },
+        {
+          "pattern": "good roleplaying",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#16",
@@ -35225,7 +35567,29 @@
       ],
       "hash": "9458702075",
       "text": "| Guts — brave, effective fighting (not stupidly brave) | 1; particularly heroic 2 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Guts: Brave and/or effective fighters should get a point of Karma, two if they are particularly heroic"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "particularly heroic",
+          "path": "scripts"
+        },
+        {
+          "pattern": "karma.{0,30}\\bguts\\b",
+          "path": "scripts"
+        },
+        {
+          "pattern": "\\bguts\\b.{0,30}karma",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#17",
@@ -35236,7 +35600,25 @@
       ],
       "hash": "a8cca16ed3",
       "text": "| Smarts — a clever plan, a solved clue, a good scam, knowing when to run | at least 1 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Smarts: Players whose characters come up with a clever strategy, solve a puzzling clue or pull off a good scam should get at least 1 point of Karma"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "karma.{0,30}smarts",
+          "path": "scripts"
+        },
+        {
+          "pattern": "smarts.{0,30}karma",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#18",
@@ -35247,7 +35629,25 @@
       ],
       "hash": "dccce512be",
       "text": "| Motivation — driving the story forward | 1 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Motivation: Players whose characters really drive the storyline forward"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "karma.{0,30}motivation",
+          "path": "scripts"
+        },
+        {
+          "pattern": "motivation.{0,30}karma",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#19",
@@ -35258,7 +35658,27 @@
       ],
       "hash": "0207aa0b55",
       "text": "| Right place, right time — the vital skill, not known in advance to be needed | 1 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Right place/right time: Characters who are in the right place, with the right skill to do some necessary job, should get 1 point of Karma"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "don't award Karma just for making good dice rolls"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "right place.{0,12}right time",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#20",
@@ -35269,7 +35689,25 @@
       ],
       "hash": "22c824c2aa",
       "text": "| Surprise — a strategy that foils the gamemaster's plans | 1 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Surprise: A surprising and effective strategy is worth a Karma Point to the player who comes up with it"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "karma.{0,40}surprise",
+          "path": "scripts"
+        },
+        {
+          "pattern": "surprise.{0,40}karma",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#21",
@@ -35280,7 +35718,21 @@
       ],
       "hash": "6ddfea7b5e",
       "text": "| Humour and drama, in character | 1 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Humor and drama: A player who paralyzes the entire gaming group with laughter while acting in character should get 1 Karma Point"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "humou?r and drama",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#22",
@@ -35291,7 +35743,36 @@
       ],
       "hash": "7b7a503e5c",
       "text": "An amazing run might earn one character 10 or 12 Karma. More than 12 for a single adventure is\n\"highly unlikely\" *(SR3 p.244)*. Good dice rolls alone earn nothing.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "that character might earn up to 10 or 12 Karma Points. A Karma award greater than 12 points for a single adventure, however, is highly unlikely"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "don't award Karma just for making good dice rolls"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "highly unlikely",
+          "path": "scripts"
+        },
+        {
+          "pattern": "more than 12 karma",
+          "path": "scripts"
+        },
+        {
+          "pattern": "karma.{0,30}over 12",
+          "path": "scripts"
+        }
+      ],
+      "note": "No ceiling or warning on a single award; the GM may type any number."
     },
     {
       "id": "rules/karma.md#23",
@@ -35302,7 +35783,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule — states no rule"
     },
     {
       "id": "rules/karma.md#24",
@@ -35313,7 +35795,8 @@
       ],
       "hash": "c6a0da1881",
       "text": "## Spending Good Karma",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "section heading with no page citation — states no rule"
     },
     {
       "id": "rules/karma.md#25",
@@ -35324,7 +35807,36 @@
       ],
       "hash": "f25df9258c",
       "text": "Good Karma is spent **between adventures** *(SR3 p.244)*. The gamemaster can also require training\ntime, a teacher, or a test to learn or improve something *(SR3 p.245)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Players can use Good Karma between adventures to improve a character"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Gamemasters should not allow characters to simply spend large amounts of Karma"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "between adventures",
+          "path": "scripts"
+        },
+        {
+          "pattern": "karma.{0,60}(teacher|training time|instructor)",
+          "path": "scripts"
+        },
+        {
+          "pattern": "(teacher|training time|instructor).{0,60}karma",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Spend Karma calculator works at any time; no training time, teacher or Skill Test is asked for or checked (the system never refuses, by design)."
     },
     {
       "id": "rules/karma.md#26",
@@ -35335,7 +35847,27 @@
       ],
       "hash": "9ccfbe8566",
       "text": "### Attributes  *(SR3 p.244)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "equal to twice the rating to which the Attribute is being raised"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7258,
+          "snippet": "return n * (n > l ? 3 : 2);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5820,
+          "snippet": "const cost  = game.sr3e.SR3EActor.karmaAttributeCost(next, limit);"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#27",
@@ -35346,7 +35878,67 @@
       ],
       "hash": "9a768fb5d9",
       "text": "Raising a Physical or Mental Attribute by 1 costs **2 × the new rating**, using the natural,\nunaugmented rating. Above the **Racial Modified Limit**, up to the **Attribute Maximum** (the limit\n× 1.5), it costs **3 × the new rating**. Strength 5 → 6 costs **12**; an elf's Strength 6 → 7, over\nher limit of 6, costs **21**.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "increasing Strength from 5 to 6 costs 12 Good Karma points. Use the natural, unaugmented Attribute when"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "A character's Attribute Maximum is equal to their Racial Modified Limit times 1.5"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Modified Limit has a cost equal to 3x the rating to which the Attribute is being raised"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "wanted to raise her Strength from 6 to 7 would have to spend 21 Good Karma Points to do so"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "6 (9) 7 (11) 9 (14) 11 (17) 6 (9)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7258,
+          "snippet": "return n * (n > l ? 3 : 2);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5817,
+          "snippet": "const cur   = attrs[a.key]?.base ?? 0;"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5819,
+          "snippet": "const limit = game.sr3e.SR3EActor.racialLimit(metatype, a.key);"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7263,
+          "snippet": "return Math.floor((Number(racialLimit) || 0) * 1.5);"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7535,
+          "snippet": "return Math.round((limit ?? 6) * 1.5);"
+        }
+      ],
+      "note": "Costs match the book (2x new rating; 3x above the Racial Modified Limit; Strength 5->6 = 12; elf Strength 6->7 = 21; natural .base rating). DIVERGES on the Attribute Maximum the sheet reports: the book says Attribute Maximum = Racial Modified Limit x 1.5 (p.244) and the Racial Attribute Limit Table (p.245) prints the rounded-up results, e.g. Body \"6 (9) 7 (11) 9 (14) 11 (17) 6 (9)\". karmaAttributeMaximum floors (limit x 1.5) -> 10, 13 and 16 for limits 7, 9 and 11 (tests/karma.test.mjs:145 pins \"troll Body maximum is 16\"), where the book prints 11, 14 and 17. The sibling racialMax() rounds half up and reproduces the table. Effect: the Spend Karma row shows the red \"past max\" one point early for limits 5, 7, 9 and 11 (the price is unaffected; nothing is refused)."
     },
     {
       "id": "rules/karma.md#28",
@@ -35357,7 +35949,23 @@
       ],
       "hash": "78e31f777c",
       "text": "Good Karma can't raise **Essence** or **Magic**, even if they were reduced. **Reaction** isn't raised\ndirectly: raise Quickness and Intelligence instead.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Characters cannot raise the Attributes of Essence or Magic with Good Karma, even if they have been reduced. Reaction cannot be"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5794,
+          "snippet": "const IMPROVABLE_ATTRS = ["
+        }
+      ],
+      "note": "The calculator lists only Body, Quickness, Strength, Charisma, Intelligence, Willpower - never Essence, Magic or Reaction."
     },
     {
       "id": "rules/karma.md#29",
@@ -35368,7 +35976,33 @@
       ],
       "hash": "1eb13c6d69",
       "text": "### Skills  *(SR3 p.244–245)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Multiply the number given on the table by the new rating (round fractions down)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "the linked natural Attribute Rating as well"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7205,
+          "snippet": "return Math.floor(n * m);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5848,
+          "snippet": "const skillCost = SR3EActorSheet._skillCost(rating + 1, attrRating, isActive);"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#30",
@@ -35379,7 +36013,44 @@
       ],
       "hash": "b9f96dfa15",
       "text": "A **new skill** costs **1** at rating 1, whatever its kind. After that, multiply the number on the\ntable by the **new** rating and **round down**. The multiplier depends on the skill's **linked\nAttribute** (natural rating) at the time you buy.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "New skills can be purchased at a skill rating of 1, by paying a cost of 1 in Good Karma"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Multiply the number given on the table by the new rating (round fractions down)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "the linked natural Attribute Rating as well"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7236,
+          "snippet": "return 1;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7205,
+          "snippet": "return Math.floor(n * m);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5834,
+          "snippet": "const attrRating = attrs[linkedAttr]?.base ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#31",
@@ -35390,7 +36061,28 @@
       ],
       "hash": "53d24652a5",
       "text": "**Skill Improvement Cost Table** *(SR3 p.245)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Multiply the number given on the table by the new rating (round fractions down)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Less than or equal to Attribute Rating 1.5 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7202,
+          "snippet": "const m = n <= a     ? (isActive ? 1.5 : 1)"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#32",
@@ -35401,7 +36093,8 @@
       ],
       "hash": "e724e9e516",
       "text": "| New rating is… | Active Skill | Knowledge / Language Skill |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row — states no rule"
     },
     {
       "id": "rules/karma.md#33",
@@ -35412,7 +36105,22 @@
       ],
       "hash": "d5c46b9e2c",
       "text": "| Less than or equal to the Attribute | 1.5 | 1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Less than or equal to Attribute Rating 1.5 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7202,
+          "snippet": "const m = n <= a     ? (isActive ? 1.5 : 1)"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#34",
@@ -35423,7 +36131,22 @@
       ],
       "hash": "6b7f62653e",
       "text": "| Less than or equal to 2 × the Attribute | 2 | 1.5 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Less than or equal to (2 x Attribute Rating) 2 1.5"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7203,
+          "snippet": ": n <= 2 * a ? (isActive ? 2   : 1.5)"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#35",
@@ -35434,7 +36157,22 @@
       ],
       "hash": "74f09cf822",
       "text": "| More than 2 × the Attribute | 2.5 | 2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "More than (2 x Attribute Rating) 2.5 2"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7204,
+          "snippet": ": (isActive ? 2.5 : 2);"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#36",
@@ -35445,7 +36183,8 @@
       ],
       "hash": "518057974c",
       "text": "| New specialization rating is… | Active | Knowledge / Language |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row — states no rule"
     },
     {
       "id": "rules/karma.md#37",
@@ -35456,7 +36195,22 @@
       ],
       "hash": "9eab6100db",
       "text": "| Less than or equal to the Attribute | .5 | .5 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Less than or equal to Attribute Rating .5 .5"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7220,
+          "snippet": "const m = n <= a ? 0.5 : n <= 2 * a ? 1 : 1.5;"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#38",
@@ -35467,7 +36221,22 @@
       ],
       "hash": "7b6b16ec15",
       "text": "| Less than or equal to 2 × the Attribute | 1 | 1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Less than or equal to (2 x Attribute Rating) 1 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7220,
+          "snippet": "const m = n <= a ? 0.5 : n <= 2 * a ? 1 : 1.5;"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#39",
@@ -35478,7 +36247,22 @@
       ],
       "hash": "7edc810982",
       "text": "| More than 2 × the Attribute | 1.5 | 1.5 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "More than (2 x Attribute Rating) 1.5 1.5"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7220,
+          "snippet": "const m = n <= a ? 0.5 : n <= 2 * a ? 1 : 1.5;"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#40",
@@ -35489,7 +36273,33 @@
       ],
       "hash": "ba6fbf053c",
       "text": "**Worked example** *(SR3 p.245)*: Iris has Pistols 3 and Quickness 4. Pistols 4 costs 4 × 1.5 =\n**6**. Pistols 5 is over her Quickness, so it costs 5 × 2 = **10**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Pistols 4 costs Iris (4 x 1.5 =) 6 Good Karma. Raising it later to Pistols 5 (higher than Quickness 4) would cost her (5 x 2 =) 10 Good Karma"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7202,
+          "snippet": "const m = n <= a     ? (isActive ? 1.5 : 1)"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7203,
+          "snippet": ": n <= 2 * a ? (isActive ? 2   : 1.5)"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7205,
+          "snippet": "return Math.floor(n * m);"
+        }
+      ],
+      "note": "Pistols 3->4 with Quickness 4: 4 <= 4 so 1.5 x 4 = 6; Pistols 5: 5 > 4 so 2 x 5 = 10."
     },
     {
       "id": "rules/karma.md#41",
@@ -35500,7 +36310,28 @@
       ],
       "hash": "347bf2ddee",
       "text": "### Specializations  *(SR3 p.84, p.245)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 86,
+          "printedPage": 84,
+          "quote": "Characters may take on additional specializations per base skill during game play"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "up to a maximum number of specializations equal to the base skill's Linked Attribute Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7297,
+          "snippet": "return (Number(baseRating) || 0) + (Number(currentLevel) || 0) + 1;"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#42",
@@ -35511,7 +36342,34 @@
       ],
       "hash": "399c120a82",
       "text": "- A new specialization is bought **one point above the base skill**, as if it were already at the\n  base skill's rating and being raised. The base skill isn't reduced.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "he must buy Sneaking at 1 point higher than his base skill (5 + 1 = 6), as if he had Sneaking 5 already and was merely raising it"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 86,
+          "printedPage": 84,
+          "quote": "Starting a specialization during game play does not reduce the base skill rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7297,
+          "snippet": "return (Number(baseRating) || 0) + (Number(currentLevel) || 0) + 1;"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6151,
+          "snippet": "specs.push({ name: specName, level: 1 });"
+        }
+      ],
+      "note": "A bought specialisation is stored as level 1 (one above the base) and the base skill rating is not touched."
     },
     {
       "id": "rules/karma.md#43",
@@ -35522,7 +36380,32 @@
       ],
       "hash": "bf31892fc0",
       "text": "- You can have as many specializations of a skill as its **linked Attribute's rating**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "up to a maximum number of specializations equal to the base skill's Linked Attribute Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7279,
+          "snippet": "return Math.max(0, Number(attrRating) || 0);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5853,
+          "snippet": "const specCap = game.sr3e.SR3EActor.karmaMaxSpecialisations(attrRating);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5858,
+          "snippet": "if (specs.length < specCap) {"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#44",
@@ -35533,7 +36416,44 @@
       ],
       "hash": "b6d8556cfc",
       "text": "- A specialization can't be more than **twice its base skill** (a base skill of 1 may have a\n  specialization of 3). Raise the base skill first.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "A specialization rating may not be more than twice its base skill rating (with the exception of base skills of 1 with specializations of 3)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 86,
+          "printedPage": 84,
+          "quote": "No specialization can have a rating higher than twice the base skill rating, except for a Rating 1 base skill with a Rating 3 specialization"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 217,
+          "snippet": "specCeiling(baseRating) {"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 219,
+          "snippet": "return b === 1 ? 3 : 2 * b;"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5856,
+          "snippet": "const overSpec = n => (GK.specOverCeiling(rating, n)"
+        },
+        {
+          "file": "scripts/data/ItemDataModels.js",
+          "line": 298,
+          "snippet": "level: new NumberField({ integer: true, initial: 1, min: 1, max: 2 }),"
+        }
+      ],
+      "note": "The ceiling logic matches (twice the base, 3 on a base of 1) and the sheet only warns rather than refuses (a deliberate warn-never-refuse choice, not a book rule). DIVERGENCE: the specialisation data model stores the spec as a BONUS (`level`) over the base and declares it min 1, max 2 (ItemDataModels.js:298). The book allows any specialisation up to twice its base skill (base 5 -> up to 10, i.e. level 5), so a spec bonus past +2 is outside the schema even where the book permits it; SkillRules comments say \"nothing may clamp it\", but the schema does. Not run live: Foundry validates updates against `max`, so a third improvement purchase would be expected to be rejected."
     },
     {
       "id": "rules/karma.md#45",
@@ -35544,7 +36464,33 @@
       ],
       "hash": "e992d109da",
       "text": "- Specializations don't rise when the base skill does; each is raised separately.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Specializations do not automatically increase when the base skill increases"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ItemDataModels.js",
+          "line": 298,
+          "snippet": "level: new NumberField({ integer: true, initial: 1, min: 1, max: 2 }),"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 746,
+          "snippet": "const dice = base + (sp.level ?? 1);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5870,
+          "snippet": "const specRating = game.sr3e.SR3EActor.karmaSpecTargetRating(rating, lvl);"
+        }
+      ],
+      "note": "Book (p.245): \"Specializations do not automatically increase when the base skill increases. Specializations must be increased separately\". Code stores a specialisation as a bonus (`level`) OVER the base skill and rolls base + level (SR3EItem.js:746; the Spend Karma row shows `rating + lvl`), so raising the base skill raises every specialisation by the same amount with no separate purchase. Each specialisation is raised separately by Karma (the guide line is true of the purchase), but the spec rating itself rises with the base. Also see unit 44 (schema max 2)."
     },
     {
       "id": "rules/karma.md#46",
@@ -35555,7 +36501,34 @@
       ],
       "hash": "4fe10b7009",
       "text": "**Worked example** *(SR3 p.245)*: Brick has Stealth 5 and Quickness 6. A new Sneaking specialization\nstarts at 6: 6 × .5 = **3**. Raising it to 7, over his Quickness, would cost 7 × 1 = **7**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "pay the cost for Sneaking at 6, which is (6 x .5 =) 3 Good Karma. If he decides to raise it again later, it will cost him (7 x 1 =) 7 Good Karma"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "he must buy Sneaking at 1 point higher than his base skill (5 + 1 = 6), as if he had Sneaking 5 already and was merely raising it"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7297,
+          "snippet": "return (Number(baseRating) || 0) + (Number(currentLevel) || 0) + 1;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7220,
+          "snippet": "const m = n <= a ? 0.5 : n <= 2 * a ? 1 : 1.5;"
+        }
+      ],
+      "note": "Stealth 5 -> new Sneaking at 6: 6 <= Quickness 6, so 6 x .5 = 3. Raising to 7 (> Quickness 6, <= 12): 7 x 1 = 7. Arithmetic checked."
     },
     {
       "id": "rules/karma.md#47",
@@ -35566,7 +36539,28 @@
       ],
       "hash": "2ccb892fbc",
       "text": "There are no refunds if a later Attribute increase would have made a purchase cheaper *(SR3 p.245)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "due to Attribute increases. Payment of Karma is made at the time of improvement"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5834,
+          "snippet": "const attrRating = attrs[linkedAttr]?.base ?? 0;"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5848,
+          "snippet": "const skillCost = SR3EActorSheet._skillCost(rating + 1, attrRating, isActive);"
+        }
+      ],
+      "note": "Cost is computed from the Attribute as it stands at the moment of purchase; nothing recomputes or refunds an earlier purchase when the Attribute later changes."
     },
     {
       "id": "rules/karma.md#48",
@@ -35577,7 +36571,34 @@
       ],
       "hash": "1d66609751",
       "text": "### Magic  *(SR3 p.168, p.180–181, p.190)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "adepts may purchase additional Power Points at a cost of 20 Good Karma Points per Power Point"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "Learning spells also costs Good Karma (p. 242) equal to the desired Force"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 168,
+          "snippet": "POWER_POINT_COST: 20,"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 176,
+          "snippet": "spellCost(force, limitModifier = 0) {"
+        }
+      ],
+      "note": "Section heading; the three purchases it covers (Power Point p.168, learning a spell p.180-181, bonding a focus p.190) are resolved in units 50-63."
     },
     {
       "id": "rules/karma.md#49",
@@ -35588,7 +36609,8 @@
       ],
       "hash": "ea2621179c",
       "text": "| Purchase | Good Karma |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row — states no rule"
     },
     {
       "id": "rules/karma.md#50",
@@ -35599,7 +36621,32 @@
       ],
       "hash": "c88fd0ee02",
       "text": "| An adept's extra **Power Point**, during play *(SR3 p.168)* | **20** each |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "adepts may purchase additional Power Points at a cost of 20 Good Karma Points per Power Point"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 168,
+          "snippet": "POWER_POINT_COST: 20,"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5885,
+          "snippet": "const cost = GK.powerPointCost(1);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5997,
+          "snippet": "await actor.update({ 'system.powerPointsBought': had + 1, 'system.karma': karma - chosenCost },"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#51",
@@ -35610,7 +36657,34 @@
       ],
       "hash": "ea5ff39c37",
       "text": "| **Learning a spell** *(SR3 p.180)* | the desired **Force** (a failed attempt costs no Karma) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "Learning spells also costs Good Karma (p. 242) equal to the desired Force"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "Failed study does not cost Karma, but teachers still expect to be paid"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 177,
+          "snippet": "return Math.max(0, pos(force) - pos(limitModifier));"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6043,
+          "snippet": "const cost = GK.spellCost(force, limit);"
+        }
+      ],
+      "note": "The cost is charged only when the player commits the purchase; the Sorcery Test and days of study are left to the GM, so a failed attempt simply never reaches the dialog."
     },
     {
       "id": "rules/karma.md#52",
@@ -35621,7 +36695,39 @@
       ],
       "hash": "219486fb80",
       "text": "| …with a **limit** (fetish, exclusive) taken on the cost *(SR3 p.181)* | the Force **minus** the limit's modifier |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "or reduce the Karma cost and difficulty to learn the spell, by its modifier"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 183,
+          "printedPage": 181,
+          "quote": "to learn instead, he could apply the -2 mod- ifier to the Force of the spell"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 177,
+          "snippet": "return Math.max(0, pos(force) - pos(limitModifier));"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6042,
+          "snippet": "limit = SpellLimits.learningReduction(chosen);"
+        },
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 23,
+          "snippet": "fetish:    { modifier: 1, field: 'limitFetish',    label: 'Fetish' },"
+        }
+      ],
+      "note": "The rule is printed on p.180 (limit -> cost reduction, Fetish -1, Exclusive -2) and illustrated on p.181; the guide cites p.181. Fetish and Exclusive are -1 and -2 in the code, matching the book."
     },
     {
       "id": "rules/karma.md#53",
@@ -35632,7 +36738,27 @@
       ],
       "hash": "ec37cbc798",
       "text": "| **Bonding a focus** *(SR3 p.190)* | from the table below |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "the owner spends Karma, the amount deter- mined by the type of focus and its Force, as shown on the Focus Bonding Table"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 203,
+          "snippet": "bondingCost(typeKey, force, reach = 0) {"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6075,
+          "snippet": "cost = GK.bondingCost(GK.focusType(focus)?.key, force, focus.system?.reach ?? 0) ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#54",
@@ -35643,7 +36769,22 @@
       ],
       "hash": "bd90783ad5",
       "text": "**Focus Bonding Table** *(SR3 p.190)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Once the required Karma is spent, the abilities of the focus are available to its owner"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 150,
+          "snippet": "export const FOCUS_BONDING = ["
+        }
+      ]
     },
     {
       "id": "rules/karma.md#55",
@@ -35654,7 +36795,8 @@
       ],
       "hash": "4637a5000d",
       "text": "| Item | Karma cost |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row — states no rule"
     },
     {
       "id": "rules/karma.md#56",
@@ -35665,7 +36807,29 @@
       ],
       "hash": "349e5df678",
       "text": "| Expendable Spell Focus | 0 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Expendable Spell Focus Specific Spell Focus Spell Category Focus Spirit Focus Power Focus Sustaining Focus Weapon Focus"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Karma Cost 0 1 x Force 3 x Force 2 x Force 5 x Force 1 x Force (3 + Weapon Reach) x Force"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 151,
+          "snippet": "{ key: 'expendable', label: 'Expendable Spell Focus', perForce: 0,"
+        }
+      ],
+      "note": "Row 1 of 7 in the table's item column and in its Karma Cost column (read as aligned: both columns list the seven foci in the same order)."
     },
     {
       "id": "rules/karma.md#57",
@@ -35676,7 +36840,29 @@
       ],
       "hash": "76ca9c389f",
       "text": "| Specific Spell Focus | 1 × Force |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Expendable Spell Focus Specific Spell Focus Spell Category Focus Spirit Focus Power Focus Sustaining Focus Weapon Focus"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Karma Cost 0 1 x Force 3 x Force 2 x Force 5 x Force 1 x Force (3 + Weapon Reach) x Force"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 153,
+          "snippet": "{ key: 'specific',   label: 'Specific Spell Focus',   perForce: 1,"
+        }
+      ],
+      "note": "Row 2 of 7 in the table's item column and in its Karma Cost column (read as aligned: both columns list the seven foci in the same order)."
     },
     {
       "id": "rules/karma.md#58",
@@ -35687,7 +36873,29 @@
       ],
       "hash": "74db47fc96",
       "text": "| Spell Category Focus | 3 × Force |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Expendable Spell Focus Specific Spell Focus Spell Category Focus Spirit Focus Power Focus Sustaining Focus Weapon Focus"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Karma Cost 0 1 x Force 3 x Force 2 x Force 5 x Force 1 x Force (3 + Weapon Reach) x Force"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 152,
+          "snippet": "{ key: 'category',   label: 'Spell Category Focus',   perForce: 3,"
+        }
+      ],
+      "note": "Row 3 of 7 in the table's item column and in its Karma Cost column (read as aligned: both columns list the seven foci in the same order)."
     },
     {
       "id": "rules/karma.md#59",
@@ -35698,7 +36906,29 @@
       ],
       "hash": "7b84c7dc55",
       "text": "| Spirit Focus | 2 × Force |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Expendable Spell Focus Specific Spell Focus Spell Category Focus Spirit Focus Power Focus Sustaining Focus Weapon Focus"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Karma Cost 0 1 x Force 3 x Force 2 x Force 5 x Force 1 x Force (3 + Weapon Reach) x Force"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 154,
+          "snippet": "{ key: 'spirit',     label: 'Spirit Focus',           perForce: 2,"
+        }
+      ],
+      "note": "Row 4 of 7 in the table's item column and in its Karma Cost column (read as aligned: both columns list the seven foci in the same order)."
     },
     {
       "id": "rules/karma.md#60",
@@ -35709,7 +36939,29 @@
       ],
       "hash": "b5c6ce919c",
       "text": "| Power Focus | 5 × Force |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Expendable Spell Focus Specific Spell Focus Spell Category Focus Spirit Focus Power Focus Sustaining Focus Weapon Focus"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Karma Cost 0 1 x Force 3 x Force 2 x Force 5 x Force 1 x Force (3 + Weapon Reach) x Force"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 155,
+          "snippet": "{ key: 'power',      label: 'Power Focus',            perForce: 5,"
+        }
+      ],
+      "note": "Row 5 of 7 in the table's item column and in its Karma Cost column (read as aligned: both columns list the seven foci in the same order)."
     },
     {
       "id": "rules/karma.md#61",
@@ -35720,7 +36972,29 @@
       ],
       "hash": "fb276de5bc",
       "text": "| Sustaining Focus | 1 × Force |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Expendable Spell Focus Specific Spell Focus Spell Category Focus Spirit Focus Power Focus Sustaining Focus Weapon Focus"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Karma Cost 0 1 x Force 3 x Force 2 x Force 5 x Force 1 x Force (3 + Weapon Reach) x Force"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 156,
+          "snippet": "{ key: 'sustaining', label: 'Sustaining Focus',       perForce: 1,"
+        }
+      ],
+      "note": "Row 6 of 7 in the table's item column and in its Karma Cost column (read as aligned: both columns list the seven foci in the same order)."
     },
     {
       "id": "rules/karma.md#62",
@@ -35731,7 +37005,34 @@
       ],
       "hash": "6e8b2a385a",
       "text": "| Weapon Focus | (3 + Weapon Reach) × Force |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Expendable Spell Focus Specific Spell Focus Spell Category Focus Spirit Focus Power Focus Sustaining Focus Weapon Focus"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 192,
+          "printedPage": 190,
+          "quote": "Karma Cost 0 1 x Force 3 x Force 2 x Force 5 x Force 1 x Force (3 + Weapon Reach) x Force"
+        }
+      ],
+      "note": "Row 7 of 7 in both columns.",
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 208,
+          "snippet": "if (row.key === 'weapon') return (3 + pos(reach)) * f;"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 157,
+          "snippet": "{ key: 'weapon',     label: 'Weapon Focus',           perForce: null,"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#63",
@@ -35742,7 +37043,29 @@
       ],
       "hash": "6d936fd149",
       "text": "**Worked example** *(SR3 p.181)*: learning Fireball at Force 8 with a −2 limit taken on the cost\ncosts 8 − 2 = **6** Karma.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 183,
+          "printedPage": 181,
+          "quote": "to learn instead, he could apply the -2 mod- ifier to the Force of the spell"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 183,
+          "printedPage": 181,
+          "quote": "and he needs to spend only 6 Karma"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 177,
+          "snippet": "return Math.max(0, pos(force) - pos(limitModifier));"
+        }
+      ],
+      "note": "Force 8 with the -2 limit taken on the cost: 8 - 2 = 6."
     },
     {
       "id": "rules/karma.md#64",
@@ -35753,7 +37076,8 @@
       ],
       "hash": "ee467c1c04",
       "text": "Initiation, quickening, allies and the rest of *Magic in the Shadows* also cost Good Karma; they\naren't covered here yet.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "A claim about Magic in the Shadows (initiation, quickening, allies, magical groups cost Good Karma), outside the core-rulebook passages this page cites. Not read page-by-page here; the OCR of MitS does show Karma costs for initiation and magical-group membership. The code side is absent by the source's own note (TODO 219)."
     },
     {
       "id": "rules/karma.md#65",
@@ -35764,7 +37088,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule — states no rule"
     },
     {
       "id": "rules/karma.md#66",
@@ -35775,7 +37100,27 @@
       ],
       "hash": "c10e4140de",
       "text": "## Using the Karma Pool  *(SR3 p.246)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "A character's Karma Pool reflects his or her accumulated"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 50,
+          "snippet": "state(sys) {"
+        },
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 177,
+          "snippet": "karmaPoolSpent:          new NumberField({ integer: true, initial: 0, min: 0 }),"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#67",
@@ -35786,7 +37131,38 @@
       ],
       "hash": "1a4b8a1ea9",
       "text": "The Karma Pool is spent **during play**. Some uses **spend** points, which come back when the pool\nrefreshes. Others **burn** them, which removes them permanently: *\"burned Karma Pool dice do not\nrefresh\"* *(SR3 p.246)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "Subtract it, for it is gone forever; burned Karma Pool dice do not refresh"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "Sometimes the rules may say that a character must burn Karma"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 62,
+          "snippet": "spend(sys, n) {"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 72,
+          "snippet": "burn(sys, n) {"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 79,
+          "snippet": "refresh() { return { karmaPoolSpent: 0 }; },"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#68",
@@ -35797,7 +37173,45 @@
       ],
       "hash": "d02b27eedc",
       "text": "| Use *(SR3 p.246)* | Cost | Spent or burned |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "It costs 1 Karma Pool die to re-roll failures once, 2 Karma Pool dice (for a total of 3) to re-roll failures again, 3 more dice for the third re-roll"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "A player can purchase successes for his or her character by burning 1 Karma Point per success"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "A player may spend 1 point of Karma to buy an additional die for use in a test, up to a maximum of however many skill, Attribute or rating dice he is currently using (not including dice from other pools)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 86,
+          "snippet": "rerollCost(done) { return pos(done) + 1; },"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 97,
+          "snippet": "extraDiceCost(n) { return triangle(n); },"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 108,
+          "snippet": "buySuccessesCost(n) { return pos(n); },"
+        }
+      ],
+      "note": "Table header; the uses listed in its rows are each resolved below."
     },
     {
       "id": "rules/karma.md#69",
@@ -35808,7 +37222,27 @@
       ],
       "hash": "08be2ff4c0",
       "text": "| **Re-roll failures** — re-roll every die in a test that failed | 1 the first time; 2 more for a second re-roll of the same test, 3 more for a third… | spent |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "It costs 1 Karma Pool die to re-roll failures once, 2 Karma Pool dice (for a total of 3) to re-roll failures again, 3 more dice for the third re-roll"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 86,
+          "snippet": "rerollCost(done) { return pos(done) + 1; },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5819,
+          "snippet": "await actor.spendKarmaPool(KarmaPool.rerollCost(done)"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#70",
@@ -35819,7 +37253,27 @@
       ],
       "hash": "aa15f2a8a6",
       "text": "| **Avoid a disaster** — every die came up 1 *(Rule of One, SR3 p.38)* | 1: the disaster becomes a simple failure | spent |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "Paying 1 point of Karma does not allow a re-roll, but does turn the disaster into a simple failure rather than a catastrophe"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 104,
+          "snippet": "AVOID_DISASTER_COST: 1,"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5832,
+          "snippet": "await actor.spendKarmaPool(KarmaPool.AVOID_DISASTER_COST"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#71",
@@ -35830,7 +37284,22 @@
       ],
       "hash": "7e2b52e5a3",
       "text": "| **Open Test re-roll** | 1 for one die, 2 more for a second (3 in all), 3 more for a third (6)… | spent |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "to re-roll 2 dice costs 2 more Karma Pool points (a total of 3), to re-roll 3 dice costs 3 more Karma Pool (a total of 6)"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "KarmaPool\\.openTestRerollCost",
+          "path": "scripts"
+        }
+      ],
+      "note": "KarmaPool.openTestRerollCost (karma-uses.mjs:101) computes the 1/3/6 price but nothing calls it: Open Tests are not rolled with a Karma re-roll (the guide's last paragraph says so)."
     },
     {
       "id": "rules/karma.md#72",
@@ -35841,7 +37310,39 @@
       ],
       "hash": "1b10b0ac06",
       "text": "| **Buy additional dice** — up to the skill, Attribute or rating dice you're using, not counting dice from other pools | 1 for one die, 2 more for a second, 3 more for a third… | spent |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "A player may spend 1 point of Karma to buy an additional die for use in a test, up to a maximum of however many skill, Attribute or rating dice he is currently using (not including dice from other pools)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "More than one die can be bought, at an incremental cost (2 more Karma Pool for a second die, 3 more Karma Pool for a third, and so on)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 97,
+          "snippet": "extraDiceCost(n) { return triangle(n); },"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 98,
+          "snippet": "extraDiceCap(baseDice) { return pos(baseDice); },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2742,
+          "snippet": "if (k > cap) ui.notifications.warn("
+        }
+      ],
+      "note": "The cap (skill/Attribute/rating dice, not other pools) is checked but only warned about; the roll goes ahead."
     },
     {
       "id": "rules/karma.md#73",
@@ -35852,7 +37353,33 @@
       ],
       "hash": "0519aa30f8",
       "text": "| **Buy successes** — only if the test already scored at least one | 1 per success | **burned** |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "A player can purchase successes for his or her character by burning 1 Karma Point per success"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "In order for a character to burn Karma Pool in this manner, he must at least achieve one success on the test normally"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 107,
+          "snippet": "canBuySuccesses(successesRolled) { return pos(successesRolled) >= 1; },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5842,
+          "snippet": "await actor.burnKarmaPool(KarmaPool.buySuccessesCost(k)"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#74",
@@ -35863,7 +37390,32 @@
       ],
       "hash": "55093d1221",
       "text": "| **Extended actions** — Karma Pool committed when a long task begins *(SR3 p.246, 248; gamemaster's option)* | as committed; the pool doesn't refresh until the task is done | spent |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 250,
+          "printedPage": 248,
+          "quote": "refresh until the action is completed"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 250,
+          "printedPage": 248,
+          "quote": "Gamemasters may also allow player characters to use"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "extended.{0,60}karma pool",
+          "path": "scripts"
+        },
+        {
+          "pattern": "karma pool.{0,60}extended",
+          "path": "scripts"
+        }
+      ],
+      "note": "No extended-action commitment: Karma Pool for a long task is spent like any other spend and the pool does not stay locked until the task ends (the GM refreshes by hand)."
     },
     {
       "id": "rules/karma.md#75",
@@ -35874,7 +37426,55 @@
       ],
       "hash": "867050b393",
       "text": "| **The Hooper-Nelson rule** — lower a spectacularly difficult target number *(SR3 p.248; gamemaster's option)* | 1 per point of TN; recommended only at TN 12 or more, and never below 8 | **burned** |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 250,
+          "printedPage": 248,
+          "quote": "a player can decide to lower the target"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 250,
+          "printedPage": 248,
+          "quote": "The amount paid is equal to the amount removed from the target number"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 250,
+          "printedPage": 248,
+          "quote": "We recommend that this rule not be used unless the Target Number is 12 or higher"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 250,
+          "printedPage": 248,
+          "quote": "target number can be reduced to using this option is 8"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 133,
+          "snippet": "hooperNelson(tn, burn) {"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 136,
+          "snippet": "const room = Math.max(0, t - 8);"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 138,
+          "snippet": "return { tn: t - used, burned: used, recommended: t >= 12 };"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2752,
+          "snippet": "await this.burnKarmaPool(r.burned,"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#76",
@@ -35885,7 +37485,8 @@
       ],
       "hash": "d4662a7c46",
       "text": "A few limits worth knowing:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "lead-in to a bulleted list of limits; each bullet is resolved as its own unit"
     },
     {
       "id": "rules/karma.md#77",
@@ -35896,7 +37497,27 @@
       ],
       "hash": "1aee0c5520",
       "text": "- **A success can't be re-rolled.** Only the failed dice go again.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "Once a dice comes up as a success, it may not be re-rolled"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5808,
+          "snippet": "const failIdx   = dice.map((d, i) => (d.success ? -1 : i)).filter(i => i >= 0);"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5825,
+          "snippet": "failIdx.forEach((idx, j) => { next[idx] = { ...fresh[j], index: idx, karmaRerolled: true }; });"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#78",
@@ -35907,7 +37528,33 @@
       ],
       "hash": "6431227cca",
       "text": "- **An \"oops\" roll can't be re-rolled.** On a Rule of One, the only use is avoiding the disaster.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "may not spend additional Karma to re-roll failed dice on an"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "Paying 1 point of Karma does not allow a re-roll, but does turn the disaster into a simple failure rather than a catastrophe"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 118,
+          "snippet": "const oops = !!glitch || !!disasterAverted;"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 120,
+          "snippet": "reroll:        !oops && pos(failures) > 0,"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#79",
@@ -35918,7 +37565,28 @@
       ],
       "hash": "b63e993da7",
       "text": "- **Each re-roll of the same test costs more.** Re-rolling twice costs 1 + 2 = 3 in all; three\n  times, 6.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "It costs 1 Karma Pool die to re-roll failures once, 2 Karma Pool dice (for a total of 3) to re-roll failures again, 3 more dice for the third re-roll"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 86,
+          "snippet": "rerollCost(done) { return pos(done) + 1; },"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 89,
+          "snippet": "rerollTotal(n) { return triangle(n); },"
+        }
+      ],
+      "note": "Total of n re-rolls = 1+2+...+n = 1, 3, 6."
     },
     {
       "id": "rules/karma.md#80",
@@ -35929,7 +37597,34 @@
       ],
       "hash": "6673b575a4",
       "text": "**Worked example** *(SR3 p.246)*: Dodger rolls Electronics B/R 5 against TN 8 and gets one success.\nHe needs four, so he spends 1 Karma Pool to re-roll the four failed dice.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "he spends 1 Karma Pool and re-rolls the 4 failures"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "It costs 1 Karma Pool die to re-roll failures once, 2 Karma Pool dice (for a total of 3) to re-roll failures again, 3 more dice for the third re-roll"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5819,
+          "snippet": "await actor.spendKarmaPool(KarmaPool.rerollCost(done)"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5822,
+          "snippet": "const fresh = actor._rollWave(failIdx.length, state.tn, true);"
+        }
+      ],
+      "note": "First re-roll costs 1 and re-rolls only the failed dice."
     },
     {
       "id": "rules/karma.md#81",
@@ -35940,7 +37635,33 @@
       ],
       "hash": "99c72330e8",
       "text": "### Refreshing the pool  *(SR3 p.104, p.246)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 106,
+          "printedPage": 104,
+          "quote": "Karma Pools refresh every 24 hours, or at the gamemaster's discretion (see Karma Pool, p. 246)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "it does not refresh every Combat Turn like other dice pools"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5713,
+          "snippet": "async refreshKarmaPool(reason = 'Karma Pool refreshed') {"
+        },
+        {
+          "file": "scripts/documents/SR3ECombat.js",
+          "line": 489,
+          "snippet": "if (sys.combatPoolSpent)      await actor.refreshCombatPool?.();"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#82",
@@ -35951,7 +37672,92 @@
       ],
       "hash": "d0d8517886",
       "text": "The Karma Pool **doesn't refresh every Combat Turn** like other dice pools. It refreshes when the\ngamemaster says so, roughly once per **scene** of the story: every 24 hours of game time, or a\nmatter of hours or days *(SR3 p.104, p.246)*. In most games it refreshes at the **start of each\nsession**. The gamemaster can bend this: characters on the run may not get to refresh, a breather\nbetween encounters may refresh some or all of it, and one character can refresh faster than\nanother. A character near death might not refresh until healed, while one pulling off heroic\nstunts might refresh in short order *(SR3 p.246)*. Only what was **spent** comes back. Burned\npoints are gone.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "it does not refresh every Combat Turn like other dice pools"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "Instead Karma Pools refresh on an abstract basis, determined by the gamemaster"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "This can mean every 24 hours of game time, or it can be a matter of hours or days"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "In most cases, Karma Pool should refresh at the beginning of each gaming session"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "Gamemasters can adjust this time frame to meet their campaign needs and to fit the nature of their Shadowrun world"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "Under certain situations, gamemasters may even allow some characters to refresh faster than others"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "a character on the verge of death may not see his Karma Pool refresh until he"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 250,
+          "printedPage": 248,
+          "quote": "refresh until the action is completed"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 106,
+          "printedPage": 104,
+          "quote": "Karma Pools refresh every 24 hours, or at the gamemaster's discretion (see Karma Pool, p. 246)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 106,
+          "printedPage": 104,
+          "quote": "Any unused dice in a character's dice pools do not carry over to the next Combat Turn (except Karma Pool)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5715,
+          "snippet": "await this.update({ 'system.karmaPoolSpent': KarmaPool.refresh().karmaPoolSpent }, { ledgerReason: reason });"
+        },
+        {
+          "file": "scripts/documents/SR3ECombat.js",
+          "line": 489,
+          "snippet": "if (sys.combatPoolSpent)      await actor.refreshCombatPool?.();"
+        },
+        {
+          "file": "scripts/sr3e.js",
+          "line": 1885,
+          "snippet": "mk('sr3e-karma-refresh-btn', '🍀 Refresh Karma Pools', _openKarmaRefreshDialog, true);"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 79,
+          "snippet": "refresh() { return { karmaPoolSpent: 0 }; },"
+        }
+      ],
+      "note": "Refresh is only ever the GM's manual action; the Combat Turn reset lists combat, spell, astral and hacking pools but not the Karma Pool. Burned points left `karmaPool` (the size) so a refresh cannot return them."
     },
     {
       "id": "rules/karma.md#83",
@@ -35962,7 +37768,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule — states no rule"
     },
     {
       "id": "rules/karma.md#84",
@@ -35973,7 +37780,8 @@
       ],
       "hash": "b57eaf6c24",
       "text": "## Doing it in The 2nd Chumming (Foundry)",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "section heading — states no rule"
     },
     {
       "id": "rules/karma.md#85",
@@ -35984,7 +37792,8 @@
       ],
       "hash": "975a8baae2",
       "text": "The system tracks everything above and charges it when you use it, but nothing is refused: the\ngamemaster can edit any number.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface (it tracks and charges, refuses nothing), not a book rule"
     },
     {
       "id": "rules/karma.md#86",
@@ -35995,7 +37804,8 @@
       ],
       "hash": "4f604d2270",
       "text": "**On the sheet**",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "bold sub-heading — states no rule"
     },
     {
       "id": "rules/karma.md#87",
@@ -36006,7 +37816,37 @@
       ],
       "hash": "5a15ef8efb",
       "text": "- **Bio → Resources** holds Good Karma and Total Karma, with **Spend Karma…** for players and\n  **Award Karma…** for the gamemaster. Awards split themselves: the tenth or twentieth point goes to\n  the Pool.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 244,
+          "printedPage": 242,
+          "quote": "All awarded Karma counts as Good Karma, except for every twentieth point, which is added to the character's Karma Pool. Human characters add every tenth point"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 3264,
+          "snippet": "${this._inlineField('Good Karma', 'system.karma', sys.karma, 'number', 80)}"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 3276,
+          "snippet": "data-action=\"awardKarma\""
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 3278,
+          "snippet": "data-action=\"spendKarmaCalculator\""
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7323,
+          "snippet": "const poolGained = Math.floor(newTotal / d) - Math.floor(t / d);"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#88",
@@ -36017,7 +37857,32 @@
       ],
       "hash": "34d51e13e0",
       "text": "- **Attributes → Derived Pools** shows the Karma Pool as **left / size**. Spending lowers \"left\";\n  burning lowers the size.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "Subtract it, for it is gone forever; burned Karma Pool dice do not refresh"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 1092,
+          "snippet": "${this._poolBlock('Karma Pool',"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 62,
+          "snippet": "spend(sys, n) {"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 75,
+          "snippet": "return { update: { karmaPool: Math.max(0, size - k) }, over: k > available };"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#89",
@@ -36028,7 +37893,8 @@
       ],
       "hash": "7aed3d58f1",
       "text": "- The **📒 Ledger** on the Bio tab records every change, with the reason: \"Pool spent\" for spends,\n  \"Karma Pool\" for burns.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface (the Bio-tab Ledger), not a book rule"
     },
     {
       "id": "rules/karma.md#90",
@@ -36039,7 +37905,65 @@
       ],
       "hash": "789631bff9",
       "text": "**Spend Karma…** lists every purchase you can afford, priced from the tables above: Attributes (it\nsays when you're over the Racial Modified Limit), skills, new skills, specializations (an amber\nwarning past twice the base skill), and under **Magic** an adept's Power Point, learning a spell\n(you choose the Force and any limit) and bonding a focus. The gamemaster can **↺ undo** any\npurchase from its ledger line: the Karma comes back and the purchase is reversed, recorded as a new\nline.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "Less than or equal to Attribute Rating 1.5 1"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "New skills can be purchased at a skill rating of 1, by paying a cost of 1 in Good Karma"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 246,
+          "printedPage": 244,
+          "quote": "Modified Limit has a cost equal to 3x the rating to which the Attribute is being raised"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5822,
+          "snippet": "const note  = next > max   ? ` <span style=\"color:var(--sr-red)\">past max ${max}</span>`"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5823,
+          "snippet": "? ` <span style=\"color:var(--sr-amber)\">above limit ${limit} — 3×</span>`"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5857,
+          "snippet": "over ${GK.specCeiling(rating)}</span>"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5886,
+          "snippet": "magicHtml.push(row('pp:buy', 'Power Point'"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6043,
+          "snippet": "const cost = GK.spellCost(force, limit);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6075,
+          "snippet": "cost = GK.bondingCost(GK.focusType(focus)?.key, force, focus.system?.reach ?? 0) ?? 0;"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 4154,
+          "snippet": "if (picked.refund) upd['system.karma'] = (actor.system.karma ?? 0) + plan.refund;"
+        }
+      ],
+      "note": "UI description of the prices (all resolved above). The calculator shows every purchase and greys out those not affordable. The \"past max\" note it prints uses the floored Attribute Maximum (see unit 27)."
     },
     {
       "id": "rules/karma.md#91",
@@ -36050,7 +37974,8 @@
       ],
       "hash": "d57bbe784d",
       "text": "**On a roll**, every roll dialog has a 🍀 row:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface (a row in the roll dialogs), not a book rule; the individual Karma uses it offers are resolved in the units that follow"
     },
     {
       "id": "rules/karma.md#92",
@@ -36061,7 +37986,33 @@
       ],
       "hash": "7e7a46fd59",
       "text": "- **Buy extra dice**: the cost (1, 3, 6…) is spent as the roll is made.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "A player may spend 1 point of Karma to buy an additional die for use in a test, up to a maximum of however many skill, Attribute or rating dice he is currently using (not including dice from other pools)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "More than one die can be bought, at an incremental cost (2 more Karma Pool for a second die, 3 more Karma Pool for a third, and so on)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2743,
+          "snippet": "await this.spendKarmaPool(KarmaPool.extraDiceCost(k)"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 44,
+          "snippet": "const triangle = n => { const k = pos(n); return (k * (k + 1)) / 2; };"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#93",
@@ -36072,7 +38023,40 @@
       ],
       "hash": "b1de26f2b7",
       "text": "- **Hold the roll for Karma**: the finished dice wait on a 🍀 card before anything happens. From\n  there you can re-roll the failures, avoid a disaster, or buy successes, then press **✔ Done**. Only\n  you (and the gamemaster) can press those buttons.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "It costs 1 Karma Pool die to re-roll failures once, 2 Karma Pool dice (for a total of 3) to re-roll failures again, 3 more dice for the third re-roll"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "Paying 1 point of Karma does not allow a re-roll, but does turn the disaster into a simple failure rather than a catastrophe"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "A player can purchase successes for his or her character by burning 1 Karma Point per success"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5803,
+          "snippet": "static async handleKarmaHold(state, action, { n = 1 } = {}) {"
+        },
+        {
+          "file": "scripts/sr3e.js",
+          "line": 2652,
+          "snippet": "else if (!_isDeciderId(held.actorId)) kBtns.forEach(b => _denyBtn(b, 'Only the roller decides how their Karma Pool is spent.'));"
+        }
+      ],
+      "note": "Re-roll / avoid / buy / Done are on the 🍀 card; the buttons are gated to the roller's decider (the comment at sr3e.js:2640 notes the GM is included when no player owns the actor)."
     },
     {
       "id": "rules/karma.md#94",
@@ -36083,7 +38067,39 @@
       ],
       "hash": "2cad5beffa",
       "text": "- **Hooper-Nelson**: burn points to lower the TN, never below 8. It warns under TN 12, because it's\n  the gamemaster's option.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 250,
+          "printedPage": 248,
+          "quote": "a player can decide to lower the target"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 250,
+          "printedPage": 248,
+          "quote": "We recommend that this rule not be used unless the Target Number is 12 or higher"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 250,
+          "printedPage": 248,
+          "quote": "target number can be reduced to using this option is 8"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2750,
+          "snippet": "if (!r.recommended) ui.notifications.warn(`Hooper-Nelson is meant for TN 12 or higher"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 136,
+          "snippet": "const room = Math.max(0, t - 8);"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#95",
@@ -36094,7 +38110,44 @@
       ],
       "hash": "3025fee673",
       "text": "**Refreshing** is the gamemaster's: **🍀 Refresh** on a character's sheet, or **🍀 Refresh Karma\nPools** among the GM tools (Rollable Tables tab) for the whole party. **Reset All Pools** doesn't touch\nthe Karma Pool.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "Instead Karma Pools refresh on an abstract basis, determined by the gamemaster"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 248,
+          "printedPage": 246,
+          "quote": "it does not refresh every Combat Turn like other dice pools"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 1098,
+          "snippet": "${game.user.isGM && (sys.karmaPoolSpent ?? 0) > 0"
+        },
+        {
+          "file": "scripts/sr3e.js",
+          "line": 1885,
+          "snippet": "mk('sr3e-karma-refresh-btn', '🍀 Refresh Karma Pools', _openKarmaRefreshDialog, true);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 4095,
+          "snippet": "await this.actor.update({"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 4098,
+          "snippet": "'system.astralPoolSpent': 0,"
+        }
+      ],
+      "note": "Reset All Pools writes combatPoolSpent, spellPoolSpent and astralPoolSpent only (SR3EActorSheet.js:4096-4098) - never karmaPoolSpent."
     },
     {
       "id": "rules/karma.md#96",
@@ -36105,7 +38158,8 @@
       ],
       "hash": "90205bab27",
       "text": "Not yet in the system: Karma Pool on opposed tests (melee, astral, contested), on Damage Resistance\nand Drain rolls, Open Test re-rolls, and *Magic in the Shadows'* Good Karma uses.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes what the system does not yet cover (its own limits), not a book rule"
     },
     {
       "id": "rules/reloading.md#1",
