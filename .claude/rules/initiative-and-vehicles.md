@@ -10,6 +10,9 @@ paths:
   - "scripts/data/weapon-accessories.mjs"
   - "scripts/data/quick-strike.mjs"
   - "scripts/data/rigging.mjs"
+  - "scripts/data/collisions.mjs"
+  - "scripts/SR3ECollision.js"
+  - "tests/collisions.test.mjs"
   - "tests/rigging.test.mjs"
   - "tests/initiative.test.mjs"
   - "tests/action-economy.test.mjs"
@@ -137,3 +140,26 @@ Exactly one participant is the **Quarry** (checkbox; its distance is 0, box fade
 relative: **positive = behind, negative = ahead**. `speed` is metres/Combat Turn (km/h ÷ 1.2); on
 `_nextTurn` each pursuer gets `newDist = oldDist − (pursuerSpeed − quarrySpeed)` and the card reports
 closing/opening. No quarry → the card says distances weren't updated. State is in-memory (`isQuarry`).
+
+### 💥 Collision — a person, a vehicle or a barrier  · *SR3 p.142-148* — TODO 189
+`SR3ECollision.open` (`scripts/SR3ECollision.js`) from the vehicle sheet, the Vehicle Tools HUD menu, the Chase
+Scene (💥 Collision; its Ramming dialog also takes a **pedestrian** target) and the 💥 Crash tool (🧍 Hit a
+pedestrian…). Rules: `scripts/data/collisions.mjs` (pure) — **`SR3EActor.crashDamage` stays the one Impact Damage
+Levels Table** and is handed in as `table`; `ramCollision` delegates to it.
+- **Pedestrian (p.148):** Power = speed ÷ 10 (rounded up); the pedestrian takes the table's level **one stage higher**
+  (past Destroyed: Power **+ half, rounded down**); the vehicle one stage **lower** (1-20 m/turn → none). Worked: 60 m/turn → 6S.
+  The pedestrian resists with the ordinary `.sr-soak-btn` card (`useImpact`, Combat Pool allowed, `noKnockdown`).
+- **Vehicle (p.143, p.147):** speed difference ÷ 10 up; level from the table. A **ram** reduces only the rammer's Power
+  (Body × successes, floor 2); an **accident** reduces nobody's (maintainer, 2026-10-17); the card is the existing
+  Ramming card (`_buildRamDamageHtml`, `ctx.accident`). A pedestrian ram gives the vehicle **no** reduction either.
+- **Barrier (p.148):** speed ≤ BR × 20 → it stops (the existing crash card); above → it collapses, the car loses
+  BR × 20, Power = BR, level read off the **loss**. Occupants (`collisionPassengerDamage({ breakthrough })`): belted
+  → nothing, unbelted → one level lower. The Barrier Damage tool is offered (`.sr-collision-barrier-btn`), never run.
+- **Accident = Braking Test first (p.142):** `Collisions.braking` (speed − Acceleration × successes; more than
+  Acceleration × 4 → Crash Test). It is a `rollPool` `followUp` (`FOLLOW_UPS.collisionBraking`) that posts a card with
+  an editable speed; the **GM's** `.sr-collision-resolve-btn` (a ⏳ step the GM owes) posts the collision. No
+  stopping-distance rule is invented.
+- ⚠ **The pedestrian dodge is a HOUSE RULE** (the book has none) and the card says so: an optional Dodge Test against
+  the Ramming Test's successes, or against an assumed 1 hit for an accident (`Collisions.dodgeToBeat`, GM-editable);
+  the GM unticks the box to skip it. It rides the ordinary `.sr-dodge-declare-btn` flow, so a tie goes to the vehicle.
+- A vehicle that takes damage is offered a **Crash Test** (`offerCrash`, p.143/p.147) on its soak result.
