@@ -2627,3 +2627,24 @@ with Magic 6, Sorcery, and a Fireball (Combat, Drain `(DL+1)`) with some Good Ka
 - [ ] Turn the hostile token to Neutral and reopen: it moves up into the NPC group.
 - [ ] As a player, "Treat someone else…": your own character and the other players' characters lead the list.
 
+### Buy gear: search the compendium, or drag an item in (TODO 154)
+
+**Prerequisites:** a character with a contact and Etiquette; Configure Source Books with core (`sr3`) on and one
+book (say `sota2`) switched OFF. Open **🛒 Buy gear…** from the Bio tab with no item.
+
+- [ ] A **🔎 Search the gear compendiums** box sits above the Item field. Type `predator`: after "Reading the
+      compendiums…" a list of matches appears (name · type · Availability · book page), best match first.
+- [ ] Type `ares viper` (two words): only names containing both appear. Clear the box: the list empties.
+- [ ] Click a hit: Item, Availability TN/time/unit, Base cost and Street Index fill in, the preview line updates,
+      and a contact poor for that type turns amber. Every field stays editable.
+- [ ] **Press Enter in the search box** with hits showing: the top hit is taken and the dialog does NOT submit.
+- [ ] Search for something that exists only in the switched-off book: **no hit**, "Nothing in the allowed books
+      matches". Switch the book on in Configure Source Books and reopen: it is found.
+- [ ] Open the Compendium sidebar and drag a gear item onto the open dialog: the same fields fill in.
+- [ ] Drag a **spell** (or an Actor) onto the dialog: a warning, nothing changes.
+- [ ] With the book off, its packs are hidden in the sidebar; if one is still reachable (an item's link in a
+      journal), dragging it warns "from a book that is switched off" and fills nothing.
+- [ ] Find a source for a searched item, negotiate and **💴 Pay**: the item lands on the sheet, price in the ledger.
+- [ ] Open Buy gear from an item's own row: it still pre-fills from that item; searching replaces it.
+- [ ] The medkit **Buy Medkit Supplies** button still fills the form and still refills the medkit on payment.
+

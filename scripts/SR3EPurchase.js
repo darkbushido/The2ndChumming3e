@@ -1,4 +1,5 @@
 import { Purchasing } from './data/purchasing.mjs';
+import { GearSearch } from './data/gear-search.mjs';
 
 /**
  * Buying gear — the flow · *SR3 pp.272-273* (TODO 82).
@@ -46,6 +47,55 @@ export const SR3EPurchase = {
     return Math.max(0, Number(skill?.system?.rating) || 0);
   },
 
+  /**
+   * The compendiums a character can shop in: Item packs that hold a buyable type, and that the GM's
+   * source-book filter lets through (TODO 154). ⚠ Presentation only, like everywhere else the filter
+   * is used: a book switched off hides its gear from the search and refuses a drop from it, and
+   * nothing is unloaded.
+   */
+  gearPacks() {
+    const sysId = game.system.id;
+    return (game.packs?.contents ?? [...(game.packs ?? [])]).filter(p => {
+      if (p.documentName !== 'Item') return false;
+      const types = p.metadata?.flags?.[sysId]?.itemTypes;
+      if (!Array.isArray(types) || !types.some(t => SR3EPurchase.BUYABLE.includes(t))) return false;
+      return game.sr3e?.SR3ESourceBooks?.packAllowed(p) ?? true;
+    });
+  },
+
+  /** Every buyable item's index row from the allowed gear packs — indexes, never full documents. */
+  async loadGearIndex() {
+    const out = [];
+    for (const pack of SR3EPurchase.gearPacks()) {
+      try {
+        const idx = await pack.getIndex({ fields: GearSearch.INDEX_FIELDS });
+        for (const row of idx) out.push(GearSearch.fromIndex(row, pack));
+      } catch (err) { console.warn(`SR3E | Could not index pack ${pack.collection}:`, err); }
+    }
+    return out.filter(e => GearSearch.isBuyable(e.type, SR3EPurchase.BUYABLE));
+  },
+
+  /**
+   * An item dropped on the dialog → the fields it fills in, or null with a warning saying why not.
+   * The same book filter as the search: an item from a pack the GM switched off is not taken.
+   */
+  async resolveDrop(data) {
+    const drop = GearSearch.parseDrop(data);
+    if (!drop.ok) { ui.notifications.warn(drop.why); return null; }
+    const dropped = await fromUuid(drop.uuid).catch(() => null);
+    if (!dropped || dropped.documentName !== 'Item') { ui.notifications.warn('That is not an item this dialog can find.'); return null; }
+    const pack = dropped.pack ? game.packs.get(dropped.pack) : null;
+    if (pack && !(game.sr3e?.SR3ESourceBooks?.packAllowed(pack) ?? true)) {
+      ui.notifications.warn(`${dropped.name} is from a book that is switched off (Configure Source Books).`);
+      return null;
+    }
+    if (!GearSearch.isBuyable(dropped.type, SR3EPurchase.BUYABLE)) {
+      ui.notifications.warn(`${dropped.name} is a ${dropped.type}, which cannot be bought here.`);
+      return null;
+    }
+    return { ...GearSearch.fields(dropped), name: dropped.name, type: dropped.type, uuid: dropped.uuid };
+  },
+
   /** The character's contacts, with what each is good for. */
   contacts(actor) {
     return (actor?.items ?? []).filter(i => i.type === 'contact').map(i => ({
@@ -68,7 +118,8 @@ export const SR3EPurchase = {
     const avail = Purchasing.parseAvailability(item?.system?.availability ?? '');
     const index = Number(item?.system?.streetIndex) || 1;
     const cost  = Number(item?.system?.cost) || 0;
-    const type  = item?.type ?? 'gear';
+    let   type  = item?.type ?? 'gear';   // a search hit or a drop changes it
+    let   picked = null;                  // the item the search or a drop chose, over the row's
 
     const cons = SR3EPurchase.contacts(actor);
     const conOpts = cons.length
@@ -87,18 +138,27 @@ export const SR3EPurchase = {
     const supplies = H.MEDKIT_SUPPLIES;
     const suppliesAvail = Purchasing.parseAvailability(supplies.availability);
 
+    const availNote = (always, unknown) => (always ? '<strong>This item is "Always" available — no test needed.</strong>'
+      : unknown ? '<strong style="color:var(--sr-amber)">This item has no Availability code — the GM sets one.</strong>' : '');
+
     let result = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${actor.name}: buy ${item ? item.name : 'gear'} (${Purchasing.PAGE})` },
       content: `
         <p style="font-size:11px;color:var(--sr-muted);margin:0 0 6px">
           An <strong>Etiquette Test</strong> against the item's Availability finds a source (SR3 p.272).
-          Successes divide the base time. ${avail.always ? '<strong>This item is "Always" available — no test needed.</strong>' : ''}
-          ${avail.unknown && !avail.always ? '<strong style="color:var(--sr-amber)">This item has no Availability code — the GM sets one.</strong>' : ''}
+          Successes divide the base time. <span id="sr-buy-avail-note">${availNote(avail.always, avail.unknown && !avail.always)}</span>
         </p>
         ${empty.length ? `<p style="font-size:11px;color:var(--sr-amber);margin:0 0 6px">
           🧰 Out of supplies: ${empty.map(i => esc(i.name)).join(', ')}.
           <button type="button" id="sr-buy-supplies" class="btn-sm">Buy ${esc(supplies.name)}</button></p>` : ''}
+        <div id="sr-buy-find" style="margin-bottom:6px">
+          <label style="display:block">🔎 Search the gear compendiums
+            <input type="text" id="sr-buy-search" placeholder="e.g. Ares Predator, medkit, flak jacket…" autocomplete="off" style="width:100%"/>
+          </label>
+          <div id="sr-buy-hits" style="max-height:140px;overflow-y:auto;font-size:12px"></div>
+          <div style="font-size:11px;color:var(--sr-muted)">…or drag an item from a compendium onto this window.</div>
+        </div>
         <label style="display:block;margin-bottom:6px">Item
           <input type="text" id="sr-buy-name" value="${esc(item?.name ?? '')}" style="width:100%"/>
         </label>
@@ -150,7 +210,7 @@ export const SR3EPurchase = {
               cost: n('#sr-buy-cost'), index: n('#sr-buy-index') || 1,
               dice: n('#sr-buy-dice'), reduce: n('#sr-buy-reduce'),
               contactId: el.querySelector('#sr-buy-contact')?.value || '',
-              itemUuid: item?.uuid ?? '',
+              itemUuid: picked?.uuid || item?.uuid || '',
             };
           } },
         { label: 'Cancel', action: 'cancel' },
@@ -179,10 +239,57 @@ export const SR3EPurchase = {
               + (ask.surcharge ? ` (includes +${Math.round(ask.surchargeRate * 100)}% ${actor.system?.metatype})` : '');
           }
         };
+        // ── Find the item: search the allowed gear packs' indexes, or drop one (TODO 154) ──
+        const set = (id, v) => { const f = el.querySelector(id); if (f) f.value = v; };
+        const take = f => {
+          picked = f; type = f.type;
+          set('#sr-buy-name', f.name); set('#sr-buy-tn', f.tn); set('#sr-buy-time', f.time);
+          set('#sr-buy-unit', f.unit); set('#sr-buy-cost', f.cost); set('#sr-buy-index', f.index);
+          const note = el.querySelector('#sr-buy-avail-note');
+          if (note) note.innerHTML = availNote(f.always, f.unknown);
+          sync();   // re-reads the contact's affinity for the new type
+        };
+        const search = el.querySelector('#sr-buy-search');
+        const hitsEl = el.querySelector('#sr-buy-hits');
+        let gearIndex = null;   // a promise, started on the first keystroke
+        let hits = [];
+        const drawHits = async () => {
+          const q = search?.value ?? '';
+          if (!GearSearch.tokens(q).length) { hits = []; hitsEl.innerHTML = ''; return; }
+          if (!gearIndex) hitsEl.textContent = 'Reading the compendiums…';
+          gearIndex ??= SR3EPurchase.loadGearIndex();   // one load, shared by every keystroke
+          const index = await gearIndex;
+          if ((search?.value ?? '') !== q) return;   // typed on while the index loaded
+          hits = GearSearch.search(index, q, { types: SR3EPurchase.BUYABLE });
+          hitsEl.innerHTML = hits.length
+            ? hits.map((h, i) => `<button type="button" class="sr-buy-hit" data-i="${i}" style="display:block;width:100%;text-align:left;margin:1px 0">
+                ${esc(h.name)} <span style="color:var(--sr-muted)">· ${esc(h.type)}${h.availability ? ` · ${esc(h.availability)}` : ''}${h.bookPage ? ` · ${esc(h.bookPage)}` : ''}</span></button>`).join('')
+            : '<em style="color:var(--sr-muted)">Nothing in the allowed books matches.</em>';
+        };
+        search?.addEventListener('input', drawHits);
+        // Enter in the filter must not press the dialog's default button (Find a source) — it takes the top hit.
+        search?.addEventListener('keydown', ev => {
+          if (ev.key !== 'Enter') return;
+          ev.preventDefault();
+          if (hits[0]) take(GearSearch.fields(hits[0]));
+        });
+        hitsEl?.addEventListener('click', ev => {
+          ev.preventDefault();
+          const h = hits[Number(ev.target.closest?.('.sr-buy-hit')?.dataset.i)];
+          if (h) take(GearSearch.fields(h));
+        });
+        el.addEventListener('dragover', ev => ev.preventDefault());
+        el.addEventListener('drop', async ev => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          const f = await SR3EPurchase.resolveDrop(foundry.applications.ux.TextEditor.implementation.getDragEventData(ev));
+          if (f) take(f);
+        });
+
         con?.addEventListener('change', sync);
         el.querySelector('#sr-buy-supplies')?.addEventListener('click', ev => {
           ev.preventDefault();
-          const set = (id, v) => { const f = el.querySelector(id); if (f) f.value = v; };
+          picked = null;   // supplies refill a medkit; they are not a catalogue item
           set('#sr-buy-name', supplies.name);
           set('#sr-buy-tn', suppliesAvail.tn);
           set('#sr-buy-time', suppliesAvail.time);
