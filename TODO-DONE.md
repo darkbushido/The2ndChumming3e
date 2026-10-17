@@ -6859,6 +6859,24 @@ mutants `launcher-reads-its-own-blast`, `launcher-mixes-grenades`, `mini-grenade
 8 m away — the template is 5 m, the dialog is on Grenade Launcher, the magazine drops by one; reload with Offensive HE and the unfired
 defensive rounds go back into their box; fire at 3 m and see the arming warning.
 
+## 164. ✅ Non-damaging area grenades: how to show and use their area — `45320465`
+
+**Done 2026-10-17 (`45320465`, `feature/spells-grenades`)**, the maintainer chose all of it: (0) the cloud is **clipped to the walls** — a visibility polygon swept from the blast point over the scene's closed movement walls (`AreaShape.clipCircle`, `SR3EActor._wallSegments`; an open door is no wall); (1) expiry and 🧹 kept, now removing the texture with the Region (`deleteRegion` hook); (2) a **look per kind** — Foundry v14 Regions carry no texture, so a Region plus a pattern-filled Drawing textured by small SVGs in `styles/regions/` (smoke, infra-red smoke, gas, flash; no binary art) — and the GM's **🌬 wind** buttons (−1 / +1 Combat Turn); (3) a fighter in smoke gets the p.112 Visibility Table row **preselected** in the ranged and spell TN windows (Heavy Smoke/Fog/Rain; Thermal Smoke for infra-red), editable; (4) each token in a gas cloud gets a **Neuro-Stun resistance card** (Body, no armour, 6S, +2 disorientation, repeat at +4 — SR3 p.249-250), with the VII/VIII discrepancy noted on the card; (5) the **Flash-Pak tick list** — the GM ticks who was facing it and each gets the +4 (+2 flare compensation) and +2 strobe card (p.283); (6)/(7) wind is (2); Thermal Smoke is already recognised by `AreaEffect.kind` and the 2nd-edition grenades stay parked in `archive/sr2/`. Live steps: `TESTING.md` §46 (**the canvas parts are unverified until a real client runs them**). Open questions for the maintainer: which p.112 smoke row an ordinary smoke grenade should offer (Heavy was chosen; the book says only "applying visibility modifiers"), and the VII/VIII split in the grenade item itself (a pack fix would need a migration for owned copies, so it is noted on the card instead).
+
+Follow-up to [#155](#155), which lands gas, smoke and flash grenades and marks a coloured Region that ends with its Combat Turns. What it does **not** do yet, and what has to be decided:
+
+1. **The marker has not been seen.** It was checked only as far as the chat card; the Region itself and its two-round expiry need a scene with a canvas. A live step: throw a smoke grenade, see the grey region, advance two
+   rounds, see it go, and try the 🧹 button. It also needs a look at how it reads on a busy map — opacity, the label, and whether a Region shows to players who cannot see that spot.
+2. **A better graphic** than a flat coloured circle: a smoke texture or animated fill, and a different look for infra-red smoke, gas and a flash. Regions can carry a texture; nothing chooses one yet.
+3. **Visibility modifiers for smoke.** The card only says *"apply the visibility modifiers"*. The table (SR3 p.112) depends on the vision the viewer uses — normal, low-light, thermographic — and the marker could offer
+   the number to the GM's TN window when an attacker or target stands inside it. Infra-red smoke is the case that changes the row for thermographic vision. Needs the tokens inside the region tested against the attack, which the ranged
+   flow does not do today.
+4. **Gas.** *"The gas cloud affects everything within a 10-meter radius"* — Neuro-Stun VII is a toxin (SR3 p.250 names VIII, p.283's row says VII; see the note on the item). Offering each token inside a resistance card, as
+   the drugs flow does for a dose, is the obvious shape, and would need the Neuro-Stun rules read first.
+5. **Flash-Pak** has no area at all: *"Anyone facing a flash-pak"* is a facing rule. It could mark a cone or ask the GM to tick who is looking; today it only states +4 (+2 with flare compensation) and +2 from the strobe.
+6. **Wind** — *"less in windy areas, at the gamemaster's discretion"* — is stated on the card and not modelled; the expiry is a fixed 2 Combat Turns. A GM cannot shorten one except by clearing the marker.
+7. **Thermal Smoke** and the other non-core no-damage grenades (the 2nd-edition ones are parked in `archive/sr2/`) would use the same two fields once their packs return.
+
 ## 165. ✅ Rules check 0.6.1 — damage staging is not the book's net comparison — `a597f2a0`
 
 **Done 2026-09-24:** the maintainer chose the net comparison. `SR3EActor.netStagedDamage`; ranged, vehicle,
