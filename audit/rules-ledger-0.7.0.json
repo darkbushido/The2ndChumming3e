@@ -29426,7 +29426,8 @@
       ],
       "hash": "e9fca8d132",
       "text": "# Drones\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / rule — states no rule"
     },
     {
       "id": "rules/drones.md#2",
@@ -29437,7 +29438,23 @@
       ],
       "hash": "cb2f7da332",
       "text": "Running unmanned vehicles from a remote-control deck: jumping into one\ndrone or sitting in the captain's chair, the network and its subscriber\nlist, the actions a rigger can take, giving a drone orders, and the\ndrones in the core rulebook. Driving and vehicle combat are on\n[Rigging](../rigging/), and vehicle statistics on [Vehicles](../vehicles/).\nFrom the core rulebook *(SR3 p.136–137, p.154–157, p.306, p.311–312)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "Riggers can control unmanned vehicles (known as drones)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 64,
+          "snippet": "return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';"
+        }
+      ],
+      "note": "Page summary. The rules it lists (jumping in, the network, actions, orders, the core drones) are checked on the units below."
     },
     {
       "id": "rules/drones.md#3",
@@ -29448,7 +29465,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / rule — states no rule"
     },
     {
       "id": "rules/drones.md#4",
@@ -29459,7 +29477,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / rule — states no rule"
     },
     {
       "id": "rules/drones.md#5",
@@ -29470,7 +29489,27 @@
       ],
       "hash": "d213efd23e",
       "text": "## What makes a drone  *(SR3 p.154, p.306)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "The key difference that sets drones apart from ordinary"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1754,
+          "snippet": "const pilotRating = actor.system.attributes?.pilot?.base ?? 0;"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 767,
+          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#6",
@@ -29481,7 +29520,27 @@
       ],
       "hash": "424c475f3b",
       "text": "A drone is any unmanned vehicle that can be run over a rigger network,\nfrom a matchbox-sized car to a modified sports car. What sets it apart is\nits **Pilot Rating**: its own self-piloting system, which lets it act on\nits own to a limited degree.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "drones have a Pilot Rating, which represents the drone's self-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1754,
+          "snippet": "const pilotRating = actor.system.attributes?.pilot?.base ?? 0;"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1757,
+          "snippet": "RCD (${pilotActor.name}, captain's chair): Pilot ${pilotRating}"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#7",
@@ -29492,7 +29551,32 @@
       ],
       "hash": "6324d9d6ed",
       "text": "- A drone must be **adapted for rigger control**. Drones that can't carry\n  passengers usually come adapted. A passenger vehicle needs a\n  **remote-control interface**, 2,500¥ × Body, which gives it a **Pilot\n  Rating of 1** and needs Sensor 1 or more *(SR3 p.306)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "transmit data to and from a rigger remote-control network. In"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "Adapting a vehicle in this manner gives the"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "remote.control interface",
+          "path": "scripts"
+        },
+        {
+          "pattern": "adapted for rigger",
+          "path": "scripts"
+        }
+      ],
+      "note": "The system has no adaptation check: a vehicle of any kind can be given a driver and a control mode, with no remote-control interface, Pilot 1 or Sensor 1 required. (Manual grep of packs-src: no \"Remote Control Interface\" vehicle mod item exists; the drone actors only name it in notes. The script search can only scan .js/.mjs, so the pack half is not machine-proven.)"
     },
     {
       "id": "rules/drones.md#8",
@@ -29503,7 +29587,26 @@
       ],
       "hash": "253dc71d9e",
       "text": "- It needs a datajack system only if a rigger means to jack into it\n  physically.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "A drone must be adapted for rigger control (however, it"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "datajack (port|system)",
+          "path": "scripts"
+        },
+        {
+          "pattern": "adapted for rigger",
+          "path": "scripts"
+        }
+      ],
+      "note": "No vehicle datajack system or \"adapted for rigger control\" requirement is modelled (the Driving Test only has a \"Non-Rigger w/ Datajack\" TN row)."
     },
     {
       "id": "rules/drones.md#9",
@@ -29514,7 +29617,27 @@
       ],
       "hash": "33c245356b",
       "text": "## Jumped in, or the captain's chair  *(SR3 p.154)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "Instead of jumping into one drone, a rigger can"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 64,
+          "snippet": "return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 221,
+          "snippet": "btn('setRcdMode', 'RCD'"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#10",
@@ -29525,7 +29648,28 @@
       ],
       "hash": "2bda97f4d3",
       "text": "Every drone affiliated with the rigger's deck runs in one of two modes, and\nthe rigger runs the whole network in one of two ways.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "All affiliated drones (see Subscriber Lists, below) operate"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 64,
+          "snippet": "return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 221,
+          "snippet": "btn('setRcdMode', 'RCD'"
+        }
+      ],
+      "note": "Modes are VCR (primary) / RCD (secondary or captain's chair) / Auto. \"Affiliated\" is not tracked (see the subscriber-list units)."
     },
     {
       "id": "rules/drones.md#11",
@@ -29536,7 +29680,8 @@
       ],
       "hash": "8eb2842ba9",
       "text": "| | How it works | Dice |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / rule — states no rule"
     },
     {
       "id": "rules/drones.md#12",
@@ -29547,7 +29692,39 @@
       ],
       "hash": "04ed7c491e",
       "text": "| **Primary drone** | The rigger **jumps in**: controls it as if jacked directly into it. Only **one** at a time. | The rigger's skills, plus **Combat and Control Pool**, and every rigger bonus. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "A rigger may operate only one drone in his or her network in primary mode."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "The rigger may use Combat and Control Pool dice when making tests for the drone"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 64,
+          "snippet": "return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1766,
+          "snippet": "controlPoolMax = Rigging.controlPoolDice(Rigging.controlPool(reactionBase, vcrLevel), pool);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5168,
+          "snippet": "VCR is exclusive"
+        }
+      ],
+      "note": "Book (SR3 p.154): a jumped-in primary drone lets \"the rigger ... use Combat and Control Pool dice when making tests for the drone, and receives all rigger bonuses\"; p.152 adds that Combat Pool dice may be added to the Sensor-Enhanced Gunnery Test. Code: the jumped-in rigger rolls their own skills (droneTestRoller), is limited to one VCR drone (asExcl, actor-sheet path only - the vehicle sheet's VCR button does not enforce it), but the vehicle-weapon roll dialog offers only Control Pool dice (SR3EItem._promptVehicleWeaponRollOptions: \"Control Pool dice (max N)\"); no Combat Pool option exists for drone/vehicle gunnery."
     },
     {
       "id": "rules/drones.md#13",
@@ -29558,7 +29735,38 @@
       ],
       "hash": "71a2535175",
       "text": "| **Secondary drones** | Everything else on the network. | The drone's **Pilot Rating** in place of skill or Attribute. **No pools.** |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "Success Tests for drones in secondary mode are made"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "Combat or Control Pool dice may not be added to Success Tests made by secondary drones."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 64,
+          "snippet": "return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1757,
+          "snippet": "RCD (${pilotActor.name}, captain's chair): Pilot ${pilotRating}"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1038,
+          "snippet": "Rigging.droneTestRoller(sys.controlMode ?? '', !!driver) === 'pilot'"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#14",
@@ -29569,7 +29777,38 @@
       ],
       "hash": "0ac1860d60",
       "text": "| **Captain's chair** | The rigger jumps into none and supervises them all from the deck's master control. | Every drone is secondary: Pilot Ratings, no pools. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "Instead of jumping into one drone, a rigger can"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "When operating drones in the captain's chair mode, a"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 64,
+          "snippet": "return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1082,
+          "snippet": "poolLabel   = `Pilot ${pilotRating}${driver ?"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1757,
+          "snippet": "RCD (${pilotActor.name}, captain's chair): Pilot ${pilotRating}"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#15",
@@ -29580,7 +29819,34 @@
       ],
       "hash": "b1c812bb2e",
       "text": "- **While jumped in**, the rigger sees through the primary drone. Glancing\n  through a secondary drone's sensors takes a **Complex Action**, and\n  orders to secondary drones take **+2** on their Comprehension Tests.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "drones, and must spend a Complex Action to do so."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "ondary drones to comprehend commands suffer a +2"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 775,
+          "snippet": "#dc-secondary')?.checked ? 2 : 0"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 799,
+          "snippet": "Issuing to a secondary drone while jumped into a primary (+2 TN)"
+        }
+      ],
+      "note": "The +2 on the secondary drone's Comprehension Test is a tick-box in the Drone Comprehension dialog (offered, not automatic). The Complex Action to glance through a secondary drone is not modelled (see the Actions table row \"Observe through a secondary drone\")."
     },
     {
       "id": "rules/drones.md#16",
@@ -29591,7 +29857,28 @@
       ],
       "hash": "2c26e5c395",
       "text": "- The **captain's chair** is the only way to run drones **without a VCR**:\n  a character with a datajack and a remote-control deck can do it.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "only drone-control method available to characters who"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 70,
+          "snippet": "return controlMode === 'rcd' && whole(vcrLevel) > 0;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 11008,
+          "snippet": "// RCD without a VCR (a datajack and a deck, p.154)"
+        }
+      ],
+      "note": "A datajack + deck rigger with no VCR gets ordinary Initiative and the drone rolls its Pilot Rating (RCD). The system never refuses a mode, so \"only way\" is not enforced."
     },
     {
       "id": "rules/drones.md#17",
@@ -29602,7 +29889,44 @@
       ],
       "hash": "ddd5b799e1",
       "text": "> **The book's example** *(SR3 p.154)*: Rigger X is in the captain's chair\n> with three drones when a security transport closes in. He still gets his\n> usual Initiative bonus, but if he orders the drones to attack, none of\n> them gets any of his pool dice, and all roll their Pilot Ratings. He\n> jumps into the roto-drone, the closest: now he can use his Control and\n> Combat Pools for it. Looking through another drone costs a Complex\n> Action, and ordering the Doberman to attack gives it +2 on its\n> Comprehension Test.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "ger X receives his usual Initiative bonus, which allows him"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "Doberman would receive a +2 target number modifier on"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "drone can receive bonus dice from any of Rigger X's dice"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 10972,
+          "snippet": "captain's chair"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1757,
+          "snippet": "RCD (${pilotActor.name}, captain's chair): Pilot ${pilotRating}"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 799,
+          "snippet": "Issuing to a secondary drone while jumped into a primary (+2 TN)"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#18",
@@ -29613,7 +29937,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / rule — states no rule"
     },
     {
       "id": "rules/drones.md#19",
@@ -29624,7 +29949,27 @@
       ],
       "hash": "abaf38fdc2",
       "text": "## The remote-control network  *(SR3 p.154–156)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "A remote-control network consists of two fundamental"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 94,
+          "snippet": "deckRating:     new NumberField"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 221,
+          "snippet": "btn('setRcdMode', 'RCD'"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#20",
@@ -29635,7 +29980,32 @@
       ],
       "hash": "fb450b2ea4",
       "text": "A **remote-control (RC) deck** is the control station, and drones connect\nto it by radio on three channels: **command** (movement, actions and\ninformation), **simsense** (sight, sound and simsense) and **system**\n(network integrity and drone status).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "drones, RC deck and rigger. The system channel carries data"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1369,
+          "snippet": "{ key: 'command',  label: 'Command'"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1371,
+          "snippet": "{ key: 'simsense', label: 'Simsense'"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1373,
+          "snippet": "{ key: 'system',   label: 'System'"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#21",
@@ -29646,7 +30016,21 @@
       ],
       "hash": "deb5fb20e8",
       "text": "### Subscriber lists  *(SR3 p.156)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "An RC deck's subscriber list is a file that enables the deck"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "subscriber|affiliat",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#22",
@@ -29657,7 +30041,21 @@
       ],
       "hash": "84f6080c79",
       "text": "- The deck only talks to drones on its **subscriber list**, which keeps\n  intruders out.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "on an RC deck's subscriber list can connect with the deck."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "subscriber|affiliat",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#23",
@@ -29668,7 +30066,27 @@
       ],
       "hash": "af9721816d",
       "text": "- The list holds **twice the deck's rating** in drones; the deck can\n  **actively control** as many as **its rating**.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "A subscriber list can contain a number of drones equal to"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "twice the RC deck's rating. However, a deck can actively con-"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "subscriber|affiliat",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#24",
@@ -29679,7 +30097,27 @@
       ],
       "hash": "12b1a046e1",
       "text": "- A drone under the deck's control is **affiliated**; the rigger can see\n  through and command it, and it can talk to the other affiliated drones.\n  A **non-affiliated** drone acts on its own, cut off from the network.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "Any drone that is under the direct control of an RC"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "A non-affiliated drone is operating independently of the RC"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "subscriber|affiliat",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#25",
@@ -29690,7 +30128,27 @@
       ],
       "hash": "ccd7f075e4",
       "text": "- **Affiliating or disaffiliating** a drone is a **Simple Action**, so\n  swapping one drone for another takes two Simple Actions or one Complex\n  Action. A drone can't act in the Combat Turn it's affiliated.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "Affiliating or disaffiliating a drone requires a Simple Action."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "A drone may not act during the Combat Turn in"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "subscriber|affiliat",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#26",
@@ -29701,7 +30159,28 @@
       ],
       "hash": "019ac8ba7f",
       "text": "> **The book's example** *(SR3 p.156)*: Josie's Rating 4 deck holds up to 8\n> drones on its list but controls 4 at once. She has 6 listed and 4\n> affiliated. To bring in a ground patrol vehicle she spends one Simple\n> Action dropping her surveillance drone and another adding the GPV, which\n> can act from her next Combat Turn.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "up to eight drones, but the deck enables Josie to actively"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "disaffiliating her surveillance drone in favor of a GPV. She"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "subscriber|affiliat",
+          "path": "scripts"
+        }
+      ],
+      "note": "The guide example agrees with the book (Rating 4 deck, 8 on the list, 4 active, 6 listed and 4 affiliated, two Simple Actions to swap)."
     },
     {
       "id": "rules/drones.md#27",
@@ -29712,7 +30191,23 @@
       ],
       "hash": "481a1c5e6d",
       "text": "### Range  *(SR3 p.136–137)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "Flux Rating and Range The range for any electronic trans-",
+          "ocrQuote": "Flux Rating and Range 1 km The range for any electronic trans-"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\.fluxRange",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Flux-to-range table is carried as data (config.js electronicWarfare.fluxRange) but nothing reads it: no range is ever computed or checked."
     },
     {
       "id": "rules/drones.md#28",
@@ -29723,7 +30218,32 @@
       ],
       "hash": "717739448d",
       "text": "An RC deck has a **Flux Rating of 2**, a range of 2 km all around it.\nSituational modifiers change the Flux Rating before the range is read; the\nmodified rating is rounded down to the nearest half.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "remote-control deck (Flux 2), a"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "determining the modified Flux Rating, round the result down to"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\.fluxRange",
+          "path": "scripts"
+        },
+        {
+          "pattern": "nearest half",
+          "path": "scripts"
+        }
+      ],
+      "note": "No default Flux 2 for a remote-control deck (the rigger sheet Flux field starts at 0), no modified-Flux calculation and no round-down-to-half step."
     },
     {
       "id": "rules/drones.md#29",
@@ -29734,7 +30254,24 @@
       ],
       "hash": "c56fd4c634",
       "text": "| Flux Range Table *(SR3 p.137)* | Range |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "0 250 meters Flux Rating and Range",
+          "ocrQuote": "250 meters Flux Rating and Range"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1393,
+          "snippet": "fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]"
+        }
+      ],
+      "note": "The table values are carried in config.js but the array is never read (see unit 27)."
     },
     {
       "id": "rules/drones.md#30",
@@ -29745,7 +30282,24 @@
       ],
       "hash": "0dc9cd57da",
       "text": "| 0 | 250 meters |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "0 250 meters Flux Rating and Range",
+          "ocrQuote": "250 meters Flux Rating and Range"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1393,
+          "snippet": "fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]"
+        }
+      ],
+      "note": "Value matches the book; the array is carried in config.js but never read (see unit 27)."
     },
     {
       "id": "rules/drones.md#31",
@@ -29756,7 +30310,24 @@
       ],
       "hash": "4e5825f5dd",
       "text": "| 1 | 1 km |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "1 1 km The range for any electronic trans-",
+          "ocrQuote": "1 km The range for any electronic trans-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1393,
+          "snippet": "fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]"
+        }
+      ],
+      "note": "Value matches the book; the array is carried in config.js but never read (see unit 27)."
     },
     {
       "id": "rules/drones.md#32",
@@ -29767,7 +30338,24 @@
       ],
       "hash": "4e20196542",
       "text": "| 2 | 2 km |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "2 2 km mitter (communications gear, remote con-",
+          "ocrQuote": "2 km mitter (communications gear, remote con-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1393,
+          "snippet": "fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]"
+        }
+      ],
+      "note": "Value matches the book; the array is carried in config.js but never read (see unit 27)."
     },
     {
       "id": "rules/drones.md#33",
@@ -29778,7 +30366,24 @@
       ],
       "hash": "ed5be702d1",
       "text": "| 3 | 4 km |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "3 4 km trol equipment, sensors, and ECM) is",
+          "ocrQuote": "4 km trol equipment, sensors, and ECM) is"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1393,
+          "snippet": "fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]"
+        }
+      ],
+      "note": "Value matches the book; the array is carried in config.js but never read (see unit 27)."
     },
     {
       "id": "rules/drones.md#34",
@@ -29789,7 +30394,24 @@
       ],
       "hash": "3fe4e93288",
       "text": "| 4 | 6 km |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "4 6 km based on the transmitter's Flux Rating, as",
+          "ocrQuote": "6 km based on the transmitter's Flux Rating, as"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1393,
+          "snippet": "fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]"
+        }
+      ],
+      "note": "Value matches the book; the array is carried in config.js but never read (see unit 27)."
     },
     {
       "id": "rules/drones.md#35",
@@ -29800,7 +30422,24 @@
       ],
       "hash": "28a73d18f0",
       "text": "| 5 | 9 km |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "5 9 km shown on the Flux Range Table. 6 12 km",
+          "ocrQuote": "9 km shown on the Flux Range Table. 12 km"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1393,
+          "snippet": "fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]"
+        }
+      ],
+      "note": "Value matches the book; the array is carried in config.js but never read (see unit 27)."
     },
     {
       "id": "rules/drones.md#36",
@@ -29811,7 +30450,24 @@
       ],
       "hash": "a374ccfe9a",
       "text": "| 6 | 12 km |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "5 9 km shown on the Flux Range Table. 6 12 km",
+          "ocrQuote": "9 km shown on the Flux Range Table. 12 km"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1393,
+          "snippet": "fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]"
+        }
+      ],
+      "note": "Value matches the book; the array is carried in config.js but never read (see unit 27)."
     },
     {
       "id": "rules/drones.md#37",
@@ -29822,7 +30478,24 @@
       ],
       "hash": "0763d61d46",
       "text": "| 7 | 16 km |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "7 16 km Situational Range Modifiers",
+          "ocrQuote": "16 km Situational Range Modifiers"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1393,
+          "snippet": "fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]"
+        }
+      ],
+      "note": "Value matches the book; the array is carried in config.js but never read (see unit 27)."
     },
     {
       "id": "rules/drones.md#38",
@@ -29833,7 +30506,24 @@
       ],
       "hash": "f9f4521b9b",
       "text": "| 8 | 20 km |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "8 20 km External circumstances can tem-",
+          "ocrQuote": "20 km External circumstances can tem-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1393,
+          "snippet": "fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]"
+        }
+      ],
+      "note": "Value matches the book; the array is carried in config.js but never read (see unit 27)."
     },
     {
       "id": "rules/drones.md#39",
@@ -29844,7 +30534,24 @@
       ],
       "hash": "d0273f0b42",
       "text": "| 9 | 25 km |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "9 25 km porarily increase or decrease the range cre-",
+          "ocrQuote": "25 km porarily increase or decrease the range cre-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1393,
+          "snippet": "fluxRange: [250, 1000, 2000, 4000, 6000, 9000, 12000, 16000, 20000, 25000]"
+        }
+      ],
+      "note": "Value matches the book; the array is carried in config.js but never read (see unit 27)."
     },
     {
       "id": "rules/drones.md#40",
@@ -29855,7 +30562,27 @@
       ],
       "hash": "af15d5d560",
       "text": "| 10+ | (2 × Flux) + 10 km |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "10+ (2 x Flux) + 10 km ated by a standard Flux Rating. The modi-",
+          "ocrQuote": "(2 x Flux) + 10 km ated by a standard Flux Rating. The modi-"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "2 ?\\* ?\\w*flux|flux\\w* ?\\* ?2",
+          "path": "scripts"
+        },
+        {
+          "pattern": "\\.fluxRange",
+          "path": "scripts"
+        }
+      ],
+      "note": "The 10+ formula appears only in a comment beside the fluxRange array; no code computes it."
     },
     {
       "id": "rules/drones.md#41",
@@ -29866,7 +30593,26 @@
       ],
       "hash": "eec5d3747b",
       "text": "| Situational Range Modifiers *(SR3 p.137)* | Modifier |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "than 4 Flux Points at any one High elevation +4",
+          "ocrQuote": "than 4 Flux Points at any one High elevation"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "high elevation|electrical storm|encryption in use",
+          "path": "scripts"
+        },
+        {
+          "pattern": "\\.fluxRange",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#42",
@@ -29877,7 +30623,26 @@
       ],
       "hash": "dc7e12c254",
       "text": "| High elevation (unbroken line of sight to the receiver) | +4 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "than 4 Flux Points at any one High elevation +4",
+          "ocrQuote": "than 4 Flux Points at any one High elevation"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "high elevation|electrical storm|encryption in use|humid air",
+          "path": "scripts"
+        },
+        {
+          "pattern": "\\.fluxRange",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#43",
@@ -29888,7 +30653,27 @@
       ],
       "hash": "3ef1251926",
       "text": "| ECCM in use | −(ECCM rating ÷ 2) |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "time, and it cannot boost any ECCM in use -Rating of transmitter/2",
+          "ocrQuote": "time, and it cannot boost any ECCM in use"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "high elevation|electrical storm|encryption in use|humid air",
+          "path": "scripts"
+        },
+        {
+          "pattern": "\\.fluxRange",
+          "path": "scripts"
+        }
+      ],
+      "note": "The table prints \"-Rating of transmitter/2\"; the table key says \"subtract half the ECCM Level\" (SR3 p.137). The guide follows the key. Either way, nothing in the code applies it."
     },
     {
       "id": "rules/drones.md#44",
@@ -29899,7 +30684,26 @@
       ],
       "hash": "b1110ea344",
       "text": "| Electrical storm | −2 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "single system by more than 2 Electrical storm -2",
+          "ocrQuote": "single system by more than 2 Electrical storm"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "high elevation|electrical storm|encryption in use|humid air",
+          "path": "scripts"
+        },
+        {
+          "pattern": "\\.fluxRange",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#45",
@@ -29910,7 +30714,26 @@
       ],
       "hash": "d3751ec546",
       "text": "| Encryption in use | −0.5 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "points. For example, Josie could Encryption in use -0.5",
+          "ocrQuote": "points. For example, Josie could Encryption in use"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "high elevation|electrical storm|encryption in use|humid air",
+          "path": "scripts"
+        },
+        {
+          "pattern": "\\.fluxRange",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#46",
@@ -29921,7 +30744,26 @@
       ],
       "hash": "c2bfa15165",
       "text": "| Humid air | −0.5 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "use the van to provide a 2-point Humid air -0.5",
+          "ocrQuote": "use the van to provide a 2-point Humid air"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "high elevation|electrical storm|encryption in use|humid air",
+          "path": "scripts"
+        },
+        {
+          "pattern": "\\.fluxRange",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#47",
@@ -29932,7 +30774,26 @@
       ],
       "hash": "296d6930f7",
       "text": "| Urban environment | −1 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 139,
+          "printedPage": 137,
+          "quote": "boost to the remote-control Urban environment -1",
+          "ocrQuote": "boost to the remote-control Urban environment"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "high elevation|electrical storm|encryption in use|humid air",
+          "path": "scripts"
+        },
+        {
+          "pattern": "\\.fluxRange",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#48",
@@ -29943,7 +30804,28 @@
       ],
       "hash": "51e07f1945",
       "text": "> **The book's example** *(SR3 p.137–138)*: Josie's deck has a signal\n> amplifier, Flux 6. On a garage roof (+4), with encryption (−0.5) and\n> ECCM 3 (−1.5), its effective Flux is 6 + 4 − 0.5 − 1.5 = **8**: 20 km.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 140,
+          "printedPage": 138,
+          "quote": "her deck transmitter is 8, calculated as follows."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 140,
+          "printedPage": 138,
+          "quote": "This effective Flux Rating gives Josie's Dalmatian an 8-"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\.fluxRange",
+          "path": "scripts"
+        }
+      ],
+      "note": "The guide's arithmetic agrees with the book (6 + 4 - 0.5 - 1.5 = 8, Flux 8 = 20 km on the Flux Range Table); the system just has no calculator for it."
     },
     {
       "id": "rules/drones.md#49",
@@ -29954,7 +30836,8 @@
       ],
       "hash": "f1afcf9a72",
       "text": "Jamming, ECM and ECCM against the network are electronic warfare, covered\nwith decking: see [Decking](../decking-defragged/).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "A pointer to the Decking page for jamming, ECM and ECCM against the network - states no rule here."
     },
     {
       "id": "rules/drones.md#50",
@@ -29965,7 +30848,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / rule — states no rule"
     },
     {
       "id": "rules/drones.md#51",
@@ -29976,7 +30860,22 @@
       ],
       "hash": "dece13010a",
       "text": "## A rigger's actions with a deck  *(SR3 p.156–157)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "The following list describes actions a rigger can perform"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Activate/Deactivate Sensors|Perform the Same Free Action|Return to Captain",
+          "path": "scripts"
+        }
+      ],
+      "note": "No drone-action list: only \"Fire a Weapon System\" (Complex, row 62) and the generic Observe in Detail (Simple) are charged by the action ledger; every other row below is not modelled."
     },
     {
       "id": "rules/drones.md#52",
@@ -29987,7 +30886,8 @@
       ],
       "hash": "05b6a00a4e",
       "text": "| Action | Free | Simple | Complex |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / rule — states no rule"
     },
     {
       "id": "rules/drones.md#53",
@@ -29998,7 +30898,21 @@
       ],
       "hash": "02212558fb",
       "text": "| Turn one drone's sensors, or its ECM/ECCM, on or off (from the next Combat Turn) | ✓ | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "Activate/Deactivate Sensors: A rigger may activate or deactivate sensors for a single drone."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Activate/Deactivate Sensors|activateSensors|toggleSensors",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#54",
@@ -30009,7 +30923,21 @@
       ],
       "hash": "9ba4690ba0",
       "text": "| Arm or disarm one drone's weapon system (one armed at a time) | ✓ | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Arm/Disarm a Weapon System: A rigger may order a single drone to arm or disarm one of its weapon systems."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Arm/Disarm|armWeapon|disarmWeapon",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#55",
@@ -30020,7 +30948,21 @@
       ],
       "hash": "6361d2babf",
       "text": "| Call up one drone's status report | ✓ | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Call Up a Status Report: A rigger may monitor the posi-"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Status Report|statusReport",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#56",
@@ -30031,7 +30973,21 @@
       ],
       "hash": "bf17a135b0",
       "text": "| Observe casually through one drone | ✓ | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Observe: A rigger may casually observe through one"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "casually observe|observeThrough",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#57",
@@ -30042,7 +30998,27 @@
       ],
       "hash": "45238ece02",
       "text": "| Delay an action, or speak a word | ✓ | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Delay Action: Riggers can delay actions per standard"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Speak a Word: Riggers may take this action per standard"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "speak a word|delay action|delayAction",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#58",
@@ -30053,7 +31029,21 @@
       ],
       "hash": "b6997b580b",
       "text": "| Affiliate or disaffiliate a drone | | ✓ | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Affiliate/Disaffiliate a Drone: A rigger may add or drop"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Affiliate/Disaffiliate|affiliat",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#59",
@@ -30064,7 +31054,23 @@
       ],
       "hash": "493ec3e61f",
       "text": "| Observe in detail through one drone | | ✓ | |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Observe in Detail: A rigger may observe in detail (see p. 106) through any single drone while in captain's chair mode."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/action-economy.mjs",
+          "line": 39,
+          "snippet": "observeInDetail:   { cost: 'simple',  label: 'Observe in Detail'"
+        }
+      ],
+      "note": "The generic Observe in Detail is a Simple Action in the ledger (SR3 p.106). Scoping it to \"any single drone in captain's chair / the primary drone only\" is not modelled."
     },
     {
       "id": "rules/drones.md#60",
@@ -30075,7 +31081,21 @@
       ],
       "hash": "f82b5c9ad7",
       "text": "| Do the same Free Action on several drones at once (captain's chair) | | ✓ | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Perform the Same Free Action on Multiple Drones: A"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Perform the Same Free Action",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#61",
@@ -30086,7 +31106,32 @@
       ],
       "hash": "d468e30dce",
       "text": "| Jump into a primary drone, or return to the captain's chair | | ✓ | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Jump into a Primary Drone: A rigger takes direct control"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Return to Captain's Chair: A rigger stops maintaining"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "jumpInto|Jump into a Primary|Return to Captain",
+          "path": "scripts"
+        },
+        {
+          "pattern": "charge\\([^)]*(setVcr|setRcd|vcrMode)",
+          "path": "scripts"
+        }
+      ],
+      "note": "Switching VCR / RCD / Auto is a sheet button (setVcrMode, setRcdMode) that charges no Simple Action."
     },
     {
       "id": "rules/drones.md#62",
@@ -30097,7 +31142,27 @@
       ],
       "hash": "344a677ae6",
       "text": "| Fire an armed weapon on one drone | | | ✓ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Fire a Weapon System: A rigger may fire an armed"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/action-economy.mjs",
+          "line": 36,
+          "snippet": "fireVehicleWeapon: { cost: 'complex'"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1815,
+          "snippet": "charge(who, 'fireVehicleWeapon', this.name)"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#63",
@@ -30108,7 +31173,21 @@
       ],
       "hash": "0bece28604",
       "text": "| Issue a command to a drone or a group | | | ✓ |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Issue a Command: A rigger may issue a command to a"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "charge\\([^)]*(ompreh|ommand)|issue ?command",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#64",
@@ -30119,7 +31198,21 @@
       ],
       "hash": "7ad186b740",
       "text": "| Observe through a secondary drone while jumped in | | | ✓ |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Observe through a Secondary Drone: When directly"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "observeSecondary|Observe through a Secondary",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#65",
@@ -30130,7 +31223,22 @@
       ],
       "hash": "57dc4037b3",
       "text": "| Operate a jumped-in drone: accelerate, brake, position, ram or hide | | | ✓ |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Operate a Drone: While jumped into a drone, the rigger"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "charge\\([^)]*(driv|brak|accel|ramm)",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Driving Test rolls for a jumped-in drone (VCR rolls the rigger's skill and Control Pool), but it is not charged as a Complex Action."
     },
     {
       "id": "rules/drones.md#66",
@@ -30141,7 +31249,28 @@
       ],
       "hash": "578a34f1c8",
       "text": "While jumped in, the rigger can only fire weapons on the primary drone, and\nCombat Pool works only with it *(SR3 p.157)*.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Riggers operating through a cybernetic link can use their Combat Pool dice only with the primary drone."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 64,
+          "snippet": "return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1766,
+          "snippet": "controlPoolMax = Rigging.controlPoolDice(Rigging.controlPool(reactionBase, vcrLevel), pool);"
+        }
+      ],
+      "note": "Book (SR3 p.157): \"Riggers operating through a cybernetic link can use their Combat Pool dice only with the primary drone.\" Code: a secondary drone gets no pool (correct), but the primary drone's vehicle-weapon roll offers Control Pool only - no Combat Pool at all (see unit 12). \"Only fire weapons on the primary\" is not enforced (a warn-never-refuse system)."
     },
     {
       "id": "rules/drones.md#67",
@@ -30152,7 +31281,27 @@
       ],
       "hash": "45c5c8ce54",
       "text": "## Giving orders: the Comprehension Test  *(SR3 p.157)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "The player then makes a Comprehension Test for the drone,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 819,
+          "snippet": "vehicle.rollPool(result.pool, result.tn"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 767,
+          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#68",
@@ -30163,7 +31312,32 @@
       ],
       "hash": "85fff870b9",
       "text": "- An order is a **Complex Action**, declared with the rigger's own actions.\n  One order goes to one drone, or to a group getting the **identical**\n  order, up to as many as the deck controls.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Issuing a command to a drone requires one"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "A rigger can issue only one command to a single drone,"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "issue ?command|issueCommand|groupCommand|identical command",
+          "path": "scripts"
+        },
+        {
+          "pattern": "charge\\([^)]*ompreh",
+          "path": "scripts"
+        }
+      ],
+      "note": "The 📡 Drone Comprehension button just rolls the test; it charges no Complex Action and has no one-drone / identical-group rule."
     },
     {
       "id": "rules/drones.md#69",
@@ -30174,7 +31348,27 @@
       ],
       "hash": "e01a0a4d9e",
       "text": "- A jumped-in primary drone needs no orders; it's driven.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "that drone as if he were driving it personally. He does not have"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 64,
+          "snippet": "return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1038,
+          "snippet": "Rigging.droneTestRoller(sys.controlMode ?? '', !!driver) === 'pilot'"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#70",
@@ -30185,7 +31379,23 @@
       ],
       "hash": "80add79ac7",
       "text": "- Orders are one sentence: \"circle this area\", \"follow that car\". The GM\n  rates the order on the Difficulty Number Table to set the TN, and the\n  rigger can simplify it first.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "set the target number for the test and give the rig- ger the option to downgrade the complexity"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 796,
+          "snippet": "Base TN (command complexity)"
+        }
+      ],
+      "note": "The GM types the base TN (default 4); the Difficulty Number Table itself is not in the code (see the table rows)."
     },
     {
       "id": "rules/drones.md#71",
@@ -30196,7 +31406,38 @@
       ],
       "hash": "196bee6fc2",
       "text": "- Roll the drone's **Pilot Rating** against that TN. **One success** and it\n  understands and carries the order out; more successes give it more\n  leeway, to the rigger's benefit.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "rolling a number of dice equal to the drone's Pilot Rating against"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "the more successes the test generates, the more leeway the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 767,
+          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 819,
+          "snippet": "vehicle.rollPool(result.pool, result.tn"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 820,
+          "snippet": "footerNote: '0 successes = no comprehension"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#72",
@@ -30207,7 +31448,39 @@
       ],
       "hash": "abaf39080f",
       "text": "- Drones the rigger isn't driving roll their Pilot Rating for every test,\n  with no dice pools. **Every drone acts in the rigger's Combat Phase,\n  after the rigger.**",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "Drones do not benefit from dice pools."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "The rigger acts first, then all drones follow."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1757,
+          "snippet": "RCD (${pilotActor.name}, captain's chair): Pilot ${pilotRating}"
+        },
+        {
+          "file": "scripts/documents/SR3ECombat.js",
+          "line": 20,
+          "snippet": "copy their rigger"
+        },
+        {
+          "file": "scripts/documents/SR3ECombat.js",
+          "line": 52,
+          "snippet": "Sync VCR/RCD vehicle initiatives"
+        }
+      ],
+      "note": "No pools for a drone rolling for itself: matched. A drone with a rigger copies the rigger's Initiative score (same Combat Phase); \"rigger first, then the drones\" is not enforced as an order on equal scores."
     },
     {
       "id": "rules/drones.md#73",
@@ -30218,7 +31491,23 @@
       ],
       "hash": "be20e59158",
       "text": "| Difficulty Number Table *(SR3 p.92)* | TN |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 94,
+          "printedPage": 92,
+          "quote": "Except for predetermined target Simple 2",
+          "ocrQuote": "Except for predetermined target Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Nearly Impossible|Strenuous",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Difficulty Number Table is not in the code: the GM types the TN. The guide row agrees with the book."
     },
     {
       "id": "rules/drones.md#74",
@@ -30229,7 +31518,23 @@
       ],
       "hash": "93a944ba76",
       "text": "| Simple | 2 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 94,
+          "printedPage": 92,
+          "quote": "Except for predetermined target Simple 2",
+          "ocrQuote": "Except for predetermined target Simple"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Nearly Impossible|Strenuous",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Difficulty Number Table is not in the code: the GM types the TN. The guide row agrees with the book."
     },
     {
       "id": "rules/drones.md#75",
@@ -30240,7 +31545,23 @@
       ],
       "hash": "c97137afd1",
       "text": "| Routine | 3 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 94,
+          "printedPage": 92,
+          "quote": "numbers, like the ones for combat, the Routine 3",
+          "ocrQuote": "numbers, like the ones for combat, the Routine"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Nearly Impossible|Strenuous",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Difficulty Number Table is not in the code: the GM types the TN. The guide row agrees with the book."
     },
     {
       "id": "rules/drones.md#76",
@@ -30251,7 +31572,23 @@
       ],
       "hash": "9c4d39d21b",
       "text": "| Average | 4 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 94,
+          "printedPage": 92,
+          "quote": "gamemaster is solely responsible for Average 4",
+          "ocrQuote": "gamemaster is solely responsible for Average"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Nearly Impossible|Strenuous",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Difficulty Number Table is not in the code: the GM types the TN. The guide row agrees with the book."
     },
     {
       "id": "rules/drones.md#77",
@@ -30262,7 +31599,23 @@
       ],
       "hash": "f9b8140a28",
       "text": "| Challenging | 5 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 94,
+          "printedPage": 92,
+          "quote": "determining target numbers. Challenging 5",
+          "ocrQuote": "determining target numbers. Challenging"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Nearly Impossible|Strenuous",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Difficulty Number Table is not in the code: the GM types the TN. The guide row agrees with the book."
     },
     {
       "id": "rules/drones.md#78",
@@ -30273,7 +31626,23 @@
       ],
       "hash": "4c3925a87f",
       "text": "| Difficult | 6–7 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 94,
+          "printedPage": 92,
+          "quote": "Gamemasters should use the Difficulty Difficult 6-7",
+          "ocrQuote": "Gamemasters should use the Difficulty Difficult"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Nearly Impossible|Strenuous",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Difficulty Number Table is not in the code: the GM types the TN. The guide row agrees with the book."
     },
     {
       "id": "rules/drones.md#79",
@@ -30284,7 +31653,23 @@
       ],
       "hash": "2e259554e1",
       "text": "| Strenuous | 8 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 94,
+          "printedPage": 92,
+          "quote": "Number Table as a guide when determin- Strenuous 8",
+          "ocrQuote": "Number Table as a guide when determin- Strenuous"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Nearly Impossible|Strenuous",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Difficulty Number Table is not in the code: the GM types the TN. The guide row agrees with the book."
     },
     {
       "id": "rules/drones.md#80",
@@ -30295,7 +31680,23 @@
       ],
       "hash": "ec24420517",
       "text": "| Extreme | 9 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 94,
+          "printedPage": 92,
+          "quote": "ing target numbers on the fly. Extreme 9",
+          "ocrQuote": "ing target numbers on the fly. Extreme"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Nearly Impossible|Strenuous",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Difficulty Number Table is not in the code: the GM types the TN. The guide row agrees with the book."
     },
     {
       "id": "rules/drones.md#81",
@@ -30306,7 +31707,23 @@
       ],
       "hash": "39f9b38ae5",
       "text": "| Nearly Impossible | 10+ |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 94,
+          "printedPage": 92,
+          "quote": "Not all tests are created equal, and Nearly Impossible 10+",
+          "ocrQuote": "Not all tests are created equal, and Nearly Impossible"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Nearly Impossible|Strenuous",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Difficulty Number Table is not in the code: the GM types the TN. The guide row agrees with the book."
     },
     {
       "id": "rules/drones.md#82",
@@ -30317,7 +31734,22 @@
       ],
       "hash": "be2230f644",
       "text": "**Sensors** *(SR3 p.136)*: a drone making a Passive Sensor Test rolls its\n**Pilot Rating** in place of Intelligence; an Active Sensor Test uses its\nSensor Rating, as any vehicle does.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 138,
+          "printedPage": 136,
+          "quote": "Tests. When making a Passive Sensor Test, use the drone's Pilot"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "passive sensor|passiveSensor|active sensor|activeSensor",
+          "path": "scripts"
+        }
+      ],
+      "note": "There are no Passive or Active Sensor Tests in the code; only the Sensor-Enhanced Gunnery bonus (half the Sensor Rating as dice) uses the Sensor Rating."
     },
     {
       "id": "rules/drones.md#83",
@@ -30328,7 +31760,27 @@
       ],
       "hash": "f6baef3f45",
       "text": "## Dump shock  *(SR3 p.156)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "Any time a rigger is dumped from a remote control"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 40,
+          "snippet": "power: r + 4, level: 'S', isStun: true, resistAttr: 'willpower'"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1304,
+          "snippet": "const d = RiggerShock.dumpShock(kind, deckRating);"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#84",
@@ -30339,7 +31791,44 @@
       ],
       "hash": "479166eb4c",
       "text": "Dumped from the network, a rigger is disoriented for ten Combat Turns at +2\nto every test, and resists **(RC deck rating + 4)S Stun** with Willpower.\nThe details are on [Rigging](../rigging/#dump-shock-for-a-rigger).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "entation for ten Combat Turns."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "all of the rigger's Success Tests receive a +2 modifier."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "The rigger must also resist (RC deck Rating + 4)S Stun"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 26,
+          "snippet": "export const DISORIENT_TURNS = 10;"
+        },
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 27,
+          "snippet": "export const DISORIENT_MOD   = 2;"
+        },
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 40,
+          "snippet": "power: r + 4, level: 'S', isStun: true, resistAttr: 'willpower'"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#85",
@@ -30350,7 +31839,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / rule — states no rule"
     },
     {
       "id": "rules/drones.md#86",
@@ -30361,7 +31851,22 @@
       ],
       "hash": "40ad13c474",
       "text": "## The core rulebook's drones  *(SR3 p.311–312)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "The Doberman is a perimeter-patrol drone equally effective"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-drones/gm-nissan-doberman.sr3e-drone-0019.json",
+          "line": 10,
+          "snippet": "\"cost\": 25000"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#87",
@@ -30372,7 +31877,8 @@
       ],
       "hash": "a954437bd2",
       "text": "| Drone | Handling | Speed | Accel | Body | Armor | Sig | Pilot | Sensor | Cargo | Load | Cost |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / rule — states no rule"
     },
     {
       "id": "rules/drones.md#88",
@@ -30383,7 +31889,60 @@
       ],
       "hash": "1e83adc172",
       "text": "| GM-Nissan Doberman | 3/5 | 70 | 8 | 2 | 6 | 2 | 2 | 1 | 2.5 | 50 | 25,000¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "Handling Speed Accel Body Armor 3/5 70 8 2 6"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "Sig Autonav Pilot Sensor Cargo Load 2.5 50 2 -- 2 1"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "Setup/Breakdown: -- Cost: 25,000"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-drones/gm-nissan-doberman.sr3e-drone-0019.json",
+          "line": 10,
+          "snippet": "\"cost\": 25000"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/gm-nissan-doberman.sr3e-drone-0019.json",
+          "line": 24,
+          "snippet": "\"handlingOffRoad\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/gm-nissan-doberman.sr3e-drone-0019.json",
+          "line": 28,
+          "snippet": "\"speed\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/gm-nissan-doberman.sr3e-drone-0019.json",
+          "line": 40,
+          "snippet": "\"armor\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/gm-nissan-doberman.sr3e-drone-0019.json",
+          "line": 52,
+          "snippet": "\"pilot\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/gm-nissan-doberman.sr3e-drone-0019.json",
+          "line": 60,
+          "snippet": "\"cargo\": {"
+        }
+      ],
+      "note": "Pack values: handling 3, off-road 5, speed 70, accel 8, body 2, armor 6, sig 2, autonav 0, pilot 2, sensor 1, cargo 2.5, load 50, cost 25,000 - all agree with the book."
     },
     {
       "id": "rules/drones.md#89",
@@ -30394,7 +31953,49 @@
       ],
       "hash": "82acc640a3",
       "text": "| GAZ-Niki GNRD-71 BIS Snooper | 4/3 | 75 | 3 | 1 | 0 | 8 | 1 | 1 | 2 | 30 | 8,500¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Handling Speed Accel Body 4/3 75 3"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Armor Sig Autonav Pilot Sensor Cargo Load 2 30 1 0 8 -- 1 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-drones/gaz-niki-gnrd-71-bis-snooper.sr3e-drone-0018.json",
+          "line": 10,
+          "snippet": "\"cost\": 8500"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/gaz-niki-gnrd-71-bis-snooper.sr3e-drone-0018.json",
+          "line": 28,
+          "snippet": "\"speed\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/gaz-niki-gnrd-71-bis-snooper.sr3e-drone-0018.json",
+          "line": 44,
+          "snippet": "\"sig\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/gaz-niki-gnrd-71-bis-snooper.sr3e-drone-0018.json",
+          "line": 52,
+          "snippet": "\"pilot\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/gaz-niki-gnrd-71-bis-snooper.sr3e-drone-0018.json",
+          "line": 64,
+          "snippet": "\"load\": {"
+        }
+      ],
+      "note": "Pack: handling 4, off-road 3, speed 75, accel 3, body 1, armor 0, sig 8, pilot 1, sensor 1, cargo 2, load 30, cost 8,500; the book prints Cost: 8,500 for the Snooper."
     },
     {
       "id": "rules/drones.md#90",
@@ -30405,7 +32006,39 @@
       ],
       "hash": "dba0ac9f06",
       "text": "| Generic surveillance drone | 3 | 70 | 9 | 1 | 0 | 5 | 2 | 1 | 0 | 10 | 8,125¥ |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Setup/Breakdown: 3 minutes Cost: 8,125"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Armor Sig Autonav Pilot Sensor Cargo Load 0 10 1 0 5 -- 2 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-drones/generic-surv-drone-vtol.sr3e-drone-0045.json",
+          "line": 10,
+          "snippet": "\"cost\": 6250"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/generic-surv-drone-vtol.sr3e-drone-0045.json",
+          "line": 44,
+          "snippet": "\"sig\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/generic-surv-drone-vtol.sr3e-drone-0045.json",
+          "line": 64,
+          "snippet": "\"load\": {"
+        }
+      ],
+      "note": "Book (SR3 p.312, Generic Surveillance Drone): Cost 8,125, Street Index 1. Pack \"Generic Surv. Drone VTOL\" (sr3e-drone-0045) has cost 6,250 and street index 0.75; every other stat (3, 70, 9, body 1, armor 0, sig 5, pilot 2, sensor 1, cargo 0, load 10) matches. The guide row agrees with the book."
     },
     {
       "id": "rules/drones.md#91",
@@ -30416,7 +32049,39 @@
       ],
       "hash": "c457fb5289",
       "text": "| MCT-Nissan Roto-drone | 4 | 70 | 6 | 2 | 0 | 4 | 1 | 1 | 4 | 150 | 10,500¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Handling Speed Accel Body 4 70 6"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Armor Sig Autonav Pilot Sensor Cargo Load 4 150 2 0 4 -- 1 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-drones/mct-nissan-roto-drone.sr3e-drone-0040.json",
+          "line": 10,
+          "snippet": "\"cost\": 10500"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/mct-nissan-roto-drone.sr3e-drone-0040.json",
+          "line": 44,
+          "snippet": "\"sig\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/mct-nissan-roto-drone.sr3e-drone-0040.json",
+          "line": 60,
+          "snippet": "\"cargo\": {"
+        }
+      ],
+      "note": "Pack: handling 4, speed 70, accel 6, body 2, armor 0, sig 4, pilot 1, sensor 1, cargo 4, load 150, cost 10,500; matches (the book prints Cost: 10,500)."
     },
     {
       "id": "rules/drones.md#92",
@@ -30427,7 +32092,39 @@
       ],
       "hash": "1590762732",
       "text": "| CyberSpace Designs Dalmatian | 3 | 105 | 8 | 2 | 0 | 6 | 2 | 1 | 3 | 80 | 16,000¥ |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Handling Speed Accel Body 3 105 8 Setup/Breakdown: -- Cost: 16,000"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Armor Sig Autonav Pilot Sensor Cargo Load 3 80 2 0 6 -- 2 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-drones/cyberspace-designs-dalmatian.sr3e-drone-0043.json",
+          "line": 10,
+          "snippet": "\"cost\": 16000"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/cyberspace-designs-dalmation.sr3e-drone-0037.json",
+          "line": 10,
+          "snippet": "\"cost\": 15800"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/cyberspace-designs-dalmation.sr3e-drone-0037.json",
+          "line": 28,
+          "snippet": "\"speed\": {"
+        }
+      ],
+      "note": "The correct pack item \"Cyberspace Designs Dalmatian\" (sr3e-drone-0043) matches the book (3, 105, 8, body 2, armor 0, sig 6, pilot 2, sensor 1, cargo 3, load 80, 16,000). But the same pack also ships a misspelt duplicate, \"Cyberspace Designs Dalmation\" (sr3e-drone-0037, bookPage sr3.312), with different stats: speed 108, sig 5, cost 15,800, street index 0.75. The book has one Dalmatian."
     },
     {
       "id": "rules/drones.md#93",
@@ -30438,7 +32135,54 @@
       ],
       "hash": "b125f2b8ee",
       "text": "None has Autonav. *Rigger 3* and *State\nof the Art 2064* add many more, and the system ships them in its\ncompendiums.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 313,
+          "printedPage": 311,
+          "quote": "Sig Autonav Pilot Sensor Cargo Load 2.5 50 2 -- 2 1"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 314,
+          "printedPage": 312,
+          "quote": "Armor Sig Autonav Pilot Sensor Cargo Load 2 30 1 0 8 -- 1 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-drones/gm-nissan-doberman.sr3e-drone-0019.json",
+          "line": 48,
+          "snippet": "\"autonav\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/gaz-niki-gnrd-71-bis-snooper.sr3e-drone-0018.json",
+          "line": 48,
+          "snippet": "\"autonav\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/generic-surv-drone-vtol.sr3e-drone-0045.json",
+          "line": 48,
+          "snippet": "\"autonav\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/mct-nissan-roto-drone.sr3e-drone-0040.json",
+          "line": 48,
+          "snippet": "\"autonav\": {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-drones/cyberspace-designs-dalmatian.sr3e-drone-0043.json",
+          "line": 48,
+          "snippet": "\"autonav\": {"
+        },
+        {
+          "file": "packs-src/sr3e-r3-drones/ares-sentinel.sr3e-drone-0012.json",
+          "line": 14,
+          "snippet": "\"bookPage\""
+        }
+      ],
+      "note": "The book prints \"--\" under Autonav for all five; the pack stores 0. The R3 and SotA 2064 drone packs (sr3e-r3-drones, sr3e-sota2-drones) exist."
     },
     {
       "id": "rules/drones.md#94",
@@ -30449,7 +32193,27 @@
       ],
       "hash": "225418a398",
       "text": "| Rigger gear *(SR3 p.306)* | Cost |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "Remote Control Deck Weight Cost Remote Control ECCM 3"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/remote-control-deck-rating-1.8c61e51800bdfb30.json",
+          "line": 21,
+          "snippet": "\"cost\": 5000"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/remote-control-deck-rating-10.261bbdf8e1c999a0.json",
+          "line": 21,
+          "snippet": "\"cost\": 50000"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#95",
@@ -30460,7 +32224,28 @@
       ],
       "hash": "3ff7211552",
       "text": "| Remote Control Deck | 5,000¥ × Rating |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "Remote Control Deck Weight Cost Remote Control ECCM 3"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/remote-control-deck-rating-1.8c61e51800bdfb30.json",
+          "line": 21,
+          "snippet": "\"cost\": 5000"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/remote-control-deck-rating-10.261bbdf8e1c999a0.json",
+          "line": 21,
+          "snippet": "\"cost\": 50000"
+        }
+      ],
+      "note": "The text layer prints the deck's data row under the label \"Remote Control ECCM\" (3 / 5,000 x Rating / 4/72 hrs); the ECCM ratings follow below it. Packs: deck Rating 1 = 5,000, Rating 10 = 50,000 (5,000 x Rating)."
     },
     {
       "id": "rules/drones.md#96",
@@ -30471,7 +32256,22 @@
       ],
       "hash": "e7d0291a09",
       "text": "| Remote Control ECCM, Ratings 1–3 | Rating × 7,500¥ |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "Ratings 1-3 1.5 Rating x 7,500"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Remote Control ECCM",
+          "path": "scripts"
+        }
+      ],
+      "note": "No SR3 p.306 \"Remote Control ECCM\" gear item is shipped. Manual grep of packs-src: the only items of that name are the Man & Machine p.23 cranial variants (sr3e-mm-cyberware, e.g. Rating 1 = 15,000, Rating 10 = 900,000), priced from M&M's own table, not from the p.306 rate. (The script search can only scan .js/.mjs, so the pack side is not machine-proven.)"
     },
     {
       "id": "rules/drones.md#97",
@@ -30482,7 +32282,22 @@
       ],
       "hash": "df954b0b55",
       "text": "| Remote Control ECCM, Ratings 4–6 | Rating × 15,000¥ |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "Ratings 4-6 2 Rating x 15,000"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Remote Control ECCM",
+          "path": "scripts"
+        }
+      ],
+      "note": "No SR3 p.306 \"Remote Control ECCM\" gear item is shipped. Manual grep of packs-src: the only items of that name are the Man & Machine p.23 cranial variants (sr3e-mm-cyberware, e.g. Rating 1 = 15,000, Rating 10 = 900,000), priced from M&M's own table, not from the p.306 rate. (The script search can only scan .js/.mjs, so the pack side is not machine-proven.)"
     },
     {
       "id": "rules/drones.md#98",
@@ -30493,7 +32308,22 @@
       ],
       "hash": "0ec1038102",
       "text": "| Remote Control ECCM, Ratings 7–9 | Rating × 35,000¥ |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "Ratings 7-9 2.5 Rating x 35,000"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Remote Control ECCM",
+          "path": "scripts"
+        }
+      ],
+      "note": "No SR3 p.306 \"Remote Control ECCM\" gear item is shipped. Manual grep of packs-src: the only items of that name are the Man & Machine p.23 cranial variants (sr3e-mm-cyberware, e.g. Rating 1 = 15,000, Rating 10 = 900,000), priced from M&M's own table, not from the p.306 rate. (The script search can only scan .js/.mjs, so the pack side is not machine-proven.)"
     },
     {
       "id": "rules/drones.md#99",
@@ -30504,7 +32334,22 @@
       ],
       "hash": "ed11c694af",
       "text": "| Remote Control ECCM, Rating 10 | 500,000¥ |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 308,
+          "printedPage": 306,
+          "quote": "Rating 10 2.5 Hitcher Jacks 0 500,000"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Remote Control ECCM",
+          "path": "scripts"
+        }
+      ],
+      "note": "No SR3 p.306 \"Remote Control ECCM\" gear item is shipped. Manual grep of packs-src: the only items of that name are the Man & Machine p.23 cranial variants (sr3e-mm-cyberware, e.g. Rating 1 = 15,000, Rating 10 = 900,000), priced from M&M's own table, not from the p.306 rate. (The script search can only scan .js/.mjs, so the pack side is not machine-proven.)"
     },
     {
       "id": "rules/drones.md#100",
@@ -30515,7 +32360,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / rule — states no rule"
     },
     {
       "id": "rules/drones.md#101",
@@ -30526,7 +32372,8 @@
       ],
       "hash": "8e605c4c08",
       "text": "## Doing it in The 2nd Chumming (Foundry)\n{: #doing-it-in-the-2nd-chumming-foundry }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / rule — states no rule"
     },
     {
       "id": "rules/drones.md#102",
@@ -30537,7 +32384,8 @@
       ],
       "hash": "99be0dd4b6",
       "text": "A drone is a vehicle actor, from the *Drones* compendiums (*Shadowrun 3rd*,\n*Rigger 3*, *State of the Art 2064*). Getting it onto a character and its\ncontrol modes are on [Rigging](../rigging/#drones-and-remote-control):",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/drones.md#103",
@@ -30548,7 +32396,27 @@
       ],
       "hash": "c0ef5dfaae",
       "text": "- **Auto**, a drone's natural state, rolls its own Pilot Rating.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 159,
+          "printedPage": 157,
+          "quote": "When making Success Tests, drones not directly con- trolled by the rigger use their Pilot Ratings in place of the rig- ger's Skill or Attribute Ratings."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1754,
+          "snippet": "const pilotRating = actor.system.attributes?.pilot?.base ?? 0;"
+        },
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1038,
+          "snippet": "Rigging.droneTestRoller(sys.controlMode ?? '', !!driver) === 'pilot'"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#104",
@@ -30559,7 +32427,8 @@
       ],
       "hash": "463aebf16f",
       "text": "- **📡 Drone Comprehension** (the drone's Stats tab, or the Vehicle Tools\n  HUD) rolls the Pilot Rating against the TN the GM sets from the table\n  above, with any electronic-warfare degradation on the command channel\n  added in.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/drones.md#105",
@@ -30570,7 +32439,27 @@
       ],
       "hash": "3f185d813c",
       "text": "- **VCR** is jumped into the **primary** drone: the rigger rolls their own\n  skills, with Combat and Control Pool. VCR is one vehicle at a time per\n  character, the same as a primary drone.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "A rigger may operate only one drone in his or her network in primary mode."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5168,
+          "snippet": "VCR is exclusive"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 64,
+          "snippet": "return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#106",
@@ -30581,7 +32470,43 @@
       ],
       "hash": "ca2a583e7d",
       "text": "- **RCD** is a **secondary** drone, or the **captain's chair**: the drone's\n  weapon attacks, Driving Tests and Crash Tests roll its own **Pilot\n  Rating**, with no pools. A rigger with a VCR keeps their VCR Initiative,\n  as Rigger X does *(SR3 p.154)*; one with only a datajack and a deck rolls\n  ordinary Initiative.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "ger X receives his usual Initiative bonus, which allows him"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "drone can receive bonus dice from any of Rigger X's dice"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1757,
+          "snippet": "RCD (${pilotActor.name}, captain's chair): Pilot ${pilotRating}"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 10972,
+          "snippet": "captain's chair"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 11008,
+          "snippet": "// RCD without a VCR (a datajack and a deck, p.154)"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 70,
+          "snippet": "return controlMode === 'rcd' && whole(vcrLevel) > 0;"
+        }
+      ]
     },
     {
       "id": "rules/drones.md#107",
@@ -30592,7 +32517,8 @@
       ],
       "hash": "e6d988ae37",
       "text": "{: .note }\n> The system doesn't track subscriber lists or affiliation: the GM keeps\n> count of how many drones the deck is controlling.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/grenades.md#1",
