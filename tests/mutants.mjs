@@ -39,6 +39,7 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
+const GMONLY = { module: '../scripts/data/gm-only-fields.mjs', klass: 'GmOnlyFields' };
 const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellLimits' };
 
 export const MUTANTS = [
@@ -2118,5 +2119,25 @@ export const MUTANTS = [
           + '"the player chooses which when the spell is learned"',
     impl:   (force, spell) => Math.max(0, Math.floor(Number(force) || 0)
       - (spell?.system?.limitFetish ? 1 : 0) - (spell?.system?.limitExclusive ? 2 : 0)),
+  },
+  {
+    id:     'karma-lock-strips-flat-keys-only',
+    suite:  'gm-only-fields',
+    ...GMONLY, method: 'strip',
+    was:    'a plausible slip (TODO 218): the submit strip deleted `data["system.karma"]` but Foundry hands '
+          + '_prepareSubmitData the EXPANDED form (`{ system: { karma } }`), so a player sheet submit still wrote Karma Pool',
+    impl:   (data, isGM) => {
+      if (isGM || !data) return data;
+      const out = JSON.parse(JSON.stringify(data));
+      for (const k of ['system.karma', 'system.totalKarma', 'system.karmaPool', 'system.karmaPoolSpent']) delete out[k];
+      return out;
+    },
+  },
+  {
+    id:     'karma-lock-only-karma-pool',
+    suite:  'gm-only-fields',
+    ...GMONLY, method: 'canEdit',
+    was:    'locking the Karma Pool but leaving Good Karma and Total Karma typeable — the maintainer decided all three (TODO 218)',
+    impl:   (path, isGM) => !!isGM || !['system.karmaPool', 'system.karmaPoolSpent'].includes(String(path)),
   },
 ];

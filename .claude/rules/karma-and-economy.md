@@ -24,6 +24,11 @@ paths:
 | `system.powerPointsBought` | adept Power Points bought with Good Karma, on top of Magic · p.168 | the Spend calculator |
 
 Karma Pool shows on the **Attributes** tab (left / size, like Combat Pool); Good/Total Karma on **Bio → Resources**.
+- ⚠ **Karma Pool, Good Karma and Total Karma are typeable by the GM only** (TODO 218, `data/gm-only-fields.mjs`).
+  A **render-time** lock: the inputs are `readonly disabled` and **unnamed** for a player, `_prepareSubmitData`
+  strips the keys (Foundry hands it the *expanded* form), and `_onFieldChange` refuses them. Spending (roll options,
+  the Spend calculator, GM-routed verbs) writes through `actor.update` and is untouched. A new GM-only sheet field
+  goes in `GmOnlyFields.FIELDS`. Mutants `karma-lock-strips-flat-keys-only`, `karma-lock-only-karma-pool`.
 
 ### The Karma Pool in play  · *SR3 p.246-248* — TODO 216 and the audit of 2026-10-11
 Rules `scripts/data/karma-uses.mjs` (`KarmaPool`, pure); actor side `spendKarmaPool` / `burnKarmaPool` /

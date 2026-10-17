@@ -6,6 +6,7 @@ import { AmmoStock } from '../data/ammo-stock.mjs';
 import { BookPage } from '../data/book-page.mjs';
 import { CyberWeapons } from '../data/cyber-weapons.mjs';
 import { SpellLimits } from '../data/spell-limits.mjs';
+import { GmOnlyFields } from '../data/gm-only-fields.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -740,9 +741,25 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   _inlineField(label, name, value, type = 'text', width = 80) {
+    // TODO 218: a GM-only field (Good/Total Karma) is read-only and UNNAMED for everyone else, so the
+    // sheet's submit — which sends every named input — cannot carry it.
+    if (!GmOnlyFields.canEdit(name, game.user.isGM)) {
+      return `<label class="inline-field">${label}
+      <input type="${type}" value="${value ?? ''}" style="width:${width}px" readonly disabled
+             title="Only the GM edits this. Spending it through the roll options and the Spend Karma calculator still works."/>
+    </label>`;
+    }
     return `<label class="inline-field">${label}
       <input type="${type}" name="${name}" value="${value ?? ''}" style="width:${width}px"/>
     </label>`;
+  }
+
+  /**
+   * Strip the GM-only fields (Karma Pool, Good Karma, Total Karma) from a non-GM's sheet submit · TODO 218.
+   * The inputs are already unnamed for them; this closes the rest of the hole.
+   */
+  _prepareSubmitData(event, form, formData, updateData) {
+    return GmOnlyFields.strip(super._prepareSubmitData(event, form, formData, updateData), game.user.isGM);
   }
 
  /**
@@ -1152,17 +1169,19 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * modField     — system field name for the pool mod / bonus
    */
   _poolBlock(label, currentVal, totalVal, baseVal, spentField, modField, tooltip = '') {
+    // TODO 218: the Karma Pool's boxes are the GM's — read-only for everyone else.
+    const lock = f => (f && !GmOnlyFields.canEdit(f, game.user.isGM) ? ' readonly disabled title="Only the GM edits the Karma Pool"' : '');
     const currentInput = spentField
       ? `<input type="number" class="pool-current-input" style="width:38px"
                data-spent-field="${spentField}"
                data-pool-total="${totalVal}"
-               value="${currentVal}" min="0"/>`
+               value="${currentVal}" min="0"${lock(spentField)}/>`
       : `<span class="pool-current-static">${currentVal}</span>`;
 
     const totalInput = `<input type="number" class="pool-total-input" style="width:38px"
              data-mod-field="${modField}"
              data-pool-base="${baseVal}"
-             value="${totalVal}" min="0"/>`;
+             value="${totalVal}" min="0"${lock(modField)}/>`;
 
     return `<div class="derived-block"${tooltip ? ` title="${tooltip}"` : ''}>
       <span class="derived-label">${label}</span>
@@ -3527,6 +3546,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (el.classList.contains('pool-current-input')) {
       const spentField = el.dataset.spentField;
       const total      = parseInt(el.dataset.poolTotal) || 0;
+      if (spentField && !GmOnlyFields.canEdit(spentField, game.user.isGM)) return this.render();   // TODO 218
       const newAvail   = Math.max(0, parseInt(el.value) || 0);
       const spent      = Math.max(0, total - newAvail);
       if (spentField) await this.actor.update({ [spentField]: spent });
@@ -3536,6 +3556,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     // Pool total input: value = desired total, writes mod = total - base
     if (el.classList.contains('pool-total-input')) {
       const modField  = el.dataset.modField;
+      if (modField && !GmOnlyFields.canEdit(modField, game.user.isGM)) return this.render();   // TODO 218
       const base      = parseInt(el.dataset.poolBase) || 0;
       const newTotal  = Math.max(0, parseInt(el.value) || 0);
       const mod       = newTotal - base;
@@ -3548,6 +3569,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 : el.type === 'number'   ? (parseFloat(el.value) || 0)
                 : el.value;
     if (!name) return;
+    if (!GmOnlyFields.canEdit(name, game.user.isGM)) return this.render();   // TODO 218
     await this.actor.update({ [name]: value });
   }
 
