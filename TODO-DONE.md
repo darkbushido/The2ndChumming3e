@@ -7003,6 +7003,96 @@ card deducts it for a dual being only (Body resists) and names it on the card. T
   against it at Power 7. Its resist card reads *Natural armor −3 Power* with TN 4. Set the NPC to
   Astral Plane and the deduction is gone (TN 7).
 
+## 189. ✅ Vehicle collisions — with a character, another vehicle, or a barrier — **asked 2026-09-27** — closed in bedf3009
+
+The maintainer wants one way for a vehicle to **collide with an actor, another vehicle, or some kind
+of barrier** — deliberately (a ram) or by accident (the driver was trying to stop). This is a
+feature, so it goes on a branch.
+
+**What exists today:**
+- **Vehicle → vehicle, deliberate:** the Chase Scene's **Ramming** action
+  (`SR3EVehicleChase._actionRamming`, `SR3EActor._buildRamDamageHtml`) — but only between two chase
+  participants, and only as a ram.
+- **Vehicle → nothing in particular:** the 💥 Crash tool (`SR3EVehicleSheet.runCrash`) damages the
+  vehicle and its occupants (`collisionPassengerDamage`); what it hit is not modelled.
+- **Vehicle → character:** nothing. Done by hand today: a 🎲 Success Test for the driver, the
+  arithmetic below, then the pedestrian's 🛡 Resist Damage (Attributes tab).
+- **Vehicle → barrier:** nothing. The **Barrier Damage** GM tool (`computeBarrierEffect`, the
+  material / Barrier Rating table, p.124) covers weapons and blasts against barriers, not vehicles.
+
+**Wanted:** one **💥 Collision** entry point (Chase Scene, the vehicle sheet, Vehicle Tools HUD)
+that asks *what was hit* — **a character/npc**, **another vehicle** (in the chase or not), or **a
+barrier** (material → Barrier Rating) — and *how* — **ram** (Ramming Test, p.143) or **accident**
+(Braking Test first, below) — then posts the right card for each side.
+
+**The common case is an ACCIDENT — the driver is trying to stop, not ramming** (maintainer,
+2026-09-27). The book has no "emergency stop" rule; the pieces are:
+- **Braking, SR3 p.142** — Driving Test vs **Handling** (Accelerating/Braking Modifiers Table);
+  speed drops by **Acceleration Rating × successes**. Decelerating more than **Acceleration × 4**
+  forces a **Crash Test** (p.147). Whatever speed is left when the car reaches the person is the
+  collision speed — the GM judges whether the braking happened in time (the book gives no
+  stopping-distance rule; don't invent one, show the numbers).
+- **Swerving instead** is a Driving Test (p.134); failure → Crash Test, and *"Individual gamemasters
+  determine exactly which objects crashing vehicles strike"* (p.148) — it may still hit them.
+- Then the collision below, at the remaining speed.
+
+**The rules** (core PDF, printed pages):
+- **Ramming, SR3 p.143** — the ramming manoeuvre covers *"another vehicle or a pedestrian"*.
+  Distance must be under the vehicle's Acceleration Rating (else accelerate first, p.142). Ramming
+  Test: Driving Skill vs **Handling**, Ramming Modifiers Table (p.143). Success = collision.
+- **Vehicle-Pedestrian Collisions, SR3 p.148** — Power = **vehicle speed ÷ 10**; Level = **one stage
+  higher** than the Impact Damage Levels Table (p.147) gives for that speed (1–20 m/turn → M); if
+  that would be past Deadly, Power **+ half, rounded down**. The pedestrian makes a standard Damage
+  Resistance Test, **may use Combat Pool**, and **impact armour reduces the damage**. The vehicle
+  resists collision damage **one stage lower** than the table (1–20 m/turn → none; 21–60 → L).
+  Worked example p.149: 60 m/turn → **6S**.
+- **Vehicle vs vehicle, SR3 p.143 / p.147** — Power = **difference in speeds ÷ 10, rounded up**;
+  Level from the Impact Damage Levels Table at that difference. The rammer reduces the Power *it*
+  faces by **Body × Ramming Test successes**; the target's is not reduced (worked example p.147:
+  15S, rammer faces 2S). Both resist with **Body + Control Pool** (up to the Vehicle Skill), TN =
+  Power, **no armour**; every 2 successes stage down one level. Either vehicle damaged → **Crash
+  Test**. Occupants: p.147, already built (`collisionPassengerDamage`). ⚠ The book gives vehicle
+  collisions only as a *ram*; an accidental two-car collision has no rule of its own — ask whether
+  to use the ram formula without the rammer's Body × successes reduction.
+- **Walls and Barriers, SR3 p.148** — compare speed with **Barrier Rating × 20** (ratings p.124):
+  - speed **≤ BR × 20** → the vehicle **stops**; resolve it as a standard **crash** (p.147) — the
+    existing 💥 Crash tool.
+  - speed **> BR × 20** → the barrier **collapses** and the vehicle carries on, **losing BR × 20**
+    speed. Collision Power = **the Barrier Rating**; Level from the **speed lost** on the Impact
+    Damage Levels Table. Restrained passengers take **no** damage; unrestrained ones resist as
+    passengers in an impact, **staged down one**.
+  - Worked example p.148: 300 m/turn into Heavy Structural (BR 16): 320 > 300, so the car stops.
+- ✅ **Decided by the maintainer, 2026-10-17:** an accidental vehicle-vs-vehicle collision uses the ram formula with NO
+  Body × successes reduction on either side; a pedestrian ram is p.148 as written (the vehicle resists one stage lower,
+  with no Body × successes reduction); the pedestrian dodge is OFFERED as a labelled house rule (an accident's dodge must
+  beat an assumed 1 hit, GM-editable; a ram's must beat the Ramming Test's successes).
+
+**Shape** (warn, never refuse; offer, never apply):
+1. A pure `scripts/data/collisions.mjs`: `pedestrianCollision(speed)` →
+   `{ pedestrian: {power, level}, vehicle: {power, level|null} }`; `vehicleCollision(speedA, speedB,
+   { ramSuccesses, ramBody })`; `barrierCollision(speed, barrierRating)` →
+   `{ breaksThrough, speedAfter, power, level }`. Unit-tested against the worked examples (p.149 6S;
+   p.147 15S → 2S; p.148 BR 16 at 300 stops) and every band edge; a mutant per rule. The Impact
+   Damage Levels Table stays in one place (`SR3EActor.crashDamage`).
+2. **"Hit a pedestrian" from the Accel / Brake action and the 💥 Crash tool first** (the accident):
+   speed before → Braking Test → speed left → pedestrian collision card; a Crash Test offered if
+   the braking exceeded Acceleration × 4. Then the deliberate version:
+   the Ramming dialog accepts a **character/npc token** as the target (`isLiveActor`, `sceneFirst`),
+   with the pedestrian's Power/Level shown and GM-editable.
+3. On a hit, the card offers the pedestrian a 🛡 Resist Damage button (impact armour, Combat Pool —
+   the existing soak card) and the vehicle its collision soak + Crash Test (p.147 triggers), and the
+   vehicle's occupants only if the vehicle took damage. Also offer it from the 💥 Crash tool
+   ("hit a pedestrian"). New waiting buttons go in `STEP_BUTTONS`.
+4. **Another vehicle** outside a chase: pick any vehicle actor (`isLiveActor`, `sceneFirst`), speeds
+   entered by the GM; reuse the Ramming card and soak buttons rather than a second copy.
+5. **A barrier:** material dropdown from the Barrier Damage tool's table (BR editable); the card says
+   *stopped* (→ the Crash flow) or *broke through, now N m/turn* (→ vehicle soak at BR / level, and
+   passengers staged down one unless belted). Damaging the barrier itself is the Barrier Damage
+   tool's job — offer it, don't apply it.
+6. A dodge for a pedestrian is **not** in the book — built as an optional, labelled house rule (decision above).
+7. Tests: the pure module's unit tests and mutants; a source-level check that the Collision dialog
+   uses `wait()`'s `render` option; a TESTING.md step for each target in a live Foundry.
+
 ## 193. ✅ The 📒 Ledger records entries on the wrong character — **reported 2026-09-27** · fixed `b42fdbae`
 
 **Cause, confirmed live 2026-09-27:** Foundry's Duplicate (and the GM copy verb `sr3e.actor.create`
