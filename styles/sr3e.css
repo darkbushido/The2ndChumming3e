@@ -3775,7 +3775,11 @@ label.act-field input[type=number] {
 .sr3e-pip.on { background: var(--sr-accent, #3a6ea5); border-color: var(--sr-accent, #3a6ea5); }
 .sr3e-pip.free.on { background: var(--sr-gold, #c8a040); border-color: var(--sr-gold, #c8a040); }
 .sr3e-pip-over { color: var(--sr-amber, #d9a020); font-size: 11px; }
-.sr3e-act-buttons { display: flex; gap: 3px; }
+.sr3e-act-buttons { display: flex; gap: 3px; align-items: stretch; }
+/* TODO 211 — read as "one Complex OR two Simple, plus a Free", not three actions. */
+.sr3e-act-group { display: inline-flex; align-items: center; gap: 3px; }
+.sr3e-act-or, .sr3e-act-plus { color: var(--sr-muted, #999); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; align-self: center; }
+.sr3e-act-plus { margin-left: 6px; padding-left: 6px; border-left: 1px solid var(--sr-border, #444); text-transform: none; }
 /* ⚡ Quick Strike (TODO 78) — on the adept's tracker row. */
 .sr3e-quick-strike { flex: 0 0 auto; width: 22px; height: 22px; padding: 0; font-size: 12px; line-height: 1; cursor: pointer; border: 1px solid var(--sr-gold, #c8a040); border-radius: 3px; background: var(--sr-surface, #1a1a1a); color: var(--sr-gold, #c8a040); }
 .sr3e-quick-strike:disabled { opacity: .35; cursor: default; border-color: var(--sr-border, #444); }

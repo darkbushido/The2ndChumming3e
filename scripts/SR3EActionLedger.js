@@ -125,13 +125,15 @@ export class SR3EActionLedger {
     wrap.className = 'sr3e-action-tracker';
     wrap.innerHTML = `
       <div class="sr3e-pips" title="This Combat Phase: ${esc(summary)} — two Simple or one Complex, and one Free (SR3 p.105)">
-        ${pip(l.complex > 0, 'complex', 'Complex Action')}
-        ${pip(l.simple > 0, 'simple', 'Simple Action')}${pip(l.simple > 1, 'simple', 'Simple Action')}
-        ${pip(l.free > 0, 'free', 'Free Action')}
+        <span class="sr3e-act-group sr3e-act-complex-group">${pip(l.complex > 0, 'complex', 'Complex Action')}</span>
+        <span class="sr3e-act-or">or</span>
+        <span class="sr3e-act-group sr3e-act-simple-group">${pip(l.simple > 0, 'simple', 'Simple Action')}${pip(l.simple > 1, 'simple', 'Simple Action')}</span>
+        <span class="sr3e-act-plus">+ Free</span>${pip(l.free > 0, 'free', 'Free Action')}
         ${l.log.some(e => e.over) ? '<span class="sr3e-pip-over" title="More than the phase allows — recorded, not refused">⚠</span>' : ''}
       </div>
       ${gm ? `<div class="sr3e-act-buttons">
         <button type="button" class="sr3e-act-complex"${l.simple ? ' disabled' : ''} title="Complex Action — ends the turn">Complex</button>
+        <span class="sr3e-act-or">or</span>
         <button type="button" class="sr3e-act-simple1${l.simple ? ' used' : ''}" title="Mark a Simple Action used (click again to unmark)">Simple</button>
         <button type="button" class="sr3e-act-simple2${l.simple > 1 ? ' used' : ''}" title="Second Simple Action — ends the turn">Simple</button>
         <button type="button" class="sr3e-act-undo"${l.log.length ? '' : ' disabled'} title="Undo the last action recorded: ${esc(l.log.at(-1)?.what ?? '—')}">↺</button>
