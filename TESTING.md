@@ -2824,7 +2824,10 @@ menu, the Chase Scene (💥 Collision) and the 💥 Crash tool (🧍 Hit a pedes
       🛡 Resist Damage button, no dodge.
 - [ ] The pedestrian's player is the only one (besides the GM) who can press their button. Dodge with 2+ successes →
       "Dodge Successful"; with 1 → "Dodge Failed (a tie goes to the attacker)", the hit carried into the soak.
-- [ ] The soak card's **armour type defaults to Impact**; the roll then offers Assign Wound — and **no Knockdown** button.
+- [ ] The soak card's **armour type defaults to Impact**; the roll then offers Assign Wound **and a 💥 Knockdown Test** (ruled
+      2026-10-17: the core Knockdown rule, SR3 p.124, applied to the collision's Power; the card says the book gives none for
+      collisions). Roll it: TN = half the collision's Power, rounded down; a Deadly wound is "knocked down automatically". The
+      Knockdown button shows as a step in the combat tracker's **⏳ Waiting-on** panel until pressed. A fully soaked hit offers none.
 - [ ] 1-20 m/turn (e.g. 20 km/h): the pedestrian takes **2M**; the car "takes no damage" and has no soak button.
 - [ ] 250 m/turn (300 km/h): the pedestrian **37D** (Power 25 + half, rounded down); the card says "past Deadly".
 - [ ] Type **9** in Power and **D** in Level before rolling: the card shows 9D and "set by the GM; the rule gives …".

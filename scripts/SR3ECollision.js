@@ -166,6 +166,10 @@ export class SR3ECollision {
         ${esc(pedName)}: <strong>${pct(power, level)} Physical</strong> — Power = speed ÷ 10; the level is one stage above the
         table's ${base.level}${r.pedestrian.pastDeadly ? ', and past Deadly the Power grows by half, rounded down' : ''} (SR3 p.148)
         ${edited ? `<span style="color:var(--sr-muted);font-size:11px"> — set by the GM; the rule gives ${pct(r.pedestrian.power, r.pedestrian.level)}</span>` : ''}
+      </div>
+      <div class="sr-staging-result" style="color:var(--sr-muted);font-size:11px">
+        After the resistance roll, a <strong>Knockdown Test</strong> (SR3 p.124) is offered: the core Knockdown rule applied to the
+        collision's Power — the book gives no Knockdown rule specific to collisions (maintainer's ruling, 2026-10-17).
       </div>`;
 
     const attackerId = cc.vehicleActorId;
@@ -174,10 +178,10 @@ export class SR3ECollision {
         attackerActorId: attackerId, targetActorId: ped.id, isMelee: false,
         stagedPower: power, stagedLevel: level, isStun: false,
         rawDamage: `${cc.vehicleName} ${pct(power, level)}`,
-        // p.148: "Impact armor reduces the damage", and Combat Pool dice may be used.
-        useImpact: true,
-        // The book gives no Knockdown Test for a collision, and an unasked step would sit open in ⏳ Waiting-on.
-        noKnockdown: true,
+        // p.148: "Impact armor reduces the damage", and Combat Pool dice may be used. The core Knockdown rule
+        // (p.124) is offered after the resistance, applied to the collision's Power — the book gives no
+        // collision-specific one (maintainer ruling, 2026-10-17). See `Collisions.pedestrianSoakFlags`.
+        ...Collisions.pedestrianSoakFlags(),
       };
       if (cc.pedDodge) {
         const beat = Collisions.dodgeToBeat({ how: cc.how, ramSuccesses: successes, override: cc.pedBeat });

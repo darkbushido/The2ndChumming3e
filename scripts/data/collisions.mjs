@@ -69,6 +69,20 @@ export const Collisions = {
   },
 
   /**
+   * How the pedestrian's soak card is set up · SR3 p.148, p.124. Ruled 2026-10-17 by the maintainer ("getting hit
+   * by a car is going to suck"): the pedestrian gets the core **Knockdown** rule too. *"Characters struck in
+   * ranged or melee combat may be knocked back or possibly down by the blow. When struck, the character must
+   * make a Body Test. Against ranged attacks, the target is equal to one-half the Power of the attack, rounding
+   * down."* (p.124). The book gives NO Knockdown rule specific to collisions, so this applies the core rule to
+   * the collision's Power (the ranged branch: a vehicle has no Strength to test against). The step is the same
+   * `sr-knockdown-btn` every attack card uses, offered after damage resistance, so it appears in ⏳ Waiting-on.
+   * Impact armour resists the collision itself (p.148: *"Impact armor reduces the damage"*).
+   */
+  pedestrianSoakFlags() {
+    return { useImpact: true, noKnockdown: false };
+  },
+
+  /**
    * A vehicle hits a person or critter · SR3 p.148.
    * @param {{speed:number, table:Function}} o  `speed` in m/turn
    * @returns {{ speed:number,

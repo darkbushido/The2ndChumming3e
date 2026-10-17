@@ -1637,6 +1637,14 @@ export const MUTANTS = [
 
   /* ── Vehicle collisions · TODO 189 (SR3 p.142, p.143, p.147, p.148) ───────────────────────────── */
   {
+    id:     'pedestrian-collision-has-no-knockdown',
+    suite:  'collisions',
+    ...COLLISIONS, method: 'pedestrianSoakFlags',
+    was:    'the pedestrian struck by a vehicle gets no Knockdown Test (the original build suppressed it as "the book gives none for '
+          + 'a collision"). The maintainer ruled 2026-10-17 that the core Knockdown rule (p.124) applies: being hit by a car is going to suck',
+    impl:   () => ({ useImpact: true, noKnockdown: true }),
+  },
+  {
     id:     'pedestrian-level-not-raised',
     suite:  'collisions',
     ...COLLISIONS, method: 'pedestrian',

@@ -7043,6 +7043,8 @@ The maintainer wants one way for a vehicle to **collide with an actor, another v
 of barrier** — deliberately (a ram) or by accident (the driver was trying to stop). This is a
 feature, so it goes on a branch.
 
+**Ruled 2026-10-17 by the maintainer:** a pedestrian hit by a vehicle also gets the **Knockdown Test** ("getting hit by a car is going to suck") — the core rule, SR3 p.124 (*"When struck, the character must make a Body Test. Against ranged attacks, the target is equal to one-half the Power of the attack, rounding down"*), applied to the collision's Power and labelled as such because the book gives none specific to collisions. Offered on the pedestrian's soak card after damage resistance via the shared `sr-knockdown-btn` (so it is a ⏳ step). The head-on negative-speed convenience is unchanged. `Collisions.pedestrianSoakFlags`.
+
 **What exists today:**
 - **Vehicle → vehicle, deliberate:** the Chase Scene's **Ramming** action
   (`SR3EVehicleChase._actionRamming`, `SR3EActor._buildRamDamageHtml`) — but only between two chase
