@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**51 open.** 173 done — see [TODO-DONE.md](TODO-DONE.md).
+**52 open.** 173 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses` |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[225](#225) Typing a Combat Pool total under a gyro stores the wrong modifier |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2628,6 +2628,16 @@ the ⏳ panel row; a gear "Power Focus (Rating 2)"; the amber "over N"; undoing 
 13. As GM, each purchase's ledger line has a **↺**. It lists the refund and every change, each
     untickable; undoing refunds as a new "↺ Undid: …" line, marks the old one "(undone)", and puts the
     stat back. Undo "Learned <new skill>": the skill item is removed. Players see no ↺.
+
+## 225. Typing a Combat Pool total under a gyro stores the wrong modifier — **found 2026-10-17** (building #213)
+
+With a worn gyro harness the Combat Pool is halved, rounded down (SR3 p.282). The Combat Pool box passed
+`combatPool − combatPoolMod` — the ALREADY-HALVED pool — as the base its typed total is subtracted from, so a
+character with base 5 (shown 2) who typed 4 stored a modifier of +2, which makes the pool ⌊7 ÷ 2⌋ = 3. Without
+a gyro the two agree. **Fix:** `CombatPool.modForTotal` (`scripts/data/combat-pool.mjs`) inverts `figure()`
+exactly — the smallest modifier that reads the typed total; the sheet passes base + Combat Sense − armour and a
+`data-pool-gyro` flag. A total that cannot be hit (negative, fractional) is rounded to the nearest and warned,
+never refused. Live step: TESTING.md §50. This is a bug fix, so it goes on `main`.
 
 ### 📌 Notes & parked
 

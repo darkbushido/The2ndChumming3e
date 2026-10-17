@@ -29,6 +29,25 @@ export const CombatPool = {
   },
 
   /**
+   * The inverse of `figure` for the sheet's Combat Pool box: the manual modifier that makes the pool read
+   * `total` (TODO 225). `rest` is everything that is NOT the modifier — base + Combat Sense − armour — and
+   * is NOT the displayed pool: a worn gyro halves the displayed pool (SR3 p.282), so subtracting the modifier
+   * from the display undercounts `rest` and a typed 4 stored a modifier that showed 3.
+   * Under a gyro `total` = ⌊full ÷ 2⌋, so `full` may be 2·total or 2·total + 1 — the smaller modifier wins.
+   * Every whole total ≥ 0 is reachable; anything else (negative, fractional, not a number) is clamped /
+   * rounded to the nearest and reported with `exact: false` so the sheet can warn — never refuse.
+   * @returns {{mod:number, total:number, exact:boolean}} `total` = what the pool will actually read.
+   */
+  modForTotal({ rest = 0, total = 0, gyro = false } = {}) {
+    const typed = Number(total);
+    const want = Number.isFinite(typed) ? Math.max(0, Math.round(typed)) : 0;
+    const exact = Number.isFinite(typed) && typed === want;
+    const r = Math.trunc(Number(rest) || 0);
+    const mod = (gyro ? want * 2 : want) - r;
+    return { mod, total: CombatPool.figure({ base: r, mod, gyro }).total, exact };
+  },
+
+  /**
    * Everything the sheet shows. `gyroName` is the worn item's name (any truthy value turns the halving on
    * through `gyro`). `parts` is the attributes line, e.g. 'QUI 4 + INT 4 + WIL 2'.
    * @returns {{base:number, mod:number, sense:number, armour:number, gyro:boolean, gyroName:string,

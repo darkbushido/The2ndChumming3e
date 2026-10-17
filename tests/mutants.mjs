@@ -2286,6 +2286,17 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'combat-pool-modfortotal-ignores-gyro',
+    suite:  'combat-pool',
+    ...CPOOL, method: 'modForTotal',
+    was:    'TODO 225: typing a total under a worn gyro stored total − rest, as if the pool were not halved — base 5, typed 4 '
+          + 'stored +2 and the pool read 3 (SR3 p.282)',
+    impl:   ({ rest = 0, total = 0 } = {}) => {
+      const want = Math.max(0, Math.round(Number(total) || 0));
+      return { mod: want - rest, total: want, exact: true };
+    },
+  },
+  {
     id:     'combat-pool-breakdown-omits-armour',
     suite:  'combat-pool',
     ...CPOOL, method: 'breakdown', needsOriginal: '_breakdownOriginal',
