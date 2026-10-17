@@ -63,7 +63,7 @@ export async function run(t) {
     ['Defensive HE Mini-grenade', '10S', '-1/.5m', '6/4 days', 60, '3', false],
     ['Defensive AP Mini-grenade', '10S', '-1/.5m', '6/4 days', 60, '3', true],
     ['Concussion Mini-grenade',   '12M Stun', '-1/m', '7/4 days', 60, '3', false],
-    ['Gas Mini-grenade (Neuro-Stun VII)', 'Special', '', '10/4 days', 120, '3', false],
+    ['Gas Mini-grenade (Neuro-Stun VIII)', 'Special', '', '10/4 days', 120, '3', false],
     ['Smoke Mini-grenade',        '--', '', '5/24 hrs', 60, '3', false],
     ['Smoke (IR) Mini-grenade',   '--', '', '6/48 hrs', 80, '3', false],
   ];

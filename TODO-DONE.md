@@ -6889,6 +6889,8 @@ Follow-up to [#155](#155), which lands gas, smoke and flash grenades and marks a
 6. **Wind** — *"less in windy areas, at the gamemaster's discretion"* — is stated on the card and not modelled; the expiry is a fixed 2 Combat Turns. A GM cannot shorten one except by clearing the marker.
 7. **Thermal Smoke** and the other non-core no-damage grenades (the 2nd-edition ones are parked in `archive/sr2/`) would use the same two fields once their packs return.
 
+**Ruled 2026-10-17 by the maintainer:** ordinary smoke offers *Heavy Smoke/Fog/Rain* (confirmed, no longer an open question). The gas grenade is **Neuro-Stun VIII** (p.250 and p.283's text; the p.283 table row prints VII): the core Gas Grenade and Gas Mini-grenade items were renamed and rebuilt from `tools/build-core-grenades.mjs`; no migration (new copies from the compendium only; an older copy still named VII keeps the card's note). No other Neuro-Stun grenade exists in the packs (the Neuro-stun IX and X entries are drugs, Mil. Tech. M&M; the SR2 versions are parked in `archive/`).
+
 ## 165. ✅ Rules check 0.6.1 — damage staging is not the book's net comparison — `a597f2a0`
 
 **Done 2026-09-24:** the maintainer chose the net comparison. `SR3EActor.netStagedDamage`; ranged, vehicle,

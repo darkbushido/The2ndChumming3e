@@ -74,8 +74,8 @@ export const AreaEffect = {
 
   /**
    * The Visibility Table row (SR3 p.112) to OFFER the GM's TN window when someone stands in a cloud of this
-   * kind. Ordinary smoke → *Heavy Smoke/Fog/Rain* (a grenade's cloud is dense; the book does not say which
-   * row, so it is an editable offer), infra-red smoke → *Thermal Smoke*. Gas and a flash change no row.
+   * kind. Ordinary smoke → *Heavy Smoke/Fog/Rain* (confirmed by the maintainer 2026-10-17; the GM can still edit
+   * the offer), infra-red smoke → *Thermal Smoke*. Gas and a flash change no row.
    */
   visibilityCondition(kind) {
     return ({ smoke: 'Heavy Smoke/Fog/Rain', irsmoke: 'Thermal Smoke' })[kind] ?? null;
@@ -121,8 +121,9 @@ export const AreaEffect = {
   /**
    * The toxin a gas grenade releases · SR3 p.250, p.283. The core book's Neuro-Stun entry is **VIII**
    * (*"Damage: 6S Stun · Speed: End of the following Combat Turn"*, p.250), and p.283's grenade text names
-   * VIII — but p.283's Explosives Table row and our grenade item say **VII**, which the book never gives
-   * statistics for. We resolve with VIII's numbers, say so, and let the GM change the Power.
+   * VIII — but p.283's Explosives Table row prints **VII**, which the book never gives statistics for. The
+   * maintainer ruled VIII (2026-10-17): the grenade items are named VIII. A copy still named VII (a world
+   * from before; no migration) resolves with VIII's numbers, says so, and the GM can change the Power.
    */
   gasToxin(itemName) {
     const m = /neuro-?\s*stun\s+(VIII|VII|IX|X)\b/i.exec(String(itemName ?? ''));
@@ -131,7 +132,7 @@ export const AreaEffect = {
       name: 'Neuro-Stun VIII', damage: '6S', speed: 'the end of the following Combat Turn',
       disorientation: 2, labelled,
       discrepancy: labelled && labelled !== 'VIII'
-        ? `This grenade is labelled Neuro-Stun ${labelled} (SR3 p.283's table row), but p.283's own text and the toxin entry on p.250 are Neuro-Stun VIII — the only one the core book gives numbers for. The card uses VIII's 6S; change the Power if your table rules otherwise.`
+        ? `This grenade is labelled Neuro-Stun ${labelled} (the p.283 table row prints VII; an older copy), but p.283's own text and the toxin entry on p.250 are Neuro-Stun VIII — the only one the core book gives numbers for. The card uses VIII's 6S; change the Power if your table rules otherwise.`
         : '',
     };
   },

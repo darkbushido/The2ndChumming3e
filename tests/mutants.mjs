@@ -2662,8 +2662,8 @@ export const MUTANTS = [
     id:     'gas-card-silent-on-the-vii-viii-split',
     suite:  'area-cloud',
     ...AREAEFFECT, method: 'gasToxin',
-    was:    'the card quietly uses VIII for a grenade labelled VII — the book contradicts itself (p.283 row vs p.250/p.283 text) '
-          + 'and the maintainer asked for the discrepancy to be NOTED, not picked silently',
+    was:    'the card quietly uses VIII for an older copy still named VII (the p.283 table row prints VII; p.250/p.283 text say VIII) '
+          + 'and the discrepancy should be NOTED on that card, not picked silently',
     impl:   () => ({ name: 'Neuro-Stun VIII', damage: '6S', speed: 'the end of the following Combat Turn', disorientation: 2, labelled: '', discrepancy: '' }),
   },
   {

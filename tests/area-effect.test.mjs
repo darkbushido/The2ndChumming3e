@@ -31,7 +31,7 @@ export async function run(t) {
 
   t.is('smoke is grey', AreaEffect.color('Smoke Grenade'), '#8a9099');
   t.is('infra-red smoke is its own colour (TODO 164)', AreaEffect.color('Smoke (IR) Grenade'), '#a0646a');
-  t.is('gas is green', AreaEffect.color('Gas Grenade (Neuro-Stun VII)'), '#6fbf73');
+  t.is('gas is green', AreaEffect.color('Gas Grenade (Neuro-Stun VIII)'), '#6fbf73');
   t.is('a flash is white', AreaEffect.color('Flash-Pak'), '#f5f5dc');
 
   // A marker laid in round 3 that lasts 2 Combat Turns is gone when round 5 begins — not before.
@@ -68,15 +68,15 @@ export async function run(t) {
     if (d.system.bookPage === 'sr3.283') byName[d.name] = d.system;
   }
   const radius = n => byName[n]?.areaRadius ?? null;
-  t.is('Gas: 10 m radius (p.283)', radius('Gas Grenade (Neuro-Stun VII)'), 10);
+  t.is('Gas: 10 m radius (p.283)', radius('Gas Grenade (Neuro-Stun VIII)'), 10);
   t.is('Smoke: 20 m across is a 10 m radius', radius('Smoke Grenade'), 10);
   t.is('Smoke (IR): the same cloud', radius('Smoke (IR) Grenade'), 10);
   t.is('Flash-Pak marks no area', radius('Flash-Pak'), null);
-  for (const n of ['Gas Grenade (Neuro-Stun VII)', 'Smoke Grenade', 'Smoke (IR) Grenade', 'Flash-Pak']) {
+  for (const n of ['Gas Grenade (Neuro-Stun VIII)', 'Smoke Grenade', 'Smoke (IR) Grenade', 'Flash-Pak']) {
     t.ok(`${n} states its effect`, (byName[n]?.areaEffect ?? '').length > 20);
   }
   t.ok('the damaging core grenades carry no area effect, so they stay damage grenades',
     ['Offensive HE Grenade', 'Defensive AP Grenade', 'Concussion Grenade'].every(n => !byName[n]?.areaEffect && !byName[n]?.areaRadius));
   t.eq('the two smoke and the gas cloud last 2 Combat Turns',
-    ['Gas Grenade (Neuro-Stun VII)', 'Smoke Grenade', 'Smoke (IR) Grenade'].map(n => AreaEffect.turns(byName[n].areaEffect)), [2, 2, 2]);
+    ['Gas Grenade (Neuro-Stun VIII)', 'Smoke Grenade', 'Smoke (IR) Grenade'].map(n => AreaEffect.turns(byName[n].areaEffect)), [2, 2, 2]);
 }

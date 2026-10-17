@@ -2770,9 +2770,9 @@ could not be laid) — the Region still works.
 - [ ] Both fighters outside any cloud: nothing is preselected. A cast spell shows the same offer.
 
 **Gas (item 4)**
-- [ ] Throw the **Gas Grenade**: each token inside (not behind a wall) gets its own "☣ in the cloud" card with
-      **Resist Neuro-Stun VIII (6S)**, the speed, the +2 disorientation and the repeat-test-at-+4 rule, and an
-      amber note that the grenade says **VII** but p.250 and the grenade's own text say **VIII**. Only the
+- [ ] Drag the **Gas Grenade (Neuro-Stun VIII)** from the Projectiles pack (and the Gas Mini-grenade from Ammunition): both are named VIII (maintainer ruling 2026-10-17; the p.283 table row prints VII). Throw the **Gas Grenade**: each token inside (not behind a wall) gets its own "☣ in the cloud" card with
+      **Resist Neuro-Stun VIII (6S)**, the speed, the +2 disorientation and the repeat-test-at-+4 rule, and no VII/VIII
+      note on a grenade named VIII (an older world copy still named VII shows the amber note). Only the
       character's owner (or the GM) can press it; it opens a Body soak card with **no armour**, Power 6.
 - [ ] The Waiting-on panel lists the gas buttons as steps; ✕ clears one.
 
