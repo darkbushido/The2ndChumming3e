@@ -53,6 +53,11 @@ Body test; `SR3EActor.knockdownOutcome` / `knockdownTN`.
 
 ### Combat Pool  · *SR3 p.43; refresh p.104*
 - ⌊(QUI + INT + WIL) / 2⌋ + wound modifier; `combatPoolSpent` tracks use; available = derived − spent.
+- **The figure and its explanation come from one place** (TODO 213, `scripts/data/combat-pool.mjs`): base + manual
+  modifier + Combat Sense (p.169) − armour (p.285, floored at 0), then **halved, rounded down, by a worn gyro**
+  (p.282). `prepareDerivedData` takes `CombatPool.figure()` and records `derived.combatPoolBreakdown` (+ the
+  older `combatPoolBeforeGyro`); the sheet shows it as the Combat Pool tooltip and a "5 halved by gyro · Gyro
+  Mount" / "N lost to armour" note. A new Combat Pool term goes into `figure()` AND `breakdown()`.
 - **Refreshed every Combat Turn** (= a Foundry round) by `SR3ECombat._endOfTurnReset()` — combat, spell,
   astral, hacking pools together, plus recoil and Full Defense. *"Unused pool dice do not carry over."*
   ⚠ Never per-pass or per-combat.

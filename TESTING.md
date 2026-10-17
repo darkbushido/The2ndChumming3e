@@ -2632,3 +2632,15 @@ nuyen; a second live character owned by Player3. JS/CSS only — reload the tabs
       and Good Karma / Karma Pool did not change).
 - [ ] Roll a skill, tick **Use Karma Pool**, add a die → the pool's "left" box drops and the roll gets the die.
 - [ ] As the **GM** on the same sheet all four boxes are editable; type a Karma Pool → it saves.
+
+### Why Combat Pool is lower (TODO 213)
+
+- [ ] Character with Quickness 4, Intelligence 4, Willpower 2 and **no** armour or gyro: Attributes → Combat Pool
+      shows 5 / 5, no note; the hover text starts "Base ⌊(Quickness + Intelligence + Willpower) ÷ 2⌋ … = 5".
+- [ ] Add a **Gyro Mount** (Gear tab, not in Storage): the pool reads 2 / 2 and the block says **"5 halved by gyro ·
+      Gyro Mount"**; the hover text has "Gyro harness (Gyro Mount): only half the pool … ⌊5 ÷ 2⌋ = 2 (SR3 p.282…)".
+- [ ] Send the Gyro Mount to **Storage**: back to 5 / 5, note gone.
+- [ ] Wear armour heavy enough to cost dice (SR3 p.285): the note reads "N lost to armour (…)" and the hover
+      text has an "Armour −N" line. With both, the hover shows armour then the gyro halving.
+- [ ] Spend some pool (type a lower left value): hover text ends "Spent N → M left of T".
+- [ ] An adept with Combat Sense +3: a "Combat Sense +3 (SR3 p.169)" line. The number itself is unchanged from before.

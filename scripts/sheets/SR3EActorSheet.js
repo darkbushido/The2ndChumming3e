@@ -1069,8 +1069,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           // modifier — armour dice lost (TODO 112) and adept dice must not be absorbed into it.
           (d.combatPool ?? 0) - (sys.combatPoolMod ?? 0),
           'system.combatPoolSpent', 'system.combatPoolMod',
-          `floor((QUI ${qui} + INT ${intl} + WIL ${wil}) / 2) = ${d.combatPoolBase ?? 0}`
-            + ((d.armorPoolPenalty ?? 0) > 0 ? ` − ${d.armorPoolPenalty} armour (B ${d.armorSumBallistic} / I ${d.armorSumImpact} worn vs Quickness ${qui}, SR3 p.285)` : ''))}
+          // TODO 213: the whole breakdown (base, Combat Sense, modifier, armour, gyro, spent) — recorded by
+          // prepareDerivedData in `derived.combatPoolBreakdown`; the old line is only a fallback.
+          (d.combatPoolBreakdown?.lines?.join('&#10;').replace(/"/g, '&quot;'))
+            ?? (`floor((QUI ${qui} + INT ${intl} + WIL ${wil}) / 2) = ${d.combatPoolBase ?? 0}`
+              + ((d.armorPoolPenalty ?? 0) > 0 ? ` − ${d.armorPoolPenalty} armour (B ${d.armorSumBallistic} / I ${d.armorSumImpact} worn vs Quickness ${qui}, SR3 p.285)` : '')),
+          // Why it is lower, in view — not only on hover. `combatPoolBeforeGyro` is the pool the gyro halved.
+          d.combatPoolBreakdown?.reduced
+            ? `${d.combatPoolBeforeGyro != null ? `${d.combatPoolBeforeGyro} halved by gyro` : `${d.armorPoolPenalty} lost to armour`}${
+                d.combatPoolBreakdown.gyroName ? ` · ${d.combatPoolBreakdown.gyroName}` : ''}`.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+            : '')}
         ${/* 🍀 Karma Pool (SR3 p.246): left / size. The left box writes `karmaPoolSpent`; the size box
             * writes `karmaPool` itself (base 0, so the "mod" IS the size). ⚠ It does NOT refresh with
             * the other pools ("does not refresh every Combat Turn") — the GM's 🍀 button does. */ ''}
@@ -1167,8 +1175,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * baseVal      — derived base before mod (used to compute mod from typed total)
    * spentField   — system field name for "spent" counter, or null if no spent tracking
    * modField     — system field name for the pool mod / bonus
+   * tooltip      — hover text (Combat Pool: the breakdown, TODO 213)
+   * note         — a short line shown under the pool when something has cut it (already HTML-escaped)
    */
-  _poolBlock(label, currentVal, totalVal, baseVal, spentField, modField, tooltip = '') {
+  _poolBlock(label, currentVal, totalVal, baseVal, spentField, modField, tooltip = '', note = '') {
     // TODO 218: the Karma Pool's boxes are the GM's — read-only for everyone else.
     const lock = f => (f && !GmOnlyFields.canEdit(f, game.user.isGM) ? ' readonly disabled title="Only the GM edits the Karma Pool"' : '');
     const currentInput = spentField
@@ -1190,6 +1200,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="pool-sep"> / </span>
         ${totalInput}
       </span>
+      ${note ? `<span class="pool-note" style="font-size:10px;color:var(--sr-amber)">${note}</span>` : ''}
     </div>`;
   }
 

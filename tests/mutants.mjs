@@ -39,6 +39,7 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
+const CPOOL = { module: '../scripts/data/combat-pool.mjs', klass: 'CombatPool' };
 const GMONLY = { module: '../scripts/data/gm-only-fields.mjs', klass: 'GmOnlyFields' };
 const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellLimits' };
 
@@ -2139,5 +2140,36 @@ export const MUTANTS = [
     ...GMONLY, method: 'canEdit',
     was:    'locking the Karma Pool but leaving Good Karma and Total Karma typeable — the maintainer decided all three (TODO 218)',
     impl:   (path, isGM) => !!isGM || !['system.karmaPool', 'system.karmaPoolSpent'].includes(String(path)),
+  },
+  {
+    id:     'combat-pool-gyro-rounds-up',
+    suite:  'combat-pool',
+    ...CPOOL, method: 'figure',
+    was:    'a plausible slip (TODO 213): halving the pool with Math.ceil — the book (SR3 p.282) says "half", this system rounds '
+          + 'down, and the reported 5-dice pool is 2, not 3',
+    impl:   ({ base = 0, mod = 0, sense = 0, armour = 0, gyro = false } = {}) => {
+      const full = Math.max(0, base + mod + sense - armour);
+      return { full, total: gyro ? Math.ceil(full / 2) : full };
+    },
+  },
+  {
+    id:     'combat-pool-gyro-halves-the-base-only',
+    suite:  'combat-pool',
+    ...CPOOL, method: 'figure',
+    was:    'halving only the (Q+I+W)/2 base and then adding Combat Sense, the modifier and armour — the gyro halves the whole pool '
+          + '"after everything else" (SR3 p.282, TODO 18)',
+    impl:   ({ base = 0, mod = 0, sense = 0, armour = 0, gyro = false } = {}) => {
+      const full = Math.max(0, base + mod + sense - armour);
+      return { full, total: Math.max(0, (gyro ? Math.floor(base / 2) : base) + mod + sense - armour) };
+    },
+  },
+  {
+    id:     'combat-pool-breakdown-omits-armour',
+    suite:  'combat-pool',
+    ...CPOOL, method: 'breakdown', needsOriginal: '_breakdownOriginal',
+    was:    'the sheet showed the gyro but the armour penalty (SR3 p.285) stayed as invisible as before (TODO 213)',
+    impl:   function (p = {}) {
+      return this._breakdownOriginal({ ...p, armour: 0 });
+    },
   },
 ];

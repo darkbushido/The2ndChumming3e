@@ -113,7 +113,7 @@ export async function run(t) {
     && /gyroOffset\(state, gyroLeft\)/.test(item) && /gyroRating:\s+game\.sr3e\.SR3EActor\.gyroRating\(actor\)/.test(item));
   t.ok('melee adds +4 to each fighter wearing one', /A\.woundTN\(actor\) \+ A\.gyroMeleeTN\(actor\)/.test(item)
     && /A\.woundTN\(targetActor\) \+ A\.gyroMeleeTN\(targetActor\)/.test(item));
-  t.ok('the Combat Pool is halved while one is worn, rounded down', /combatPool\s+= gyroWorn \? Math\.floor\(combatPoolFull \/ 2\) : combatPoolFull/.test(act));
+  t.ok('the Combat Pool is halved while one is worn, rounded down (data/combat-pool.mjs, TODO 213)', /CombatPool\.figure\(\{[^}]*gyro: gyroWorn \}\)/.test(act));
   t.ok('FirearmData declares both fields nullable', /smartgun:\s+new BooleanField\(\{ nullable: true, initial: null \}\)/.test(read('scripts/data/ItemDataModels.js'))
     && /laserSight:\s+new BooleanField\(\{ nullable: true, initial: null \}\)/.test(read('scripts/data/ItemDataModels.js')));
 }
