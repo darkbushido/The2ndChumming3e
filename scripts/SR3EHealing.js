@@ -27,6 +27,7 @@
  */
 
 import { itemRating } from './data/item-rating.mjs';
+import { PatientOrder } from './data/patient-order.mjs';
 
 const LEVEL_NAME = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
 const NEXT_DOWN  = { D: 'S', S: 'M', M: 'L', L: '' };
@@ -458,6 +459,27 @@ export class SR3EHealing {
             ...tokenActors.filter(a => a?.isToken && kind(a) && may(a))];
   }
 
+  /**
+   * The token disposition that says whether a patient is hostile: an unlinked token's own, else a
+   * token of this actor on the viewed scene, else the prototype token's. ⚠ Read-only — it only orders the list.
+   */
+  static dispositionOf(actor) {
+    if (actor?.token?.disposition !== undefined) return actor.token.disposition;
+    const onScene = (globalThis.canvas?.scene?.tokens?.contents ?? []).find(t => t.actorId === actor?.id);
+    return onScene?.disposition ?? actor?.prototypeToken?.disposition;
+  }
+
+  /** TODO 208: party first, other NPCs next, hostile NPCs last — everyone stays listed (`PatientOrder`). */
+  static orderedPatients(actors) {
+    return PatientOrder.order(actors.map(a => ({
+      actor: a,
+      name: a.name,
+      owned: !!a.isOwner,
+      isPlayer: game.sr3e.SR3EQuery.isPlayerCharacter(a),
+      hostile: PatientOrder.isHostile(SR3EHealing.dispositionOf(a)),
+    }))).map(e => e.actor);
+  }
+
   /** The unlinked tokens' actors on the viewed scene — each its own patient (TODO 207). */
   static sceneTokenActors() {
     return (globalThis.canvas?.scene?.tokens?.contents ?? [])
@@ -477,8 +499,8 @@ export class SR3EHealing {
 
   /** The GM-tools entry (and "Treat someone else…"): pick a patient first. */
   static async openPicker() {
-    const actors = SR3EHealing.patientsFor(game.user, game.actors.contents ?? [...game.actors], SR3EHealing.sceneTokenActors())
-      .sort((a, b) => Number(b.isOwner) - Number(a.isOwner) || a.name.localeCompare(b.name));
+    const actors = SR3EHealing.orderedPatients(
+      SR3EHealing.patientsFor(game.user, game.actors.contents ?? [...game.actors], SR3EHealing.sceneTokenActors()));
     if (!actors.length) { ui.notifications.warn('No characters you can heal.'); return; }
     let id = null;
     await foundry.applications.api.DialogV2.wait({

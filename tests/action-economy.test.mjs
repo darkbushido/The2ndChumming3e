@@ -98,6 +98,20 @@ export async function run(t) {
   t.ok('a charge never advances the turn — only the GM\'s Complex / second Simple do',
     (led.match(/nextTurn\(\)/g) ?? []).length === 2 && !/charge[\s\S]{0,400}nextTurn/.test(led.slice(led.indexOf('static async charge'), led.indexOf('static async write'))));
   t.ok('the GM\'s second Simple button lights up once two Simples are taken (TODO 141)', /sr3e-act-simple2\$\{l\.simple > 1 \? ' used' : ''\}/.test(led));
+  // TODO 211 — the tracker reads "Complex OR two Simples, plus a Free", not three side-by-side actions.
+  const trackerSrc = led.slice(led.indexOf('static renderTracker'), led.indexOf('static async openUndo'));
+  const pipsSrc = trackerSrc.slice(trackerSrc.indexOf('sr3e-pips'), trackerSrc.indexOf('sr3e-act-buttons'));
+  const btnsSrc = trackerSrc.slice(trackerSrc.indexOf('sr3e-act-buttons'), trackerSrc.indexOf('sr3e-act-undo"'));
+  const orderOf = (src, parts) => parts.map(p => src.indexOf(p));
+  const inOrder = a => a.every((x, i) => x >= 0 && (i === 0 || x > a[i - 1]));
+  t.ok('the pips read [Complex] or [Simple][Simple] + Free, in that order (TODO 211)',
+    inOrder(orderOf(pipsSrc, ["'complex'", 'sr3e-act-or', "'simple'", 'sr3e-act-plus', "'free'"])) && /\+ Free/.test(pipsSrc));
+  t.ok('the two Simple pips share one group, apart from the Complex pip',
+    /sr3e-act-simple-group">\$\{pip\(l\.simple > 0[^}]*\}\$\{pip\(l\.simple > 1/.test(pipsSrc));
+  t.ok('the GM buttons read Complex or Simple Simple, then the undo (TODO 211)',
+    inOrder(orderOf(btnsSrc, ['sr3e-act-complex', 'sr3e-act-or', 'sr3e-act-simple1', 'sr3e-act-simple2'])));
+  t.ok('the grouping is styled with existing custom properties',
+    /\.sr3e-act-or[^{]*\{[^}]*var\(--sr-muted/.test(read('styles/sr3e.css')) && /\.sr3e-act-plus/.test(read('styles/sr3e.css')));
   const chargeSrc = led.slice(led.indexOf('static async charge'), led.indexOf('static async write'));
   t.ok('a charge does not use up the flow\'s snapshot — the next charge in the flow needs it too (TODO 152)',
     !/_pending\.delete/.test(led) && /ActionEconomy\.pendingSnap\(SR3EActionLedger\._pending\.get\(actor\.uuid\), SR3EActionLedger\.phase\(cbt\.parent\)\)/.test(chargeSrc));

@@ -36,6 +36,8 @@ const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots'
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
+const PORDER = { module: '../scripts/data/patient-order.mjs', klass: 'PatientOrder' };
+const GSEARCH = { module: '../scripts/data/gear-search.mjs', klass: 'GearSearch' };
 const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
@@ -2108,5 +2110,64 @@ export const MUTANTS = [
           + '"the player chooses which when the spell is learned"',
     impl:   (force, spell) => Math.max(0, Math.floor(Number(force) || 0)
       - (spell?.system?.limitFetish ? 1 : 0) - (spell?.system?.limitExclusive ? 2 : 0)),
+  },
+  {
+    id:     'patients-hostile-above-players',
+    suite:  'patient-order',
+    ...PORDER, method: 'tier',
+    was:    'a hostile token outranked the party: a player character on a hostile-disposition token sank to the bottom '
+          + '(TODO 208 asks for players first, hostile NPCs last)',
+    impl:   ({ isPlayer = false, hostile = false } = {}) => (hostile ? 2 : isPlayer ? 0 : 1),
+  },
+  {
+    id:     'patients-hostile-not-last',
+    suite:  'patient-order',
+    ...PORDER, method: 'tier',
+    was:    'hostile NPCs sorted with the other NPCs instead of at the bottom (TODO 208)',
+    impl:   ({ isPlayer = false } = {}) => (isPlayer ? 0 : 1),
+  },
+  {
+    id:     'patients-hostile-dropped',
+    suite:  'patient-order',
+    ...PORDER, method: 'order',
+    was:    'hostile NPCs were filtered out of the list instead of listed last — "every actor stays in the list" (TODO 208)',
+    impl:   function (entries) { return [...entries].filter(e => !e.hostile).sort((a, b) => this.tier(a) - this.tier(b)); },
+  },
+  {
+    id:     'gear-search-any-word',
+    suite:  'gear-search',
+    ...GSEARCH, method: 'matches',
+    was:    'a search matched on ANY word, so "ares viper" listed every Ares item (TODO 154 wants a narrowing search)',
+    impl:   function (entry, query) {
+      const words = this.tokens(query);
+      const name = String(entry?.name ?? '').toLowerCase();
+      return words.some(w => name.includes(w));
+    },
+  },
+  {
+    id:     'gear-search-blank-lists-everything',
+    suite:  'gear-search',
+    ...GSEARCH, method: 'matches',
+    was:    'a blank query matched every item, drawing thousands of rows the moment the dialog opened',
+    impl:   function (entry, query) {
+      const name = String(entry?.name ?? '').toLowerCase();
+      return this.tokens(query).every(w => name.includes(w));
+    },
+  },
+  {
+    id:     'gear-search-ignores-the-type-filter',
+    suite:  'gear-search',
+    ...GSEARCH, method: 'search',
+    was:    'the search listed spells, skills and contacts from a mixed pack — things the dialog cannot buy',
+    impl:   function (entries, query, { limit = this.MAX_HITS } = {}) {
+      return (entries ?? []).filter(e => this.matches(e, query)).slice(0, limit);
+    },
+  },
+  {
+    id:     'gear-search-unranked',
+    suite:  'gear-search',
+    ...GSEARCH, method: 'rank',
+    was:    'every hit ranked alike, so typing "jacket" listed "Trench Jacket Liner" above "Jacket"',
+    impl:   () => 0,
   },
 ];

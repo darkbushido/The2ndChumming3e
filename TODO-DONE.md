@@ -6740,6 +6740,13 @@ The GM's ↺ Undo on the action ledger ([#48](TODO.md#48)) has to be pressed twi
 snapshot to the first charge only; ↺ defaults to the last entry, which had none, so the first press only freed
 the slot. Every charge in a flow now carries the snapshot (`ActionEconomy.pendingSnap`, keyed to the phase).
 
+## 154. ✅ 🛒 Buy gear: search the compendium, or drag an item in — **requested in the trial session, 2026-09-23** — closed in 2759f28b
+
+Picking the item in the Buy gear dialog ([#82](#82)) should work in two ways: a search
+across the gear compendiums, and dragging an item from a compendium onto the dialog. It must
+respect the source-book filter (`SR3ESourceBooks.packAllowed`). This is a feature, so it goes on
+a branch.
+
 ## 155. ✅ Grenades with no damage code cannot be thrown — `5df18568`
 
 Smoke, gas, Flash-Pak and thermal smoke carry `--`, `Special`, `gas`, `-` and so on, which
@@ -7166,12 +7173,32 @@ Observed: you can't heal an NPC who has been downed. Expected: a downed NPC can 
 anyone else. Not investigated yet; reproduce first, and check whether the patient list filters the
 NPC out or the heal itself refuses. This is a bug fix, so it goes on `main`.
 
+## 208. ✅ Healing patient list: players first, hostile NPCs last — **requested in play, 2026-10-11** — closed in 3807bc99
+
+Order the 🩹 Healing patient list with the player characters at the top
+(`SR3EQuery.isPlayerCharacter`), then other NPCs, and hostile NPCs at the bottom (token disposition
+HOSTILE). Every actor stays in the list; this only changes the order. Pairs with [#207](#207)
+(downed NPCs can't be healed). This is a request, so it is a feature and goes on a branch, separate
+from #207's fix.
+
 ## 210. ✅ Throwing a grenade asks for the firearms skill — **reported in play, 2026-10-11** · fixed `3d218466`
 
 Observed: throwing a grenade wants a firearms skill. Expected: a thrown grenade uses Throwing Weapons.
 Check the book for the exact skill and page before fixing; a grenade launcher is a separate case and
 uses Grenade Launchers. Repro: the **Offensive AP grenade**, thrown from the **Attack** button. Not
 investigated yet. This is a bug fix, so it goes on `main`.
+
+## 211. ✅ Action tracker reads as three actions — show it as "Complex OR two Simples" — **requested in play, 2026-10-11** — closed in 5694aeec
+
+At the table, the tracker on the active combatant's row (`SR3EActionLedger.renderTracker`) was read
+as everyone getting three actions. The GM buttons are **Complex · Simple · Simple · ↺** and the pips
+are **Complex · Simple · Simple · Free**, laid out side by side. The rule is one Complex **or** up
+to two Simple, plus one Free (SR3 p.105, p.107; `ActionEconomy.fits`). Wanted: a layout that shows
+the choice, e.g. **[Complex] or [Simple][Simple]**, with the Free pip set apart (`+ Free`). Pips and
+buttons both. No change to the rules or the buttons' behaviour (Complex and the second Simple still
+end the turn). Test: a source-level check that the tracker markup has the "or" grouping. Add a
+Foundry checklist step to look at it on a live row. Unrelated to [#206](#206) (the actions don't reset on a
+second pass), which also makes the pips look wrong. This is a feature, so it goes on a branch.
 
 ## 214. ✅ 🧹 Clear blast marker button is black on black — **reported in play, 2026-10-11** · fixed `3d218466`
 

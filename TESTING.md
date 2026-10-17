@@ -2601,3 +2601,50 @@ with Magic 6, Sorcery, and a Fireball (Combat, Drain `(DL+1)`) with some Good Ka
 - [ ] Same spell with the limit off the **cost**: Drain is **Physical**, F=8, TN 4.
 - [ ] A fetish-limited spell warns that the fetish must be touching the caster; casting is never refused.
 - [ ] The GM's ↺ on the "Learned Fireball" ledger line puts the spell's Force **and both limits** back.
+
+## 45. Table QoL (TODO 211, 208, 154 — `feature/table-qol`)
+
+### Action tracker reads "Complex or two Simples" (TODO 211)
+
+**Prerequisites:** a started combat with a combatant active. One client as GM, one as a player.
+
+- [ ] On the active combatant's row the pips read **[Complex] or [Simple][Simple]  + Free ●** — the Free pip sits
+      apart, behind a divider; no longer four pips in a row.
+- [ ] The GM's buttons read **Complex  or  Simple Simple  ↺**.
+- [ ] Click Simple: the first Simple pip fills. Click the second: both fill and the turn ends, as before. A Complex
+      still ends the turn. ↺ still opens the undo list.
+- [ ] A player's client shows the pips with the same grouping and no buttons.
+- [ ] Narrow the sidebar: the row wraps without overlapping the combatant name.
+
+### Healing patient list order (TODO 208)
+
+**Prerequisites:** a scene with a player character, a friendly or neutral NPC token, and a hostile NPC token
+(token disposition Hostile, ideally unlinked); the player character's name sorts last alphabetically.
+
+- [ ] GM tools → 🩹 Healing: the "who is hurt?" list shows the **player characters first**, then the other NPCs,
+      and the **hostile NPC last** — even though the alphabetical order would put them elsewhere.
+- [ ] The hostile NPC is still listed and can be picked and treated.
+- [ ] Turn the hostile token to Neutral and reopen: it moves up into the NPC group.
+- [ ] As a player, "Treat someone else…": your own character and the other players' characters lead the list.
+
+### Buy gear: search the compendium, or drag an item in (TODO 154)
+
+**Prerequisites:** a character with a contact and Etiquette; Configure Source Books with core (`sr3`) on and one
+book (say `sota2`) switched OFF. Open **🛒 Buy gear…** from the Bio tab with no item.
+
+- [ ] A **🔎 Search the gear compendiums** box sits above the Item field. Type `predator`: after "Reading the
+      compendiums…" a list of matches appears (name · type · Availability · book page), best match first.
+- [ ] Type `ares viper` (two words): only names containing both appear. Clear the box: the list empties.
+- [ ] Click a hit: Item, Availability TN/time/unit, Base cost and Street Index fill in, the preview line updates,
+      and a contact poor for that type turns amber. Every field stays editable.
+- [ ] **Press Enter in the search box** with hits showing: the top hit is taken and the dialog does NOT submit.
+- [ ] Search for something that exists only in the switched-off book: **no hit**, "Nothing in the allowed books
+      matches". Switch the book on in Configure Source Books and reopen: it is found.
+- [ ] Open the Compendium sidebar and drag a gear item onto the open dialog: the same fields fill in.
+- [ ] Drag a **spell** (or an Actor) onto the dialog: a warning, nothing changes.
+- [ ] With the book off, its packs are hidden in the sidebar; if one is still reachable (an item's link in a
+      journal), dragging it warns "from a book that is switched off" and fills nothing.
+- [ ] Find a source for a searched item, negotiate and **💴 Pay**: the item lands on the sheet, price in the ledger.
+- [ ] Open Buy gear from an item's own row: it still pre-fills from that item; searching replaces it.
+- [ ] The medkit **Buy Medkit Supplies** button still fills the form and still refills the medkit on payment.
+
