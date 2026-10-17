@@ -7166,6 +7166,14 @@ Observed: you can't heal an NPC who has been downed. Expected: a downed NPC can 
 anyone else. Not investigated yet; reproduce first, and check whether the patient list filters the
 NPC out or the heal itself refuses. This is a bug fix, so it goes on `main`.
 
+## 208. ✅ Healing patient list: players first, hostile NPCs last — **requested in play, 2026-10-11** — closed in 3807bc99
+
+Order the 🩹 Healing patient list with the player characters at the top
+(`SR3EQuery.isPlayerCharacter`), then other NPCs, and hostile NPCs at the bottom (token disposition
+HOSTILE). Every actor stays in the list; this only changes the order. Pairs with [#207](#207)
+(downed NPCs can't be healed). This is a request, so it is a feature and goes on a branch, separate
+from #207's fix.
+
 ## 210. ✅ Throwing a grenade asks for the firearms skill — **reported in play, 2026-10-11** · fixed `3d218466`
 
 Observed: throwing a grenade wants a firearms skill. Expected: a thrown grenade uses Throwing Weapons.
