@@ -7361,3 +7361,13 @@ This is a feature, so it goes on a branch.
 The captain's chair (RCD) dropped a VCR rigger's Initiative bonus, and RCD drones rolled the rigger's
 Gunnery and vehicle skill instead of their own Pilot Rating. Fixed in `Rigging.droneTestRoller` /
 `usesVcrInitiative`; live check in TESTING.md, *RCD with a VCR — the captain's chair*.
+
+## 225. ✅ Typing a Combat Pool total under a gyro stores the wrong modifier — **found 2026-10-17** (building #213) — closed in 13b5c53d
+
+With a worn gyro harness the Combat Pool is halved, rounded down (SR3 p.282). The Combat Pool box passed
+`combatPool − combatPoolMod` — the ALREADY-HALVED pool — as the base its typed total is subtracted from, so a
+character with base 5 (shown 2) who typed 4 stored a modifier of +2, which makes the pool ⌊7 ÷ 2⌋ = 3. Without
+a gyro the two agree. **Fix:** `CombatPool.modForTotal` (`scripts/data/combat-pool.mjs`) inverts `figure()`
+exactly — the smallest modifier that reads the typed total; the sheet passes base + Combat Sense − armour and a
+`data-pool-gyro` flag. A total that cannot be hit (negative, fractional) is rounded to the nearest and warned,
+never refused. Live step: TESTING.md §50. This is a bug fix, so it goes on `main`.
