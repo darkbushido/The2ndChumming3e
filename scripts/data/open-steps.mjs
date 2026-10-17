@@ -43,6 +43,9 @@ export const STEP_BUTTONS = {
   'sr-matrix-ic-resist-roll-btn':   { icon: '💻', label: 'Roll Matrix damage resistance' },
   'sr-matrix-decker-resist-btn':    { icon: '💻', label: 'Resist Matrix damage' },
   'sr-matrix-decker-resist-roll-btn': { icon: '💻', label: 'Roll Matrix damage resistance' },
+  // A gas cloud's resistance card (SR3 p.250, TODO 164) and the GM's "who was facing the flash" tick list (p.283).
+  'sr-gas-resist-btn':              { icon: '☣', label: 'Resist the gas' },
+  'sr-flash-btn':                   { icon: '⚡', label: 'Say who was facing the flash' },
   // A roll held for Karma Pool (SR3 p.246): nothing resolves until the roller decides. Any 🍀 choice
   // on the card records this step too (sr3e.js), since a re-roll or a buy moves on to a new card.
   'sr-karma-done-btn':              { icon: '🍀', label: 'Spend Karma Pool or resolve the roll' },

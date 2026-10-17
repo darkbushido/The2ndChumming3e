@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <!-- Tiling infra-red smoke: the same drift as smoke, but warm — hot particles (SR3 p.283). TODO 164. -->
+  <defs>
+    <filter id="s" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.017" numOctaves="4" seed="19" stitchTiles="stitch" result="n"/>
+      <feColorMatrix in="n" type="matrix"
+        values="0 0 0 0 0.78
+                0 0 0 0 0.42
+                0 0 0 0 0.40
+                0 0 0 1.9 -0.55"/>
+    </filter>
+  </defs>
+  <rect width="256" height="256" filter="url(#s)"/>
+</svg>

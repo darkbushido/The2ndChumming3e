@@ -30,7 +30,7 @@ export async function run(t) {
   t.is('no duration in the text: it lasts until cleared', AreaEffect.turns('Anyone facing it takes +4'), null);
 
   t.is('smoke is grey', AreaEffect.color('Smoke Grenade'), '#8a9099');
-  t.is('infra-red smoke too', AreaEffect.color('Smoke (IR) Grenade'), '#8a9099');
+  t.is('infra-red smoke is its own colour (TODO 164)', AreaEffect.color('Smoke (IR) Grenade'), '#a0646a');
   t.is('gas is green', AreaEffect.color('Gas Grenade (Neuro-Stun VII)'), '#6fbf73');
   t.is('a flash is white', AreaEffect.color('Flash-Pak'), '#f5f5dc');
 

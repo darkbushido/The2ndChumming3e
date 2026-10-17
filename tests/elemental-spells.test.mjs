@@ -112,7 +112,7 @@ export async function run(t) {
     /\/\/ Elemental Manipulation \(p\.183\)[^\n]*\n\s*isElemental,/.test(item));
 
   const btn = actor.slice(actor.indexOf('static _spellResistButton('),
-    actor.indexOf('static _spellResistButton(') + 4000);
+    actor.indexOf('static _spellResistButton(') + 6000);
   t.ok('an elemental hit posts the DODGE declaration, not a spell resist (p.183)',
     /if \(sc\.isElemental\)[\s\S]*class="sr-dodge-declare-btn"/.test(btn));
   t.ok('…staged by the caster\'s successes on the ranged rule',

@@ -1821,6 +1821,15 @@ Hooks.on('updateCombatant', (combatant, changed) => {
 
 // Action Tracker state resets whenever the combat turn or round changes (covers both the
 // tracker's own buttons and the default next-turn arrow).
+/* A cloud's texture goes with its Region (TODO 164). Regions carry no texture in Foundry v14, so a smoke, gas or
+ * flash marker is a Region plus a pattern-filled Drawing; whichever way the Region ends — it expires, the 🧹
+ * button, the wind, or the GM deletes it by hand — the active GM's client removes the Drawing with it. */
+Hooks.on('deleteRegion', region => {
+  if (!game.users?.activeGM?.isSelf) return;
+  const id = region.getFlag?.('The2ndChumming3e', 'decorDrawingId');
+  if (id && region.parent?.drawings?.has(id)) region.parent.deleteEmbeddedDocuments('Drawing', [id]).catch(() => {});
+});
+
 Hooks.on('updateCombat', (_combat, changed) => {
   // Per-combat-round upkeep (GM client only): count down infiltrations; refresh IVIS Pools;
   // expire Attribute Boosts. ⚠ A Foundry ROUND is an SR3 Combat Turn, which is the unit
@@ -3091,6 +3100,53 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
         _usedButtons.delete(`${mid}|blastwall|${i}`);
         btn.disabled = false;
       }
+    });
+  });
+
+  // ☣ A gas cloud's resistance card (SR3 p.249-250, TODO 164): posts the toxin's soak card — Body, no armour.
+  // Posts onward, so any owner of that character (or the GM): `_mineId`.
+  html.querySelectorAll('.sr-gas-resist-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'gasresist', i)) return;
+    const pl = _payload(btn);
+    if (!pl) return;
+    if (!_mineId(pl.actorId)) return _denyBtn(btn, 'Only this character\'s owner (or the GM) can resist for it.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'gasresist', i)) return;
+      if (await SR3EActor.handleGasResist(btn) === false) {
+        _usedButtons.delete(`${mid}|gasresist|${i}`);
+        btn.disabled = false;
+      }
+    });
+  });
+
+  // ⚡ Flash-Pak: the GM ticks who was facing it (SR3 p.283, TODO 164). GM only — facing is a table fact.
+  // Cancelling (or ticking no one) hands the button back.
+  html.querySelectorAll('.sr-flash-btn').forEach((btn, i) => {
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM says who was facing the flash.');
+    if (!_checkBtn(btn, mid, 'flashtick', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'flashtick', i)) return;
+      if (await SR3EActor.handleFlashTick(btn) === false) {
+        _usedButtons.delete(`${mid}|flashtick|${i}`);
+        btn.disabled = false;
+      }
+    });
+  });
+
+  // 🌬 Wind (SR3 p.283, TODO 164): the GM shortens or extends a cloud. Repeatable, so no one-shot guard;
+  // the buttons are not shown to players at all.
+  html.querySelectorAll('.sr-wind-row').forEach(row => { if (!game.user.isGM) row.remove(); });
+  html.querySelectorAll('.sr-wind-btn').forEach(btn => {
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      btn.disabled = true;
+      try { await SR3EActor.shiftCloud(btn.dataset.regionId, btn.dataset.sceneId, Number(btn.dataset.delta)); }
+      finally { btn.disabled = false; }
     });
   });
 

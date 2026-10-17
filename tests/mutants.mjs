@@ -40,6 +40,8 @@ const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon
 const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
 const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellLimits' };
+const AREAEFFECT = { module: '../scripts/data/area-effect.mjs', klass: 'AreaEffect' };
+const AREASHAPE = { module: '../scripts/data/area-shape.mjs', klass: 'AreaShape' };
 const WILLING = { module: '../scripts/data/willing-target.mjs', klass: 'WillingTarget' };
 
 export const MUTANTS = [
@@ -2147,5 +2149,113 @@ export const MUTANTS = [
     ...WILLING, method: 'carriedIds',
     was:    'carrying whatever the dialog sent, including ids that are not targets of the cast, and on damaging spells',
     impl:   (_c, _ids, ticked) => [...(ticked ?? [])],
+  },
+  {
+    id:     'cloud-ignores-walls',
+    suite:  'area-cloud',
+    ...AREASHAPE, method: 'clipCircle',
+    was:    'the shipped behaviour (TODO 155): a smoke or gas marker is always the full circle, through every wall — '
+          + 'the cloud of SR3 p.283 does not pass a wall (TODO 164)',
+    impl:   () => null,
+  },
+  {
+    id:     'cloud-clip-is-the-full-ring-as-a-polygon',
+    suite:  'area-cloud',
+    ...AREASHAPE, method: 'clipCircle',
+    was:    'a clip that returns the unclipped ring as a polygon: it looks clipped (a polygon Region) but still crosses walls',
+    impl:   (center, radius) => {
+      const out = [];
+      for (let i = 0; i < 48; i++) { const a = (2 * Math.PI * i) / 48; out.push(center.x + Math.cos(a) * radius, center.y + Math.sin(a) * radius); }
+      return out;
+    },
+  },
+  {
+    id:     'cloud-hole-counts-as-inside',
+    suite:  'area-cloud',
+    ...AREASHAPE, method: 'contains',
+    was:    'membership that ignores holes: a token in a hole of the cloud is still offered the smoke modifier',
+    impl:   function (shapes, pt) { return (shapes ?? []).some(s => !s?.hole && this.inShape(s, pt)); },
+  },
+  {
+    id:     'infra-red-smoke-is-plain-smoke',
+    suite:  'area-cloud',
+    ...AREAEFFECT, method: 'kind',
+    was:    'infra-red smoke treated as ordinary smoke: same look, and thermographic vision is never blinded '
+          + '(SR3 p.283: "Infra-red smoke contains hot particles that obscure thermographic vision")',
+    impl:   (name) => {
+      const n = String(name ?? '');
+      if (/smoke/i.test(n)) return 'smoke';
+      if (/gas|neuro|nerve/i.test(n)) return 'gas';
+      return /flash/i.test(n) ? 'flash' : '';
+    },
+  },
+  {
+    id:     'ir-smoke-offers-heavy-smoke-row',
+    suite:  'area-cloud',
+    ...AREAEFFECT, method: 'visibilityCondition',
+    was:    'infra-red smoke offered the ordinary Heavy Smoke row, so a thermographic viewer sees almost nothing wrong '
+          + '(+1/0) — the p.112 table has a Thermal Smoke row (+8/+6) for exactly this',
+    impl:   (kind) => (kind === 'smoke' || kind === 'irsmoke' ? 'Heavy Smoke/Fog/Rain' : null),
+  },
+  {
+    id:     'smoke-offers-the-lowest-row',
+    suite:  'area-cloud',
+    ...AREAEFFECT, method: 'pickCondition',
+    was:    'of several clouds, the row with the LOWEST modifier is offered instead of the worst for the viewer',
+    impl:   (kinds, modOf) => {
+      let best = null, m = Infinity;
+      for (const k of kinds ?? []) {
+        const c = ({ smoke: 'Heavy Smoke/Fog/Rain', irsmoke: 'Thermal Smoke' })[k];
+        if (c && (Number(modOf?.(c)) || 0) < m) { best = c; m = Number(modOf?.(c)) || 0; }
+      }
+      return best;
+    },
+  },
+  {
+    id:     'wind-cannot-shorten',
+    suite:  'area-cloud',
+    ...AREAEFFECT, method: 'shiftExpiry',
+    was:    'the shipped behaviour (TODO 155): a fixed two Combat Turns the GM cannot change — p.283 "less in windy areas, '
+          + 'at the gamemaster\'s discretion"',
+    impl:   (expires, _d, round) => ({ expires, remaining: Number.isFinite(expires) ? Math.max(0, expires - round) : null, ended: false }),
+  },
+  {
+    id:     'wind-leaves-a-cloud-with-no-turns-left',
+    suite:  'area-cloud',
+    ...AREAEFFECT, method: 'shiftExpiry',
+    was:    'a shortened cloud that reaches 0 Combat Turns is not marked ended and lingers',
+    impl:   (expires, delta, round) => {
+      const next = (Number.isFinite(expires) ? expires : round) + Math.trunc(delta);
+      return { expires: next, remaining: Math.max(0, next - round), ended: false };
+    },
+  },
+  {
+    id:     'gas-card-silent-on-the-vii-viii-split',
+    suite:  'area-cloud',
+    ...AREAEFFECT, method: 'gasToxin',
+    was:    'the card quietly uses VIII for a grenade labelled VII — the book contradicts itself (p.283 row vs p.250/p.283 text) '
+          + 'and the maintainer asked for the discrepancy to be NOTED, not picked silently',
+    impl:   () => ({ name: 'Neuro-Stun VIII', damage: '6S', speed: 'the end of the following Combat Turn', disorientation: 2, labelled: '', discrepancy: '' }),
+  },
+  {
+    id:     'gas-forgets-the-disorientation',
+    suite:  'area-cloud',
+    ...AREAEFFECT, method: 'gasToxin',
+    was:    'the toxin card omits the +2 disorientation that follows even a resisted dose (SR3 p.250)',
+    impl:   () => ({ name: 'Neuro-Stun VIII', damage: '6S', speed: 'the end of the following Combat Turn', disorientation: 0, labelled: 'VII', discrepancy: 'p.250 VIII' }),
+  },
+  {
+    id:     'flare-compensation-changes-nothing',
+    suite:  'area-cloud',
+    ...AREAEFFECT, method: 'flashMods',
+    was:    'a Flash-Pak that hits flare-compensated eyes for the full +4 (SR3 p.283: "+2 if the target has flare compensation")',
+    impl:   (flare) => ({ facing: 4, strobe: 2, total: 6, flare: !!flare }),
+  },
+  {
+    id:     'flash-forgets-the-strobe',
+    suite:  'area-cloud',
+    ...AREAEFFECT, method: 'flashMods',
+    was:    'the card states only the +4 / +2 and drops the pak\'s own +2 for the strobing flashes (SR3 p.283)',
+    impl:   (flare) => { const facing = flare ? 2 : 4; return { facing, strobe: 0, total: facing, flare: !!flare }; },
   },
 ];

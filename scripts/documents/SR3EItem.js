@@ -1456,6 +1456,8 @@ export class SR3EItem extends Item {
     gyroLeft:     gyro.left,   // TODO 18 — offsets the Attacker movement rows (p.113)
     gyroRating:   game.sr3e.SR3EActor.gyroRating(actor),
     gyroUsed:     gyro.used,
+    // Smoke on the map (TODO 164): offered to the window as a preselected Visibility Table row, never forced.
+    smoke:        await game.sr3e.SR3EActor.smokeOffer(actor, [targetActor]).catch(() => null),
   }, { timeout: 300_000 });
 
   if (negotiation === null) return null;   // GM cancelled the attack — nothing written
@@ -3166,10 +3168,12 @@ export class SR3EItem extends Item {
       // says what was found (TODO 99). Implants are name-matched — the TODO #18 gap — which
       // is why it stays a pre-selection.
       if (m.select === 'visibility') {
+        // Smoke the fighters stand in (TODO 164): the row is OFFERED — preselected, the GM free to change it.
+        const smokeCond = ctx.smoke?.condition && SR3E_VISIBILITY_TABLE[ctx.smoke.condition] ? ctx.smoke.condition : '';
         const condOpts = ['<option value="">— not impaired —</option>']
           .concat(Object.keys(SR3E_VISIBILITY_TABLE)
-            .map(c => `<option value="${c}">${c}</option>`)).join('');
-        const pre     = vision ? bestVisionKey(vision, '') : 'normal';
+            .map(c => `<option value="${c}"${c === smokeCond ? ' selected' : ''}>${c}</option>`)).join('');
+        const pre     = vision ? bestVisionKey(vision, smokeCond) : 'normal';
         const visOpts = SR3E_VISION_TYPES
           .map(v => `<option value="${v.key}"${v.key === pre ? ' selected' : ''}>${v.label}</option>`).join('');
         return `<div class="sr-gm-modrow" style="break-inside:avoid">
@@ -3178,6 +3182,7 @@ export class SR3EItem extends Item {
               <select class="sr-gm-vis-cond" style="width:100%">${condOpts}</select>
               <select class="sr-gm-vis-type" style="width:100%">${visOpts}</select>
               ${visionHint ? `<div class="sr-gm-vis-hint" style="font-size:10px;color:var(--sr-muted);line-height:1.25">👁 ${escapeHTML(visionHint)}</div>` : ''}
+              ${smokeCond ? `<div class="sr-gm-smoke-hint" style="font-size:10px;color:var(--sr-amber);line-height:1.25">${escapeHTML(ctx.smoke.note ?? '')}</div>` : ''}
               <div class="sr-gm-vis-note" style="font-size:10px;color:var(--sr-dim);line-height:1.25"></div>
             </div>
           </div>`;
@@ -4852,6 +4857,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
         attackerName: actor.name,
         targetName:   isAoE ? `area (${aoeRadius} m)` : (targetActors[0]?.name ?? '—'),
         weaponName:   this.name,
+        smoke:        await game.sr3e.SR3EActor.smokeOffer(actor, isAoE ? [] : targetActors).catch(() => null),   // TODO 164
         // Only an ELEMENTAL area drops the Target rows: its blast reaches behind a wall (p.182). Any
         // other area spell affects only targets the caster can see, so their cover still counts.
         area:         isAoE && isElemental,

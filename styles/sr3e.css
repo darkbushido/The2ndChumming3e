@@ -256,6 +256,9 @@ background-color: var(--sr-surface) !important;
 .sr-karma-btn,
 .sr-karma-done-btn,
 .sr-clear-blast-btn,
+.sr-gas-resist-btn,
+.sr-flash-btn,
+.sr-wind-btn,
 .sr-prone-btn {
   width: 100%;
   height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
@@ -289,7 +292,9 @@ background-color: var(--sr-surface) !important;
 .sr-charge-quickness-btn,
 .sr-blast-wall-btn,
 .sr-karma-btn,
-.sr-karma-done-btn {
+.sr-karma-done-btn,
+.sr-gas-resist-btn,
+.sr-flash-btn {
   background: linear-gradient(135deg, color-mix(in srgb, var(--sr-gold) 15%, transparent) 0%, color-mix(in srgb, var(--sr-gold) 5%, transparent) 100%);
   border: 1px solid var(--sr-gold);
   color: var(--sr-gold);
@@ -307,6 +312,19 @@ background-color: var(--sr-surface) !important;
 }
 .sr-clear-blast-btn:hover:not(:disabled) { border-color: var(--sr-accent); color: var(--sr-accent); }
 .sr-clear-blast-btn:disabled { color: var(--sr-muted); opacity: 0.7; cursor: default; }
+/* 🌬 The GM's wind buttons on a cloud's card (TODO 164): neutral, like 🧹, and side by side. */
+.sr-wind-btn {
+  width: auto;
+  flex: 1 1 auto;
+  background: var(--sr-surface);
+  border: 1px solid var(--sr-border-hi);
+  color: var(--sr-text);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+}
+.sr-wind-btn:hover:not(:disabled) { border-color: var(--sr-accent); color: var(--sr-accent); }
+.sr-wind-btn:disabled { color: var(--sr-muted); opacity: 0.7; cursor: default; }
 
 /* 🍀 Karma Pool hold card (SR3 p.246): the spend buttons share a row and size to their labels. */
 .sr-karma-actions .sr-karma-btn { width: auto; flex: 1 1 auto; }
