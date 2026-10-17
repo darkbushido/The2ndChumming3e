@@ -15,6 +15,13 @@ import { BookPage } from '../data/book-page.mjs';
 import { AmmoStock, GUN_CLASSES } from '../data/ammo-stock.mjs';
 import { MiniGrenade } from '../data/mini-grenade.mjs';
 
+/** Where a spell's fetish or exclusive limit was taken · SR3 p.180 (TODO 223). Blank = the spell has no such limit. */
+const SPELL_LIMIT_SIDES = [
+  { value: '',         label: 'None' },
+  { value: 'drain',    label: 'Off the Force for Drain' },
+  { value: 'learning', label: 'Off the Karma cost to learn' },
+];
+
 export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
   static DEFAULT_OPTIONS = {
@@ -807,6 +814,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._sel('Duration', 'duration', s.duration, SR3E.spellDurations)}
           ${this._f('Drain Code', 'drain', s.drain, 'text', 'placeholder="(F/2) or (DL+1)"')}
           ${this._f('Learned Force', 'force', s.force, 'number', 'min="1" placeholder="not recorded" title="The Force this spell was learned at (SR3 p.178). It may be cast at or below this, never above. Blank = not recorded, which caps nothing."')}
+          ${this._sel('Fetish limit (−1)', 'limitFetish', s.limitFetish ?? '', SPELL_LIMIT_SIDES)}
+          ${this._sel('Exclusive limit (−2)', 'limitExclusive', s.limitExclusive ?? '', SPELL_LIMIT_SIDES)}
           ${this._sel('Damage track', 'damageTrack', s.damageTrack ?? '', [
             { value: '',         label: 'From the name (stun spells Stun, else Physical)' },
             { value: 'Physical', label: 'Physical' },

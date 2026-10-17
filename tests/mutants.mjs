@@ -39,6 +39,7 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
+const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellLimits' };
 
 export const MUTANTS = [
   {
@@ -2089,5 +2090,23 @@ export const MUTANTS = [
     was:    'a plausible misreading: twice the base, always — SR3 p.84 excepts "a Rating 1 base skill with a '
           + 'Rating 3 specialization"',
     impl:   (b) => 2 * Math.max(0, b | 0),
+  },
+  {
+    id:     'limited-spell-drains-at-full-force',
+    suite:  'spell-limits',
+    ...SPELLLIMITS, method: 'drainForce',
+    was:    'the shipped behaviour (TODO 223): a limit could only be taken off the learning cost, so a Force 8 Fireball '
+          + 'with the exclusive limit still drained as Force 8 and was Physical at Magic 6 — SR3 p.180: the limit may '
+          + '"reduce the Force of a spell for purposes of Drain"',
+    impl:   (force) => Math.max(0, Math.floor(Number(force) || 0)),
+  },
+  {
+    id:     'limit-off-the-cost-also-cuts-drain',
+    suite:  'spell-limits',
+    ...SPELLLIMITS, method: 'drainForce',
+    was:    'a plausible misreading: a limit lowers BOTH Drain and the learning cost — p.180: it is "either … or", '
+          + '"the player chooses which when the spell is learned"',
+    impl:   (force, spell) => Math.max(0, Math.floor(Number(force) || 0)
+      - (spell?.system?.limitFetish ? 1 : 0) - (spell?.system?.limitExclusive ? 2 : 0)),
   },
 ];

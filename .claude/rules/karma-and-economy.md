@@ -63,7 +63,8 @@ Tables: karma, nuyen, a gear note to ticked PCs) both go through `SR3EActor.karm
 
 **Spending** (`_onSpendKarmaCalculator`) lists every affordable purchase: attributes, skill increases, new
 skills, new specialisations, specialisation increases, and under **Magic**: an adept's Power Point (20, p.168),
-learning a spell at a Force (Karma = Force, less a limit's modifier, p.180-181 — asked in a sub-dialog), and
+learning a spell at a Force (Karma = Force, less the limits taken off the **cost** — each of fetish/exclusive is
+taken off the cost OR off Drain, recorded on the spell, p.180-181, TODO 223 — asked in a sub-dialog), and
 bonding a focus (Focus Bonding Table, p.190 — `GoodKarma.focusType`/`focusForce`/`bondingCost`; foci are gear
 named for their type, bonded = flag `bonded`; weapon foci are melee `isFocus`, bonded = `focusActive`).
 ⚠ A specialisation over **twice the base** (3 on a base of 1, p.84) is **warned**, not refused.

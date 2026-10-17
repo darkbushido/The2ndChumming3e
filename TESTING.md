@@ -2584,3 +2584,20 @@ reserved). One client is enough; repeat once with the pop-up and the chat log bo
 - [ ] The attack card's button reads spent/"already acted" in both the pop-up and the log; clicking it again as GM
       does nothing and posts nothing ("✓ Defence already declared").
 - [ ] Only one soak button follows the dodge.
+
+## 44. Limited spells (TODO 223, SR3 p.180-181)
+
+**Prerequisites:** a full Foundry restart is NOT needed (new spell fields default to blank). An Awakened character
+with Magic 6, Sorcery, and a Fireball (Combat, Drain `(DL+1)`) with some Good Karma.
+
+- [ ] **Spend Karma → Learn a spell** (Fireball): the dialog has a **Fetish (−1)** and an **Exclusive (−2)** select,
+      each None / Taken off the Karma cost / Taken off the Force for Drain. Pick Force 8 and Exclusive → **off the
+      Karma cost**: it costs **6**, the ledger line says "limit: exclusive −2 (learning)", and the spell's sheet shows
+      Exclusive limit = "Off the Karma cost to learn".
+- [ ] Learn it again (or edit the spell sheet) with Exclusive → **off the Force for Drain**: it costs the full **8**.
+- [ ] Cast it at Force 8 (Magic 6) with the limit off **Drain**: warnings pop up (Exclusive Action, p.160); the cast
+      card shows "Limit −2: drains as Force 6 (cast at 8)"; **Resist Drain** reads **Stun**, formula F=6 (TN 3 for
+      `(DL+1)`), with no "Force > Magic" warning. The target still resists at Force 8.
+- [ ] Same spell with the limit off the **cost**: Drain is **Physical**, F=8, TN 4.
+- [ ] A fetish-limited spell warns that the fetish must be touching the caster; casting is never refused.
+- [ ] The GM's ↺ on the "Learned Fireball" ledger line puts the spell's Force **and both limits** back.

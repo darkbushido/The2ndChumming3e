@@ -90,6 +90,14 @@ Sheet shows available / total.
    - ⚠ **Sorcery Rule of One: +2 Drain TN** (p.182), carried as `castGlitch`, added in `_postDrainCard`,
      **cumulative** with sustaining. The Detection-spell "GM lies" consequence is the GM's.
 
+- **Limited spells** (p.180-181, TODO 223; `scripts/data/spell-limits.mjs`, `SpellLimits`): a fetish (−1) or
+  exclusive (−2) limit is taken off **either** the Force for Drain **or** the Karma cost to learn — chosen when
+  learned, recorded as `system.limitFetish` / `system.limitExclusive` (`''`/`'drain'`/`'learning'`). ⚠ A limit
+  off Drain lowers the Force **before** the Force-versus-Magic Stun/Physical test and before the Drain Modifier
+  (`drainForce`, carried as `spellContext.drainForce`); the spell's own Force (damage, resistance TN) is untouched.
+  Cast warns (fetish touching the caster; Exclusive Action, p.160), never refuses. Mutants
+  `limited-spell-drains-at-full-force`, `limit-off-the-cost-also-cuts-drain`.
+
 **Elemental Manipulation** · *SR3 p.183, p.196*: dodged like ranged attacks. `_spellResistButton` checks
 `sc.isElemental` (`SR3EItem.isElementalSpell(category)`) and posts the **ranged `.sr-dodge-declare-btn`**
 (staged by the caster's successes); dodge, carry and soak are the gunshot's. The soak halves **Impact** only

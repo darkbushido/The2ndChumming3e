@@ -5,6 +5,7 @@ import { CarriedLoad } from '../data/carried-load.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import { BookPage } from '../data/book-page.mjs';
 import { CyberWeapons } from '../data/cyber-weapons.mjs';
+import { SpellLimits } from '../data/spell-limits.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -5789,37 +5790,52 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     }
 
     /* Learning a spell · SR3 p.180: "Learning spells also costs Good Karma … equal to the desired
-     * Force." A limit (p.181) may lower the cost by its modifier instead of lowering Drain. The
-     * Sorcery Test and the days of study are the GM's (p.180, and Training, p.245). */
+     * Force." A limit (p.180-181) is taken off EITHER the cost to learn OR the Force for Drain — "the
+     * player chooses which when the spell is learned" — and the choice is recorded on the spell
+     * (TODO 223), because the cast reads it. The Sorcery Test and the days of study are the GM's
+     * (p.180, and Training, p.245). */
     if (type === 'spell') {
       const spell = actor.items.get(parts[1]);
       if (!spell) return;
       const was = spell.system.force;
       let force = null, limit = 0;
+      let fetish = spell.system.limitFetish ?? '', exclusive = spell.system.limitExclusive ?? '';
+      const limitSel = (id, key, mod) => `
+            <label>${SpellLimits.LIMITS[key].label} limit (−${mod})
+              <select id="${id}" style="width:230px">
+                <option value="">None</option>
+                <option value="learning" ${(key === 'fetish' ? fetish : exclusive) === 'learning' ? 'selected' : ''}>Taken off the Karma cost to learn</option>
+                <option value="drain" ${(key === 'fetish' ? fetish : exclusive) === 'drain' ? 'selected' : ''}>Taken off the Force for Drain</option>
+              </select></label>`;
       await foundry.applications.api.DialogV2.wait({
         window: { title: `Learn a spell — ${spell.name}` },
         content: `
           <div style="padding:8px;display:flex;flex-direction:column;gap:6px;font-size:12px">
             <label>Learn at Force <input type="number" id="sp-force" value="${Number.isInteger(was) ? was + 1 : 1}" min="1" style="width:50px"/></label>
-            <label title="A fetish or exclusive limit (SR3 p.181) can lower the Karma and difficulty to learn, instead of lowering Drain">
-              Limit modifier taken off the cost <input type="number" id="sp-limit" value="0" min="0" style="width:50px"/></label>
-            <div style="color:var(--sr-muted)">Costs Good Karma equal to the Force, less the limit (SR3 p.180-181). You have ${karma}.</div>
+            ${limitSel('sp-fetish', 'fetish', SpellLimits.LIMITS.fetish.modifier)}
+            ${limitSel('sp-exclusive', 'exclusive', SpellLimits.LIMITS.exclusive.modifier)}
+            <div style="color:var(--sr-muted)">A limit lowers EITHER the Karma cost and difficulty to learn OR the Force for Drain (including whether Drain is Stun or Physical) — you choose now (SR3 p.180-181). Costs Good Karma equal to the Force, less the limits taken off the cost. You have ${karma}.</div>
           </div>`,
         buttons: [
           { label: 'Learn', action: 'learn', default: true, callback: (_e, _b, d) => {
             force = Math.max(1, parseInt(d.element.querySelector('#sp-force')?.value) || 1);
-            limit = Math.max(0, parseInt(d.element.querySelector('#sp-limit')?.value) || 0);
+            fetish    = d.element.querySelector('#sp-fetish')?.value ?? '';
+            exclusive = d.element.querySelector('#sp-exclusive')?.value ?? '';
           } },
           { label: 'Cancel', action: 'cancel' },
         ],
       });
       if (!force) return;
+      const chosen = { system: { limitFetish: fetish, limitExclusive: exclusive } };
+      limit = SpellLimits.learningReduction(chosen);
       const cost = GK.spellCost(force, limit);
       if (cost > karma) { ui.notifications.warn(`Not enough karma — Force ${force} costs ${cost}.`); return; }
-      await spell.update({ 'system.force': force });
+      const wasLimits = { 'system.limitFetish': spell.system.limitFetish ?? '', 'system.limitExclusive': spell.system.limitExclusive ?? '' };
+      await spell.update({ 'system.force': force, 'system.limitFetish': fetish, 'system.limitExclusive': exclusive });
+      const limitNote = SpellLimits.describe(chosen);
       await actor.update({ 'system.karma': karma - cost },
-        { ledgerReason: `Learned ${spell.name} at Force ${force}${limit ? ` (limit −${limit})` : ''}`,
-          ledgerRevert: { items: [{ id: spell.id, name: spell.name, update: { 'system.force': was ?? null } }] } });
+        { ledgerReason: `Learned ${spell.name} at Force ${force}${limitNote ? ` (limit: ${limitNote})` : ''}`,
+          ledgerRevert: { items: [{ id: spell.id, name: spell.name, update: { 'system.force': was ?? null, ...wasLimits } }] } });
       ui.notifications.info(`${spell.name} learned at Force ${force} (${cost} karma spent).`);
       return;
     }

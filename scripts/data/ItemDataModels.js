@@ -470,6 +470,13 @@ export class SpellData extends foundry.abstract.TypeDataModel {
       damageTrack: new StringField({ initial: '' }),
       duration:    new StringField({ initial: 'Instant' }),
       drain:       new StringField({ initial: '' }),
+      /* Limited spells · SR3 p.180-181 (TODO 223). A fetish (−1) or exclusive (−2) limit is taken off
+       * EITHER the Force for Drain OR the Karma cost to learn, "the player chooses which when the spell is
+       * learned". Each records where it was taken: '' (no such limit), 'drain' or 'learning'. Read only
+       * through SpellLimits (scripts/data/spell-limits.mjs). No `choices` — a blank string on a field
+       * with choices fails validation (see damageTrack above). */
+      limitFetish:    new StringField({ initial: '' }),
+      limitExclusive: new StringField({ initial: '' }),
       target:      new StringField({ initial: '' }),
       bookPage:    new StringField({ initial: '' }),
       description: new HTMLField({ initial: '', required: false }),

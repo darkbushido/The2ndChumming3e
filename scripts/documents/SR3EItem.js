@@ -7,6 +7,7 @@ import { PhaseTargets } from '../data/phase-targets.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
 import { MiniGrenade } from '../data/mini-grenade.mjs';
+import { SpellLimits } from '../data/spell-limits.mjs';
 
 export class SR3EItem extends Item {
 
@@ -4649,6 +4650,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
               ? `Astrally projecting → Drain is <strong style="color:var(--sr-red)">Physical</strong> at any Force (p.183)`
               : `Force &gt; Magic ${magicAttr} → Drain is <strong style="color:var(--sr-red)">Physical</strong> instead of Stun`}
           </div>
+          ${SpellLimits.isLimited(this) ? `<div style="color:var(--sr-amber);margin-top:4px">Limited: ${SpellLimits.describe(this)}${SpellLimits.drainReduction(this) ? ` — the Force is lowered by ${SpellLimits.drainReduction(this)} for Drain, including the Stun/Physical test (p.180)` : ''}</div>` : ''}
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           Force: <input type="number" id="spell-force" min="1" max="${learnedForce ?? 99}"
@@ -4707,8 +4709,13 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
 
     // SR3 p.183: Physical when Force exceeds the Magic Attribute — or, whatever the Force, when the
     // caster is astrally projecting. The astral half was missing.
-    const drainIsPhysical = game.sr3e.SR3EActor.drainIsPhysical(force, actor.system.attributes,
+    // ⚠ A limit taken off Drain lowers the Force BEFORE this test and before the Drain Modifier (p.180,
+    // TODO 223) — Bones's Force 8 Fireball, limit −2, drains as Force 6 and stays Stun at Magic 6.
+    const drainForce      = SpellLimits.drainForce(force, this);
+    const drainIsPhysical = game.sr3e.SR3EActor.drainIsPhysical(drainForce, actor.system.attributes,
       { astral: actor.system.astralMode === 'astral' });
+    // Warn, never refuse: the fetish at hand and the Exclusive Action are the table's to police.
+    for (const w of SpellLimits.castWarnings(this)) ui.notifications.warn(`${this.name}: ${w}`);
 
     // Step 2: Select target(s)
     const spellType   = this.system.type ?? 'Mana';
@@ -4883,6 +4890,10 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       rawDamage,
       damageBase,
       drainStr,
+      // The Force it drains as, and the notes for the card (p.180, TODO 223).
+      drainForce,
+      limitDrainNote:    SpellLimits.drainNote(force, this),
+      limitWarnings:     SpellLimits.castWarnings(this),
       // SR3: failed-drain damage uses the nominated Damage Level (combat and elemental spells).
       drainLevel:        isCombat ? damageLevel : null,
       sorceryRating,

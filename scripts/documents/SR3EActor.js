@@ -3670,6 +3670,7 @@ _prepareCharacter(sys, attr) {
           stagingHtml = `
             <div class="sr-staging-result">
               🔮 ${sc.spellName ?? 'Spell'} (${sc.rawDamage}) cast — <strong>${successes} success${successes !== 1 ? 'es' : ''}</strong> vs TN ${tn}${sc.tnSource ? ` <span style="color:var(--sr-muted)">(${sc.tnSource})</span>` : ''}<br>
+              ${[sc.limitDrainNote, ...(sc.limitWarnings ?? [])].filter(Boolean).map(n => `<span style="color:var(--sr-amber);font-size:11px">${n}</span><br>`).join('')}
               ${stageLine}
             </div>`;
 
@@ -3715,7 +3716,8 @@ _prepareCharacter(sys, attr) {
         const drainPayload = JSON.stringify({
           actorId:          sc.attackerActorId,
           drainStr:         sc.drainStr,
-          force:            sc.force,
+          // The Force it DRAINS as — the cast Force less a limit taken off Drain (p.180, TODO 223).
+          force:            sc.drainForce ?? sc.force,
           drainLevel:       sc.drainLevel ?? undefined,   // nominated Damage Level (combat spells)
           sorceryRating:    sc.sorceryRating,
           drainIsPhysical:  sc.drainIsPhysical,
@@ -10164,7 +10166,7 @@ _prepareCharacter(sys, attr) {
     const drainPayload = JSON.stringify({
       actorId:         sc.attackerActorId,
       drainStr:        sc.drainStr,
-      force,
+      force:           sc.drainForce ?? force,   // the Drain Force, limit taken off (p.180, TODO 223)
       drainLevel:      sc.drainLevel ?? undefined,   // nominated Damage Level (combat spells)
       sorceryRating:   sc.sorceryRating,
       drainIsPhysical: sc.drainIsPhysical,

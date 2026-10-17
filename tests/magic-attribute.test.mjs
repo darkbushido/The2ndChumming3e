@@ -47,7 +47,7 @@ export async function run(t) {
   t.is('Force 3 against Magic 4 is Stun on the physical plane', SR3EActor.drainIsPhysical(3, drained), false);
   t.is('…and Physical while astrally projecting, whatever the Force', SR3EActor.drainIsPhysical(3, drained, { astral: true }), true);
   t.is('Force 5 against Magic 4 is Physical either way', SR3EActor.drainIsPhysical(5, drained), true);
-  t.ok('casting passes the astral state', /drainIsPhysical\(force, actor\.system\.attributes,\s*\{ astral: actor\.system\.astralMode === 'astral' \}\)/.test(read('scripts/documents/SR3EItem.js')));
+  t.ok('casting passes the astral state', /drainIsPhysical\((?:drainForce|force), actor\.system\.attributes,\s*\{ astral: actor\.system\.astralMode === 'astral' \}\)/.test(read('scripts/documents/SR3EItem.js')));
   t.ok('…and the Force dialog says so when projecting', /Astrally projecting → Drain is/.test(read('scripts/documents/SR3EItem.js')));
   // p.183: "the caster's Willpower dice" — the effective Willpower, so a Pain Editor's +1 counts.
   const editor = { willpower: { base: 4, value: 5 }, charisma: { base: 3, value: 3 } };
