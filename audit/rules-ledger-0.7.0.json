@@ -2664,7 +2664,8 @@
       ],
       "hash": "209287389a",
       "text": "What the books say about paying shadowrunners, and a house-rule framework\nfor pricing individual specialists. The nine specialist pages below build\non this one.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / description / table of contents / heading / navigation — states no game rule"
     },
     {
       "id": "hiring/index.md#3",
@@ -3825,7 +3826,23 @@
       ],
       "hash": "626dc763c3",
       "text": "| [Combat Medic](combat-medic/) | Security: 200¥ a day; or per patient, 50–400¥ a wound (SR3 p.128) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 130,
+          "printedPage": 128,
+          "quote": "Paramedic first aid for: Deadly wound Serious wound Moderate wound Light wound Doctor's services for:"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EHealing.js",
+          "line": 64,
+          "snippet": "paramedic:    { D: 400, S: 200, M: 100, L: 50 },"
+        }
+      ],
+      "note": "Per patient 50-400¥ a wound is the p.128 paramedic scale. The 200¥/day security figure is SRComp p.100 (no text layer; unverifiable on hiring/combat-medic.md#9)."
     },
     {
       "id": "hiring/infiltrator.md#1",
@@ -6569,7 +6586,8 @@
       ],
       "hash": "c56cefb8e6",
       "text": "Quick-reference pages for **Shadowrun, Third Edition**: combat, healing,\ngrenades, magic, life with and without a SIN, buying and fencing gear,\ncyberware grades, what it costs to hire a specialist, and the factions\nthat run the Sixth World.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / description / table of contents / heading / navigation — states no game rule"
     },
     {
       "id": "index.md#3",
@@ -6712,7 +6730,8 @@
       ],
       "hash": "338b9dd5f5",
       "text": "| **Hiring** | [What the Books Say](hiring/) · [Decker](hiring/decker/) · [Rigger](hiring/rigger/) · [Combat Mage](hiring/combat-mage/) · [Shaman](hiring/shaman/) · [Physical Adept](hiring/physical-adept/) · [Street Samurai](hiring/street-samurai/) · [Face](hiring/face/) · [Infiltrator](hiring/infiltrator/) · [Combat Medic](hiring/combat-medic/) |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / description / table of contents / heading / navigation — states no game rule"
     },
     {
       "id": "index.md#15",
@@ -6723,7 +6742,8 @@
       ],
       "hash": "ba1cfba5eb",
       "text": "| **The Sixth World** | [Who Runs It](world/) · [Megacorporations](world/megacorporations/) · [The Underworld](world/underworld/) · [Politics, Police & Policlubs](world/politics-and-security/) |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / description / table of contents / heading / navigation — states no game rule"
     },
     {
       "id": "magic/awakened-primer.md#1",
@@ -8470,7 +8490,8 @@
       ],
       "hash": "196e0c5906",
       "text": "Spellcasting, the spells themselves, conjuring and astral space for new\nAwakened characters, and\nthe powers of physical adepts and how to initiate.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / description / table of contents / heading / navigation — states no game rule"
     },
     {
       "id": "magic/initiation.md#1",
@@ -13344,7 +13365,23 @@
       ],
       "hash": "103d47f740",
       "text": "### Elemental spells work like guns  *(SR3 p.183, p.196)*\n{: #elemental-spells }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 185,
+          "printedPage": 183,
+          "quote": "Elemental spells are treated like normal ranged attacks (see p. 109) using Sorcery as the Ranged Combat Skill"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4469,
+          "snippet": "static isElementalSpell(category) {"
+        }
+      ],
+      "note": "0.7.0: the heading gained an explicit anchor; evidence carried from 0.6.3 and re-verified."
     },
     {
       "id": "magic/spellcasting.md#89",
@@ -14121,7 +14158,23 @@
       ],
       "hash": "d4db830b23",
       "text": "## Sustaining spells  *(SR3 p.178)*\n{: #sustaining-spells }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "Spells have three durations: Instant, Sustained, and Permanent"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/sustaining.mjs",
+          "line": 32,
+          "snippet": "/** Sustained and Permanent spells are held; Instant ones are over when cast (p.178). */"
+        }
+      ],
+      "note": "0.7.0: the heading gained an explicit anchor; evidence carried from 0.6.3 and re-verified."
     },
     {
       "id": "magic/spellcasting.md#120",
@@ -18146,7 +18199,23 @@
       ],
       "hash": "9646e42103",
       "text": "## Melee combat  *(SR3 p.120–123)*\n{: #melee-combat }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 122,
+          "printedPage": 120,
+          "quote": "Whenever two or more characters engage each other in hand-to-hand combat"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 270,
+          "snippet": "static async rollMeleeAttack("
+        }
+      ],
+      "note": "0.7.0: the heading gained an explicit anchor; evidence carried from 0.6.3 and re-verified."
     },
     {
       "id": "rules/combat.md#60",
@@ -34979,7 +35048,8 @@
       ],
       "hash": "e1e2fc2127",
       "text": "Combat, weapons, grenades, healing, Karma, decking, rigging, vehicles and\ndrones, from the *Shadowrun, Third Edition* core rulebook.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / description / table of contents / heading / navigation — states no game rule"
     },
     {
       "id": "rules/karma.md#1",
@@ -37977,7 +38047,8 @@
       ],
       "hash": "6fb9df0102",
       "text": "The vehicles and drones themselves, with their statistics, rigger gear\nand drone networks, are on [Vehicles](../vehicles/) and\n[Drones](../drones/).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / description / table of contents / heading / navigation — states no game rule"
     },
     {
       "id": "rules/rigging.md#4",
@@ -38024,7 +38095,23 @@
       ],
       "hash": "153f865228",
       "text": "### Vehicle Attributes  *(SR3 p.130–133)*\n{: #vehicle-attributes }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 132,
+          "printedPage": 130,
+          "quote": "The basic vehicle Attributes are Handling, Speed,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EVehicleSheet.js",
+          "line": 1241,
+          "snippet": "infoRow('Handling (base TN)', handling)"
+        }
+      ],
+      "note": "0.7.0: the heading gained an explicit anchor; evidence carried from 0.6.3 and re-verified."
     },
     {
       "id": "rules/rigging.md#8",
@@ -38273,7 +38360,34 @@
       ],
       "hash": "95a46dd38f",
       "text": "### Riggers, jacking in, and Control Pool  *(SR3 p.44, p.130, p.140, p.301)*\n{: #riggers-and-control-pool }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 303,
+          "printedPage": 301,
+          "quote": "adds +2 to the user's Reaction and +1D6 Initiative dice while"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 142,
+          "printedPage": 140,
+          "quote": "Bonuses for boosted and wired reflexes,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 29,
+          "snippet": "return whole(reactionBase) + 2 * whole(vcrLevel);"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 34,
+          "snippet": "return 1 + whole(vcrLevel);"
+        }
+      ],
+      "note": "0.7.0: the heading gained an explicit anchor; evidence carried from 0.6.3 and re-verified."
     },
     {
       "id": "rules/rigging.md#18",
@@ -41182,7 +41296,23 @@
       ],
       "hash": "3d9b3eb7ba",
       "text": "### Dump shock for a rigger  *(SR3 p.156)*\n{: #dump-shock-for-a-rigger }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 158,
+          "printedPage": 156,
+          "quote": "Any time a rigger is dumped from a remote control"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigger-shock.mjs",
+          "line": 38,
+          "snippet": "if (source === 'network') {"
+        }
+      ],
+      "note": "0.7.0: the heading gained an explicit anchor; evidence carried from 0.6.3 and re-verified."
     },
     {
       "id": "rules/rigging.md#130",
@@ -41553,7 +41683,39 @@
       ],
       "hash": "81028073ad",
       "text": "- **RCD** — remote control deck, the book's **captain's chair**: a\n  rigger with a VCR keeps the VCR Initiative, one without uses their\n  ordinary Reaction and Initiative dice. The drone's own tests (weapons,\n  Driving and Crash Tests) roll its **Pilot Rating**, with no pools\n  *(SR3 p.154)*. See [Drones](../drones/).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "Tests for drones in secondary mode are made with the drones' Pilot Ratings"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 156,
+          "printedPage": 154,
+          "quote": "Even though he is in captain's chair mode, Rigger X receives his usual Initiative bonus"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 64,
+          "snippet": "return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 69,
+          "snippet": "if (controlMode === 'vcr') return true;"
+        },
+        {
+          "file": "scripts/data/rigging.mjs",
+          "line": 70,
+          "snippet": "return controlMode === 'rcd' && whole(vcrLevel) > 0;"
+        }
+      ],
+      "note": "New in 0.7.0 (RCD captain's chair, p.154). Without a VCR, usesVcrInitiative is false and the ordinary Reaction + Initiative dice apply."
     },
     {
       "id": "rules/rigging.md#150",
@@ -46089,7 +46251,8 @@
       ],
       "hash": "e0a9aba743",
       "text": "| **NS** | *New Seattle* |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "book abbreviation (NS = New Seattle) — states no game rule"
     },
     {
       "id": "sources.md#14",
