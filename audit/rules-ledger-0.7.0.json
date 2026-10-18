@@ -48676,15 +48676,11 @@
       ],
       "search": [
         {
-          "pattern": "datajack port.{0,80}reaction",
+          "pattern": "\\+1.{0,40}reaction.{0,60}vehicle (tests|combat)",
           "path": "scripts"
         },
         {
           "pattern": "reaction.{0,60}datajack port",
-          "path": "scripts"
-        },
-        {
-          "pattern": "+1.{0,40}reaction.{0,60}vehicle (tests|combat)",
           "path": "scripts"
         }
       ],
