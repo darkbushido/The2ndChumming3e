@@ -54,7 +54,7 @@ Chicago. Since O'Malley's death, **who will be capo of Seattle** is the
 question of the moment. His daughter **Rowena O'Malley** took over the
 Finnigan Family within days and made a strong bid for it; **Maurice
 "Butcher" Bigio** is the other contender. The O'Malley camp believes Bigio
-arranged O'Malley's death *(NS p.97, p.100)*.
+arranged O'Malley's death *(NS p.97–98, p.100)*.
 
 | Family | Leader | Territory and business |
 | :--- | :--- | :--- |

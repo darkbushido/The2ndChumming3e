@@ -16,7 +16,7 @@ where shadowruns come from.
 
 {: .note }
 > **When this describes.** These pages describe the world as of **October
-> 2059**. The SR3 core book and *New Seattle* carry the story on into 2060–61;
+> 2059**. The SR3 core book and *New Seattle* carry the story on into 2060;
 > gamemasters will find those later events in the system's **GM Only**
 > compendium. Much of *New Seattle* is written as posts by shadowrunners on the
 > Shadowland BBS, so it's rumor as much as fact. These pages say **"runners

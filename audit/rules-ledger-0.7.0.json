@@ -8696,7 +8696,6 @@
           "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
         }
       ],
-      "note": "Of the per-grade benefits, the Astral Reaction bonus and the Initiate Astral Pool are implemented since 0.7.0 (539c5c9f). The rest (metaplanes, metamagic, geasa, signature alteration) are not-implemented under their own units (12, 15-17).",
       "code": [
         {
           "file": "scripts/data/initiate-astral.mjs",
@@ -8708,7 +8707,8 @@
           "line": 42,
           "snippet": "pool(grade, mod = 0) {"
         }
-      ]
+      ],
+      "note": "Of the per-grade benefits, the Astral Reaction bonus and the Initiate Astral Pool are implemented since 0.7.0 (539c5c9f). The rest (metaplanes, metamagic, geasa, signature alteration) are not-implemented under their own units (12, 15-17)."
     },
     {
       "id": "magic/initiation.md#9",
@@ -8742,7 +8742,6 @@
           "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
         }
       ],
-      "note": "Implemented in 0.7.0 (539c5c9f): Astral Reaction = Intelligence + grade, used for the astral Initiative (INT + grade + 20 + 1D6). It applies only while projecting, the only time Astral Reaction is used (SR3 p.174).",
       "code": [
         {
           "file": "scripts/data/initiate-astral.mjs",
@@ -8754,7 +8753,8 @@
           "line": 11220,
           "snippet": "base = InitiateAstral.initiativeBase(intel, grade);"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (539c5c9f): Astral Reaction = Intelligence + grade, used for the astral Initiative (INT + grade + 20 + 1D6). It applies only while projecting, the only time Astral Reaction is used (SR3 p.174)."
     },
     {
       "id": "magic/initiation.md#11",
@@ -11828,7 +11828,32 @@
       "hash": "3036e44a45",
       "text": "- **The Initiate Astral Pool** (grade dice) shows beside the Astral Combat\n  Pool. It is offered on astral combat, on Assensing, and on rolls made while\n  dual or projecting, and it refreshes with the other pools. A projecting\n  initiate's Initiative adds the grade *(MitS p.58)*.",
       "verdict": "match",
-      "note": "Guide text added in 0.7.0 with the Initiate Astral Pool (539c5c9f).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "which contains a number of dice equal to the initiate's grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Astral Pool dice can be used for any test made while on the astral",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Dice in the Astral Pool refresh",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
       "code": [
         {
           "file": "scripts/data/initiate-astral.mjs",
@@ -11856,32 +11881,7 @@
           "snippet": "async refreshInitiatePool() {"
         }
       ],
-      "pdf": [
-        {
-          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
-          "pdfPage": 59,
-          "printedPage": 58,
-          "quote": "which contains a number of dice equal to the initiate's grade",
-          "ocrPrinted": "Altering Astral Signature",
-          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
-        },
-        {
-          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
-          "pdfPage": 59,
-          "printedPage": 58,
-          "quote": "Astral Pool dice can be used for any test made while on the astral",
-          "ocrPrinted": "Altering Astral Signature",
-          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
-        },
-        {
-          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
-          "pdfPage": 59,
-          "printedPage": 58,
-          "quote": "Dice in the Astral Pool refresh",
-          "ocrPrinted": "Altering Astral Signature",
-          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
-        }
-      ]
+      "note": "Guide text added in 0.7.0 with the Initiate Astral Pool (539c5c9f)."
     },
     {
       "id": "magic/initiation.md#106",
@@ -16488,7 +16488,6 @@
           "quote": "Consult the Object Resistance Table for examples of objects and materials"
         }
       ],
-      "note": "Implemented in 0.7.0 (742bb050) for an Analyze Device cast and for any spell aimed at a vehicle actor: the cast dialog offers the Object Resistance Table rows and the TN is the row. Loose objects (a door, a wall) still cannot be targeted, because spells are aimed at actors.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
@@ -16500,7 +16499,8 @@
           "line": 201,
           "snippet": "case 'object': {"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (742bb050) for an Analyze Device cast and for any spell aimed at a vehicle actor: the cast dialog offers the Object Resistance Table rows and the TN is the row. Loose objects (a door, a wall) still cannot be targeted, because spells are aimed at actors."
     },
     {
       "id": "magic/spellcasting.md#44",
@@ -16557,7 +16557,6 @@
           "quote": "Consult the Object Resistance Table for examples of objects and materials"
         }
       ],
-      "note": "Implemented in 0.7.0 (742bb050) for an Analyze Device cast and for any spell aimed at a vehicle actor: the cast dialog offers the Object Resistance Table rows and the TN is the row. Loose objects (a door, a wall) still cannot be targeted, because spells are aimed at actors.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
@@ -16569,7 +16568,8 @@
           "line": 201,
           "snippet": "case 'object': {"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (742bb050) for an Analyze Device cast and for any spell aimed at a vehicle actor: the cast dialog offers the Object Resistance Table rows and the TN is the row. Loose objects (a door, a wall) still cannot be targeted, because spells are aimed at actors."
     },
     {
       "id": "magic/spellcasting.md#46",
@@ -16607,14 +16607,14 @@
           "quote": "Consult the Object Resistance Table for examples of objects and materials"
         }
       ],
-      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.OBJECT_ROWS. Applies to a vehicle target and to Analyze Device; see unit 43.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
           "line": 37,
           "snippet": "key: 'natural'"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.OBJECT_ROWS. Applies to a vehicle target and to Analyze Device; see unit 43."
     },
     {
       "id": "magic/spellcasting.md#48",
@@ -16640,14 +16640,14 @@
           "quote": "Consult the Object Resistance Table for examples of objects and materials"
         }
       ],
-      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.OBJECT_ROWS. Applies to a vehicle target and to Analyze Device; see unit 43.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
           "line": 38,
           "snippet": "key: 'lowtech'"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.OBJECT_ROWS. Applies to a vehicle target and to Analyze Device; see unit 43."
     },
     {
       "id": "magic/spellcasting.md#49",
@@ -16673,14 +16673,14 @@
           "quote": "Consult the Object Resistance Table for examples of objects and materials"
         }
       ],
-      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.OBJECT_ROWS. Applies to a vehicle target and to Analyze Device; see unit 43.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
           "line": 39,
           "snippet": "key: 'hightech'"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.OBJECT_ROWS. Applies to a vehicle target and to Analyze Device; see unit 43."
     },
     {
       "id": "magic/spellcasting.md#50",
@@ -16706,14 +16706,14 @@
           "quote": "Consult the Object Resistance Table for examples of objects and materials"
         }
       ],
-      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.OBJECT_ROWS. Applies to a vehicle target and to Analyze Device; see unit 43.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
           "line": 40,
           "snippet": "key: 'processed'"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.OBJECT_ROWS. Applies to a vehicle target and to Analyze Device; see unit 43."
     },
     {
       "id": "magic/spellcasting.md#51",
@@ -16739,7 +16739,6 @@
           "quote": "Consult the Object Resistance Table for examples of objects and materials"
         }
       ],
-      "note": "Force must be at least half the Object Resistance, rounded down: coded (objectMinForce) and warned on the cast card, not refused (0.7.0, 742bb050). NOT coded: \"Vehicles add Body and half armor to object resistance before dividing in half\" - for a vehicle target the code halves the bare table row and only prints a reminder that the vehicle adds Body and half Armor. The cast TN is likewise the bare row.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
@@ -16751,7 +16750,8 @@
           "line": 201,
           "snippet": "case 'object': {"
         }
-      ]
+      ],
+      "note": "Force must be at least half the Object Resistance, rounded down: coded (objectMinForce) and warned on the cast card, not refused (0.7.0, 742bb050). NOT coded: \"Vehicles add Body and half armor to object resistance before dividing in half\" - for a vehicle target the code halves the bare table row and only prints a reminder that the vehicle adds Body and half Armor. The cast TN is likewise the bare row."
     },
     {
       "id": "magic/spellcasting.md#52",
@@ -21438,7 +21438,6 @@
           "quote": "DETECTION SPELL TARGET NUMBER Subject Target Number"
         }
       ],
-      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.DETECTION_ROWS / detectionTN. The Detection Spell Results table (successes -> information) below is still not coded.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
@@ -21450,7 +21449,8 @@
           "line": 111,
           "snippet": "detectionTN(rowKey, force = 0, behindBarrier = false) {"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.DETECTION_ROWS / detectionTN. The Detection Spell Results table (successes -> information) below is still not coded."
     },
     {
       "id": "magic/spells.md#84",
@@ -21470,7 +21470,6 @@
           "quote": "Target is in sight of caster 4"
         }
       ],
-      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.DETECTION_ROWS / detectionTN. The Detection Spell Results table (successes -> information) below is still not coded.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
@@ -21482,7 +21481,8 @@
           "line": 111,
           "snippet": "detectionTN(rowKey, force = 0, behindBarrier = false) {"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.DETECTION_ROWS / detectionTN. The Detection Spell Results table (successes -> information) below is still not coded."
     },
     {
       "id": "magic/spells.md#85",
@@ -21502,7 +21502,6 @@
           "quote": "Target is out of sight of caster 6"
         }
       ],
-      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.DETECTION_ROWS / detectionTN. The Detection Spell Results table (successes -> information) below is still not coded.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
@@ -21514,7 +21513,8 @@
           "line": 111,
           "snippet": "detectionTN(rowKey, force = 0, behindBarrier = false) {"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.DETECTION_ROWS / detectionTN. The Detection Spell Results table (successes -> information) below is still not coded."
     },
     {
       "id": "magic/spells.md#86",
@@ -21534,7 +21534,6 @@
           "quote": "Target is on a different plane 10"
         }
       ],
-      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.DETECTION_ROWS / detectionTN. The Detection Spell Results table (successes -> information) below is still not coded.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
@@ -21546,7 +21545,8 @@
           "line": 111,
           "snippet": "detectionTN(rowKey, force = 0, behindBarrier = false) {"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.DETECTION_ROWS / detectionTN. The Detection Spell Results table (successes -> information) below is still not coded."
     },
     {
       "id": "magic/spells.md#87",
@@ -21566,7 +21566,6 @@
           "quote": "Target is behind an astral barrier + Force"
         }
       ],
-      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.DETECTION_ROWS / detectionTN. The Detection Spell Results table (successes -> information) below is still not coded.",
       "code": [
         {
           "file": "scripts/data/spell-target.mjs",
@@ -21578,7 +21577,8 @@
           "line": 111,
           "snippet": "detectionTN(rowKey, force = 0, behindBarrier = false) {"
         }
-      ]
+      ],
+      "note": "Implemented in 0.7.0 (742bb050): SpellTarget.DETECTION_ROWS / detectionTN. The Detection Spell Results table (successes -> information) below is still not coded."
     },
     {
       "id": "magic/spells.md#88",
@@ -23915,7 +23915,14 @@
       "hash": "40cf53ba7a",
       "text": "The Sorcery Test to learn, the days of study, and the teacher's or\nformula's price are the GM's to run. A limit taken off **Drain** instead\nis recorded on the spell, and the cast drains at the lowered Force\n*(SR3 p.180)*.",
       "verdict": "match",
-      "note": "Implemented in 0.7.0 (TODO 223): a limit taken on the Drain side is recorded on the spell (limitFetish / limitExclusive) and the cast drains at the lowered Force, including the Stun/Physical test. The Sorcery Test to learn, the days of study and the teacher's price are not run by the system - the guide says they are the GM's.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "The reduction in Force for Drain purposes also affects whether or not the caster suffers stun or physical Drain damage"
+        }
+      ],
       "code": [
         {
           "file": "scripts/data/spell-limits.mjs",
@@ -23928,14 +23935,7 @@
           "snippet": "const drainForce      = SpellLimits.drainForce(force, this);"
         }
       ],
-      "pdf": [
-        {
-          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
-          "pdfPage": 182,
-          "printedPage": 180,
-          "quote": "The reduction in Force for Drain purposes also affects whether or not the caster suffers stun or physical Drain damage"
-        }
-      ]
+      "note": "Implemented in 0.7.0 (TODO 223): a limit taken on the Drain side is recorded on the spell (limitFetish / limitExclusive) and the cast drains at the lowered Force, including the Stun/Physical test. The Sorcery Test to learn, the days of study and the teacher's price are not run by the system - the guide says they are the GM's."
     },
     {
       "id": "magic/spells.md#174",
@@ -45982,7 +45982,14 @@
       "hash": "1c848bc447",
       "text": "| …with a **limit** (fetish, exclusive) taken on the cost *(SR3 p.180)* | the Force **minus** the limit's modifier |",
       "verdict": "match",
-      "note": "Implemented in 0.7.0 (TODO 223): the learning dialog lets the player take the fetish (-1) / exclusive (-2) limit on the learning side and the Karma cost is the Force less the modifier.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "reduce the Karma cost and difficulty to learn the spell, by its modifier"
+        }
+      ],
       "code": [
         {
           "file": "scripts/data/karma-uses.mjs",
@@ -46000,14 +46007,7 @@
           "snippet": "learningReduction(spell) { return total(spell, 'learning'); },"
         }
       ],
-      "pdf": [
-        {
-          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
-          "pdfPage": 182,
-          "printedPage": 180,
-          "quote": "reduce the Karma cost and difficulty to learn the spell, by its modifier"
-        }
-      ]
+      "note": "Implemented in 0.7.0 (TODO 223): the learning dialog lets the player take the fetish (-1) / exclusive (-2) limit on the learning side and the Karma cost is the Force less the modifier."
     },
     {
       "id": "rules/karma.md#53",
@@ -64949,7 +64949,14 @@
       "hash": "e4cd25775d",
       "text": "- **✋** marks a weapon **ready** in hand; drawing one is a Ready Weapon\n  action *(SR3 p.107)*.",
       "verdict": "match",
-      "note": "The ✋ toggle marks a weapon in hand; readying charges a Simple Action (Ready Weapon), putting away is free.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 109,
+          "printedPage": 107,
+          "quote": "A character may ready a weapon by spending a Simple Action"
+        }
+      ],
       "code": [
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
@@ -64962,14 +64969,7 @@
           "snippet": "* ✋ In hand or put away (SR3 p.107, TODO 47) — only for weapons that c"
         }
       ],
-      "pdf": [
-        {
-          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
-          "pdfPage": 109,
-          "printedPage": 107,
-          "quote": "A character may ready a weapon by spending a Simple Action"
-        }
-      ]
+      "note": "The ✋ toggle marks a weapon in hand; readying charges a Simple Action (Ready Weapon), putting away is free."
     },
     {
       "id": "rules/weapons.md#240",
@@ -69877,10 +69877,10 @@
         17,
         24
       ],
-      "hash": "0ac3854656",
-      "text": "{: .note }\n> **When this describes.** These pages describe the world as of **October\n> 2059**. The SR3 core book and *New Seattle* carry the story on into 2060–61;\n> gamemasters will find those later events in the system's **GM Only**\n> compendium. Much of *New Seattle* is written as posts by shadowrunners on the\n> Shadowland BBS, so it's rumor as much as fact. These pages say **\"runners\n> claim\"** or **\"rumor\"** when the book does. Anything stated as fact here is\n> stated as fact in the book.",
+      "hash": "4dc166c293",
+      "text": "{: .note }\n> **When this describes.** These pages describe the world as of **October\n> 2059**. The SR3 core book and *New Seattle* carry the story on into 2060;\n> gamemasters will find those later events in the system's **GM Only**\n> compendium. Much of *New Seattle* is written as posts by shadowrunners on the\n> Shadowland BBS, so it's rumor as much as fact. These pages say **\"runners\n> claim\"** or **\"rumor\"** when the book does. Anything stated as fact here is\n> stated as fact in the book.",
       "verdict": "unverifiable",
-      "reason": "DATE: the box says the SR3 core book and New Seattle \"carry the story on into 2060-61\". The latest dated entries found are SR3 p.35 (events of 2060: the Corporate Court seat, the Fuchi break-up) and New Seattle's last dated Shadowland post, \"28 September 2060\" (NS p.104); a search of both books' text found no 2061 anywhere. The \"Shadowland BBS\" posts and the \"runners claim\" convention are accurate (NS pp.76-105 are posts). The \"GM Only compendium\" is a system matter, not a book fact."
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS p.104: agrees. The latest dated events are 2060 (SR3 p.35, the Corporate Court and Fuchi; NS p.104, a post of 28 September 2060); fixed 2026-10-18 from \"2060-61\", as neither book reaches 2061. The later events are in the GM-only journal (packs-src/sr3e-gm-sixth-world)."
     },
     {
       "id": "world/index.md#5",
@@ -70347,16 +70347,8 @@
       ],
       "hash": "016135a2ef",
       "text": "- **Hired muscle.** Mitsuhama calls on the Seattle yakuza for its\n  \"special problems\" *(NS p.92–93)*.",
-      "verdict": "guide-differs",
-      "pdf": [
-        {
-          "file": "Shadowrun 3e - New Seattle.pdf",
-          "pdfPage": 94,
-          "printedPage": 92,
-          "quote": "In the past, Mitsuhama could call on the yakuza for help in dealing with special problems. Now, with the Seattle yakuza hostile to outsiders"
-        }
-      ],
-      "note": "Book says Mitsuhama USED to call on the Seattle yakuza (\"In the past\") and no longer can, because the Seattle yakuza seceded from the Watada-rengo (Shotozumi-rengo) and are now \"hostile to outsiders\", so MCT \"has to hire more shadowrunners\" (NS p.92-93). Guide says \"Mitsuhama calls on the Seattle yakuza for its special problems\" in the present tense."
+      "verdict": "unverifiable",
+      "reason": "Setting fact, deliberate for the campaign date. NS pp.92-93 says Mitsuhama \"In the past\" called on the Seattle yakuza, before their secession; New Seattle dates the secession only by its 2060 posts. The maintainer's GM-only journal (packs-src/sr3e-gm-sixth-world/the-sixth-world-after-october-2059-gm-only.*.json, \"The yakuza break with Japan\") places it after October 2059, the date these pages describe, so the guide's present tense is right for that date (checked 2026-10-18)."
     },
     {
       "id": "world/index.md#44",
@@ -70572,7 +70564,7 @@
       "hash": "13210469c5",
       "text": "- **Use the rivalries listed above.** Fuchi against Renraku, Fuchi's three\n  factions against each other (and Villiers's new Novatech), the Seattle\n  Mafia's fight over who succeeds O'Malley, and Humanis against the\n  Empowerment Coalition are all open in late 2059, and each one hires\n  runners.",
       "verdict": "unverifiable",
-      "reason": "DATE: \"open in late 2059\" - Fuchi vs Renraku, Fuchi's three factions and Villiers's Novatech are dated 2059 in SR3 p.35. The Seattle Mafia succession is not: SR3 p.35 dates O'Malley's death to 2058, but New Seattle p.97 (a post dated 24 September 2060) already reports that the Commissione appointed Maurice \"Butcher\" Bigio capo of Seattle, with no date given for that appointment, so the book does not show the succession was still open in late 2059. The Humanis vs Empowerment Coalition rivalry (NS pp.79-81) is also undated."
+      "reason": "Setting fact, deliberate for the campaign date. Fuchi, its factions and Novatech are dated 2059 (SR3 p.35); the Mafia succession is open in October 2059 because the GM-only journal (packs-src/sr3e-gm-sixth-world/the-sixth-world-after-october-2059-gm-only.*.json) places Bigio's appointment after it; Humanis vs the Empowerment Coalition is undated (NS pp.79-81). Agrees with the campaign date."
     },
     {
       "id": "world/index.md#62",
@@ -71063,16 +71055,8 @@
       ],
       "hash": "de5a9f925f",
       "text": "It aims for the top spot in computing while Fuchi and Renraku fight.\nRunners credit it with the **\"zero-zone\"**: zero penetration, zero\nsurvival. That means concealed autoguns, lethal gas, barghest guard dogs,\nbound elementals, and **black ice** that kills. Its wage mages are\n**Unit 13**, which is mostly human, with no shamans. Its Johnsons want the\njob done exactly as planned. For its \"special problems\" it can call on the\nSeattle yakuza.",
-      "verdict": "guide-differs",
-      "pdf": [
-        {
-          "file": "Shadowrun 3e - New Seattle.pdf",
-          "pdfPage": 94,
-          "printedPage": 92,
-          "quote": "In the past, Mitsuhama could call on the yakuza for help in dealing with special problems. Now, with the Seattle yakuza hostile to outsiders"
-        }
-      ],
-      "note": "Book says Mitsuhama USED to call on the Seattle yakuza (\"In the past\") but cannot now, because the Seattle yakuza seceded and are \"hostile to outsiders\" (NS p.92-93). Guide says \"For its special problems it can call on the Seattle yakuza.\" The rest of the paragraph (zero-zone, autoguns, barghest dogs, bound elementals, lethal ice, Unit 13 mostly human with no shamans, Johnsons by the numbers) agrees with NS pp.93-94."
+      "verdict": "unverifiable",
+      "reason": "Setting fact, deliberate for the campaign date. NS pp.92-93 says Mitsuhama \"In the past\" called on the Seattle yakuza, before their secession; New Seattle dates the secession only by its 2060 posts. The maintainer's GM-only journal (packs-src/sr3e-gm-sixth-world/the-sixth-world-after-october-2059-gm-only.*.json, \"The yakuza break with Japan\") places it after October 2059, the date these pages describe, so the guide's present tense is right for that date (checked 2026-10-18)."
     },
     {
       "id": "world/megacorporations.md#41",
@@ -71993,10 +71977,10 @@
         52,
         57
       ],
-      "hash": "48c82fd6f2",
-      "text": "It began on Seattle's docks and in its labour unions, and was run from\nChicago. Since O'Malley's death, **who will be capo of Seattle** is the\nquestion of the moment. His daughter **Rowena O'Malley** took over the\nFinnigan Family within days and made a strong bid for it; **Maurice\n\"Butcher\" Bigio** is the other contender. The O'Malley camp believes Bigio\narranged O'Malley's death *(NS p.97, p.100)*.",
+      "hash": "e93c9a3cb9",
+      "text": "It began on Seattle's docks and in its labour unions, and was run from\nChicago. Since O'Malley's death, **who will be capo of Seattle** is the\nquestion of the moment. His daughter **Rowena O'Malley** took over the\nFinnigan Family within days and made a strong bid for it; **Maurice\n\"Butcher\" Bigio** is the other contender. The O'Malley camp believes Bigio\narranged O'Malley's death *(NS p.97–98, p.100)*.",
       "verdict": "unverifiable",
-      "reason": "DATE: the guide presents who will be capo of Seattle as still open (\"the question of the moment\", Bigio \"the other contender\"). New Seattle says the Commissione \"appointed Maurice 'Butcher' Bigio\" capo of Seattle (NS p.97) and Uncle Al's report speaks of \"Maurice Bigio as capo of Seattle\" and \"Bigio's new regime\" (NS pp.98, 100); Rowena \"made a good run at becoming capa of Seattle\" (NS p.100, past tense). The book gives no date for the appointment (the posts are dated 24 and 28 September 2060), so whether it was settled by October 2059 cannot be shown. The rest agrees: Rowena took the Finnigan Family \"mere days after her father's death\" (NS p.100); \"We both know he arranged the hit on your father, though I can't prove it\" is on NS p.98 (the guide cites p.97, p.100)."
+      "reason": "Setting fact, deliberate for the campaign date. NS p.97 reports the Commissione appointing Bigio capo of Seattle, in posts dated September 2060 with no date for the appointment. The GM-only journal (packs-src/sr3e-gm-sixth-world/the-sixth-world-after-october-2059-gm-only.*.json, \"The Mafia: Bigio becomes capo\") places it after October 2059, so the guide's \"who will be capo … is the question of the moment\" is right for that date. The guide's cite for \"arranged O'Malley's death\" should include NS p.98."
     },
     {
       "id": "world/underworld.md#20",
@@ -72151,16 +72135,8 @@
       ],
       "hash": "5590383872",
       "text": "**Conflicts:** **Mitsuhama** calls on the yakuza for its \"special\nproblems\" *(NS p.92–93)*. The *sokaiya* target corps in the **Pacific\nProsperity Group**, which brings them into conflict with the Triads\n*(NS p.102)*.",
-      "verdict": "guide-differs",
-      "pdf": [
-        {
-          "file": "Shadowrun 3e - New Seattle.pdf",
-          "pdfPage": 94,
-          "printedPage": 92,
-          "quote": "In the past, Mitsuhama could call on the yakuza for help in dealing with special problems. Now, with the Seattle yakuza hostile to outsiders"
-        }
-      ],
-      "note": "Book says Mitsuhama USED to call on the Seattle yakuza (\"In the past\") and cannot now, because the Seattle yakuza seceded and are \"hostile to outsiders\" (NS p.92-93). Guide says \"Mitsuhama calls on the yakuza for its special problems\" in the present tense. The second sentence (sokaiya target PPG corps, conflicts with the Triads, NS p.102) agrees: \"They're particularly interested in corps belonging to the Pacific Prosperity Group, which has led to some conflicts with the Triads\" (a runner's post)."
+      "verdict": "unverifiable",
+      "reason": "Setting fact, deliberate for the campaign date. NS pp.92-93 says Mitsuhama \"In the past\" called on the Seattle yakuza, before their secession; New Seattle dates the secession only by its 2060 posts. The maintainer's GM-only journal (packs-src/sr3e-gm-sixth-world/the-sixth-world-after-october-2059-gm-only.*.json, \"The yakuza break with Japan\") places it after October 2059, the date these pages describe, so the guide's present tense is right for that date (checked 2026-10-18)."
     },
     {
       "id": "world/underworld.md#33",
