@@ -2956,3 +2956,8 @@ No restart (JS only). Every dialog has a **GM adjustment** field: type +2 once a
       preview doubles uncompensated recoil (10 rounds, 6 comp = +8).
 - [ ] **Minimum range.** Fire a grenade launcher at a target 3 m away: a warning toast and a "Minimum range" line in the TN
       breakdown; the shot is still allowed. Fire a missile launcher at 12 m: same, 20 m. At 25 m: nothing.
+
+## 56. APDS against a vehicle or drone (rules check 0.7.0, SR3 p.116)
+
+- [ ] Shoot a drone (or vehicle) with an APDS-loaded weapon. On its soak card the Armor is **not** halved and the note reads
+      "APDS is not anti-vehicular: treated as normal ammunition". Shoot a person with the same weapon: Ballistic is halved.

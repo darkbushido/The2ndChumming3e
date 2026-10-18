@@ -16,6 +16,7 @@ import { MdfRules } from '../data/mdf-rules.mjs';
 import { KarmaPool } from '../data/karma-uses.mjs';
 import { CombatPool } from '../data/combat-pool.mjs';
 import { Collisions } from '../data/collisions.mjs';
+import { Apds } from '../data/apds.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -9328,8 +9329,10 @@ _prepareCharacter(sys, attr) {
     } else if (ammoRules.armorEffect === 'gel') {
       ammoNote = `Gel — Impact armour applies (${impact}), not Ballistic`;
     } else if (ammoRules.armorEffect === 'apds') {
-      ballistic = Math.floor(ballistic / 2);
-      ammoNote  = `APDS — ballistic armour halved (now ${ballistic})`;
+      // SR3 p.116: APDS "is not anti-vehicular and is therefore treated as normal ammunition against vehicles and drones".
+      const apds = Apds.resolve(ballistic, this.type === 'vehicle');
+      ballistic = apds.ballistic;
+      ammoNote  = apds.note;
     } else if (ammoRules.armorEffect === 'flechette') {
       const dermal = this.type === 'vehicle' ? [] : SR3EActor.dermalArmorSources(this);
       // An (f) code has the increase built in; dermal armor negates it, so the level drops one (TODO 161).

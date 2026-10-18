@@ -52,6 +52,7 @@ const SPELLTN = { module: '../scripts/data/spell-target.mjs', klass: 'SpellTarge
 const WILLING = { module: '../scripts/data/willing-target.mjs', klass: 'WillingTarget' };
 
 const RANGEB = { module: '../scripts/data/range-bands.mjs', klass: 'RangeBands' };
+const APDSM = { module: '../scripts/data/apds.mjs', klass: 'Apds' };
 const COLLISIONS = { module: '../scripts/data/collisions.mjs', klass: 'Collisions' };
 const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment' };
 
@@ -2927,5 +2928,12 @@ export const MUTANTS = [
     ...RANGEB, method: 'minimumRangeWarning',
     was:    "nothing read the Weapon Range Table's minimum-range asterisk (grenade launcher 5 m, missile launcher 20 m, SR3 p.111)",
     impl:   () => '',
+  },
+  {
+    id:     'apds-halves-vehicle-armor',
+    suite:  'apds',
+    ...APDSM, method: 'resolve',
+    was:    "APDS halved a vehicle's or drone's Armor; SR3 p.116 treats it as normal ammunition against vehicles and drones",
+    impl:   b => { const h = Math.floor((Number(b) || 0) / 2); return { ballistic: h, halved: true, note: 'APDS' }; },
   },
 ];
