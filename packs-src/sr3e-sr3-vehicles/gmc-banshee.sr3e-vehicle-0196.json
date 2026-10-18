@@ -12,6 +12,7 @@
       "availability": "NA",
       "bookPage": "sr3.311,r3.190",
       "seating": 3,
+      "stallSpeed": 250,
       "notes": "ECM 5, ECCM 5, RAM 2 (factored in), Thermal Baffles 1 (factored in), External Fixed Hardpoint, Small Turret (1 CF Ammo Bin), Gas Enviroseal | Alt-mode Speed/Accel: 250(1000)/50 | Seating: 3e",
       "damage": {
         "value": 0
@@ -26,8 +27,8 @@
           "base": 6
         },
         "speed": {
-          "value": 250,
-          "base": 250
+          "value": 1000,
+          "base": 1000
         },
         "accel": {
           "value": 50,

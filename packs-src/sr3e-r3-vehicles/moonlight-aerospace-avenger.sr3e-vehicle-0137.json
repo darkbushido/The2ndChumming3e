@@ -12,6 +12,7 @@
       "availability": "3/72 hrs",
       "bookPage": "r3.181",
       "seating": 1,
+      "stallSpeed": 40,
       "notes": "2 External Firmpoints | Alt-mode Speed/Accel: 40(200)/21",
       "damage": {
         "value": 0
@@ -26,8 +27,8 @@
           "base": 4
         },
         "speed": {
-          "value": 40,
-          "base": 40
+          "value": 200,
+          "base": 200
         },
         "accel": {
           "value": 21,

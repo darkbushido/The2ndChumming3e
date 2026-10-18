@@ -11,6 +11,7 @@
       "streetIndex": 2,
       "availability": "12/12days",
       "seating": 0,
+      "stallSpeed": 60,
       "bookPage": "r3.175",
       "notes": "Remote-Control Interface, Rigger Adaptation, External Fixed Hardpoint, External Missle Mount | Alt-mode Speed/Accel: 60(500)/40",
       "damage": {
@@ -26,8 +27,8 @@
           "base": 5
         },
         "speed": {
-          "value": 60,
-          "base": 60
+          "value": 500,
+          "base": 500
         },
         "accel": {
           "value": 40,

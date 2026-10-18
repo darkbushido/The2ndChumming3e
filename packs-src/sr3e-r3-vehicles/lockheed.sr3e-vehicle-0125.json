@@ -12,6 +12,7 @@
       "availability": "NA",
       "bookPage": "r3.178",
       "seating": 204,
+      "stallSpeed": 125,
       "notes": "6 Partial Basic Living Amenities | Alt-mode Speed/Accel: 125(2500)/60",
       "damage": {
         "value": 0
@@ -26,8 +27,8 @@
           "base": 6
         },
         "speed": {
-          "value": 125,
-          "base": 125
+          "value": 2500,
+          "base": 2500
         },
         "accel": {
           "value": 60,

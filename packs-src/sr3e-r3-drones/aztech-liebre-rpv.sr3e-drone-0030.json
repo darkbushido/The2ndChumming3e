@@ -11,6 +11,7 @@
       "streetIndex": 2,
       "availability": "16/16days",
       "seating": 0,
+      "stallSpeed": 60,
       "bookPage": "r3.175",
       "notes": "Remote-Control Interface, Rigger Adaptation, External Fixed Hardpoint, Vindicator Minigun | Alt-mode Speed/Accel: 60(1620)/75",
       "damage": {
@@ -26,8 +27,8 @@
           "base": 3
         },
         "speed": {
-          "value": 60,
-          "base": 60
+          "value": 1620,
+          "base": 1620
         },
         "accel": {
           "value": 75,

@@ -1,4 +1,5 @@
 import { Collisions } from './data/collisions.mjs';
+import { StallSpeed } from './data/stall-speed.mjs';
 
 /**
  * 💥 Collision — a vehicle hits a person, another vehicle or a barrier · TODO 189.
@@ -68,6 +69,7 @@ export class SR3ECollision {
       vehicleName:    v.name,
       vehicleBody:    sys.attributes?.body?.base ?? 4,
       accel:          sys.attributes?.accel?.base ?? 0,
+      stallSpeed:     StallSpeed.of(sys),   // an aircraft's stall speed, m/turn (0 = none) — SR3 p.132
       soakPool:       c.soak ?? (sys.attributes?.body?.base ?? 4),
       driverActorId:  (c.aboard ?? []).find(a => a.role === 'Driver')?.id ?? '',
       passengerActorIds: (c.aboard ?? []).filter(a => a.role === 'Passenger').map(a => a.id),
@@ -282,13 +284,21 @@ export class SR3ECollision {
     const cc = ctx.cc;
     const successes = res?.successes ?? 0;
     const b = Collisions.braking({ speed: cc.speed, acceleration: cc.accel, successes });
-    const crashBtn = b.crashTest
+    // An aircraft braked below its stall speed (SR3 p.132): the same Crash Test offer, never rolled for anyone.
+    const stalled = StallSpeed.below(b.speedAfter, cc.stallSpeed);
+    const stallNote = stalled
+      ? `<div class="sr-staging-result" style="color:var(--sr-amber)">${esc(StallSpeed.note(cc.vehicleName, b.speedAfter, cc.stallSpeed))}</div>`
+        + (b.crashTest ? '' : `<div class="sr-soak-action">
+           <button class="sr-crash-open-btn" data-vehicle-id="${cc.vehicleActorId}">💥 ${esc(cc.vehicleName)} — Crash Test</button>
+         </div>`)
+      : '';
+    const crashBtn = stallNote + (b.crashTest
       ? `<div class="sr-staging-result" style="color:var(--sr-amber)">
            ⚠ It decelerated ${b.reduction} m/turn — more than Acceleration × 4 (${cc.accel * 4}). A Crash Test is called for (SR3 p.142, p.147).
          </div>
          <div class="sr-soak-action">
            <button class="sr-crash-open-btn" data-vehicle-id="${cc.vehicleActorId}">💥 ${esc(cc.vehicleName)} — Crash Test</button>
-         </div>` : '';
+         </div>` : '');
     const other = cc.kind === 'vehicle'
       ? `<label style="font-size:12px">${esc(cc.otherName)} (km/h)
            <input type="number" class="sr-coll-other" value="${kmh(cc.otherSpeed ?? 0)}" style="width:5em"/></label>` : '';

@@ -12,6 +12,7 @@
       "availability": "NA",
       "bookPage": "r3.190",
       "seating": 3,
+      "stallSpeed": 250,
       "notes": "ECM 3, ECCM 3, RAM 2 (factored in), Thermal Baffles 2 (factored in), Gas Enviroseal, Medium Launch Control System, 2 External Missile Mounts, Small Turret (1 CF Ammo Bin) | Alt-mode Speed/Accel: 250(850)/45 | Seating: 3e",
       "damage": {
         "value": 0
@@ -26,8 +27,8 @@
           "base": 5
         },
         "speed": {
-          "value": 250,
-          "base": 250
+          "value": 850,
+          "base": 850
         },
         "accel": {
           "value": 45,

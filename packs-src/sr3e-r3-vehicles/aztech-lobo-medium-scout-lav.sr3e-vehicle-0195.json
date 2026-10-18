@@ -12,6 +12,7 @@
       "availability": "NA",
       "bookPage": "r3.190",
       "seating": 3,
+      "stallSpeed": 250,
       "notes": "ECM 6, ECCM 5, Medium Turret (1 CF Ammo Bin), Gas Enviroseal | Alt-mode Speed/Accel: 250(850)/35 | Seating: 3e",
       "damage": {
         "value": 0
@@ -26,8 +27,8 @@
           "base": 6
         },
         "speed": {
-          "value": 250,
-          "base": 250
+          "value": 850,
+          "base": 850
         },
         "accel": {
           "value": 35,

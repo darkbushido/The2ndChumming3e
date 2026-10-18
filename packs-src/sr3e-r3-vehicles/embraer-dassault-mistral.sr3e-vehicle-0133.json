@@ -12,6 +12,7 @@
       "availability": "18/18 days",
       "bookPage": "r3.180",
       "seating": 17,
+      "stallSpeed": 135,
       "notes": "Alt-mode Speed/Accel: 135(300)/21",
       "damage": {
         "value": 0
@@ -26,8 +27,8 @@
           "base": 4
         },
         "speed": {
-          "value": 135,
-          "base": 135
+          "value": 300,
+          "base": 300
         },
         "accel": {
           "value": 21,

@@ -12,6 +12,7 @@
       "availability": "15/15 days",
       "bookPage": "r3.180",
       "seating": 5,
+      "stallSpeed": 135,
       "notes": "3 Folding Bench Seats | Alt-mode Speed/Accel: 135(330)/24 | Seating: 2+3b",
       "damage": {
         "value": 0
@@ -26,8 +27,8 @@
           "base": 4
         },
         "speed": {
-          "value": 135,
-          "base": 135
+          "value": 330,
+          "base": 330
         },
         "accel": {
           "value": 24,

@@ -503,6 +503,10 @@ export class VehicleData extends foundry.abstract.TypeDataModel {
       passengerActorIds: new ArrayField(new StringField()),
       controlMode:   new StringField({ initial: '' }),
       seating:      new NumberField({ integer: true, initial: 4, min: 0 }),
+      /* An aircraft's stall speed, m/turn — SR3 p.132: fixed-wing aircraft have two Speed Ratings, "the higher
+       * number is its maximum safe speed [`attributes.speed`]; the lower represents the aircraft's stall speed".
+       * 0 = none. Guard reads with `?? 0` (StallSpeed.of). */
+      stallSpeed:   new NumberField({ integer: true, initial: 0, min: 0 }),
       entryPoints:  new StringField({ initial: '' }),
       cost:         new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:  new NumberField({ initial: 0, min: 0 }),

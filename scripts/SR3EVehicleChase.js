@@ -1,5 +1,6 @@
 import { vcrLevel as vcrLevelOf } from './data/item-rating.mjs';
 import { Rigging } from './data/rigging.mjs';
+import { StallSpeed } from './data/stall-speed.mjs';
 import { openTestFirstWave, openTestExplode, openTestPending, openTestHighest } from './data/open-test.mjs';
 
 const VEHICLE_TYPES = [
@@ -168,6 +169,8 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       p.speed = (parseFloat(ev.target.value) || 0) / 1.2; // store as km/ct
       this._refreshScores(p);
     });
+    // …and once the GM has finished typing it: an aircraft that has dropped below its stall speed (SR3 p.132).
+    el.querySelector(`#p-${pid}-speed`)?.addEventListener('change', () => this._checkStall(p));
 
     // Distance → just store
     el.querySelector(`#p-${pid}-distance`)?.addEventListener('input', ev => {
@@ -806,6 +809,32 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
   /* ------------------------------------------------------------------ */
   /*  Shared action-dialog helpers                                        */
   /* ------------------------------------------------------------------ */
+
+  /**
+   * An aircraft slower than its stall speed (SR3 p.132: "the minimum speed it must maintain to keep flying";
+   * Rigger 3 Revised, Running Out of Gas: a Crash Test "when the vehicle's speed falls below its Stall Speed
+   * Rating"). Warns once per drop and OFFERS the Crash Test (`.sr-crash-open-btn`) — never rolls it. The flag
+   * resets when the speed is back at or above the stall speed. No altitude is tracked, so the card says "if airborne".
+   */
+  async _checkStall(p) {
+    const vehicle = game.actors.get(p.vehicleActorId);
+    const stall   = StallSpeed.of(vehicle?.system);
+    if (!StallSpeed.below(p.speed, stall)) { p.stallWarned = false; return; }
+    if (p.stallWarned) return;
+    p.stallWarned = true;
+    const note = StallSpeed.note(vehicle.name, p.speed, stall);
+    ui.notifications.warn(`${vehicle.name}: below its stall speed (${stall} m/turn).`);
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: vehicle }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">✈ ${vehicle.name} — below its stall speed</div>
+        <div class="sr-staging-result" style="color:var(--sr-amber)">${note}</div>
+        <div class="sr-soak-action">
+          <button class="sr-crash-open-btn" data-vehicle-id="${vehicle.id}">💥 ${vehicle.name} — Crash Test</button>
+        </div>
+      </div>`,
+    });
+  }
 
   _getParticipantInfo(pid) {
     const p = this._participants.find(x => x.id === pid);

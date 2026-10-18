@@ -3031,3 +3031,17 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] Fire a **full-auto** burst at Armor 3: same, deflected.
 - [ ] Raise the weapon's code by hand to 8M (retype the Damage Code in the dialog): Power 4 beats Armor 3, no deflection note.
 - [ ] An **AV munition** against Armor 6 (halved to 3): a Power 3 AV hit is deflected, a Power 4 is not.
+
+## 64. Aircraft have a stall speed (rules check 0.7.0, SR3 p.132; Rigger 3 Revised, Running Out of Gas)
+
+⚠ New persisted field (`system.stallSpeed` on vehicles): **fully restart Foundry**, not F5. The aircraft packs and the 0.7.0 migration change too, so the packs must be rebuilt/installed (`npm run packs:install`, Foundry closed).
+
+**Prerequisites:** a world with a vehicle copied from the **old** packs (an owned Cessna C750(Cargo) with Speed 135, or any aircraft made before this change), a fresh Cessna C750(Cargo) from the Vehicles pack, a GM and a player who can drive it.
+
+- [ ] **Packs.** The new Cessna C750(Cargo) shows **Speed 340** and **Stall Speed 135** on its Stats tab (the book row is 135/340, SR3 p.310). GMC Banshee: Speed 1000, Stall 250. A Cunard liner / any boat: Stall Speed 0, Speed unchanged.
+- [ ] **Migration.** Load the world with the old Cessna: it becomes Speed 340 / Stall 135. Then edit its Speed to 200 by hand and run `game.sr3e.SR3EMigrations.force()`: Speed stays 200 (the GM's value), Stall Speed stays 135.
+- [ ] **Editable.** Type a Stall Speed on any vehicle; it saves and survives a reload. Blank/0 means none.
+- [ ] **Speed rating.** In a Chase Scene give the Cessna a speed of 200 m/turn × 1.2 = 240 km/h: the Accel/Brake dialog's "Exceeds speed rating" tick is **off** (it was on while Speed held 135). At 500 km/h (417 m/turn) it ticks on (above 340).
+- [ ] **Below stall.** In the Chase Scene type 120 km/h (100 m/turn) in the Cessna's speed box and press Tab: a warning appears and a chat card "below its stall speed" with a **💥 Crash Test** button; clicking it opens the Crash dialog (nothing is rolled by itself). Re-typing the same speed does not post a second card; type 300 km/h then 100 again and it posts once more. A speed of 0 posts nothing.
+- [ ] **Braking.** Run the 💥 Collision tool as an accident with the Cessna at 300 km/h so the Braking Test leaves it under 135 m/turn: the Braking card carries the same stall warning and a Crash Test button (one button, not two, when the deceleration already called for a Crash Test).
+- [ ] A thunderbird (GMC Harpy Scout LAV): same stall speed 250, and the card says the stall speed applies only at 75 m or higher.

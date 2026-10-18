@@ -12,6 +12,7 @@
       "availability": "17/17 days",
       "bookPage": "r3.180",
       "seating": 2,
+      "stallSpeed": 135,
       "notes": "Customised Engine(factored in), 2 External Hardpoints | Alt-mode Speed/Accel: 135(400)/30",
       "damage": {
         "value": 0
@@ -26,8 +27,8 @@
           "base": 3
         },
         "speed": {
-          "value": 135,
-          "base": 135
+          "value": 400,
+          "base": 400
         },
         "accel": {
           "value": 30,

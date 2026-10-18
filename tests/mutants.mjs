@@ -28,6 +28,7 @@ const PACKFIX = { module: '../scripts/data/pack-corrections-0-7-0.mjs', klass: '
 const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' };
 const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  };
 const VARM  = { module: '../scripts/data/vehicle-armor.mjs', klass: 'VehicleArmor' };
+const STALL = { module: '../scripts/data/stall-speed.mjs', klass: 'StallSpeed' };
 const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  };
 const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
@@ -234,6 +235,26 @@ export const MUTANTS = [
     ...VARM, method: 'comparedPower',
     was:    'the soak card compared the staged Power, burst / full-auto bonus included, with the vehicle Armor; SR3 p.132 / p.149 leave it out (0.7.0)',
     impl:   (staged) => Number(staged) || 0,
+  },
+  {
+    id:     'stall-speed-never-warns',
+    suite:  'aircraft-stall',
+    ...STALL, method: 'below',
+    was:    'an aircraft below its stall speed raised no warning and no Crash Test offer; the model had no stall speed at all (SR3 p.132, 0.7.0)',
+    impl:   () => false,
+  },
+  {
+    id:     'stall-migration-keeps-the-low-speed-as-max',
+    suite:  'aircraft-stall',
+    ...PACKFIX, method: 'fixActor', needsOriginal: '_fixActorOriginal',
+    was:    'owned aircraft kept the stall speed in Speed (the lower number of the 135/340 row) and got no stall speed (SR3 p.132, 0.7.0)',
+    impl:   function (actor) {
+      const d = this._fixActorOriginal(actor);
+      if (!d) return d;
+      delete d['system.attributes.speed.value'];
+      delete d['system.attributes.speed.base'];
+      return d;
+    },
   },
   {
     id:     'captains-chair-loses-vcr-initiative',

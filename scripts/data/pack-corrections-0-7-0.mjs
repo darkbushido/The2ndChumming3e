@@ -124,6 +124,57 @@ export const ACTOR_CORRECTIONS = [
   ] },
 ];
 
+/* ── Aircraft stall speed · SR3 p.132, Rigger 3 Revised ───────────────────────────────────────────
+ * "Fixed-wing aircraft have two Speed Ratings. The higher number is its maximum safe speed; the lower represents the
+ * aircraft's stall speed." The packs stored the LOWER number in `speed` (the book's "135/340" row became speed 135, the
+ * maximum surviving only in the notes as "Alt-mode Speed/Accel: 135(340)/22"). Each row is [name, stall, max, bookPage?]:
+ * `speed` becomes the maximum and the new `stallSpeed` field the lower. Same rule as every correction here: a field is
+ * changed only while it still holds the shipped value — a GM-edited Speed is left as typed, and `stallSpeed` only fills a
+ * blank. `bookPage` pins a name the pack gave a single letter or a truncated word ("A", "P", "Lockheed"). The vehicle
+ * types read from the book rows: fixed-wing aircraft (including the thunderbird LAVs and the suborbitals), the
+ * fixed-wing/STOL UAVs. Boats, ships, submarines and the Nizhinyi BMV-2 (no readable book page) are NOT here. */
+export const AIRCRAFT_STALL = [
+  ['Aztech Liebre RPV', 60, 1620],
+  ['CAS Wandjina RPV', 60, 500],
+  ['FMC-Stonebrooke TADS Firebird', 40, 105],
+  ['GM-Nissan Spotter', 40, 200],
+  ['GTE-Ford Retrans Unit', 40, 105],
+  ['P', 40, 105, 'r3.176'],
+  ['A', 200, 1000, 'r3.192'],
+  ['Airbus A1570 HSCT', 125, 3000],
+  ['Artemis Nightglider', 10, 60],
+  ['Aztech Halcon GAA', 150, 1800],
+  ['Aztech Lobo Medium Scout LAV', 250, 850],
+  ['Bac-Dessault-MBB EFA Variants', 150, 2000],
+  ['CASA J-239 Raven', 135, 400],
+  ['Embraer-Dassault Mistral', 135, 300],
+  ['F-B China Clipper Suborbital', 150, 1250],
+  ['Fiat-Fokker Cloud Nine', 60, 200],
+  ['GD SV250 Semiballistic', 200, 1500],
+  ['GMC Harpy Scout LAV', 250, 850],
+  ['Hawker-Ridley HS-895 Skytruck', 135, 320],
+  ['Ilyushin IL-159 Suborbital', 150, 750],
+  ['Lear-Cessna Platinum I', 135, 330],
+  ['Lear-Cessna Platinum II', 135, 800],
+  ['Lockheed C-260 Transport', 150, 600],
+  ['Lockheed', 125, 2500, 'r3.178'],
+  ['Moonlight Aerospace Avenger', 40, 200],
+  ['MCT Indrahar O-5P Surv. Drone', 60, 300],
+  ['Cessna C750(Cargo)', 135, 340],
+  ['Cessna C750(Passenger)', 135, 340],
+  ['GMC Banshee', 250, 1000],
+];
+
+ACTOR_CORRECTIONS.push(...AIRCRAFT_STALL.map(([name, stall, max, bookPage]) => ({
+  name,
+  ...(bookPage ? { gate: { 'system.bookPage': bookPage } } : {}),
+  fixes: [
+    { path: 'system.attributes.speed.value', from: stall, to: max },
+    { path: 'system.attributes.speed.base',  from: stall, to: max },
+    { path: 'system.stallSpeed', from: [0, ''], to: stall },
+  ],
+})));
+
 const gateOk = (doc, gate) => Object.entries(gate ?? {}).every(([p, v]) => same(get(doc, p), v));
 
 function applyFixes(doc, c) {
@@ -166,6 +217,7 @@ export class PackFixes070 {
     if (actor?.type !== 'vehicle') return null;
     for (const c of ACTOR_CORRECTIONS) {
       if (c.name !== actor.name && !(c.alt ?? []).includes(actor.name)) continue;
+      if (!gateOk(actor, c.gate)) continue;
       const delta = applyFixes(actor, c);
       if (c.rename && actor.name === c.name) delta.name = c.rename;
       if (Object.keys(delta).length) return delta;

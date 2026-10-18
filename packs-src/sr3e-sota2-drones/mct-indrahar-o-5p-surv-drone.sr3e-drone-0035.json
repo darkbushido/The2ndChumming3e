@@ -11,6 +11,7 @@
       "streetIndex": 1.5,
       "availability": "6/6 days",
       "seating": 0,
+      "stallSpeed": 60,
       "bookPage": "sta2.39",
       "notes": "Remote-Control Interface, Rigger Adaptation, ECCM 6, Enhanced Sensors 6 | Alt-mode Speed/Accel: 60(300)/20",
       "damage": {
@@ -26,8 +27,8 @@
           "base": 4
         },
         "speed": {
-          "value": 60,
-          "base": 60
+          "value": 300,
+          "base": 300
         },
         "accel": {
           "value": 20,

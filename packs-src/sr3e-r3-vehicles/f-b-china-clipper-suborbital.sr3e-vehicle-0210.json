@@ -12,6 +12,7 @@
       "availability": "NA",
       "bookPage": "r3.192",
       "seating": 156,
+      "stallSpeed": 150,
       "notes": "Rigger Adaption, 8 Partial Basic Living Amenities | Alt-mode Speed/Accel: 150(1250)/150",
       "damage": {
         "value": 0
@@ -26,8 +27,8 @@
           "base": 5
         },
         "speed": {
-          "value": 150,
-          "base": 150
+          "value": 1250,
+          "base": 1250
         },
         "accel": {
           "value": 150,

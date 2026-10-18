@@ -11,6 +11,7 @@
       "streetIndex": 1,
       "availability": "3/72hrs",
       "seating": 0,
+      "stallSpeed": 40,
       "bookPage": "r3.175",
       "notes": "Remote-Control Interface, Rigger Adaptation | Alt-mode Speed/Accel: 40(200)/35",
       "damage": {
@@ -26,8 +27,8 @@
           "base": 3
         },
         "speed": {
-          "value": 40,
-          "base": 40
+          "value": 200,
+          "base": 200
         },
         "accel": {
           "value": 35,

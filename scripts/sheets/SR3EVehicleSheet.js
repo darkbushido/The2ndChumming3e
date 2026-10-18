@@ -1,5 +1,6 @@
 import { vcrLevel } from '../data/item-rating.mjs';
 import { Rigging } from '../data/rigging.mjs';
+import { StallSpeed } from '../data/stall-speed.mjs';
 
 export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
@@ -274,6 +275,12 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       <div class="attributes-grid veh-stat-grid">
         ${_stat('handling', 'Handling')}
         ${_stat('speed',    'Speed')}
+        <div class="attr-block" title="SR3 p.132: a fixed-wing aircraft has two Speed Ratings. The higher is its maximum safe speed (Speed); the lower is its stall speed, the minimum it must keep to stay in the air. 0 = none.">
+          <span class="attr-label">Stall Speed</span>
+          <div class="attr-row">
+            <input class="attr-input" type="number" min="0" name="system.stallSpeed" value="${StallSpeed.of(sys)}"/>
+          </div>
+        </div>
         ${_stat('accel',    'Accel')}
         ${_stat('body',     'Body')}
         ${_stat('armor',    'Armor')}

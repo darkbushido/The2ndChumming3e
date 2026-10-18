@@ -12,6 +12,7 @@
       "availability": "-",
       "bookPage": "r3.178",
       "seating": 42,
+      "stallSpeed": 135,
       "notes": "Alt-mode Speed/Accel: 135(320)/22 | Seating: 2+40b",
       "damage": {
         "value": 0
@@ -26,8 +27,8 @@
           "base": 5
         },
         "speed": {
-          "value": 135,
-          "base": 135
+          "value": 320,
+          "base": 320
         },
         "accel": {
           "value": 22,
