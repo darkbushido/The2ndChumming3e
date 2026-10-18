@@ -7673,7 +7673,7 @@
           "path": "scripts"
         }
       ],
-      "note": "Only weapon foci are modelled (an isFocus / focusActive flag on melee items, used by astral combat). Spell, spirit, power and sustaining foci, and bonding with Karma, are not."
+      "note": "Weapon foci are modelled (an isFocus / focusActive flag on melee items, used by astral combat). 0.7.0: bonding any focus with Karma is now priced and charged (GoodKarma.focusType / bondingCost, scripts/data/karma-uses.mjs:184-210, the Focus Bonding Table p.190; bonded = flag `bonded`). What spell, spirit, power and sustaining foci DO once bonded (their dice and sustaining) is still not modelled."
     },
     {
       "id": "magic/awakened-primer.md#39",
