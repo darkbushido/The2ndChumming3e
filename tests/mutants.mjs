@@ -55,6 +55,7 @@ const WILLING = { module: '../scripts/data/willing-target.mjs', klass: 'WillingT
 const RANGEB = { module: '../scripts/data/range-bands.mjs', klass: 'RangeBands' };
 const APDSM = { module: '../scripts/data/apds.mjs', klass: 'Apds' };
 const MAGICLOSS = { module: '../scripts/data/magic-loss.mjs', klass: 'MagicLoss' };
+const ADEPTLEVELS = { module: '../scripts/data/adept-levels.mjs', klass: 'AdeptLevels' };
 const MISFIRE = { module: '../scripts/data/misfire.mjs', klass: 'Misfire' };
 const COLLISIONS = { module: '../scripts/data/collisions.mjs', klass: 'Collisions' };
 const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment' };
@@ -2983,5 +2984,12 @@ export const MUTANTS = [
     ...MAGICLOSS, method: 'lost',
     was:    'a Magic Loss check that was only "2D6 at or below Magic"; SR3 p.160: "A roll of 2 always indicates the loss of a Magic point"',
     impl:   (roll, magic) => (Number(roll) || 0) <= (Number(magic) || 0),
+  },
+  {
+    id:     'adept-level-ignores-fixed-level-names',
+    suite:  'adept-levels',
+    ...ADEPTLEVELS, method: 'levelOf',
+    was:    'the Magic cap read the level of a power only from system.level (hasLevels), so Imp. Reflexes Level 3 / Combat Sense +3 were never checked against Magic (SR3 p.168)',
+    impl:   (_name, system = {}) => (system?.hasLevels ? Math.max(1, Math.trunc(Number(system.level) || 1)) : 1),
   },
 ];

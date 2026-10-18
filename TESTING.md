@@ -2991,3 +2991,11 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 
 - [ ] The Magic loss card rolls 2D6 and, on a total of **2**, reports a point lost even at Magic 1; a total above Magic is "no loss"; a total at or below Magic loses one.
       (To force a 2, stub `game.sr3e.SR3EHealing._d` to return `{ total: 2 }`; with Magic 1, a 3 must be "no loss".)
+
+## 60. Adept powers above Magic (rules check 0.7.0, SR3 p.168)
+
+**Prerequisites:** an adept with Magic 2 (base). Add from the packs: Imp. Reflexes Level 3, Combat Sense +1, Attribute Boost(STR) at level 3, Imp. Sense: Vision Mag 3.
+
+- [ ] The Magic tab's Adept Powers shows a red "Above Magic" alert naming **Imp. Reflexes Level 3 (level 3)** and **Attribute Boost(STR) (level 3)**; not Combat Sense +1, not Vision Mag 3 (a magnification, not a level).
+- [ ] Raise Magic to 3: Imp. Reflexes drops off the alert; Attribute Boost stays until Magic 3 too, then the alert disappears. Nothing is clamped or refused.
+- [ ] Power Points still turn red when the total passes Magic.

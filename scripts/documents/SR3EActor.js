@@ -18,6 +18,7 @@ import { CombatPool } from '../data/combat-pool.mjs';
 import { Collisions } from '../data/collisions.mjs';
 import { Apds } from '../data/apds.mjs';
 import { Misfire } from '../data/misfire.mjs';
+import { AdeptLevels } from '../data/adept-levels.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -2073,6 +2074,14 @@ _prepareCharacter(sys, attr) {
       const lvl  = s.hasLevels ? (s.level ?? 1) : 1;
       const kind = kindOf ? kindOf(item.name) : 'other';
 
+      // SR3 p.168: "An adept cannot have more levels in a power than the adept's Magic Attribute." Read from
+      // wherever the level is stored (`AdeptLevels.levelOf`: `system.level` for a levelled power, the NAME for
+      // a fixed-level one such as Imp. Reflexes Level 3). ⚠ Checked BEFORE the Attribute Boost `continue` below,
+      // and for every kind: the first cut checked only `hasLevels` powers after that `continue`, so a fixed-level
+      // power or an Attribute Boost above Magic raised no warning. Warn only — the sheet never clamps.
+      const capLevel = AdeptLevels.levelOf(item.name, s);
+      if (capLevel > magicForCaps) overLevelled.push({ name: item.name, level: capLevel });
+
       // ⚠ **A levelled power's bonus is PER LEVEL** — *"Each level of this power increases
       // the Attribute by 1"* (p.169), and the upstream `Mods` string stores `+1STR` for a
       // power with `hasLevels: true`. Multiplying was missing until 2026-08-29, so Improved
@@ -2159,10 +2168,6 @@ _prepareCharacter(sys, attr) {
        * level 1. `lvl` stays correct for Power Point cost, where a fixed-level item's cost
        * already covers its level; the two must not be conflated.
        */
-      // ⚠ Checked against `lvl` (the power's own level), not `effectLvl`. p.168 limits the
-      // LEVELS an adept may have in a power, and a fixed-level item like `Imp. Reflexes
-      // Level 3` is one purchase, not three levels of a levelled power.
-      if (s.hasLevels && lvl > magicForCaps) overLevelled.push({ name: item.name, level: lvl });
       const effectLvl = globalThis.game?.sr3e?.SR3E?.adeptPowerLevel?.(item.name, s) ?? lvl;
       const eff = globalThis.game?.sr3e?.SR3E?.adeptPowerEffect?.(item.name, effectLvl) ?? null;
       if (eff) {
