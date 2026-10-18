@@ -104,6 +104,9 @@ export const ACTOR_CORRECTIONS = [
     { path: 'system.attributes.load.value', from: 72, to: 68 },
     { path: 'system.attributes.load.base', from: 72, to: 68 },
   ] },
+  // Both G12A variants print one Availability, 3/72 hrs (SR3 p.311); the pack said 4/96 hrs.
+  { name: 'Chrysler-Nissan G12A(cargo)', fixes: [{ path: 'system.availability', from: '4/96 hrs', to: '3/72 hrs' }] },
+  { name: 'Chrysler-Nissan G12A(passenger)', fixes: [{ path: 'system.availability', from: '4/96 hrs', to: '3/72 hrs' }] },
   /* ── Drones · SR3 p.312 ───────────────────────────────────────────────────────── */
   { name: 'Generic Surv. Drone VTOL', fixes: [
     { path: 'system.cost', from: 6250, to: 8125 },

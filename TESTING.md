@@ -2910,3 +2910,4 @@ packs), a copy of the **DocWagon Paramedic** contact, a second character with an
 - [ ] Gear compendium: **Imaging Scope, Low-Light** and **Imaging Scope, Thermographic** (1,500¥, Concealability -2, Top mount,
       sr3.282) replace the single untyped "Imaging Scope"; the Rating 1-3 magnification scopes are unchanged. An
       "Imaging Scope" already on an actor is left as it was (its kind cannot be known).
+- [ ] Both **Chrysler-Nissan G12A** variants show Availability **3/72 hrs** (a world copy at the old 4/96 hrs is corrected).

@@ -135,6 +135,8 @@ export async function run(t) {
   for (const k of ['handling', 'speed', 'accel', 'body', 'armor', 'sig', 'autonav', 'pilot', 'sensor']) {
     t.eq(`…${k} is the cargo variant's (the book rows agree)`, pass.doc.system.attributes[k], cargo.doc.system.attributes[k]);
   }
+  t.is('...Availability 3/72 hrs, as the book prints for both variants (SR3 p.311)', pass.doc.system.availability, '3/72 hrs');
+  t.is('the cargo variant: 3/72 hrs too', cargo.doc.system.availability, '3/72 hrs');
   t.is('…and the cargo variant is untouched: 62,000¥', cargo.doc.system.cost, 62000);
 
   const drone = sys('sr3e-sr3-drones', 'sr3e-drone-0045');
@@ -278,6 +280,10 @@ export async function run(t) {
   t.eq('…a GM-edited Dalmation keeps its own numbers but still takes the right name',
     fa(veh('Cyberspace Designs Dalmation', { speed: { value: 120, base: 120 }, sig: { value: 7, base: 7 } }, { cost: 20000, streetIndex: 2 })),
     { name: 'Cyberspace Designs Dalmatian' });
+  for (const n of ['Chrysler-Nissan G12A(cargo)', 'Chrysler-Nissan G12A(passenger)']) {
+    t.eq(`${n}: 4/96 hrs -> 3/72 hrs`, fa(veh(n, {}, { availability: '4/96 hrs' })), { 'system.availability': '3/72 hrs' });
+    t.is(`${n}: a GM-set availability stays`, fa(veh(n, {}, { availability: '6/96 hrs' })), null);
+  }
   t.is('a character is never touched by the vehicle pass', fa({ type: 'character', name: 'Hughes WK-2', system: { attributes: { cargo: { value: 70 } } } }), null);
 
   /* ── the migration is registered and wired ── */
