@@ -7275,9 +7275,14 @@ _prepareCharacter(sys, attr) {
     return n * (n > l ? 3 : 2);
   }
 
-  /** `Racial Modified Limit × 1.5` · *SR3 p.244*. Reported, never enforced. */
+  /**
+   * `Racial Modified Limit × 1.5` · *SR3 p.244*. Reported, never enforced.
+   * ⚠ One rule with `racialMax`: the Racial Attribute Limit Table (p.245) prints the result
+   * rounded UP (7 → 11, 9 → 14, troll Body "11 (17)"). This floored (10/13/16) until 0.7.0, so
+   * Spend Karma said "past max" a point early.
+   */
   static karmaAttributeMaximum(racialLimit) {
-    return Math.floor((Number(racialLimit) || 0) * 1.5);
+    return SR3EActor.racialMax(Number(racialLimit) || 0);
   }
 
   /**

@@ -707,6 +707,14 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'karma-attr-maximum-floors',
+    suite:  'karma',
+    ...ACTOR, method: 'karmaAttributeMaximum',
+    was:    'Math.floor - p.245 prints the maximum rounded UP (7 -> 11, 9 -> 14, troll Body 11 (17)); '
+          + 'flooring said "past max" a point early in Spend Karma',
+    impl:   (racialLimit) => Math.floor((Number(racialLimit) || 0) * 1.5),
+  },
+  {
     id:     'karma-attr-always-2x',
     suite:  'karma',
     ...ACTOR, method: 'karmaAttributeCost',

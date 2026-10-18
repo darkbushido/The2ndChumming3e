@@ -142,7 +142,9 @@ export async function run(t) {
 
   // Attribute Maximum is reported, never enforced.
   t.is('a human attribute maximum is 9 (6 × 1.5)',  SR3EActor.karmaAttributeMaximum(6), 9);
-  t.is('a troll Body maximum is 16 (11 × 1.5)',     SR3EActor.karmaAttributeMaximum(11), 16);
+  t.is('a troll Body maximum is 17 (11 × 1.5 rounded up; table prints "11 (17)")', SR3EActor.karmaAttributeMaximum(11), 17);
+  t.is('limit 7 → 11, 9 → 14 (the printed table)', [7, 9].map(SR3EActor.karmaAttributeMaximum).join(','), '11,14');
+  t.is('Spend Karma and racialMax agree', SR3EActor.karmaAttributeMaximum(9), SR3EActor.racialMax(9));
   t.ok('a purchase past the maximum is still PRICED, not refused',
     attrCost(20, 6) === 60);
 
