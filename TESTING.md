@@ -2943,3 +2943,16 @@ No restart (JS only). Every dialog has a **GM adjustment** field: type +2 once a
       quoted. (The Fling target does not yet dodge — the Sorcery Test is its attack roll only.)
 - [ ] A spell whose Target the system cannot read (edit a spell's Target to "ZZ"): Willpower fallback and the card says the GM is
       to check the TN.
+
+## 55. Ranged weapons — range, heavy recoil, minimum range (rules check 0.7.0, SR3 p.110-111, p.118)
+
+**Prerequisites:** a character with Strength 2 and a token on a scene with a grid; a target token. No restart (JS only).
+
+- [ ] **Bow range from the bow's Strength Minimum.** Give the character a Standard Bow with Str Min 5. At 3 m the fire dialog's
+      range reads **Short**; at 40 m **Medium** (bands 5/50/150/300). Raise the character's Strength to 9: the bands do not change.
+- [ ] **Crossbow.** A Medium Crossbow (Str Min 4): Short to 12 m, Medium to 48 m. A Heavy Crossbow with Str Min blank still uses 5.
+- [ ] **A thrown knife** still scales with the thrower's Strength.
+- [ ] **Assault cannon.** The Vigorous Assault Cannon at 80 m reads Short (0-100), at 250 m Medium; its fire dialog's recoil
+      preview doubles uncompensated recoil (10 rounds, 6 comp = +8).
+- [ ] **Minimum range.** Fire a grenade launcher at a target 3 m away: a warning toast and a "Minimum range" line in the TN
+      breakdown; the shot is still allowed. Fire a missile launcher at 12 m: same, 20 m. At 25 m: nothing.

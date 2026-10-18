@@ -51,6 +51,7 @@ const AREASHAPE = { module: '../scripts/data/area-shape.mjs', klass: 'AreaShape'
 const SPELLTN = { module: '../scripts/data/spell-target.mjs', klass: 'SpellTarget' };
 const WILLING = { module: '../scripts/data/willing-target.mjs', klass: 'WillingTarget' };
 
+const RANGEB = { module: '../scripts/data/range-bands.mjs', klass: 'RangeBands' };
 const COLLISIONS = { module: '../scripts/data/collisions.mjs', klass: 'Collisions' };
 const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment' };
 
@@ -2905,5 +2906,26 @@ export const MUTANTS = [
     ...SPELLTN, method: 'kind', needsOriginal: '_kindOriginal',
     was:    'Antidote and Detox (Target "TOX") were not recognised, so the toxin Strength was never asked for (SR3 p.193)',
     impl:   function (tok, name) { return /^TOX/i.test(String(tok)) ? 'unknown' : this._kindOriginal(tok, name); },
+  },
+  {
+    id:     'bow-range-from-archer-strength',
+    suite:  'range-bands',
+    ...RANGEB, method: 'rangeStrength',
+    was:    "a bow's and crossbow's range multiplied the ARCHER's Strength; SR3 p.110/p.118 use the weapon's Strength Minimum",
+    impl:   (_cat, _min, str) => Math.max(1, Number(str) || 1),
+  },
+  {
+    id:     'assault-cannon-not-heavy',
+    suite:  'range-bands',
+    ...RANGEB, method: 'isHeavyWeapon',
+    was:    'the Assault Cannon did not double uncompensated recoil; SR3 p.111 names "all Assault Cannons" as Heavy Weapons',
+    impl:   c => ['LMG', 'MMG', 'HMG', 'MinG'].includes(c ?? ''),
+  },
+  {
+    id:     'minimum-range-never-warns',
+    suite:  'range-bands',
+    ...RANGEB, method: 'minimumRangeWarning',
+    was:    "nothing read the Weapon Range Table's minimum-range asterisk (grenade launcher 5 m, missile launcher 20 m, SR3 p.111)",
+    impl:   () => '',
   },
 ];

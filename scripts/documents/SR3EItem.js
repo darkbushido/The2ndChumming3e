@@ -10,6 +10,7 @@ import { MiniGrenade } from '../data/mini-grenade.mjs';
 import { SpellLimits } from '../data/spell-limits.mjs';
 import { WillingTarget } from '../data/willing-target.mjs';
 import { SpellTarget } from '../data/spell-target.mjs';
+import { RangeBands } from '../data/range-bands.mjs';
 
 export class SR3EItem extends Item {
 
@@ -1280,8 +1281,7 @@ export class SR3EItem extends Item {
     const availableModes = this._getAvailableModes();
     if (availableModes.length > 0) {
       // SS-only weapons: skip the dialog — no recoil, no damage mods
-      const HEAVY_CATS = new Set(['LMG', 'MMG', 'HMG', 'MinG']);
-      const isHeavy   = HEAVY_CATS.has(this.system.category ?? '');
+      const isHeavy   = RangeBands.isHeavyWeapon(this.system.category);
       const isShotgun = (this.system.category ?? '') === 'ShtG';
       if (availableModes.length === 1 && availableModes[0] === 'SS') {
         fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, shotgunSpread: 0,
@@ -1363,10 +1363,15 @@ export class SR3EItem extends Item {
   // Range — auto-measured from tokens when available (firearms, bows/crossbows, thrown).
   // Passed to the roll dialog as an editable dropdown so the GM can override the band.
   let rangeInfo = null;
+  let minRangeWarning = '';
   if (['firearm', 'projectile', 'thrown'].includes(this.type)) {
     const bands  = this._getRangeBands(actor);
     const aToken = actor.getActiveTokens?.()[0] ?? null;
     const metres = SR3EItem._measureDistance(aToken, targetToken);
+    // SR3 p.111: an asterisked weapon "cannot be fired at targets closer than the minimum value given under
+    // Short Range" (grenade launcher 5 m, missile launcher 20 m). Warn, never refuse.
+    minRangeWarning = RangeBands.minimumRangeWarning(this.system.category, metres);
+    if (minRangeWarning) ui.notifications.warn(`${this.name}: ${minRangeWarning}`);
     if (bands && metres != null) {
       const band = SR3EItem._rangeBandForDistance(bands, metres);
       rangeInfo = { bandIdx: band.idx, distance: metres, beyond: band.beyond };
@@ -1413,6 +1418,7 @@ export class SR3EItem extends Item {
   if (gyro.used)                             tnBreakdownParts.push(`Gyro −${gyro.used} of recoil (up to ${gyro.left} off movement too)`);
   if (fireModeResult?.additionalTNPenalty)   tnBreakdownParts.push(`Multi-target +${fireModeResult.additionalTNPenalty}`);
   if (woundPenalty > 0)                      tnBreakdownParts.push(`Wound +${woundPenalty}`);
+  if (minRangeWarning)                       tnBreakdownParts.push(`⚠ ${minRangeWarning}`);
   if (armorQTN > 0)                          tnBreakdownParts.push(`Layered armour +${armorQTN}`);
   if (sustainTN > 0)                         tnBreakdownParts.push(game.sr3e.SR3EActor.standingNote(actor));
   if (shot?.spreads) tnBreakdownParts.push(`Shot spread −${shot.spreads} (choke ${shot.choke}, ${shot.spreads + 1} m wide; Power −${shot.spreads}, their Dodge +${shot.spreads})`);
@@ -2062,8 +2068,10 @@ export class SR3EItem extends Item {
     if (fixed) return fixed;
     const mult = game.sr3e.SR3E.weaponRangeMultipliers?.[cat];
     if (mult) {
-      const str = Math.max(1, actor?.system?.attributes?.strength?.value
-                            ?? actor?.system?.attributes?.strength?.base ?? 1);
+      // SR3 p.110/p.118: a bow's or crossbow's range comes from the WEAPON's Strength Minimum, not the archer's
+      // Strength; thrown weapons keep the thrower's.
+      const str = RangeBands.rangeStrength(cat, this.system.strMin,
+        actor?.system?.attributes?.strength?.value ?? actor?.system?.attributes?.strength?.base ?? 1);
       return mult.map(m => m * str);
     }
     return null;

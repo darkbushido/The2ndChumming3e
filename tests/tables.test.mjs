@@ -102,7 +102,8 @@ export async function run(t) {
     LMG:    [75, 200, 400, 800],    // Light MG          0-75  76-200  201-400 401-800
     MMG:    [80, 250, 750, 1200],   // Medium MG         0-80  81-250  251-750 751-1200
     HMG:    [80, 250, 800, 1500],   // Heavy MG          0-80  81-250  251-800 801-1500
-    MinG:   [100, 300, 900, 2400],  // Assault Cannon    0-100 101-300 301-900 901-2400
+    ACan:   [100, 300, 900, 2400],  // Assault Cannon    0-100 101-300 301-900 901-2400
+    MinG:   [100, 300, 900, 2400],  // Minigun: NOT in the book, kept at the assault-cannon row
     GrLn:   [50, 100, 150, 300],    // Grenade Launcher  5-50  51-100  101-150 151-300
     MisLn:  [150, 450, 1200, 3000], // Missile Launcher  20-150 151-450 451-1200 1201-3000
   };

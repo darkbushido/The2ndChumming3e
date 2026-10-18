@@ -1427,7 +1427,8 @@ export const SR3E = {
     LMG:    [75, 200, 400, 800],   // Light Machine Gun
     MMG:    [80, 250, 750, 1200],  // Medium Machine Gun
     HMG:    [80, 250, 800, 1500],  // Heavy Machine Gun
-    MinG:   [100, 300, 900, 2400], // Minigun (≈ assault cannon, not in book)
+    MinG:   [100, 300, 900, 2400], // Minigun (not in the book; ≈ the assault cannon, kept as before)
+    ACan:   [100, 300, 900, 2400], // Assault Cannon  0-100 101-300 301-900 901-2,400 (SR3 p.111)
     GrLn:   [50, 100, 150, 300],   // Grenade Launcher
     MisLn:  [150, 450, 1200, 3000],// Missile Launcher
     Las:    [50, 150, 350, 550],   // Laser (≈ assault rifle, not in book)
