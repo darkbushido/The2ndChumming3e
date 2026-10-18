@@ -47,7 +47,9 @@ export async function run(t) {
   t.ok('the contact\'s own rating wins — "[Rating 5]" stays 5', medkits.filter(d => /Rating 5/.test(d.name)).every(d => d.system.rating === 5));
   t.ok('…"[Rating 3]" / "(Rating 3)" stay 3', medkits.filter(d => /Rating 3/.test(d.name)).every(d => d.system.rating === 3));
   const plain = medkits.find(d => d.name === 'Medkit');
-  t.ok('a plain "Medkit" is the core book\'s (SR3 p.304), by the reviewed alias', plain && packOf(plain) === 'sr3e-sr3-medical' && plain.system.bookPage === 'sr3.304');
+  // 0.7.0: the DocWagon Paramedic's plain "Medkit" became a Rating 5 one (MJLBB p.65 "medkit 5"), so none may
+  // be left — and any that ever is must still be the core book's.
+  t.ok('a plain "Medkit", if any is left, is the core book\'s (SR3 p.304), by the reviewed alias', !plain || packOf(plain) === 'sr3e-sr3-medical' && plain.system.bookPage === 'sr3.304');
 
   const unrated = items.filter(d => /^Micro-(transceiver|recorder)$/.test(d.name));
   t.ok('a stub with no rating is NOT matched to one of ten rated variants', unrated.length > 0 && unrated.every(d => !d._stats?.compendiumSource && d.type === 'gear'));

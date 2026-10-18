@@ -1986,7 +1986,7 @@ const CONTACTS = [
       cyberware('Thermographic', 0),
       cyberware('Headware Radio 5', 0.95),
       armor('Armor Jacket', 5, 3),
-      gear('Medkit', 5),
+      gear('Medkit [Rating 5]'),   // MJLBB p.65 "medkit 5" — a Rating 5 medkit, not five medkits (rules check 0.7.0)
       gear('Slap Patches'),
     ],
   },

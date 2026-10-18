@@ -440,16 +440,16 @@
       }
     },
     "!actors.items!evde7uJkZD9DBlpe.2rgrtANFi4HHhJKE": {
-      "name": "Medkit",
+      "name": "Medkit [Rating 5]",
       "type": "medical",
       "system": {
         "category": "Biotech",
-        "rating": "3",
-        "weight": "3",
-        "cost": 200,
-        "availability": "2/24hrs",
+        "rating": 5,
+        "weight": "5",
+        "cost": 280,
+        "availability": "4/24hrs",
         "streetIndex": "1.5",
-        "bookPage": "sr3.304",
+        "bookPage": "mm.138",
         "notes": ""
       },
       "_id": "2rgrtANFi4HHhJKE",
@@ -469,7 +469,7 @@
         "createdTime": 1784690543687,
         "modifiedTime": 1789435951597,
         "lastModifiedBy": "ge55aFMax5sNd2Ho",
-        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-medical.Item.ca45bfc015c3181c",
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-mm-medical.Item.be6b0782420f102a",
         "duplicateSource": null,
         "exportSource": null
       }

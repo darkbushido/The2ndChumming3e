@@ -7,8 +7,8 @@
     "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
     "system": {
       "vehicleType": "drone",
-      "cost": 6250,
-      "streetIndex": 0.75,
+      "cost": 8125,
+      "streetIndex": 1,
       "availability": "2/24hrs",
       "seating": 0,
       "bookPage": "sr3.312",
