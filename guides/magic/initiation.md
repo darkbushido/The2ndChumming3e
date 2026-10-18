@@ -260,8 +260,12 @@ The system records the grade but doesn't run initiation yet.
   initiation yet.
 - **Magic**: raise the Magic Attribute by hand. An adept's Power Point total
   follows Magic, so their new Power Point appears by itself.
-- **Not tracked yet**: the initiate's Astral Pool and Astral Reaction bonus,
-  metamagic, geasa and magical groups. Apply them at the table.
+- **The Initiate Astral Pool** (grade dice) shows beside the Astral Combat
+  Pool. It is offered on astral combat, on Assensing, and on rolls made while
+  dual or projecting, and it refreshes with the other pools. A projecting
+  initiate's Initiative adds the grade *(MitS p.58)*.
+- **Not tracked yet**: metamagic, geasa and magical groups. Apply them at the
+  table.
 
 {: .note }
 > Building initiation, metamagic and the other *Magic in the Shadows* Karma
