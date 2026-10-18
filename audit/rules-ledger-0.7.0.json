@@ -18904,7 +18904,8 @@
       ],
       "hash": "d4e06707eb",
       "text": "# Spells: learning them, and the Street Grimoire\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#2",
@@ -18915,7 +18916,23 @@
       ],
       "hash": "189d7632df",
       "text": "What a spell's statistics mean, how a magician learns one and what it\ncosts, limited spells, and every spell in the core rulebook's Street\nGrimoire. Casting one is on [Spellcasting, Resistance & Drain](../spellcasting/).\nFrom the core rulebook *(SR3 p.55, p.60, p.178–181, p.191–198, p.305)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Each spell has the following characteristics: Type, Target, Duration and Drain."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/death-touch.sr3e-spell-0001.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL-1)\","
+        }
+      ],
+      "note": "Summary of the page: the Street Grimoire rows are checked individually below; the learning and limit rules in their own units."
     },
     {
       "id": "magic/spells.md#3",
@@ -18926,7 +18943,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#4",
@@ -18937,7 +18955,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#5",
@@ -18948,7 +18967,22 @@
       ],
       "hash": "853c6cc607",
       "text": "## Reading a spell  *(SR3 p.178, p.191)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "Spells differ in Type, Category, Duration, Range, Force,"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/death-touch.sr3e-spell-0001.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL-1)\","
+        }
+      ]
     },
     {
       "id": "magic/spells.md#6",
@@ -18959,7 +18993,23 @@
       ],
       "hash": "89fc7ae97f",
       "text": "Each spell in the Street Grimoire is given as **Type · Target · Duration ·\nDrain**. Its **category** is the section it's listed in.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Each spell has the following characteristics: Type, Target, Duration and Drain."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/death-touch.sr3e-spell-0001.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL-1)\","
+        }
+      ],
+      "note": "Each spell item carries category, type, duration, range, drain and target (see the pack record)."
     },
     {
       "id": "magic/spells.md#7",
@@ -18970,7 +19020,8 @@
       ],
       "hash": "1d679c0f0e",
       "text": "| Statistic | Values | What it means |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#8",
@@ -18981,7 +19032,34 @@
       ],
       "hash": "d3c60fec7e",
       "text": "| **Type** | **M** (mana) or **P** (physical) | Physical spells affect physical properties, and **only they affect non-living objects**. Mana spells affect minds, spirits, life force and magic, and **only they affect astral forms** *(SR3 p.178)*. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "Physical spells affect the physical properties of a target."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "Only physical spells affect non-living objects."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "mana spells affect astral forms"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "low-?tech|highly processed|Object Resistance Table|objectResistance",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Type is recorded on every spell, but the cast flow never tests it against the target: spells can only be aimed at actors (never an object), and no plane check stops a Mana spell reaching a physical target or the reverse."
     },
     {
       "id": "magic/spells.md#9",
@@ -18992,7 +19070,39 @@
       ],
       "hash": "b9902092b2",
       "text": "| **Target** | **W**, **B**, **I**, **OR**, or a number | The target number. W, B and I are the target's Willpower, Body and Intelligence; **OR** is the Object Resistance Table *(SR3 p.182)*. An unwilling target also makes a Spell Resistance Test *(SR3 p.191)*. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Target is the target number of the spell. Willpower (W),"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Spells cast on an unwilling target require a Spell Resistance Test"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4518,
+          "snippet": "if (ATTRS[base]) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4532,
+          "snippet": "// Fallback (empty / OR / unrecognised): Mana"
+        }
+      ],
+      "note": "W, B and I (the target's attribute) and fixed numbers are parsed; OR is not: _parseSpellTarget falls back to the target's Willpower (Mana) or Body (Physical) and the Object Resistance Table is not in the system. Unwilling targets do get a Spell Resistance Test."
     },
     {
       "id": "magic/spells.md#10",
@@ -19003,7 +19113,27 @@
       ],
       "hash": "32151f2ce3",
       "text": "| **Duration** | **I**, **S** or **P** | Instant, Sustained or Permanent. See [Sustaining spells](../spellcasting/#sustaining-spells) *(SR3 p.178)*. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Duration is either Instant (I), Sustained (S) or Permanent (P)."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1554,
+          "snippet": "spellDurations:  ['Instant', 'Sustained', 'Permanent'],"
+        },
+        {
+          "file": "scripts/data/sustaining.mjs",
+          "line": 33,
+          "snippet": "export function isSustainable(duration) {"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#11",
@@ -19014,7 +19144,28 @@
       ],
       "hash": "4ca7b1ab35",
       "text": "| **Drain** | e.g. **+1(M)** | A modifier to the Drain Power, which is half the Force rounded down, and the Drain Level *(SR3 p.191)*. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Drain consists of a modifier to the Drain"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "half the spell's Force, rounded down"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4373,
+          "snippet": "const halfF  = Math.floor(F / 2);"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#12",
@@ -19025,7 +19176,35 @@
       ],
       "hash": "78e4759781",
       "text": "**Range.** Most spells are **line of sight**: if the caster can see the\ntarget, at any distance, it can be affected. Some, especially health spells,\nneed a **touch**. Touching an unwilling target takes an unarmed attack, at\n−1 TN, as part of the spellcasting; one net success is enough\n*(SR3 p.178)*. **Area** spells affect everything within the caster's Magic\nin meters, friend and foe, including the caster *(SR3 p.181)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "One net success is sufficient for the caster to touch the target"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 183,
+          "printedPage": 181,
+          "quote": "Area spells affect all valid targets within the radius of effect, friend and foe alike (including th"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "touch[^\\n]*unarmed|unarmed[^\\n]*touch|touch attack",
+          "path": "scripts/documents"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4993,
+          "snippet": "static spellAreaRadius(magic, withheld = 0, mode = 'widen') {"
+        }
+      ],
+      "note": "Line of sight, area radius = Magic (spellAreaRadius, SR3EItem.js:4993) and the caster being hit are coded. The touch rule - an Unarmed Combat attack at -1 TN, one net success - is not: touch spells are only exempted from the cover/visibility window."
     },
     {
       "id": "magic/spells.md#13",
@@ -19036,7 +19215,22 @@
       ],
       "hash": "c6f2e9d5c5",
       "text": "**Variable Drain.** Spells that do or heal damage have a Drain Level that\ndepends on the damage. If a modifier would push the Drain Level **past\nDeadly**, each level past Deadly adds **+2 to the Drain Power** instead\n*(SR3 p.191)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "If a modifier would raise the Drain Level above Deadly, add +2 to the Drain Power instead for each level above Deadly."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4387,
+          "snippet": "abovePower = Math.max(0, raw - 3) * 2;"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#14",
@@ -19047,7 +19241,28 @@
       ],
       "hash": "44acbd9582",
       "text": "> **Example.** A Force 6 Fireball cast at Serious has Drain **+1(Damage\n> Level +2)**. Power: 6 ÷ 2 = 3, + 1 = **4**. Level: Serious + 2 is one\n> level past Deadly, so the level is **Deadly** and the Power rises by 2, to\n> **6**. The caster resists **6D** Drain.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "If a modifier would raise the Drain Level above Deadly, add +2 to the Drain Power instead for each level above Deadly."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4373,
+          "snippet": "const halfF  = Math.floor(F / 2);"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4387,
+          "snippet": "abovePower = Math.max(0, raw - 3) * 2;"
+        }
+      ],
+      "note": "Worked example re-computed: Force 6, +1(DL+2) at Serious: Power 3 + 1 = 4; S + 2 is one past D, so Deadly and +2 Power = 6 (6D). The code produces the same."
     },
     {
       "id": "magic/spells.md#15",
@@ -19058,7 +19273,29 @@
       ],
       "hash": "a8bd74bfb9",
       "text": "### Permanent spells  *(SR3 p.178)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "Permanent spells must be maintained for a specified period"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permanentBase|Permanent Spell Base Time|divide the base time",
+          "path": "scripts/documents"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EHealing.js",
+          "line": 74,
+          "snippet": "static PERMANENT_SPELL_TURNS = { L: 5, M: 10, S: 15, D: 20 };"
+        }
+      ],
+      "note": "The base-time table exists only inside the guided healing flow (SR3EHealing.js:74); a permanent spell cast through the Sorcery flow gets no base time and its successes cannot be allocated to divide it."
     },
     {
       "id": "magic/spells.md#16",
@@ -19069,7 +19306,35 @@
       ],
       "hash": "2bcf81b9c8",
       "text": "A permanent spell must be sustained for a base time, set by its Drain\nLevel, before its effect becomes permanent. Sorcery successes can be spent\ndividing that time instead of on the effect.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "The caster of a permanent spell has the option of allocating"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "Divide the base time by the number of successes allocated"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permanentBase|Permanent Spell Base Time|divide the base time",
+          "path": "scripts/documents"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EHealing.js",
+          "line": 74,
+          "snippet": "static PERMANENT_SPELL_TURNS = { L: 5, M: 10, S: 15, D: 20 };"
+        }
+      ],
+      "note": "The base-time table exists only inside the guided healing flow (SR3EHealing.js:74); a permanent spell cast through the Sorcery flow gets no base time and its successes cannot be allocated to divide it."
     },
     {
       "id": "magic/spells.md#17",
@@ -19080,7 +19345,8 @@
       ],
       "hash": "03d6d28e96",
       "text": "| Drain Level | Base time to become permanent |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#18",
@@ -19091,7 +19357,29 @@
       ],
       "hash": "2c9b1a9c9e",
       "text": "| Light | 5 Turns |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "5 Turns modifier, since the caster only needs to touch 10 Turns the target. One net success is sufficient 15 Turns for the caster to touch the target. 20 Turns"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permanentBase|Permanent Spell Base Time|divide the base time",
+          "path": "scripts/documents"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EHealing.js",
+          "line": 74,
+          "snippet": "static PERMANENT_SPELL_TURNS = { L: 5, M: 10, S: 15, D: 20 };"
+        }
+      ],
+      "note": "The base-time table exists only inside the guided healing flow (SR3EHealing.js:74); a permanent spell cast through the Sorcery flow gets no base time and its successes cannot be allocated to divide it. Row values (Light 5, Moderate 10, Serious 15, Deadly 20 Combat Turns) match the book table (read by order; the OCR splits the level names from the times) and the constant."
     },
     {
       "id": "magic/spells.md#19",
@@ -19102,7 +19390,29 @@
       ],
       "hash": "4dc048d279",
       "text": "| Moderate | 10 Turns |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "5 Turns modifier, since the caster only needs to touch 10 Turns the target. One net success is sufficient 15 Turns for the caster to touch the target. 20 Turns"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permanentBase|Permanent Spell Base Time|divide the base time",
+          "path": "scripts/documents"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EHealing.js",
+          "line": 74,
+          "snippet": "static PERMANENT_SPELL_TURNS = { L: 5, M: 10, S: 15, D: 20 };"
+        }
+      ],
+      "note": "The base-time table exists only inside the guided healing flow (SR3EHealing.js:74); a permanent spell cast through the Sorcery flow gets no base time and its successes cannot be allocated to divide it. Row values (Light 5, Moderate 10, Serious 15, Deadly 20 Combat Turns) match the book table (read by order; the OCR splits the level names from the times) and the constant."
     },
     {
       "id": "magic/spells.md#20",
@@ -19113,7 +19423,29 @@
       ],
       "hash": "4a415c6eb9",
       "text": "| Serious | 15 Turns |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "5 Turns modifier, since the caster only needs to touch 10 Turns the target. One net success is sufficient 15 Turns for the caster to touch the target. 20 Turns"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permanentBase|Permanent Spell Base Time|divide the base time",
+          "path": "scripts/documents"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EHealing.js",
+          "line": 74,
+          "snippet": "static PERMANENT_SPELL_TURNS = { L: 5, M: 10, S: 15, D: 20 };"
+        }
+      ],
+      "note": "The base-time table exists only inside the guided healing flow (SR3EHealing.js:74); a permanent spell cast through the Sorcery flow gets no base time and its successes cannot be allocated to divide it. Row values (Light 5, Moderate 10, Serious 15, Deadly 20 Combat Turns) match the book table (read by order; the OCR splits the level names from the times) and the constant."
     },
     {
       "id": "magic/spells.md#21",
@@ -19124,7 +19456,29 @@
       ],
       "hash": "653e63723e",
       "text": "| Deadly | 20 Turns |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "5 Turns modifier, since the caster only needs to touch 10 Turns the target. One net success is sufficient 15 Turns for the caster to touch the target. 20 Turns"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permanentBase|Permanent Spell Base Time|divide the base time",
+          "path": "scripts/documents"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EHealing.js",
+          "line": 74,
+          "snippet": "static PERMANENT_SPELL_TURNS = { L: 5, M: 10, S: 15, D: 20 };"
+        }
+      ],
+      "note": "The base-time table exists only inside the guided healing flow (SR3EHealing.js:74); a permanent spell cast through the Sorcery flow gets no base time and its successes cannot be allocated to divide it. Row values (Light 5, Moderate 10, Serious 15, Deadly 20 Combat Turns) match the book table (read by order; the OCR splits the level names from the times) and the constant."
     },
     {
       "id": "magic/spells.md#22",
@@ -19135,7 +19489,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#23",
@@ -19146,7 +19501,22 @@
       ],
       "hash": "9423eead47",
       "text": "## Starting spells: Spell Points  *(SR3 p.55, p.60)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 56,
+          "printedPage": 54,
+          "quote": "As starting characters, full magicians receive 25 Spell Points."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spellPoints",
+          "path": "scripts"
+        }
+      ],
+      "note": "Spell Points and character creation are not modelled."
     },
     {
       "id": "magic/spells.md#24",
@@ -19157,7 +19527,33 @@
       ],
       "hash": "4341f6ce84",
       "text": "- A starting **full magician** gets **25 Spell Points**; an **aspected\n  magician** gets **35**. Adepts get none.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 56,
+          "printedPage": 54,
+          "quote": "As starting characters, full magicians receive 25 Spell Points."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "All aspected magicians start off with 35 Spell Points."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "Because adepts do not use spells, they get no Spell Points."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spellPoints",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#25",
@@ -19168,7 +19564,21 @@
       ],
       "hash": "e6bcb66cf3",
       "text": "- A spell costs **1 Spell Point per point of Force**.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 56,
+          "printedPage": 54,
+          "quote": "Spell Points are used to purchase spells, at a rate of 1 Spell Point"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spellPoints",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#26",
@@ -19179,7 +19589,27 @@
       ],
       "hash": "1f2c10e134",
       "text": "- Spell Points can also bond foci, at 1 Spell Point per point of Karma, and\n  buy starting spirits: 1 per point of Force plus 2 per service owed.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "Players can also spend Spell Points to begin the game with"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "(again, at a rate of 1 Spell Point per point of Karma)"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spellPoints",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#27",
@@ -19190,7 +19620,27 @@
       ],
       "hash": "ba6dc3c22a",
       "text": "- More Spell Points cost **25,000¥ each**, up to **50** in all, and only at\n  character creation. They can't be sold back.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "per point, up to a maximum of 50 Spell Points"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "Spell Points cannot be sold back for the nuyen."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spellPoints",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#28",
@@ -19201,7 +19651,21 @@
       ],
       "hash": "4ab275ccbc",
       "text": "- No starting spell, focus or spirit can be above **Force 6**.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "Starting full magicians may not have any spells, foci or spirits higher than Force 6."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spellPoints",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#29",
@@ -19212,7 +19676,22 @@
       ],
       "hash": "7831143ea4",
       "text": "After character creation, spells are learned with Good Karma.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "After character creation, magicians must use Karma to learn spells and bond foci."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6043,
+          "snippet": "const cost = GK.spellCost(force, limit);"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#30",
@@ -19223,7 +19702,28 @@
       ],
       "hash": "2987d3ecd4",
       "text": "## Learning a spell  *(SR3 p.180)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "Learning spells also costs Good Karma (p. 242) equal to the desired Force."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 176,
+          "snippet": "spellCost(force, limitModifier = 0) {"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6043,
+          "snippet": "const cost = GK.spellCost(force, limit);"
+        }
+      ],
+      "note": "Heading: only the Karma cost is coded (units 31-38)."
     },
     {
       "id": "magic/spells.md#31",
@@ -19234,7 +19734,21 @@
       ],
       "hash": "7663f2b048",
       "text": "You learn from a **teacher** or a **spell formula**, of your own tradition.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "You can only learn a spell from a teacher or formula of the same tradition you follow."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "sameTradition|tradition.{0,30}teacher",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#32",
@@ -19245,7 +19759,35 @@
       ],
       "hash": "d42bb346a6",
       "text": "| **Where you study** | A shaman needs a **lodge**, a mage a **Sorcery library**, rated at least the desired Force. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "must study in a shamanic lodge with a rating at least equal to the desired Force of the spell"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "The mage needs a Sorcery library with a rating at least equal to the desired Force of the spell."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "sorcery library|shamanic lodge",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "sorcery library|shamanic lodge",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "sorcery library|shamanic lodge",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#33",
@@ -19256,7 +19798,27 @@
       ],
       "hash": "dc8570b219",
       "text": "| **A teacher** | Typically **1,000¥ × the Force**, plus living expenses. They can teach up to the Force they know. With the Instruction skill, every 2 successes on an Instruction (4) Test add a die to your test. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "a typical price is 1,000 nuyen times the spell's desired Force, plus living expenses"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "Each 2 successes from this test add an additional die to the student's Sorcery Test to learn the spell."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "instructionTest|Instruction \\(4\\)|teacher",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#34",
@@ -19267,7 +19829,27 @@
       ],
       "hash": "80b3058780",
       "text": "| **A formula** | Bought from a talismonger. For a spell with variable Drain, price it at its highest Drain. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "A formula is the published version of a spell, available for"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "use the highest applicable Drain to determine the cost of the spell's formula"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spell.?formula",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#35",
@@ -19278,7 +19860,22 @@
       ],
       "hash": "4f6e8ba918",
       "text": "| **The test** | **Sorcery**, with Magic Background as a Complementary Skill, against **twice the desired Force**. Shamans get totem modifiers; injury and sustaining modifiers apply. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "requires a Sorcery Test; the Magic Background Skill can be used as a Complementary Skill for this test. The target number is twice the desired Force of the spell."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnSpellTest|learning test|twice the desired force",
+          "path": "scripts"
+        }
+      ],
+      "note": "The guide (units 172-173) says the test is the GM's to run; the code has no learning roll."
     },
     {
       "id": "magic/spells.md#36",
@@ -19289,7 +19886,21 @@
       ],
       "hash": "bbc836941b",
       "text": "| **The time** | **Days equal to the Force, divided by the successes**; at least one day. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "Learning a spell requires a number of days equal to the desired Force. Divide this time by the number of successes. The minimum time is one day."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnSpellTest|learning test|daysToLearn",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#37",
@@ -19300,7 +19911,27 @@
       ],
       "hash": "bef4aae601",
       "text": "| **The Karma** | **Good Karma equal to the Force.** |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "Learning spells also costs Good Karma (p. 242) equal to the desired Force."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 176,
+          "snippet": "spellCost(force, limitModifier = 0) {"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6043,
+          "snippet": "const cost = GK.spellCost(force, limit);"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#38",
@@ -19311,7 +19942,21 @@
       ],
       "hash": "b24391b033",
       "text": "| **Failure** | No successes wastes days equal to the Force. Failed study costs no Karma, but the teacher still expects to be paid. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "A failed attempt wastes a number of days equal to the desired Force. Failed study does not cost Karma, but teachers still expect to be paid."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnSpellTest|learning test|daysToLearn",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#39",
@@ -19322,7 +19967,28 @@
       ],
       "hash": "27937b4501",
       "text": "To raise a spell's Force you **learn it again** at the new Force\n*(SR3 p.178)*, at the full cost.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "must re-learn the spell. See Learning Spells on p. 180."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6043,
+          "snippet": "const cost = GK.spellCost(force, limit);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6046,
+          "snippet": "await spell.update({ 'system.force': force,"
+        }
+      ],
+      "note": "Spend Karma re-prices the spell at the new Force in full and records it."
     },
     {
       "id": "magic/spells.md#40",
@@ -19333,7 +19999,22 @@
       ],
       "hash": "699961eebe",
       "text": "### Spell formula prices  *(SR3 p.305)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 307,
+          "printedPage": 305,
+          "quote": "Force/24 hrs Force x 50� 2 Force/48 hrs Force/72 hrs Force x 100� 2 Force/7 days Force x 500� 2 Force x 1,000� 2"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spell.?formula",
+          "path": "scripts"
+        }
+      ],
+      "note": "Spell formula prices are not modelled (spells are items; no formula purchase)."
     },
     {
       "id": "magic/spells.md#41",
@@ -19344,7 +20025,8 @@
       ],
       "hash": "2266fbb5de",
       "text": "| Drain | Availability | Cost | Street Index |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#42",
@@ -19355,7 +20037,22 @@
       ],
       "hash": "ec54dcd28a",
       "text": "| L | Force / 24 hrs | Force × 50¥ | 2 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 307,
+          "printedPage": 305,
+          "quote": "Force/24 hrs Force x 50� 2 Force/48 hrs Force/72 hrs Force x 100� 2 Force/7 days Force x 500� 2 Force x 1,000� 2"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spell.?formula",
+          "path": "scripts"
+        }
+      ],
+      "note": "Spell Formulas table: L Force/24 hrs Force x 50, M Force/48 hrs Force x 100, S Force/72 hrs Force x 500, D Force/7 days Force x 1,000, street index 2 (rows paired with the Drain levels by order; the OCR splits them). The guide matches. No formula price anywhere in the code."
     },
     {
       "id": "magic/spells.md#43",
@@ -19366,7 +20063,22 @@
       ],
       "hash": "cced3a28d4",
       "text": "| M | Force / 48 hrs | Force × 100¥ | 2 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 307,
+          "printedPage": 305,
+          "quote": "Force/24 hrs Force x 50� 2 Force/48 hrs Force/72 hrs Force x 100� 2 Force/7 days Force x 500� 2 Force x 1,000� 2"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spell.?formula",
+          "path": "scripts"
+        }
+      ],
+      "note": "Spell Formulas table: L Force/24 hrs Force x 50, M Force/48 hrs Force x 100, S Force/72 hrs Force x 500, D Force/7 days Force x 1,000, street index 2 (rows paired with the Drain levels by order; the OCR splits them). The guide matches. No formula price anywhere in the code."
     },
     {
       "id": "magic/spells.md#44",
@@ -19377,7 +20089,22 @@
       ],
       "hash": "f07e98c843",
       "text": "| S | Force / 72 hrs | Force × 500¥ | 2 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 307,
+          "printedPage": 305,
+          "quote": "Force/24 hrs Force x 50� 2 Force/48 hrs Force/72 hrs Force x 100� 2 Force/7 days Force x 500� 2 Force x 1,000� 2"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spell.?formula",
+          "path": "scripts"
+        }
+      ],
+      "note": "Spell Formulas table: L Force/24 hrs Force x 50, M Force/48 hrs Force x 100, S Force/72 hrs Force x 500, D Force/7 days Force x 1,000, street index 2 (rows paired with the Drain levels by order; the OCR splits them). The guide matches. No formula price anywhere in the code."
     },
     {
       "id": "magic/spells.md#45",
@@ -19388,7 +20115,22 @@
       ],
       "hash": "5ec3b6676b",
       "text": "| D | Force / 7 days | Force × 1,000¥ | 2 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 307,
+          "printedPage": 305,
+          "quote": "Force/24 hrs Force x 50� 2 Force/48 hrs Force/72 hrs Force x 100� 2 Force/7 days Force x 500� 2 Force x 1,000� 2"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spell.?formula",
+          "path": "scripts"
+        }
+      ],
+      "note": "Spell Formulas table: L Force/24 hrs Force x 50, M Force/48 hrs Force x 100, S Force/72 hrs Force x 500, D Force/7 days Force x 1,000, street index 2 (rows paired with the Drain levels by order; the OCR splits them). The guide matches. No formula price anywhere in the code."
     },
     {
       "id": "magic/spells.md#46",
@@ -19399,7 +20141,28 @@
       ],
       "hash": "d6515a97cf",
       "text": "**Worked example.** A mage learns **Manabolt at Force 5** from a formula.\nManabolt's Drain is the damage level, so the formula is priced at its\nhighest, D: 5 × 1,000¥ = **5,000¥**, availability 5 / 7 days. She needs a\nSorcery library of rating 5 or more. Her Sorcery Test is against 5 × 2 =\n**TN 10**. With 1 success it takes 5 ÷ 1 = **5 days**, and it costs **5\nGood Karma**.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 307,
+          "printedPage": 305,
+          "quote": "Force/24 hrs Force x 50� 2 Force/48 hrs Force/72 hrs Force x 100� 2 Force/7 days Force x 500� 2 Force x 1,000� 2"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "The target number is twice the desired Force of the spell."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spell.?formula",
+          "path": "scripts"
+        }
+      ],
+      "note": "Example re-computed: Manabolt priced at D = 5 x 1,000 = 5,000 Y, availability 5 / 7 days, library 5, TN 5 x 2 = 10, 5 / 1 = 5 days, 5 Karma - all consistent with the book. Only the Karma (5) is coded."
     },
     {
       "id": "magic/spells.md#47",
@@ -19410,7 +20173,28 @@
       ],
       "hash": "17bd1b9b9b",
       "text": "### Limited spells  *(SR3 p.180–181)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "A limit may either reduce the Force of a spell for purposes"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 23,
+          "snippet": "fetish:    { modifier: 1, field: 'limitFetish',    label: 'Fetish' },"
+        },
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 24,
+          "snippet": "exclusive: { modifier: 2, field: 'limitExclusive', label: 'Exclusive' },"
+        }
+      ],
+      "note": "Heading: limited spells are implemented (scripts/data/spell-limits.mjs)."
     },
     {
       "id": "magic/spells.md#48",
@@ -19421,7 +20205,44 @@
       ],
       "hash": "53575b72d1",
       "text": "A limit makes a spell easier, in one of two ways, chosen **when you learn\nit**: it either lowers the **Force for Drain** (including whether the Drain\nis Physical), or lowers the **Karma cost and the learning TN**, by its\nmodifier.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "A limit may either reduce the Force of a spell for purposes"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "The reduction in Force for Drain purposes also affects"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 23,
+          "snippet": "fetish:    { modifier: 1, field: 'limitFetish',    label: 'Fetish' },"
+        },
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 24,
+          "snippet": "exclusive: { modifier: 2, field: 'limitExclusive', label: 'Exclusive' },"
+        },
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 55,
+          "snippet": "drainForce(force, spell) {"
+        },
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 45,
+          "snippet": "learningReduction(spell) { return total(spell, 'learning'); },"
+        }
+      ],
+      "note": "Each limit records where it was taken (drain or learning). A limit taken off Drain lowers the Drain Force (and the Stun/Physical test); one taken off learning lowers the Karma in Spend Karma. The learning TN is not coded (there is no learning test)."
     },
     {
       "id": "magic/spells.md#49",
@@ -19432,7 +20253,8 @@
       ],
       "hash": "daa92d6d8f",
       "text": "| Limit | Modifier | The catch |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#50",
@@ -19443,7 +20265,34 @@
       ],
       "hash": "d857c85ac1",
       "text": "| **Fetish** | −1 | The fetish, an enchanted reusable object for one spell category, must be touching you to cast. Losing it means attuning a new one: hours of meditation equal to the Force. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "Fetish (-1 modifier): Casting a fetish-limited spell requires"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "of hours in meditation equal to the Force of the spell)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 23,
+          "snippet": "fetish:    { modifier: 1, field: 'limitFetish',    label: 'Fetish' },"
+        },
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 67,
+          "snippet": "castWarnings(spell) {"
+        }
+      ],
+      "note": "Modifier 1 and a cast-time warning are coded; the hours of meditation to attune a new fetish are the table's to run."
     },
     {
       "id": "magic/spells.md#51",
@@ -19454,7 +20303,33 @@
       ],
       "hash": "7a73eaea1d",
       "text": "| **Exclusive** | −2 | Casting and sustaining it is an **Exclusive Action** (p.160). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "Exclusive (-2 modifier): An exclusive limited spell"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 183,
+          "printedPage": 181,
+          "quote": "casting and sustaining the spell an Exclusive Action (see"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 24,
+          "snippet": "exclusive: { modifier: 2, field: 'limitExclusive', label: 'Exclusive' },"
+        },
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 67,
+          "snippet": "castWarnings(spell) {"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#52",
@@ -19465,7 +20340,8 @@
       ],
       "hash": "4bcc0e4876",
       "text": "A spell can have both, if they're for different purposes. An unlimited\nversion has to be learned separately.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Book p.180: a spell can have both a fetish and an exclusive modifier \"but they must be separate in purpose\" (and an unlimited version is learned as a separate spell). The code lets each limit be assigned to the drain or learning side independently (spell-limits.mjs side()); I could not tell what \"separate in purpose\" requires, so I cannot say whether the code honours it."
     },
     {
       "id": "magic/spells.md#53",
@@ -19476,7 +20352,40 @@
       ],
       "hash": "0f7023c431",
       "text": "**The book's example** *(SR3 p.181)*: Grandfather Bones, Magic 6, learns\n**Fireball at Force 8** with the exclusive limit. Taken off Drain, he\ntreats it as Force 6 for Drain, so the Drain isn't Physical. Taken off\nlearning instead, his TN is 8 × 2 − 2 = **14** and it costs **6 Karma**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 183,
+          "printedPage": 181,
+          "quote": "Grandfather Bones wants to learn to cast a killer Fireball"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 183,
+          "printedPage": 181,
+          "quote": "would be 14 (8 x 2 = 16 and 16"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 183,
+          "printedPage": 181,
+          "quote": "and he needs to spend only 6 Karma."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 176,
+          "snippet": "spellCost(force, limitModifier = 0) {"
+        },
+        {
+          "file": "scripts/data/spell-limits.mjs",
+          "line": 55,
+          "snippet": "drainForce(force, spell) {"
+        }
+      ],
+      "note": "Karma 8 - 2 = 6 and Drain Force 8 - 2 = 6 (so the Drain stays Stun at Magic 6) are coded; the learning TN 14 has no code."
     },
     {
       "id": "magic/spells.md#54",
@@ -19487,7 +20396,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#55",
@@ -19498,7 +20408,22 @@
       ],
       "hash": "34653465ef",
       "text": "## The Street Grimoire  *(SR3 p.191–198)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "STREET GRIMOIRE The following are the most common spells in use in the"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/death-touch.sr3e-spell-0001.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL-1)\","
+        }
+      ]
     },
     {
       "id": "magic/spells.md#56",
@@ -19509,7 +20434,23 @@
       ],
       "hash": "02c6b1d413",
       "text": "Every spell in the core rulebook, with its statistics as printed. The last\ncolumn is a short summary; the book has the details.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Each spell has the following characteristics: Type, Target, Duration and Drain."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/death-touch.sr3e-spell-0001.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL-1)\","
+        }
+      ],
+      "note": "Every Street Grimoire spell the guide lists has a record in sr3e-sr3-spells (checked row by row below; the attribute spells ship one record per Attribute)."
     },
     {
       "id": "magic/spells.md#57",
@@ -19520,7 +20461,22 @@
       ],
       "hash": "3586966315",
       "text": "### Combat spells  *(SR3 p.191)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "COMBAT SPELLS All combat spells work by damaging the target directly,"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/death-touch.sr3e-spell-0001.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL-1)\","
+        }
+      ]
     },
     {
       "id": "magic/spells.md#58",
@@ -19531,7 +20487,44 @@
       ],
       "hash": "a69b2cbc6f",
       "text": "The caster picks the **Damage Level** when casting, and it sets the Drain.\nCombat spells **ignore armor**. Damage is **Physical** unless it's a stun\nspell.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "The caster of a combat spell chooses the spell's base Damage Level when it is cast."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Manabolt and Manaball channel destructive magical"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "Combat spells ignore the effects of armor and non-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4745,
+          "snippet": "if (isCombat) damageLevel = dialog.element.querySelector('#spell-damage')?.value || defaultLevel;"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4821,
+          "snippet": "//   Net successes (caster − resister) stage the base damage. No soak."
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4332,
+          "snippet": "static spellDealsStun(spell) {"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#59",
@@ -19542,7 +20535,8 @@
       ],
       "hash": "a4a90fe894",
       "text": "| Spell | Type | Target | Duration | Drain | Notes |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#60",
@@ -19630,7 +20624,23 @@
       ],
       "hash": "79b8f526c0",
       "text": "### Detection spells  *(SR3 p.192–193)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Detection spells give the subject a new sense beyond the"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/detect-life.sr3e-spell-0031.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(L)\","
+        }
+      ],
+      "note": "Heading: the detection spells ship; the Detection Spell tables are units 83-92."
     },
     {
       "id": "magic/spells.md#68",
@@ -19641,7 +20651,28 @@
       ],
       "hash": "5b9585950a",
       "text": "The sense reaches **Force × the caster's Magic** in meters. The caster must\ntouch the subject, who can be the caster. Anyone who doesn't want to be\ndetected can resist with Willpower.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "multiply the spell's Force by the caster's Magic Attribute for the distance in meters"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "The subject must be touched by the caster to receive the spell."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "detectionRange|senseRange",
+          "path": "scripts"
+        }
+      ],
+      "note": "The range of the new sense is not computed; the cast flow has no detection-specific handling."
     },
     {
       "id": "magic/spells.md#69",
@@ -19652,7 +20683,8 @@
       ],
       "hash": "a4a90fe894",
       "text": "| Spell | Type | Target | Duration | Drain | Notes |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#70",
@@ -19806,7 +20838,22 @@
       ],
       "hash": "64761c03b9",
       "text": "| Detection Spell Target Number *(SR3 p.192)* | TN |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "DETECTION SPELL TARGET NUMBER Subject Target Number"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "different plane|detectionResults|Only general knowledge",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Detection Spell Target Number and Results tables are not in the code; the detection spells' pack target is the token DT (SR3EItem._parseSpellTarget does not recognise it)."
     },
     {
       "id": "magic/spells.md#84",
@@ -19817,7 +20864,22 @@
       ],
       "hash": "71a75721ba",
       "text": "| Target is in sight of the caster | 4 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Target is in sight of caster 4"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "different plane|detectionResults|Only general knowledge",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Detection Spell Target Number and Results tables are not in the code; the detection spells' pack target is the token DT (SR3EItem._parseSpellTarget does not recognise it)."
     },
     {
       "id": "magic/spells.md#85",
@@ -19828,7 +20890,22 @@
       ],
       "hash": "6ee1661d87",
       "text": "| Target is out of sight of the caster | 6 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Target is out of sight of caster 6"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "different plane|detectionResults|Only general knowledge",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Detection Spell Target Number and Results tables are not in the code; the detection spells' pack target is the token DT (SR3EItem._parseSpellTarget does not recognise it)."
     },
     {
       "id": "magic/spells.md#86",
@@ -19839,7 +20916,22 @@
       ],
       "hash": "6866bc717f",
       "text": "| Target is on a different plane | 10 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Target is on a different plane 10"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "different plane|detectionResults|Only general knowledge",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Detection Spell Target Number and Results tables are not in the code; the detection spells' pack target is the token DT (SR3EItem._parseSpellTarget does not recognise it)."
     },
     {
       "id": "magic/spells.md#87",
@@ -19850,7 +20942,22 @@
       ],
       "hash": "1beefe5e06",
       "text": "| Target is behind an astral barrier | + Force |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Target is behind an astral barrier + Force"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "different plane|detectionResults|Only general knowledge",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Detection Spell Target Number and Results tables are not in the code; the detection spells' pack target is the token DT (SR3EItem._parseSpellTarget does not recognise it)."
     },
     {
       "id": "magic/spells.md#88",
@@ -19861,7 +20968,22 @@
       ],
       "hash": "d225a51fd7",
       "text": "| Successes | Detection Spell Results *(SR3 p.192)* |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "DETECTION SPELL RESULTS Successes Results"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "different plane|detectionResults|Only general knowledge",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Detection Spell Target Number and Results tables are not in the code; the detection spells' pack target is the token DT (SR3EItem._parseSpellTarget does not recognise it)."
     },
     {
       "id": "magic/spells.md#89",
@@ -19872,7 +20994,22 @@
       ],
       "hash": "abde51ded0",
       "text": "| 1 | Only general knowledge, no details. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "1 Only general knowledge, no details."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "different plane|detectionResults|Only general knowledge",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Detection Spell Target Number and Results tables are not in the code; the detection spells' pack target is the token DT (SR3EItem._parseSpellTarget does not recognise it)."
     },
     {
       "id": "magic/spells.md#90",
@@ -19883,7 +21020,22 @@
       ],
       "hash": "6d8eaa6b23",
       "text": "| 2 | Detailed information, but some minor parts are inaccurate. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "2 Detailed information, but some minor parts are inaccurate."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "different plane|detectionResults|Only general knowledge",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Detection Spell Target Number and Results tables are not in the code; the detection spells' pack target is the token DT (SR3EItem._parseSpellTarget does not recognise it)."
     },
     {
       "id": "magic/spells.md#91",
@@ -19894,7 +21046,22 @@
       ],
       "hash": "8d768b5c81",
       "text": "| 3 | All details are accurate, but minor parts are obscure or missing. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "3 All details are accurate, but minor parts are obscure or missing."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "different plane|detectionResults|Only general knowledge",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Detection Spell Target Number and Results tables are not in the code; the detection spells' pack target is the token DT (SR3EItem._parseSpellTarget does not recognise it)."
     },
     {
       "id": "magic/spells.md#92",
@@ -19905,7 +21072,22 @@
       ],
       "hash": "9f7825c76b",
       "text": "| 4 | Accurate and detailed information. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "4 Accurate and detailed information."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "different plane|detectionResults|Only general knowledge",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Detection Spell Target Number and Results tables are not in the code; the detection spells' pack target is the token DT (SR3EItem._parseSpellTarget does not recognise it)."
     },
     {
       "id": "magic/spells.md#93",
@@ -19916,7 +21098,23 @@
       ],
       "hash": "939afe659a",
       "text": "### Health spells  *(SR3 p.193–194)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Health spells can heal physical injury, cure diseases (or inflict"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/heal.sr3e-spell-0074.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL)\","
+        }
+      ],
+      "note": "Heading: the health spells ship; rows are checked below."
     },
     {
       "id": "magic/spells.md#94",
@@ -19927,7 +21125,28 @@
       ],
       "hash": "5c8d1e2249",
       "text": "All health spells need a **touch**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "All health spells require the caster to touch the target of"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/heal.sr3e-spell-0074.json",
+          "line": 12,
+          "snippet": "\"range\": \"T\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4445,
+          "snippet": "static spellTakesGMWindow(range) {"
+        }
+      ],
+      "note": "Every health spell record has range T and touch spells skip the cover/visibility window; the touch attack itself is not coded (see unit 12)."
     },
     {
       "id": "magic/spells.md#95",
@@ -20730,7 +21949,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#168",
