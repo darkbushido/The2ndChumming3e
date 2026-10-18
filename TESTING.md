@@ -3021,3 +3021,13 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] Fire the RCD drone's weapon: no Combat Pool row (Pilot Rating, no pools).
 - [ ] Rigger with no Gunnery skill (Default dialog, attribute default): the Combat Pool offered is limited by the Default Table cap.
 - [ ] Spend the rigger's pool from another client mid-way (or leave 1 die): asking for more than is left rolls only what was deducted and warns.
+
+## 63. Vehicle armour is hardened — burst and full-auto Power do not count (rules check 0.7.0, SR3 p.132, p.149)
+
+**Prerequisites:** a vehicle with Armor 3 (e.g. an actor with `Armor` set to 3), a character with an Uzi III (6M, SA/BF/FA) and a target the vehicle.
+
+- [ ] Fire a **single shot** at the vehicle: after the hits, the Resist Damage card's gold note says the Power (3) does not exceed armour 3, hardened armour deflects it, no damage (p.132, p.149).
+- [ ] Fire a **burst** (BF, Power +3 → 9, halved 4): the staged Incoming reads 4, but the card **still** says it is deflected (the unaugmented 6 halves to 3). Before this fix the burst beat the armour.
+- [ ] Fire a **full-auto** burst at Armor 3: same, deflected.
+- [ ] Raise the weapon's code by hand to 8M (retype the Damage Code in the dialog): Power 4 beats Armor 3, no deflection note.
+- [ ] An **AV munition** against Armor 6 (halved to 3): a Power 3 AV hit is deflected, a Power 4 is not.

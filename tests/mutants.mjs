@@ -27,6 +27,7 @@
 const PACKFIX = { module: '../scripts/data/pack-corrections-0-7-0.mjs', klass: 'PackFixes070' };
 const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' };
 const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  };
+const VARM  = { module: '../scripts/data/vehicle-armor.mjs', klass: 'VehicleArmor' };
 const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  };
 const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
@@ -226,6 +227,13 @@ export const MUTANTS = [
     ...RIG, method: 'gunneryCombatPool',
     was:    'drone gunnery offered a Combat Pool to a secondary drone (or none to the jumped-in rigger); SR3 p.154/p.157 give it to the primary drone only (0.7.0)',
     impl:   (_roller, available) => Number(available) || 0,
+  },
+  {
+    id:     'hardened-armour-counts-the-burst',
+    suite:  'vehicle-armor',
+    ...VARM, method: 'comparedPower',
+    was:    'the soak card compared the staged Power, burst / full-auto bonus included, with the vehicle Armor; SR3 p.132 / p.149 leave it out (0.7.0)',
+    impl:   (staged) => Number(staged) || 0,
   },
   {
     id:     'captains-chair-loses-vcr-initiative',

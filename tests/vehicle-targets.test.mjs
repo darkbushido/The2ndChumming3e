@@ -51,5 +51,5 @@ export async function run(t) {
   const actor = read('scripts/documents/SR3EActor.js');
   t.ok('the vehicle soak card halves armour, round down, for AV',
     /armorEffect === 'antiVehicle' && this\.type === 'vehicle'\)[\s\S]{0,300}ballistic = Math\.floor\(ballistic \/ 2\)/.test(actor));
-  t.ok('…and says when the Power does not exceed the armour', /stagedPower <= defaultArmor/.test(actor));
+  t.ok('…and says when the Power does not exceed the armour', /VehicleArmor\.deflects\(hardPower, defaultArmor\)/.test(actor));
 }

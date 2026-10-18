@@ -1,5 +1,6 @@
 import { vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
 import { Rigging } from '../data/rigging.mjs';
+import { VehicleArmor } from '../data/vehicle-armor.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
 import { WeaponAccessories } from '../data/weapon-accessories.mjs';
@@ -1277,6 +1278,7 @@ export class SR3EItem extends Item {
   // --- Step 2: Fire mode selection (firearms only) ---
   let fireModeResult = null;
   let fireModeRounds = 0;
+  let modePowerBonus = 0;   // burst / full-auto Power added to the code (SR3 p.115) — hardened armour ignores it (p.132)
   if (this.type === 'firearm') {
     const availableModes = this._getAvailableModes();
     if (availableModes.length > 0) {
@@ -1355,10 +1357,12 @@ export class SR3EItem extends Item {
           isTracer: !!ammoRules.tracer,
           shortBurst,
         });
+        modePowerBonus = staged.power - parsed.power;
         rawDamage = `${staged.power}${staged.level}${parsed.isStun ? ' Stun' : ''}`;
       }
     }
   }
+  const modeRawDamage = rawDamage;   // the code the dialog starts from, burst / full-auto bonus included
 
   // Range — auto-measured from tokens when available (firearms, bows/crossbows, thrown).
   // Passed to the roll dialog as an editable dropdown so the GM can override the band.
@@ -1501,8 +1505,12 @@ export class SR3EItem extends Item {
     ui.notifications.warn(`${this.name} has no damage code set. Edit the item to add one (e.g. 9M, (STR+2)M, 6S Stun).`);
   }
   if (targetActor.type === 'vehicle' && damageBase) {
+    // Hardened armour compares the reduced Power WITHOUT the burst / full-auto bonus (SR3 p.132, p.149). A code the
+    // GM retyped in the dialog is taken as the weapon's own Power (there is no way to tell what they meant).
+    const unaug = VehicleArmor.unaugmentedPower(damageBase.power, weaponOpts.damageCode === modeRawDamage ? modePowerBonus : 0);
+    const hardenedPower = SR3EItem.vehicleTargetDamage({ ...damageBase, power: unaug }, { av: weaponOpts.avMunition }).damage.power;
     const vd = SR3EItem.vehicleTargetDamage(damageBase, { av: weaponOpts.avMunition });
-    damageBase = vd.damage;
+    damageBase = { ...vd.damage, hardenedPower };
     effectiveRawDamage = `${damageBase.power}${damageBase.level}${damageBase.isStun ? ' Stun' : ''}`;
     if (vd.noEffect) ui.notifications.warn(`${this.name}: ${vd.note}`);
   }

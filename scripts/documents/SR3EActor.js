@@ -17,6 +17,7 @@ import { KarmaPool } from '../data/karma-uses.mjs';
 import { CombatPool } from '../data/combat-pool.mjs';
 import { Collisions } from '../data/collisions.mjs';
 import { Apds } from '../data/apds.mjs';
+import { VehicleArmor } from '../data/vehicle-armor.mjs';
 import { Misfire } from '../data/misfire.mjs';
 import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { AdeptLevels } from '../data/adept-levels.mjs';
@@ -3736,6 +3737,8 @@ _prepareCharacter(sys, attr) {
               stagedLevel:     staged.level,
               isStun:          staged.isStun,
               rawDamage:       state.rawDamage,
+              // Hardened armour compares the Power without burst / full-auto (p.132) — vehicle targets only.
+              hardenedPower:   state.damageBase?.hardenedPower,
               // A vehicle: "Standard staging rules apply" (p.149) — the net comparison. TODO 165.
               net:             { attackHits: successes, basePower: state.damageBase.power, baseLevel: state.damageBase.level },
             }).replace(/'/g, '&#39;');
@@ -9463,11 +9466,14 @@ _prepareCharacter(sys, attr) {
     const defaultArmor = usesImpact ? impact : ballistic;
 
     const soakTN = Math.max(2, stagedPower - defaultArmor);
-    // SR3 p.149: "If a weapon's reduced Power (unaugmented by burst or full-auto fire rates) does not
-    // exceed the armor's rating, the weapons fire does no damage to the vehicle." Stated for the GM —
-    // the card cannot tell a burst's Power from the weapon's own.
-    if (this.type === 'vehicle' && stagedPower <= defaultArmor) {
-      ammoNote = [ammoNote, `Power ${stagedPower} does not exceed armour ${defaultArmor} — no damage to the vehicle (p.149; burst/full-auto Power does not count)`]
+    // SR3 p.132: vehicle armour is hardened — it "can deflect all damage from weapons with a Power (modified by the
+    // vehicle's Body, but not by burst or autofire) equal to or less than the Armor Rating"; p.149: "If a weapon's
+    // reduced Power (unaugmented by burst or full-auto fire rates) does not exceed the armor's rating, the weapons fire
+    // does no damage to the vehicle." The attack carries that unaugmented Power as `hardenedPower`; without it
+    // (a grenade, a collision) the staged Power is all there is. Announced, never applied.
+    const hardPower = VehicleArmor.comparedPower(stagedPower, payload.hardenedPower);
+    if (this.type === 'vehicle' && !payload.noArmor && VehicleArmor.deflects(hardPower, defaultArmor)) {
+      ammoNote = [ammoNote, `Power ${hardPower} (without any burst/full-auto bonus) does not exceed armour ${defaultArmor} — hardened armour deflects it: no damage to the vehicle (p.132, p.149)`]
         .filter(Boolean).join(' · ');
     }
 
