@@ -11816,7 +11816,8 @@
       ],
       "hash": "8d8e2d6ece",
       "text": "# Physical Adepts\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#2",
@@ -11827,7 +11828,29 @@
       ],
       "hash": "3fca2285e0",
       "text": "The Awakened who turn their magic inward, on their own bodies and minds:\nPower Points, every adept power in the core rulebook, the ones *Magic in\nthe Shadows* adds, and how the sheet tracks them. From the core rulebook\n*(SR3 p.54–55, p.160, p.168–171)* and *(MitS p.149–151)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "Followers of the somatic way, adepts do not use magical"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "An adept begins the game with a number of Power Points"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2900,
+          "snippet": "const ppTotal  = (actor.system.attributes?.magic?.value ?? 0) + ppBought;"
+        }
+      ],
+      "note": "Adept support exists as a Magic-tab Adept Powers list with a Power Point budget; individual rows are checked below."
     },
     {
       "id": "magic/physical-adepts.md#3",
@@ -11838,7 +11861,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#4",
@@ -11849,7 +11873,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#5",
@@ -11860,7 +11885,29 @@
       ],
       "hash": "e782d23825",
       "text": "## What an adept is  *(SR3 p.55, p.168)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "Followers of the somatic way, adepts do not use magical"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "Adepts follow their own path, called the somatic way"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2900,
+          "snippet": "const ppTotal  = (actor.system.attributes?.magic?.value ?? 0) + ppBought;"
+        }
+      ],
+      "note": "The heading covers the adept description; the casting/astral limits are unit 6, the creation rules units 7-8."
     },
     {
       "id": "magic/physical-adepts.md#6",
@@ -11871,7 +11918,32 @@
       ],
       "hash": "27b3f348f7",
       "text": "Adepts follow **the somatic way**. They don't cast spells or conjure\nspirits, and they have no access to astral space unless they buy the\n**Astral Perception** power. They can never astrally project. What they get\ninstead are **powers**, magical abilities that become a natural part of the\nadept through training *(SR3 p.55, p.168)*. An adept can still use Sorcery\nin astral combat *(SR3 p.168)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "cannot astrally project, and cannot use astral perception unless it is"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "they can use Sorcery in astral combat; see p. 174"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hasAstralPerception|canPerceiveAstrally|adeptAstral",
+          "path": "scripts"
+        },
+        {
+          "pattern": "magicType.{0,25}Adept.{0,60}(cast|conjur|project)",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Adept magic type exists, but nothing in the code stops an adept casting, conjuring or perceiving astrally, nor treats Astral Perception as the only way in (the system warns, it does not refuse)."
     },
     {
       "id": "magic/physical-adepts.md#7",
@@ -11882,7 +11954,28 @@
       ],
       "hash": "a91f912479",
       "text": "- **At character creation** an adept takes **Magic at Priority B**, the\n  same priority as an aspected magician; a full magician needs Priority A\n  *(SR3 p.54)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 56,
+          "printedPage": 54,
+          "quote": "Adept/Aspected Magician 27 40 400,000"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 56,
+          "printedPage": 54,
+          "quote": "Full Magician 30 50 1,000,000"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spellPoints|magicPriority",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Master Character Creation Table row for Priority B is Adept/Aspected Magician (full magician is A). Character creation by Priority is not part of the system; magic type is picked on the Magic tab."
     },
     {
       "id": "magic/physical-adepts.md#8",
@@ -11893,7 +11986,28 @@
       ],
       "hash": "d9f4d7ac12",
       "text": "- Adepts get **no Spell Points**. They can buy weapon foci with nuyen, but\n  can't bond one until they have the Karma *(SR3 p.55, p.60)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "Adepts can purchase weapon foci, but cannot bond them until they have enough Karma"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "Because adepts do not use spells, they get no Spell Points"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spellPoints",
+          "path": "scripts"
+        }
+      ],
+      "note": "Spell Points do not exist in the system; foci are bonded with Karma (GK.bondingCost) on the Spend Karma calculator."
     },
     {
       "id": "magic/physical-adepts.md#9",
@@ -11904,7 +12018,33 @@
       ],
       "hash": "3581e80514",
       "text": "## Power Points  *(SR3 p.55, p.168)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "An adept begins the game with a number of Power Points"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "During game play, adepts may purchase additional Power Points"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2900,
+          "snippet": "const ppTotal  = (actor.system.attributes?.magic?.value ?? 0) + ppBought;"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5885,
+          "snippet": "const cost = GK.powerPointCost(1);"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#10",
@@ -11915,7 +12055,29 @@
       ],
       "hash": "bfe8106cfe",
       "text": "- An adept starts with **Power Points equal to their Magic Attribute**, 6\n  in most cases. At character creation they **can't buy or sell** extra\n  Power Points *(SR3 p.55)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "All starting adepts receive a number of Power Points equal to their Magic Rating"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "Players of adepts CANNOT purchase or sell extra Power Points"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2900,
+          "snippet": "const ppTotal  = (actor.system.attributes?.magic?.value ?? 0) + ppBought;"
+        }
+      ],
+      "note": "Power Points = Magic (plus Karma-bought ones) is coded. The creation-time ban on buying or selling is not enforced (nothing models character creation; the sheet takes powerPointsBought at any time)."
     },
     {
       "id": "magic/physical-adepts.md#11",
@@ -11926,7 +12088,22 @@
       ],
       "hash": "411b10a345",
       "text": "- Each power costs Power Points. **Once spent they're gone, and the choice\n  of powers is permanent** *(SR3 p.168)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "Power Points, once spent, are gone. The adept's choice of powers is permanent."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permanentPowers|lockPowers|powersLocked",
+          "path": "scripts"
+        }
+      ],
+      "note": "Powers can be added and removed freely on the sheet; permanence is left to the table. The Power Points used/total count is shown (SR3EActorSheet.js:2970)."
     },
     {
       "id": "magic/physical-adepts.md#12",
@@ -11937,7 +12114,28 @@
       ],
       "hash": "e37699a18e",
       "text": "- **No power can have more levels than the adept's Magic.** An adept with\n  Magic 4 has at most 4 points of powers, and none of more than four levels\n  *(SR3 p.168)*.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "cannot have more than 4 points worth of pow- ers, none of which can have more than four levels"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2163,
+          "snippet": "if (s.hasLevels && lvl > magicForCaps) overLevelled.push({ name: item.name, level: lvl });"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2161,
+          "snippet": "p.168 limits the"
+        }
+      ],
+      "note": "The book: no power may have more levels than Magic, and total power points cannot exceed Magic. The code lists levelled powers above Magic under Above Magic and turns the Power Point count red, but only for powers with hasLevels. Fixed-level items (Improved Reflexes 1-3, Combat Sense 1-3, Killing Hands levels) are never checked, so Improved Reflexes level 3 on a Magic 2 adept raises no warning. Warn-only by design."
     },
     {
       "id": "magic/physical-adepts.md#13",
@@ -11948,7 +12146,27 @@
       ],
       "hash": "0c26241a62",
       "text": "- **During play**, an adept can buy more Power Points at **20 Good Karma\n  each** *(SR3 p.168)*. See [Karma](../../rules/karma/).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "During game play, adepts may purchase additional Power Points at a cost of 20 Good Karma Points per Power Point"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 169,
+          "snippet": "powerPointCost(n = 1) { return pos(n) * 20; },"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5885,
+          "snippet": "const cost = GK.powerPointCost(1);"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#14",
@@ -11959,7 +12177,29 @@
       ],
       "hash": "21ed21eed6",
       "text": "### Losing Magic  *(SR3 p.160, p.168)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 162,
+          "printedPage": 160,
+          "quote": "the Magic attribute, one point for every full point of Essence, or"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 162,
+          "printedPage": 160,
+          "quote": "Adepts who lose Magic Attribute also lose some of their"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2420,
+          "snippet": "attr.magic.value = Math.min(magicBase, Math.floor(effectiveMagic))"
+        }
+      ],
+      "note": "Heading: the Essence-to-Magic rule is coded; the Magic loss check is unit 15."
     },
     {
       "id": "magic/physical-adepts.md#15",
@@ -11970,7 +12210,40 @@
       ],
       "hash": "0f5ce11a03",
       "text": "Every full point of Essence lost, or fraction of one, costs a point of\nMagic: an adept with Essence 5.8 and Magic 5 loses another point of Magic\nwhen Essence drops below 5. Deadly wounds, bad medical care, drug abuse and\ndisruption in astral combat can also call for a **Magic Loss check**: roll\n2D6, and if the total is **less than or equal to** your Magic, it drops by\none. A roll of 2 always costs the point *(SR3 p.160)*.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 162,
+          "printedPage": 160,
+          "quote": "the Magic attribute, one point for every full point of Essence, or"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 162,
+          "printedPage": 160,
+          "quote": "If the total is less than or equal to your Magic Attribute, it drops"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 162,
+          "printedPage": 160,
+          "quote": "A roll of 2 always indicates the loss of a Magic point."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2420,
+          "snippet": "attr.magic.value = Math.min(magicBase, Math.floor(effectiveMagic))"
+        },
+        {
+          "file": "scripts/SR3EHealing.js",
+          "line": 187,
+          "snippet": "static magicLost(roll, magic) { return (Number(roll) || 0) <= (Number(magic) || 0); }"
+        }
+      ],
+      "note": "Essence: effective Magic is capped at floor(Essence), so Essence 5.8 with Magic 5 loses a point only below 5 - matches. The Magic Loss check exists only in the guided healing flow (Deadly wound, untreated Awakened patient) as \"2D6 at or below Magic\"; the book's \"a roll of 2 always indicates the loss of a Magic point\" is not coded, so at Magic 1 a roll of 2 does not cost the point. Drugs, astral disruption and totem-path failure have no check."
     },
     {
       "id": "magic/physical-adepts.md#16",
@@ -11981,7 +12254,28 @@
       ],
       "hash": "75d6f8bb0d",
       "text": "**An adept who loses a point of Magic loses a point's worth of powers.**\nThe player chooses which *(SR3 p.168)*. At Magic 0 the character burns out\nand is mundane forever *(SR3 p.160)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "so an adept who loses a Magic point"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 162,
+          "printedPage": 160,
+          "quote": "If a character's Magic Attribute ever drops to 0, he \"burns"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "burn(s|ed)?.?out|burnout",
+          "path": "scripts"
+        }
+      ],
+      "note": "No powers are removed on Magic loss (the sheet only warns when the Power Point total exceeds Magic) and nothing marks a burnout at Magic 0."
     },
     {
       "id": "magic/physical-adepts.md#17",
@@ -11992,7 +12286,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#18",
@@ -12003,7 +12298,23 @@
       ],
       "hash": "5bab55c54e",
       "text": "## The core rulebook powers  *(SR3 p.168–171)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Mystic Armor does not provide Ballistic Armor."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/mystic-armor.sr3e-adeptpower-0089.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "Heading: the core powers ship in the sr3e-sr3-adept-powers pack (42 items); each row is checked below."
     },
     {
       "id": "magic/physical-adepts.md#19",
@@ -12014,7 +12325,8 @@
       ],
       "hash": "34774b7040",
       "text": "| Power | Cost | What it does |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#20",
@@ -12025,7 +12337,29 @@
       ],
       "hash": "0bae1f087a",
       "text": "| **Astral Perception** | 2 | Normal astral perception (p.171). Never projection. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "Adepts with this power follow all the normal rules for astral perception"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "hasAstralPerception|canPerceiveAstrally|adeptAstral",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/astral-perception.sr3e-adeptpower-0005.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 2,"
+        }
+      ],
+      "note": "Cost 2 is in the pack; no code reads the power (no Astral Perception gating anywhere)."
     },
     {
       "id": "magic/physical-adepts.md#21",
@@ -12036,7 +12370,28 @@
       ],
       "hash": "d62e5f56ce",
       "text": "| **Attribute Boost** | .25 per level | A temporary boost to one Physical Attribute. Bought separately for each. [Below](#attribute-boost). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "chased for any Physical Attribute: Strength, Body, or Quickness."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/attribute-boost-str.sr3e-adeptpower-0006.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.25,"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8018,
+          "snippet": "static attributeBoostTN(baseRating) {"
+        }
+      ],
+      "note": "Cost .25 per level is in the pack (one item per Physical Attribute); the activation, duration and Drain are SR3EActor.openAttributeBoost / tickAttributeBoosts."
     },
     {
       "id": "magic/physical-adepts.md#22",
@@ -12047,7 +12402,28 @@
       ],
       "hash": "9c3f3468a1",
       "text": "| **Body Control** | .25 per level | +1 die per level to resist toxins and diseases. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Each level of Body Control pro- vides 1 additional die for Resistance Tests against such effects."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/body-control.sr3e-adeptpower-0011.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.25,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1292,
+          "snippet": "{ match: /^body control/i,          situation: 'toxin',       dicePerLevel: 1 },"
+        }
+      ],
+      "note": "The dice are a situational bonus (offered as a checkbox where the roll cannot know it is against a toxin)."
     },
     {
       "id": "magic/physical-adepts.md#23",
@@ -12058,7 +12434,28 @@
       ],
       "hash": "8bb99da58f",
       "text": "| **Combat Sense** | see table | Extra Combat Pool dice, and Combat Pool usable on the Reaction Test for surprise (p.109). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Each level gives you a num- ber of extra Combat Pool dice"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense-1.sr3e-adeptpower-0012.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1299,
+          "snippet": "{ match: /^combat sense/i,          poolPerLevel: 1,"
+        }
+      ],
+      "note": "Extra Combat Pool is coded; spending a fraction of the pool on the surprise Reaction Test is only a sheet note."
     },
     {
       "id": "magic/physical-adepts.md#24",
@@ -12069,7 +12466,33 @@
       ],
       "hash": "cc0a85e7e4",
       "text": "| **Enhanced Perception** | .5 per level | +1 die per level to every Perception Test, including astral perception if the adept has it. No more dice than Intelligence or Magic, **whichever is less**. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "additional die for all Perception Tests (p. 231), including astral"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/enhanced-perception.sr3e-adeptpower-0030.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1294,
+          "snippet": "{ match: /^enhanced perception/i,   situation: 'perception',  dicePerLevel: 1,"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2448,
+          "snippet": "if (!b.capBy) continue;"
+        }
+      ],
+      "note": "The Intelligence-or-Magic cap is applied (capBy)."
     },
     {
       "id": "magic/physical-adepts.md#25",
@@ -12080,7 +12503,27 @@
       ],
       "hash": "2fc87dd4f3",
       "text": "| **Improved Ability** | see table | Extra dice for one Active Skill and its specializations. [Below](#improved-ability). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "This power gives you additional dice for use with a specific"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-abl-combat-skl.sr3e-adeptpower-0040.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8077,
+          "snippet": "return Math.max(0, Math.min(level, skillRating, magic));"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#26",
@@ -12091,7 +12534,34 @@
       ],
       "hash": "7ed68f6c31",
       "text": "| **Improved Physical Attribute** | .5 per level | +1 per level to Body, Strength or Quickness. Each level **over the racial modified limit costs double**, 1 point per level. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "power allows you to exceed your racial modified limit"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Each level of this power increas- es the Attribute by 1."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-physical-attr-str.sr3e-adeptpower-0046.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-phys-attr-str-racmod-1.sr3e-adeptpower-0047.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        }
+      ],
+      "note": "The double-cost-over-the-limit is a second pack item at cost 1 per level; the player picks it."
     },
     {
       "id": "magic/physical-adepts.md#27",
@@ -12102,7 +12572,34 @@
       ],
       "hash": "957b7a535d",
       "text": "| **Improved Reflexes** | see table | +2 Reaction and +1 Initiative die per level, at most level 3. **Doesn't combine** with technological or other magical Reaction or Initiative increases. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Reflexes (p. 301). For each level, you 2 3 receive +2 to Reaction and an addi-"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "The maximum level of Improved Reflexes is 3"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes-level-1.sr3e-adeptpower-0050.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 2,"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8105,
+          "snippet": "static reflexBonus({ adeptRea = 0, adeptInit = 0, cyberRea = 0, cyberInit = 0 } = {}) {"
+        }
+      ],
+      "note": "Three fixed-level items (1-3); the non-combining rule picks the better package and reports the dropped one."
     },
     {
       "id": "magic/physical-adepts.md#28",
@@ -12113,7 +12610,35 @@
       ],
       "hash": "17c4c71b29",
       "text": "| **Improved Sense** | .25 per improvement | A sense the race doesn't have: low-light, thermographic, high- or low-frequency hearing, direction sense, improved scent or taste, flare compensation, sound dampening. Anything cyberware provides except radio and similar technology. No package deals. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Improvements include Low-Light or Thermo-"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Unlike cyberware, there are no package deals on cost."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "improvedSense",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-sense-low-light-vision.sr3e-adeptpower-0053.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.25,"
+        }
+      ],
+      "note": "The fourteen Improved Sense items ship at .25 each, but none has an effect in the code (descriptions only)."
     },
     {
       "id": "magic/physical-adepts.md#29",
@@ -12124,7 +12649,34 @@
       ],
       "hash": "83c70acefe",
       "text": "| **Killing Hands** | see table | Unarmed attacks do Physical damage at the purchased level instead of (Strength)M Stun. [Below](#killing-hands). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Normal unarmed attacks do (Strength)M Stun Damage."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "The use of Killing Hands must be declared with the Unarmed Combat attack"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 261,
+          "snippet": "static killingHandsDamage(baseCode, level) {"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/killing-hands-str-light.sr3e-adeptpower-0070.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "Offered in the Called Shot dialog; immunity to Normal Weapons and astral use are stated on the card, not resolved."
     },
     {
       "id": "magic/physical-adepts.md#30",
@@ -12135,7 +12687,27 @@
       ],
       "hash": "296d5279a5",
       "text": "| **Magic Resistance** | 1 per level | +1 die per level to every Spell Resistance Test. Doesn't stop spells you choose not to resist. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Add 1 die per level of this power to all"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/magic-resistance.sr3e-adeptpower-0080.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1295,
+          "snippet": "{ match: /^magic resistance/i,      situation: 'spellResist', dicePerLevel: 1 },"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#31",
@@ -12146,7 +12718,27 @@
       ],
       "hash": "1b7e5a9a62",
       "text": "| **Missile Parry** | 1 | Catch arrows, thrown knives and shuriken out of the air. [Below](#missile-parry). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Using Missile Parry is a Free Action."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/missile-parry.sr3e-adeptpower-0085.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7404,
+          "snippet": "static missileParryTN(baseRangeTN) {"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#32",
@@ -12157,7 +12749,38 @@
       ],
       "hash": "32675bfbad",
       "text": "| **Mystic Armor** | .5 per level | +1 Impact armor per level, cumulative with worn armor. No Ballistic armor. Also protects in astral combat. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Mystic Armor does not provide Ballistic Armor."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Mystic Armor also protects against damage done in astral combat"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/mystic-armor.sr3e-adeptpower-0089.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 9293,
+          "snippet": "if (mysticArmor > 0) impact += mysticArmor;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 11845,
+          "snippet": "const mysticArmor = Math.max(0, this.system.derived?.mysticArmor ?? 0);"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#33",
@@ -12168,7 +12791,27 @@
       ],
       "hash": "fa379e85d3",
       "text": "| **Pain Resistance** | .5 per level | Subtract the level from your damage before finding your injury modifier. [Below](#pain-resistance). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Subtract your level of Pain Resistance from your current damage"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/pain-resistance.sr3e-adeptpower-0093.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7497,
+          "snippet": "static painAdjustedBoxes(boxes, painResistance = 0) {"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#34",
@@ -12179,7 +12822,27 @@
       ],
       "hash": "6f6a882086",
       "text": "| **Rapid Healing** | .5 per level | +1 die per level to Body for Healing Tests and for the test against a crippling injury from a Deadly wound (p.127). No effect on Magic Loss checks. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "adds 1 die to your Body for Healing Tests as well as"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/rapid-healing.sr3e-adeptpower-0100.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1296,
+          "snippet": "{ match: /^rapid healing/i,         situation: 'healing',     dicePerLevel: 1 },"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#35",
@@ -12190,7 +12853,43 @@
       ],
       "hash": "3244b10641",
       "text": "| **Suspended State** | 1 | A meditative state that slows metabolism and bleeding: Willpower (4) Test, with injury modifiers, read like the Hibernate spell (p.194). Switches on by itself if the adept falls unconscious from a Deadly physical wound. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 173,
+          "printedPage": 171,
+          "quote": "To use Suspended State, roll your Willpower against a target number of 4"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 173,
+          "printedPage": 171,
+          "quote": "the power automatically activates."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "suspendedState|hibernate",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "suspendedState|hibernate",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "suspendedState|hibernate",
+          "path": "scripts/sheets"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/suspended-state.sr3e-adeptpower-0110.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        }
+      ],
+      "note": "Cost 1 is in the pack; nothing resolves the power."
     },
     {
       "id": "magic/physical-adepts.md#36",
@@ -12201,7 +12900,23 @@
       ],
       "hash": "873a491fa8",
       "text": "### Cost tables  *(SR3 p.169–170)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "ATTRIBUTE BOOST DRAIN TABLE Boosted Attribute Rating is: Drain Level"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense-1.sr3e-adeptpower-0012.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        }
+      ],
+      "note": "Heading: the cost tables are rows 38-52."
     },
     {
       "id": "magic/physical-adepts.md#37",
@@ -12212,7 +12927,8 @@
       ],
       "hash": "6ef3f8aa85",
       "text": "| Combat Sense level | Cost | Combat Pool | Usable Pool dice for the surprise Reaction Test |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#38",
@@ -12223,7 +12939,23 @@
       ],
       "hash": "2292ae2170",
       "text": "| 1 | 1 | +1 | ¼ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "for Reaction Test 2 2 2 3 3 3 1/4 1/2 Full"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense-1.sr3e-adeptpower-0012.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        }
+      ],
+      "note": "Cost and Combat Pool bonus are the pack items (+1CPL/+2CPL/+3CPL); the Usable-Pool-dice fraction is only a sheet note."
     },
     {
       "id": "magic/physical-adepts.md#39",
@@ -12234,7 +12966,23 @@
       ],
       "hash": "7a7ec99af6",
       "text": "| 2 | 2 | +2 | ½ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "for Reaction Test 2 2 2 3 3 3 1/4 1/2 Full"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense-2.sr3e-adeptpower-0013.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 2,"
+        }
+      ],
+      "note": "Cost and Combat Pool bonus are the pack items (+1CPL/+2CPL/+3CPL); the Usable-Pool-dice fraction is only a sheet note."
     },
     {
       "id": "magic/physical-adepts.md#40",
@@ -12245,7 +12993,23 @@
       ],
       "hash": "6fc975cae5",
       "text": "| 3 | 3 | +3 | Full |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "for Reaction Test 2 2 2 3 3 3 1/4 1/2 Full"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense-3.sr3e-adeptpower-0014.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 3,"
+        }
+      ],
+      "note": "Cost and Combat Pool bonus are the pack items (+1CPL/+2CPL/+3CPL); the Usable-Pool-dice fraction is only a sheet note."
     },
     {
       "id": "magic/physical-adepts.md#41",
@@ -12256,7 +13020,8 @@
       ],
       "hash": "4ea1dc1894",
       "text": "| Improved Ability: skill category | Cost per die |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#42",
@@ -12267,7 +13032,23 @@
       ],
       "hash": "cca619389c",
       "text": "| **Physical skills**: Athletics, Diving, Stealth | .25 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Physical Skills .25 Athletics, Diving, Stealth"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-abl-phys-skl.sr3e-adeptpower-0041.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.25,"
+        }
+      ],
+      "note": "The pack carries the category cost (.25) only; which skills belong to the category is not coded (the player names the skill)."
     },
     {
       "id": "magic/physical-adepts.md#43",
@@ -12278,7 +13059,23 @@
       ],
       "hash": "43b38d2c5d",
       "text": "| **Combat skills**: Edged Weapons, Clubs, Pole Arms, Cyber-Implant Weapon, Unarmed Combat, Throwing Weapons, Projectile Weapons, Underwater Combat, Pistols, SMGs, Rifles, Assault Rifles, Shotguns, Heavy Weapons, Grenade Launchers, Whips, Gunnery, Launch Weapons | .5 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Combat Skills .5 Edged Weapons, Clubs, Pole Arms Cyber-Implant Weapon, Unarmed Combat"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-abl-combat-skl.sr3e-adeptpower-0040.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "The guide's skill list matches the book's. The pack carries the category cost only; the skill list is not coded."
     },
     {
       "id": "magic/physical-adepts.md#44",
@@ -12289,7 +13086,8 @@
       ],
       "hash": "a12733a43e",
       "text": "| Improved Reflexes level | Cost |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#45",
@@ -12300,7 +13098,22 @@
       ],
       "hash": "9fb4a09031",
       "text": "| 1 | 2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "This power increases the speed Level Cost at which you react, just like Wired 1 2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes-level-1.sr3e-adeptpower-0050.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 2,"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#46",
@@ -12311,7 +13124,22 @@
       ],
       "hash": "277bd38d56",
       "text": "| 2 | 3 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Reflexes (p. 301). For each level, you 2 3"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes-level-2.sr3e-adeptpower-0051.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 3,"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#47",
@@ -12322,7 +13150,22 @@
       ],
       "hash": "8b41f3321c",
       "text": "| 3 | 5 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "receive +2 to Reaction and an addi- 3 5"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes-level-3.sr3e-adeptpower-0052.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 5,"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#48",
@@ -12333,7 +13176,8 @@
       ],
       "hash": "425a440c67",
       "text": "| Killing Hands damage level | Cost |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#49",
@@ -12344,7 +13188,23 @@
       ],
       "hash": "b698658859",
       "text": "| Light | .5 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Cost .5 effect on checks for magic loss (p. 160). 1 2 Suspended State 4 Cost: 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/killing-hands-str-light.sr3e-adeptpower-0070.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "Killing Hands cost table: Light .5, Moderate 1, Serious 2, Deadly 4 (the OCR splits the level names from the costs; matched by order). The pack names Moderate \"medium\"."
     },
     {
       "id": "magic/physical-adepts.md#50",
@@ -12355,7 +13215,23 @@
       ],
       "hash": "9b4b5551d2",
       "text": "| Moderate | 1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Cost .5 effect on checks for magic loss (p. 160). 1 2 Suspended State 4 Cost: 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/killing-hands-str-medium.sr3e-adeptpower-0071.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        }
+      ],
+      "note": "Killing Hands cost table: Light .5, Moderate 1, Serious 2, Deadly 4 (the OCR splits the level names from the costs; matched by order). The pack names Moderate \"medium\"."
     },
     {
       "id": "magic/physical-adepts.md#51",
@@ -12366,7 +13242,23 @@
       ],
       "hash": "4ac345aded",
       "text": "| Serious | 2 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Cost .5 effect on checks for magic loss (p. 160). 1 2 Suspended State 4 Cost: 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/killing-hands-str-serious.sr3e-adeptpower-0072.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 2,"
+        }
+      ],
+      "note": "Killing Hands cost table: Light .5, Moderate 1, Serious 2, Deadly 4 (the OCR splits the level names from the costs; matched by order). The pack names Moderate \"medium\"."
     },
     {
       "id": "magic/physical-adepts.md#52",
@@ -12377,7 +13269,23 @@
       ],
       "hash": "8e023bfffa",
       "text": "| Deadly | 4 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Cost .5 effect on checks for magic loss (p. 160). 1 2 Suspended State 4 Cost: 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/killing-hands-str-deadly.sr3e-adeptpower-0073.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 4,"
+        }
+      ],
+      "note": "Killing Hands cost table: Light .5, Moderate 1, Serious 2, Deadly 4 (the OCR splits the level names from the costs; matched by order). The pack names Moderate \"medium\"."
     },
     {
       "id": "magic/physical-adepts.md#53",
@@ -12388,7 +13296,22 @@
       ],
       "hash": "7c51fb3e65",
       "text": "### Attribute Boost  *(SR3 p.168–169)*\n{: #attribute-boost }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "To gain the boost, make a Magic Test against a target number equal to one half the base"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8018,
+          "snippet": "static attributeBoostTN(baseRating) {"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#54",
@@ -12399,7 +13322,28 @@
       ],
       "hash": "3cb30ca92c",
       "text": "1. **Activate it** with a **Magic Test** against **half the base\n   (unaugmented) Attribute**, rounded up. No successes, no boost.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "To gain the boost, make a Magic Test against a target number equal to one half the base"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "If there are no successes, the Attribute is not boosted."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8019,
+          "snippet": "return Math.max(2, Math.ceil((baseRating ?? 0) / 2));"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#55",
@@ -12410,7 +13354,33 @@
       ],
       "hash": "79e71e1043",
       "text": "2. Otherwise the Attribute goes up by the power's level, for **Combat Turns\n   equal to the successes**. Nothing can be boosted past **twice its racial\n   modified limit** (p.245).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "is boosted by the level of the power. The boost lasts for a number of"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "can be boosted to greater than twice its Racial Modified Limit"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2268,
+          "snippet": "const capped = Math.min(attr[key].value + b.level, SR3EActor.attributeBoostCap(limit));"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8028,
+          "snippet": "return (limit ?? 6) * 2;"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#56",
@@ -12421,7 +13391,33 @@
       ],
       "hash": "1614932026",
       "text": "3. **When it runs out**, resist Drain with **Willpower** against **half the\n   boosted Attribute**, rounded up. Every two successes reduce the Drain\n   Level by one. The damage is **Stun**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Test. The target number is equal to one-half the boosted"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "es reduce the Drain Level by one. Any Drain damage taken is stun damage."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8040,
+          "snippet": "return Math.max(2, Math.ceil((boostedValue ?? 0) / 2));"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8469,
+          "snippet": "drainIsPhysical: false,"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#57",
@@ -12432,7 +13428,8 @@
       ],
       "hash": "97a74df493",
       "text": "| Attribute Boost Drain Table: the boosted rating is… | Drain Level |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#58",
@@ -12443,7 +13440,22 @@
       ],
       "hash": "4d31e5286a",
       "text": "| At or below the racial modified limit | L |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Less than or equal to Racial Modified Limit L"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8057,
+          "snippet": "if (boosted <= limit)                        return 'L';"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#59",
@@ -12454,7 +13466,22 @@
       ],
       "hash": "4f7b14cc12",
       "text": "| Up to the racial Attribute maximum | M |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Up to Racial Attribute Maximum M"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8058,
+          "snippet": "if (boosted <= SR3EActor.racialMax(limit))   return 'M';"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#60",
@@ -12465,7 +13492,22 @@
       ],
       "hash": "094abadf49",
       "text": "| Up to twice the racial modified limit | S |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Up to 2x Racial Modified Limit S"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8059,
+          "snippet": "return 'S';"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#61",
@@ -12476,7 +13518,29 @@
       ],
       "hash": "7d48e9286b",
       "text": "It doesn't work with cyberware or spell increases, but does stack with\nImproved Physical Attribute.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "ware) enhancements, nor spell-based increases. It is compati-"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "ble with the Improved Physical Attribute power."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8195,
+          "snippet": "Attribute Boost is"
+        }
+      ],
+      "note": "Not blocked: the sheet warns when cyberware or bioware already raises the attribute (the GM adjudicates). The boost is applied on top of Improved Physical Attribute."
     },
     {
       "id": "magic/physical-adepts.md#62",
@@ -12487,7 +13551,34 @@
       ],
       "hash": "1f467b4eb0",
       "text": "**Worked example.** A human adept with base Strength 5 and Attribute Boost\n(Strength) 2 activates it. Magic Test TN: 5 ÷ 2 = 2.5, rounded up, **3**.\nShe rolls 3 successes, so Strength is **7** for **3 Combat Turns**. A human's\nStrength limit is 6 and maximum 9 *(SR3 p.245)*; 7 is above 6 but no higher\nthan 9, so the Drain is **M**. When the boost ends she rolls Willpower\nagainst 7 ÷ 2 = 3.5, rounded up, **4**. Two successes would drop the Drain to\nLight; four would cancel it.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "The target number is equal to one-half the boosted"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "6 (9) 7 (11) 9 (14) 11 (17) 6 (9)"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8019,
+          "snippet": "return Math.max(2, Math.ceil((baseRating ?? 0) / 2));"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8057,
+          "snippet": "if (boosted <= limit)                        return 'L';"
+        }
+      ],
+      "note": "Worked example re-computed: TN ceil(5/2) = 3; Strength 5 + 2 = 7; human limit 6 / maximum 9, so 7 is M; Drain TN ceil(7/2) = 4; two successes M to L, four cancel. Matches the book table and the code."
     },
     {
       "id": "magic/physical-adepts.md#63",
@@ -12498,7 +13589,22 @@
       ],
       "hash": "e5d8c19df0",
       "text": "### Improved Ability  *(SR3 p.169)*\n{: #improved-ability }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "You cannot have more additional dice than your base skill"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8077,
+          "snippet": "return Math.max(0, Math.min(level, skillRating, magic));"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#64",
@@ -12509,7 +13615,8 @@
       ],
       "hash": "e40207a0b7",
       "text": "- The dice apply to the skill and carry over equally to its specializations.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Book p.169: Improved Ability dice carry over equally to the skill's specializations. The dice are kept per skill name in derived.skillBonusDice; I did not trace a specialization roll path to confirm the dice reach it."
     },
     {
       "id": "magic/physical-adepts.md#65",
@@ -12520,7 +13627,27 @@
       ],
       "hash": "d191971728",
       "text": "- **Capped at the base skill rating or Magic, whichever is less.** An adept\n  with Pistols 4 and Magic 5 can have at most 4 dice.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "rating or your Magic Attribute, whichever is less. For example,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8077,
+          "snippet": "return Math.max(0, Math.min(level, skillRating, magic));"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2456,
+          "snippet": "for (const claim of pendingImprovedAbility) {"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#66",
@@ -12531,7 +13658,23 @@
       ],
       "hash": "91ba4a9953",
       "text": "- **Defaulting** to the improved skill uses only **half** the dice, rounded\n  down.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "to the improved skill, only half (round down) of the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 709,
+          "snippet": "only half (round down) of the Improved"
+        }
+      ],
+      "note": "The defaulting tier halves the adept dice after the cap."
     },
     {
       "id": "magic/physical-adepts.md#67",
@@ -12542,7 +13685,23 @@
       ],
       "hash": "6c5d87798c",
       "text": "- It doesn't raise the skill's rating, only the dice rolled for it.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Ability does not actually improve a skill's rating, it only provides"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2469,
+          "snippet": "_addSkillDice(claim.skill, dice, claim.label, { kind: 'adept', note });"
+        }
+      ],
+      "note": "The dice go into a separate skillBonusDice map; the skill rating is unchanged."
     },
     {
       "id": "magic/physical-adepts.md#68",
@@ -12553,7 +13712,22 @@
       ],
       "hash": "16ba4ccea4",
       "text": "### Killing Hands  *(SR3 p.170)*\n{: #killing-hands }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "The use of Killing Hands must be declared with the Unarmed Combat attack"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2867,
+          "snippet": "const killingHands = (html.querySelector('#sr-killinghands-cs')?.checked && khLevel)"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#69",
@@ -12564,7 +13738,34 @@
       ],
       "hash": "3ca4af2dfa",
       "text": "Ordinary unarmed attacks do **(Strength)M Stun**. With Killing Hands the\nadept may instead do **Physical** damage at the level bought, and must\n**declare it with the attack**. It works against Immunity to Normal Weapons\n(their defensive bonuses don't count), and in astral combat if the adept has\nAstral Perception and is using it.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "The use of Killing Hands must be declared with the Unarmed Combat attack"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "A Killing Hands attack is effective against creatures with"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 261,
+          "snippet": "static killingHandsDamage(baseCode, level) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2867,
+          "snippet": "const killingHands = (html.querySelector('#sr-killinghands-cs')?.checked && khLevel)"
+        }
+      ],
+      "note": "Physical damage at the bought level, declared with the attack (the Called Shot dialog) - coded. Immunity to Normal Weapons and astral-combat use have no flow; they are stated on the card for the GM (SR3EItem.js:255-259 comment)."
     },
     {
       "id": "magic/physical-adepts.md#70",
@@ -12575,7 +13776,28 @@
       ],
       "hash": "b6daa6291b",
       "text": "### Missile Parry  *(SR3 p.110, p.170)*\n{: #missile-parry }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Using Missile Parry is a Free Action."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "Number 6 and extreme range a base Target Number 9."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7404,
+          "snippet": "static missileParryTN(baseRangeTN) {"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#71",
@@ -12586,7 +13808,39 @@
       ],
       "hash": "717973e242",
       "text": "A Free Action. Roll **Reaction**, plus any Combat Pool dice you want to\nadd, against **10 minus the base target number for the attack's range**.\nYou catch the missile only with **more successes than the attacker**; ties\ngo to the attacker.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "To successfully grab the missile weapon out of the air, you"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Ties go to the attacker. Using Missile Parry is a Free Action."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Target Number of 10, minus the base target"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7405,
+          "snippet": "return Math.max(2, 10 - (Number(baseRangeTN) || 0));"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7428,
+          "snippet": "return { caught: (parryHits ?? 0) > (attackHits ?? 0) };"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#72",
@@ -12597,7 +13851,29 @@
       ],
       "hash": "590fb45e02",
       "text": "{: .note }\n> The base range TNs are Short 4, Medium 5, Long 6 and Extreme 9\n> *(SR3 p.110)*, so a long-range arrow is TN 10 − 6 = **4**. The book's own\n> example says \"10 − 8, the base Target Number for long range\", giving 2.\n> The rule sentence, not the example, is followed here and in the system.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "Number 6 and extreme range a base Target Number 9."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "against an arrow coming from long range, the target number is 2 (10"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7405,
+          "snippet": "return Math.max(2, 10 - (Number(baseRangeTN) || 0));"
+        }
+      ],
+      "note": "The guide's note is accurate: p.110 gives long range base TN 6 and the p.170 example says 10 - 8; the code follows the rule sentence (TN 4 at long range) and says so in a comment (SR3EActor.js:7392-7400)."
     },
     {
       "id": "magic/physical-adepts.md#73",
@@ -12608,7 +13884,22 @@
       ],
       "hash": "0fb26624e6",
       "text": "### Pain Resistance  *(SR3 p.170)*\n{: #pain-resistance }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Subtract your level of Pain Resistance from your current damage"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7497,
+          "snippet": "static painAdjustedBoxes(boxes, painResistance = 0) {"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#74",
@@ -12619,7 +13910,34 @@
       ],
       "hash": "2d791e07a3",
       "text": "Subtract the level from your damage **before** looking up the injury\nmodifier. It doesn't reduce the damage itself. The book's example: with\nPain Resistance 3, Light and Moderate wounds carry no modifier, and 4 boxes\nof damage count as 4 − 3 = 1, a Light wound, **+1**. It works on both\nCondition Monitors, and the level also comes off target numbers to resist\npain from torture, illness and the like.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Pain Resistance works equally on both the"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Pain Resistance also allows you to resist pain from torture,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7497,
+          "snippet": "static painAdjustedBoxes(boxes, painResistance = 0) {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2220,
+          "snippet": "const physBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.physical?.value ?? 0, woundOffset);"
+        }
+      ],
+      "note": "Wound-modifier offset on both Condition Monitors is coded (boxes stay). The book's second use - \"The level is subtracted from your target numbers to resist pain\" (torture, painful disease, interrogation) - has no code; painResistance is read only for the wound lookup."
     },
     {
       "id": "magic/physical-adepts.md#75",
@@ -12630,7 +13948,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#76",
@@ -12641,7 +13960,24 @@
       ],
       "hash": "a08a199086",
       "text": "## Powers from *Magic in the Shadows*  *(MitS p.149–151)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 150,
+          "printedPage": 149,
+          "quote": "For each level of the power, roll an additional die for Counterattack Tests in melee",
+          "ocrPrinted": "1 1v9 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/counterstrike.sr3e-adeptpower-0017.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "Heading: the MitS powers ship in the sr3e-mits-adept-powers pack (26 items); rows are checked above."
     },
     {
       "id": "magic/physical-adepts.md#77",
@@ -12652,7 +13988,8 @@
       ],
       "hash": "34774b7040",
       "text": "| Power | Cost | What it does |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#78",
@@ -12663,7 +14000,30 @@
       ],
       "hash": "d8ff0df432",
       "text": "| **Blind Fighting** | .5 | The visibility modifier for blind fire or full darkness becomes +4. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 150,
+          "printedPage": 149,
+          "quote": "function more effectively without sight. Blind fighting reduces",
+          "ocrPrinted": "1 1v9 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "blindFighting|adept.{0,30}blind fighting",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/blind-fighting.sr3e-adeptpower-0010.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "Cost .5 is in the pack; no code applies the +4 visibility."
     },
     {
       "id": "magic/physical-adepts.md#79",
@@ -12674,7 +14034,33 @@
       ],
       "hash": "572136d48d",
       "text": "| **Counterstrike** | .5 per level | +1 die per level, for Counterattack Tests only (SR3 p.122). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 150,
+          "printedPage": 149,
+          "quote": "For each level of the power, roll an additional die for Counterattack Tests in melee",
+          "ocrPrinted": "1 1v9 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/counterstrike.sr3e-adeptpower-0017.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1306,
+          "snippet": "{ match: /^counterstrike/i,         situation: 'counterattack', dicePerLevel: 1 },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 9029,
+          "snippet": "const relevant = ctx.role === 'defender' ? ['counterattack'] : [];"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#80",
@@ -12685,7 +14071,30 @@
       ],
       "hash": "0c7a116108",
       "text": "| **Delay Damage** | 1 (obvious) or 2 (silent) | An unarmed hit's damage is held in the target's aura and lands at a time the adept chooses, within 24 hours. The adept sustains it at +2 to all tests. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 150,
+          "printedPage": 149,
+          "quote": "The delay damage power allows an adept to inflict dam-",
+          "ocrPrinted": "1 1v9 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "delayDamage|delayedDamage",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/delay-damage-1.sr3e-adeptpower-0019.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        }
+      ],
+      "note": "Costs 1 / 2 are in the pack (two items); the delayed-damage mechanic is not coded."
     },
     {
       "id": "magic/physical-adepts.md#81",
@@ -12696,7 +14105,30 @@
       ],
       "hash": "697340f8b6",
       "text": "| **Distance Strike** | 2 | An unarmed attack at range, up to Magic in meters. The target defends as against a ranged attack. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 150,
+          "printedPage": 149,
+          "quote": "This power allows an adept to \"transmit\" an unarmed",
+          "ocrPrinted": "1 1v9 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "distance.?strike",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/distance-strike.sr3e-adeptpower-0021.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 2,"
+        }
+      ],
+      "note": "Cost 2 is in the pack; not coded."
     },
     {
       "id": "magic/physical-adepts.md#82",
@@ -12707,7 +14139,31 @@
       ],
       "hash": "f483c5f896",
       "text": "| **Empathic Sense** | .5 | Perception (4) Test to read the emotions of people the adept can see, using the Assensing Table. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 151,
+          "printedPage": 150,
+          "quote": "Empathic sense grants a limited form of magical aware-",
+          "ocrPrinted": "Empathic Sense",
+          "printedNote": "OCR lost this page footer; printed 150 confirmed from the neighbouring footers (149, 151); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "empathic.?sense",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/empathic-sense.sr3e-adeptpower-0026.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "Cost .5 is in the pack; not coded."
     },
     {
       "id": "magic/physical-adepts.md#83",
@@ -12718,7 +14174,35 @@
       ],
       "hash": "eaa054b3ff",
       "text": "| **Flexibility** | .5 (level 1) or 1 (level 2) | −1 per level to Athletics (Escape Artist) TNs, and squeezing through small openings. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 151,
+          "printedPage": 150,
+          "quote": "this power, the adept may reduce the target numbers for Athletics (Escape Artist) Tests",
+          "ocrPrinted": "Empathic Sense",
+          "printedNote": "OCR lost this page footer; printed 150 confirmed from the neighbouring footers (149, 151); anchored on page text"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/flexibility-1.sr3e-adeptpower-0033.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        },
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/flexibility-2.sr3e-adeptpower-0034.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1316,
+          "snippet": "{ match: /^flexibility/i,           situation: 'escapeArtist',  tnPerLevel: -1 },"
+        }
+      ],
+      "note": "The -1 per level on Athletics (Escape Artist) is a situational target-number modifier; squeezing through openings is the GM's."
     },
     {
       "id": "magic/physical-adepts.md#84",
@@ -12729,7 +14213,31 @@
       ],
       "hash": "7ee032ac90",
       "text": "| **Freefall** | .25 per level | Fall 2 meters per level without injury. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 151,
+          "printedPage": 150,
+          "quote": "For each level of freefall, an adept can fall a distance of 2",
+          "ocrPrinted": "Empathic Sense",
+          "printedNote": "OCR lost this page footer; printed 150 confirmed from the neighbouring footers (149, 151); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "freefallLevel|adeptFreefall|cushion",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/freefall.sr3e-adeptpower-0035.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.25,"
+        }
+      ],
+      "note": "Cost .25 per level is in the pack; the 2 m per level is only a sheet note (config.js freefall note)."
     },
     {
       "id": "magic/physical-adepts.md#85",
@@ -12740,7 +14248,30 @@
       ],
       "hash": "89d8c9eb8d",
       "text": "| **Great Leap** | .25 per level | +1 die per level for jumping, and the level adds to Quickness for maximum distance. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 151,
+          "printedPage": 150,
+          "quote": "Each level of great leap adds a die for jumping Tests",
+          "ocrPrinted": "Empathic Sense",
+          "printedNote": "OCR lost this page footer; printed 150 confirmed from the neighbouring footers (149, 151); anchored on page text"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/great-leap.sr3e-adeptpower-0037.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.25,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1313,
+          "snippet": "{ match: /^great leap/i,            situation: 'jumping',       dicePerLevel: 1,"
+        }
+      ],
+      "note": "Jumping dice are a situational bonus; the Quickness addition is a sheet note."
     },
     {
       "id": "magic/physical-adepts.md#86",
@@ -12751,7 +14282,29 @@
       ],
       "hash": "e605854d45",
       "text": "| **Iron Will** | .5 per level | +1 die per level to resist mind control or alteration. Not illusions or mana combat spells. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 151,
+          "printedPage": 150,
+          "quote": "The iron will power protects an adept's mind from outside",
+          "ocrPrinted": "Empathic Sense",
+          "printedNote": "OCR lost this page footer; printed 150 confirmed from the neighbouring footers (149, 151); anchored on page text"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/iron-will.sr3e-adeptpower-0069.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1307,
+          "snippet": "{ match: /^iron will/i,             situation: 'mindControl',   dicePerLevel: 1 },"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#87",
@@ -12762,7 +14315,31 @@
       ],
       "hash": "fa2e4a8f42",
       "text": "| **Magic Sense** | .5 | Sense magic within Magic × 5 meters, read with the Detection Spell Table. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 151,
+          "printedPage": 150,
+          "quote": "The magic sense power allows an adept to sense magical",
+          "ocrPrinted": "Empathic Sense",
+          "printedNote": "OCR lost this page footer; printed 150 confirmed from the neighbouring footers (149, 151); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magic.?sense",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/magic-sense.sr3e-adeptpower-0081.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "Cost .5 is in the pack; not coded."
     },
     {
       "id": "magic/physical-adepts.md#88",
@@ -12773,7 +14350,31 @@
       ],
       "hash": "df8eae75ad",
       "text": "| **Missile Mastery** | 1 | Pens and credsticks become thrown weapons, (Strength ÷ 2, round down)L. +2 Power to real throwing weapons. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 151,
+          "printedPage": 150,
+          "quote": "An adept with missile mastery has such a highly devel-",
+          "ocrPrinted": "Empathic Sense",
+          "printedNote": "OCR lost this page footer; printed 150 confirmed from the neighbouring footers (149, 151); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "missile.?mastery",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/missile-mastery.sr3e-adeptpower-0084.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        }
+      ],
+      "note": "Cost 1 is in the pack; not coded."
     },
     {
       "id": "magic/physical-adepts.md#89",
@@ -12784,7 +14385,31 @@
       ],
       "hash": "b95077cde7",
       "text": "| **Nerve Strike** | 1 | An unarmed attack at TN 4 + the target's Impact armor. Every 2 net successes cost the target 1 Quickness instead of doing damage. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 151,
+          "printedPage": 150,
+          "quote": "Nerve strilte allows an adept to inflict damage that affects",
+          "ocrPrinted": "Empathic Sense",
+          "printedNote": "OCR lost this page footer; printed 150 confirmed from the neighbouring footers (149, 151); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "nerve.?strike",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/nerve-strike.sr3e-adeptpower-0090.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        }
+      ],
+      "note": "Cost 1 is in the pack; not coded."
     },
     {
       "id": "magic/physical-adepts.md#90",
@@ -12795,7 +14420,30 @@
       ],
       "hash": "6b986df3f7",
       "text": "| **Quick Draw** | .5 | The pistol quick-draw rule (SR3 p.107) for any weapon, with a Reaction (4) Test. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 152,
+          "printedPage": 151,
+          "quote": "The quiclt draw power allows an adept to use the quiclt-",
+          "ocrPrinted": "1 51 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "quick.?draw.{0,40}adept|adept.{0,40}quick.?draw",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/quick-draw.sr3e-adeptpower-0098.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "Cost .5 is in the pack; the pistol quick-draw rule exists (ready-weapon.mjs) but nothing lets the power extend it to other weapons."
     },
     {
       "id": "magic/physical-adepts.md#91",
@@ -12806,7 +14454,33 @@
       ],
       "hash": "6f575353f1",
       "text": "| **Quick Strike** | 3 | Act first in one Initiative Pass per Combat Turn, using that pass's action. Unwounded adepts only. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 152,
+          "printedPage": 151,
+          "quote": "This power allows the adept to act first in one lnitiative Pass per Combat Turn",
+          "ocrPrinted": "1 51 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/quick-strike.sr3e-adeptpower-0099.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 3,"
+        },
+        {
+          "file": "scripts/data/quick-strike.mjs",
+          "line": 22,
+          "snippet": "COST: 3,"
+        },
+        {
+          "file": "scripts/documents/SR3ECombat.js",
+          "line": 334,
+          "snippet": "async quickStrike(combatantId, { by = '', force = false } = {}) {"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#92",
@@ -12817,7 +14491,29 @@
       ],
       "hash": "b9eae0c0d3",
       "text": "| **Rooting** | .25 per level | A Simple Action to become immovable: +1 die per level to resist knockdown, throws and levitation, +2 to all TNs, and no moving. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 152,
+          "printedPage": 151,
+          "quote": "By taking a Simple Action, an adept with the rooting",
+          "ocrPrinted": "1 51 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/rooting.sr3e-adeptpower-0103.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.25,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1309,
+          "snippet": "{ match: /^rooting/i,               situation: 'knockdown',     dicePerLevel: 1,"
+        }
+      ],
+      "note": "The +1 die per level is a situational bonus (the Knockdown Test claims it); the +2 and no-movement are a sheet note."
     },
     {
       "id": "magic/physical-adepts.md#93",
@@ -12828,7 +14524,28 @@
       ],
       "hash": "f91c8625a2",
       "text": "| **Sixth Sense** | .25 per level | +1 die per level on Reaction Tests for Surprise (SR3 p.108) only. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 152,
+          "printedPage": 151,
+          "quote": "These dice do not apply to any other type of Reaction Test or",
+          "ocrPrinted": "1 51 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/sixth-sense.sr3e-adeptpower-0105.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.25,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1308,
+          "snippet": "{ match: /^sixth sense/i,           situation: 'surprise',      dicePerLevel: 1 },"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#94",
@@ -12839,7 +14556,30 @@
       ],
       "hash": "3eebc19056",
       "text": "| **Smashing Blow** | 1 | Unarmed Combat (4) Test; add the successes to Strength and compare with the Barrier Rating (SR3 p.124). |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 152,
+          "printedPage": 151,
+          "quote": "The adept makes an Unarmed Combat Test against a Target",
+          "ocrPrinted": "1 51 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "smashing.?blow",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/smashing-blow.sr3e-adeptpower-0107.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        }
+      ],
+      "note": "Cost 1 is in the pack; not coded (the Barrier Damage tool exists but is separate)."
     },
     {
       "id": "magic/physical-adepts.md#95",
@@ -12850,7 +14590,28 @@
       ],
       "hash": "40e1c6a51e",
       "text": "| **Spell Shroud** | .25 per level | +1 die per level to resist detection spells only. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 152,
+          "printedPage": 151,
+          "quote": "against detection spells only. Note that the spell shroud power",
+          "ocrPrinted": "1 51 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/spell-shroud.sr3e-adeptpower-0108.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.25,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1311,
+          "snippet": "{ match: /^spell shroud/i,          situation: 'detectionSpell', dicePerLevel: 1 },"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#96",
@@ -12861,7 +14622,28 @@
       ],
       "hash": "e2607f05ae",
       "text": "| **Temperature Tolerance** | .25 per level | +1 die per level against extreme heat and cold, including elemental manipulation effects. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 152,
+          "printedPage": 151,
+          "quote": "adept gains an additional die for resisting the effects and dam-",
+          "ocrPrinted": "1 51 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/temperature-tolerance.sr3e-adeptpower-0112.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.25,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1312,
+          "snippet": "{ match: /^temperature tolerance/i, situation: 'temperature',   dicePerLevel: 1 },"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#97",
@@ -12872,7 +14654,30 @@
       ],
       "hash": "b26d112387",
       "text": "| **Traceless Walk** | .5 | Leave no tracks on snow, sand or paper, make no footstep noise (+4 to hearing Perception), and don't trip pressure sensors. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 152,
+          "printedPage": 151,
+          "quote": "An adept with the traceless wallt power can move over",
+          "ocrPrinted": "1 51 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "tracelessWalk",
+          "path": "scripts"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/traceless-walk.sr3e-adeptpower-0115.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "Cost .5 is in the pack; not coded."
     },
     {
       "id": "magic/physical-adepts.md#98",
@@ -12883,7 +14688,28 @@
       ],
       "hash": "095cbf36b7",
       "text": "| **True Sight** | .25 per level | +1 die per level to resist illusion spells and illusion critter powers. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 152,
+          "printedPage": 151,
+          "quote": "additional die when malting Resistance Tests against illusion",
+          "ocrPrinted": "1 51 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-adept-powers/true-sight.sr3e-adeptpower-0116.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.25,"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1314,
+          "snippet": "{ match: /^true sight/i,            situation: 'illusion',      dicePerLevel: 1 },"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#99",
@@ -12894,7 +14720,23 @@
       ],
       "hash": "78b401d63a",
       "text": "*State of the Art 2064* adds more *(SOTA64 p.64–68)*; the system ships those\ntoo, in its own compendium.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Supplements/Shadowrun 3e - State of the Art 2064 {FPR25004}.pdf",
+          "pdfPage": 66,
+          "printedPage": 65,
+          "quote": "Cool Resolve Cost: 0.5 per level An adept with Cool Resolve has a confident and unflap-"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sota2-adept-powers/cool-resolve.sr3e-adeptpower-0016.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "SOTA64 pdf pages 65-69 (printed 64-68) hold the adept powers; the sr3e-sota2-adept-powers pack ships them (pack source name sota2)."
     },
     {
       "id": "magic/physical-adepts.md#100",
@@ -12905,7 +14747,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#101",
@@ -12916,7 +14759,8 @@
       ],
       "hash": "00a813d49e",
       "text": "## Worked example: building an adept",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#102",
@@ -12927,7 +14771,22 @@
       ],
       "hash": "9c062b0b45",
       "text": "A street samurai-style adept with **Magic 6** has **6 Power Points**:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 57,
+          "printedPage": 55,
+          "quote": "All starting adepts receive a number of Power Points equal to their Magic Rating"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2900,
+          "snippet": "const ppTotal  = (actor.system.attributes?.magic?.value ?? 0) + ppBought;"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#103",
@@ -12938,7 +14797,8 @@
       ],
       "hash": "5f2cfb0d28",
       "text": "| Power | Arithmetic | Power Points |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#104",
@@ -12949,7 +14809,22 @@
       ],
       "hash": "7401f46723",
       "text": "| Improved Reflexes 2 | from the table | 3 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Reflexes (p. 301). For each level, you 2 3"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes-level-2.sr3e-adeptpower-0051.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 3,"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#105",
@@ -12960,7 +14835,22 @@
       ],
       "hash": "514dcc5985",
       "text": "| Killing Hands (Moderate) | from the table | 1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Cost .5 effect on checks for magic loss (p. 160). 1 2 Suspended State 4 Cost: 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/killing-hands-str-medium.sr3e-adeptpower-0071.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 1,"
+        }
+      ]
     },
     {
       "id": "magic/physical-adepts.md#106",
@@ -12971,7 +14861,23 @@
       ],
       "hash": "9ce1602b64",
       "text": "| Improved Ability (Unarmed Combat) 2 | 2 dice × .5 | 1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "Combat Skills .5 Edged Weapons, Clubs, Pole Arms Cyber-Implant Weapon, Unarmed Combat"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-abl-combat-skl.sr3e-adeptpower-0040.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "2 dice x .5 = 1."
     },
     {
       "id": "magic/physical-adepts.md#107",
@@ -12982,7 +14888,23 @@
       ],
       "hash": "2287247cf7",
       "text": "| Mystic Armor 2 | 2 levels × .5 | 1 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 172,
+          "printedPage": 170,
+          "quote": "Mystic Armor does not provide Ballistic Armor."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/mystic-armor.sr3e-adeptpower-0089.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "2 levels x .5 = 1."
     },
     {
       "id": "magic/physical-adepts.md#108",
@@ -12993,7 +14915,8 @@
       ],
       "hash": "3a3a4f9023",
       "text": "| | **Total** | **6** |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "arithmetic only: 3 + 1 + 1 + 1 = 6 Power Points (checked against the rows above)"
     },
     {
       "id": "magic/physical-adepts.md#109",
@@ -13004,7 +14927,45 @@
       ],
       "hash": "468b4d9be8",
       "text": "Her Unarmed Combat is 4, so the cap on Improved Ability is the lesser of 4\nand Magic 6: **4**, and 2 dice is within it. No power has more than 6\nlevels. After a few runs she spends **20 Good Karma** on a seventh Power\nPoint and buys **Pain Resistance 2** (2 × .5 = 1).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "You cannot have more additional dice than your base skill"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "rating or your Magic Attribute, whichever is less. For example,"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "During game play, adepts may purchase additional Power Points at a cost of 20 Good Karma Points per Power Point"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8077,
+          "snippet": "return Math.max(0, Math.min(level, skillRating, magic));"
+        },
+        {
+          "file": "scripts/data/karma-uses.mjs",
+          "line": 169,
+          "snippet": "powerPointCost(n = 1) { return pos(n) * 20; },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-adept-powers/pain-resistance.sr3e-adeptpower-0093.json",
+          "line": 9,
+          "snippet": "\"powerCost\": 0.5,"
+        }
+      ],
+      "note": "Cap min(4, 6) = 4 so 2 dice are fine; the seventh Power Point is 20 Good Karma; Pain Resistance 2 = 2 x .5 = 1."
     },
     {
       "id": "magic/physical-adepts.md#110",
@@ -13015,7 +14976,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#111",
@@ -13026,7 +14988,8 @@
       ],
       "hash": "8e605c4c08",
       "text": "## Doing it in The 2nd Chumming (Foundry)\n{: #doing-it-in-the-2nd-chumming-foundry }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#112",
@@ -13037,7 +15000,8 @@
       ],
       "hash": "0113d71d0a",
       "text": "### Making a character an adept",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#113",
@@ -13048,7 +15012,8 @@
       ],
       "hash": "95ce968bcc",
       "text": "On the **Magic** tab, set the magic type to **Adept**. The tab then shows an\n**Adept Powers** list with **Power Points: used / total**, where the total\nis Magic plus any Power Points bought with Karma.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: the Magic tab shows Adept Powers with Power Points used / total, total = Magic + powerPointsBought (SR3EActorSheet.js:2898-2900, 2970)."
     },
     {
       "id": "magic/physical-adepts.md#114",
@@ -13059,7 +15024,8 @@
       ],
       "hash": "57ce4f9a2c",
       "text": "Add powers by dragging them from the compendiums (*Shadowrun 3rd*, *Magic in\nthe Shadows* and *State of the Art 2064* under Adept Powers), or with\n**+ Add Power**. Give a levelled power its level on the row.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: Adept Powers drag from the four adept-power packs and an Add Power control exists (SR3EActorSheet.js adept list ~2905-2975); the level sits on the row."
     },
     {
       "id": "magic/physical-adepts.md#115",
@@ -13070,7 +15036,8 @@
       ],
       "hash": "17acc65932",
       "text": "The system **warns, and never refuses**:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule: the sheet warns and never refuses (its own comment at SR3EActorSheet.js:2944-2947)."
     },
     {
       "id": "magic/physical-adepts.md#116",
@@ -13081,7 +15048,8 @@
       ],
       "hash": "f81bf43755",
       "text": "- Power Points over the total turn the count red.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: SR3EActorSheet.js:2969 colours the Power Point count red when ppOver."
     },
     {
       "id": "magic/physical-adepts.md#117",
@@ -13092,7 +15060,28 @@
       ],
       "hash": "08fbb659b4",
       "text": "- A power with more levels than Magic is listed under **Above Magic**\n  *(SR3 p.168)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "cannot have more than 4 points worth of pow- ers, none of which can have more than four levels"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2951,
+          "snippet": "<strong>Above Magic:</strong>"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2163,
+          "snippet": "if (s.hasLevels && lvl > magicForCaps) overLevelled.push({ name: item.name, level: lvl });"
+        }
+      ],
+      "note": "Only levelled powers (hasLevels) are listed; see unit 12."
     },
     {
       "id": "magic/physical-adepts.md#118",
@@ -13103,7 +15092,28 @@
       ],
       "hash": "8597d5a056",
       "text": "- Improved Reflexes stacked with wired reflexes or a spell gets a warning,\n  and the sheet applies the better package only *(SR3 p.169)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 171,
+          "printedPage": 169,
+          "quote": "the increase cannot be combined"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2344,
+          "snippet": "does not stack with"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 8105,
+          "snippet": "static reflexBonus({ adeptRea = 0, adeptInit = 0, cyberRea = 0, cyberInit = 0 } = {}) {"
+        }
+      ],
+      "note": "The book forbids combining; the code warns and applies the better package (initiative dice first, then Reaction)."
     },
     {
       "id": "magic/physical-adepts.md#119",
@@ -13114,7 +15124,8 @@
       ],
       "hash": "b14e314f54",
       "text": "- Powers the system can describe but not resolve are listed as **Applied by\n  the GM**, with what each one does.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: powers with an effect note but no resolution are listed in the sheet's adept notes block (SR3EActorSheet.js:2955, derived.adeptNotes)."
     },
     {
       "id": "magic/physical-adepts.md#120",
@@ -13125,7 +15136,8 @@
       ],
       "hash": "c1de5f1ff3",
       "text": "### What the system does with each power",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#121",
@@ -13136,7 +15148,8 @@
       ],
       "hash": "cc74bbee6f",
       "text": "| Power | Where it shows up |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#122",
@@ -13147,7 +15160,8 @@
       ],
       "hash": "d388d21f9f",
       "text": "| Improved Physical Attribute | Added to the Attribute (per level). |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: adept Improved Physical Attribute bonuses (mul(s.bonusStr) etc.) are added to the attribute (SR3EActor.js:2097-2099)."
     },
     {
       "id": "magic/physical-adepts.md#123",
@@ -13158,7 +15172,8 @@
       ],
       "hash": "becfa11315",
       "text": "| Improved Reflexes | Reaction and Initiative dice. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: Improved Reflexes rea / init dice come through reflexBonus into Reaction and Initiative dice (SR3EActor.js:2327-2332)."
     },
     {
       "id": "magic/physical-adepts.md#124",
@@ -13169,7 +15184,8 @@
       ],
       "hash": "1cd1bdfb1f",
       "text": "| Improved Ability | Extra dice on the skill, capped at the lesser of the skill and Magic. Half, rounded down, when defaulting. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: SR3EActor.improvedAbilityDice caps at min(skill, Magic) (8077) and the defaulting tier halves the dice (SR3EItem.js:708-720)."
     },
     {
       "id": "magic/physical-adepts.md#125",
@@ -13180,7 +15196,8 @@
       ],
       "hash": "7e8ac36c97",
       "text": "| Combat Sense | Extra Combat Pool. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: adeptCombatPool feeds the Combat Pool (SR3EActor.js:2531)."
     },
     {
       "id": "magic/physical-adepts.md#126",
@@ -13191,7 +15208,8 @@
       ],
       "hash": "8cd2f3b09c",
       "text": "| Pain Resistance | A smaller wound modifier. The boxes on the Condition Monitor don't change. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: painAdjustedBoxes changes the lookup, not the tracks (SR3EActor.js:2220, 7497)."
     },
     {
       "id": "magic/physical-adepts.md#127",
@@ -13202,7 +15220,8 @@
       ],
       "hash": "1c018b9c47",
       "text": "| Mystic Armor | Added to Impact armor on the soak card, and to astral soak. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: mysticArmor adds to Impact on the soak card (SR3EActor.js:9293) and to astral soak (11845)."
     },
     {
       "id": "magic/physical-adepts.md#128",
@@ -13213,7 +15232,8 @@
       ],
       "hash": "74fab2e57e",
       "text": "| Killing Hands | Offered in the **Called Shot** dialog of an unarmed attack, because it must be declared with the attack. It replaces the damage level; it doesn't stage it. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: the Called Shot dialog offers Killing Hands (SR3EItem.js:2867) and killingHandsDamage replaces the level, not stages it (261)."
     },
     {
       "id": "magic/physical-adepts.md#129",
@@ -13224,7 +15244,8 @@
       ],
       "hash": "6110c521d0",
       "text": "| Attribute Boost | A **⚡** button on the power's row. It rolls the Magic Test, counts the turns down each Combat Turn, and posts the Drain card when the boost runs out. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: the sheet row has the boost button (SR3EActorSheet.js:2914), tickAttributeBoosts counts turns down and _postAttributeBoostDrain posts the Drain card (SR3EActor.js:8406-8470)."
     },
     {
       "id": "magic/physical-adepts.md#130",
@@ -13235,7 +15256,8 @@
       ],
       "hash": "b801e24b95",
       "text": "| Missile Parry | A third choice when declaring a defense against an arrow, a crossbow bolt or a thrown weapon. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: a third defense choice for catchable weapons (SR3EItem.js:3406-3409 canMissileParry)."
     },
     {
       "id": "magic/physical-adepts.md#131",
@@ -13246,7 +15268,8 @@
       ],
       "hash": "b00e457eb7",
       "text": "| Quick Strike | A **⚡** on the adept's row in the combat tracker, once per Combat Turn. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: SR3ECombat.quickStrike (334) behind the tracker button, once per Combat Turn (quickStrikeRound flag)."
     },
     {
       "id": "magic/physical-adepts.md#132",
@@ -13257,7 +15280,8 @@
       ],
       "hash": "d781376d1e",
       "text": "| Body Control, Counterstrike, Sixth Sense, Iron Will, Rooting and the other situational dice | Added where the roll knows the situation, offered as a checkbox where it doesn't. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: situational bonuses (config.js adeptPowerEffects, adeptSituations) are claimed by the flow that knows the situation, else offered as a checkbox (SR3EActor.js:9029)."
     },
     {
       "id": "magic/physical-adepts.md#133",
@@ -13268,7 +15292,8 @@
       ],
       "hash": "8a2f65569e",
       "text": "### Buying a Power Point with Karma",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/physical-adepts.md#134",
@@ -13279,7 +15304,28 @@
       ],
       "hash": "cd1444be3b",
       "text": "On the **Bio** tab, **Spend Karma…** lists **Power Point** under Magic at 20\nGood Karma *(SR3 p.168)*. The purchase goes into the 📒 Ledger, and the GM can\nundo it there. See [Karma](../../rules/karma/#doing-it-in-the-2nd-chumming-foundry).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 170,
+          "printedPage": 168,
+          "quote": "During game play, adepts may purchase additional Power Points at a cost of 20 Good Karma Points per Power Point"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5885,
+          "snippet": "const cost = GK.powerPointCost(1);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5997,
+          "snippet": "await actor.update({ 'system.powerPointsBought': had + 1, 'system.karma': karma - chosenCost },"
+        }
+      ],
+      "note": "Ledger entry and GM undo are the Karma ledger (checked on rules/karma.md)."
     },
     {
       "id": "magic/spellcasting.md#1",
