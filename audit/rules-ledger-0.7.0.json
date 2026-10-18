@@ -8502,7 +8502,8 @@
       ],
       "hash": "59fd02d2fc",
       "text": "# How to Initiate\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#2",
@@ -8513,7 +8514,22 @@
       ],
       "hash": "51d8f1e0e9",
       "text": "How an Awakened character climbs the grades of initiation: what it costs,\nthe ordeals that make it cheaper, magical groups, metamagic, and the geasa\nthat keep a magician's power when Magic is lost. Initiation isn't in the\ncore rulebook; all of this is from *Magic in the Shadows* *(MitS p.30–33,\np.57–79)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 58,
+          "printedPage": 57,
+          "quote": "Initiation sharpens the natural Awakened sensitivity to magic and purifies the spirit"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "The system only records the grade: a number on the Magic tab (scripts/data/ActorDataModels.js:203 `initiateGrade`, SR3EActorSheet.js:2814). Nothing gates, costs or runs initiation."
     },
     {
       "id": "magic/initiation.md#3",
@@ -8524,7 +8540,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#4",
@@ -8535,7 +8552,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#5",
@@ -8546,7 +8564,22 @@
       ],
       "hash": "a9345f6bf5",
       "text": "## Who can initiate  *(MitS p.57–58)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 58,
+          "printedPage": 57,
+          "quote": "Only Awakened characters (full magicians, aspected magicians and adepts)are capable of initiating"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "The system only records the grade: a number on the Magic tab (scripts/data/ActorDataModels.js:203 `initiateGrade`, SR3EActorSheet.js:2814). Nothing gates, costs or runs initiation."
     },
     {
       "id": "magic/initiation.md#6",
@@ -8557,7 +8590,36 @@
       ],
       "hash": "612f57cd20",
       "text": "Only the Awakened: **full magicians, aspected magicians and adepts**. A\ncharacter can initiate **alone** or as a member of a **magical group**,\nwhich makes it cheaper. Each initiation adds a **grade**: the first makes\nyou a Grade 1 initiate, the second Grade 2, and so on.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 58,
+          "printedPage": 57,
+          "quote": "Only Awakened characters (full magicians, aspected magicians and adepts)are capable of initiating"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 58,
+          "printedPage": 57,
+          "quote": "A character can initiate on his own or as a member of a magical group"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "At the end of a character's first initiation, they are a Grade 1 initiate",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "The system only records the grade: a number on the Magic tab (scripts/data/ActorDataModels.js:203 `initiateGrade`, SR3EActorSheet.js:2814). Nothing gates, costs or runs initiation."
     },
     {
       "id": "magic/initiation.md#7",
@@ -8568,7 +8630,30 @@
       ],
       "hash": "1fbc9144d5",
       "text": "The gamemaster decides when a character can initiate, and some time should\npass between having the Karma and taking the next grade. They also decide\nwhat the process involves, guided by the character's path: study, practice,\nrituals, or proving themselves *(MitS p.57–58)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "should elapse between the character acquiring the required",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 58,
+          "printedPage": 57,
+          "quote": "Characters may have to diligently study, practice and perform rituals"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "Game-master discretion. The system leaves it to the table (it automates nothing here)."
     },
     {
       "id": "magic/initiation.md#8",
@@ -8579,7 +8664,28 @@
       ],
       "hash": "fcd4dbf704",
       "text": "## What each grade gives  *(MitS p.58)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Becoming an initiate gives an Awakened character access to a number of benefits and abilities",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "astral.?reaction",
+          "path": "scripts"
+        },
+        {
+          "pattern": "initiationCost",
+          "path": "scripts"
+        }
+      ],
+      "note": "Of the per-grade benefits only the Magic attribute (set by hand) and a differently-sized Astral Pool exist; see units 10, 11, 12, 15, 16, 17."
     },
     {
       "id": "magic/initiation.md#9",
@@ -8590,7 +8696,8 @@
       ],
       "hash": "ed352a7077",
       "text": "**Every initiate** gets these with each grade:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#10",
@@ -8601,7 +8708,28 @@
       ],
       "hash": "e45fc376b1",
       "text": "- **Astral Reaction** goes up by the grade.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Initiates receive a bonus to their Astral Reaction equal to their grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "astral.?reaction",
+          "path": "scripts"
+        },
+        {
+          "pattern": "Astral Init.{0,60}grade",
+          "path": "scripts"
+        }
+      ],
+      "note": "Astral initiative is Intelligence + 20 + 1d6 (SR3EActor.js:11100-11103) with no grade term; nothing reads initiateGrade there."
     },
     {
       "id": "magic/initiation.md#11",
@@ -8612,7 +8740,46 @@
       ],
       "hash": "3b6f8e7fdf",
       "text": "- An **Astral Pool** of dice equal to the grade. It can be used on any test\n  on the astral plane or the metaplanes, including Astral Combat (even with\n  Sorcery) and Astral Perception, except Magical Skill Tests. It refreshes\n  like other pools.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "which contains a number of dice equal to the initiate's grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Astral Pool dice can be used for any test made while on the astral",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Dice in the Astral Pool refresh",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2556,
+          "snippet": "const astralPoolBase = magicBase > 0"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2563,
+          "snippet": "const astralPool          = astralPoolBase !== null ? astralPoolBase + (sys.astralPoolMod ?? 0) : null;"
+        }
+      ],
+      "note": "The book: an Astral Pool \"of dice equal to the initiate's grade\" (MitS p.58), which only initiates have. The code gives every Awakened actor (Magic base above 0, initiate or not) an Astral Pool of floor((Intelligence + Charisma + Willpower) / 2) plus a manual modifier; initiateGrade never enters it. The pool is used in astral combat (SR3EActor.js:11590 Astral Pool field) and refreshes (refreshAstralPool, SR3EActor.js:10197). It is not offered on Astral Perception tests. The guide (unit 11 and unit 105) says the pool is 'not tracked yet'; the code does track one, with a different formula."
     },
     {
       "id": "magic/initiation.md#12",
@@ -8623,7 +8790,32 @@
       ],
       "hash": "45a342141b",
       "text": "- A full magician's **first** initiation opens the **metaplanes** of astral\n  space (p.91).",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Upon a character's first initiation, full magicians receive access to the metaplanes of astral space",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "metaplane",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "metaplane",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "metaplane",
+          "path": "scripts/sheets"
+        }
+      ],
+      "note": "No metaplane or astral-quest content exists in the code."
     },
     {
       "id": "magic/initiation.md#13",
@@ -8634,7 +8826,8 @@
       ],
       "hash": "b215e16e19",
       "text": "**Then choose one** of these three, each time:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#14",
@@ -8645,7 +8838,8 @@
       ],
       "hash": "d9876df611",
       "text": "| Option | Magic | And |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#15",
@@ -8656,7 +8850,24 @@
       ],
       "hash": "880657ad73",
       "text": "| **Learn a metamagical technique** | +1 | One technique you qualify for. [Below](#metamagic). |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "The first option is to raise the initiate's Magic Attribute and learn a metamagical technique",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnTechnique|techniquesKnown|knownTechniques|system.metamagic",
+          "path": "scripts"
+        }
+      ],
+      "note": "Magic is raised by hand; no metamagic is tracked or learned."
     },
     {
       "id": "magic/initiation.md#16",
@@ -8667,7 +8878,40 @@
       ],
       "hash": "cc52748246",
       "text": "| **Alter your astral signature** | +1 | A Magic Test against **6 + the new grade**, with no dice but Karma. Two or more successes change it. Each failure adds +1 to later attempts. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Make a Magic Test against Target Number 6 plus the new grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "No dice other than Karma can be added to this test",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "A minimum of 2 successes means the character has altered his signature",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "alter.{0,25}signature|signature.{0,25}alter|changeSignature",
+          "path": "scripts"
+        }
+      ],
+      "note": "Astral signatures are read (assensing) but never altered."
     },
     {
       "id": "magic/initiation.md#17",
@@ -8678,7 +8922,30 @@
       ],
       "hash": "bfc7c38241",
       "text": "| **Shed a geas** | none | One geas comes off a Magic point you already have, so that point works without it. [Geasa](#geasa). |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "The third option is to shed a geas",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 34,
+          "printedPage": 33,
+          "quote": "options for initiating is to drop a geas, replacing the lost Magic"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\bgeas",
+          "path": "scripts"
+        }
+      ],
+      "note": "No geasa exist in the code."
     },
     {
       "id": "magic/initiation.md#18",
@@ -8689,7 +8956,30 @@
       ],
       "hash": "49ed10cd25",
       "text": "- **Magic can rise above 6** this way.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Magic Attribute can increase above 6 in this manner",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 228,
+          "snippet": "magic: new SchemaField({"
+        },
+        {
+          "file": "scripts/data/ActorDataModels.js",
+          "line": 229,
+          "snippet": "value: new NumberField({ integer: true, initial: 0, min: 0 }),"
+        }
+      ],
+      "note": "The Magic fields (value, base) have a minimum of 0 and no maximum, and prepareDerivedData applies no cap at 6 (SR3EActor.js:2419-2422 caps only by Essence); raising Magic is by hand."
     },
     {
       "id": "magic/initiation.md#19",
@@ -8700,7 +8990,25 @@
       ],
       "hash": "92a56957db",
       "text": "- **Adepts get a Power Point** for each point of Magic gained. See\n  [Physical Adepts](../physical-adepts/).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "adepts an additional Power Point for purchasing new powers",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 2900,
+          "snippet": "const ppTotal  = (actor.system.attributes?.magic?.value ?? 0) + ppBought;"
+        }
+      ],
+      "note": "An adept's Power Point total on the sheet is Magic plus Power Points bought with Karma, so a raised Magic raises the total."
     },
     {
       "id": "magic/initiation.md#20",
@@ -8711,7 +9019,32 @@
       ],
       "hash": "c872a2d65e",
       "text": "> **The book's example** *(MitS p.58)*: Bandi, Magic 8, initiates to Grade\n> 3 and tries to alter her signature. She rolls 8 dice against 6 + 3 = **TN\n> 9** and gets 1 success, which isn't enough. Next time her TN is one higher.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "she rolls her Magic 8 against a Target Number 9 (6 plus Grade 3)",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "She rolls only 1 success and so fails to alter her signature",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "alter.{0,25}signature|signature.{0,25}alter|changeSignature",
+          "path": "scripts"
+        }
+      ],
+      "note": "The example's arithmetic matches the book (TN 6 + 3 = 9, 1 success is short of 2, next TN one higher); the mechanic is not coded."
     },
     {
       "id": "magic/initiation.md#21",
@@ -8722,7 +9055,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#22",
@@ -8733,7 +9067,23 @@
       ],
       "hash": "b3866ac89e",
       "text": "## The Karma cost  *(MitS p.58)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Initiation costs Karma. To determine the basic Karma cost of an",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#23",
@@ -8744,7 +9094,32 @@
       ],
       "hash": "048658c27a",
       "text": "**Base cost = 5 + the grade you're initiating to.** Multiply by the\ninitiation type, and round down.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "initiation, add 5 to the desired grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "ate cost multiplier from the lnitiation Cost Table (round down)",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#24",
@@ -8755,7 +9130,56 @@
       ],
       "hash": "a1b4496d50",
       "text": "| Initiation Cost Table *(MitS p.58)* | Cost |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "initiation, add 5 to the desired grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Eli must pay (5 + 1, the desired grade) x 3, or 18 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "he pays 7 x 2.5, or 17 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "only 12 Karma for his Grade 1 initiation (5 + 1 = 6, 6 x 2",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "or 9 (6 x 1.5) if he under-",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#25",
@@ -8766,7 +9190,24 @@
       ],
       "hash": "16f3fb331c",
       "text": "| Self-initiation | Base Cost × 3 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Eli must pay (5 + 1, the desired grade) x 3, or 18 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#26",
@@ -8777,7 +9218,32 @@
       ],
       "hash": "7057a376bd",
       "text": "| Self-initiation with an ordeal | Base Cost × 2.5 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "he pays 7 x 2.5, or 17 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "If he undergoes an ordeal, this cost is reduced to 15 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#27",
@@ -8788,7 +9254,24 @@
       ],
       "hash": "9302c248a0",
       "text": "| Group initiation | Base Cost × 2 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "only 12 Karma for his Grade 1 initiation (5 + 1 = 6, 6 x 2",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#28",
@@ -8799,7 +9282,24 @@
       ],
       "hash": "f3852e2b14",
       "text": "| Group initiation with an ordeal | Base Cost × 1.5 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "or 9 (6 x 1.5) if he under-",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#29",
@@ -8810,7 +9310,8 @@
       ],
       "hash": "e3b9995afe",
       "text": "The same table worked out for the first six grades:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#30",
@@ -8821,7 +9322,8 @@
       ],
       "hash": "086fd279b2",
       "text": "| Grade | Base | Self | Self + ordeal | Group | Group + ordeal |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#31",
@@ -8832,7 +9334,56 @@
       ],
       "hash": "1221f98d42",
       "text": "| 1 | 6 | 18 | 15 | 12 | 9 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "initiation, add 5 to the desired grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Eli must pay (5 + 1, the desired grade) x 3, or 18 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "he pays 7 x 2.5, or 17 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "only 12 Karma for his Grade 1 initiation (5 + 1 = 6, 6 x 2",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "or 9 (6 x 1.5) if he under-",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked: base 5 + grade; x3, x2.5 and x1.5 rounded down, x2. The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#32",
@@ -8843,7 +9394,56 @@
       ],
       "hash": "5e1bb94d99",
       "text": "| 2 | 7 | 21 | 17 | 14 | 10 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "initiation, add 5 to the desired grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Eli must pay (5 + 1, the desired grade) x 3, or 18 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "he pays 7 x 2.5, or 17 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "only 12 Karma for his Grade 1 initiation (5 + 1 = 6, 6 x 2",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "or 9 (6 x 1.5) if he under-",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked: base 5 + grade; x3, x2.5 and x1.5 rounded down, x2. The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#33",
@@ -8854,7 +9454,56 @@
       ],
       "hash": "3df7380443",
       "text": "| 3 | 8 | 24 | 20 | 16 | 12 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "initiation, add 5 to the desired grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Eli must pay (5 + 1, the desired grade) x 3, or 18 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "he pays 7 x 2.5, or 17 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "only 12 Karma for his Grade 1 initiation (5 + 1 = 6, 6 x 2",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "or 9 (6 x 1.5) if he under-",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked: base 5 + grade; x3, x2.5 and x1.5 rounded down, x2. The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#34",
@@ -8865,7 +9514,56 @@
       ],
       "hash": "22a6723211",
       "text": "| 4 | 9 | 27 | 22 | 18 | 13 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "initiation, add 5 to the desired grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Eli must pay (5 + 1, the desired grade) x 3, or 18 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "he pays 7 x 2.5, or 17 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "only 12 Karma for his Grade 1 initiation (5 + 1 = 6, 6 x 2",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "or 9 (6 x 1.5) if he under-",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked: base 5 + grade; x3, x2.5 and x1.5 rounded down, x2. The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#35",
@@ -8876,7 +9574,56 @@
       ],
       "hash": "542ab09ffb",
       "text": "| 5 | 10 | 30 | 25 | 20 | 15 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "initiation, add 5 to the desired grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Eli must pay (5 + 1, the desired grade) x 3, or 18 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "he pays 7 x 2.5, or 17 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "only 12 Karma for his Grade 1 initiation (5 + 1 = 6, 6 x 2",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "or 9 (6 x 1.5) if he under-",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked: base 5 + grade; x3, x2.5 and x1.5 rounded down, x2. The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#36",
@@ -8887,7 +9634,56 @@
       ],
       "hash": "742a338635",
       "text": "| 6 | 11 | 33 | 27 | 22 | 16 |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "initiation, add 5 to the desired grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Eli must pay (5 + 1, the desired grade) x 3, or 18 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "he pays 7 x 2.5, or 17 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "only 12 Karma for his Grade 1 initiation (5 + 1 = 6, 6 x 2",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "or 9 (6 x 1.5) if he under-",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked: base 5 + grade; x3, x2.5 and x1.5 rounded down, x2. The Initiation Cost Table on MitS p.58 is an image with no text layer (read on the rendered page: Self-initiation Base Cost x 3, with ordeal x 2.5, Group initiation x 2, with ordeal x 1.5; Base Cost = 5 + desired grade); its multipliers are quoted here from the book's worked example. The guide matches. No cost is computed anywhere in the code."
     },
     {
       "id": "magic/initiation.md#37",
@@ -8898,7 +9694,40 @@
       ],
       "hash": "95d6177361",
       "text": "> **The book's example** *(MitS p.58)*: Eli, an owl shaman, initiates\n> alone. Grade 1 costs (5 + 1) × 3 = **18**, or **15** with an ordeal. Grade\n> 2 costs 7 × 3 = **21**, or 7 × 2.5 = 17.5, rounded down to **17**, with an\n> ordeal. In a group he'd have paid 6 × 2 = **12** for Grade 1, or 6 × 1.5 =\n> **9** with an ordeal, and **14**, or **10** with an ordeal, for Grade 2.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "If he accepts another ordeal, he pays 7 x 2.5, or 17 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "Eli must pay (5 + 1, the desired grade) x 3, or 18 Karma",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "he would pay only 12 Karma for his Grade 1 initiation",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "initiation(Cost|Karma)|karma.{0,40}initiation|initiation.{0,40}karma|ordeal|gradeCost|canInitiate",
+          "path": "scripts"
+        }
+      ],
+      "note": "The guide's example matches the book's Eli example (18/15, 21/17, group 12/9 and 14/10)."
     },
     {
       "id": "magic/initiation.md#38",
@@ -8909,7 +9738,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#39",
@@ -8920,7 +9750,47 @@
       ],
       "hash": "9b42223b5a",
       "text": "## Ordeals  *(MitS p.58–61)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "by 0.5. The Karma cost reduction represents the character's",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "The character must choose an ordeal before undergoing initiation.",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "An ordeal can only be repeated with the gamemaster's permission",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "he does not need to repay the initiation Karma cost when attempting the ordeal again",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "ordeal|asceticism",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#40",
@@ -8931,7 +9801,47 @@
       ],
       "hash": "ec5b90175f",
       "text": "An ordeal is a test of the candidate. It lowers the cost multiplier by\n**0.5**. Choose it **before** initiating; only a deed can be done ahead of\ntime. Pass it and you gain the grade. Fail and you try again, without paying\nthe Karma a second time. An ordeal can be repeated only with the GM's\npermission, and an oath never.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "by 0.5. The Karma cost reduction represents the character's",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "The character must choose an ordeal before undergoing initiation.",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "An ordeal can only be repeated with the gamemaster's permission",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "he does not need to repay the initiation Karma cost when attempting the ordeal again",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "ordeal|asceticism",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#41",
@@ -8942,7 +9852,8 @@
       ],
       "hash": "dd2599dc10",
       "text": "| Ordeal | What it takes |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#42",
@@ -8953,7 +9864,31 @@
       ],
       "hash": "ec2621cd75",
       "text": "| **Astral quest** | A quest on the metaplanes with a rating of **twice the grade**. Shamans go to their totem's metaplane, mages to each of the four elemental metaplanes. You must be able to project. After a failure, a Willpower Test against the grade sets the preparation time: 10 days divided by the successes. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "The rating of the astral quest is twice the desired grade of initiation.",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "Divide the base time of 10 days by the successes",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "ordeal|asceticism",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#43",
@@ -8964,7 +9899,31 @@
       ],
       "hash": "633d06a904",
       "text": "| **Asceticism** | Permanently give up **1 point of a Physical Attribute**'s unaugmented rating, and 1 point of its racial modified limit. Not an Attribute at 1. Taken again, it must be a different Attribute first. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "must permanently give up 1 point from a physical Attribute",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "reduce a different physical Attribute before he can reduce a",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "ordeal|asceticism",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#44",
@@ -8975,7 +9934,31 @@
       ],
       "hash": "75e1c59b67",
       "text": "| **Deed** | A task fitting the character's path, group, totem or code, agreed with the GM, or a run that fits. **You give up that run's Karma award.** It can be saved, but only for the next initiation. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "simply turns down the Karma award for the run and the ordeal is accomplished",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "be used for the character's next initiation, however, and cannot be saved beyond that grade",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "ordeal|asceticism",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#45",
@@ -8986,7 +9969,31 @@
       ],
       "hash": "e764bb7f75",
       "text": "| **Familiar** | Magicians who can summon allies only. Summon an **ally spirit** that costs at least the initiation's Karma (with the ordeal). It costs no Magic Point, but if it's ever banished, freed or destroyed you check for Magic loss. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "amount of Karma equal to the Karma cost of the initiation with an ordeal",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "The ally conjured for this ordeal does not cost a Magic Point",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "ordeal|asceticism",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#46",
@@ -8997,7 +10004,31 @@
       ],
       "hash": "fa2a37f625",
       "text": "| **Geas** | Take a geas on the new grade's Magic Point; an adept can put it on the new Power Point. It can never be removed. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "A geas taken as an ordeal cannot be removed.",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 61,
+          "printedPage": 60,
+          "quote": "Adepts may take this ordeal by applying a geas to the Power Point gained from the initiation",
+          "ocrPrinted": "Astral Quest",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "ordeal|asceticism",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#47",
@@ -9008,7 +10039,43 @@
       ],
       "hash": "2482d3956b",
       "text": "| **Meditation** | Pass three tests: Charisma against your Strength, Intelligence against your Quickness, Willpower against your Body. Each takes grade × 4 days, divided by its successes. Fail one and the cycle starts again. +2 to all three on a Squatter or Street lifestyle, unless you're in the wilderness with Wilderness Survival 4+. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 62,
+          "printedPage": 61,
+          "quote": "A CharismaTest against a target number equal to Strength.",
+          "ocrPrinted": "6 1 1"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 62,
+          "printedPage": 61,
+          "quote": "Each test has a base time of (desired grade x 4) in days.",
+          "ocrPrinted": "6 1 1"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 62,
+          "printedPage": 61,
+          "quote": "meditative tests if the character's lifestyle is Squatter or Street",
+          "ocrPrinted": "6 1 1"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 62,
+          "printedPage": 61,
+          "quote": "Wilderness Survival Skill of rating 4 or greater",
+          "ocrPrinted": "6 1 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "ordeal|asceticism",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#48",
@@ -9019,7 +10086,29 @@
       ],
       "hash": "f8888ca7bb",
       "text": "| **Oath** | Swear to obey a magical group's rules. For group members only, and only the first oath counts. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 62,
+          "printedPage": 61,
+          "quote": "a character swears several oaths in his career, only the first qualifies as an ordeal",
+          "ocrPrinted": "6 1 1"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 62,
+          "printedPage": 61,
+          "quote": "available only to members of such groups",
+          "ocrPrinted": "6 1 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "ordeal|asceticism",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#49",
@@ -9030,7 +10119,29 @@
       ],
       "hash": "b703876fe3",
       "text": "| **Thesis** | Write or make a formula of all your magical knowledge, as a spell formula of rating 6, 30 days base time. Anyone with a copy has a material link to you, and if every copy is destroyed you lose a Magic Point. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 62,
+          "printedPage": 61,
+          "quote": "with a Rating of 6, using the character's",
+          "ocrPrinted": "6 1 1"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 62,
+          "printedPage": 61,
+          "quote": "the author immediately loses a Magic Point",
+          "ocrPrinted": "6 1 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "ordeal|asceticism",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#50",
@@ -9041,7 +10152,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#51",
@@ -9052,7 +10164,30 @@
       ],
       "hash": "cf5a0384a7",
       "text": "## Magical groups  *(MitS p.61–65)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 62,
+          "printedPage": 61,
+          "quote": "Magical groups form because even the Awakened are social animals",
+          "ocrPrinted": "6 1 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#52",
@@ -9063,7 +10198,31 @@
       ],
       "hash": "a56098e840",
       "text": "Orders, covens, lodges and circles. What makes one magical is a **magical\nlink**, its connection to a spirit **avatar**. Initiating through a group\nis cheaper, but members live by its rules.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 63,
+          "printedPage": 62,
+          "quote": "must have a magical linlt. This is a connection to the forces of magic, a connection to a spirit avatar",
+          "ocrPrinted": "STRICTURES",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#53",
@@ -9074,7 +10233,47 @@
       ],
       "hash": "e04a3c2a38",
       "text": "- **Kinds** *(MitS p.62)*: **initiatory** (magical study first),\n  **dedicated** (a religious or moral cause) and **conspiratorial** (power\n  and wealth, often secret and controlling).",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 63,
+          "printedPage": 62,
+          "quote": "An initiatory group pursues magical ltnowledge and the development of the individual members",
+          "ocrPrinted": "STRICTURES",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 63,
+          "printedPage": 62,
+          "quote": "A dedicated group has a specific religious or moral bias",
+          "ocrPrinted": "STRICTURES",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 63,
+          "printedPage": 62,
+          "quote": "A conspiratorialgroup is dedicated to a specific goal",
+          "ocrPrinted": "STRICTURES",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#54",
@@ -9085,7 +10284,35 @@
       ],
       "hash": "ec9680e872",
       "text": "- **Joining** costs **3 Karma and the first month's dues**, which other\n  members can pay for you. The group then checks that your \"vibes\" fit its\n  link *(MitS p.65)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 66,
+          "printedPage": 65,
+          "quote": "joining a magical group costs 3 Karma and the first month's dues"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 66,
+          "printedPage": 65,
+          "quote": "Another member or members can put up the Karma or the money"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#55",
@@ -9096,7 +10323,41 @@
       ],
       "hash": "4875e34df7",
       "text": "- **Founding** one needs two or more Awakened, each paying the 3 Karma.\n  Once a month they roll to establish a link, against TN 12 with modifiers;\n  extra dice cost 3 Karma each *(MitS p.65)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 66,
+          "printedPage": 65,
+          "quote": "Founding a magical group requires two or more"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 66,
+          "printedPage": 65,
+          "quote": "The target number for the Magical Linlt Test is 12, with the following modifiers"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 66,
+          "printedPage": 65,
+          "quote": "additional dice for each test at a cost of 3 Karma per die"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#56",
@@ -9107,7 +10368,31 @@
       ],
       "hash": "e0690572bd",
       "text": "- **Leaving** a group you swore an oath to means a check for **Magic loss**\n  *(MitS p.62)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 63,
+          "printedPage": 62,
+          "quote": "loses membership in any group to which he has sworn an oath, he must check for Magic loss",
+          "ocrPrinted": "STRICTURES",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#57",
@@ -9118,7 +10403,31 @@
       ],
       "hash": "a6d2b775aa",
       "text": "### Strictures  *(MitS p.62–63)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 63,
+          "printedPage": 62,
+          "quote": "Groups have strictures, which are rules tied to the group's magic",
+          "ocrPrinted": "STRICTURES",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#58",
@@ -9129,7 +10438,29 @@
       ],
       "hash": "93871b5638",
       "text": "A group's rules, tied to its magic. Most have three or four that bind each\nmember:",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 64,
+          "printedPage": 63,
+          "quote": "Most groups have three or four such strictures."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#59",
@@ -9140,7 +10471,35 @@
       ],
       "hash": "39d2d1768a",
       "text": "> Attendance · Belief · Deed · Exclusive Membership · Exclusive Ritual ·\n> Fraternity · Geas · Obedience · Sacrifice (−1 to every Karma award) ·\n> Secrecy",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 64,
+          "printedPage": 63,
+          "quote": "Members of this group must talte a geas if they lose a"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 64,
+          "printedPage": 63,
+          "quote": "reduce all Karma Awards to a member of this group by -1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#60",
@@ -9151,7 +10510,35 @@
       ],
       "hash": "06dc443b72",
       "text": "**Group strictures**, such as **Limited Membership** or **Oath** (every\nmember takes the oath ordeal at their first initiation with the group), can\nonly be broken by the group itself, and doing so costs it its link.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 64,
+          "printedPage": 63,
+          "quote": "Only the group as a whole can break a group stricture"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 64,
+          "printedPage": 63,
+          "quote": "All members must, in their first initiation with the group, accept the oath ordeal"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#61",
@@ -9162,7 +10549,39 @@
       ],
       "hash": "3a7da7f17b",
       "text": "**Breaking a stricture** leaves marks in your aura that fellow members can\nsee. When you next initiate, roll **Magic** against **twice the grade\nyou're seeking**, needing at least one success per stricture broken. Pass\nand the slate is wiped clean. Fail and the group must expel you, or lose\nits link *(MitS p.62)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 63,
+          "printedPage": 62,
+          "quote": "The target number is twice the initiate grade the character is trying to",
+          "ocrPrinted": "STRICTURES",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 63,
+          "printedPage": 62,
+          "quote": "If the character fails the test, the group must expel him or lose their magical linlt",
+          "ocrPrinted": "STRICTURES",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "magical.?group|stricture|magicalLink|avatar",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#62",
@@ -9173,7 +10592,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#63",
@@ -9184,7 +10604,21 @@
       ],
       "hash": "69dcf70192",
       "text": "## Metamagic  *(MitS p.69–79)*\n{: #metamagic }",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 70,
+          "printedPage": 69,
+          "quote": "Metamagic controls how magic is used, Initiates can learn"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnTechnique|techniquesKnown|knownTechniques|system.metamagic",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#64",
@@ -9195,7 +10629,8 @@
       ],
       "hash": "7f819ff479",
       "text": "| Technique | Page | What it does |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#65",
@@ -9206,7 +10641,23 @@
       ],
       "hash": "5c554dbff6",
       "text": "| **Anchoring** | p.70 | Store a live spell in an anchoring focus, set off by a trigger. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 71,
+          "printedPage": 70,
+          "quote": "an anchoring focus and set certain conditions, called triggers, by which the spell may be set off",
+          "ocrPrinted": "ANCHORING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "anchoringFocus|anchoring focus|anchor(ed)?Spell",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#66",
@@ -9217,7 +10668,24 @@
       ],
       "hash": "4fd419cb8a",
       "text": "| **Centering** | p.72 | Use a creative skill to add successes, resist Drain, or cancel penalties. [Below](#centering). |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 73,
+          "printedPage": 72,
+          "quote": "Centering can reduce Drain or reduce penalties affecting magical target numbers",
+          "ocrPrinted": "CENTERING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "centering.{0,20}(test|dice|success|drain)|creative.?skill",
+          "path": "scripts"
+        }
+      ],
+      "note": "Only the Centering skill itself exists (config.js:88); the technique is not implemented."
     },
     {
       "id": "magic/initiation.md#67",
@@ -9228,7 +10696,23 @@
       ],
       "hash": "b010f6b3f5",
       "text": "| **Cleansing** | p.74 | Clear temporary background count, once its cause is gone. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 75,
+          "printedPage": 74,
+          "quote": "Cleansing is used to clear away temporary bacltground count",
+          "ocrPrinted": "CLEANSING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "cleansing|backgroundCount",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#68",
@@ -9239,7 +10723,24 @@
       ],
       "hash": "e27567b9b1",
       "text": "| **Divining** | p.74 | Read omens for insight into future events. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 75,
+          "printedPage": 74,
+          "quote": "Divining allows an initiate to gain insight into future events concerning a specific subject",
+          "ocrPrinted": "CLEANSING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "divination (test|table)|divining (test|dice)|predictionSkill",
+          "path": "scripts"
+        }
+      ],
+      "note": "Only the Divining skill name exists (config.js:90)."
     },
     {
       "id": "magic/initiation.md#69",
@@ -9250,7 +10751,30 @@
       ],
       "hash": "cf2de13931",
       "text": "| **Invoking** | p.75 | Summon great form spirits. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 76,
+          "printedPage": 75,
+          "quote": "Invoking allows initiates to summon particularly power- ful spirits known as great form",
+          "ocrPrinted": "7 5 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "great.?form|invoking",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "great.?form|invoking",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "great.?form|invoking",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#70",
@@ -9261,7 +10785,24 @@
       ],
       "hash": "6c0344faf3",
       "text": "| **Masking** | p.76 | Disguise your aura, and see through others' disguises. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 77,
+          "printedPage": 76,
+          "quote": "Masking hides the true nature of an initiate's aura, pre- senting a less powerful astral presence",
+          "ocrPrinted": "MASKING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "aura.?mask|deliberate.?mask|masking (test|dice)|mask(ed)?Aura",
+          "path": "scripts"
+        }
+      ],
+      "note": "No aura masking. The only Masking use is the ward 'Fool This Ward' test (SR3EWard.js:291-310), which is a different mechanic."
     },
     {
       "id": "magic/initiation.md#71",
@@ -9272,7 +10813,23 @@
       ],
       "hash": "4190a567cd",
       "text": "| **Possessing** | p.76 | Your astral form enters and controls a living being. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 77,
+          "printedPage": 76,
+          "quote": "This technique allows an astrally projecting initiate to take control of another being's body for a period of time",
+          "ocrPrinted": "MASKING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "possessing|astralPossession|possess(ion)?(Test|Host)",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#72",
@@ -9283,7 +10840,21 @@
       ],
       "hash": "ad02e9b676",
       "text": "| **Quickening** | p.77 | Make a sustained spell permanent without a sustaining focus. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 78,
+          "printedPage": 77,
+          "quote": "can malte any sustained spell permanent with- out need for a sustaining focus"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "quickenedSpell|quickeningTime|quickening (test|time)|isQuickened",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#73",
@@ -9294,7 +10865,23 @@
       ],
       "hash": "f3e77af73d",
       "text": "| **Reflecting** | p.78 | Spell defense that can turn a spell back on its caster. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 79,
+          "printedPage": 78,
+          "quote": "Reflecting allows an initiate to reflect a spell back at the caster.",
+          "ocrPrinted": "REFLECTING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "reflecting|reflectDice|spellReflect|reflectedSpell",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#74",
@@ -9305,7 +10892,29 @@
       ],
       "hash": "fc494f7902",
       "text": "| **Shielding** | p.79 | A stronger form of spell defense. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 80,
+          "printedPage": 79,
+          "quote": "Shielding is an initiated version of spell defense"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "shielding|shieldDice|spellShield",
+          "path": "scripts/documents"
+        },
+        {
+          "pattern": "shielding|shieldDice|spellShield",
+          "path": "scripts/data"
+        },
+        {
+          "pattern": "shielding|shieldDice|spellShield",
+          "path": "scripts/sheets"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#75",
@@ -9316,7 +10925,21 @@
       ],
       "hash": "9195658cf7",
       "text": "### Learning a technique  *(MitS p.69–70)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 70,
+          "printedPage": 69,
+          "quote": "a character can attempt: to learn one metamagical technique, provided he meets the requirements to use it"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnTechnique|techniquesKnown|knownTechniques|system.metamagic",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#76",
@@ -9327,7 +10950,27 @@
       ],
       "hash": "e310a5c74a",
       "text": "One technique per grade, and only one you can use: conjurers and adepts\ncan't learn Quickening or Shielding, which need Sorcery. **Adepts can learn\nonly Centering, Divining and Masking.** There are three ways to learn:",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 70,
+          "printedPage": 69,
+          "quote": "A conjurer or an adept cannot, for example, learn"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 70,
+          "printedPage": 69,
+          "quote": "Adepts can only learn the techniques of Centering, Divining and Masking."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnTechnique|techniquesKnown|knownTechniques|system.metamagic",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#77",
@@ -9338,7 +10981,8 @@
       ],
       "hash": "f418ae639d",
       "text": "| From | The test | Time and price |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#78",
@@ -9349,7 +10993,47 @@
       ],
       "hash": "1e6251cd01",
       "text": "| **Another initiate** of equal or higher grade who knows it | Magic, TN **8 − the teacher's grade** | 14 days ÷ successes. Free within a group; otherwise usually **grade × 1,000¥ a day**. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 71,
+          "printedPage": 70,
+          "quote": "ceed in a Magic Test with a Target Number of 8 minus the teacher's grade",
+          "ocrPrinted": "ANCHORING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 71,
+          "printedPage": 70,
+          "quote": "Divide the base time of 14 days by the num- ber of successes to determine how long it taltes",
+          "ocrPrinted": "ANCHORING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 71,
+          "printedPage": 70,
+          "quote": "Magical groups generally teach metamagic to their mem- bers free of charge",
+          "ocrPrinted": "ANCHORING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 71,
+          "printedPage": 70,
+          "quote": "per day to teach a technique",
+          "ocrPrinted": "ANCHORING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnTechnique|techniquesKnown|knownTechniques|system.metamagic",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#79",
@@ -9360,7 +11044,31 @@
       ],
       "hash": "93a7d4dd26",
       "text": "| **An astral quest** | The quest, rated by the number of techniques you already know (TN at least 2) | Days equal to the quest rating. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 71,
+          "printedPage": 70,
+          "quote": "The Quest Rating is equal to the number of metamagical techniques the character knows",
+          "ocrPrinted": "ANCHORING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 71,
+          "printedPage": 70,
+          "quote": "The quest takes a number of days equal to the Quest Rating to complete",
+          "ocrPrinted": "ANCHORING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnTechnique|techniquesKnown|knownTechniques|system.metamagic",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#80",
@@ -9371,7 +11079,39 @@
       ],
       "hash": "14e87a361b",
       "text": "| **A free spirit** | As from an initiate, with Spirit Energy for grade | Karma, at least its Spirit Energy. Invoking costs double. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 71,
+          "printedPage": 70,
+          "quote": "may teach them as metamagical techniques in the same manner as an initiate, using Spirit Energy in place of grade",
+          "ocrPrinted": "ANCHORING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 71,
+          "printedPage": 70,
+          "quote": "Any free spirit can teach Invoking, but they usually charge extra",
+          "ocrPrinted": "ANCHORING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 71,
+          "printedPage": 70,
+          "quote": "with a minimum Karma cost equal to their Spirit Energy",
+          "ocrPrinted": "ANCHORING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnTechnique|techniquesKnown|knownTechniques|system.metamagic",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#81",
@@ -9382,7 +11122,33 @@
       ],
       "hash": "bf91a7583a",
       "text": "Fail the test and you can try that technique again only at your next grade,\non top of that grade's technique. A third failure, or a roll of **all 1s**,\nmeans you can never learn it.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 70,
+          "printedPage": 69,
+          "quote": "If the character fails the test, they cannot learn that technique without first"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 70,
+          "printedPage": 69,
+          "quote": "if they fail on the third try, they may not try again"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 70,
+          "printedPage": 69,
+          "quote": "If the result of any of these tests is all Is, the character may not ever learn that technique"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnTechnique|techniquesKnown|knownTechniques|system.metamagic",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#82",
@@ -9393,7 +11159,24 @@
       ],
       "hash": "dab9fc8dd3",
       "text": "### Centering  *(MitS p.72–74)*\n{: #centering }",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 73,
+          "printedPage": 72,
+          "quote": "Centering Skill is an Active Magical Skill (p. 85, SIU) that is linked to Willpower",
+          "ocrPrinted": "CENTERING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "centering.{0,20}(test|dice|success|drain)|creative.?skill",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Centering skill exists (config.js:88, Willpower) but nothing uses it."
     },
     {
       "id": "magic/initiation.md#83",
@@ -9404,7 +11187,44 @@
       ],
       "hash": "c9c280073b",
       "text": "Centering uses two skills: **Centering**, an Active Magical Skill linked to\nWillpower, and a **creative skill** such as singing, dancing, an instrument,\nan arcane language or meditation. Centering can never be higher than the\ncreative skill, and the creative skill can't come from a chip. Centering is\na **Free Action** in the same phase as the magic it helps, rolled first, and\nyou get only one of its benefits per phase:",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 73,
+          "printedPage": 72,
+          "quote": "Centering Skill is an Active Magical Skill (p. 85, SIU) that is linked to Willpower",
+          "ocrPrinted": "CENTERING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 73,
+          "printedPage": 72,
+          "quote": "can never be raised higher than the rating of the creative skill",
+          "ocrPrinted": "CENTERING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 74,
+          "printedPage": 73,
+          "quote": "A creative sltill can never be chip-based."
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 74,
+          "printedPage": 73,
+          "quote": "only one of the benefits of centering (increased success, resist Drain, or reduce penalties) during any phase"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "centering.{0,20}(test|dice|success|drain)|creative.?skill",
+          "path": "scripts"
+        }
+      ],
+      "note": "The skill is on the skill list (scripts/config.js:88, linked to Willpower, as the book says); no part of the technique is coded."
     },
     {
       "id": "magic/initiation.md#84",
@@ -9415,7 +11235,27 @@
       ],
       "hash": "be3f327670",
       "text": "- **For success**: same TN as the magical test. Every 2 successes add a\n  success, but only if the magical test scores at least one. A magician has\n  to be astrally perceiving to do this.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 74,
+          "printedPage": 73,
+          "quote": "cesses generated on the Centering Test count as an additional success on the Magical"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 74,
+          "printedPage": 73,
+          "quote": "the initiate must use astral perception"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "centering.{0,20}(test|dice|success|drain)|creative.?skill",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#85",
@@ -9426,7 +11266,21 @@
       ],
       "hash": "5d70091295",
       "text": "- **Against Drain**: TN = the Drain Power. Every 2 successes count as one\n  Drain Resistance success, if the Drain test scores at least one.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 74,
+          "printedPage": 73,
+          "quote": "intended. Every 2 successes from this test count as 1 success in the Drain Resistance Test"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "centering.{0,20}(test|dice|success|drain)|creative.?skill",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#86",
@@ -9437,7 +11291,27 @@
       ],
       "hash": "32d19f7404",
       "text": "- **Against penalties**: TN = the magical test's full TN **minus your\n  grade**. Every 2 successes cancel 1 point of modifiers, never the base TN.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 74,
+          "printedPage": 73,
+          "quote": "adding all applicable modifiers and subtracting the initiate's"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 74,
+          "printedPage": 73,
+          "quote": "Every 2 successes cancel out 1 point of modifiers to the Magical Sltill Test target number; centering cannot reduce the base target number"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "centering.{0,20}(test|dice|success|drain)|creative.?skill",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#87",
@@ -9448,7 +11322,39 @@
       ],
       "hash": "2a1114da96",
       "text": "**Adept centering** *(MitS p.73–74)*. An adept who learns Centering applies\nit to **Athletics and Stealth**. Each later grade can add one more skill\narea instead of another technique: Build and Repair, Melee Combat, Ranged\nCombat, Knowledge, Language, Social, Technical, Vehicle, or a Special Skill\narea. Adepts don't need astral perception to center for success, and can\ncenter against the Drain of their powers, such as Attribute Boost.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 75,
+          "printedPage": 74,
+          "quote": "An adept who learns centering begins with the ability to apply it to Athletics and Stealth.",
+          "ocrPrinted": "CLEANSING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 75,
+          "printedPage": 74,
+          "quote": "Adepts can center against any Drain caused by any use of",
+          "ocrPrinted": "CLEANSING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 75,
+          "printedPage": 74,
+          "quote": "adepts do not require astral perception to use centering for success",
+          "ocrPrinted": "CLEANSING",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "centering.{0,20}(test|dice|success|drain)|creative.?skill",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#88",
@@ -9459,7 +11365,34 @@
       ],
       "hash": "e2a4961c7a",
       "text": "> **The book's example** *(MitS p.73)*: Beaumains, a Grade 4 initiate,\n> casts Powerbolt at a target with Body 4, partial cover (+2), poor light\n> (+2), and his own Light Stun (+1): TN 9. He centers on his synthesizer\n> against 9 − 4 = **TN 5** and gets 2 successes, cancelling 1 point. He\n> casts at **TN 8**.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 74,
+          "printedPage": 73,
+          "quote": "Beaumains, a Grade 4 initiate, is tossing a Powerbolt"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 74,
+          "printedPage": 73,
+          "quote": "(the actual target number o f 9, minus his grade), he scores 2 successes"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 74,
+          "printedPage": 73,
+          "quote": "Sorcery Test against a Target Number o f 8 (9 - 1)"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "centering.{0,20}(test|dice|success|drain)|creative.?skill",
+          "path": "scripts"
+        }
+      ],
+      "note": "The guide's example matches the book (TN 9, centering TN 9 - 4 = 5, 2 successes cancel 1 point, cast at TN 8)."
     },
     {
       "id": "magic/initiation.md#89",
@@ -9470,7 +11403,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#90",
@@ -9481,7 +11415,22 @@
       ],
       "hash": "5498ab8180",
       "text": "## Geasa  *(MitS p.30–33)*\n{: #geasa }",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 32,
+          "printedPage": 31,
+          "quote": "The game rules define a geas as a restriction a magician accepts as a way o f holding on to a Magic Point",
+          "ocrPrinted": "3 1 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\bgeas",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#91",
@@ -9492,7 +11441,22 @@
       ],
       "hash": "c3ef53f6c3",
       "text": "When a character **loses a point of Magic**, they can take a **geas**, a\nrestriction on how they use magic, to keep working as if they still had\nit. A magician with Magic 6 who loses a point is at 5, but with a geas casts\nas if they had 6.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 32,
+          "printedPage": 31,
+          "quote": "he now has a rating of 5; taking a geas allows the character to continue casting spells and so on as if he still had a Magic Rating of 6",
+          "ocrPrinted": "3 1 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\bgeas",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#92",
@@ -9503,7 +11467,31 @@
       ],
       "hash": "a6df039664",
       "text": "- Decide **when the point is lost**. Turn the geas down then and you can't\n  take one for that point later.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 33,
+          "printedPage": 32,
+          "quote": "When a character loses a Magic Point, they must choose whether to accept a geas.",
+          "ocrPrinted": "Talisman Geas",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 33,
+          "printedPage": 32,
+          "quote": "they may not offset that specific Magic loss with a geas at a later time",
+          "ocrPrinted": "Talisman Geas",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\bgeas",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#93",
@@ -9514,7 +11502,27 @@
       ],
       "hash": "547ca76deb",
       "text": "- At most **unaugmented Willpower** geasa. At Magic 0 nothing helps: the\n  character is mundane.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 34,
+          "printedPage": 33,
+          "quote": "The maximum number of geasa a character can take is equal to his unaugmented Willpower Attribute"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 34,
+          "printedPage": 33,
+          "quote": "they immediately become a mundane-no geasa can offset that."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\bgeas",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#94",
@@ -9525,7 +11533,22 @@
       ],
       "hash": "9bc3ec9229",
       "text": "- A geas only offsets lost points; it never adds Magic.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 32,
+          "printedPage": 31,
+          "quote": "Geasa can only be talten to offset lost Magic Points; they may not be talten to gain more Magic.",
+          "ocrPrinted": "3 1 1"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\bgeas",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#95",
@@ -9536,7 +11559,33 @@
       ],
       "hash": "3140c6e7cf",
       "text": "- **Break any one** and you lose **all** the points your geasa cover, and\n  take **+1 to every Magical Skill test per geas** you have, while it stays\n  broken. Astral combat and assensing aren't affected.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 34,
+          "printedPage": 33,
+          "quote": "temporarily must function without any of the Magic Points off- set by geasa"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 34,
+          "printedPage": 33,
+          "quote": "must add + 1 to the target numbers of all Magical Skill Tests for each geas he possesses"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 34,
+          "printedPage": 33,
+          "quote": "Tests for astral combat, assensing and similar actions are not subject to geasa."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\bgeas",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#96",
@@ -9547,7 +11596,29 @@
       ],
       "hash": "936c3c6239",
       "text": "- Initiation can shed one geas per grade, instead of gaining Magic.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 59,
+          "printedPage": 58,
+          "quote": "a character can shed only one geas per grade",
+          "ocrPrinted": "Altering Astral Signature",
+          "printedNote": "OCR lost this page footer; printed 58 confirmed on the rendered page image; anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 34,
+          "printedPage": 33,
+          "quote": "options for initiating is to drop a geas, replacing the lost Magic"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\bgeas",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#97",
@@ -9558,7 +11629,55 @@
       ],
       "hash": "1b13638538",
       "text": "**Standard geasa** *(MitS p.32)*: Condition (unwounded, astrally\nperceiving…), Domain (the city, the forest…), Exclusive (adepts only: the\npower can't be used alongside other magic), Fasting, Gesture, Incantation,\nShaman's (only spells and spirits with a totem advantage), Talisman, and\nTime (day or night, or a season).",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 33,
+          "printedPage": 32,
+          "quote": "You must specify a personal condition to",
+          "ocrPrinted": "Talisman Geas",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 33,
+          "printedPage": 32,
+          "quote": "You specify a domain in which your magic works",
+          "ocrPrinted": "Talisman Geas",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 33,
+          "printedPage": 32,
+          "quote": "Fasting Geas: if the character eats or drinks or accepts any nourishment other than water",
+          "ocrPrinted": "Talisman Geas",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 33,
+          "printedPage": 32,
+          "quote": "geas restricts shamans to performing only that magic that provides a Totem Advantage",
+          "ocrPrinted": "Talisman Geas",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 33,
+          "printedPage": 32,
+          "quote": "Talisman Geas: The character must use a specific item,",
+          "ocrPrinted": "Talisman Geas",
+          "printedNote": "OCR lost this page footer; printed page confirmed from the neighbouring footers (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\bgeas",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "magic/initiation.md#98",
@@ -9569,7 +11688,28 @@
       ],
       "hash": "1797703b31",
       "text": "> **The book's example** *(MitS p.33)*: Rikki Ratboy, Magic 6, loses a\n> point to a bad wound and takes the **gesture** geas, then another to\n> cyberware and takes **domain** (the city). Shot in a park with a broken\n> arm, he's broken both. He works at Magic **4**, with **+2** to all magical\n> tests, until he's out of the park and his arm is fixed.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 34,
+          "printedPage": 33,
+          "quote": "Riklti Ratboy (Magic 6) gets shot up bad on a run and"
+        },
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 34,
+          "printedPage": 33,
+          "quote": "by 2, down to 4, and he suffers a +2 modifier to all magical tests"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "\\bgeas",
+          "path": "scripts"
+        }
+      ],
+      "note": "The guide's example matches the book (gesture, then domain; both broken: Magic 6 to 4 and +2 to all magical tests)."
     },
     {
       "id": "magic/initiation.md#99",
@@ -9580,7 +11720,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#100",
@@ -9591,7 +11732,8 @@
       ],
       "hash": "8e605c4c08",
       "text": "## Doing it in The 2nd Chumming (Foundry)\n{: #doing-it-in-the-2nd-chumming-foundry }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row / lead-in sentence — states no rule"
     },
     {
       "id": "magic/initiation.md#101",
@@ -9602,7 +11744,8 @@
       ],
       "hash": "210cc14a3d",
       "text": "The system records the grade but doesn't run initiation yet.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: initiation is only a recorded grade (scripts/data/ActorDataModels.js:203), nothing runs it."
     },
     {
       "id": "magic/initiation.md#102",
@@ -9613,7 +11756,8 @@
       ],
       "hash": "f19530cda7",
       "text": "- **Initiate Grade** is a field on the **Magic** tab. A ward's **🌫 Fool This\n  Ward** test reads it (Masking, against a ward).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: the Magic tab has an Initiate Grade field (SR3EActorSheet.js:2814) and the Fool This Ward test reads system.initiateGrade (SR3EWard.js:307)."
     },
     {
       "id": "magic/initiation.md#103",
@@ -9624,7 +11768,8 @@
       ],
       "hash": "fa03ea313c",
       "text": "- **The Karma**: work out the cost from the table above, and subtract it\n  from Good Karma on the sheet. The Spend Karma calculator doesn't offer\n  initiation yet.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: the Spend Karma calculator offers Power Points, spells and foci, not initiation (SR3EActorSheet.js:5876-5879 comment, TODO 219)."
     },
     {
       "id": "magic/initiation.md#104",
@@ -9635,7 +11780,8 @@
       ],
       "hash": "ae95582159",
       "text": "- **Magic**: raise the Magic Attribute by hand. An adept's Power Point total\n  follows Magic, so their new Power Point appears by itself.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: Magic is edited by hand and the adept's Power Point total is Magic + bought points (SR3EActorSheet.js:2900)."
     },
     {
       "id": "magic/initiation.md#105",
@@ -9646,7 +11792,8 @@
       ],
       "hash": "5fbc437221",
       "text": "- **Not tracked yet**: the initiate's Astral Pool and Astral Reaction bonus,\n  metamagic, geasa and magical groups. Apply them at the table.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. The metamagic, geasa and magical-group parts are accurate (nothing in scripts/). Inaccurate: the system DOES track an Astral Pool (SR3EActor.js:2556), sized floor((INT+CHA+WIL)/2) for every Awakened actor instead of the initiate's grade — see unit 11; the Astral Reaction bonus is indeed absent."
     },
     {
       "id": "magic/initiation.md#106",
@@ -9657,7 +11804,8 @@
       ],
       "hash": "5d181c4fe3",
       "text": "{: .note }\n> Building initiation, metamagic and the other *Magic in the Shadows* Karma\n> costs into the system is planned (TODO 219).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "roadmap note naming a planned TODO; states no rule"
     },
     {
       "id": "magic/physical-adepts.md#1",
