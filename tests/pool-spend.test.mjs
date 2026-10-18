@@ -41,7 +41,7 @@ const SOURCES = FILES.map(f => ({
 function spendCalls(text) {
   const out = [];
   text.split('\n').forEach((line, i) => {
-    for (const m of line.matchAll(/\bspend(Combat|Astral|Hacking|Spell)Pool\s*\(/g)) {
+    for (const m of line.matchAll(/\bspend(Combat|Astral|Initiate|Hacking|Spell)Pool\s*\(/g)) {
       out.push({ line: i + 1, pool: m[1], text: line.trim() });
     }
   });
@@ -55,7 +55,7 @@ function spendCalls(text) {
 function usesReturn(line) {
   const t = line.trim();
   // Bare statement: optionally guarded by `if (...)`, then `await <expr>.spendXPool(...);`
-  const bare = /^(?:if\s*\([^)]*\)\s*)?await\s+[\w?.$[\]]+\.spend(?:Combat|Astral|Hacking|Spell)Pool\s*\([^;]*\)\s*;?$/;
+  const bare = /^(?:if\s*\([^)]*\)\s*)?await\s+[\w?.$[\]]+\.spend(?:Combat|Astral|Initiate|Hacking|Spell)Pool\s*\([^;]*\)\s*;?$/;
   return !bare.test(t);
 }
 
@@ -82,7 +82,7 @@ export async function run(t) {
 
   // ── The helpers must still return the deduction, or the rule above is vacuous ──
   const actor = SOURCES.find(s => s.file === 'SR3EActor.js').text;
-  for (const pool of ['Combat', 'Astral', 'Hacking', 'Spell']) {
+  for (const pool of ['Combat', 'Astral', 'Initiate', 'Hacking', 'Spell']) {
     const re = new RegExp(`async\\s+spend${pool}Pool\\s*\\([^)]*\\)\\s*\\{[\\s\\S]{0,1200}?\\n  \\}`, 'm');
     const body = actor.match(re)?.[0];
     t.ok(`spend${pool}Pool exists`, !!body);

@@ -49,6 +49,7 @@ const SR3E_ACCUMULATORS = new Set([
   'system.combatPoolSpent',
   'system.spellPoolSpent',
   'system.astralPoolSpent',
+  'system.initiatePoolSpent',
   'system.hackingPoolSpent',
   'system.spellDefensePool',
   'system.woundValue',
@@ -360,6 +361,7 @@ export class SR3EQuery {
         combat:       'spendCombatPool',
         spell:        'spendSpellPool',
         astral:       'spendAstralPool',
+        initiate:     'spendInitiatePool',
         hacking:      'spendHackingPool',
         spellDefense: 'useSpellDefenseDice',
       }[pool];
@@ -445,6 +447,7 @@ export class SR3EQuery {
         combat:  'refreshCombatPool',
         spell:   'refreshSpellPool',
         astral:  'refreshAstralPool',
+        initiate: 'refreshInitiatePool',
         hacking: 'refreshHackingPool',
       }[pool];
       if (!fn) throw new Error(`SR3E | pool.refresh: unknown pool '${pool}'`);

@@ -37,7 +37,7 @@ Both end the round and prompt the GM to re-roll.
 - Default: `Reaction + woundMod` + `initiativeDice`d6 (wired reflexes apply)
 - TRM / AR / VR-Cold: meat-world initiative, own dice (MDF p.10 — see matrix rules); Response does NOT apply
 - VR-Hot: `reaction.base + woundMod + Response×2` + `(1 + Response)`d6 (no cyber bonuses)
-- Astral Projection: `Intelligence + 20` + 1d6
+- Astral Projection: `Intelligence + 20` + 1d6 — **plus the initiate's grade** (Astral Reaction bonus, MitS p.58; `InitiateAstral.initiativeBase`)
 - Physical / Dual Natured: default
 
 **Vehicle initiative** (`system.vcrMode`, `system.controlledBy`):

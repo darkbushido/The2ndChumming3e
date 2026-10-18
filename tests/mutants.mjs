@@ -56,6 +56,7 @@ const RANGEB = { module: '../scripts/data/range-bands.mjs', klass: 'RangeBands' 
 const APDSM = { module: '../scripts/data/apds.mjs', klass: 'Apds' };
 const MAGICLOSS = { module: '../scripts/data/magic-loss.mjs', klass: 'MagicLoss' };
 const ADEPTLEVELS = { module: '../scripts/data/adept-levels.mjs', klass: 'AdeptLevels' };
+const INITASTRAL = { module: '../scripts/data/initiate-astral.mjs', klass: 'InitiateAstral' };
 const MISFIRE = { module: '../scripts/data/misfire.mjs', klass: 'Misfire' };
 const COLLISIONS = { module: '../scripts/data/collisions.mjs', klass: 'Collisions' };
 const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment' };
@@ -2991,5 +2992,26 @@ export const MUTANTS = [
     ...ADEPTLEVELS, method: 'levelOf',
     was:    'the Magic cap read the level of a power only from system.level (hasLevels), so Imp. Reflexes Level 3 / Combat Sense +3 were never checked against Magic (SR3 p.168)',
     impl:   (_name, system = {}) => (system?.hasLevels ? Math.max(1, Math.trunc(Number(system.level) || 1)) : 1),
+  },
+  {
+    id:     'astral-initiative-ignores-initiate-grade',
+    suite:  'initiate-astral',
+    ...INITASTRAL, method: 'initiativeBase',
+    was:    'the astral Initiative of Intelligence + 20 with no grade term; MitS p.58: a bonus to Astral Reaction equal to the grade',
+    impl:   (intelligence, _grade) => (Number(intelligence) || 0) + 20,
+  },
+  {
+    id:     'initiate-pool-allowed-on-magical-skills',
+    suite:  'initiate-astral',
+    ...INITASTRAL, method: 'allowedOnSkill',
+    was:    'letting Initiate Astral Pool dice onto a Magical Skill Test; MitS p.58 excludes them',
+    impl:   () => true,
+  },
+  {
+    id:     'initiate-pool-for-everyone',
+    suite:  'initiate-astral',
+    ...INITASTRAL, method: 'pool',
+    was:    'giving every Awakened character an Initiate Astral Pool (0 dice) instead of none; only initiates have one (MitS p.58)',
+    impl:   (grade, mod = 0) => Math.max(0, (Number(grade) || 0) + (Number(mod) || 0)),
   },
 ];

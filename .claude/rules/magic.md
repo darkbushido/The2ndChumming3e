@@ -18,11 +18,20 @@ paths:
 
 ### Astral state  · *SR3 p.41, p.62*
 `system.astralMode`, toggled on the Magic tab (one at a time; clicking the active one clears it):
-`''` none · `'physical'` (grey badge) · `'dual'` (amber "Dual Nat.") · `'astral'` (purple; **INT + 20 + 1d6** initiative).
+`''` none · `'physical'` (grey badge) · `'dual'` (amber "Dual Nat.") · `'astral'` (purple; **INT + grade + 20 + 1d6** initiative — an initiate's grade is added to Astral Reaction, MitS p.58).
 
 **Astral damage resistance** · *SR3 p.174-175* (TODO 132) — `SR3EActor.astralResistPool`: only `'astral'` is an
 astral being (**Willpower**, or a spirit's **Force**, no Combat Pool); every other mode, including none, is a
 dual being in astral combat (**Body + Combat Pool**, p.174). TN is `astralSoakTN` (Power − Mystic Armor).
+
+**Two astral pools — never confuse them.** The **Astral Combat Pool** (SR3 p.174, `derived.astralPool`, `astralPoolSpent`):
+⌊(INT+CHA+WIL)/2⌋, every Awakened actor, spent in astral combat. The **Initiate Astral Pool** (MitS p.58,
+`scripts/data/initiate-astral.mjs`, `derived.initiatePool`, `initiatePoolSpent`/`initiatePoolMod`): **grade** dice, initiates only
+(null otherwise), usable on any astral-plane test except Magical Skill Tests — offered in each astral-combat corner
+(`sr-astral-*-ipool`), on Assensing, and on the attribute/skill roll dialogs while dual/projecting
+(`SR3EActor.initiateRollRow`, charged once in `rollPool` via `options.initiatePoolDice`). Spent through
+`spendInitiatePool` → `sr3e.pool.spend` (`pool: 'initiate'`); refreshed in `_endOfTurnReset` and Reset All Pools.
+`tests/initiate-astral.test.mjs`.
 
 ### Sustained spells  · *SR3 p.178, p.180, p.183*
 > "+2 target modifier per sustained spell applied to all tests, including Drain Resistance Tests (but not

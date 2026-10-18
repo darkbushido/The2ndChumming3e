@@ -489,6 +489,7 @@ export class SR3ECombat extends Combat {
       if (sys.combatPoolSpent)      await actor.refreshCombatPool?.();
       if (sys.spellPoolSpent)       await actor.refreshSpellPool?.();
       if (sys.astralPoolSpent)      await actor.refreshAstralPool?.();
+      if (sys.initiatePoolSpent)    await actor.refreshInitiatePool?.();   // MitS p.58: "refresh the same way as other dice pools"
       if (sys.hackingPoolSpent)     await actor.refreshHackingPool?.();
       // Full Defense is a declared posture for the turn, not a standing state. The
       // updateActor hook in sr3e.js drives the status icon off this field, so clearing it

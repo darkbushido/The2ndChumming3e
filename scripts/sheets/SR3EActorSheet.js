@@ -9,6 +9,7 @@ import { SpellLimits } from '../data/spell-limits.mjs';
 import { GmOnlyFields } from '../data/gm-only-fields.mjs';
 import { Funds } from '../data/funds.mjs';
 import { CombatPool } from '../data/combat-pool.mjs';
+import { InitiateAstral } from '../data/initiate-astral.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -1107,12 +1108,20 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               `floor((INT ${intl} + WIL ${wil} + MAG ${mag}) / 3) = ${d.spellPoolBase ?? 0}`)
           : ''}
         ${d.astralPool !== null && d.astralPool !== undefined
-          ? this._poolBlock('Astral Pool',
+          ? this._poolBlock('Astral Combat Pool',
               d.availableAstralPool ?? d.astralPool ?? 0,
               d.astralPool ?? 0,
               d.astralPoolBase ?? 0,
               'system.astralPoolSpent', 'system.astralPoolMod',
-              `floor((INT ${intl} + CHA ${cha} + WIL ${wil}) / 2) = ${d.astralPoolBase ?? 0}`)
+              `Astral Combat Pool (SR3 p.174): floor((INT ${intl} + CHA ${cha} + WIL ${wil}) / 2) = ${d.astralPoolBase ?? 0}`)
+          : ''}
+        ${d.initiatePool !== null && d.initiatePool !== undefined
+          ? this._poolBlock('Initiate Astral Pool',
+              d.availableInitiatePool ?? d.initiatePool ?? 0,
+              d.initiatePool ?? 0,
+              d.initiatePoolBase ?? 0,
+              'system.initiatePoolSpent', 'system.initiatePoolMod',
+              `Grade ${d.initiatePoolBase ?? 0} dice for tests on the astral plane — not for Magical Skill Tests; refreshes like other pools (Magic in the Shadows p.58). Not the Astral Combat Pool.`)
           : ''}
         ${(sys.spellDefensePool ?? 0) > 0 ? this._derivedBlock('Spell Defense', `<span style="color:var(--sr-accent)">${sys.spellDefensePool} dice</span>`) : ''}
         ${d.hackingPool !== null ? this._poolBlock('Hacking Pool',
@@ -4096,6 +4105,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       'system.combatPoolSpent': 0,
       'system.spellPoolSpent':  0,
       'system.astralPoolSpent': 0,
+      'system.initiatePoolSpent': 0,
     });
   }
 
@@ -4183,6 +4193,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       poolNote: 'Intelligence',
       physicalDice,
       rollAttr: 'intelligence',
+      astralPerception: true,   // an Astral Perception Test — the Initiate Astral Pool row is always offered (MitS p.58)
     });
     if (!rollOptions) return;
     await actor.rollPool(rollOptions.pool ?? intVal, rollOptions.tn, 'Assensing', {
@@ -5266,7 +5277,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * rather than an attribute. Picking an attribute still fills the pool from it, as ever.
    * The result then carries `label`, and `selectedAttr` is `''` for a plain pool.
    */
-  static async _promptRollOptions(actor, { defaultPool = null, poolNote = '', physicalDice = false, rollAttr = null, custom = false } = {}) {
+  static async _promptRollOptions(actor, { defaultPool = null, poolNote = '', physicalDice = false, rollAttr = null, custom = false, astralPerception = false } = {}) {
     const woundPenalty = -(actor?.system.woundMod ?? 0);
     // Sustained spells, +2 each on all tests (p.178) — pre-applied beside the wound, and `rollPool` skips both.
     const sustainTN    = game.sr3e.SR3EActor.standingTN(actor);
@@ -5343,6 +5354,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             <span></span>
             ${toxinRow}
             ${game.sr3e.SR3EActor.karmaRollRow(actor)}
+            ${game.sr3e.SR3EActor.initiateRollRow(actor, { force: astralPerception })}
             ${physicalDice ? `<p class="roll-opts-physical">📋 Physical dice mode</p>` : ''}
           </div>
         `,
@@ -5361,6 +5373,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 tn:           Math.max(2, tn),
                 // 🍀 { karmaHold, karmaDice, hooperNelson } — charged by rollPool (SR3 p.246).
                 ...game.sr3e.SR3EActor.readKarmaRollRow(html),
+                // ✦ Initiate Astral Pool dice (MitS p.58) — charged by rollPool.
+                ...game.sr3e.SR3EActor.readInitiateRollRow(html),
                 // 0 is kept (TODO 102) — rollPool refuses it with "dice pool is 0" rather than
                 // this dialog quietly rolling one die the character does not have.
                 pool:         poolEl ? Math.max(0, parseInt(poolEl.value) || 0) : null,
@@ -5565,6 +5579,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             ${armorQTN > 0 ? `<div id="sr-armor-note" style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px;display:${qtnFor(defSkill) ? 'block' : 'none'}">🛡 Layered armour TN +${armorQTN} (Quickness-linked skill, SR3 p.285, pre-applied)</div>` : ''}
             <div id="sr-default-note" style="font-size:11px;color:var(--sr-amber);margin:4px 0 8px;display:${defS.rating ? 'none' : 'block'}">↩ No skill — you'll <strong>choose how to default</strong> (specialization / skill / attribute) when you roll.</div>
             ${game.sr3e.SR3EActor.karmaRollRow(actor)}
+            ${game.sr3e.SR3EActor.initiateRollRow(actor)}
             ${physicalDice ? `<p class="skill-opts-physical">📋 Physical dice mode</p>` : ''}
           </div>
         `,
@@ -5582,6 +5597,16 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                 tn:            Math.max(2, tn),
                 // 🍀 { karmaHold, karmaDice, hooperNelson } — charged by rollPool (SR3 p.246).
                 ...game.sr3e.SR3EActor.readKarmaRollRow(html),
+                // ✦ Initiate Astral Pool dice (MitS p.58) — NOT for Magical Skill Tests; dropped with a note, never refused.
+                ...(() => {
+                  const r = game.sr3e.SR3EActor.readInitiateRollRow(html);
+                  const cat = actor.items.get(selectedSkillId)?.system?.category;
+                  if (r.initiatePoolDice > 0 && !InitiateAstral.allowedOnSkill(cat)) {
+                    ui.notifications.warn(`${actor.name}: Astral Pool dice can't be used on Magical Skill Tests (Magic in the Shadows p.58) — left unspent.`);
+                    return { initiatePoolDice: 0 };
+                  }
+                  return r;
+                })(),
                 pool:          poolEl ? Math.max(1, parseInt(poolEl.value) || 1) : defPool,
                 selectedSkillId,
                 physicalDice,

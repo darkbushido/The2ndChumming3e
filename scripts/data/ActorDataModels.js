@@ -74,6 +74,9 @@ function _pools() {
     spellPoolMod:            new NumberField({ integer: true, initial: 0 }),
     astralPoolSpent:         new NumberField({ integer: true, initial: 0, min: 0 }),
     astralPoolMod:           new NumberField({ integer: true, initial: 0 }),
+    // The INITIATE Astral Pool (MitS p.58): grade dice, a different pool from the core Astral Combat Pool above.
+    initiatePoolSpent:       new NumberField({ integer: true, initial: 0, min: 0 }),
+    initiatePoolMod:         new NumberField({ integer: true, initial: 0 }),
     hackingPoolSpent:        new NumberField({ integer: true, initial: 0, min: 0 }),
     spellDefensePool:        new NumberField({ integer: true, initial: 0, min: 0 }),
     spellDefenseSorceryDice: new NumberField({ integer: true, initial: 0, min: 0 }),

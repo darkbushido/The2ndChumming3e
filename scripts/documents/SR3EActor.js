@@ -18,6 +18,7 @@ import { CombatPool } from '../data/combat-pool.mjs';
 import { Collisions } from '../data/collisions.mjs';
 import { Apds } from '../data/apds.mjs';
 import { Misfire } from '../data/misfire.mjs';
+import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { AdeptLevels } from '../data/adept-levels.mjs';
 
 export class SR3EActor extends Actor {
@@ -2570,6 +2571,10 @@ _prepareCharacter(sys, attr) {
   const astralPool          = astralPoolBase !== null ? astralPoolBase + (sys.astralPoolMod ?? 0) : null;
   const astralPoolSpent     = magicBase > 0 ? (sys.astralPoolSpent ?? 0) : 0;
   const availableAstralPool = astralPool !== null ? Math.max(0, astralPool - astralPoolSpent) : null;
+  // The INITIATE Astral Pool (MitS p.58) — grade dice, null for a non-initiate. Not the Astral Combat Pool above.
+  const initiateGrade         = InitiateAstral.grade(sys.initiateGrade);
+  const initiatePool          = InitiateAstral.pool(initiateGrade, sys.initiatePoolMod ?? 0);
+  const availableInitiatePool = InitiateAstral.available(initiatePool, sys.initiatePoolSpent ?? 0);
 
   const vcrItem   = sys.activeVCRItemId ? this.items?.get(sys.activeVCRItemId) : null;
   // ⚠ Through `vcrLevel`: the shipped rigs store `rating: 0` with the level in the NAME.
@@ -2674,6 +2679,9 @@ _prepareCharacter(sys, attr) {
     astralPoolBase,
     astralPool,
     availableAstralPool,
+    initiatePoolBase: InitiateAstral.poolBase(initiateGrade),
+    initiatePool,
+    availableInitiatePool,
     hackingPoolBase,
     hackingPool:          hackingPoolBase !== null ? Math.max(0, hackingPoolBase) : null,
     availableHackingPool: hackingPoolBase !== null ? Math.max(0, hackingPoolBase - (sys.hackingPoolSpent ?? 0)) : null,
@@ -2763,6 +2771,19 @@ _prepareCharacter(sys, attr) {
       }
     }
     const karmaHold = !!(options.karmaHold ?? options.karmaReroll) && KarmaPool.available(this.system) > 0;
+
+    /* The Initiate Astral Pool (MitS p.58) — dice from the roll dialog's row, charged here once, whichever dialog
+     * asked. Added AFTER the Karma dice so the Karma cap ("not including dice from other pools", p.246) still counts
+     * only the base. What is rolled is what the pool GRANTED (`spendInitiatePool` clamps on the GM), never the
+     * request. */
+    {
+      const want = Math.max(0, parseInt(options.initiatePoolDice) || 0);
+      if (want > 0) {
+        const got = await this.spendInitiatePool(want);
+        if (got < want) ui.notifications.warn(`${this.name}: only ${got} of ${want} Initiate Astral Pool dice were available.`);
+        if (got > 0) { pool += got; label = `${label} (+${got} Initiate Astral Pool)`; }
+      }
+    }
 
     if (options.physicalDice) {
       const successes = await SR3EActor._promptPhysicalSuccesses(pool, effectiveTN, label, tn, woundDisplay);
@@ -5760,6 +5781,32 @@ _prepareCharacter(sys, attr) {
           <span style="color:var(--sr-muted);font-size:11px">GM's option · TN 12+ · not below 8 · burned for ever</span>
         </label>
       </div>`;
+  }
+
+  /**
+   * The Initiate Astral Pool row for a roll dialog (MitS p.58). Offered only to an initiate with dice left who is
+   * on the astral plane — perceiving (dual) or projecting — or whose dialog IS an Astral Perception Test
+   * (`{ force: true }`). `#sr-initiate-dice` is read back by `readInitiateRollRow` and charged by `rollPool`.
+   */
+  static initiateRollRow(actor, { force = false } = {}) {
+    const d = actor?.system?.derived;
+    const total = d?.initiatePool ?? null;
+    if (total === null || total === undefined) return '';
+    if (!force && !InitiateAstral.onAstralPlane(actor.system.astralMode)) return '';
+    const avail = d.availableInitiatePool ?? 0;
+    if (avail <= 0) return `<div class="sr-initiate-row" style="grid-column:1/-1;font-size:11px;color:var(--sr-muted)">✦ Initiate Astral Pool: none left of ${total}.</div>`;
+    return `
+      <div class="sr-initiate-row" style="grid-column:1/-1;margin-top:4px;padding:4px 6px;border:1px solid var(--sr-border);border-radius:var(--r);font-size:12px">
+        <label title="Grade dice for tests on the astral plane, not Magical Skill Tests (Magic in the Shadows p.58). Not the Astral Combat Pool.">
+          ✦ <strong>Initiate Astral Pool</strong> +<input type="number" id="sr-initiate-dice" value="0" min="0" max="${avail}" style="width:44px"/>
+          <span style="color:var(--sr-muted);font-size:11px">of ${avail} left · MitS p.58</span>
+        </label>
+      </div>`;
+  }
+
+  /** Read the ✦ row back: `{ initiatePoolDice }` (0 when the row is absent). */
+  static readInitiateRollRow(el) {
+    return { initiatePoolDice: Math.max(0, parseInt(el?.querySelector?.('#sr-initiate-dice')?.value) || 0) };
   }
 
   /** Read the 🍀 row back: `{ karmaHold, karmaDice, hooperNelson }` (all off when the row is absent). */
@@ -10222,6 +10269,36 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * Spend dice from the INITIATE Astral Pool (MitS p.58) — a different pool from the Astral Combat Pool, with its own
+   * counter. Routed exactly like the others (`sr3e.pool.spend`, queued per actor on the GM), and returns what was
+   * actually deducted.
+   */
+  async spendInitiatePool(amount) {
+    if (!game.users.activeGM?.isSelf) {
+      const { spent } = await game.sr3e.SR3EQuery.asGM('sr3e.pool.spend',
+        { uuid: this.uuid, pool: 'initiate', n: amount });
+      return spent;
+    }
+    return game.sr3e.SR3EQueue.run(this.uuid, async () => {
+      const available = this.system.derived?.availableInitiatePool ?? 0;
+      const spend     = Math.min(amount, available);
+      if (spend > 0) {
+        await this.update({ 'system.initiatePoolSpent': (this.system.initiatePoolSpent ?? 0) + spend });
+      }
+      return spend;
+    });
+  }
+
+  /** The Initiate Astral Pool "refresh[es] the same way as other dice pools" (MitS p.58). */
+  async refreshInitiatePool() {
+    if (!game.users.activeGM?.isSelf) {
+      await game.sr3e.SR3EQuery.asGM('sr3e.pool.refresh', { uuid: this.uuid, pool: 'initiate' });
+      return;
+    }
+    await this.update({ 'system.initiatePoolSpent': 0 });
+  }
+
+  /**
    * Reset astral pool spending.
    */
   async refreshAstralPool() {
@@ -11130,11 +11207,13 @@ _prepareCharacter(sys, attr) {
       dice = Rigging.vcrInitiativeDice(vcrLevel);
       modeNote = `<div class="sr-roll-meta" style="color:var(--sr-accent)">🎮 ${jumpedIn ? 'VCR' : "Captain's chair (RCD), VCR"} Lv${vcrLevel} — REA base ${reactionBase}${vcrLevel ? ` + VCR ${vcrLevel} (+${2 * vcrLevel})` : ''}${jam ? ` − Simsense jam (${jam})` : ''}</div>`;
     } else if (useAstral) {
-      // Astral initiative: Intelligence + 20 + 1d6
+      // Astral initiative: Astral Reaction (Intelligence, SR3 p.174) + 20 + 1d6. An initiate's Astral Reaction is
+      // raised by the grade (MitS p.58: "a bonus to their Astral Reaction equal to their grade").
       const intel = this.system.attributes?.intelligence?.value ?? 0;
-      base = intel + 20;
+      const grade = InitiateAstral.grade(this.system.initiateGrade);
+      base = InitiateAstral.initiativeBase(intel, grade);
       dice = 1;
-      modeNote = `<div class="sr-roll-meta" style="color:#c070f5">✦ Astral Init — INT ${intel} + 20</div>`;
+      modeNote = `<div class="sr-roll-meta" style="color:#c070f5">✦ Astral Init — INT ${intel}${grade ? ` + grade ${grade} (Astral Reaction)` : ''} + 20</div>`;
     } else if ((() => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox'; } catch { return false; } })()
               && (this.system.orthodoxRunState?.currentHostId ?? '') !== '') {
       // Orthodox SR3: decker jacked in uses reaction BASE + ResponseIncrease×2 + (1+Response)d6
@@ -11474,6 +11553,8 @@ _prepareCharacter(sys, attr) {
     const _getAstralInfo = (actor) => {
       const cha        = actor.system.attributes?.charisma?.base   ?? 1;
       const astralPool = actor.system.derived?.availableAstralPool ?? 0;
+      // The initiate's own pool (MitS p.58) — usable on Astral Combat "even when Sorcery is used"; 0 for a non-initiate.
+      const initiatePool = actor.system.derived?.availableInitiatePool ?? 0;
 
       // Damage: armed if active weapon focus, unarmed otherwise
       const weaponFocus = actor.items.find(i =>
@@ -11501,6 +11582,7 @@ _prepareCharacter(sys, attr) {
           isDefault: meleeInfo.isDefault,
           rawDamage,
           astralPool: meleeInfo.isDefault ? 0 : astralPool,
+          initiatePool: meleeInfo.isDefault ? 0 : initiatePool,
         };
       }
 
@@ -11534,6 +11616,7 @@ _prepareCharacter(sys, attr) {
           isDefault: false,
           rawDamage,
           astralPool,
+          initiatePool,
         };
       }
 
@@ -11545,6 +11628,7 @@ _prepareCharacter(sys, attr) {
         defaultTnMod: 0,
         rawDamage,
         astralPool:   0,
+        initiatePool: 0,
       };
     };
 
@@ -11567,6 +11651,7 @@ _prepareCharacter(sys, attr) {
       info.skillName    = def.label;
       info.defaultTnMod = def.tnMod;
       info.astralPool   = Math.min(dActor.system.derived?.availableAstralPool ?? 0, def.poolCap);
+      info.initiatePool = Math.min(dActor.system.derived?.availableInitiatePool ?? 0, def.poolCap);
       return true;
     };
     if (!await _applyAstralDefault(atkInfo, this, 'attacker'))         return null;
@@ -11585,12 +11670,14 @@ _prepareCharacter(sys, attr) {
       atkSkillDice:    atkInfo.skillDice,
       atkIsDefault:    atkInfo.isDefault,
       atkAstralPool:   atkInfo.astralPool,
+      atkInitiatePool: atkInfo.initiatePool ?? 0,
       atkRawDamage:    atkInfo.rawDamage,
       atkTN,
       defSkillName:    defInfo.skillName,
       defSkillDice:    defInfo.skillDice,
       defIsDefault:    defInfo.isDefault,
       defAstralPool:   defInfo.astralPool,
+      defInitiatePool: defInfo.initiatePool ?? 0,
       defRawDamage:    defInfo.rawDamage,
       defTN,
     });
@@ -11603,7 +11690,7 @@ _prepareCharacter(sys, attr) {
 
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
 
-    const _corner = (name, skillName, skillDice, isDefault, rawDamage, astralPool, tn, poolClass, tnClass, dmgClass, role, owner) => `
+    const _corner = (name, skillName, skillDice, isDefault, rawDamage, astralPool, tn, poolClass, tnClass, dmgClass, role, owner, initiatePool, initiateClass) => `
       <div class="sr-melee-corner sr-astral-corner"
            data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${name}">
         <div class="sr-melee-name">${name}</div>
@@ -11621,9 +11708,14 @@ _prepareCharacter(sys, attr) {
           <strong class="sr-astral-field-value">${skillDice}</strong>
         </div>
         <div class="sr-astral-field-row">
-          <label class="sr-astral-field-label">+ Astral Pool (avail. ${astralPool})</label>
+          <label class="sr-astral-field-label">+ Astral Combat Pool (avail. ${astralPool})</label>
           <input type="number" class="${poolClass} sr-astral-input" value="0" min="0" max="${astralPool}"/>
         </div>
+        ${initiatePool > 0 ? `
+        <div class="sr-astral-field-row">
+          <label class="sr-astral-field-label" title="The initiate's own pool, grade dice (Magic in the Shadows p.58) — usable on Astral Combat even when Sorcery is used">+ Initiate Astral Pool (avail. ${initiatePool})</label>
+          <input type="number" class="${initiateClass} sr-astral-input" value="0" min="0" max="${initiatePool}"/>
+        </div>` : ''}
         <div class="sr-astral-field-row">
           <label class="sr-astral-field-label">TN</label>
           <input type="number" class="${tnClass} sr-astral-input" value="${tn}" min="2" max="30"/>
@@ -11638,11 +11730,11 @@ _prepareCharacter(sys, attr) {
           <div class="sr-melee-boxing">
             ${_corner(atk.name, ctx.atkSkillName, ctx.atkSkillDice, ctx.atkIsDefault, ctx.atkRawDamage,
                       ctx.atkAstralPool, ctx.atkTN, 'sr-astral-atk-pool', 'sr-astral-atk-tn', 'sr-astral-atk-damage',
-                      'attacker', ctx.attackerActorId)}
+                      'attacker', ctx.attackerActorId, ctx.atkInitiatePool ?? 0, 'sr-astral-atk-ipool')}
             <div class="sr-melee-vs">VS</div>
             ${_corner(def.name, ctx.defSkillName, ctx.defSkillDice, ctx.defIsDefault, ctx.defRawDamage,
                       ctx.defAstralPool, ctx.defTN, 'sr-astral-def-pool', 'sr-astral-def-tn', 'sr-astral-def-damage',
-                      'defender', ctx.defenderActorId)}
+                      'defender', ctx.defenderActorId, ctx.defInitiatePool ?? 0, 'sr-astral-def-ipool')}
           </div>
           <div style="margin:8px 0 4px;font-size:11px;color:var(--sr-muted)">
             <label style="display:flex;align-items:center;gap:6px">
@@ -11672,8 +11764,11 @@ _prepareCharacter(sys, attr) {
 
     const atkAstralPool = parseInt(f('attacker', 'sr-astral-atk-pool')) || 0;
     const defAstralPool = parseInt(f('defender', 'sr-astral-def-pool')) || 0;
-    const atkPool       = Math.max(1, (ctx.atkSkillDice ?? 1) + atkAstralPool);
-    const defPool       = Math.max(1, (ctx.defSkillDice ?? 1) + defAstralPool);
+    // ✦ The initiate's own pool (MitS p.58) — a second, separate pool; absent from the corner unless an initiate.
+    const atkInitiateWant = parseInt(f('attacker', 'sr-astral-atk-ipool')) || 0;
+    const defInitiateWant = parseInt(f('defender', 'sr-astral-def-ipool')) || 0;
+    let atkPool         = Math.max(1, (ctx.atkSkillDice ?? 1) + atkAstralPool);
+    let defPool         = Math.max(1, (ctx.defSkillDice ?? 1) + defAstralPool);
     const atkTN         = SR3EActor.cornerTN(f('attacker', 'sr-astral-atk-tn'), ctx.atkTN);
     const defTN         = SR3EActor.cornerTN(f('defender', 'sr-astral-def-tn'), ctx.defTN);
     const atkRawDamage  = String(f('attacker', 'sr-astral-atk-damage') ?? '').trim() || ctx.atkRawDamage;
@@ -11687,11 +11782,23 @@ _prepareCharacter(sys, attr) {
     const atkAstralSpent = (atkAstralPool > 0 && atkActor) ? await atkActor.spendAstralPool(atkAstralPool) : 0;
     const defAstralSpent = (defAstralPool > 0 && defActor) ? await defActor.spendAstralPool(defAstralPool) : 0;
     if (atkAstralSpent !== atkAstralPool) {
-      ui.notifications.warn(`${atkActor?.name ?? 'Attacker'}: only ${atkAstralSpent} of ${atkAstralPool} Astral Pool dice were available.`);
+      ui.notifications.warn(`${atkActor?.name ?? 'Attacker'}: only ${atkAstralSpent} of ${atkAstralPool} Astral Combat Pool dice were available.`);
     }
     if (defAstralSpent !== defAstralPool) {
-      ui.notifications.warn(`${defActor?.name ?? 'Defender'}: only ${defAstralSpent} of ${defAstralPool} Astral Pool dice were available.`);
+      ui.notifications.warn(`${defActor?.name ?? 'Defender'}: only ${defAstralSpent} of ${defAstralPool} Astral Combat Pool dice were available.`);
     }
+
+    // Charge the initiate pool; what is rolled is what it GRANTED (the spend clamps on the GM).
+    const atkInitSpent = (atkInitiateWant > 0 && atkActor) ? await atkActor.spendInitiatePool(atkInitiateWant) : 0;
+    const defInitSpent = (defInitiateWant > 0 && defActor) ? await defActor.spendInitiatePool(defInitiateWant) : 0;
+    if (atkInitSpent !== atkInitiateWant) {
+      ui.notifications.warn(`${atkActor?.name ?? 'Attacker'}: only ${atkInitSpent} of ${atkInitiateWant} Initiate Astral Pool dice were available.`);
+    }
+    if (defInitSpent !== defInitiateWant) {
+      ui.notifications.warn(`${defActor?.name ?? 'Defender'}: only ${defInitSpent} of ${defInitiateWant} Initiate Astral Pool dice were available.`);
+    }
+    atkPool += atkInitSpent;
+    defPool += defInitSpent;
 
     const atk = game.actors.get(ctx.attackerActorId);
     const def = game.actors.get(ctx.defenderActorId);

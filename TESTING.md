@@ -2999,3 +2999,16 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] The Magic tab's Adept Powers shows a red "Above Magic" alert naming **Imp. Reflexes Level 3 (level 3)** and **Attribute Boost(STR) (level 3)**; not Combat Sense +1, not Vision Mag 3 (a magnification, not a level).
 - [ ] Raise Magic to 3: Imp. Reflexes drops off the alert; Attribute Boost stays until Magic 3 too, then the alert disappears. Nothing is clamped or refused.
 - [ ] Power Points still turn red when the total passes Magic.
+
+## 61. The initiate's Astral Pool and Astral Reaction (rules check 0.7.0, Magic in the Shadows p.58)
+
+⚠ New persisted fields (`initiatePoolSpent`, `initiatePoolMod`): **fully restart Foundry**, not F5.
+
+**Prerequisites:** an Awakened character with Magic 5, `Initiate grade` 2 (Magic tab) — and a second Awakened character with grade 0. Two players for the multi-client steps.
+
+- [ ] **Sheet.** The initiate's Derived Pools shows **Initiate Astral Pool 2 / 2** beside **Astral Combat Pool** (the old "Astral Pool", still ⌊(INT+CHA+WIL)/2⌋). The grade-0 character shows only the Astral Combat Pool. Hover text names the book page. Editing the left box changes spent; the right box adds a manual modifier.
+- [ ] **Astral Initiative.** Switch to **Astral** mode and roll initiative: the card reads "INT n + grade 2 (Astral Reaction) + 20", the score is Intelligence + 2 + 20 + 1D6. The grade-0 character still gets Intelligence + 20 + 1D6. Dual and Physical modes are unchanged.
+- [ ] **Astral Perception.** Click **Assensing**: the dialog has "✦ Initiate Astral Pool +[0] of 2 left". Enter 2 and roll: the card label says "+2 Initiate Astral Pool", the pool is Intelligence + 2 dice and the sheet now shows 0 / 2. The grade-0 character's Assensing dialog has no such row.
+- [ ] **A general test while perceiving.** Dual Nat. mode, roll an attribute and a non-magical skill from the sheet: the row appears and charges. In Physical mode it does not appear. Roll **Sorcery** with dice entered: a warning says Astral Pool dice can't be used on Magical Skill Tests and the pool stays unspent.
+- [ ] **Astral Combat (two clients).** Initiate attacks, a second Awakened actor defends: the initiate's corner has "+ Astral Combat Pool" and "+ Initiate Astral Pool (avail. 2)"; the defender's corner (grade 0) has only the first. Submit 1 initiate die, resolve: the roll uses skill dice + Astral Combat Pool dice + 1, the initiate pool drops to 1 / 2 from the **player's own** client.
+- [ ] **Refresh.** With the pool spent, advance to the next Combat Turn (or end combat): it returns to 2 / 2. **↺ Reset All Pools** also refills it.

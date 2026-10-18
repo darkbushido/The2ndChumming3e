@@ -126,7 +126,7 @@ export const ActionEconomy = {
    * action can have spent is exactly this: pool dice, the recoil count, Karma Pool, and ammunition. */
 
   /** Actor fields an action can spend. */
-  SNAP_ACTOR: ['combatPoolSpent', 'spellPoolSpent', 'astralPoolSpent', 'hackingPoolSpent', 'roundsFiredThisPhase', 'karmaPool',
+  SNAP_ACTOR: ['combatPoolSpent', 'spellPoolSpent', 'astralPoolSpent', 'initiatePoolSpent', 'hackingPoolSpent', 'roundsFiredThisPhase', 'karmaPool',
                'karmaPoolSpent', 'targetsThisPhase'],
   /** Object fields, copied and compared by VALUE — who was shot at this phase (TODO 56.2). */
   SNAP_OBJECT: { targetsThisPhase: v => PhaseTargets.normalize(v) },
