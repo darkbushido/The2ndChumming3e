@@ -20547,7 +20547,23 @@
       ],
       "hash": "a395aa31b7",
       "text": "| Death Touch | M | W | I | (Damage Level −1) | Touch. One target. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Death Touch Type: M � Target: W � Duration: I � Drain: (Damage Level -1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/death-touch.sr3e-spell-0001.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL-1)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(R) / Instant / (DL-1)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#61",
@@ -20558,7 +20574,23 @@
       ],
       "hash": "1c4564ca4c",
       "text": "| Manabolt | M | W | I | (Damage Level) | One target. Living and magical targets only. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Manabolt Type: M � Target: W � Duration: I � Drain: (Damage Level)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/manabolt.sr3e-spell-0005.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(R) / Instant / (DL)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#62",
@@ -20569,7 +20601,23 @@
       ],
       "hash": "8f8aa792af",
       "text": "| Manaball | M | W | I | (Damage Level +1) | Area version of Manabolt. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Manaball Type: M � Target: W � Duration: I � Drain: (Damage Level +1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/manaball.sr3e-spell-0004.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL+1)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(R) / Instant / (DL+1)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#63",
@@ -20580,7 +20628,23 @@
       ],
       "hash": "2c23e87d61",
       "text": "| Powerbolt | P | B | I | +1(Damage Level) | One target. Living or not (OR for objects). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Powerbolt Type: P � Target: B � Duration: I � Drain: +1(Damage Level)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/powerbolt.sr3e-spell-0008.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(DL)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / B(R) / Instant / +1(DL)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#64",
@@ -20591,7 +20655,23 @@
       ],
       "hash": "8e2c87f97c",
       "text": "| Powerball | P | B | I | +1(Damage Level +1) | Area version of Powerbolt. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Powerball Type: P � Target: B � Duration: I � Drain: +1(Damage Level +1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/powerball.sr3e-spell-0007.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(DL+1)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / B(R) / Instant / +1(DL+1)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#65",
@@ -20602,7 +20682,23 @@
       ],
       "hash": "c726041192",
       "text": "| Stunbolt | M | W | I | −1(Damage Level) | **Stun** damage. One target. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Stunbolt Type: M � Target: W � Duration: I � Drain: -1(Damage Level)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/stunbolt.sr3e-spell-0016.json",
+          "line": 13,
+          "snippet": "\"drain\": \"-1(DL)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(R) / Instant / -1(DL)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#66",
@@ -20613,7 +20709,23 @@
       ],
       "hash": "214ec60ca2",
       "text": "| Stunball | M | W | I | −1(Damage Level +1) | Area version of Stunbolt. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 193,
+          "printedPage": 191,
+          "quote": "Stunball Type: M � Target: W � Duration: I � Drain: -1(Damage Level +1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/stunball.sr3e-spell-0015.json",
+          "line": 13,
+          "snippet": "\"drain\": \"-1(DL+1)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(R) / Instant / -1(DL+1)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#67",
@@ -20695,7 +20807,33 @@
       ],
       "hash": "86638d580a",
       "text": "| Analyze Device | P | OR | S | +1(M) | Every 2 successes give a point of skill for the device, up to Force. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Analyze Device Type: P � Target: OR � Duration: S � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/analyze-device.sr3e-spell-0019.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (analyze-device.sr3e-spell-0019.json): the Object Resistance table is not coded; _parseSpellTarget does not recognise OR and falls back to the target's Body (Physical)."
     },
     {
       "id": "magic/spells.md#71",
@@ -20706,7 +20844,23 @@
       ],
       "hash": "30c33fa270",
       "text": "| Analyze Truth | M | W | S | L | Tells whether spoken statements are true. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Analyze Truth Type: M � Target: W � Duration: S � Drain: L"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/analyze-truth.sr3e-spell-0021.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(L)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(R) / Sustained / (L)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#72",
@@ -20717,7 +20871,23 @@
       ],
       "hash": "686ac6cd87",
       "text": "| Clairaudience | M | 6 | S | M | Hear distant sounds. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Clairaudience Type: M � Target: 6 � Duration: S � Drain: M"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/clairaudience.sr3e-spell-0026.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 6(R) / Sustained / (M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#73",
@@ -20728,7 +20898,23 @@
       ],
       "hash": "0a9459c2a6",
       "text": "| Clairvoyance | M | 6 | S | M | See distant scenes. Can't target spells through it. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Clairvoyance Type: M � Target: 6 � Duration: S � Drain: M"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/clairvoyance.sr3e-spell-0027.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 6(R) / Sustained / (M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#74",
@@ -20739,7 +20925,23 @@
       ],
       "hash": "f74779372f",
       "text": "| Combat Sense | M | 4 | S | S | Every 2 successes add a Combat Pool die, up to Force. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Combat Sense Type: M � Target: 4 � Duration: S � Drain: S"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/combat-sense.sr3e-spell-0028.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 4 / Sustained / (S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#75",
@@ -20750,7 +20952,33 @@
       ],
       "hash": "660f5ee229",
       "text": "| Detect Enemies | M | table | S | M | Living beings hostile to the subject. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Detect Enemies Type: M � Target: See table above � Duration: S � Drain: M"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/detect-enemies.sr3e-spell-0029.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(M)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (detect-enemies.sr3e-spell-0029.json): the Detection Spell Target Number table (4 in sight, 6 out of sight, 10 on another plane, + Force behind an astral barrier) is not coded; _parseSpellTarget does not recognise the pack token DT and falls back to the target's Willpower (Mana) or Body (Physical)."
     },
     {
       "id": "magic/spells.md#76",
@@ -20761,7 +20989,33 @@
       ],
       "hash": "4d9f1b081f",
       "text": "| Detect Individual | M | table | S | L | One named person. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Detect Individual Type: M � Target: See table, p. 192 � Duration: S � Drain: L"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/detect-individual.sr3e-spell-0030.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(L)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (detect-individual.sr3e-spell-0030.json): the Detection Spell Target Number table (4 in sight, 6 out of sight, 10 on another plane, + Force behind an astral barrier) is not coded; _parseSpellTarget does not recognise the pack token DT and falls back to the target's Willpower (Mana) or Body (Physical)."
     },
     {
       "id": "magic/spells.md#77",
@@ -20772,7 +21026,33 @@
       ],
       "hash": "8b3f9f9ced",
       "text": "| Detect Life | M | table | S | L | All living beings, their number and location. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 194,
+          "printedPage": 192,
+          "quote": "Detect Life Type: M � Target: See table, p. 192 � Duration: S � Drain: L"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/detect-life.sr3e-spell-0031.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(L)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (detect-life.sr3e-spell-0031.json): the Detection Spell Target Number table (4 in sight, 6 out of sight, 10 on another plane, + Force behind an astral barrier) is not coded; _parseSpellTarget does not recognise the pack token DT and falls back to the target's Willpower (Mana) or Body (Physical)."
     },
     {
       "id": "magic/spells.md#78",
@@ -20783,7 +21063,39 @@
       ],
       "hash": "78330f63de",
       "text": "| Detect (Life Form) | M | table | S | −1(L) | One kind of being: Detect Orks, Detect Dragons… |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Type: M � Target: See table, p."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "192 � Duration: S � Drain: -1(L)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/detect-life-form.sr3e-spell-0032.json",
+          "line": 13,
+          "snippet": "\"drain\": \"-1(L)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (detect-life-form.sr3e-spell-0032.json): the Detection Spell Target Number table (4 in sight, 6 out of sight, 10 on another plane, + Force behind an astral barrier) is not coded; _parseSpellTarget does not recognise the pack token DT and falls back to the target's Willpower (Mana) or Body (Physical)."
     },
     {
       "id": "magic/spells.md#79",
@@ -20794,7 +21106,39 @@
       ],
       "hash": "48e679ec05",
       "text": "| Detect Magic | M | table | S | L | Foci, spells and spirits. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Type: M � Target: See table p."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "192 � Duration: S � Drain: L"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/detect-magic.sr3e-spell-0033.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(L)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (detect-magic.sr3e-spell-0033.json): pack Target \"6(4)\" differs from the book (\"See table p. 192\"): a fixed 6, not the Detection Spell Target Number table."
     },
     {
       "id": "magic/spells.md#80",
@@ -20805,7 +21149,33 @@
       ],
       "hash": "c5557c36c6",
       "text": "| Detect (Object) | P | table | S | +1(M) | One kind of object: Detect Guns, Detect Explosives… |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Detect (Object) Type: P � Target: See table, p. 192 � Duration: S � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/detect-object.sr3e-spell-0034.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (detect-object.sr3e-spell-0034.json): the Detection Spell Target Number table (4 in sight, 6 out of sight, 10 on another plane, + Force behind an astral barrier) is not coded; _parseSpellTarget does not recognise the pack token DT and falls back to the target's Willpower (Mana) or Body (Physical)."
     },
     {
       "id": "magic/spells.md#81",
@@ -20816,7 +21186,23 @@
       ],
       "hash": "869ecc36dd",
       "text": "| Mindlink | M | 4 | S | S | Two willing subjects talk mind to mind. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Mindlink Type: M � Target: 4 � Duration: S � Drain: S"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/mindlink.sr3e-spell-0040.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 4(V) / Sustained / (S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#82",
@@ -20827,7 +21213,23 @@
       ],
       "hash": "79f9131470",
       "text": "| Mind Probe | M | W | S | S | Read a target's mind; see the results table. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Mind Probe Type: M � Target: W � Duration: S � Drain: S"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/mindprobe.sr3e-spell-0041.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(R) / Sustained / (S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#83",
@@ -21157,7 +21559,8 @@
       ],
       "hash": "a4a90fe894",
       "text": "| Spell | Type | Target | Duration | Drain | Notes |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#96",
@@ -21168,7 +21571,33 @@
       ],
       "hash": "6362eef462",
       "text": "| Antidote | M | Toxin Strength | P | (Toxin Damage Level) | Each success cuts the toxin's Power by 1, up to Force. Cast before it does damage. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Antidote Type: M � Target: Toxin Strength � Duration: P � Drain: (Toxin"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/antidote-tox-lev.sr3e-spell-0050.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(TOX DL)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (antidote-tox-lev.sr3e-spell-0050.json): the book TN is the toxin's Strength; _parseSpellTarget does not recognise the pack token and falls back to the target's Willpower."
     },
     {
       "id": "magic/spells.md#97",
@@ -21179,7 +21608,39 @@
       ],
       "hash": "42d7284d9f",
       "text": "| Cure Disease | M | Power | P | (Disease Damage Level) | Each success cuts the disease's Power by 1, up to Force. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Type: M � Target: Power �"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Damage Level) This spell can be used at any point after infection"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/cure-disease.sr3e-spell-0054.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DIS DL)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (cure-disease.sr3e-spell-0054.json): the book TN is the disease's Power; _parseSpellTarget does not recognise the pack token and falls back to the target's Willpower."
     },
     {
       "id": "magic/spells.md#98",
@@ -21190,7 +21651,33 @@
       ],
       "hash": "b04e184554",
       "text": "| Decrease (Attribute) | M | 10 − Essence | S | +1(S) | Every 2 net successes take 1 from the Attribute. Not cybered Attributes. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Decrease (Attribute) Type: M � Target: 10 - Essence � Duration: S � Drain: +1(S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/decrease-attribute-b.sr3e-spell-0055.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(S)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (decrease-attribute-b.sr3e-spell-0055.json): the book TN is 10 minus the target's Essence; _parseSpellTarget reads parseInt(\"10-E\") = 10, a fixed TN 10."
     },
     {
       "id": "magic/spells.md#99",
@@ -21201,7 +21688,33 @@
       ],
       "hash": "34f81a63fc",
       "text": "| Decrease (Cybered Attribute) | P | 10 − Essence | S | +2(S) | The same, for cybered Attributes only. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Decrease (Cybered Attribute) Type: P � Target: 10 - Essence � Duration: S � Drain: +2(S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/decrease-cyber-attribute-b-1.sr3e-spell-0061.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+2(S)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (decrease-cyber-attribute-b-1.sr3e-spell-0061.json): the book TN is 10 minus the target's Essence; _parseSpellTarget reads parseInt(\"10-E\") = 10, a fixed TN 10."
     },
     {
       "id": "magic/spells.md#100",
@@ -21212,7 +21725,33 @@
       ],
       "hash": "768a966c53",
       "text": "| Detox | M | Toxin Strength | P | −2(Toxin Damage) | Removes a toxin's side-effects if Force ≥ its Power. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Detox Type: M � Target: Toxin Strength � Duration: P � Drain: -2(Toxin"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/detox.sr3e-spell-0072.json",
+          "line": 13,
+          "snippet": "\"drain\": \"-2(TOX DL)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (detox.sr3e-spell-0072.json): the book TN is the toxin's Strength; _parseSpellTarget does not recognise the pack token and falls back to the target's Willpower."
     },
     {
       "id": "magic/spells.md#101",
@@ -21223,7 +21762,33 @@
       ],
       "hash": "8c85f79f50",
       "text": "| Heal | M | 10 − Essence | P | (Wound Level) | Each success heals a box of Physical damage, up to Force. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Heal Type: M � Target: 10 - Essence � Duration: P � Drain: (Wound"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/heal.sr3e-spell-0074.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (heal.sr3e-spell-0074.json): the book TN is 10 minus the target's Essence; _parseSpellTarget reads parseInt(\"10-E\") = 10, a fixed TN 10."
     },
     {
       "id": "magic/spells.md#102",
@@ -21234,7 +21799,33 @@
       ],
       "hash": "46c16df54d",
       "text": "| Treat | M | 10 − Essence | P | −1(Wound Level) | As Heal, within an hour of injury; half the time to become permanent. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 195,
+          "printedPage": 193,
+          "quote": "Treat Type: M � Target: 10 - Essence � Duration: P � Drain: -1(Wound"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/treat.sr3e-spell-0100.json",
+          "line": 13,
+          "snippet": "\"drain\": \"-1(DL)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (treat.sr3e-spell-0100.json): the book TN is 10 minus the target's Essence; _parseSpellTarget reads parseInt(\"10-E\") = 10, a fixed TN 10."
     },
     {
       "id": "magic/spells.md#103",
@@ -21245,7 +21836,23 @@
       ],
       "hash": "043dc4b4ae",
       "text": "| Healthy Glow | M | 4 | P | L | Cosmetic. Wears off in Force × 24 hours. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Healthy Glow Type: M � Target: 4 � Duration: P � Drain: L"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/healthy-glow.sr3e-spell-0075.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(L)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 4(V) / Permanent / (L)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#104",
@@ -21256,7 +21863,23 @@
       ],
       "hash": "dd0fc054ab",
       "text": "| Hibernate | M | 4 | S | +1(M) | Suspended animation: metabolism slowed by twice the successes. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Hibernate Type: M � Target: 4 � Duration: S � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/hibernate.sr3e-spell-0076.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 4(V) / Sustained / +1(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#105",
@@ -21267,7 +21890,33 @@
       ],
       "hash": "89660c4cc1",
       "text": "| Increase (Attribute) | M | Attribute | S | +1(M) | Every 2 successes add 1, up to Force. Not cybered Attributes. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Increase (Attribute) Type: M � Target: Attribute � Duration: S � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/increased-attribute-b.sr3e-spell-0077.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (increased-attribute-b.sr3e-spell-0077.json): the book TN is the Attribute being increased; _parseSpellTarget does not recognise the pack token and falls back to the target's Willpower."
     },
     {
       "id": "magic/spells.md#106",
@@ -21278,7 +21927,33 @@
       ],
       "hash": "9cbf1a543b",
       "text": "| Increase (Cybered Attribute) | P | Attribute | S | +2(M) | The same, for cybered Attributes only. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Increase (Cybered Attribute) Type: P � Target: Attribute � Duration: S � Drain: +2(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/increased-cyber-attribute-b-1.sr3e-spell-0083.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+2(M)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (increased-cyber-attribute-b-1.sr3e-spell-0083.json): the book TN is the Attribute being increased; _parseSpellTarget does not recognise the pack token and falls back to the target's Willpower."
     },
     {
       "id": "magic/spells.md#107",
@@ -21289,7 +21964,33 @@
       ],
       "hash": "6bf5cf7eb7",
       "text": "| Increase Reaction | M | Reaction | S | +1(S) | Every 2 successes add 1 Reaction, up to Force. Not with cybered Reaction. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Increase Reaction Type: M � Target: Reaction � Duration: S � Drain: +1(S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/increased-reaction.sr3e-spell-0089.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(S)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (increased-reaction.sr3e-spell-0089.json): the book TN is the target's Reaction; _parseSpellTarget does not recognise the pack token and falls back to the target's Willpower."
     },
     {
       "id": "magic/spells.md#108",
@@ -21300,7 +22001,33 @@
       ],
       "hash": "ea182bdacb",
       "text": "| Increase Reflexes +1 | M | Reaction | S | +1(S) | +1 Initiative die. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Increase Reflexes +1 Type: M � Target: Reaction � Duration: S � Drain: +1(S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/incr-reflexes-1ini-die.sr3e-spell-0090.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(S)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (incr-reflexes-1ini-die.sr3e-spell-0090.json): the book TN is the target's Reaction; _parseSpellTarget does not recognise the pack token and falls back to the target's Willpower."
     },
     {
       "id": "magic/spells.md#109",
@@ -21311,7 +22038,33 @@
       ],
       "hash": "0fc3de6568",
       "text": "| Increase Reflexes +2 | M | Reaction | S | +1(D) | +2 Initiative dice. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Increase Reflexes +2 Type: M � Target: Reaction � Duration: S � Drain: +1(D)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/incr-reflexes-2ini-die.sr3e-spell-0091.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(D)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (incr-reflexes-2ini-die.sr3e-spell-0091.json): the book TN is the target's Reaction; _parseSpellTarget does not recognise the pack token and falls back to the target's Willpower."
     },
     {
       "id": "magic/spells.md#110",
@@ -21322,7 +22075,33 @@
       ],
       "hash": "ef92eb05e6",
       "text": "| Increase Reflexes +3 | M | Reaction | S | +3(D) | +3 Initiative dice. None of the three works with wired reflexes or the adept power Improved Reflexes. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Increase Reflexes +3 Type: M � Target: Reaction � Duration: S � Drain: +3(D)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/incr-reflexes-3ini-die.sr3e-spell-0092.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+3(D)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (incr-reflexes-3ini-die.sr3e-spell-0092.json): the book TN is the target's Reaction; _parseSpellTarget does not recognise the pack token and falls back to the target's Willpower."
     },
     {
       "id": "magic/spells.md#111",
@@ -21333,7 +22112,23 @@
       ],
       "hash": "8a2ad92bf0",
       "text": "| Oxygenate | P | 4 | S | +2(L) | A Body die per 2 successes against suffocation and gas; breathe underwater. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Oxygenate Type: P � Target: 4 � Duration: S � Drain: +2(L)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/oxygenate.sr3e-spell-0095.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+2(L)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(V) / Sustained / +2(L)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#112",
@@ -21344,7 +22139,23 @@
       ],
       "hash": "b85265135f",
       "text": "| Prophylaxis | M | 4 | S | +1(L) | A die per 2 successes, up to Force, to resist infection, drugs and toxins, helpful ones included. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Prophylaxis Type: M � Target: 4 � Duration: S � Drain: +1(L)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/prophylaxis.sr3e-spell-0097.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(L)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 4(V) / Sustained / +1(L)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#113",
@@ -21355,7 +22166,23 @@
       ],
       "hash": "31e0a96361",
       "text": "| Resist Pain | M | 4 | P | −2(Damage) | Each success ignores the modifier of one box of Physical damage, up to Force. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Resist Pain Type: M � Target: 4 � Duration: P � Drain: -2(Damage)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/resist-pain.sr3e-spell-0098.json",
+          "line": 13,
+          "snippet": "\"drain\": \"-2(DL)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 4(V) / Permanent / -2(DL)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#114",
@@ -21366,7 +22193,33 @@
       ],
       "hash": "42ed2d1fba",
       "text": "| Stabilize | M | 4 + minutes | P | +1(M) | Stops a Deadly-wounded character dying, if Force ≥ the overflow. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "Stabilize Type: M � Target: 4 + minutes � Duration: P � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/stabilize.sr3e-spell-0099.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (stabilize.sr3e-spell-0099.json): the book TN is 4 plus the minutes since the Deadly damage; _parseSpellTarget reads parseInt(\"4+MIN V\") = 4, ignoring the minutes."
     },
     {
       "id": "magic/spells.md#115",
@@ -21377,7 +22230,22 @@
       ],
       "hash": "85e329fed3",
       "text": "A character can be magically healed **once** for any set of injuries\n*(SR3 p.194)*. See [Healing](../../rules/healing/).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 196,
+          "printedPage": 194,
+          "quote": "A character can only be magi- cally healed once for any single set of injuries."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3EHealing.js",
+          "line": 530,
+          "snippet": "only once per set of injuries (p.194)"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#116",
@@ -21388,7 +22256,23 @@
       ],
       "hash": "f07da78447",
       "text": "### Illusion spells  *(SR3 p.195–196)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "No matter how realistic they are, illusions cannot cause per-"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/confusion.sr3e-spell-0106.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(S)\","
+        }
+      ],
+      "note": "Heading: the illusion spells ship; rows are checked above."
     },
     {
       "id": "magic/spells.md#117",
@@ -21399,7 +22283,34 @@
       ],
       "hash": "ec6f5942bb",
       "text": "Illusions can't do lasting harm. **Mana** illusions fool minds, not\ncameras; **physical** illusions fool sensors too. Equal or more successes on\nthe Resistance Test see through it. Directed mana illusions are resisted by\nWillpower and physical ones by Intelligence; **indirect** illusions are all\nresisted by Intelligence.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "If the observer generates equal or more successes in a Resistance Test, then the observer determines"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Mana illusions are resisted by Willpower, while physical illusions are resisted by Intelligence."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "All indirect illusions are resisted by Intelligence."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "seeThrough|illusionResist|illusion(Test|Success)",
+          "path": "scripts"
+        }
+      ],
+      "note": "The pack carries W or I as each illusion's target so the resisting attribute follows from the spell record, but the rule that equal or more successes sees through the illusion has no code: an illusion is cast and resisted like any other spell and nothing marks it penetrated."
     },
     {
       "id": "magic/spells.md#118",
@@ -21410,7 +22321,8 @@
       ],
       "hash": "a4a90fe894",
       "text": "| Spell | Type | Target | Duration | Drain | Notes |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#119",
@@ -21421,7 +22333,23 @@
       ],
       "hash": "9ff1360a7b",
       "text": "| Confusion | M | W | S | S | Directed. +1 to all the target's TNs per success, up to Force. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Confusion Type: M � Target: W � Duration: S � Drain: S"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/confusion.sr3e-spell-0106.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(R) / Sustained / (S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#120",
@@ -21432,7 +22360,23 @@
       ],
       "hash": "a30820f46d",
       "text": "| Mass Confusion | M | W | S | D | Area version of Confusion. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Mass Confusion Type: M � Target: W � Duration: S � Drain: D"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/mass-confusion.sr3e-spell-0114.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(D)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(R) / Sustained / (D)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#121",
@@ -21443,7 +22387,23 @@
       ],
       "hash": "3905feffdd",
       "text": "| Chaos | P | I | S | +1(S) | Physical Confusion; affects sensors too. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Chaos Type: P � Target: I � Duration: S � Drain: +1(S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/chaos.sr3e-spell-0104.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / I(R) / Sustained / +1(S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#122",
@@ -21454,7 +22414,23 @@
       ],
       "hash": "2bdab8e53d",
       "text": "| Chaotic World | P | I | S | +1(D) | Area version of Chaos. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Chaotic World Type: P � Target: I � Duration: S � Drain: +1(D)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/chaotic-world.sr3e-spell-0105.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(D)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / I(R) / Sustained / +1(D)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#123",
@@ -21465,7 +22441,23 @@
       ],
       "hash": "75b5c062f0",
       "text": "| Entertainment | M | W | S | L | Area, willing audience. Obvious, entertaining illusions. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Entertainment Type: M � Target: W � Duration: S � Drain: L"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/entertainment.sr3e-spell-0109.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(L)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(V) / Sustained / (L)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#124",
@@ -21476,7 +22468,23 @@
       ],
       "hash": "4cf35b349a",
       "text": "| Trid Entertainment | P | I | S | +1(L) | The same, visible to sensors. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Trid Entertainment Type: P � Target: I � Duration: S � Drain: +1(L)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/trid-entertainment.sr3e-spell-0118.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(L)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / I(V) / Sustained / +1(L)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#125",
@@ -21487,7 +22495,23 @@
       ],
       "hash": "0895ea4cfc",
       "text": "| Invisibility | M | 4 | S | M | Indirect. Invisible to normal sight; attackers use the Blind Fire modifier. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Invisibility Type: M � Target: 4 � Duration: S � Drain: M"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/invisibility.sr3e-spell-0131.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 4(R) / Sustained / (M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#126",
@@ -21498,7 +22522,23 @@
       ],
       "hash": "7ae7bfc31d",
       "text": "| Improved Invisibility | P | 4 | S | +1(M) | Fools sensors too. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Improved Invisibility Type: P � Target: 4 � Duration: S � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/improved-invisibility.sr3e-spell-0129.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(R) / Sustained / +1(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#127",
@@ -21509,7 +22549,23 @@
       ],
       "hash": "1c95996b36",
       "text": "| Mask | M | 4 | S | M | A new appearance, voice and scent of the same size and shape. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Mask Type: M � Target: 4 � Duration: S � Drain: M"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/mask.sr3e-spell-0132.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 4(R) / Sustained / (M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#128",
@@ -21520,7 +22576,23 @@
       ],
       "hash": "6f06b75e83",
       "text": "| Physical Mask | P | 4 | S | +1(M) | Fools sensors too. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Physical Mask Type: P � Target: 4 � Duration: S � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/physical-mask.sr3e-spell-0137.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(R) / Sustained / +1(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#129",
@@ -21531,7 +22603,23 @@
       ],
       "hash": "faf97655ab",
       "text": "| Phantasm | M | 4 | S | D | Area. A convincing illusion of anything the caster has seen. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Phantasm Type: M � Target: 4 � Duration: S � Drain: D"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/phantasm.sr3e-spell-0133.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(D)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 4(R) / Sustained / (D)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#130",
@@ -21542,7 +22630,23 @@
       ],
       "hash": "41b34189ca",
       "text": "| Trid Phantasm | P | 4 | S | +1(D) | Fools sensors too. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 197,
+          "printedPage": 195,
+          "quote": "Trid Phantasm Type: P � Target: 4 � Duration: S � Drain: +1(D)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/trid-phantasm.sr3e-spell-0143.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(D)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(R) / Sustained / +1(D)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#131",
@@ -21553,7 +22657,23 @@
       ],
       "hash": "c9f37f9758",
       "text": "| Silence | P | 4 | S | +1(S) | Area. +1 per success, up to Force, to hearing Perception; jams sonar and alarms. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "Silence Type: P � Target: 4 � Duration: S � Drain: +1(S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/silence.sr3e-spell-0140.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(R) / Sustained / +1(S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#132",
@@ -21564,7 +22684,23 @@
       ],
       "hash": "fa60c30175",
       "text": "| Stealth | P | 4 | S | +1(M) | The subject makes no sound. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "Stealth Type: P � Target: 4 � Duration: S � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/stealth.sr3e-spell-0141.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(R) / Sustained / +1(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#133",
@@ -21575,7 +22711,23 @@
       ],
       "hash": "1c8d578b43",
       "text": "### Manipulation spells  *(SR3 p.196–198)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "MANIPULATION SPELLS Manipulation spells control, animate or transform matter"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/control-actions.sr3e-spell-0151.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        }
+      ],
+      "note": "Heading: the manipulation spells ship; rows are checked above."
     },
     {
       "id": "magic/spells.md#134",
@@ -21586,7 +22738,28 @@
       ],
       "hash": "b0ad2cc86f",
       "text": "Many have a **Threshold**: after the Resistance Test, the caster needs at\nleast that many successes, or the spell fails.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "Many manipulation spells have a Threshold; this is"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "a number of successes required for the spell to function."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spellThreshold|manipulationThreshold",
+          "path": "scripts"
+        }
+      ],
+      "note": "Thresholds are not coded."
     },
     {
       "id": "magic/spells.md#135",
@@ -21597,7 +22770,28 @@
       ],
       "hash": "525432405f",
       "text": "**Control manipulations** are resisted by Willpower, with a Threshold of\nhalf the target's Willpower, rounded down.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "Control manipulations affect the actions and the thoughts"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "and have a Threshold equal to half the target's Willpower (round down)."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "spellThreshold|manipulationThreshold",
+          "path": "scripts"
+        }
+      ],
+      "note": "Thresholds are not coded."
     },
     {
       "id": "magic/spells.md#136",
@@ -21608,7 +22802,8 @@
       ],
       "hash": "a4a90fe894",
       "text": "| Spell | Type | Target | Duration | Drain | Notes |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#137",
@@ -21619,7 +22814,23 @@
       ],
       "hash": "5d4f71a5f0",
       "text": "| Control Actions | M | W | S | +1(M) | Puppet the target's body, at +4 to its TNs. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "Control Actions Type: M � Target: W � Duration: S � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/control-actions.sr3e-spell-0151.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(T) / Sustained / +1(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#138",
@@ -21630,7 +22841,23 @@
       ],
       "hash": "4d3ae56c3c",
       "text": "| Control Emotion | M | W | S | +1(M) | An overwhelming emotion of the caster's choice. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "Control Emotion Type: M � Target: W � Duration: S � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/control-emotion.sr3e-spell-0153.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(T) / Sustained / +1(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#139",
@@ -21641,7 +22868,23 @@
       ],
       "hash": "a8852425b9",
       "text": "| Control Thoughts | M | W | S | +1(S) | Command the target's mind with a Simple Action. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "Control Thoughts Type: M � Target: W � Duration: S � Drain: +1(S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/control-thoughts.sr3e-spell-0155.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(T) / Sustained / +1(S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#140",
@@ -21652,7 +22895,23 @@
       ],
       "hash": "b330968d9a",
       "text": "| Influence | M | W | P | S | One post-hypnotic suggestion. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "Influence Type: M � Target: W � Duration: P � Drain: S"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/influence.sr3e-spell-0156.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / W(T) / Permanent / (S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#141",
@@ -21663,7 +22922,34 @@
       ],
       "hash": "65f48ae187",
       "text": "**Elemental manipulations** are **ranged attacks** using Sorcery, base TN 4\nat any range in sight. **Impact armor counts at half**, rounded down. The\ncaster picks the Damage Level. They also have secondary effects on the\nsurroundings. See [Elemental spells work like guns](../spellcasting/#elemental-spells).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "are treated like normal ranged attacks (see p. 109) using Sorcery as the Ranged Combat Skill"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "regardless of range, as long as the caster can see the target"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4469,
+          "snippet": "static isElementalSpell(category) {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5286,
+          "snippet": "static elementalImpact({ ballistic: _ballistic = 0, impact = 0 } = {}) {"
+        }
+      ],
+      "note": "Elemental spells resolve as ranged attacks with Impact armour at half (rounded down); the secondary effects on the surroundings are not resolved (the GM applies them)."
     },
     {
       "id": "magic/spells.md#142",
@@ -21674,7 +22960,8 @@
       ],
       "hash": "a4a90fe894",
       "text": "| Spell | Type | Target | Duration | Drain | Notes |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#143",
@@ -21685,7 +22972,23 @@
       ],
       "hash": "dcf159bc5d",
       "text": "| Acid Stream | P | 4 | I | +1(Damage Level +1) | One target. Choking fumes: +4 TNs in the area for the turn. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "Acid Stream Type: P � Target: 4 � Duration: I � Drain: +1(Damage Level +1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/acid-stream.sr3e-spell-0159.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(DL+1)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(RC) / Instant / +1(DL+1)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#144",
@@ -21696,7 +22999,23 @@
       ],
       "hash": "24860b479c",
       "text": "| Toxic Wave | P | 4 | I | +1(Damage Level +2) | Area version of Acid Stream. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 198,
+          "printedPage": 196,
+          "quote": "Toxic Wave Type: P � Target: 4 � Duration: I � Drain: +1(Damage Level +2)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/toxic-wave.sr3e-spell-0174.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(DL+2)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(RC) / Instant / +1(DL+2)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#145",
@@ -21707,7 +23026,23 @@
       ],
       "hash": "d3fc9f4e5e",
       "text": "| Flamethrower | P | 4 | I | +1(Damage Level +1) | One target. Can set fires and cook off ammunition. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 199,
+          "printedPage": 197,
+          "quote": "Flamethrower Type: P � Target: 4 � Duration: I � Drain: +1(Damage Level +1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/flamethrower.sr3e-spell-0164.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(DL+1)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(RC) / Instant / +1(DL+1)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#146",
@@ -21718,7 +23053,23 @@
       ],
       "hash": "76db28fda8",
       "text": "| Fireball | P | 4 | I | +1(Damage Level +2) | Area version of Flamethrower. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 199,
+          "printedPage": 197,
+          "quote": "Fireball Type: P � Target: 4 � Duration: I � Drain: +1(Damage Level +2)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/fireball.sr3e-spell-0163.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(DL+2)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(RC) / Instant / +1(DL+2)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#147",
@@ -21729,7 +23080,23 @@
       ],
       "hash": "a3398c4f1b",
       "text": "| Lightning Bolt | P | 4 | I | +1(Damage Level +1) | One target. Metallic armor doesn't help. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 199,
+          "printedPage": 197,
+          "quote": "Lightning Bolt Type: P � Target: 4 � Duration: I � Drain: +1(Damage Level +1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/lightning-bolt.sr3e-spell-0167.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(DL+1)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(RC) / Instant / +1(DL+1)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#148",
@@ -21740,7 +23107,23 @@
       ],
       "hash": "161b919710",
       "text": "| Ball Lightning | P | 4 | I | +1(Damage Level +2) | Area version of Lightning Bolt. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 199,
+          "printedPage": 197,
+          "quote": "Ball Lightning Type: P � Target: 4 � Duration: I � Drain: +1(Damage Level +2)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/ball-lightning.sr3e-spell-0161.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(DL+2)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(RC) / Instant / +1(DL+2)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#149",
@@ -21751,7 +23134,8 @@
       ],
       "hash": "2fed5e8bfe",
       "text": "**Telekinetic manipulations** move physical objects.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "category description (telekinetic manipulations move physical objects); states no mechanic"
     },
     {
       "id": "magic/spells.md#150",
@@ -21762,7 +23146,8 @@
       ],
       "hash": "a4a90fe894",
       "text": "| Spell | Type | Target | Duration | Drain | Notes |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#151",
@@ -21773,7 +23158,23 @@
       ],
       "hash": "8ef690c44d",
       "text": "| Clout | P | 4 | I | (Damage Level) | An invisible punch: a ranged attack doing **Stun**. Impact armor counts. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 199,
+          "printedPage": 197,
+          "quote": "Clout Type: P � Target: 4 � Duration: I � Drain: (Damage Level)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/clout.sr3e-spell-0180.json",
+          "line": 13,
+          "snippet": "\"drain\": \"(DL)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(RC) / Instant / (DL)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#152",
@@ -21784,7 +23185,33 @@
       ],
       "hash": "39a2539942",
       "text": "| Fling | P | see text | I | +1(M) | Throw an object of up to Magic kilograms at Strength = Force. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 199,
+          "printedPage": 197,
+          "quote": "Fling Type: P � Target: See text � Duration: I � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/fling.sr3e-spell-0182.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4508,
+          "snippet": "static _parseSpellTarget(spellTarget, targetActor, force, spellType) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4528,
+          "snippet": "const numeric = parseInt(base);"
+        }
+      ],
+      "note": "Type, Target, Duration and Drain checked against the book line and the pack record (fling.sr3e-spell-0182.json): the book Target is \"See text\" (the spell has no fixed TN) but the pack carries 4(RC)."
     },
     {
       "id": "magic/spells.md#153",
@@ -21795,7 +23222,23 @@
       ],
       "hash": "1b75915a0c",
       "text": "| Levitate | P | 4 | S | +2(M) | Move an object or person at Magic × successes meters per turn. +1 TN per full 100 kg. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 199,
+          "printedPage": 197,
+          "quote": "Levitate Type: P � Target: 4 � Duration: S � Drain: +2(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/levitate.sr3e-spell-0184.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+2(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(R) / Sustained / +2(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#154",
@@ -21806,7 +23249,23 @@
       ],
       "hash": "5d5761fa63",
       "text": "| Magic Fingers | P | 6 | S | +2(M) | Invisible hands with Strength and Quickness = successes, up to Force; +2 to TNs. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 199,
+          "printedPage": 197,
+          "quote": "Magic Fingers Type: P � Target: 6 � Duration: S � Drain: +2(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/magic-fingers.sr3e-spell-0186.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+2(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 6 / Sustained / +2(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#155",
@@ -21817,7 +23276,23 @@
       ],
       "hash": "ea8aa37d9a",
       "text": "| Poltergeist | P | 4 | S | +1(M) | Area. Whirling debris: +2 Visibility, Light Stun each turn. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 199,
+          "printedPage": 197,
+          "quote": "Poltergeist Type: P � Target: 4 � Duration: S � Drain: +1(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/poltergeist.sr3e-spell-0191.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(R) / Sustained / +1(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#156",
@@ -21828,7 +23303,8 @@
       ],
       "hash": "60b0c9d20b",
       "text": "**Transformation manipulations** create or transform matter and energy.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "category description (transformation manipulations create or transform matter and energy); states no mechanic"
     },
     {
       "id": "magic/spells.md#157",
@@ -21839,7 +23315,8 @@
       ],
       "hash": "a4a90fe894",
       "text": "| Spell | Type | Target | Duration | Drain | Notes |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#158",
@@ -21850,7 +23327,23 @@
       ],
       "hash": "f480cb33ce",
       "text": "| Armor | P | 6 | S | +2(M) | Ballistic and Impact armor equal to Force, on top of worn armor. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 200,
+          "printedPage": 198,
+          "quote": "Armor Type: P � Target: 6 � Duration: S � Drain: +2(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/armor.sr3e-spell-0198.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+2(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 6 / Sustained / +2(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#159",
@@ -21861,7 +23354,23 @@
       ],
       "hash": "bb5ef38309",
       "text": "| Physical Barrier | P | 6 | S | +2(S) | A wall or dome of Barrier Rating Force, +1 per 2 successes. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 200,
+          "printedPage": 198,
+          "quote": "Physical Barrier Type: P � Target: 6 � Duration: S � Drain: +2(S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/physical-barrier.sr3e-spell-0228.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+2(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 6 / Sustained / +2(S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#160",
@@ -21872,7 +23381,23 @@
       ],
       "hash": "68cf4cce40",
       "text": "| Astral Barrier | M | 6 | S | +1(S) | The same, on the astral plane only. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 200,
+          "printedPage": 198,
+          "quote": "Astral Barrier Type: M � Target: 6 � Duration: S � Drain: +1(S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/astral-barrior.sr3e-spell-0200.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Mana / 6 / Sustained / +1(S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#161",
@@ -21883,7 +23408,23 @@
       ],
       "hash": "02befa64a1",
       "text": "| Ice Sheet | P | 4 | I | +1(S) | A Magic-meter radius of ice. Quickness (Force) Test to stay up; vehicles make a Crash Test. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 200,
+          "printedPage": 198,
+          "quote": "Ice Sheet Type: P � Target: 4 � Duration: I � Drain: +1(S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/ice-sheet.sr3e-spell-0217.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4 / Instant / +1(S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#162",
@@ -21894,7 +23435,23 @@
       ],
       "hash": "fc9302d7bb",
       "text": "| Ignite | P | 4 | P | +1(D) | Sets the target alight. Threshold half its Body or Barrier Rating. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 200,
+          "printedPage": 198,
+          "quote": "Ignite Type: P � Target: 4 � Duration: P � Drain: +1(D)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/ignite.sr3e-spell-0218.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(D)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4(T) / Permanent / +1(D)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#163",
@@ -21905,7 +23462,23 @@
       ],
       "hash": "93cf6e8dca",
       "text": "| Light | P | 4 | S | +2(M) | Each success cancels +1 of darkness modifier, up to Force. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 200,
+          "printedPage": 198,
+          "quote": "Light Type: P � Target: 4 � Duration: S � Drain: +2(M)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/light.sr3e-spell-0220.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+2(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4 / Sustained / +2(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#164",
@@ -21916,7 +23489,23 @@
       ],
       "hash": "a6ceff00ec",
       "text": "| Petrify | P | B | S | +1(S) | Turns a living target to stone. Threshold half its Body. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 200,
+          "printedPage": 198,
+          "quote": "Petrify Type: P � Target: B � Duration: S � Drain: +1(S)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/petrify.sr3e-spell-0227.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+1(S)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / B(T) / Sustained / +1(S)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#165",
@@ -21927,7 +23516,23 @@
       ],
       "hash": "b5660dc7be",
       "text": "| Shadow | P | 4 | S | +2M | A globe of darkness: +1 Visibility per success, up to Force or +8. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 200,
+          "printedPage": 198,
+          "quote": "Shadow Type: P � Target: 4 � Duration: S � Drain: +2M"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-spells/shadow.sr3e-spell-0233.json",
+          "line": 13,
+          "snippet": "\"drain\": \"+2(M)\","
+        }
+      ],
+      "note": "Row checked against the book line and the pack record (Physical / 4 / Sustained / +2(M)); the target token is one _parseSpellTarget reads."
     },
     {
       "id": "magic/spells.md#166",
@@ -21938,7 +23543,25 @@
       ],
       "hash": "d1b7fa8952",
       "text": "*Magic in the Shadows* adds many more spells *(MitS p.140–148)*, and the\nsystem ships those in its own compendium.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Magic in the Shadows.pdf",
+          "pdfPage": 141,
+          "printedPage": 140,
+          "quote": "The Shattershield spell is a Deadly damage spell specifi-",
+          "ocrPrinted": "Shattenhield",
+          "printedNote": "OCR lost this page footer; printed 140 confirmed from the neighbouring pages (printed = pdf - 1); anchored on page text"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-mits-spells/shattershield.sr3e-spell-0010.json",
+          "line": 1,
+          "snippet": "\"_key\": \"!items!sr3e-spell-0010\""
+        }
+      ],
+      "note": "sr3e-mits-spells carries 99 spells (bookPage mits.140-mits.148); MitS pdf 141-149 hold the spells (printed 140-148)."
     },
     {
       "id": "magic/spells.md#167",
@@ -21961,7 +23584,8 @@
       ],
       "hash": "8e605c4c08",
       "text": "## Doing it in The 2nd Chumming (Foundry)\n{: #doing-it-in-the-2nd-chumming-foundry }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#169",
@@ -21972,7 +23596,8 @@
       ],
       "hash": "d87e45a6d4",
       "text": "### Getting a spell onto the sheet",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#170",
@@ -21983,7 +23608,33 @@
       ],
       "hash": "7206539650",
       "text": "Drag a spell onto the character from the compendiums (*Shadowrun 3rd*,\n*Magic in the Shadows* and *State of the Art 2064* under Spells), and it\nappears on the **Magic** tab with a **Cast** button. Set its learned\n**Force** on the spell. A spell with a Force can be cast at that Force or\nlower, never higher *(SR3 p.178)*. A spell with no Force recorded isn't\ncapped, and the cast dialog says so.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "Spellcasters learn spells at a specific Force. They can cast the"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 180,
+          "printedPage": 178,
+          "quote": "spell at a lower Force, if desired, but can never cast the spell at a"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4664,
+          "snippet": "const learnedForce = Number(this.system.force) > 0 ? Number(this.system.force) : null;"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4708,
+          "snippet": "learned at Force ${learnedForce} — may be cast lower, never higher (p.178)"
+        }
+      ]
     },
     {
       "id": "magic/spells.md#171",
@@ -21994,7 +23645,8 @@
       ],
       "hash": "efe04b542e",
       "text": "### Learning with Karma",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#172",
@@ -22005,7 +23657,34 @@
       ],
       "hash": "20aea813c9",
       "text": "On the **Bio** tab, **Spend Karma…** lists each spell on the sheet under\nMagic. Pick one, enter the **Force** to learn it at, and any **limit\nmodifier** taken off the cost. It charges Good Karma equal to the Force,\nless the limit *(SR3 p.180–181)*, and records the new Force. The purchase\ngoes into the 📒 Ledger, and the GM can undo it there.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "Learning spells also costs Good Karma (p. 242) equal to the desired Force."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 182,
+          "printedPage": 180,
+          "quote": "A limit may either reduce the Force of a spell for purposes"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 6043,
+          "snippet": "const cost = GK.spellCost(force, limit);"
+        },
+        {
+          "file": "scripts/sheets/SR3EActorSheet.js",
+          "line": 5894,
+          "snippet": "GK.spellCost(next), GK.spellCost(next) <= karma));"
+        }
+      ],
+      "note": "The calculator charges Force less the limit modifier and records the new Force and limits; ledger and GM undo are the Karma ledger (checked on rules/karma.md)."
     },
     {
       "id": "magic/spells.md#173",
@@ -22016,7 +23695,8 @@
       ],
       "hash": "40bfa23289",
       "text": "The Sorcery Test to learn, the days of study, and the teacher's or\nformula's price are the GM's to run. The system doesn't track a limit taken\noff **Drain** instead: the GM applies that.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Its first two sentences hold (the Sorcery learning test, days and prices are not in the system). The last is out of date: the system DOES track a limit taken off Drain - system.limitFetish / limitExclusive record drain or learning (ItemDataModels.js:478-479) and SpellLimits.drainForce lowers the Drain Force at cast time (SR3EItem.js:4763)."
     },
     {
       "id": "magic/spells.md#174",
@@ -22027,7 +23707,8 @@
       ],
       "hash": "e9c0d47f13",
       "text": "### Casting",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / divider / heading / table header row — states no rule"
     },
     {
       "id": "magic/spells.md#175",
@@ -22038,7 +23719,8 @@
       ],
       "hash": "635848a4f9",
       "text": "**Cast** opens the Force dialog, then the target, then Spell Pool, and rolls.\nEvery step after that, from resistance to Drain, is on\n[Spellcasting, Resistance & Drain](../spellcasting/).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule. Verified: rollSpell asks for the Force (with the learned-Force note), then the target, then Spell Pool dice, then rolls (SR3EItem.js:4661-4890)."
     },
     {
       "id": "rules/combat.md#1",
