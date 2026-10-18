@@ -49588,7 +49588,8 @@
       ],
       "hash": "f8f54b0c38",
       "text": "# Weapons\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#2",
@@ -49599,7 +49600,23 @@
       ],
       "hash": "c722c93572",
       "text": "Every weapon in the core rulebook, how to read its statistics, the Weapon\nRange Table, firing modes, ammunition, shotguns and accessories. How an\nattack is rolled is on [Actions & Combat](../combat/); reloading is on\n[Reloading](../reloading/); grenades are on [Grenades](../grenades/). From\nthe core rulebook *(SR3 p.110–117, p.275–282)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "To determine a weapon's base target number, check the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1437,
+          "snippet": "rangeTN: [0, 1, 2, 5]"
+        }
+      ],
+      "note": "Page summary; each topic it lists is checked on the units below."
     },
     {
       "id": "rules/weapons.md#3",
@@ -49610,7 +49627,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#4",
@@ -49621,7 +49639,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#5",
@@ -49632,7 +49651,32 @@
       ],
       "hash": "2f1b29256e",
       "text": "## Reading a weapon's statistics  *(SR3 p.275–276)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Firearm statistics include Ammo, Mode and Recoil Com-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ItemDataModels.js",
+          "line": 149,
+          "snippet": "ammunition:      new StringField({ initial: '' }),"
+        },
+        {
+          "file": "scripts/data/ItemDataModels.js",
+          "line": 151,
+          "snippet": "mode:            new StringField({ initial: '' }),"
+        },
+        {
+          "file": "scripts/data/ItemDataModels.js",
+          "line": 153,
+          "snippet": "recoilMod:       new NumberField({ integer: true, initial: 0, min: 0 }),"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#6",
@@ -49643,7 +49687,8 @@
       ],
       "hash": "9e344778c7",
       "text": "| Statistic | What it means |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#7",
@@ -49654,7 +49699,27 @@
       ],
       "hash": "578e58bba4",
       "text": "| **Concealability** | The higher, the easier to hide. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 272,
+          "printedPage": 270,
+          "quote": "Concealability measures how concealable the weapon is. This rating is used as the target"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/concealment.mjs",
+          "line": 50,
+          "snippet": "export const NOTICE      = 'notice';"
+        },
+        {
+          "file": "scripts/data/concealment.mjs",
+          "line": 101,
+          "snippet": "targetNumber(c, mode = NOTICE, mod = 0) {"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#8",
@@ -49665,7 +49730,33 @@
       ],
       "hash": "5047d445a5",
       "text": "| **Reach** (melee) | The weapon's length. A longer reach gives a target number modifier in melee *(SR3 p.121)*. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Reach measures a weapon's length. If the Reach of one"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 123,
+          "printedPage": 121,
+          "quote": "The character with the longer (higher) Reach can choose to apply this number as either a negative target number modifier"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7598,
+          "snippet": "static meleeReach(weapon, actor) {"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 374,
+          "snippet": "const reachDiff   = Math.abs(atkReach - defReach);"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#9",
@@ -49676,7 +49767,33 @@
       ],
       "hash": "72bf336f00",
       "text": "| **Damage** | Power and Damage Level, like **9M**. A melee weapon's Power is usually the wielder's **Strength plus a number**: (STR + 2)M. **Stun** marks Stun damage, **(f)** that flechette is already counted. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "have a base Power equal to the Strength of the wield- er, plus a given value."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "Guns with flechette ammo already figured into their Damage Code have an (f) notation following the Damage Code."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 938,
+          "snippet": "const isStun = /stun/i.test(code);"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 943,
+          "snippet": "const flagged ="
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#10",
@@ -49687,7 +49804,27 @@
       ],
       "hash": "12d0da62f8",
       "text": "| **Ammo** | Rounds held and how it reloads: **(c)** clip, **(b)** break-action, **(m)** internal magazine, **(cy)** cylinder, **(belt)** belt feed. See [Reloading](../reloading/). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "tion (c) means clip, (b) means break-action, (m) means maga- zine, (cy) means cylinder, and (belt) means belt feed."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1515,
+          "snippet": "ammoLoadMechanisms: {"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1520,
+          "snippet": "belt:     'Belt Feed',"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#11",
@@ -49698,7 +49835,22 @@
       ],
       "hash": "14029edd74",
       "text": "| **Mode** | **SS** single-shot, **SA** semi-automatic, **BF** burst-fire, **FA** full-auto. [Below](#firing-modes). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Mode refers to the weapon's available firing modes. SS means single-shot, SA means semi-automatic, BF means burst- fire, and FA means full autofire."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1363,
+          "snippet": "fireModes:      ['SS', 'SA', 'BF', 'FA'],"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#12",
@@ -49709,7 +49861,34 @@
       ],
       "hash": "47ccc818aa",
       "text": "| **RC** | Recoil compensation built in. A number in brackets only counts with every integral accessory in use, such as a folding stock. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Recoil Compensation (RC) lists the available points of recoil compensation when firing the weapon."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Numbers in parentheses refer to full recoil compensation that only applies"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ItemDataModels.js",
+          "line": 153,
+          "snippet": "recoilMod:       new NumberField({ integer: true, initial: 0, min: 0 }),"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4084,
+          "snippet": "const weaponComp   = weapon.system.recoilMod ?? 0;"
+        }
+      ],
+      "note": "Book (SR3 p.276): the RC column is the weapon's points of recoil compensation, and a number in parentheses counts only when every integral accessory (folding or detachable stock) is in use. Code: a firearm has one editable number, system.recoilMod, which feeds the recoil TN. The shipped SR3 firearm pack does not fill it (no weapon in packs-src/sr3e-sr3-firearms carries recoilMod, so it is 0); the RC appears only in the free-text accessories (\"Fold. Stock(1RC)\", \"Gas Vent II(2RC)\"). The bracketed \"only with integral accessories\" figure is not modelled."
     },
     {
       "id": "rules/weapons.md#13",
@@ -49720,7 +49899,28 @@
       ],
       "hash": "edf1373f42",
       "text": "| **Legal** | The Legality Code, like **6P-E** *(SR3 p.274)*. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "The second part of the Legality Code lists the restriction"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "If an item's Legality Code features a \"P,\" a permit"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "class FirearmData(?:(?!export class)[\\s\\S])*legal",
+          "path": "scripts"
+        }
+      ],
+      "note": "No firearm carries a Legality Code: the firearm data model has no legal field, and the melee/projectile models hold only a legal true/false. The weapon packs store no code like 6P-E. (Legality Codes as a whole are also recorded as not modelled on street/gear-and-fencing.md.)"
     },
     {
       "id": "rules/weapons.md#14",
@@ -49731,7 +49931,32 @@
       ],
       "hash": "ee1307c527",
       "text": "Firearms take standard or **caseless** ammunition, but not both. Every\nfirearm has a digital ammo counter *(SR3 p.276)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "can fire either type of ammunition, but not both interchange- ably."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "digital ammunition counter is standard equipment."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "caseless",
+          "path": "scripts"
+        },
+        {
+          "pattern": "ammo(unition)? counter",
+          "path": "scripts"
+        }
+      ],
+      "note": "Caseless versus standard ammunition is not a thing in the system (one ammo stream per gun), and there is no \"digital ammo counter\" item feature; the Track Ammunition setting counts rounds without modelling the counter."
     },
     {
       "id": "rules/weapons.md#15",
@@ -49742,7 +49967,22 @@
       ],
       "hash": "fcc07fcd01",
       "text": "### Which skill?  *(SR3 p.85–86)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "Pistols governs the use of all types of hand-held firearms,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3649,
+          "snippet": "static get WEAPON_SKILL_MAP() {"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#16",
@@ -49753,7 +49993,8 @@
       ],
       "hash": "5c236ba7ab",
       "text": "| Weapons | Skill |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#17",
@@ -49764,7 +50005,37 @@
       ],
       "hash": "4a1b033c86",
       "text": "| Hold-out, light and heavy pistols; tasers | Pistols |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "including hold-out, light and heavy pistols, and tasers."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3652,
+          "snippet": "'HOPist': { skill: 'Pistols', attribute: 'quickness' },"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3653,
+          "snippet": "'LPist':  { skill: 'Pistols', attribute: 'quickness' },"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3655,
+          "snippet": "'HPist':  { skill: 'Pistols', attribute: 'quickness' },"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3703,
+          "snippet": "'Tasr':   { skill: 'Pistols',        attribute: 'quickness' },"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#18",
@@ -49775,7 +50046,8 @@
       ],
       "hash": "3019b66404",
       "text": "| Machine pistols and SMGs | Submachine Guns |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "The book never says which skill governs a machine pistol: SR3 p.86 gives Submachine Guns \"lightweight semi-automatic and automatic guns fired from the shoulder or hip\" and Pistols \"all types of hand-held firearms\", and p.278 lists the Ceska Black Scorpion under PISTOLS (Machine Pistols) while describing it as combining \"light pistol concealability and submachine gun rates of fire\". The code maps MaPist to Submachine Guns (SR3EItem.WEAPON_SKILL_MAP). Neither reading is the book's; the maintainer's call."
     },
     {
       "id": "rules/weapons.md#19",
@@ -49786,7 +50058,27 @@
       ],
       "hash": "19a461fa94",
       "text": "| Sport and sniper rifles | Rifles |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "This skill governs the use of all sport and sniper rifles."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3670,
+          "snippet": "'SptR':   { skill: 'Rifles', attribute: 'quickness' },"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3671,
+          "snippet": "'Snip':   { skill: 'Rifles', attribute: 'quickness' },"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#20",
@@ -49797,7 +50089,22 @@
       ],
       "hash": "e583343028",
       "text": "| Assault rifles | Assault Rifles |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 87,
+          "printedPage": 85,
+          "quote": "Assault Rifles covers the use of all multi-firing-rate rifles."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3666,
+          "snippet": "'AsRf':   { skill: 'Assault Rifles', attribute: 'quickness' },"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#21",
@@ -49808,7 +50115,22 @@
       ],
       "hash": "62f9b108fa",
       "text": "| Shotguns | Shotguns |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "The Shotguns Skill governs the use of all shotguns."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3680,
+          "snippet": "'ShtG':   { skill: 'Shotguns', attribute: 'quickness' },"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#22",
@@ -49819,7 +50141,27 @@
       ],
       "hash": "c03a17e769",
       "text": "| Machine guns and assault cannons: anything larger than an assault rifle, on foot or a tripod | Heavy Weapons |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "handle anything larger than an assault rifle, including large weapons when they are mounted on tripods,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3674,
+          "snippet": "'LMG':    { skill: 'Heavy Weapons', attribute: 'strength' },"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3706,
+          "snippet": "'ACan':   { skill: 'Heavy Weapons',  attribute: 'strength' },       // \"larger than an assault rifle\""
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#23",
@@ -49830,7 +50172,33 @@
       ],
       "hash": "40d5efce6a",
       "text": "| Grenade launchers (including underbarrel ones), rocket and missile launchers | Launch Weapons |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "the use of both specific grenade-launching weapons and underbarrel grenade-launching mounts."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "fires a missile, rocket, or other explosive projectile (such as"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3704,
+          "snippet": "'GrLn':   { skill: 'Launch Weapons', attribute: 'intelligence' },   // grenades: named in the rule"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3705,
+          "snippet": "'MisLn':  { skill: 'Launch Weapons', attribute: 'intelligence' },   // \"fires a missile, rocket\""
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#24",
@@ -49841,7 +50209,22 @@
       ],
       "hash": "a62f11463a",
       "text": "| Weapons mounted on a vehicle | Gunnery |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "Gunnery Skill governs the use of all vehicle-mounted weapons, whether in mounts, pintles or turrets."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1708,
+          "snippet": "const gunnery    = pilotActor.items.find(i => i.type === 'skill' && /gunnery/i.test(i.name));"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#25",
@@ -49852,7 +50235,27 @@
       ],
       "hash": "fb0b3ec2ec",
       "text": "| Bows and crossbows | Projectile Weapons |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "Projectile Weapons governs the use of muscle-powered projectile weapons."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3735,
+          "snippet": "'Bow':    { skill: 'Projectile Weapons', attribute: 'strength' },"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3736,
+          "snippet": "'LCB':    { skill: 'Projectile Weapons', attribute: 'strength' },"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#26",
@@ -49863,7 +50266,38 @@
       ],
       "hash": "3da12b6d04",
       "text": "| Throwing knives, shuriken, hand grenades | Throwing Weapons |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "Throwing Weapons governs the use of any item thrown by the user."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "Specializations: By specific weapon type (including but not"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3722,
+          "snippet": "'TK':     { skill: 'Throwing Weapons', attribute: 'strength' },"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3723,
+          "snippet": "'SH':     { skill: 'Throwing Weapons', attribute: 'strength' },"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3721,
+          "snippet": "'GR':     { skill: 'Throwing Weapons', attribute: 'strength' },"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#27",
@@ -49874,7 +50308,22 @@
       ],
       "hash": "fd4c47270a",
       "text": "| Knives, swords and axes under a meter | Edged Weapons |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "weapons that have a sharpened edge or point. This skill allows a character to use various knives, swords and axes effectively,"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3742,
+          "snippet": "'EDG': { skill: 'Edged Weapons',        attribute: 'strength' },"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#28",
@@ -49885,7 +50334,33 @@
       ],
       "hash": "ab88ae8576",
       "text": "| Clubs, saps, stun batons | Clubs |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 87,
+          "printedPage": 85,
+          "quote": "Clubs governs the use of hand-held melee weapons that have no edge or blade and are less than one meter long."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3743,
+          "snippet": "'CLB': { skill: 'Clubs',               attribute: 'strength' },"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/sap.sr3e-melee-0074.json",
+          "line": 8,
+          "snippet": "\"category\": \"CLB\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/stun-baton.sr3e-melee-0081.json",
+          "line": 8,
+          "snippet": "\"category\": \"CLB\""
+        }
+      ],
+      "note": "The book's skill text does not name saps or stun batons; its Personal Weapons table lists Club, Sap and Stun Baton together under Clubs (SR3 p.275), which the pack follows."
     },
     {
       "id": "rules/weapons.md#29",
@@ -49896,7 +50371,23 @@
       ],
       "hash": "2f6d7e28ca",
       "text": "| Melee weapons over a meter: pole arms, staffs | Pole Arms/Staffs |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "This skill governs the use of hand-held melee weapons longer than one meter."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3744,
+          "snippet": "'POL': { skill: 'Pole Arms',           attribute: 'strength' },"
+        }
+      ],
+      "note": "The skill is called \"Pole Arms/Staffs\" in the book; the code's skill list and WEAPON_SKILL_MAP name it \"Pole Arms\" (the Pole Arm and Staff packs say \"Pole Arms/Staff\"). The Combat Axe is the exception: see its row."
     },
     {
       "id": "rules/weapons.md#30",
@@ -49907,7 +50398,22 @@
       ],
       "hash": "7822fc3efb",
       "text": "| Whips, monofilament whips | Whips |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "This skill governs the use of whips or anything that can be used as a whip."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3745,
+          "snippet": "'WHP': { skill: 'Whips',              attribute: 'quickness' },"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#31",
@@ -49918,7 +50424,22 @@
       ],
       "hash": "0fa9d04836",
       "text": "| Fists, feet, martial arts | Unarmed Combat |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 88,
+          "printedPage": 86,
+          "quote": "bat) governs the use of combat techniques based solely on the use of the individual's own body."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3749,
+          "snippet": "'UNA': { skill: 'Unarmed Combat',       attribute: 'strength' },"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#32",
@@ -49929,7 +50450,23 @@
       ],
       "hash": "e31d5331b8",
       "text": "| Combat cyberware: spurs, hand razors | Cyber-Implant Combat |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 87,
+          "printedPage": 85,
+          "quote": "This new combat discipline has developed since the advent of combat-oriented cyberware."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3748,
+          "snippet": "'CYB': { skill: 'Cyber Implant Combat', attribute: 'strength' },"
+        }
+      ],
+      "note": "The book names the skill for combat-oriented cyberware generally; spurs and hand razors are named in Man & Machine. The code maps the CYB category to Cyber Implant Combat."
     },
     {
       "id": "rules/weapons.md#33",
@@ -49940,7 +50477,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#34",
@@ -49951,7 +50489,22 @@
       ],
       "hash": "3b9d697469",
       "text": "## The Weapon Range Table  *(SR3 p.110–111)*\n{: #weapon-range-table }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "Shots against targets at short range have a base Target Number of 4."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1437,
+          "snippet": "rangeTN: [0, 1, 2, 5]"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#35",
@@ -49962,7 +50515,28 @@
       ],
       "hash": "9d6df8fa33",
       "text": "The column sets the attack's **base target number**. Distances are in\nmeters.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "All distances listed in the columns are in meters."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "The base target number appears at the top of the appro-"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1437,
+          "snippet": "rangeTN: [0, 1, 2, 5]"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#36",
@@ -49973,7 +50547,8 @@
       ],
       "hash": "c7054e9cbb",
       "text": "| | **Short** | **Medium** | **Long** | **Extreme** |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#37",
@@ -49984,7 +50559,29 @@
       ],
       "hash": "a000b2213d",
       "text": "| **Base TN** | **4** | **5** | **6** | **9** |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "Shots against targets at short range have a base Target Number of 4."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "Number 6 and extreme range a base Target Number 9."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1437,
+          "snippet": "rangeTN: [0, 1, 2, 5]"
+        }
+      ],
+      "note": "rangeTN is stored as the modifier over base 4: 0 / +1 / +2 / +5 = TN 4 / 5 / 6 / 9."
     },
     {
       "id": "rules/weapons.md#38",
@@ -49995,7 +50592,8 @@
       ],
       "hash": "a79c7127dc",
       "text": "| *Firearms* | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#39",
@@ -50006,7 +50604,23 @@
       ],
       "hash": "0462036c54",
       "text": "| Hold-out Pistol | 0–5 | 6–15 | 16–30 | 31–50 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-5 6-15 16-30 31-50 0-5 6-15 16-30 31-50"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1413,
+          "snippet": "HOPist: [5, 15, 30, 50]"
+        }
+      ],
+      "note": "Row read from the table (Hold-out Pistol); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#40",
@@ -50017,7 +50631,23 @@
       ],
       "hash": "f33a9825b9",
       "text": "| Light Pistol | 0–5 | 6–15 | 16–30 | 31–50 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-5 6-15 16-30 31-50 0-5 6-15 16-30 31-50"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1414,
+          "snippet": "LPist:  [5, 15, 30, 50]"
+        }
+      ],
+      "note": "Row read from the table (Light Pistol); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#41",
@@ -50028,7 +50658,23 @@
       ],
       "hash": "ca93da0fc0",
       "text": "| Heavy Pistol | 0–5 | 6–20 | 21–40 | 41–60 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-5 6-20 21-40 41-60 0-10 11-40 41-80 81-150"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1417,
+          "snippet": "HPist:  [5, 20, 40, 60]"
+        }
+      ],
+      "note": "Row read from the table (Heavy Pistol); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#42",
@@ -50039,7 +50685,23 @@
       ],
       "hash": "ceb426b2af",
       "text": "| SMG | 0–10 | 11–40 | 41–80 | 81–150 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-5 6-20 21-40 41-60 0-10 11-40 41-80 81-150"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1420,
+          "snippet": "SMG:    [10, 40, 80, 150]"
+        }
+      ],
+      "note": "Row read from the table (SMG); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#43",
@@ -50050,7 +50712,23 @@
       ],
       "hash": "47aac36f38",
       "text": "| Taser | 0–5 | 6–10 | 11–12 | 13–15 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-5 6-10 11-12 13-15 0-10 11-20 21-50 51-100"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1419,
+          "snippet": "Tasr:   [5, 10, 12, 15]"
+        }
+      ],
+      "note": "Row read from the table (Taser); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#44",
@@ -50061,7 +50739,23 @@
       ],
       "hash": "4ca592f6f3",
       "text": "| Shotgun | 0–10 | 11–20 | 21–50 | 51–100 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-5 6-10 11-12 13-15 0-10 11-20 21-50 51-100"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1421,
+          "snippet": "ShtG:   [10, 20, 50, 100]"
+        }
+      ],
+      "note": "Row read from the table (Shotgun); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#45",
@@ -50072,7 +50766,23 @@
       ],
       "hash": "bc69e39f4c",
       "text": "| Sporting Rifle | 0–100 | 101–250 | 251–500 | 501–750 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-100 101-250 251-500 501-750"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1425,
+          "snippet": "SptR:   [100, 250, 500, 750]"
+        }
+      ],
+      "note": "Row read from the table (Sporting Rifle); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#46",
@@ -50083,7 +50793,23 @@
       ],
       "hash": "93587ccea2",
       "text": "| Sniper Rifle | 0–150 | 151–300 | 301–700 | 701–1,000 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-150 151-300 301-700 701-1,000"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1426,
+          "snippet": "Snip:   [150, 300, 700, 1000]"
+        }
+      ],
+      "note": "Row read from the table (Sniper Rifle); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#47",
@@ -50094,7 +50820,23 @@
       ],
       "hash": "d4ab9e997f",
       "text": "| Assault Rifle | 0–50 | 51–150 | 151–350 | 351–550 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-50 51-150 151-350 351-550 0-75 76-200 201-400 401-800"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1424,
+          "snippet": "AsRf:   [50, 150, 350, 550]"
+        }
+      ],
+      "note": "Row read from the table (Assault Rifle); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#48",
@@ -50105,7 +50847,8 @@
       ],
       "hash": "98556d6bf2",
       "text": "| *Heavy weapons* | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#49",
@@ -50116,7 +50859,23 @@
       ],
       "hash": "6b6a616099",
       "text": "| Light Machine Guns | 0–75 | 76–200 | 201–400 | 401–800 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-50 51-150 151-350 351-550 0-75 76-200 201-400 401-800"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1427,
+          "snippet": "LMG:    [75, 200, 400, 800]"
+        }
+      ],
+      "note": "Row read from the table (Light Machine Guns); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#50",
@@ -50127,7 +50886,23 @@
       ],
       "hash": "c9a0f67002",
       "text": "| Medium Machine Gun | 0–80 | 81–250 | 251–750 | 751–1,200 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-80 81-250 251-750 751-1,200 0-80 81-250 251-800 801-1,500"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1428,
+          "snippet": "MMG:    [80, 250, 750, 1200]"
+        }
+      ],
+      "note": "Row read from the table (Medium Machine Gun); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#51",
@@ -50138,7 +50913,23 @@
       ],
       "hash": "4002677fb0",
       "text": "| Heavy Machine Gun | 0–80 | 81–250 | 251–800 | 801–1,500 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-80 81-250 251-750 751-1,200 0-80 81-250 251-800 801-1,500"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1429,
+          "snippet": "HMG:    [80, 250, 800, 1500]"
+        }
+      ],
+      "note": "Row read from the table (Heavy Machine Gun); the OCR prints the names and the range columns separately, in the same row order."
     },
     {
       "id": "rules/weapons.md#52",
@@ -50149,7 +50940,28 @@
       ],
       "hash": "5409bf2ab5",
       "text": "| Assault Cannon | 0–100 | 101–300 | 301–900 | 901–2,400 |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-100 101-300 301-900 901-2,400 5-50* 51-100 101-150** 151-300"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1430,
+          "snippet": "MinG:   [100, 300, 900, 2400]"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1412,
+          "snippet": "weaponRanges: {"
+        }
+      ],
+      "note": "Book: Assault Cannon 0-100 / 101-300 / 301-900 / 901-2,400. The numbers are in config.js, but under the key MinG (\"Minigun (≈ assault cannon, not in book)\"); weaponRanges has no ACan key, and the shipped Vigorous Assault Cannon is category ACan, so SR3EItem._getRangeBands returns no bands for it (no auto range, no range TN)."
     },
     {
       "id": "rules/weapons.md#53",
@@ -50160,7 +50972,23 @@
       ],
       "hash": "d4cc004064",
       "text": "| Grenade Launcher | 5–50\\* | 51–100 | 101–150\\*\\* | 151–300 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-100 101-300 301-900 901-2,400 5-50* 51-100 101-150** 151-300"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1431,
+          "snippet": "GrLn:   [50, 100, 150, 300]"
+        }
+      ],
+      "note": "Bands match. The 5 m minimum range (\"5-50*\") is not enforced (see the footnote unit)."
     },
     {
       "id": "rules/weapons.md#54",
@@ -50171,7 +50999,23 @@
       ],
       "hash": "eac9d2251b",
       "text": "| Missile Launcher | 20–150\\* | 151–450 | 451–1,200 | 1,201–3,000 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "20-150* 151-450 451-1,200 1,201-3,000"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1432,
+          "snippet": "MisLn:  [150, 450, 1200, 3000]"
+        }
+      ],
+      "note": "Bands match. The 20 m minimum range is not enforced (see the footnote unit)."
     },
     {
       "id": "rules/weapons.md#55",
@@ -50182,7 +51026,8 @@
       ],
       "hash": "cea56c3fb7",
       "text": "| *Impact projectiles* | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#56",
@@ -50193,7 +51038,39 @@
       ],
       "hash": "f38951da56",
       "text": "| Bow | 0–STR | to STR × 10 | to STR × 30 | to STR × 60 |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-STR To STR x 10 To STR x 30 To STR x 60"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "the bow's Strength Minimum is used to determine the distance."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1491,
+          "snippet": "Bow:  [1, 10, 30, 60]"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2066,
+          "snippet": "return mult.map(m => m * str);"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2065,
+          "snippet": "actor?.system?.attributes?.strength?.value"
+        }
+      ],
+      "note": "Book (SR3 p.110, p.117, p.118): bows and crossbows take their ranges from the weapon's Strength Minimum (\"The weapon's Strength Minimum is used to determine the weapon's range and damage\"; \"A crossbow's Strength Minimum Rating determines its range\"). The multipliers in the row are right (Bow), but SR3EItem._getRangeBands multiplies them by the ATTACKER'S Strength attribute; the weapon's strMin is shown on the sheet and used nowhere in the range maths."
     },
     {
       "id": "rules/weapons.md#57",
@@ -50204,7 +51081,39 @@
       ],
       "hash": "ef6e9e6b94",
       "text": "| Light Crossbow | 0–STR × 2 | to STR × 8 | to STR × 20 | to STR × 40 |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-STR x 2 To STR x 8 To STR x 20 To STR x 40"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "the bow's Strength Minimum is used to determine the distance."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1492,
+          "snippet": "LCB:  [2, 8, 20, 40]"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2066,
+          "snippet": "return mult.map(m => m * str);"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2065,
+          "snippet": "actor?.system?.attributes?.strength?.value"
+        }
+      ],
+      "note": "Book (SR3 p.110, p.117, p.118): bows and crossbows take their ranges from the weapon's Strength Minimum (\"The weapon's Strength Minimum is used to determine the weapon's range and damage\"; \"A crossbow's Strength Minimum Rating determines its range\"). The multipliers in the row are right (Light Crossbow), but SR3EItem._getRangeBands multiplies them by the ATTACKER'S Strength attribute; the weapon's strMin is shown on the sheet and used nowhere in the range maths."
     },
     {
       "id": "rules/weapons.md#58",
@@ -50215,7 +51124,39 @@
       ],
       "hash": "7b9a15260c",
       "text": "| Medium Crossbow | 0–STR × 3 | to STR × 12 | to STR × 30 | to STR × 50 |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-STR x 3 To STR x 12 To STR x 30 To STR x 50"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "the bow's Strength Minimum is used to determine the distance."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1493,
+          "snippet": "MCB:  [3, 12, 30, 50]"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2066,
+          "snippet": "return mult.map(m => m * str);"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2065,
+          "snippet": "actor?.system?.attributes?.strength?.value"
+        }
+      ],
+      "note": "Book (SR3 p.110, p.117, p.118): bows and crossbows take their ranges from the weapon's Strength Minimum (\"The weapon's Strength Minimum is used to determine the weapon's range and damage\"; \"A crossbow's Strength Minimum Rating determines its range\"). The multipliers in the row are right (Medium Crossbow), but SR3EItem._getRangeBands multiplies them by the ATTACKER'S Strength attribute; the weapon's strMin is shown on the sheet and used nowhere in the range maths."
     },
     {
       "id": "rules/weapons.md#59",
@@ -50226,7 +51167,39 @@
       ],
       "hash": "0c798fca1d",
       "text": "| Heavy Crossbow | 0–STR × 5 | to STR × 15 | to STR × 40 | to STR × 60 |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-STR x 5 To STR x 15 To STR x 40 To STR x 60"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "the bow's Strength Minimum is used to determine the distance."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1494,
+          "snippet": "HCB:  [5, 15, 40, 60]"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2066,
+          "snippet": "return mult.map(m => m * str);"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2065,
+          "snippet": "actor?.system?.attributes?.strength?.value"
+        }
+      ],
+      "note": "Book (SR3 p.110, p.117, p.118): bows and crossbows take their ranges from the weapon's Strength Minimum (\"The weapon's Strength Minimum is used to determine the weapon's range and damage\"; \"A crossbow's Strength Minimum Rating determines its range\"). The multipliers in the row are right (Heavy Crossbow), but SR3EItem._getRangeBands multiplies them by the ATTACKER'S Strength attribute; the weapon's strMin is shown on the sheet and used nowhere in the range maths."
     },
     {
       "id": "rules/weapons.md#60",
@@ -50237,7 +51210,28 @@
       ],
       "hash": "0e5d984f8c",
       "text": "| Thrown Knife | 0–STR | to STR × 2 | to STR × 3 | to STR × 5 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-STR To STR x 2 To STR x 3 To STR x 5"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1495,
+          "snippet": "TK:   [1, 2, 3, 5]"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2066,
+          "snippet": "return mult.map(m => m * str);"
+        }
+      ],
+      "note": "Thrown weapons use the thrower's Strength (SR3 p.118), which is what the code multiplies."
     },
     {
       "id": "rules/weapons.md#61",
@@ -50248,7 +51242,28 @@
       ],
       "hash": "b3529cb85d",
       "text": "| Shuriken | 0–STR | to STR × 2 | to STR × 5 | to STR × 7 |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "0-STR To STR x 2 To STR x 5 To STR x 7"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1496,
+          "snippet": "SH:   [1, 2, 5, 7]"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2066,
+          "snippet": "return mult.map(m => m * str);"
+        }
+      ],
+      "note": "Thrown weapons use the thrower's Strength (SR3 p.118), which is what the code multiplies."
     },
     {
       "id": "rules/weapons.md#62",
@@ -50259,7 +51274,29 @@
       ],
       "hash": "0a5a6421bf",
       "text": "\\* Minimum range. \\*\\* Target number 8: see [Grenades](../grenades/).",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "* Minimum Range ** Target number 8: see page 119"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "isk cannot be fired at targets closer than the minimum value given under Short Range."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1451,
+          "snippet": "grenadeRangeTN: [0, 1, 4, 5]"
+        }
+      ],
+      "note": "Book: \"Weapons marked with an asterisk cannot be fired at targets closer than the minimum value given under Short Range\" (grenade launcher 5 m, missile launcher 20 m), and the grenade launcher's Long band is TN 8. The TN 8 is implemented (grenadeRangeTN: Short 4, Medium 5, Long 8, Extreme 9). The minimum range is not: nothing in the code reads a minimum range (no match for \"minimum range\" or a min-range field)."
     },
     {
       "id": "rules/weapons.md#63",
@@ -50270,7 +51307,34 @@
       ],
       "hash": "bf7417dfa8",
       "text": "- **Bows and crossbows** use their **Strength Minimum**, not the archer's\n  Strength, for range: a Strength Minimum 5 bow has a short range of 0–5\n  meters and a medium range of 6–50 *(SR3 p.110)*. Thrown weapons use the\n  thrower's Strength *(SR3 p.118)*.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "the bow's Strength Minimum is used to determine the distance."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 120,
+          "printedPage": 118,
+          "quote": "Throwing weapons have no Strength Minimum Rating; the thrower's Strength Attribute determines range and damage."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 2066,
+          "snippet": "return mult.map(m => m * str);"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1490,
+          "snippet": "weaponRangeMultipliers: {"
+        }
+      ],
+      "note": "Thrown weapons using the thrower's Strength is right. Bows and crossbows using their Strength Minimum is not what the code does: it multiplies the attacker's Strength attribute (see the bow and crossbow rows)."
     },
     {
       "id": "rules/weapons.md#64",
@@ -50281,7 +51345,28 @@
       ],
       "hash": "a421c4ce59",
       "text": "- **Magnifying scopes** move the range one column left per point of rating,\n  but never past Short *(SR3 p.110)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "These systems change a weapon's range category by a number equal to the device's rating."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 112,
+          "printedPage": 110,
+          "quote": "could not reduce the range category to less than short range."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "(shift|move)s?\\b.{0,30}(range|column)s?\\b.{0,40}(left|rating)",
+          "path": "scripts"
+        }
+      ],
+      "note": "Image magnification appears only as a row in the GM's situational modifier list (\"Image magnification: Special\", SR3ECombatModifiers.js imageMag, null, not rendered); the range band is never shifted by a scope's rating."
     },
     {
       "id": "rules/weapons.md#65",
@@ -50292,7 +51377,39 @@
       ],
       "hash": "6c94391a82",
       "text": "- **Guns of one class share ammunition**: every light pistol can use any\n  light pistol ammo, and every shotgun any shotgun ammo *(SR3 p.279)*.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "kind of gun can trade ammo with another of its class."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "Shotguns, whether pistols or rifles, can share ammo."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ammo-stock.mjs",
+          "line": 61,
+          "snippet": "const CLASS_ALIASES = {"
+        },
+        {
+          "file": "scripts/data/ammo-stock.mjs",
+          "line": 66,
+          "snippet": "ShtG: 'Shotgun (pistol or rifle)'"
+        },
+        {
+          "file": "scripts/data/ammo-stock.mjs",
+          "line": 168,
+          "snippet": "gunClass(category) {"
+        }
+      ],
+      "note": "Class sharing is implemented (AmmoStock.classFits, keyed on the weapon's category). But \"shotguns, whether pistols or rifles, can share ammo\": the class list labels ShtG \"Shotgun (pistol or rifle)\" and CLASS_ALIASES folds MPist/MaPist/VHP/LCarb/Carb, yet nothing folds a shotgun pistol into ShtG. The shipped Remington Roomsweeper (the book's shotgun pistol) is category HPist, so it counts as a heavy pistol and would not take shotgun ammunition stamped ShtG."
     },
     {
       "id": "rules/weapons.md#66",
@@ -50303,7 +51420,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#67",
@@ -50314,7 +51432,22 @@
       ],
       "hash": "7266d3ba39",
       "text": "## Firing modes  *(SR3 p.114–116)*\n{: #firing-modes }",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 116,
+          "printedPage": 114,
+          "quote": "Most ranged combat involves firearms that fire in one or more of the following modes:"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1363,
+          "snippet": "fireModes:      ['SS', 'SA', 'BF', 'FA'],"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#68",
@@ -50325,7 +51458,8 @@
       ],
       "hash": "3dda58bab1",
       "text": "| Mode | Action | Effect |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#69",
@@ -50336,7 +51470,27 @@
       ],
       "hash": "10c74a7c75",
       "text": "| **Single-shot (SS)** | Simple | Can't fire again in the same Combat Phase. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 116,
+          "printedPage": 114,
+          "quote": "Firing a single-shot weapon requires only a Simple Action, but that weapon cannot be fired again during the same Combat Phase."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/action-economy.mjs",
+          "line": 25,
+          "snippet": "fireWeapon:        { cost: 'simple'"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3895,
+          "snippet": "return before >= 1 ? 'SS weapons cannot fire twice in a combat phase.' : null;"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#70",
@@ -50347,7 +51501,38 @@
       ],
       "hash": "9279c91697",
       "text": "| **Semi-automatic (SA)** | Simple | Two shots a phase. The second takes **+1 recoil**. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "can be fired twice in the same Combat Phase."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "in that same Combat Phase, takes a +1 recoil modifier."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/action-economy.mjs",
+          "line": 25,
+          "snippet": "fireWeapon:        { cost: 'simple'"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3898,
+          "snippet": "'Semi-automatic weapons fire at most twice per Combat Phase (SR3 p.115).'"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4040,
+          "snippet": "return Math.max(0, (roundsBefore + own) - totalComp) * mult;"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#71",
@@ -50358,7 +51543,44 @@
       ],
       "hash": "6b1d35c458",
       "text": "| **Burst-fire (BF)** | Simple | Three rounds. **Power +3, Damage Level +1**. **+3 recoil** per burst; two bursts a phase. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "Firing a weapon in burst-fire mode is a Simple Action"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "es a +3 recoil modifier per burst fired."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "weapon as having a Power Level 3 points greater than the level listed and raise the Damage Level by one."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4071,
+          "snippet": "pwr   += shortBurst ? 2 : 3;"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4037,
+          "snippet": "mode === 'BF' ? (shortBurst ? 2 : 3)"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3901,
+          "snippet": "'Burst fire is limited to two bursts per Combat Phase (SR3 p.115).'"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#72",
@@ -50369,7 +51591,61 @@
       ],
       "hash": "0b9f083b85",
       "text": "| **Full-auto (FA)** | Complex | Declare 3 to 10 rounds. **Power +1 per round; Damage Level +1 per full three rounds**, up to Deadly. **+1 recoil per round**. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "weapon in full-auto mode is a Complex Action."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "The Power Rating of the weapon increases by 1 point for every round in that full-auto burst."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "The Damage Level of the weapon also increases by one level for every three full rounds"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "At least three rounds must be fired in each burst."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "recoil modifier for the entire burst"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/action-economy.mjs",
+          "line": 26,
+          "snippet": "fireAutomatic:     { cost: 'complex'"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4076,
+          "snippet": "lvlIdx = Math.min(3, lvlIdx + Math.floor(rds / 3));"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4264,
+          "snippet": "rounds = Math.min(10, Math.max(3,"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3905,
+          "snippet": "Full auto is limited to 10 rounds per Combat Phase"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#73",
@@ -50380,7 +51656,40 @@
       ],
       "hash": "8c472fd4b5",
       "text": "- **Recoil compensation** cancels recoil, and only recoil. Every shot or\n  burst is a separate test with its own Combat Pool dice *(SR3 p.115)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 115,
+          "printedPage": 113,
+          "quote": "Recoil compensation does not counter any other situational modifiers"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "Each burst requires a separate allocation of Combat Pool dice."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "Each shot requires a separate Success Test and a separate allocation of any Combat Pool dice used."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4040,
+          "snippet": "return Math.max(0, (roundsBefore + own) - totalComp) * mult;"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1057,
+          "snippet": "async rollWeapon(options = {}) {"
+        }
+      ],
+      "note": "Compensation is subtracted from recoil only (recoilTN); each declaration is its own rollWeapon call with its own Combat Pool allocation."
     },
     {
       "id": "rules/weapons.md#74",
@@ -50391,7 +51700,39 @@
       ],
       "hash": "170efba490",
       "text": "- **Short bursts.** A burst of 2 rounds, because the clip ran out, gets\n  **+2 Power**, no Damage Level increase, and +2 recoil. A burst of 1 round\n  is a single shot *(SR3 p.115)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "clip, the Power Rating increases by +2, but the Damage Level does not increase. A +2 recoil modifier also applies."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 117,
+          "printedPage": 115,
+          "quote": "of only one round due to insufficient ammu- nition, resolve it as a single-shot attack."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4071,
+          "snippet": "pwr   += shortBurst ? 2 : 3;"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3865,
+          "snippet": "if (have === 2) return { mode: 'BF', rounds: 2,"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3867,
+          "snippet": "return { mode: 'SS', rounds: Math.min(1, have)"
+        }
+      ],
+      "note": "Short bursts are detected from the clip only while the Track Ammunition setting is on (resolveBurst); with tracking off every burst is a full burst."
     },
     {
       "id": "rules/weapons.md#75",
@@ -50402,7 +51743,34 @@
       ],
       "hash": "b05de5fad9",
       "text": "- **Heavy weapons double uncompensated recoil**: a medium machine gun\n  firing 10 rounds with 6 points of compensation has (10 − 6) × 2 = **+8**.\n  So does a shotgun in burst-fire *(SR3 p.111)*.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "compensation, equals 4; 4 doubled is 8"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 113,
+          "printedPage": 111,
+          "quote": "Any shotgun fired in Burst-Fire Mode is also subjected to the double recoil modifier for any uncompensated recoil."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1282,
+          "snippet": "const HEAVY_CATS = new Set(['LMG', 'MMG', 'HMG', 'MinG']);"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4032,
+          "snippet": "const mult = (isHeavy || (isShotgun && mode === 'BF')) ? 2 : 1;"
+        }
+      ],
+      "note": "Book (SR3 p.111): \"For any weapon classified as a Heavy Weapon (Light, Medium, Heavy Machine Guns and all Assault Cannons) double all uncompensated recoil.\" The doubling, the (10-6)x2 = 8 worked example and the shotgun-in-burst case are all implemented (recoilTN), but the heavy-weapon test is HEAVY_CATS = LMG, MMG, HMG, MinG: the assault cannon category (ACan, the shipped Vigorous Assault Cannon) is left out."
     },
     {
       "id": "rules/weapons.md#76",
@@ -50413,7 +51781,33 @@
       ],
       "hash": "75a5687d8c",
       "text": "- **Several targets**: **+2** to the TN for each new target engaged that\n  Combat Phase. Full-auto fire walked between targets wastes **1 round per\n  meter** between them; smartguns waste none *(SR3 p.116)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "one round is wasted for every meter of distance between the two targets. Smartguns never waste rounds."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "The attacker also receives a +2 modifier to the target number for each new target engaged during that Combat Phase."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3949,
+          "snippet": "return smartgun ? 0 : Math.max(0, Math.trunc(Number(metres) || 0));"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3987,
+          "snippet": "return n > 1 ? (n - 1) * 2 : 0;"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#77",
@@ -50424,7 +51818,23 @@
       ],
       "hash": "f1986c8edd",
       "text": "| Firing Mode Table *(SR3 p.117)* | Firing mode |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "ic (varies by weapon) Semi-automatic and burst-fire Semi-automatic or burst-fire"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ItemDataModels.js",
+          "line": 151,
+          "snippet": "mode:            new StringField({ initial: '' }),"
+        }
+      ],
+      "note": "Header of the Firing Mode Table. The system stores each weapon's own modes (system.mode, e.g. \"SA/BF\"), not a table by class: the class rows below are checked against the shipped weapons."
     },
     {
       "id": "rules/weapons.md#78",
@@ -50435,7 +51845,27 @@
       ],
       "hash": "d8e52c688b",
       "text": "| Hold-Out Pistol | Single-shot or semi-automatic (varies by weapon) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "Single-shot or semi-automat- ic (varies by weapon) Semi-automatic Single-shot"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/streetline-special.sr3e-firearm-0016.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SS\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/walther-palm-pistol.sr3e-firearm-0019.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SS\""
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#79",
@@ -50446,7 +51876,27 @@
       ],
       "hash": "b2e68ac8a7",
       "text": "| Light Pistol | Semi-automatic |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "Semi-automatic Single-shot Single-shot or semi-automat- ic (varies by weapon)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/beretta-model-101t.sr3e-firearm-0023.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fichetti-security-500a.sr3e-firearm-0033.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\""
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#80",
@@ -50457,7 +51907,29 @@
       ],
       "hash": "37850ccc69",
       "text": "| Taser | Single-shot |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "Semi-automatic Single-shot Single-shot or semi-automat- ic (varies by weapon)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Defiance Super Shock 4 4 (m) SA 10S Stun 2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-super-shock.sr3e-firearm-0642.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\""
+        }
+      ],
+      "note": "Book: the Firing Mode Table (p.117) gives the Taser \"Single-shot\"; the Firearms table (p.278) gives the Defiance Super Shock \"SA\". The pack follows the Firearms table (SA). The book disagrees with itself; the guide copies the Firing Mode Table."
     },
     {
       "id": "rules/weapons.md#81",
@@ -50468,7 +51940,34 @@
       ],
       "hash": "f40f88ccbc",
       "text": "| Heavy Pistol | Single-shot or semi-automatic (varies by weapon) |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "Single-shot Single-shot or semi-automat- ic (varies by weapon) Semi-automatic and burst-fire"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Ares Viper Slivergun 6 30 (c) SA/BF 9S(f)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ruger-super-warhawk.sr3e-firearm-0133.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SS\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-viper-slivergun.sr3e-firearm-0077.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF\""
+        }
+      ],
+      "note": "Book: Firing Mode Table \"Single-shot or semi-automatic (varies by weapon)\" for heavy pistols; the Firearms table (p.278) gives the Ares Viper Slivergun SA/BF, which the pack carries. The book disagrees with itself."
     },
     {
       "id": "rules/weapons.md#82",
@@ -50479,7 +51978,39 @@
       ],
       "hash": "286f9907bf",
       "text": "| Submachine Gun | Semi-automatic and burst-fire |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "ic (varies by weapon) Semi-automatic and burst-fire Semi-automatic or burst-fire"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "AK-97 SMG/Carbine 4 30 (c) SA/BF/FA 6M"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97-smg-carbine.sr3e-firearm-0656.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF/FA\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/heckler-koch-hk227.sr3e-firearm-0683.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF/FA\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-smartgun-mod-20t.sr3e-firearm-0688.json",
+          "line": 14,
+          "snippet": "\"mode\": \"BF/FA\""
+        }
+      ],
+      "note": "Book: Firing Mode Table \"Semi-automatic and burst-fire\" for submachine guns; the Firearms table (p.278) lists the AK-97 SMG/Carbine and HK227 as SA/BF/FA, the Ingram Smartgun BF/FA and the Uzi III BF, which is what the pack carries. The book disagrees with itself."
     },
     {
       "id": "rules/weapons.md#83",
@@ -50490,7 +52021,27 @@
       ],
       "hash": "bb3a8d9291",
       "text": "| Shotgun | Semi-automatic or burst-fire (varies by weapon) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "Semi-automatic and burst-fire Semi-automatic or burst-fire (varies by weapon) Semi-automatic, burst-fire"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-t-250.sr3e-firearm-0894.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/enfield-as7.sr3e-firearm-0896.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF\""
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#84",
@@ -50501,7 +52052,27 @@
       ],
       "hash": "8d3fb85a63",
       "text": "| Assault Rifle | Semi-automatic, burst-fire and/or full-auto (varies by weapon) |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "(varies by weapon) Semi-automatic, burst-fire and/or full-auto (varies by weapon) Semi-automatic"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97.sr3e-firearm-0761.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF/FA\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fn-har.sr3e-firearm-0772.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF/FA\""
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#85",
@@ -50512,7 +52083,27 @@
       ],
       "hash": "2d9d286360",
       "text": "| Sporting Rifle | Semi-automatic |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "and/or full-auto (varies by weapon) Semi-automatic Semi-automatic Full-auto"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-750.sr3e-firearm-1003.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-950.sr3e-firearm-1004.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\""
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#86",
@@ -50523,7 +52114,22 @@
       ],
       "hash": "3c4d122e4c",
       "text": "| Sniper Rifle | Semi-automatic |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "weapon) Semi-automatic Semi-automatic Full-auto Single-shot"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ranger-arms-sm-3.sr3e-firearm-0966.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\""
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#87",
@@ -50534,7 +52140,39 @@
       ],
       "hash": "5e94681444",
       "text": "| LMG/MMG/HMG | Full-auto |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "Semi-automatic Semi-automatic Full-auto Single-shot"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "Ingram Valiant LMG -- 50 (c)/Belt BF/FA"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-valiant.sr3e-firearm-1134.json",
+          "line": 14,
+          "snippet": "\"mode\": \"BF/FA\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rpk-hmg.sr3e-firearm-1156.json",
+          "line": 14,
+          "snippet": "\"mode\": \"FA\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ultimax-mmg.sr3e-firearm-1147.json",
+          "line": 14,
+          "snippet": "\"mode\": \"FA\""
+        }
+      ],
+      "note": "Book: Firing Mode Table \"Full-auto\" for LMG/MMG/HMG; the Firearms table (p.279) gives the Ingram Valiant LMG BF/FA, which the pack carries (the RPK HMG and Ultimax MMG are FA). The book disagrees with itself."
     },
     {
       "id": "rules/weapons.md#88",
@@ -50545,7 +52183,22 @@
       ],
       "hash": "7f483b5844",
       "text": "| Assault Cannon | Single-shot |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "Semi-automatic Semi-automatic Full-auto Single-shot"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/vigorous-assault-cannon.sr3e-firearm-1161.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SS\""
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#89",
@@ -50556,7 +52209,51 @@
       ],
       "hash": "d33a9adf8c",
       "text": "> **The book's example** *(SR3 p.115–116)*: Wedge fires an AK-97 (**8M**)\n> with a gas vent 3 and a shock pad, 4 points of compensation, and a laser\n> sight (−1). Base TN 4 − 1 = **3**.\n> - Burst one, 3 rounds at the first punk: 3 recoil, all compensated. TN\n>   **3**, damage 8 + 3 = **11S**.\n> - Burst two, 3 rounds at the second: 6 rounds fired, 2 uncompensated,\n>   +2 for the second target. TN 3 + 2 + 2 = **7**, **11S**.\n> - Burst three, 4 rounds at the third: 10 rounds, 6 uncompensated, +4 for\n>   the third target. TN 3 + 6 + 4 = **13**, damage 8 + 4 = **12S**.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "reducing Wedge's Target Number to 3 (4 - 1)."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "Number to 13 (3 + 6 + 4 = 13)."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "round burst the AK-97 does 12S damage. Ouch!"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "raising it to 7 (3 + 2 + 2 = 7)."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 3987,
+          "snippet": "return n > 1 ? (n - 1) * 2 : 0;"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4040,
+          "snippet": "return Math.max(0, (roundsBefore + own) - totalComp) * mult;"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4071,
+          "snippet": "pwr   += shortBurst ? 2 : 3;"
+        }
+      ],
+      "note": "Arithmetic checked: 3 recoil all compensated = TN 3, 8+3 = 11S; 6 rounds, 2 uncompensated, +2 second target = 7; 10 rounds, 6 uncompensated, +4 third target = 13, a 4-round burst raises Power 8+4 = 12S (Level +1). The functions reproduce it."
     },
     {
       "id": "rules/weapons.md#90",
@@ -50567,7 +52264,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#91",
@@ -50578,7 +52276,22 @@
       ],
       "hash": "78369f3f68",
       "text": "## Ammunition  *(SR3 p.116–117, p.279–281)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "Most weapons can fire an assortment of ammunition"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1538,
+          "snippet": "ammoTypes: {"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#92",
@@ -50589,7 +52302,40 @@
       ],
       "hash": "e58dcb4f51",
       "text": "One type per clip, except tracers. Damage codes assume regular ammo.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "Ammunition cannot be mixed in a clip. Each clip must contain only one type of ammo."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "exception to the restriction of one type of ammunition to a clip."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "Damage codes for weapons are calculated using regular ammunition."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/ItemDataModels.js",
+          "line": 155,
+          "snippet": "loadedAmmoType:  new StringField({ initial: 'regular' }),"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1545,
+          "snippet": "tracer:      { label: 'Tracer',       faOnly: true, tracer: true },"
+        }
+      ],
+      "note": "A gun carries one loadedAmmoType; the tracer-every-third-round mix is modelled as a tracer type with its own damage rule, not as a mixed clip."
     },
     {
       "id": "rules/weapons.md#93",
@@ -50600,7 +52346,8 @@
       ],
       "hash": "ab9ca2ac12",
       "text": "| Type | Effect |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#94",
@@ -50611,7 +52358,39 @@
       ],
       "hash": "3b6b53aa07",
       "text": "| **APDS** | **Halves** (round down) armor's Ballistic rating and Barrier Ratings. Normal ammo against vehicles and drones. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "APDS halves (round down) the Ballistic Rating of armor or the Barrier Rating of an object in any attack."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "normal ammunition against vehicles and drones."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1543,
+          "snippet": "apds:        { label: 'APDS',         armorEffect: 'apds' },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 9330,
+          "snippet": "} else if (ammoRules.armorEffect === 'apds') {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7660,
+          "snippet": "const v = actor.system?.attributes?.armor?.base ?? 0;"
+        }
+      ],
+      "note": "Halving the target's Ballistic armour (round down) is implemented. Two parts of the rule are not: (1) the Barrier Rating is never halved (the weapon flow has no barrier handling); (2) the book says APDS \"is not anti-vehicular and is therefore treated as normal ammunition against vehicles and drones\", but the soak card applies the same halving to a vehicle's Armor (armorRatings gives a vehicle ballistic = impact = Armor), so APDS halves vehicle armour."
     },
     {
       "id": "rules/weapons.md#95",
@@ -50622,7 +52401,40 @@
       ],
       "hash": "5e96ff7d7e",
       "text": "| **Explosive** | **+1 Power**. Through a barrier: TN is twice the Barrier Rating, and the barrier takes damage as if at half. **Misfires** when every die rolls a 1: the shooter is hit by the weapon's normal damage, resisted without Combat Pool. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "Increase the Power Rating of any attack made with explosive rounds by 1."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "use twice the mate- rial's normal Barrier Rating as the target number for the attack; however, the barrier itself takes damage from a successful attack as if it had half its normal Barrier Rating."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "Explosive rounds will misfire whenever all the dice rolled for the attack test come up 1."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1540,
+          "snippet": "explosive:   { label: 'Explosive',    powerMod: 1 },"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1268,
+          "snippet": "rules.powerMod ?? 0"
+        }
+      ],
+      "note": "+1 Power is implemented (ammoTypes.explosive.powerMod). Not implemented: the barrier rules (TN twice the Barrier Rating, barrier damaged as at half) and the misfire (all dice 1: the shooter is attacked with the weapon's normal damage, resisted without Combat Pool, and the shot misses). No code in the ranged flow references either."
     },
     {
       "id": "rules/weapons.md#96",
@@ -50633,7 +52445,29 @@
       ],
       "hash": "91363ee04c",
       "text": "| **EX Explosive** | **+2 Power**, otherwise as explosive. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "EX Explosive rounds adds +2 to the power of the weapon."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "It follows all other standard explosive rounds rules."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1541,
+          "snippet": "exExplosive: { label: 'EX Explosive', powerMod: 2 },"
+        }
+      ],
+      "note": "+2 Power is implemented; \"otherwise as explosive\" inherits the missing barrier and misfire rules (see the Explosive row)."
     },
     {
       "id": "rules/weapons.md#97",
@@ -50644,7 +52478,45 @@
       ],
       "hash": "a887f0dd95",
       "text": "| **Flechette** | **+1 Damage Level** against unarmored targets. Against armor, use **double Impact or Ballistic, whichever is higher**. Double Barrier Ratings and vehicle armor. Dermal armor cancels the level increase. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "Against unarmored targets, flechette rounds increase their Damage Codes by one level."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "Armor Rating, use either double its Impact Armor Rating or its normal Ballistic Armor Rating, whichever is higher. Double the Barrier Rating of any barriers fired at or through"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "Dermal armor negates the Damage Level increase of flechette ammunition."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7893,
+          "snippet": "static flechetteRaisesLevel({ ballistic = 0, impact = 0, dermalArmor = 0 } = {}) {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 5268,
+          "snippet": "return Math.max(Math.max(0, impact) * 2, Math.max(0, ballistic));"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7909,
+          "snippet": "static flechetteCodedDrop({ dermalArmor = 0 } = {}) {"
+        }
+      ],
+      "note": "Implemented: +1 level against the unarmoured, the double-Impact-or-Ballistic armour rule (a vehicle's Armor is both, so it doubles), dermal armour negating the increase. Not implemented: doubling Barrier Ratings (no barrier handling in the weapon flow)."
     },
     {
       "id": "rules/weapons.md#98",
@@ -50655,7 +52527,33 @@
       ],
       "hash": "b39fb6a9c3",
       "text": "| **Gel** | **−2 Power**, same level, all **Stun**. **Impact** armor applies, not Ballistic. Knockdown: Body against the attack's Power. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "Gel rounds have a Power Rating 2 points less than that listed for the weapon's normal round; they have the same Damage Level, except that all damage is Stun rather than Physical. Impact armor, not Ballistic, applies."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 118,
+          "printedPage": 116,
+          "quote": "equal to the Power of the attack."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1542,
+          "snippet": "gel:         { label: 'Gel',          powerMod: -2, isStun: true, armorEffect: 'gel' },"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7036,
+          "snippet": "return Math.max(2, ammoType === 'gel' ? p : Math.floor(p / 2));"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#99",
@@ -50666,7 +52564,39 @@
       ],
       "hash": "51ac1f52b3",
       "text": "| **Tracer** | Full-auto only, every third round. Without a smartgun, **−1 TN** beyond Short per three rounds fired. The tracers add no Power to the burst, but do raise its level: a 5M SMG firing 10 rounds does **12D**, not 15D. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "Non-smartgun users receive an additional -1 target number mod- ifier at all ranges beyond Short, cumulative with every third round fired"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "do not add a bonus to the Power for the tracer round, but do increase the Damage Level accordingly."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1545,
+          "snippet": "tracer:      { label: 'Tracer',       faOnly: true, tracer: true },"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4075,
+          "snippet": "pwr   += isTracer ? (rds - Math.floor(rds / 3)) : rds;"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1424,
+          "snippet": "Tracer −${tracerTN} (beyond Short, non-smartgun"
+        }
+      ],
+      "note": "Damage is computed (a 5M SMG firing 10 rounds: Power +7, Level +3 = 12D). The -1 TN per three rounds beyond Short is shown on the card for the GM to apply (\"apply manually\"), not folded into the TN. Full-auto-only is a warning, not a refusal."
     },
     {
       "id": "rules/weapons.md#100",
@@ -50677,7 +52607,22 @@
       ],
       "hash": "8f1d60cc3c",
       "text": "Prices per 10 rounds are on [Reloading](../reloading/). Standard ammunition\nis **20¥ for 10 rounds** *(SR3 p.279)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "share ammo. Standard ammo costs 20"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-ammunition/regular-rnds.4fb05083db64fc8d.json",
+          "line": 26,
+          "snippet": "\"cost\": 20"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#101",
@@ -50688,7 +52633,28 @@
       ],
       "hash": "ebaca5e270",
       "text": "### Rockets and missiles  *(SR3 p.281)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 282,
+          "printedPage": 280,
+          "quote": "High-Explosive Rockets/Missiles (HER/HEM): These projec-"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 283,
+          "printedPage": 281,
+          "quote": "Rocket/Missiles Intelligence Damage Blast"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "(anti-?(personnel|vehicle)|high-?explosive) (rocket|missile)",
+          "path": "scripts"
+        }
+      ],
+      "note": "No SR3 rocket or missile item exists. Manual grep of packs-src: the SR3 ammunition pack has grenades and mini-grenades but no AP/AV/HE rockets or missiles (only Cannon Companion gyrojet rockets and vehicle-weapon missiles). The script search can only scan .js/.mjs, so the pack side is not machine-proven."
     },
     {
       "id": "rules/weapons.md#102",
@@ -50699,7 +52665,8 @@
       ],
       "hash": "a81819ebf8",
       "text": "| | Intelligence | Damage | Blast |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#103",
@@ -50710,7 +52677,22 @@
       ],
       "hash": "89dda20022",
       "text": "| Anti-Personnel rocket | NA | 16D | −1/.5m |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 283,
+          "printedPage": 281,
+          "quote": "Rockets Anti-Personnel NA 16D -1/.5m"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "(anti-?(personnel|vehicle)|high-?explosive) (rocket|missile)",
+          "path": "scripts"
+        }
+      ],
+      "note": "The row is right (checked against the book table: Intelligence, 16D, Blast as the guide prints them) but no such rocket or missile item ships; see the section heading."
     },
     {
       "id": "rules/weapons.md#104",
@@ -50721,7 +52703,22 @@
       ],
       "hash": "2d47b1f91c",
       "text": "| Anti-Vehicle rocket | NA | 16D | −8/m |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 283,
+          "printedPage": 281,
+          "quote": "Anti-Vehicle NA 16D -8/m 3 8/14 days"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "(anti-?(personnel|vehicle)|high-?explosive) (rocket|missile)",
+          "path": "scripts"
+        }
+      ],
+      "note": "The row is right (checked against the book table: Intelligence, 16D, Blast as the guide prints them) but no such rocket or missile item ships; see the section heading."
     },
     {
       "id": "rules/weapons.md#105",
@@ -50732,7 +52729,22 @@
       ],
       "hash": "95ee3ca259",
       "text": "| High-Explosive rocket | NA | 16D | −1/m |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 283,
+          "printedPage": 281,
+          "quote": "High-Explosive NA 16D -1/m"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "(anti-?(personnel|vehicle)|high-?explosive) (rocket|missile)",
+          "path": "scripts"
+        }
+      ],
+      "note": "The row is right (checked against the book table: Intelligence, 16D, Blast as the guide prints them) but no such rocket or missile item ships; see the section heading."
     },
     {
       "id": "rules/weapons.md#106",
@@ -50743,7 +52755,22 @@
       ],
       "hash": "0872c02b16",
       "text": "| Anti-Personnel missile | 3 | 16D | −1/.5m |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 283,
+          "printedPage": 281,
+          "quote": "Missiles Anti-Personnel Anti-Vehicle 3 16D -1/.5m"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "(anti-?(personnel|vehicle)|high-?explosive) (rocket|missile)",
+          "path": "scripts"
+        }
+      ],
+      "note": "The row is right (checked against the book table: Intelligence, 16D, Blast as the guide prints them) but no such rocket or missile item ships; see the section heading."
     },
     {
       "id": "rules/weapons.md#107",
@@ -50754,7 +52781,22 @@
       ],
       "hash": "476cb50033",
       "text": "| Anti-Vehicle missile | 4 | 16D | −8/m |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 283,
+          "printedPage": 281,
+          "quote": "High-Explosive 4 16D -8/m"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "(anti-?(personnel|vehicle)|high-?explosive) (rocket|missile)",
+          "path": "scripts"
+        }
+      ],
+      "note": "The row is right (checked against the book table: Intelligence, 16D, Blast as the guide prints them) but no such rocket or missile item ships; see the section heading."
     },
     {
       "id": "rules/weapons.md#108",
@@ -50765,7 +52807,22 @@
       ],
       "hash": "ea5130468b",
       "text": "| High-Explosive missile | 3 | 16D | −1/m |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 283,
+          "printedPage": 281,
+          "quote": "High-Explosive 3 16D -1/m"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "(anti-?(personnel|vehicle)|high-?explosive) (rocket|missile)",
+          "path": "scripts"
+        }
+      ],
+      "note": "The row is right (checked against the book table: Intelligence, 16D, Blast as the guide prints them) but no such rocket or missile item ships; see the section heading."
     },
     {
       "id": "rules/weapons.md#109",
@@ -50776,7 +52833,26 @@
       ],
       "hash": "ff5bff0181",
       "text": "A missile's Intelligence is its targeting circuitry *(SR3 p.279)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "The Intelligence rating listed on the table represents the missile's targeting and control circuits"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "missile.{0,40}intelligence",
+          "path": "scripts"
+        },
+        {
+          "pattern": "targeting (and control )?circuit",
+          "path": "scripts"
+        }
+      ],
+      "note": "No missile Intelligence is modelled."
     },
     {
       "id": "rules/weapons.md#110",
@@ -50787,7 +52863,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#111",
@@ -50798,7 +52875,22 @@
       ],
       "hash": "7ee4208aeb",
       "text": "## Shotguns  *(SR3 p.117)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "The shotguns described in the Street Gear section (beginning on p. 277) fire slug rounds."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/shotgun.mjs",
+          "line": 69,
+          "snippet": "return weapon?.system?.category === 'ShtG' && weapon?.system?.loadedAmmoType === 'shot';"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#112",
@@ -50809,7 +52901,22 @@
       ],
       "hash": "31bd2c9ea0",
       "text": "The listed shotguns fire **slugs**. **Shot rounds** use the **flechette\nrules** on the gun's Damage Code, and spread:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "To determine the damage done by shot rounds, apply the flechette ammunition rules to the Damage Code indicated for the weapon."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 1549,
+          "snippet": "shot:        { label: 'Shot',         armorEffect: 'flechette', shotgunOnly: true },"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#113",
@@ -50820,7 +52927,33 @@
       ],
       "hash": "e4eb103f38",
       "text": "- Set the **choke** from 2 to 10. Every *choke* meters the shot travels, the\n  pattern widens by a meter.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "The shotgun user can set his weapon's choke at anywhere from 2 to 10."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "For every number of meters equal to the choke setting that the shot travels, it will spread one meter"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/shotgun.mjs",
+          "line": 40,
+          "snippet": "export const CHOKE_MIN = 2, CHOKE_MAX = 10, CHOKE_DEFAULT = 5;"
+        },
+        {
+          "file": "scripts/data/shotgun.mjs",
+          "line": 53,
+          "snippet": "return Math.max(1, Math.ceil(d / Shotgun.choke(choke)));"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#114",
@@ -50831,7 +52964,33 @@
       ],
       "hash": "6bff374b2f",
       "text": "- Each widening costs **1 Power** and gives the attacker **−1 TN**. At Power\n  0 the shot is spent.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "Every time a shot round increases its spread, it loses 1 point of power. Every time the shot spreads, subtract -1 from the attacker's target number."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "When the Power reaches 0, the shot is considered ineffective"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/shotgun.mjs",
+          "line": 64,
+          "snippet": "return { spreads: s, power: -s, tn: -s, dodge: s };"
+        },
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1387,
+          "snippet": "if (p.power + shot.power <= 0) {"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#115",
@@ -50842,7 +53001,29 @@
       ],
       "hash": "68920ea738",
       "text": "- **Everyone in the spread is a target.** The attacker rolls once; each\n  target dodges and resists against those successes, with **+1 Damage\n  Resistance die** per other target in front of them.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "within the area of spread is con- sidered a valid target."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "Award an additional die to the target's Damage Resistance Test for every other target within the spread in front of the target."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 1418,
+          "snippet": "each gets +1 Damage Resistance die per other target in front of them"
+        }
+      ],
+      "note": "Offered, not applied: the attack goes at one target; the card tells the GM that everyone in the spread is a valid target and gets +1 Damage Resistance die per other target in front. The extra dice are not added to any roll."
     },
     {
       "id": "rules/weapons.md#116",
@@ -50853,7 +53034,22 @@
       ],
       "hash": "728d9ceb06",
       "text": "- A smartlink is worth **−1** with shot. Smart goggles and laser sights\n  don't help.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "Shotguns equipped with smartlinks that fire shot rounds receive a -1 target number modifier. Shotguns get no benefits from smart goggles or laser sights."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3ECombatModifiers.js",
+          "line": 63,
+          "snippet": "key: 'smartlinkShot'"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#117",
@@ -50864,7 +53060,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#118",
@@ -50875,7 +53072,8 @@
       ],
       "hash": "4c0ae00e8c",
       "text": "## The core rulebook's weapons",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#119",
@@ -50897,7 +53095,8 @@
       ],
       "hash": "61d68675a9",
       "text": "| Weapon | Conceal | Reach | Damage | Cost | Legal |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#121",
@@ -50908,7 +53107,8 @@
       ],
       "hash": "5662d4a4dd",
       "text": "| *Edged* | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#122",
