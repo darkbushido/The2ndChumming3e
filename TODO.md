@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**49 open.** 176 done — see [TODO-DONE.md](TODO-DONE.md).
+**58 open.** 176 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings" |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -553,6 +553,97 @@ Wanted: a clip is bought for, and keyed to, one weapon (the gun on the sheet, or
 offers only that weapon's clips, and a clip's capacity is its weapon's. Loose rounds stay shared by class
 (p.279). This needs an item link and the purchase and reload flows, so it's a feature and goes on a branch,
 with a migration for existing clips (unkeyed clips fit anything until they're assigned).
+
+## 226. Pain Resistance against pain itself — **found in the 0.7.0 rules check, 2026-10-18**
+
+**SR3 p.170:** besides offsetting wound modifiers, *"The level is subtracted from your target numbers to resist
+pain"*: torture, a painful disease, interrogation. The system reads `painResistance` only for the wound lookup
+(rules check `magic/physical-adepts.md#74`). Wanted: the level offered as a TN reduction on a test the GM marks
+as resisting pain (a roll-dialog row, or a GM tool), stated, never applied without a click. **The maintainer,
+2026-10-18:** not needed now.
+
+## 227. Off-road Handling and Speed — **found in the 0.7.0 rules check, 2026-10-18**
+
+**SR3 p.130:** most ground vehicles have two Handling ratings, the second used *"in off-road terrain"*, and a
+ground vehicle off-road also halves its Speed. The packs carry `handlingOffRoad`, but every Driving Test, chase
+action and Crash Test reads `handling.base` (rules check `rules/vehicles.md#7`). Wanted: an on/off-road choice on
+the Driving Test, the Crash Test and the Chase Scene (per participant), which picks the Handling and halves Speed.
+**The maintainer, 2026-10-18:** may be a bigger issue (the chase's terrain rows, the Collision tool, drones) — a
+feature, on a branch.
+
+## 228. Initiation, metamagic, geasa and magical groups — **found in the 0.7.0 rules check, 2026-10-18**
+
+The system stores `initiateGrade` and nothing else of *Magic in the Shadows* pp.30-33 and 57-79 (rules check
+`magic/initiation.md`: 79 units not implemented). TODO 219 covers the Good Karma costs; this is the mechanics:
+- **Grades** (MitS p.58): +1 Magic per grade (or shed a geas instead), metaplane access for full magicians,
+  altering an astral signature (Magic Test against 6 + …).
+- **The Karma cost** (MitS p.58): base 5 + the new grade, × 3 self / × 2.5 self with an ordeal / × 2 group /
+  × 1.5 group with an ordeal — shared with #219.
+- **Ordeals** (MitS pp.58-61): astral quest, asceticism, deed, familiar, geas, meditation, oath, thesis.
+- **Magical groups and strictures** (MitS pp.61-65): joining (3 Karma + dues), founding, leaving (Magic loss
+  check), strictures and breaking them.
+- **Metamagic** (MitS pp.69-79): learning (one technique per grade, teacher / astral quest / free spirit), and
+  each technique — anchoring, centering (the two-skill rules, MitS pp.72-74), cleansing, divining, invoking,
+  masking, possessing, quickening, reflecting, shielding.
+- **Geasa** (MitS pp.30-33): take one on a lost Magic point, at most unaugmented Willpower, break one and lose all.
+A feature, on a branch; the initiate's Astral Pool and Astral Reaction bonus are being fixed separately (0.7.0).
+
+## 229. Learning spells, and starting Spell Points — **found in the 0.7.0 rules check, 2026-10-18**
+
+Rules check `magic/spells.md`: the system charges the Karma (Force) to learn a spell but models nothing else.
+- **Learning** (SR3 p.180): a teacher (≈ 1,000¥ × Force) or a formula of your tradition; a lodge or Sorcery
+  library; a Sorcery Test (Magic Background complementary); days = Force ÷ successes; failure wastes Force days.
+- **Formula prices** (SR3 p.305): L/M/S/D Drain → Force × 50 / 100 / 500 / 1,000¥, availability Force/24 hrs …
+- **Spell Points at creation** (SR3 pp.54-55, p.60): 25 for a full magician (aspected per the table), 1 per Force,
+  bonding foci at 1 per Karma, extra points at 25,000¥ each up to 50, nothing above Force 6.
+- **Permanent spells** (SR3 p.178): the base time to sustain by Drain Level (L 5 / M 10 / S 15 / D 20 Turns,
+  ÷ successes allocated) — the table exists only in `SR3EHealing.js`; the cast flow doesn't offer it.
+
+## 230. Detection spells: range and results — **found in the 0.7.0 rules check, 2026-10-18**
+
+**SR3 p.192:** a detection sense reaches **Force × Magic** metres, and the successes read off the Detection
+Spell Results table (1 general knowledge … 4 accurate and detailed). The target-number table (in sight 4, out of
+sight 6, another plane 10, + Force behind an astral barrier) is being fixed in 0.7.0 with the spell TNs; the range
+and the results table are not modelled (rules check `magic/spells.md#68`, `#88-92`).
+
+## 231. Drones from a deck: actions, subscriber lists, range, sensors — **found in the 0.7.0 rules check, 2026-10-18**
+
+Rules check `rules/drones.md`: 46 units not implemented.
+- **Subscriber lists and affiliation** (SR3 p.156): twice the deck's rating in drones; affiliate/disaffiliate is a
+  Simple Action.
+- **The rigger's deck actions** (SR3 pp.156-157): the Free / Simple / Complex list (sensors, arm a weapon, status
+  report, jump in, issue a command — a Complex Action, to one drone or a group).
+- **Range** (SR3 pp.136-138): the Flux-to-range table (`config.js` `fluxRange`, read by nothing) and the Situational
+  Range Modifiers (elevation +4, ECCM −rating÷2, storm −2, encryption −0.5, humid −0.5, urban −1).
+- **The Difficulty Number Table** (SR3 p.92) for drone tests and Passive/Active Sensor Tests (SR3 p.136): today the
+  GM types the TN.
+- **Gear**: rigger adaptation as a requirement (SR3 p.306) and the core Remote Control ECCM (Rating × 7,500 /
+  15,000 / 35,000¥, Rating 10 500,000¥ — SR3 p.306; only M&M's cranial ECCM ships).
+
+## 232. The Karma award table — **found in the 0.7.0 rules check, 2026-10-18**
+
+**SR3 p.244:** team Karma (survival, success, danger) and individual awards (good roleplaying, guts, smarts,
+motivation, right place / right time, surprise, humour and drama), with the 12-point ceiling for one run. Today the
+GM types a number into Award Karma / Session Rewards (rules check `rules/karma.md#13-22`). Wanted: the table as
+tick-boxes that total a suggestion the GM can edit. Also not modelled from the same page: Good Karma is spent
+**between adventures** with training time (p.244-245, `#25`), the Open Test Karma re-roll
+(`KarmaPool.openTestRerollCost` exists, nothing calls it, p.246 `#71`), and Karma Pool committed to extended
+actions (p.248, `#74`).
+
+## 233. Rockets and missiles — **found in the 0.7.0 rules check, 2026-10-18**
+
+**SR3 pp.279-281:** anti-personnel, anti-vehicle and high-explosive rockets and missiles (16D, blast −1/.5 m,
+−8/m, −1/m), missile Intelligence as targeting circuitry. None ship in the SR3 packs, and the launcher flow has no
+rocket/missile path (rules check `rules/weapons.md#101-109`). Wanted: the items, and the attack using the blast
+rules the grenade flow already has, with missile Intelligence added.
+
+## 234. Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts — **found in the 0.7.0 rules check, 2026-10-18**
+
+**SR3 p.307:** hardpoints carry heavy and vehicle weapons (MMG and larger), firmpoints lighter ones; a vehicle's
+**Body** sets how many it can have (a hardpoint takes 2 points); fixed mounts fire in a fixed arc, with recoil
+halved and Signature −1 (rules check `rules/vehicles.md#10`, `#64-67`). The vehicle-mods data has no Legal or RC
+fields for the mount rows either. Wanted: mounts as vehicle slots with capacity from Body, and their effects on the
+vehicle-weapon roll.
 
 ### 🪄 Spells & drugs
 
