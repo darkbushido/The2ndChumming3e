@@ -15,6 +15,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PackFixes070 } from '../scripts/data/pack-corrections-0-7-0.mjs';
+import { splitImagingScopes } from '../tools/build-default-gear.mjs';
 
 export const name = 'pack-corrections-070';
 
@@ -87,6 +88,35 @@ export async function run(t) {
   t.ok('RPK HMG: the (6) tripod is in the accessories', /6RC/.test(sys('sr3e-sr3-firearms', 'sr3e-firearm-1156').accessories));
   t.ok('...and a (6) / (1) weapon has no recoilMod: the figure counts only with the accessory',
     ['sr3e-firearm-1147', 'sr3e-firearm-1156', 'sr3e-firearm-0656', 'sr3e-firearm-0684'].every(id => !sys('sr3e-sr3-firearms', id).recoilMod));
+
+  // Imaging scopes: SR3 p.282 lists Low-Light and Thermographic as two items (Top, Concealability -2, 3/36 hrs,
+  // 1,500 nuyen, Street Index .8). No book prints a fixed-price combined scope (SR3 p.280: "add together the
+  // costs of their components"; Cannon Companion p.34 likewise), so the untyped item is replaced, not kept.
+  const gearDir = join(SRC, 'sr3e-sr3-gear');
+  const scopes = readdirSync(gearDir).filter(f => /^imaging-scope/.test(f)).map(f => JSON.parse(readFileSync(join(gearDir, f), 'utf8')).doc);
+  const lowLight = scopes.find(d => d.name === 'Imaging Scope, Low-Light');
+  const thermo = scopes.find(d => d.name === 'Imaging Scope, Thermographic');
+  for (const [label, d] of [['Low-Light', lowLight], ['Thermographic', thermo]]) {
+    t.ok(`imaging scope, ${label}: shipped`, !!d);
+    t.is(`...cost 1,500 (SR3 p.282)`, d?.system.cost, 1500);
+    t.is('...Concealability (-2)', d?.system.concealability, '(-2)');
+    t.is('...Availability 3/36hrs, Street Index .8, weight .25', `${d?.system.availability} ${d?.system.streetIndex} ${d?.system.weight}`, '3/36hrs .8 0.25');
+    t.is('...book page sr3.282', d?.system.bookPage, 'sr3.282');
+    t.ok('...Top mount in the description', /Top/.test(d?.system.description));
+    t.is('...unrated (a rating belongs to the magnification scopes)', d?.system.rating, null);
+  }
+  t.ok('...two different documents', lowLight?._id !== thermo?._id);
+  t.eq('the untyped "Imaging Scope" at Rating -, 1,500 is gone; the three magnification scopes stay',
+    scopes.filter(d => d.name === 'Imaging Scope').map(d => d.system.rating).sort(), [1, 2, 3]);
+  const gen = splitImagingScopes([
+    { row: { Name: 'Imaging Scope', Rating: '-', BookPage: 'sr3.282', Cost: '1500' }, category: 'x' },
+    { row: { Name: 'Imaging Scope', Rating: '2', BookPage: 'sr3.282', Cost: '800' }, category: 'x' },
+    { row: { Name: 'Imaging Scope', Rating: '-', BookPage: 'cc.28', Cost: '1500' }, category: 'x' },
+  ]);
+  t.eq('the generator splits only the untyped SR3 row, so a re-run reproduces the pack',
+    gen.map(g => g.row.Name), ['Imaging Scope, Low-Light', 'Imaging Scope, Thermographic', 'Imaging Scope', 'Imaging Scope']);
+  t.is('an old untyped Imaging Scope in a world is not touched (its kind cannot be known)',
+    PackFixes070.fixItem({ type: 'gear', name: 'Imaging Scope', system: { rating: null, cost: 1500, concealability: '(-2)', bookPage: 'sr3.282' } }), null);
 
   const att = (pack, id) => load(pack, id).doc.system.attributes;
   t.is('Hughes WK-2 Stallion: Cargo 72 (SR3 p.310)', att('sr3e-sr3-vehicles', 'sr3e-vehicle-0178').cargo.value, 72);

@@ -240,6 +240,23 @@ function rowDoc(row, category, edition) {
 
 /* ── The build ────────────────────────────────────────────────────────────────────────────── */
 
+/**
+ * SR3 p.282's Firearm Accessories table lists the Low-Light and the Thermographic imaging scope as TWO items
+ * (Top mount, Concealability -2, 3/36 hrs, 1,500¥, Street Index .8). Upstream has one untyped "Imaging Scope"
+ * row at those figures, which cannot say which kind it is (rules check 0.7.0, rules/weapons.md #223, #225).
+ * It becomes the two book items. No book prints a fixed-price combined scope: the core rules (p.280) and the
+ * Cannon Companion (p.34) both say a combo is built by adding the components' costs. The magnification
+ * scopes (Rating 1-3) are untouched.
+ */
+export function splitImagingScopes(rows) {
+  return rows.flatMap(({ row, category }) => {
+    const untyped = row.Name === 'Imaging Scope' && String(row.Rating ?? '').trim() === '-' && row.BookPage === 'sr3.282';
+    return untyped
+      ? ['Low-Light', 'Thermographic'].map(kind => ({ row: { ...row, Name: `Imaging Scope, ${kind}` }, category }))
+      : [{ row, category }];
+  });
+}
+
 function rowsByCategory(file) {
   const data = JSON.parse(readFileSync(join(REPO, file), 'utf8'));
   const out = [];
@@ -249,7 +266,7 @@ function rowsByCategory(file) {
       for (const x of Object.values(o)) if (x && typeof x === 'object') walk(x); } };
     walk(v);
   }
-  return out;
+  return splitImagingScopes(out);
 }
 
 const VARIANT_FIELDS = ['Rating', 'Cost', 'Weight', 'Concealability', 'Damage', 'Ballistic', 'Impact', 'Availability'];
