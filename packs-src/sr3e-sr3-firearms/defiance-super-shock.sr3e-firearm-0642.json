@@ -11,7 +11,7 @@
       "attribute": "quickness",
       "concealability": "4",
       "ammunition": "4(m)",
-      "mode": "SA",
+      "mode": "SS",
       "damage": "10S Stun",
       "weight": "2",
       "availability": "5/24hrs",

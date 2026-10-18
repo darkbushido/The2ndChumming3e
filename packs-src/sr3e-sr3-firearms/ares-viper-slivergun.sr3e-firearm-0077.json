@@ -11,7 +11,7 @@
       "attribute": "quickness",
       "concealability": "6",
       "ammunition": "30(c)",
-      "mode": "SA/BF",
+      "mode": "SA",
       "damage": "9S(f)",
       "flechette": true,
       "weight": "2",

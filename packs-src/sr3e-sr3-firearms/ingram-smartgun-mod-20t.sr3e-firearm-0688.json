@@ -11,7 +11,7 @@
       "attribute": "quickness",
       "concealability": "5",
       "ammunition": "32(c)",
-      "mode": "BF/FA",
+      "mode": "SA/BF",
       "damage": "7M",
       "weight": "3",
       "availability": "4/24hrs",
