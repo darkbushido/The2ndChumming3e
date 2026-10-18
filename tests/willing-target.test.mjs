@@ -19,7 +19,7 @@ export async function run(t) {
   /* ==== which spells may be cast on a willing subject ==== */
   for (const c of ['Health', 'Illusion', 'Manipulation', 'Detection', '', undefined])
     t.is(`${c || 'blank'} may be cast on a willing subject`, WillingTarget.canBeWilling(c), true);
-  t.is('Combat never (it is meant to hurt)', WillingTarget.canBeWilling('Combat'), false);
+  t.is('Combat may too (the maintainer, 0.7.0: a willing target of a Manabolt takes no Resistance Test)', WillingTarget.canBeWilling('Combat'), true);
   t.is('Elemental never (a Damage Resistance Test, p.183)', WillingTarget.canBeWilling(' elemental '), false);
 
   /* ==== the default tick ==== */
@@ -30,9 +30,26 @@ export async function run(t) {
   t.is('a stranger is not assumed willing', WillingTarget.defaultWilling({}), false);
   t.is('…nor with no facts at all', WillingTarget.defaultWilling(), false);
 
+  /* ==== Combat spells default to NOT willing — only ticked deliberately ==== */
+  t.is('Combat: not even the caster is pre-ticked', WillingTarget.defaultWilling({ isSelf: true }, 'Combat'), false);
+  t.is('Combat: an owned ally is not pre-ticked', WillingTarget.defaultWilling({ sameOwner: true, bothPlayerOwned: true, friendlyToken: true }, ' combat '), false);
+  for (const c of ['Health', 'Illusion', 'Manipulation', 'Detection', 'Transformation', '', undefined]) {
+    t.is(`${c || 'blank'} (a buff): self is ticked`, WillingTarget.defaultWilling({ isSelf: true }, c), true);
+    t.is(`${c || 'blank'} (a buff): an ally of the same owner is ticked`, WillingTarget.defaultWilling({ sameOwner: true }, c), true);
+    t.is(`${c || 'blank'} (a buff): a party member is ticked`, WillingTarget.defaultWilling({ bothPlayerOwned: true }, c), true);
+    t.is(`${c || 'blank'} (a buff): a friendly token is ticked`, WillingTarget.defaultWilling({ friendlyToken: true }, c), true);
+  }
+  t.is('defaultsToUnwilling is Combat only', ['Combat', 'Elemental', 'Health', ''].map(c => WillingTarget.defaultsToUnwilling(c)).join(), 'true,false,false,false');
+
+  /* ==== a vehicle is not living: no Spell Resistance Test (p.183) ==== */
+  t.is('a vehicle makes no resistance test', WillingTarget.isNonLiving('vehicle'), true);
+  t.is('a character does', WillingTarget.isNonLiving('character'), false);
+  t.ok('the non-living line cites p.183', /not living[\s\S]*p\.183/.test(WillingTarget.effectLine({ targetName: 'Van', spellName: 'Powerbolt', successes: 2, nonLiving: true })));
+
   /* ==== what the carried ids may hold ==== */
   t.eq('only real targets are carried', WillingTarget.carriedIds('Health', ['a', 'b'], ['a', 'zzz', 'a']), ['a']);
-  t.eq('a damaging spell carries none even if ticked', WillingTarget.carriedIds('Combat', ['a'], ['a']), []);
+  t.eq('a Combat spell carries a deliberate tick', WillingTarget.carriedIds('Combat', ['a', 'b'], ['a']), ['a']);
+  t.eq('an Elemental spell carries none even if ticked', WillingTarget.carriedIds('Elemental', ['a'], ['a']), []);
   t.eq('nothing ticked', WillingTarget.carriedIds('Health', ['a'], []), []);
 
   /* ==== who skips the Resistance Test ==== */
@@ -62,7 +79,12 @@ export async function run(t) {
   t.ok('a cancelled willing dialog cancels the cast', /picked === null\) return null/.test(item));
   t.ok('the dialog is a DialogV2.wait with checkboxes, defaults from defaultWilling',
     /_promptWillingTargets[\s\S]{0,3000}type="checkbox" name="willing"[\s\S]{0,2500}DialogV2\.wait/.test(item)
-    && /WillingTarget\.defaultWilling\(facts\)/.test(item));
+    && /WillingTarget\.defaultWilling\(facts, category\)/.test(item));
+  t.ok('the dialog is given the spell category, so Combat defaults to unticked',
+    /_promptWillingTargets\(actor, targetActors, this\.name, this\.system\.category\)/.test(item));
+  t.ok('same-owner is read for the default (a buff on the player own ally never rolls)',
+    /sameOwner:\s+!!game\.users\?\.some\(u => !u\.isGM/.test(item));
+  t.ok('a non-living target skips the resist button', /isNonLiving\(tActor\.type\)[\s\S]{0,300}nonLiving: true/.test(actor));
   t.ok('the resist button yields to the willing line', /WillingTarget\.resolvesUnresisted\(sc, targetId\)/.test(actor));
   t.ok('the willing branch sits before the elemental dodge branch in _spellResistButton',
     actor.indexOf('WillingTarget.resolvesUnresisted(sc, targetId)') < actor.indexOf('if (sc.isElemental) {\n      const staged'));

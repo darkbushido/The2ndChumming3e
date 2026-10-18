@@ -2821,4 +2821,25 @@ export const MUTANTS = [
       return this._fixItemOriginal(item);
     },
   },
+  {
+    id:     'willing-combat-spell-never-offered',
+    suite:  'willing-target',
+    ...WILLING, method: 'canBeWilling',
+    was:    'the pre-ruling behaviour: a Combat spell could never be cast on a willing subject, so a Manabolt on a consenting target still had to be resisted (SR3 p.183: "unless the target of the spell is willing"; the maintainer ruled Combat allowed, Elemental not)',
+    impl:   c => !/^\s*(combat|elemental)\s*$/i.test(String(c ?? '')),
+  },
+  {
+    id:     'willing-combat-defaults-ticked',
+    suite:  'willing-target',
+    ...WILLING, method: 'defaultsToUnwilling',
+    was:    'a Combat spell pre-ticks the caster and allies as willing: a Manabolt at a party member would skip its Resistance Test unless someone unticked it',
+    impl:   () => false,
+  },
+  {
+    id:     'willing-vehicle-resists-a-spell',
+    suite:  'willing-target',
+    ...WILLING, method: 'isNonLiving',
+    was:    'a vehicle was handed a Resist Spell button (SR3 p.183: only "living targets" make a Spell Resistance Test)',
+    impl:   () => false,
+  },
 ];

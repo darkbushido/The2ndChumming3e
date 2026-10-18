@@ -2733,8 +2733,14 @@ and a Combat spell (Manabolt), and a second actor on the scene. No restart neede
       resists as before.
 - [ ] A cast with **zero successes** on a willing subject says the spell fails; Drain is still owed.
 - [ ] A **touch** spell on a willing subject adds "No Unarmed Combat Test is needed" (p.178).
-- [ ] **Manabolt** (Combat) and an Elemental spell cast at yourself or an ally: **no** willing dialog appears and
-      the usual Resist Spell / dodge flow runs.
+- [ ] **Manabolt** (Combat) cast at an ally: the willing dialog appears with **nobody ticked** (not even yourself) and a
+      line saying a Combat spell is meant to hurt. Leave it unticked: the usual Resist Spell flow runs. Tick the ally:
+      no Resist button, a line says every success sets the effect (0.7.0 ruling, SR3 p.183).
+- [ ] An **Elemental** spell (Fireball) cast at an ally: **no** willing dialog; the dodge / soak flow runs.
+- [ ] A buff (Increase Reflexes, Invisibility, Heal) cast at a player-owned ally, a Friendly-disposition NPC token, and as an
+      **area** over several of them: each is ticked by default and none gets a Resist Spell button. An NPC with neutral
+      or hostile disposition is unticked.
+- [ ] Any non-Elemental spell cast at a **vehicle**: no Resist Spell button, a line says it is not living (p.183).
 - [ ] An **area** non-damaging spell lists every target in the radius (the caster included) with its own tick.
 - [ ] Press **Cancel** or Esc on the willing dialog: the cast is cancelled and no Spell Pool is spent.
 

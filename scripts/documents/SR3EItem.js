@@ -3601,22 +3601,24 @@ export class SR3EItem extends Item {
   }
 
   /**
-   * "Is the target willing?" — one tick per target of a non-damaging spell · SR3 p.183 (TODO 191).
+   * "Is the target willing?" — one tick per target of any spell but an Elemental one · SR3 p.183 (TODO 191).
    * A willing subject takes no Spell Resistance Test; the defaults come from `WillingTarget.defaultWilling`
    * (self, an actor the same player owns, a party member, a friendly token) and every one is editable.
    * Resolves to the ticked actor ids, or `null` when the caster cancels.
    */
-  static async _promptWillingTargets(caster, targets, spellName) {
+  static async _promptWillingTargets(caster, targets, spellName, category = '') {
     const Q = game.sr3e.SR3EQuery;
     const friendly = globalThis.CONST?.TOKEN_DISPOSITIONS?.FRIENDLY ?? 1;
     const rows = targets.map(t => {
       const facts = {
         isSelf:          t.id === caster.id,
         bothPlayerOwned: !!(Q?.isPlayerCharacter(caster) && Q?.isPlayerCharacter(t)),
+        // A player (not the GM, who owns everything) who owns both the caster and this target.
+        sameOwner:       !!game.users?.some(u => !u.isGM && caster.testUserPermission?.(u, 'OWNER') && t.testUserPermission?.(u, 'OWNER')),
         friendlyToken:   t.getActiveTokens?.().some(tk => tk.document?.disposition === friendly) ?? false,
       };
-      const on = WillingTarget.defaultWilling(facts);
-      const why = facts.isSelf ? 'the caster' : (facts.bothPlayerOwned ? 'party' : (facts.friendlyToken ? 'friendly token' : ''));
+      const on = WillingTarget.defaultWilling(facts, category);
+      const why = facts.isSelf ? 'the caster' : (facts.sameOwner ? 'same owner' : (facts.bothPlayerOwned ? 'party' : (facts.friendlyToken ? 'friendly token' : '')));
       return `<label class="sr-target-row" style="display:flex;gap:6px;align-items:center">
         <input type="checkbox" name="willing" value="${t.id}" ${on ? 'checked' : ''}
                style="width:13px;height:13px;margin:0;appearance:auto;-webkit-appearance:checkbox"/>
@@ -3628,7 +3630,8 @@ export class SR3EItem extends Item {
       window: { title: `${caster.name} — ${spellName}: willing targets?` },
       content: `
         <p style="font-size:12px;margin:0 0 6px">Tick each target that is <strong>willing</strong> — it makes no Spell Resistance Test and
-        every success sets the spell's effect (SR3 p.183). Leave a target unticked and it resists as usual.</p>
+        every success sets the spell's effect (SR3 p.183). Leave a target unticked and it resists as usual.
+        ${WillingTarget.defaultsToUnwilling(category) ? '<br/><em>A Combat spell is meant to hurt — tick a target only if it has agreed to be hit.</em>' : ''}</p>
         <div class="sr-target-list">${rows}</div>`,
       buttons: [
         {
@@ -4809,7 +4812,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
      * per target — defaulted from self / an owned or friendly actor, always the caster's to change. */
     let willingTargetIds = [];
     if (WillingTarget.canBeWilling(this.system.category) && targetActors.length) {
-      const picked = await SR3EItem._promptWillingTargets(actor, targetActors, this.name);
+      const picked = await SR3EItem._promptWillingTargets(actor, targetActors, this.name, this.system.category);
       if (picked === null) return null;   // cancelled
       willingTargetIds = WillingTarget.carriedIds(this.system.category, targetActors.map(t => t.id), picked);
     }

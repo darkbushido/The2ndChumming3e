@@ -10606,6 +10606,10 @@ _prepareCharacter(sys, attr) {
      * > according to the spell's description, to determine the spell's effect."
      * No Resist button: a line states the effect. Both sites that hand out spell buttons come through
      * here, so counterspelling (which lowers `attackSuccesses` first) still applies. */
+    if (!sc.isElemental && WillingTarget.isNonLiving(tActor.type)) {
+      return `<div class="sr-roll-meta" style="font-size:11px">🧱 ${WillingTarget.effectLine({
+        targetName: tActor.name, spellName: sc.spellName ?? 'The spell', successes: attackSuccesses, nonLiving: true })}</div>`;
+    }
     if (WillingTarget.resolvesUnresisted(sc, targetId)) {
       return `<div class="sr-roll-meta" style="font-size:11px">🤝 ${WillingTarget.effectLine({
         targetName: tActor.name, spellName: sc.spellName ?? 'The spell', successes: attackSuccesses, touch: !!sc.touch })}</div>`;
