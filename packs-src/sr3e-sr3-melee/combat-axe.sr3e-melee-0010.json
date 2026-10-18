@@ -5,8 +5,8 @@
     "name": "Combat Axe",
     "type": "melee",
     "system": {
-      "category": "EDG",
-      "skill": "Edged Weapons",
+      "category": "POL",
+      "skill": "Pole Arms/Staff",
       "attribute": "strength",
       "concealability": "2",
       "reach": "2",
@@ -21,7 +21,7 @@
       "hands": 1
     },
     "effects": [],
-    "img": "systems/The2ndChumming3e/styles/icons/melee-edged.svg"
+    "img": "systems/The2ndChumming3e/styles/icons/melee-pole.svg"
   },
   "embedded": {}
 }

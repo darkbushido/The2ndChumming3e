@@ -9,7 +9,7 @@
       "skill": "Whips/Flails",
       "attribute": "strength",
       "concealability": "10",
-      "reach": "1",
+      "reach": "2",
       "damage": "10S",
       "weight": "0",
       "availability": "24/14days",

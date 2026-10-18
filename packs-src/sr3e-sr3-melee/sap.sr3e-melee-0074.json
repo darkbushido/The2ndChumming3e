@@ -10,7 +10,7 @@
       "attribute": "strength",
       "concealability": "8",
       "reach": "-",
-      "damage": "(STR+1)M Stun",
+      "damage": "(STR+2)M Stun",
       "weight": "0",
       "availability": "2/6hrs",
       "cost": 10,

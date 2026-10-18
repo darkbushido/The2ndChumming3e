@@ -5,11 +5,11 @@
     "name": "Combat Axe Thrusting Point",
     "type": "melee",
     "system": {
-      "category": "other",
-      "skill": "Armed Combat",
+      "category": "POL",
+      "skill": "Pole Arms/Staff",
       "attribute": "strength",
-      "concealability": "-",
-      "reach": "-",
+      "concealability": "12",
+      "reach": "0",
       "damage": "(STR+2)L",
       "weight": "0",
       "availability": "0",
@@ -21,7 +21,7 @@
       "hands": 1
     },
     "effects": [],
-    "img": "systems/The2ndChumming3e/styles/icons/melee-club.svg"
+    "img": "systems/The2ndChumming3e/styles/icons/melee-pole.svg"
   },
   "embedded": {}
 }
