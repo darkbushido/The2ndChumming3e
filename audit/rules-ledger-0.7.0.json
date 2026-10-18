@@ -70220,7 +70220,8 @@
       ],
       "hash": "4fad3c4f6d",
       "text": "# Megacorporations\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/megacorporations.md#2",
@@ -70231,7 +70232,8 @@
       ],
       "hash": "9bffd4dbd3",
       "text": "The giants as of October 2059: who owns each one, where it's based, what it\ndoes in Seattle, and what running against it is like.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Page introduction describing the page; states no rule."
     },
     {
       "id": "world/megacorporations.md#3",
@@ -70242,7 +70244,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/megacorporations.md#4",
@@ -70253,7 +70256,8 @@
       ],
       "hash": "943658ec17",
       "text": "{: .note }\n> *New Seattle* lists the megacorps and their Seattle offices *(NS p.89–96)*,\n> but it's set a little later, in 2060. This page keeps the parts that hold\n> for late 2059. Security descriptions are **runners' claims** from the\n> Shadowland posts in that book. They're good GM material, but they aren't\n> statistics.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.89-96 (the \"Megacorporations\" section runs Ares to Yamatetsu) and NS p.2 (\"the world of 2060\"): agrees. Security descriptions in those entries are Shadowland posts, as the note says. The Renraku lockdown (NS p.29-30) is dated December 2059, after the page date, and this page does not mention it."
     },
     {
       "id": "world/megacorporations.md#5",
@@ -70264,7 +70268,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/megacorporations.md#6",
@@ -70275,7 +70280,8 @@
       ],
       "hash": "5ccc6deeab",
       "text": "## How they got here  *(SR3 p.31–35)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 pp.31-35 (\"Show Me the Money\" and \"Corporate Machinations\"): agrees."
     },
     {
       "id": "world/megacorporations.md#7",
@@ -70286,7 +70292,8 @@
       ],
       "hash": "8f40212d4b",
       "text": "- **2033: Damien Knight's \"Nanosecond Buyout\".** A burst of computer-driven\n  trades gave Knight 22% of **Ares**. He and CEO Leonard Aurelius loathed\n  each other from the start *(SR3 p.31)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.31: agrees. Damien Knight's 2033 \"Nanosecond Buyout\" gave him \"22 percent of Ares\"; Knight and CEO Leonard Aurelius \"loathed each other on sight\"."
     },
     {
       "id": "world/megacorporations.md#8",
@@ -70297,7 +70304,8 @@
       ],
       "hash": "4ad7f703e5",
       "text": "- **2034: Richard Villiers** bought a failed tech company cheaply after its\n  founders died, then used its \"lost\" research to buy his way into\n  **Fuchi** *(SR3 p.31)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.31: agrees. In May 2034 Matrix Systems of Boston's founders died; Villiers (already a 49-percent holder) \"bought the company for pennies\" and used the research data to buy his way into Fuchi. Nuance: the book calls it a \"two-horse corp\", not a failed one."
     },
     {
       "id": "world/megacorporations.md#9",
@@ -70308,7 +70316,8 @@
       ],
       "hash": "91305b9e65",
       "text": "- **2037: Lofwyr** revealed that he owned 63% of the company behind BMW, and\n  renamed it **Saeder-Krupp** *(SR3 p.31)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.31: agrees. \"in 2037 made the startling announcement that he owned 63 percent of Saeder-Krupp stock (the backbone of the BMW corporate empire)\" and renamed BMW the Saeder-Krupp Corporation."
     },
     {
       "id": "world/megacorporations.md#10",
@@ -70319,7 +70328,8 @@
       ],
       "hash": "9f5a154dbc",
       "text": "- **2041–42: Yamatetsu** forced its way onto the Corporate Court, turning\n  the Big Seven into the **Big Eight** *(SR3 p.31)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.31: agrees. Yamatetsu did not break into the \"Big Seven\" until 2041 and \"had carved out its niche by 2042, turning the Big Seven into the Big Eight\"."
     },
     {
       "id": "world/megacorporations.md#11",
@@ -70330,7 +70340,8 @@
       ],
       "hash": "14278cf991",
       "text": "- **2048: Operation Reciprocity.** The corps struck Aztechnology jointly\n  after Aztlan nationalised them *(SR3 p.31)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.31 (2048 entry): agrees."
     },
     {
       "id": "world/megacorporations.md#12",
@@ -70341,7 +70352,8 @@
       ],
       "hash": "20181ec187",
       "text": "- **2058–59: The corp war begins.** Miles Lanier left Fuchi for Renraku's\n  board, Fuchi's three factions turned on each other, and Villiers formed\n  **Novatech** to take his share out. Yamatetsu's chairman died in 2059 and\n  left his shares to his ork son; rather than depose him, Yamatetsu moved\n  its headquarters to **Vladivostok**. **Wuxing** took Fuchi's Corporate\n  Court seat *(SR3 p.34–35)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 pp.34-35: agrees. Lanier 2058, Fuchi's three factions, Villiers's Novatech, Yamatetsu's chairman dying in 2059 with shares to his ork son Yuri, the move to Vladivostok, and Wuxing taking the Court seat are all dated 2058-59 in the book."
     },
     {
       "id": "world/megacorporations.md#13",
@@ -70352,7 +70364,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/megacorporations.md#14",
@@ -70363,7 +70376,8 @@
       ],
       "hash": "ff73e1b927",
       "text": "## The megacorps",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/megacorporations.md#15",
@@ -70374,7 +70388,8 @@
       ],
       "hash": "c19bd7941a",
       "text": "| Corp | Run by | Home office | In Seattle |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/megacorporations.md#16",
@@ -70385,7 +70400,8 @@
       ],
       "hash": "731c26618d",
       "text": "| **Ares Macrotechnology** | Damien Knight | Detroit, UCAS | Quiet, but everywhere: Knight Errant, freight, and arms sales. It sub-contracts to Federated-Boeing rather than fight it *(NS p.89–90)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.89-90: agrees. Detroit HQ; \"number-one gun supplier to Weapons World\"; Knight Errant and trucking/air freight subsidiaries; \"negotiated some lucrative sub-contracts with Federated-Boeing\"."
     },
     {
       "id": "world/megacorporations.md#17",
@@ -70396,7 +70412,8 @@
       ],
       "hash": "e4b59fd808",
       "text": "| **Aztechnology** | Juan Atzcapotzalco | Tenochtitlán, Aztlan | The Pyramid. HQ of its Northwestern Division, and its beachhead in North America *(NS p.90)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.90: agrees. President/CEO Juan Atzcapotzalco; Home Office Tenochtitlan; Seattle is the headquarters of the Northwestern Division; \"an important beachhead for Aztechnology in North America\"."
     },
     {
       "id": "world/megacorporations.md#18",
@@ -70407,7 +70424,8 @@
       ],
       "hash": "78afbdebef",
       "text": "| **Fuchi Industrial Electronics** | Three feuding factions, Richard Villiers's among them | — | The Fuchi compound downtown: seven towers around a central eighth *(SR3 p.35; NS p.94)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS p.94: agrees. The Fuchi (now Novatech) compound \"consists of seven skyscrapers, each of a different height, around an eighth central building\" (NS p.94); Fuchi's three factions are SR3 p.34-35. The seven-towers sentence is the NS page, not SR3 p.35."
     },
     {
       "id": "world/megacorporations.md#19",
@@ -70418,7 +70436,16 @@
       ],
       "hash": "98a587a6f6",
       "text": "| **Mitsuhama Computer Technologies** | Toshiro Mitsuhama | Kyoto, Japan | Six towers on Lake Washington. It also runs the city's grid-guide traffic system *(NS p.92)*. |",
-      "verdict": null
+      "verdict": "guide-differs",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - New Seattle.pdf",
+          "pdfPage": 78,
+          "printedPage": 76,
+          "quote": "Mitsuhama Computer Technologies has the contract for Seattle's grid-guide system"
+        }
+      ],
+      "note": "The facts are right (Toshiro Mitsuhama, Kyoto, six black-and-silver towers on Lake Washington are on NS p.92) but the grid-guide traffic contract is on NS p.76, not the cited NS p.92 - p.92 does not mention it. Citation error only."
     },
     {
       "id": "world/megacorporations.md#20",
@@ -70429,7 +70456,8 @@
       ],
       "hash": "70481604b5",
       "text": "| **Renraku Computer Systems** | Inazo Aneki | Chiba, Japan | The **Renraku Arcology**, a self-contained city for nearly 100,000 people *(NS p.30)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.30 and NS p.94: agrees. NS p.30: the arcology can \"provide for all the daily needs of its nearly 100,000 inhabitants\"; NS p.94: President/CEO Inazo Aneki (the book adds \"on indefinite leave; interim CEO Haruhiko Nakada\", a 2060 detail the guide omits)."
     },
     {
       "id": "world/megacorporations.md#21",
@@ -70440,7 +70468,8 @@
       ],
       "hash": "3c22dd69b0",
       "text": "| **Saeder-Krupp** | Lofwyr | Rhine-Ruhr Megaplex, German Alliance | Officially absent. In practice it owns small subsidiaries and keeps watchers *(NS p.94–95)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.94-95: agrees. Rhine-Ruhr Megaplex, German Alliance; Seattle Division \"None (officially)\"; small factories owned by S-K subsidiaries; \"corporate watchers chosen by Lofwyr\"."
     },
     {
       "id": "world/megacorporations.md#22",
@@ -70451,7 +70480,8 @@
       ],
       "hash": "f10fc6b493",
       "text": "| **Shiawase** | Tadashi Shiawase | Osaka, Japan | Twin towers in Tacoma, a fusion plant, and public-works contracts *(NS p.95)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.95: agrees. Tadashi Shiawase, Osaka; \"Twin towers of steel and mirrored glass\" in Tacoma; fusion plant \"near glow city in Redmond\"; \"public-works contract with the metroplex government\"."
     },
     {
       "id": "world/megacorporations.md#23",
@@ -70462,7 +70492,8 @@
       ],
       "hash": "cf12c27079",
       "text": "| **Yamatetsu** | Yuri Shibanokuji | Vladivostok, Russia | Hiring metahumans in Seattle *(NS p.96)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "BOOKS DIFFER on who \"runs\" Yamatetsu: NS p.96 lists \"President/CEO: Saru Iwano\" and calls Yuri the \"new ork chairman\"; SR3 p.35 says the chairman Tadamako Shibanokuji's shares reverted to his ork son Yuri and that Yamatetsu relocated to Vladivostok rather than depose him. The guide's \"Run by: Yuri Shibanokuji\" follows SR3 p.35; the NS CEO name is not given. Vladivostok HQ and \"Hiring metahumans in Seattle\" (NS p.96) agree."
     },
     {
       "id": "world/megacorporations.md#24",
@@ -70473,7 +70504,8 @@
       ],
       "hash": "3e28e6eea3",
       "text": "Below the Big Eight, newly rich and pushing in:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/megacorporations.md#25",
@@ -70484,7 +70516,8 @@
       ],
       "hash": "c19bd7941a",
       "text": "| Corp | Run by | Home office | In Seattle |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/megacorporations.md#26",
@@ -70495,7 +70528,8 @@
       ],
       "hash": "867869971e",
       "text": "| **Wuxing** | Wu Lung-Wei | Hong Kong | Now on the Corporate Court, and hiring aggressively *(SR3 p.35; NS p.96)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS p.96: agrees. President/CEO Wu Lung-Wei, Hong Kong Free Enterprise Enclave; Court seat after David Hague's death; \"hiring aggressively in the metroplex\"."
     },
     {
       "id": "world/megacorporations.md#27",
@@ -70506,7 +70540,8 @@
       ],
       "hash": "a15b802a3c",
       "text": "| **Cross Applied Technologies** | Lucien Cross | Montreal, Quebec | Pushing into the UCAS; Cross Advanced Electronics, in Everett *(SR3 p.35; NS p.90–91)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS pp.90-91: agrees. Lucien Cross, Montreal (Republic of Quebec); \"interested in expanding into the UCAS market\"; Cross Advanced Electronics, Cross Plaza, Everett."
     },
     {
       "id": "world/megacorporations.md#28",
@@ -70517,7 +70552,8 @@
       ],
       "hash": "75fac0f2bd",
       "text": "| **The Draco Foundation** | Nadja Daviar | Federal District of Columbia, UCAS | Five floors downtown, covering the whole Northwest *(NS p.91–92)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.91-92: agrees. Director Nadja Daviar; HQ Federal District of Columbia, UCAS; \"taking up five floors of a building in the University District\"; the office covers the Pacific Northwest \"including Tir Tairngire\"."
     },
     {
       "id": "world/megacorporations.md#29",
@@ -70528,7 +70564,8 @@
       ],
       "hash": "d56cecd92c",
       "text": "### Ares Macrotechnology  *(NS p.89–90)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.89-90 (Ares Macrotechnology): agrees."
     },
     {
       "id": "world/megacorporations.md#30",
@@ -70539,7 +70576,8 @@
       ],
       "hash": "6179c874e7",
       "text": "The military-industrial giant, led mostly by ex-military execs. In Seattle\nit avoids a costly war with Federated-Boeing and works with it instead, as a\nsub-contractor and **ally**. Its security subsidiary **Knight Errant**\nguards its buildings, and Ares Arms tests prototypes on KE. Its feud with\n**Cross** is personal: Leonard Aurelius, Knight's old rival, sold his Ares\nstock and backed Cross, and his son now runs Cross's Seattle division\n*(NS p.91)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.91 (Aurelius sold his Ares stock and backed \"Damien Knight's other worst enemy\"; his son Nicholas runs Cross Advanced Electronics) and NS pp.77 and 89-90: agrees. Also read: Ares execs are ex-military, Knight Errant guards the Ares Building, Ares Arms uses KE to test prototypes (NS p.77), Ares is \"something of an ally\" of Federated-Boeing."
     },
     {
       "id": "world/megacorporations.md#31",
@@ -70550,7 +70588,8 @@
       ],
       "hash": "1a44c6ec56",
       "text": "### Aztechnology  *(NS p.81, p.90)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.81 and p.90 (Aztechnology): agrees."
     },
     {
       "id": "world/megacorporations.md#32",
@@ -70561,7 +70600,8 @@
       ],
       "hash": "71914bd01e",
       "text": "Banned from California and Tir Tairngire, so Seattle is where it pulls the\nstrings on its business there, through shells and holding companies. At\nleast one battalion of **Aztlan troops** is stationed in Seattle. Runners\ndescribe a layered magical defence of watcher spirits and then elementals,\nand rumours of **blood magic** in the sub-basements. Its Matrix host has a\nlink to the Tenochtitlán home office. It is **Aztlan's corp** in all but\nname, and relations between Aztlan and Seattle are \"cool but cordial\"\n*(NS p.81)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.81 and 90: agrees. Banned from California and Tir Tairngire with interests there run by \"a complex maze of shells and holding companies\"; \"At least one battalion of Aztlan troops\"; watcher spirits then guard elementals; blood-magic rumours; Matrix host linked to the Tenochtitlan PLTG; Aztlan/Seattle relations \"cool but cordial\"."
     },
     {
       "id": "world/megacorporations.md#33",
@@ -70572,7 +70612,8 @@
       ],
       "hash": "bb5b797d92",
       "text": "### Cross Applied Technologies  *(SR3 p.35; NS p.90–91)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS pp.90-91 (Cross Applied Technologies): agrees."
     },
     {
       "id": "world/megacorporations.md#34",
@@ -70583,7 +70624,8 @@
       ],
       "hash": "cc760f60ab",
       "text": "A second-tier corp from Quebec pushing into the UCAS market, and paying for\nit: the Big Eight want no more newcomers, and Lucien Cross survived three\nassassination attempts in 2058 alone *(SR3 p.35)*. Its black-ops division is\n**the Seraphim**. Runners say Cross prefers to take intruders alive, and its\nMatrix ice traces you so it can collect a favour later. Its people have\nbeen seen visiting the Draco Foundation.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS pp.90-91: agrees. Three assassination attempts in 2058 alone (SR3 p.35); the Seraphim black-ops division; \"Cross Corp prefers to take intruders alive\"; trace-heavy ice and a later visit from a Seraphim agent; a fixer seen visiting the Draco Foundation (NS pp.91)."
     },
     {
       "id": "world/megacorporations.md#35",
@@ -70594,7 +70636,8 @@
       ],
       "hash": "a4343a1079",
       "text": "### The Draco Foundation\n{: #the-draco-foundation }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/megacorporations.md#36",
@@ -70605,7 +70648,8 @@
       ],
       "hash": "1fe4cf25e2",
       "text": "Set up by Dunkelzahn's will to administer his bequests, with Nadja Daviar\nas chair *(SR3 p.34)*. In Seattle it is run by **Sassinian**, a sasquatch.\nThe Council of Princes refused it an office in the Tir, so the Seattle\noffice covers the Tir as well. *New Seattle* calls it \"a big-big-big\nemployer of shadowrunners\": it has plenty of money and a will to carry out\n*(NS p.91–92)*. It also sits on the UCC *(NS p.83)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.34 and NS pp.83, 91-92: agrees. Dunkelzahn's will provided for the Draco Foundation, \"with Daviar as chairman of the board\"; Sassinian is \"a Salish-area sasquatch\"; the Council of Princes refused an office; \"The Draco Foundation is a big-big-big employer of shadowrunners\"; a Draco Foundation member of the UCC (Morgan Gallagher)."
     },
     {
       "id": "world/megacorporations.md#37",
@@ -70616,7 +70660,8 @@
       ],
       "hash": "fa64a2fda2",
       "text": "### Fuchi Industrial Electronics  *(SR3 p.34–35)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 pp.34-35 (Fuchi): agrees."
     },
     {
       "id": "world/megacorporations.md#38",
@@ -70627,7 +70672,8 @@
       ],
       "hash": "9dab73035e",
       "text": "A Big Eight computer giant tearing itself apart. Fuchi has **three internal\nfactions**, and the corp war with Renraku has made their feud worse. In\nmid-2059 Fuchi accused Renraku of stealing its secrets through Miles Lanier,\nits former security chief; the charges were dropped. **Richard Villiers**,\nexpecting the other factions to force him out, has formed **Novatech** and\nis quietly buying his Fuchi North America holdings into it. He has offered\nLanier the job of Novatech's head of security. Every faction, and every\nrival, wants to know what happens to Fuchi next, which means steady work\nfor runners.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited beyond the heading; checked against SR3 pp.34-35: Fuchi's \"three internal factions\"; \"Around mid-2059, Fuchi formally accused Renraku of industrial espionage with the aid of Miles Lanier. The charges were eventually dropped\"; Villiers formed Novatech and \"offered his old buddy Miles Lanier the job of Head of Security\". All dated 2059 or earlier: agrees."
     },
     {
       "id": "world/megacorporations.md#39",
@@ -70638,7 +70684,8 @@
       ],
       "hash": "bd5c593b3e",
       "text": "### Mitsuhama Computer Technologies  *(NS p.92–93)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.92-93 (Mitsuhama): agrees."
     },
     {
       "id": "world/megacorporations.md#40",
@@ -70649,7 +70696,16 @@
       ],
       "hash": "de5a9f925f",
       "text": "It aims for the top spot in computing while Fuchi and Renraku fight.\nRunners credit it with the **\"zero-zone\"**: zero penetration, zero\nsurvival. That means concealed autoguns, lethal gas, barghest guard dogs,\nbound elementals, and **black ice** that kills. Its wage mages are\n**Unit 13**, which is mostly human, with no shamans. Its Johnsons want the\njob done exactly as planned. For its \"special problems\" it can call on the\nSeattle yakuza.",
-      "verdict": null
+      "verdict": "guide-differs",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - New Seattle.pdf",
+          "pdfPage": 94,
+          "printedPage": 92,
+          "quote": "In the past, Mitsuhama could call on the yakuza for help in dealing with special problems. Now, with the Seattle yakuza hostile to outsiders"
+        }
+      ],
+      "note": "Book says Mitsuhama USED to call on the Seattle yakuza (\"In the past\") but cannot now, because the Seattle yakuza seceded and are \"hostile to outsiders\" (NS p.92-93). Guide says \"For its special problems it can call on the Seattle yakuza.\" The rest of the paragraph (zero-zone, autoguns, barghest dogs, bound elementals, lethal ice, Unit 13 mostly human with no shamans, Johnsons by the numbers) agrees with NS pp.93-94."
     },
     {
       "id": "world/megacorporations.md#41",
@@ -70660,7 +70716,8 @@
       ],
       "hash": "f759ceb75e",
       "text": "### Renraku Computer Systems  *(SR3 p.34–35)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 pp.34-35 (Renraku): agrees."
     },
     {
       "id": "world/megacorporations.md#42",
@@ -70671,7 +70728,8 @@
       ],
       "hash": "d970816fe4",
       "text": "Fuchi's great rival, and lately the winner: months after Miles Lanier\njoined its board in 2058, Renraku began producing remarkable technological\nadvances. Fuchi's espionage charges in mid-2059 were dropped, but Lanier\nleft Renraku and sold his stock to the Zurich-Orbital bank. In Seattle,\nRenraku is the **Arcology**: a self-contained corporate city that houses\nnearly 100,000 people *(NS p.30)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 pp.34-35 and NS p.30: agrees. Lanier's 2058 seat and Renraku's advances \"just months after Lanier joined the board\" (SR3 p.34); mid-2059 charges dropped, Lanier sold his Renraku stock to the Zurich-Orbital Bank (SR3 p.35); the arcology holds \"nearly 100,000 inhabitants\" (NS p.30). The December 2059 lockdown is not mentioned, correctly for October 2059."
     },
     {
       "id": "world/megacorporations.md#43",
@@ -70682,7 +70740,8 @@
       ],
       "hash": "5b46828ef4",
       "text": "### Saeder-Krupp  *(SR3 p.31; NS p.94–95)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.31 and NS pp.94-95 (Saeder-Krupp): agrees."
     },
     {
       "id": "world/megacorporations.md#44",
@@ -70693,7 +70752,8 @@
       ],
       "hash": "29d8e265b9",
       "text": "Owned by the great dragon **Lofwyr**, and called the world's largest\nmegacorp. Officially it has no presence in Seattle. Unofficially it has\nsubsidiaries, small offices, and watchers posted by Lofwyr. \"The biggest\nbusiness Saeder-Krupp does in Seattle is shadow business,\" and nobody can\npredict what it will want.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited beyond the heading; checked against NS p.95: \"the world's largest megacorporation\"; \"Seattle Division: None (officially)\"; subsidiaries, innocuous offices and watchers; \"The biggest business Saeder-Krupp does in Seattle is shadow business\"; \"With Lofwyr, you can never tell\": agrees."
     },
     {
       "id": "world/megacorporations.md#45",
@@ -70704,7 +70764,8 @@
       ],
       "hash": "b9867b171c",
       "text": "### Shiawase  *(NS p.76, p.95–96)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.76 and pp.95-96 (Shiawase): agrees."
     },
     {
       "id": "world/megacorporations.md#46",
@@ -70715,7 +70776,8 @@
       ],
       "hash": "416254a02f",
       "text": "The Shiawase decision that created extraterritoriality is named after this\ncorp *(SR3 p.22)*. Shiawase Atomics maintains Seattle's power grid, and\nwants Gaeatronics's generating contract *(NS p.76)*. Its spy network often\nknows a run is coming. Its defences use **net-guns and knockout gas**, and\nits ice is mostly trace, because it wants prisoners to interrogate.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.22 and NS pp.76, 95-97: agrees. The Shiawase decision followed a botched attack on a Shiawase, Inc. nuclear plant (SR3 p.22); Shiawase Atomics maintains the grid and wants the generating contract (NS p.76); intelligence network \"more often than not the corp knows about it\"; net-guns and knockout gas; ice is \"trace and maybe some deck-burning drek\" (NS p.95-96)."
     },
     {
       "id": "world/megacorporations.md#47",
@@ -70726,7 +70788,8 @@
       ],
       "hash": "d9863b9e2b",
       "text": "### Wuxing  *(SR3 p.35; NS p.81, p.96)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS p.81, p.96 (Wuxing): agrees."
     },
     {
       "id": "world/megacorporations.md#48",
@@ -70737,7 +70800,8 @@
       ],
       "hash": "8ecc405b8e",
       "text": "A small family corp until Dunkelzahn's money raised it to the top. In 2059\nWuxing took the Corporate Court seat left empty when Fuchi's representative\ndied *(SR3 p.35)*. It drives the **Pacific Prosperity Group**, a trade bloc\nagainst Japanese economic dominance. That makes it an enemy of the Japanese\ncorps, and a rival of Federated-Boeing, which is also in the PPG. Runners\nexpect the **Triads** to work on its behalf.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS pp.81, 96: agrees. A \"mom-and-pop corp jumped up to the big time\" by Dunkelzahn's cash; Hague's Court seat; PPG formed \"to break the Japanese economic stranglehold on the Pac Rim\"; not endeared to the Japanacorps; Federated-Boeing \"also a member of the PPG\"; a runner predicts Triad action on Wuxing's behalf."
     },
     {
       "id": "world/megacorporations.md#49",
@@ -70748,7 +70812,8 @@
       ],
       "hash": "7f00ab04b6",
       "text": "### Yamatetsu  *(SR3 p.35; NS p.96)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS p.96 (Yamatetsu): agrees."
     },
     {
       "id": "world/megacorporations.md#50",
@@ -70759,7 +70824,8 @@
       ],
       "hash": "57192703ff",
       "text": "When chairman Tadamako Shibanokuji died in 2059, his shares went to his son\n**Yuri**, an ork. Pressed to depose him, Yamatetsu instead moved its\nheadquarters to **Vladivostok** *(SR3 p.35)*. It now sells itself as the\nmeta-friendly, \"Awakened\" corp, and its traditionalist staff are fighting\nthat change. It has no friends among the other Japanese corps *(NS p.96)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS p.96: agrees. Chairman Tadamako Shibanokuji died in 2059, shares reverted to his ork son Yuri, HQ moved to Vladivostok (SR3 p.35); \"Yamatetsu has no friends among the Japanacorps\" (NS p.96)."
     },
     {
       "id": "world/megacorporations.md#51",
@@ -70770,7 +70836,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/megacorporations.md#52",
@@ -70781,7 +70848,8 @@
       ],
       "hash": "30fc08552d",
       "text": "## Seattle's own big players  *(NS p.83–89)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.83-89 (Seattle's local corporations): agrees."
     },
     {
       "id": "world/megacorporations.md#53",
@@ -70792,7 +70860,8 @@
       ],
       "hash": "f0bca04706",
       "text": "Seattle's local corps employ more of the city than the megacorps do, and\nthey have the home-field advantage *(NS p.83)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.83: agrees. \"Seattle's local corps employ a higher percentage of the metroplex's population ... they have a home-field advantage in Seattle\"."
     },
     {
       "id": "world/megacorporations.md#54",
@@ -70803,7 +70872,8 @@
       ],
       "hash": "22f9fefc05",
       "text": "| Corp | What it is | Ties |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/megacorporations.md#55",
@@ -70814,7 +70884,8 @@
       ],
       "hash": "a6a167f921",
       "text": "| **Federated-Boeing** | Seattle's largest employer: aircraft, drones, ships | Ares and Mitsuhama have both failed to buy it. Member of the PPG *(NS p.84, p.96)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.84 and p.96: agrees. Federated-Boeing is \"the largest employer in the metroplex\"; \"Both megacorps have tried to buy out FB at various points and failed\"; Wuxing note: FB is \"also a member of the PPG\"."
     },
     {
       "id": "world/megacorporations.md#56",
@@ -70825,7 +70896,8 @@
       ],
       "hash": "26279c8d0d",
       "text": "| **Brackhaven Investments** | Kenneth Brackhaven's holding company | Funds politicians across every party. His uncle chairs Humanis *(NS p.83–84)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.83-84: agrees. Brackhaven Investments is the umbrella company for Kenneth Brackhaven; contributions \"covers the entire spectrum from Technocrat to One World partyites\"; his uncle Karl Brackhaven is president of the Seattle Humanis chapter."
     },
     {
       "id": "world/megacorporations.md#57",
@@ -70836,7 +70908,8 @@
       ],
       "hash": "8bf993f9ac",
       "text": "| **Gaeatronics** | Supplies most of Seattle's power | Owned by the Salish-Shidhe Council. Runners say it backs eco-terrorists against competitors *(NS p.84–85)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.84-85: agrees. Owned and operated by the Salish-Shidhe Council; a runner says it is \"covertly supporting eco-terrorist attacks on competing operations\"."
     },
     {
       "id": "world/megacorporations.md#58",
@@ -70847,7 +70920,8 @@
       ],
       "hash": "1650f65d7e",
       "text": "| **Pacific Rim Communications** | Runs Seattle's LTG phone network | *(NS p.87)* |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.87: agrees. \"PRC runs the Seattle LTG\"."
     },
     {
       "id": "world/megacorporations.md#59",
@@ -70858,7 +70932,8 @@
       ],
       "hash": "1f31f39ef2",
       "text": "| **Telestrian Industries** | Tir Tairngire's largest conglomerate | 5% owned by the Council of Princes, runners claim *(NS p.87–88)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.87-88: agrees. \"The largest and most aggressive conglomerate in Tir Tairngire\"; \"The Council of Princes owns 5 percent of the company\" (a runner's post)."
     },
     {
       "id": "world/megacorporations.md#60",
@@ -70869,7 +70944,8 @@
       ],
       "hash": "ac7f091eba",
       "text": "| **Universal Omnitech** | Biotech | Owns Ingersoll & Berkley. Rival of Telestrian *(NS p.85, p.88)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.85 and p.88: agrees. Universal Omnitech bought Ingersoll and Berkley in 2057; competition with Telestrian in biotech."
     },
     {
       "id": "world/megacorporations.md#61",
@@ -70880,7 +70956,8 @@
       ],
       "hash": "2d7766a6f5",
       "text": "| **United Oil** | Petrochemicals, Dallas (CAS) | Its security chief was once a dragon, Haesslich *(NS p.88)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.88: agrees. Headquarters Dallas, Texas, CAS; \"UniOil's chief of security was a dragon (yes, a dragon) named Haesslich\" - a runner's post (FastJack)."
     },
     {
       "id": "world/megacorporations.md#62",
@@ -70891,7 +70968,16 @@
       ],
       "hash": "d3a8ce10dd",
       "text": "| **Microdeck, Dassurn, Global Technologies, MegaMedia, VisionCrafters, VisionQuest** | Computers, finance, skillsofts, media, optics, simsense | All of them hire runners for paydata and against each other *(NS p.84–89)*. |",
-      "verdict": null
+      "verdict": "guide-differs",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - New Seattle.pdf",
+          "pdfPage": 86,
+          "printedPage": 84,
+          "quote": "The financial wizards at DSI do just that, with a little help from some"
+        }
+      ],
+      "note": "Overgeneralisation (not certain): the book describes runners being hired only by Dassurn (\"special consultants (read: shadowrunners)\", deckers and couriers, NS p.84) and Microdeck (\"more runs in the works\", NS p.86). Global Technologies, MegaMedia, VisionCrafters and VisionQuest (NS pp.85-89) are not described as hiring runners, for paydata or otherwise. Guide says \"All of them hire runners for paydata and against each other\"."
     },
     {
       "id": "world/politics-and-security.md#1",
