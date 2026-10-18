@@ -71384,7 +71384,8 @@
       ],
       "hash": "145055d304",
       "text": "# The Underworld\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#2",
@@ -71395,7 +71396,8 @@
       ],
       "hash": "89dd20192a",
       "text": "The crime syndicates that run the shadow economy, how they fight each\nother, and what they want from runners, as of October 2059. Seattle is the\nexample the books give in most detail.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Page introduction; states no rule."
     },
     {
       "id": "world/underworld.md#3",
@@ -71406,7 +71408,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#4",
@@ -71417,7 +71420,8 @@
       ],
       "hash": "825a21794e",
       "text": "{: .note }\n> *New Seattle*'s underworld chapter is written in character. The Mafia\n> section is a stolen letter from a consigliere, and the Seoulpa section\n> comes from leaked Lone Star files *(NS p.97–106)*. Treat the details as\n> what those sources believe.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.97-106: agrees. The Mafia section is an intercepted report from consigliere \"Uncle Al\" Cavalieri to Rowena O'Malley (NS p.97-98); the Seoulpa section is \"from Lone Star's secret files\" (NS p.104). The latest dated post in the section is 28 September 2060."
     },
     {
       "id": "world/underworld.md#5",
@@ -71428,7 +71432,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#6",
@@ -71439,7 +71444,8 @@
       ],
       "hash": "47722ac594",
       "text": "## Why the syndicates matter",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#7",
@@ -71450,7 +71456,8 @@
       ],
       "hash": "07fcaa46dc",
       "text": "The SR3 introduction says the Mafia, the Yakuza and the other syndicates\n\"have grown explosively\", because their networks supply anything people\nwill buy *(SR3 p.8)*. In Seattle, the city's position as a UCAS island\ninside NAN territory, near the sea route to Russia, makes it a major\nsmuggling port for every syndicate *(NS p.82)*. The syndicates hire runners\nthrough **street Johnsons**, who have less money than corp Johnsons but can\noffer protection, illegal services or extra bodies *(MJLBB p.18)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.8, NS p.82, MJLBB p.18: agrees. SR3 p.8: \"The Mafia, Yakuza and other crime syndicates have grown explosively as their networks provide anything that people will buy\"; NS p.82: Seattle's \"status as an island of UCAS law in the middle of NAN territory, so close to the route across the strait to Russia\" makes it a smuggling hub; MJLBB p.18: a street Johnson's \"funding and resources are probably far less than a corporate Johnson's\" but the group can offer \"protection, illegal services or extra bodies\"."
     },
     {
       "id": "world/underworld.md#8",
@@ -71461,7 +71468,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#9",
@@ -71472,7 +71480,8 @@
       ],
       "hash": "dde54e30f4",
       "text": "## The long war: Mafia against Yakuza  *(SR3 p.35; NS p.97–101)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS pp.97-101 (the Mafia-yakuza war): agrees."
     },
     {
       "id": "world/underworld.md#10",
@@ -71483,7 +71492,8 @@
       ],
       "hash": "dd4e8514b2",
       "text": "| Year | What happened |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#11",
@@ -71494,7 +71504,8 @@
       ],
       "hash": "cf238cbf4d",
       "text": "| 2030 | War breaks out in Seattle when the leaders of both syndicates are assassinated. After many deaths, the exhausted organisations call a truce *(SR3 p.35)*. NS puts the ceasefire in 2031 *(NS p.97)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS p.97: agrees. SR3 p.35: \"2030: Mafia-Yakuza war breaks out in Seattle when the leaders of both syndicates are assassinated. After many deaths, the worn-out organizations call a truce.\"; NS p.97: \"The deaths of Don O'Malley and the yakuza oyabun ... finally brought about a cease-fire in 2031.\""
     },
     {
       "id": "world/underworld.md#12",
@@ -71505,7 +71516,8 @@
       ],
       "hash": "698e47c5c7",
       "text": "| 2032 | The yakuza in Japan send **Korean bosses** to rebuild the Seattle organisation *(SR3 p.35)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35: agrees. \"2032: The oyabun of the Yakuza in Chiba, Japan sends Korean bosses to Seattle to rebuild\" the organizations."
     },
     {
       "id": "world/underworld.md#13",
@@ -71516,7 +71528,8 @@
       ],
       "hash": "8e1eca0035",
       "text": "| 2042–44 | The Japanese yakuza bosses purge the Korean bosses they had sent to rebuild Seattle. The survivors form the **Seoulpa Rings** *(SR3 p.35; NS p.101)*. *The sources disagree on the year: SR3 says 2042, NS p.101 says 2043, and NS p.104 says 2044.* |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS pp.101, 104: agrees. SR3 p.35 dates the purge of the Korean bosses 2042; NS p.101 \"In 2043, yakuza assassins purged Seattle of its Korean bosses\"; NS p.104 has Kyu surviving \"the yakuza purge of Koreans from their ranks in 2044\" - the guide's disagreement note is accurate."
     },
     {
       "id": "world/underworld.md#14",
@@ -71527,7 +71540,8 @@
       ],
       "hash": "46722db0da",
       "text": "| 2044 | **Hanzo Shotozumi** is made oyabun of Seattle. His strong-arm tactics bring the Mafia's **James O'Malley** back to fight him *(SR3 p.35)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35: agrees. \"2044: Hanzo Shotozumi is appointed head of the Seattle Yakuza. His strong-arm tactics spark renewed hostilities between the Yaks and the Mafia. Don James O'Malley comes out of retirement\". (NS p.101 puts Shotozumi's appointment right after the 2043 purge; the guide cites SR3.)"
     },
     {
       "id": "world/underworld.md#15",
@@ -71538,7 +71552,8 @@
       ],
       "hash": "baa679d824",
       "text": "| 2058 | Don O'Malley is shot outside his home on New Year's Day. An all-out mob war follows between the Mafia, Yakuza, Triads and Rings *(SR3 p.35; NS p.97)*. NS says the killer worked for an organisation called **Chimera** *(NS p.97)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.35 and NS p.97: agrees. SR3 p.35: \"2058: Don O'Malley is shot dead outside his Seattle home, spawning an all-out Mob war as Mafia, Yakuza, Triads and Rings go at each other's throats\"; NS p.97: shot \"on New Year's Day, 2058\" by \"an assassin working for the organization known as Chimera\"."
     },
     {
       "id": "world/underworld.md#16",
@@ -71549,7 +71564,8 @@
       ],
       "hash": "e18a3d9884",
       "text": "| 2058–59 | The yakuza seize large parts of Seattle's criminal markets in the confusion *(NS p.101)*. The Mafia families fight over who will lead Seattle, and the Commissione sends **Don Leo \"the Lion\" McCaskill** of Milwaukee to oversee the situation *(NS p.97)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.101 and NS p.97: agrees. NS p.101: \"After O'Malley was killed in 2058, the yakuza seized large segments of Seattle's criminal markets in the resulting confusion\" (the book names 2058 only); NS p.97: \"The Commissione put Don Leo 'the Lion' McCaskill of Milwaukee in charge of the situation\". The same page then says the Commissione \"appointed Maurice 'Butcher' Bigio\" capo - undated; see underworld#19."
     },
     {
       "id": "world/underworld.md#17",
@@ -71560,7 +71576,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#18",
@@ -71571,7 +71588,8 @@
       ],
       "hash": "6c335143a4",
       "text": "## The Mafia  *(NS p.97–100)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.97-100 (the Mafia): agrees."
     },
     {
       "id": "world/underworld.md#19",
@@ -71582,7 +71600,8 @@
       ],
       "hash": "48c82fd6f2",
       "text": "It began on Seattle's docks and in its labour unions, and was run from\nChicago. Since O'Malley's death, **who will be capo of Seattle** is the\nquestion of the moment. His daughter **Rowena O'Malley** took over the\nFinnigan Family within days and made a strong bid for it; **Maurice\n\"Butcher\" Bigio** is the other contender. The O'Malley camp believes Bigio\narranged O'Malley's death *(NS p.97, p.100)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "DATE: the guide presents who will be capo of Seattle as still open (\"the question of the moment\", Bigio \"the other contender\"). New Seattle says the Commissione \"appointed Maurice 'Butcher' Bigio\" capo of Seattle (NS p.97) and Uncle Al's report speaks of \"Maurice Bigio as capo of Seattle\" and \"Bigio's new regime\" (NS pp.98, 100); Rowena \"made a good run at becoming capa of Seattle\" (NS p.100, past tense). The book gives no date for the appointment (the posts are dated 24 and 28 September 2060), so whether it was settled by October 2059 cannot be shown. The rest agrees: Rowena took the Finnigan Family \"mere days after her father's death\" (NS p.100); \"We both know he arranged the hit on your father, though I can't prove it\" is on NS p.98 (the guide cites p.97, p.100)."
     },
     {
       "id": "world/underworld.md#20",
@@ -71593,7 +71612,8 @@
       ],
       "hash": "f388c0829e",
       "text": "| Family | Leader | Territory and business |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#21",
@@ -71604,7 +71624,8 @@
       ],
       "hash": "5ee8cfdc33",
       "text": "| **Bigio** | Maurice \"Butcher\" Bigio | Tacoma and the south: dock protection, smuggling, fencing, hijacking yakuza shipments, loan-sharking. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.98: Bigio controls Tacoma and the southern metroplex; \"protection, smuggling, fencing and hijacking shipments--especially material owned by the yakuza\", loan-sharking: agrees."
     },
     {
       "id": "world/underworld.md#22",
@@ -71615,7 +71636,8 @@
       ],
       "hash": "67a1d57166",
       "text": "| **Finnigan** | Rowena O'Malley, a Harvard lawyer, with \"Uncle Al\" Cavalieri | Downtown waterfront smuggling (shared with the yakuza and the Choson Ring), and Bellevue. Old Mary Finnigan opposes her. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS pp.98-100: Rowena, \"a Harvard Law grad\"; Uncle Al Cavalieri; waterfront smuggling shared \"with the yakuza and the Choson Ring\"; Bellevue; Mary Finnigan's opposition: agrees."
     },
     {
       "id": "world/underworld.md#23",
@@ -71626,7 +71648,8 @@
       ],
       "hash": "8845b37fd9",
       "text": "| **Ciarniello** | Vince \"Numbers\" Ciarniello | Everett and Snohomish: gambling at Casino Corner, smuggling on the Everett docks. He sides with whoever looks safest. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.100: \"Numbers\" Ciarniello; Everett and Snohomish, Casino Corner gambling, Everett docks; \"goes where the wind blows\": agrees."
     },
     {
       "id": "world/underworld.md#24",
@@ -71637,7 +71660,8 @@
       ],
       "hash": "4a5973abac",
       "text": "**Conflicts:** the families fight the yakuza first and each other second.\nAn ambitious lieutenant might hire runners to do things the rest of the\nFamily mustn't know about *(MJLBB p.53–54)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.97-100 and MJLBB pp.53-54: agrees. MJLBB p.54, the ambitious Mafia lieutenant: runners are \"a resource for getting jobs done without the rest of the Family knowing about it\". The \"fight the yakuza first and each other second\" summary is the guide's own reading of NS pp.97-100."
     },
     {
       "id": "world/underworld.md#25",
@@ -71648,7 +71672,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#26",
@@ -71659,7 +71684,8 @@
       ],
       "hash": "d28ba1a95c",
       "text": "## The Yakuza  *(NS p.100–102)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.100-102 (the yakuza): agrees."
     },
     {
       "id": "world/underworld.md#27",
@@ -71670,7 +71696,8 @@
       ],
       "hash": "49722a64dc",
       "text": "The yakuza followed the Japanese corps to Seattle. The Seattle clans answer\nto **Hanzo Shotozumi**, who was made oyabun of Seattle by **Akira Watada**\nof the powerful **Watada-rengo** in Japan and told to rebuild a traditional,\nloyal organisation. Since O'Malley's death they have become the most\npowerful syndicate in the Pacific Northwest, and Shotozumi's ambition has\ngrown with them *(NS p.101)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.101: agrees. The yakuza arrived with the Japanese corporations; Watada chose Shotozumi to \"rebuild a traditional and loyal yakuza organization\"; \"The growth of the yakuza over the years made them the most powerful syndicate in the Pacific Northwest\" - the book attributes this to their long growth and adds that they seized markets after O'Malley's death in 2058, so the guide's \"Since O'Malley's death\" compresses it. The guide does not mention that Shotozumi then split from the Watada-rengo (the Shotozumi-rengo), which the book also states."
     },
     {
       "id": "world/underworld.md#28",
@@ -71681,7 +71708,8 @@
       ],
       "hash": "aba2af2c45",
       "text": "| Group | Leader | Notes |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#29",
@@ -71692,7 +71720,8 @@
       ],
       "hash": "341133d8ef",
       "text": "| **Shotozumi's organisation** | Hanzo Shotozumi | Downtown and Tacoma: smuggling, gambling, computer crime. Its **sokaiya** branch works on corporations through stock purchases and blackmail. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS pp.101-102: \"most influential in Downtown Seattle and Tacoma\"; smuggling, gambling, computer crime; the sokaiya \"use traditional yakuza business methods such as stock buys paired with blackmail\": agrees. (The book names it the Shotozumi-rengo.)"
     },
     {
       "id": "world/underworld.md#30",
@@ -71703,7 +71732,8 @@
       ],
       "hash": "7b29b7c703",
       "text": "| **Nishidon-gumi** | Isao Nishidon | The oldest clan. Smuggling in Puyallup and Redmond, and the Barrens chip trade. Shotozumi's main rival among the Seattle clans. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.102: \"the oldest yakuza clan in Seattle\"; \"Shotozumi's greatest rival\"; smuggling through Puyallup and Redmond; \"much of the vice industry in the Barrens, particularly the chip trade\": agrees."
     },
     {
       "id": "world/underworld.md#31",
@@ -71714,7 +71744,8 @@
       ],
       "hash": "d19f6bcb86",
       "text": "| **Shigeda-gumi** | Takeo Shigeda | The smallest clan. Everett, Snohomish, and parts of Redmond. It is progressive, and admits more magicians and women. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS pp.102-103: \"Seattle's smallest and least influential yakuza clan\"; Everett, Snohomish and parts of Redmond; \"more magicians and women\": agrees."
     },
     {
       "id": "world/underworld.md#32",
@@ -71725,7 +71756,16 @@
       ],
       "hash": "5590383872",
       "text": "**Conflicts:** **Mitsuhama** calls on the yakuza for its \"special\nproblems\" *(NS p.92–93)*. The *sokaiya* target corps in the **Pacific\nProsperity Group**, which brings them into conflict with the Triads\n*(NS p.102)*.",
-      "verdict": null
+      "verdict": "guide-differs",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - New Seattle.pdf",
+          "pdfPage": 94,
+          "printedPage": 92,
+          "quote": "In the past, Mitsuhama could call on the yakuza for help in dealing with special problems. Now, with the Seattle yakuza hostile to outsiders"
+        }
+      ],
+      "note": "Book says Mitsuhama USED to call on the Seattle yakuza (\"In the past\") and cannot now, because the Seattle yakuza seceded and are \"hostile to outsiders\" (NS p.92-93). Guide says \"Mitsuhama calls on the yakuza for its special problems\" in the present tense. The second sentence (sokaiya target PPG corps, conflicts with the Triads, NS p.102) agrees: \"They're particularly interested in corps belonging to the Pacific Prosperity Group, which has led to some conflicts with the Triads\" (a runner's post)."
     },
     {
       "id": "world/underworld.md#33",
@@ -71736,7 +71776,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#34",
@@ -71747,7 +71788,8 @@
       ],
       "hash": "8b5f3e54f2",
       "text": "## The Triads  *(NS p.102–104)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.102-104 (the Triads): agrees."
     },
     {
       "id": "world/underworld.md#35",
@@ -71758,7 +71800,8 @@
       ],
       "hash": "b953165d3f",
       "text": "Chinese syndicates that control Hong Kong and most of mainland China. In\nSeattle they're junior to the Mafia and the Yakuza, but rising: the city\nleans toward the PPG, which is opening trade with Hong Kong. Most of their\nmoney comes from **smuggling**. The Triads take metahumans and women more\nreadily than other syndicates do *(NS p.102; MJLBB p.54)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.102 and MJLBB p.54: agrees. NS p.102: Chinese syndicates \"control Hong Kong and most of mainland China\", \"overshadowed by the yakuza and the Mafia in Seattle\", PPG \"opening trade to Hong Kong\", \"make most of their money in smuggling\"; the Yellow Lotus recruits \"metahumans barred from joining other criminal gangs\"; MJLBB p.54: \"the Triads are more enlightened than most other organized crime groups regarding the membership of women and metahumans\"."
     },
     {
       "id": "world/underworld.md#36",
@@ -71769,7 +71812,8 @@
       ],
       "hash": "832056c62c",
       "text": "| Triad | Leader | Notes |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#37",
@@ -71780,7 +71824,8 @@
       ],
       "hash": "1cc6309185",
       "text": "| **Yellow Lotus** | Lodgemaster Zheng Li Kwan, an initiated adept | The largest. It recruits orks heavily and is strong in Puyallup. Runners fear its incense master, Su Cheng. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS pp.102-103: Lodgemaster Zheng Li Kwan, an adept; recruits orks, influence in the Puyallup Barrens; the incense master Su Cheng is the one \"who really scares me\" (a runner's post). The book calls it \"the top Triad in Seattle\" and says it more than doubled in size; it does not say \"the largest\" in so many words: broadly agrees."
     },
     {
       "id": "world/underworld.md#38",
@@ -71791,7 +71836,8 @@
       ],
       "hash": "fac12a2727",
       "text": "| **Eighty-Eights** | Rick Wu | Modern, and heavily cybered. Gambling and vice in Everett, Bellevue and Puyallup. Allied with the **Tigers** gang. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.103: Rick Wu; \"heavy use of cyberware\"; \"gambling and vice in Everett, Bellevue and parts of Puyallup\"; allied with the Tigers: agrees."
     },
     {
       "id": "world/underworld.md#39",
@@ -71802,7 +71848,8 @@
       ],
       "hash": "5a610944b8",
       "text": "| **Octagon** | David Gao | The weakest. It has allied with the Yellow Lotus. Its incense master, **Chen Kwan-Ti**, is rumoured to work for the great dragon **Lung**. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.104: \"the weakest of the three Triads in Seattle\"; leader David Gao; the alliance with the Yellow Lotus; Chen Kwan-Ti, Incense Master, \"Rumor has it that Chen was a student of the great dragon Lung\": agrees."
     },
     {
       "id": "world/underworld.md#40",
@@ -71813,7 +71860,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#41",
@@ -71824,7 +71872,8 @@
       ],
       "hash": "aac1f57f40",
       "text": "## The Seoulpa Rings  *(NS p.104–106)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS pp.104-106 (the Seoulpa Rings): agrees."
     },
     {
       "id": "world/underworld.md#42",
@@ -71835,7 +71884,8 @@
       ],
       "hash": "7ad5f1ab1e",
       "text": "Small Korean-led gangs descended from the survivors of the purge. Seattle\nhas anywhere from a couple of dozen to fifty of them. They are the\n\"wild cards\". Most hate the yakuza.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.101 (the surviving Koreans \"became the core of the Seoulpa Rings, desiring nothing so much as revenge against the yakuza\") and NS p.104 (\"anywhere from a couple dozen to fifty ... The Rings are the wild cards of the Seattle underworld\"): agrees."
     },
     {
       "id": "world/underworld.md#43",
@@ -71846,7 +71896,8 @@
       ],
       "hash": "21c0daf797",
       "text": "| Ring | Turf | Business |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#44",
@@ -71857,7 +71908,8 @@
       ],
       "hash": "b51a068ec1",
       "text": "| **Choson** | Downtown waterfront | Dock smuggling. Fights the yakuza-backed First Nations gang. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.105: Choson Ring, Downtown waterfront, dock smuggling, \"fighting with the yakuza-backed First Nations gang\": agrees."
     },
     {
       "id": "world/underworld.md#45",
@@ -71868,7 +71920,8 @@
       ],
       "hash": "f56f4565da",
       "text": "| **Divine Revenge** | Bellevue | Blackmail, influence peddling, fencing. It exists to destroy the yakuza. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.105: Divine Revenge, Bellevue, \"blackmail, influence peddling and fencing\", \"founded for the express purpose of destroying the yakuza\": agrees."
     },
     {
       "id": "world/underworld.md#46",
@@ -71879,7 +71932,8 @@
       ],
       "hash": "9d50dbbc11",
       "text": "| **Komun'go** | Redmond | Smuggling, protection, information. Uses magic openly. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.105: Komun'go Ring, Redmond, \"smuggling, fencing, protection and information rackets\", \"regular use of magic\": agrees."
     },
     {
       "id": "world/underworld.md#47",
@@ -71890,7 +71944,8 @@
       ],
       "hash": "b729411978",
       "text": "| **Phantom Lake** | Bellevue | Smuggling across Lake Sammamish. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.106: Phantom Lake Ring, Bellevue, smuggling \"across Lake Sammamish\": agrees."
     },
     {
       "id": "world/underworld.md#48",
@@ -71901,7 +71956,8 @@
       ],
       "hash": "9bd3e4d35e",
       "text": "| **Red and Yellow** | Renton | Deckers selling data, and protection rackets that use viruses. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.106: Red and Yellow Ring, Renton, data-brokering and protection rackets using virus programs: agrees."
     },
     {
       "id": "world/underworld.md#49",
@@ -71912,7 +71968,8 @@
       ],
       "hash": "f307e7758f",
       "text": "| **Tartarus** | Puyallup Underground | Smuggling and organlegging. Linked to the street drug *shade*. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Lore, no page cited; checked against NS p.106: Tartarus Ring, \"the Underground, primarily in Puyallup\", smuggling, an organlegging operation, linked to the street drug shade: agrees."
     },
     {
       "id": "world/underworld.md#50",
@@ -71923,7 +71980,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#51",
@@ -71934,7 +71992,8 @@
       ],
       "hash": "c6babc8c87",
       "text": "## Gangs",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/underworld.md#52",
@@ -71945,7 +72004,8 @@
       ],
       "hash": "880d229459",
       "text": "Below the syndicates are the street gangs, often allied with them. The\n**Tigers** work with the Eighty-Eights *(NS p.103)*. The all-elf\n**Ancients** control smuggling from the Tir *(NS p.106)*. *New Seattle*\ncovers the major gangs from p.106 onward, and each district's gangs in its\ndistrict chapters.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.103 and p.106: agrees. The Eighty-Eights \"forged an alliance with the Tigers\" (NS p.103); the Ancients, \"an all-elf go-gang\", control \"smuggling from Salem and Portland into Seattle\" (NS p.106); the gang write-ups begin on p.106 (\"TOP GANGS\")."
     }
   ]
 }
