@@ -28,6 +28,7 @@
 
 import { itemRating } from './data/item-rating.mjs';
 import { PatientOrder } from './data/patient-order.mjs';
+import { MagicLoss } from './data/magic-loss.mjs';
 import { SpellTarget } from './data/spell-target.mjs';
 
 const LEVEL_NAME = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
@@ -184,8 +185,8 @@ export class SR3EHealing {
     return deadly || treatedWithoutMod ? 1 : 0;
   }
 
-  /** A 2D6 at or below current Magic loses a point (p.129). */
-  static magicLost(roll, magic) { return (Number(roll) || 0) <= (Number(magic) || 0); }
+  /** A 2D6 at or below current Magic loses a point, and a roll of 2 always does (SR3 p.160) — the rule is MagicLoss. */
+  static magicLost(roll, magic) { return MagicLoss.lost(roll, magic); }
 
   /** Does it need a doctor? Body (natural) vs the Wound Table (p.126); Deadly always does (p.127). */
   static attentionTN(level, { stabilizationUnit = false } = {}) {

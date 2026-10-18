@@ -2984,3 +2984,10 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] **A third improvement works.** Improve the specialisation three times in a row; no validation error, each costs the NEW
       specialisation rating x the table multiplier; one over twice the base shows the amber "over N" warning but still buys.
 - [ ] Edit the skill's Rating by hand on its item sheet: the specialisation's dice stay the same (the bonus moves the other way).
+
+## 59. The Magic Loss check — a roll of 2 always loses (rules check 0.7.0, SR3 p.160)
+
+**Prerequisites:** an Awakened patient with Magic 1 (set the base by hand), a Deadly physical wound, a medic. Open 🩹 Healing, the Deadly-wound Magic loss step.
+
+- [ ] The Magic loss card rolls 2D6 and, on a total of **2**, reports a point lost even at Magic 1; a total above Magic is "no loss"; a total at or below Magic loses one.
+      (To force a 2, stub `game.sr3e.SR3EHealing._d` to return `{ total: 2 }`; with Magic 1, a 3 must be "no loss".)

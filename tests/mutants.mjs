@@ -54,6 +54,7 @@ const WILLING = { module: '../scripts/data/willing-target.mjs', klass: 'WillingT
 
 const RANGEB = { module: '../scripts/data/range-bands.mjs', klass: 'RangeBands' };
 const APDSM = { module: '../scripts/data/apds.mjs', klass: 'Apds' };
+const MAGICLOSS = { module: '../scripts/data/magic-loss.mjs', klass: 'MagicLoss' };
 const MISFIRE = { module: '../scripts/data/misfire.mjs', klass: 'Misfire' };
 const COLLISIONS = { module: '../scripts/data/collisions.mjs', klass: 'Collisions' };
 const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment' };
@@ -2975,5 +2976,12 @@ export const MUTANTS = [
     ...MISFIRE, method: 'payload', needsOriginal: '_payloadOriginal',
     was:    "the misfire would be resisted with Combat Pool; SR3 p.116 says without",
     impl:   function (o) { const p = this._payloadOriginal(o); return p && { ...p, noPools: false }; },
+  },
+  {
+    id:     'magic-loss-two-not-automatic',
+    suite:  'magic-loss',
+    ...MAGICLOSS, method: 'lost',
+    was:    'a Magic Loss check that was only "2D6 at or below Magic"; SR3 p.160: "A roll of 2 always indicates the loss of a Magic point"',
+    impl:   (roll, magic) => (Number(roll) || 0) <= (Number(magic) || 0),
   },
 ];
