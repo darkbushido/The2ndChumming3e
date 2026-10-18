@@ -2971,3 +2971,16 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
       "Resist the misfire (9M, no Combat Pool)" with the weapon's **normal** code (no +1 Power). Click it: a soak card for the
       **shooter**, no Combat Pool field ("Explosive round misfired…"), normal-ammo armour. Nothing is applied until the GM clicks the wound boxes.
 - [ ] The same Rule of One with ordinary ammunition: no misfire button.
+
+## 58. Attribute Maximum and specialisations in Spend Karma (rules check 0.7.0, SR3 p.244-245, p.84)
+
+**Prerequisites:** a character with Good Karma ~60, a skill (say Pistols 3, Quickness 4) with one specialisation at base +2 (rolls 5).
+
+- [ ] **Attribute Maximum.** Spend Karma for a troll's Body (limit 11): the row says "past max" only above **17**, not above 16.
+- [ ] **A base raise leaves the specialisation where it was.** Spend Karma, raise Pistols 3 → 4. The skill's specialisation still
+      rolls **5** (its bonus drops from +2 to +1); the dice pool dialog's Specialization tier reads 5 dice, not 6.
+- [ ] Raise Pistols again to 5: the specialisation rolls 5 (bonus +0, "Lv0" on the item sheet). Raise it to 6: still +0, still listed.
+- [ ] **↺ Undo** the base raises (GM): rating and specialisation come back together as they were.
+- [ ] **A third improvement works.** Improve the specialisation three times in a row; no validation error, each costs the NEW
+      specialisation rating x the table multiplier; one over twice the base shows the amber "over N" warning but still buys.
+- [ ] Edit the skill's Rating by hand on its item sheet: the specialisation's dice stay the same (the bonus moves the other way).

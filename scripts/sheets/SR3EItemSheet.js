@@ -118,7 +118,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         const idx = parseInt(sel.dataset.specIdx);
         const specs = [...(this.item.system.specialisations ?? [])];
         if (!specs[idx]) return;
-        specs[idx] = { ...specs[idx], level: parseInt(sel.value) || 1 };
+        specs[idx] = { ...specs[idx], level: Math.max(0, parseInt(sel.value) || 0) };
         await this.item.update({ 'system.specialisations': specs });
       });
     });
@@ -692,7 +692,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
                               // Always offer at least 1..4, and always far enough to include the
                               // current value however high a GM or the karma calculator took it.
                               const top = Math.max(4, cur + 1);
-                              return Array.from({ length: top }, (_, n) => n + 1).map(lv =>
+                              // Lv0 = the base skill has caught up to the specialisation (SR3 p.245, specsAfterRatingChange).
+                              return Array.from({ length: top + 1 }, (_, n) => n).map(lv =>
                                 `<option value="${lv}" ${cur === lv ? 'selected' : ''}>`
                                 + `Lv${lv} (${rating + lv} dice)</option>`).join('');
                             })()}

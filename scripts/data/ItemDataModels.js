@@ -295,7 +295,10 @@ export class SkillData extends foundry.abstract.TypeDataModel {
       specialisation:  new StringField({ initial: '' }),
       specialisations: new ArrayField(new SchemaField({
         name:  new StringField({ initial: '' }),
-        level: new NumberField({ integer: true, initial: 1, min: 1, max: 2 }),
+        // BONUS over the base skill. ⚠ NO max: p.245 puts no ceiling on a specialisation (it was
+        // max 2, so a third improvement failed validation). min 0 = the base has caught up
+        // (`specsAfterRatingChange`).
+        level: new NumberField({ integer: true, initial: 1, min: 0 }),
       }), { initial: () => [] }),
       description:     new HTMLField({ initial: '', required: false }),
     };

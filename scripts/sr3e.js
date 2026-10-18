@@ -10,6 +10,7 @@ import { SR3EMigrations } from './SR3EMigrations.js';
 import { SR3EPackRepair } from './SR3EPackRepair.js';
 import { AmmoStock } from './data/ammo-stock.mjs';
 import { restockImage, restockActorImage } from './data/item-icons.mjs';
+import { SkillRules } from './data/skill-rules.mjs';
 import { EssenceHoles } from './data/essence-holes.mjs';
 import { SR3EStress } from './SR3EStress.js';
 import { Stress } from './data/stress.mjs';
@@ -479,6 +480,17 @@ Hooks.on('preUpdateItem', (document, changes) => {
   if (document.type !== 'ammunition' || !foundry.utils.hasProperty(changes, 'system') || 'img' in changes) return;
   const img = restockImage(foundry.utils.mergeObject(document.toObject(), changes, { inplace: false }));
   if (img) changes.img = img;
+});
+
+// A skill's rating changes (Spend Karma, a sheet edit): its specialisations keep their OWN ratings -
+// SR3 p.245 "Specializations do not automatically increase when the base skill increases". An update
+// that carries the specialisations itself (an Undo, an import, the item sheet) is left as written.
+Hooks.on('preUpdateItem', (document, changes) => {
+  if (document.type !== 'skill') return;
+  const rating = foundry.utils.getProperty(changes, 'system.rating');
+  if (rating === undefined || foundry.utils.hasProperty(changes, 'system.specialisations')) return;
+  const next = SkillRules.specsAfterRatingChange(document.system.specialisations, document.system.rating, rating);
+  if (next) foundry.utils.setProperty(changes, 'system.specialisations', next);
 });
 
 // Auto-assign newly created Matrix/vehicle actors to their organisational folder,

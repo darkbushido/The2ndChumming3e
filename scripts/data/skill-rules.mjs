@@ -74,3 +74,39 @@ export function parseSpecialisations(text, base) {
       return { name: m[1].trim(), level: level >= 1 ? level : CHARGEN_SPEC_GAP };
     });
 }
+
+export class SkillRules {
+  /**
+   * Specialisations after the BASE skill's rating changes · *SR3 p.245*, `rules/karma.md#44`
+   *
+   * > "Specializations do not automatically increase when the base skill increases.
+   * > Specializations must be increased separately."
+   *
+   * `level` is stored as the BONUS over the base (a spec rolls base + level), so a base that
+   * rises by N must LOWER every bonus by N for the specialisation to keep its own rating —
+   * Iris's Pistols 3 / Beretta 5 becomes Pistols 4 / Beretta 5, level 2 → 1. A base that falls
+   * raises the bonus the same way (the spec keeps its rating; reversible).
+   *
+   * ⚠ **The book is silent on a base that catches up to the spec.** The bonus floors at 0: the
+   * specialisation stays on the skill, rolling as the base (it is no longer "better"), and the
+   * next karma purchase is base + 1 as for a new one. A bonus below 0 would make the
+   * specialisation a penalty. Nothing is removed.
+   *
+   * ⚠ **An unlearned skill (rating 0) is left alone**, both ways: learning a skill at 1 is not
+   * "the base increased", and a skill dropped to 0 keeps its specialisations as they were.
+   *
+   * @returns {Array<{name:string, level:number}>|null}  the new list, or null when nothing changes
+   */
+  static specsAfterRatingChange(specs, oldRating, newRating) {
+    const o = Number(oldRating) || 0, n = Number(newRating) || 0;
+    if (!Array.isArray(specs) || !specs.length || o <= 0 || n <= 0 || o === n) return null;
+    const delta = n - o;
+    let changed = false;
+    const next = specs.map(sp => {
+      const level = Math.max(0, (Number(sp?.level) || 0) - delta);
+      if (level !== sp?.level) changed = true;
+      return { ...sp, level };
+    });
+    return changed ? next : null;
+  }
+}

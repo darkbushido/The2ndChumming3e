@@ -35,6 +35,8 @@ installGlobals();
 const { SR3E } = await import('../scripts/config.js');
 installGame({ sr3e: { SR3E } });
 const { SR3EActor } = await import('../scripts/documents/SR3EActor.js');
+const { SkillRules } = await import('../scripts/data/skill-rules.mjs');
+const { readFileSync } = await import('node:fs');
 
 export const name = 'karma';
 
@@ -187,6 +189,45 @@ export async function run(t) {
   t.is('…and a level-5 spec keeps going',               target(5, 5), 11);
 
   t.is('a missing level is treated as brand new', target(5), 6);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Specialisations keep their OWN rating when the base rises · p.245 (rules/karma.md#44, #45)
+   *
+   *  "Specializations do not automatically increase when the base skill increases."
+   *  Iris: Pistols 3, Beretta at 5 (bonus 2). Pistols → 4: the Beretta is still 5 (bonus 1).
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const after = SkillRules.specsAfterRatingChange;
+  const iris = [{ name: 'Beretta 101T', level: 2 }];
+  const up = after(iris, 3, 4) ?? [{ name: '(unchanged)', level: iris[0].level }];  // a null result must FAIL an assertion, not throw
+  t.is("Iris's Beretta stays at 5 after Pistols 3 -> 4 (bonus 2 -> 1)", 4 + up[0].level, 5);
+  t.is('…name kept', up[0].name, 'Beretta 101T');
+  t.is('a base raised by 2 lowers the bonus by 2 (a specialisation at +4)', (after([{ name: 'x', level: 4 }], 3, 5) ?? [{}])[0].level, 2);
+  /* The base catches up: floors at 0 (the book is silent) - never negative, never removed. */
+  t.is('base catches the spec: bonus floors at 0, spec kept', (after(iris, 3, 5) ?? [{}])[0].level, 0);
+  t.is('base passes the spec: still 0, never negative', (after(iris, 3, 9) ?? [{}])[0].level, 0);
+  t.is('a base that FALLS raises the bonus (the spec keeps its rating)', 2 + (after(iris, 4, 2) ?? [{}])[0].level, 6);
+  t.is('several specialisations all keep their ratings',
+    (after([{ name: 'a', level: 1 }, { name: 'b', level: 3 }], 4, 5) ?? []).map(s => s.level).join(','), '0,2');
+  t.is('learning a skill (0 -> 1) is not a base increase', after(iris, 0, 1), null);
+  t.is('dropping to 0 leaves the specialisations alone', after(iris, 3, 0), null);
+  t.is('an unchanged rating changes nothing', after(iris, 3, 3), null);
+  t.is('no specialisations: nothing to do', after([], 3, 4), null);
+
+  /* Buying: the spec's NEXT rating is the new specialisation rating, priced on it. */
+  t.is('after Pistols 4 the Beretta (bonus 1) is bought to 6',    target(4, up[0].level), 6);
+  t.is('…costing 6 x 1 = 6 at Quickness 4 (6 is above the attribute, within twice it)', SR3EActor.karmaSpecCost(6, 4), 6);
+
+  /* ⚠ Source-level (the model and the hook need Foundry to run): no max on the bonus, and the
+   * rating hook is wired and skips an update that carries the specialisations itself. */
+  const read = f => readFileSync(new URL(`../scripts/${f}`, import.meta.url), 'utf8');
+  const model = read('data/ItemDataModels.js');
+  t.ok('a specialisation bonus has NO max (it was max: 2 - a third improvement failed validation)',
+    /level: new NumberField\(\{ integer: true, initial: 1, min: 0 \}\)/.test(model) && !/level: new NumberField\([^)]*max:/.test(model));
+  const boot = read('sr3e.js');
+  t.ok('sr3e.js lowers specialisation bonuses when a skill rating changes',
+    /preUpdateItem[\s\S]{0,400}SkillRules\.specsAfterRatingChange/.test(boot));
+  t.ok('…and leaves an update that carries system.specialisations as written',
+    /hasProperty\(changes, 'system\.specialisations'\)\) return/.test(boot));
 
   /* ════════════════════════════════════════════════════════════════════════════
    *  DEFECT 6 — the twentieth point goes to the Pool INSTEAD of Good Karma · p.244

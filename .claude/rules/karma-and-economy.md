@@ -116,7 +116,13 @@ re-crossed the pool threshold from 0 and granted points twice.
   `specialisations[].level` is the **bonus**.
 - ⚠ **Chargen gap is 2** (SR3 p.57: spec = base+1, base −1), which is why `SkillData.migrateData` uses 2
   for legacy strings. It's a **start, not a ceiling** — `level: 4` is legitimate; never clamp. The item
-  sheet's dropdown only offers Lv1/Lv2 (TODO 88).
+  sheet's dropdown offers Lv0 upward, past the current value.
+- ⚠ **A specialisation keeps its OWN rating when the base rises** (p.245, rules-check 0.7.0): `preUpdateItem` in
+  `sr3e.js` calls `SkillRules.specsAfterRatingChange` (`data/skill-rules.mjs`), lowering every `level` by the rise (a fall
+  raises it). Floors at **0** when the base catches up (book silent; spec kept, rolls as the base). Rating 0 (unlearned) is
+  skipped, and an update that carries `system.specialisations` itself (Undo, item sheet) is left as written. The schema has
+  **no max** on `level` (it was 2). Mutants `spec-rises-with-the-base`, `spec-bonus-goes-negative`.
+- ⚠ `karmaAttributeMaximum` IS `racialMax` (rounds half up: 7→11, 9→14, 11→17); mutant `karma-attr-maximum-floors`.
 - ⚠ **`_isActiveSkill` must delegate to `skillTypeForCategory`** (Martial Arts is active). One classifier.
 - ⚠ **Test with fractional and divergent cases** — every book example lands on integers and has
   skill/attribute one apart, so `ceil` vs `floor` and skill- vs attribute-gated caps both pass them.

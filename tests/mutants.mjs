@@ -40,6 +40,7 @@ const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 const PORDER = { module: '../scripts/data/patient-order.mjs', klass: 'PatientOrder' };
 const GSEARCH = { module: '../scripts/data/gear-search.mjs', klass: 'GearSearch' };
 const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
+const SKILLRULES = { module: '../scripts/data/skill-rules.mjs', klass: 'SkillRules' };
 const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
 const CPOOL = { module: '../scripts/data/combat-pool.mjs', klass: 'CombatPool' };
@@ -713,6 +714,22 @@ export const MUTANTS = [
     was:    'Math.floor - p.245 prints the maximum rounded UP (7 -> 11, 9 -> 14, troll Body 11 (17)); '
           + 'flooring said "past max" a point early in Spend Karma',
     impl:   (racialLimit) => Math.floor((Number(racialLimit) || 0) * 1.5),
+  },
+  {
+    id:     'spec-rises-with-the-base',
+    suite:  'karma',
+    ...SKILLRULES, method: 'specsAfterRatingChange',
+    was:    'raising the base skill left every specialisation bonus alone, so the specialisation rose '
+          + 'with it for free - p.245: Specializations do not automatically increase when the base skill increases',
+    impl:   () => null,
+  },
+  {
+    id:     'spec-bonus-goes-negative',
+    suite:  'karma',
+    ...SKILLRULES, method: 'specsAfterRatingChange',
+    was:    'no floor: a base that catches up to the specialisation turned its bonus into a penalty',
+    impl:   (specs, o, n) => (!specs?.length || !(o > 0) || !(n > 0) || o === n) ? null
+      : specs.map(sp => ({ ...sp, level: (sp.level || 0) - (n - o) })),
   },
   {
     id:     'karma-attr-always-2x',
