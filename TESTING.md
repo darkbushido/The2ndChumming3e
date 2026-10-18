@@ -2917,3 +2917,29 @@ packs), a copy of the **DocWagon Paramedic** contact, a second character with an
       sr3.282) replace the single untyped "Imaging Scope"; the Rating 1-3 magnification scopes are unchanged. An
       "Imaging Scope" already on an actor is left as it was (its kind cannot be known).
 - [ ] Both **Chrysler-Nissan G12A** variants show Availability **3/72 hrs** (a world copy at the old 4/96 hrs is corrected).
+
+## 54. Spell cast target numbers from the Target code (rules check 0.7.0, SR3 pp.182, 192-197)
+
+**Prerequisites:** an Awakened character with Sorcery and the spells below (from the Spells compendium, which already
+carries the normalised tokens); a second character with a known Essence; a vehicle actor; a token on the scene.
+No restart (JS only). Every dialog has a **GM adjustment** field: type +2 once and the card says "GM +2".
+
+- [ ] **Heal** / **Treat** at a target with Essence 6: after the target pick, a "target number" dialog shows
+      "10 − Essence 6 (p.193) → TN 4"; Cast. The card's TN source reads the same. Essence 5.5 gives TN 5 (rounds up).
+- [ ] **Decrease Attribute (Body)**: TN 10 − Essence; the target's Resist Spell button rolls **Body** (the Attribute affected).
+- [ ] **Detect Life** (or any Detect): the dialog lists the Detection table rows (in sight 4 / out of sight 6 / different plane
+      10) with a "behind an astral barrier (+ Force)" tick. The default is **in sight** for a visible token on the scene,
+      **out of sight** for an off-scene target. Pick "different plane": TN 10. Tick the barrier at Force 5 on "in sight": 9.
+- [ ] **Analyze Device**: the dialog lists the Object Resistance Table (3 / 5 / 8 / 10) with a familiarity (−2) tick; the card
+      states the Force needed (half the Resistance, rounded down) and warns, never refuses, when Force is below it.
+- [ ] A **Physical** spell cast at a **vehicle** actor: the dialog offers the Object Resistance rows (vehicles add Body and
+      half Armor — stated, not applied).
+- [ ] **Detox**, **Antidote**, **Cure Disease**: a number field for the toxin Strength / disease Power. Leave it blank: TN 2 and the
+      card says it was not entered. Enter 6: TN 6.
+- [ ] **Increase Attribute (Strength)** / Cybered / **Increase Reaction** / **Increase Reflexes**: TN is the target's rating in that
+      Attribute / Reaction, shown on the card; no dialog beyond the adjustment.
+- [ ] **Stabilize**: minutes field; 3 minutes gives TN 7.
+- [ ] **Fling**: the range-band dropdown (Short 4 / Medium 5 / Long 6 / Extreme 9) with the book's "normal Ranged Combat Test" rule
+      quoted. (The Fling target does not yet dodge — the Sorcery Test is its attack roll only.)
+- [ ] A spell whose Target the system cannot read (edit a spell's Target to "ZZ"): Willpower fallback and the card says the GM is
+      to check the TN.

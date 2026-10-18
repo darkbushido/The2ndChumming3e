@@ -10689,7 +10689,7 @@ _prepareCharacter(sys, attr) {
   async _postSpellSoakCard(payload) {
     const { baseDamage, attackSuccesses, spellType, spellTarget, force, rawDamage, spellName } = payload;
     // Same parser as the cast, so the resist attribute matches the cast's Target code exactly.
-    const { resistAttr, resistName } = game.sr3e.SR3EItem._parseSpellTarget(spellTarget, this, force, spellType);
+    const { resistAttr, resistName } = game.sr3e.SR3EItem._parseSpellTarget(spellTarget, this, force, spellType, { spellName });
 
     this.prepareDerivedData();
     const attrVal = this.system.attributes?.[resistAttr]?.value

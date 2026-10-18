@@ -67,9 +67,14 @@ Sheet shows available / total.
    🧹. Off-canvas → `_promptTargetsMulti`. Empty area still casts (Drain applies).
 3. Spell Pool dialog.
 4. **Cast**: Sorcery + Spell Pool vs **the spell's Target attribute** on the target —
-   `SR3EItem._parseSpellTarget` (the single parser for cast TN and resist): `W` `B` `I` `Q`; `F` = Force as TN;
-   number = fixed TN; blank/`OR`/unknown → Mana=Willpower, Physical=Body. `(R)/(T)/(RC)/(V)/(DT)` suffixes
-   stripped. ⚠ **Several targets: one roll, each against its own TN** (p.182) — dice roll at the **hardest** TN
+   `SR3EItem._parseSpellTarget` (the single parser for cast TN and resist; the rule is `SpellTarget.resolve`,
+   `scripts/data/spell-target.mjs`): `W` `B` `I` `Q`; `F` = Force as TN; number = fixed TN; blank → Mana=Willpower,
+   Physical=Body. The book's formula/table codes (rules check 0.7.0): `10-E` = 10 − Essence (Heal, Treat, Decrease);
+   `DT` = the Detection table 4/6/10 (+ Force behind an astral barrier, p.192); `OR` = the Object Resistance Table
+   3/5/8/10 (p.182; any spell on a **vehicle** uses it); `TOX`/`DP` = the toxin Strength / disease Power (asked);
+   `ATT`/`REA` = the target's rating in the Attribute raised / Reaction; `4+MIN` = 4 + minutes (asked); Fling's
+   "See text" = the ranged base TN by range band. `_promptSpellTNInputs` asks after targeting and carries a GM adjustment;
+   the card states the source. An unreadable code falls back and says the GM is to check. `(R)/(T)/(RC)/(V)` suffixes stripped. ⚠ **Several targets: one roll, each against its own TN** (p.182) — dice roll at the **hardest** TN
    and `SR3EActor.hitsAgainst` counts them per target; a target the dice didn't reach gets no Resist button;
    Spell Defense reduces each count.
 5. Final wave: 0 successes → fails, Drain still posted. Else each target gets **Resist Spell**

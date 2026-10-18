@@ -9,6 +9,7 @@ import { AreaEffect } from '../data/area-effect.mjs';
 import { MiniGrenade } from '../data/mini-grenade.mjs';
 import { SpellLimits } from '../data/spell-limits.mjs';
 import { WillingTarget } from '../data/willing-target.mjs';
+import { SpellTarget } from '../data/spell-target.mjs';
 
 export class SR3EItem extends Item {
 
@@ -3612,9 +3613,9 @@ export class SR3EItem extends Item {
     const rows = targets.map(t => {
       const facts = {
         isSelf:          t.id === caster.id,
-        bothPlayerOwned: !!(Q?.isPlayerCharacter(caster) && Q?.isPlayerCharacter(t)),
         // A player (not the GM, who owns everything) who owns both the caster and this target.
         sameOwner:       !!game.users?.some(u => !u.isGM && caster.testUserPermission?.(u, 'OWNER') && t.testUserPermission?.(u, 'OWNER')),
+        bothPlayerOwned: !!(Q?.isPlayerCharacter(caster) && Q?.isPlayerCharacter(t)),
         friendlyToken:   t.getActiveTokens?.().some(tk => tk.document?.disposition === friendly) ?? false,
       };
       const on = WillingTarget.defaultWilling(facts, category);
@@ -4500,45 +4501,100 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
 
   /**
    * Resolve a spell's cast TN + resist attribute from its Target code (the cast TN AND the
-   * attribute the target resists with). Any parenthetical suffix — (R)/(T)/(RC)/(V)/(DT) — is
-   * descriptive only and stripped before parsing, so codes like "W(R)", "B(T)", "4(V)" never
-   * misfire. Base codes:
-   *   W → Willpower, B → Body, I → Intelligence, Q → Quickness (TN = that target attribute)
-   *   F → Force (TN = the spell's Force; resist defaults to Willpower)
-   *   a number → fixed TN (resist defaults to Willpower)
-   *   anything else (incl. OR / blank) → Mana→Willpower, Physical→Body fallback.
+   * attribute the target resists with). The rule is `SpellTarget.resolve` (scripts/data/spell-target.mjs,
+   * pure and tested): W/B/I/Q read the target, F is Force, a number is fixed, and the book's formula and
+   * table codes — 10-E, DT, OR, TOX, DP, ATT, REA, 4+MIN, Fling's "See text" — are read there too.
+   * Any parenthetical suffix — (R)/(T)/(RC)/(V) — is descriptive only and stripped.
+   *   `ctx` — { spellName, inputs }: the spell's name (the Attribute an Increase/Decrease spell names)
+   *   and what the cast dialog collected (`_promptSpellTNInputs`) for this target.
    */
-  static _parseSpellTarget(spellTarget, targetActor, force, spellType) {
-    // Strip the parenthetical suffix and whitespace → bare base code.
-    const base = String(spellTarget ?? '').toUpperCase().replace(/\([^)]*\)/g, '').trim();
+  static _parseSpellTarget(spellTarget, targetActor, force, spellType, ctx = {}) {
+    return SpellTarget.resolve({
+      token: spellTarget, spellName: ctx.spellName ?? '', spellType, force,
+      target: { type: targetActor?.type, attributes: targetActor?.system?.attributes },
+      inputs: ctx.inputs ?? {},
+    });
+  }
 
-    const ATTRS = {
-      W: ['willpower',    'Willpower'],
-      B: ['body',         'Body'],
-      I: ['intelligence', 'Intelligence'],
-      Q: ['quickness',    'Quickness'],
-    };
-    if (ATTRS[base]) {
-      const [attr, name] = ATTRS[base];
-      const val = targetActor?.system.attributes?.[attr]?.value
-               ?? targetActor?.system.attributes?.[attr]?.base ?? 3;
-      return { tn: Math.max(2, val), resistAttr: attr, resistName: name, attrLabel: name };
-    }
-    if (base === 'F') {
-      // Force is the cast TN, not a target attribute; resist defaults to Willpower.
-      return { tn: Math.max(2, force ?? 1), resistAttr: 'willpower', resistName: 'Willpower', attrLabel: 'Force' };
-    }
-    const numeric = parseInt(base);
-    if (!isNaN(numeric) && base !== '') {
-      return { tn: Math.max(2, numeric), resistAttr: 'willpower', resistName: 'Willpower', attrLabel: `Fixed ${numeric}` };
-    }
-    // Fallback (empty / OR / unrecognised): Mana → Willpower, Physical → Body.
-    const isMana = spellType !== 'Physical';
-    const attr   = isMana ? 'willpower' : 'body';
-    const name   = isMana ? 'Willpower' : 'Body';
-    const val    = targetActor?.system.attributes?.[attr]?.value
-                ?? targetActor?.system.attributes?.[attr]?.base ?? 3;
-    return { tn: Math.max(2, val), resistAttr: attr, resistName: name, attrLabel: name };
+  /**
+   * The cast dialog for a Target code that is a formula or a table · SR3 pp.182, 192, 194, 197.
+   * One block per target for the Detection / Object Resistance rows (the target's own state), one
+   * field for a toxin's Strength / a disease's Power / Stabilize's minutes / Fling's range band, and a
+   * GM adjustment on every TN. Every figure is a default: warn, never refuse. Resolves to
+   * `{ perTarget: {id: inputs}, shared }` or `null` when the caster cancels.
+   */
+  static async _promptSpellTNInputs(caster, targets, spell, force) {
+    const token = spell.system.target ?? '', name = spell.name, type = spell.system.type ?? 'Mana';
+    const kinds = new Map(targets.map(t => [t.id, SpellTarget.resolve({
+      token, spellName: name, spellType: type, force, target: { type: t.type, attributes: t.system?.attributes } }).kind]));
+    const kindList = [...new Set(kinds.values())];
+    if (!kindList.some(k => SpellTarget.needsPrompt(k))) return { perTarget: {}, shared: {} };
+    const opt = (rows, sel) => rows.map(r => `<option value="${r.key}" ${r.key === sel ? 'selected' : ''}>${r.label} — ${r.tn}</option>`).join('');
+    const blocks = targets.map(t => {
+      const k = kinds.get(t.id);
+      const resolved = SpellTarget.resolve({ token, spellName: name, spellType: type, force,
+        target: { type: t.type, attributes: t.system?.attributes } });
+      const tk = t.getActiveTokens?.() ?? [];
+      const row = SpellTarget.defaultDetectionRow({ onCanvas: tk.length > 0, visible: tk.some(x => x.visible) });
+      let inner;
+      if (k === 'detect') {
+        inner = `<select name="row" data-t="${t.id}">${opt(SpellTarget.DETECTION_ROWS, row)}</select>
+          <label style="display:block;font-size:11px"><input type="checkbox" name="barrier" data-t="${t.id}"
+            style="appearance:auto;-webkit-appearance:checkbox"/> behind an astral barrier (+ Force ${force})</label>`;
+      } else if (k === 'object') {
+        inner = `<select name="row" data-t="${t.id}">${opt(SpellTarget.OBJECT_ROWS, 'hightech')}</select>
+          ${/analyze device/i.test(name) ? `<label style="display:block;font-size:11px"><input type="checkbox" name="familiar" data-t="${t.id}"
+            style="appearance:auto;-webkit-appearance:checkbox"/> familiar with the device or similar ones (−2)</label>` : ''}`;
+      } else {
+        inner = `<span style="font-size:11px;color:var(--sr-muted)">${resolved.source} → TN ${resolved.tn}</span>`;
+      }
+      return `<div style="margin:6px 0"><strong>${t.name}</strong>
+        ${k === 'object' && t.type === 'vehicle' ? '<span style="font-size:10px;color:var(--sr-muted)"> (non-living — Object Resistance Table, p.182)</span>' : ''}
+        <div>${inner}</div></div>`;
+    }).join('');
+    const asks = Object.fromEntries(['row', 'barrier', 'strength', 'minutes', 'band']
+      .map(f => [f, kindList.some(k => SpellTarget.asks(k)[f])]));
+    const shared = `
+      ${kindList.includes('toxin') || kindList.includes('disease') ? `<div>${kindList.includes('toxin') ? "Toxin's Strength" : "Disease's Power"}:
+        <input type="number" name="strength" min="1" value="" style="width:60px"/>
+        <span style="font-size:11px;color:var(--sr-muted)">the target number is this (p.193) — the system cannot know it</span></div>` : ''}
+      ${asks.minutes ? `<div>Minutes since the Deadly damage: <input type="number" name="minutes" min="0" value="0" style="width:60px"/>
+        <span style="font-size:11px;color:var(--sr-muted)">TN = 4 + minutes (p.194)</span></div>` : ''}
+      ${asks.band ? `<div>Range to the target: <select name="band">${opt(SpellTarget.FLING_BANDS, 'short')}</select>
+        <div style="font-size:11px;color:var(--sr-muted)">"Treat the Sorcery Test as a normal Ranged Combat Test" (p.197): the base TN by range band (p.112).
+        Throwing weapons use their normal range based on the spell's effective Strength (= Force).</div></div>` : ''}
+      <div style="margin-top:6px">GM adjustment to the TN: <input type="number" name="adjust" value="0" style="width:60px"/>
+        <span style="font-size:11px;color:var(--sr-muted)">every figure above is a default — change it freely</span></div>`;
+    let out = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${caster.name} — ${name}: target number` },
+      content: `<p style="font-size:12px;margin:0 0 6px">${name}'s Target is <strong>${String(token).trim() || '—'}</strong>.</p>${blocks}${shared}`,
+      buttons: [
+        {
+          label: 'Cast', action: 'confirm', default: true,
+          callback: (_e, _b, dialog) => {
+            const el = dialog.element, q = sel => el.querySelector(sel);
+            const num = sel => { const v = parseInt(q(sel)?.value); return Number.isFinite(v) ? v : undefined; };
+            const adjust = num('[name="adjust"]') ?? 0;
+            const perTarget = {};
+            for (const t of targets) {
+              perTarget[t.id] = {
+                row: q(`[name="row"][data-t="${t.id}"]`)?.value,
+                barrier: !!q(`[name="barrier"][data-t="${t.id}"]`)?.checked,
+                familiar: !!q(`[name="familiar"][data-t="${t.id}"]`)?.checked,
+                strength: num('[name="strength"]'),
+                minutes: num('[name="minutes"]'),
+                band: q('[name="band"]')?.value,
+                adjust,
+              };
+            }
+            out = { perTarget, shared: { adjust } };
+          },
+        },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    return out;
   }
 
   /**
@@ -4546,7 +4602,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
    * Shows each candidate's relevant TN (Essence or Body).
    * Returns array of Actor objects, or null if cancelled / nothing selected.
    */
-  static async _promptTargetsMulti(attacker, spellType, spellTarget, force) {
+  static async _promptTargetsMulti(attacker, spellType, spellTarget, force, spellName = '') {
     // The caster is a candidate too — an area spell catches them if they stand in it (SR3 p.181).
     const all = game.actors.contents
       .filter(a => a.type !== 'vehicle' && game.sr3e.isLiveActor(a));
@@ -4557,7 +4613,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     }
 
     const choices = candidates.map(a => {
-      const parsed = SR3EItem._parseSpellTarget(spellTarget, a, force, spellType);
+      const parsed = SR3EItem._parseSpellTarget(spellTarget, a, force, spellType, { spellName });
       return `
         <label class="sr-target-row">
           <input type="checkbox" name="target-actor" value="${a.id}"
@@ -4793,7 +4849,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
         }
       } else {
         // No scene — fall back to the manual checkbox list.
-        targetActors = await SR3EItem._promptTargetsMulti(actor, spellType, spellTarget, force);
+        targetActors = await SR3EItem._promptTargetsMulti(actor, spellType, spellTarget, force, this.name);
         if (!targetActors || targetActors.length === 0) return null;
       }
     } else {
@@ -4829,21 +4885,29 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     //   only then can every lower TN be counted from the same dice — and each target's hits are
     //   counted against its own (`hitsAgainst`, in _postWaveCard). Until 0.6.1 the FIRST target's
     //   TN was used for everyone (TODO 171).
-    let targetTNs = Object.fromEntries(targetActors.map(t =>
-      [t.id, SR3EItem._parseSpellTarget(spellTarget, t, force, spellType).tn]));
+    /* The Target codes that are a formula or a table (10-E, DT, OR, TOX, DP, ATT, REA, 4+MIN, Fling) are read
+     * by `SpellTarget.resolve`; the ones that need the caster's say-so (a Detection row, a toxin's Strength,
+     * the minutes since the Deadly damage, Fling's range band) are asked here, after targeting, with a GM
+     * adjustment on every TN. Every figure is a default (warn, never refuse). */
+    const tnInputs = targetActors.length
+      ? await SR3EItem._promptSpellTNInputs(actor, targetActors, this, force)
+      : { perTarget: {}, shared: {} };
+    if (tnInputs === null) return null;   // cancelled — nothing spent yet
+    const parseFor = t => SR3EItem._parseSpellTarget(spellTarget, t, force, spellType,
+      { spellName: this.name, inputs: tnInputs.perTarget[t.id] ?? {} });
+    let targetTNs = Object.fromEntries(targetActors.map(t => [t.id, parseFor(t).tn]));
     const hardest   = targetActors.reduce((best, t) =>
       (!best || targetTNs[t.id] > targetTNs[best.id]) ? t : best, null);
     const primaryTarget  = hardest ?? null;
-    const parsedPrimary  = primaryTarget
-      ? SR3EItem._parseSpellTarget(spellTarget, primaryTarget, force, spellType)
-      : null;
+    const parsedPrimary  = primaryTarget ? parseFor(primaryTarget) : null;
     let tn               = parsedPrimary ? parsedPrimary.tn : Math.max(2, force);
     const tnsDiffer      = new Set(Object.values(targetTNs)).size > 1;
     // Human-readable source of the cast TN, shown on the result card.
     let tnSource;
     if (!parsedPrimary || parsedPrimary.attrLabel === 'Force') tnSource = `Force ${force}`;
     else if (parsedPrimary.attrLabel.startsWith('Fixed'))      tnSource = 'fixed';
-    else tnSource = `${primaryTarget.name}'s ${parsedPrimary.attrLabel}`;
+    else if (['attr', 'blank'].includes(parsedPrimary.kind))   tnSource = `${primaryTarget.name}'s ${parsedPrimary.attrLabel}`;
+    else tnSource = `${primaryTarget.name}: ${parsedPrimary.source}${parsedPrimary.check ? ' ⚠' : ''}`;
     if (tnsDiffer) tnSource = `each target's own; rolled at the highest, ${tnSource}`;
 
     /* The GM's TN window for a cast · SR3 p.182-183 (TODO 131): *"If the caster has trouble seeing

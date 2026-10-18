@@ -48,6 +48,7 @@ const GMONLY = { module: '../scripts/data/gm-only-fields.mjs', klass: 'GmOnlyFie
 const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellLimits' };
 const AREAEFFECT = { module: '../scripts/data/area-effect.mjs', klass: 'AreaEffect' };
 const AREASHAPE = { module: '../scripts/data/area-shape.mjs', klass: 'AreaShape' };
+const SPELLTN = { module: '../scripts/data/spell-target.mjs', klass: 'SpellTarget' };
 const WILLING = { module: '../scripts/data/willing-target.mjs', klass: 'WillingTarget' };
 
 const COLLISIONS = { module: '../scripts/data/collisions.mjs', klass: 'Collisions' };
@@ -2841,5 +2842,68 @@ export const MUTANTS = [
     ...WILLING, method: 'isNonLiving',
     was:    'a vehicle was handed a Resist Spell button (SR3 p.183: only "living targets" make a Spell Resistance Test)',
     impl:   () => false,
+  },
+  {
+    id:     'spell-heal-tn-ignores-essence',
+    suite:  'spell-target',
+    ...SPELLTN, method: 'essenceTN',
+    was:    'Heal, Treat and Decrease Attribute (Target "10-E") fell to the Mana fallback and were cast at the target Willpower instead of 10 - Essence (SR3 p.193)',
+    impl:   () => 4,
+  },
+  {
+    id:     'spell-detect-ignores-the-table',
+    suite:  'spell-target',
+    ...SPELLTN, method: 'detectionTN',
+    was:    'Detection spells (Target "DT") were cast at the target Willpower instead of the Detection Spell Target Number table (SR3 p.192)',
+    impl:   () => 4,
+  },
+  {
+    id:     'spell-detect-barrier-adds-nothing',
+    suite:  'spell-target',
+    ...SPELLTN, method: 'detectionTN', needsOriginal: '_detectionTNOriginal',
+    was:    'a target behind an astral barrier cost no extra (the table says "+ Force", SR3 p.192)',
+    impl:   function (row, force) { return this._detectionTNOriginal(row, force, false); },
+  },
+  {
+    id:     'spell-object-resistance-flat',
+    suite:  'spell-target',
+    ...SPELLTN, method: 'objectTN',
+    was:    'Analyze Device (Target "OR") was one flat number whatever the material, not the Object Resistance Table 3/5/8/10 (SR3 p.182)',
+    impl:   () => 5,
+  },
+  {
+    id:     'spell-stabilize-ignores-minutes',
+    suite:  'spell-target',
+    ...SPELLTN, method: 'stabilizeTN',
+    was:    'Stabilize was cast at a flat 4: the minutes since the Deadly damage add to the TN (SR3 p.194)',
+    impl:   () => 4,
+  },
+  {
+    id:     'spell-fling-flat-short-range',
+    suite:  'spell-target',
+    ...SPELLTN, method: 'flingTN',
+    was:    'Fling ignored the range band: "Treat the Sorcery Test as a normal Ranged Combat Test" (SR3 p.197) is 4/5/6/9 by range',
+    impl:   () => 4,
+  },
+  {
+    id:     'spell-increase-attribute-reads-willpower',
+    suite:  'spell-target',
+    ...SPELLTN, method: 'attributeOf',
+    was:    'Increase Attribute (Target "Att") was cast at Willpower, not "the Attribute to be increased" (SR3 p.194)',
+    impl:   () => ['willpower', 'Willpower'],
+  },
+  {
+    id:     'spell-unknown-token-says-nothing',
+    suite:  'spell-target',
+    ...SPELLTN, method: 'resolve', needsOriginal: '_resolveOriginal',
+    was:    'a Target code the system cannot read fell back to Willpower silently, with no note on the card that the GM should check the TN',
+    impl:   function (a) { return { ...this._resolveOriginal(a), check: false, source: 'target Willpower' }; },
+  },
+  {
+    id:     'spell-toxin-token-unread',
+    suite:  'spell-target',
+    ...SPELLTN, method: 'kind', needsOriginal: '_kindOriginal',
+    was:    'Antidote and Detox (Target "TOX") were not recognised, so the toxin Strength was never asked for (SR3 p.193)',
+    impl:   function (tok, name) { return /^TOX/i.test(String(tok)) ? 'unknown' : this._kindOriginal(tok, name); },
   },
 ];

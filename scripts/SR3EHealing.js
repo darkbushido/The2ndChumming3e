@@ -28,6 +28,7 @@
 
 import { itemRating } from './data/item-rating.mjs';
 import { PatientOrder } from './data/patient-order.mjs';
+import { SpellTarget } from './data/spell-target.mjs';
 
 const LEVEL_NAME = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
 const NEXT_DOWN  = { D: 'S', S: 'M', M: 'L', L: '' };
@@ -269,7 +270,7 @@ export class SR3EHealing {
   }
 
   /** Heal / Treat (pp.193-194): TN 10 − Essence, rounded up (a fraction makes it harder, not easier). */
-  static healSpellTN(essence) { return Math.max(2, Math.ceil(10 - (Number(essence) || 0))); }
+  static healSpellTN(essence) { return SpellTarget.essenceTN(essence); }
 
   /**
    * Heal / Treat result (p.194): each success heals a box up to the Force, OR divides the base
