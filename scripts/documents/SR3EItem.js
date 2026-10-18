@@ -1775,19 +1775,33 @@ export class SR3EItem extends Item {
     // No pool dice allowed when defaulting to an attribute.
     if (gunneryDefaulting) controlPoolMax = Math.min(controlPoolMax, gunneryDefPoolCap);
 
+    // Combat Pool for the jumped-in rigger only (SR3 p.154, p.152, p.157) — a secondary drone gets none.
+    const combatPoolMax = Rigging.gunneryCombatPool(roller, pilotActor?.system?.derived?.availableCombatPool ?? 0,
+      { defaulting: gunneryDefaulting, poolCap: gunneryDefPoolCap });
+
     // Step 3: Roll options dialog
     const baseSig  = targetActor.type === 'vehicle'
       ? (targetActor.system.attributes?.sig?.base ?? 4)
       : 4;
     const weaponOpts = await SR3EItem._promptVehicleWeaponRollOptions(
-      this, targetActor, pool, poolLabel, baseSig, rawDamage, vcrLevel, controlPoolMax
+      this, targetActor, pool, poolLabel, baseSig, rawDamage, vcrLevel, controlPoolMax, combatPoolMax
     );
     if (!weaponOpts) return null;
 
+    // Charge the Combat Pool through the pool helper and roll what it actually deducted (tests/pool-spend).
+    let combatDice = 0;
+    if (combatPoolMax > 0 && pilotActor && weaponOpts.combatPool > 0) {
+      combatDice = await pilotActor.spendCombatPool(Math.min(weaponOpts.combatPool, combatPoolMax));
+      if (combatDice < weaponOpts.combatPool) {
+        ui.notifications.warn(`${pilotActor.name}: only ${combatDice} of ${weaponOpts.combatPool} Combat Pool dice were available.`);
+      }
+    }
+
     // Sensor-enhanced gunnery adds half the Sensor Rating (round down) as DICE · SR3 p.152.
-    const finalPool = Math.max(1, pool + weaponOpts.controlPool + (weaponOpts.sensorDice ?? 0));
+    const finalPool = Math.max(1, pool + weaponOpts.controlPool + combatDice + (weaponOpts.sensorDice ?? 0));
     const tn        = weaponOpts.tn + gunneryDefTnMod + pilotWoundMod + pilotSustain;   // defaulting + the gunner's wounds and spells
     const cpNote    = (weaponOpts.controlPool > 0 ? ` + CP${weaponOpts.controlPool}` : '')
+                    + (combatDice > 0 ? ` + Combat Pool ${combatDice}` : '')
                     + (weaponOpts.sensorDice > 0 ? ` + Sensor ${weaponOpts.sensorDice}` : '');
     const woundNote = (pilotWoundMod > 0 ? ` (${pilotActor.name} wounded +${pilotWoundMod} TN)` : '')
                     + (pilotSustain  > 0 ? ` (${game.sr3e.SR3EActor.standingNote(pilotActor)})` : '');
@@ -1827,7 +1841,7 @@ export class SR3EItem extends Item {
   /**
    * Roll options dialog for vehicle weapon attacks.
    */
-  static async _promptVehicleWeaponRollOptions(weapon, targetActor, pool, poolLabel, baseSig, rawDamage, _vcrLevel = 0, controlPoolMax = 0) {
+  static async _promptVehicleWeaponRollOptions(weapon, targetActor, pool, poolLabel, baseSig, rawDamage, _vcrLevel = 0, controlPoolMax = 0, combatPoolMax = 0) {
     const isVehicleTarget = targetActor.type === 'vehicle';
     const sensorRating    = weapon.actor?.system.attributes?.sensor?.base ?? 0;
     /* Sensor-enhanced gunnery · SR3 p.152: "rolls a number of dice equal to the character's Gunnery
@@ -1908,6 +1922,10 @@ export class SR3EItem extends Item {
                         title="Control Pool unavailable — VCR required for gunnery"/>
                </label>`
           }
+          ${combatPoolMax > 0
+            ? `<label class="vw-field" title="SR3 p.154: a jumped-in rigger may use Combat Pool dice for the drone; p.152 adds them to the Sensor-Enhanced Gunnery Test">Combat Pool dice (max ${combatPoolMax})
+                 <input type="number" id="vw-cbp" value="0" min="0" max="${combatPoolMax}"/>
+               </label>` : ''}
           <label class="vw-field vw-full" title="SR3 p.152 — needs a successful Sensor Test to lock on first. Manual gunnery gets no Sensor dice.">
             <span><input type="checkbox" id="vw-sensor" ${sensorDice > 0 ? 'checked' : 'disabled'}/>
             Sensor-enhanced gunnery: +${sensorDice} dice (½ Sensor ${sensorRating}, round down)</span>
@@ -1938,6 +1956,7 @@ export class SR3EItem extends Item {
             result = {
               tn:          Math.max(2, sig + rng),
               controlPool: Math.max(0, parseInt(el.querySelector('#vw-fc')?.value) || 0),
+              combatPool:  Math.min(combatPoolMax, Math.max(0, parseInt(el.querySelector('#vw-cbp')?.value) || 0)),
               damageCode:  el.querySelector('#vw-damage')?.value.trim() || rawDamage,
               avMunition:  el.querySelector('#vw-av')?.checked ?? false,
               sensorDice:  el.querySelector('#vw-sensor')?.checked ? sensorDice : 0,

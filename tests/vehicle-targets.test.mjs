@@ -45,7 +45,7 @@ export async function run(t) {
   t.ok('no Math.ceil halving of Power is left', !/Math\.ceil\(damageBase\.power \/ 2\)/.test(item));
   t.ok('the gunnery TN is the Signature — neither Sensor nor VCR comes off it',
     /const defaultTN\s*= Math\.max\(2, baseSig\);/.test(item) && !/baseSig - tnReduction/.test(item));
-  t.ok('the Sensor dice reach the pool', /pool \+ weaponOpts\.controlPool \+ \(weaponOpts\.sensorDice \?\? 0\)/.test(item));
+  t.ok('the Sensor dice reach the pool', /pool \+ weaponOpts\.controlPool \+ combatDice \+ \(weaponOpts\.sensorDice \?\? 0\)/.test(item));
   t.ok('an AV munition on a vehicle weapon reaches the soak card', /if \(weaponOpts\.avMunition\) options\.ammoType = 'antiVehicle'/.test(item));
 
   const actor = read('scripts/documents/SR3EActor.js');

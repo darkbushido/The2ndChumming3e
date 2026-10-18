@@ -58,6 +58,17 @@ export async function run(t) {
   t.is('jumped in (VCR): the rigger rolls', Rigging.droneTestRoller('vcr', true), 'rigger');
   t.is("captain's chair / secondary (RCD): the drone's Pilot rolls", Rigging.droneTestRoller('rcd', true), 'pilot');
   t.is('no rigger: the Pilot rolls', Rigging.droneTestRoller('vcr', false), 'pilot');
+  /* Combat Pool on drone gunnery · SR3 p.154 "The rigger may use Combat and Control Pool dice", p.152
+   * "Combat Pool dice may be added to this test", p.157 "…only with the primary drone".
+   * 0.7.0 rules check: the vehicle-weapon dialog offered Control Pool only. */
+  t.is('jumped in: the rigger may add all their Combat Pool', Rigging.gunneryCombatPool('rigger', 6), 6);
+  t.is('secondary drone / captain chair (Pilot rolls): no Combat Pool (p.157)', Rigging.gunneryCombatPool('pilot', 6), 0);
+  t.is('defaulting to an attribute: capped by the Default Table', Rigging.gunneryCombatPool('rigger', 6, { defaulting: true, poolCap: 2 }), 2);
+  t.is('a cap does not apply when the skill is not defaulted', Rigging.gunneryCombatPool('rigger', 6, { poolCap: 2 }), 6);
+  t.is('nothing left, nothing offered', Rigging.gunneryCombatPool('rigger', 0), 0);
+  t.ok('gunnery: only the jumped-in rigger is offered it, and it is charged through the pool helper',
+    /Rigging\.gunneryCombatPool\(roller,/.test(item) && /await pilotActor\.spendCombatPool\(/.test(item)
+    && /pool \+ weaponOpts\.controlPool \+ combatDice/.test(item));
   t.ok('VCR mode: VCR Initiative', Rigging.usesVcrInitiative('vcr', 2));
   t.ok('RCD with a VCR keeps the VCR Initiative (Rigger X, p.154)', Rigging.usesVcrInitiative('rcd', 2));
   t.ok('RCD with only a datajack and a deck: ordinary Initiative', !Rigging.usesVcrInitiative('rcd', 0));

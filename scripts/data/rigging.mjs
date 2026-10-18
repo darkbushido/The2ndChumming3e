@@ -64,6 +64,22 @@ export class Rigging {
     return hasRigger && controlMode === 'vcr' ? 'rigger' : 'pilot';
   }
 
+  /**
+   * Combat Pool dice a vehicle or drone weapon test may take (0.7.0 rules check, drones.md #12/#66).
+   * > "The rigger may use Combat and Control Pool dice when making tests for the drone" — SR3 p.154
+   * > "Combat Pool dice may be added to this test [Sensor-Enhanced Gunnery]. When not controlled by a
+   * >  rigger, drones use their Pilot Ratings" — SR3 p.152
+   * > "Riggers operating through a cybernetic link can use their Combat Pool dice only with the
+   * >  primary drone" — SR3 p.157;  "Drones do not benefit from dice pools" (secondary) — p.157
+   * Only the rigger who rolls (`droneTestRoller` = 'rigger', i.e. jumped in) has a pool to add; a
+   * Pilot-Rating roller gets none. Defaulting to an attribute allows no pool (SR3 p.84-85) and the
+   * Default Table's `poolCap` caps it. `available` is the rigger's unspent Combat Pool.
+   */
+  static gunneryCombatPool(roller, available, { defaulting = false, poolCap = Infinity } = {}) {
+    if (roller !== 'rigger') return 0;
+    return Math.min(whole(available), defaulting ? whole(poolCap) : Infinity);
+  }
+
   /** Does the rigger roll VCR Initiative? Jumped in always; in the captain's chair (RCD) only with a VCR. */
   static usesVcrInitiative(controlMode, vcrLevel) {
     if (controlMode === 'vcr') return true;

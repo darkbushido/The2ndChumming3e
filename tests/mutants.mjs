@@ -221,6 +221,13 @@ export const MUTANTS = [
     impl:   (_mode, hasRigger) => hasRigger ? 'rigger' : 'pilot',
   },
   {
+    id:     'secondary-drone-gets-combat-pool',
+    suite:  'rigging',
+    ...RIG, method: 'gunneryCombatPool',
+    was:    'drone gunnery offered a Combat Pool to a secondary drone (or none to the jumped-in rigger); SR3 p.154/p.157 give it to the primary drone only (0.7.0)',
+    impl:   (_roller, available) => Number(available) || 0,
+  },
+  {
     id:     'captains-chair-loses-vcr-initiative',
     suite:  'rigging',
     ...RIG, method: 'usesVcrInitiative',

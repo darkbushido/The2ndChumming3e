@@ -3012,3 +3012,12 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] **A general test while perceiving.** Dual Nat. mode, roll an attribute and a non-magical skill from the sheet: the row appears and charges. In Physical mode it does not appear. Roll **Sorcery** with dice entered: a warning says Astral Pool dice can't be used on Magical Skill Tests and the pool stays unspent.
 - [ ] **Astral Combat (two clients).** Initiate attacks, a second Awakened actor defends: the initiate's corner has "+ Astral Combat Pool" and "+ Initiate Astral Pool (avail. 2)"; the defender's corner (grade 0) has only the first. Submit 1 initiate die, resolve: the roll uses skill dice + Astral Combat Pool dice + 1, the initiate pool drops to 1 / 2 from the **player's own** client.
 - [ ] **Refresh.** With the pool spent, advance to the next Combat Turn (or end combat): it returns to 2 / 2. **↺ Reset All Pools** also refills it.
+
+## 62. Combat Pool on a jumped-in drone's gunnery (rules check 0.7.0, SR3 p.152, p.154, p.157)
+
+**Prerequisites:** a rigger character with a VCR (Rating 2), a Combat Pool, and a drone with a mounted weapon (vehicleweapon item) set to **VCR** mode with the rigger as driver; a second drone set to **RCD** with the same rigger; a target actor.
+
+- [ ] Fire the VCR drone's weapon: the Attack Options dialog has **Combat Pool dice (max N)** beside Control Pool, N = the rigger's available Combat Pool. Enter 2 and roll: the card label reads "+ Combat Pool 2" and the **rigger's** sheet shows 2 more spent. The roll is skill + Control Pool + Combat Pool (+ Sensor).
+- [ ] Fire the RCD drone's weapon: no Combat Pool row (Pilot Rating, no pools).
+- [ ] Rigger with no Gunnery skill (Default dialog, attribute default): the Combat Pool offered is limited by the Default Table cap.
+- [ ] Spend the rigger's pool from another client mid-way (or leave 1 die): asking for more than is left rolls only what was deducted and warns.
