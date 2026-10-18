@@ -14,6 +14,7 @@
       "mode": "SA",
       "damage": "9S(f)",
       "flechette": true,
+      "shotgunRules": true,
       "weight": "2.5",
       "availability": "3/24hrs",
       "cost": 300,

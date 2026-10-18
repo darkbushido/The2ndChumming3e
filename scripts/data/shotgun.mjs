@@ -64,8 +64,56 @@ export const Shotgun = {
     return { spreads: s, power: -s, tn: -s, dodge: s };
   },
 
-  /** Does this weapon throw shot? A shotgun (ShtG) with shot loaded. */
+  /**
+   * Does this weapon follow the shotgun rules (choke, spread, shotgun ammunition, double recoil in BF)?
+   * A shotgun (category ShtG) always does; so does any firearm ticked `shotgunRules` — the Remington
+   * Roomsweeper, which keeps heavy-pistol ranges and the Pistols skill (category HPist) but, SR3 p.277:
+   * "The weapon uses heavy-pistol ranges, but shotgun rules; see Shotguns, p. 117 of Combat."
+   */
+  usesRules(weaponOrSystem) {
+    const s = weaponOrSystem?.system ?? weaponOrSystem;
+    return s?.category === 'ShtG' || s?.shotgunRules === true;
+  },
+
+  /**
+   * Is a shotgun-rules weapon of another category (the Roomsweeper) firing NORMAL rounds? SR3 p.277: it
+   * "can be loaded with normal rounds instead of shotgun rounds, in which case the weapon does 9M damage."
+   *
+   * ⚠ Its Damage Code, 9S(f), is the SHOT code (the Firearms table prints it, and `(f)` says the flechette
+   * level is already in it). It fires shot unless an ordinary ammunition item is loaded: a gun with nothing
+   * loaded (`equippedAmmoId` blank) stays on the table's code, `loadedAmmoType` 'shot' is shot, and
+   * 'regular' with an ammunition item loaded is normal rounds. A plain ShtG is never this case (its code is
+   * the slug code already).
+   */
+  firesNormalRounds(system) {
+    return system?.shotgunRules === true && system?.category !== 'ShtG'
+      && /\(f\)/i.test(String(system?.damage ?? ''))
+      && (system?.loadedAmmoType ?? 'regular') === 'regular'
+      && !!system?.equippedAmmoId;
+  },
+
+  /**
+   * The Damage Code to fire with: the weapon's own, except normal rounds in a shotgun-rules weapon, which
+   * drop the flechette level the `(f)` code carries — 9S(f) → 9M (SR3 p.277; the Defiance T-250's short barrel
+   * prints "9S(f) or 9M" the same way, p.279). Anything else is returned untouched.
+   */
+  damageCode(system) {
+    const code = String(system?.damage ?? '');
+    if (!Shotgun.firesNormalRounds(system)) return code;
+    const m = code.match(/^\s*(\d+)\s*([LMSD])\s*\(f\)\s*(.*)$/i);
+    if (!m) return code;
+    const STAGES = ['L', 'M', 'S', 'D'];
+    const lvl = STAGES[Math.max(0, STAGES.indexOf(m[2].toUpperCase()) - 1)];
+    return `${m[1]}${lvl}${m[3] ? ' ' + m[3] : ''}`;
+  },
+
+  /** Does this weapon throw shot? A shotgun-rules weapon with shot loaded — or a Roomsweeper-type on its default. */
   firesShot(weapon) {
-    return weapon?.system?.category === 'ShtG' && weapon?.system?.loadedAmmoType === 'shot';
+    const s = weapon?.system;
+    if (!Shotgun.usesRules(s)) return false;
+    if (s.loadedAmmoType === 'shot') return true;
+    // The default of a non-ShtG shotgun-rules weapon with an (f) code: shot, until normal rounds are loaded.
+    return s.category !== 'ShtG' && /\(f\)/i.test(String(s.damage ?? ''))
+      && (s.loadedAmmoType ?? 'regular') === 'regular' && !s.equippedAmmoId;
   },
 };

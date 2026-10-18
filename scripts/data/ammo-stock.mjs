@@ -182,7 +182,24 @@ export const AmmoStock = {
    */
   classFits(sys, gunClass) {
     const mine = String(sys?.gunClass ?? '').trim();
-    return !mine || !gunClass || mine === gunClass;
+    const classes = [].concat(gunClass ?? []).filter(Boolean);   // a shotgun-rules weapon has two (below)
+    return !mine || classes.length === 0 || classes.includes(mine);
+  },
+
+  /**
+   * Every ammunition class a firearm takes — its own, plus shotgun ammunition when it follows the shotgun
+   * rules · SR3 p.277 (the Remington Roomsweeper "can be loaded with normal rounds instead of shotgun
+   * rounds") and p.279 ("Shotguns, whether pistols or rifles, can share ammo"). Null for no category.
+   */
+  gunClasses(system) {
+    const own = AmmoStock.gunClass(system?.category);
+    if (!own) return null;
+    return system?.shotgunRules === true && own !== 'ShtG' ? [own, 'ShtG'] : [own];
+  },
+
+  /** The class a box of `ammoType` belongs to in THIS gun — shot in a shotgun-rules weapon is shotgun ammunition. */
+  classForType(system, ammoType) {
+    return system?.shotgunRules === true && ammoType === 'shot' ? 'ShtG' : AmmoStock.gunClass(system?.category);
   },
 
   /**

@@ -3045,3 +3045,16 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] **Below stall.** In the Chase Scene type 120 km/h (100 m/turn) in the Cessna's speed box and press Tab: a warning appears and a chat card "below its stall speed" with a **💥 Crash Test** button; clicking it opens the Crash dialog (nothing is rolled by itself). Re-typing the same speed does not post a second card; type 300 km/h then 100 again and it posts once more. A speed of 0 posts nothing.
 - [ ] **Braking.** Run the 💥 Collision tool as an accident with the Cessna at 300 km/h so the Braking Test leaves it under 135 m/turn: the Braking card carries the same stall warning and a Crash Test button (one button, not two, when the deceleration already called for a Crash Test).
 - [ ] A thunderbird (GMC Harpy Scout LAV): same stall speed 250, and the card says the stall speed applies only at 75 m or higher.
+
+## 65. The Remington Roomsweeper follows the shotgun rules (rules check 0.7.0, SR3 p.277-278)
+
+⚠ New persisted field (`system.shotgunRules` on firearms): **fully restart Foundry**, not F5. The firearms pack and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
+
+**Prerequisites:** a character with Pistols, a fresh Rmngton Roomsweeper ShG from the Firearms pack, a copy owned before this change, a target token, and (Items) Shotgun-class shot ammunition (an Ammunition item, Ammo Type Shot) plus ordinary heavy-pistol rounds.
+
+- [ ] **Item sheet.** The Roomsweeper shows **Shotgun rules (p.117; implied for category Shotgun)** ticked; category is still Heavy Pistol, Damage 9S(f). An ordinary Ares Predator is unticked.
+- [ ] **Migration.** The copy owned before this change gains the tick on load (or `game.sr3e.SR3EMigrations.force()`). Untick it by hand and force again: it is set again (the shipped value was wrong); a ShtG keeps working with the box unticked.
+- [ ] **Shot, by default.** With nothing loaded, fire at a token 12 m away: the fire dialog shows **Choke** and the spread box, the recoil line says "Shotgun: 2x uncompensated recoil in Burst Fire", the damage code is **9S(f)** less one Power per spread. Range band is the **heavy pistol** range table (not a shotgun's).
+- [ ] **Ammunition.** ↻ Reload offers both the heavy-pistol rounds and the shot box (not rifle rounds). Load the **normal rounds**: fire again: no choke row ("Slugs loaded"), damage code **9M**, the soak card applies no flechette rule. Load the **shot**: 9S(f), choke row back.
+- [ ] A Gel or APDS box is not offered for the Roomsweeper.
+- [ ] **Gear.** Give the Roomsweeper a laser sight: the GM's TN window does not pre-tick the laser sight (shotguns get none, p.117).

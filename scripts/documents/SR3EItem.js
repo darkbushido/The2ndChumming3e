@@ -989,6 +989,8 @@ export class SR3EItem extends Item {
    * own rules apply — a gun that had gel loaded before the rule existed is still a flechette gun.
    */
   static flechetteAmmo(system, loaded = 'regular') {
+    // Normal rounds in a Roomsweeper: the (f) is not in the code being fired (damageCode dropped it), SR3 p.277.
+    if (Shotgun.firesNormalRounds(system)) return loaded;
     const coded = SR3EItem.parseDamageCode(system?.damage ?? '')?.flechette === true;
     if (coded) return 'flechette-coded';
     return system?.flechette === true ? 'flechette' : loaded;
@@ -1001,6 +1003,8 @@ export class SR3EItem extends Item {
    * explosive and a second flechette would each change a code that already includes flechette.
    */
   static weaponAcceptsAmmoType(system, ammoType = 'regular') {
+    // A shotgun-rules weapon takes normal rounds or shotgun rounds and nothing else (SR3 p.277) — the maintainer, 2026-10-18.
+    if (system?.shotgunRules === true) return ['regular', 'shot'].includes(ammoType || 'regular');
     if (SR3EItem.flechetteAmmo(system, 'regular') === 'regular') return true;
     return (ammoType || 'regular') === 'regular';
   }
@@ -1088,7 +1092,7 @@ export class SR3EItem extends Item {
   }
 
   const isAoE = this.system.isAoE ?? false;
-  let rawDamage = this.system.damage || '';
+  let rawDamage = Shotgun.damageCode(this.system) || '';   // normal rounds in a Roomsweeper: 9M (SR3 p.277)
 
   if (isAoE) {
     // ── AoE path (thrown / launched) ──────────────────────────────────────────
@@ -1284,7 +1288,7 @@ export class SR3EItem extends Item {
     if (availableModes.length > 0) {
       // SS-only weapons: skip the dialog — no recoil, no damage mods
       const isHeavy   = RangeBands.isHeavyWeapon(this.system.category);
-      const isShotgun = (this.system.category ?? '') === 'ShtG';
+      const isShotgun = Shotgun.usesRules(this.system);   // ShtG, or a shotgun-rules weapon (Roomsweeper, SR3 p.277)
       if (availableModes.length === 1 && availableModes[0] === 'SS') {
         fireModeResult = { mode: 'SS', rounds: 0, roundsWasted: 0, recoilTN: 0, shotgunSpread: 0,
           // No dialog to ask, so the ordinal comes from who was already shot at (TODO 56.2).
@@ -2201,15 +2205,19 @@ export class SR3EItem extends Item {
     // armour and a medkit. A stack split into storage used to be offered here.
     // The gun's ammunition class (SR3 p.279): a box already stated for another class is not offered.
     const gunClass = this.type === 'firearm' ? AmmoStock.gunClass(this.system.category) : null;
+    // A shotgun-rules weapon (Roomsweeper, SR3 p.277) also takes shotgun ammunition (p.279).
+    const gunClasses = this.type === 'firearm' ? AmmoStock.gunClasses(this.system) : null;
     const launcher = this.type === 'firearm' && MiniGrenade.isLauncher(this.system);
     let stock = actor.items.filter(i =>
       i.type === 'ammunition' && !i.getFlag('The2ndChumming3e', 'stored')
-      && AmmoStock.fits(i.system, gunMech, gunClass)   // loose rounds fit any gun of their class; a reload only its own mechanism
+      && AmmoStock.fits(i.system, gunMech, gunClasses)   // loose rounds fit any gun of their class; a reload only its own mechanism
       && SR3EItem.weaponAcceptsAmmoType(this.system, i.system.ammoType ?? 'regular')   // a flechette weapon takes no other type (TODO 161)
       && (!launcher || MiniGrenade.isMiniGrenade(i.system)));   // a launcher fires only mini-grenades (SR3 p.279, TODO 163)
     if (trackOn) stock = stock.filter(i => AmmoStock.stock(i.system).count > 0);
     if (stock.length === 0) {
-      ui.notifications.warn(SR3EItem.flechetteAmmo(this.system, 'regular') === 'regular'
+      ui.notifications.warn(this.system.shotgunRules === true
+        ? `No compatible ammo in stock for ${this.name} — it takes normal rounds or shotgun rounds (SR3 p.277).`
+        : SR3EItem.flechetteAmmo(this.system, 'regular') === 'regular'
         ? `No compatible ammo in stock for ${this.name}${gunClass ? ` (${gunClass} class — SR3 p.279)` : ''}.`
         : `No compatible ammo in stock for ${this.name} — a flechette weapon takes only ordinary rounds (SR3 p.116).`);
       return;
@@ -2225,7 +2233,8 @@ export class SR3EItem extends Item {
     const type      = ammo.system.ammoType ?? 'regular';
     const typeLabel = SR3E.ammoTypes[type]?.label ?? 'Regular';
     // A box with no class stated is stated now: the ammunition was bought for this class of gun (p.279).
-    if (gunClass && !String(ammo.system.gunClass ?? '').trim()) await ammo.update({ 'system.gunClass': gunClass });
+    const stampClass = this.type === 'firearm' ? AmmoStock.classForType(this.system, type) : gunClass;
+    if (stampClass && !String(ammo.system.gunClass ?? '').trim()) await ammo.update({ 'system.gunClass': stampClass });
 
     if (!trackOn) {
       await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': magSize, 'system.equippedAmmoId': ammo.id });
@@ -2241,7 +2250,7 @@ export class SR3EItem extends Item {
     await ammo.update({ [`system.${plan.field}`]: plan.remaining });
     // `equippedAmmoId` — the stock this load came from; a launcher fires that grenade (`_loadedGrenade`).
     await this.update({ 'system.loadedAmmoType': type, 'system.loadedRounds': plan.loaded, 'system.equippedAmmoId': ammo.id });
-    const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned, gunClass, loadedId) : null;
+    const returnedTo = plan.returned > 0 ? await SR3EItem._returnRounds(actor, gunMech, current.type, plan.returned, AmmoStock.classForType(this.system, current.type) ?? gunClass, loadedId) : null;
     const quickness = actor.system?.attributes?.quickness?.value ?? 1;
     const actions   = AmmoStock.reloadActions(ammo.system, { taken: plan.taken, quickness, gunMech }).text;
     // Charge what the Ammo Reloading Table says it took (TODO 48): a clip swap is Remove Clip + Insert
@@ -2285,7 +2294,7 @@ export class SR3EItem extends Item {
     const type     = this.system.loadedAmmoType ?? 'regular';
     await this.update({ 'system.loadedRounds': 0 });
     const homeId   = MiniGrenade.isLauncher(this.system) ? (this.system.equippedAmmoId || '') : '';   // TODO 163
-    const into = await SR3EItem._returnRounds(actor, gunMech, type, n, gunClass, homeId);
+    const into = await SR3EItem._returnRounds(actor, gunMech, type, n, AmmoStock.classForType(this.system, type) ?? gunClass, homeId);
     const cost = AmmoStock.unloadActions(gunMech);
     if (cost.simple > 0) game.sr3e.SR3EActionLedger?.charge(actor, 'removeClip', this.name);
     ui.notifications.info(`${this.name}: ${n} unfired round${n === 1 ? '' : 's'} unloaded into ${into} — ${cost.text}.`);

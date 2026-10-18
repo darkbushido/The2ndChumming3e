@@ -412,7 +412,7 @@ export function guessGearModifiers(actor, weapon) {
 
   // Shotguns (p.117): "Shotguns get no benefits from smart goggles or laser sights", and a smartlink is
   // worth −1, not −2, while it fires shot. TODO 57.
-  const shotgun = weapon?.system?.category === 'ShtG';
+  const shotgun = Shotgun.usesRules(weapon);   // ShtG or a shotgun-rules weapon (Roomsweeper, SR3 p.277)
   const shot    = Shotgun.firesShot(weapon);
   const linked  = !dual && gunIsSmart && hasSmartlink;
 

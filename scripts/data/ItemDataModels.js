@@ -168,6 +168,10 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       // Uses the flechette rules (SR3 p.116, p.119; TODO 156). An (f) in the Damage Code says the level
       // increase is already in it, so only the armour rule applies; ticked on a plain code, all of it does.
       flechette:       new BooleanField({ initial: false }),
+      // Follows the shotgun rules (choke, spread, shotgun ammunition, double BF recoil) though its category says
+      // otherwise — the Remington Roomsweeper: "heavy-pistol ranges, but shotgun rules" (SR3 p.277). A ShtG always
+      // does, without this. Read through Shotgun.usesRules.
+      shotgunRules:    new BooleanField({ initial: false }),
       bookPage:        new StringField({ initial: '' }),
       notes:           new HTMLField({ initial: '', required: false }),
       isAoE:           new BooleanField({ initial: false }),

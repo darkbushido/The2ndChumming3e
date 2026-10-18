@@ -24,6 +24,7 @@
  * mutants will silently survive — which this harness will then report, correctly.
  */
 
+const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
 const PACKFIX = { module: '../scripts/data/pack-corrections-0-7-0.mjs', klass: 'PackFixes070' };
 const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' };
 const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  };
@@ -3049,5 +3050,19 @@ export const MUTANTS = [
     ...INITASTRAL, method: 'pool',
     was:    'giving every Awakened character an Initiate Astral Pool (0 dice) instead of none; only initiates have one (MitS p.58)',
     impl:   (grade, mod = 0) => Math.max(0, (Number(grade) || 0) + (Number(mod) || 0)),
+  },
+  {
+    id:     'roomsweeper-ignores-shotgun-rules-flag',
+    suite:  'roomsweeper',
+    ...SHOTGUN, method: 'usesRules',
+    was:    'only category ShtG followed the shotgun rules, so the Remington Roomsweeper (heavy-pistol ranges, "but shotgun rules", SR3 p.277) got no choke, spread or BF recoil doubling',
+    impl:   w => (w?.system ?? w)?.category === 'ShtG',
+  },
+  {
+    id:     'roomsweeper-normal-rounds-still-9s-f',
+    suite:  'roomsweeper',
+    ...SHOTGUN, method: 'damageCode',
+    was:    'the Roomsweeper kept its shot code 9S(f) with normal rounds loaded; SR3 p.277: "loaded with normal rounds … the weapon does 9M damage"',
+    impl:   system => String(system?.damage ?? ''),
   },
 ];

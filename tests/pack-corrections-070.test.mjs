@@ -245,6 +245,15 @@ export async function run(t) {
   t.is('...a GM-edited accessories text stays', rcFix('FN HAR', 2, 'sr3.278', { accessories: 'Laser Sight, my stock' }), null);
   t.eq('Ultimax MMG: "None" -> Tripod(6RC)', rcFix('Ultimax MMG', 0, 'sr3.279', { accessories: 'None' }), { 'system.accessories': 'Tripod(6RC)' });
 
+  // Roomsweeper: the shotgun-rules flag (SR3 p.277), set only from the shipped false/blank.
+  const room = (name, sy) => fx(it('firearm', name, { bookPage: 'sr3.278', category: 'HPist', mode: 'SA', ...sy }));
+  t.eq('Roomsweeper: shipped (no flag) -> shotgunRules', room('Rmngton Roomsweeper ShG', {}), { 'system.shotgunRules': true });
+  t.eq('Roomsweeper: shipped false -> shotgunRules', room('Rmngton Roomsweeper ShG', { shotgunRules: false }), { 'system.shotgunRules': true });
+  t.is('Roomsweeper: already ticked -> nothing', room('Rmngton Roomsweeper ShG', { shotgunRules: true }), null);
+  t.eq('a hand-made "Remington Roomsweeper" heavy pistol is flagged too', fx(it('firearm', 'Remington Roomsweeper', { category: 'HPist' })), { 'system.shotgunRules': true });
+  t.is('...a same-named item of another category is left alone', fx(it('firearm', 'Remington Roomsweeper', { category: 'ShtG' })), null);
+  t.is('the pack ships the flag', sys('sr3e-sr3-firearms', 'sr3e-firearm-0132').shotgunRules, true);
+
   // The DocWagon medkit: only the paramedic's own Rating 3 core medkit.
   const medkit = (parent) => it('medical', 'Medkit', { rating: '3', cost: 200, bookPage: 'sr3.304', weight: '3', availability: '2/24hrs' }, { parent });
   const m5 = fx(medkit({ name: 'DocWagon Paramedic' }));

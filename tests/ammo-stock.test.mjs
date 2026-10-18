@@ -95,7 +95,7 @@ export async function run(t) {
   t.ok('…and do not say "into the clip"', !/into the clip/.test(AmmoStock.reloadActions(rounds(50, 'c'), { taken: 3, quickness: 6, gunMech: 'b' }).text));
   t.is('a reload keeps its own mechanism\'s rate', AmmoStock.reloadActions(clip, { gunMech: 'cy' }).simple, 2);
   const itemSrc = readFileSync(new URL('../scripts/documents/SR3EItem.js', import.meta.url), 'utf8');
-  t.ok('reload() offers stock through AmmoStock.fits, with the gun\'s class', /AmmoStock\.fits\(i\.system, gunMech, gunClass\)/.test(itemSrc));
+  t.ok('reload() offers stock through AmmoStock.fits, with the gun\'s class', /AmmoStock\.fits\(i\.system, gunMech, gunClasses\)/.test(itemSrc));   // gunClasses: own class, + ShtG for shotgun rules
   t.ok('…and unloaded rounds go home through it too', /AmmoStock\.fits\(i\.system, mech, gunClass\) && \(i\.system\.ammoType/.test(itemSrc));
 
   /* ── Gun class · SR3 p.279 (TODO 173, the maintainer's choice to enforce it) ─────────────── */
@@ -111,7 +111,7 @@ export async function run(t) {
   t.ok('…not even by hand into a revolver of another class', !AmmoStock.fits(box('LPist'), 'cy', 'HPist'));
   t.ok('a gun with no category constrains nothing', AmmoStock.fits(box('LPist'), 'c', null));
   t.ok('reload() states the class of a box that had none',
-    /if \(gunClass && !String\(ammo\.system\.gunClass \?\? ''\)\.trim\(\)\) await ammo\.update\(\{ 'system\.gunClass': gunClass \}\)/.test(itemSrc));
+    /if \(stampClass && !String\(ammo\.system\.gunClass \?\? ''\)\.trim\(\)\) await ammo\.update\(\{ 'system\.gunClass': stampClass \}\)/.test(itemSrc));
 
   /* ── Belts load (Quickness × 2) rounds a Complex Action · SR3 p.280 (TODO 173) ───────────── */
   const beltBox = { loadMechanism: 'belt', countedIn: 'rounds', rounds: 100 };
@@ -153,7 +153,7 @@ export async function run(t) {
   t.ok('…says what the reload takes', /AmmoStock\.reloadActions\(/.test(reload));
   t.ok('…and what was lost', /plan\.discarded/.test(reload));
   t.ok('…never from storage (the stash is not on the character)', /!i\.getFlag\('The2ndChumming3e', 'stored'\)/.test(reload));
-  t.ok('…and puts unloaded rounds back into stock', /plan\.returned > 0 \? await SR3EItem\._returnRounds\(actor, gunMech, current\.type, plan\.returned, gunClass, loadedId\)/.test(reload));
+  t.ok('…and puts unloaded rounds back into stock', /plan\.returned > 0 \? await SR3EItem\._returnRounds\(actor, gunMech, current\.type, plan\.returned, AmmoStock\.classForType\(this\.system, current\.type\) \?\? gunClass, loadedId\)/.test(reload));
   const back = item.slice(item.indexOf('static async _returnRounds'), item.indexOf('static async _returnRounds') + 2400);
   t.ok('_returnRounds adds to the loose stock of that type, or makes one', /'system\.rounds': \(home\.system\.rounds \?\? 0\) \+ n/.test(back) && /createEmbeddedDocuments\('Item'/.test(back));
   const dlg = item.slice(item.indexOf('static async _promptReloadChoice'), item.indexOf('static async _promptReloadChoice') + 5000);
@@ -191,7 +191,7 @@ export async function run(t) {
   const unloadBody = /async unload\(\) \{([\s\S]*?)\n  \}/.exec(itemSrc)?.[1] ?? '';
   t.ok('SR3EItem.unload exists', unloadBody.length > 0);
   t.ok('…empties the gun', /'system\.loadedRounds': 0/.test(unloadBody));
-  t.ok('…returns the rounds to loose stock', /_returnRounds\(actor, gunMech, type, n, gunClass, homeId\)/.test(unloadBody));
+  t.ok('…returns the rounds to loose stock', /_returnRounds\(actor, gunMech, type, n, AmmoStock\.classForType\(this\.system, type\) \?\? gunClass, homeId\)/.test(unloadBody));
   t.ok('…snapshots for the GM\'s undo before writing', unloadBody.indexOf('.begin(actor)') > -1 && unloadBody.indexOf('.begin(actor)') < unloadBody.indexOf('update('));
   t.ok('the sheet offers ⏏ Unload and wires it', /data-action="unloadWeapon"/.test(sheetSrc) && /unloadWeapon:\s+SR3EActorSheet\._onUnloadWeapon/.test(sheetSrc));
   const returnBody = /static async _returnRounds\([^)]*\) \{([\s\S]*?)\n  \}/.exec(itemSrc)?.[1] ?? '';

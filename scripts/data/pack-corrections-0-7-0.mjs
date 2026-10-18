@@ -42,6 +42,13 @@ export const ITEM_CORRECTIONS = [
     { path: 'system.reach', from: '-', to: '0' },
   ] },
 
+  /* ── Remington Roomsweeper · SR3 p.277 ──────────────────────────────────────────────────────────
+   * "The weapon uses heavy-pistol ranges, but shotgun rules." `system.shotgunRules` makes it follow them while the
+   * category stays HPist (ranges, Pistols skill). Only the shipped false/blank is set; the pack's name, or the
+   * book's own spelling on a hand-made copy still in the heavy-pistol category. */
+  { type: 'firearm', name: 'Rmngton Roomsweeper ShG', gate: { 'system.bookPage': 'sr3.278' }, fixes: [{ path: 'system.shotgunRules', from: [false, ''], to: true }] },
+  { type: 'firearm', name: 'Remington Roomsweeper', gate: { 'system.category': 'HPist' }, fixes: [{ path: 'system.shotgunRules', from: [false, ''], to: true }] },
+
   /* ── Bows and crossbows · SR3 p.276 ───────────────────────────────────────────── */
   // Standard Bow: damage (Str Min + 2)M, Concealability 2. The Str Min 3 bow shipped 4M…
   { type: 'projectile', name: 'Standard Bow', gate: { 'system.strMin': 3, 'system.cost': 300 },
