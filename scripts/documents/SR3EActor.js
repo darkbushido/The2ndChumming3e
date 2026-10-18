@@ -17,6 +17,7 @@ import { KarmaPool } from '../data/karma-uses.mjs';
 import { CombatPool } from '../data/combat-pool.mjs';
 import { Collisions } from '../data/collisions.mjs';
 import { Apds } from '../data/apds.mjs';
+import { Misfire } from '../data/misfire.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -3632,6 +3633,21 @@ _prepareCharacter(sys, attr) {
           }
         } else if (successes === 0) {
           stagingHtml = '<div class="sr-staging-result">0 hits — no damage</div>';
+          // SR3 p.116: "Explosive rounds will misfire whenever all the dice rolled for the attack test come up 1."
+          // The shooter is attacked with the weapon's normal damage, resisted without Combat Pool, and the shot misses.
+          // Offered, never applied: the shooter (or GM) clicks.
+          if (Misfire.applies({ ammoType: state.ammoType, glitch, isMelee: state.isMelee })) {
+            const shooter = game.actors.get(state.attackerActorId);
+            const weapon  = shooter?.items.get(state.weaponItemId);
+            const code    = String(weapon?.system?.damage ?? '').trim();
+            const parsed  = code ? SR3EItem.parseDamageCode(code, shooter) : null;
+            const mp      = Misfire.payload({ shooterId: state.attackerActorId, weaponItemId: state.weaponItemId, parsed, code });
+            if (mp) {
+              const json = JSON.stringify(mp).replace(/'/g, '&#39;');
+              stagingHtml += `<div class="sr-staging-result sr-warn">💥 The ${state.ammoType === 'exExplosive' ? 'EX explosive' : 'explosive'} round MISFIRES (p.116): the shot misses, and ${shooter?.name ?? 'the shooter'} takes the weapon's normal damage (${code}).</div>`;
+              postRollHtml += `<div class="sr-soak-action"><button class="sr-soak-btn" data-payload='${json}'>🛡 ${shooter?.name ?? 'Shooter'}: Resist the misfire (${code}, no Combat Pool)</button></div>`;
+            }
+          }
         } else {
           const staged     = SR3EItem.stageDamage(state.damageBase, successes);
           const trackLabel = staged.isStun ? 'Stun' : 'Physical';
@@ -9415,6 +9431,7 @@ _prepareCharacter(sys, attr) {
       net:             payload.net ? { ...payload.net, baseLevel: netBaseLevel } : undefined,
       resistAttr,
       noPools:         payload.noPools === true,
+      noPoolsNote:     payload.noPoolsNote ?? undefined,
       noKnockdown:     payload.noKnockdown === true,
     }).replace(/'/g, '&#39;');
 
@@ -9435,7 +9452,7 @@ _prepareCharacter(sys, attr) {
             </label>
             ${payload.noPools
               ? `<div class="sr-roll-meta" style="font-size:11px;color:var(--sr-amber)">
-                   No Combat or Control Pool dice on this test (SR3 p.145).
+                   ${payload.noPoolsNote ?? 'No Combat or Control Pool dice on this test (SR3 p.145).'}
                  </div>`
               : availPool > 0
               ? `<label class="sr-soak-label">

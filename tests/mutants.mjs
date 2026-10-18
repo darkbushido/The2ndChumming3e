@@ -53,6 +53,7 @@ const WILLING = { module: '../scripts/data/willing-target.mjs', klass: 'WillingT
 
 const RANGEB = { module: '../scripts/data/range-bands.mjs', klass: 'RangeBands' };
 const APDSM = { module: '../scripts/data/apds.mjs', klass: 'Apds' };
+const MISFIRE = { module: '../scripts/data/misfire.mjs', klass: 'Misfire' };
 const COLLISIONS = { module: '../scripts/data/collisions.mjs', klass: 'Collisions' };
 const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment' };
 
@@ -2935,5 +2936,19 @@ export const MUTANTS = [
     ...APDSM, method: 'resolve',
     was:    "APDS halved a vehicle's or drone's Armor; SR3 p.116 treats it as normal ammunition against vehicles and drones",
     impl:   b => { const h = Math.floor((Number(b) || 0) / 2); return { ballistic: h, halved: true, note: 'APDS' }; },
+  },
+  {
+    id:     'explosive-never-misfires',
+    suite:  'misfire',
+    ...MISFIRE, method: 'applies',
+    was:    "an explosive round never misfired when every attack die came up 1 (SR3 p.116)",
+    impl:   () => false,
+  },
+  {
+    id:     'misfire-resisted-with-pool',
+    suite:  'misfire',
+    ...MISFIRE, method: 'payload', needsOriginal: '_payloadOriginal',
+    was:    "the misfire would be resisted with Combat Pool; SR3 p.116 says without",
+    impl:   function (o) { const p = this._payloadOriginal(o); return p && { ...p, noPools: false }; },
   },
 ];

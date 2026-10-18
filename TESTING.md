@@ -2961,3 +2961,13 @@ No restart (JS only). Every dialog has a **GM adjustment** field: type +2 once a
 
 - [ ] Shoot a drone (or vehicle) with an APDS-loaded weapon. On its soak card the Armor is **not** halved and the note reads
       "APDS is not anti-vehicular: treated as normal ammunition". Shoot a person with the same weapon: Ballistic is halved.
+
+## 57. Explosive-round misfire (rules check 0.7.0, SR3 p.116)
+
+**Prerequisites:** a character with a firearm loaded with Explosive (or EX Explosive) rounds. To force it, use the physical-dice
+roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and roll until the die is a 1, or stub `Math.random`.
+
+- [ ] Every attack die a 1 with explosive loaded: the result card says the round **MISFIRES**, the shot misses, and offers
+      "Resist the misfire (9M, no Combat Pool)" with the weapon's **normal** code (no +1 Power). Click it: a soak card for the
+      **shooter**, no Combat Pool field ("Explosive round misfired…"), normal-ammo armour. Nothing is applied until the GM clicks the wound boxes.
+- [ ] The same Rule of One with ordinary ammunition: no misfire button.
