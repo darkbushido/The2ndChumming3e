@@ -2904,3 +2904,6 @@ packs), a copy of the **DocWagon Paramedic** contact, a second character with an
 - [ ] A value the GM had typed beforehand (e.g. a Sap at (STR+3)M) is **not** changed. Reloading again changes nothing.
 - [ ] In the vehicle compendium there is a **Chrysler-Nissan G12A(passenger)** (57,000¥, Cargo 12, Load 250, 10 seats)
       beside the cargo variant, and only one Dalmatian in the drones.
+- [ ] Firearm Recoil Compensation: an old-pack **HK227**, **Ingram Smartgun**, **Ranger Arms SM-3** and **FN HAR** now show
+      **Recoil Comp 2** on the item sheet, the **Ingram Valiant 3**; the FN HAR's accessories no longer list a Fold Stock.
+      The fire-mode dialog's weapon-comp field opens at that figure. A copy whose Recoil Comp the GM set is untouched.

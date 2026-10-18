@@ -77,6 +77,17 @@ export async function run(t) {
   };
   for (const [id, [label, mode]] of Object.entries(fm)) t.is(`${label}: ${mode}`, sys('sr3e-sr3-firearms', id).mode, mode);
 
+  // Firearm Recoil Compensation: the Firearms tables RC column, SR3 pp.278-279. recoilMod is the figure outside
+  // the parentheses; the parenthesised "integral accessory" figure stays in the accessories text.
+  const rc = { 'sr3e-firearm-0683': 2, 'sr3e-firearm-0688': 2, 'sr3e-firearm-0966': 2, 'sr3e-firearm-0772': 2, 'sr3e-firearm-1134': 3 };
+  for (const [id, n] of Object.entries(rc)) t.is(`${load('sr3e-sr3-firearms', id).doc.name}: RC ${n}`, sys('sr3e-sr3-firearms', id).recoilMod, n);
+  t.ok('FN HAR: the stock gives no RC (SR3 p.277 "Neither affect recoil") - its text lists only the gas vent',
+    !/stock/i.test(sys('sr3e-sr3-firearms', 'sr3e-firearm-0772').accessories) && /Gas Vent II\(2RC\)/.test(sys('sr3e-sr3-firearms', 'sr3e-firearm-0772').accessories));
+  t.is('Ultimax MMG: RC (6) with its tripod, recorded in the accessories', sys('sr3e-sr3-firearms', 'sr3e-firearm-1147').accessories, 'Tripod(6RC)');
+  t.ok('RPK HMG: the (6) tripod is in the accessories', /6RC/.test(sys('sr3e-sr3-firearms', 'sr3e-firearm-1156').accessories));
+  t.ok('...and a (6) / (1) weapon has no recoilMod: the figure counts only with the accessory',
+    ['sr3e-firearm-1147', 'sr3e-firearm-1156', 'sr3e-firearm-0656', 'sr3e-firearm-0684'].every(id => !sys('sr3e-sr3-firearms', id).recoilMod));
+
   const att = (pack, id) => load(pack, id).doc.system.attributes;
   t.is('Hughes WK-2 Stallion: Cargo 72 (SR3 p.310)', att('sr3e-sr3-vehicles', 'sr3e-vehicle-0178').cargo.value, 72);
   t.is('…base too', att('sr3e-sr3-vehicles', 'sr3e-vehicle-0178').cargo.base, 72);
@@ -184,6 +195,23 @@ export async function run(t) {
     t.is(`${n}: already ${to} → nothing`, fx(it('firearm', n, { mode: to })), null);
   }
   t.is('an item that is not a firearm with a firearm\'s name is skipped', fx(it('gear', 'Uzi III', { mode: 'BF' })), null);
+
+  // Recoil Compensation: only a copy still at the shipped 0/blank, and only the SR3 core item.
+  const rcFix = (name, rm, page = 'sr3.278', extra = {}) => fx(it('firearm', name, { recoilMod: rm, mode: 'zz', bookPage: page, ...extra }));
+  for (const [n, v, page] of [['Heckler & Koch HK227', 2, 'sr3.278'], ['Ingram Smartgun Mod. 20t', 2, 'sr3.278'], ['Ranger Arms SM-3', 2, 'sr3.278'], ['Ingram Valiant', 3, 'sr3.279']]) {
+    t.eq(`${n}: shipped 0 -> RC ${v}`, rcFix(n, 0, page), { 'system.recoilMod': v });
+    t.eq(`${n}: shipped blank -> RC ${v}`, rcFix(n, undefined, page), { 'system.recoilMod': v });
+    t.is(`${n}: a GM-set RC stays`, rcFix(n, 5, page), null);
+    t.is(`${n}: already correct -> nothing`, rcFix(n, v, page), null);
+    t.is(`${n}: a same-named item from another book is left alone`, rcFix(n, 0, 'cc.99'), null);
+  }
+  t.eq('a weapon owing both fixes gets both (Valiant mode + RC)', fx(it('firearm', 'Ingram Valiant', { mode: 'BF/FA', recoilMod: 0, bookPage: 'sr3.279' })),
+    { 'system.mode': 'FA', 'system.recoilMod': 3 });
+  t.eq('FN HAR: RC 2 and the stock RC removed from the text',
+    rcFix('FN HAR', 0, 'sr3.278', { accessories: 'Laser Sight, Gas Vent II(2RC), Fold Stock(1RC)' }),
+    { 'system.recoilMod': 2, 'system.accessories': 'Laser Sight, Gas Vent II(2RC)' });
+  t.is('...a GM-edited accessories text stays', rcFix('FN HAR', 2, 'sr3.278', { accessories: 'Laser Sight, my stock' }), null);
+  t.eq('Ultimax MMG: "None" -> Tripod(6RC)', rcFix('Ultimax MMG', 0, 'sr3.279', { accessories: 'None' }), { 'system.accessories': 'Tripod(6RC)' });
 
   // The DocWagon medkit: only the paramedic's own Rating 3 core medkit.
   const medkit = (parent) => it('medical', 'Medkit', { rating: '3', cost: 200, bookPage: 'sr3.304', weight: '3', availability: '2/24hrs' }, { parent });

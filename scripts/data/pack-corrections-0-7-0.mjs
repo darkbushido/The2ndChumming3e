@@ -18,6 +18,9 @@
 const same = (a, b) => String(a ?? '') === String(b ?? '');
 const get = (obj, path) => path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
 
+/** A recoilMod fix: only the shipped 0 / blank becomes the book's RC. */
+const RC = n => ({ path: 'system.recoilMod', from: ['', 0], to: n });
+
 /** Item corrections: `{ type, name, gate?, fixes: [{ path, from, to }] }`, paths relative to the item. */
 export const ITEM_CORRECTIONS = [
   /* ── Melee · SR3 p.275 ────────────────────────────────────────────────────────── */
@@ -62,6 +65,27 @@ export const ITEM_CORRECTIONS = [
   { type: 'firearm', name: 'Ingram Smartgun Mod. 20t', fixes: [{ path: 'system.mode', from: 'BF/FA', to: 'SA/BF' }] },
   { type: 'firearm', name: 'Uzi III', fixes: [{ path: 'system.mode', from: 'BF', to: 'SA/BF' }] },
   { type: 'firearm', name: 'Ingram Valiant', fixes: [{ path: 'system.mode', from: 'BF/FA', to: 'FA' }] },
+
+  /* ── Firearm Recoil Compensation · the Firearms tables RC column, SR3 pp.278-279 ────────────────
+   * `system.recoilMod` is the weapon's own RC, ADDED to the shooter's (SR3EItem.recoilTN totalComp); the
+   * "(1RC)" text in `accessories` is never parsed, so it is not double counted. The figure stored is the one
+   * outside the parentheses — a parenthesised figure "counts only when every integral accessory is in use"
+   * and stays in the accessories text (HK227 2(3): stock Retr. Stock(1RC); RPK/Ultimax (6): the tripod).
+   * Only a copy still at the shipped 0/blank is set, gated on the book page so a same-named non-core item
+   * (a Cannon Companion or Fields of Fire rewrite) is left alone. */
+  { type: 'firearm', name: 'Heckler & Koch HK227', gate: { 'system.bookPage': 'sr3.278' }, fixes: [RC(2)] },
+  { type: 'firearm', name: 'Ingram Smartgun Mod. 20t', gate: { 'system.bookPage': 'sr3.278' }, fixes: [RC(2)] },
+  { type: 'firearm', name: 'Ranger Arms SM-3', gate: { 'system.bookPage': 'sr3.278' }, fixes: [RC(2)] },
+  { type: 'firearm', name: 'Ingram Valiant', gate: { 'system.bookPage': 'sr3.279' }, fixes: [RC(3)] },
+  // FN HAR: RC 2 (the Rating 2 gas vent); rifle stocks give no RC (SR3 p.277: "Neither affect recoil").
+  { type: 'firearm', name: 'FN HAR', gate: { 'system.bookPage': 'sr3.278' }, fixes: [
+    RC(2),
+    { path: 'system.accessories', from: 'Laser Sight, Gas Vent II(2RC), Fold Stock(1RC)', to: 'Laser Sight, Gas Vent II(2RC)' },
+  ] },
+  // Ultimax MMG: RC (6) with its tripod (SR3 p.279) — recorded in the accessories text, like the RPK HMG.
+  { type: 'firearm', name: 'Ultimax MMG', gate: { 'system.bookPage': 'sr3.279' }, fixes: [
+    { path: 'system.accessories', from: 'None', to: 'Tripod(6RC)' },
+  ] },
 ];
 
 /** The DocWagon Paramedic's medkit · MJLBB p.65 "medkit 5" — see `docwagonMedkit`. */
@@ -102,7 +126,7 @@ const gateOk = (doc, gate) => Object.entries(gate ?? {}).every(([p, v]) => same(
 function applyFixes(doc, c) {
   const delta = {};
   for (const f of c.fixes) {
-    if (same(get(doc, f.path), f.from)) delta[f.path] = f.to;
+    if ([].concat(f.from).some(v => same(get(doc, f.path), v))) delta[f.path] = f.to;
   }
   return delta;
 }
@@ -125,12 +149,13 @@ export class PackFixes070 {
       return { name: d.name, 'system.rating': d.rating, 'system.weight': d.weight, 'system.cost': d.cost,
         'system.availability': d.availability, 'system.bookPage': d.bookPage };
     }
+    // Every matching entry contributes: one weapon can owe a firing-mode fix AND a Recoil Compensation fix.
+    const delta = {};
     for (const c of ITEM_CORRECTIONS) {
       if (c.type !== item?.type || c.name !== item?.name || !gateOk(item, c.gate)) continue;
-      const delta = applyFixes(item, c);
-      if (Object.keys(delta).length) return delta;
+      Object.assign(delta, applyFixes(item, c));
     }
-    return null;
+    return Object.keys(delta).length ? delta : null;
   }
 
   /** Update delta for a vehicle/drone actor, or null. */

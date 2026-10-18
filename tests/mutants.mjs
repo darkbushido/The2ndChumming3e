@@ -2810,4 +2810,15 @@ export const MUTANTS = [
       return this._fixActorOriginal(actor);
     },
   },
+  {
+    id:     'pack-fix-overwrites-a-gm-set-recoil-comp',
+    suite:  'pack-corrections-070',
+    ...PACKFIX, method: 'fixItem', needsOriginal: '_fixItemOriginal',
+    was:    'the Recoil Compensation migration set the weapon\x27s RC whatever it held, wiping a GM\x27s own recoilMod, and matched a '
+          + 'same-named non-core item (SR3 pp.278-279 give the core HK227 RC 2(3))',
+    impl:   function (item) {
+      if (item?.type === 'firearm' && item?.name === 'Heckler & Koch HK227') return { 'system.recoilMod': 2 };
+      return this._fixItemOriginal(item);
+    },
+  },
 ];

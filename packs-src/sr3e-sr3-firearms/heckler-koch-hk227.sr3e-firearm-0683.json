@@ -22,7 +22,8 @@
       "notes": "",
       "hands": 1,
       "smartgun": false,
-      "laserSight": true
+      "laserSight": true,
+      "recoilMod": 2
     },
     "effects": []
   },
