@@ -70988,7 +70988,8 @@
       ],
       "hash": "3e9c813b44",
       "text": "# Politics, Police & Policlubs\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/politics-and-security.md#2",
@@ -70999,7 +71000,8 @@
       ],
       "hash": "e0e36c25c2",
       "text": "Who enforces the law, who lobbies and bombs for a cause, and how Seattle\ndeals with its neighbours, as of October 2059. These are the powers that\naren't megacorps or syndicates, but deal with both.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Page introduction; states no rule."
     },
     {
       "id": "world/politics-and-security.md#3",
@@ -71010,7 +71012,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/politics-and-security.md#4",
@@ -71021,7 +71024,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/politics-and-security.md#5",
@@ -71032,7 +71036,8 @@
       ],
       "hash": "722a899b35",
       "text": "## Law enforcement is a business\n{: #law-enforcement-is-a-business }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/politics-and-security.md#6",
@@ -71043,7 +71048,8 @@
       ],
       "hash": "114d2e37e3",
       "text": "Seattle fired its whole police department in **2025**, after the officers\nwent on strike, and gave policing to **Lone Star** *(SR3 p.28; NS p.76)*.\nPolice work is now \"a business like any other\" *(NS p.76)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.28 and NS p.76: agrees. SR3 p.28: \"Lone Star took over law enforcement in the Seattle Metroplex in 2025, after the Seattle Police Department had the bad judgment to go on strike. The governor declared the strike illegal, fired them all and hired the cop corp\"; NS p.76: \"the law in Seattle has become a business like any other\"."
     },
     {
       "id": "world/politics-and-security.md#7",
@@ -71054,7 +71060,8 @@
       ],
       "hash": "63119fe0c3",
       "text": "| Provider | Owner and base | Role in Seattle |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/politics-and-security.md#8",
@@ -71065,7 +71072,8 @@
       ],
       "hash": "784855e031",
       "text": "| **Lone Star Security Services** | Austin, Texas | **The** police, under city contract. It has authority over every other security corp in the metroplex *(NS p.76, p.78)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.76 and p.78: agrees. Lone Star, HQ Austin, Texas, is \"the official provider of policing to the Seattle metroplex\"; p.78: \"Lone Star has authority over all other security corps in the metroplex\"."
     },
     {
       "id": "world/politics-and-security.md#9",
@@ -71076,7 +71084,8 @@
       ],
       "hash": "04373be9ca",
       "text": "| **Knight Errant** | Ares (Damien Knight's own project), Detroit | Second-largest provider. It holds private contracts and has a training academy in Renton. Its image is elite, while Lone Star's is \"beat cops\" *(NS p.77)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.77: agrees. Knight Errant: Detroit, \"The brainchild and pet project of Ares CEO Damien Knight\", \"Seattle's second-largest security provider\", training academy in Renton, KE personnel \"considered elite\" against Lone Star's \"beat cops\"."
     },
     {
       "id": "world/politics-and-security.md#10",
@@ -71087,7 +71096,8 @@
       ],
       "hash": "1e2704c2e4",
       "text": "| **Eagle Security, Hard Corps, Wolverine** and others | Various | At least twenty firms in all. They may act only on their client's property, and must hold a suspect there until Lone Star arrives *(NS p.78)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.78: agrees. \"At least twenty different private security providers operate in Seattle ... Eagle Security, Hard Corps, Inc. and Wolverine Security\"; the other corps \"can only take action on a customer's site, and keep a perp from escaping until Lone Star shows up\"."
     },
     {
       "id": "world/politics-and-security.md#11",
@@ -71098,7 +71108,8 @@
       ],
       "hash": "4079c94045",
       "text": "- **The contract is always contested.** Knight Errant wants Lone Star's\n  contract, and so does the Sioux-based Eagle Security, though the city is\n  unlikely to trust a NAN corp *(NS p.76)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.76: agrees. Knight Errant \"would love to get hold of that big, juicy city contract\"; Sioux-based Eagle Security \"wouldn't mind getting it either\", but \"it's hard to imagine the government trusting a NAN-based corp\"."
     },
     {
       "id": "world/politics-and-security.md#12",
@@ -71109,7 +71120,8 @@
       ],
       "hash": "20e4eb521b",
       "text": "- **The police hire runners too.** Lone Star Seattle's **Shadowriders** are\n  a covert unit that hires freelance runners for not-quite-legal jobs against\n  the syndicates, and has people ready to take the blame if a job goes wrong\n  *(NS p.76)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.76: agrees. \"he recently re-established the Shadowriders, a covert black-ops division of Lone Star Seattle\"; Marrs \"has saps in place to take the fall if necessary\"."
     },
     {
       "id": "world/politics-and-security.md#13",
@@ -71120,7 +71132,8 @@
       ],
       "hash": "07a625c0e6",
       "text": "- **The \"Dips\"**, Lone Star's magical investigation division (DPI), read\n  crime scenes astrally and **license Seattle's legal magicians**. That\n  gives them leverage over above-ground magic *(NS p.77)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.77: agrees. The \"Dips\" (Department of Magical Investigation, DPI) investigate \"all crimes involving magic\", read crime scenes astrally, and \"Lone Star controls the licensing and certification of magicians in Seattle\"."
     },
     {
       "id": "world/politics-and-security.md#14",
@@ -71131,7 +71144,8 @@
       ],
       "hash": "8ad3c03ab1",
       "text": "### The Metroplex Guard  *(NS p.78)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.78 (the military: the Metroplex Guard): agrees."
     },
     {
       "id": "world/politics-and-security.md#15",
@@ -71142,7 +71156,8 @@
       ],
       "hash": "d883a43d5e",
       "text": "Seattle's own military is the **Metroplex Guard**. It has quietly kept\nmetahumans out of its ranks, and it's an open secret that **Humanis**\nrecruits from it: some Guard officers and senior NCOs hold posts in Humanis.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.78: agrees. The Guard \"has a lot of leeway in choosing who gets in ... resulted in a 'weeding out' of metahumans\"; \"It's an open secret that the Humanis Policlub recruits from the Metroplex Guard, and a few officers and senior NCOs also hold key positions in Humanis\". The Joint Task Force Seattle material on the same page follows the Renraku lockdown (December 2059) and the guide correctly leaves it out."
     },
     {
       "id": "world/politics-and-security.md#16",
@@ -71153,7 +71168,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/politics-and-security.md#17",
@@ -71164,7 +71180,8 @@
       ],
       "hash": "40052d41f8",
       "text": "## Policlubs\n{: #policlubs }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/politics-and-security.md#18",
@@ -71175,7 +71192,8 @@
       ],
       "hash": "1e2bdd2702",
       "text": "*New Seattle* sorts policlubs into three camps: anti-Awakened and\nanti-metahuman, pro-metahuman, and pro-civil rights. It also sorts them by\ntype: **political and fraternal organisations**, **terrorist groups**, and\na rumoured third kind, secretive circles of the wealthy *(NS p.79)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.79: agrees. \"Policlubs fall into three broad camps: anti-Awakened/anti-metahuman, pro-metahuman, and generally pro-civil rights and liberties\"; two types, \"political/fraternal organizations and terrorist groups\"; \"A third type of group does exist, but in such a shadowy and unsubstantiated way that they are generally dismissed as rumors\" (the Human Nation)."
     },
     {
       "id": "world/politics-and-security.md#19",
@@ -71186,7 +71204,8 @@
       ],
       "hash": "a57554db70",
       "text": "| Policlub | Leader in Seattle | Stance | Backing and links |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/politics-and-security.md#20",
@@ -71197,7 +71216,8 @@
       ],
       "hash": "1c260c5edc",
       "text": "| **Humanis Policlub** | Karl Brackhaven | Human supremacist. Treats metahumanity as a disease. | Founded **2023** *(SR3 p.28)*. Publicly it only lobbies. Privately it **fronts for and funds** terrorists such as **Alamos 20,000** and the **Hand of Five**, and steers its most violent members to them *(NS p.79–80)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 p.28 and NS pp.79-80: agrees. SR3 p.28: \"the founding of the Humanis Policlub ... in 2023\"; NS p.79: Leader Karl Brackhaven; \"they quietly fund such associations as Alamos 20,000, the Hand of Five and other terrorist groups\"; \"Humanis draws in members and quietly diverts the most violent and virulent to Alamos 20K and their ilk\"; treats metahumanity \"as a disease rather than a natural state of being\"."
     },
     {
       "id": "world/politics-and-security.md#21",
@@ -71208,7 +71228,8 @@
       ],
       "hash": "1f5d7e397c",
       "text": "| **Ork Rights Commission (ORC)** | Jasper Squashright | Metahuman rights, focused on orks | Grassroots, but runners say it has a real war chest and pays runners well. Runners also claim its leaders pass resources to pro-Awakened terrorists such as the **Sons of Sauron** *(NS p.80)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.80: agrees. Leader Jasper Squashright; \"grassroots metahuman-rights organization, mostly devoted to the cause of orks\"; a runner says ORC \"have a pretty decent war chest\" and pays well; another says ORC bigwigs \"slide information and resources\" to pro-Awakened groups \"like the Sons of Sauron and the Children of the Sixth World\" - runners' posts, as the guide says."
     },
     {
       "id": "world/politics-and-security.md#22",
@@ -71219,7 +71240,8 @@
       ],
       "hash": "9ab80097d4",
       "text": "| **Empowerment Coalition** | Libby Chalmers | Civil rights | Funded by Dunkelzahn's **Timmons Memorial Fund**. It is bringing ORC and other groups under its umbrella, and will pay runners *(NS p.80)*. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.80: agrees. Leader Libby Chalmers; the Timmons Memorial Fund from Dunkelzahn's will; the Coalition \"has been helping groups like ORC and Mothers of Metahumans\"; a runner says Chalmers \"is more than willing to spend Coalition money on shadowrunners\"."
     },
     {
       "id": "world/politics-and-security.md#23",
@@ -71230,7 +71252,16 @@
       ],
       "hash": "ab7f560a0e",
       "text": "**How they interact:** Humanis has rich friends. **Kenneth Brackhaven**, an\ninvestor and Karl Brackhaven's nephew, sits on the UCC and has paid for the\ncampaigns of at least six district mayors *(NS p.83–84)*. The Coalition's\nLibby Chalmers reportedly faced him down when he told her the Coalition\nwasn't wanted in Seattle *(NS p.80)*. Each side's terrorists are its\ndeniable hand, much as shadowrunners are the corps'.",
-      "verdict": null
+      "verdict": "guide-differs",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - New Seattle.pdf",
+          "pdfPage": 85,
+          "printedPage": 83,
+          "quote": "Norman Jones, Brackhaven Investments"
+        }
+      ],
+      "note": "Book lists the UCC member for Brackhaven Investments as Norman Jones (NS p.83 Council Members); Kenneth Brackhaven is its President/CEO but is not named as a UCC member. Guide says \"Kenneth Brackhaven ... sits on the UCC\". The rest agrees: Karl Brackhaven's nephew; contributed to \"at least six different district mayors\" (NS p.84 - the book says \"contributed to the campaigns\", the guide \"paid for\"); Chalmers faced Brackhaven down (a runner's report, NS p.80)."
     },
     {
       "id": "world/politics-and-security.md#24",
@@ -71241,7 +71272,8 @@
       ],
       "hash": "32e208426c",
       "text": "{: .note }\n> **The Human Nation** appears in two ways. NS p.79 names it in the rumoured\n> third category, a circle of the very rich funding experiments on\n> metahumans. NS p.80 then lists it among Humanis's terrorist fronts.\n> The book leaves the contradiction unresolved.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.79: agrees. The Human Nation is named as the example of the rumoured third kind of group, and the sentence \"Humanis operates as a front organization for anti-Awakened terrorist groups like Alamos 20,000, Human Nation, the Hand of Five and others\" starts at the foot of p.79 and ends at the top of p.80. The guide's \"NS p.80 then lists it\" is accurate for the second half of that sentence."
     },
     {
       "id": "world/politics-and-security.md#25",
@@ -71252,7 +71284,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/politics-and-security.md#26",
@@ -71263,7 +71296,8 @@
       ],
       "hash": "8d23741148",
       "text": "## Foreign relations\n{: #foreign-relations }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "heading / navigation / table header / divider - states no rule"
     },
     {
       "id": "world/politics-and-security.md#27",
@@ -71274,7 +71308,8 @@
       ],
       "hash": "8b3ecfa0c8",
       "text": "Seattle is a UCAS city surrounded by NAN territory. Since 2042 it has been\nallowed to send its own envoys abroad *(NS p.80)*. Its position goes back\nto the Treaty of Denver, which kept cities like Seattle as extraterritorial\nextensions of their governments *(SR3 p.27)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.80 and SR3 p.27: agrees. NS p.80: \"In 2042, the UCAS granted Seattle the right to send its own representatives to any nations considered vital to its survival\"; SR3 p.27: the Treaty of Denver provided \"the maintenance of cities like Seattle as extraterritorial extensions of various governments\"."
     },
     {
       "id": "world/politics-and-security.md#28",
@@ -71285,7 +71320,8 @@
       ],
       "hash": "83e5190c73",
       "text": "| Neighbour | Relations  *(NS p.81)* |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.81 (Foreign Relations: Aztlan, California Free State, Japanese Imperial State, Korea, Native American Nations, Tir Tairngire): agrees."
     },
     {
       "id": "world/politics-and-security.md#29",
@@ -71296,7 +71332,8 @@
       ],
       "hash": "6b1e097f9e",
       "text": "| **Aztlan** | Cool but cordial. Seattle is Aztechnology's main West Coast market, which gives Aztlan leverage. Aztlan once tried to dock a warship in Everett. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.81: agrees. \"Aztlan/Seattle relations are currently cool but cordial\"; Seattle is Aztechnology's major West Coast market; Aztlan tested its clout by \"trying to dock a warship in Everett\"."
     },
     {
       "id": "world/politics-and-security.md#30",
@@ -71307,7 +71344,8 @@
       ],
       "hash": "60c1af33e4",
       "text": "| **California Free State** | Mixed. CalFree sees Seattle as an ally against the Tir, and its spies use Seattle as a base for operations there. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.81: agrees. Relations \"are split\"; the CFS \"sees Seattle as a potential economic and military ally against the Tir\"; a runner says California uses Seattle \"as a staging ground for intel ops in Tir Tairngire\"."
     },
     {
       "id": "world/politics-and-security.md#31",
@@ -71318,7 +71356,8 @@
       ],
       "hash": "615b4689e4",
       "text": "| **Japanese Imperial State** | Losing ground to the Pacific Prosperity Group. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.81: agrees. The Pacific Prosperity Group \"has reduced Japan's influence in Seattle\"."
     },
     {
       "id": "world/politics-and-security.md#32",
@@ -71329,7 +71368,8 @@
       ],
       "hash": "6ccd1f7892",
       "text": "| **Korea** | Growing ties through the PPG and Wuxing. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.81: agrees. Seattle's ties with Korea have grown; \"Wuxing, Inc., the PPG's driving force, has already set up corporate offices in the metroplex\"."
     },
     {
       "id": "world/politics-and-security.md#33",
@@ -71340,7 +71380,8 @@
       ],
       "hash": "3aa2144b2a",
       "text": "| **NAN / Salish-Shidhe** | Tense. Some in the NAN want Seattle for themselves. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.81: agrees. UCAS troops in Seattle \"awakened old hostilities\"; \"some in the NAN would like to take over Seattle\"."
     },
     {
       "id": "world/politics-and-security.md#34",
@@ -71351,7 +71392,8 @@
       ],
       "hash": "dbe945be7d",
       "text": "| **Tir Tairngire** | Strained since Dunkelzahn's death, but the Tir needs Seattle as a trade pipeline and a place to send its dissidents. |",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against NS p.81: agrees. \"Relations between Land of Promise and Seattle ... have been strained since Dunkelzahn's assassination\"; the Tir \"needs its trade agreements with Seattle, which is its pipeline to the rest of the world, and also its pressure valve for Tir dissidents\"."
     },
     {
       "id": "world/politics-and-security.md#35",
@@ -71362,7 +71404,8 @@
       ],
       "hash": "6cedac27e8",
       "text": "### How the nations got here  *(SR3 p.27–30)*",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 pp.27-30 (history of the nations): agrees."
     },
     {
       "id": "world/politics-and-security.md#36",
@@ -71373,7 +71416,8 @@
       ],
       "hash": "33a121cbdf",
       "text": "The Treaty of Denver gave the **Native American Nations** most of western\nNorth America *(SR3 p.27)*. The **CAS** broke from the newly merged\nUCAS in 2034. The elves founded **Tír na nÓg** (2034) and **Tir Tairngire**\n(2035), and the dragon Lofwyr sits on Tir Tairngire's Council of Princes.\nCalifornia's 2036–37 collapse left **San Francisco** under Japanese\ncorporate control *(SR3 p.30)*.",
-      "verdict": null
+      "verdict": "unverifiable",
+      "reason": "Setting fact, no code counterpart; checked against SR3 pp.27-30: agrees. p.27: the Treaty of Denver \"acknowledged the sovereignty of the NAN over most of western North America\"; p.30: the CAS broke away \"A year later\" than 2033 (2034), Tir na nOg (Christmas Day 2034), Tir Tairngire (2035), the Council of Princes admitted the dragon Lofwyr; Greater San Francisco under \"a council of Japanese megacorps\"."
     },
     {
       "id": "world/underworld.md#1",
