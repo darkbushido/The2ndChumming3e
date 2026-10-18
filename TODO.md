@@ -2520,6 +2520,13 @@ afterwards. Wanted:
 Related: [#204](#204) (Chunky Salsa reads map walls) and "chunky-salsa wall strength" in
 [#176](#176). This is a feature, so it goes on a branch.
 
+**Shooting a barrier — added 2026-10-18 from the 0.7.0 rules check** (`rules/weapons.md#94`, `#95`, `#97`).
+The weapon flow has no barrier target at all; the only barrier code is the GM's 🧱 Barrier Damage calculator
+(`_openBarrierDamageCalculator`, `sr3e.js`) and the grenade wall button. When a gun can target a barrier, the
+ammunition rules apply (SR3 p.116): **APDS** halves the Barrier Rating; **explosive / EX-explosive** make the
+attack TN twice the Barrier Rating and the barrier takes damage as at half its rating; **flechette** doubles
+the Barrier Rating.
+
 ## 212. GM undo for a Karma spend — **requested in play, 2026-10-11**
 
 Observed: a GM has no way to undo a character spending Karma (raising a skill or attribute, etc.).
