@@ -53084,7 +53084,27 @@
       ],
       "hash": "4469509c50",
       "text": "### Melee weapons  *(SR3 p.275)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Personal weapons are the basic hand-to-hand fighting"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/katana.sr3e-melee-0019.json",
+          "line": 8,
+          "snippet": "\"category\": \"EDG\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/katana.sr3e-melee-0019.json",
+          "line": 9,
+          "snippet": "\"skill\": \"Edged Weapons\","
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#120",
@@ -53119,7 +53139,44 @@
       ],
       "hash": "c869361227",
       "text": "| Thrusting Point | 12 | 0 | (STR + 2)L | NA | NA |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Thrusting Point 12 0 (STR + 2)L Forearm Snap Blades 7 0 (STR)M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "NA NA 4/48 hrs 4-B NA 4/48 hrs NA NA 5-B"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/combat-axe-thrusting-point.sr3e-melee-0011.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/combat-axe-thrusting-point.sr3e-melee-0011.json",
+          "line": 12,
+          "snippet": "\"reach\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/combat-axe-thrusting-point.sr3e-melee-0011.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR+2)L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/combat-axe-thrusting-point.sr3e-melee-0011.json",
+          "line": 16,
+          "snippet": "\"cost\": 0,"
+        }
+      ],
+      "note": "Book: Thrusting Point, Concealability 12, Reach 0, (STR + 2)L, cost NA. Pack item \"Combat Axe Thrusting Point\" (sr3e-melee-0011) has concealability \"-\", reach \"-\" (reads as 0), cost 0, category \"other\" and skill \"Armed Combat\" (not an SR3 skill name). The damage matches; the Concealability of 12 is missing. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#123",
@@ -53130,7 +53187,44 @@
       ],
       "hash": "82618f613e",
       "text": "| Forearm Snap Blades | 7 | 0 | (STR)M | 850¥ | 4-B |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Forearm Snap Blades 7 0 (STR)M Katana 3 1 (STR + 3)M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "2/4 hrs 8-A 1.5 3/24 hrs 850� 2 4-B"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/forearm-snap-blades.sr3e-melee-0015.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"7\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/forearm-snap-blades.sr3e-melee-0015.json",
+          "line": 12,
+          "snippet": "\"reach\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/forearm-snap-blades.sr3e-melee-0015.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR)M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/forearm-snap-blades.sr3e-melee-0015.json",
+          "line": 16,
+          "snippet": "\"cost\": 850,"
+        }
+      ],
+      "note": "Concealability 7, damage (STR)M, cost 850 agree. The pack stores Reach as \"-\" where the book prints 0; SR3EActor.meleeReach reads \"-\" as 0, so it plays the same. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#124",
@@ -53141,7 +53235,44 @@
       ],
       "hash": "bafaacebea",
       "text": "| Katana | 3 | 1 | (STR + 3)M | 1,000¥ | 5-B |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Katana 3 1 (STR + 3)M Knife 8 -- (STR)L"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "3/6 hrs 6-A 1 1,000� 2 2/6 hrs 6-C"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/katana.sr3e-melee-0019.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"3\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/katana.sr3e-melee-0019.json",
+          "line": 12,
+          "snippet": "\"reach\": \"1\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/katana.sr3e-melee-0019.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR+3)M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/katana.sr3e-melee-0019.json",
+          "line": 16,
+          "snippet": "\"cost\": 1000,"
+        }
+      ],
+      "note": "Concealability 3, Reach 1, (STR+3)M, 1,000 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#125",
@@ -53152,7 +53283,44 @@
       ],
       "hash": "fa34584189",
       "text": "| Knife | 8 | — | (STR)L | 30¥ | 8-A |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Knife 8 -- (STR)L Sword 4 1 (STR + 2)M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "2/6 hrs 6-C .5 2/6 hrs 30� .75 5-C"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/knife.sr3e-melee-0029.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"8\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/knife.sr3e-melee-0029.json",
+          "line": 12,
+          "snippet": "\"reach\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/knife.sr3e-melee-0029.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR)L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/knife.sr3e-melee-0029.json",
+          "line": 16,
+          "snippet": "\"cost\": 30,"
+        }
+      ],
+      "note": "Concealability 8, no Reach (\"-\" = the book's \"--\"), (STR)L, 30 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#126",
@@ -53163,7 +53331,44 @@
       ],
       "hash": "bba470cdfa",
       "text": "| Sword | 4 | 1 | (STR + 2)M | 500¥ | 4-B |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Sword 4 1 (STR + 2)M Survival Knife 6 0 (STR + 2)L"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "3/36 hrs 5-C 1 500� 1 3/24 hrs 3-B"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/sword.sr3e-melee-0043.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"4\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/sword.sr3e-melee-0043.json",
+          "line": 12,
+          "snippet": "\"reach\": \"1\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/sword.sr3e-melee-0043.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR+2)M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/sword.sr3e-melee-0043.json",
+          "line": 16,
+          "snippet": "\"cost\": 500,"
+        }
+      ],
+      "note": "Concealability 4, Reach 1, (STR+2)M, 500 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#127",
@@ -53174,7 +53379,44 @@
       ],
       "hash": "f2bd203b3c",
       "text": "| Survival Knife | 6 | 0 | (STR + 2)L | 450¥ | 6-A |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Survival Knife 6 0 (STR + 2)L Clubs Club 5 1 (STR + 1)M Stun"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": ".75 4/48 hrs 450� 1 3-B 3/24 hrs 8-C"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/survival-knife.sr3e-melee-0042.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"6\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/survival-knife.sr3e-melee-0042.json",
+          "line": 12,
+          "snippet": "\"reach\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/survival-knife.sr3e-melee-0042.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR+2)L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/survival-knife.sr3e-melee-0042.json",
+          "line": 16,
+          "snippet": "\"cost\": 450,"
+        }
+      ],
+      "note": "Concealability 6, (STR+2)L, 450 agree. Reach is stored \"-\" where the book prints 0; it reads as 0. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#128",
@@ -53185,7 +53427,8 @@
       ],
       "hash": "e45cdcdc5c",
       "text": "| *Clubs* | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#129",
@@ -53196,7 +53439,44 @@
       ],
       "hash": "fa0b0ed3c8",
       "text": "| Club | 5 | 1 | (STR + 1)M Stun | 10¥ | 6-C |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Clubs Club 5 1 (STR + 1)M Stun Sap 8 -- (STR + 2)M Stun"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "24/14 days 1-K 1 5/48 hrs 10� 1 5-B"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/club.sr3e-melee-0053.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"5\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/club.sr3e-melee-0053.json",
+          "line": 12,
+          "snippet": "\"reach\": \"1\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/club.sr3e-melee-0053.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR+1)M Stun\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/club.sr3e-melee-0053.json",
+          "line": 16,
+          "snippet": "\"cost\": 10,"
+        }
+      ],
+      "note": "Concealability 5, Reach 1, (STR+1)M Stun, 10 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#130",
@@ -53207,7 +53487,44 @@
       ],
       "hash": "3f22220e4e",
       "text": "| Sap | 8 | — | (STR + 2)M Stun | 10¥ | 5-C |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Sap 8 -- (STR + 2)M Stun Stun Baton 4 1 6S Stun"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "4/48 hrs 10-C -- -- 10� 1 --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/sap.sr3e-melee-0074.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"8\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/sap.sr3e-melee-0074.json",
+          "line": 12,
+          "snippet": "\"reach\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/sap.sr3e-melee-0074.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR+1)M Stun\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/sap.sr3e-melee-0074.json",
+          "line": 16,
+          "snippet": "\"cost\": 10,"
+        }
+      ],
+      "note": "Book: Sap damage (STR + 2)M Stun. Pack Sap (sr3e-melee-0074) has (STR+1)M Stun - one Power short. Concealability 8, no Reach and cost 10 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#131",
@@ -53218,7 +53535,44 @@
       ],
       "hash": "1c291c70ca",
       "text": "| Stun Baton | 4 | 1 | 6S Stun | 750¥ | 5-C |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Stun Baton 4 1 6S Stun Pole Arms/Staffs Combat Axe 2 2 (STR)S"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "-- -- 10� 1 -- 1 750� 1 2.0 750 2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/stun-baton.sr3e-melee-0081.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"4\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/stun-baton.sr3e-melee-0081.json",
+          "line": 12,
+          "snippet": "\"reach\": \"1\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/stun-baton.sr3e-melee-0081.json",
+          "line": 13,
+          "snippet": "\"damage\": \"6S Stun\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/stun-baton.sr3e-melee-0081.json",
+          "line": 16,
+          "snippet": "\"cost\": 750,"
+        }
+      ],
+      "note": "Concealability 4, Reach 1, 6S Stun, 750 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#132",
@@ -53229,7 +53583,8 @@
       ],
       "hash": "e34116b0fd",
       "text": "| *Pole arms and staffs* | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#133",
@@ -53240,7 +53595,44 @@
       ],
       "hash": "ca1c661b29",
       "text": "| Combat Axe | 2 | 2 | (STR)S | 750¥ | 3-B |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Pole Arms/Staffs Combat Axe 2 2 (STR)S Pole Arm 2 2 (STR + 3)S"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "1 750� 1 2.0 750 2 4 500� 2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/combat-axe.sr3e-melee-0010.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/combat-axe.sr3e-melee-0010.json",
+          "line": 12,
+          "snippet": "\"reach\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/combat-axe.sr3e-melee-0010.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR)S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/combat-axe.sr3e-melee-0010.json",
+          "line": 16,
+          "snippet": "\"cost\": 750,"
+        }
+      ],
+      "note": "Concealability 2, Reach 2, (STR)S and 750 agree. But the book's table groups the Combat Axe under Pole Arms/Staffs (the guide row sits there too) and the pack gives it category EDG / skill Edged Weapons, which SR3 p.86 limits to weapons \"less than one meter long\". The book does not name the Combat Axe's skill outright; flagged for the maintainer. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#134",
@@ -53251,7 +53643,44 @@
       ],
       "hash": "fee2fe5807",
       "text": "| Pole Arm | 2 | 2 | (STR + 3)S | 500¥ | 3-B |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Pole Arm 2 2 (STR + 3)S Staff 2 2 (STR + 2)M Stun"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "2.0 750 2 4 500� 2 2 50� 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/pole-arm.sr3e-melee-0069.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/pole-arm.sr3e-melee-0069.json",
+          "line": 12,
+          "snippet": "\"reach\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/pole-arm.sr3e-melee-0069.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR+3)S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/pole-arm.sr3e-melee-0069.json",
+          "line": 16,
+          "snippet": "\"cost\": 500,"
+        }
+      ],
+      "note": "Concealability 2, Reach 2, (STR+3)S, 500 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#135",
@@ -53262,7 +53691,44 @@
       ],
       "hash": "4ad6f84c47",
       "text": "| Staff | 2 | 2 | (STR + 2)M Stun | 50¥ | 8-C |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Staff 2 2 (STR + 2)M Stun Other Monofilament Whip 10 2 10S"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "4 500� 2 2 50� 1 -- 3,000� 3"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/staff.sr3e-melee-0080.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/staff.sr3e-melee-0080.json",
+          "line": 12,
+          "snippet": "\"reach\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/staff.sr3e-melee-0080.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR+2)M Stun\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/staff.sr3e-melee-0080.json",
+          "line": 16,
+          "snippet": "\"cost\": 50,"
+        }
+      ],
+      "note": "Concealability 2, Reach 2, (STR+2)M Stun, 50 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#136",
@@ -53273,7 +53739,8 @@
       ],
       "hash": "539cba3828",
       "text": "| *Other* | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#137",
@@ -53284,7 +53751,44 @@
       ],
       "hash": "7fd47f1a96",
       "text": "| Monofilament Whip | 10 | 2 | 10S | 3,000¥ | 1-K |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Other Monofilament Whip 10 2 10S Shock Glove 9 0 (STR - 1)M Stun +7S Stun .5 950� 2"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "2 50� 1 -- 3,000� 3 1 300� 2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/monofilament-whip.sr3e-melee-0092.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"10\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/monofilament-whip.sr3e-melee-0092.json",
+          "line": 12,
+          "snippet": "\"reach\": \"1\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/monofilament-whip.sr3e-melee-0092.json",
+          "line": 13,
+          "snippet": "\"damage\": \"10S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/monofilament-whip.sr3e-melee-0092.json",
+          "line": 16,
+          "snippet": "\"cost\": 3000,"
+        }
+      ],
+      "note": "Book: Monofilament Whip Reach 2 (and the description: \"The line can extend out to two meters, which gives it +2 Reach\"). Pack has reach \"1\". Concealability 10, 10S and 3,000 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#138",
@@ -53295,7 +53799,38 @@
       ],
       "hash": "371e64de9f",
       "text": "| Shock Glove | 9 | 0 | (STR − 1)M Stun +7S Stun | 950¥ | 5-B |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Shock Glove 9 0 (STR - 1)M Stun +7S Stun .5 950� 2 Whip 5 2 (STR)L"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/shock-glove.sr3e-melee-0109.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"9\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/shock-glove.sr3e-melee-0109.json",
+          "line": 12,
+          "snippet": "\"reach\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/shock-glove.sr3e-melee-0109.json",
+          "line": 13,
+          "snippet": "\"damage\": \"7S Stun\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/shock-glove.sr3e-melee-0109.json",
+          "line": 16,
+          "snippet": "\"cost\": 950,"
+        }
+      ],
+      "note": "Book: Shock Glove damage (STR - 1)M Stun +7S Stun (fist damage reduced to (STR - 1)M, plus an extra 7S Stun). Pack has damage \"7S Stun\" alone, category UNA. Concealability 9, cost 950 agree; Reach stored \"-\" reads as 0 (book 0). The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#139",
@@ -53306,7 +53841,44 @@
       ],
       "hash": "bd6e5248bc",
       "text": "| Whip | 5 | 2 | (STR)L | 300¥ | 10-C |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Whip 5 2 (STR)L Unarmed -- -- (STR)M Stun"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "-- 3,000� 3 1 300� 2 -- -- --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-melee/whip.sr3e-melee-0097.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"5\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/whip.sr3e-melee-0097.json",
+          "line": 12,
+          "snippet": "\"reach\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/whip.sr3e-melee-0097.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR)L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-melee/whip.sr3e-melee-0097.json",
+          "line": 16,
+          "snippet": "\"cost\": 300,"
+        }
+      ],
+      "note": "Concealability 5, Reach 2, (STR)L, 300 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#140",
@@ -53317,7 +53889,23 @@
       ],
       "hash": "e9a484904f",
       "text": "| Unarmed | — | — | (STR)M Stun | — | — |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "Whip 5 2 (STR)L Unarmed -- -- (STR)M Stun"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 233,
+          "snippet": "damage: '(STR)M Stun', reach: 0, category: 'UNA'"
+        }
+      ],
+      "note": "Unarmed is the synthetic weapon built in SR3EItem (_unarmedWeapon): (STR)M Stun, Reach 0 (the book prints \"--\"), Unarmed Combat."
     },
     {
       "id": "rules/weapons.md#141",
@@ -53328,7 +53916,28 @@
       ],
       "hash": "bb91c592ae",
       "text": "- **Monofilament whip**: if the attack misses only because the defender's\n  Combat Pool successes beat it, or the attacker rolls more 1s than\n  successes, roll a Whip Test against TN 6. No successes and the whip hits\n  its wielder for 10S. Impact armor counts at half against it, and Barrier\n  Ratings double *(SR3 p.275)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "occurs, make a separate Whip Test against a Target Number 6. If the test yields no successes, the whip strikes the attacker."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 277,
+          "printedPage": 275,
+          "quote": "whip, but its rating is halved (round down). Barrier Ratings are doubled against a monowhip."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "monofilament|monowhip|whip test",
+          "path": "scripts"
+        }
+      ],
+      "note": "No special rule for the monofilament whip exists: no Whip Test risk when an attack misses on Combat Pool successes or more 1s than successes, no halving of Impact armour, no doubled Barrier Rating. It is only a melee weapon with a 10S code."
     },
     {
       "id": "rules/weapons.md#142",
@@ -53339,7 +53948,28 @@
       ],
       "hash": "8a6dd7884c",
       "text": "- **Whip**: damage is reduced by **twice** the Impact armor. It can snare\n  instead of doing damage *(SR3 p.276)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "armored targets, damage from bullwhips is reduced by twice the Impact Armor Rating."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "nent instead of doing damage--each net success on the Attack"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "bullwhip|snare|entangl",
+          "path": "scripts"
+        }
+      ],
+      "note": "A whip is an ordinary melee weapon: armour is not doubled against it and there is no snare action."
     },
     {
       "id": "rules/weapons.md#143",
@@ -53350,7 +53980,32 @@
       ],
       "hash": "59885762d1",
       "text": "- **Shock glove**: 8 charges, then an hour to recharge *(SR3 p.276)*. Shock\n  weapons are on *(SR3 p.124)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "charged 8 times before requiring a 1-hour recharge."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 126,
+          "printedPage": 124,
+          "quote": "A successful hit by a stun weapon stuns the tar-"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "shockGlove|glove charges|stuns the (target|tar)",
+          "path": "scripts"
+        },
+        {
+          "pattern": "charges? (left|remaining)",
+          "path": "scripts"
+        }
+      ],
+      "note": "No shock-weapon rules exist: no 8-charge limit and 1-hour recharge for the shock glove, and the p.124 stun effect (a hit stuns the target for Power minus half impact armour Combat Turns, ended early by a Willpower test) is not modelled."
     },
     {
       "id": "rules/weapons.md#144",
@@ -53361,7 +54016,27 @@
       ],
       "hash": "b6d66a411a",
       "text": "### Bows, crossbows and throwing weapons  *(SR3 p.276)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "These weapons are man-powered, but may use simple"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/light-crossbow.sr3e-projectile-0024.json",
+          "line": 8,
+          "snippet": "\"category\": \"LCB\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/light-crossbow.sr3e-projectile-0024.json",
+          "line": 12,
+          "snippet": "\"strMin\": 3,"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#145",
@@ -53372,7 +54047,8 @@
       ],
       "hash": "fd927f0385",
       "text": "| Weapon | Conceal | Strength Minimum | Damage | Cost |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#146",
@@ -53383,7 +54059,44 @@
       ],
       "hash": "2f70dfd537",
       "text": "| Standard Bow | 2 | 1+ | (STR Min + 2)M | 100¥ × Str. Min. |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Bows 2 1+ (STR Min + 2)M 1"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "x Str. Min. 1 5-D .1 3/36 hrs 10� 1 10-D"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/standard-bow.sr3e-projectile-0003.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/standard-bow.sr3e-projectile-0003.json",
+          "line": 12,
+          "snippet": "\"strMin\": 3,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/standard-bow.sr3e-projectile-0003.json",
+          "line": 13,
+          "snippet": "\"damage\": \"4M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/standard-bow.sr3e-projectile-0003.json",
+          "line": 16,
+          "snippet": "\"cost\": 300,"
+        }
+      ],
+      "note": "Book: Standard Bow, Concealability 2, Str Min 1+, damage (STR Min + 2)M, cost 100 x Str Min. The pack ships one bow per Strength Minimum 1-12 (sr3e-projectile-0001..0012): all follow the formula except two. The Str Min 3 bow (0003) has damage 4M, not 5M. The Str Min 10 bow (0010) is stored with concealability \"10\" and strMin 1 - its 12M damage and 1,000 cost are the Str Min 10 values, so the Concealability 2 / Str Min 10 pair is swapped. (The Legal column is not carried; see unit 13.)"
     },
     {
       "id": "rules/weapons.md#147",
@@ -53394,7 +54107,39 @@
       ],
       "hash": "e199522eea",
       "text": "| Arrows | 3 | NA | As bow | 10¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Standard Bow Arrows 3 NA As bow"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "x Str. Min. 1 5-D .1 3/36 hrs 10� 1 10-D"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-ammunition/arrows.0e75831c3e9a2f72.json",
+          "line": 17,
+          "snippet": "\"concealability\": \"3\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-ammunition/arrows.0e75831c3e9a2f72.json",
+          "line": 18,
+          "snippet": "\"damage\": \"(As bow)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-ammunition/arrows.0e75831c3e9a2f72.json",
+          "line": 26,
+          "snippet": "\"cost\": 10,"
+        }
+      ],
+      "note": "Arrows are in the SR3 ammunition pack: Concealability 3, \"As bow\", 10. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#148",
@@ -53405,7 +54150,44 @@
       ],
       "hash": "9a7cf7b137",
       "text": "| Light Crossbow | 2 | 3 | 6L | 300¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Crossbows Light 2 3 6L Medium Heavy 2 4 6M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": ".1 3/36 hrs 10� 1 10-D 2 4/36 hrs 300� 1 6-D"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/light-crossbow.sr3e-projectile-0024.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/light-crossbow.sr3e-projectile-0024.json",
+          "line": 12,
+          "snippet": "\"strMin\": 3,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/light-crossbow.sr3e-projectile-0024.json",
+          "line": 13,
+          "snippet": "\"damage\": \"6L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/light-crossbow.sr3e-projectile-0024.json",
+          "line": 16,
+          "snippet": "\"cost\": 300,"
+        }
+      ],
+      "note": "Concealability 2, Str Min 3, 6L, 300 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#149",
@@ -53416,7 +54198,44 @@
       ],
       "hash": "dd7aa0fe5d",
       "text": "| Medium Crossbow | 2 | 4 | 6M | 500¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Crossbows Light 2 3 6L Medium Heavy 2 4 6M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "2 4/36 hrs 300� 1 6-D 3 5/36 hrs 500� 1 6-D"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/medium-crossbow.sr3e-projectile-0025.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/medium-crossbow.sr3e-projectile-0025.json",
+          "line": 12,
+          "snippet": "\"strMin\": 4,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/medium-crossbow.sr3e-projectile-0025.json",
+          "line": 13,
+          "snippet": "\"damage\": \"6M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/medium-crossbow.sr3e-projectile-0025.json",
+          "line": 16,
+          "snippet": "\"cost\": 500,"
+        }
+      ],
+      "note": "Concealability 2, Str Min 4, 6M, 500 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#150",
@@ -53427,7 +54246,44 @@
       ],
       "hash": "5d6caabaf0",
       "text": "| Heavy Crossbow | NA | 5 | 6S | 750¥ |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Heavy 2 4 6M Bolts NA 5 6S 4 -- As crossbow"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "3 5/36 hrs 500� 1 6-D 4 6/36 hrs 750� 1 5-D"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/heavy-crossbow.sr3e-projectile-0027.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/heavy-crossbow.sr3e-projectile-0027.json",
+          "line": 12,
+          "snippet": "\"strMin\": 5,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/heavy-crossbow.sr3e-projectile-0027.json",
+          "line": 13,
+          "snippet": "\"damage\": \"8S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/heavy-crossbow.sr3e-projectile-0027.json",
+          "line": 16,
+          "snippet": "\"cost\": 750,"
+        }
+      ],
+      "note": "Book: Heavy Crossbow, Concealability NA, Str Min 5, 6S, 750. Pack Heavy Crossbow (sr3e-projectile-0027) has damage 8S, not 6S. Str Min 5 and cost 750 agree; Concealability \"-\" stands for NA. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#151",
@@ -53438,7 +54294,33 @@
       ],
       "hash": "d3a34479ee",
       "text": "| Bolts | 4 | — | As crossbow | 5¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "NA 5 6S 4 -- As crossbow .05 5/36 hrs 5� 1 10-D"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-ammunition/bolts.b6199c5a20f71fee.json",
+          "line": 17,
+          "snippet": "\"concealability\": \"4\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-ammunition/bolts.b6199c5a20f71fee.json",
+          "line": 18,
+          "snippet": "\"damage\": \"(As crossbow)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-ammunition/bolts.b6199c5a20f71fee.json",
+          "line": 26,
+          "snippet": "\"cost\": 5,"
+        }
+      ],
+      "note": "Bolts are in the SR3 ammunition pack: Concealability 4, \"As crossbow\", 5. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#152",
@@ -53449,7 +54331,39 @@
       ],
       "hash": "5057adbefe",
       "text": "| Throwing Knife | 9 | NA | (STR)L | 20¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Non-Aerodynamic Throwing Knife 9 NA (STR)L Aerodynamic Shuriken 8 NA (STR)L"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": ".25 2/24 hrs 20� 1 8-D .25 2/24 hrs 30� 2 6-D"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/throwing-knife.sr3e-projectile-0045.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"9\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/throwing-knife.sr3e-projectile-0045.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR)L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/throwing-knife.sr3e-projectile-0045.json",
+          "line": 16,
+          "snippet": "\"cost\": 20,"
+        }
+      ],
+      "note": "Concealability 9, (STR)L, 20 agree (Str Min \"NA\" is stored 0). The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#153",
@@ -53460,7 +54374,39 @@
       ],
       "hash": "d437cb797a",
       "text": "| Shuriken | 8 | NA | (STR)L | 30¥ |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Non-Aerodynamic Throwing Knife 9 NA (STR)L Aerodynamic Shuriken 8 NA (STR)L"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": ".25 2/24 hrs 20� 1 8-D .25 2/24 hrs 30� 2 6-D"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/shuriken.sr3e-projectile-0047.json",
+          "line": 11,
+          "snippet": "\"concealability\": \"8\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/shuriken.sr3e-projectile-0047.json",
+          "line": 13,
+          "snippet": "\"damage\": \"(STR)L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-projectiles/shuriken.sr3e-projectile-0047.json",
+          "line": 16,
+          "snippet": "\"cost\": 30,"
+        }
+      ],
+      "note": "Concealability 8, (STR)L, 30 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#154",
@@ -53471,7 +54417,32 @@
       ],
       "hash": "8f17f37d98",
       "text": "**Strength Minimum** *(SR3 p.117–118)*: an archer below a bow's minimum\ntakes **+1 TN per point short**. Below a crossbow's minimum, reloading\ntakes one extra Ready Weapon action per point short. A bow is bought at a\nchosen Strength Minimum.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 119,
+          "printedPage": 117,
+          "quote": "suffer an additional +1 modifier to their target numbers per point below the mini- mum;"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 120,
+          "printedPage": 118,
+          "quote": "he must spend one additional Ready Weapon action reloading the crossbow for each point of Strength he is below the minimum"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "strMin[^\\n]*(TN|tn|penalt|below|short)",
+          "path": "scripts"
+        },
+        {
+          "pattern": "crossbow[^\\n]*(additional|extra) Ready|Strength Minimum[^\\n]*Ready Weapon",
+          "path": "scripts"
+        }
+      ],
+      "note": "Neither penalty exists: no +1 TN per point below a bow's Strength Minimum and no extra Ready Weapon per point for a crossbow (strMin is only displayed). A bow being bought at a chosen Strength Minimum is true of the pack (twelve bows, 100 x Str Min). (reloading.md#48 records the crossbow half.)"
     },
     {
       "id": "rules/weapons.md#155",
@@ -53482,7 +54453,27 @@
       ],
       "hash": "6e4458a5c4",
       "text": "### Firearms  *(SR3 p.278)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Firearms are primarily slug-throwers."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-predator.sr3e-firearm-0072.json",
+          "line": 9,
+          "snippet": "\"category\": \"HPist\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-predator.sr3e-firearm-0072.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"15(c)\","
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#156",
@@ -53493,7 +54484,8 @@
       ],
       "hash": "904e6e670b",
       "text": "| Weapon | Conceal | Ammo | Mode | Damage | RC | Cost | Legal |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#157",
@@ -53504,7 +54496,8 @@
       ],
       "hash": "39664f8a9e",
       "text": "| *Hold-out pistols* | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#158",
@@ -53515,7 +54508,49 @@
       ],
       "hash": "1cb66b3d1b",
       "text": "| Streetline Special | 8 | 6 (c) | SS | 4L | — | 100¥ | 10P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Streetline Special 8 6 (c) SS 4L"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Hold-Out Streetline Special 8 6 (c) SS 4L .5 2/12 hrs 100� .75 10P-E --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/streetline-special.sr3e-firearm-0016.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"8\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/streetline-special.sr3e-firearm-0016.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"6(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/streetline-special.sr3e-firearm-0016.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SS\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/streetline-special.sr3e-firearm-0016.json",
+          "line": 15,
+          "snippet": "\"damage\": \"4L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/streetline-special.sr3e-firearm-0016.json",
+          "line": 18,
+          "snippet": "\"cost\": 100,"
+        }
+      ],
+      "note": "Conceal 8, 6 (c), SS, 4L, 100 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#159",
@@ -53526,7 +54561,49 @@
       ],
       "hash": "47edbbe8ba",
       "text": "| Walther Palm Pistol | 9 | 2 (b) | SS | 4L | — | 200¥ | 10P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Walther Palm Pistol 9 2 (b) SS 4L"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Streetline Special 8 6 (c) SS 4L .5 2/12 hrs 100� .75 10P-E -- Walther Palm Pistol 9 2 (b) SS 4L .25 3/12 hrs 200� .75 10P-E --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/walther-palm-pistol.sr3e-firearm-0019.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"9\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/walther-palm-pistol.sr3e-firearm-0019.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"2(b)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/walther-palm-pistol.sr3e-firearm-0019.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SS\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/walther-palm-pistol.sr3e-firearm-0019.json",
+          "line": 15,
+          "snippet": "\"damage\": \"4L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/walther-palm-pistol.sr3e-firearm-0019.json",
+          "line": 18,
+          "snippet": "\"cost\": 200,"
+        }
+      ],
+      "note": "Conceal 9, 2 (b), SS, 4L, 200 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#160",
@@ -53537,7 +54614,8 @@
       ],
       "hash": "ea605f766a",
       "text": "| *Light pistols* | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#161",
@@ -53548,7 +54626,49 @@
       ],
       "hash": "4aad39a9fb",
       "text": "| Beretta Model 101T | 5 | 12 (c) | SA | 6L | — | 350¥ | 8P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Beretta Model 101T 5 12 (c) SA 6L"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Light Beretta Model 101T 5 12 (c) SA 6L 1 3/12 hrs 350� .8 8P-E --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/beretta-model-101t.sr3e-firearm-0023.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"5\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/beretta-model-101t.sr3e-firearm-0023.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"12(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/beretta-model-101t.sr3e-firearm-0023.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/beretta-model-101t.sr3e-firearm-0023.json",
+          "line": 15,
+          "snippet": "\"damage\": \"6L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/beretta-model-101t.sr3e-firearm-0023.json",
+          "line": 18,
+          "snippet": "\"cost\": 350,"
+        }
+      ],
+      "note": "Conceal 5, 12 (c), SA, 6L, 350 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#162",
@@ -53559,7 +54679,49 @@
       ],
       "hash": "5cc7b72437",
       "text": "| Colt American L36 | 6 | 11 (c) | SA | 6L | — | 350¥ | 8P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Colt American L36 6 11 (c) SA 6L"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Beretta Model 101T 5 12 (c) SA 6L 1 3/12 hrs 350� .8 8P-E -- Colt American L36 6 11 (c) SA 6L 1 3/12 hrs 350� .8 8P-E --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/colt-american-l36.sr3e-firearm-0026.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"6\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/colt-american-l36.sr3e-firearm-0026.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"11(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/colt-american-l36.sr3e-firearm-0026.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/colt-american-l36.sr3e-firearm-0026.json",
+          "line": 15,
+          "snippet": "\"damage\": \"6L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/colt-american-l36.sr3e-firearm-0026.json",
+          "line": 18,
+          "snippet": "\"cost\": 350,"
+        }
+      ],
+      "note": "Conceal 6, 11 (c), SA, 6L, 350 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#163",
@@ -53570,7 +54732,49 @@
       ],
       "hash": "a108fda677",
       "text": "| Fichetti Security 500 | 7 | 12 (c) | SA | 6L | — | 400¥ | 8P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Fichetti Security 500 7 12 (c) SA 6L"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Colt American L36 6 11 (c) SA 6L 1 3/12 hrs 350� .8 8P-E -- Fichetti Security 500 7 12 (c) SA 6L 1 3/12 hrs 400� .8 8P-E --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fichetti-security-500.sr3e-firearm-0032.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"7\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fichetti-security-500.sr3e-firearm-0032.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"12(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fichetti-security-500.sr3e-firearm-0032.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fichetti-security-500.sr3e-firearm-0032.json",
+          "line": 15,
+          "snippet": "\"damage\": \"6L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fichetti-security-500.sr3e-firearm-0032.json",
+          "line": 18,
+          "snippet": "\"cost\": 400,"
+        }
+      ],
+      "note": "Conceal 7, 12 (c), SA, 6L, 400 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#164",
@@ -53581,7 +54785,49 @@
       ],
       "hash": "7f4c7e6018",
       "text": "| Fichetti Security 500a | 6 | 25 (c) | SA | 6L | (1) | 550¥ | 8P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Fichetti Security 500a 6 25 (c) SA 6L"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Fichetti Security 500 7 12 (c) SA 6L 1 3/12 hrs 400� .8 8P-E -- Fichetti Security 500a 6 25 (c) SA 6L 1.25 3/12 hrs 550� .8 8P-E (1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fichetti-security-500a.sr3e-firearm-0033.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"6\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fichetti-security-500a.sr3e-firearm-0033.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"25(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fichetti-security-500a.sr3e-firearm-0033.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fichetti-security-500a.sr3e-firearm-0033.json",
+          "line": 15,
+          "snippet": "\"damage\": \"6L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fichetti-security-500a.sr3e-firearm-0033.json",
+          "line": 18,
+          "snippet": "\"cost\": 550,"
+        }
+      ],
+      "note": "Conceal 6, 25 (c), SA, 6L, 550 agree. The RC column is carried only as accessories text (see unit 12). Pack accessories: \"Detach. Stock(1RC)\". The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#165",
@@ -53592,7 +54838,8 @@
       ],
       "hash": "c0bb342103",
       "text": "| *Machine pistols* | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#166",
@@ -53603,7 +54850,49 @@
       ],
       "hash": "064c797bda",
       "text": "| Ceska Black Scorpion | 5 | 35 (c) | SA/BF | 6L | (1) | 850¥ | 5-G |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Ceska Black Scorpion 5 35 (c) SA/BF 6L"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Machine Pistols Ceska Black Scorpion 5 35 (c) SA/BF 6L 3 5/36 hrs 850� 2 5-G (1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ceska-black-scorpion.sr3e-firearm-0060.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"5\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ceska-black-scorpion.sr3e-firearm-0060.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"35(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ceska-black-scorpion.sr3e-firearm-0060.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ceska-black-scorpion.sr3e-firearm-0060.json",
+          "line": 15,
+          "snippet": "\"damage\": \"6L\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ceska-black-scorpion.sr3e-firearm-0060.json",
+          "line": 18,
+          "snippet": "\"cost\": 850,"
+        }
+      ],
+      "note": "Conceal 5, 35 (c), SA/BF, 6L, 850 agree. The RC column is carried only as accessories text (see unit 12). Pack accessories: \"Fold. Stock(1RC)\". The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#167",
@@ -53614,7 +54903,8 @@
       ],
       "hash": "ed672f6d64",
       "text": "| *Heavy pistols* | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#168",
@@ -53625,7 +54915,49 @@
       ],
       "hash": "5805aa2809",
       "text": "| Ares Predator | 5 | 15 (c) | SA | 9M | — | 450¥ | 6P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Ares Predator 5 15 (c) SA 9M 2.25 3/24 hrs 450� .5 6P-E --"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Heavy Pistols Ares Predator 5 15 (c) SA 9M 2.25 3/24 hrs 450� .5 6P-E --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-predator.sr3e-firearm-0072.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"5\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-predator.sr3e-firearm-0072.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"15(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-predator.sr3e-firearm-0072.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-predator.sr3e-firearm-0072.json",
+          "line": 15,
+          "snippet": "\"damage\": \"9M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-predator.sr3e-firearm-0072.json",
+          "line": 18,
+          "snippet": "\"cost\": 450,"
+        }
+      ],
+      "note": "Conceal 5, 15 (c), SA, 9M, 450 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#169",
@@ -53636,7 +54968,49 @@
       ],
       "hash": "973473e9aa",
       "text": "| Ares Viper Slivergun | 6 | 30 (c) | SA/BF | 9S(f) | — | 600¥ | 6P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Ares Viper Slivergun 6 30 (c) SA/BF 9S(f)"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Ares Predator 5 15 (c) SA 9M 2.25 3/24 hrs 450� .5 6P-E -- Ares Viper Slivergun 6 30 (c) SA/BF 9S(f) 2 3/48 hrs 600� 1 6P-E --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-viper-slivergun.sr3e-firearm-0077.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"6\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-viper-slivergun.sr3e-firearm-0077.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"30(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-viper-slivergun.sr3e-firearm-0077.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-viper-slivergun.sr3e-firearm-0077.json",
+          "line": 15,
+          "snippet": "\"damage\": \"9S(f)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-viper-slivergun.sr3e-firearm-0077.json",
+          "line": 19,
+          "snippet": "\"cost\": 600,"
+        }
+      ],
+      "note": "Conceal 6, 30 (c), SA/BF, 9S(f), 600 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#170",
@@ -53647,7 +55021,49 @@
       ],
       "hash": "6b4537cb22",
       "text": "| Browning Max-Power | 6 | 10 (c) | SA | 9M | — | 450¥ | 6P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Browning Max-Power 6 10 (c) SA 9M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Ares Viper Slivergun 6 30 (c) SA/BF 9S(f) 2 3/48 hrs 600� 1 6P-E -- Browning Max-Power 6 10 (c) SA 9M 2 3/24 hrs 450� 1 6P-E --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/browning-max-power.sr3e-firearm-0088.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"6\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/browning-max-power.sr3e-firearm-0088.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"10(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/browning-max-power.sr3e-firearm-0088.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/browning-max-power.sr3e-firearm-0088.json",
+          "line": 15,
+          "snippet": "\"damage\": \"9M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/browning-max-power.sr3e-firearm-0088.json",
+          "line": 18,
+          "snippet": "\"cost\": 450,"
+        }
+      ],
+      "note": "Conceal 6, 10 (c), SA, 9M, 450 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#171",
@@ -53658,7 +55074,49 @@
       ],
       "hash": "d320c19a16",
       "text": "| Remington Roomsweeper | 6 | 8 (m) | SA | 9S(f) | — | 300¥ | 6P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Remington Roomsweeper 6 8 (m) SA 9S(f) 2.5"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Browning Max-Power 6 10 (c) SA 9M 2 3/24 hrs 450� 1 6P-E -- Remington Roomsweeper 6 8 (m) SA 9S(f) 2.5 3/24 hrs 300� 1 6P-E --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rmngton-roomsweeper-shg.sr3e-firearm-0132.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"6\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rmngton-roomsweeper-shg.sr3e-firearm-0132.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"8(m)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rmngton-roomsweeper-shg.sr3e-firearm-0132.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rmngton-roomsweeper-shg.sr3e-firearm-0132.json",
+          "line": 15,
+          "snippet": "\"damage\": \"9S(f)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rmngton-roomsweeper-shg.sr3e-firearm-0132.json",
+          "line": 19,
+          "snippet": "\"cost\": 300,"
+        }
+      ],
+      "note": "Conceal 6, 8 (m), SA, 9S(f), 300 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#172",
@@ -53669,7 +55127,49 @@
       ],
       "hash": "7af5e749a9",
       "text": "| Ruger Super Warhawk | 4 | 6 (cy) | SS | 10M | — | 300¥ | 6P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Ruger Super Warhawk 4 6 (cy) SS 10M 2.5"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Remington Roomsweeper 6 8 (m) SA 9S(f) 2.5 3/24 hrs 300� 1 6P-E -- Ruger Super Warhawk 4 6 (cy) SS 10M 2.5 3/24 hrs 300� 1 6P-E --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ruger-super-warhawk.sr3e-firearm-0133.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"4\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ruger-super-warhawk.sr3e-firearm-0133.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"6(cy)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ruger-super-warhawk.sr3e-firearm-0133.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SS\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ruger-super-warhawk.sr3e-firearm-0133.json",
+          "line": 15,
+          "snippet": "\"damage\": \"10M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ruger-super-warhawk.sr3e-firearm-0133.json",
+          "line": 18,
+          "snippet": "\"cost\": 300,"
+        }
+      ],
+      "note": "Conceal 4, 6 (cy), SS, 10M, 300 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#173",
@@ -53680,7 +55180,8 @@
       ],
       "hash": "e3bf079a60",
       "text": "| *Special weapons* | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#174",
@@ -53691,7 +55192,49 @@
       ],
       "hash": "dc1ffcc8ad",
       "text": "| Defiance Super Shock | 4 | 4 (m) | SA | 10S Stun | — | 1,000¥ | 6P-E |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Defiance Super Shock 4 4 (m) SA 10S Stun 2"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Special Weapons Defiance Super Shock 4 4 (m) SA 10S Stun 2 5/24 hrs 1,000� 1 6P-E --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-super-shock.sr3e-firearm-0642.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"4\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-super-shock.sr3e-firearm-0642.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"4(m)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-super-shock.sr3e-firearm-0642.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-super-shock.sr3e-firearm-0642.json",
+          "line": 15,
+          "snippet": "\"damage\": \"10S Stun\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-super-shock.sr3e-firearm-0642.json",
+          "line": 18,
+          "snippet": "\"cost\": 1000,"
+        }
+      ],
+      "note": "Conceal 4, 4 (m), SA, 10S Stun, 1,000 agree. Pack category is Tasr. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#175",
@@ -53702,7 +55245,8 @@
       ],
       "hash": "248e726dbd",
       "text": "| *Submachine guns* | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#176",
@@ -53713,7 +55257,49 @@
       ],
       "hash": "947d823c18",
       "text": "| AK-97 SMG/Carbine | 4 | 30 (c) | SA/BF/FA | 6M | (1) | 800¥ | 4-G |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "AK-97 SMG/Carbine 4 30 (c) SA/BF/FA 6M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "SUBMACHINE GUNS AK-97 SMG/Carbine 4 30 (c) SA/BF/FA 6M 4 5/3 days 800� 1 4-G (1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97-smg-carbine.sr3e-firearm-0656.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"4\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97-smg-carbine.sr3e-firearm-0656.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"30(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97-smg-carbine.sr3e-firearm-0656.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF/FA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97-smg-carbine.sr3e-firearm-0656.json",
+          "line": 15,
+          "snippet": "\"damage\": \"6M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97-smg-carbine.sr3e-firearm-0656.json",
+          "line": 18,
+          "snippet": "\"cost\": 800,"
+        }
+      ],
+      "note": "Conceal 4, 30 (c), SA/BF/FA, 6M, 800 agree. The RC column is carried only as accessories text (see unit 12). Pack accessories: \"Fold. Stock(1RC)\". The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#177",
@@ -53724,7 +55310,49 @@
       ],
       "hash": "fd9a00c67a",
       "text": "| Heckler & Koch HK227 | 4 | 28 (c) | SA/BF/FA | 7M | 2(3) | 1,500¥ | 4-G |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Heckler & Koch HK227 4 28 (c) SA/BF/FA 7M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "AK-97 SMG/Carbine 4 30 (c) SA/BF/FA 6M 4 5/3 days 800� 1 4-G (1) Heckler & Koch HK227 4 28 (c) SA/BF/FA 7M 4 4/24 hrs 1,500� .75 4-G 2(3)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/heckler-koch-hk227.sr3e-firearm-0683.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"4\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/heckler-koch-hk227.sr3e-firearm-0683.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"28(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/heckler-koch-hk227.sr3e-firearm-0683.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF/FA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/heckler-koch-hk227.sr3e-firearm-0683.json",
+          "line": 15,
+          "snippet": "\"damage\": \"7M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/heckler-koch-hk227.sr3e-firearm-0683.json",
+          "line": 18,
+          "snippet": "\"cost\": 1500,"
+        }
+      ],
+      "note": "Conceal 4, 28 (c), SA/BF/FA, 7M, 1,500 agree. The RC column is carried only as accessories text (see unit 12). Pack accessories: \"Gas Vent II(2RC), Retr. Stock(1RC)\" = 2(3). The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#178",
@@ -53735,7 +55363,49 @@
       ],
       "hash": "d842117834",
       "text": "| HK227-S | 5 | 28 (c) | SA/BF | 7M | (1) | 1,200¥ | 3-G |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "HK227-S 5 28 (c) SA/BF 7M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "FN HAR 2 35 (c) SA/BF/FA 8M 4.5 4/48 hrs 1,200� 2 2-G 2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/heckler-koch-hk227-s.sr3e-firearm-0684.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"5\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/heckler-koch-hk227-s.sr3e-firearm-0684.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"28(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/heckler-koch-hk227-s.sr3e-firearm-0684.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/heckler-koch-hk227-s.sr3e-firearm-0684.json",
+          "line": 15,
+          "snippet": "\"damage\": \"7M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/heckler-koch-hk227-s.sr3e-firearm-0684.json",
+          "line": 18,
+          "snippet": "\"cost\": 1200,"
+        }
+      ],
+      "note": "Conceal 5, 28 (c), SA/BF, 7M, 1,200 agree. The RC column is carried only as accessories text (see unit 12). Pack accessories: \"Retr. Stock(1RC)\". The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#179",
@@ -53746,7 +55416,49 @@
       ],
       "hash": "3a67635741",
       "text": "| Ingram Smartgun | 5 | 32 (c) | BF/FA | 7M | 2(3) | 950¥ | 4-G |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Ingram Smartgun 5 32 (c) BF/FA 7M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "HK227-S 5 28 (c) SA/BF 7M 3 10/7 days 1,200� 2 3-G (1) Ingram Smartgun 5 32 (c) BF/FA 7M 3 4/24 hrs 950� 1 4-G 2(3)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-smartgun-mod-20t.sr3e-firearm-0688.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"5\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-smartgun-mod-20t.sr3e-firearm-0688.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"32(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-smartgun-mod-20t.sr3e-firearm-0688.json",
+          "line": 14,
+          "snippet": "\"mode\": \"BF/FA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-smartgun-mod-20t.sr3e-firearm-0688.json",
+          "line": 15,
+          "snippet": "\"damage\": \"7M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-smartgun-mod-20t.sr3e-firearm-0688.json",
+          "line": 18,
+          "snippet": "\"cost\": 950,"
+        }
+      ],
+      "note": "Conceal 5, 32 (c), BF/FA, 7M, 950 agree. The RC column is carried only as accessories text (see unit 12). Pack accessories: \"Fold. Stock(1RC), Gas Vent II(2RC)\" = 2(3). The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#180",
@@ -53757,7 +55469,49 @@
       ],
       "hash": "a940a0b18c",
       "text": "| Uzi III | 5 | 24 (c) | BF | 6M | (1) | 600¥ | 4-G |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Uzi III 5 24 (c) BF 6M RIFLES 3 5 (m) SA 7S"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Ingram Smartgun 5 32 (c) BF/FA 7M 3 4/24 hrs 950� 1 4-G 2(3) Uzi III 5 24 (c) BF 6M 2 4/24 hrs 600� .75 4-G (1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/uzi-iii.sr3e-firearm-0704.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"5\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/uzi-iii.sr3e-firearm-0704.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"24(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/uzi-iii.sr3e-firearm-0704.json",
+          "line": 14,
+          "snippet": "\"mode\": \"BF\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/uzi-iii.sr3e-firearm-0704.json",
+          "line": 15,
+          "snippet": "\"damage\": \"6M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/uzi-iii.sr3e-firearm-0704.json",
+          "line": 18,
+          "snippet": "\"cost\": 600,"
+        }
+      ],
+      "note": "Conceal 5, 24 (c), BF, 6M, 600 agree. The RC column is carried only as accessories text (see unit 12). Pack accessories: \"Fold Stock(1RC)\". The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#181",
@@ -53768,7 +55522,8 @@
       ],
       "hash": "145280efc9",
       "text": "| *Sport rifles* | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#182",
@@ -53779,7 +55534,49 @@
       ],
       "hash": "4c8baf249d",
       "text": "| Remington 750 | 3 | 5 (m) | SA | 7S | — | 600¥ | 5P-F |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "RIFLES 3 5 (m) SA 7S Sport Rifles Remington 750 2 5 (m) SA 9S"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Uzi III 5 24 (c) BF 6M 2 4/24 hrs 600� .75 4-G (1) RIFLES 3 5 (m) SA 7S 3 3/24 hrs 600� 1 5P-F --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-750.sr3e-firearm-1003.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"3\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-750.sr3e-firearm-1003.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"5(m)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-750.sr3e-firearm-1003.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-750.sr3e-firearm-1003.json",
+          "line": 15,
+          "snippet": "\"damage\": \"7S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-750.sr3e-firearm-1003.json",
+          "line": 18,
+          "snippet": "\"cost\": 600,"
+        }
+      ],
+      "note": "Conceal 3, 5 (m), SA, 7S, 600 agree (the text layer prints each rifle's data one line above its name). The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#183",
@@ -53790,7 +55587,49 @@
       ],
       "hash": "56d6465244",
       "text": "| Remington 950 | 2 | 5 (m) | SA | 9S | — | 800¥ | 5P-F |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "RIFLES 3 5 (m) SA 7S Sport Rifles Remington 750 2 5 (m) SA 9S"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Sport Rifles Remington 750 2 5 (m) SA 9S 4 3/24 hrs 800� 1 5P-F --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-950.sr3e-firearm-1004.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-950.sr3e-firearm-1004.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"5(m)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-950.sr3e-firearm-1004.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-950.sr3e-firearm-1004.json",
+          "line": 15,
+          "snippet": "\"damage\": \"9S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/remington-950.sr3e-firearm-1004.json",
+          "line": 18,
+          "snippet": "\"cost\": 800,"
+        }
+      ],
+      "note": "Conceal 2, 5 (m), SA, 9S, 800 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#184",
@@ -53801,7 +55640,8 @@
       ],
       "hash": "c6dffab8b0",
       "text": "| *Sniper rifles* | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#185",
@@ -53812,7 +55652,49 @@
       ],
       "hash": "2f34af54be",
       "text": "| Ranger Arms SM-3 | — | 6 (m) | SA | 14S | 2 | 4,000¥ | 2-K |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Remington 950 Sniper Rifles -- 6 (m) SA 14S Ranger Arms SM-3"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Remington 950 Sniper Rifles -- 6 (m) SA 14S 4 12/7 days 4,000� 4 2-K 2"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ranger-arms-sm-3.sr3e-firearm-0966.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ranger-arms-sm-3.sr3e-firearm-0966.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"6(m)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ranger-arms-sm-3.sr3e-firearm-0966.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ranger-arms-sm-3.sr3e-firearm-0966.json",
+          "line": 15,
+          "snippet": "\"damage\": \"14S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ranger-arms-sm-3.sr3e-firearm-0966.json",
+          "line": 18,
+          "snippet": "\"cost\": 4000,"
+        }
+      ],
+      "note": "Conceal -, 6 (m), SA, 14S, 4,000 agree. The RC column is carried only as accessories text (see unit 12). Pack accessories: \"Gas Vent II(2RC)\" = 2. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#186",
@@ -53823,7 +55705,8 @@
       ],
       "hash": "bd4dcb87fa",
       "text": "| *Shotguns* | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#187",
@@ -53834,7 +55717,49 @@
       ],
       "hash": "ff1aeba8c9",
       "text": "| Defiance T-250 | 4 | 5 (m) | SA | 10S | — | 500¥ | 5P-F |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "SHOTGUNS 4 5 (m) SA 10S Defiance T-250 Enfield AS-7 3 10 (c) SA/BF 8S"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "AK-97 SMG/Carbine 4 30 (c) SA/BF/FA 6M 4 5/3 days 800� 1 4-G (1) Heckler & Koch HK227 4 28 (c) SA/BF/FA 7M 4 4/24 hrs 1,500� .75 4-G 2(3)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-t-250.sr3e-firearm-0894.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"4\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-t-250.sr3e-firearm-0894.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"5(m)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-t-250.sr3e-firearm-0894.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-t-250.sr3e-firearm-0894.json",
+          "line": 15,
+          "snippet": "\"damage\": \"10S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-t-250.sr3e-firearm-0894.json",
+          "line": 18,
+          "snippet": "\"cost\": 500,"
+        }
+      ],
+      "note": "Conceal 4, 5 (m), SA, 10S, 500 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#188",
@@ -53845,7 +55770,49 @@
       ],
       "hash": "48adb571dd",
       "text": "| Enfield AS-7 | 3 | 10 (c) | SA/BF | 8S | — | 1,000¥ | 5P-F |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "SHOTGUNS 4 5 (m) SA 10S Defiance T-250 Enfield AS-7 3 10 (c) SA/BF 8S"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Defiance T-250 Enfield AS-7 3 10 (c) SA/BF 8S 4 8/8 days 1,000� 1 5P-F --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/enfield-as7.sr3e-firearm-0896.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"3\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/enfield-as7.sr3e-firearm-0896.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"10(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/enfield-as7.sr3e-firearm-0896.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/enfield-as7.sr3e-firearm-0896.json",
+          "line": 15,
+          "snippet": "\"damage\": \"8S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/enfield-as7.sr3e-firearm-0896.json",
+          "line": 18,
+          "snippet": "\"cost\": 1000,"
+        }
+      ],
+      "note": "Conceal 3, 10 (c), SA/BF, 8S, 1,000 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#189",
@@ -53856,7 +55823,8 @@
       ],
       "hash": "b256fa2524",
       "text": "| *Assault rifles* | | | | | | | |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#190",
@@ -53867,7 +55835,49 @@
       ],
       "hash": "050d98fff6",
       "text": "| AK-97 | 3 | 38 (c) | SA/BF/FA | 8M | — | 700¥ | 2-G |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "ASSAULT RIFLES 3 38 (c) SA/BF/FA 8M AK-97 AK-98 2 38 (c) SA/BF/FA 8M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Enfield AS-7 3 10 (c) SA/BF 8S 4 8/8 days 1,000� 1 5P-F -- ASSAULT RIFLES 3 38 (c) SA/BF/FA 8M 4.5 3/36 hrs 700� 2 2-G --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97.sr3e-firearm-0761.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"3\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97.sr3e-firearm-0761.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"38(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97.sr3e-firearm-0761.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF/FA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97.sr3e-firearm-0761.json",
+          "line": 15,
+          "snippet": "\"damage\": \"8M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-97.sr3e-firearm-0761.json",
+          "line": 18,
+          "snippet": "\"cost\": 700,"
+        }
+      ],
+      "note": "Conceal 3, 38 (c), SA/BF/FA, 8M, 700 agree. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#191",
@@ -53878,7 +55888,49 @@
       ],
       "hash": "5397bb294a",
       "text": "| AK-98 | 2 | 38 (c) | SA/BF/FA | 8M | — | 2,500¥ | 1-G |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "ASSAULT RIFLES 3 38 (c) SA/BF/FA 8M AK-97 AK-98 2 38 (c) SA/BF/FA 8M"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "AK-97 AK-98 2 38 (c) SA/BF/FA 8M 6 8/4 days 2,500� 4 1-G --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-98.sr3e-firearm-0762.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-98.sr3e-firearm-0762.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"38(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-98.sr3e-firearm-0762.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF/FA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-98.sr3e-firearm-0762.json",
+          "line": 15,
+          "snippet": "\"damage\": \"8M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ak-98.sr3e-firearm-0762.json",
+          "line": 18,
+          "snippet": "\"cost\": 2500,"
+        }
+      ],
+      "note": "Conceal 2, 38 (c), SA/BF/FA, 8M, 2,500 agree. Pack accessories name the integral grenade launcher. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#192",
@@ -53889,7 +55941,49 @@
       ],
       "hash": "76b52d1428",
       "text": "| FN HAR | 2 | 35 (c) | SA/BF/FA | 8M | 2 | 1,200¥ | 2-G |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "AK-98 2 38 (c) SA/BF/FA 8M FN HAR 2 35 (c) SA/BF/FA 8M 4.5 4/48 hrs 1,200� 2 2-G 2"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "Heckler & Koch HK227 4 28 (c) SA/BF/FA 7M 4 4/24 hrs 1,500� .75 4-G 2(3) HK227-S 5 28 (c) SA/BF 7M 3 10/7 days 1,200� 2 3-G (1)"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fn-har.sr3e-firearm-0772.json",
+          "line": 12,
+          "snippet": "\"concealability\": \"2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fn-har.sr3e-firearm-0772.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"35(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fn-har.sr3e-firearm-0772.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SA/BF/FA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fn-har.sr3e-firearm-0772.json",
+          "line": 15,
+          "snippet": "\"damage\": \"8M\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fn-har.sr3e-firearm-0772.json",
+          "line": 18,
+          "snippet": "\"cost\": 1200,"
+        }
+      ],
+      "note": "Conceal 2, 35 (c), SA/BF/FA, 8M, 1,200 agree. The book gives the FN HAR RC 2 (the Rating 2 gas vent) and says rifle stocks, rigid or folding, \"affect recoil\" not at all (p.277). The pack's accessories text lists \"Fold Stock(1RC)\" as well, which would make 3. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#193",
@@ -53900,7 +55994,23 @@
       ],
       "hash": "2f09a83203",
       "text": "Notes from the descriptions *(SR3 p.276–279)*:",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Firearms in Shadowrun include pistols, taser weapons,"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/fn-har.sr3e-firearm-0772.json",
+          "line": 20,
+          "snippet": "\"accessories\": \"Laser Sight, Gas Vent II(2RC), Fold Stock(1RC)\","
+        }
+      ],
+      "note": "Introduction to the description notes resolved one by one below."
     },
     {
       "id": "rules/weapons.md#194",
@@ -53911,7 +56021,38 @@
       ],
       "hash": "e44f7cf1b1",
       "text": "- **Revolvers** can't take silencers or sound suppressors; **hold-outs**\n  take no accessories. **SMGs** take sound suppressors but not silencers;\n  **shotguns** take neither.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Revolvers cannot use silencers or sound"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 279,
+          "printedPage": 277,
+          "quote": "SMGs cannot use silencers, but can use sound suppressers."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 279,
+          "printedPage": 277,
+          "quote": "silencers or sound suppressers. Rifles include the following:"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "silencer.{0,40}revolver|revolver.{0,40}silencer",
+          "path": "scripts"
+        },
+        {
+          "pattern": "hold-?out.{0,40}accessor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Accessory compatibility (no silencer on a revolver or shotgun, no accessories on a hold-out, no silencer on an SMG) is not enforced or even stored: accessories are free gear items and a free-text list on the weapon."
     },
     {
       "id": "rules/weapons.md#195",
@@ -53922,7 +56063,39 @@
       ],
       "hash": "9e2b98dbc0",
       "text": "- **Remington Roomsweeper**: heavy-pistol ranges, shotgun rules; with normal\n  rounds, 9M.",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 279,
+          "printedPage": 277,
+          "quote": "The weapon uses heavy-pistol ranges, but shotgun rules; see Shotguns, p."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 279,
+          "printedPage": 277,
+          "quote": "normal rounds instead of shotgun rounds, in which case the weapon does 9M damage."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rmngton-roomsweeper-shg.sr3e-firearm-0132.json",
+          "line": 9,
+          "snippet": "\"category\": \"HPist\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rmngton-roomsweeper-shg.sr3e-firearm-0132.json",
+          "line": 15,
+          "snippet": "\"damage\": \"9S(f)\","
+        },
+        {
+          "file": "scripts/data/shotgun.mjs",
+          "line": 69,
+          "snippet": "return weapon?.system?.category === 'ShtG' && weapon?.system?.loadedAmmoType === 'shot';"
+        }
+      ],
+      "note": "Heavy-pistol ranges: yes (category HPist). Shotgun rules: no - choke and spread apply only to category ShtG (Shotgun.firesShot), so the Roomsweeper never spreads, and its pack damage is 9S(f) with no way to load \"normal rounds\" for 9M (a weapon with an (f) code takes no other ammunition)."
     },
     {
       "id": "rules/weapons.md#196",
@@ -53933,7 +56106,28 @@
       ],
       "hash": "1b6fad2fc9",
       "text": "- **Defiance T-250**: the code is for slugs; with shot, **10D(f)**. The\n  short-barrel version uses heavy-pistol ranges, Concealability 6, and does\n  9S(f) or 9M.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "The Damage Code is factored for slug rounds; if using shotgun (flechette) rounds the Damage Code is 10D(f)."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/defiance-t-250.sr3e-firearm-0894.json",
+          "line": 15,
+          "snippet": "\"damage\": \"10S\","
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1549,
+          "snippet": "shot:        { label: 'Shot',         armorEffect: 'flechette', shotgunOnly: true },"
+        }
+      ],
+      "note": "Slug code 10S; shot goes through the flechette rules (+1 level against the unarmoured = 10D). The short-barrel variant (heavy-pistol ranges, Concealability 6, 9S(f) or 9M) is not shipped as an item (manual grep of the packs)."
     },
     {
       "id": "rules/weapons.md#197",
@@ -53944,7 +56138,28 @@
       ],
       "hash": "d918dcbc4a",
       "text": "- **Enfield AS-7**: with shot, **8D(f)**. A 50-round drum is available.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "instead of slug rounds, the weapon has a Damage Code of 8D(f)."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/enfield-as7.sr3e-firearm-0896.json",
+          "line": 15,
+          "snippet": "\"damage\": \"8S\","
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 1549,
+          "snippet": "shot:        { label: 'Shot',         armorEffect: 'flechette', shotgunOnly: true },"
+        }
+      ],
+      "note": "Slug code 8S; shot goes through the flechette rules (8D against the unarmoured). The 50-shot drum (-3 Concealability, +2 kg) is not modelled; the pack gun is 10 (c)."
     },
     {
       "id": "rules/weapons.md#198",
@@ -53955,7 +56170,28 @@
       ],
       "hash": "d5d083f323",
       "text": "- **Ranger Arms SM-3**: breaks down into a briefcase. Carried and used in a\n  fight, each turn adds to a 2D6 chance of it losing alignment, at +2 TN.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "chance on a roll of 2D6 that the weapon will suffer a +2 target"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 280,
+          "printedPage": 278,
+          "quote": "assembling the gun takes three Complex Actions."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "loss of alignment|SM-?3 (alignment|briefcase)",
+          "path": "scripts"
+        }
+      ],
+      "note": "The Ranger Arms SM-3 is an ordinary rifle: no disassembly actions and no loss-of-alignment chance."
     },
     {
       "id": "rules/weapons.md#199",
@@ -53966,7 +56202,23 @@
       ],
       "hash": "c33bdb6cad",
       "text": "### Heavy weapons  *(SR3 p.279)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "Heavy weapons can generally take one barrel-, one under-"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-valiant.sr3e-firearm-1134.json",
+          "line": 9,
+          "snippet": "\"category\": \"LMG\","
+        }
+      ],
+      "note": "Accessory mounts are not modelled (see the Accessories section); the heavy weapons are firearms with category LMG/MMG/HMG/ACan/GrLn/MisLn."
     },
     {
       "id": "rules/weapons.md#200",
@@ -53977,7 +56229,8 @@
       ],
       "hash": "b5272b308d",
       "text": "| Weapon | Ammo | Mode | Damage | RC | Cost | Legal |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#201",
@@ -53988,7 +56241,38 @@
       ],
       "hash": "4303390f5d",
       "text": "| Ingram Valiant LMG | 50 (c)/Belt | BF/FA | 7S | 3 | 1,500¥ | 1-H |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "Ingram Valiant -- 50 (c)/Belt BF/FA 7S 9 6/5 days 1,500� 2 1-H 3"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-valiant.sr3e-firearm-1134.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"belt/50(c)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-valiant.sr3e-firearm-1134.json",
+          "line": 14,
+          "snippet": "\"mode\": \"BF/FA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-valiant.sr3e-firearm-1134.json",
+          "line": 15,
+          "snippet": "\"damage\": \"7S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ingram-valiant.sr3e-firearm-1134.json",
+          "line": 18,
+          "snippet": "\"cost\": 1500,"
+        }
+      ],
+      "note": "Ammo 50 (c)/Belt, BF/FA, 7S, 1,500 agree (pack ammo \"belt/50(c)\"). RC 3: pack accessories \"Hip Brace(1RC), Gas Vent II(2RC)\" = 3. The RC column is carried only as accessories text (see unit 12). The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#202",
@@ -53999,7 +56283,38 @@
       ],
       "hash": "f17abb0b1d",
       "text": "| RPK HMG | 40 (c)/Belt | FA | 10S | (6) | 4,000¥ | 2-H |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "The Damage Code is factored for slug rounds; if using shotgun RPK HMG: A Russian-made heavy machinegun, usually mount-"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rpk-hmg.sr3e-firearm-1156.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"40(c)/Belt\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rpk-hmg.sr3e-firearm-1156.json",
+          "line": 14,
+          "snippet": "\"mode\": \"FA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rpk-hmg.sr3e-firearm-1156.json",
+          "line": 15,
+          "snippet": "\"damage\": \"10S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/rpk-hmg.sr3e-firearm-1156.json",
+          "line": 18,
+          "snippet": "\"cost\": 4000,"
+        }
+      ],
+      "note": "Ammo 40 (c)/Belt, FA, 10S, 4,000 agree. RC (6): pack accessories \"fold-out tripod(6RC)\". The RC column is carried only as accessories text (see unit 12). The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#203",
@@ -54010,7 +56325,38 @@
       ],
       "hash": "1447a63ef1",
       "text": "| Ultimax MMG | 40 (c)/Belt | FA | 9S | (6) | 2,500¥ | 2-H |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "variant uses heavy-pistol ranges, has Concealability 6 and does Ultimax MMG: This Singapore-produced medium machine gun"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ultimax-mmg.sr3e-firearm-1147.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"40(c)/Belt\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ultimax-mmg.sr3e-firearm-1147.json",
+          "line": 14,
+          "snippet": "\"mode\": \"FA\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ultimax-mmg.sr3e-firearm-1147.json",
+          "line": 15,
+          "snippet": "\"damage\": \"9S\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ultimax-mmg.sr3e-firearm-1147.json",
+          "line": 18,
+          "snippet": "\"cost\": 2500,"
+        }
+      ],
+      "note": "Ammo 40 (c)/Belt, FA, 9S, 2,500 agree. The book gives RC (6); the pack's accessories say \"None\", so the tripod's 6 points are not recorded anywhere (recoilMod is 0 like every other pack weapon). The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#204",
@@ -54021,7 +56367,38 @@
       ],
       "hash": "5e66ab7c33",
       "text": "| Vigorous Assault Cannon | 20 (c)/Belt | SS | 18D | — | 6,500¥ | 2-H |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "Vigorous Assault Cannon -- 20 (c)/Belt SS 18D 20 16/14 days 6,500� 2 2-H --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/vigorous-assault-cannon.sr3e-firearm-1161.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"20(c)/Belt\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/vigorous-assault-cannon.sr3e-firearm-1161.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SS\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/vigorous-assault-cannon.sr3e-firearm-1161.json",
+          "line": 15,
+          "snippet": "\"damage\": \"18D\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/vigorous-assault-cannon.sr3e-firearm-1161.json",
+          "line": 18,
+          "snippet": "\"cost\": 6500,"
+        }
+      ],
+      "note": "Ammo 20 (c)/Belt, SS, 18D, 6,500 agree. See the Weapon Range Table and heavy-recoil units for the cannon's category ACan. The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#205",
@@ -54032,7 +56409,38 @@
       ],
       "hash": "fc531dcec9",
       "text": "| Ares Antioch grenade launcher | 6 (m) | SS | grenade | — | 1,700¥ | 1-K |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "Ares Antioch 6 (-3) 6 (m) SS grenade +2 kg 8/4 days 1,700� 3 1-K --"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-antioch.sr3e-firearm-1178.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"6(m)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-antioch.sr3e-firearm-1178.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SS\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-antioch.sr3e-firearm-1178.json",
+          "line": 15,
+          "snippet": "\"damage\": \"(Grenade)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/ares-antioch.sr3e-firearm-1178.json",
+          "line": 18,
+          "snippet": "\"cost\": 1700,"
+        }
+      ],
+      "note": "Ammo 6 (m), SS, grenade, 1,700 agree (pack damage \"(Grenade)\", Concealability \"6(-3)\"). The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#206",
@@ -54043,7 +56451,38 @@
       ],
       "hash": "52dac88240",
       "text": "| IWS Multi-Launcher | 4 (b) | SS | — | — | 8,000¥ | 1-K |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "ibrated parts. For example, John uses his SM-3 to discourage IWS Multi-Launcher: The most common missile launcher in"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-firearms/iws-multi-launcher.sr3e-firearm-1204.json",
+          "line": 13,
+          "snippet": "\"ammunition\": \"4(b)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/iws-multi-launcher.sr3e-firearm-1204.json",
+          "line": 14,
+          "snippet": "\"mode\": \"SS\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/iws-multi-launcher.sr3e-firearm-1204.json",
+          "line": 15,
+          "snippet": "\"damage\": \"(Missile)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-firearms/iws-multi-launcher.sr3e-firearm-1204.json",
+          "line": 18,
+          "snippet": "\"cost\": 8000,"
+        }
+      ],
+      "note": "Ammo 4 (b), SS, 8,000 agree (pack damage \"(Missile)\"). The Legal column is not carried (see unit 13)."
     },
     {
       "id": "rules/weapons.md#207",
@@ -54054,7 +56493,28 @@
       ],
       "hash": "98bf6b6c74",
       "text": "The Antioch fires mini-grenades only; as an underbarrel accessory it can't\nbe removed and costs −3 Concealability.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "These weapons fire only mini-grenades."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 281,
+          "printedPage": 279,
+          "quote": "it cannot be removed, and modifies Concealability by -3."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "antioch",
+          "path": "scripts"
+        }
+      ],
+      "note": "Mini-grenade-only is not enforced and nothing treats the Antioch as an underbarrel accessory that cannot be removed (the pack stores Concealability as the text \"6(-3)\")."
     },
     {
       "id": "rules/weapons.md#208",
@@ -54065,7 +56525,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#209",
@@ -54076,7 +56537,22 @@
       ],
       "hash": "d4f7433a0e",
       "text": "## Accessories  *(SR3 p.280–282)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 282,
+          "printedPage": 280,
+          "quote": "Firearms can mount various accessories, from common"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/bipod.6d0d7ade36b511d2.json",
+          "line": 18,
+          "snippet": "\"category\": \"Firearms Accessories\","
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#210",
@@ -54087,7 +56563,38 @@
       ],
       "hash": "f25d60aa35",
       "text": "A firearm has **top**, **barrel** and **underbarrel** mounts, one accessory\neach; integral accessories use up their mount *(SR3 p.280)*. Pistols take\none barrel and one top accessory, SMGs one of each but no grenade\nlauncher, rifles and heavy weapons one of each *(SR3 p.276–279)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 282,
+          "printedPage": 280,
+          "quote": "accessory can be attached to a particular mount."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 278,
+          "printedPage": 276,
+          "quote": "Standard pistols can mount one barrel- and one top-mount-"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 279,
+          "printedPage": 277,
+          "quote": "SMGs can accept one top-mounting, one barrel-mounting, and one underbarrel-mount-"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "underbarrel|barrel.?mount|top.?mount",
+          "path": "scripts"
+        },
+        {
+          "pattern": "mount slot",
+          "path": "scripts"
+        }
+      ],
+      "note": "Mounts are not modelled: accessories are separate gear items (the mount is a line of description text) and nothing limits a firearm to one accessory per top/barrel/underbarrel mount or by weapon class."
     },
     {
       "id": "rules/weapons.md#211",
@@ -54098,7 +56605,8 @@
       ],
       "hash": "ceab7afef2",
       "text": "| Accessory | Mount | Conceal | Rating | Cost | Effect |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#212",
@@ -54109,7 +56617,33 @@
       ],
       "hash": "a4caac18f6",
       "text": "| Bipod | Under | — | 2 | 400¥ | 2 recoil compensation when deployed (a Simple Action). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Mount Conceal Rating Weight Availability Cost Street Index Legal General Under -- 2 2 6/12 hrs 400� 1 Legal"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/bipod.6d0d7ade36b511d2.json",
+          "line": 21,
+          "snippet": "\"cost\": 400,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/bipod.6d0d7ade36b511d2.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/bipod.6d0d7ade36b511d2.json",
+          "line": 20,
+          "snippet": "\"rating\": 2,"
+        }
+      ],
+      "note": "Under, Conceal -, Rating 2, 400 agree. The effect (2 recoil compensation when deployed, a Simple Action to set up) is not computed: accessories do not feed recoil compensation, the GM sets the weapon's Recoil Comp. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#213",
@@ -54120,7 +56654,39 @@
       ],
       "hash": "32b6c00695",
       "text": "| Concealable Holster | — | +2 | — | 100¥ | +2 Concealability for a pistol. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "General Under -- 2 2 6/12 hrs 400� 1 Legal Bipod -- +2 -- .1 2/24 hrs 100�"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 282,
+          "printedPage": 280,
+          "quote": "It adds +2 to the Concealability of a pistol."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/concealable-holster.ce11a61c097abafc.json",
+          "line": 21,
+          "snippet": "\"cost\": 100,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/concealable-holster.ce11a61c097abafc.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(+2)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/concealable-holster.ce11a61c097abafc.json",
+          "line": 20,
+          "snippet": "\"rating\": null,"
+        }
+      ],
+      "note": "Conceal +2, 100 agree (the pack's \"(+2)\"). The +2 Concealability for a pistol is not applied by anything. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#214",
@@ -54131,7 +56697,33 @@
       ],
       "hash": "e7b5130b21",
       "text": "| Silencer | Barrel | −2 | — | 500¥ | SS and SA only, not revolvers. +2 to notice the shot or find the shooter. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Bipod -- +2 -- .1 2/24 hrs 100� Concealable Holster -2 -- .2 4/48 hrs 500� .75 Legal"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/silencer.510317e11b10f1f7.json",
+          "line": 21,
+          "snippet": "\"cost\": 500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/silencer.510317e11b10f1f7.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(-2)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/silencer.510317e11b10f1f7.json",
+          "line": 20,
+          "snippet": "\"rating\": null,"
+        }
+      ],
+      "note": "Barrel, Conceal -2, 500 agree. SS/SA-only, no revolvers, and +2 to notice the shot are not modelled. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#215",
@@ -54142,7 +56734,33 @@
       ],
       "hash": "6e8ec90958",
       "text": "| Sound Suppresser | Barrel | −2 | — | 750¥ | The same for BF and FA. Replace every 300 rounds. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Concealable Holster -2 -- .2 4/48 hrs 500� .75 Legal Silencer Barrel -2 -- .5 6/48 hrs 750�"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/sound-suppresser.88b73237ab2bcc2d.json",
+          "line": 21,
+          "snippet": "\"cost\": 750,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/sound-suppresser.88b73237ab2bcc2d.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(-2)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/sound-suppresser.88b73237ab2bcc2d.json",
+          "line": 20,
+          "snippet": "\"rating\": null,"
+        }
+      ],
+      "note": "Barrel, Conceal -2, 750 agree. BF/FA use and the 300-round replacement are not modelled. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#216",
@@ -54153,7 +56771,39 @@
       ],
       "hash": "b294c645eb",
       "text": "| Spare Clips | — | — | — | 5¥ | Not interchangeable between weapons, even of one class. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Sound Suppresser Barrel -- -- .75 2/24 hrs 2 As Weapon Spare Clips -- 6 8 10/12 hrs 5�"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 283,
+          "printedPage": 281,
+          "quote": "Spare Clips: Extra ammunition clips cost 5"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/spare-clip.27d3735181b12497.json",
+          "line": 21,
+          "snippet": "\"cost\": 5,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/spare-clip.27d3735181b12497.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/spare-clip.27d3735181b12497.json",
+          "line": 20,
+          "snippet": "\"rating\": null,"
+        }
+      ],
+      "note": "Cost 5 agrees (pack item \"Spare Clip\"). Clips not interchangeable between weapons is enforced only by ammunition class (see unit 65), not weapon-by-weapon. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#217",
@@ -54164,7 +56814,33 @@
       ],
       "hash": "1463aee509",
       "text": "| Tripod | Under | — | 6 | 600¥ | 6 recoil compensation, prone or sitting. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Spare Clips -- 6 8 10/12 hrs 5� Tripod -- 600� 2 As Weapon"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/tripod.56d0a68ea32d5456.json",
+          "line": 21,
+          "snippet": "\"cost\": 600,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/tripod.56d0a68ea32d5456.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/tripod.56d0a68ea32d5456.json",
+          "line": 20,
+          "snippet": "\"rating\": 6,"
+        }
+      ],
+      "note": "Under, Rating 6, 600 agree. 6 recoil compensation (prone or sitting) is not computed. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#218",
@@ -54175,7 +56851,33 @@
       ],
       "hash": "8346b22fe6",
       "text": "| Gas Vent II | Barrel | −1 | 2 | 450¥ | 2 recoil compensation. Permanent. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "-- Gas Vent II Barrel -1 1 .5 2/24 hrs 450� .8 Legal"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/gas-vent-ii.cac4e7808bef4494.json",
+          "line": 21,
+          "snippet": "\"cost\": 450,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/gas-vent-ii.cac4e7808bef4494.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(-1)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/gas-vent-ii.cac4e7808bef4494.json",
+          "line": 20,
+          "snippet": "\"rating\": 2,"
+        }
+      ],
+      "note": "Barrel, Conceal -1, Rating 2, 450 agree. The 2 points of recoil compensation are not computed from the item. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#219",
@@ -54186,7 +56888,33 @@
       ],
       "hash": "5d50d6a6ca",
       "text": "| Gas Vent III | Barrel | −2 | 3 | 700¥ | 3 recoil compensation. Permanent. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Gas Vent II Barrel -1 1 .5 2/24 hrs 450� .8 Legal 2 700�"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/gas-vent-iii.1cf913cb9de7b39b.json",
+          "line": 21,
+          "snippet": "\"cost\": 700,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/gas-vent-iii.1cf913cb9de7b39b.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(-2)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/gas-vent-iii.1cf913cb9de7b39b.json",
+          "line": 20,
+          "snippet": "\"rating\": 3,"
+        }
+      ],
+      "note": "Barrel, Conceal -2, Rating 3, 700 agree. The 3 points of recoil compensation are not computed from the item. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#220",
@@ -54197,7 +56925,33 @@
       ],
       "hash": "b3c9e1bdbf",
       "text": "| Gyro Mount, Standard | Under | −5 | 5 | 2,500¥ | Cancels recoil **and movement** modifiers up to its rating. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Gas Vent III Barrel -2 3 .75 2/24 hrs 6,000� 1 Legal -- 2,500�"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/gyro-mount.1cd8f276561a6eda.json",
+          "line": 21,
+          "snippet": "\"cost\": 2500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/gyro-mount.1cd8f276561a6eda.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(-5)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/gyro-mount.1cd8f276561a6eda.json",
+          "line": 20,
+          "snippet": "\"rating\": 5,"
+        }
+      ],
+      "note": "Under, Conceal -5, Rating 5, 2,500 agree. Gyro effects are modelled (SR3EActor.gyroOnRecoil, gyroRating). (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#221",
@@ -54208,7 +56962,33 @@
       ],
       "hash": "f8dec17b2d",
       "text": "| Gyro Mount, Deluxe | Under | −6 | 6 | 6,000¥ | As standard, rating 6. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "2 700� Gas Vent III Barrel -2 3 .75 2/24 hrs 6,000� 1 Legal"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/gyro-mount.1bd8f0e3dc063951.json",
+          "line": 21,
+          "snippet": "\"cost\": 6000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/gyro-mount.1bd8f0e3dc063951.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(-6)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/gyro-mount.1bd8f0e3dc063951.json",
+          "line": 20,
+          "snippet": "\"rating\": 6,"
+        }
+      ],
+      "note": "Under, Conceal -6, Rating 6, 6,000 agree. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#222",
@@ -54219,7 +56999,33 @@
       ],
       "hash": "3395aa17fb",
       "text": "| Shock Pads | — | — | 1 | 200¥ | 1 recoil compensation. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "-- 2,500� Gyro Mount, Deluxe Under -6 -- 8 4/48 hrs 200� 1 Legal"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/shock-pads-rc.7ddcaa51f31d608d.json",
+          "line": 21,
+          "snippet": "\"cost\": 200,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/shock-pads-rc.7ddcaa51f31d608d.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/shock-pads-rc.7ddcaa51f31d608d.json",
+          "line": 20,
+          "snippet": "\"rating\": 1,"
+        }
+      ],
+      "note": "Rating 1, 200 agree. The 1 point of recoil compensation is not computed from the item. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#223",
@@ -54230,7 +57036,33 @@
       ],
       "hash": "f970ff2fb0",
       "text": "| Imaging scope, Low-Light | Top | −2 | — | 1,500¥ | |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "-- Imaging Systems Top -2 -- .25 3/36 hrs 1,500� .8 Legal"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/imaging-scope.2f9e1b443b109894.json",
+          "line": 21,
+          "snippet": "\"cost\": 1500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/imaging-scope.2f9e1b443b109894.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(-2)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/imaging-scope.2f9e1b443b109894.json",
+          "line": 20,
+          "snippet": "\"rating\": null,"
+        }
+      ],
+      "note": "Book: Low-Light and Thermographic scopes are two items, Top, Conceal -2, 1,500 each. The pack ships one untyped \"Imaging Scope\" (sr3e-gear, Top, -2, 1,500) with no low-light / thermographic distinction, so one of the two is missing. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#224",
@@ -54241,7 +57073,33 @@
       ],
       "hash": "57b9914e39",
       "text": "| Imaging scope, Magnification 1–3 | Top | −1 | 1–3 | 500¥–1,200¥ | Shifts the range column. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Gas Vent III Barrel -2 3 .75 2/24 hrs 6,000� 1 Legal -- 2,500�"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/imaging-scope.fb469e2e8f655dea.json",
+          "line": 21,
+          "snippet": "\"cost\": 500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/imaging-scope.fb469e2e8f655dea.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(-1)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/imaging-scope.fb469e2e8f655dea.json",
+          "line": 20,
+          "snippet": "\"rating\": 1,"
+        }
+      ],
+      "note": "Magnification 1 (500, Top, -1), 2 (800) and 3 (1,200) are three pack items (ratings 1-3). The range shift they give is not modelled. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#225",
@@ -54252,7 +57110,33 @@
       ],
       "hash": "8c5332c812",
       "text": "| Imaging scope, Thermographic | Top | −2 | — | 1,500¥ | |",
-      "verdict": null
+      "verdict": "diverges",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Low-Light 1,200� 1 Legal Magnification 1 Top -1 .25 3/36 hrs 1,500� .8 Legal"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/imaging-scope.2f9e1b443b109894.json",
+          "line": 21,
+          "snippet": "\"cost\": 1500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/imaging-scope.2f9e1b443b109894.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(-2)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/imaging-scope.2f9e1b443b109894.json",
+          "line": 20,
+          "snippet": "\"rating\": null,"
+        }
+      ],
+      "note": "Book: Thermographic scope, Top, Conceal -2, 1,500. See the Low-Light row: the pack has one untyped Imaging Scope at 1,500 / -2 for both. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#226",
@@ -54263,7 +57147,33 @@
       ],
       "hash": "3b56c17d17",
       "text": "| Laser Sight | Top/under | −1 | — | 500¥ | **−1 TN**. Not with a smartlink. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "-- Imaging Systems Top -2 -- .25 3/36 hrs 1,500� .8 Legal"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/laser-sight.dc95a8d435cb7c70.json",
+          "line": 21,
+          "snippet": "\"cost\": 500,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/laser-sight.dc95a8d435cb7c70.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(-1)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/laser-sight.dc95a8d435cb7c70.json",
+          "line": 20,
+          "snippet": "\"rating\": null,"
+        }
+      ],
+      "note": "Top/Under, Conceal -1, 500 agree. -1 TN is a gear modifier in the GM window (laserSight); \"not with a smartlink\" is applied by the second-firearm cancel only, the GM unticks the rest. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#227",
@@ -54274,7 +57184,33 @@
       ],
       "hash": "75ff714767",
       "text": "| Ultrasound Sight | Top/under | −2 | — | 1,300¥ | Halves lighting and invisibility modifiers, rounded up. Needs ultrasound goggles (1,100¥). |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Magnification 2 500� .9 Legal Magnification 3 Top -1 .25 3/36 hrs 1,300� .8 Legal"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/ultrasound-sight.22b3ed0644b04900.json",
+          "line": 21,
+          "snippet": "\"cost\": 1300,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/ultrasound-sight.22b3ed0644b04900.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"(-2)\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/ultrasound-sight.22b3ed0644b04900.json",
+          "line": 20,
+          "snippet": "\"rating\": null,"
+        }
+      ],
+      "note": "Top/Under, Conceal -2, 1,300 agree; the Ultrasound Goggles item is 1,100. The halved lighting/invisibility modifier is not computed. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#228",
@@ -54285,7 +57221,33 @@
       ],
       "hash": "10f963fea1",
       "text": "| Smart Goggles | — | 0 | — | 3,000¥ | The receptor for a smartgun without a cybernetic smartlink. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Laser Sights Top -2 .25 3/36 hrs Ultrasound Sight 3,000� 1 4P-N"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/smart-goggles-level-i.134989762df06ef8.json",
+          "line": 21,
+          "snippet": "\"cost\": 3000,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/smart-goggles-level-i.134989762df06ef8.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"-\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/smart-goggles-level-i.134989762df06ef8.json",
+          "line": 20,
+          "snippet": "\"rating\": null,"
+        }
+      ],
+      "note": "Smart Goggles (level I) 3,000 agree (a second \"Smart Goggles I\" item costs 4,000). The -1 TN with a smartgun is in the GM window (smartGoggles). (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#229",
@@ -54296,7 +57258,22 @@
       ],
       "hash": "ab8cf33377",
       "text": "| Smartgun, internal | — | — | — | +100% | Built in; doubles the gun's cost if added later. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Ultrasound Goggles Top/under -1 .25 6/36 hrs +100% Weapon 4P-N"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "doubles? (the )?(weapon|gun)",
+          "path": "scripts"
+        }
+      ],
+      "note": "No Smartgun, internal item or cost doubling exists; firearms carry a built-in smartgun as a true/false flag (system.smartgun) with no pricing."
     },
     {
       "id": "rules/weapons.md#230",
@@ -54307,7 +57284,33 @@
       ],
       "hash": "76bbda8e07",
       "text": "| Smartgun, external | Top/under | −2 | — | 600¥ | Moves between guns with an hour's work. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 284,
+          "printedPage": 282,
+          "quote": "Ultrasound Goggles Top/under -1 .25 6/36 hrs +100% Weapon 4P-N 600� 4P-N"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/smartlink-level-i.976939c2631d86f8.json",
+          "line": 21,
+          "snippet": "\"cost\": 600,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/smartlink-level-i.976939c2631d86f8.json",
+          "line": 19,
+          "snippet": "\"concealability\": \"-2\","
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/smartlink-level-i.976939c2631d86f8.json",
+          "line": 20,
+          "snippet": "\"rating\": null,"
+        }
+      ],
+      "note": "Top/Under, Conceal -2, 600 agree - under the pack name \"Smartlink level I\" (there is no item called Smartgun, external). The hour of maintenance to move it is not modelled. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
       "id": "rules/weapons.md#231",
@@ -54318,7 +57321,33 @@
       ],
       "hash": "69855ccb8e",
       "text": "- **A smartgun** is −2 TN with a smartlink, −1 with smart goggles\n  *(SR3 p.112, p.281)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 114,
+          "printedPage": 112,
+          "quote": "receive a -1 modi- fier to the target number."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 283,
+          "printedPage": 281,
+          "quote": "vides a -2 target number modifier for firearms tests."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/SR3ECombatModifiers.js",
+          "line": 58,
+          "snippet": "key: 'smartlink'"
+        },
+        {
+          "file": "scripts/SR3ECombatModifiers.js",
+          "line": 59,
+          "snippet": "key: 'smartGoggles'"
+        }
+      ]
     },
     {
       "id": "rules/weapons.md#232",
@@ -54329,7 +57358,45 @@
       ],
       "hash": "28f6e13177",
       "text": "- **A gyro mount** is a harness: +1 Impact and Ballistic armor, not\n  concealable, **+4 TN in melee** and **only half the Combat Pool**. Five\n  minutes to get into, a Complex Action to quick-release *(SR3 p.280)*.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 282,
+          "printedPage": 280,
+          "quote": "tional point of impact and ballistic armor, and is not concealable."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 282,
+          "printedPage": 280,
+          "quote": "Gyro systems add +4 to the wearer's target numbers in melee"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 282,
+          "printedPage": 280,
+          "quote": "combat, and only allow him to use half his Combat Pool dice."
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7673,
+          "snippet": "const gyro = SR3EActor.gyroMount(actor) ? 1 : 0;"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7707,
+          "snippet": "static gyroMeleeTN(actor) { return SR3EActor.gyroMount(actor) ? 4 : 0; }"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 2589,
+          "snippet": "combatPoolBeforeGyro: gyroWorn ? combatPoolFull : null,"
+        }
+      ],
+      "note": "+1 Impact and Ballistic, +4 melee TN and half the Combat Pool are implemented. Not modelled: five minutes to get into the harness, a Complex Action to quick-release, two Complex Actions to attach or remove a weapon."
     },
     {
       "id": "rules/weapons.md#233",
@@ -54340,7 +57407,22 @@
       ],
       "hash": "7d6b54bf0e",
       "text": "- Imaging scopes can't be used with a smartlink *(SR3 p.280)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 282,
+          "printedPage": 280,
+          "quote": "only be top-mounted, may not be used with smartlink systems,"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "incompatible with (a )?smartlink|(scope|imaging).{0,40}(may not|cannot) (be )?used? with (a )?smartlink",
+          "path": "scripts"
+        }
+      ],
+      "note": "No code stops or warns about an imaging scope together with a smartlink."
     },
     {
       "id": "rules/weapons.md#234",
@@ -54351,7 +57433,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#235",
@@ -54362,7 +57445,8 @@
       ],
       "hash": "8e605c4c08",
       "text": "## Doing it in The 2nd Chumming (Foundry)\n{: #doing-it-in-the-2nd-chumming-foundry }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#236",
@@ -54373,7 +57457,8 @@
       ],
       "hash": "efc65edded",
       "text": "### Getting a weapon",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#237",
@@ -54384,7 +57469,8 @@
       ],
       "hash": "a9af5f8c77",
       "text": "Drag a weapon onto the character from the compendiums, or buy it with\n**🛒 Buy gear**. It appears on the **Weapons** tab. Its category picks the\nskill and the range bands; **Range override** on the weapon replaces the\nbands, as \"5/15/30/50\".",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/weapons.md#238",
@@ -54395,7 +57481,8 @@
       ],
       "hash": "c08773c24a",
       "text": "### Shooting",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#239",
@@ -54406,7 +57493,16 @@
       ],
       "hash": "dc8d483e0e",
       "text": "- **✋** marks a weapon **ready** in hand; drawing one is a Ready Weapon\n  action *(SR3 p.106)*.",
-      "verdict": null
+      "verdict": "guide-differs",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 109,
+          "printedPage": 107,
+          "quote": "A character may ready a weapon by spending a Simple Action."
+        }
+      ],
+      "note": "The rule is right - readying a weapon is a Simple Action - but the book describes Ready Weapon on printed p.107 (the Simple Actions list runs p.106-107: Fire Weapon and Insert Clip are on p.106, Ready Weapon and Remove Clip on p.107). The guide cites p.106."
     },
     {
       "id": "rules/weapons.md#240",
@@ -54417,7 +57513,8 @@
       ],
       "hash": "b48cb6231e",
       "text": "- The **🎲** on the row opens the attack. Choose the **fire mode** and, for\n  full-auto, the rounds. The dialog shows the **range band** measured on the\n  map, the **recoil** after compensation (the weapon's own and the\n  character's, both editable), the target count for this phase, and every\n  other modifier. The TN is yours to change before you roll.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/weapons.md#241",
@@ -54428,7 +57525,8 @@
       ],
       "hash": "9efae1a1fb",
       "text": "- **Smartgun**, **laser sight** and **recoil compensation** are fields on the\n  weapon. A smartgun saves the rounds walked fire would waste.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/weapons.md#242",
@@ -54439,7 +57537,8 @@
       ],
       "hash": "d7008ec0c2",
       "text": "- A shotgun loaded with **shot** asks for the **choke**, and the card shows\n  each spread's Power and TN.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/weapons.md#243",
@@ -54450,7 +57549,8 @@
       ],
       "hash": "2411793186",
       "text": "- **🎯** on the token's HUD fires a ready weapon from the map.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/weapons.md#244",
@@ -54461,7 +57561,8 @@
       ],
       "hash": "46aaa882c5",
       "text": "### Ammunition",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#245",
@@ -54472,7 +57573,8 @@
       ],
       "hash": "66cb50c590",
       "text": "- **↻ Reload** loads from ammunition on the character: loose rounds of the\n  gun's class, or a spare clip. The loaded type (regular, APDS, explosive,\n  gel, flechette, tracer, shot) changes the damage and the armor used on the\n  soak card by itself.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/weapons.md#246",
@@ -54483,7 +57585,8 @@
       ],
       "hash": "209e291d8e",
       "text": "- With the world setting **Track ammunition** on, firing counts rounds down,\n  and an empty gun won't fire until reloaded.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/weapons.md#247",
@@ -54494,7 +57597,8 @@
       ],
       "hash": "9b205ed167",
       "text": "- Thrown weapons count down their quantity; bows and crossbows nock an\n  arrow or bolt.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "rules/weapons.md#248",
@@ -54505,7 +57609,8 @@
       ],
       "hash": "65d7ed57f2",
       "text": "### Melee",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
       "id": "rules/weapons.md#249",
@@ -54516,7 +57621,8 @@
       ],
       "hash": "484ffb7027",
       "text": "**Equip** a melee weapon on the Weapons tab, then use its **🎲 Melee\nattack**. Reach is read from the weapon. **Unarmed** is always there, and\nuses the best of Unarmed Combat and any martial art. See\n[Actions & Combat](../combat/#melee-combat).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "describes the system's interface, not a book rule"
     },
     {
       "id": "sources.md#1",
