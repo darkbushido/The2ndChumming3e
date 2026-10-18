@@ -24,6 +24,7 @@
  * mutants will silently survive — which this harness will then report, correctly.
  */
 
+const PACKFIX = { module: '../scripts/data/pack-corrections-0-7-0.mjs', klass: 'PackFixes070' };
 const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' };
 const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  };
 const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  };
@@ -2761,5 +2762,52 @@ export const MUTANTS = [
     ...AREAEFFECT, method: 'flashMods',
     was:    'the card states only the +4 / +2 and drops the pak\'s own +2 for the strobing flashes (SR3 p.283)',
     impl:   (flare) => { const facing = flare ? 2 : 4; return { facing, strobe: 0, total: facing, flare: !!flare }; },
+  },
+  {
+    id:     'pack-fix-overwrites-a-gm-edit',
+    suite:  'pack-corrections-070',
+    ...PACKFIX, method: 'fixItem', needsOriginal: '_fixItemOriginal',
+    was:    'the 0.7.0 data migration set the Sap to (STR+2)M Stun whatever it held, overwriting a GM edit of the damage code '
+          + 'instead of correcting only the old shipped value (SR3 p.275)',
+    impl:   function (item) {
+      if (item?.type === 'melee' && item?.name === 'Sap') return { 'system.damage': '(STR+2)M Stun' };
+      return this._fixItemOriginal(item);
+    },
+  },
+  {
+    id:     'pack-fix-hits-every-4m-bow',
+    suite:  'pack-corrections-070',
+    ...PACKFIX, method: 'fixItem', needsOriginal: '_fixItemOriginal',
+    was:    'the bow migration matched on the shared name "Standard Bow" and damage 4M alone, so the Str Min 2 bow '
+          + '(4M by the formula) became 5M too (SR3 p.276: damage is (Str Min + 2)M)',
+    impl:   function (item) {
+      if (item?.name === 'Standard Bow' && item?.system?.damage === '4M') return { 'system.damage': '5M' };
+      return this._fixItemOriginal(item);
+    },
+  },
+  {
+    id:     'pack-fix-gives-every-core-medkit-rating-5',
+    suite:  'pack-corrections-070',
+    ...PACKFIX, method: 'fixItem', needsOriginal: '_fixItemOriginal',
+    was:    'the DocWagon medkit migration matched any Rating 3 core Medkit, upgrading every runner medkit '
+          + 'to Rating 5 (MJLBB p.65 gives the DocWagon Paramedic alone "medkit 5")',
+    impl:   function (item) {
+      if (item?.type === 'medical' && item?.name === 'Medkit' && String(item.system?.rating) === '3') {
+        return { name: 'Medkit [Rating 5]', 'system.rating': '5', 'system.weight': '5', 'system.cost': 280,
+          'system.availability': '4/24hrs', 'system.bookPage': 'mm.138' };
+      }
+      return this._fixItemOriginal(item);
+    },
+  },
+  {
+    id:     'pack-fix-leaves-the-dalmation-misspelt',
+    suite:  'pack-corrections-070',
+    ...PACKFIX, method: 'fixActor', needsOriginal: '_fixActorOriginal',
+    was:    'a world copy of the misspelt "Cyberspace Designs Dalmation" kept its name and its 15,800¥ / Speed 108 numbers '
+          + 'after the duplicate left the pack (SR3 p.312 prints one Dalmatian: 16,000¥, Speed 105)',
+    impl:   function (actor) {
+      if (actor?.name === 'Cyberspace Designs Dalmation') return null;
+      return this._fixActorOriginal(actor);
+    },
   },
 ];

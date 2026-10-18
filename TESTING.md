@@ -2884,3 +2884,23 @@ looker. Log in as the GM; F5 once (new follow-up kind and button class).
       the weapon". Otherwise **Roll** makes the roll and, after any 💥, a card gives the successes against the TN and the
       **Perception Success Table** line (1: "Something is there" … 4+: "knows what it is, but no specifics").
 - [ ] Nothing is written to any item in any of the above.
+
+## 53. Compendium data corrections and their migration (rules check 0.7.0 — melee, bows, spells, firing modes, vehicles, drones, DocWagon medkit)
+
+Needs a world stamped **before 0.7.0** holding: a Sap, a Monofilament Whip, a Shock Glove, a Combat Axe, a Standard Bow
+(Str Min 3), the Heavy Crossbow, a Taser, an Uzi III, a Hughes WK-2 and a Generic Surv. Drone VTOL (all from the OLD
+packs), a copy of the **DocWagon Paramedic** contact, a second character with an ordinary core Medkit, and a drone named
+"Cyberspace Designs Dalmation" on a scene. Log in as the GM and reload once (the migration runs on the active GM's load).
+
+- [ ] The console reports the 0.7.0 migration; the notification says it migrated documents.
+- [ ] Sap damage reads **(STR+2)M Stun**; the Monofilament Whip has **Reach 2**; the Shock Glove's damage is
+      **(STR-1)M Stun** and its notes carry the extra **+7S Stun** (the roller handles one code — the GM adds the 7S).
+- [ ] The Combat Axe is now **Pole Arms/Staff** (POL); its Thrusting Point is **Concealability 12, Reach 0, POL**.
+- [ ] The Str Min 3 bow is **5M**; a Str Min 2 bow is still **4M**. Heavy Crossbow **6S**.
+- [ ] The Taser fires **SS**, the Uzi III **SA/BF**.
+- [ ] Hughes WK-2 Cargo **72**; the Generic Surveillance Drone costs **8,125¥**; the old "Dalmation" is now
+      "Cyberspace Designs Dalmatian" (still on its scene, not deleted), 16,000¥, Speed 105.
+- [ ] The Paramedic's medkit is **Medkit [Rating 5]**; the other character's ordinary Medkit is **still Rating 3**.
+- [ ] A value the GM had typed beforehand (e.g. a Sap at (STR+3)M) is **not** changed. Reloading again changes nothing.
+- [ ] In the vehicle compendium there is a **Chrysler-Nissan G12A(passenger)** (57,000¥, Cargo 12, Load 250, 10 seats)
+      beside the cargo variant, and only one Dalmatian in the drones.

@@ -31,6 +31,7 @@ import { parseJohnsonNotes, isJohnsonNote } from './data/johnson-notes.mjs';
 import { knownRating } from './data/item-rating.mjs';
 import { AmmoStock } from './data/ammo-stock.mjs';
 import { restockImage, restockActorImage } from './data/item-icons.mjs';
+import { PackFixes070 } from './data/pack-corrections-0-7-0.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -458,6 +459,22 @@ const MIGRATIONS = [
       const img = restockActorImage(actor);
       return img ? { img } : null;
     },
+  },
+  {
+    version: '0.7.0',
+    label: 'Compendium data corrected against the books: melee, bows, spell targets, firing modes, vehicles, drones, the DocWagon medkit (rules check 0.7.0)',
+    /**
+     * The pack fixes of the 0.7.0 rules check, applied to copies already in a world. All of it lives in
+     * `data/pack-corrections-0-7-0.mjs` (pure, tested), one entry per fix with its book page.
+     *
+     * ⚠ **This OVERWRITES, and argues for it:** each field changes only while it still holds EXACTLY the
+     * value the old pack shipped — a value wrong against the book. Anything a GM has since edited no longer
+     * matches and is left alone; a name shared by several items (the twelve Standard Bows) is gated on a
+     * second field. Idempotent. The misspelt "Cyberspace Designs Dalmation" drone is renamed and corrected,
+     * never deleted — a world's drone keeps its place on its scene.
+     */
+    fixItem: PackFixes070.fixItem,
+    fixActor: PackFixes070.fixActor,
   },
 
 ];
