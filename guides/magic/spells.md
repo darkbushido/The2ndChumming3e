@@ -318,8 +318,9 @@ less the limit *(SR3 p.180–181)*, and records the new Force. The purchase
 goes into the 📒 Ledger, and the GM can undo it there.
 
 The Sorcery Test to learn, the days of study, and the teacher's or
-formula's price are the GM's to run. The system doesn't track a limit taken
-off **Drain** instead: the GM applies that.
+formula's price are the GM's to run. A limit taken off **Drain** instead
+is recorded on the spell, and the cast drains at the lowered Force
+*(SR3 p.180)*.
 
 ### Casting
 

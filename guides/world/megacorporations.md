@@ -52,7 +52,7 @@ does in Seattle, and what running against it is like.
 | **Ares Macrotechnology** | Damien Knight | Detroit, UCAS | Quiet, but everywhere: Knight Errant, freight, and arms sales. It sub-contracts to Federated-Boeing rather than fight it *(NS p.89–90)*. |
 | **Aztechnology** | Juan Atzcapotzalco | Tenochtitlán, Aztlan | The Pyramid. HQ of its Northwestern Division, and its beachhead in North America *(NS p.90)*. |
 | **Fuchi Industrial Electronics** | Three feuding factions, Richard Villiers's among them | — | The Fuchi compound downtown: seven towers around a central eighth *(SR3 p.35; NS p.94)*. |
-| **Mitsuhama Computer Technologies** | Toshiro Mitsuhama | Kyoto, Japan | Six towers on Lake Washington. It also runs the city's grid-guide traffic system *(NS p.92)*. |
+| **Mitsuhama Computer Technologies** | Toshiro Mitsuhama | Kyoto, Japan | Six towers on Lake Washington *(NS p.92)*. It also runs the city's grid-guide traffic system *(NS p.76)*. |
 | **Renraku Computer Systems** | Inazo Aneki | Chiba, Japan | The **Renraku Arcology**, a self-contained city for nearly 100,000 people *(NS p.30)*. |
 | **Saeder-Krupp** | Lofwyr | Rhine-Ruhr Megaplex, German Alliance | Officially absent. In practice it owns small subsidiaries and keeps watchers *(NS p.94–95)*. |
 | **Shiawase** | Tadashi Shiawase | Osaka, Japan | Twin towers in Tacoma, a fusion plant, and public-works contracts *(NS p.95)*. |
@@ -186,4 +186,4 @@ they have the home-field advantage *(NS p.83)*.
 | **Telestrian Industries** | Tir Tairngire's largest conglomerate | 5% owned by the Council of Princes, runners claim *(NS p.87–88)*. |
 | **Universal Omnitech** | Biotech | Owns Ingersoll & Berkley. Rival of Telestrian *(NS p.85, p.88)*. |
 | **United Oil** | Petrochemicals, Dallas (CAS) | Its security chief was once a dragon, Haesslich *(NS p.88)*. |
-| **Microdeck, Dassurn, Global Technologies, MegaMedia, VisionCrafters, VisionQuest** | Computers, finance, skillsofts, media, optics, simsense | All of them hire runners for paydata and against each other *(NS p.84–89)*. |
+| **Microdeck, Dassurn, Global Technologies, MegaMedia, VisionCrafters, VisionQuest** | Computers, finance, skillsofts, media, optics, simsense | Dassurn and Microdeck are known to hire runners *(NS p.84, p.86)*. |

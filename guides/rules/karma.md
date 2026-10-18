@@ -117,7 +117,7 @@ There are no refunds if a later Attribute increase would have made a purchase ch
 | :--- | :--- |
 | An adept's extra **Power Point**, during play *(SR3 p.168)* | **20** each |
 | **Learning a spell** *(SR3 p.180)* | the desired **Force** (a failed attempt costs no Karma) |
-| …with a **limit** (fetish, exclusive) taken on the cost *(SR3 p.181)* | the Force **minus** the limit's modifier |
+| …with a **limit** (fetish, exclusive) taken on the cost *(SR3 p.180)* | the Force **minus** the limit's modifier |
 | **Bonding a focus** *(SR3 p.190)* | from the table below |
 
 **Focus Bonding Table** *(SR3 p.190)*

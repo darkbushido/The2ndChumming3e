@@ -376,7 +376,7 @@ bands, as "5/15/30/50".
 ### Shooting
 
 - **✋** marks a weapon **ready** in hand; drawing one is a Ready Weapon
-  action *(SR3 p.106)*.
+  action *(SR3 p.107)*.
 - The **🎲** on the row opens the attack. Choose the **fire mode** and, for
   full-auto, the rounds. The dialog shows the **range band** measured on the
   map, the **recoil** after compensation (the weapon's own and the

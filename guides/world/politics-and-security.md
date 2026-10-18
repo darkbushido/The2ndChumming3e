@@ -63,7 +63,8 @@ a rumoured third kind, secretive circles of the wealthy *(NS p.79)*.
 | **Empowerment Coalition** | Libby Chalmers | Civil rights | Funded by Dunkelzahn's **Timmons Memorial Fund**. It is bringing ORC and other groups under its umbrella, and will pay runners *(NS p.80)*. |
 
 **How they interact:** Humanis has rich friends. **Kenneth Brackhaven**, an
-investor and Karl Brackhaven's nephew, sits on the UCC and has paid for the
+investor and Karl Brackhaven's nephew, heads Brackhaven Investments (whose
+seat on the UCC is held by Norman Jones) and has contributed to the
 campaigns of at least six district mayors *(NS p.83–84)*. The Coalition's
 Libby Chalmers reportedly faced him down when he told her the Coalition
 wasn't wanted in Seattle *(NS p.80)*. Each side's terrorists are its
