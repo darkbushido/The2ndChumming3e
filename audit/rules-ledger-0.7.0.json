@@ -56104,39 +56104,8 @@
       ],
       "hash": "37fd418b11",
       "text": "| **Rigger adaptation** (\"Vehicle Control Gear\") | 2,500¥ | The \"black box\" that lets a character with a VCR rig it. Includes a datajack port; needs Sensor 1 or more. Uses 1 Cargo Factor and 10 kg of Load. |",
-      "verdict": "diverges",
-      "pdf": [
-        {
-          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
-          "pdfPage": 308,
-          "printedPage": 306,
-          "quote": "Rigger adaptation costs 2,500¥, and consumes 1 CF and 10kg of Load"
-        },
-        {
-          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
-          "pdfPage": 308,
-          "printedPage": 306,
-          "quote": "must have Sensor Rating of 1 or higher"
-        }
-      ],
-      "code": [
-        {
-          "file": "packs-src/sr3e-sr3-vehicle-mods/rigger-adaptation.sr3e-vehiclemod-0039.json",
-          "line": 9,
-          "snippet": "\"cost\": 2800,"
-        },
-        {
-          "file": "packs-src/sr3e-sr3-vehicle-mods/rigger-adaptation.sr3e-vehiclemod-0039.json",
-          "line": 14,
-          "snippet": "\"cfCost\": \"1\","
-        },
-        {
-          "file": "packs-src/sr3e-sr3-vehicle-mods/rigger-adaptation.sr3e-vehiclemod-0039.json",
-          "line": 15,
-          "snippet": "\"load\": \"10kg\","
-        }
-      ],
-      "note": "Book (p.306): \"Rigger adaptation costs 2,500¥, and consumes 1 CF and 10kg of Load\". The pack prices it at 2,800¥ (CF 1 and 10kg match; the pack cites SR3 p.306 and R3 p.130, whose price was not checked, poor OCR). Nothing in scripts/ reads the item either, so \"the black box that lets a character with a VCR rig it\" is not enforced (a VCR rigger can rig any vehicle). 2026-10-18: Rigger 3 Revised printed p.130 (PDF 132, read from the page image) gives \"Parts Cost: 2,800¥\", which is the pack's figure; the core book p.306 says 2,500¥. Left unchanged pending the maintainer's choice of book."
+      "verdict": "unverifiable",
+      "reason": "Books differ; ruled. The maintainer, 2026-10-18: use Rigger 3 Revised's numbers, which the pack already carries. SR3 p.306 says rigger adaptation costs 2,500¥; Rigger 3 Revised printed p.130 (PDF 132, read from the page image — the OCR is too garbled to quote) gives \"Parts Cost: 2,800¥\", the pack's figure. Nothing in scripts/ reads the item (a VCR rigger can rig any vehicle; see TODO 231)."
     },
     {
       "id": "rules/vehicles.md#61",
@@ -56596,33 +56565,8 @@
       ],
       "hash": "0da1d035b9",
       "text": "| Small Turret | 7 | 100 kg | 7,500¥ | 3P-V | −1/2 |",
-      "verdict": "diverges",
-      "pdf": [
-        {
-          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
-          "pdfPage": 314,
-          "printedPage": 312,
-          "quote": "Small Turret 7 100kg 12/30 days 7,500¥ 3 3P-V -1/2"
-        }
-      ],
-      "code": [
-        {
-          "file": "packs-src/sr3e-sr3-vehicle-mods/small-turret.sr3e-vehiclemod-0107.json",
-          "line": 9,
-          "snippet": "\"cost\": 7500,"
-        },
-        {
-          "file": "packs-src/sr3e-sr3-vehicle-mods/small-turret.sr3e-vehiclemod-0107.json",
-          "line": 14,
-          "snippet": "\"cfCost\": \"8\","
-        },
-        {
-          "file": "packs-src/sr3e-sr3-vehicle-mods/small-turret.sr3e-vehiclemod-0107.json",
-          "line": 15,
-          "snippet": "\"load\": \"100kg\","
-        }
-      ],
-      "note": "Book (p.312, read from the page image): Small Turret CF Cost 7, load 100kg, 7,500¥. The pack item has cfCost \"8\" (cost 7,500 and load 100kg match; the pack cites SR3 p.312 and R3 p.139, whose value was not checked). The turret text on p.307 says a turret \"adds 2 CF\", which does not give 8 either. 2026-10-18: Rigger 3 Revised printed p.141 (PDF 143, page image) prints two CF blocks: Design Specifications 7 (= core p.312) and Customization Specifications 8 (the pack's figure). Left unchanged pending the maintainer's choice."
+      "verdict": "unverifiable",
+      "reason": "Books differ; ruled. The maintainer, 2026-10-18: use Rigger 3 Revised's numbers, which the pack already carries. SR3 p.312 prints Small Turret CF 7; Rigger 3 Revised printed p.141 (PDF 143, page image) prints Design Specifications CF 7 and Customization Specifications CF 8 — the pack's 8 is the customisation figure, for fitting a turret to an existing vehicle."
     },
     {
       "id": "rules/vehicles.md#75",
@@ -56633,33 +56577,8 @@
       ],
       "hash": "1c9e1344dd",
       "text": "| Mini-turret | 6 | 25 kg | 5,000¥ | 3P-V | −1/2 |",
-      "verdict": "diverges",
-      "pdf": [
-        {
-          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
-          "pdfPage": 314,
-          "printedPage": 312,
-          "quote": "Mini-turret 6 25kg 12/30 days 5,000¥ 2 3P-V -1/2"
-        }
-      ],
-      "code": [
-        {
-          "file": "packs-src/sr3e-sr3-vehicle-mods/mini-turret.sr3e-vehiclemod-0106.json",
-          "line": 9,
-          "snippet": "\"cost\": 5000,"
-        },
-        {
-          "file": "packs-src/sr3e-sr3-vehicle-mods/mini-turret.sr3e-vehiclemod-0106.json",
-          "line": 14,
-          "snippet": "\"cfCost\": \"7\","
-        },
-        {
-          "file": "packs-src/sr3e-sr3-vehicle-mods/mini-turret.sr3e-vehiclemod-0106.json",
-          "line": 15,
-          "snippet": "\"load\": \"25kg\","
-        }
-      ],
-      "note": "Book (p.312, read from the page image): Mini-turret CF Cost 6, load 25kg, 5,000¥. The pack item has cfCost \"7\" (cost 5,000 and load 25kg match; the pack cites SR3 p.312 and R3 p.139, whose value was not checked). 2026-10-18: Rigger 3 Revised printed p.141 (PDF 143, page image): Design Specifications 6 (= core p.312), Customization Specifications 7 (the pack's figure). Left unchanged pending the maintainer's choice."
+      "verdict": "unverifiable",
+      "reason": "Books differ; ruled. The maintainer, 2026-10-18: use Rigger 3 Revised's numbers, which the pack already carries. SR3 p.312 prints Mini-turret CF 6; Rigger 3 Revised printed p.141 (PDF 143, page image): Design Specifications CF 6, Customization Specifications CF 7 — the pack's 7."
     },
     {
       "id": "rules/vehicles.md#76",
