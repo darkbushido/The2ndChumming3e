@@ -2,6 +2,127 @@
 
 What changed, for the people running games with it. Newest first.
 
+## 0.7.0 — 2026-10-17
+
+The Karma Pool works at last, and Good Karma buys what the book says it can. Vehicles can hit people, cars and walls. Smoke, gas and flash grenades fill the room they land in. Spells cast on a willing friend no longer need to hit them. The sheet gets a Ledger tab, a ± Funds button and a Combat Pool breakdown. And the guides gain six new pages.
+
+This release also carries everything the 0.7.0 rules check found: every guide page was compared against the books and the code, and about seventy rules and item stats now follow the book — spell target numbers, shock weapons, bow ranges, firing modes, recoil compensation, aircraft speeds, the initiate's Astral Pool and more. They are listed below with their pages.
+
+### Before you upgrade
+
+- **Fully restart Foundry** after updating, not just refresh the browser. Spells have two new fields (their fetish and exclusive limits), characters have new Karma Pool, Power Point, Initiate Astral Pool and stun fields, weapons have new fields (shotgun rules, an extra damage code, a shock flag, the bracketed recoil compensation), vehicles have a Stall Speed, and there is a new compendium pack.
+- **A world migration corrects owned copies of the items fixed below** — weapon damage and reach, recoil compensation, firing modes, vehicle and drone stats, the DocWagon Paramedic's medkit. It changes a value only while it still holds the old shipped one, so anything a GM edited is left alone.
+- **An "Imaging Scope" already on a character stays as it is.** The pack now has a Low-Light and a Thermographic scope (SR3 p.282), and the system can't tell which one an old item meant: swap it by hand.
+- **Aircraft speeds changed.** An airplane's Speed is now its maximum safe speed, and its stall speed has its own field (SR3 p.132). Aircraft already in a world are updated if their Speed is still the old (stall) figure.
+- **Check each character's Karma Pool.** Before this release, spending a point of Karma Pool lowered the pool itself, so spent points never came back (SR3 p.246 says they return). The pool's size now stays put and a separate count tracks what is spent. No migration can tell a spent point from a burned one, so a character who spent Karma Pool in an older version may show a pool that is too small. Type the right size into the sheet as GM. As a guide, a character starts with 1 and gains 1 for every 10 Karma earned (human) or 20 (anyone else) (SR3 p.244).
+- **The gas grenade is now "Gas Grenade (Neuro-Stun VIII)"**, and its mini-grenade likewise. Grenades already on a character keep the old "VII" name; the gas card says which toxin it is either way.
+
+### Rules that now resolve differently
+
+**Karma**
+
+- **The Karma Pool can be spent on rolls** (SR3 p.246–248). Every roll dialog has a 🍀 row: buy extra dice, use the Hooper-Nelson rule (p.248), or **hold for Karma**, which stops the final wave on a 🍀 card so you can re-roll failures, avoid a disaster, or buy successes before anything resolves. Before, the "Use Karma Pool" box did nothing at all. Spent points come back when the GM refreshes the pool (a sheet button and a GM tool); burned points are gone for good.
+- **Good Karma buys what the core book says it can:** adept Power Points at 20 each (p.168), a new spell at the Force you choose (p.180–181), and bonding a focus (p.190). Going over the specialisation ceiling (p.84) warns.
+- **Karma Pool, Good Karma and Total Karma can be typed only by the GM.** Players still spend their Karma Pool on rolls and buy things with Good Karma.
+- **The GM can undo a Karma purchase** with ↺ on its 📒 Ledger line. The Karma comes back and the purchase is reverted.
+- **The Attribute Maximum rounds up**, as the Racial Attribute Limit Table prints it (SR3 p.244–245): a troll's Body maximum is 17, not 16. Spend Karma warned "past max" a point early.
+- **A specialisation keeps its own rating when the skill rises** (SR3 p.245: *"Specializations do not automatically increase when the base skill increases"*). Before, raising Pistols raised every Pistols specialisation with it. When the skill catches up to a specialisation, the specialisation's bonus is 0. Specialisations can now go past base + 2, up to twice the base skill (p.84).
+
+**Magic**
+
+- **A spell limit comes off Drain *or* the learning cost, and the player chooses** (SR3 p.180–181). When you learn a spell, choose for a fetish (−1) and for an exclusive limit (−2) whether it lowers the Karma cost or the Force for Drain. Taken off Drain, the lower Force also decides whether Drain is Stun or Physical. The spell still casts at its real Force. Before, a limit always came off Drain.
+- **A non-damaging spell cast on a willing subject needs no Spell Resistance Test** (SR3 p.183: *"unless the target of the spell is willing"*). After choosing targets, a dialog asks who is willing; the caster, party members and friendly tokens start ticked. A willing subject gets every Sorcery success. A **combat** spell may be cast on a willing target too, but nobody starts ticked; **elemental** spells are always resisted, because their resistance is a Damage Resistance Test (p.183). A vehicle or other non-living target gets no Resist button. **Ruled:** the Sorcery TN is still the subject's attribute.
+- **Spell target numbers follow each spell's entry** (SR3 pp.182–197). Before, about twenty spells read a flat 10 or the target's Willpower or Body.
+  - **Heal, Treat, Decrease Attribute:** 10 − the target's Essence (p.193–194).
+  - **Detection spells:** 4 in sight, 6 out of sight, 10 on another plane, + Force behind an astral barrier — chosen in the cast dialog (p.192).
+  - **Spells on objects and vehicles** (Analyze Device and others): the Object Resistance Table, 3 / 5 / 8 / 10 (p.182).
+  - **Antidote, Detox, Cure Disease:** the toxin's Strength or the disease's Power, asked in the dialog.
+  - **Increase Attribute, Increase Reaction, Increase Reflexes:** the target's rating in the Attribute or Reaction (p.193–194).
+  - **Stabilize:** 4 + the minutes since the Deadly wound, asked (p.194).
+  - A spell whose Target the system can't read falls back to Willpower or Body and the card says to check it. Every TN stays editable.
+- **Fling is a ranged attack** (SR3 p.197: *"Treat the Sorcery Test as a normal Ranged Combat Test"*). The target dodges, then resists the object's damage on **Impact** armour — no Spell Resistance Test. A thrown weapon uses its own damage and range at Strength = Force; any other object's damage is the GM's call.
+- **Initiates have an Initiate Astral Pool** of dice equal to their grade, and a projecting initiate adds the grade to astral Initiative (*Magic in the Shadows* p.58). The pool is offered in astral combat (Sorcery included), on Assensing, and on other rolls while astral, but not on Magical Skill Tests — Sorcery, Conjuring, Aura Reading, Centering. It refreshes with the other pools. The core **Astral Combat Pool** (SR3 p.174) is unchanged.
+- **Every adept power is checked against Magic** (SR3 p.168), fixed-level powers like Improved Reflexes 3 included. It warns, as before.
+- **On a Magic Loss check, a roll of 2 always loses a point** (SR3 p.160).
+
+**Combat**
+
+- **A second Initiative Pass is a new Combat Phase.** The action tracker now resets for it. Before, it still showed the first pass's actions.
+- **A grenade is thrown, never fired** (SR3 p.86). A grenade with a blank category, or "(AP)" in its name, asked for a firearm skill.
+- **Smoke, gas and flash grenades act on what is inside their cloud** (SR3 p.112, p.249–250, p.283).
+  - **The cloud stops at the scene's walls.** It used to be a circle through everything.
+  - **Smoke:** a shooter or target inside it gets the p.112 Visibility Table row offered in the GM's TN window: Heavy Smoke/Fog/Rain for ordinary smoke (**ruled** — the book doesn't name a row), Thermal Smoke for infra-red smoke.
+  - **Gas:** each token in the cloud gets a card to resist Neuro-Stun VIII, 6S Stun, with Body and no armour (p.250). The card states the +2 disorientation and the repeat test at +4 (p.249).
+  - **Flash-Pak:** the GM ticks who was facing it, and each gets +4 (+2 with flare compensation) and the strobe's +2 (p.283).
+  - The GM can shorten or lengthen a cloud a Combat Turn at a time for wind.
+- **Shock weapons stun** (SR3 p.124–125) — stun batons, tasers, the Shock Glove and the M&M Shock Hand. After the hit is soaked, the target is offered **Resist the stun**: Body or Willpower (the higher) against TN 4. The stun lasts the attack's Power, minus half the Impact armour (rounded down), minus those successes, in Combat Turns; **⚡ Mark stunned** applies it. While stunned the character takes **+2 on every test**, Damage Resistance included, and the count drops each Combat Turn. Impact armour counts at half against a shock weapon.
+- **The Shock Glove** does (STR − 1)M Stun **and** an extra 7S Stun, resisted separately and staged by the same net successes (SR3 p.276). Before, it was 7S Stun alone.
+
+**Weapons**
+
+- **Bows and crossbows take their range from the weapon's Strength Minimum** (SR3 p.110, p.118), not the archer's Strength.
+- **Assault cannons** have their range bands and double their uncompensated recoil, as Heavy Weapons (SR3 p.111). Before, they had no range bands.
+- **A grenade or missile launcher fired under its minimum range** (5 m / 20 m) warns (SR3 p.111).
+- **APDS is ordinary ammunition against vehicles and drones** (SR3 p.116). It halved a vehicle's armour.
+- **An explosive round misfires on a Rule of One** (SR3 p.116): the shot misses, and the shooter is offered a card to resist the weapon's normal damage, without Combat Pool.
+- **Firing modes follow the Firing Mode Table** (SR3 p.117) where it disagrees with the Firearms tables — **ruled**: the Defiance Super Shock SS, the Ares Viper Slivergun SA, the AK-97 SMG/Carbine, HK227, Ingram Smartgun and Uzi III SA/BF, the Ingram Valiant FA.
+- **Recoil compensation from the Firearms tables now counts** (SR3 pp.276–279). No shipped weapon carried any before: the HK227, Ingram Smartgun, Ranger Arms SM-3 and FN HAR have 2, the Ingram Valiant 3. A figure in parentheses — a folding stock, a tripod — counts when you tick **"integral accessories in use"** in the fire dialog, and replaces the plain figure.
+- **The Remington Roomsweeper follows the shotgun rules** (SR3 p.277): the Shotguns skill, heavy-pistol ranges, choke and spread with shot at 9S(f), or normal rounds for 9M.
+- **Melee weapons fixed to the book** (SR3 pp.275–276): the Sap is (STR + 2)M Stun, the Monofilament Whip has Reach 2, the Combat Axe and its Thrusting Point are Pole Arms/Staffs (**ruled**) and the point is Concealability 12, the Standard Bow at Strength Minimum 3 does 5M, and the Heavy Crossbow does 6S.
+
+**Rigging**
+
+- **Drones run from a rigger's deck (RCD) follow SR3 p.154.** The rigger keeps their VCR Initiative in the captain's chair, and a drone's gunnery and Driving tests roll its own Pilot Rating, with no pools. Before, the rigger rolled ordinary Initiative and the drones rolled the rigger's skills.
+- **💥 Collision: a vehicle can hit a person, another vehicle or a barrier** (SR3 p.142–148), on purpose (a Ramming Test) or by accident (a Braking Test first, then whatever speed is left). It opens from the vehicle sheet, the Vehicle Tools menu, the Chase Scene and the 💥 Crash tool.
+  - **A pedestrian** takes Power = speed ÷ 10 at one level higher than the Impact Damage Levels Table, and resists with Combat Pool and impact armour; the vehicle resists one level lower (p.148). They also make a Knockdown Test (p.124) — **ruled**, the book gives none for collisions; the TN is half the Power, as for a ranged attack.
+  - **Another vehicle** uses the ramming rule (p.143). For an accident, **ruled**: the same formula without the rammer's Body × successes.
+  - **A barrier** stops the vehicle at up to Barrier Rating × 20 m/turn; any faster and it breaks through (p.148).
+  - A vehicle damaged in a collision is offered a Crash Test (p.143, p.147).
+- **A jumped-in rigger can add Combat Pool to vehicle gunnery** (SR3 p.152, p.154, p.157). Only Control Pool was offered. A drone run from the deck still gets no pools.
+- **Vehicle armour is hardened against the attack's own Power** (SR3 p.132, p.149): the burst or full-auto bonus no longer counts when deciding whether the armour stops a hit completely.
+- **Aircraft have a stall speed** (SR3 p.132). Speed is the maximum safe speed; dropping below the stall speed in a chase or a braking test warns and offers a Crash Test (Rigger 3), never applied. 29 aircraft carry both numbers.
+
+### Item and vehicle data
+
+- **DocWagon Paramedic** (contact) carries a Rating 5 medkit (*Mr. Johnson's Little Black Book* p.65), not Rating 3.
+- **Generic Surveillance Drone** costs 8,125¥, Street Index 1 (SR3 p.312). A misspelt duplicate "Dalmation" drone is gone; owned copies are renamed to the Dalmatian and given its stats.
+- **Hughes WK-2 Stallion** Cargo 72 and **Northrup Wasp** Load 68 (SR3 p.310–311). The **Chrysler-Nissan G12A passenger** variant is added (57,000¥), and both G12As are Availability 3/72 hrs (p.311).
+- **Imaging scopes** are two items, Low-Light and Thermographic (SR3 p.282).
+- **Ruled — Rigger 3 Revised wins where it reprices vehicle gear:** the DocWagon Osprey II stays at 935,000¥ (the core book says 331,000¥), rigger adaptation at 2,800¥ (core 2,500¥), and the small turret and mini-turret at CF 8 and 7 (core 7 and 6).
+
+### Known differences from the book
+
+- **A pedestrian may dodge a vehicle** (house rule — the book gives no dodge). It is optional and labelled on the card; the dodge must beat the Ramming successes, or 1 in an accident. The GM can change the number or skip the dodge.
+- **Spare clips still fit any gun that takes them** (house rule; SR3 p.281 says they don't). TODO 203.
+- **Whether a stock or tripod is in use is the shooter's tick**, remembered per gun — the book gives no rule for it. Accessories as mounted items are TODO 235.
+- **Not modelled yet** (each has a TODO): shooting a barrier with APDS, explosive or flechette rounds (TODO 209); off-road Handling (227); Pain Resistance against torture (226); the Shock Glove's charges (239); Magic Loss from drugs or astral disruption (236).
+
+### New
+
+- **📒 Ledger tab.** Every Karma and nuyen entry is on its own tab, and Bio shows the latest 8. The GM can delete a line.
+- **± Funds** beside Nuyen: add or take away money, with an optional reason for the Ledger, or **give money to another player character**. A gift can't be more than you have, or zero or negative, and both Ledgers record it.
+- **Combat Pool breakdown.** Hover the Combat Pool to see where it comes from: base, Combat Sense, the manual modifier, armour (p.285), a gyro halving it (p.282, naming the item), and what is spent.
+- **👁 Concealment** (GM). Lists what a character carries that can be seen, least concealed first, and posts it to chat. A 🔍 Perception Test checks against an item's Concealability (p.45, p.231), or for a search against the Concealability plus the Physical Search Modifiers Table (p.236–237).
+- **🛒 Buy gear** can search the gear compendiums, or take an item dragged in from one. It respects the source-book filter; an item from a switched-off book is warned about but still filled in.
+- **The action tracker reads "Complex or two Simples, + Free"**, which is the rule (p.105, p.107). It was read as three actions.
+- **The healing patient list** puts player characters first and hostile NPCs last.
+- **A new GM-only compendium, *The Sixth World after October 2059*,** holds what the books place after the campaign's date. It is hidden from players, but anyone can read it from the console or on GitHub.
+
+### Fixes
+
+- **Full Defense** could post its auto-commit card and roll the dodge twice. It now happens once.
+- **Typing a Combat Pool total with a gyro worn** stored the wrong modifier: typing 4 on a pool of 5 showed 3.
+- **Chunky Salsa** showed Power 10 and S instead of the grenade's own.
+- **Healing** couldn't target a downed NPC token.
+- **🧹 Clear blast marker** was black on black.
+- **The character importer** took Good Karma before spending, re-granted Karma Pool on the next award, brought burned Karma Pool back, and dropped bought Power Points.
+
+### Guides
+
+- New pages: **Physical Adepts, Spells, How to Initiate, Weapons, Vehicles and Drones**, and **Karma**.
+- The **World** section — megacorporations, politics and security, the underworld — now describes October 2059, and there is a **combat medic** page.
+- Corrections from the rules check: a stabilization unit stabilizes automatically and gives −2 on healing tests (SR3 p.305, it was described as the antidote patch); Ready Weapon is SR3 p.107; only Dassurn and Microdeck are said to hire runners; Brackhaven Investments' seat on the UCC is Norman Jones's; the books run into 2060, not 2061; the initiate's Astral Pool and a limit taken off Drain are now tracked by the system.
+
 ## 0.6.3 — 2026-09-28
 
 A bug-fix release: dump shock for riggers and deckers, rigger damage from a wrecked vehicle, natural armour in astral combat, flechette against dermal armour, and the Matrix Defragged IC list.
