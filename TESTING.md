@@ -2942,7 +2942,8 @@ No restart (JS only). Every dialog has a **GM adjustment** field: type +2 once a
 - [ ] **Fling** (a ranged attack, SR3 p.197): the cast dialog offers the object flung (a thrown weapon from the caster's items, or "another
       object" with a Damage Code field, the GM's call) and the range band (4/5/6/9); with a thrown weapon chosen each band shows its
       metres at Strength = Force and the band pre-selects from the token distance. The GM's cover/visibility window opens. On a hit the
-      target gets the **dodge** declaration (not Resist Spell), then Resist Damage against the object's code (Impact armour NOT halved);
+      target gets the **dodge** declaration (not Resist Spell), then Resist Damage against the object's code on **Impact** armour
+      (not Ballistic, and not halved);
       no willing-subject prompt; Drain is still +1(M).
 - [ ] A spell whose Target the system cannot read (edit a spell's Target to "ZZ"): Willpower fallback and the card says the GM is
       to check the TN.

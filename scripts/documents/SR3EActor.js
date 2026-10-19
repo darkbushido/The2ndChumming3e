@@ -10944,6 +10944,8 @@ _prepareCharacter(sys, attr) {
         rawDamage:       `${sc.spellName ?? 'Spell'} ${sc.rawDamage}`,
         // Fling (p.197) is dodged and soaked like a gunshot, but it is not an elemental spell: no halving of Impact.
         elemental:       sc.isElemental ? true : undefined,
+        // A flung object is a blow, not a bullet: it is resisted on IMPACT armour (the maintainer, 2026-10-18).
+        useImpact:       sc.isFling ? true : undefined,
         // "treated like normal ranged attacks" (p.183) — the net comparison. TODO 165.
         net:             { attackHits: attackSuccesses, basePower: sc.damageBase.power, baseLevel: sc.damageBase.level },
       };
