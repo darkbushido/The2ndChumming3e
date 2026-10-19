@@ -127,7 +127,7 @@ export async function run(t) {
   t.ok('the cast asks for the table / toxin / minutes inputs before computing the TN',
     /_promptSpellTNInputs\(actor, targetActors, this, force\)[\s\S]{0,900}targetTNs = Object\.fromEntries/.test(item));
   t.ok('a cancelled TN dialog cancels the cast', /tnInputs === null\) return null/.test(item));
-  t.ok('the dialog is a DialogV2.wait', /_promptSpellTNInputs[\s\S]{0,6000}DialogV2\.wait/.test(item));
+  t.ok('the dialog is a DialogV2.wait', /static async _promptSpellTNInputs[\s\S]{0,9000}DialogV2\.wait/.test(item));
   t.ok('the card carries the non-simple TN source', /parsedPrimary\.source/.test(item));
   t.ok('Heal/Treat share the pure Essence rule', /healSpellTN\(essence\) \{ return SpellTarget\.essenceTN/.test(heal));
   t.ok('the Resist card passes the spell name (Decrease resists with the Attribute named)',

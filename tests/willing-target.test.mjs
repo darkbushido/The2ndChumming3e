@@ -87,5 +87,5 @@ export async function run(t) {
   t.ok('a non-living target skips the resist button', /isNonLiving\(tActor\.type\)[\s\S]{0,300}nonLiving: true/.test(actor));
   t.ok('the resist button yields to the willing line', /WillingTarget\.resolvesUnresisted\(sc, targetId\)/.test(actor));
   t.ok('the willing branch sits before the elemental dodge branch in _spellResistButton',
-    actor.indexOf('WillingTarget.resolvesUnresisted(sc, targetId)') < actor.indexOf('if (sc.isElemental) {\n      const staged'));
+    actor.indexOf('WillingTarget.resolvesUnresisted(sc, targetId)') < actor.indexOf('if (sc.isElemental || sc.isFling) {\n      const staged'));
 }
