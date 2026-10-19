@@ -13,6 +13,7 @@ import { SpellLimits } from '../data/spell-limits.mjs';
 import { WillingTarget } from '../data/willing-target.mjs';
 import { SpellTarget } from '../data/spell-target.mjs';
 import { RangeBands } from '../data/range-bands.mjs';
+import { Fling } from '../data/fling.mjs';
 
 export class SR3EItem extends Item {
 
@@ -4622,19 +4623,54 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const asks = Object.fromEntries(['row', 'barrier', 'strength', 'minutes', 'band']
       .map(f => [f, kindList.some(k => SpellTarget.asks(k)[f])]));
     const shared = `
+    /* Fling · SR3 p.197: a ranged attack. The object flung (a thrown weapon of the caster's, or another object
+     * whose damage is the GM's call) and the range band — a thrown weapon's bands are its normal ones at
+     * Strength = Force. The band is pre-selected from the measured distance when both tokens are on the canvas. */
+    const flingHtml = (() => {
+      if (!kindList.includes('fling')) return '';
+      const mults = i => (game.sr3e.SR3E?.weaponRangeMultipliers?.[i.system.category] ?? []).join(',');
+      const throwOpts = caster.items.filter(i => Fling.isThrowingWeapon(i)).map(i => {
+        const d = Fling.damage({ weaponCode: i.system.damage, force, parse: SR3EItem.parseDamageCode });
+        return `<option value="${i.id}" data-mults="${mults(i)}">${i.name} — ${d.raw}</option>`;
+      }).join('');
+      const bandOpts = SpellTarget.FLING_BANDS.map(b => `<option value="${b.key}" data-label="${b.label}" data-tn="${b.tn}">${b.label} — ${b.tn}</option>`).join('');
+      return `<div class="sr-fling">Object flung: <select name="flingItem"><option value="" data-mults="">Another object (damage is the GM's call)</option>${throwOpts}</select>
+        <div>Damage Code of another object: <input type="text" name="flingCode" value="" placeholder="e.g. ${force}L" style="width:80px"/>
+          <span style="font-size:11px;color:var(--sr-muted)">a thrown weapon does its own code at Strength ${force} (= Force); any other object's damage is not printed — the GM's call (blank = ${force}L)</span></div>
+        <div>Range to the target: <select name="band">${bandOpts}</select>
+          <div style="font-size:11px;color:var(--sr-muted)">"Treat the Sorcery Test as a normal Ranged Combat Test" (p.197): the base TN by range band (p.112); the target may dodge, then resists the damage (no Spell Resistance Test).
+          Throwing weapons use their normal range based on the spell's effective Strength (= Force); another object has no printed range — name the band.</div></div></div>`;
+    })();
+    const aTok = caster.getActiveTokens?.()[0], tTok = targets.length === 1 ? targets[0].getActiveTokens?.()[0] : null;
+    const flingMetres = aTok && tTok ? SR3EItem._measureDistance(aTok, tTok) : null;
+    const wireFling = (_app, html) => {
+      const sel = html.querySelector('[name="flingItem"]'), band = html.querySelector('[name="band"]'), code = html.querySelector('[name="flingCode"]');
+      if (!sel || !band) return;
+      let touched = false;
+      const refresh = () => {
+        const mults = (sel.selectedOptions[0]?.dataset.mults ?? '').split(',').filter(Boolean).map(Number);
+        const bands = Fling.bands(mults, force);
+        [...band.options].forEach((o, i) => { o.textContent = `${o.dataset.label} — ${o.dataset.tn}${bands ? ` (to ${bands[i]} m)` : ''}`; });
+        if (code) code.disabled = !!sel.value;
+        const auto = bands ? Fling.bandForDistance(bands, flingMetres) : null;
+        if (auto && !touched) band.value = auto;
+      };
+      band.addEventListener('change', () => { touched = true; });
+      sel.addEventListener('change', refresh);
+      refresh();
+    };
       ${kindList.includes('toxin') || kindList.includes('disease') ? `<div>${kindList.includes('toxin') ? "Toxin's Strength" : "Disease's Power"}:
         <input type="number" name="strength" min="1" value="" style="width:60px"/>
         <span style="font-size:11px;color:var(--sr-muted)">the target number is this (p.193) — the system cannot know it</span></div>` : ''}
       ${asks.minutes ? `<div>Minutes since the Deadly damage: <input type="number" name="minutes" min="0" value="0" style="width:60px"/>
         <span style="font-size:11px;color:var(--sr-muted)">TN = 4 + minutes (p.194)</span></div>` : ''}
-      ${asks.band ? `<div>Range to the target: <select name="band">${opt(SpellTarget.FLING_BANDS, 'short')}</select>
-        <div style="font-size:11px;color:var(--sr-muted)">"Treat the Sorcery Test as a normal Ranged Combat Test" (p.197): the base TN by range band (p.112).
-        Throwing weapons use their normal range based on the spell's effective Strength (= Force).</div></div>` : ''}
+      ${asks.band ? flingHtml : ''}
       <div style="margin-top:6px">GM adjustment to the TN: <input type="number" name="adjust" value="0" style="width:60px"/>
         <span style="font-size:11px;color:var(--sr-muted)">every figure above is a default — change it freely</span></div>`;
     let out = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${caster.name} — ${name}: target number` },
+      render: (_event, dialog) => wireFling(dialog, dialog.element),
       content: `<p style="font-size:12px;margin:0 0 6px">${name}'s Target is <strong>${String(token).trim() || '—'}</strong>.</p>${blocks}${shared}`,
       buttons: [
         {
@@ -4655,7 +4691,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
                 adjust,
               };
             }
-            out = { perTarget, shared: { adjust } };
+            const fling = asks.band ? { itemId: q('[name="flingItem"]')?.value || '', code: q('[name="flingCode"]')?.value ?? '' } : null;
+            out = { perTarget, shared: { adjust, fling } };
           },
         },
         { label: 'Cancel', action: 'cancel' },
@@ -4934,7 +4971,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
      * against spells, unless the target of the spell is willing."* A non-damaging spell offers the choice
      * per target — defaulted from self / an owned or friendly actor, always the caster's to change. */
     let willingTargetIds = [];
-    if (WillingTarget.canBeWilling(this.system.category) && targetActors.length) {
+    const isFling = SpellTarget.kind(this.system.target, this.name) === 'fling';   // a ranged attack (p.197)
+    if (WillingTarget.canBeWilling(this.system.category) && !isFling && targetActors.length) {
       const picked = await SR3EItem._promptWillingTargets(actor, targetActors, this.name, this.system.category);
       if (picked === null) return null;   // cancelled
       willingTargetIds = WillingTarget.carriedIds(this.system.category, targetActors.map(t => t.id), picked);
@@ -4984,7 +5022,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
      * asks before the attacker's screen — nobody spends dice against a number they cannot see. Range
      * stays out; touch and personal spells never ask (p.182). One window per cast: its difference moves
      * every target's TN and the roll's alike. */
-    if (SR3EItem.spellTakesGMWindow(this.system.range)) {
+    if (SR3EItem.spellTakesGMWindow(this.system.range) || isFling) {   // Fling: a ranged attack, cover and visibility count
       const negotiation = await game.sr3e.SR3EQuery.asGM('sr3e.spell.negotiate', {
         attackerUuid: actor.uuid,
         targetUuids:  targetActors.map(t => t.uuid),
@@ -5053,8 +5091,13 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     // Damage track: SR3EItem.spellDealsStun — Physical unless it is a stun spell (SR3 p.191).
     const level      = damageLevel;
     const isStun     = SR3EItem.spellDealsStun(this);
-    const damageBase = { power: force, level, isStun };
-    const rawDamage  = `${force}${level}`;
+    /* Fling (p.197): the object's damage, not Force + a chosen level. A thrown weapon's own code at Strength = Force. */
+    const flingPick   = tnInputs.shared?.fling;
+    const flingDamage = isFling ? Fling.damage({
+      weaponCode: flingPick?.itemId ? actor.items.get(flingPick.itemId)?.system?.damage : null,
+      typedCode:  flingPick?.code, force, parse: SR3EItem.parseDamageCode }) : null;
+    const damageBase = flingDamage ? flingDamage.base : { power: force, level, isStun };
+    const rawDamage  = flingDamage ? flingDamage.raw : `${force}${level}`;
     const drainStr   = this.system.drain ?? '';
 
     const targetNames  = targetActors.length ? targetActors.map(t => t.name).join(', ')
@@ -5078,6 +5121,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       // Elemental Manipulation (p.183): each target dodges and soaks instead of resisting.
       isElemental,
       isAoE,
+      // Fling (p.197): a ranged attack — dodge, then Damage Resistance against the object; no Spell Resistance.
+      isFling,
+      flingNote:         flingDamage ? `Object damage: ${flingDamage.source}${flingDamage.gmCall ? ' ⚠' : ''}` : '',
       aoeRegionId,
       aoeMarkerId,
       tnSource,

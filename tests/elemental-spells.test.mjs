@@ -114,7 +114,7 @@ export async function run(t) {
   const btn = actor.slice(actor.indexOf('static _spellResistButton('),
     actor.indexOf('static _spellResistButton(') + 6000);
   t.ok('an elemental hit posts the DODGE declaration, not a spell resist (p.183)',
-    /if \(sc\.isElemental\)[\s\S]*class="sr-dodge-declare-btn"/.test(btn));
+    /if \(sc\.isElemental( \|\| sc\.isFling)?\)[\s\S]*class="sr-dodge-declare-btn"/.test(btn));
   t.ok('…staged by the caster\'s successes on the ranged rule',
     /SR3EItem\.stageDamage\(sc\.damageBase, attackSuccesses\)/.test(btn));
   t.ok('…carrying the elemental flag to the soak card', /elemental:\s+true/.test(btn));
@@ -167,7 +167,7 @@ export async function run(t) {
 
   const cast = item.slice(item.indexOf('async rollSpell('), item.indexOf('static spellAreaRadius('));
   t.ok('the cast asks the GM through sr3e.spell.negotiate when the spell takes the window',
-    /if \(SR3EItem\.spellTakesGMWindow\(this\.system\.range\)\)[\s\S]{0,120}asGM\('sr3e\.spell\.negotiate'/.test(cast));
+    /if \(SR3EItem\.spellTakesGMWindow\(this\.system\.range\)( \|\| isFling)?\)[\s\S]{0,200}asGM\('sr3e\.spell\.negotiate'/.test(cast));
   t.ok('only an ELEMENTAL area drops the Target rows — cover still counts for a Manaball (p.182)',
     /area:\s+isAoE && isElemental,/.test(cast));
   t.ok('…BEFORE the Spell Pool is committed', cast.indexOf("'sr3e.spell.negotiate'") < cast.indexOf('_promptMagicPool('));

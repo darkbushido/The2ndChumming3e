@@ -3894,6 +3894,17 @@ _prepareCharacter(sys, attr) {
       } else if (state.isAttributeBoostRoll && state.attributeBoostContext) {
         /* Attribute Boost · SR3 p.168-169 (TODO 63)
          *
+          /* Fling (p.197): "Treat the Sorcery Test as a normal Ranged Combat Test" — an attack, dodged, then a
+           * Damage Resistance Test against the object. The object's damage is a thrown weapon's own code at
+           * Strength = Force, otherwise the GM's call. */
+          if (sc.isFling) {
+            stagingHtml += `
+              <div class="sr-roll-meta" style="font-size:11px">
+                🪨 Fling is a ranged attack (p.197): each target may <strong>dodge</strong> (p.113), then resists the
+                object's damage with <strong>Body + Combat Pool</strong> — no Spell Resistance Test.
+                ${sc.flingNote ?? ''}
+              </div>`;
+          }
          * > "If there are no successes, the Attribute is not boosted. Otherwise, the
          * > Attribute is boosted by the level of the power. The boost lasts for a number of
          * > Combat Turns equal to the number of successes."
@@ -10615,8 +10626,8 @@ _prepareCharacter(sys, attr) {
     if (currentSuccesses > 0) {
       html += `<div class="sr-roll-meta">
         🔮 ${sc.spellName} — <strong>${currentSuccesses} casting hit${currentSuccesses !== 1 ? 's' : ''}</strong> after defense;
-        base <strong>${sc.rawDamage}</strong>. ${sc.isElemental
-          ? 'Each target may dodge, then resists the damage (p.183).'
+        base <strong>${sc.rawDamage}</strong>. ${(sc.isElemental || sc.isFling)
+          ? 'Each target may dodge, then resists the damage (p.183, p.197).'
           : `Each target resists vs Force ${force}.`}
       </div>`;
       // Spell Defense took (cast − current) off the cast; each target loses the same from its own
@@ -10759,7 +10770,7 @@ _prepareCharacter(sys, attr) {
      * > according to the spell's description, to determine the spell's effect."
      * No Resist button: a line states the effect. Both sites that hand out spell buttons come through
      * here, so counterspelling (which lowers `attackSuccesses` first) still applies. */
-    if (!sc.isElemental && WillingTarget.isNonLiving(tActor.type)) {
+    if (!sc.isElemental && !sc.isFling && WillingTarget.isNonLiving(tActor.type)) {
       return `<div class="sr-roll-meta" style="font-size:11px">🧱 ${WillingTarget.effectLine({
         targetName: tActor.name, spellName: sc.spellName ?? 'The spell', successes: attackSuccesses, nonLiving: true })}</div>`;
     }
@@ -10785,7 +10796,7 @@ _prepareCharacter(sys, attr) {
      * ⚠ `elemental: true` rides to the soak card, which halves Impact (p.196). `handleDodgeDeclare`
      *   and `_rollDodge` pass the context whole; `_soakButtonHtml` lists its fields, and carries it.
      */
-    if (sc.isElemental) {
+    if (sc.isElemental || sc.isFling) {
       const staged       = SR3EItem.stageDamage(sc.damageBase, attackSuccesses);
       const attackerName = game.actors.get(sc.attackerActorId)?.name ?? 'The caster';
       const ctx = {
@@ -10798,7 +10809,8 @@ _prepareCharacter(sys, attr) {
         stagedLevel:     staged.level,
         isStun:          staged.isStun,
         rawDamage:       `${sc.spellName ?? 'Spell'} ${sc.rawDamage}`,
-        elemental:       true,
+        // Fling (p.197) is dodged and soaked like a gunshot, but it is not an elemental spell: no halving of Impact.
+        elemental:       sc.isElemental ? true : undefined,
         // "treated like normal ranged attacks" (p.183) — the net comparison. TODO 165.
         net:             { attackHits: attackSuccesses, basePower: sc.damageBase.power, baseLevel: sc.damageBase.level },
       };

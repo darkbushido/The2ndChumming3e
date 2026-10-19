@@ -55,6 +55,7 @@ const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellL
 const AREAEFFECT = { module: '../scripts/data/area-effect.mjs', klass: 'AreaEffect' };
 const AREASHAPE = { module: '../scripts/data/area-shape.mjs', klass: 'AreaShape' };
 const SPELLTN = { module: '../scripts/data/spell-target.mjs', klass: 'SpellTarget' };
+const FLING = { module: '../scripts/data/fling.mjs', klass: 'Fling' };
 const WILLING = { module: '../scripts/data/willing-target.mjs', klass: 'WillingTarget' };
 
 const RANGEB = { module: '../scripts/data/range-bands.mjs', klass: 'RangeBands' };
@@ -2954,6 +2955,20 @@ export const MUTANTS = [
     ...SPELLTN, method: 'flingTN',
     was:    'Fling ignored the range band: "Treat the Sorcery Test as a normal Ranged Combat Test" (SR3 p.197) is 4/5/6/9 by range',
     impl:   () => 4,
+  },
+  {
+    id:     'fling-damage-ignores-the-thrown-weapon',
+    suite:  'fling',
+    ...FLING, method: 'damage',
+    was:    'a flung throwing weapon did Force + a level instead of its own Damage Code at Strength = Force (SR3 p.117, p.197)',
+    impl:   ({ force = 1 } = {}) => ({ base: { power: force, level: 'M', isStun: false }, raw: force + 'M', source: '', gmCall: false }),
+  },
+  {
+    id:     'fling-range-ignores-force',
+    suite:  'fling',
+    ...FLING, method: 'bands',
+    was:    'a flung throwing weapon used its range at Strength 1, not the spell effective Strength = Force (SR3 p.197)',
+    impl:   (mults) => (Array.isArray(mults) && mults.length >= 4 ? mults.slice(0, 4) : null),
   },
   {
     id:     'spell-increase-attribute-reads-willpower',
