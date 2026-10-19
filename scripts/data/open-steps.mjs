@@ -34,6 +34,9 @@ export const STEP_BUTTONS = {
   'sr-astral-soak-roll-btn':        { icon: '✨', label: 'Roll astral Damage Resistance' },
   'sr-drain-btn':                   { icon: '⚡', label: 'Resist Drain' },
   'sr-drain-roll-btn':              { icon: '⚡', label: 'Roll the Drain Resistance Test' },
+  // A shock weapon's hit stuns the target unless the Body/Willpower Test shortens it (SR3 p.124-125). The Mark button
+  // after it is optional, so it is not a step.
+  'sr-shock-stun-btn':              { icon: '⚡', label: 'Resist the shock stun' },
   'sr-knockdown-btn':               { icon: '💥', label: 'Knockdown test' },
   // Records ITSELF, on the GM, in the same queued write as the damage (TODO 137) — see `runOnce`.
   'sr-assign-damage-btn':           { icon: '🩸', label: 'Assign the wound', recordsItself: true },

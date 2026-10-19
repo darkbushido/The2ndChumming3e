@@ -24,6 +24,7 @@
  * mutants will silently survive — which this harness will then report, correctly.
  */
 
+const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
 const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
@@ -3067,6 +3068,106 @@ export const MUTANTS = [
     ...INITASTRAL, method: 'pool',
     was:    'giving every Awakened character an Initiate Astral Pool (0 dice) instead of none; only initiates have one (MitS p.58)',
     impl:   (grade, mod = 0) => Math.max(0, (Number(grade) || 0) + (Number(mod) || 0)),
+  },
+  {
+    id:     'shock-stun-rounds-half-impact-up',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'halfImpact',
+    was:    'Impact armour against a shock weapon was halved and rounded UP; SR3 p.124-125: "minus one-half (round down) any impact armor worn"',
+    impl:   impact => Math.ceil(Math.max(0, Number(impact) || 0) / 2),
+  },
+  {
+    id:     'shock-stun-ignores-the-resist-successes',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'duration',
+    was:    'the stun lasted Power minus half Impact whatever the Body/Willpower Test rolled; SR3 p.124-125: "and also minus the successes generated"',
+    impl:   ({ power, impact = 0 } = {}) => Math.max(0, Math.trunc(Number(power) || 0) - Math.floor((Number(impact) || 0) / 2)),
+  },
+  {
+    id:     'shock-stun-full-impact',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'duration',
+    was:    'the stun took the full Impact rating off, not half; SR3 p.124-125: "minus one-half (round down) any impact armor worn"',
+    impl:   ({ power, impact = 0, successes = 0 } = {}) => Math.max(0, Math.trunc(Number(power) || 0) - (Number(impact) || 0) - Math.trunc(Number(successes) || 0)),
+  },
+  {
+    id:     'shock-stun-can-go-negative',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'duration',
+    was:    'enough successes made the stun a negative number of Combat Turns instead of none',
+    impl:   ({ power, impact = 0, successes = 0 } = {}) => Math.trunc(Number(power) || 0) - Math.floor((Number(impact) || 0) / 2) - Math.trunc(Number(successes) || 0),
+  },
+  {
+    id:     'shock-stun-resists-with-the-lower-of-body-willpower',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'resistDice',
+    was:    'the stun Test used the lesser of Body and Willpower; SR3 p.124-125: "a Body or Willpower Test (whichever is greater)"',
+    impl:   (body, willpower) => {
+      const b = Math.max(0, Math.trunc(Number(body) || 0)), w = Math.max(0, Math.trunc(Number(willpower) || 0));
+      return w < b ? { dice: w, attr: 'willpower' } : { dice: b, attr: 'body' };
+    },
+  },
+  {
+    id:     'shock-stun-body-only',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'resistDice',
+    was:    'the stun Test was always Body, ignoring a higher Willpower',
+    impl:   (body) => ({ dice: Math.max(0, Math.trunc(Number(body) || 0)), attr: 'body' }),
+  },
+  {
+    id:     'shock-stun-plus-one-not-two',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'tnMod',
+    was:    'the stunned target\x27s modifier was +1 to all tests; SR3 p.125: "an additional +2 target modifier to all tests"',
+    impl:   stunned => (stunned ? 1 : 0),
+  },
+  {
+    id:     'shock-stun-counts-down-by-two',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'countDown',
+    was:    'the stun lost two Combat Turns per Combat Turn',
+    impl:   turns => Math.max(0, Math.trunc(Number(turns) || 0) - 2),
+  },
+  {
+    id:     'shock-stun-the-glove-fist-stuns',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'mainCode',
+    was:    'the Shock Glove\x27s fist code was read as the shock (Power (STR-1)); its shock is the extra 7S Stun (SR3 p.275-276, p.124)',
+    impl:   (weaponOrSystem, rawDamage) => {
+      const s = weaponOrSystem?.system ?? weaponOrSystem;
+      return (s?.shock === true || s?.category === 'Tasr') ? String(rawDamage || s?.damage || '').trim() : '';
+    },
+  },
+  {
+    id:     'shock-stun-taser-needs-the-tick',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'isShock',
+    was:    'a taser (category Tasr) was a shock weapon only with the tick, so a cyber taser or a hand-made taser never stunned (SR3 p.124-125)',
+    impl:   w => (w?.system ?? w)?.shock === true,
+  },
+  {
+    id:     'shock-stun-printed-power-not-read',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'printedPower',
+    was:    'the Power of a "+7S Stun" code was not read through the table\x27s plus sign',
+    impl:   code => { const m = String(code ?? '').match(/^\s*(\d+)/); return m ? parseInt(m[1], 10) : null; },
+  },
+  {
+    id:     'shock-stun-not-in-standing-tn',
+    suite:  'shock-stun',
+    ...ACTOR, method: 'standingTN',
+    was:    'the shock-weapon stun was left out of the standing TN, so a stunned target\x27s tests kept their ordinary Target Numbers; SR3 p.125: "+2 target modifier to all tests"',
+    impl:   function (actor) { return this.sustainingTN(actor) + this.drugTN(actor); },
+  },
+  {
+    id:     'shock-stun-not-in-the-dodge-tn',
+    suite:  'shock-stun',
+    ...ACTOR, method: 'dodgeTN',
+    was:    'the Dodge Test took drugs and spells but not the stun as its own term, so a stunned target dodged at the plain TN (SR3 p.125, "all tests")',
+    impl:   ({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0, drugs = 0 } = {}) => {
+      const n = v => Math.max(0, Math.trunc(Number(v) || 0));
+      return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) - Math.min(0, Math.trunc(Number(woundMod) || 0)) + n(sustain) + n(drugs);
+    },
   },
   {
     id:     'roomsweeper-ignores-shotgun-rules-flag',

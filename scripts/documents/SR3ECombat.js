@@ -1,4 +1,5 @@
 import { QuickStrike } from '../data/quick-strike.mjs';
+import { ShockStun } from '../data/shock-stun.mjs';
 
 /**
  * SR3ECombat - Custom Combat with SR2/SR3 initiative modes
@@ -500,9 +501,35 @@ export class SR3ECombat extends Combat {
     }
   }
 
+  /**
+   * A Combat Turn has passed: every shock-weapon stun counts down by one (SR3 p.124-125: stunned "for a number of
+   * Combat Turns"). Called from `_newRound` only — NOT from `_endOfTurnReset`, which also runs at the start and end
+   * of the fight and would count twice. Marked mid-turn, a stun of N lasts the rest of that turn and N-1 more.
+   * At 0 the count and the Stunned status go. This runs on the GM's client (only a GM advances the round).
+   */
+  async _countDownStun() {
+    const SR3EActor = game.sr3e.SR3EActor;
+    for (const c of this.combatants.contents) {
+      const actor = c.actor;
+      if (!actor) continue;
+      const turns = SR3EActor.stunTurns(actor);
+      if (!turns) continue;
+      const next = ShockStun.countDown(turns);
+      if (next > 0) { await actor.setFlag('The2ndChumming3e', 'stunTurns', next); continue; }
+      await actor.clearStunned();
+      await ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor }),
+        content: `<div class="sr-roll-card"><div class="sr-roll-header">⚡ ${actor.name} is no longer stunned</div>
+          <div class="sr-roll-meta">The shock stun has run its Combat Turns — the +2 to all tests is gone (SR3 p.124-125).</div></div>`,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      });
+    }
+  }
+
   async _newRound() {
     await this.nextRound();                       // increments round, resets turn
     await this._endOfTurnReset();
+    await this._countDownStun();
     await this.rollInitiative();                  // RAW: re-roll every round
     const queue = await this.rebuildQueue({ resetIndex: true });
     if (!queue.length) {
@@ -537,6 +564,8 @@ export class SR3ECombat extends Combat {
       if (!actor) continue;
       await actor.clearSpellDefense?.();
       await actor.unsetFlag('The2ndChumming3e', 'tempMagicLoss').catch(() => {});
+      // A shock stun is counted in Combat Turns, which stop when the fight does (SR3 p.124-125).
+      await actor.clearStunned?.();
     }
 
     ui.notifications.info('Combat ended — pools refreshed.');

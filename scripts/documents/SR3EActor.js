@@ -22,6 +22,7 @@ import { Misfire } from '../data/misfire.mjs';
 import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { AdeptLevels } from '../data/adept-levels.mjs';
 import { ExtraDamage } from '../data/extra-damage.mjs';
+import { ShockStun, STUN_TN, STUN_STATUS, STUN_PAGE } from '../data/shock-stun.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -1426,6 +1427,79 @@ export class SR3EActor extends Actor {
       </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  Shock weapons — the stun · SR3 p.124-125                            */
+  /* ------------------------------------------------------------------ */
+
+  /**
+   * The target's Body or Willpower Test (whichever is greater) against TN 4 — the click on a soak card's ⚡ button.
+   * Goes through `rollPool`, so the wound modifier and any standing penalty (an already-stunned target) apply like
+   * any other test, and 💥 explosions finish before the follow-up (`shockStun`) states the duration.
+   */
+  static async handleShockStunClick(btn) {
+    const p     = JSON.parse(btn.dataset.payload ?? '{}');
+    const actor = game.actors.get(p.actorId);
+    if (!actor) return;
+    actor.prepareDerivedData();
+    const val = k => Math.max(actor.system.attributes?.[k]?.value ?? 0, actor.system.attributes?.[k]?.base ?? 0);
+    const { dice, attr } = ShockStun.resistDice(val('body'), val('willpower'));
+    await actor.rollPool(Math.max(1, dice), STUN_TN, `${actor.name}: ${attr === 'body' ? 'Body' : 'Willpower'} — resist the stun`, {
+      followUp: { kind: 'shockStun', ctx: { actorId: actor.id, power: p.power, impact: p.impact, code: p.code } },
+    });
+  }
+
+  /**
+   * `rollThen`/`rollPool` follow-up: state how long the stun lasts and offer to mark it. Nothing is applied here —
+   * the click on ⚡ Mark stunned does that. 0 Combat Turns = not stunned.
+   */
+  static async _shockStunOutcome(ctx, res) {
+    const actor = game.actors.get(ctx.actorId);
+    const turns = ShockStun.duration({ power: ctx.power, impact: ctx.impact, successes: res.successes });
+    const half  = ShockStun.halfImpact(ctx.impact);
+    const sum   = `Power ${ctx.power} − ½ Impact ${half} − ${res.successes} success${res.successes === 1 ? '' : 'es'}`;
+    const markPayload = JSON.stringify({ actorId: ctx.actorId, targetActorId: ctx.actorId, turns }).replace(/'/g, '&#39;');
+    await ChatMessage.create({
+      speaker: actor ? ChatMessage.getSpeaker({ actor }) : undefined,
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">⚡ ${actor?.name ?? 'Target'} — Shock stun</div>
+        <div class="sr-staging-result">${turns > 0
+          ? `Stunned for <strong>${turns} Combat Turn${turns === 1 ? '' : 's'}</strong>: ${sum}. <strong>+2</strong> to all tests while it lasts (${STUN_PAGE}).`
+          : `<strong>Not stunned</strong>: ${sum} = 0 Combat Turns.`}</div>
+        ${turns > 0 ? `<div class="sr-soak-action">
+          <button class="sr-shock-stun-mark-btn" data-payload='${markPayload}'>⚡ Mark stunned (${turns} Combat Turn${turns === 1 ? '' : 's'})</button>
+        </div>` : ''}
+        <div class="sr-roll-meta" style="font-size:11px">The stun itself deals no damage. It counts down each Combat Turn in combat; outside combat the GM tracks it, and may remove the Stunned status by hand.</div>
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
+  }
+
+  /** ⚡ Mark stunned (clicked by the target's owner or the GM). */
+  static async handleShockStunMarkClick(btn) {
+    const p     = JSON.parse(btn.dataset.payload ?? '{}');
+    const actor = game.actors.get(p.actorId);
+    if (!actor) return;
+    await actor.markStunned(p.turns);
+    ui.notifications.info(`${actor.name} is stunned for ${p.turns} Combat Turn${p.turns === 1 ? '' : 's'} (+2 to all tests).`);
+  }
+
+  /**
+   * Stun this actor for `turns` Combat Turns (SR3 p.124-125): the count in a flag, the `sr3e-stunned` status on
+   * the token. A second stun does not stack — the longer of the two stands.
+   */
+  async markStunned(turns) {
+    const n = Math.max(0, Math.trunc(Number(turns) || 0));
+    if (!n) return;
+    await this.setFlag('The2ndChumming3e', 'stunTurns', Math.max(n, SR3EActor.stunTurns(this)));
+    if (!this.statuses?.has(STUN_STATUS)) await this.toggleStatusEffect(STUN_STATUS, { active: true });
+  }
+
+  /** End the stun: the count and the status. Safe when not stunned. */
+  async clearStunned() {
+    if (SR3EActor.stunTurns(this) > 0) await this.unsetFlag('The2ndChumming3e', 'stunTurns');
+    if (this.statuses?.has(STUN_STATUS)) await this.toggleStatusEffect(STUN_STATUS, { active: false });
   }
 
   /* ------------------------------------------------------------------ */
@@ -3045,12 +3119,37 @@ _prepareCharacter(sys, attr) {
    * `sustainingTN` stays the sustain rule alone, for the Drain Power it also sets (p.180).
    */
   static standingTN(actor) {
-    return SR3EActor.sustainingTN(actor) + SR3EActor.drugTN(actor);
+    return SR3EActor.sustainingTN(actor) + SR3EActor.drugTN(actor) + SR3EActor.stunnedTN(actor);
   }
 
   /** Both notes, joined — the breakdown line for `standingTN`. */
   static standingNote(actor) {
-    return [SR3EActor.sustainingNote(actor), SR3EActor.drugNote(actor)].filter(Boolean).join(' · ');
+    return [SR3EActor.sustainingNote(actor), SR3EActor.drugNote(actor), SR3EActor.stunnedNote(actor)].filter(Boolean).join(' · ');
+  }
+
+  /**
+   * Combat Turns of shock-weapon stun left · SR3 p.124-125. Stored as a flag (0 = none counted); the
+   * `sr3e-stunned` status effect is the condition itself, so a GM who ticks it on a token by hand stuns that
+   * actor with no count (the GM tracks the duration) and one who removes it ends the stun (sr3e.js clears the count).
+   */
+  static stunTurns(actor) {
+    const f = typeof actor?.getFlag === 'function' ? actor.getFlag('The2ndChumming3e', 'stunTurns') : actor?.flags?.The2ndChumming3e?.stunTurns;
+    return Math.max(0, Math.trunc(Number(f) || 0));
+  }
+
+  /** Is the actor stunned by a shock weapon? The count, or the status icon alone. */
+  static isStunned(actor) {
+    return SR3EActor.stunTurns(actor) > 0 || actor?.statuses?.has?.(STUN_STATUS) === true;
+  }
+
+  /** +2 to every test while stunned (p.125: "an additional +2 target modifier to all tests"). */
+  static stunnedTN(actor) {
+    return ShockStun.tnMod(SR3EActor.isStunned(actor));
+  }
+
+  /** "Stunned +2 (3 Combat Turns)", or '' — for a TN breakdown. */
+  static stunnedNote(actor) {
+    return SR3EActor.isStunned(actor) ? ShockStun.note(SR3EActor.stunTurns(actor)) : '';
   }
 
   /** Start sustaining a spell (p.178). Returns the new entry's id. */
@@ -3795,6 +3894,17 @@ _prepareCharacter(sys, attr) {
           /* Elemental Manipulation (p.183, p.196): a ranged attack, not a spell resistance. Say so, and
            * state the secondary effects — p.196 hands them to the GM ("selective … judgment calls"),
            * so they are a line on the card and nothing more. */
+          /* Fling (p.197): "Treat the Sorcery Test as a normal Ranged Combat Test" — an attack, dodged, then a
+           * Damage Resistance Test against the object. The object's damage is a thrown weapon's own code at
+           * Strength = Force, otherwise the GM's call. */
+          if (sc.isFling) {
+            stagingHtml += `
+              <div class="sr-roll-meta" style="font-size:11px">
+                🪨 Fling is a ranged attack (p.197): each target may <strong>dodge</strong> (p.113), then resists the
+                object's damage with <strong>Body + Combat Pool</strong> — no Spell Resistance Test.
+                ${sc.flingNote ?? ''}
+              </div>`;
+          }
           if (sc.isElemental) {
             const objMod = SR3EItem.elementalSecondaryResistance(sc.damageBase?.level);
             stagingHtml += `
@@ -3894,17 +4004,6 @@ _prepareCharacter(sys, attr) {
       } else if (state.isAttributeBoostRoll && state.attributeBoostContext) {
         /* Attribute Boost · SR3 p.168-169 (TODO 63)
          *
-          /* Fling (p.197): "Treat the Sorcery Test as a normal Ranged Combat Test" — an attack, dodged, then a
-           * Damage Resistance Test against the object. The object's damage is a thrown weapon's own code at
-           * Strength = Force, otherwise the GM's call. */
-          if (sc.isFling) {
-            stagingHtml += `
-              <div class="sr-roll-meta" style="font-size:11px">
-                🪨 Fling is a ranged attack (p.197): each target may <strong>dodge</strong> (p.113), then resists the
-                object's damage with <strong>Body + Combat Pool</strong> — no Spell Resistance Test.
-                ${sc.flingNote ?? ''}
-              </div>`;
-          }
          * > "If there are no successes, the Attribute is not boosted. Otherwise, the
          * > Attribute is boosted by the level of the power. The boost lasts for a number of
          * > Combat Turns equal to the number of successes."
@@ -4425,6 +4524,7 @@ _prepareCharacter(sys, attr) {
           const soakPayload = JSON.stringify({
             attackerActorId: fc.attackerActorId,
             targetActorId:   fc.defenderActorId,
+            weaponItemId:    fc.atkWeaponId || undefined,
             isMelee:         true,
             stagedPower:     st.power,
             stagedLevel:     st.level,
@@ -4987,6 +5087,7 @@ _prepareCharacter(sys, attr) {
     quickDraw:         ['SR3EItem', '_quickDrawRolled'],   // TODO 47 — Reaction (4), p.107
     purchaseSourced:   ['SR3EPurchase', 'onSourced'],       // TODO 82 — Etiquette vs Availability, p.272
     riggerDisorient:   ['SR3EActor', '_riggerDisorientOutcome'], // TODO 198 — Willpower (4), p.156
+    shockStun:         ['SR3EActor', '_shockStunOutcome'],       // Body or Willpower (4) vs a shock weapon, p.124-125
     collisionBraking:  ['SR3ECollision', 'brakingRolled'],      // TODO 189 — the Braking Test, p.142
     concealPerception: ['SR3EConcealment', 'perceptionRolled'],  // TODO 195 — Perception vs Concealability, p.231
   };
@@ -6490,6 +6591,7 @@ _prepareCharacter(sys, attr) {
       targetActorId:   ctx.defenderActorId,
       net:             fd.net,
       atkRawDamage:    ctx.atkRawDamage,
+      atkWeaponId:     ctx.atkWeaponId,
       atkDamageBase:   ctx.atkDamageBase,
       calledShot:      ctx.calledShot ?? null,
       calledShotTarget: ctx.calledShotTarget ?? null,
@@ -6652,6 +6754,7 @@ _prepareCharacter(sys, attr) {
         const soakPayload = JSON.stringify({
           attackerActorId: ctx.attackerActorId,
           targetActorId:   loser?.id,
+          weaponItemId:    winnerWeaponId || undefined,   // lets the soak card see a shock weapon (SR3 p.124-125)
           isMelee:         true,
           knockdownTNMod:  _chargeFailed ? _kdMod : 0,
           stagedPower:     power,
@@ -6682,6 +6785,7 @@ _prepareCharacter(sys, attr) {
         targetActorId:   loser?.id,
         isMelee:         true,
         shock:           true,
+        shockCode:       extraCode,   // the Power printed on the shock code sets the stun (SR3 p.124-125)
         stagedPower:     _xs.power,
         stagedLevel:     _xs.level,
         isStun:          extraBase.isStun,
@@ -6955,10 +7059,10 @@ _prepareCharacter(sys, attr) {
  * @param {number}  [o.sustain=0]        the DEFENDER's sustained-spell modifier, +2 each (p.178)
  * @returns {number} the Dodge Test target number
  */
-  static dodgeTN({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0, drugs = 0 } = {}) {
+  static dodgeTN({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0, drugs = 0, stunned = 0 } = {}) {
     const n = v => Math.max(0, Math.trunc(Number(v) || 0));
     const wound = Math.min(0, Math.trunc(Number(woundMod) || 0));
-    return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) - wound + n(sustain) + n(drugs);
+    return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) - wound + n(sustain) + n(drugs) + n(stunned);
   }
 
   /**
@@ -6967,7 +7071,7 @@ _prepareCharacter(sys, attr) {
    *
    * @returns {string[]} human-readable fragments, empty when the TN is a plain 4
    */
-  static dodgeTNParts({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0, drugs = 0 } = {}) {
+  static dodgeTNParts({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0, drugs = 0, stunned = 0 } = {}) {
     const n = v => Math.max(0, Math.trunc(Number(v) || 0));
     const wound = Math.min(0, Math.trunc(Number(woundMod) || 0));
     const parts = [];
@@ -6977,6 +7081,7 @@ _prepareCharacter(sys, attr) {
     if (wound)         parts.push(`+${-wound} wound`);
     if (n(sustain))    parts.push(`+${n(sustain)} sustaining spells`);
     if (n(drugs))      parts.push(`+${n(drugs)} drugs`);
+    if (n(stunned))    parts.push(`+${n(stunned)} stunned`);
     return parts;
   }
 
@@ -9007,6 +9112,7 @@ _prepareCharacter(sys, attr) {
       woundMod:      targetActor.system.woundMod ?? 0,
       sustain:       SR3EActor.sustainingTN(targetActor),
       drugs:         SR3EActor.drugTN(targetActor),
+      stunned:       SR3EActor.stunnedTN(targetActor),
     };
     const DODGE_TN  = SR3EActor.dodgeTN(tnOpts);
     const tnParts   = SR3EActor.dodgeTNParts(tnOpts);
@@ -9378,6 +9484,7 @@ _prepareCharacter(sys, attr) {
     const resistAttr = payload.resistAttr === 'willpower' ? 'willpower' : 'body';
     const resistName = resistAttr === 'willpower' ? 'Willpower' : 'Body';
     const bodyAttr = this.system.attributes?.[resistAttr];
+    const bodyOf   = k => Math.max(this.system.attributes?.[k]?.value ?? 0, this.system.attributes?.[k]?.base ?? 0);
     const body     = Math.max(bodyAttr?.value ?? 0, bodyAttr?.base ?? 0, 1);
 
     // Body dice are free; Combat Pool dice are not, so they are separate fields — one merged
@@ -9494,9 +9601,14 @@ _prepareCharacter(sys, attr) {
       ammoNote = `Elemental spell — Impact armour at half (${impact} → ${halved}); Ballistic does not apply (p.196)`;
       impact   = halved;
     }
-    // A shock weapon's extra damage (the Shock Glove, SR3 p.276, p.124): "Impact armor protects against shock
-    // weapons, but its rating is halved (rounding down)."
-    if (payload.shock === true) {
+    /* A shock weapon (SR3 p.124-125) — a stun baton, a taser, or the Shock Glove's extra code. The glove's extra
+     * payload names its code (`shockCode`); any other shock weapon is found through the attack's weapon, whose main
+     * code is the shock. "Impact armor protects against shock weapons, but its rating is halved (rounding down)." */
+    const shockWeapon = game.actors.get(payload.attackerActorId)?.items?.get(payload.weaponItemId);
+    const shockCode   = this.type === 'vehicle' ? '' : (payload.shockCode || ShockStun.mainCode(shockWeapon, rawDamage));
+    const shock       = payload.shock === true || !!shockCode;
+    const impactWorn  = impact;     // the full rating, before the halving — the stun's duration halves it itself
+    if (shock) {
       const halved = ExtraDamage.shockImpact(impact);
       ammoNote = `Shock weapon — Impact armour at half (${impact} → ${halved}), rounded down (p.124)`;
       impact   = halved;
@@ -9513,7 +9625,7 @@ _prepareCharacter(sys, attr) {
     // except gel rounds, which are a ranged attack the rules resist with Impact. That
     // exception is declared on the ammo type (config.js) rather than hard-coded here, so it
     // sits with the rest of the ammo-armour rules instead of hiding in the selection.
-    const usesImpact   = isMelee || ammoRules.armorEffect === 'gel' || payload.elemental === true || payload.useImpact === true;
+    const usesImpact   = isMelee || ammoRules.armorEffect === 'gel' || payload.elemental === true || payload.useImpact === true || shock;
     const defaultArmor = usesImpact ? impact : ballistic;
 
     const soakTN = Math.max(2, stagedPower - defaultArmor);
@@ -9548,6 +9660,26 @@ _prepareCharacter(sys, attr) {
       noPoolsNote:     payload.noPoolsNote ?? undefined,
       noKnockdown:     payload.noKnockdown === true,
     }).replace(/'/g, '&#39;');
+
+    // A successful hit by a shock weapon also stuns (SR3 p.124-125): offered on the same card, rolled by the target.
+    let stunHtml = '';
+    if (shockCode) {
+      const stunPower = ShockStun.printedPower(shockCode) ?? Math.max(0, Math.trunc(Number(stagedPower) || 0));
+      const stunPayload = JSON.stringify({
+        actorId: this.id, targetActorId: this.id, power: stunPower, impact: impactWorn, code: shockCode,
+      }).replace(/'/g, '&#39;');
+      const rd = ShockStun.resistDice(bodyOf('body'), bodyOf('willpower'));
+      stunHtml = `
+          <div class="sr-roll-meta" style="font-size:11px;color:var(--sr-gold);margin-top:6px">
+            ⚡ Shock weapon: a hit also stuns for Power ${stunPower} − ½ Impact (${ShockStun.halfImpact(impactWorn)}) − the successes of a
+            Body or Willpower Test (the greater: ${rd.attr === 'body' ? 'Body' : 'Willpower'} ${rd.dice}) at TN ${STUN_TN} Combat Turns, +2 to all tests while stunned (${STUN_PAGE}).
+          </div>
+          <div class="sr-soak-action">
+            <button class="sr-shock-stun-btn" data-payload='${stunPayload}'>
+              ⚡ ${this.name}: Resist the stun (Body or Willpower, TN ${STUN_TN})
+            </button>
+          </div>`;
+    }
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
@@ -9593,6 +9725,7 @@ _prepareCharacter(sys, attr) {
               🎲 ${this.name}: Roll to Resist
             </button>
           </div>
+          ${stunHtml}
         </div>
       `,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,

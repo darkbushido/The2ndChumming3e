@@ -13,6 +13,7 @@
       "ammunition": "1",
       "mode": "SS",
       "damage": "6S Stun",
+      "shock": true,
       "weight": ".75",
       "availability": "12/7days",
       "cost": 750,

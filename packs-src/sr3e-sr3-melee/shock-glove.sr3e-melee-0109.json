@@ -12,6 +12,7 @@
       "reach": "-",
       "damage": "(STR-1)M Stun",
       "extraDamage": "7S Stun",
+      "shock": true,
       "weight": ".5",
       "availability": "5/48hrs",
       "cost": 950,

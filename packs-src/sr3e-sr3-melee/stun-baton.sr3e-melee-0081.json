@@ -11,6 +11,7 @@
       "concealability": "4",
       "reach": "1",
       "damage": "6S Stun",
+      "shock": true,
       "weight": "1",
       "availability": "3/36hrs",
       "cost": 750,

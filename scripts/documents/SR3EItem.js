@@ -3449,6 +3449,7 @@ export class SR3EItem extends Item {
       woundMod:      defender.system.woundMod ?? 0,
       sustain:       game.sr3e.SR3EActor.sustainingTN(defender),
       drugs:         game.sr3e.SR3EActor.drugTN(defender),
+      stunned:       game.sr3e.SR3EActor.stunnedTN(defender),
     };
     const dodgeTN    = game.sr3e.SR3EActor.dodgeTN(tnOpts);
     const dodgeParts = game.sr3e.SR3EActor.dodgeTNParts(tnOpts);
@@ -4622,7 +4623,6 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     }).join('');
     const asks = Object.fromEntries(['row', 'barrier', 'strength', 'minutes', 'band']
       .map(f => [f, kindList.some(k => SpellTarget.asks(k)[f])]));
-    const shared = `
     /* Fling · SR3 p.197: a ranged attack. The object flung (a thrown weapon of the caster's, or another object
      * whose damage is the GM's call) and the range band — a thrown weapon's bands are its normal ones at
      * Strength = Force. The band is pre-selected from the measured distance when both tokens are on the canvas. */
@@ -4659,6 +4659,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       sel.addEventListener('change', refresh);
       refresh();
     };
+    const shared = `
       ${kindList.includes('toxin') || kindList.includes('disease') ? `<div>${kindList.includes('toxin') ? "Toxin's Strength" : "Disease's Power"}:
         <input type="number" name="strength" min="1" value="" style="width:60px"/>
         <span style="font-size:11px;color:var(--sr-muted)">the target number is this (p.193) — the system cannot know it</span></div>` : ''}
@@ -4669,8 +4670,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
         <span style="font-size:11px;color:var(--sr-muted)">every figure above is a default — change it freely</span></div>`;
     let out = null;
     await foundry.applications.api.DialogV2.wait({
-      window: { title: `${caster.name} — ${name}: target number` },
       render: (_event, dialog) => wireFling(dialog, dialog.element),
+      window: { title: `${caster.name} — ${name}: target number` },
       content: `<p style="font-size:12px;margin:0 0 6px">${name}'s Target is <strong>${String(token).trim() || '—'}</strong>.</p>${blocks}${shared}`,
       buttons: [
         {
@@ -5120,10 +5121,10 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       spellTarget,
       // Elemental Manipulation (p.183): each target dodges and soaks instead of resisting.
       isElemental,
-      isAoE,
       // Fling (p.197): a ranged attack — dodge, then Damage Resistance against the object; no Spell Resistance.
       isFling,
       flingNote:         flingDamage ? `Object damage: ${flingDamage.source}${flingDamage.gmCall ? ' ⚠' : ''}` : '',
+      isAoE,
       aoeRegionId,
       aoeMarkerId,
       tnSource,

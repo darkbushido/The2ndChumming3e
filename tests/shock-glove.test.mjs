@@ -41,9 +41,9 @@ export async function run(t) {
   t.eq('the Shock Glove stores (STR-1)M Stun and 7S Stun separately (p.275)', [s.damage, s.extraDamage], ['(STR-1)M Stun', '7S Stun']);
   t.ok('…and its notes say the second is resisted apart, Impact at half', /separately/.test(s.notes) && /half/.test(s.notes));
   const glove = (sy) => ({ type: 'melee', name: 'Shock Glove', system: sy });
-  t.eq('migration: an owned glove gains the extra code (blank only)', PackFixes070.fixItem(glove({ damage: '(STR-1)M Stun', extraDamage: '', notes: 'x' })), { 'system.extraDamage': '7S Stun' });
-  t.eq('…also when the field never existed', PackFixes070.fixItem(glove({ damage: '(STR-1)M Stun', notes: 'x' })), { 'system.extraDamage': '7S Stun' });
-  t.is('…a GM-set extra code stays', PackFixes070.fixItem(glove({ damage: '(STR-1)M Stun', extraDamage: '9S Stun', notes: 'x' })), null);
+  t.eq('migration: an owned glove gains the extra code (blank only)', PackFixes070.fixItem(glove({ damage: '(STR-1)M Stun', extraDamage: '', shock: true, notes: 'x' })), { 'system.extraDamage': '7S Stun' });
+  t.eq('…also when the field never existed', PackFixes070.fixItem(glove({ damage: '(STR-1)M Stun', shock: true, notes: 'x' })), { 'system.extraDamage': '7S Stun' });
+  t.is('…a GM-set extra code stays', PackFixes070.fixItem(glove({ damage: '(STR-1)M Stun', extraDamage: '9S Stun', shock: true, notes: 'x' })), null);
   t.is('…an item of another type with that name is skipped', PackFixes070.fixItem({ type: 'gear', name: 'Shock Glove', system: {} }), null);
 
   /* ── the wiring, source-level ─────────────────────────────────────────────── */
@@ -52,9 +52,9 @@ export async function run(t) {
   const actor = read('scripts/documents/SR3EActor.js');
   t.ok('the melee result reads the winner\'s extra code', /ExtraDamage\.winnerExtra\(ctx, _mo\.winnerIsAtk\)/.test(actor));
   t.ok('…stages it by the same net successes', /stageDamage\(extraBase, net, \{ meleeRules: true \}\)/.test(actor));
-  t.ok('…and posts its OWN Resist button, marked shock', /shock:\s+true,\s+stagedPower:\s+_xs\.power/.test(actor) && /Resist the Shock/.test(actor));
+  t.ok('…and posts its OWN Resist button, marked shock', /shock:\s+true,\s+shockCode:\s+extraCode,[\s\S]{0,160}stagedPower:\s+_xs\.power/.test(actor) && /Resist the Shock/.test(actor));
   t.ok('…after the fist\'s button on both outcomes', (actor.match(/\$\{soakBtn\}\s+\$\{extraHtml\}/g) ?? []).length === 2);
-  t.ok('the soak card halves Impact for a shock payload', /payload\.shock === true[\s\S]{0,200}ExtraDamage\.shockImpact\(impact\)/.test(actor));
+  t.ok('the soak card halves Impact for a shock payload', /const shock\s+= payload\.shock === true[\s\S]{0,400}ExtraDamage\.shockImpact\(impact\)/.test(actor));
   t.ok('MeleeData declares extraDamage', /extraDamage:\s+new StringField\(\{ initial: '' \}\)/.test(read('scripts/data/ItemDataModels.js')));
   t.ok('the item sheet has the field', /'Extra Damage', 'extraDamage'/.test(read('scripts/sheets/SR3EItemSheet.js')));
 }

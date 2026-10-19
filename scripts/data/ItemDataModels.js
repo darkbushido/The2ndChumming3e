@@ -32,6 +32,9 @@ export class MeleeData extends foundry.abstract.TypeDataModel {
       // A second Damage Code delivered with the first and resisted on its own — the Shock Glove's "+7S Stun"
       // (SR3 p.275-276). Blank for every other weapon. Read through ExtraDamage (scripts/data/extra-damage.mjs).
       extraDamage:    new StringField({ initial: '' }),
+      // A shock weapon — a stun baton, the Shock Glove (SR3 p.124-125): a hit stuns the target for Power − half
+      // Impact − the Body/Willpower Test's successes Combat Turns. Read through ShockStun.isShock.
+      shock:          new BooleanField({ initial: false }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -180,6 +183,9 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       // otherwise — the Remington Roomsweeper: "heavy-pistol ranges, but shotgun rules" (SR3 p.277). A ShtG always
       // does, without this. Read through Shotgun.usesRules.
       shotgunRules:    new BooleanField({ initial: false }),
+      // A shock weapon (SR3 p.124-125) — the Defiance Super Shock and the other tasers. A category Tasr always is
+      // (ShockStun.isShock), so the tick is for a taser-like weapon filed elsewhere.
+      shock:           new BooleanField({ initial: false }),
       bookPage:        new StringField({ initial: '' }),
       notes:           new HTMLField({ initial: '', required: false }),
       isAoE:           new BooleanField({ initial: false }),

@@ -177,6 +177,8 @@ Hooks.once('init', () => {
     { id: 'sr3e-astral',      name: 'Astral Projection',  img: 'icons/svg/aura.svg' },
     { id: 'sr3e-dual',        name: 'Dual-Natured',       img: 'icons/svg/eye.svg' },
     { id: 'sr3e-vr',          name: 'Jacked In (VR)',     img: 'icons/svg/net.svg' },
+    // Stunned by a shock weapon (SR3 p.124-125): +2 to all tests. Marked from the result card; counts down in combat.
+    { id: 'sr3e-stunned',     name: 'Stunned (shock weapon)', img: 'icons/svg/lightning.svg' },
   );
 
   // Default icons for each item type (must reference paths that exist in Foundry v14)
@@ -2120,6 +2122,15 @@ Hooks.on('updateActor', async (actor, changes) => {
 });
 
 
+// The GM takes the Stunned status off a token by hand (SR3 p.124-125) → the count ends with it, so the +2 stops.
+// Active GM only; the count is cleared, never the other way (turning the icon on by hand stuns with no count).
+Hooks.on('deleteActiveEffect', (effect) => {
+  if (!game.users.activeGM?.isSelf) return;
+  const actor = effect.parent;
+  if (!(actor instanceof Actor) || !effect.statuses?.has?.('sr3e-stunned')) return;
+  if (game.sr3e.SR3EActor.stunTurns(actor) > 0) actor.unsetFlag('The2ndChumming3e', 'stunTurns');
+});
+
 // Took damage while sustaining a spell → the Sorcery Test to keep each one (SR3 p.178). Detected in
 // preUpdate, which still sees the old boxes, on the client MAKING the change; that same client posts
 // the card, so it needs no GM. Nothing drops by itself — the card offers the tests.
@@ -2739,6 +2750,33 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       if (!_claimBtn(btn, mid, 'riggerdisorient', i)) return;
       btn.disabled = true;
       await SR3EActor.handleRiggerDisorientClick(btn);
+    });
+  });
+
+  // Shock weapon (SR3 p.124-125): the target's Body or Willpower Test against TN 4 to shorten the stun. It ROLLS,
+  // so exactly one user (_isDeciderId); the result card's Mark button is the owner's or the GM's (_mineId).
+  html.querySelectorAll('.sr-shock-stun-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'shockstun', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_isDeciderId(pl.actorId)) return _denyBtn(btn, 'Only the target’s player (or the GM) rolls this test.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'shockstun', i)) return;
+      btn.disabled = true;
+      await SR3EActor.handleShockStunClick(btn);
+    });
+  });
+  html.querySelectorAll('.sr-shock-stun-mark-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'shockstunmark', i)) return;
+    const pl = _payload(btn);
+    if (pl && !_mineId(pl.actorId)) return _denyBtn(btn, 'Only the stunned character’s owner (or the GM) marks this.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'shockstunmark', i)) return;
+      btn.disabled = true;
+      await SR3EActor.handleShockStunMarkClick(btn);
     });
   });
 

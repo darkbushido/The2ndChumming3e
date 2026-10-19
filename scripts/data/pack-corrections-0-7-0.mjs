@@ -36,7 +36,20 @@ export const ITEM_CORRECTIONS = [
     { path: 'system.notes', from: '', to: SHOCK_GLOVE_NOTES },
     // The second code, in its own field so the melee result posts a separate Resist button for it (SR3 p.275-276).
     { path: 'system.extraDamage', from: '', to: '7S Stun' },
+    // The glove is a shock weapon: its extra code stuns (SR3 p.124-125, shock-stun.mjs).
+    { path: 'system.shock', from: [false, ''], to: true },
   ] },
+
+  /* ── Shock weapons · SR3 p.124-125 ─────────────────────────────────────────────────────────────
+   * "Shock weapons include melee-combat stun batons and ranged-combat tasers." The `shock` flag makes a hit stun the
+   * target (ShockStun). Only the shipped false/blank is set, so a hand-made copy under another name is the GM's to
+   * tick (a category Taser is a shock weapon with no tick at all). */
+  { type: 'melee',   name: 'Stun Baton',            fixes: [{ path: 'system.shock', from: [false, ''], to: true }] },
+  { type: 'melee',   name: 'AZ-150 Stun Baton',     fixes: [{ path: 'system.shock', from: [false, ''], to: true }] },
+  { type: 'firearm', name: 'Defiance Super Shock',  fixes: [{ path: 'system.shock', from: [false, ''], to: true }] },
+  { type: 'firearm', name: 'Jupiter Taser Club',    fixes: [{ path: 'system.shock', from: [false, ''], to: true }] },
+  { type: 'firearm', name: 'Nova Inf. Telcom Taser', fixes: [{ path: 'system.shock', from: [false, ''], to: true }] },
+  { type: 'firearm', name: 'Yamaha Pulsar',         fixes: [{ path: 'system.shock', from: [false, ''], to: true }] },
   // The Combat Axe sits under Pole Arms/Staffs in the book's melee table (maintainer's ruling 2026-10-18).
   { type: 'melee', name: 'Combat Axe', gate: { 'system.damage': '(STR)S' }, fixes: [
     { path: 'system.category', from: 'EDG', to: 'POL' },

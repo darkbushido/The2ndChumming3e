@@ -3089,3 +3089,20 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] **Ultimax tripod.** FA, 10 rounds, with the tripod ticked: the recoil preview is **+8**; unticked **+20** (SR3 p.115's worked MMG example).
 - [ ] The Ares Predator's dialog has **no** tick.
 - [ ] A short burst on a nearly empty clip (trackAmmo on) recomputes recoil with the ticked figure.
+
+## 68. Shock weapons stun the target (rules check 0.7.0, SR3 p.124-125)
+
+⚠ New persisted field (`system.shock` on melee weapons and firearms): **fully restart Foundry**, not F5. The packs and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
+
+**Prerequisites:** a Stun Baton (Melee pack), a Defiance Super Shock (Firearms pack), a Shock Glove, an old copy of each owned before this change, an attacker, a target with Impact armour 4 and a player owner, a GM, a combat with both in it.
+
+- [ ] **Item sheet.** The Stun Baton, Shock Glove and Super Shock show **Shock weapon** ticked; a Club does not; a Taser-category firearm shows it ticked by itself. The old owned copies gain the tick on load (or `game.sr3e.SR3EMigrations.force()`).
+- [ ] **Melee.** Hit the target with the baton (6S Stun). The soak card shows "Armour type" Impact at **half** (4 → 2) and, under Roll to Resist, a **⚡ Resist the stun** button with the note "Power 6 − ½ Impact (2) − the successes …". Only the target's player (or the GM) can press it; it is on the ⏳ Waiting-on panel.
+- [ ] **The test.** Press it: the roll is Body or Willpower, **whichever is greater**, against TN **4** (the card says which). If it explodes (💥) the result waits for the last wave.
+- [ ] **The result card** says "Stunned for N Combat Turns: Power 6 − ½ Impact 2 − S successes". N = 6 − 2 − S, and with S = 4 or more it reads **Not stunned** with no Mark button. Nothing is applied by the roll.
+- [ ] **⚡ Mark stunned (N Combat Turns).** The target's owner (or the GM) clicks it once: the token gets the **Stunned (shock weapon)** icon, and every roll of that actor shows +2 on its TN ("Stunned +2 (N Combat Turns)" in the breakdown) - skill roll, Knockdown, and the **Dodge Test** TN line ("+2 stunned"). Another player cannot press Mark.
+- [ ] **Count.** Advance the combat one Combat Turn (new round): the sheet/flag turns drop by one (`actor.getFlag('The2ndChumming3e','stunTurns')`). At 0 a chat line says the target is no longer stunned and the icon and +2 go. Ending the combat clears it too.
+- [ ] **By hand.** Remove the icon from the token HUD: the +2 stops (flag cleared). Tick it on by hand: the +2 applies with no count; the GM tracks the duration.
+- [ ] **Shock Glove.** Win a melee exchange with the glove: the fist's Resist Damage card has **no** stun button; the **Resist the Shock (7S Stun)** card has one, and its Power is **7** (not the staged Power).
+- [ ] **Ranged.** Shoot the Super Shock (10S Stun): the soak card's Armour type defaults to **Impact** at half, and the stun button states Power 10.
+- [ ] A hit with an ordinary weapon (Club, Predator) shows no stun button.

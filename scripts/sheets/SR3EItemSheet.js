@@ -323,6 +323,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._bookPageField(s)}
           ${this._check('Legal', 'legal', s.legal)}
+          ${this._check('Shock weapon (p.124-125; a hit stuns the target)', 'shock', s.shock)}
         </div>
         ${this._notes(s.notes)}`;
 
@@ -438,6 +439,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._check('Area of Effect (AoE)', 'isAoE', s.isAoE)}
           ${this._check('Flechette rules (p.116)', 'flechette', s.flechette || game.sr3e.SR3EItem.parseDamageCode(s.damage)?.flechette === true)}
           ${this._check('Shotgun rules (p.117; implied for category Shotgun)', 'shotgunRules', s.shotgunRules)}
+          ${this._check('Shock weapon (p.124-125; implied for category Taser)', 'shock', s.shock || s.category === 'Tasr')}
         </div>
         ${this._notes(s.notes)}`;
 

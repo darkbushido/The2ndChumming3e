@@ -222,9 +222,9 @@ export async function run(t) {
     ['Ingram Valiant', 'BF/FA', 'FA'],
   ];
   for (const [n, from, to] of modes) {
-    t.eq(`${n}: ${from} → ${to}`, fx(it('firearm', n, { mode: from })), { 'system.mode': to });
-    t.is(`${n}: a mode the GM changed (SS/BF) stays`, fx(it('firearm', n, { mode: 'XX' })), null);
-    t.is(`${n}: already ${to} → nothing`, fx(it('firearm', n, { mode: to })), null);
+    t.eq(`${n}: ${from} → ${to}`, fx(it('firearm', n, { mode: from, shock: true })), { 'system.mode': to });
+    t.is(`${n}: a mode the GM changed (SS/BF) stays`, fx(it('firearm', n, { mode: 'XX', shock: true })), null);
+    t.is(`${n}: already ${to} → nothing`, fx(it('firearm', n, { mode: to, shock: true })), null);
   }
   t.is('an item that is not a firearm with a firearm\'s name is skipped', fx(it('gear', 'Uzi III', { mode: 'BF' })), null);
 

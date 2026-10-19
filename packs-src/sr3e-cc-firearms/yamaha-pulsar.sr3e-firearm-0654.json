@@ -13,6 +13,7 @@
       "ammunition": "4(m)",
       "mode": "SA",
       "damage": "8D Stun",
+      "shock": true,
       "weight": "2",
       "availability": "12/7days",
       "cost": 1350,

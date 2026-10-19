@@ -76,5 +76,23 @@ never a second settings list.
 `system.extraDamage` ("7S Stun") is a second code delivered with the first (`scripts/data/extra-damage.mjs`); the
 fist stays `(STR-1)M Stun` in `damage`. The melee Result posts a **second Resist button** for it (`shock: true`):
 staged by the **same net successes**, resisted separately, **Impact armour at half, rounded down** (p.124).
-Not modelled: the 8 discharges and 1-hour recharge, and p.124's stunned-for-Power-turns effect. ⚠ Two codes with
+Not modelled: the 8 discharges and 1-hour recharge. ⚠ Two codes with
 different Power and Level cannot share one Damage Resistance Test.
+
+### Shock weapons stun the target  · *SR3 p.124-125* · `scripts/data/shock-stun.mjs`
+*"A successful hit by a stun weapon stuns the target for a number of Combat Turns equal to the Power of the
+attack, minus one-half (round down) any impact armor worn, and also minus the successes generated from a Body or
+Willpower Test (whichever is greater) made against a Target Number 4 … an additional +2 target modifier to all
+tests for as long as it lasts."* Stun batons, tasers (category `Tasr` always; `system.shock` on melee/firearm
+otherwise) and the Shock Glove (whose shock is its **extra** code — the fist is not one).
+- ⚠ **Which Power:** the shock code's Power **as printed** (7 glove, 6 baton, 10 Super Shock), after a GM edit —
+  not the staged Power. `ShockStun.duration({power, impact, successes})`, never below 0.
+- The **soak card** (`_postSoakCard`) finds a shock hit two ways: the glove's extra payload names its `shockCode`;
+  any other attack names `weaponItemId` and `ShockStun.mainCode` reads the weapon. A shock hit is also resisted with
+  **Impact at half** (baton and taser too, not only the glove's extra), and the card offers `.sr-shock-stun-btn`
+  (target's `_isDeciderId`, a ⏳ step) → `rollPool` (greater of Body/Willpower, TN 4) → `FOLLOW_UPS.shockStun` →
+  result card with `.sr-shock-stun-mark-btn` (`_mineId`). **Nothing is applied until Mark is clicked.**
+- The condition: status `sr3e-stunned` + flag `stunTurns`; `SR3EActor.stunnedTN` is part of `standingTN` and a
+  `stunned:` term of `dodgeTN`. `SR3ECombat._countDownStun` (from `_newRound` only) counts down; `endCombat` clears;
+  removing the icon clears the count (`deleteActiveEffect`); ticking it on by hand stuns with no count.
+- ⚠ Not in the soak TN: standing penalties (spells, drugs, stun) stay off the Damage Resistance Test, as before.
