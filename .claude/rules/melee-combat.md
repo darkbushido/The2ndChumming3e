@@ -71,3 +71,10 @@ never a second settings list.
 
 - ⚠ **"Instead" is exclusive** — `SR3EActor.chargingFailure`, with a mutant.
 - ⚠ Movement continuity (2+ m across passes) is **declared**, not measured.
+
+### A weapon's extra Damage Code — the Shock Glove  · *SR3 p.275-276, p.124*
+`system.extraDamage` ("7S Stun") is a second code delivered with the first (`scripts/data/extra-damage.mjs`); the
+fist stays `(STR-1)M Stun` in `damage`. The melee Result posts a **second Resist button** for it (`shock: true`):
+staged by the **same net successes**, resisted separately, **Impact armour at half, rounded down** (p.124).
+Not modelled: the 8 discharges and 1-hour recharge, and p.124's stunned-for-Power-turns effect. ⚠ Two codes with
+different Power and Level cannot share one Damage Resistance Test.

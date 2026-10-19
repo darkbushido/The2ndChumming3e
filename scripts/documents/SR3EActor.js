@@ -21,6 +21,7 @@ import { VehicleArmor } from '../data/vehicle-armor.mjs';
 import { Misfire } from '../data/misfire.mjs';
 import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { AdeptLevels } from '../data/adept-levels.mjs';
+import { ExtraDamage } from '../data/extra-damage.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -6589,6 +6590,7 @@ _prepareCharacter(sys, attr) {
 
       // Winner's weapon damage code
       const winnerWeaponId = winnerIsAtk ? ctx.atkWeaponId : ctx.defWeaponId;
+      const winnerWeaponName = winnerIsAtk ? ctx.atkWeaponName : ctx.defWeaponName;
       const winnerRawDmg   = winnerIsAtk ? ctx.atkRawDamage : ctx.defRawDamage;
       const winnerDmgBase  = winnerIsAtk ? ctx.atkDamageBase : ctx.defDamageBase;
 
@@ -6655,6 +6657,35 @@ _prepareCharacter(sys, attr) {
           </div>`;
       }
 
+    // The weapon's extra Damage Code — the Shock Glove's +7S Stun (SR3 p.275-276, p.124): its OWN Resist Damage
+    // button, because a different Power and Level cannot share one test. Staged by the same net successes as the
+    // fist, resisted with Impact armour at half (`shock`); the GM applies the wound.
+    let extraHtml = '';
+    const extraCode = ExtraDamage.winnerExtra(ctx, _mo.winnerIsAtk);
+    const extraBase = extraCode ? game.sr3e.SR3EItem.parseDamageCode(extraCode, winner) : null;
+    if (extraBase) {
+      const _xs = game.sr3e.SR3EItem.stageDamage(extraBase, net, { meleeRules: true });
+      const _xTrack = extraBase.isStun ? 'Stun' : 'Physical';
+      const _xPayload = JSON.stringify({
+        attackerActorId: ctx.attackerActorId,
+        targetActorId:   loser?.id,
+        isMelee:         true,
+        shock:           true,
+        stagedPower:     _xs.power,
+        stagedLevel:     _xs.level,
+        isStun:          extraBase.isStun,
+        rawDamage:       extraCode,
+      }).replace(/'/g, '&#39;');
+      extraHtml = `
+        <div class="sr-staging-result">⚡ Extra ${extraCode} (${winnerWeaponName}) — resisted separately; net ${net} hit${net !== 1 ? 's' : ''} → <strong>${_xs.power}${_xs.level} ${_xTrack}</strong>
+          <div style="font-size:11px;color:var(--sr-muted)">Shock weapon: Impact armour counts at half, rounded down (SR3 p.124). Discharges: 8, then a 1-hour recharge (p.276) — not tracked.</div></div>
+        <div class="sr-soak-action">
+          <button class="sr-soak-btn" data-payload='${_xPayload}'>
+            ⚡ ${loserName}: Resist the Shock (${extraCode})
+          </button>
+        </div>`;
+    }
+
     // ⚠ "Instead" is EXCLUSIVE — a charger who took damage does NOT also roll Quickness. When
     // no damage lands there is no Knockdown Test to modify, so the Quickness (5) Test is the
     // only consequence, and it needs its own button.
@@ -6688,13 +6719,15 @@ _prepareCharacter(sys, attr) {
            </div>
            ${stagingHtml}
            ${chargeHtml}
-           ${soakBtn}`
+           ${soakBtn}
+           ${extraHtml}`
         : `<div class="sr-melee-result sr-melee-win">
              ⚔ ${winnerName} wins! ${atkSuccesses} vs ${defSuccesses} (net ${net})
            </div>
            ${stagingHtml}
            ${chargeHtml}
-           ${soakBtn}`;
+           ${soakBtn}
+           ${extraHtml}`;
     }
 
     await ChatMessage.create({
@@ -9448,6 +9481,13 @@ _prepareCharacter(sys, attr) {
     if (payload.elemental === true) {
       const halved = SR3EActor.elementalImpact({ ballistic, impact });
       ammoNote = `Elemental spell — Impact armour at half (${impact} → ${halved}); Ballistic does not apply (p.196)`;
+      impact   = halved;
+    }
+    // A shock weapon's extra damage (the Shock Glove, SR3 p.276, p.124): "Impact armor protects against shock
+    // weapons, but its rating is halved (rounding down)."
+    if (payload.shock === true) {
+      const halved = ExtraDamage.shockImpact(impact);
+      ammoNote = `Shock weapon — Impact armour at half (${impact} → ${halved}), rounded down (p.124)`;
       impact   = halved;
     }
     // Damage from inside the body — a crash, a drug — is not an attack, and no armour resists it.

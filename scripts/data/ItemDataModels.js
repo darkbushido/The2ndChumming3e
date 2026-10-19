@@ -29,6 +29,9 @@ export class MeleeData extends foundry.abstract.TypeDataModel {
       hands:          new NumberField({ integer: true, nullable: true, initial: null, min: 0, max: 2 }),
       reach:          new NumberField({ integer: true, initial: 0, min: 0 }),
       damage:         new StringField({ initial: '' }),
+      // A second Damage Code delivered with the first and resisted on its own — the Shock Glove's "+7S Stun"
+      // (SR3 p.275-276). Blank for every other weapon. Read through ExtraDamage (scripts/data/extra-damage.mjs).
+      extraDamage:    new StringField({ initial: '' }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),

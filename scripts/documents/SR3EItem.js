@@ -462,6 +462,9 @@ export class SR3EItem extends Item {
       // Declared per attack (p.170). Carried so the card can say so, and so the result can
       // note that it bypasses Immunity to Normal Weapons.
       killingHands:     khDeclared,
+      // The Shock Glove's second code (SR3 p.276): the result card posts its own Resist button for it.
+      atkExtraDamage:   atkWeapon?.system?.extraDamage ?? '',
+      defExtraDamage:   defWeapon?.system?.extraDamage ?? '',
       defRawDamage:     defWeapon?.system?.damage ?? '',
       defDamageBase:    defWeapon ? SR3EItem.parseDamageCode(defWeapon.system?.damage ?? '', targetActor) : null,
       atkReach,

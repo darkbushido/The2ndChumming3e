@@ -3058,3 +3058,16 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] **Ammunition.** ↻ Reload offers both the heavy-pistol rounds and the shot box (not rifle rounds). Load the **normal rounds**: fire again: no choke row ("Slugs loaded"), damage code **9M**, the soak card applies no flechette rule. Load the **shot**: 9S(f), choke row back.
 - [ ] A Gel or APDS box is not offered for the Roomsweeper.
 - [ ] **Gear.** Give the Roomsweeper a laser sight: the GM's TN window does not pre-tick the laser sight (shotguns get none, p.117).
+
+## 66. The Shock Glove's extra 7S Stun (rules check 0.7.0, SR3 p.275-276, p.124)
+
+⚠ New persisted field (`system.extraDamage` on melee weapons): **fully restart Foundry**, not F5. The melee pack and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
+
+**Prerequisites:** a Shock Glove from the Melee pack (and one owned before this change), an attacker with Unarmed Combat equipped with it, a target, a GM.
+
+- [ ] **Item sheet.** The Shock Glove shows Damage `(STR-1)M Stun` and **Extra Damage** `7S Stun`; an ordinary Club's Extra Damage is blank. The old owned glove gains `7S Stun` on load (or after `game.sr3e.SR3EMigrations.force()`); a hand-typed extra code survives.
+- [ ] **Fight.** Attack with the glove and win the exchange. The Result card shows the fist's staged damage and its **Resist Damage** button, then a second line "Extra 7S Stun ... resisted separately" with its own **Resist the Shock** button. Both buttons work (the second after the first; each once).
+- [ ] **Staging.** With 2 net hits the fist code (STR-1)M stages to S and the extra 7S to D; the tie case (net 0) shows both at base.
+- [ ] **Armour.** The target wears Impact 4 armour: the fist card's TN is Power − 4; the **Shock** card says "Impact armour at half (4 → 2)" and its TN is 7 − 2 = 5.
+- [ ] **Defender's glove.** Equip the glove on the defender and let the defender win: the extra 7S Stun is offered against the attacker. A defender without a glove, winning, offers only its own code.
+- [ ] No damage is applied by itself, and the 8-discharge limit is not enforced (stated on the card).

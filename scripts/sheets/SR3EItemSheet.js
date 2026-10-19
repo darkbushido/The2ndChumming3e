@@ -316,6 +316,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Hands', 'hands', s.hands ?? '', 'number', `min="0" max="2" step="1" placeholder="${game.sr3e.Hands?.defaultHands(type, s.category) ?? ''}" title="Hands it takes — blank = the category's default (TODO 49)"`)}
           ${this._f('Reach', 'reach', s.reach, 'number', 'min="0"')}
           ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="(STR+2)M"')}
+          ${this._f('Extra Damage', 'extraDamage', s.extraDamage ?? '', 'text', 'placeholder="7S Stun" title="A second Damage Code resisted on its own, e.g. the Shock Glove +7S Stun (SR3 p.276). Leave blank for an ordinary weapon."')}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
           ${this._f('Availability', 'availability', s.availability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}

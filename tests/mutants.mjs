@@ -24,6 +24,7 @@
  * mutants will silently survive — which this harness will then report, correctly.
  */
 
+const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
 const PACKFIX = { module: '../scripts/data/pack-corrections-0-7-0.mjs', klass: 'PackFixes070' };
 const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' };
@@ -3064,5 +3065,33 @@ export const MUTANTS = [
     ...SHOTGUN, method: 'damageCode',
     was:    'the Roomsweeper kept its shot code 9S(f) with normal rounds loaded; SR3 p.277: "loaded with normal rounds … the weapon does 9M damage"',
     impl:   system => String(system?.damage ?? ''),
+  },
+  {
+    id:     'shock-extra-resisted-with-full-impact',
+    suite:  'shock-glove',
+    ...EXTRADMG, method: 'shockImpact',
+    was:    'the glove\x27s extra 7S Stun was resisted with the target\x27s full Impact armour; SR3 p.124: "Impact armor protects against shock weapons, but its rating is halved (rounding down)"',
+    impl:   impact => Math.max(0, Number(impact) || 0),
+  },
+  {
+    id:     'shock-extra-rounds-impact-up',
+    suite:  'shock-glove',
+    ...EXTRADMG, method: 'shockImpact',
+    was:    'Impact armour halved against a shock weapon but rounded up (Impact 3 → 2) instead of down (p.124: "rounding down")',
+    impl:   impact => Math.ceil(Math.max(0, Number(impact) || 0) / 2),
+  },
+  {
+    id:     'shock-extra-always-the-attackers',
+    suite:  'shock-glove',
+    ...EXTRADMG, method: 'winnerExtra',
+    was:    'the extra damage always came from the attacker\x27s glove, so a defender who won with one dealt none, and a glove-less winner dealt the loser\x27s extra',
+    impl:   function (ctx) { return this.normalise(ctx?.atkExtraDamage); },
+  },
+  {
+    id:     'shock-extra-keeps-the-plus-sign',
+    suite:  'shock-glove',
+    ...EXTRADMG, method: 'normalise',
+    was:    'the table\x27s "+7S Stun" was handed to the code parser with its plus sign, which reads no damage at all (one code only, SR3EItem.parseDamageCode)',
+    impl:   code => String(code ?? '').trim(),
   },
 ];

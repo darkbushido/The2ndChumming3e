@@ -18,6 +18,8 @@
 const same = (a, b) => String(a ?? '') === String(b ?? '');
 const get = (obj, path) => path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
 
+const SHOCK_GLOVE_NOTES = "SR3 p.275 prints the damage as \"(STR - 1)M Stun +7S Stun\": the glove's fist damage is (STR - 1)M Stun (the Damage field) and the gloves deliver an extra +7S Stun (the Extra Damage field), which the melee result resists separately, with Impact armour at half (SR3 p.124). Eight discharges, then a 1-hour recharge (p.276) - not tracked.";
+
 /** A recoilMod fix: only the shipped 0 / blank becomes the book's RC. */
 const RC = n => ({ path: 'system.recoilMod', from: ['', 0], to: n });
 
@@ -28,7 +30,9 @@ export const ITEM_CORRECTIONS = [
   { type: 'melee', name: 'Monofilament Whip', fixes: [{ path: 'system.reach', from: '1', to: '2' }] },
   { type: 'melee', name: 'Shock Glove', fixes: [
     { path: 'system.damage', from: '7S Stun', to: '(STR-1)M Stun' },
-    { path: 'system.notes', from: '', to: 'SR3 p.275 prints the damage as "(STR - 1)M Stun +7S Stun": the glove\'s fist damage is (STR - 1)M Stun, plus an extra 7S Stun. The damage field holds only the first code (the roller parses one); the GM adds the +7S Stun by hand.' },
+    { path: 'system.notes', from: '', to: SHOCK_GLOVE_NOTES },
+    // The second code, in its own field so the melee result posts a separate Resist button for it (SR3 p.275-276).
+    { path: 'system.extraDamage', from: '', to: '7S Stun' },
   ] },
   // The Combat Axe sits under Pole Arms/Staffs in the book's melee table (maintainer's ruling 2026-10-18).
   { type: 'melee', name: 'Combat Axe', gate: { 'system.damage': '(STR)S' }, fixes: [
