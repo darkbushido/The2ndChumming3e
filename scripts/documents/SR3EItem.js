@@ -3,6 +3,7 @@ import { Rigging } from '../data/rigging.mjs';
 import { VehicleArmor } from '../data/vehicle-armor.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
+import { IntegralRC } from '../data/integral-rc.mjs';
 import { WeaponAccessories } from '../data/weapon-accessories.mjs';
 import { PhaseTargets } from '../data/phase-targets.mjs';
 import { Blast } from '../data/blast.mjs';
@@ -1323,7 +1324,7 @@ export class SR3EItem extends Item {
             mode:           burst.mode,
             roundsBefore:   actor.system.roundsFiredThisPhase ?? 0,
             roundsThisShot: SR3EItem.roundsExpended({ ...fireModeResult, rounds: burst.rounds }),
-            totalComp:      (actor.system.recoilCompensation ?? 0) + (this.system.recoilMod ?? 0),
+            totalComp:      (actor.system.recoilCompensation ?? 0) + (fireModeResult.weaponComp ?? this.system.recoilMod ?? 0),
             isHeavy, isShotgun, shortBurst,
           });
           ui.notifications.warn(burst.mode === 'SS'
@@ -4132,7 +4133,10 @@ static fireModeDamage({ power, level = 'M', mode, rounds = 0, isTracer = false,
 static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isShotgun = false, prefill = {}) {
   const weaponName   = weapon.name;
   const actorComp    = actor.system.recoilCompensation ?? 0;
-  const weaponComp   = weapon.system.recoilMod ?? 0;
+  // The bracketed RC (SR3 p.276) replaces the plain figure while the integral accessories are in use.
+  const hasIntegral  = IntegralRC.has(weapon.system);
+  const inUse0       = IntegralRC.defaultInUse(weapon.system);
+  const weaponComp   = IntegralRC.weaponComp(weapon.system, inUse0);
   const roundsBefore = actor.system.roundsFiredThisPhase ?? 0;
 
   // Delegates to the pure `SR3EItem.recoilTN` so the dialog's preview and the TN actually
@@ -4233,6 +4237,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       <span>+</span>
       <span title="Gas vents, bipods etc. mounted on this weapon">Weapon
         <input type="number" id="sr-weapon-comp" value="${weaponComp}" min="0" max="20" style="width:42px"/></span>
+      ${hasIntegral ? `<label style="flex-basis:100%;font-size:11px" title="SR3 p.276: numbers in parentheses are the full recoil compensation that only applies when all integral accessories are used (folding or detachable stocks, and so forth)">
+        <input type="checkbox" id="sr-integral" ${inUse0 ? 'checked' : ''}/> Integral accessories in use (stock folded out / tripod set up) — RC ${weapon.system.recoilMod ?? 0} → <strong>${weapon.system.recoilModIntegral}</strong>
+      </label>` : ''}
       <span>= <strong id="sr-total-comp">${totalComp}</strong></span>
       <span>&nbsp;|&nbsp; Rounds fired this phase: <strong id="sr-rounds-fired">${roundsBefore}</strong></span>
       ${isHeavy ? '<span style="color:var(--sr-amber)">&nbsp;|&nbsp; ⚠ Heavy weapon: 2× uncompensated recoil</span>' : ''}
@@ -4271,6 +4278,12 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     };
     el.querySelector('#sr-actor-comp')?.addEventListener('input', refreshPreviews);
     el.querySelector('#sr-weapon-comp')?.addEventListener('input', refreshPreviews);
+    // Ticking swaps the weapon's figure between the plain RC and the bracketed total (it replaces, never adds).
+    el.querySelector('#sr-integral')?.addEventListener('change', event => {
+      const wEl = el.querySelector('#sr-weapon-comp');
+      if (wEl) wEl.value = String(IntegralRC.weaponComp(weapon.system, event.target.checked));
+      refreshPreviews();
+    });
     el.querySelector('#fa-rounds')?.addEventListener('input', refreshPreviews);
     el.querySelector('#fa-metres')?.addEventListener('input', refreshPreviews);
     el.querySelector('#fa-smartgun')?.addEventListener('change', refreshPreviews);
@@ -4322,7 +4335,12 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           const aComp = Math.max(0, parseInt(el.querySelector('#sr-actor-comp')?.value)  || 0);
           const wComp = Math.max(0, parseInt(el.querySelector('#sr-weapon-comp')?.value) || 0);
           if (aComp !== actorComp)  await actor.update({ 'system.recoilCompensation': aComp });
-          if (wComp !== weaponComp) await weapon.update({ 'system.recoilMod': wComp });
+          // A number typed over the weapon's figure is remembered against whichever figure was showing.
+          const inUse = hasIntegral && !!el.querySelector('#sr-integral')?.checked;
+          if (hasIntegral && inUse !== inUse0) await weapon.update({ 'system.integralInUse': inUse });
+          if (wComp !== IntegralRC.weaponComp(weapon.system, inUse)) {
+            await weapon.update({ [inUse ? 'system.recoilModIntegral' : 'system.recoilMod']: wComp });
+          }
 
           // Recoil per mode (see SR3EItem.recoilTN). BF and FA count their OWN rounds —
           // `rounds` is what this shot fires — while SS/SA count only what came before.
@@ -4333,7 +4351,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           const chokeEl = el.querySelector('#sr-shot-choke');
           const choke   = chokeEl ? Shotgun.choke(chokeEl.value) : null;
           if (choke !== null && choke !== weapon.system.choke) await weapon.update({ 'system.choke': choke });
-          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty, shotgunSpread, choke };
+          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty, shotgunSpread, choke, weaponComp: wComp, integralInUse: inUse };
         },
       },
       { label: 'Cancel', action: 'cancel' },

@@ -18,6 +18,7 @@
       "cost": 600,
       "streetIndex": ".75",
       "accessories": "Laser Sight, Fold Stock(1RC)",
+      "recoilModIntegral": 1,
       "bookPage": "sr3.278",
       "notes": "",
       "hands": 1,

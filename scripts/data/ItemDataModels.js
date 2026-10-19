@@ -154,6 +154,11 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       mode:            new StringField({ initial: '' }),
       damage:          new StringField({ initial: '' }),
       recoilMod:       new NumberField({ integer: true, initial: 0, min: 0 }),
+      // The RC printed in PARENTHESES — the total with every integral accessory (stock, tripod) in use, SR3 p.276.
+      // Null = the row prints none. Replaces recoilMod when ticked in the fire dialog (scripts/data/integral-rc.mjs).
+      recoilModIntegral: new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
+      // The shooter's last answer to "integral accessories in use" for this gun.
+      integralInUse:   new BooleanField({ initial: false }),
       rangeOverride:   new StringField({ initial: '' }),  // "S/M/L/E" metres, e.g. "5/15/30/50"
       loadedAmmoType:  new StringField({ initial: 'regular' }),
       loadedRounds:    new NumberField({ integer: true, initial: 0, min: 0 }),

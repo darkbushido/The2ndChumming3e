@@ -427,6 +427,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Mode', 'mode', s.mode, 'text', 'placeholder="SA/BF/FA"')}
           ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="9M"')}
           ${this._f('Recoil Comp', 'recoilMod', s.recoilMod ?? 0, 'number', 'min="0" max="20" title="Recoil compensation from gas vents, bipods, shock pads etc. mounted on this weapon"')}
+          ${this._f('Recoil Comp (integral)', 'recoilModIntegral', s.recoilModIntegral ?? '', 'number', 'min="0" max="20" title="The RC printed in parentheses: the total when every integral accessory (folding or detachable stock, tripod) is in use, SR3 p.276. Blank if the weapon has none."')}
           ${this._f('Range Override', 'rangeOverride', s.rangeOverride ?? '', 'text', 'placeholder="5/15/30/50" title="Short/Medium/Long/Extreme max range in metres. Leave blank to use the category default."')}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
           ${this._f('Availability', 'availability', s.availability)}

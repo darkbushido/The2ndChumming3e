@@ -18,6 +18,7 @@
       "cost": 1200,
       "streetIndex": "2",
       "accessories": "Laser Sight, Suppressor, Retr. Stock(1RC)",
+      "recoilModIntegral": 1,
       "bookPage": "sr3.278",
       "notes": "",
       "hands": 1,

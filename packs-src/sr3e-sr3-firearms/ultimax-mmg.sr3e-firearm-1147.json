@@ -18,6 +18,7 @@
       "cost": 2500,
       "streetIndex": "2",
       "accessories": "Tripod(6RC)",
+      "recoilModIntegral": 6,
       "bookPage": "sr3.279",
       "notes": "",
       "hands": 2,

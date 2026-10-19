@@ -229,7 +229,7 @@ export async function run(t) {
   t.is('an item that is not a firearm with a firearm\'s name is skipped', fx(it('gear', 'Uzi III', { mode: 'BF' })), null);
 
   // Recoil Compensation: only a copy still at the shipped 0/blank, and only the SR3 core item.
-  const rcFix = (name, rm, page = 'sr3.278', extra = {}) => fx(it('firearm', name, { recoilMod: rm, mode: 'zz', bookPage: page, ...extra }));
+  const rcFix = (name, rm, page = 'sr3.278', extra = {}) => fx(it('firearm', name, { recoilMod: rm, recoilModIntegral: 99, mode: 'zz', bookPage: page, ...extra }));   // 99: the bracketed RC is already filled, so these assert the plain RC alone
   for (const [n, v, page] of [['Heckler & Koch HK227', 2, 'sr3.278'], ['Ingram Smartgun Mod. 20t', 2, 'sr3.278'], ['Ranger Arms SM-3', 2, 'sr3.278'], ['Ingram Valiant', 3, 'sr3.279']]) {
     t.eq(`${n}: shipped 0 -> RC ${v}`, rcFix(n, 0, page), { 'system.recoilMod': v });
     t.eq(`${n}: shipped blank -> RC ${v}`, rcFix(n, undefined, page), { 'system.recoilMod': v });
@@ -243,7 +243,22 @@ export async function run(t) {
     rcFix('FN HAR', 0, 'sr3.278', { accessories: 'Laser Sight, Gas Vent II(2RC), Fold Stock(1RC)' }),
     { 'system.recoilMod': 2, 'system.accessories': 'Laser Sight, Gas Vent II(2RC)' });
   t.is('...a GM-edited accessories text stays', rcFix('FN HAR', 2, 'sr3.278', { accessories: 'Laser Sight, my stock' }), null);
-  t.eq('Ultimax MMG: "None" -> Tripod(6RC)', rcFix('Ultimax MMG', 0, 'sr3.279', { accessories: 'None' }), { 'system.accessories': 'Tripod(6RC)' });
+  t.eq('Ultimax MMG: "None" -> Tripod(6RC)', rcFix('Ultimax MMG', 0, 'sr3.279', { accessories: 'None', recoilModIntegral: 6 }), { 'system.accessories': 'Tripod(6RC)' });
+
+  // The bracketed RC (SR3 p.276; Firearms table pp.278-279): filled only where blank, never over a GM's own.
+  const integral = [['AK-97 SMG/Carbine', 1, 'sr3.278'], ['Ceska Black Scorpion', 1, 'sr3.278'], ['Fichetti Security 500a', 1, 'sr3.278'],
+    ['Heckler & Koch HK227', 3, 'sr3.278'], ['Heckler & Koch HK227-S', 1, 'sr3.278'], ['Ingram Smartgun Mod. 20t', 3, 'sr3.278'],
+    ['Uzi III', 1, 'sr3.278'], ['Ultimax MMG', 6, 'sr3.279'], ['RPK HMG', 6, 'sr3.279']];
+  for (const [n, v, page] of integral) {
+    const base = { recoilMod: 5, mode: 'zz', bookPage: page, accessories: 'x' };   // everything else already right
+    t.eq(`${n}: blank bracketed RC -> ${v}`, fx(it('firearm', n, { ...base, recoilModIntegral: null })), { 'system.recoilModIntegral': v });
+    t.eq(`${n}: a copy from before the field -> ${v}`, fx(it('firearm', n, base)), { 'system.recoilModIntegral': v });
+    t.is(`${n}: a GM-set bracketed RC stays`, fx(it('firearm', n, { ...base, recoilModIntegral: 9 })), null);
+    t.is(`${n}: already ${v} -> nothing`, fx(it('firearm', n, { ...base, recoilModIntegral: v })), null);
+    t.is(`${n}: another book's item of that name is left alone`, fx(it('firearm', n, { ...base, bookPage: 'cc.99' })), null);
+    const packed = readdirSync(join(SRC, 'sr3e-sr3-firearms')).map(x => JSON.parse(readFileSync(join(SRC, 'sr3e-sr3-firearms', x), 'utf8')).doc).find(d => d.name === n);
+    t.is(`${n}: the pack ships the bracketed RC ${v}`, packed?.system?.recoilModIntegral, v);
+  }
 
   // Roomsweeper: the shotgun-rules flag (SR3 p.277), set only from the shipped false/blank.
   const room = (name, sy) => fx(it('firearm', name, { bookPage: 'sr3.278', category: 'HPist', mode: 'SA', ...sy }));

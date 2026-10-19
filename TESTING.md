@@ -3071,3 +3071,17 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] **Armour.** The target wears Impact 4 armour: the fist card's TN is Power − 4; the **Shock** card says "Impact armour at half (4 → 2)" and its TN is 7 − 2 = 5.
 - [ ] **Defender's glove.** Equip the glove on the defender and let the defender win: the extra 7S Stun is offered against the attacker. A defender without a glove, winning, offers only its own code.
 - [ ] No damage is applied by itself, and the 8-discharge limit is not enforced (stated on the card).
+
+## 67. The bracketed Recoil Compensation — integral accessories (rules check 0.7.0, SR3 p.276-279)
+
+⚠ Two new persisted firearm fields (`system.recoilModIntegral`, `system.integralInUse`): **fully restart Foundry**, not F5. The firearms pack and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
+
+**Prerequisites:** a character, a fresh Heckler & Koch HK227 (RC 2, bracketed 3), an Ultimax MMG (bracketed 6), an Ares Predator, an HK227 copied from the old pack, a target token.
+
+- [ ] **Item sheet.** The HK227 shows Recoil Comp `2` and **Recoil Comp (integral)** `3`; the Ultimax `0` / `6`; the Predator's integral field is blank. The old HK227 gains 3 on load (or after `game.sr3e.SR3EMigrations.force()`); type 9 there first and it stays 9.
+- [ ] **Fire dialog, HK227.** Its Recoil comp bar has the tick "Integral accessories in use (stock folded out / tripod set up) - RC 2 → 3", **unticked**, Weapon comp 2. Tick it: Weapon becomes 3 (not 5), the Total and every mode's recoil preview drop by 1. Untick: back to 2.
+- [ ] **Remembered.** Tick it and confirm; fire again: the tick is already on. Untick and confirm: next time it is off.
+- [ ] **Typed override.** Tick, type 4 over the Weapon figure and confirm: the sheet's integral field now reads 4 and the plain Recoil Comp is still 2.
+- [ ] **Ultimax tripod.** FA, 10 rounds, with the tripod ticked: the recoil preview is **+8**; unticked **+20** (SR3 p.115's worked MMG example).
+- [ ] The Ares Predator's dialog has **no** tick.
+- [ ] A short burst on a nearly empty clip (trackAmmo on) recomputes recoil with the ticked figure.

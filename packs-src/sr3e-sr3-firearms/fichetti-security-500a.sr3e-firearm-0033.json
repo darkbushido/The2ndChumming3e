@@ -18,6 +18,7 @@
       "cost": 550,
       "streetIndex": ".8",
       "accessories": "Detach. Stock(1RC)",
+      "recoilModIntegral": 1,
       "bookPage": "sr3.278",
       "notes": "",
       "hands": 1,

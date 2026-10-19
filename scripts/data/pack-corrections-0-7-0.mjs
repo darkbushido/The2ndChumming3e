@@ -23,6 +23,9 @@ const SHOCK_GLOVE_NOTES = "SR3 p.275 prints the damage as \"(STR - 1)M Stun +7S 
 /** A recoilMod fix: only the shipped 0 / blank becomes the book's RC. */
 const RC = n => ({ path: 'system.recoilMod', from: ['', 0], to: n });
 
+/** A recoilModIntegral fill: the bracketed RC of the Firearms table (SR3 p.276), only where still blank. */
+const RCI = n => ({ path: 'system.recoilModIntegral', from: ['', null], to: n });
+
 /** Item corrections: `{ type, name, gate?, fixes: [{ path, from, to }] }`, paths relative to the item. */
 export const ITEM_CORRECTIONS = [
   /* ── Melee · SR3 p.275 ────────────────────────────────────────────────────────── */
@@ -93,6 +96,17 @@ export const ITEM_CORRECTIONS = [
     RC(2),
     { path: 'system.accessories', from: 'Laser Sight, Gas Vent II(2RC), Fold Stock(1RC)', to: 'Laser Sight, Gas Vent II(2RC)' },
   ] },
+  /* The bracketed RC: "full recoil compensation that only applies when all integral accessories are used" (SR3 p.276),
+   * the Firearms table pp.278-279. A new field, so a copy owned before it holds blank (fill blanks, never overwrite). */
+  { type: 'firearm', name: 'AK-97 SMG/Carbine', gate: { 'system.bookPage': 'sr3.278' }, fixes: [RCI(1)] },
+  { type: 'firearm', name: 'Ceska Black Scorpion', gate: { 'system.bookPage': 'sr3.278' }, fixes: [RCI(1)] },
+  { type: 'firearm', name: 'Fichetti Security 500a', gate: { 'system.bookPage': 'sr3.278' }, fixes: [RCI(1)] },
+  { type: 'firearm', name: 'Heckler & Koch HK227', gate: { 'system.bookPage': 'sr3.278' }, fixes: [RCI(3)] },
+  { type: 'firearm', name: 'Heckler & Koch HK227-S', gate: { 'system.bookPage': 'sr3.278' }, fixes: [RCI(1)] },
+  { type: 'firearm', name: 'Ingram Smartgun Mod. 20t', gate: { 'system.bookPage': 'sr3.278' }, fixes: [RCI(3)] },
+  { type: 'firearm', name: 'Uzi III', gate: { 'system.bookPage': 'sr3.278' }, fixes: [RCI(1)] },
+  { type: 'firearm', name: 'Ultimax MMG', gate: { 'system.bookPage': 'sr3.279' }, fixes: [RCI(6)] },
+  { type: 'firearm', name: 'RPK HMG', gate: { 'system.bookPage': 'sr3.279' }, fixes: [RCI(6)] },
   // Ultimax MMG: RC (6) with its tripod (SR3 p.279) — recorded in the accessories text, like the RPK HMG.
   { type: 'firearm', name: 'Ultimax MMG', gate: { 'system.bookPage': 'sr3.279' }, fixes: [
     { path: 'system.accessories', from: 'None', to: 'Tripod(6RC)' },

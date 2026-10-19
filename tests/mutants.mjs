@@ -25,6 +25,7 @@
  */
 
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
+const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
 const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
 const PACKFIX = { module: '../scripts/data/pack-corrections-0-7-0.mjs', klass: 'PackFixes070' };
 const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' };
@@ -3093,5 +3094,26 @@ export const MUTANTS = [
     ...EXTRADMG, method: 'normalise',
     was:    'the table\x27s "+7S Stun" was handed to the code parser with its plus sign, which reads no damage at all (one code only, SR3EItem.parseDamageCode)',
     impl:   code => String(code ?? '').trim(),
+  },
+  {
+    id:     'integral-rc-adds-to-the-plain-figure',
+    suite:  'integral-rc',
+    ...INTEGRALRC, method: 'weaponComp',
+    was:    'the bracketed RC was added to the plain one, so an HK227 2(3) with its stock out compensated 5 (SR3 p.276: the parentheses are the FULL recoil compensation; the stock\x27s 1 point makes 3)',
+    impl:   (system, inUse = false) => (Number(system?.recoilMod) || 0) + (inUse && system?.recoilModIntegral != null ? Number(system.recoilModIntegral) : 0),
+  },
+  {
+    id:     'integral-rc-ignores-the-tick',
+    suite:  'integral-rc',
+    ...INTEGRALRC, method: 'weaponComp',
+    was:    'the fire dialog\x27s integral-accessories tick changed nothing: the bracketed RC was never used, so a tripod-mounted Ultimax kept 0 compensation (SR3 p.276, p.279 prints (6))',
+    impl:   system => Math.max(0, Math.trunc(Number(system?.recoilMod) || 0)),
+  },
+  {
+    id:     'integral-rc-blank-counts-as-zero',
+    suite:  'integral-rc',
+    ...INTEGRALRC, method: 'has',
+    was:    'a weapon with no bracketed RC (null) read as having one worth 0, so ticking the box on an Ares Predator dropped its compensation',
+    impl:   system => system?.recoilModIntegral !== undefined,
   },
 ];
