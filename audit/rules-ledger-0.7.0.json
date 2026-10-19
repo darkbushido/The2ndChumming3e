@@ -25262,8 +25262,13 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9631,
-          "snippet": "const soakTN = Math.max(2, stagedPower - defaultArmor);"
+          "line": 9633,
+          "snippet": "const soakTN = ShockStun.soakTN(stagedPower, defaultArmor, stunnedNow);"
+        },
+        {
+          "file": "scripts/data/shock-stun.mjs",
+          "line": 104,
+          "snippet": "return Math.max(2, (Number(power) || 0) - (Number(armor) || 0) + ShockStun.tnMod(stunned));"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
@@ -54065,8 +54070,13 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9631,
-          "snippet": "const soakTN = Math.max(2, stagedPower - defaultArmor);"
+          "line": 9633,
+          "snippet": "const soakTN = ShockStun.soakTN(stagedPower, defaultArmor, stunnedNow);"
+        },
+        {
+          "file": "scripts/data/shock-stun.mjs",
+          "line": 104,
+          "snippet": "return Math.max(2, (Number(power) || 0) - (Number(armor) || 0) + ShockStun.tnMod(stunned));"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
