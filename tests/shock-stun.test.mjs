@@ -92,6 +92,18 @@ export async function run(t) {
       'sr3e-tss-firearms/.sr3e-firearm-0650.json', 'sr3e-cc-firearms/.sr3e-firearm-0654.json']
       .every(x => { const [p, f] = x.split('/'); return sys(p, f).shock === true; }));
   t.ok('an ordinary Club is not', sys('sr3e-sr3-melee', '.sr3e-melee-0069.json').shock !== true);
+  t.ok('…the M&M Shock Hand is a shock weapon (M&M p.42; the maintainer, 2026-10-19)',
+    sys('sr3e-mm-melee', '.sr3e-melee-0153.json').shock === true);
+  t.eq('migration: an owned Shock Hand gains the flag',
+    PackFixes070.fixItem({ type: 'melee', name: 'Shock Hand', system: { shock: false, damage: '8S Stun' } }), { 'system.shock': true });
+
+  /* ==== already stunned: the Damage Resistance Test takes the +2 too (p.124 "all tests"; maintainer 2026-10-18) ==== */
+  t.is('not stunned: Power − armour', ShockStun.soakTN(8, 3, false), 5);
+  t.is('stunned: Power − armour + 2', ShockStun.soakTN(8, 3, true), 7);
+  t.is('…never below 2', ShockStun.soakTN(2, 5, true), 2);
+  const actorSrc = read('scripts/documents/SR3EActor.js');
+  t.ok('the soak card reads the target\'s stun NOW (the hit that stuns is soaked before the status is on)',
+    /const stunnedNow = SR3EActor\.isStunned\(this\);\s*const soakTN = ShockStun\.soakTN\(stagedPower, defaultArmor, stunnedNow\)/.test(actorSrc));
   const fx = (type, nm, sy) => PackFixes070.fixItem({ type, name: nm, system: sy });
   t.eq('migration: an owned Stun Baton gains the flag', fx('melee', 'Stun Baton', { shock: false, damage: '6S Stun' }), { 'system.shock': true });
   t.eq('…an owned Defiance Super Shock', fx('firearm', 'Defiance Super Shock', { shock: false }), { 'system.shock': true });

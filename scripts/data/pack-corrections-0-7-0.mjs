@@ -50,6 +50,8 @@ export const ITEM_CORRECTIONS = [
   { type: 'firearm', name: 'Jupiter Taser Club',    fixes: [{ path: 'system.shock', from: [false, ''], to: true }] },
   { type: 'firearm', name: 'Nova Inf. Telcom Taser', fixes: [{ path: 'system.shock', from: [false, ''], to: true }] },
   { type: 'firearm', name: 'Yamaha Pulsar',         fixes: [{ path: 'system.shock', from: [false, ''], to: true }] },
+  // M&M p.42: shock pads that "inflict a nasty electric shock" — a shock weapon (the maintainer, 2026-10-19).
+  { type: 'melee',   name: 'Shock Hand',            fixes: [{ path: 'system.shock', from: [false, ''], to: true }] },
   // The Combat Axe sits under Pole Arms/Staffs in the book's melee table (maintainer's ruling 2026-10-18).
   { type: 'melee', name: 'Combat Axe', gate: { 'system.damage': '(STR)S' }, fixes: [
     { path: 'system.category', from: 'EDG', to: 'POL' },

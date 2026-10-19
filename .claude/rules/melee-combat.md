@@ -95,4 +95,6 @@ otherwise) and the Shock Glove (whose shock is its **extra** code — the fist i
 - The condition: status `sr3e-stunned` + flag `stunTurns`; `SR3EActor.stunnedTN` is part of `standingTN` and a
   `stunned:` term of `dodgeTN`. `SR3ECombat._countDownStun` (from `_newRound` only) counts down; `endCombat` clears;
   removing the icon clears the count (`deleteActiveEffect`); ticking it on by hand stuns with no count.
-- ⚠ Not in the soak TN: standing penalties (spells, drugs, stun) stay off the Damage Resistance Test, as before.
+- ⚠ **A character ALREADY stunned soaks at +2** (p.124 "all tests"; the maintainer, 2026-10-18): `ShockStun.soakTN`
+  in `_postSoakCard` reads `isStunned` when the card is built, so the hit that causes the stun is soaked without it.
+  Sustaining and drug penalties still stay off the Damage Resistance Test. The M&M Shock Hand (p.42) is a shock weapon.

@@ -96,6 +96,14 @@ export const ShockStun = {
     return stunned ? STUN_MOD : 0;
   },
 
+  /**
+   * The Damage Resistance Test's TN for a character who is ALREADY stunned: Power − armour, +2 (p.124 "all tests";
+   * the maintainer, 2026-10-18). The soak of the hit that stuns is not affected — the status is not on yet.
+   */
+  soakTN(power, armor, stunned) {
+    return Math.max(2, (Number(power) || 0) - (Number(armor) || 0) + ShockStun.tnMod(stunned));
+  },
+
   /** "Stunned +2 (3 Combat Turns)", for a TN breakdown. */
   note(turns) {
     const t = Math.max(0, Math.trunc(Number(turns) || 0));

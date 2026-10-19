@@ -3070,6 +3070,13 @@ export const MUTANTS = [
     impl:   (grade, mod = 0) => Math.max(0, (Number(grade) || 0) + (Number(mod) || 0)),
   },
   {
+    id:     'shock-stun-soak-ignores-the-stun',
+    suite:  'shock-stun',
+    ...SHOCKSTUN, method: 'soakTN',
+    was:    'a character already stunned soaked at Power − armour, without the +2; SR3 p.124: "+2 target modifier to all tests" (maintainer 2026-10-18)',
+    impl:   (power, armor) => Math.max(2, (Number(power) || 0) - (Number(armor) || 0)),
+  },
+  {
     id:     'shock-stun-rounds-half-impact-up',
     suite:  'shock-stun',
     ...SHOCKSTUN, method: 'halfImpact',

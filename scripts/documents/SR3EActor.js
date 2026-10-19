@@ -9628,7 +9628,9 @@ _prepareCharacter(sys, attr) {
     const usesImpact   = isMelee || ammoRules.armorEffect === 'gel' || payload.elemental === true || payload.useImpact === true || shock;
     const defaultArmor = usesImpact ? impact : ballistic;
 
-    const soakTN = Math.max(2, stagedPower - defaultArmor);
+    // Already stunned by a shock weapon: +2 on this test too (p.124, "all tests"; the maintainer, 2026-10-18).
+    const stunnedNow = SR3EActor.isStunned(this);
+    const soakTN = ShockStun.soakTN(stagedPower, defaultArmor, stunnedNow);
     // SR3 p.132: vehicle armour is hardened — it "can deflect all damage from weapons with a Power (modified by the
     // vehicle's Body, but not by burst or autofire) equal to or less than the Armor Rating"; p.149: "If a weapon's
     // reduced Power (unaugmented by burst or full-auto fire rates) does not exceed the armor's rating, the weapons fire
@@ -9709,7 +9711,7 @@ _prepareCharacter(sys, attr) {
                    No Combat Pool left to soak with.
                  </div>`}
             <label class="sr-soak-label">
-              TN (Power ${stagedPower} − Armour):
+              TN (Power ${stagedPower} − Armour${stunnedNow ? ' + 2 stunned' : ''}):
               <input type="number" class="sr-soak-tn" value="${soakTN}" min="2" max="30" style="width:55px"/>
             </label>
             <label class="sr-soak-label">

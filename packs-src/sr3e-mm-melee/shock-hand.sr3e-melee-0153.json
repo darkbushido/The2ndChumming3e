@@ -11,6 +11,7 @@
       "concealability": "5",
       "reach": "0",
       "damage": "8S Stun",
+      "shock": true,
       "weight": "",
       "availability": "",
       "cost": 0,
