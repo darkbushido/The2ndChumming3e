@@ -3061,6 +3061,13 @@ export const MUTANTS = [
     impl:   w => (w?.system ?? w)?.category === 'ShtG',
   },
   {
+    id:     'roomsweeper-skill-follows-range-category',
+    suite:  'roomsweeper',
+    ...SHOTGUN, method: 'skillCode',
+    was:    'the Roomsweeper rolled the Pistols skill because its HPist category (for heavy-pistol ranges) also picked the skill; it is a shotgun for skill (maintainer ruling, SR3 p.277)',
+    impl:   system => system?.category || null,
+  },
+  {
     id:     'roomsweeper-normal-rounds-still-9s-f',
     suite:  'roomsweeper',
     ...SHOTGUN, method: 'damageCode',

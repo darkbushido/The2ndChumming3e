@@ -75,13 +75,22 @@ export async function run(t) {
   const pistol = { type: 'firearm', system: { category: 'HPist', damage: '9M', laserSight: true } };
   t.ok('…an ordinary heavy pistol still does', guessGearModifiers(shooter, pistol).laserSight);
 
+  /* ── the skill: Shotguns, though the category keeps the heavy-pistol ranges ───────────────────── */
+  t.is('a Roomsweeper rolls Shotguns (maintainer 2026-10-18)', SR3EItem.weaponSkillFor(Shotgun.skillCode(room().system), 'firearm'), 'Shotguns');
+  t.is('…its category (the range bands) is still HPist', room().system.category, 'HPist');
+  t.is('an ordinary heavy pistol still rolls Pistols', SR3EItem.weaponSkillFor(Shotgun.skillCode({ category: 'HPist' }), 'firearm'), 'Pistols');
+  t.is('a plain ShtG rolls Shotguns', SR3EItem.weaponSkillFor(Shotgun.skillCode({ category: 'ShtG' }), 'firearm'), 'Shotguns');
+  t.is('a blank category falls to the name-parsed code (null here)', Shotgun.skillCode({ category: '' }), null);
+  const isrc = read('scripts/documents/SR3EItem.js');
+  t.ok('_getWeaponSkill and _getDefaultAttribute read Shotgun.skillCode', (isrc.match(/Shotgun\.skillCode\(this\.system\)/g) ?? []).length === 2);
+
   /* ── the pack, and the item sheet ─────────────────────────────────────────── */
   const dir = new URL('../packs-src/sr3e-sr3-firearms/', import.meta.url);
   const f = readdirSync(dir).find(n => n.endsWith('.sr3e-firearm-0132.json'));
   const doc = JSON.parse(readFileSync(new URL(f, dir), 'utf8')).doc;
-  t.eq('the Roomsweeper is HPist (heavy-pistol ranges, Pistols), 9S(f), SA, 8(m), Conceal 6 (p.278)',
+  t.eq('the Roomsweeper is HPist (heavy-pistol ranges), Shotguns skill, 9S(f), SA, 8(m), Conceal 6 (p.278)',
     [doc.system.category, doc.system.skill, doc.system.damage, doc.system.mode, doc.system.ammunition, doc.system.concealability],
-    ['HPist', 'Pistols', '9S(f)', 'SA', '8(m)', '6']);
+    ['HPist', 'Shotguns', '9S(f)', 'SA', '8(m)', '6']);
   t.ok('…and carries the shotgun-rules flag', doc.system.shotgunRules === true);
 
   const src = read('scripts/documents/SR3EItem.js');

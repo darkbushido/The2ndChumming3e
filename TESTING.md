@@ -3058,6 +3058,7 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] **Ammunition.** ↻ Reload offers both the heavy-pistol rounds and the shot box (not rifle rounds). Load the **normal rounds**: fire again: no choke row ("Slugs loaded"), damage code **9M**, the soak card applies no flechette rule. Load the **shot**: 9S(f), choke row back.
 - [ ] A Gel or APDS box is not offered for the Roomsweeper.
 - [ ] **Gear.** Give the Roomsweeper a laser sight: the GM's TN window does not pre-tick the laser sight (shotguns get none, p.117).
+- [ ] **Skill.** The Roomsweeper's attack pool uses the **Shotguns** skill (not Pistols); a character with only Pistols defaults (Quickness). The range bands stay heavy-pistol. The owned copy's skill label reads Shotguns after the migration.
 
 ## 66. The Shock Glove's extra 7S Stun (rules check 0.7.0, SR3 p.275-276, p.124)
 

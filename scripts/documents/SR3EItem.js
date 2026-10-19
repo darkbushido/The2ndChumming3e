@@ -3822,7 +3822,9 @@ _getWeaponCode() {
  * @private
  */
 _getWeaponSkill() {
-  return SR3EItem.weaponSkillFor(this._getWeaponCode(), this.type);
+  // A shotgun-rules weapon (the Roomsweeper) uses Shotguns whatever its range category (SR3 p.277).
+  const code = this.type === 'firearm' ? (Shotgun.skillCode(this.system) ?? this._getWeaponCode()) : this._getWeaponCode();
+  return SR3EItem.weaponSkillFor(code, this.type);
 }
 
 /**
@@ -3855,7 +3857,7 @@ static weaponSkillFor(code, type) {
  * @private
  */
 _getDefaultAttribute() {
-  const code = this._getWeaponCode();
+  const code = this.type === 'firearm' ? (Shotgun.skillCode(this.system) ?? this._getWeaponCode()) : this._getWeaponCode();
 
   if (code && SR3EItem.WEAPON_SKILL_MAP[code]) {
     return SR3EItem.WEAPON_SKILL_MAP[code].attribute;

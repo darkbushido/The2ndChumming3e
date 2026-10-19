@@ -76,6 +76,16 @@ export const Shotgun = {
   },
 
   /**
+   * The category code that picks the SKILL (and its default attribute) — not the ranges. A shotgun-rules weapon
+   * uses the Shotguns skill whatever its category says: the Roomsweeper "uses heavy-pistol ranges, but shotgun
+   * rules" (SR3 p.277) and the maintainer rules it a shotgun for the skill too (2026-10-18), while its HPist
+   * category still gives the heavy-pistol range bands. Everything else keeps its own category.
+   */
+  skillCode(system) {
+    return Shotgun.usesRules(system) ? 'ShtG' : (system?.category || null);
+  },
+
+  /**
    * Is a shotgun-rules weapon of another category (the Roomsweeper) firing NORMAL rounds? SR3 p.277: it
    * "can be loaded with normal rounds instead of shotgun rounds, in which case the weapon does 9M damage."
    *

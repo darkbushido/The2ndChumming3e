@@ -7,7 +7,7 @@
     "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-heavy.svg",
     "system": {
       "category": "HPist",
-      "skill": "Pistols",
+      "skill": "Shotguns",
       "attribute": "quickness",
       "concealability": "6",
       "ammunition": "8(m)",

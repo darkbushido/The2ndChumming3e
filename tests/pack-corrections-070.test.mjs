@@ -264,6 +264,8 @@ export async function run(t) {
   const room = (name, sy) => fx(it('firearm', name, { bookPage: 'sr3.278', category: 'HPist', mode: 'SA', ...sy }));
   t.eq('Roomsweeper: shipped (no flag) -> shotgunRules', room('Rmngton Roomsweeper ShG', {}), { 'system.shotgunRules': true });
   t.eq('Roomsweeper: shipped false -> shotgunRules', room('Rmngton Roomsweeper ShG', { shotgunRules: false }), { 'system.shotgunRules': true });
+  t.eq('Roomsweeper: the shipped Pistols skill -> Shotguns (maintainer 2026-10-18)', room('Rmngton Roomsweeper ShG', { skill: 'Pistols', shotgunRules: true }), { 'system.skill': 'Shotguns' });
+  t.is('Roomsweeper: a GM-chosen skill is left alone', room('Rmngton Roomsweeper ShG', { skill: 'Heavy Weapons', shotgunRules: true }), null);
   t.is('Roomsweeper: already ticked -> nothing', room('Rmngton Roomsweeper ShG', { shotgunRules: true }), null);
   t.eq('a hand-made "Remington Roomsweeper" heavy pistol is flagged too', fx(it('firearm', 'Remington Roomsweeper', { category: 'HPist' })), { 'system.shotgunRules': true });
   t.is('...a same-named item of another category is left alone', fx(it('firearm', 'Remington Roomsweeper', { category: 'ShtG' })), null);
