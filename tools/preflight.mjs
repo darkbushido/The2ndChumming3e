@@ -26,6 +26,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { parseProgress, heartbeat } from './lib/progress.mjs';
+import { parseE2EResult, explainE2E } from './lib/e2e-summary.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -208,10 +209,15 @@ if (WANT_E2E && !FAST) {
     // only once it has finished when its output is piped, as it is here.
     const r = await run('node', [path.join(ROOT, 'node_modules/@playwright/test/cli.js'), 'test',
       '--reporter=list,./tests/e2e/progress-reporter.mjs'], { timeout: 30 * 60_000 });
-    const m = r.out.match(/(\d+) passed[^\n]*/);
-    record('e2e (Playwright)', r.ok, m ? m[0] : tail(r.out, 14),
-      'npx playwright test. A failure that dies in milliseconds usually means a client had not '
-      + 'joined yet — re-run alone before treating it as a code fault.');
+    // ⚠ A failed run is explained from the reporter's E2E-RESULT line, never by its "N passed"
+    // count — that hid every failing test and its error (tools/lib/e2e-summary.mjs).
+    if (r.ok) {
+      const m = r.out.match(/(\d+) passed[^\n]*/);
+      record('e2e (Playwright)', true, m ? m[0] : tail(r.out, 3));
+    } else {
+      const { detail, hint } = explainE2E(parseE2EResult(r.out), tail(r.out, 14));
+      record('e2e (Playwright)', false, detail, hint);
+    }
   }
 } else skip('e2e (Playwright)', WANT_E2E ? 'skipped (--fast)' : 'not requested (pass --e2e)');
 
@@ -290,7 +296,7 @@ for (const r of results) {
   console.log(`${r.skipped ? 'SKIP' : r.ok ? 'PASS' : 'FAIL'}  ${r.name.padEnd(width)}  ${r.detail.split('\n')[0]}`);
   if (!r.ok) {
     for (const line of r.detail.split('\n').slice(1)) console.log(`        │ ${line}`);
-    if (r.hint) console.log(`        → ${r.hint}`);
+    if (r.hint) console.log(r.hint.split('\n').map(h => `        → ${h}`).join('\n'));
   }
 }
 console.log('─'.repeat(60));

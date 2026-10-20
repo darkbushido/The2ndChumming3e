@@ -114,6 +114,20 @@ test.describe('spellcasting — caster and target act on their own halves', () =
     // been closed" and points at teardown rather than at the selector.
     await answerDialog(caster.page, /Cast Manabolt/i, /^next$/i);
     await selectTarget(caster.page, VICTIM);
+
+    // ⚠ Willing targets (TODO 191, SR3 p.183): every spell but an Elemental one now asks, on the
+    // caster, which targets are willing — BEFORE the GM window. Left unanswered, the GM window
+    // never opens and the spec times out waiting for it on the GM's page, nowhere near the
+    // cause (that is how this was found, 2026-10-20). A Combat spell ticks nobody by default
+    // (the maintainer's 0.7.0 ruling); a ticked victim gets no Resist button, which would leave
+    // this spec nothing to assert — so the default is checked, not just accepted.
+    const willing = caster.page.locator('.application.dialog, dialog[open]')
+      .filter({ has: caster.page.locator('.window-title', { hasText: /willing targets\?/i }) }).first();
+    await willing.waitFor({ state: 'visible', timeout: 20_000 });
+    await expect(willing.locator('input[name="willing"]:checked'),
+      'a Combat spell defaults every target to unwilling').toHaveCount(0);
+    await willing.getByRole('button', { name: /^cast$/i }).click();
+
     await answerDialog(gm.page, /^GM — /, /set target number/i, 30_000);
     await answerDialog(caster.page, /Spell Pool/i, /confirm/i);
 
