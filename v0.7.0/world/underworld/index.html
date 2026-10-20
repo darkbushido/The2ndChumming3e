@@ -1,0 +1,644 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.7.0/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.7.0/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(2)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(6) > ul > li:nth-child(2) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(6) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(6) > ul > li:nth-child(2) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(6) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(6) > ul.nav-list > li.nav-list-item:nth-child(2) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.7.0/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.7.0/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>The Underworld | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="The Underworld" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.7.0/world/underworld/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.7.0/world/underworld/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="The Underworld" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"The Underworld","url":"https://darkbushido.github.io/The2ndChumming3e/v0.7.0/world/underworld/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.7.0/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/weapons/" class="nav-list-link">Weapons</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/healing/" class="nav-list-link">Healing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/karma/" class="nav-list-link">Karma</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/decking-defragged/" class="nav-list-link">Decking (Matrix Defragged)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/decking/" class="nav-list-link">Decking (SR3 core)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/rigging/" class="nav-list-link">Rigging</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/vehicles/" class="nav-list-link">Vehicles</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/drones/" class="nav-list-link">Drones</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/spells/" class="nav-list-link">Spells</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/physical-adepts/" class="nav-list-link">Physical Adepts</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/initiation/" class="nav-list-link">How to Initiate</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/combat-medic/" class="nav-list-link">Combat Medic</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Sixth World submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/world/" class="nav-list-link">The Sixth World</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/world/megacorporations/" class="nav-list-link">Megacorporations</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/world/underworld/" class="nav-list-link">The Underworld</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/world/politics-and-security/" class="nav-list-link">Politics, Police & Policlubs</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.7.0</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.7.0/world/">The Sixth World</a></li>
+    <li class="breadcrumb-nav-list-item"><span>The Underworld</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="the-underworld">
+  
+  
+    <a href="#the-underworld" class="anchor-heading" aria-labelledby="the-underworld"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Underworld
+  
+  
+</h1>
+    
+
+<p>The crime syndicates that run the shadow economy, how they fight each
+other, and what they want from runners, as of October 2059. Seattle is the
+example the books give in most detail.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#why-the-syndicates-matter" id="markdown-toc-why-the-syndicates-matter">Why the syndicates matter</a></li>
+  <li><a href="#the-long-war-mafia-against-yakuza--sr3-p35-ns-p97101" id="markdown-toc-the-long-war-mafia-against-yakuza--sr3-p35-ns-p97101">The long war: Mafia against Yakuza  <em>(SR3 p.35; NS p.97–101)</em></a></li>
+  <li><a href="#the-mafia--ns-p97100" id="markdown-toc-the-mafia--ns-p97100">The Mafia  <em>(NS p.97–100)</em></a></li>
+  <li><a href="#the-yakuza--ns-p100102" id="markdown-toc-the-yakuza--ns-p100102">The Yakuza  <em>(NS p.100–102)</em></a></li>
+  <li><a href="#the-triads--ns-p102104" id="markdown-toc-the-triads--ns-p102104">The Triads  <em>(NS p.102–104)</em></a></li>
+  <li><a href="#the-seoulpa-rings--ns-p104106" id="markdown-toc-the-seoulpa-rings--ns-p104106">The Seoulpa Rings  <em>(NS p.104–106)</em></a></li>
+  <li><a href="#gangs" id="markdown-toc-gangs">Gangs</a></li>
+</ol>
+
+<blockquote class="note">
+  <p><em>New Seattle</em>’s underworld chapter is written in character. The Mafia
+section is a stolen letter from a consigliere, and the Seoulpa section
+comes from leaked Lone Star files <em>(NS p.97–106)</em>. Treat the details as
+what those sources believe.</p>
+</blockquote><hr />
+<h2 id="why-the-syndicates-matter">
+  
+  
+    <a href="#why-the-syndicates-matter" class="anchor-heading" aria-labelledby="why-the-syndicates-matter"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Why the syndicates matter
+  
+  
+</h2>
+    
+
+<p>The SR3 introduction says the Mafia, the Yakuza and the other syndicates
+“have grown explosively”, because their networks supply anything people
+will buy <em>(SR3 p.8)</em>. In Seattle, the city’s position as a UCAS island
+inside NAN territory, near the sea route to Russia, makes it a major
+smuggling port for every syndicate <em>(NS p.82)</em>. The syndicates hire runners
+through <strong>street Johnsons</strong>, who have less money than corp Johnsons but can
+offer protection, illegal services or extra bodies <em>(MJLBB p.18)</em>.</p><hr />
+<h2 id="the-long-war-mafia-against-yakuza--sr3-p35-ns-p97101">
+  
+  
+    <a href="#the-long-war-mafia-against-yakuza--sr3-p35-ns-p97101" class="anchor-heading" aria-labelledby="the-long-war-mafia-against-yakuza--sr3-p35-ns-p97101"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The long war: Mafia against Yakuza  <em>(SR3 p.35; NS p.97–101)</em>
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Year</th>
+      <th style="text-align: left">What happened</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">2030</td>
+      <td style="text-align: left">War breaks out in Seattle when the leaders of both syndicates are assassinated. After many deaths, the exhausted organisations call a truce <em>(SR3 p.35)</em>. NS puts the ceasefire in 2031 <em>(NS p.97)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">2032</td>
+      <td style="text-align: left">The yakuza in Japan send <strong>Korean bosses</strong> to rebuild the Seattle organisation <em>(SR3 p.35)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">2042–44</td>
+      <td style="text-align: left">The Japanese yakuza bosses purge the Korean bosses they had sent to rebuild Seattle. The survivors form the <strong>Seoulpa Rings</strong> <em>(SR3 p.35; NS p.101)</em>. <em>The sources disagree on the year: SR3 says 2042, NS p.101 says 2043, and NS p.104 says 2044.</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">2044</td>
+      <td style="text-align: left"><strong>Hanzo Shotozumi</strong> is made oyabun of Seattle. His strong-arm tactics bring the Mafia’s <strong>James O’Malley</strong> back to fight him <em>(SR3 p.35)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">2058</td>
+      <td style="text-align: left">Don O’Malley is shot outside his home on New Year’s Day. An all-out mob war follows between the Mafia, Yakuza, Triads and Rings <em>(SR3 p.35; NS p.97)</em>. NS says the killer worked for an organisation called <strong>Chimera</strong> <em>(NS p.97)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">2058–59</td>
+      <td style="text-align: left">The yakuza seize large parts of Seattle’s criminal markets in the confusion <em>(NS p.101)</em>. The Mafia families fight over who will lead Seattle, and the Commissione sends <strong>Don Leo “the Lion” McCaskill</strong> of Milwaukee to oversee the situation <em>(NS p.97)</em>.</td>
+    </tr>
+  </tbody>
+</table></div><hr />
+<h2 id="the-mafia--ns-p97100">
+  
+  
+    <a href="#the-mafia--ns-p97100" class="anchor-heading" aria-labelledby="the-mafia--ns-p97100"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Mafia  <em>(NS p.97–100)</em>
+  
+  
+</h2>
+    
+
+<p>It began on Seattle’s docks and in its labour unions, and was run from
+Chicago. Since O’Malley’s death, <strong>who will be capo of Seattle</strong> is the
+question of the moment. His daughter <strong>Rowena O’Malley</strong> took over the
+Finnigan Family within days and made a strong bid for it; <strong>Maurice
+“Butcher” Bigio</strong> is the other contender. The O’Malley camp believes Bigio
+arranged O’Malley’s death <em>(NS p.97–98, p.100)</em>.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Family</th>
+      <th style="text-align: left">Leader</th>
+      <th style="text-align: left">Territory and business</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Bigio</strong></td>
+      <td style="text-align: left">Maurice “Butcher” Bigio</td>
+      <td style="text-align: left">Tacoma and the south: dock protection, smuggling, fencing, hijacking yakuza shipments, loan-sharking.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Finnigan</strong></td>
+      <td style="text-align: left">Rowena O’Malley, a Harvard lawyer, with “Uncle Al” Cavalieri</td>
+      <td style="text-align: left">Downtown waterfront smuggling (shared with the yakuza and the Choson Ring), and Bellevue. Old Mary Finnigan opposes her.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Ciarniello</strong></td>
+      <td style="text-align: left">Vince “Numbers” Ciarniello</td>
+      <td style="text-align: left">Everett and Snohomish: gambling at Casino Corner, smuggling on the Everett docks. He sides with whoever looks safest.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Conflicts:</strong> the families fight the yakuza first and each other second.
+An ambitious lieutenant might hire runners to do things the rest of the
+Family mustn’t know about <em>(MJLBB p.53–54)</em>.</p><hr />
+<h2 id="the-yakuza--ns-p100102">
+  
+  
+    <a href="#the-yakuza--ns-p100102" class="anchor-heading" aria-labelledby="the-yakuza--ns-p100102"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Yakuza  <em>(NS p.100–102)</em>
+  
+  
+</h2>
+    
+
+<p>The yakuza followed the Japanese corps to Seattle. The Seattle clans answer
+to <strong>Hanzo Shotozumi</strong>, who was made oyabun of Seattle by <strong>Akira Watada</strong>
+of the powerful <strong>Watada-rengo</strong> in Japan and told to rebuild a traditional,
+loyal organisation. Since O’Malley’s death they have become the most
+powerful syndicate in the Pacific Northwest, and Shotozumi’s ambition has
+grown with them <em>(NS p.101)</em>.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Group</th>
+      <th style="text-align: left">Leader</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Shotozumi’s organisation</strong></td>
+      <td style="text-align: left">Hanzo Shotozumi</td>
+      <td style="text-align: left">Downtown and Tacoma: smuggling, gambling, computer crime. Its <strong>sokaiya</strong> branch works on corporations through stock purchases and blackmail.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Nishidon-gumi</strong></td>
+      <td style="text-align: left">Isao Nishidon</td>
+      <td style="text-align: left">The oldest clan. Smuggling in Puyallup and Redmond, and the Barrens chip trade. Shotozumi’s main rival among the Seattle clans.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Shigeda-gumi</strong></td>
+      <td style="text-align: left">Takeo Shigeda</td>
+      <td style="text-align: left">The smallest clan. Everett, Snohomish, and parts of Redmond. It is progressive, and admits more magicians and women.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Conflicts:</strong> <strong>Mitsuhama</strong> calls on the yakuza for its “special
+problems” <em>(NS p.92–93)</em>. The <em>sokaiya</em> target corps in the <strong>Pacific
+Prosperity Group</strong>, which brings them into conflict with the Triads
+<em>(NS p.102)</em>.</p><hr />
+<h2 id="the-triads--ns-p102104">
+  
+  
+    <a href="#the-triads--ns-p102104" class="anchor-heading" aria-labelledby="the-triads--ns-p102104"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Triads  <em>(NS p.102–104)</em>
+  
+  
+</h2>
+    
+
+<p>Chinese syndicates that control Hong Kong and most of mainland China. In
+Seattle they’re junior to the Mafia and the Yakuza, but rising: the city
+leans toward the PPG, which is opening trade with Hong Kong. Most of their
+money comes from <strong>smuggling</strong>. The Triads take metahumans and women more
+readily than other syndicates do <em>(NS p.102; MJLBB p.54)</em>.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Triad</th>
+      <th style="text-align: left">Leader</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Yellow Lotus</strong></td>
+      <td style="text-align: left">Lodgemaster Zheng Li Kwan, an initiated adept</td>
+      <td style="text-align: left">The largest. It recruits orks heavily and is strong in Puyallup. Runners fear its incense master, Su Cheng.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Eighty-Eights</strong></td>
+      <td style="text-align: left">Rick Wu</td>
+      <td style="text-align: left">Modern, and heavily cybered. Gambling and vice in Everett, Bellevue and Puyallup. Allied with the <strong>Tigers</strong> gang.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Octagon</strong></td>
+      <td style="text-align: left">David Gao</td>
+      <td style="text-align: left">The weakest. It has allied with the Yellow Lotus. Its incense master, <strong>Chen Kwan-Ti</strong>, is rumoured to work for the great dragon <strong>Lung</strong>.</td>
+    </tr>
+  </tbody>
+</table></div><hr />
+<h2 id="the-seoulpa-rings--ns-p104106">
+  
+  
+    <a href="#the-seoulpa-rings--ns-p104106" class="anchor-heading" aria-labelledby="the-seoulpa-rings--ns-p104106"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Seoulpa Rings  <em>(NS p.104–106)</em>
+  
+  
+</h2>
+    
+
+<p>Small Korean-led gangs descended from the survivors of the purge. Seattle
+has anywhere from a couple of dozen to fifty of them. They are the
+“wild cards”. Most hate the yakuza.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Ring</th>
+      <th style="text-align: left">Turf</th>
+      <th style="text-align: left">Business</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Choson</strong></td>
+      <td style="text-align: left">Downtown waterfront</td>
+      <td style="text-align: left">Dock smuggling. Fights the yakuza-backed First Nations gang.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Divine Revenge</strong></td>
+      <td style="text-align: left">Bellevue</td>
+      <td style="text-align: left">Blackmail, influence peddling, fencing. It exists to destroy the yakuza.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Komun’go</strong></td>
+      <td style="text-align: left">Redmond</td>
+      <td style="text-align: left">Smuggling, protection, information. Uses magic openly.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Phantom Lake</strong></td>
+      <td style="text-align: left">Bellevue</td>
+      <td style="text-align: left">Smuggling across Lake Sammamish.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Red and Yellow</strong></td>
+      <td style="text-align: left">Renton</td>
+      <td style="text-align: left">Deckers selling data, and protection rackets that use viruses.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Tartarus</strong></td>
+      <td style="text-align: left">Puyallup Underground</td>
+      <td style="text-align: left">Smuggling and organlegging. Linked to the street drug <em>shade</em>.</td>
+    </tr>
+  </tbody>
+</table></div><hr />
+<h2 id="gangs">
+  
+  
+    <a href="#gangs" class="anchor-heading" aria-labelledby="gangs"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Gangs
+  
+  
+</h2>
+    
+
+<p>Below the syndicates are the street gangs, often allied with them. The
+<strong>Tigers</strong> work with the Eighty-Eights <em>(NS p.103)</em>. The all-elf
+<strong>Ancients</strong> control smuggling from the Tir <em>(NS p.106)</em>. <em>New Seattle</em>
+covers the major gangs from p.106 onward, and each district’s gangs in its
+district chapters.</p>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+

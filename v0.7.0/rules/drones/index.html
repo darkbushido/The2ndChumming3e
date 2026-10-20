@@ -1,0 +1,968 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.7.0/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.7.0/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(11)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(11) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(2) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(11) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list > li.nav-list-item:nth-child(11) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.7.0/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.7.0/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Drones | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Drones" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.7.0/rules/drones/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.7.0/rules/drones/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Drones" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"Drones","url":"https://darkbushido.github.io/The2ndChumming3e/v0.7.0/rules/drones/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.7.0/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/weapons/" class="nav-list-link">Weapons</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/healing/" class="nav-list-link">Healing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/karma/" class="nav-list-link">Karma</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/decking-defragged/" class="nav-list-link">Decking (Matrix Defragged)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/decking/" class="nav-list-link">Decking (SR3 core)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/rigging/" class="nav-list-link">Rigging</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/vehicles/" class="nav-list-link">Vehicles</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/drones/" class="nav-list-link">Drones</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/spells/" class="nav-list-link">Spells</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/physical-adepts/" class="nav-list-link">Physical Adepts</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/initiation/" class="nav-list-link">How to Initiate</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/combat-medic/" class="nav-list-link">Combat Medic</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Sixth World submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/world/" class="nav-list-link">The Sixth World</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/world/megacorporations/" class="nav-list-link">Megacorporations</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/world/underworld/" class="nav-list-link">The Underworld</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/world/politics-and-security/" class="nav-list-link">Politics, Police & Policlubs</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.7.0</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/">Rules</a></li>
+    <li class="breadcrumb-nav-list-item"><span>Drones</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="drones">
+  
+  
+    <a href="#drones" class="anchor-heading" aria-labelledby="drones"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Drones
+  
+  
+</h1>
+    
+
+<p>Running unmanned vehicles from a remote-control deck: jumping into one
+drone or sitting in the captain’s chair, the network and its subscriber
+list, the actions a rigger can take, giving a drone orders, and the
+drones in the core rulebook. Driving and vehicle combat are on
+<a href="../rigging/">Rigging</a>, and vehicle statistics on <a href="../vehicles/">Vehicles</a>.
+From the core rulebook <em>(SR3 p.136–137, p.154–157, p.306, p.311–312)</em>.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#what-makes-a-drone--sr3-p154-p306" id="markdown-toc-what-makes-a-drone--sr3-p154-p306">What makes a drone  <em>(SR3 p.154, p.306)</em></a></li>
+  <li><a href="#jumped-in-or-the-captains-chair--sr3-p154" id="markdown-toc-jumped-in-or-the-captains-chair--sr3-p154">Jumped in, or the captain’s chair  <em>(SR3 p.154)</em></a></li>
+  <li><a href="#the-remote-control-network--sr3-p154156" id="markdown-toc-the-remote-control-network--sr3-p154156">The remote-control network  <em>(SR3 p.154–156)</em></a>    <ol>
+      <li><a href="#subscriber-lists--sr3-p156" id="markdown-toc-subscriber-lists--sr3-p156">Subscriber lists  <em>(SR3 p.156)</em></a></li>
+      <li><a href="#range--sr3-p136137" id="markdown-toc-range--sr3-p136137">Range  <em>(SR3 p.136–137)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#a-riggers-actions-with-a-deck--sr3-p156157" id="markdown-toc-a-riggers-actions-with-a-deck--sr3-p156157">A rigger’s actions with a deck  <em>(SR3 p.156–157)</em></a></li>
+  <li><a href="#giving-orders-the-comprehension-test--sr3-p157" id="markdown-toc-giving-orders-the-comprehension-test--sr3-p157">Giving orders: the Comprehension Test  <em>(SR3 p.157)</em></a></li>
+  <li><a href="#dump-shock--sr3-p156" id="markdown-toc-dump-shock--sr3-p156">Dump shock  <em>(SR3 p.156)</em></a></li>
+  <li><a href="#the-core-rulebooks-drones--sr3-p311312" id="markdown-toc-the-core-rulebooks-drones--sr3-p311312">The core rulebook’s drones  <em>(SR3 p.311–312)</em></a></li>
+  <li><a href="#doing-it-in-the-2nd-chumming-foundry" id="markdown-toc-doing-it-in-the-2nd-chumming-foundry">Doing it in The 2nd Chumming (Foundry)</a></li>
+</ol><hr />
+<h2 id="what-makes-a-drone--sr3-p154-p306">
+  
+  
+    <a href="#what-makes-a-drone--sr3-p154-p306" class="anchor-heading" aria-labelledby="what-makes-a-drone--sr3-p154-p306"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> What makes a drone  <em>(SR3 p.154, p.306)</em>
+  
+  
+</h2>
+    
+
+<p>A drone is any unmanned vehicle that can be run over a rigger network,
+from a matchbox-sized car to a modified sports car. What sets it apart is
+its <strong>Pilot Rating</strong>: its own self-piloting system, which lets it act on
+its own to a limited degree.</p>
+
+<ul>
+  <li>A drone must be <strong>adapted for rigger control</strong>. Drones that can’t carry
+passengers usually come adapted. A passenger vehicle needs a
+<strong>remote-control interface</strong>, 2,500¥ × Body, which gives it a <strong>Pilot
+Rating of 1</strong> and needs Sensor 1 or more <em>(SR3 p.306)</em>.</li>
+  <li>It needs a datajack system only if a rigger means to jack into it
+physically.</li>
+</ul>
+<h2 id="jumped-in-or-the-captains-chair--sr3-p154">
+  
+  
+    <a href="#jumped-in-or-the-captains-chair--sr3-p154" class="anchor-heading" aria-labelledby="jumped-in-or-the-captains-chair--sr3-p154"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Jumped in, or the captain’s chair  <em>(SR3 p.154)</em>
+  
+  
+</h2>
+    
+
+<p>Every drone affiliated with the rigger’s deck runs in one of two modes, and
+the rigger runs the whole network in one of two ways.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left">How it works</th>
+      <th style="text-align: left">Dice</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Primary drone</strong></td>
+      <td style="text-align: left">The rigger <strong>jumps in</strong>: controls it as if jacked directly into it. Only <strong>one</strong> at a time.</td>
+      <td style="text-align: left">The rigger’s skills, plus <strong>Combat and Control Pool</strong>, and every rigger bonus.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Secondary drones</strong></td>
+      <td style="text-align: left">Everything else on the network.</td>
+      <td style="text-align: left">The drone’s <strong>Pilot Rating</strong> in place of skill or Attribute. <strong>No pools.</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Captain’s chair</strong></td>
+      <td style="text-align: left">The rigger jumps into none and supervises them all from the deck’s master control.</td>
+      <td style="text-align: left">Every drone is secondary: Pilot Ratings, no pools.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<ul>
+  <li><strong>While jumped in</strong>, the rigger sees through the primary drone. Glancing
+through a secondary drone’s sensors takes a <strong>Complex Action</strong>, and
+orders to secondary drones take <strong>+2</strong> on their Comprehension Tests.</li>
+  <li>The <strong>captain’s chair</strong> is the only way to run drones <strong>without a VCR</strong>:
+a character with a datajack and a remote-control deck can do it.</li>
+</ul>
+
+<blockquote>
+  <p><strong>The book’s example</strong> <em>(SR3 p.154)</em>: Rigger X is in the captain’s chair
+with three drones when a security transport closes in. He still gets his
+usual Initiative bonus, but if he orders the drones to attack, none of
+them gets any of his pool dice, and all roll their Pilot Ratings. He
+jumps into the roto-drone, the closest: now he can use his Control and
+Combat Pools for it. Looking through another drone costs a Complex
+Action, and ordering the Doberman to attack gives it +2 on its
+Comprehension Test.</p>
+</blockquote><hr />
+<h2 id="the-remote-control-network--sr3-p154156">
+  
+  
+    <a href="#the-remote-control-network--sr3-p154156" class="anchor-heading" aria-labelledby="the-remote-control-network--sr3-p154156"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The remote-control network  <em>(SR3 p.154–156)</em>
+  
+  
+</h2>
+    
+
+<p>A <strong>remote-control (RC) deck</strong> is the control station, and drones connect
+to it by radio on three channels: <strong>command</strong> (movement, actions and
+information), <strong>simsense</strong> (sight, sound and simsense) and <strong>system</strong>
+(network integrity and drone status).</p>
+<h3 id="subscriber-lists--sr3-p156">
+  
+  
+    <a href="#subscriber-lists--sr3-p156" class="anchor-heading" aria-labelledby="subscriber-lists--sr3-p156"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Subscriber lists  <em>(SR3 p.156)</em>
+  
+  
+</h3>
+    
+
+<ul>
+  <li>The deck only talks to drones on its <strong>subscriber list</strong>, which keeps
+intruders out.</li>
+  <li>The list holds <strong>twice the deck’s rating</strong> in drones; the deck can
+<strong>actively control</strong> as many as <strong>its rating</strong>.</li>
+  <li>A drone under the deck’s control is <strong>affiliated</strong>; the rigger can see
+through and command it, and it can talk to the other affiliated drones.
+A <strong>non-affiliated</strong> drone acts on its own, cut off from the network.</li>
+  <li><strong>Affiliating or disaffiliating</strong> a drone is a <strong>Simple Action</strong>, so
+swapping one drone for another takes two Simple Actions or one Complex
+Action. A drone can’t act in the Combat Turn it’s affiliated.</li>
+</ul>
+
+<blockquote>
+  <p><strong>The book’s example</strong> <em>(SR3 p.156)</em>: Josie’s Rating 4 deck holds up to 8
+drones on its list but controls 4 at once. She has 6 listed and 4
+affiliated. To bring in a ground patrol vehicle she spends one Simple
+Action dropping her surveillance drone and another adding the GPV, which
+can act from her next Combat Turn.</p>
+</blockquote>
+<h3 id="range--sr3-p136137">
+  
+  
+    <a href="#range--sr3-p136137" class="anchor-heading" aria-labelledby="range--sr3-p136137"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Range  <em>(SR3 p.136–137)</em>
+  
+  
+</h3>
+    
+
+<p>An RC deck has a <strong>Flux Rating of 2</strong>, a range of 2 km all around it.
+Situational modifiers change the Flux Rating before the range is read; the
+modified rating is rounded down to the nearest half.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Flux Range Table <em>(SR3 p.137)</em></th>
+      <th style="text-align: left">Range</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">0</td>
+      <td style="text-align: left">250 meters</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">1 km</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: left">2 km</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: left">4 km</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: left">6 km</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: left">9 km</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: left">12 km</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">7</td>
+      <td style="text-align: left">16 km</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">8</td>
+      <td style="text-align: left">20 km</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">9</td>
+      <td style="text-align: left">25 km</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">10+</td>
+      <td style="text-align: left">(2 × Flux) + 10 km</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Situational Range Modifiers <em>(SR3 p.137)</em></th>
+      <th style="text-align: center">Modifier</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">High elevation (unbroken line of sight to the receiver)</td>
+      <td style="text-align: center">+4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ECCM in use</td>
+      <td style="text-align: center">−(ECCM rating ÷ 2)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Electrical storm</td>
+      <td style="text-align: center">−2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Encryption in use</td>
+      <td style="text-align: center">−0.5</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Humid air</td>
+      <td style="text-align: center">−0.5</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Urban environment</td>
+      <td style="text-align: center">−1</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<blockquote>
+  <p><strong>The book’s example</strong> <em>(SR3 p.137–138)</em>: Josie’s deck has a signal
+amplifier, Flux 6. On a garage roof (+4), with encryption (−0.5) and
+ECCM 3 (−1.5), its effective Flux is 6 + 4 − 0.5 − 1.5 = <strong>8</strong>: 20 km.</p>
+</blockquote>
+
+<p>Jamming, ECM and ECCM against the network are electronic warfare, covered
+with decking: see <a href="../decking-defragged/">Decking</a>.</p><hr />
+<h2 id="a-riggers-actions-with-a-deck--sr3-p156157">
+  
+  
+    <a href="#a-riggers-actions-with-a-deck--sr3-p156157" class="anchor-heading" aria-labelledby="a-riggers-actions-with-a-deck--sr3-p156157"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> A rigger’s actions with a deck  <em>(SR3 p.156–157)</em>
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Action</th>
+      <th style="text-align: center">Free</th>
+      <th style="text-align: center">Simple</th>
+      <th style="text-align: center">Complex</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Turn one drone’s sensors, or its ECM/ECCM, on or off (from the next Combat Turn)</td>
+      <td style="text-align: center">✓</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Arm or disarm one drone’s weapon system (one armed at a time)</td>
+      <td style="text-align: center">✓</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Call up one drone’s status report</td>
+      <td style="text-align: center">✓</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Observe casually through one drone</td>
+      <td style="text-align: center">✓</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Delay an action, or speak a word</td>
+      <td style="text-align: center">✓</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Affiliate or disaffiliate a drone</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">✓</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Observe in detail through one drone</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">✓</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Do the same Free Action on several drones at once (captain’s chair)</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">✓</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Jump into a primary drone, or return to the captain’s chair</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">✓</td>
+      <td style="text-align: center"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Fire an armed weapon on one drone</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">✓</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Issue a command to a drone or a group</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">✓</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Observe through a secondary drone while jumped in</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">✓</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Operate a jumped-in drone: accelerate, brake, position, ram or hide</td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center">✓</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>While jumped in, the rigger can only fire weapons on the primary drone, and
+Combat Pool works only with it <em>(SR3 p.157)</em>.</p>
+<h2 id="giving-orders-the-comprehension-test--sr3-p157">
+  
+  
+    <a href="#giving-orders-the-comprehension-test--sr3-p157" class="anchor-heading" aria-labelledby="giving-orders-the-comprehension-test--sr3-p157"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Giving orders: the Comprehension Test  <em>(SR3 p.157)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li>An order is a <strong>Complex Action</strong>, declared with the rigger’s own actions.
+One order goes to one drone, or to a group getting the <strong>identical</strong>
+order, up to as many as the deck controls.</li>
+  <li>A jumped-in primary drone needs no orders; it’s driven.</li>
+  <li>Orders are one sentence: “circle this area”, “follow that car”. The GM
+rates the order on the Difficulty Number Table to set the TN, and the
+rigger can simplify it first.</li>
+  <li>Roll the drone’s <strong>Pilot Rating</strong> against that TN. <strong>One success</strong> and it
+understands and carries the order out; more successes give it more
+leeway, to the rigger’s benefit.</li>
+  <li>Drones the rigger isn’t driving roll their Pilot Rating for every test,
+with no dice pools. <strong>Every drone acts in the rigger’s Combat Phase,
+after the rigger.</strong></li>
+</ul>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Difficulty Number Table <em>(SR3 p.92)</em></th>
+      <th style="text-align: center">TN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Simple</td>
+      <td style="text-align: center">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Routine</td>
+      <td style="text-align: center">3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Average</td>
+      <td style="text-align: center">4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Challenging</td>
+      <td style="text-align: center">5</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Difficult</td>
+      <td style="text-align: center">6–7</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Strenuous</td>
+      <td style="text-align: center">8</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Extreme</td>
+      <td style="text-align: center">9</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Nearly Impossible</td>
+      <td style="text-align: center">10+</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Sensors</strong> <em>(SR3 p.136)</em>: a drone making a Passive Sensor Test rolls its
+<strong>Pilot Rating</strong> in place of Intelligence; an Active Sensor Test uses its
+Sensor Rating, as any vehicle does.</p>
+<h2 id="dump-shock--sr3-p156">
+  
+  
+    <a href="#dump-shock--sr3-p156" class="anchor-heading" aria-labelledby="dump-shock--sr3-p156"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Dump shock  <em>(SR3 p.156)</em>
+  
+  
+</h2>
+    
+
+<p>Dumped from the network, a rigger is disoriented for ten Combat Turns at +2
+to every test, and resists <strong>(RC deck rating + 4)S Stun</strong> with Willpower.
+The details are on <a href="../rigging/#dump-shock-for-a-rigger">Rigging</a>.</p><hr />
+<h2 id="the-core-rulebooks-drones--sr3-p311312">
+  
+  
+    <a href="#the-core-rulebooks-drones--sr3-p311312" class="anchor-heading" aria-labelledby="the-core-rulebooks-drones--sr3-p311312"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The core rulebook’s drones  <em>(SR3 p.311–312)</em>
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Drone</th>
+      <th style="text-align: center">Handling</th>
+      <th style="text-align: center">Speed</th>
+      <th style="text-align: center">Accel</th>
+      <th style="text-align: center">Body</th>
+      <th style="text-align: center">Armor</th>
+      <th style="text-align: center">Sig</th>
+      <th style="text-align: center">Pilot</th>
+      <th style="text-align: center">Sensor</th>
+      <th style="text-align: center">Cargo</th>
+      <th style="text-align: center">Load</th>
+      <th style="text-align: right">Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">GM-Nissan Doberman</td>
+      <td style="text-align: center">3/5</td>
+      <td style="text-align: center">70</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">2.5</td>
+      <td style="text-align: center">50</td>
+      <td style="text-align: right">25,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">GAZ-Niki GNRD-71 BIS Snooper</td>
+      <td style="text-align: center">4/3</td>
+      <td style="text-align: center">75</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">30</td>
+      <td style="text-align: right">8,500¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Generic surveillance drone</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">70</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">10</td>
+      <td style="text-align: right">8,125¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">MCT-Nissan Roto-drone</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">70</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">150</td>
+      <td style="text-align: right">10,500¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">CyberSpace Designs Dalmatian</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">105</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">80</td>
+      <td style="text-align: right">16,000¥</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>None has Autonav. <em>Rigger 3</em> and <em>State
+of the Art 2064</em> add many more, and the system ships them in its
+compendiums.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Rigger gear <em>(SR3 p.306)</em></th>
+      <th style="text-align: left">Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Remote Control Deck</td>
+      <td style="text-align: left">5,000¥ × Rating</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Remote Control ECCM, Ratings 1–3</td>
+      <td style="text-align: left">Rating × 7,500¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Remote Control ECCM, Ratings 4–6</td>
+      <td style="text-align: left">Rating × 15,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Remote Control ECCM, Ratings 7–9</td>
+      <td style="text-align: left">Rating × 35,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Remote Control ECCM, Rating 10</td>
+      <td style="text-align: left">500,000¥</td>
+    </tr>
+  </tbody>
+</table></div><hr />
+<h2 id="doing-it-in-the-2nd-chumming-foundry">
+  
+  
+    <a href="#doing-it-in-the-2nd-chumming-foundry" class="anchor-heading" aria-labelledby="doing-it-in-the-2nd-chumming-foundry"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Doing it in The 2nd Chumming (Foundry)
+  
+  
+</h2>
+    
+
+<p>A drone is a vehicle actor, from the <em>Drones</em> compendiums (<em>Shadowrun 3rd</em>,
+<em>Rigger 3</em>, <em>State of the Art 2064</em>). Getting it onto a character and its
+control modes are on <a href="../rigging/#drones-and-remote-control">Rigging</a>:</p>
+
+<ul>
+  <li><strong>Auto</strong>, a drone’s natural state, rolls its own Pilot Rating.</li>
+  <li><strong>📡 Drone Comprehension</strong> (the drone’s Stats tab, or the Vehicle Tools
+HUD) rolls the Pilot Rating against the TN the GM sets from the table
+above, with any electronic-warfare degradation on the command channel
+added in.</li>
+  <li><strong>VCR</strong> is jumped into the <strong>primary</strong> drone: the rigger rolls their own
+skills, with Combat and Control Pool. VCR is one vehicle at a time per
+character, the same as a primary drone.</li>
+  <li><strong>RCD</strong> is a <strong>secondary</strong> drone, or the <strong>captain’s chair</strong>: the drone’s
+weapon attacks, Driving Tests and Crash Tests roll its own <strong>Pilot
+Rating</strong>, with no pools. A rigger with a VCR keeps their VCR Initiative,
+as Rigger X does <em>(SR3 p.154)</em>; one with only a datajack and a deck rolls
+ordinary Initiative.</li>
+</ul>
+
+<blockquote class="note">
+  <p>The system doesn’t track subscriber lists or affiliation: the GM keeps
+count of how many drones the deck is controlling.</p>
+</blockquote>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+

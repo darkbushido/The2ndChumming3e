@@ -1,0 +1,1114 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.7.0/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.7.0/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(10)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(10) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(2) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(10) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list > li.nav-list-item:nth-child(10) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.7.0/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.7.0/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Vehicles | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Vehicles" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.7.0/rules/vehicles/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.7.0/rules/vehicles/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Vehicles" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"Vehicles","url":"https://darkbushido.github.io/The2ndChumming3e/v0.7.0/rules/vehicles/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.7.0/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/weapons/" class="nav-list-link">Weapons</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/healing/" class="nav-list-link">Healing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/karma/" class="nav-list-link">Karma</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/decking-defragged/" class="nav-list-link">Decking (Matrix Defragged)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/decking/" class="nav-list-link">Decking (SR3 core)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/rigging/" class="nav-list-link">Rigging</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/vehicles/" class="nav-list-link">Vehicles</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/drones/" class="nav-list-link">Drones</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/spells/" class="nav-list-link">Spells</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/physical-adepts/" class="nav-list-link">Physical Adepts</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/magic/initiation/" class="nav-list-link">How to Initiate</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/hiring/combat-medic/" class="nav-list-link">Combat Medic</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Sixth World submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.7.0/world/" class="nav-list-link">The Sixth World</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/world/megacorporations/" class="nav-list-link">Megacorporations</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/world/underworld/" class="nav-list-link">The Underworld</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/world/politics-and-security/" class="nav-list-link">Politics, Police & Policlubs</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.7.0/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.7.0</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.7.0/rules/">Rules</a></li>
+    <li class="breadcrumb-nav-list-item"><span>Vehicles</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="vehicles">
+  
+  
+    <a href="#vehicles" class="anchor-heading" aria-labelledby="vehicles"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Vehicles
+  
+  
+</h1>
+    
+
+<p>Every vehicle in the core rulebook with its statistics, what it takes to
+rig one, and vehicle weapon mounts. Driving Tests, vehicle combat, damage
+and crashes are on <a href="../rigging/">Rigging</a>; drones have their own page,
+<a href="../drones/">Drones</a>. From the core rulebook <em>(SR3 p.130–133, p.306–312)</em>.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#reading-a-vehicles-statistics--sr3-p130133" id="markdown-toc-reading-a-vehicles-statistics--sr3-p130133">Reading a vehicle’s statistics  <em>(SR3 p.130–133)</em></a></li>
+  <li><a href="#the-core-rulebooks-vehicles--sr3-p307311" id="markdown-toc-the-core-rulebooks-vehicles--sr3-p307311">The core rulebook’s vehicles  <em>(SR3 p.307–311)</em></a></li>
+  <li><a href="#rigging-a-vehicle--sr3-p306" id="markdown-toc-rigging-a-vehicle--sr3-p306">Rigging a vehicle  <em>(SR3 p.306)</em></a></li>
+  <li><a href="#weapon-mounts--sr3-p307-p312" id="markdown-toc-weapon-mounts--sr3-p307-p312">Weapon mounts  <em>(SR3 p.307, p.312)</em></a></li>
+  <li><a href="#doing-it-in-the-2nd-chumming-foundry" id="markdown-toc-doing-it-in-the-2nd-chumming-foundry">Doing it in The 2nd Chumming (Foundry)</a></li>
+</ol><hr />
+<h2 id="reading-a-vehicles-statistics--sr3-p130133">
+  
+  
+    <a href="#reading-a-vehicles-statistics--sr3-p130133" class="anchor-heading" aria-labelledby="reading-a-vehicles-statistics--sr3-p130133"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Reading a vehicle’s statistics  <em>(SR3 p.130–133)</em>
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Statistic</th>
+      <th style="text-align: left">What it means</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Handling</strong></td>
+      <td style="text-align: left">The base TN for Driving Tests, so <strong>lower is better</strong>. Most ground vehicles show two: <strong>on road / off road</strong>, as in 3/8.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Speed</strong></td>
+      <td style="text-align: left">Maximum safe speed, in <strong>meters per Combat Turn</strong>. A fixed-wing aircraft has two, its minimum and its maximum.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Accel</strong></td>
+      <td style="text-align: left">How much each success on a Driving Test can add to Speed in a chase.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Body</strong></td>
+      <td style="text-align: left">Toughness. It also sets the number of weapon mounts.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Armor</strong></td>
+      <td style="text-align: left">Hardened armor: it stops any hit whose Power (after the vehicle’s Body, but not counting burst or autofire) doesn’t beat it.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Sig</strong></td>
+      <td style="text-align: left">Signature: the TN for sensors and guided weapons to lock on.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Autonav</strong></td>
+      <td style="text-align: left">The collision-avoidance and navigation system, a driver’s assistant. It can’t fire weapons.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Pilot</strong></td>
+      <td style="text-align: left">A drone’s own brain. Ordinary vehicles have none (—).</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Sensor</strong></td>
+      <td style="text-align: left">Detection, identification and targeting systems.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Cargo</strong></td>
+      <td style="text-align: left">Cargo Factor: each point is a cube half a meter on a side.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Load</strong></td>
+      <td style="text-align: left">What it can carry, in kilograms.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>The full rules for each are summarized on
+<a href="../rigging/#vehicle-attributes">Rigging</a>.</p><hr />
+<h2 id="the-core-rulebooks-vehicles--sr3-p307311">
+  
+  
+    <a href="#the-core-rulebooks-vehicles--sr3-p307311" class="anchor-heading" aria-labelledby="the-core-rulebooks-vehicles--sr3-p307311"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The core rulebook’s vehicles  <em>(SR3 p.307–311)</em>
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Vehicle</th>
+      <th style="text-align: center">Handling</th>
+      <th style="text-align: center">Speed</th>
+      <th style="text-align: center">Accel</th>
+      <th style="text-align: center">Body</th>
+      <th style="text-align: center">Armor</th>
+      <th style="text-align: center">Sig</th>
+      <th style="text-align: center">Autonav</th>
+      <th style="text-align: center">Sensor</th>
+      <th style="text-align: center">Cargo</th>
+      <th style="text-align: center">Load</th>
+      <th style="text-align: right">Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><em>Cars</em></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Chrysler-Nissan Jackrabbit (electric)</td>
+      <td style="text-align: center">3/8</td>
+      <td style="text-align: center">80</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">100</td>
+      <td style="text-align: right">20,500¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Chrysler-Nissan Jackrabbit (methane)</td>
+      <td style="text-align: center">3/8</td>
+      <td style="text-align: center">90</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">100</td>
+      <td style="text-align: right">16,500¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Eurocar Westwind 2000</td>
+      <td style="text-align: center">3/8</td>
+      <td style="text-align: center">210</td>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">45</td>
+      <td style="text-align: right">57,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Eurocar Westwind 2000 (turbo)</td>
+      <td style="text-align: center">3/8</td>
+      <td style="text-align: center">240</td>
+      <td style="text-align: center">14</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">45</td>
+      <td style="text-align: right">77,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ford Americar</td>
+      <td style="text-align: center">4/8</td>
+      <td style="text-align: center">105</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">12</td>
+      <td style="text-align: center">110</td>
+      <td style="text-align: right">20,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><em>Bikes</em></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Dodge Scoot</td>
+      <td style="text-align: center">3/4</td>
+      <td style="text-align: center">60</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">—</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">10</td>
+      <td style="text-align: right">5,900¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Harley-Davidson Scorpion</td>
+      <td style="text-align: center">4/5</td>
+      <td style="text-align: center">120</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">60</td>
+      <td style="text-align: right">13,500¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Yamaha Rapier</td>
+      <td style="text-align: center">3/6</td>
+      <td style="text-align: center">195</td>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">40</td>
+      <td style="text-align: right">14,200¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><em>Trucks</em></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ares Roadmaster</td>
+      <td style="text-align: center">4/10</td>
+      <td style="text-align: center">90</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">80</td>
+      <td style="text-align: center">2,000</td>
+      <td style="text-align: right">45,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ford-Canada Bison</td>
+      <td style="text-align: center">4/3</td>
+      <td style="text-align: center">135</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">67</td>
+      <td style="text-align: center">1,918</td>
+      <td style="text-align: right">145,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><em>Hovercraft</em></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Chrysler-Nissan G12A (passenger)</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">120</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">12</td>
+      <td style="text-align: center">250</td>
+      <td style="text-align: right">57,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Chrysler-Nissan G12A (cargo)</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">120</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">66</td>
+      <td style="text-align: center">1,000</td>
+      <td style="text-align: right">62,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><em>Boats</em></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Samuvani Criscraft Otter</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">45</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">48</td>
+      <td style="text-align: center">650</td>
+      <td style="text-align: right">32,500¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Sendanko Marlin</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">30</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">12</td>
+      <td style="text-align: center">150</td>
+      <td style="text-align: right">18,750¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><em>Winged planes</em></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Cessna C750</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">135/340</td>
+      <td style="text-align: center">22</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">48</td>
+      <td style="text-align: center">1,100</td>
+      <td style="text-align: right">177,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Cessna C750 (passenger)</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">135/340</td>
+      <td style="text-align: center">22</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">36</td>
+      <td style="text-align: center">500</td>
+      <td style="text-align: right">167,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><em>Rotorcraft</em></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ares Dragon</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">260</td>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">95</td>
+      <td style="text-align: center">3,250</td>
+      <td style="text-align: right">590,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Hughes WK-2 Stallion</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">190</td>
+      <td style="text-align: center">14</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">72</td>
+      <td style="text-align: center">1,250</td>
+      <td style="text-align: right">257,500¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><em>Security vehicles</em></td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: center"> </td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ares Citymaster</td>
+      <td style="text-align: center">5/11</td>
+      <td style="text-align: center">120</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">41</td>
+      <td style="text-align: center">530</td>
+      <td style="text-align: right">136,300¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Chrysler-Nissan Patrol-1</td>
+      <td style="text-align: center">4/8</td>
+      <td style="text-align: center">180</td>
+      <td style="text-align: center">12</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">11</td>
+      <td style="text-align: center">40</td>
+      <td style="text-align: right">43,700¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">GMC Banshee</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">250/1,000</td>
+      <td style="text-align: center">50</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">18</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">29</td>
+      <td style="text-align: center">805</td>
+      <td style="text-align: right">2,560,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">GMC Beachcraft Patroller</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">165</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">65</td>
+      <td style="text-align: center">510</td>
+      <td style="text-align: right">176,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">DocWagon Osprey II</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">380</td>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">12</td>
+      <td style="text-align: center">300</td>
+      <td style="text-align: right">331,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Northrup Wasp (PRC-42B variant)</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">130</td>
+      <td style="text-align: center">15</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">68</td>
+      <td style="text-align: right">54,000¥</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>None of these has a Pilot Rating; the drones are on <a href="../drones/">Drones</a>.
+<em>Rigger 3</em> and <em>State of the Art</em> add many more, and the system ships them
+in its compendiums.</p><hr />
+<h2 id="rigging-a-vehicle--sr3-p306">
+  
+  
+    <a href="#rigging-a-vehicle--sr3-p306" class="anchor-heading" aria-labelledby="rigging-a-vehicle--sr3-p306"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Rigging a vehicle  <em>(SR3 p.306)</em>
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Gear</th>
+      <th style="text-align: left">Cost</th>
+      <th style="text-align: left">What it does</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Datajack port</strong></td>
+      <td style="text-align: left">2,500¥ (5,000¥ for a bike)</td>
+      <td style="text-align: left">Drive by datajack: +1 Reaction for Vehicle Tests and vehicle combat. Not enough for a VCR. Uses 1 Cargo Factor and 15 kg of Load.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Remote-control interface</strong> (“Remote Control Gear”)</td>
+      <td style="text-align: left">2,500¥ × Body</td>
+      <td style="text-align: left">Lets the vehicle join a rigger’s remote-control network as a drone, with a <strong>Pilot Rating of 1</strong>. Needs Sensor 1 or more. Uses no cargo space.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Rigger adaptation</strong> (“Vehicle Control Gear”)</td>
+      <td style="text-align: left">2,500¥</td>
+      <td style="text-align: left">The “black box” that lets a character with a VCR rig it. Includes a datajack port; needs Sensor 1 or more. Uses 1 Cargo Factor and 10 kg of Load.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>A <strong>Vehicle Control Rig</strong> itself is cyberware: each level adds +2 Reaction
+and an Initiative die while rigging, and gives the Control Pool <em>(SR3 p.44,
+p.301)</em>. See <a href="../rigging/#riggers-and-control-pool">Rigging</a>.</p><hr />
+<h2 id="weapon-mounts--sr3-p307-p312">
+  
+  
+    <a href="#weapon-mounts--sr3-p307-p312" class="anchor-heading" aria-labelledby="weapon-mounts--sr3-p307-p312"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Weapon mounts  <em>(SR3 p.307, p.312)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li><strong>Hardpoints</strong> carry heavy and vehicle weapons (MMGs and larger);
+<strong>firmpoints</strong> carry LMGs, assault rifles and smaller.</li>
+  <li>A vehicle’s <strong>Body</strong> sets how many it has: a hardpoint takes 2 points of
+Body, a firmpoint 1. A Body 4 vehicle could have 2 hardpoints, or a
+hardpoint and 2 firmpoints, or 4 firmpoints.</li>
+  <li><strong>Firmpoints</strong> are fixed mounts or pintle mounts; <strong>hardpoints</strong> are
+fixed mounts or turrets.</li>
+  <li><strong>Fixed mounts</strong> fire in a fixed arc, usually forward or back, and
+<strong>halve recoil</strong>, which cancels a heavy weapon’s doubling. The driving
+rigger can fire them. A side-firing fixed mount adds its recoil to the
+vehicle’s Handling and forces a Crash Test. External fixed mounts lower
+the Signature by 1.</li>
+</ul>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Vehicle Mounts <em>(SR3 p.312)</em></th>
+      <th style="text-align: center">CF Cost</th>
+      <th style="text-align: center">Load</th>
+      <th style="text-align: right">Cost</th>
+      <th style="text-align: center">Legal</th>
+      <th style="text-align: center">RC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">External Firmpoint Fixed Mount</td>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">10 kg</td>
+      <td style="text-align: right">750¥</td>
+      <td style="text-align: center">3P-V</td>
+      <td style="text-align: center">−1/2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">External Hardpoint Fixed Mount</td>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">10 kg</td>
+      <td style="text-align: right">2,000¥</td>
+      <td style="text-align: center">3P-V</td>
+      <td style="text-align: center">−1/2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Internal Firmpoint Fixed Mount</td>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">10 kg</td>
+      <td style="text-align: right">1,500¥</td>
+      <td style="text-align: center">3P-V</td>
+      <td style="text-align: center">−1/2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Internal Hardpoint Fixed Mount</td>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">10 kg</td>
+      <td style="text-align: right">3,000¥</td>
+      <td style="text-align: center">3P-V</td>
+      <td style="text-align: center">−1/2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Pintle Mount</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">0</td>
+      <td style="text-align: right">50¥</td>
+      <td style="text-align: center">Legal</td>
+      <td style="text-align: center">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Small Turret</td>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">100 kg</td>
+      <td style="text-align: right">7,500¥</td>
+      <td style="text-align: center">3P-V</td>
+      <td style="text-align: center">−1/2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Mini-turret</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">25 kg</td>
+      <td style="text-align: right">5,000¥</td>
+      <td style="text-align: center">3P-V</td>
+      <td style="text-align: center">−1/2</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Vehicle Weapons <em>(SR3 p.312)</em></th>
+      <th style="text-align: left">Type</th>
+      <th style="text-align: center">Ammo</th>
+      <th style="text-align: center">Mode</th>
+      <th style="text-align: center">Damage</th>
+      <th style="text-align: right">Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Ares Vermicide Autocannon</td>
+      <td style="text-align: left">Cannon</td>
+      <td style="text-align: center">10 (c)</td>
+      <td style="text-align: center">SA</td>
+      <td style="text-align: center">12D</td>
+      <td style="text-align: right">12,000¥</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Water Cannon</td>
+      <td style="text-align: left">“Shotgun”</td>
+      <td style="text-align: center">“20”</td>
+      <td style="text-align: center">“SA”</td>
+      <td style="text-align: center">6M Stun</td>
+      <td style="text-align: right">20,000¥</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>The gamemaster sets the Availability, Legality and Street Index of
+vehicle-grade weapons <em>(SR3 p.312)</em>. Firing a mounted weapon uses
+<strong>Gunnery</strong> <em>(SR3 p.86)</em>.</p><hr />
+<h2 id="doing-it-in-the-2nd-chumming-foundry">
+  
+  
+    <a href="#doing-it-in-the-2nd-chumming-foundry" class="anchor-heading" aria-labelledby="doing-it-in-the-2nd-chumming-foundry"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Doing it in The 2nd Chumming (Foundry)
+  
+  
+</h2>
+    
+
+<p>A vehicle is its own actor with its own sheet. Everything about using one
+is on the Rigging page:</p>
+
+<ul>
+  <li><a href="../rigging/#getting-a-vehicle-onto-a-characters-sheet">Getting a vehicle onto a character’s sheet</a>:
+drag it from the compendiums (<em>Vehicles</em> for <em>Shadowrun 3rd</em>, <em>Rigger 3</em>
+and <em>State of the Art</em>), or <strong>+ Add Vehicle</strong> on the <strong>Vehicles</strong> tab.</li>
+  <li><a href="../rigging/#jacking-in-vcr--rcd--auto">Jacking in: VCR / RCD / Auto</a>.</li>
+  <li><a href="../rigging/#driving-without-rigging-in-foundry">Driving without rigging</a>.</li>
+  <li><a href="../rigging/#driving-tests-and-crash-tests">Driving Tests and Crash Tests</a>.</li>
+  <li><a href="../rigging/#the-chase-scene-combat-tracker">The Chase Scene</a>.</li>
+</ul>
+
+<p>Mounted weapons go on the vehicle sheet’s <strong>Weapons</strong> tab. They don’t use
+clips or reloads.</p>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+

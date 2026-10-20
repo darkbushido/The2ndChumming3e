@@ -1,0 +1,1587 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/latest/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/latest/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(3)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(3) > ul > li:nth-child(3) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(3) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(3) > ul > li:nth-child(3) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(3) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(3) > ul.nav-list > li.nav-list-item:nth-child(3) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/latest/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/latest/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Spells | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Spells" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/latest/magic/spells/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/latest/magic/spells/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Spells" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"Spells","url":"https://darkbushido.github.io/The2ndChumming3e/latest/magic/spells/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/latest/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/latest/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/weapons/" class="nav-list-link">Weapons</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/healing/" class="nav-list-link">Healing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/karma/" class="nav-list-link">Karma</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/decking-defragged/" class="nav-list-link">Decking (Matrix Defragged)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/decking/" class="nav-list-link">Decking (SR3 core)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/rigging/" class="nav-list-link">Rigging</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/vehicles/" class="nav-list-link">Vehicles</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/drones/" class="nav-list-link">Drones</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/latest/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/magic/spells/" class="nav-list-link">Spells</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/magic/physical-adepts/" class="nav-list-link">Physical Adepts</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/magic/initiation/" class="nav-list-link">How to Initiate</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/latest/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/latest/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/combat-medic/" class="nav-list-link">Combat Medic</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Sixth World submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/latest/world/" class="nav-list-link">The Sixth World</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/world/megacorporations/" class="nav-list-link">Megacorporations</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/world/underworld/" class="nav-list-link">The Underworld</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/world/politics-and-security/" class="nav-list-link">Politics, Police & Policlubs</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.7.0</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/latest/magic/">Magic</a></li>
+    <li class="breadcrumb-nav-list-item"><span>Spells</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="spells-learning-them-and-the-street-grimoire">
+  
+  
+    <a href="#spells-learning-them-and-the-street-grimoire" class="anchor-heading" aria-labelledby="spells-learning-them-and-the-street-grimoire"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Spells: learning them, and the Street Grimoire
+  
+  
+</h1>
+    
+
+<p>What a spell’s statistics mean, how a magician learns one and what it
+costs, limited spells, and every spell in the core rulebook’s Street
+Grimoire. Casting one is on <a href="../spellcasting/">Spellcasting, Resistance &amp; Drain</a>.
+From the core rulebook <em>(SR3 p.55, p.60, p.178–181, p.191–198, p.305)</em>.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#reading-a-spell--sr3-p178-p191" id="markdown-toc-reading-a-spell--sr3-p178-p191">Reading a spell  <em>(SR3 p.178, p.191)</em></a>    <ol>
+      <li><a href="#permanent-spells--sr3-p178" id="markdown-toc-permanent-spells--sr3-p178">Permanent spells  <em>(SR3 p.178)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#starting-spells-spell-points--sr3-p55-p60" id="markdown-toc-starting-spells-spell-points--sr3-p55-p60">Starting spells: Spell Points  <em>(SR3 p.55, p.60)</em></a></li>
+  <li><a href="#learning-a-spell--sr3-p180" id="markdown-toc-learning-a-spell--sr3-p180">Learning a spell  <em>(SR3 p.180)</em></a>    <ol>
+      <li><a href="#spell-formula-prices--sr3-p305" id="markdown-toc-spell-formula-prices--sr3-p305">Spell formula prices  <em>(SR3 p.305)</em></a></li>
+      <li><a href="#limited-spells--sr3-p180181" id="markdown-toc-limited-spells--sr3-p180181">Limited spells  <em>(SR3 p.180–181)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#the-street-grimoire--sr3-p191198" id="markdown-toc-the-street-grimoire--sr3-p191198">The Street Grimoire  <em>(SR3 p.191–198)</em></a>    <ol>
+      <li><a href="#combat-spells--sr3-p191" id="markdown-toc-combat-spells--sr3-p191">Combat spells  <em>(SR3 p.191)</em></a></li>
+      <li><a href="#detection-spells--sr3-p192193" id="markdown-toc-detection-spells--sr3-p192193">Detection spells  <em>(SR3 p.192–193)</em></a></li>
+      <li><a href="#health-spells--sr3-p193194" id="markdown-toc-health-spells--sr3-p193194">Health spells  <em>(SR3 p.193–194)</em></a></li>
+      <li><a href="#illusion-spells--sr3-p195196" id="markdown-toc-illusion-spells--sr3-p195196">Illusion spells  <em>(SR3 p.195–196)</em></a></li>
+      <li><a href="#manipulation-spells--sr3-p196198" id="markdown-toc-manipulation-spells--sr3-p196198">Manipulation spells  <em>(SR3 p.196–198)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#doing-it-in-the-2nd-chumming-foundry" id="markdown-toc-doing-it-in-the-2nd-chumming-foundry">Doing it in The 2nd Chumming (Foundry)</a>    <ol>
+      <li><a href="#getting-a-spell-onto-the-sheet" id="markdown-toc-getting-a-spell-onto-the-sheet">Getting a spell onto the sheet</a></li>
+      <li><a href="#learning-with-karma" id="markdown-toc-learning-with-karma">Learning with Karma</a></li>
+      <li><a href="#casting" id="markdown-toc-casting">Casting</a></li>
+    </ol>
+  </li>
+</ol><hr />
+<h2 id="reading-a-spell--sr3-p178-p191">
+  
+  
+    <a href="#reading-a-spell--sr3-p178-p191" class="anchor-heading" aria-labelledby="reading-a-spell--sr3-p178-p191"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Reading a spell  <em>(SR3 p.178, p.191)</em>
+  
+  
+</h2>
+    
+
+<p>Each spell in the Street Grimoire is given as <strong>Type · Target · Duration ·
+Drain</strong>. Its <strong>category</strong> is the section it’s listed in.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Statistic</th>
+      <th style="text-align: left">Values</th>
+      <th style="text-align: left">What it means</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Type</strong></td>
+      <td style="text-align: left"><strong>M</strong> (mana) or <strong>P</strong> (physical)</td>
+      <td style="text-align: left">Physical spells affect physical properties, and <strong>only they affect non-living objects</strong>. Mana spells affect minds, spirits, life force and magic, and <strong>only they affect astral forms</strong> <em>(SR3 p.178)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Target</strong></td>
+      <td style="text-align: left"><strong>W</strong>, <strong>B</strong>, <strong>I</strong>, <strong>OR</strong>, or a number</td>
+      <td style="text-align: left">The target number. W, B and I are the target’s Willpower, Body and Intelligence; <strong>OR</strong> is the Object Resistance Table <em>(SR3 p.182)</em>. An unwilling target also makes a Spell Resistance Test <em>(SR3 p.191)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Duration</strong></td>
+      <td style="text-align: left"><strong>I</strong>, <strong>S</strong> or <strong>P</strong></td>
+      <td style="text-align: left">Instant, Sustained or Permanent. See <a href="../spellcasting/#sustaining-spells">Sustaining spells</a> <em>(SR3 p.178)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Drain</strong></td>
+      <td style="text-align: left">e.g. <strong>+1(M)</strong></td>
+      <td style="text-align: left">A modifier to the Drain Power, which is half the Force rounded down, and the Drain Level <em>(SR3 p.191)</em>.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Range.</strong> Most spells are <strong>line of sight</strong>: if the caster can see the
+target, at any distance, it can be affected. Some, especially health spells,
+need a <strong>touch</strong>. Touching an unwilling target takes an unarmed attack, at
+−1 TN, as part of the spellcasting; one net success is enough
+<em>(SR3 p.178)</em>. <strong>Area</strong> spells affect everything within the caster’s Magic
+in meters, friend and foe, including the caster <em>(SR3 p.181)</em>.</p>
+
+<p><strong>Variable Drain.</strong> Spells that do or heal damage have a Drain Level that
+depends on the damage. If a modifier would push the Drain Level <strong>past
+Deadly</strong>, each level past Deadly adds <strong>+2 to the Drain Power</strong> instead
+<em>(SR3 p.191)</em>.</p>
+
+<blockquote>
+  <p><strong>Example.</strong> A Force 6 Fireball cast at Serious has Drain <strong>+1(Damage
+Level +2)</strong>. Power: 6 ÷ 2 = 3, + 1 = <strong>4</strong>. Level: Serious + 2 is one
+level past Deadly, so the level is <strong>Deadly</strong> and the Power rises by 2, to
+<strong>6</strong>. The caster resists <strong>6D</strong> Drain.</p>
+</blockquote>
+<h3 id="permanent-spells--sr3-p178">
+  
+  
+    <a href="#permanent-spells--sr3-p178" class="anchor-heading" aria-labelledby="permanent-spells--sr3-p178"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Permanent spells  <em>(SR3 p.178)</em>
+  
+  
+</h3>
+    
+
+<p>A permanent spell must be sustained for a base time, set by its Drain
+Level, before its effect becomes permanent. Sorcery successes can be spent
+dividing that time instead of on the effect.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Drain Level</th>
+      <th style="text-align: left">Base time to become permanent</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Light</td>
+      <td style="text-align: left">5 Turns</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Moderate</td>
+      <td style="text-align: left">10 Turns</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Serious</td>
+      <td style="text-align: left">15 Turns</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Deadly</td>
+      <td style="text-align: left">20 Turns</td>
+    </tr>
+  </tbody>
+</table></div><hr />
+<h2 id="starting-spells-spell-points--sr3-p55-p60">
+  
+  
+    <a href="#starting-spells-spell-points--sr3-p55-p60" class="anchor-heading" aria-labelledby="starting-spells-spell-points--sr3-p55-p60"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Starting spells: Spell Points  <em>(SR3 p.55, p.60)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li>A starting <strong>full magician</strong> gets <strong>25 Spell Points</strong>; an <strong>aspected
+magician</strong> gets <strong>35</strong>. Adepts get none.</li>
+  <li>A spell costs <strong>1 Spell Point per point of Force</strong>.</li>
+  <li>Spell Points can also bond foci, at 1 Spell Point per point of Karma, and
+buy starting spirits: 1 per point of Force plus 2 per service owed.</li>
+  <li>More Spell Points cost <strong>25,000¥ each</strong>, up to <strong>50</strong> in all, and only at
+character creation. They can’t be sold back.</li>
+  <li>No starting spell, focus or spirit can be above <strong>Force 6</strong>.</li>
+</ul>
+
+<p>After character creation, spells are learned with Good Karma.</p>
+<h2 id="learning-a-spell--sr3-p180">
+  
+  
+    <a href="#learning-a-spell--sr3-p180" class="anchor-heading" aria-labelledby="learning-a-spell--sr3-p180"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Learning a spell  <em>(SR3 p.180)</em>
+  
+  
+</h2>
+    
+
+<p>You learn from a <strong>teacher</strong> or a <strong>spell formula</strong>, of your own tradition.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left"> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Where you study</strong></td>
+      <td style="text-align: left">A shaman needs a <strong>lodge</strong>, a mage a <strong>Sorcery library</strong>, rated at least the desired Force.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>A teacher</strong></td>
+      <td style="text-align: left">Typically <strong>1,000¥ × the Force</strong>, plus living expenses. They can teach up to the Force they know. With the Instruction skill, every 2 successes on an Instruction (4) Test add a die to your test.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>A formula</strong></td>
+      <td style="text-align: left">Bought from a talismonger. For a spell with variable Drain, price it at its highest Drain.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>The test</strong></td>
+      <td style="text-align: left"><strong>Sorcery</strong>, with Magic Background as a Complementary Skill, against <strong>twice the desired Force</strong>. Shamans get totem modifiers; injury and sustaining modifiers apply.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>The time</strong></td>
+      <td style="text-align: left"><strong>Days equal to the Force, divided by the successes</strong>; at least one day.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>The Karma</strong></td>
+      <td style="text-align: left"><strong>Good Karma equal to the Force.</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Failure</strong></td>
+      <td style="text-align: left">No successes wastes days equal to the Force. Failed study costs no Karma, but the teacher still expects to be paid.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>To raise a spell’s Force you <strong>learn it again</strong> at the new Force
+<em>(SR3 p.178)</em>, at the full cost.</p>
+<h3 id="spell-formula-prices--sr3-p305">
+  
+  
+    <a href="#spell-formula-prices--sr3-p305" class="anchor-heading" aria-labelledby="spell-formula-prices--sr3-p305"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Spell formula prices  <em>(SR3 p.305)</em>
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Drain</th>
+      <th style="text-align: left">Availability</th>
+      <th style="text-align: left">Cost</th>
+      <th style="text-align: center">Street Index</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">L</td>
+      <td style="text-align: left">Force / 24 hrs</td>
+      <td style="text-align: left">Force × 50¥</td>
+      <td style="text-align: center">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">M</td>
+      <td style="text-align: left">Force / 48 hrs</td>
+      <td style="text-align: left">Force × 100¥</td>
+      <td style="text-align: center">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">S</td>
+      <td style="text-align: left">Force / 72 hrs</td>
+      <td style="text-align: left">Force × 500¥</td>
+      <td style="text-align: center">2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">D</td>
+      <td style="text-align: left">Force / 7 days</td>
+      <td style="text-align: left">Force × 1,000¥</td>
+      <td style="text-align: center">2</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Worked example.</strong> A mage learns <strong>Manabolt at Force 5</strong> from a formula.
+Manabolt’s Drain is the damage level, so the formula is priced at its
+highest, D: 5 × 1,000¥ = <strong>5,000¥</strong>, availability 5 / 7 days. She needs a
+Sorcery library of rating 5 or more. Her Sorcery Test is against 5 × 2 =
+<strong>TN 10</strong>. With 1 success it takes 5 ÷ 1 = <strong>5 days</strong>, and it costs <strong>5
+Good Karma</strong>.</p>
+<h3 id="limited-spells--sr3-p180181">
+  
+  
+    <a href="#limited-spells--sr3-p180181" class="anchor-heading" aria-labelledby="limited-spells--sr3-p180181"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Limited spells  <em>(SR3 p.180–181)</em>
+  
+  
+</h3>
+    
+
+<p>A limit makes a spell easier, in one of two ways, chosen <strong>when you learn
+it</strong>: it either lowers the <strong>Force for Drain</strong> (including whether the Drain
+is Physical), or lowers the <strong>Karma cost and the learning TN</strong>, by its
+modifier.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Limit</th>
+      <th style="text-align: center">Modifier</th>
+      <th style="text-align: left">The catch</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Fetish</strong></td>
+      <td style="text-align: center">−1</td>
+      <td style="text-align: left">The fetish, an enchanted reusable object for one spell category, must be touching you to cast. Losing it means attuning a new one: hours of meditation equal to the Force.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Exclusive</strong></td>
+      <td style="text-align: center">−2</td>
+      <td style="text-align: left">Casting and sustaining it is an <strong>Exclusive Action</strong> (p.160).</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>A spell can have both, if they’re for different purposes. An unlimited
+version has to be learned separately.</p>
+
+<p><strong>The book’s example</strong> <em>(SR3 p.181)</em>: Grandfather Bones, Magic 6, learns
+<strong>Fireball at Force 8</strong> with the exclusive limit. Taken off Drain, he
+treats it as Force 6 for Drain, so the Drain isn’t Physical. Taken off
+learning instead, his TN is 8 × 2 − 2 = <strong>14</strong> and it costs <strong>6 Karma</strong>.</p><hr />
+<h2 id="the-street-grimoire--sr3-p191198">
+  
+  
+    <a href="#the-street-grimoire--sr3-p191198" class="anchor-heading" aria-labelledby="the-street-grimoire--sr3-p191198"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Street Grimoire  <em>(SR3 p.191–198)</em>
+  
+  
+</h2>
+    
+
+<p>Every spell in the core rulebook, with its statistics as printed. The last
+column is a short summary; the book has the details.</p>
+<h3 id="combat-spells--sr3-p191">
+  
+  
+    <a href="#combat-spells--sr3-p191" class="anchor-heading" aria-labelledby="combat-spells--sr3-p191"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Combat spells  <em>(SR3 p.191)</em>
+  
+  
+</h3>
+    
+
+<p>The caster picks the <strong>Damage Level</strong> when casting, and it sets the Drain.
+Combat spells <strong>ignore armor</strong>. Damage is <strong>Physical</strong> unless it’s a stun
+spell.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Spell</th>
+      <th style="text-align: center">Type</th>
+      <th style="text-align: center">Target</th>
+      <th style="text-align: center">Duration</th>
+      <th style="text-align: left">Drain</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Death Touch</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">(Damage Level −1)</td>
+      <td style="text-align: left">Touch. One target.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Manabolt</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">(Damage Level)</td>
+      <td style="text-align: left">One target. Living and magical targets only.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Manaball</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">(Damage Level +1)</td>
+      <td style="text-align: left">Area version of Manabolt.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Powerbolt</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">B</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">+1(Damage Level)</td>
+      <td style="text-align: left">One target. Living or not (OR for objects).</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Powerball</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">B</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">+1(Damage Level +1)</td>
+      <td style="text-align: left">Area version of Powerbolt.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Stunbolt</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">−1(Damage Level)</td>
+      <td style="text-align: left"><strong>Stun</strong> damage. One target.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Stunball</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">−1(Damage Level +1)</td>
+      <td style="text-align: left">Area version of Stunbolt.</td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="detection-spells--sr3-p192193">
+  
+  
+    <a href="#detection-spells--sr3-p192193" class="anchor-heading" aria-labelledby="detection-spells--sr3-p192193"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Detection spells  <em>(SR3 p.192–193)</em>
+  
+  
+</h3>
+    
+
+<p>The sense reaches <strong>Force × the caster’s Magic</strong> in meters. The caster must
+touch the subject, who can be the caster. Anyone who doesn’t want to be
+detected can resist with Willpower.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Spell</th>
+      <th style="text-align: center">Type</th>
+      <th style="text-align: center">Target</th>
+      <th style="text-align: center">Duration</th>
+      <th style="text-align: left">Drain</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Analyze Device</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">OR</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">Every 2 successes give a point of skill for the device, up to Force.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Analyze Truth</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">L</td>
+      <td style="text-align: left">Tells whether spoken statements are true.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Clairaudience</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">M</td>
+      <td style="text-align: left">Hear distant sounds.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Clairvoyance</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">M</td>
+      <td style="text-align: left">See distant scenes. Can’t target spells through it.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Combat Sense</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">S</td>
+      <td style="text-align: left">Every 2 successes add a Combat Pool die, up to Force.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Detect Enemies</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">table</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">M</td>
+      <td style="text-align: left">Living beings hostile to the subject.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Detect Individual</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">table</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">L</td>
+      <td style="text-align: left">One named person.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Detect Life</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">table</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">L</td>
+      <td style="text-align: left">All living beings, their number and location.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Detect (Life Form)</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">table</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">−1(L)</td>
+      <td style="text-align: left">One kind of being: Detect Orks, Detect Dragons…</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Detect Magic</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">table</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">L</td>
+      <td style="text-align: left">Foci, spells and spirits.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Detect (Object)</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">table</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">One kind of object: Detect Guns, Detect Explosives…</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Mindlink</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">S</td>
+      <td style="text-align: left">Two willing subjects talk mind to mind.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Mind Probe</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">S</td>
+      <td style="text-align: left">Read a target’s mind; see the results table.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Detection Spell Target Number <em>(SR3 p.192)</em></th>
+      <th style="text-align: center">TN</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Target is in sight of the caster</td>
+      <td style="text-align: center">4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Target is out of sight of the caster</td>
+      <td style="text-align: center">6</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Target is on a different plane</td>
+      <td style="text-align: center">10</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Target is behind an astral barrier</td>
+      <td style="text-align: center">+ Force</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Successes</th>
+      <th style="text-align: left">Detection Spell Results <em>(SR3 p.192)</em></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: left">Only general knowledge, no details.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: left">Detailed information, but some minor parts are inaccurate.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: left">All details are accurate, but minor parts are obscure or missing.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: left">Accurate and detailed information.</td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="health-spells--sr3-p193194">
+  
+  
+    <a href="#health-spells--sr3-p193194" class="anchor-heading" aria-labelledby="health-spells--sr3-p193194"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Health spells  <em>(SR3 p.193–194)</em>
+  
+  
+</h3>
+    
+
+<p>All health spells need a <strong>touch</strong>.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Spell</th>
+      <th style="text-align: center">Type</th>
+      <th style="text-align: center">Target</th>
+      <th style="text-align: center">Duration</th>
+      <th style="text-align: left">Drain</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Antidote</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">Toxin Strength</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: left">(Toxin Damage Level)</td>
+      <td style="text-align: left">Each success cuts the toxin’s Power by 1, up to Force. Cast before it does damage.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Cure Disease</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">Power</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: left">(Disease Damage Level)</td>
+      <td style="text-align: left">Each success cuts the disease’s Power by 1, up to Force.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Decrease (Attribute)</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">10 − Essence</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(S)</td>
+      <td style="text-align: left">Every 2 net successes take 1 from the Attribute. Not cybered Attributes.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Decrease (Cybered Attribute)</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">10 − Essence</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+2(S)</td>
+      <td style="text-align: left">The same, for cybered Attributes only.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Detox</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">Toxin Strength</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: left">−2(Toxin Damage)</td>
+      <td style="text-align: left">Removes a toxin’s side-effects if Force ≥ its Power.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Heal</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">10 − Essence</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: left">(Wound Level)</td>
+      <td style="text-align: left">Each success heals a box of Physical damage, up to Force.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Treat</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">10 − Essence</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: left">−1(Wound Level)</td>
+      <td style="text-align: left">As Heal, within an hour of injury; half the time to become permanent.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Healthy Glow</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: left">L</td>
+      <td style="text-align: left">Cosmetic. Wears off in Force × 24 hours.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Hibernate</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">Suspended animation: metabolism slowed by twice the successes.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Increase (Attribute)</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">Attribute</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">Every 2 successes add 1, up to Force. Not cybered Attributes.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Increase (Cybered Attribute)</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">Attribute</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+2(M)</td>
+      <td style="text-align: left">The same, for cybered Attributes only.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Increase Reaction</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">Reaction</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(S)</td>
+      <td style="text-align: left">Every 2 successes add 1 Reaction, up to Force. Not with cybered Reaction.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Increase Reflexes +1</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">Reaction</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(S)</td>
+      <td style="text-align: left">+1 Initiative die.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Increase Reflexes +2</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">Reaction</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(D)</td>
+      <td style="text-align: left">+2 Initiative dice.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Increase Reflexes +3</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">Reaction</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+3(D)</td>
+      <td style="text-align: left">+3 Initiative dice. None of the three works with wired reflexes or the adept power Improved Reflexes.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Oxygenate</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+2(L)</td>
+      <td style="text-align: left">A Body die per 2 successes against suffocation and gas; breathe underwater.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Prophylaxis</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(L)</td>
+      <td style="text-align: left">A die per 2 successes, up to Force, to resist infection, drugs and toxins, helpful ones included.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Resist Pain</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: left">−2(Damage)</td>
+      <td style="text-align: left">Each success ignores the modifier of one box of Physical damage, up to Force.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Stabilize</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">4 + minutes</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">Stops a Deadly-wounded character dying, if Force ≥ the overflow.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>A character can be magically healed <strong>once</strong> for any set of injuries
+<em>(SR3 p.194)</em>. See <a href="../../rules/healing/">Healing</a>.</p>
+<h3 id="illusion-spells--sr3-p195196">
+  
+  
+    <a href="#illusion-spells--sr3-p195196" class="anchor-heading" aria-labelledby="illusion-spells--sr3-p195196"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Illusion spells  <em>(SR3 p.195–196)</em>
+  
+  
+</h3>
+    
+
+<p>Illusions can’t do lasting harm. <strong>Mana</strong> illusions fool minds, not
+cameras; <strong>physical</strong> illusions fool sensors too. Equal or more successes on
+the Resistance Test see through it. Directed mana illusions are resisted by
+Willpower and physical ones by Intelligence; <strong>indirect</strong> illusions are all
+resisted by Intelligence.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Spell</th>
+      <th style="text-align: center">Type</th>
+      <th style="text-align: center">Target</th>
+      <th style="text-align: center">Duration</th>
+      <th style="text-align: left">Drain</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Confusion</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">S</td>
+      <td style="text-align: left">Directed. +1 to all the target’s TNs per success, up to Force.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Mass Confusion</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">D</td>
+      <td style="text-align: left">Area version of Confusion.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Chaos</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(S)</td>
+      <td style="text-align: left">Physical Confusion; affects sensors too.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Chaotic World</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(D)</td>
+      <td style="text-align: left">Area version of Chaos.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Entertainment</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">L</td>
+      <td style="text-align: left">Area, willing audience. Obvious, entertaining illusions.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Trid Entertainment</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(L)</td>
+      <td style="text-align: left">The same, visible to sensors.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Invisibility</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">M</td>
+      <td style="text-align: left">Indirect. Invisible to normal sight; attackers use the Blind Fire modifier.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Improved Invisibility</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">Fools sensors too.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Mask</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">M</td>
+      <td style="text-align: left">A new appearance, voice and scent of the same size and shape.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Physical Mask</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">Fools sensors too.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Phantasm</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">D</td>
+      <td style="text-align: left">Area. A convincing illusion of anything the caster has seen.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Trid Phantasm</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(D)</td>
+      <td style="text-align: left">Fools sensors too.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Silence</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(S)</td>
+      <td style="text-align: left">Area. +1 per success, up to Force, to hearing Perception; jams sonar and alarms.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Stealth</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">The subject makes no sound.</td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="manipulation-spells--sr3-p196198">
+  
+  
+    <a href="#manipulation-spells--sr3-p196198" class="anchor-heading" aria-labelledby="manipulation-spells--sr3-p196198"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Manipulation spells  <em>(SR3 p.196–198)</em>
+  
+  
+</h3>
+    
+
+<p>Many have a <strong>Threshold</strong>: after the Resistance Test, the caster needs at
+least that many successes, or the spell fails.</p>
+
+<p><strong>Control manipulations</strong> are resisted by Willpower, with a Threshold of
+half the target’s Willpower, rounded down.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Spell</th>
+      <th style="text-align: center">Type</th>
+      <th style="text-align: center">Target</th>
+      <th style="text-align: center">Duration</th>
+      <th style="text-align: left">Drain</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Control Actions</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">Puppet the target’s body, at +4 to its TNs.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Control Emotion</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">An overwhelming emotion of the caster’s choice.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Control Thoughts</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(S)</td>
+      <td style="text-align: left">Command the target’s mind with a Simple Action.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Influence</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">W</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: left">S</td>
+      <td style="text-align: left">One post-hypnotic suggestion.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Elemental manipulations</strong> are <strong>ranged attacks</strong> using Sorcery, base TN 4
+at any range in sight. <strong>Impact armor counts at half</strong>, rounded down. The
+caster picks the Damage Level. They also have secondary effects on the
+surroundings. See <a href="../spellcasting/#elemental-spells">Elemental spells work like guns</a>.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Spell</th>
+      <th style="text-align: center">Type</th>
+      <th style="text-align: center">Target</th>
+      <th style="text-align: center">Duration</th>
+      <th style="text-align: left">Drain</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Acid Stream</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">+1(Damage Level +1)</td>
+      <td style="text-align: left">One target. Choking fumes: +4 TNs in the area for the turn.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Toxic Wave</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">+1(Damage Level +2)</td>
+      <td style="text-align: left">Area version of Acid Stream.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Flamethrower</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">+1(Damage Level +1)</td>
+      <td style="text-align: left">One target. Can set fires and cook off ammunition.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Fireball</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">+1(Damage Level +2)</td>
+      <td style="text-align: left">Area version of Flamethrower.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Lightning Bolt</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">+1(Damage Level +1)</td>
+      <td style="text-align: left">One target. Metallic armor doesn’t help.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ball Lightning</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">+1(Damage Level +2)</td>
+      <td style="text-align: left">Area version of Lightning Bolt.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Telekinetic manipulations</strong> move physical objects.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Spell</th>
+      <th style="text-align: center">Type</th>
+      <th style="text-align: center">Target</th>
+      <th style="text-align: center">Duration</th>
+      <th style="text-align: left">Drain</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Clout</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">(Damage Level)</td>
+      <td style="text-align: left">An invisible punch: a ranged attack doing <strong>Stun</strong>. Impact armor counts.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Fling</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">see text</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">Throw an object of up to Magic kilograms at Strength = Force.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Levitate</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+2(M)</td>
+      <td style="text-align: left">Move an object or person at Magic × successes meters per turn. +1 TN per full 100 kg.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Magic Fingers</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+2(M)</td>
+      <td style="text-align: left">Invisible hands with Strength and Quickness = successes, up to Force; +2 to TNs.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Poltergeist</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(M)</td>
+      <td style="text-align: left">Area. Whirling debris: +2 Visibility, Light Stun each turn.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Transformation manipulations</strong> create or transform matter and energy.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Spell</th>
+      <th style="text-align: center">Type</th>
+      <th style="text-align: center">Target</th>
+      <th style="text-align: center">Duration</th>
+      <th style="text-align: left">Drain</th>
+      <th style="text-align: left">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Armor</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+2(M)</td>
+      <td style="text-align: left">Ballistic and Impact armor equal to Force, on top of worn armor.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Physical Barrier</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+2(S)</td>
+      <td style="text-align: left">A wall or dome of Barrier Rating Force, +1 per 2 successes.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Astral Barrier</td>
+      <td style="text-align: center">M</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(S)</td>
+      <td style="text-align: left">The same, on the astral plane only.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ice Sheet</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">I</td>
+      <td style="text-align: left">+1(S)</td>
+      <td style="text-align: left">A Magic-meter radius of ice. Quickness (Force) Test to stay up; vehicles make a Crash Test.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ignite</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: left">+1(D)</td>
+      <td style="text-align: left">Sets the target alight. Threshold half its Body or Barrier Rating.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Light</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+2(M)</td>
+      <td style="text-align: left">Each success cancels +1 of darkness modifier, up to Force.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Petrify</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">B</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+1(S)</td>
+      <td style="text-align: left">Turns a living target to stone. Threshold half its Body.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Shadow</td>
+      <td style="text-align: center">P</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">S</td>
+      <td style="text-align: left">+2M</td>
+      <td style="text-align: left">A globe of darkness: +1 Visibility per success, up to Force or +8.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><em>Magic in the Shadows</em> adds many more spells <em>(MitS p.140–148)</em>, and the
+system ships those in its own compendium.</p><hr />
+<h2 id="doing-it-in-the-2nd-chumming-foundry">
+  
+  
+    <a href="#doing-it-in-the-2nd-chumming-foundry" class="anchor-heading" aria-labelledby="doing-it-in-the-2nd-chumming-foundry"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Doing it in The 2nd Chumming (Foundry)
+  
+  
+</h2>
+    
+<h3 id="getting-a-spell-onto-the-sheet">
+  
+  
+    <a href="#getting-a-spell-onto-the-sheet" class="anchor-heading" aria-labelledby="getting-a-spell-onto-the-sheet"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Getting a spell onto the sheet
+  
+  
+</h3>
+    
+
+<p>Drag a spell onto the character from the compendiums (<em>Shadowrun 3rd</em>,
+<em>Magic in the Shadows</em> and <em>State of the Art 2064</em> under Spells), and it
+appears on the <strong>Magic</strong> tab with a <strong>Cast</strong> button. Set its learned
+<strong>Force</strong> on the spell. A spell with a Force can be cast at that Force or
+lower, never higher <em>(SR3 p.178)</em>. A spell with no Force recorded isn’t
+capped, and the cast dialog says so.</p>
+<h3 id="learning-with-karma">
+  
+  
+    <a href="#learning-with-karma" class="anchor-heading" aria-labelledby="learning-with-karma"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Learning with Karma
+  
+  
+</h3>
+    
+
+<p>On the <strong>Bio</strong> tab, <strong>Spend Karma…</strong> lists each spell on the sheet under
+Magic. Pick one, enter the <strong>Force</strong> to learn it at, and any <strong>limit
+modifier</strong> taken off the cost. It charges Good Karma equal to the Force,
+less the limit <em>(SR3 p.180–181)</em>, and records the new Force. The purchase
+goes into the 📒 Ledger, and the GM can undo it there.</p>
+
+<p>The Sorcery Test to learn, the days of study, and the teacher’s or
+formula’s price are the GM’s to run. A limit taken off <strong>Drain</strong> instead
+is recorded on the spell, and the cast drains at the lowered Force
+<em>(SR3 p.180)</em>.</p>
+<h3 id="casting">
+  
+  
+    <a href="#casting" class="anchor-heading" aria-labelledby="casting"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Casting
+  
+  
+</h3>
+    
+
+<p><strong>Cast</strong> opens the Force dialog, then the target, then Spell Pool, and rolls.
+Every step after that, from resistance to Drain, is on
+<a href="../spellcasting/">Spellcasting, Resistance &amp; Drain</a>.</p>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+
