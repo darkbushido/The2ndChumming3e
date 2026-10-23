@@ -30,6 +30,9 @@ Two modes (game setting):
 Both end the round and prompt the GM to re-roll.
 
 - **Shift-click** any initiative button (sheet bolt, tracker d20) → physical-dice dialog for typing the result.
+- **Removing a combatant mid-round** (TODO 251, `scripts/data/round-queue.mjs`): a `deleteCombatant` hook (active
+  GM) prunes its slots from the stored queue, holding position; if it was acting, the next one acts now.
+  `nextTurn` prunes too, as a backstop. ⚠ Stale slots made the next combatant act twice and gave the top row extra turns.
 - **Pre-start lock**: before `combat.started` the tracker's per-combatant roll icons are dimmed and
   `pointer-events:none`; initiative is rolled only through "Begin Encounter".
 

@@ -1,5 +1,6 @@
 import { QuickStrike } from '../data/quick-strike.mjs';
 import { ShockStun } from '../data/shock-stun.mjs';
+import { RoundQueue } from '../data/round-queue.mjs';
 
 /**
  * SR3ECombat - Custom Combat with SR2/SR3 initiative modes
@@ -298,6 +299,18 @@ export class SR3ECombat extends Combat {
    * @override
    */
   async nextTurn() {
+    // Backstop for TODO 251: the deleteCombatant hook normally prunes as the combatant leaves. If it did not
+    // (no GM connected then), the acting slot may be the removed one — play the next survivor, don't skip them.
+    const pruned = await this.pruneQueue();
+    if (pruned?.actingRemoved) {
+      if (pruned.index >= pruned.queue.length) return this._newRound();
+      if (pruned.queue[pruned.index].pass !== pruned.removedSlot.pass) {
+        for (const c of this.combatants.contents) await c.actor?.resetRecoil?.();
+      }
+      await this._applySlot(pruned.queue, pruned.index);
+      return this;
+    }
+
     let queue = this.flags?.The2ndChumming3e?.queue ?? null;
     if (!queue?.length) queue = await this.rebuildQueue({ resetIndex: true });
     if (!queue.length) return this._newRound();   // nobody has initiative yet
@@ -315,6 +328,19 @@ export class SR3ECombat extends Combat {
 
     await this._applySlot(queue, next);
     return this;
+  }
+
+  /**
+   * Drop the slots of combatants no longer in this combat (TODO 251, `RoundQueue.prune`), keeping the index on
+   * whoever is acting. Writes only when something was removed; returns the prune result, or null.
+   */
+  async pruneQueue() {
+    const flags = this.flags?.The2ndChumming3e ?? {};
+    if (!flags.queue?.length) return null;
+    const r = RoundQueue.prune(flags.queue, flags.queueIndex ?? 0, this.combatants.contents.map(c => c.id));
+    if (!r.changed) return null;
+    await this.update({ flags: { The2ndChumming3e: { queue: r.queue, queueIndex: r.index } } });
+    return r;
   }
 
   /**

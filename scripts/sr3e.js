@@ -1835,6 +1835,22 @@ Hooks.on('updateCombatant', (combatant, changed) => {
   combat.rebuildQueue().then(() => ui.combat?.render());
 });
 
+// A combatant removed mid-round (the GM taking out someone knocked out) must leave the round's queue too, or
+// its slots stay behind: the next combatant acts twice, and a leftover slot hands someone an extra turn
+// (TODO 251). Pruned as it leaves, holding position; if the ACTING combatant left, the next one acts now —
+// which is also the row Foundry's tracker has already moved to. GM client only, since it writes.
+Hooks.on('deleteCombatant', combatant => {
+  if (!game.users?.activeGM?.isSelf) return;
+  const combat = combatant.parent;
+  if (!combat?.started || typeof combat.pruneQueue !== 'function') return;
+  combat.pruneQueue().then(async r => {
+    // Re-point the tracker at the slot the index now names (its row may have shifted too). Index past the end:
+    // the round is over, and the next End Turn starts the next one.
+    if (r && r.index < r.queue.length) await combat._applySlot(r.queue, r.index);
+    ui.combat?.render();
+  }).catch(err => console.warn('SR3E | pruning the round queue failed', err));
+});
+
 // Action Tracker state resets whenever the combat turn or round changes (covers both the
 // tracker's own buttons and the default next-turn arrow).
 /* A cloud's texture goes with its Region (TODO 164). Regions carry no texture in Foundry v14, so a smoke, gas or

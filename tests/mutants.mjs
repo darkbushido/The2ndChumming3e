@@ -3246,4 +3246,22 @@ export const MUTANTS = [
     was:    'a weapon with no bracketed RC (null) read as having one worth 0, so ticking the box on an Ares Predator dropped its compensation',
     impl:   system => system?.recoilModIntegral !== undefined,
   },
+  {
+    id:     'round-queue-keeps-removed',
+    suite:  'round-queue',
+    module: '../scripts/data/round-queue.mjs', klass: 'RoundQueue', method: 'prune',
+    was:    'a combatant removed mid-round left its slots in the queue: the next combatant acted twice and a leftover slot gave the top tracker row an extra turn (TODO 251, seen in play 2026-10-23)',
+    impl:   (queue, index) => ({ queue: queue ?? [], index: Number(index) || 0, changed: false, actingRemoved: false, removedSlot: null }),
+  },
+  {
+    id:     'round-queue-skips-next-survivor',
+    suite:  'round-queue',
+    module: '../scripts/data/round-queue.mjs', klass: 'RoundQueue', method: 'prune',
+    was:    'pruning the acting combatant without saying so — End Turn then advanced past the survivor the tracker already showed, so they lost their action (TODO 251)',
+    impl:   (queue, index, liveIds) => {
+      const live = new Set(liveIds); const q = queue ?? [];
+      const kept = q.filter(s => live.has(s.id));
+      return { queue: kept, index: q.slice(0, index).filter(s => live.has(s.id)).length, changed: kept.length !== q.length, actingRemoved: false, removedSlot: null };
+    },
+  },
 ];
