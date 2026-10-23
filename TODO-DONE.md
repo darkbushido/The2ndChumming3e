@@ -7487,3 +7487,11 @@ a gyro the two agree. **Fix:** `CombatPool.modForTotal` (`scripts/data/combat-po
 exactly — the smallest modifier that reads the typed total; the sheet passes base + Combat Sense − armour and a
 `data-pool-gyro` flag. A total that cannot be hit (negative, fractional) is rounded to the nearest and warned,
 never refused. Live step: TESTING.md §50. This is a bug fix, so it goes on `main`.
+
+## 248. ✅ Flechette seemed to do nothing against armour — **reported in play, 2026-10-23** — not a bug, closed in ef3b7cf3
+
+Observed: flechette did not appear to affect armour. SR3 p.116 makes flechette *stronger* only against
+unarmoured targets (armoured: max(Impact × 2, Ballistic)), so this may be correct.
+
+**Closed 2026-10-23, the maintainer:** a misremembered rule (flechette assumed to be better against armour).
+The system follows p.116; no change.
