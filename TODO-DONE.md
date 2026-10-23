@@ -7495,3 +7495,14 @@ unarmoured targets (armoured: max(Impact × 2, Ballistic)), so this may be corre
 
 **Closed 2026-10-23, the maintainer:** a misremembered rule (flechette assumed to be better against armour).
 The system follows p.116; no change.
+
+## 251. ✅ The initiative tracker stops working after 4–5 rounds — **reported in play, 2026-10-23** — fixed in 7cd2a4f9
+
+Observed: after four or five rounds the tracker failed. The maintainer had been removing knocked-out
+combatants from combat and suspects that.
+
+**Cause (reproduced in `test-shadowrun`):** a removed combatant's slots stayed in the round's stored queue
+until the next round. Removing the acting combatant made the next one act twice; a leftover later slot fell
+back to `turn: 0` and gave the top tracker row an extra turn. **Fix:** `RoundQueue.prune`
+(`scripts/data/round-queue.mjs`) from a `deleteCombatant` hook and from `nextTurn`. Tests `round-queue`, mutants
+`round-queue-keeps-removed` / `round-queue-skips-next-survivor`; live: 7 rounds with mid-round removals, clean.
