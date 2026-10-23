@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**64 open.** 176 done — see [TODO-DONE.md](TODO-DONE.md).
+**75 open.** 176 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses` |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[241](#241) A player can't end their own turn<br>[242](#242) Tied initiative is listed out of acting order<br>[243](#243) Full Defense carries into the next round<br>[244](#244) Can't find how to make one melee attack against several opponents<br>[245](#245) The melee GM window should pick up Prone<br>[246](#246) NPC-side buttons in their own colour<br>[247](#247) Trim the token status list to what Shadowrun uses<br>[248](#248) Flechette seemed to do nothing against armour<br>[249](#249) Resolve every NPC in a grenade blast at once<br>[250](#250) Remove the blast marker once the blast is resolved<br>[251](#251) The initiative tracker stops working after 4–5 rounds |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -444,6 +444,10 @@ Action economy is **bookkeeping**, not an outcome, so tracking it does not cross
 *"all stats are manually editable"* still applies: every auto-charge must be reversible by the GM
 with one click, and the existing three buttons stay as the manual path.
 
+### Seen in play, 2026-10-23
+
+Melee attacks did not mark the attacker's action on the initiative tracker. Not investigated yet.
+
 ## 49. Nothing models hands — what is held, and how many can be held
 
 > **Built 2026-09-15 on `feature/action-economy`** (0.6; not merged). `hands` on every weapon (0-2,
@@ -511,6 +515,8 @@ row cannot be done properly until accessories are structured data.
 - **Quick Draw is explicitly out of scope** — *"we will need some way for someone to quick draw a
   one-handed weapon if the need arises but that's a problem for another day."* It is specified in
   #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
+
+**Seen in play, 2026-10-23:** grenades that were only carried counted as being in hand. Not investigated yet.
 
 ## 176. Rules check 0.6.1 — Rules the guides state that the code does not implement
 
@@ -587,6 +593,9 @@ The system stores `initiateGrade` and nothing else of *Magic in the Shadows* pp.
   masking, possessing, quickening, reflecting, shielding.
 - **Geasa** (MitS pp.30-33): take one on a lost Magic point, at most unaugmented Willpower, break one and lose all.
 A feature, on a branch; the initiate's Astral Pool and Astral Reaction bonus are being fixed separately (0.7.0).
+
+**Seen in play, 2026-10-23:** an adept can spend Karma on a power point without initiating. The maintainer:
+that purchase should follow the *Magic in the Shadows* rules for it. Not investigated yet (page to find in MitS).
 
 ## 229. Learning spells, and starting Spell Points — **found in the 0.7.0 rules check, 2026-10-18**
 
@@ -2682,6 +2691,62 @@ the ⏳ panel row; a gear "Power Focus (Rating 2)"; the amber "over N"; undoing 
 13. As GM, each purchase's ledger line has a **↺**. It lists the refund and every change, each
     untickable; undoing refunds as a new "↺ Undid: …" line, marks the old one "(undone)", and puts the
     stat back. Undo "Learned <new skill>": the skill item is removed. Players see no ↺.
+
+## 241. A player can't end their own turn — **reported in play, 2026-10-23**
+
+Observed: a player moved their character and clicked End Turn; Foundry said they did not have permission.
+Not investigated yet. Note which seat and the exact message when reproducing. A bug fix, on `main`.
+
+## 242. Tied initiative is listed out of acting order — **reported in play, 2026-10-23**
+
+Observed: when several combatants roll the same initiative, the tracker does not list them in the order they
+will act. Not investigated yet. A bug fix, on `main`.
+
+## 243. Full Defense carries into the next round — **reported in play, 2026-10-23**
+
+Observed: Full Defense stayed in effect the next round. Possibly a regression of `30bab18` ("Full Defense ending
+at a turn boundary", see #7). Not investigated yet. A bug fix, on `main`.
+
+## 244. Can't find how to make one melee attack against several opponents — **reported in play, 2026-10-23**
+
+Observed: the maintainer could not see how to attack more than one opponent in melee. [#38](TODO-DONE.md#38)
+says both halves (ranged and melee, SR3 pp.122-123) were done 2026-08-19. Not investigated yet: either it is
+there and hard to find, or it does not work.
+
+## 245. The melee GM window should pick up Prone — **requested in play, 2026-10-23**
+
+Wanted: when a combatant is prone, the melee GM difficulty window knows it and ticks Prone itself. A feature, on
+a branch.
+
+## 246. NPC-side buttons in their own colour — **requested in play, 2026-10-23**
+
+Observed: on a melee card the GM rolled the player's side by accident. Wanted: buttons for an NPC's side in a
+different colour so the GM can tell them apart. A feature, on a branch.
+
+## 247. Trim the token status list to what Shadowrun uses — **requested in play, 2026-10-23**
+
+Wanted: a shorter status-effect list. Today the system appends its six statuses to Foundry's list and removes
+none of the core ones; there is no setting. A feature, on a branch.
+
+## 248. Flechette seemed to do nothing against armour — **reported in play, 2026-10-23**
+
+Observed: flechette did not appear to affect armour. SR3 p.116 makes flechette *stronger* only against
+unarmoured targets (armoured: max(Impact × 2, Ballistic)), so this may be correct. Not investigated yet:
+check against p.116 with the weapon, ammo and target's armour.
+
+## 249. Resolve every NPC in a grenade blast at once — **requested in play, 2026-10-23**
+
+Observed: the GM resolves each NPC in a blast one by one. Wanted: all NPCs resolved in one step; player
+characters unchanged. A feature, on a branch.
+
+## 250. Remove the blast marker once the blast is resolved — **requested in play, 2026-10-23**
+
+Wanted: the blast marker disappears as soon as everyone in the blast has been resolved. A feature, on a branch.
+
+## 251. The initiative tracker stops working after 4–5 rounds — **reported in play, 2026-10-23**
+
+Observed: after four or five rounds the tracker failed. The maintainer had been removing knocked-out
+combatants from combat and suspects that. Not investigated yet. A bug fix, on `main`.
 
 ### 📌 Notes & parked
 
