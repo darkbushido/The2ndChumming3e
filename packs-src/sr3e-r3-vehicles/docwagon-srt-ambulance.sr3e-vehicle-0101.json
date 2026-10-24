@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0101",
     "name": "DocWagon SRT Ambulance",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/boxvan-docwagon.svg",
     "system": {
       "vehicleType": "car",
       "cost": 341250,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2.5,
+      "height": 6.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/boxvan-docwagon.svg"
+      }
+    }
   },
   "embedded": {}
 }

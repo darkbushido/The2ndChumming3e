@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0099",
     "name": "DocWagon Ares Citymaster",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/armored-truck-docwagon.svg",
     "system": {
       "vehicleType": "military",
       "cost": 677000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2.5,
+      "height": 7,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/armored-truck-docwagon.svg"
+      }
+    }
   },
   "embedded": {}
 }

@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0111",
     "name": "Lone Star Black Mariah USPTV",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/armored-truck-lonestar.svg",
     "system": {
       "vehicleType": "military",
       "cost": 115000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2.5,
+      "height": 7,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/armored-truck-lonestar.svg"
+      }
+    }
   },
   "embedded": {}
 }

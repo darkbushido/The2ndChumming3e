@@ -4,7 +4,7 @@
     "_id": "sr3e-drone-0041",
     "name": "Aeroquip",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/helidrone-safety.svg",
     "system": {
       "vehicleType": "drone",
       "cost": 85000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 1.5,
+      "height": 2.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/helidrone-safety.svg"
+      }
+    }
   },
   "embedded": {}
 }

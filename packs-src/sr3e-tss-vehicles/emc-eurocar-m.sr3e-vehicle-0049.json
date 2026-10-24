@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0049",
     "name": "EMC Eurocar (M)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sedan-orange.svg",
     "system": {
       "vehicleType": "car",
       "cost": 25000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2,
+      "height": 5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sedan-orange.svg"
+      }
+    }
   },
   "embedded": {}
 }

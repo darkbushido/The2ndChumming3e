@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0095",
     "name": "GMC 4201",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/truck-orange.svg",
     "system": {
       "vehicleType": "car",
       "cost": 80000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2.5,
+      "height": 9,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/truck-orange.svg"
+      }
+    }
   },
   "embedded": {}
 }

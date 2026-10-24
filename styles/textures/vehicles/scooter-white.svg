@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="300" viewBox="0 0 100 150">
+<!-- scooter (scooter / folding bike), white, 1 × 1.5 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<rect x="43" y="6" width="14" height="40" rx="4.2" fill="#1d1e21" stroke="#141518" stroke-width="2"/><rect x="43" y="104" width="14" height="40" rx="4.2" fill="#1d1e21" stroke="#141518" stroke-width="2"/><rect x="24" y="22" width="52" height="105" rx="22" fill="#e6e6e1" stroke="#141518" stroke-width="3"/><rect x="35" y="30" width="30" height="45" rx="10" fill="#2d2e31" stroke="#141518" stroke-width="2"/><rect x="28" y="82.5" width="44" height="30" rx="8" fill="#eeeeea" stroke="#141518" stroke-width="2"/><line x1="18" y1="98" x2="82" y2="98" stroke="#2a2b2e" stroke-width="5" stroke-linecap="round"/><ellipse cx="50" cy="132" rx="8" ry="5" fill="#fff1bf" stroke="#141518" stroke-width="1.5"/>
+</g>
+</svg>

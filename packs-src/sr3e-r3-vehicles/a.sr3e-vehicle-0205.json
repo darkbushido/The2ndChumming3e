@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0205",
     "name": "A",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/aircraft-white.svg",
     "system": {
       "vehicleType": "car",
       "cost": 75000000,
@@ -69,7 +69,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 30,
+      "height": 50,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/aircraft-white.svg"
+      }
+    }
   },
   "embedded": {}
 }

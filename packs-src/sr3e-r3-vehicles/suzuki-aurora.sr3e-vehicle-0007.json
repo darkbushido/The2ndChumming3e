@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0007",
     "name": "Suzuki Aurora",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sportbike-blue.svg",
     "system": {
       "vehicleType": "motorcycle",
       "cost": 18100,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 1,
+      "height": 2,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sportbike-blue.svg"
+      }
+    }
   },
   "embedded": {}
 }

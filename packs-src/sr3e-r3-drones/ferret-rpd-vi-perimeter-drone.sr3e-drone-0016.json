@@ -4,7 +4,7 @@
     "_id": "sr3e-drone-0016",
     "name": "Ferret RPD-VI Perimeter Drone",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/ground-bone.svg",
     "system": {
       "vehicleType": "drone",
       "cost": 18500,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 1,
+      "height": 1.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/ground-bone.svg"
+      }
+    }
   },
   "embedded": {}
 }

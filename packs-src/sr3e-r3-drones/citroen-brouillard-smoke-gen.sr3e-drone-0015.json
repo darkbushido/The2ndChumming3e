@@ -4,7 +4,7 @@
     "_id": "sr3e-drone-0015",
     "name": "Citroen Brouillard Smoke Gen.",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/ground-graphite.svg",
     "system": {
       "vehicleType": "drone",
       "cost": 10000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 1,
+      "height": 1.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/ground-graphite.svg"
+      }
+    }
   },
   "embedded": {}
 }
