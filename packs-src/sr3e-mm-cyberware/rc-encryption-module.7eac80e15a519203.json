@@ -1,0 +1,26 @@
+{
+  "_key": "!items!7eac80e15a519203",
+  "doc": {
+    "_id": "7eac80e15a519203",
+    "name": "RC Encryption Module",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 90000,
+      "availability": "9/9 days",
+      "streetIndex": 3,
+      "legalCode": "8P-W",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.23",
+      "grade": "Standard",
+      "rating": 9,
+      "description": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}
