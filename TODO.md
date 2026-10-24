@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**72 open.** 187 done — see [TODO-DONE.md](TODO-DONE.md).
+**73 open.** 187 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[245](#245) The melee GM window should pick up Prone<br>[246](#246) NPC-side buttons in their own colour<br>[247](#247) Trim the token status list to what Shadowrun uses<br>[249](#249) Resolve every NPC in a grenade blast at once<br>[250](#250) Remove the blast marker once the blast is resolved<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[245](#245) The melee GM window should pick up Prone<br>[246](#246) NPC-side buttons in their own colour<br>[247](#247) Trim the token status list to what Shadowrun uses<br>[249](#249) Resolve every NPC in a grenade blast at once<br>[250](#250) Remove the blast marker once the blast is resolved<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2791,6 +2791,17 @@ mount, a description line, a mount chip on the sheet. Add **Smartgun, internal**
 and **Smartlink-2 Modification, Internal** (M&M p.32, ×150%) at 0¥ with the rule in the text.
 ⚠ The builder derives a generated item's id from its name and book, so a rename changes the id; the 0.7.1
 migration maps the old ids. Same branch as #256.
+
+## 260. Unlinked NPC tokens share wounds and statuses through their sidebar actor — **reported in play, 2026-10-24**
+
+Observed (the maintainer): "Mark prone should only do the token on the map. That explains why when I drag an actor
+onto the map it has previous statuses applied." **Reproduced in `test-shadowrun`:** two unlinked tokens of one NPC;
+assigning 3 wounds to Goon A through the card's path left the sidebar NPC, Goon A **and Goon B** at 3; Mark prone
+made all three prone. Through Goon A's own token uuid, only Goon A changed.
+**Cause:** card payloads carry `actorId`, and a synthetic token actor has the SAME id as its sidebar actor, so
+`game.actors.get(actorId)` / `SR3EQuery.resolve(actorId)` reach the sidebar actor, whose data every unlinked token
+inherits. Affects at least: Assign the wound (soak result), Mark prone (Knockdown, failed charge), Mark stunned
+(shock), Knockdown's target; likely more (~60 `actorId:` payloads in SR3EActor.js). A bug fix, on `main`.
 
 ### 📌 Notes & parked
 
