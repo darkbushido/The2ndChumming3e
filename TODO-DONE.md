@@ -7497,6 +7497,16 @@ Observed: a player moved their character and clicked End Turn; Foundry said they
 (`sr3e.combat.nextTurn`): owner of the acting combatant only, and only while it is still the one they saw acting.
 Tests `end-turn`; e2e `end-turn.spec.mjs` (Player2 ends it, Player3 cannot) passed 2026-10-23.
 
+## 242. ✅ Tied initiative is listed out of acting order — **reported in play, 2026-10-23** — fixed in 63291fe0
+
+Observed: when several combatants roll the same initiative, the tracker does not list them in the order they
+will act.
+
+**Cause:** core's `_sortCombatants` breaks ties by combatant id; the queue by the `tieBreak` rank (Reaction, then
+a dice-off). **Fix:** `SR3ECombat._sortCombatants` uses the rank; `startCombat` and the initiative-edit hook
+re-point `turn` after the re-sort (core keeps it on the same combatant). Tests in `initiative`; live: four tied
+on 12, rows = queue = turns walked.
+
 ## 248. ✅ Flechette seemed to do nothing against armour — **reported in play, 2026-10-23** — not a bug, closed in ef3b7cf3
 
 Observed: flechette did not appear to affect armour. SR3 p.116 makes flechette *stronger* only against
