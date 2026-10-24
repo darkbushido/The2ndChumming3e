@@ -6,7 +6,7 @@
  *                                                node tools/build-mod-ratings.mjs && npm run packs:build
  *   node tools/fix-mod-book-values.mjs --check   exit 1 if anything would change — changes nothing
  *
- * The rule is `ModBookFixes` (`scripts/data/mod-book-fixes.mjs`, shared with the 0.7.1 migration that
+ * The rule is `ModBookFixes` (`scripts/data/mod-book-fixes.mjs`, shared with the 0.8.0 migration that
  * corrects owned copies): a field is rewritten only while it still holds the value we shipped, so a re-run
  * is a no-op. Every entry carries its book and page. Reads and writes `packs-src` only (never LevelDB).
  *

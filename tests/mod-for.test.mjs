@@ -69,7 +69,7 @@ export async function run(t) {
   t.eq('…and its levels (1-10, 1,000¥ x Rating — SR3 p.284)', [Object.keys(MOD_RATING_TABLE['armor|Signal Locator']).length, MOD_RATING_TABLE['armor|Signal Locator'][7].cost], [10, 7000]);
   t.is('Tracking Signal is 100¥ x Rating (SR3 p.284)', MOD_RATING_TABLE['armor|Tracking Signal'][6].cost, 600);
 
-  /* ── The 0.7.1 migration for an owned copy ───────────────────────────────────── */
+  /* ── The 0.8.0 migration for an owned copy ───────────────────────────────────── */
   t.eq('a 0.7.0 gear copy gets its tag and modFor, the level kept',
     ModFor.migrateDelta({ type: 'gear', name: 'Chemical Seal [4]', system: { category: 'Stuff With Ratings', rating: 4 } }),
     { 'system.modFor': 'armor', name: 'Chemical Seal (Armor) [4]' });
@@ -108,5 +108,5 @@ export async function run(t) {
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
   t.ok('the item sheet shows "Mod for" on armour, gear, cyberware and vehicle mods', (sheet.match(/this\._modForField\(s\)/g) ?? []).length === 4 && /Mod for/.test(sheet));
   const mig = read('scripts/SR3EMigrations.js');
-  t.ok('the 0.7.1 migration tags owned mods', /fixItem: \(item\) => \{[\s\S]{0,200}ModFor\.migrateDelta\(item\)/.test(mig));
+  t.ok('the 0.8.0 migration tags owned mods', /fixItem: \(item\) => \{[\s\S]{0,200}ModFor\.migrateDelta\(item\)/.test(mig));
 }

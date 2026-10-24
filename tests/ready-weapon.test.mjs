@@ -74,8 +74,8 @@ export async function run(t) {
     t.is('a ready pistol on an old sheet is not touched — the report was about grenades', R.putAwayCarriedGrenade(
       { type: 'firearm', name: 'Ares Predator', system: { category: 'HPist', ready: true } }, 'character'), null);
     const mig = read('scripts/SR3EMigrations.js');
-    t.ok('the 0.7.1 migration applies it to every item on a character or NPC',
-      /version: '0\.7\.1'[\s\S]{0,1500}fixItem: \(item\) => ReadyWeapon\.putAwayCarriedGrenade\(item, item\?\.parent\?\.type \?\? null\)/.test(mig));
+    t.ok('the 0.8.0 migration applies it to every item on a character or NPC',
+      /version: '0.8.0'[\s\S]{0,1500}fixItem: \(item\) => ReadyWeapon\.putAwayCarriedGrenade\(item, item\?\.parent\?\.type \?\? null\)/.test(mig));
   }
 
   t.ok('the sheet has the ✋ toggle on every weapon row, and readying charges a Simple Action',

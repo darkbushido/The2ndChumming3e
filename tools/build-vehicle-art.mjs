@@ -29,7 +29,7 @@
  * ⚠ Only a stock picture is replaced (the type texture, or one of these files); art someone chose
  *   for an entry stays, and so does its token.
  * ⚠ Foundry embeds actors from a pack, it doesn't link them: owned VEHICLES get the art through the
- *   0.7.1 migration (`scripts/data/vehicle-art.mjs`), which reads `scripts/data/vehicle-art-map.mjs` —
+ *   0.8.0 migration (`scripts/data/vehicle-art.mjs`), which reads `scripts/data/vehicle-art-map.mjs` —
  *   written here too. Drones are not migrated (the maintainer's call).
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, rmSync } from 'node:fs';

@@ -102,7 +102,7 @@ export async function run(t) {
   applyArt(keepTok, art);
   t.ok('other token settings survive', keepTok.prototypeToken.actorLink === true && keepTok.prototypeToken.texture.tint === '#ffffff');
 
-  /* ── The world migration (0.7.1): owned vehicles, not drones ───────────────────────────── */
+  /* ── The world migration (0.8.0): owned vehicles, not drones ───────────────────────────── */
   t.ok('the runtime table matches the reviewed map', readFileSync(ART_MAP_FILE, 'utf8') === renderArtMap(map));
   const OLD = 'systems/The2ndChumming3e/styles/textures/vehicles-default.webp';
   const sedanArt = VehicleArt.artFor('Ford Americar');
@@ -127,5 +127,5 @@ export async function run(t) {
   t.ok('a prototype token with nothing stored reads as the 1 × 1 default', VehicleArt.fixActor({ ...owned, prototypeToken: undefined })?.['prototypeToken.height'] === 5);
   t.ok('stock means blank, mystery man, the old textures or ours', [undefined, '', 'icons/svg/mystery-man.svg', OLD, sedanArt.img].every(isStock) && !isStock('worlds/x/y.webp'));
   const mig = readFileSync(join(ROOT, 'scripts', 'SR3EMigrations.js'), 'utf8');
-  t.ok('the 0.7.1 migration runs VehicleArt.fixActor', /version: '0\.7\.1'[\s\S]{0,3000}fixActor: VehicleArt\.fixActor/.test(mig));
+  t.ok('the 0.8.0 migration runs VehicleArt.fixActor', /version: '0.8.0'[\s\S]{0,3000}fixActor: VehicleArt\.fixActor/.test(mig));
 }

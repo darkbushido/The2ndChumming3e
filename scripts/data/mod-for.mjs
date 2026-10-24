@@ -70,7 +70,7 @@ export const ModFor = {
   },
 
   /**
-   * The 0.7.1 update for an owned copy: everything `ModRatings.migrateDelta` does (the level moved out of the
+   * The 0.8.0 update for an owned copy: everything `ModRatings.migrateDelta` does (the level moved out of the
    * name, a dead compendium link repointed) AND the mod's tag — `system.modFor` filled while blank, the name
    * given its tag with the level kept. Null when there is nothing to do. Idempotent: a tagged name with `modFor` set yields null.
    *

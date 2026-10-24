@@ -236,7 +236,7 @@ export const ModRatings = {
   },
 
   /**
-   * The whole 0.7.1 update for an owned copy: the rename, and its dead compendium link repointed.
+   * The whole 0.8.0 update for an owned copy: the rename, and its dead compendium link repointed.
    *
    * ⚠ The repoint OVERWRITES `_stats.compendiumSource`, and argues for it: it only fires on a link to a
    * document that NO LONGER EXISTS, so nothing anyone chose can be there — the one thing it replaces is

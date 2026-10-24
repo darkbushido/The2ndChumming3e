@@ -81,7 +81,7 @@ export const ReadyWeapon = {
   },
 
   /**
-   * The 0.7.1 migration's rule (TODO 254): a grenade on a character or NPC that reads as in hand is put away.
+   * The 0.8.0 migration's rule (TODO 254): a grenade on a character or NPC that reads as in hand is put away.
    * Seen in play, 2026-10-23, on an old player character — "grenades shouldn't count as being in hand when they
    * are just carried". Weapons from before Ready Weapon (0.6) carry `ready: true`, the field's initial; new ones
    * arrive put away (`putAwayOnCreate`), so only old sheets hold every grenade at once. Returns the delta or null.

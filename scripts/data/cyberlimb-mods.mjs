@@ -8,7 +8,7 @@
  * numbers disagree with the book. Those are corrected here.
  *
  * `PACK_CORRECTIONS` is the one list: `tools/fix-cyberlimb-mods.mjs` applies it to `packs-src/`,
- * `tests/cyberlimb-mods.test.mjs` pins it, and the owned-copy migration (0.7.1) reads `was` so it changes
+ * `tests/cyberlimb-mods.test.mjs` pins it, and the owned-copy migration (0.8.0) reads `was` so it changes
  * a field only while it still holds the old, wrong value — a GM's edit survives.
  *
  * Pure: no Foundry globals.

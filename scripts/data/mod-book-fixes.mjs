@@ -5,7 +5,7 @@
  * ONE list, read by two callers:
  *
  *   - `tools/fix-mod-book-values.mjs` corrects the hand-kept pack documents in `packs-src` with it;
- *   - the 0.7.1 migration (`scripts/SR3EMigrations.js`) corrects the copies worlds already own
+ *   - the 0.8.0 migration (`scripts/SR3EMigrations.js`) corrects the copies worlds already own
  *     (world actors, world items, unlinked token actors) through `ModBookFixes.fixItem`.
  *
  * Each entry is `{ kind, name, rating, field, from, to, source }`:

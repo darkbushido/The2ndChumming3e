@@ -58,7 +58,7 @@ export async function run(t) {
   t.is('a bare trailing number is a model, not a level', split('Ares Predator 2'), null);
   t.is('a plain name has no level', split('Anti-Theft System'), null);
 
-  /* ── The rename (packs tool and the 0.7.1 migration) ─────────────────────────── */
+  /* ── The rename (packs tool and the 0.8.0 migration) ─────────────────────────── */
   t.eq('a levelled vehicle mod keeps its name ("ECCM [3]") and its level is saved', ModRatings.renameDelta(veh('ECCM [3]')), { 'system.rating': 3 });
   t.eq('…a rating already agreeing is left as it is', ModRatings.renameDelta(limb('Signal Booster [3]', { rating: 3 })), null);
   t.eq('…a GM\'s different rating wins over the stale name', ModRatings.renameDelta(veh('ECCM [3]', { rating: 5 })), { name: 'ECCM [5]' });
@@ -332,7 +332,7 @@ export async function run(t) {
 
   /* ── The migration ───────────────────────────────────────────────────────────── */
   const mig = read('scripts/SR3EMigrations.js');
-  t.ok('a 0.7.1 migration renames owned copies and repoints dead links', /version: '0\.7\.1',\s*label: 'Every rated item[\s\S]{0,4200}ModFor\.migrateDelta\(item\)/.test(mig));
+  t.ok('a 0.8.0 migration renames owned copies and repoints dead links', /version: '0.8.0',\s*label: 'Every rated item[\s\S]{0,4200}ModFor\.migrateDelta\(item\)/.test(mig));
   t.ok('…the migrated name is the synced name ("ECCM [3]", rating 3) — it never strips the level out of an owned copy', /ModRatings\.syncName\(item\.name, rating, item\.type\)/.test(read('scripts/data/mod-ratings.mjs')));
   t.ok('…and logs a rating that disagrees with the name', /ModRatings\.renameConflict\(item\)/.test(mig));
 }

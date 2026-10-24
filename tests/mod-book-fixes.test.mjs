@@ -1,5 +1,5 @@
 /**
- * Mod values corrected to the books (TODO 261) — the pure rule shared by the pack tool and the 0.7.1
+ * Mod values corrected to the books (TODO 261) — the pure rule shared by the pack tool and the 0.8.0
  * migration, the migration's wiring, and the packs themselves.
  */
 import { readFileSync } from 'node:fs';
@@ -61,5 +61,5 @@ export async function run(t) {
   t.eq('RC Encryption Module 9 and 10 are rows of the level table (M&M p.24: ratings 1 through 10)', Object.keys(readExtraLevels()['cyberware|RC Encryption Module']).map(Number), [9, 10]);
 
   /* ── The migration is wired ──────────────────────────────────────────────────── */
-  t.ok('a 0.7.1 migration applies the corrections to owned copies', /version: '0\.7\.1',\s*label: 'Mod values corrected[\s\S]{0,2500}fixItem: ModBookFixes\.fixItem/.test(readFileSync(join(ROOT, 'scripts/SR3EMigrations.js'), 'utf8')));
+  t.ok('a 0.8.0 migration applies the corrections to owned copies', /version: '0.8.0',\s*label: 'Mod values corrected[\s\S]{0,2500}fixItem: ModBookFixes\.fixItem/.test(readFileSync(join(ROOT, 'scripts/SR3EMigrations.js'), 'utf8')));
 }

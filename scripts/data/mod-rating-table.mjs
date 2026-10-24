@@ -1954,7 +1954,7 @@ export const MOD_RATING_TABLE = {
 
 /**
  * pack name → { deleted level document id → the document that kept its family }. A copy whose
- * `_stats.compendiumSource` names a deleted document is repointed by the 0.7.1 migration.
+ * `_stats.compendiumSource` names a deleted document is repointed by the 0.8.0 migration.
  */
 export const COLLAPSED_SOURCES = {
   "sr3e-cc-ammunition": {

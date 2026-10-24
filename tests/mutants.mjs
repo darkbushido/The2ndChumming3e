@@ -3397,7 +3397,7 @@ export const MUTANTS = [
     id:     'mod-fix-overwrites-a-houserule',
     suite:  'mod-book-fixes',
     ...MODFIX, method: 'fixItem', needsOriginal: '_fixItemOriginal',
-    was:    'the 0.7.1 mod-value migration set the corrected value whatever the field held, overwriting a GM\'s edited cost, CF or legality '
+    was:    'the 0.8.0 mod-value migration set the corrected value whatever the field held, overwriting a GM\'s edited cost, CF or legality '
           + 'instead of correcting only the value we shipped (TODO 261)',
     impl:   function (item) {
       const delta = {};
@@ -3453,7 +3453,7 @@ export const MUTANTS = [
     id:     'migration-repoint-overwrites-a-live-link',
     suite:  'mod-ratings',
     ...MODRATE, method: 'repointSource',
-    was:    'the 0.7.1 migration repointed any compendium link to the first pack\'s kept document, even one whose source is not a deleted level (TODO 261: only a DEAD link)',
+    was:    'the 0.8.0 migration repointed any compendium link to the first pack\'s kept document, even one whose source is not a deleted level (TODO 261: only a DEAD link)',
     impl:   function (item) {
       const m = /^Compendium\.The2ndChumming3e\.([^.]+)\.Item\.(.+)$/.exec(String(item?._stats?.compendiumSource ?? ''));
       return m ? `Compendium.The2ndChumming3e.${m[1]}.Item.kept` : null;

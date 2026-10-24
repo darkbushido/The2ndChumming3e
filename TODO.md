@@ -520,7 +520,7 @@ row cannot be done properly until accessories are structured data.
   #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
 
 **Seen in play, 2026-10-23:** grenades that were only carried counted as being in hand — an old sheet's
-pre-Ready-Weapon default; fixed by the 0.7.1 migration, [#254](TODO-DONE.md#254).
+pre-Ready-Weapon default; fixed by the 0.8.0 migration, [#254](TODO-DONE.md#254).
 
 ## 176. Rules check 0.6.1 — Rules the guides state that the code does not implement
 
@@ -782,7 +782,7 @@ BARE trailing number), and every mod names what it attaches to — the truth [#2
 - **`system.modFor`** (`''` | armor | weapon | cyberlimb | vehicle) on gear, cyberware, armour and vehicle mods; the pack name ends in the tag
   ("Chemical Seal (Armor)", owned copy "Chemical Seal (Armor) [4]"). Rule: `scripts/data/mod-for.mjs`. One helper,
   `ModRatings.baseName`, is the key every name-keyed lookup uses (level table, families, GEAR_RATINGS, the Johnson import tools).
-- **0.7.1 migration** (the #261 entry, extended) tags owned copies, fills `modFor` only while blank, and renames "+Signal Locator 7" to
+- **0.8.0 migration** (the #261 entry, extended) tags owned copies, fills `modFor` only while blank, and renames "+Signal Locator 7" to
   "Signal Locator (Armor) [7]".
 - Item sheet shows "Mod for: Armor" (an editable select).
 
@@ -954,7 +954,7 @@ is a host-sheet feature (a list of steps, each with IC and a rating) and is wort
 ## 130. Store implant names plainly, with the rating only in the field
 
 > **Note (2026-10-24):** the rename itself is now done by [#261](TODO-DONE.md#261) on `feature/cyberlimb-mods-marked` — every rated
-> item is ONE pack document with the level in its rating, and the 0.7.1 migration renames owned copies. What is left
+> item is ONE pack document with the level in its rating, and the 0.8.0 migration renames owned copies. What is left
 > here is the maintainer's call (not archived, not marked done): confirm the name-keyed lookups listed below
 > (`SRCG_BONUSES`, the `config.js` registries, the healing regexes) behave on plain names in play.
 
@@ -2841,7 +2841,7 @@ markings, and a book-dependent price for built-in gear. A feature, on branch `fe
 - **Built-in gear price** (the 14 comm units, memory chips and pocket secretary): SR3 p.303 prices a built-in
   device at **4 × normal cost**; M&M pp.35–36 gives capacity units and no multiplier. The maintainer: ×4 when
   *Man & Machine* is off, the normal price when it is on (`optionalRuleAllowed('mm')`), in the purchase dialog.
-- **Migration 0.7.1**: [#255](TODO-DONE.md#255)'s corrections onto owned copies (only while a field still holds the old
+- **Migration 0.8.0**: [#255](TODO-DONE.md#255)'s corrections onto owned copies (only while a field still holds the old
   value), the rename (only an untouched name), the flag and the description line. Three populations.
 
 ## 259. Show where each weapon mod mounts — **requested 2026-10-23**
@@ -2853,7 +2853,7 @@ filled from the book's Mount column, **and** the same four markings as #256 — 
 Modification, External; the truncated "Extended Clip (", "Shock Pads (RC", "Stock (Rigid"), pack folders by
 mount, a description line, a mount chip on the sheet. Add **Smartgun, internal** (SR3 p.282, +100% of the gun)
 and **Smartlink-2 Modification, Internal** (M&M p.32, ×150%) at 0¥ with the rule in the text.
-⚠ The builder derives a generated item's id from its name and book, so a rename changes the id; the 0.7.1
+⚠ The builder derives a generated item's id from its name and book, so a rename changes the id; the 0.8.0
 migration maps the old ids. Same branch as #256.
 
 ## 260. Unlinked NPC tokens share wounds and statuses through their sidebar actor — **reported in play, 2026-10-24**

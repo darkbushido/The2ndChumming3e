@@ -482,7 +482,7 @@ const MIGRATIONS = [
     fixActor: PackFixes070.fixActor,
   },
   {
-    version: '0.7.1',
+    version: '0.8.0',
     label: 'Carried grenades are put away, not held (TODO 254); vehicle token art for owned vehicles (TODO 257)',
     /**
      * Seen in play, 2026-10-23, on an old player character: every grenade counted as in hand. Weapons from
@@ -497,8 +497,8 @@ const MIGRATIONS = [
      */
     fixItem: (item) => ReadyWeapon.putAwayCarriedGrenade(item, item?.parent?.type ?? null),
     /**
-     * Vehicle token art (TODO 257) — numbered 0.7.1 by the maintainer's call (2026-10-24), shipping with the
-     * grenade fix rather than as 0.8.0. The packs now carry drawn art (`tools/build-vehicle-art.mjs`); a vehicle already in a world is its
+     * Vehicle token art (TODO 257) — numbered 0.8.0, the release it ships in with the grenade fix (the maintainer,
+     * 2026-10-24: first 0.7.1, then the release became 0.8.0). The packs now carry drawn art (`tools/build-vehicle-art.mjs`); a vehicle already in a world is its
      * own copy and kept the old texture. The maintainer asked for vehicles, not drones (2026-10-24).
      *
      * ⚠ **This OVERWRITES, and argues for it:** `VehicleArt.fixActor` changes the picture and the
@@ -509,7 +509,7 @@ const MIGRATIONS = [
     fixActor: VehicleArt.fixActor,
   },
   {
-    version: '0.7.1',
+    version: '0.8.0',
     label: 'Every rated item\'s level moves out of its name into the rating; a link to a deleted level document is repointed (TODO 261); every mod says what it is a mod for (TODO 266)',
     /**
      * The packs now ship ONE document per rated item ("Chemical Seal", its levels in the Level dropdown) and
@@ -537,12 +537,12 @@ const MIGRATIONS = [
      */
     fixItem: (item) => {
       const note = ModRatings.renameConflict(item);
-      if (note) console.log(`SR3E | 0.7.1: ${note}`);
+      if (note) console.log(`SR3E | 0.8.0: ${note}`);
       return ModFor.migrateDelta(item);
     },
   },
   {
-    version: '0.7.1',
+    version: '0.8.0',
     label: 'Mod values corrected to the books: Vehicle Armor costs, Concealed Armor CF, Power Amplifier CF, Remote Control ECCM, Hydraulic Jack, RC Encryption Module and cyberlimb plating legality (TODO 261)',
     /**
      * The maintainer checked the mod level tables against R3 pp.131-147 and M&M pp.24-37 and approved the

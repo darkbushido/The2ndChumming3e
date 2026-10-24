@@ -22,10 +22,10 @@
  *   document — it only reads them for the table, and `--check` fails if one still carries a level.
  * ⚠ **Ids never change** for the document that stays: it keeps its key, so owned copies keep their compendium link.
  *   The deleted documents' ids are recorded (`deleted`) and written to the table file as `COLLAPSED_SOURCES`, so the
- *   0.7.1 migration repoints a copy that linked to one (`ModRatings.repointSource`).
+ *   0.8.0 migration repoints a copy that linked to one (`ModRatings.repointSource`).
  * ⚠ A level printed twice with different numbers is NOT guessed at: it is kept as `unplaced` in the record.
  * ⚠ `sr3e-mr-johnsons-contacts` is left alone (a contact's gear is not a gear listing — the maintainer decides).
- * ⚠ Copies already in worlds are renamed by the 0.7.1 migration (`scripts/SR3EMigrations.js`).
+ * ⚠ Copies already in worlds are renamed by the 0.8.0 migration (`scripts/SR3EMigrations.js`).
  */
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -145,7 +145,7 @@ ${rows.join('\n')}
 
 /**
  * pack name → { deleted level document id → the document that kept its family }. A copy whose
- * \`_stats.compendiumSource\` names a deleted document is repointed by the 0.7.1 migration.
+ * \`_stats.compendiumSource\` names a deleted document is repointed by the 0.8.0 migration.
  */
 export const COLLAPSED_SOURCES = {
 ${src.join('\n')}
