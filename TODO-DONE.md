@@ -7524,8 +7524,8 @@ window) — but nothing on screen said so, and each further opponent was charged
 SR3 p.122 reads *"Characters may attack more than one opponent with a Complex Action."* **Fix:** melee opponents
 are marked in `targetsThisPhase`; `PhaseTargets.sameMeleeAction` stops the second charge; the melee card carries
 a line saying how (or that this is a further opponent). Tests in `phase-targets`, mutant
-`melee-each-opponent-a-new-action`. **Not yet walked live** — Foundry checklist: attack two opponents in one
-phase; the second card says "Opponent 2 … same Complex Action", the ledger shows one Complex, the GM window +2.
+`melee-each-opponent-a-new-action`. **Walked live 2026-10-23** (`test-shadowrun`, SWAT vs Troll then Ploder in one
+phase): the second card says "Opponent 2 … same Complex Action", the ledger holds one Complex, attacker TN 4 → 6.
 
 ## 248. ✅ Flechette seemed to do nothing against armour — **reported in play, 2026-10-23** — not a bug, closed in ef3b7cf3
 

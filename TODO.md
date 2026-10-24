@@ -446,7 +446,10 @@ with one click, and the existing three buttons stay as the manual path.
 
 ### Seen in play, 2026-10-23
 
-Melee attacks did not mark the attacker's action on the initiative tracker. Not investigated yet.
+Melee attacks did not mark the attacker's action on the initiative tracker. **Re-checked live the same day, after
+the tracker fixes (#251, #242):** a melee attack by the acting combatant marks one Complex. A charge is recorded only
+for the tracker's *acting* combatant (`SR3EActionLedger.activeFor`), and before #251 a removed combatant's leftover
+slot pointed the tracker at the wrong row — the likely cause. Watch for it in the next session.
 
 ## 49. Nothing models hands — what is held, and how many can be held
 
