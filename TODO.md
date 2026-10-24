@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**68 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**69 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2790,6 +2790,32 @@ spell AoE dedupe, the auto-defeated hook. Tests `actor-ref` (ratchet), `targetin
 **Still to do before closing:** (1) the live check — two unlinked goons; ranged, melee, grenade and spell damage plus
 Mark prone / Mark stunned land on one goon only; a PC is unchanged; (2) the maintainer's call on a one-off GM tool to
 clear wounds and statuses that sidebar NPCs already collected this way (offered, not built).
+
+## 262. Meet the contact — a name and a face for a Little Black Book archetype — **requested 2026-10-24**
+
+The maintainer wants the 62 Mr. Johnson's Little Black Book archetypes ([#83](#83)) turned into people: a
+real-world name with a chance of a street name, and a portrait from his private portrait module. Decisions, 2026-10-24:
+**the GM creates, players see the result on their contact**; **names: real-world plus a chance of a street name**;
+archetypes with no matching portrait job **fall back to the nearest one for now** and switch when the portraits exist;
+**the book's metatype is an example, not a rule** — the GM can change it in the dialog (stats stay the book's; warn).
+
+⚠ **The system must work with no portrait module and never names one.** Any active module whose manifest carries
+`flags.The2ndChumming3e.portraits = { index, schema: 1 }` is a source (`scripts/data/portraits.mjs`; contract in
+`.claude/rules/portraits.md`). No module → names still work, the face grid is hidden.
+
+⚠ **Offer, never apply.** Nothing assigns a portrait on its own; a picture someone chose is never replaced.
+
+**Built (branch `feature/meet-the-contact`):**
+- `scripts/data/portraits.mjs` — discovery, index validation, best-match-first candidates (exact → variant → any
+  metatype → same group → same metatype), gender text, stock-picture test. Pure.
+- `scripts/data/names.mjs` — heritage-matched real-world names (first and last from the same sub-pool), elven given
+  names for some elves, street names by job group. Pure, seedable.
+- `tests/portraits.test.mjs`.
+- `scripts/SR3EMeetContact.js` — the dialog (DialogV2.wait, wired per dialog) and the only writes: the NPC through
+  `sr3e.actor.create`, whose new `set` is a whitelist (img, token art, metatype, gender, ethnicity); then the contact's
+  `npcUuid`, name and — only when stock — picture. 🎲 on the Contacts tab (GM only), the face on the row for everyone.
+- `contact.npcUuid` — new field: **full Foundry restart**.
+- Live check: TESTING.md, *Meet the contact*.
 
 ### 📌 Notes & parked
 

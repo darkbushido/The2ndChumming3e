@@ -106,6 +106,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         createLinkVehicle: SR3EActorSheet._onCreateLinkVehicle,
         linkArchetype:     SR3EActorSheet._onLinkArchetype,
         openArchetype:     SR3EActorSheet._onOpenArchetype,
+        meetContact:       SR3EActorSheet._onMeetContact,
+        openContactNpc:    SR3EActorSheet._onOpenContactNpc,
         toggleVehicleMode: SR3EActorSheet._onToggleVehicleMode,
         openVehicle:       SR3EActorSheet._onOpenVehicle,
         openHost:          SR3EActorSheet._onOpenHost,
@@ -3069,11 +3071,21 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ? `<i class="fas fa-book-open rollable" data-action="openArchetype" data-item-id="${c.id}"
               title="Open the archetype's stat block" style="margin-right:6px"></i>`
         : '';
+      /* Meet the contact · TODO 262 — GM only, once the contact points at a statted archetype. The face shows to
+       * everyone once the GM has met them (the contact's own picture); a click opens the NPC for whoever may see it. */
+      const meet = game.user.isGM && c.system.archetypeUuid
+        ? `<i class="fas fa-dice rollable" data-action="meetContact" data-item-id="${c.id}"
+              title="Meet the contact — a name and a face from the archetype" style="margin-right:6px"></i>`
+        : '';
+      const face = c.system.npcUuid && !String(c.img ?? '').startsWith('icons/')
+        ? `<img src="${c.img}" data-action="openContactNpc" data-item-id="${c.id}" title="Open the NPC"
+              style="width:24px;height:24px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px;cursor:pointer;border:none"/>`
+        : '';
       return `
         <div class="item-row" data-item-id="${c.id}">
-          <span class="item-name">${c.name}</span>
+          <span class="item-name">${face}${c.name}</span>
           <span class="item-cell" style="font-size:11px;color:var(--sr-muted)">
-            ${linked}<span data-action="linkArchetype" data-item-id="${c.id}"
+            ${meet}${linked}<span data-action="linkArchetype" data-item-id="${c.id}"
               style="cursor:pointer;text-decoration:underline dotted"
               title="Link this contact to a statted archetype">${archetype}</span>
           </span>
@@ -5126,6 +5138,23 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       if (doc?.name) changes['system.archetype'] = doc.name;
     }
     await item.update(changes);
+  }
+
+  /** Meet the contact · TODO 262 — GM only (the button is GM-only too). See `scripts/SR3EMeetContact.js`. */
+  static async _onMeetContact(_ev, target) {
+    if (!game.user.isGM) return;
+    const item = this.actor.items.get(target.dataset.itemId);
+    if (!item?.system?.archetypeUuid) return;
+    await game.sr3e.SR3EMeetContact.open({ archetypeUuid: item.system.archetypeUuid, contact: item });
+  }
+
+  /** Open the NPC a contact was met as, if this user may see it. */
+  static async _onOpenContactNpc(_ev, target) {
+    const item = this.actor.items.get(target.dataset.itemId);
+    const npc = item?.system?.npcUuid ? await fromUuid(item.system.npcUuid) : null;
+    if (!npc) { ui.notifications.warn('SR3E: that NPC no longer exists.'); return; }
+    if (!npc.testUserPermission(game.user, 'LIMITED')) { ui.notifications.info(`${npc.name}`); return; }
+    npc.sheet.render(true);
   }
 
   /** Open the linked archetype's stat block. */

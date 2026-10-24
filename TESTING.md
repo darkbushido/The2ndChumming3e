@@ -408,6 +408,18 @@ On the active combatant's card: **Complex** (full width) + two **Simple** button
 
 ---
 
+## Meet the contact — TODO 262 (`feature/meet-the-contact`)
+
+Needs a **full Foundry restart** (new `contact.npcUuid` field). With a portrait module active and without one:
+- [ ] GM: a contact linked to a Little Black Book archetype shows 🎲 on the Contacts tab; a player does not see it.
+- [ ] 🎲 opens the dialog: the book's metatype preselected, a face grid best match first, a name that fits the face.
+- [ ] Changing the metatype shows the amber "stats stay the book's …" line; 🎲 Seattle mix mostly rolls human.
+- [ ] Clicking a face rerolls the name (until the name is typed over); 🎲 beside the name rerolls it alone.
+- [ ] Cancel / Esc writes nothing. Create NPC makes a world actor with that name, picture, token art, metatype, gender.
+- [ ] The contact shows the face and new name to its player; clicking the face opens the NPC only for those who may see it.
+- [ ] A contact whose picture someone chose keeps it (the name still changes only if "Show on the contact" is ticked).
+- [ ] No portrait module active: no grid, the note says so, names still work, the NPC keeps the archetype's picture.
+
 ## Open combat steps — TODO 147 (`feature/open-steps`)
 
 **Checked live by the agent, 2026-09-24** (mcp-api, then with the maintainer's Gamemaster seat also on):
