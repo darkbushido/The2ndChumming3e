@@ -48,6 +48,11 @@ export async function run(t) {
     /PDFs as the authority/.test(pre));
   t.ok('the skill repeats it, because that is the file an agent actually reads',
     /Do not perform the TODO 121 rules check/.test(read('.claude/skills/verify-build/SKILL.md')));
+  const release = read('.claude/skills/release/SKILL.md');
+  t.ok('the /release skill repeats it too — it drives the whole train, so it is where the shortcut would be taken',
+    /Do not perform the TODO 121 rules check/.test(release) && /never write `audit\/rules-check-<version>\.md` yourself/.test(release));
+  t.ok('…and never pushes or tags', /Never `git push` and never `git tag`/.test(release));
+  t.ok('…and bumps the version in one step only', /Only step 5 bumps the version/.test(release));
 
   /* ── Every gate that can fail must say what to do next ─────────────────────── */
   const calls = [...pre.matchAll(/record\(\s*'([^']+)'/g)].map(m => m[1]);

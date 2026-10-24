@@ -50,7 +50,9 @@ npm run test:e2e        # Playwright, two real clients (Foundry running)
 
 ## Verifying a build — `npm run preflight`
 
-One command, one verdict (also the `verify-build` skill, `.claude/skills/verify-build/SKILL.md`).
+One command, one verdict (also the `verify-build` skill, `.claude/skills/verify-build/SKILL.md`). The whole release
+train — take stock, version, preflight, rules check, notes, bump, hand-back — is **`/release`**
+(`.claude/skills/release/SKILL.md`), resumable across sessions.
 
 ```bash
 npm run preflight                          # eslint, suites, mutants, TODO, packs, manifest, guides
