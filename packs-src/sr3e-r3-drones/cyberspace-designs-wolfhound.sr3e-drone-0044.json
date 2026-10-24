@@ -4,7 +4,7 @@
     "_id": "sr3e-drone-0044",
     "name": "Cyberspace Designs Wolfhound",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/ground-matte.svg",
     "system": {
       "vehicleType": "drone",
       "cost": 60000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 1,
+      "height": 1.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/ground-matte.svg"
+      }
+    }
   },
   "embedded": {}
 }

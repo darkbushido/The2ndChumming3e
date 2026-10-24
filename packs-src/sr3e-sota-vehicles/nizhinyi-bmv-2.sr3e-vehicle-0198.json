@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0198",
     "name": "Nizhinyi BMV-2",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/tracked-apc-tan.svg",
     "system": {
       "vehicleType": "military",
       "cost": 1844750,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 3.5,
+      "height": 7,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/tracked-apc-tan.svg"
+      }
+    }
   },
   "embedded": {}
 }

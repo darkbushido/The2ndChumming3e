@@ -4,7 +4,7 @@
     "_id": "sr3e-drone-0050",
     "name": "Toyota MK-Guyver S",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/anthro-graphite.svg",
     "system": {
       "vehicleType": "drone",
       "cost": 95375,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 1,
+      "height": 1,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/anthro-graphite.svg"
+      }
+    }
   },
   "embedded": {}
 }

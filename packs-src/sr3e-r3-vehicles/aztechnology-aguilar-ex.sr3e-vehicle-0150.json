@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0150",
     "name": "Aztechnology Aguilar-EX",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/gunship-tan.svg",
     "system": {
       "vehicleType": "helicopter",
       "cost": 1508250,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 12,
+      "height": 16,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/gunship-tan.svg"
+      }
+    }
   },
   "embedded": {}
 }

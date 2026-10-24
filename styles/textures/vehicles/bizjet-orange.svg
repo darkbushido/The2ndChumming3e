@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3200" height="3600" viewBox="0 0 1600 1800">
+<!-- bizjet (business jet / small airliner), orange, 16 × 18 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<polygon points="712,216 888,216 1120,108 1120,18 888,36 712,36 480,18 480,108" fill="#bb6426" stroke="#141518" stroke-width="5" stroke-linejoin="round"/><polygon points="712,1008 888,1008 1600,612 1600,486 888,720 712,720 0,486 0,612" fill="#bb6426" stroke="#141518" stroke-width="5" stroke-linejoin="round"/><rect x="584" y="216" width="112" height="288" rx="44.8" fill="#8d9196" stroke="#141518" stroke-width="5"/><rect x="904" y="216" width="112" height="288" rx="44.8" fill="#8d9196" stroke="#141518" stroke-width="5"/><path d="M712 18 H888 V1404 Q888 1800 800 1800 Q712 1800 712 1404 Z" fill="#d06f2a" stroke="#141518" stroke-width="5" stroke-linejoin="round"/><rect x="769.2" y="216" width="61.6" height="1080" rx="26.4" fill="#dc935f"/><rect x="787.2" y="18" width="25.6" height="252" rx="10" fill="#924e1d" stroke="#141518" stroke-width="2.5"/><ellipse cx="800" cy="1620" rx="52.8" ry="63" fill="#26313b" stroke="#141518" stroke-width="3"/>
+</g>
+</svg>

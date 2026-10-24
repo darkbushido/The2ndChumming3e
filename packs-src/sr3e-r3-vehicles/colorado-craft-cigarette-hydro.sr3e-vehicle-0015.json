@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0015",
     "name": "Colorado Craft Cigarette Hydro",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/speedboat-yellow.svg",
     "system": {
       "vehicleType": "boat",
       "cost": 35000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2.5,
+      "height": 9,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/speedboat-yellow.svg"
+      }
+    }
   },
   "embedded": {}
 }

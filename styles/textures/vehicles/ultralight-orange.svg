@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1200" viewBox="0 0 1000 600">
+<!-- ultralight (ultralight / glider), orange, 10 × 6 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<polygon points="465,84 535,84 650,72 650,18 535,12 465,12 350,18 350,72" fill="#bb6426" stroke="#141518" stroke-width="3" stroke-linejoin="round"/><polygon points="465,396 535,396 1000,372 1000,288 535,276 465,276 0,288 0,372" fill="#bb6426" stroke="#141518" stroke-width="3" stroke-linejoin="round"/><path d="M465 6 H535 V450 Q535 600 500 600 Q465 600 465 450 Z" fill="#d06f2a" stroke="#141518" stroke-width="3" stroke-linejoin="round"/><rect x="487.8" y="72" width="24.5" height="360" rx="10.5" fill="#dc935f"/><rect x="492" y="6" width="16" height="84" rx="10" fill="#924e1d" stroke="#141518" stroke-width="1.5"/><ellipse cx="500" cy="480" rx="21" ry="21" fill="#26313b" stroke="#141518" stroke-width="1.7999999999999998"/><ellipse cx="500" cy="12" rx="100" ry="7.2" fill="#d8dde3" stroke="#9aa3ad" stroke-width="1.2000000000000002"/>
+</g>
+</svg>

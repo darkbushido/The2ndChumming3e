@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0194",
     "name": "Federated Boeing Eagle",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/fighter-forest.svg",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 12102000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 10,
+      "height": 16,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/fighter-forest.svg"
+      }
+    }
   },
   "embedded": {}
 }

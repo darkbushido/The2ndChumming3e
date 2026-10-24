@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0123",
     "name": "Hawker-Ridley HS-895 Skytruck",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/transport-cream.svg",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 1131250,
@@ -69,7 +69,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 32,
+      "height": 28,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/transport-cream.svg"
+      }
+    }
   },
   "embedded": {}
 }

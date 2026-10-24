@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0084",
     "name": "Ford-Min Pao Spider",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sports-black.svg",
     "system": {
       "vehicleType": "car",
       "cost": 18000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2,
+      "height": 4.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sports-black.svg"
+      }
+    }
   },
   "embedded": {}
 }

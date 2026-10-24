@@ -4,7 +4,7 @@
     "_id": "sr3e-drone-0009",
     "name": "IFMU Mr. Bright (household)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/crawler-bone.svg",
     "system": {
       "vehicleType": "drone",
       "cost": 6000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 0.5,
+      "height": 0.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/crawler-bone.svg"
+      }
+    }
   },
   "embedded": {}
 }

@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0159",
     "name": "Northrup YellowJacket PRC44F",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/heli-light-grey.svg",
     "system": {
       "vehicleType": "helicopter",
       "cost": 76000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 8,
+      "height": 9,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/heli-light-grey.svg"
+      }
+    }
   },
   "embedded": {}
 }

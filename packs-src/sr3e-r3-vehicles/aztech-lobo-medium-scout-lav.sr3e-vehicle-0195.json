@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0195",
     "name": "Aztech Lobo Medium Scout LAV",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/lav-fieldgrey.svg",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 2420000,
@@ -69,7 +69,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 6,
+      "height": 14,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/lav-fieldgrey.svg"
+      }
+    }
   },
   "embedded": {}
 }

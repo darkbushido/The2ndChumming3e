@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0012",
     "name": "Aztech Nightrunner(M)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sports-blue.svg",
     "system": {
       "vehicleType": "car",
       "cost": 30000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2,
+      "height": 4.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sports-blue.svg"
+      }
+    }
   },
   "embedded": {}
 }

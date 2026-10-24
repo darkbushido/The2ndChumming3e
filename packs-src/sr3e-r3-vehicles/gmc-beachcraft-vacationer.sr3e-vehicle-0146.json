@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0146",
     "name": "GMC Beachcraft Vacationer",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/hovercraft-red.svg",
     "system": {
       "vehicleType": "hovercraft",
       "cost": 289000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 5,
+      "height": 12,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/hovercraft-red.svg"
+      }
+    }
   },
   "embedded": {}
 }
