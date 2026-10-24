@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="600" viewBox="0 0 100 300">
+<!-- jetski (personal watercraft), maroon, 1 × 3 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<path d="M6 14.8 Q6 6 14.8 6 H85.2 Q94 6 94 14.8 V186 Q94 247.1 50 297 Q6 247.1 6 186 Z" fill="#6d2433" stroke="#141518" stroke-width="3" stroke-linejoin="round"/><path d="M18 26.4 Q18 20 24.4 20 H75.6 Q82 20 82 26.4 V180 Q82 229.5 50 270 Q18 229.5 18 180 Z" fill="#8a505c" stroke-linejoin="round"/><rect x="30" y="42" width="40" height="108" rx="14" fill="#2d2e31" stroke="#141518" stroke-width="2"/><line x1="14" y1="180" x2="86" y2="180" stroke="#2a2b2e" stroke-width="5" stroke-linecap="round"/><rect x="40" y="6" width="20" height="14" rx="4" fill="#1d1e21" stroke="#141518" stroke-width="1.5"/>
+</g>
+</svg>

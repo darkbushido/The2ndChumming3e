@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0024",
     "name": "Zemlya Poltava Swordsman(AME)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/patrol-boat-slate.svg",
     "system": {
       "vehicleType": "boat",
       "cost": 58375,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 4,
+      "height": 14,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/patrol-boat-slate.svg"
+      }
+    }
   },
   "embedded": {}
 }

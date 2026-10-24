@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0152",
     "name": "M-K Sperber Military Variant",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/gunship-tan.svg",
     "system": {
       "vehicleType": "helicopter",
       "cost": 1380000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 12,
+      "height": 16,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/gunship-tan.svg"
+      }
+    }
   },
   "embedded": {}
 }

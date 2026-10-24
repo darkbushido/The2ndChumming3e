@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Draw the top-down token art for road vehicles and drones, and point the packs at it — TODO 241.
+ * Draw the top-down token art for every vehicle and drone, and point the packs at it — TODO 241.
  *
  *   node tools/build-vehicle-art.mjs           write styles/textures/vehicles/*.svg and edit packs-src,
  *                                              then run: npm run packs:build
@@ -12,8 +12,8 @@
  * table's map art is licensed and can never be published, so EVERY shape here is drawn in this file —
  * no traced, copied or third-party art of any kind.
  *
- * In scope: every `packs-src/sr3e-*-vehicles` actor whose `vehicleType` is car, motorcycle or military,
- * and every `packs-src/sr3e-*-drones` actor (`isInScope`). Each is mapped BY NAME to an archetype in
+ * In scope: every actor of every `packs-src/sr3e-*-vehicles` and `sr3e-*-drones` pack — road, water
+ * and air (`isInScope`). Each is mapped BY NAME to an archetype in
  * `tools/data/vehicle-archetypes.json` — a reviewed file, not a guess at build time; `--draft` only
  * proposes entries for a person to check.
  *
@@ -46,10 +46,8 @@ export const IMG_DIR = 'systems/The2ndChumming3e/styles/textures/vehicles';
 export const STOCK_IMAGES = ['vehicles-default.webp', 'drone-default.webp']
   .map(f => `systems/The2ndChumming3e/styles/textures/${f}`);
 
-/** The vehicleTypes of `-vehicles` packs that are road or ground vehicles. Drones are all in. */
-export const ROAD_TYPES = ['car', 'motorcycle', 'military'];
-export const isInScope = (pack, doc) =>
-  /^sr3e-.+-drones$/.test(pack) || (/^sr3e-.+-vehicles$/.test(pack) && ROAD_TYPES.includes(doc?.system?.vehicleType));
+/** Every vehicle and every drone: the actors of the `-vehicles` and `-drones` packs. */
+export const isInScope = pack => /^sr3e-.+-(vehicles|drones)$/.test(pack);
 
 /* ── Colours ───────────────────────────────────────────────────────────────────────────────── */
 
@@ -62,6 +60,7 @@ export const PAINTS = {
   blue: { body: '#2f5c9c' }, green: { body: '#3e6a46' }, yellow: { body: '#d8b031' }, orange: { body: '#d06f2a' },
   teal: { body: '#2a8787' }, maroon: { body: '#6d2433' }, grey: { body: '#6a6e74' }, cream: { body: '#d6cdae' },
   olive: { body: '#5b6236' }, tan: { body: '#9f895b' }, fieldgrey: { body: '#6b7167' }, forest: { body: '#3f4a33' },
+  haze: { body: '#8d949b' }, battleship: { body: '#6c737b' }, slate: { body: '#4f565e' },
   graphite: { body: '#4a4d52' }, safety: { body: '#d6a62a' }, matte: { body: '#7d8187' }, bone: { body: '#d4d5d2' },
   lonestar: { body: '#26457a', decal: 'lightbar' },
   docwagon: { body: '#ecece8', decal: 'cross' },
@@ -71,6 +70,7 @@ export const PALETTES = {
   civilian: ['white', 'silver', 'black', 'red', 'blue', 'green', 'yellow', 'orange', 'teal', 'maroon', 'grey', 'cream'],
   military: ['olive', 'tan', 'fieldgrey', 'forest'],
   drone:    ['graphite', 'bone', 'safety', 'orange', 'matte'],
+  naval:    ['haze', 'battleship', 'slate'],
 };
 
 /** Mix two `#rrggbb` colours; `t` = 0 is `a`, 1 is `b`. */
@@ -92,7 +92,8 @@ export function hashName(name) {
 /* ── Drawing primitives (centimetres; y = 0 is the REAR, y = L the front, which faces south) ── */
 
 const n = v => +v.toFixed(1);
-const SW = 3;
+/** The outline width in cm: 3 cm on road vehicles, thicker on big hulls so it survives their coarser texture. */
+let SW = 3;
 const rect = (x, y, w, h, fill, { rx = 0, sw = SW, stroke = INK, extra = '' } = {}) =>
   `<rect x="${n(x)}" y="${n(y)}" width="${n(w)}" height="${n(h)}"${rx ? ` rx="${n(rx)}"` : ''} fill="${fill}"${sw ? ` stroke="${stroke}" stroke-width="${sw}"` : ''}${extra}/>`;
 const circle = (cx, cy, r, fill, { sw = SW, stroke = INK, extra = '' } = {}) =>
@@ -340,16 +341,259 @@ function tank(p, W, L) {
   return s + circle(W / 2 + 46, L * 0.4, 18, darker(b, 0.2), { sw: 2 });           // commander's cupola
 }
 
-/* ── Aircraft (misfiled as cars in the r3 pack — TODO 240) ──────────────────────────────── */
+/* ── Boats, ships and submarines ───────────────────────────────────────────────────────────── */
 
-function aircraft(p, W, L) {
-  const b = p.body, cx = W / 2, sw = 12;
-  let s = poly([[cx - 200, L * 0.18], [cx + 200, L * 0.18], [cx + 1440, L * 0.06], [cx + 300, L * 0.6], [cx - 300, L * 0.6], [cx - 1440, L * 0.06]], darker(b, 0.12), { sw });
-  s += poly([[cx - 160, 40], [cx + 160, 40], [cx + 520, 20], [cx + 140, L * 0.14], [cx - 140, L * 0.14], [cx - 520, 20]], darker(b, 0.12), { sw });
-  s += poly([[cx - 160, 0], [cx + 160, 0], [cx + 170, L * 0.75], [cx, L], [cx - 170, L * 0.75]], b, { sw });
-  for (const x of [-700, -380, 380, 700]) s += rect(cx + x - 60, L * 0.2, 120, 380, METAL, { rx: 50, sw });
-  s += poly([[cx - 90, L * 0.88], [cx + 90, L * 0.88], [cx, L * 0.96]], GLASS, { sw: 6 });
-  return s + rect(cx - 40, L * 0.15, 80, L * 0.65, lighter(b, 0.2), { rx: 30, sw: 0 });
+/** A hull outline: square stern at y0, sides parallel to yBow, curving in to the bow point at yTip. */
+function hullD(x0, x1, y0, yBow, yTip) {
+  const cx = (x0 + x1) / 2, c = (x1 - x0) * 0.1, k = yBow + (yTip - yBow) * 0.55;
+  return `M${n(x0)} ${n(y0 + c)} Q${n(x0)} ${n(y0)} ${n(x0 + c)} ${n(y0)} H${n(x1 - c)} Q${n(x1)} ${n(y0)} ${n(x1)} ${n(y0 + c)}`
+    + ` V${n(yBow)} Q${n(x1)} ${n(k)} ${n(cx)} ${n(yTip)} Q${n(x0)} ${n(k)} ${n(x0)} ${n(yBow)} Z`;
+}
+const path = (d, fill, { sw = SW, stroke = INK, extra = '' } = {}) =>
+  `<path d="${d}" fill="${fill}"${sw ? ` stroke="${stroke}" stroke-width="${n(sw)}"` : ''} stroke-linejoin="round"${extra}/>`;
+const hull = (x0, x1, y0, yBow, yTip, fill, o) => path(hullD(x0, x1, y0, yBow, yTip), fill, o);
+/** A helicopter landing pad: a ring with an H made of bars. */
+const helipad = (cx, cy, r) => circle(cx, cy, r, darker('#5a6066', 0.2), { sw: SW * 0.6, stroke: '#e8e8e2' })
+  + rect(cx - r * 0.45, cy - r * 0.55, r * 0.18, r * 1.1, '#e8e8e2', { sw: 0 }) + rect(cx + r * 0.27, cy - r * 0.55, r * 0.18, r * 1.1, '#e8e8e2', { sw: 0 })
+  + rect(cx - r * 0.3, cy - r * 0.09, r * 0.6, r * 0.18, '#e8e8e2', { sw: 0 });
+
+function jetski(p, W, L) {
+  const b = p.body, cx = W / 2;
+  return hull(6, W - 6, 6, L * 0.62, L - 3, b) + hull(18, W - 18, 20, L * 0.6, L - 30, lighter(b, 0.2), { sw: 0 })
+    + rect(cx - W * 0.2, L * 0.14, W * 0.4, L * 0.36, '#2d2e31', { rx: 14, sw: 2 })
+    + line(cx - W * 0.36, L * 0.6, cx + W * 0.36, L * 0.6, '#2a2b2e', 5) + rect(cx - 10, 6, 20, 14, TYRE, { rx: 4, sw: 1.5 });
+}
+
+function speedboat(p, W, L) {
+  const b = p.body, cx = W / 2;
+  let s = hull(6, W - 6, 4, L * 0.5, L - 3, b);
+  s += hull(22, W - 22, 18, L * 0.5, L - 60, lighter(b, 0.25), { sw: 0 });         // foredeck sheen
+  s += rect(26, L * 0.12, W - 52, L * 0.36, '#e4e1d6', { rx: 20, sw: 2 });          // cockpit floor
+  s += path(`M${n(26)} ${n(L * 0.48)} Q${n(cx)} ${n(L * 0.6)} ${n(W - 26)} ${n(L * 0.48)} L${n(W - 34)} ${n(L * 0.45)} Q${n(cx)} ${n(L * 0.55)} ${n(34)} ${n(L * 0.45)} Z`, GLASS, { sw: 2 });
+  for (const x of [cx - 48, cx + 8]) s += rect(x, L * 0.32, 40, 46, '#2d2e31', { rx: 8, sw: 2 });
+  s += rect(cx - 60, L * 0.15, 120, 34, '#2d2e31', { rx: 10, sw: 2 });              // rear bench
+  return s + rect(cx - 22, 0, 44, 30, TYRE, { rx: 6, sw: 2 });                       // outboard
+}
+
+function patrolBoat(p, W, L) {
+  const b = p.body, cx = W / 2;
+  let s = hull(8, W - 8, 4, L * 0.55, L - 3, b);
+  s += hull(26, W - 26, 18, L * 0.55, L - 70, lighter(b, 0.18), { sw: 0 });
+  s += rect(W * 0.2, L * 0.34, W * 0.6, L * 0.28, lighter(b, 0.35), { rx: 18 });     // wheelhouse
+  s += rect(W * 0.24, L * 0.55, W * 0.52, L * 0.05, GLASS, { rx: 6, sw: 2 });
+  s += rect(W * 0.3, L * 0.38, W * 0.4, L * 0.12, lighter(b, 0.55), { rx: 8, sw: 2 });
+  s += circle(cx, L * 0.42, W * 0.06, METAL, { sw: 2 });                            // radar
+  s += turret(darker(b, 0.15), cx, L * 0.72, W * 0.1, L * 0.86, 10);
+  return s + circle(cx, L * 0.14, W * 0.12, darker(b, 0.3), { sw: 2 }) + line(cx, L * 0.14, cx, L * 0.04, darker(b, 0.6), 8);
+}
+
+function yacht(p, W, L) {
+  const b = p.body, cx = W / 2, deck = '#c9a877';
+  let s = hull(8, W - 8, 4, L * 0.6, L - 4, b);
+  s += hull(24, W - 24, 16, L * 0.6, L - 120, deck, { sw: 2 });                    // teak deck
+  s += rect(W * 0.14, L * 0.16, W * 0.72, L * 0.54, '#ecebe6', { rx: 60 });          // main deck house
+  s += rect(W * 0.18, L * 0.62, W * 0.64, L * 0.05, GLASS, { rx: 20, sw: 2 });
+  s += rect(W * 0.24, L * 0.26, W * 0.52, L * 0.32, '#f7f6f2', { rx: 40, sw: 2 });  // flybridge
+  s += rect(W * 0.3, L * 0.5, W * 0.4, L * 0.04, GLASS, { rx: 14, sw: 2 });
+  return s + rect(cx - W * 0.2, L * 0.04, W * 0.4, L * 0.08, '#46b3e6', { rx: 20, sw: 2 }) + decal(p, cx, L * 0.4, W * 0.3);
+}
+
+function minisub(p, W, L, { sdv = false } = {}) {
+  const b = p.body, cx = W / 2;
+  let s = rect(cx - W * 0.45, L * 0.08, W * 0.9, L * 0.06, darker(b, 0.3), { rx: 6, sw: 2 });  // stern planes
+  s += circle(cx, L * 0.04, W * 0.16, ROTOR, { sw: 1.5, stroke: '#9aa3ad', extra: ' fill-opacity="0.45"' });
+  s += ellipse(cx, L * 0.52, W * (sdv ? 0.3 : 0.4), L * 0.46, b);
+  s += ellipse(cx - W * 0.1, L * 0.45, W * 0.06, L * 0.25, lighter(b, 0.3), { sw: 0 });
+  if (sdv) {
+    s += ellipse(cx, L * 0.72, W * 0.14, L * 0.07, GLASS, { sw: 1.5 }) + ellipse(cx, L * 0.52, W * 0.14, L * 0.07, GLASS, { sw: 1.5 });
+    for (const y of [0.3, 0.42, 0.62]) s += line(cx - W * 0.36, L * y, cx - W * 0.3, L * y, METAL, 4) + line(cx + W * 0.3, L * y, cx + W * 0.36, L * y, METAL, 4);
+    return s;
+  }
+  s += ellipse(cx, L * 0.8, W * 0.22, L * 0.08, GLASS, { sw: 2 });                 // viewport dome
+  return s + line(cx + W * 0.2, L * 0.86, cx + W * 0.3, L * 0.99, METAL, 6) + lamps(cx - W * 0.3, cx + W * 0.3, L * 0.97, L * 0.1, 20, 8);
+}
+
+function submarine(p, W, L) {
+  const b = darker(p.body, 0.35), cx = W / 2;
+  let s = poly([[cx - W * 0.48, L * 0.02], [cx + W * 0.48, L * 0.02], [cx + W * 0.1, L * 0.1], [cx - W * 0.1, L * 0.1]], darker(b, 0.2));  // stern planes
+  s += ellipse(cx, L * 0.5, W * 0.4, L * 0.48, b);
+  s += ellipse(cx, L * 0.5, W * 0.08, L * 0.4, lighter(b, 0.12), { sw: 0 });
+  s += rect(cx - W * 0.12, L * 0.6, W * 0.24, L * 0.1, darker(b, 0.25), { rx: W * 0.1 });  // the sail
+  s += rect(cx - W * 0.36, L * 0.65, W * 0.72, L * 0.012, darker(b, 0.25), { rx: 10, sw: SW * 0.6 });
+  for (let i = 0; i < 6; i++) s += rect(cx - W * 0.1, L * (0.32 + i * 0.04), W * 0.2, L * 0.02, darker(b, 0.15), { sw: SW * 0.4 });
+  return s;
+}
+
+function warship(p, W, L) {
+  const b = p.body, cx = W / 2;
+  let s = hull(W * 0.04, W * 0.96, 0, L * 0.62, L, b);
+  s += hull(W * 0.1, W * 0.9, L * 0.01, L * 0.62, L * 0.96, lighter(b, 0.12), { sw: 0 });
+  s += helipad(cx, L * 0.1, W * 0.32);
+  s += rect(W * 0.18, L * 0.22, W * 0.64, L * 0.36, lighter(b, 0.2));              // superstructure
+  s += rect(W * 0.26, L * 0.3, W * 0.48, L * 0.18, lighter(b, 0.32), { sw: SW * 0.6 });
+  s += ellipse(cx, L * 0.32, W * 0.12, L * 0.04, darker(b, 0.5), { sw: SW * 0.6 });  // funnel
+  s += circle(cx, L * 0.44, W * 0.08, METAL, { sw: SW * 0.6 });                      // mast
+  s += rect(W * 0.26, L * 0.58, W * 0.48, L * 0.006, GLASS, { sw: 0 });
+  s += rect(W * 0.3, L * 0.62, W * 0.4, L * 0.06, darker(b, 0.2), { sw: SW * 0.6 }); // missile cells
+  return s + turret(lighter(b, 0.1), cx, L * 0.76, W * 0.13, L * 0.88, W * 0.04);
+}
+
+function carrier(p, W, L) {
+  const b = p.body, deck = '#4d5357', cx = W / 2;
+  let s = hull(W * 0.2, W * 0.8, 0, L * 0.7, L, b);
+  s += poly([[W * 0.12, L * 0.01], [W * 0.84, L * 0.01], [W * 0.88, L * 0.62], [W * 0.66, L * 0.99], [W * 0.34, L * 0.99], [W * 0.16, L * 0.8], [W * 0.02, L * 0.6], [W * 0.04, L * 0.36]], deck);
+  s += line(W * 0.2, L * 0.04, W * 0.12, L * 0.6, '#e8e8e2', SW * 0.5);              // angled deck
+  s += line(W * 0.48, L * 0.04, W * 0.24, L * 0.62, '#e8e8e2', SW * 0.5);
+  for (let y = 0.08; y < 0.95; y += 0.05) s += line(cx + W * 0.02, L * y, cx + W * 0.02, L * (y + 0.025), '#e8e8e2', SW * 0.6);  // centreline
+  s += rect(W * 0.8, L * 0.4, W * 0.12, L * 0.14, lighter(b, 0.15));               // the island
+  s += circle(W * 0.86, L * 0.46, W * 0.03, METAL, { sw: SW * 0.5 });
+  for (const y of [0.2, 0.7]) s += rect(W * 0.86, L * y, W * 0.1, L * 0.05, darker(deck, 0.2), { sw: SW * 0.5 });  // elevators
+  const jet = (x, y) => poly([[x, y + 600], [x + 380, y], [x, y + 160], [x - 380, y]], '#8a9096', { sw: SW * 0.4 });
+  for (const [x, y] of [[0.62, 0.12], [0.74, 0.12], [0.62, 0.26], [0.74, 0.26], [0.66, 0.78]]) s += jet(W * x, L * y);
+  return s;
+}
+
+function liner(p, W, L) {
+  const b = darker(p.body, 0.2), white = '#f1f0ec', cx = W / 2;
+  let s = hull(W * 0.03, W * 0.97, 0, L * 0.72, L, b);
+  s += hull(W * 0.08, W * 0.92, L * 0.01, L * 0.72, L * 0.97, '#c9a877', { sw: 0 });  // deck
+  s += rect(W * 0.1, L * 0.12, W * 0.8, L * 0.66, white, { rx: W * 0.1 });
+  s += rect(W * 0.2, L * 0.2, W * 0.6, L * 0.5, '#fbfbf8', { rx: W * 0.08, sw: SW * 0.5 });
+  s += rect(W * 0.14, L * 0.76, W * 0.72, L * 0.008, GLASS, { sw: 0 });
+  for (const y of [0.34, 0.5]) s += ellipse(cx, L * y, W * 0.12, L * 0.035, '#c8372d', { sw: SW * 0.6 }) + ellipse(cx, L * y, W * 0.08, L * 0.02, INK, { sw: 0 });
+  for (const y of [0.22, 0.6]) s += rect(cx - W * 0.16, L * y, W * 0.32, L * 0.05, '#46b3e6', { rx: W * 0.05, sw: SW * 0.5 });
+  for (let y = 0.16; y < 0.74; y += 0.04) s += rect(W * 0.1, L * y, W * 0.05, L * 0.025, LED, { sw: SW * 0.3 }) + rect(W * 0.85, L * y, W * 0.05, L * 0.025, LED, { sw: SW * 0.3 });
+  return s;
+}
+
+function freighter(p, W, L) {
+  const b = p.body, boxes = ['#b4452f', '#2f6c9c', '#c9a227', '#3e7a4c', '#8a8f95', '#7a3b5b'];
+  let s = hull(W * 0.04, W * 0.96, 0, L * 0.78, L, b);
+  s += hull(W * 0.08, W * 0.92, L * 0.01, L * 0.78, L * 0.97, darker(b, 0.3), { sw: 0 });
+  s += rect(W * 0.12, L * 0.03, W * 0.76, L * 0.11, '#ecebe6');                    // bridge, aft
+  s += rect(W * 0.16, L * 0.12, W * 0.68, L * 0.008, GLASS, { sw: 0 });
+  s += ellipse(W / 2, L * 0.06, W * 0.1, L * 0.02, darker(b, 0.4), { sw: SW * 0.5 });
+  const cw = W * 0.76 / 6, ch = L * 0.064;
+  for (let r = 0; r < 10; r++) {
+    for (let c = 0; c < 6; c++) s += rect(W * 0.12 + c * cw, L * 0.17 + r * (ch + L * 0.006), cw, ch, boxes[(r * 7 + c * 3) % boxes.length], { sw: SW * 0.4 });
+  }
+  return s + line(W * 0.1, L * 0.45, W * 0.9, L * 0.45, '#d8b031', SW * 1.2) + line(W * 0.1, L * 0.62, W * 0.9, L * 0.62, '#d8b031', SW * 1.2);
+}
+
+function hovercraft(p, W, L) {
+  const b = p.body, cx = W / 2;
+  let s = rect(2, 2, W - 4, L - 4, '#26272a', { rx: W * 0.3 });                     // skirt
+  s += rect(W * 0.08, L * 0.05, W * 0.84, L * 0.88, b, { rx: W * 0.22 });
+  s += rect(W * 0.18, L * 0.38, W * 0.64, L * 0.46, lighter(b, 0.18), { rx: W * 0.14, sw: 2 });  // cabin roof
+  s += rect(W * 0.2, L * 0.8, W * 0.6, L * 0.06, GLASS, { rx: 14, sw: 2 });
+  for (const x of [W * 0.3, W * 0.7]) {
+    s += circle(x, L * 0.17, W * 0.17, darker(b, 0.25)) + circle(x, L * 0.17, W * 0.13, ROTOR, { sw: 1.5, extra: ' fill-opacity="0.4"' });
+    s += line(x - W * 0.12, L * 0.17, x + W * 0.12, L * 0.17, '#3a3d42', 4);
+  }
+  return s + decal(p, cx, L * 0.6, W * 0.4) + lamps(W * 0.1, W * 0.9, L * 0.92, L * 0.05, 30, 10);
+}
+
+function airship(p, W, L) {
+  const b = p.body, cx = W / 2;
+  let s = poly([[cx, L * 0.2], [W * 0.02, L * 0.02], [W * 0.06, L * 0.01], [cx, L * 0.1], [W * 0.94, L * 0.01], [W * 0.98, L * 0.02]], darker(b, 0.25));  // fins
+  s += ellipse(cx, L * 0.5, W * 0.42, L * 0.49, b);
+  for (const k of [0.66, 0.33]) s += ellipse(cx, L * 0.5, W * 0.42 * k, L * 0.49, 'none', { sw: SW * 0.5, stroke: darker(b, 0.2) });
+  s += ellipse(cx - W * 0.14, L * 0.6, W * 0.08, L * 0.25, lighter(b, 0.3), { sw: 0 });
+  s += rect(cx - W * 0.03, L * 0.02, W * 0.06, L * 0.14, darker(b, 0.3), { sw: SW * 0.6 });      // top fin
+  return s + ellipse(cx, L * 0.96, W * 0.08, L * 0.025, METAL, { sw: SW * 0.6 }) + decal(p, cx, L * 0.4, W * 0.3);
+}
+
+/* ── Helicopters ───────────────────────────────────────────────────────────────────────────── */
+
+/** `kind`: light (bubble), utility, gunship (tandem canopy, stub wings), heavy (tandem rotors). */
+function heli(p, W, L, { kind = 'utility' } = {}) {
+  const b = p.body, cx = W / 2, fw = { light: 0.26, utility: 0.2, gunship: 0.12, heavy: 0.22 }[kind];
+  let s = '';
+  if (kind === 'heavy') {
+    s += rect(cx - W * fw / 2, L * 0.05, W * fw, L * 0.9, b, { rx: W * fw * 0.4 });
+    s += rect(cx - W * fw * 0.3, L * 0.86, W * fw * 0.6, L * 0.06, GLASS, { rx: 30 });
+    s += rect(cx - W * fw * 0.3, L * 0.15, W * fw * 0.6, L * 0.6, lighter(b, 0.15), { rx: 20, sw: 0 });
+    return s + disc(cx, L * 0.25, W / 2 - 4) + disc(cx, L * 0.73, W / 2 - 4) + decal(p, cx, L * 0.5, W * 0.15);
+  }
+  s += rect(cx - W * 0.02, L * 0.06, W * 0.04, L * 0.4, darker(b, 0.15), { rx: 10 });   // tail boom
+  s += rect(cx - W * 0.12, L * 0.1, W * 0.24, L * 0.035, b, { rx: 10 });               // stabiliser
+  s += ellipse(cx + W * 0.04, L * 0.07, W * 0.012, L * 0.07, ROTOR, { sw: 2 });        // tail rotor
+  if (kind === 'gunship') s += rect(cx - W * 0.3, L * 0.54, W * 0.6, L * 0.05, darker(b, 0.15), { rx: 10 })
+    + rect(cx - W * 0.32, L * 0.5, W * 0.06, L * 0.12, METAL, { rx: 20 }) + rect(cx + W * 0.26, L * 0.5, W * 0.06, L * 0.12, METAL, { rx: 20 });
+  const y0 = kind === 'light' ? 0.48 : 0.36;
+  s += ellipse(cx, L * (y0 + 0.98) / 2, W * fw / 2, L * (0.98 - y0) / 2, b);
+  if (kind === 'gunship') s += ellipse(cx, L * 0.86, W * fw * 0.32, L * 0.05, GLASS, { sw: 2 }) + ellipse(cx, L * 0.74, W * fw * 0.32, L * 0.05, GLASS, { sw: 2 });
+  else s += ellipse(cx, L * (kind === 'light' ? 0.82 : 0.88), W * fw * 0.4, L * (kind === 'light' ? 0.13 : 0.07), GLASS, { sw: 2 });
+  if (kind === 'utility') s += rect(cx - W * fw * 0.3, L * 0.45, W * fw * 0.6, L * 0.3, lighter(b, 0.15), { rx: 20, sw: 0 });
+  return s + disc(cx, L * 0.62, W / 2 - 4) + decal(p, cx, L * 0.5, W * 0.12);
+}
+
+function tiltrotor(p, W, L) {
+  const b = p.body, cx = W / 2;
+  let s = rect(cx - W * 0.2, L * 0.02, W * 0.4, L * 0.05, darker(b, 0.1), { rx: 10 });   // tailplane
+  s += rect(W * 0.18, L * 0.5, W * 0.64, L * 0.07, darker(b, 0.1), { rx: 10 });          // wing
+  s += rect(cx - W * 0.08, L * 0.02, W * 0.16, L * 0.96, b, { rx: W * 0.07 });
+  s += ellipse(cx, L * 0.9, W * 0.05, L * 0.05, GLASS, { sw: 2 });
+  for (const x of [W * 0.2, W * 0.8]) s += rect(x - W * 0.025, L * 0.44, W * 0.05, L * 0.2, METAL, { rx: 20 }) + disc(x, L * 0.62, W * 0.19);
+  return s + decal(p, cx, L * 0.35, W * 0.1);
+}
+
+/* ── Fixed-wing aircraft ───────────────────────────────────────────────────────────────────── */
+
+/**
+ * A plane from four numbers per surface: `wing` = [root leading, root trailing, tip leading, tip
+ * trailing] as fractions of the length (bigger is nearer the nose), `span` its fraction of the width;
+ * the same for `tail`. `fw` is the fuselage width as a fraction of W.
+ */
+function plane(p, W, L, { fw = 0.1, wing, span = 1, tail, tailSpan = 0.35, nose = 0.8, engines = [], props = [], canopy = 0.86, fins = 1 }) {
+  const b = p.body, cx = W / 2, h = W * fw / 2;
+  const surface = ([rl, rt, tl, tt], sp) => {
+    const x = W * sp / 2;
+    return poly([[cx - h, L * rl], [cx + h, L * rl], [cx + x, L * tl], [cx + x, L * tt], [cx + h, L * rt], [cx - h, L * rt], [cx - x, L * tt], [cx - x, L * tl]], darker(b, 0.1));
+  };
+  let s = surface(tail, tailSpan) + surface(wing, span);
+  for (const [x, y0, y1, w] of engines) s += rect(cx + W * x - W * w / 2, L * y0, W * w, L * (y1 - y0), METAL, { rx: W * w * 0.4 });
+  s += path(`M${n(cx - h)} ${n(L * 0.01)} H${n(cx + h)} V${n(L * nose)} Q${n(cx + h)} ${n(L)} ${n(cx)} ${n(L)} Q${n(cx - h)} ${n(L)} ${n(cx - h)} ${n(L * nose)} Z`, b);
+  s += rect(cx - h * 0.35, L * 0.12, h * 0.7, L * 0.6, lighter(b, 0.25), { rx: h * 0.3, sw: 0 });
+  for (let i = 0; i < fins; i++) {
+    const x = fins === 1 ? cx : cx + (i ? 1 : -1) * h * 0.7;
+    s += rect(x - W * 0.008, L * 0.01, W * 0.016, L * 0.14, darker(b, 0.3), { rx: 10, sw: SW * 0.5 });
+  }
+  s += ellipse(cx, L * canopy, h * 0.6, L * 0.035, GLASS, { sw: SW * 0.6 });
+  for (const [x, y, r] of props) s += ellipse(cx + W * x, L * y, W * r, L * 0.012, ROTOR, { sw: SW * 0.4, stroke: '#9aa3ad', extra: ' fill-opacity="0.55"' });
+  return s + decal(p, cx, L * 0.5, h * 1.4);
+}
+
+const ultralight = (p, W, L) => plane(p, W, L, { fw: 0.07, wing: [0.66, 0.46, 0.62, 0.48], tail: [0.14, 0.02, 0.12, 0.03], tailSpan: 0.3, nose: 0.75, props: [[0, 0.02, 0.1]], canopy: 0.8 });
+const lightPlane = (p, W, L) => plane(p, W, L, { fw: 0.11, wing: [0.72, 0.56, 0.7, 0.58], tail: [0.16, 0.02, 0.13, 0.04], tailSpan: 0.36, nose: 0.85, props: [[0, 0.995, 0.16]], canopy: 0.8 });
+const bizjet = (p, W, L) => plane(p, W, L, { fw: 0.11, wing: [0.56, 0.4, 0.34, 0.27], tail: [0.12, 0.02, 0.06, 0.01], tailSpan: 0.4, nose: 0.78, engines: [[-0.1, 0.12, 0.28, 0.07], [0.1, 0.12, 0.28, 0.07]], canopy: 0.9 });
+const fighter = (p, W, L) => plane(p, W, L, { fw: 0.16, wing: [0.62, 0.18, 0.24, 0.16], tail: [0.14, 0.01, 0.06, 0.01], tailSpan: 0.56, nose: 0.68, canopy: 0.78, fins: 2 });
+const transport = (p, W, L) => plane(p, W, L, { fw: 0.14, wing: [0.62, 0.5, 0.6, 0.52], tail: [0.14, 0.01, 0.1, 0.02], tailSpan: 0.42, nose: 0.86,
+  engines: [-0.34, -0.18, 0.18, 0.34].map(x => [x, 0.5, 0.66, 0.04]), props: [-0.34, -0.18, 0.18, 0.34].map(x => [x, 0.665, 0.07]), canopy: 0.92 });
+const airliner = (p, W, L) => plane(p, W, L, { fw: 0.1, wing: [0.62, 0.08, 0.12, 0.06], tail: [0.14, 0.01, 0.1, 0.01], tailSpan: 0.1, nose: 0.82,
+  engines: [-0.28, -0.14, 0.14, 0.28].map(x => [x, 0.06, 0.24, 0.05]), canopy: 0.94 });
+
+function lav(p, W, L) {
+  const b = p.body, cx = W / 2;
+  let s = '';
+  for (const [x, y] of [[0.2, 0.22], [0.8, 0.22], [0.2, 0.74], [0.8, 0.74]]) {
+    s += circle(W * x, L * y, W * 0.2, darker(b, 0.2)) + circle(W * x, L * y, W * 0.15, ROTOR, { sw: 1.5, extra: ' fill-opacity="0.4"' });
+  }
+  s += poly([[W * 0.22, L * 0.02], [W * 0.78, L * 0.02], [W * 0.8, L * 0.7], [cx + W * 0.12, L * 0.99], [cx - W * 0.12, L * 0.99], [W * 0.2, L * 0.7]], b);
+  s += poly([[W * 0.3, L * 0.72], [W * 0.7, L * 0.72], [cx + W * 0.08, L * 0.92], [cx - W * 0.08, L * 0.92]], GLASS, { sw: 2 });
+  s += rect(W * 0.3, L * 0.08, W * 0.4, L * 0.36, lighter(b, 0.15), { rx: 20, sw: 2 });
+  return s + turret(darker(b, 0.1), cx, L * 0.52, W * 0.11, L * 0.7, 8);
+}
+
+/* ── Trailer (the N-C Bergen road train is misfiled as fixed-wing — TODO 240) ─────────────── */
+
+function trailer(p, W, L) {
+  const box = '#c3c6c8';
+  let s = axle(W, L * 0.06, 22, 80) + axle(W, L * 0.13, 22, 80) + axle(W, L * 0.2, 22, 80);
+  s += rect(6, 3, W - 12, L - 30, box, { rx: 6 });
+  for (let y = 60; y < L - 60; y += 60) s += line(14, y, W - 14, y, darker(box, 0.2), 2.5);
+  s += rect(W / 2 - 50, 6, 100, 10, TAIL, { sw: 1.5 });
+  return s + rect(W / 2 - 16, L - 30, 32, 26, '#2a2b2e', { rx: 6, sw: 2 });            // kingpin plate
 }
 
 /* ── Drones ────────────────────────────────────────────────────────────────────────────────── */
@@ -487,7 +731,32 @@ export const ARCHETYPES = {
   'armored-truck':{ size: [2.5, 7],   palette: 'military', draw: armoredTruck, about: 'armoured riot or security truck' },
   'tracked-apc':  { size: [3.5, 7],   palette: 'military', draw: trackedApc, about: 'tracked APC / IFV' },
   tank:           { size: [3.5, 10],  palette: 'military', draw: tank, about: 'tank / self-propelled gun' },
-  aircraft:       { size: [30, 50],   palette: 'civilian', draw: aircraft, about: 'jet transport (misfiled as cars, TODO 240)' },
+  trailer:        { size: [2.5, 13],  palette: 'civilian', draw: trailer, about: 'semi-trailer' },
+  jetski:         { size: [1, 3],     palette: 'civilian', draw: jetski, about: 'personal watercraft' },
+  speedboat:      { size: [2.5, 9],   palette: 'civilian', draw: speedboat, about: 'speedboat / launch' },
+  'patrol-boat':  { size: [4, 14],    palette: 'naval',    draw: patrolBoat, about: 'patrol or work boat with a wheelhouse' },
+  yacht:          { size: [6, 24],    palette: 'civilian', draw: yacht, about: 'motor yacht' },
+  minisub:        { size: [3, 8],     palette: 'drone',    draw: minisub, about: 'minisub / submersible' },
+  sdv:            { size: [1, 3.5],   palette: 'naval',    draw: (p, W, L) => minisub(p, W, L, { sdv: true }), about: 'swimmer delivery vehicle' },
+  submarine:      { size: [10, 110],  palette: 'naval',    draw: submarine, about: 'submarine' },
+  warship:        { size: [14, 120],  palette: 'naval',    draw: warship, about: 'corvette / frigate' },
+  carrier:        { size: [75, 330],  palette: 'naval',    draw: carrier, about: 'aircraft carrier' },
+  liner:          { size: [36, 290],  palette: 'civilian', draw: liner, about: 'cruise liner' },
+  freighter:      { size: [30, 200],  palette: 'civilian', draw: freighter, about: 'container ship' },
+  hovercraft:     { size: [5, 12],    palette: 'civilian', draw: hovercraft, about: 'hovercraft' },
+  airship:        { size: [16, 60],   palette: 'civilian', draw: airship, about: 'airship / dirigible' },
+  'heli-light':   { size: [8, 9],     palette: 'civilian', draw: (p, W, L) => heli(p, W, L, { kind: 'light' }), about: 'one-man light helicopter' },
+  helicopter:     { size: [12, 15],   palette: 'civilian', draw: heli, about: 'utility helicopter' },
+  gunship:        { size: [12, 16],   palette: 'military', draw: (p, W, L) => heli(p, W, L, { kind: 'gunship' }), about: 'attack helicopter' },
+  'heli-heavy':   { size: [16, 28],   palette: 'civilian', draw: (p, W, L) => heli(p, W, L, { kind: 'heavy' }), about: 'tandem-rotor heavy lifter' },
+  tiltrotor:      { size: [16, 15],   palette: 'civilian', draw: tiltrotor, about: 'tilt-rotor VTOL' },
+  ultralight:     { size: [10, 6],    palette: 'civilian', draw: ultralight, about: 'ultralight / glider' },
+  'light-plane':  { size: [11, 9],    palette: 'civilian', draw: lightPlane, about: 'high-wing light plane' },
+  bizjet:         { size: [16, 18],   palette: 'civilian', draw: bizjet, about: 'business jet / small airliner' },
+  fighter:        { size: [10, 16],   palette: 'military', draw: fighter, about: 'fighter / ground-attack jet' },
+  transport:      { size: [32, 28],   palette: 'civilian', draw: transport, about: 'four-engined transport' },
+  airliner:       { size: [30, 60],   palette: 'civilian', draw: airliner, about: 'supersonic / suborbital airliner' },
+  lav:            { size: [6, 14],    palette: 'military', draw: lav, about: 'LAV (thrust vectored low-altitude vehicle)' },
   rotor:          { size: [1, 1],     palette: 'drone',    draw: rotor, about: 'multirotor drone' },
   helidrone:      { size: [1.5, 2.5], palette: 'drone',    draw: helidrone, about: 'single-rotor helicopter drone' },
   fixedwing:      { size: [3, 2],     palette: 'drone',    draw: fixedwing, about: 'fixed-wing RPV / glider' },
@@ -504,11 +773,14 @@ export const ARCHETYPES = {
 /** Texture resolution: 200 px a metre, capped so no side passes 4096 px (the usual GPU limit). */
 export const pxPerMetre = ([w, l]) => Math.min(200, Math.floor(4096 / Math.max(w, l)));
 
+export const outlineFor = size => Math.max(3, Math.round(Math.max(...size) * 0.25));
+
 /** The SVG text of one archetype in one paint. */
 export function renderSvg(archetype, paintName) {
   const a = ARCHETYPES[archetype], paint = PAINTS[paintName];
   if (!a || !paint) throw new Error(`no archetype "${archetype}" or paint "${paintName}"`);
   const [W, L] = a.size.map(m => m * 100), k = pxPerMetre(a.size) / 100;
+  SW = outlineFor(a.size);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W * k}" height="${L * k}" viewBox="0 0 ${W} ${L}">
 <!-- ${archetype} (${a.about}), ${paintName}, ${a.size[0]} × ${a.size[1]} m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
 <g stroke-linejoin="round">
@@ -549,7 +821,7 @@ export function inScopeEntries(src = SRC) {
   for (const pack of readdirSync(src).sort()) {
     if (!/^sr3e-.+-(vehicles|drones)$/.test(pack)) continue;
     for (const [key, doc] of readSourceDir(join(src, pack))) {
-      if (key.startsWith('!actors!') && isInScope(pack, doc)) out.push({ pack, key, doc });
+      if (key.startsWith('!actors!') && isInScope(pack)) out.push({ pack, key, doc });
     }
   }
   return out;
@@ -592,7 +864,39 @@ export function guessArchetype(pack, doc) {
     if (/crawler|kodiak|dlk/i.test(name)) return 'tracked-drone';
     return 'ground';
   }
-  const vt = doc.system?.vehicleType;
+  const vt = doc.system?.vehicleType, seats = Number(doc.system?.seating) || 0, speed = doc.system?.attributes?.speed?.value ?? 0;
+  if (vt === 'boat') {
+    if (/watersport/i.test(name)) return 'jetski';
+    if (/harland|dolphin/i.test(name)) return 'yacht';
+    if (/delphin/i.test(name)) return 'minisub';
+    return seats >= 4 ? 'patrol-boat' : 'speedboat';
+  }
+  if (vt === 'ship') {
+    if (/supercarrier/i.test(name)) return 'carrier';
+    if (/liner/i.test(name)) return 'liner';
+    if (/merchant/i.test(name)) return 'freighter';
+    if (/electronaut/i.test(name)) return 'minisub';
+    return 'warship';
+  }
+  if (vt === 'submarine') return /anago/i.test(name) ? 'sdv' : seats ? 'minisub' : 'submarine';
+  if (vt === 'hovercraft') return 'hovercraft';
+  if (vt === 'airship') return 'airship';
+  if (vt === 'helicopter') {
+    if (/vtol/i.test(t)) return 'tiltrotor';
+    if (/dragon|dorocilo|tsumukari/i.test(name)) return 'heli-heavy';
+    if (/missle|missile|rocket|tiger/i.test(t)) return 'gunship';
+    return seats <= 1 ? 'heli-light' : 'helicopter';
+  }
+  if (vt === 'fixedwing') {
+    if (/bergen\(trailer/i.test(name)) return 'trailer';
+    if (/bergen/i.test(name)) return 'truck';
+    if (/\bLAV\b|banshee/.test(name)) return 'lav';
+    if (seats >= 100) return 'airliner';
+    if (/hardpoint|missile/i.test(t) && speed >= 400) return 'fighter';
+    if (speed <= 280) return seats <= 1 ? 'ultralight' : 'light-plane';
+    if (seats >= 40) return 'transport';
+    return speed >= 330 || seats >= 10 ? 'bizjet' : 'light-plane';
+  }
   if (vt === 'motorcycle') {
     if (/scoot|papoose/i.test(name)) return 'scooter';
     if (/snow/i.test(name)) return 'snowmobile';
@@ -605,7 +909,7 @@ export function guessArchetype(pack, doc) {
     if (/bmv|keller|falkener|semaphore/i.test(name)) return 'tracked-apc';
     return 'apc';
   }
-  if (/Alt-mode Speed\/Accel: \d+\(\d{3,}\)/.test(t) && (doc.system?.attributes?.speed?.value ?? 0) >= 500) return 'aircraft';
+  if (/Alt-mode Speed\/Accel: \d+\(\d{3,}\)/.test(t) && speed >= 500) return 'airliner';
   if (/snowbear/i.test(name)) return 'snowcat';
   if (/ambulance|step-van|cl bed|media van/i.test(name)) return 'boxvan';
   if (/flat bed/i.test(name)) return 'pickup-flat';
@@ -711,7 +1015,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     const all = readSourceDir(join(SRC, pack));
     let changed = 0;
     for (const [key, doc] of all) {
-      if (!key.startsWith('!actors!') || !isInScope(pack, doc)) continue;
+      if (!key.startsWith('!actors!') || !isInScope(pack)) continue;
       if (applyArt(doc, artFor(doc.name, map[doc.name]))) changed++;
     }
     if (!changed) continue;

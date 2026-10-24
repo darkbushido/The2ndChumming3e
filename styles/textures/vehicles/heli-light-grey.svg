@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1800" viewBox="0 0 800 900">
+<!-- heli-light (one-man light helicopter), grey, 8 × 9 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<rect x="384" y="54" width="32" height="360" rx="10" fill="#5a5e63" stroke="#141518" stroke-width="3"/><rect x="304" y="90" width="192" height="31.5" rx="10" fill="#6a6e74" stroke="#141518" stroke-width="3"/><ellipse cx="432" cy="63" rx="9.6" ry="63" fill="#d8dde3" stroke="#141518" stroke-width="2"/><ellipse cx="400" cy="657" rx="104" ry="225" fill="#6a6e74" stroke="#141518" stroke-width="3"/><ellipse cx="400" cy="738" rx="83.2" ry="117" fill="#26313b" stroke="#141518" stroke-width="2"/><circle cx="400" cy="558" r="396" fill="#d8dde3" stroke="#9aa3ad" stroke-width="1.5" fill-opacity="0.35"/><line x1="83.2" y1="558" x2="716.8" y2="558" stroke="#3a3d42" stroke-width="2.5" stroke-linecap="round"/><circle cx="400" cy="558" r="71.3" fill="#3a3d42" stroke="#141518" stroke-width="1.5"/>
+</g>
+</svg>

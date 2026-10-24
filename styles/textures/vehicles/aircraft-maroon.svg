@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="2430" height="4050.0000000000005" viewBox="0 0 3000 5000">
-<!-- aircraft (jet transport (misfiled as cars, TODO 240)), maroon, 30 × 50 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
-<g stroke-linejoin="round">
-<polygon points="1300,900 1700,900 2940,300 1800,3000 1200,3000 60,300" fill="#60202d" stroke="#141518" stroke-width="12" stroke-linejoin="round"/><polygon points="1340,40 1660,40 2020,20 1640,700 1360,700 980,20" fill="#60202d" stroke="#141518" stroke-width="12" stroke-linejoin="round"/><polygon points="1340,0 1660,0 1670,3750 1500,5000 1330,3750" fill="#6d2433" stroke="#141518" stroke-width="12" stroke-linejoin="round"/><rect x="740" y="1000" width="120" height="380" rx="50" fill="#8d9196" stroke="#141518" stroke-width="12"/><rect x="1060" y="1000" width="120" height="380" rx="50" fill="#8d9196" stroke="#141518" stroke-width="12"/><rect x="1820" y="1000" width="120" height="380" rx="50" fill="#8d9196" stroke="#141518" stroke-width="12"/><rect x="2140" y="1000" width="120" height="380" rx="50" fill="#8d9196" stroke="#141518" stroke-width="12"/><polygon points="1410,4400 1590,4400 1500,4800" fill="#26313b" stroke="#141518" stroke-width="6" stroke-linejoin="round"/><rect x="1460" y="750" width="80" height="3250" rx="30" fill="#8a505c"/>
-</g>
-</svg>

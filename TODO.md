@@ -41,7 +41,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
-| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[241](#241) Top-down token art for road vehicles and drones |
+| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[241](#241) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
@@ -698,6 +698,9 @@ Found while adding stall speeds: three Rigger 3 vehicles are named just **"A"** 
 the R3 rows for the full names and types, fix the pack (`packs-src/sr3e-r3-vehicles/`) and its source data, with a
 migration that renames owned copies still carrying the short names.
 
+**Also found 2026-10-24 (TODO 241):** the **N-C Bergen (tractor)** and **(trailer)** (r3.192) are a road train typed
+**fixedwing**, and the **Vulkan Electronaut** is a minisub typed **ship**. Check both against the R3 rows.
+
 ### 🪄 Spells & drugs
 
 ## 123. Audit every shipped spell and the casting rules — **requested 2026-09-14**
@@ -986,13 +989,14 @@ wants this rethought before the next release. Not diagnosed yet: settle first *w
 where the multiplication happens (`itemRating()`, the buy flow, encumbrance, the ledger) and where it is
 shown. Design question for the maintainer before any code.
 
-## 241. Top-down token art for road vehicles and drones — **requested 2026-10-24, branch `claude/inspiring-wright-vggxfj`**
+## 241. Top-down token art for every vehicle and drone — **requested 2026-10-24, branch `claude/inspiring-wright-vggxfj`**
 
 The token half of [#104](#104): original, code-drawn art that can ship in the public packs (the private
-table's map art is licensed and never can). **Built:** `tools/build-vehicle-art.mjs` draws 35 parameterised
-archetypes (cars, vans, bikes, military, drones — `ARCHETYPES`) as SVG, top-down, front facing **south**
-(rotation 0), transparent, in centimetres so the viewBox is the footprint. Each in-scope entry — every
-`sr3e-*-vehicles` car, motorcycle and military vehicle and every `sr3e-*-drones` entry, 167 in all — is mapped
+table's map art is licensed and never can). **Built:** `tools/build-vehicle-art.mjs` draws 60 parameterised
+archetypes (cars, vans, bikes, military, boats, ships, subs, hovercraft, airships, helicopters, planes,
+drones — `ARCHETYPES`) as SVG, top-down, front facing **south**
+(rotation 0), transparent, in centimetres so the viewBox is the footprint. Every actor of every
+`sr3e-*-vehicles` and `sr3e-*-drones` pack — 263 in all — is mapped
 by name in the reviewed `tools/data/vehicle-archetypes.json`; its paint is the archetype palette's pick by a
 hash of the name (Lone Star and DocWagon have liveries). The tool writes `styles/textures/vehicles/<archetype>-<paint>.svg`
 and sets `img`, `prototypeToken.texture.src` and `prototypeToken.width/height` (metres = 1 m squares) in
@@ -1000,9 +1004,12 @@ and sets `img`, `prototypeToken.texture.src` and `prototypeToken.width/height` (
 fails on an unmapped entry, a missing or drifted SVG, an orphan, or a token size off Foundry's ½ step.
 
 - **Not done:** owned world copies keep the old picture (Foundry embeds, it doesn't link) — no migration
-  unless the maintainer wants one. Boats, aircraft, helicopters and hovercraft are out of scope.
-- "A", "Lockheed" and the Lockheed C-260 are aircraft misfiled as cars ([#240](#240)); they get the
-  `aircraft` archetype for now — re-map them when #240 retypes them.
+  unless the maintainer wants one.
+- Misfiled entries ([#240](#240)) are mapped to what they ARE: "A" and "Lockheed" → `airliner`, the
+  Lockheed C-260 → `transport` (all typed car); the N-C Bergen tractor and trailer → `truck` / `trailer`
+  (typed fixedwing); the Vulkan Electronaut → `minisub` (typed ship).
+- Ships are their real size (the Akihito carrier is 75 × 330 squares); big hulls get a coarser texture
+  (4096 px cap) and a thicker outline.
 
 **🧪 Test in Foundry** (Foundry restarted after `npm run packs:install`)
 1. Drag a sedan, a bus, a sport bike, a tank and a rotor drone from the packs onto a 1 m grid scene: each
@@ -1012,6 +1019,8 @@ fails on an unmapped entry, a missing or drifted SVG, an orphan, or a token size
 3. The actor sheet's portrait and the compendium list show the same art, with no broken-image icon on
    a Linux server (case-exact paths).
 4. A crawler and a micro drone (½ × ½ m) are still legible at the scene's default zoom.
+5. A helicopter, a speedboat and the supercarrier: the carrier token loads (texture ≤ 4096 px) and
+   reads at a zoomed-out view; rotor discs are see-through.
 
 ### 📦 Content gaps
 

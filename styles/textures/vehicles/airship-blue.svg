@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1088" height="4080.0000000000005" viewBox="0 0 1600 6000">
+<!-- airship (airship / dirigible), blue, 16 × 60 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<polygon points="800,1200 32,120 96,60 800,600 1504,60 1568,120" fill="#234575" stroke="#141518" stroke-width="15" stroke-linejoin="round"/><ellipse cx="800" cy="3000" rx="672" ry="2940" fill="#2f5c9c" stroke="#141518" stroke-width="15"/><ellipse cx="800" cy="3000" rx="443.5" ry="2940" fill="none" stroke="#264a7d" stroke-width="7.5"/><ellipse cx="800" cy="3000" rx="221.8" ry="2940" fill="none" stroke="#264a7d" stroke-width="7.5"/><ellipse cx="576" cy="3600" rx="128" ry="1500" fill="#6d8dba"/><rect x="752" y="120" width="96" height="840" fill="#21406d" stroke="#141518" stroke-width="9"/><ellipse cx="800" cy="5760" rx="128" ry="150" fill="#8d9196" stroke="#141518" stroke-width="9"/>
+</g>
+</svg>

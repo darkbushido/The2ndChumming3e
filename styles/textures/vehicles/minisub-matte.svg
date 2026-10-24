@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="1600" viewBox="0 0 300 800">
+<!-- minisub (minisub / submersible), matte, 3 × 8 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<rect x="15" y="64" width="270" height="48" rx="6" fill="#585a5f" stroke="#141518" stroke-width="2"/><circle cx="150" cy="32" r="48" fill="#d8dde3" stroke="#9aa3ad" stroke-width="1.5" fill-opacity="0.45"/><ellipse cx="150" cy="416" rx="120" ry="368" fill="#7d8187" stroke="#141518" stroke-width="3"/><ellipse cx="120" cy="360" rx="18" ry="200" fill="#a4a7ab"/><ellipse cx="150" cy="640" rx="66" ry="64" fill="#26313b" stroke="#141518" stroke-width="2"/><line x1="210" y1="688" x2="240" y2="792" stroke="#8d9196" stroke-width="6" stroke-linecap="round"/><rect x="66" y="766" width="20" height="8" rx="3" fill="#fff1bf" stroke="#141518" stroke-width="1.5"/><rect x="214" y="766" width="20" height="8" rx="3" fill="#fff1bf" stroke="#141518" stroke-width="1.5"/><rect x="66" y="82" width="16" height="6.4" rx="2" fill="#cf2f2a" stroke="#141518" stroke-width="1.5"/><rect x="218" y="82" width="16" height="6.4" rx="2" fill="#cf2f2a" stroke="#141518" stroke-width="1.5"/>
+</g>
+</svg>

@@ -1,5 +1,5 @@
 /**
- * Vehicle and drone token art — `tools/build-vehicle-art.mjs`, its reviewed name → archetype map
+ * Vehicle and drone token art (every vehicle type) — `tools/build-vehicle-art.mjs`, its reviewed name → archetype map
  * (`tools/data/vehicle-archetypes.json`), and the pack entries it points at the art (TODO 241).
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
@@ -7,7 +7,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   ARCHETYPES, PAINTS, PALETTES, IMG_DIR, OUT, isInScope, readMap, artFor, paintFor, renderAll, renderSvg,
-  inScopeEntries, applyArt, hashName, pxPerMetre,
+  inScopeEntries, applyArt, hashName, pxPerMetre, outlineFor,
 } from '../tools/build-vehicle-art.mjs';
 
 export const name = 'vehicle-art';
@@ -16,15 +16,14 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 export async function run(t) {
   /* ── Scope ─────────────────────────────────────────────────────────────────────────────── */
-  t.ok('a car in a vehicles pack is in scope', isInScope('sr3e-sr3-vehicles', { system: { vehicleType: 'car' } }));
-  t.ok('…so is a bike and a military vehicle', isInScope('sr3e-r3-vehicles', { system: { vehicleType: 'motorcycle' } })
-    && isInScope('sr3e-sota-vehicles', { system: { vehicleType: 'military' } }));
-  t.ok('a boat is not', !isInScope('sr3e-r3-vehicles', { system: { vehicleType: 'boat' } }));
-  t.ok('every drone is, whatever its type', isInScope('sr3e-ssg-drones', { system: { vehicleType: 'drone' } }));
-  t.ok('a vehicle-mods pack is not', !isInScope('sr3e-sr3-vehicle-mods', { system: { vehicleType: 'car' } }));
+  t.ok('every vehicles pack is in scope — road, water and air', isInScope('sr3e-sr3-vehicles') && isInScope('sr3e-r3-vehicles'));
+  t.ok('every drones pack is in scope', isInScope('sr3e-ssg-drones'));
+  t.ok('a vehicle-mods or vehicle-weapons pack is not', !isInScope('sr3e-sr3-vehicle-mods') && !isInScope('sr3e-r3-vehicle-weapons'));
 
   const entries = inScopeEntries();
-  t.ok(`the scope finds the road vehicles and drones (${entries.length})`, entries.length >= 160);
+  t.ok(`the scope finds every vehicle and drone (${entries.length})`, entries.length >= 260);
+  t.eq('…of every vehicleType the packs use', [...new Set(entries.map(e => e.doc.system?.vehicleType))].sort(),
+    ['airship', 'boat', 'car', 'drone', 'fixedwing', 'helicopter', 'hovercraft', 'military', 'motorcycle', 'ship', 'submarine']);
   const names = entries.map(e => e.doc.name);
   t.eq('in-scope names are unique (the map is keyed by name)', names.filter((n, i) => names.indexOf(n) !== i), []);
 
@@ -56,6 +55,11 @@ export async function run(t) {
   t.ok('bikes are 1 m wide and at most 3 m long', ['scooter', 'sportbike', 'cruiser', 'snowmobile'].every(a => range(a, 1, 3) && ARCHETYPES[a].size[0] === 1));
   t.ok('military vehicles stay under 4 × 11 m', ['apc', 'armored-truck', 'tracked-apc', 'tank'].every(a => ARCHETYPES[a].size[0] <= 4 && ARCHETYPES[a].size[1] <= 11));
   t.ok('drones are ½–3 m', ['rotor', 'helidrone', 'fixedwing', 'ductfan', 'ground', 'combat-rover', 'tracked-drone', 'crawler', 'micro', 'anthro', 'sentry'].every(a => range(a, 0.5, 3)));
+  t.ok('helicopters are as wide as their rotor, 8–16 m', ['heli-light', 'helicopter', 'gunship', 'heli-heavy'].every(a => ARCHETYPES[a].size[0] >= 8 && ARCHETYPES[a].size[0] <= 16));
+  t.ok('boats under 25 m, ships under 400 m', ['jetski', 'speedboat', 'patrol-boat', 'yacht', 'minisub', 'sdv'].every(a => ARCHETYPES[a].size[1] <= 25)
+    && ['submarine', 'warship', 'carrier', 'liner', 'freighter'].every(a => ARCHETYPES[a].size[1] <= 400));
+  t.ok('a wide aircraft is wider than its fuselage is long only when it has wings', ['ultralight', 'light-plane', 'transport', 'tiltrotor'].every(a => ARCHETYPES[a].size[0] > ARCHETYPES[a].size[1] * 0.9));
+  t.ok('the outline thickens on big hulls so it survives a coarse texture', outlineFor([2, 5]) === 3 && outlineFor([75, 330]) > 50);
   t.ok('a texture never passes 4096 px a side', Object.values(ARCHETYPES).every(a => Math.max(...a.size) * pxPerMetre(a.size) <= 4096));
 
   /* ── The pack entries point at the art ─────────────────────────────────────────────────── */

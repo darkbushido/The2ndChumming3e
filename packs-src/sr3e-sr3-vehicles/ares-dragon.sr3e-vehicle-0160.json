@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0160",
     "name": "Ares Dragon",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/heli-heavy-silver.svg",
     "system": {
       "vehicleType": "helicopter",
       "cost": 590000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 16,
+      "height": 28,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/heli-heavy-silver.svg"
+      }
+    }
   },
   "embedded": {}
 }

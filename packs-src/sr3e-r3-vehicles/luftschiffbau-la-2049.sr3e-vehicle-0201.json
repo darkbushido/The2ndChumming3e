@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0201",
     "name": "Luftschiffbau LA-2049",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/airship-blue.svg",
     "system": {
       "vehicleType": "airship",
       "cost": 318000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 16,
+      "height": 60,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/airship-blue.svg"
+      }
+    }
   },
   "embedded": {}
 }

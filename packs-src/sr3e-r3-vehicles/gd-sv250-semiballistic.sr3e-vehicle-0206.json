@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0206",
     "name": "GD SV250 Semiballistic",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/airliner-red.svg",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 76000000,
@@ -69,7 +69,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 30,
+      "height": 60,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/airliner-red.svg"
+      }
+    }
   },
   "embedded": {}
 }

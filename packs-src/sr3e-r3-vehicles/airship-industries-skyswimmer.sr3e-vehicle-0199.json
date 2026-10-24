@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0199",
     "name": "Airship Industries Skyswimmer",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/airship-teal.svg",
     "system": {
       "vehicleType": "airship",
       "cost": 240000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 16,
+      "height": 60,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/airship-teal.svg"
+      }
+    }
   },
   "embedded": {}
 }

@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0202",
     "name": "Luftschiffbau LA-2051-C",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/airship-green.svg",
     "system": {
       "vehicleType": "airship",
       "cost": 310000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 16,
+      "height": 60,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/airship-green.svg"
+      }
+    }
   },
   "embedded": {}
 }
