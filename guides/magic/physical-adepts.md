@@ -76,7 +76,7 @@ and is mundane forever *(SR3 p.160)*.
 | **Killing Hands** | see table | Unarmed attacks do Physical damage at the purchased level instead of (Strength)M Stun. [Below](#killing-hands). |
 | **Magic Resistance** | 1 per level | +1 die per level to every Spell Resistance Test. Doesn't stop spells you choose not to resist. |
 | **Missile Parry** | 1 | Catch arrows, thrown knives and shuriken out of the air. [Below](#missile-parry). |
-| **Mystic Armor** | .5 per level | +1 Impact armor per level, cumulative with worn armor. No Ballistic armor. Also protects in astral combat. |
+| **Mystic Armor** | .5 per level | +1 Impact armor per level, cumulative with worn armor. No Ballistic armor. Also protects in astral combat (p.174), which an adept fights only while using Astral Perception, never by projecting. [How perceivers fight](../awakened-primer/#astral-combat). |
 | **Pain Resistance** | .5 per level | Subtract the level from your damage before finding your injury modifier. [Below](#pain-resistance). |
 | **Rapid Healing** | .5 per level | +1 die per level to Body for Healing Tests and for the test against a crippling injury from a Deadly wound (p.127). No effect on Magic Loss checks. |
 | **Suspended State** | 1 | A meditative state that slows metabolism and bleeding: Willpower (4) Test, with injury modifiers, read like the Hibernate spell (p.194). Switches on by itself if the adept falls unconscious from a Deadly physical wound. |

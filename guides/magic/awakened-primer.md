@@ -151,9 +151,15 @@ astral. A weapon focus lets you use an armed skill in astral combat.
 | Reaction | **Intelligence**, and Initiative is **INT + 20 + 1D6** |
 
 ### Astral combat  *(SR3 p.174–175)*
+{: #astral-combat }
 
 - Astral combat uses the **melee** rules. There are no ranged attacks except
   spells.
+- **Perceiving is not projecting.** A character who is astrally perceiving,
+  such as an adept with Astral Perception, and other dual beings fight with
+  their normal physical Attributes, skills and Combat Pool, and keep their
+  normal Reaction and Initiative. The Astral Combat Pool below and the
+  astral attributes above are for projecting characters only. *(SR3 p.174)*
 - A projecting character uses the **Astral Combat Pool**, (INT + WIL + CHA)
   ÷ 2. *(SR3 p.44, p.174)* Attack with an armed skill if you have a weapon
   focus, Unarmed Combat otherwise, or **Sorcery** in its place.
