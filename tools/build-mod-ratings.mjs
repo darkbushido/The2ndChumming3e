@@ -107,7 +107,9 @@ export function tableFor(docs, collapsed = readCollapsed(), extras = {}) {
 export function sourcesOf(collapsed = readCollapsed()) {
   const out = {};
   for (const fam of Object.values(collapsed)) {
-    for (const id of fam.deleted ?? []) (out[fam.pack] ??= {})[id] = fam.keep;
+    // A document REMOVED for one in another pack (TODO 266: the SR3 Transceiver, for the Cannon Companion's) names it 'pack/id'.
+    const to = fam.keepPack && fam.keepPack !== fam.pack ? `${fam.keepPack}/${fam.keep}` : fam.keep;
+    for (const id of fam.deleted ?? []) (out[fam.pack] ??= {})[id] = to;
   }
   return Object.fromEntries(Object.keys(out).sort().map(p => [p, Object.fromEntries(Object.keys(out[p]).sort().map(id => [id, out[p][id]]))]));
 }

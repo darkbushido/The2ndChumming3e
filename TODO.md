@@ -773,6 +773,8 @@ three and is built last.
 Built on `feature/mod-for` (not merged). The maintainer: the same level fix for the armour options #261 missed (their level is a
 BARE trailing number), and every mod names what it attaches to — the truth [#263](#263)'s attach logic will warn on.
 
+**Settled by the maintainer 2026-10-24 (fix commits on main):** ONE "Helmet/Wrist Transceiver (Armor)" (the Cannon Companion's, cc.51, still levelled); the SR3 Transceiver, "Low-light Vision" (CC only) and the two "Mag 38" typos deleted from sr3e-sr3-armor; magnification is a RATING ("Electronic/Optical Magnification (Armor)", rating 3) and the Cannon Companion's duplicates deleted; the truncated "Extended Clip (" is "Extended Clip (Weapon)". Owned copies by the 0.8.0 migration (`scripts/data/name-fixes.mjs`); generator drops: `DROPPED_ARMOR_ROWS`. Open: cc-armor "Therm Vision" vs "Thermo Vision".
+
 **Built:**
 - **Bare-number families collapse** like #261's: `+Signal Locator 1…10`, `+Tracking Signal 1…10`, `+Transceiver Rtg. 1…10` (SR3 and
   Cannon Companion armour packs), Cannon Companion's `Personal Comm Unit 1…10` (Cyberlimb Mod), Mythic's `Ritual Sorcery Materials - Combat
@@ -796,6 +798,10 @@ BARE trailing number), and every mod names what it attaches to — the truth [#2
 2. Buy "Chemical Seal (Armor)" at level 4 from 🛒: the owned copy reads "Chemical Seal (Armor) [4]"; changing its level keeps "(Armor)".
 3. Migration: an owned 0.7.0 "+Signal Locator 7" on a character becomes "Signal Locator (Armor) [7]" with Mod for: Armor and Level 7 (check a world item and an unlinked token's copy too).
 4. A vehicle mod's sheet shows "Mod for: Vehicle"; a Firearms Accessory shows Weapon; a Cyberlimb Mod Cyberlimb.
+5. The Cannon Companion armour compendium shows "Helmet/Wrist Transceiver (Armor)" (cc.51) with its Level dropdown (1-10, 250¥ x level); sr3e-sr3-armor has no transceiver, no "Low-light Vision" and nothing named "Mag 3x".
+6. Migration: an owned "Transceiver (Armor) [5]" (or the 0.7.0 "+Transceiver Rtg. 5") becomes "Helmet/Wrist Transceiver (Armor) [5]", level 5; one linked to the deleted SR3 document links to the Cannon Companion one.
+7. "Electronic Magnification (Armor)" and "Optical Magnification (Armor)" (both armour packs) show Level 3, at 900¥ and 1,200¥; an owned "Elec. Vis. Mag 3" / "Optical Vis. Mag 38" becomes "Electronic Magnification (Armor) [3]" / "Optical Magnification (Armor) [3]".
+8. The Cannon Companion gear compendium shows "Extended Clip (Weapon)" (cc.81, 16¥); an owned "Extended Clip ( (Weapon)" is renamed to it.
 
 ### 🪄 Spells & drugs
 

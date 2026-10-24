@@ -3460,6 +3460,26 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'repoint-ignores-the-other-pack',
+    suite:  'name-fixes',
+    ...MODRATE, method: 'repointSource', needsOriginal: '_repointOriginal',
+    was:    'a link to a document removed for one in ANOTHER pack ("pack/id", TODO 266: the SR3 Transceiver for the Cannon Companion one) was pointed back into the old pack, so the owned copy kept a dead link',
+    impl:   function (item, table) {
+      const to = this._repointOriginal(item, table);
+      const from = /^Compendium\.The2ndChumming3e\.([^.]+)\./.exec(String(item?._stats?.compendiumSource ?? ''));
+      return to && from ? to.replace(/^Compendium\.The2ndChumming3e\.[^.]+\./, `Compendium.The2ndChumming3e.${from[1]}.`) : to;
+    },
+  },
+  {
+    id:     'rename-takes-a-houserule-name',
+    suite:  'name-fixes',
+    module: '../scripts/data/name-fixes.mjs', klass: 'NameFixes', method: 'fixedName',
+    was:    'the armour Transceiver rename matched any armour name that merely CONTAINS "Transceiver", so a GM own "Transceiver Mk II (Armor)" was renamed (TODO 266: only the exact old pack names)',
+    impl:   function (item) {
+      return item?.type === 'armor' && /Transceiver/.test(String(item.name)) && !/^Helmet\/Wrist/.test(String(item.name)) ? 'Helmet/Wrist Transceiver (Armor)' : null;
+    },
+  },
+  {
     id:     'syncname-does-not-swap-the-old-level',
     suite:  'mod-ratings',
     ...MODRATE, method: 'syncName',

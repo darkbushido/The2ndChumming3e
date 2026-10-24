@@ -1,9 +1,9 @@
 {
-  "_key": "!items!sr3e-armor-0172",
+  "_key": "!items!sr3e-armor-0242",
   "doc": {
-    "img": "systems/The2ndChumming3e/styles/icons/gear-goggles.svg",
-    "_id": "sr3e-armor-0172",
-    "name": "Elec. Vis. Mag 3 (Armor)",
+    "img": "systems/The2ndChumming3e/styles/icons/armor-accessory.svg",
+    "_id": "sr3e-armor-0242",
+    "name": "Electronic Magnification (Armor)",
     "type": "armor",
     "system": {
       "concealability": "-",
@@ -13,9 +13,10 @@
       "availability": "-",
       "cost": 900,
       "streetIndex": "2",
-      "bookPage": "cc.51",
+      "bookPage": "sr3.284",
       "notes": "",
-      "modFor": "armor"
+      "modFor": "armor",
+      "rating": 3
     },
     "effects": []
   },

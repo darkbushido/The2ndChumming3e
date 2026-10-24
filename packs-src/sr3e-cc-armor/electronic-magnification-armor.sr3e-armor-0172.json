@@ -1,9 +1,9 @@
 {
-  "_key": "!items!sr3e-armor-0201",
+  "_key": "!items!sr3e-armor-0172",
   "doc": {
     "img": "systems/The2ndChumming3e/styles/icons/armor-accessory.svg",
-    "_id": "sr3e-armor-0201",
-    "name": "Transceiver (Armor)",
+    "_id": "sr3e-armor-0172",
+    "name": "Electronic Magnification (Armor)",
     "type": "armor",
     "system": {
       "concealability": "-",
@@ -11,12 +11,12 @@
       "impact": 0,
       "weight": 0,
       "availability": "-",
-      "cost": 250,
+      "cost": 900,
       "streetIndex": "2",
       "bookPage": "cc.51",
       "notes": "",
       "modFor": "armor",
-      "rating": 1
+      "rating": 3
     },
     "effects": []
   },

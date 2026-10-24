@@ -1,9 +1,9 @@
 {
-  "_key": "!items!sr3e-armor-0243",
+  "_key": "!items!sr3e-armor-0173",
   "doc": {
-    "img": "systems/The2ndChumming3e/styles/icons/gear-goggles.svg",
-    "_id": "sr3e-armor-0243",
-    "name": "Optical Vis. Mag 3 (Armor)",
+    "img": "systems/The2ndChumming3e/styles/icons/armor-accessory.svg",
+    "_id": "sr3e-armor-0173",
+    "name": "Optical Magnification (Armor)",
     "type": "armor",
     "system": {
       "concealability": "-",
@@ -13,9 +13,10 @@
       "availability": "-",
       "cost": 1200,
       "streetIndex": "2",
-      "bookPage": "sr3.284",
+      "bookPage": "cc.51",
       "notes": "",
-      "modFor": "armor"
+      "modFor": "armor",
+      "rating": 3
     },
     "effects": []
   },

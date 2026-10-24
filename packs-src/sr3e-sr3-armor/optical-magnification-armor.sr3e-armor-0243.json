@@ -1,9 +1,9 @@
 {
-  "_key": "!items!sr3e-armor-0245",
+  "_key": "!items!sr3e-armor-0243",
   "doc": {
-    "img": "systems/The2ndChumming3e/styles/icons/gear-goggles.svg",
-    "_id": "sr3e-armor-0245",
-    "name": "Low-light Vision (Armor)",
+    "img": "systems/The2ndChumming3e/styles/icons/armor-accessory.svg",
+    "_id": "sr3e-armor-0243",
+    "name": "Optical Magnification (Armor)",
     "type": "armor",
     "system": {
       "concealability": "-",
@@ -11,11 +11,12 @@
       "impact": 0,
       "weight": 0,
       "availability": "-",
-      "cost": 700,
+      "cost": 1200,
       "streetIndex": "2",
       "bookPage": "sr3.284",
       "notes": "",
-      "modFor": "armor"
+      "modFor": "armor",
+      "rating": 3
     },
     "effects": []
   },

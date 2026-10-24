@@ -303,6 +303,27 @@ export const ACCESSORY_FIXES = [
   { name: 'Low Power Laser Sight', page: 'sr3.282,fof.60', drop: true },
 ];
 
+/**
+ * Upstream armour-option rows the hand-kept armour packs already carry as ONE document each, or that the maintainer
+ * removed against the book (TODO 266, 2026-10-24). Dropped here — never left to ship as a generated twin:
+ *   - "+Transceiver Rtg. 1-10" (SR3 p.284, Cannon Companion p.51): ONE "Helmet/Wrist Transceiver (Armor)" in the Cannon
+ *     Companion pack, rated 1-10 at 250 nuyen x Rating ("Helmet or Wrist Transceiver (250¥ x Rating)", cc p.51); the
+ *     SR3 pack has none (SR3 prints a flat "Helmet or Wrist Transceiver (2,500¥)").
+ *   - "+Low-light Vision" (sr3.284): not in SR3 p.284's Helmet Vision Enhancement list; Cannon Companion p.51 only.
+ *   - "+Elec. Vis. Mag 38", "+Optical Vis. Mag 38" (sr3.284): typo rows duplicating Magnification 3.
+ *   - "+Electric Vision Mag 3", "+Optical Vision Mag 3" (cc.51): the same items as the "Electronic Magnification (Armor)" /
+ *     "Optical Magnification (Armor)" documents (magnification is their rating, 3).
+ */
+export const DROPPED_ARMOR_ROWS = [
+  { re: /^\+Transceiver Rtg\. \d+$/, pages: ['sr3.284', 'cc.51'] },
+  { re: /^\+Low-light Vision$/, pages: ['sr3.284'] },
+  { re: /^\+(?:Elec\. |Optical )Vis\. Mag 38$/, pages: ['sr3.284'] },
+  { re: /^\+(?:Electric|Optical) Vision Mag 3$/, pages: ['cc.51'] },
+];
+
+/** The upstream rows without DROPPED_ARMOR_ROWS. Pure. */
+export const dropArmorRows = rows => rows.filter(({ row }) => !DROPPED_ARMOR_ROWS.some(d => d.re.test(row.Name) && d.pages.includes(row.BookPage)));
+
 /** Apply ACCESSORY_FIXES to the upstream rows. Pure. */
 export function fixAccessories(rows) {
   return rows.flatMap(({ row, category }) => {
@@ -321,7 +342,7 @@ function rowsByCategory(file) {
       for (const x of Object.values(o)) if (x && typeof x === 'object') walk(x); } };
     walk(v);
   }
-  return fixAccessories(splitImagingScopes(out));
+  return dropArmorRows(fixAccessories(splitImagingScopes(out)));
 }
 
 const VARIANT_FIELDS = ['Rating', 'Cost', 'Weight', 'Concealability', 'Damage', 'Ballistic', 'Impact', 'Availability'];

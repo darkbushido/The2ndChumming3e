@@ -191,7 +191,9 @@ export async function run(t) {
   t.ok('the level table matches the packs, the collapsed records and the extra levels',
     read(TABLE_FILE.slice(ROOT.length + 1)) === renderTable(tableFor(docs.map(x => x.d), records, readExtraLevels()).table, sourcesOf(records)));
   t.ok('every collapsed family\'s kept document is in its pack, plain, at its lowest level', Object.values(records).every(f => {
-    const kept = docs.find(x => x.pack === f.pack && x.key === `!items!${f.keep}`);
+    const kept = docs.find(x => x.pack === (f.keepPack ?? f.pack) && x.key === `!items!${f.keep}`);
+    // A REMOVED document (TODO 266) has no levels of its own: its replacement just has to exist, in its own pack.
+    if (f.removed) return !!kept;
     return kept && !ModRatings.splitName(kept.d.name) && Number(kept.d.system.rating) === Math.min(...Object.keys(f.levels).map(Number));
   }));
   t.ok('…and no deleted document is still in its pack', Object.values(records).every(f => (f.deleted ?? []).every(id => !docs.some(x => x.pack === f.pack && x.key === `!items!${id}`))));

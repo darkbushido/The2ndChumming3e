@@ -39,6 +39,9 @@ const write = (doc, file) => {
   writeFileSync(file, JSON.stringify(doc, null, 2) + '\n');
 };
 
+/** Write a whole document back (sorted, the one format). */
+export const writeDoc = write;
+
 const record = f => {
   const { key, ...rest } = f;
   void key;
@@ -46,6 +49,8 @@ const record = f => {
   if (rest.folded?.length) out.folded = rest.folded;
   if (rest.duplicates?.length) out.duplicates = rest.duplicates;
   if (rest.unplaced?.length) out.unplaced = rest.unplaced;
+  if (rest.keepPack) out.keepPack = rest.keepPack;
+  if (rest.removed) out.removed = true;
   return out;
 };
 

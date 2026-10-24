@@ -232,7 +232,10 @@ export const ModRatings = {
   repointSource(item, table = COLLAPSED_SOURCES) {
     const m = SOURCE.exec(String(item?._stats?.compendiumSource ?? ''));
     const kept = m && table[m[1]]?.[m[2]];
-    return kept ? `Compendium.The2ndChumming3e.${m[1]}.Item.${kept}` : null;
+    if (!kept) return null;
+    // 'pack/id' = the document went to ANOTHER pack (a removed SR3 armour option, for the Cannon Companion's).
+    const [pack, id] = kept.includes('/') ? kept.split('/') : [m[1], kept];
+    return `Compendium.The2ndChumming3e.${pack}.Item.${id}`;
   },
 
   /**
