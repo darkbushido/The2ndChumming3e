@@ -24,6 +24,8 @@ const veh = (name, system = {}) => ({ type: 'vehiclemod', name, system });
 const limb = (name, system = {}) => ({ type: 'cyberware', name, system: { cyberwareCategory: 'Cyberlimb Mods', ...system } });
 const acc = (name, system = {}) => ({ type: 'gear', name, system: { category: 'Firearms Accessories', ...system } });
 const gear = (name, system = {}) => ({ type: 'gear', name, system: { category: 'Biotech', ...system } });
+// A mod carries its tag in the pack ("Chemical Seal (Armor)", TODO 266) — the tests below find it by its plain name.
+const plainName = d => ModRatings.baseName(d?.name);
 const ware = (name, system = {}) => ({ type: 'cyberware', name, system: { cyberwareCategory: 'Bodyware', ...system } });
 
 export async function run(t) {
@@ -174,15 +176,15 @@ export async function run(t) {
     && docs.filter(x => ks.includes(x.key)).filter(x => Number(x.d.system?.rating) > 0).length > 1);
   t.eq('no pack holds two rated documents of one item — every family is ONE document', ratedTwins.map(([k]) => k), []);
   t.ok(`the kinds are all there (${docs.length} rated-type documents)`, ['vehicle', 'cyberlimb', 'weapon', 'gear', 'cyberware', 'bioware', 'medical'].every(k => docs.some(x => ModRatings.kindOf(x.d) === k)));
-  const sts = docs.find(x => x.d.name === 'STS (Beacon)');
+  const sts = docs.find(x => plainName(x.d) === 'STS (Beacon)');
   t.is('a generated item keeps the id of its LOWEST level\'s ORIGINAL name (owned copies keep their link)',
     sts?.key, `!items!${idFor(`${GENERATOR}|cc|gear|${normName('STS (Beacon) Rating [1]')}`)}`);
   t.is('…at level 1', sts?.d.system.rating, 1);
   const rdm = docs.find(x => x.key === '!items!sr3e-cyberware-0824');
-  t.ok('the Rigger Decryption Module (Cyberlimb Mod) is one plain document at level 1', rdm?.d.name === 'Rigger Decryption Module' && rdm.d.system.rating === 1);
+  t.ok('the Rigger Decryption Module (Cyberlimb Mod) is one plain document at level 1', plainName(rdm?.d) === 'Rigger Decryption Module' && rdm.d.system.rating === 1);
   t.ok('the maintainer\'s named renames dropped " Rating": Chemical Seal and Tracker AOD',
-    docs.some(x => x.d.name === 'Chemical Seal') && docs.some(x => x.d.name === 'Tracker AOD') && !docs.some(x => /Rating$/.test(x.d.name) && ModRatings.kindOf(x.d)));
-  t.ok('…and Lv: Bug Scanner', docs.some(x => x.d.name === 'Bug Scanner') && !docs.some(x => / Lv$/.test(x.d.name)));
+    docs.some(x => plainName(x.d) === 'Chemical Seal') && docs.some(x => plainName(x.d) === 'Tracker AOD') && !docs.some(x => /Rating$/.test(x.d.name) && ModRatings.kindOf(x.d)));
+  t.ok('…and Lv: Bug Scanner', docs.some(x => plainName(x.d) === 'Bug Scanner') && !docs.some(x => / Lv$/.test(x.d.name)));
 
   /* ── The table and the records are build output ──────────────────────────────── */
   const records = readCollapsed();
@@ -205,7 +207,7 @@ export async function run(t) {
   t.ok('…each level programming Rating x 2 frequencies (SR3 p.297: "Rating x 2 radio or telephone frequencies")', Object.entries(RR).every(([l, r]) => r.description === `${2 * Number(l)} programmed frequencies`));
 
   /* ── One Vehicle Armor (the maintainer, 2026-10-24) ──────────────────────────── */
-  const armour = docs.filter(x => x.d.type === 'vehiclemod' && x.d.name === 'Vehicle Armor');
+  const armour = docs.filter(x => x.d.type === 'vehiclemod' && plainName(x.d) === 'Vehicle Armor');
   t.is('the packs hold ONE Vehicle Armor', armour.length, 1);
   t.ok('…at level 1, keeping the level-1 id', armour[0]?.key === '!items!sr3e-vehiclemod-0044' && armour[0].d.system.rating === 1);
   t.eq('…and its dropdown still offers levels 1-11', ModRatings.options(veh('Vehicle Armor', { rating: 1 })).map(o => o.value), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
@@ -237,14 +239,14 @@ export async function run(t) {
   const RB = MOD_RATING_TABLE['cyberware|RC Encryption Module'];
   t.eq('the Rigger implant RC Encryption Module has levels 1-10 too — 9 and 10 are table rows, not documents (M&M p.25)', Object.keys(RB).map(Number), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   for (let n = 1; n <= 10; n++) t.eq(`…level ${n}: Rating x 10,000¥, (Rating)/(Rating) days`, [RB[n].cost, /^(\d+)\/(\d+) day/.exec(RB[n].availability)?.slice(1).map(Number)], [n * 10000, [n, n]]);
-  const rcDocs = docs.filter(x => x.d.name === 'RC Encryption Module');
+  const rcDocs = docs.filter(x => plainName(x.d) === 'RC Encryption Module');
   t.is('…one document per kind (Bodyware and Cyberlimb Mod)', rcDocs.length, 2);
   t.ok('…8P-W on both (M&M p.25)', rcDocs.every(x => x.d.system.legalCode === '8P-W'));
   const HJ = MOD_RATING_TABLE['cyberware|Hydraulic Jack'];
   t.eq('the Bodyware Hydraulic Jack has levels 1-5', Object.keys(HJ).map(Number), [1, 2, 3, 4, 5]);
   t.ok('…and says jump distance, never running distance (M&M p.29: "rating x 20 percent to his maximum jump distance")',
     Object.entries(HJ).every(([n, r]) => r.description.includes(`+${n * 20}% jump distance`) && !/running distance/.test(r.description)));
-  t.ok('…the kept Bodyware document too', docs.filter(x => x.d.name === 'Hydraulic Jack' && x.d.type === 'cyberware').every(x => !/running distance/.test(x.d.system.description)));
+  t.ok('…the kept Bodyware document too', docs.filter(x => plainName(x.d) === 'Hydraulic Jack' && x.d.type === 'cyberware').every(x => !/running distance/.test(x.d.system.description)));
 
   t.ok('collapse() keeps the lowest level\'s document and only that one', (() => {
     const e = new Map([['!items!a', { type: 'vehiclemod', name: 'Y', system: { rating: 2, cost: 20 } }], ['!items!b', { type: 'vehiclemod', name: 'Y', system: { rating: 1, cost: 10 } }], ['!items!c', { type: 'vehiclemod', name: 'Other', system: { rating: 1 } }]]);
@@ -321,7 +323,7 @@ export async function run(t) {
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
   t.ok('a vehicle mod has a sheet of its own', /case 'vehiclemod':[\s\S]{0,200}_modRatingField\(s\)/.test(sheet));
   t.ok('cyberware, bioware, gear and vehicle mods offer the level dropdown', (sheet.match(/\$\{this\._modRatingField\(s\)\}/g) ?? []).length === 3);
-  t.ok('medical, ammunition and vehicle weapons offer it through _levelField', (sheet.match(/\$\{this\._levelField\(s/g) ?? []).length === 3);
+  t.ok('medical, ammunition, vehicle weapons and the armour options offer it through _levelField', (sheet.match(/\$\{this\._levelField\(s/g) ?? []).length === 4);
   t.ok('a vehicle weapon has a sheet at last', /case 'vehicleweapon':/.test(sheet));
   t.ok('an item with no table keeps the Rating box', /_modRatingField\(s\) \{\s*const opts = ModRatings\.options\(this\.document\);\s*if \(!opts\) return this\._ratingField\(s\);/.test(sheet));
   t.ok('the dropdown is wired', /\.mod-rating-select'\)\s*\?\.addEventListener\('change', ev => SR3EItemSheet\._onModRatingChange/.test(sheet));
@@ -330,7 +332,7 @@ export async function run(t) {
 
   /* ── The migration ───────────────────────────────────────────────────────────── */
   const mig = read('scripts/SR3EMigrations.js');
-  t.ok('a 0.7.1 migration renames owned copies and repoints dead links', /version: '0\.7\.1',\s*label: 'Every rated item[\s\S]{0,2600}ModRatings\.migrateDelta\(item\)/.test(mig));
+  t.ok('a 0.7.1 migration renames owned copies and repoints dead links', /version: '0\.7\.1',\s*label: 'Every rated item[\s\S]{0,4200}ModFor\.migrateDelta\(item\)/.test(mig));
   t.ok('…the migrated name is the synced name ("ECCM [3]", rating 3) — it never strips the level out of an owned copy', /ModRatings\.syncName\(item\.name, rating, item\.type\)/.test(read('scripts/data/mod-ratings.mjs')));
   t.ok('…and logs a rating that disagrees with the name', /ModRatings\.renameConflict\(item\)/.test(mig));
 }

@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-armor-0178",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/icons/armor-accessory.svg",
+    "_id": "sr3e-armor-0178",
+    "name": "Respirator (Armor)",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "availability": "-",
+      "cost": 500,
+      "streetIndex": "2",
+      "bookPage": "cc.51",
+      "notes": "",
+      "modFor": "armor"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0743",
+  "doc": {
+    "_id": "sr3e-cyberware-0743",
+    "name": "Direct Neural Interface (Cyberlimb)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0.1,
+      "cost": 4500,
+      "availability": "4/6 days",
+      "streetIndex": 1,
+      "legalCode": "5P-Q",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.303",
+      "grade": "Standard",
+      "rating": null,
+      "description": "Control devices not meant to be controlled cybernetically",
+      "modFor": "cyberlimb"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

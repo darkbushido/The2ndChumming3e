@@ -1,0 +1,23 @@
+{
+  "_key": "!items!sr3e-armor-0250",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/icons/gear-goggles.svg",
+    "_id": "sr3e-armor-0250",
+    "name": "Smart Goggles 2 (Armor)",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "availability": "-",
+      "cost": 3500,
+      "streetIndex": "2",
+      "bookPage": "mm.32",
+      "notes": "",
+      "modFor": "armor"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

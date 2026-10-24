@@ -47,11 +47,45 @@ const BARE = /^(.*?)\s+(?:Rating|Lvl|Lv)\s+(\d+)\s*$/;
 /** `Compendium.The2ndChumming3e.<pack>.Item.<id>` — the system's own packs only. */
 const SOURCE = /^Compendium\.The2ndChumming3e\.([^.]+)\.Item\.([A-Za-z0-9_-]+)$/;
 
+/**
+ * Families whose level is a BARE trailing number — the ones the " [N]" / "Rating N" rule skipped (TODO 266).
+ *
+ * ⚠ **A bare trailing number is a MODEL unless its stem is named here** ("Ares Predator 2", "Smart Goggles 1",
+ * and the helmet options "Optical Vis. Mag 3" / "Elec. Vis. Mag 38" — MAGNIFICATION 3, SR3 p.284: *"Electronic
+ * Magnification 3 (900¥), Optical Magnification 3 (1,200¥)"* — are not levels). Each entry is a book fact:
+ *   - **Signal Locator** (1000¥ x Rating) and **Tracking Signal** (100¥ x Rating) — SR3 p.284, armour options;
+ *   - **Transceiver Rtg. N** — the armour option, written "+Transceiver Rtg. 7" (the stem drops "Rtg.", the
+ *     way "Rating" is dropped);
+ *   - **Personal Comm Unit N** — a Cyberlimb Mod (cc-cyberware);
+ *   - **Ritual Sorcery Materials - Combat Force N** — the Force is the level (mits-gear);
+ *   - **Thermal Dampening Rat[8]MAX** — the Cannon Companion's level-8 row (p.53), upstream wrote "Rat[8]MAX".
+ * The armour options carry a leading "+" in the old packs; it is not part of the stem.
+ * `re` captures (1) the stem and (2) the level.
+ */
+const BARE_LEVELS = [
+  /^\+?\s*(Signal Locator|Tracking Signal)\s+(\d+)\s*$/,
+  /^\+?\s*(Transceiver)\s+Rtg\.?\s+(\d+)\s*$/,
+  /^(Personal Comm Unit)\s+(\d+)\s*$/,
+  /^(Ritual Sorcery Materials - Combat)\s+Force\s+(\d+)\s*$/,
+  /^(Thermal Dampening)\s+Rat\[(\d+)\]\s*MAX\s*$/,
+];
+
+/**
+ * The "what is this a mod FOR" tag every mod name ends with, before any level (TODO 266): "Chemical Seal (Armor)",
+ * "Gas Vent IV (Weapon) [4]". `system.modFor` is the truth; the tag is how a list says it.
+ */
+export const MOD_TAGS = { armor: 'Armor', weapon: 'Weapon', cyberlimb: 'Cyberlimb', vehicle: 'Vehicle' };
+const TAG = new RegExp(`\\s*\\((?:${Object.values(MOD_TAGS).join('|')})\\)\\s*$`);
+const TAG_BEFORE_LEVEL = new RegExp(`\\s*\\((?:${Object.values(MOD_TAGS).join('|')})\\)(?=\\s*(?:\\[\\d+\\])?\\s*$)`);
+
+const tidy = s => String(s ?? '').replace(/\s+/g, ' ').trim();
+
 export const ModRatings = {
   /** The item's kind (see the table above) for a rated type, else null. */
   kindOf(item) {
     const s = item?.system ?? {};
     switch (item?.type) {
+      case 'armor': return 'armor';        // the armour options (Signal Locator, Chemseal…) — TODO 266
       case 'vehiclemod': return 'vehicle';
       case 'cyberware': return s.cyberwareCategory === 'Cyberlimb Mods' ? 'cyberlimb' : 'cyberware';
       case 'gear': return s.category === 'Firearms Accessories' ? 'weapon' : 'gear';
@@ -65,9 +99,54 @@ export const ModRatings = {
 
   /** `{ stem, rating }` for a name carrying a level, else null. Spaces in the stem are tidied. */
   splitName(name) {
-    const m = LEVEL.exec(String(name ?? '')) ?? BARE.exec(String(name ?? ''));
+    const text = String(name ?? '');
+    const m = LEVEL.exec(text) ?? BARE.exec(text) ?? BARE_LEVELS.map(re => re.exec(text)).find(Boolean);
     if (!m || !m[1].trim()) return null;
     return { stem: m[1].replace(/\s+/g, ' ').trim(), rating: Number(m[2]) };
+  },
+
+  /**
+   * A name's plain item name — the key every name-keyed lookup uses (TODO 266). The trailing level
+   * (" [4]", " Rating [4]", a bare-family number) comes off, then the trailing mod tag ("(Armor)"), and a
+   * leading "+" (the old armour options). So "Chemical Seal (Armor) [4]", the 0.7.0 "Chemical Seal Rating [4]"
+   * and the plain "Chemical Seal" are all "Chemical Seal".
+   */
+  baseName(name) {
+    let t = tidy(name).replace(/^\+\s*/, '');
+    const first = ModRatings.splitName(t);
+    if (first) t = first.stem;
+    t = t.replace(TAG, '');
+    const second = ModRatings.splitName(t);        // "X [4] (Armor)" — a level written before the tag
+    if (second) t = second.stem;
+    return t.trim();
+  },
+
+  /** The name with its mod tag taken off and everything else kept — "X (Armor) [4]" → "X [4]". */
+  untagged(name) {
+    return String(name ?? '').replace(TAG_BEFORE_LEVEL, '');
+  },
+
+  /** A name's mod tag as a `modFor` key, or ''. */
+  tagOf(name) {
+    const m = /\((Armor|Weapon|Cyberlimb|Vehicle)\)(?=\s*(?:\[\d+\])?\s*$)/.exec(String(name ?? ''));
+    return m ? Object.keys(MOD_TAGS).find(k => MOD_TAGS[k] === m[1]) : '';
+  },
+
+  /**
+   * The name with its mod tag: "Chemical Seal" → "Chemical Seal (Armor)"; the level kept, after the tag
+   * ("Chemical Seal [4]" → "Chemical Seal (Armor) [4]", the 0.7.0 "Chemical Seal Rating [4]" too). ⚠ Never
+   * doubled: a name already carrying a tag has it REPLACED, so tagging twice is the same as once. An unknown
+   * `modFor` returns the name as written. The old armour options' leading "+" goes (the tag says what it is).
+   */
+  tagged(name, modFor) {
+    const tag = MOD_TAGS[modFor];
+    const text = tidy(name);
+    if (!tag) return text;
+    const bare = text.replace(/^\+\s*/, '');
+    const split = ModRatings.splitName(bare);
+    let stem = (split ? split.stem : bare).replace(TAG, '').trim();
+    stem = ModRatings.splitName(stem)?.stem ?? stem;
+    return `${stem} (${tag})${split ? ` [${split.rating}]` : ''}`;
   },
 
   /**
@@ -86,6 +165,8 @@ export const ModRatings = {
    * "Gyro Mount (Deluxe)" and "Strength Enhancement [4] w/Torso" (a bracket that is not last) are not levels
    * and are returned as written. `type`, when given, must be a rated type — any other is returned unchanged.
    * Never for a compendium document: the packs stay plain (the hooks in `sr3e.js` skip them).
+   * ⚠ A mod's TAG ("(Armor)", "(Weapon)" — TODO 266) is part of the stem: it is kept, only the trailing level is
+   * swapped, and a tag is never doubled ("Chemical Seal (Armor) [4]" at rating 5 is "Chemical Seal (Armor) [5]").
    */
   syncName(name, rating, type = null) {
     const text = String(name ?? '');
@@ -168,12 +249,14 @@ export const ModRatings = {
     return Object.keys(delta).length ? delta : null;
   },
 
-  /** The table key for an item: kind and plain name. */
+  /**
+   * The table key for an item: kind and plain name (`baseName`) — the UNTAGGED name, so "Chemical Seal (Armor) [4]"
+   * and the 0.7.0 "Chemical Seal Rating [4]" find the same row.
+   */
   keyOf(item) {
     const kind = ModRatings.kindOf(item);
     if (!kind) return null;
-    const name = ModRatings.splitName(item.name)?.stem ?? String(item.name ?? '').replace(/\s+/g, ' ').trim();
-    return `${kind}|${name}`;
+    return `${kind}|${ModRatings.baseName(item.name)}`;
   },
 
   /** The levels the books print for this mod, `{ "1": { fields… }, … }`, or null when it has none. */

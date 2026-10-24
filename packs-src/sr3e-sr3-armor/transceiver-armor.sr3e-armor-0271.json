@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-armor-0271",
+  "doc": {
+    "img": "systems/The2ndChumming3e/styles/icons/armor-accessory.svg",
+    "_id": "sr3e-armor-0271",
+    "name": "Transceiver (Armor)",
+    "type": "armor",
+    "system": {
+      "concealability": "-",
+      "ballistic": 0,
+      "impact": 0,
+      "weight": 0,
+      "availability": "-",
+      "cost": 250,
+      "streetIndex": "2",
+      "bookPage": "sr3.284",
+      "notes": "",
+      "modFor": "armor",
+      "rating": 1
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

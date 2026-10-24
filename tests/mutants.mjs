@@ -30,6 +30,7 @@ const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'Integral
 const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
 const MODFIX = { module: '../scripts/data/mod-book-fixes.mjs', klass: 'ModBookFixes' };
 const FAMILIES = { module: '../scripts/data/rated-families.mjs', klass: 'RatedFamilies' };
+const MODFOR = { module: '../scripts/data/mod-for.mjs', klass: 'ModFor' };
 const MODRATE = { module: '../scripts/data/mod-ratings.mjs', klass: 'ModRatings' };
 const PACKFIX = { module: '../scripts/data/pack-corrections-0-7-0.mjs', klass: 'PackFixes070' };
 const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' };
@@ -3485,6 +3486,78 @@ export const MUTANTS = [
     ...MODRATE, method: 'inPack',
     was:    'the name hooks treated a compendium document like a world item, so a pack would have been renamed "Medkit [1]" (TODO 261: the packs stay plain)',
     impl:   function () { return false; },
+  },
+  {
+    id:     'basename-keeps-the-tag',
+    suite:  'mod-for',
+    ...MODRATE, method: 'baseName',
+    was:    'baseName took the level off but left the mod tag, so "Chemical Seal (Armor) [4]" no longer found "Chemical Seal"\'s level table row (TODO 266: every name-keyed lookup goes through the untagged base name)',
+    impl:   function (name) {
+      const t = String(name ?? '').replace(/\s+/g, ' ').trim().replace(/^\+\s*/, '');
+      return this.splitName(t)?.stem ?? t;
+    },
+  },
+  {
+    id:     'basename-keeps-the-plus',
+    suite:  'mod-for',
+    ...MODRATE, method: 'baseName',
+    was:    'baseName kept the old armour options\' leading "+", so a 0.7.0 "+Signal Locator 7" missed the "Signal Locator" row (TODO 266)',
+    impl:   function (name) {
+      const t = String(name ?? '').replace(/\s+/g, ' ').trim();
+      const s = this.splitName(t)?.stem ?? t;
+      return s.replace(/\s*\((Armor|Weapon|Cyberlimb|Vehicle)\)\s*$/, '');
+    },
+  },
+  {
+    id:     'tagged-doubles-the-tag',
+    suite:  'mod-for',
+    ...MODRATE, method: 'tagged',
+    was:    'tagging appended the tag without checking for one, so a second migration run (or a drop of an already tagged mod) made "Chemical Seal (Armor) (Armor)" (TODO 266: never doubled)',
+    impl:   function (name, modFor) {
+      const tag = { armor: 'Armor', weapon: 'Weapon', cyberlimb: 'Cyberlimb', vehicle: 'Vehicle' }[modFor];
+      const text = String(name ?? '').trim();
+      if (!tag) return text;
+      const split = this.splitName(text);
+      return `${split ? split.stem : text} (${tag})${split ? ` [${split.rating}]` : ''}`;
+    },
+  },
+  {
+    id:     'bare-number-is-any-level',
+    suite:  'mod-for',
+    ...MODRATE, method: 'splitName',
+    was:    'any bare trailing number counted as a level, so "Optical Vis. Mag 3" (MAGNIFICATION 3, SR3 p.284) and "Ares Predator 2" were collapsed into families (TODO 266: only the named families are levelled)',
+    impl:   function (name) {
+      const m = /^(.*?)\s*(?:\b(?:Rating|Lvl|Lv)\s*)?(?:\[(\d+)\]|(\d+))\s*$/.exec(String(name ?? ''));
+      const n = m && (m[2] ?? m[3]);
+      return m && m[1].trim() && n ? { stem: m[1].replace(/\s+/g, ' ').trim().replace(/^\+\s*/, ''), rating: Number(n) } : null;
+    },
+  },
+  {
+    id:     'modfor-ignores-the-category',
+    suite:  'mod-for',
+    ...MODFOR, method: 'of',
+    was:    'a Firearms Accessory was not recognised as a weapon mod, so the weapon accessories shipped and migrated untagged (TODO 266)',
+    impl:   function (item) {
+      const s = item?.system ?? {};
+      if (s.modFor) return s.modFor;
+      switch (item?.type) {
+        case 'vehiclemod': return 'vehicle';
+        case 'cyberware': return s.cyberwareCategory === 'Cyberlimb Mods' ? 'cyberlimb' : '';
+        case 'armor': return /^\s*\+/.test(String(item.name ?? '')) ? 'armor' : '';
+        default: return '';
+      }
+    },
+  },
+  {
+    id:     'modfor-overwrites-the-set-value',
+    suite:  'mod-for',
+    ...MODFOR, method: 'of',
+    was:    'the derived value beat a modFor someone had set, so the migration and the pack tool overwrote a GM\'s choice (TODO 266: only blanks are filled)',
+    impl:   function (item) {
+      const s = item?.system ?? {};
+      if (item?.type === 'vehiclemod') return 'vehicle';
+      return s.modFor && !(s.category === 'Firearms Accessories') ? s.modFor : (s.category === 'Firearms Accessories' ? 'weapon' : '');
+    },
   },
   {
     id:     'gear-level-change-forgets-street-index',

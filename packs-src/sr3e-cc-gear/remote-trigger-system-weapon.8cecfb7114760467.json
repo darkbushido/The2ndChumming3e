@@ -23,7 +23,8 @@
       "availability": "12/1mth",
       "streetIndex": "2",
       "bookPage": "cc.55",
-      "description": ""
+      "description": "",
+      "modFor": "weapon"
     }
   },
   "embedded": {}

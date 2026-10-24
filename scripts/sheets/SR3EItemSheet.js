@@ -12,6 +12,7 @@ import {
 import { SPIRIT_TYPES } from '../documents/SR3ESpiritSummoning.js';
 import { knownRating } from '../data/item-rating.mjs';
 import { ModRatings } from '../data/mod-ratings.mjs';
+import { ModFor } from '../data/mod-for.mjs';
 import { BookPage } from '../data/book-page.mjs';
 import { AmmoStock, GUN_CLASSES } from '../data/ammo-stock.mjs';
 import { MiniGrenade } from '../data/mini-grenade.mjs';
@@ -262,6 +263,22 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     if (ModRatings.options(this.document)) return this._modRatingField(s);
     if (plain) return plain;
     return Number(s.rating) > 0 ? this._ratingField(s) : '';
+  }
+
+  /**
+   * "Mod for: Armor" — what this mod is a mod FOR (`system.modFor`, TODO 266). An editable select, like every stat
+   * (the GM can always correct it); the name's tag ("Chemical Seal (Armor)") says the same in a list. Shown only on an
+   * item that is a mod (set, or by its type / category — `ModFor.of`); a plain item has no such line.
+   */
+  _modForField(s) {
+    const now = s.modFor || ModFor.of(this.document);
+    if (!now) return '';
+    return `<label class="form-field">
+      <span class="field-label">Mod for</span>
+      <select name="system.modFor" class="mod-for-select" title="What this mod attaches to: an armour, a weapon, a cyberlimb or a vehicle.">
+        ${ModFor.CHOICES.map(v => `<option value="${v}"${v === now ? ' selected' : ''}>${ModFor.LABELS[v]}</option>`).join('')}
+      </select>
+    </label>`;
   }
 
   /**
@@ -550,6 +567,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
       case 'armor':
         return `<div class="form-grid">
+          ${this._levelField(s)}
+          ${this._modForField(s)}
           ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Ballistic', 'ballistic', s.ballistic, 'number', 'min="0"')}
           ${this._f('Impact', 'impact', s.impact, 'number', 'min="0"')}
@@ -822,6 +841,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._sel('Grade', 'grade', grade, SR3E.cyberwareGrades, 'grade-select')}
           ${isBio ? '' : this._check(`Essence Slot (+${game.sr3e.EssenceHoles.THRESHOLD_MOD} Threshold)`, 'essenceSlot', s.essenceSlot)}
           ${this._modRatingField(s)}
+          ${isBio ? '' : this._modForField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Availability', 'availability', availEff, 'text', 'placeholder="8/36 hrs"')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex, 'number', 'step="0.1" min="0"')}
@@ -901,6 +921,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         return `<div class="form-grid">
           ${this._f('Category', 'category', s.category, 'text', 'placeholder="Surveillance and Security"')}
           ${this._modRatingField(s)}
+          ${this._modForField(s)}
           ${this._f('Quantity', 'quantity', s.quantity, 'number', 'min="0"')}
           ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
@@ -1143,6 +1164,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       case 'vehiclemod':
         return `<div class="form-grid">
           ${this._modRatingField(s)}
+          ${this._modForField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number', 'min="0"')}
           ${this._f('CF', 'cfCost', s.cfCost, 'text', 'title="Cargo Factor the mod takes"')}
           ${this._f('Load', 'load', s.load)}

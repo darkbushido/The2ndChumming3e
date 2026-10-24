@@ -1,0 +1,24 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0243",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0243",
+    "name": "Medium Sidecar (Vehicle)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 2000,
+      "availability": "Always",
+      "streetIndex": "1",
+      "installEquipment": "-",
+      "installTime": "-",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.154",
+      "description": "+1 Hand, CF 8",
+      "rating": null,
+      "modFor": "vehicle"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

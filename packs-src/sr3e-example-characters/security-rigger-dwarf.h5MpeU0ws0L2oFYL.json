@@ -855,7 +855,7 @@
       }
     },
     "!actors.items!h5MpeU0ws0L2oFYL.jIVa6EtSwycDqMcP": {
-      "name": "Remote Control ECCM",
+      "name": "Remote Control ECCM (Cyberlimb)",
       "type": "cyberware",
       "_id": "jIVa6EtSwycDqMcP",
       "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
@@ -883,7 +883,8 @@
         "bonusInitDice": 0,
         "essenceCostBase": 0,
         "costBase": 0,
-        "availabilityBase": ""
+        "availabilityBase": "",
+        "modFor": "cyberlimb"
       },
       "effects": [],
       "folder": null,
@@ -1032,7 +1033,7 @@
       }
     },
     "!actors.items!h5MpeU0ws0L2oFYL.zLzFbjm6mGVXHMrD": {
-      "name": "Remote Control Deck",
+      "name": "Remote Control Deck (Cyberlimb)",
       "type": "cyberware",
       "_id": "zLzFbjm6mGVXHMrD",
       "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
@@ -1060,7 +1061,8 @@
         "bonusInitDice": 0,
         "essenceCostBase": 0,
         "costBase": 0,
-        "availabilityBase": ""
+        "availabilityBase": "",
+        "modFor": "cyberlimb"
       },
       "effects": [],
       "folder": null,

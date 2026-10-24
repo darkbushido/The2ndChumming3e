@@ -16,6 +16,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PackFixes070 } from '../scripts/data/pack-corrections-0-7-0.mjs';
 import { MOD_RATING_TABLE } from '../scripts/data/mod-rating-table.mjs';
+import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 import { splitImagingScopes } from '../tools/build-default-gear.mjs';
 
 export const name = 'pack-corrections-070';
@@ -95,8 +96,8 @@ export async function run(t) {
   // costs of their components"; Cannon Companion p.34 likewise), so the untyped item is replaced, not kept.
   const gearDir = join(SRC, 'sr3e-sr3-gear');
   const scopes = readdirSync(gearDir).filter(f => /^imaging-scope/.test(f)).map(f => JSON.parse(readFileSync(join(gearDir, f), 'utf8')).doc);
-  const lowLight = scopes.find(d => d.name === 'Imaging Scope, Low-Light');
-  const thermo = scopes.find(d => d.name === 'Imaging Scope, Thermographic');
+  const lowLight = scopes.find(d => ModRatings.baseName(d.name) === 'Imaging Scope, Low-Light');
+  const thermo = scopes.find(d => ModRatings.baseName(d.name) === 'Imaging Scope, Thermographic');
   for (const [label, d] of [['Low-Light', lowLight], ['Thermographic', thermo]]) {
     t.ok(`imaging scope, ${label}: shipped`, !!d);
     t.is(`...cost 1,500 (SR3 p.282)`, d?.system.cost, 1500);
@@ -108,7 +109,7 @@ export async function run(t) {
   }
   t.ok('...two different documents', lowLight?._id !== thermo?._id);
   t.eq('the untyped "Imaging Scope" at Rating -, 1,500 is gone; the three magnification scopes stay',
-    scopes.filter(d => d.name === 'Imaging Scope').map(d => d.system.rating).sort(), [1]);   // ONE document, levels 1-3 in the table (TODO 261)
+    scopes.filter(d => ModRatings.baseName(d.name) === 'Imaging Scope').map(d => d.system.rating).sort(), [1]);   // ONE document, levels 1-3 in the table (TODO 261)
   t.eq('…and its dropdown offers Ratings 1-3', Object.keys(MOD_RATING_TABLE['weapon|Imaging Scope']).map(Number), [1, 2, 3]);
   const gen = splitImagingScopes([
     { row: { Name: 'Imaging Scope', Rating: '-', BookPage: 'sr3.282', Cost: '1500' }, category: 'x' },

@@ -40,6 +40,7 @@ import { readdirSync } from 'node:fs';
 import { copyPacks } from './lib/pack-copy.mjs';
 import { extractPack } from './lib/pack-source.mjs';
 import { ratingFromName } from '../scripts/data/item-rating.mjs';
+import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 
 const HERE    = dirname(fileURLToPath(import.meta.url));
 const REPO    = join(HERE, '..');
@@ -122,9 +123,11 @@ try {
     try { await db.open(); } catch { continue; }
     for await (const [k, v] of db.iterator()) {
       if (!String(k).startsWith('!items!') || !v?.name) continue;
-      const n = norm(v.name);
-      if (!idx.has(n)) idx.set(n, []);
-      idx.get(n).push({ doc: v, pack: p });
+      // A mod carries its tag in the pack ("Gas Vent IV (Weapon)", TODO 266) and the book does not: index it under its plain name too.
+      for (const n of new Set([norm(v.name), norm(ModRatings.baseName(v.name))])) {
+        if (!idx.has(n)) idx.set(n, []);
+        idx.get(n).push({ doc: v, pack: p });
+      }
     }
     await db.close();
   }

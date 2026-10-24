@@ -1,0 +1,28 @@
+{
+  "_key": "!items!sr3e-cyberware-0749",
+  "doc": {
+    "_id": "sr3e-cyberware-0749",
+    "name": "Hand Razor, Retractable(CYB) (Cyberlimb)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0,
+      "cost": 9000,
+      "availability": "5/72 hours",
+      "streetIndex": 1,
+      "legalCode": "3-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "sr3.302",
+      "grade": "Standard",
+      "rating": null,
+      "description": "(STR)L",
+      "srcgName": "H.Razor, Retract(CYB)",
+      "modFor": "cyberlimb"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

@@ -1,0 +1,31 @@
+{
+  "_key": "!items!718dcff52daa7dcd",
+  "doc": {
+    "_id": "718dcff52daa7dcd",
+    "name": "Laser Sight, Low-Power (Weapon)",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scope.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "(-1)",
+      "rating": null,
+      "cost": 800,
+      "weight": 0.25,
+      "availability": "",
+      "streetIndex": "",
+      "bookPage": "cc.82",
+      "description": "<p><strong>Mount:</strong> Top/Under<br><strong>Source:</strong> A Cannon Companion customisation: Design Points +100 × 8 (p.80, p.82). No Street Index (p.80).</p>",
+      "modFor": "weapon"
+    }
+  },
+  "embedded": {}
+}

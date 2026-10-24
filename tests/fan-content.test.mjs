@@ -41,7 +41,7 @@ export async function run(t) {
       if (codes.length) offenders.push(`${pack}: ${d.doc?.name} (${codes.join(',')})`);
     }
   }
-  t.ok(`the packs hold ${total} documents`, total > 3400);   // 4,707 with SR2 parked (2026-09-24); 3,421 once every rated family is ONE document (TODO 261)
+  t.ok(`the packs hold ${total} documents`, total > 3300);   // 3,328 once the armour options and the rest of the bare-number families collapse (TODO 266); 4,707 with SR2 parked (2026-09-24); 3,421 once every rated family is ONE document (TODO 261)
   t.is(`no shipped document cites a fan code${offenders.length ? ` — ${offenders.slice(0, 5).join('; ')}` : ''}`,
     offenders.length, 0);
 

@@ -1,0 +1,31 @@
+{
+  "_key": "!items!fe61c67c58c7283a",
+  "doc": {
+    "_id": "fe61c67c58c7283a",
+    "name": "Smart Shades I (Cost 6000¥) (Weapon)",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scope.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 6000,
+      "weight": 0.1,
+      "availability": "3/36hrs",
+      "streetIndex": "1",
+      "bookPage": "sr3.281",
+      "description": "<p><strong>Source:</strong> Smart goggles rigged as mirrored sunglasses, at double the nuyen (SR3 p.281); 8,000¥ with the +1,000¥ low-light or infrared option, doubled.</p>",
+      "modFor": "weapon"
+    }
+  },
+  "embedded": {}
+}

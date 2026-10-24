@@ -20,6 +20,7 @@
  * ⚠ **Only a stock picture is ever replaced** (`isStockImage`): one a GM or player chose is theirs.
  */
 import { AmmoStock } from './ammo-stock.mjs';
+import { ModRatings } from './mod-ratings.mjs';
 
 const SYS = 'systems/The2ndChumming3e/styles';
 export const ICON_DIR = `${SYS}/icons`;
@@ -230,7 +231,9 @@ function specialAmmo(name, sys, gunClass) {
 export function itemIcon(item) {
   const { type, name = '', system: sys = {} } = item ?? {};
   if (type === 'gear') return icon(GEAR_ICONS[sys.category] ?? 'gear-case');
-  if (type === 'armor') return icon(armorIcon(name));
+  // An armour OPTION is named without its old leading "+" and ends in "(Armor)" now (TODO 266) — the "+" was how the rules above knew it,
+  // and the tag's own word "Armor" would read as armour plate. So it is judged by its plain name, with the "+" put back.
+  if (type === 'armor') return icon(armorIcon(sys.modFor === 'armor' ? `+${ModRatings.baseName(name)}` : name));
   if (type === 'medical') {
     if (/\bpatch\b/i.test(name)) return icon('medical-patch');
     if (/\b(hospital|clinic|docwagon)\b/i.test(name)) return icon('medical-clinic');

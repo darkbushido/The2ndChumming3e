@@ -35,6 +35,7 @@ import { PackFixes070 } from './data/pack-corrections-0-7-0.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { VehicleArt } from './data/vehicle-art.mjs';
 import { ModRatings } from './data/mod-ratings.mjs';
+import { ModFor } from './data/mod-for.mjs';
 import { ModBookFixes } from './data/mod-book-fixes.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
@@ -509,7 +510,7 @@ const MIGRATIONS = [
   },
   {
     version: '0.7.1',
-    label: 'Every rated item\'s level moves out of its name into the rating; a link to a deleted level document is repointed (TODO 261)',
+    label: 'Every rated item\'s level moves out of its name into the rating; a link to a deleted level document is repointed (TODO 261); every mod says what it is a mod for (TODO 266)',
     /**
      * The packs now ship ONE document per rated item ("Chemical Seal", its levels in the Level dropdown) and
      * name it plainly; the level is `system.rating`. A copy already in a world still reads "Chemical Seal
@@ -524,11 +525,20 @@ const MIGRATIONS = [
      * ⚠ **It also OVERWRITES `_stats.compendiumSource`, and argues for it:** only when it names a document the
      * collapse DELETED (`COLLAPSED_SOURCES`), so nothing anyone chose can be there — it restores a dead link to
      * the document that kept the family. The kept document is never in that table, so a second run yields null.
+     *
+     * TODO 266 — the armour options ("+Signal Locator 7", "+Tracking Signal 3", "+Transceiver Rtg. 4") are rated types
+     * now: the same rename ("Signal Locator [7]", rating 7). And every MOD says what it is a mod FOR: `system.modFor`
+     * ('armor' | 'weapon' | 'cyberlimb' | 'vehicle') is filled **only while blank**, from the item's type, category or
+     * the "+" of an armour option (`ModFor.of`); anything else is left untagged.
+     * ⚠ **This RENAMES again, and argues for it:** the name gets its tag appended — "Chemical Seal [4]" becomes
+     * "Chemical Seal (Armor) [4]", "+Signal Locator 7" becomes "Signal Locator (Armor) [7]" — only on an item that IS a
+     * mod by type or category, the name's own text is never touched, the level stays after the tag, and a tag is
+     * never doubled. Runs over world actors, world items and unlinked token actors like the rest. Idempotent.
      */
     fixItem: (item) => {
       const note = ModRatings.renameConflict(item);
       if (note) console.log(`SR3E | 0.7.1: ${note}`);
-      return ModRatings.migrateDelta(item);
+      return ModFor.migrateDelta(item);
     },
   },
   {

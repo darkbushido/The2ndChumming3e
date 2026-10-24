@@ -35,6 +35,7 @@
  */
 import { GEAR_RATINGS } from './gear-ratings.mjs';
 import { parseRatingFromName } from './rating-name.mjs';
+import { ModRatings } from './mod-ratings.mjs';
 
 /** Lower case, punctuation to spaces — the key `GEAR_RATINGS` is written with. */
 const normName = s => String(s ?? '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -56,7 +57,8 @@ export const ItemRating = {
    * the generator's Rating column for a name that carries none (`GEAR_RATINGS`). Null for neither.
    */
   knownRating(name) {
-    return ItemRating.ratingFromName(name) ?? GEAR_RATINGS[normName(name)] ?? null;
+    // The mod tag ("Chemical Seal (Armor)", TODO 266) is not part of the name GEAR_RATINGS is keyed by.
+    return ItemRating.ratingFromName(name) ?? GEAR_RATINGS[normName(ModRatings.untagged(name))] ?? null;
   },
 
   /** Types whose `rating` field is authoritative — null on one of these means NO rating. */
