@@ -13,6 +13,7 @@
  * `npm test` must not fail merely because Foundry happens to be running.
  */
 import { splitCyberware, splitTopLevel } from '../tools/lib/cyberware-split.mjs';
+import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 import {
   IMPLANT_ALIASES, EYE_MOD_ALIASES, EAR_MOD_ALIASES, SPELL_ALIASES,
   resolveImplant, resolveMod, resolveSpell,
@@ -124,7 +125,9 @@ export async function run(t) {
     ...Object.values(IMPLANT_ALIASES), ...Object.values(EYE_MOD_ALIASES),
     ...Object.values(EAR_MOD_ALIASES), ...Object.values(SPELL_ALIASES),
   ];
-  const dead = [...new Set(targets)].filter(n => !names.has(n));
+  // A rated alias names its level ("Radio [3]"); the pack holds ONE "Radio" now (TODO 260), so compare the plain name.
+  const plain = n => ModRatings.splitName(n)?.stem ?? n;
+  const dead = [...new Set(targets)].filter(n => !names.has(plain(n)));
   t.is(dead.length ? `aliases naming nothing that ships: ${dead.join(', ')}`
                    : `every alias resolves to a real pack entry (${targets.length} checked)`,
     dead.length, 0);
@@ -134,7 +137,7 @@ export async function run(t) {
     'Boosted Reflexes [1]', 'Wired Reflexes [2]', 'Muscle Replacement [1]',
     'Cerebral Booster[1]', 'Filter: Air [10]', 'Vehicle Control Rig [2]', 'Sound Filter [5]',
     'Eyes, Vision Magnification, Electronic[3]'];
-  const badBuilt = built.filter(n => !names.has(n));
+  const badBuilt = built.filter(n => !names.has(plain(n)));
   t.is(badBuilt.length ? `rated patterns building missing names: ${badBuilt.join(', ')}`
                        : 'every rated pattern builds a name that ships',
     badBuilt.length, 0);

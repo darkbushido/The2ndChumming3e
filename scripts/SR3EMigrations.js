@@ -509,18 +509,27 @@ const MIGRATIONS = [
   },
   {
     version: '0.7.1',
-    label: 'Mod levels move out of the name into the rating: cyber, weapon and vehicle mods (TODO 260)',
+    label: 'Every rated item\'s level moves out of its name into the rating; a link to a deleted level document is repointed (TODO 260)',
     /**
-     * The packs now name a mod plainly ("Anti-Theft System") and keep its level in `system.rating`, which
-     * the item sheet offers as a dropdown (`ModRatings`). A copy already in a world still reads
-     * "Anti-Theft System [10]" — and a vehicle mod had no rating field at all until now.
+     * The packs now ship ONE document per rated item ("Chemical Seal", its levels in the Level dropdown) and
+     * name it plainly; the level is `system.rating`. A copy already in a world still reads "Chemical Seal
+     * Rating [4]" / "Wired Reflexes [2]" / "Bug Scanner Lv [3]" — and may link to a level document the collapse
+     * deleted.
      *
-     * ⚠ **This RENAMES, and argues for it:** only the three mod kinds (vehicle mods, Cyberlimb Mods,
-     * Firearms Accessories), only a name ENDING in a bracketed level, and the level is kept — moved into
-     * the rating when that is blank. A GM who typed a different rating keeps it. A name someone wrote
-     * without a bracket is never touched. Idempotent: a plain name yields null.
+     * ⚠ **This RENAMES, and argues for it:** only the rated item types (gear, cyberware, bioware, medical,
+     * vehicle mods, ammunition, vehicle weapons), only a name ENDING in a level ("[N]", "Rating [N]", "Rating N"),
+     * and the level is kept — moved into the rating when that is blank. A GM who typed a different rating keeps
+     * it (and the line is logged). A name written without a level is never touched. Idempotent: a plain name
+     * yields null.
+     * ⚠ **It also OVERWRITES `_stats.compendiumSource`, and argues for it:** only when it names a document the
+     * collapse DELETED (`COLLAPSED_SOURCES`), so nothing anyone chose can be there — it restores a dead link to
+     * the document that kept the family. The kept document is never in that table, so a second run yields null.
      */
-    fixItem: ModRatings.renameDelta,
+    fixItem: (item) => {
+      const note = ModRatings.renameConflict(item);
+      if (note) console.log(`SR3E | 0.7.1: ${note}`);
+      return ModRatings.migrateDelta(item);
+    },
   },
   {
     version: '0.7.1',

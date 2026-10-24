@@ -8,6 +8,7 @@
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { PACK_CORRECTIONS, getPath, setPath } from '../scripts/data/cyberlimb-mods.mjs';
+import { COLLAPSED_SOURCES } from '../scripts/data/mod-rating-table.mjs';
 
 export const name = 'cyberlimb-mods';
 
@@ -36,6 +37,7 @@ export async function run(t) {
 
   /* ── …and the packs carry it ───────────────────────────────────────────────────── */
   for (const c of PACK_CORRECTIONS) {
+    if (COLLAPSED_SOURCES[c.pack]?.[c.id]) continue;   // a level document the collapse deleted (TODO 260) — its numbers are in the table
     const doc = docById(c.pack, c.id);
     t.ok(`${c.pack}/${c.id} exists`, !!doc);
     for (const [path, value] of Object.entries(c.set)) t.is(`${doc?.name} ${path} (${c.source})`, getPath(doc, path), value);

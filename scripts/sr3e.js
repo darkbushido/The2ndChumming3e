@@ -2612,23 +2612,9 @@ Hooks.on('renderSettingsConfig', (_app, html) => {
 // Attach action button handlers to each chat message as it renders.
 // renderChatMessageHTML fires for every render (new message AND pop-up notification),
 // so the guard above is what prevents double-firing across the two DOM instances.
-/**
- * A rated item lists its level in a compendium window (TODO 260): the packs name the mod ("ECCM") and
- * keep the level in `system.rating`, so without this ten entries would read "ECCM". Text only — the
- * entry, its drag data and its document are untouched.
- */
-Hooks.on('renderCompendium', (app, html) => {
-  const pack = app.collection;
-  if (pack?.documentName !== 'Item') return;
-  const root = html instanceof HTMLElement ? html : app.element;
-  root?.querySelectorAll('[data-entry-id]').forEach(li => {
-    const entry = pack.index.get(li.dataset.entryId);
-    const label = entry ? ItemRating.displayName(entry) : null;
-    if (!label || label === entry.name) return;
-    const el = li.querySelector('.entry-name a, .entry-name, .document-name a, .document-name');
-    if (el && el.textContent.trim() === entry.name) el.textContent = label;
-  });
-});
+// ⚠ No "[N]" in a compendium window (TODO 260): a rated item is ONE document there, its level picked on the
+// item sheet or when bought, so the stored level of a collapsed document means nothing in a list. (A
+// `renderCompendium` hook used to append it; it is gone on purpose — tests/mod-ratings.test.mjs.)
 
 Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   const mid = message.id;

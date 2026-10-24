@@ -19,6 +19,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readSourceDir, writeSourceDir } from './lib/pack-source.mjs';
 import { PACK_CORRECTIONS, getPath, setPath } from '../scripts/data/cyberlimb-mods.mjs';
+import { COLLAPSED_SOURCES } from '../scripts/data/mod-rating-table.mjs';
 
 const ROOT  = join(dirname(fileURLToPath(import.meta.url)), '..');
 const check = process.argv.includes('--check');
@@ -33,6 +34,8 @@ for (const [pack, list] of byPack) {
   let changed = 0;
   for (const c of list) {
     const doc = entries.get(`!items!${c.id}`);
+    // A level document the collapse deleted (TODO 260): its correction is in the family's kept document / the table.
+    if (!doc && COLLAPSED_SOURCES[pack]?.[c.id]) { console.log(`· ${pack}/${c.id}: collapsed into ${COLLAPSED_SOURCES[pack][c.id]}`); continue; }
     if (!doc) { console.log(`✗ ${pack}/${c.id}: not in the pack`); unexpected++; continue; }
     for (const [path, value] of Object.entries(c.set)) {
       const now = getPath(doc, path);

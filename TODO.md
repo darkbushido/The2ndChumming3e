@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[245](#245) The melee GM window should pick up Prone<br>[246](#246) NPC-side buttons in their own colour<br>[247](#247) Trim the token status list to what Shadowrun uses<br>[249](#249) Resolve every NPC in a grenade blast at once<br>[250](#250) Remove the blast marker once the blast is resolved<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) A mod's level is its rating, picked from a dropdown — not part of its name |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[245](#245) The melee GM window should pick up Prone<br>[246](#246) NPC-side buttons in their own colour<br>[247](#247) Trim the token status list to what Shadowrun uses<br>[249](#249) Resolve every NPC in a grenade blast at once<br>[250](#250) Remove the blast marker once the blast is resolved<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Every rated item is ONE document — its level is its rating, picked from a dropdown, never part of its name |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -869,6 +869,11 @@ Mainframe Support module. Any implementation should report that, not enforce it.
 is a host-sheet feature (a list of steps, each with IC and a rating) and is worth its own pass.
 
 ## 130. Store implant names plainly, with the rating only in the field
+
+> **Note (2026-10-24):** the rename itself is now done by [#260](#260) on `feature/cyberlimb-mods-marked` — every rated
+> item is ONE pack document with the level in its rating, and the 0.7.1 migration renames owned copies. What is left
+> here is the maintainer's call (not archived, not marked done): confirm the name-keyed lookups listed below
+> (`SRCG_BONUSES`, the `config.js` registries, the healing regexes) behave on plain names in play.
 
 Raised 2026-09-21 as the remainder of [#122](TODO-DONE.md#122), which made the **field** authoritative but left
 every shipped name as `Wired Reflexes [2]`. The maintainer's original ask has two halves; this is the
@@ -2792,57 +2797,71 @@ and **Smartlink-2 Modification, Internal** (M&M p.32, ×150%) at 0¥ with the ru
 ⚠ The builder derives a generated item's id from its name and book, so a rename changes the id; the 0.7.1
 migration maps the old ids. Same branch as #256.
 
-## 260. A mod's level is its rating, picked from a dropdown — not part of its name — **requested 2026-10-24**
+## 260. Every rated item is ONE document — its level is its rating, picked from a dropdown, never part of its name — **requested 2026-10-24**
 
-The maintainer: *"remove the level from all mods and put them as a dropdown inside the mod"* — for **cyber,
-weapon and vehicle mods** ("Anti-Theft System [10]"). The mods half of [#130](#130); implants outside a
-cyberlimb keep their bracketed names until #130 itself.
+The maintainer: *"remove the level from all mods and put them as a dropdown inside the mod"* (cyber, weapon and
+vehicle mods), then, the same day: *"We shouldn't have any [N] gear — the point is to move the level into the
+gear's doc."* — **all gear, ONE document per item**, like Vehicle Armor. This folds the rename half of
+[#130](#130) into this item.
 
 **Built (branch `feature/cyberlimb-mods-marked`):**
-- **Names:** 299 documents now name the mod and keep the level in `system.rating` (193 vehicle mods, 86
-  Cyberlimb Mods incl. 2 on an example character, 18 Firearms Accessories). The rule is
-  `ModRatings` (`scripts/data/mod-ratings.mjs`). `tools/build-mod-ratings.mjs` renames the hand-kept packs;
-  the weapon mods are generated, so `tools/build-default-gear.mjs` strips them — **after** deriving the id from
-  the original upstream name, so owned copies keep their compendium link. Ids never change.
-- **Vehicle mods** get a nullable `rating` field (`VehicleModData`) and an item sheet of their own (they had
-  none: "No fields defined"). Every unlevelled one ships `rating: null`.
-- **The dropdown:** the item sheet's Level box offers the levels the packs print
-  (`MOD_RATING_TABLE`, generated) and brings that level's cost, CF, load, Essence, availability, Street Index
-  and description with it; graded cyberware re-applies its grade. A houserule level stays selectable; a
-  renamed mod keeps the plain box.
-- **Lists show "[N]":** `displayName` (vehicle mods are a rated type now), the vehicle sheet's Mods tab, the
-  🛒 search and drop, and a `renderCompendium` hook on the compendium window (`system.rating` is in the index).
-- **Owned copies:** the 0.7.1 migration renames them (`ModRatings.renameDelta`): only the three kinds, only a
-  name ending in a bracketed level, the level kept in the rating.
-- `tests/mod-ratings.test.mjs`.
+- **One document per family.** A family is the documents of one pack that are the same type and the same item
+  apart from their level (`RatedFamilies`, `scripts/data/rated-families.mjs`): the lowest level's document stays
+  with its `_id` unchanged, named for the item (`system.rating` = that level); every field that differs between
+  the levels is a row of the level table (`MOD_RATING_TABLE`, generated); the other documents are deleted
+  (**196 families, 1296 documents deleted**; the list is `tools/data/collapsed-mods.json`). The rule for the name is
+  `ModRatings` (`scripts/data/mod-ratings.mjs`): " [N]", " Rating [N]", " Lvl [N]", " Lv [N]" and a bare " Rating N"
+  come off. Kinds: vehicle mods, Cyberlimb Mods, Firearms Accessories, other gear, other cyberware, bioware, medical,
+  ammunition (tracker rounds) and vehicle weapons (the AM-56 lure launcher) — the last two got a nullable `rating`
+  field and the vehicle weapon its first item sheet.
+- **Generated packs collapse inside the generator** (`tools/build-default-gear.mjs`, after the id is derived from the
+  original upstream name), so a regeneration cannot bring a level back; the hand-kept packs by
+  `tools/build-mod-ratings.mjs`. `tools/lib/collapsed-mods.mjs` keeps the records; `COLLAPSED_SOURCES` (pack → deleted
+  id → kept id) is written into the table file.
+- **The Level dropdown** works for every kind (cost, availability, Essence / Bio Index, Street Index, legality,
+  description, the bonus fields…); graded cyberware **and bioware** re-apply their grade.
+- **🛒 Buy gear / drop:** a family is ONE row; the dialog has a Level picker (default the lowest) that brings that level's
+  price and availability; the bought copy gets the level's rating and fields (`ModRatings.withLevel`). The search shows
+  the plain name. The compendium window shows no "[N]" (the `renderCompendium` hook is gone). Owned items on sheets
+  still show "[rating]" (`displayName`).
+- **The 0.7.1 migration** renames every owned copy of a rated type (rating filled only while blank; a different
+  rating is kept and logged) and repoints a `_stats.compendiumSource` that names a deleted level document to the kept one.
+- **Bodyware twins fixed to the book:** RC Encryption Module [1]-[8] 8P-W, levels 9-10 as table rows
+  (`tools/data/extra-levels.json`, M&M p.25); Hydraulic Jack [1]-[5] says jump distance (M&M p.29); both added to
+  `ModBookFixes` for owned copies (kind `cyberware`).
+- `tests/mod-ratings.test.mjs` (incl. the ratchet: no Item pack document outside the contacts pack ends in "[digits]"),
+  mutants `family-*` and `migration-repoint-*`.
 
 **For the maintainer:**
-- **One Vehicle Armor** (the maintainer, 2026-10-24: *"we should just have one Vehicle Armor mod"*): the pack
-  keeps ONE document (level 1, id `sr3e-vehiclemod-0044`); its levels live in `tools/data/collapsed-mods.json`
-  (`build-mod-ratings.mjs --collapse`), merged into the table. Any other mod can be collapsed the same way.
-- **The second "Vehicle Armor [11]"** (was `sr3e-vehiclemod-0055`: 16,250¥, Handling+2) is **dropped** (the
-  maintainer, 2026-10-24); the dropdown offers 1-11. The level costs are fixed to R3 p.131 ("1,250¥ per Armor
-  point", "Armor value x 8 hrs", "Target Number: Desired Armor rating ÷ 3"): level 7 8,750¥, 9 11,250¥, 10 12,500¥,
-  11 13,750¥ and B/R(4).
-- **Book corrections** (the maintainer checked the level tables against the PDFs, 2026-10-24: "fix all to the
-  book"), one list `ModBookFixes` (`scripts/data/mod-book-fixes.mjs`) read by `tools/fix-mod-book-values.mjs`
-  (packs) and the 0.7.1 migration (owned copies — only a field still holding the old shipped value changes):
-  Concealed Armor 9 CF 27 (R3 p.132) · Ablative Armor 2 availability 12/14 days (R3 p.131) · Power Amplifier CF
-  rounded up (R3 p.147) · Remote Control ECCM 5 and 6 cost (M&M p.25) · Hydraulic Jack "jump distance" (M&M p.29) ·
-  RC Encryption Module 8P-W and levels 9-10 (M&M pp.24-25) · cyberlimb plating legality (M&M p.37).
-- `npm run packs:install` was not run (cloud session) — run it with Foundry closed.
+- **One Vehicle Armor** (the maintainer, 2026-10-24); the second "[11]" (was `sr3e-vehiclemod-0055`) is dropped; levels
+  1-11. Book corrections (R3 pp.131-147, M&M pp.24-37) are one list `ModBookFixes`.
+- **Unplaced:** the second **Radio Receiver [4]** (`sr3e-cyberware-0293`: 5,000¥, "10 programmed frequencies" — it looks
+  like level 5) is NOT guessed at; the table has no level 5 until you say.
+- **Cross-pack same name:** `weapon|Gyro Mount` is SR3 levels 5-6 and Cannon Companion level 7; its table rows merge
+  (levels 5-7) but a row carries only the fields that differ within its own book.
+- **Decisions to confirm:** the unbracketed "Medkit Rating N" / "Hospital Rating N" families were collapsed too; "Lv" was
+  dropped from names (Bug Scanner Lv [N] → Bug Scanner); ammunition and vehicle weapons got a rating field.
+- `sr3e-mr-johnsons-contacts` is left alone (embedded "Wired Reflexes [2]"… stay; only their dead compendium links are repointed).
+- `scripts/macros/generate-chrome-threat.js` still names the implants it generates "Wired Reflexes [N]"; the next 0.7.1
+  load renames them. `npm run packs:install` was not run — run it with Foundry closed.
 
-**🧪 Test in Foundry**
-1. A compendium of vehicle mods lists "Anti-Theft System [3]" … "[10]", not eight identical names.
-2. Drag "Anti-Theft System [7]" onto a vehicle; its sheet's Level dropdown shows 3-10 with 7 selected. Pick
-   10: cost 50,000¥, availability 6/14days. The Mods tab reads "Anti-Theft System [10]".
-3. A Cyberlimb Mod (Armor: Ballistic) at Alpha grade: change the level — the cost follows, doubled for Alpha.
-4. A world from 0.7.0 with "ECCM [3]" on a vehicle: after the reload as GM it reads "ECCM", level 3.
-5. 🛒 Buy gear: search "STS" — "STS (Beacon) [1]" … "[6]".
-6. A Vehicle Armor mod's Level dropdown shows 1-11 only (no 12th); pick 7: cost 8,750¥.
-7. A Power Amplifier: pick level 3 — CF consumed 2.
-8. A vehicle with an owned Concealed Armor (level 9, CF 37): after the reload as GM its CF reads 27; one whose CF
-   you had edited is left as you set it.
+**🧪 Test in Foundry** (full Foundry restart first — two data models gained a field)
+1. The vehicle-mods compendium shows ONE "Anti-Theft System" — no "[N]" anywhere in a compendium window.
+2. Drag it onto a vehicle; its Level dropdown shows 3-10. Pick 10: cost 50,000¥, availability 6/14days. The Mods tab
+   reads "Anti-Theft System [10]".
+3. A Cyberlimb Mod (Armor: Ballistic) at Alpha grade: change the level — the cost follows, doubled for Alpha. Same for a
+   cultured bioware (Muscle Toner) at Alpha: the Bio Index follows.
+4. A 0.7.0 world with "ECCM [3]" on a vehicle and "Wired Reflexes [2]" on a character: after the reload as GM they read
+   "ECCM" level 3 and "Wired Reflexes" level 2 (the sheet still shows "[2]"), and the console logs nothing for them.
+5. 🛒 Buy gear: search "STS" — ONE "STS (Beacon)" with a Level picker 1-6; level 4 shows 800¥ and 4/48hrs.
+6. 🛒 buy "Chemical Seal" at level 4: the bought item is named "Chemical Seal", rating 4, level-4 price (1,000¥ asking base).
+7. An owned "Chemical Seal Rating [4]" in a 0.7.0 world becomes "Chemical Seal", level 4, and still links to the compendium
+   (open its source from the sheet header).
+8. A Vehicle Armor mod's Level dropdown shows 1-11 only; pick 7: cost 8,750¥. A Power Amplifier at 3: CF consumed 2.
+9. A Medkit (medical) at level 5: the Level dropdown shows 1-10 and the cost reads 280¥; a Tracker AOD (ammunition) level 3; a Lure
+   Launcher AM-56 (vehicle weapon) now has a sheet with a Level dropdown.
+10. A vehicle with an owned Concealed Armor (level 9, CF 37): after the reload as GM its CF reads 27; one whose CF you had
+    edited is left as you set it.
 
 ### 📌 Notes & parked
 

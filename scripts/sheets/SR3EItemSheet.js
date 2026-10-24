@@ -234,10 +234,12 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
   }
 
   /**
-   * A rated mod's level as a dropdown of the levels the books print (TODO 260): picking one sets that
-   * level's cost, CF, Essence and the rest (`ModRatings.ratingChange`, wired in `_onRender`). A mod with
-   * no printed levels — or one someone renamed — keeps the plain Rating box. The select has no `name`,
-   * so the form never saves the bare number without its level's fields.
+   * A rated item's level as a dropdown of the levels the books print (TODO 260): picking one sets that
+   * level's cost, availability, Essence / Bio Index, description and the rest (`ModRatings.ratingChange`,
+   * wired in `_onRender`). Every rated item is ONE document now — gear, cyberware, bioware, medical,
+   * vehicle mods — and its levels are this dropdown. An item with no printed levels — or one someone
+   * renamed — keeps the plain Rating box. The select has no `name`, so the form never saves the bare
+   * number without its level's fields.
    */
   _modRatingField(s) {
     const opts = ModRatings.options(this.document);
@@ -251,14 +253,28 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     </label>`;
   }
 
-  /** Apply a picked level. Graded cyberware re-applies its grade to the new level's base numbers. */
+  /**
+   * Medical, ammunition and vehicle-weapon sheets: the level dropdown where the item has printed levels, else
+   * what they had before (medical's free-text Rating — some Biotech rows are signed modifiers — and nothing for
+   * the others unless a level is saved).
+   */
+  _levelField(s, { plain = null } = {}) {
+    if (ModRatings.options(this.document)) return this._modRatingField(s);
+    if (plain) return plain;
+    return Number(s.rating) > 0 ? this._ratingField(s) : '';
+  }
+
+  /**
+   * Apply a picked level. Graded cyberware and bioware re-apply their grade to the new level's base numbers
+   * (the level's printed cost and Essence / Bio Index are the Standard grade's).
+   */
   static async _onModRatingChange(ev) {
     const value = Number(ev.currentTarget.value);
     if (!(value > 0)) return;
     const delta = ModRatings.ratingChange(this.item, value);
     const grade = this.item.system.grade ?? 'Standard';
-    if (this.item.type === 'cyberware' && grade !== 'Standard') {
-      Object.assign(delta, { 'system.costBase': 0, 'system.essenceCostBase': 0, 'system.availabilityBase': '' });
+    if ((this.item.type === 'cyberware' || this.item.type === 'bioware') && grade !== 'Standard') {
+      Object.assign(delta, { 'system.costBase': 0, [this.item.type === 'bioware' ? 'system.bioIndexBase' : 'system.essenceCostBase']: 0, 'system.availabilityBase': '' });
       await this.item.update(delta);
       return SR3EItemSheet._onGradeChange.call(this, { currentTarget: { value: grade } });
     }
@@ -487,6 +503,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           .map(([k, v]) => `<option value="${k}" ${(s.loadMechanism ?? 'c') === k ? 'selected' : ''}>${v} (${k})</option>`)
           .join('');
         return `<div class="form-grid">
+          ${this._levelField(s)}
           <div class="form-field">
             <span class="field-label">Ammo Type</span>
             <select name="system.ammoType" title="Rules (power, armour interaction, stun) are applied automatically by type">${ammoTypeOpts}</select>
@@ -915,7 +932,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       case 'medical':
         return `<div class="form-grid">
           ${this._f('Category', 'category', s.category, 'text', 'placeholder="Medical Equipment — General, Medical Clinics — Alpha Grade…"')}
-          ${this._f('Rating', 'rating', s.rating)}
+          ${this._levelField(s, { plain: this._f('Rating', 'rating', s.rating) })}
           ${this._f('Availability', 'availability', s.availability)}
           ${this._f('Weight (kg)', 'weight', s.weight)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
@@ -1107,6 +1124,21 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           <textarea name="system.description" class="bio-text">${s.description ?? ''}</textarea>
         </div>`;
       }
+
+      case 'vehicleweapon':
+        return `<div class="form-grid">
+          ${this._levelField(s)}
+          ${this._f('Weapon Type', 'weaponType', s.weaponType)}
+          ${this._f('Mode', 'mode', s.mode)}
+          ${this._f('Damage', 'damage', s.damage)}
+          ${this._f('Ammunition', 'ammunition', s.ammunition)}
+          ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
+          ${this._f('Cost (¥)', 'cost', s.cost, 'number', 'min="0"')}
+          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Street Index', 'streetIndex', s.streetIndex)}
+          ${this._bookPageField(s)}
+        </div>
+        ${this._notes(s.notes)}`;
 
       case 'vehiclemod':
         return `<div class="form-grid">

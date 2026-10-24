@@ -78,7 +78,7 @@ export async function run(t) {
   t.ok('a drop is checked against packAllowed for the pack it came from', /game\.packs\.get\(dropped\.pack\)/.test(drop) && /SR3ESourceBooks\?\.packAllowed\(pack\)/.test(drop));
   t.ok('a drop FILLS even when warned: resolveDrop returns the fields after the warnings, with no early return for book or type',
     drop.includes('dropWarnings(')
-    && drop.indexOf('dropWarnings(') < drop.indexOf('return { ...GearSearch.fields(dropped)')
+    && drop.indexOf('dropWarnings(') < drop.indexOf('const entry = { ...GearSearch.fields(dropped)')
     && (drop.match(/return null/g) ?? []).length === 2);
   t.ok('the search uses pack indexes, not full documents', /pack\.getIndex\(\{ fields: GearSearch\.INDEX_FIELDS \}\)/.test(idxFn) && !/getDocuments?\(/.test(idxFn));
   t.ok('only Item packs holding a buyable type are searched', /documentName !== 'Item'/.test(packs) && /itemTypes/.test(packs) && /BUYABLE\.includes/.test(packs));

@@ -15,6 +15,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { PackFixes070 } from '../scripts/data/pack-corrections-0-7-0.mjs';
+import { MOD_RATING_TABLE } from '../scripts/data/mod-rating-table.mjs';
 import { splitImagingScopes } from '../tools/build-default-gear.mjs';
 
 export const name = 'pack-corrections-070';
@@ -107,7 +108,8 @@ export async function run(t) {
   }
   t.ok('...two different documents', lowLight?._id !== thermo?._id);
   t.eq('the untyped "Imaging Scope" at Rating -, 1,500 is gone; the three magnification scopes stay',
-    scopes.filter(d => d.name === 'Imaging Scope').map(d => d.system.rating).sort(), [1, 2, 3]);
+    scopes.filter(d => d.name === 'Imaging Scope').map(d => d.system.rating).sort(), [1]);   // ONE document, levels 1-3 in the table (TODO 260)
+  t.eq('…and its dropdown offers Ratings 1-3', Object.keys(MOD_RATING_TABLE['weapon|Imaging Scope']).map(Number), [1, 2, 3]);
   const gen = splitImagingScopes([
     { row: { Name: 'Imaging Scope', Rating: '-', BookPage: 'sr3.282', Cost: '1500' }, category: 'x' },
     { row: { Name: 'Imaging Scope', Rating: '2', BookPage: 'sr3.282', Cost: '800' }, category: 'x' },
@@ -168,7 +170,8 @@ export async function run(t) {
   const medkits = Object.values(dw.embedded).filter(i => /medkit/i.test(i.name));
   t.is('the DocWagon Paramedic carries one medkit', medkits.length, 1);
   const mk = medkits[0];
-  const mm5 = load('sr3e-mm-medical', 'be6b0782420f102a').doc.system;
+  // The Rating 5 medkit is one level of the ONE "Medkit" document now (TODO 260): its numbers are the level table's.
+  const mm5 = { ...load('sr3e-mm-medical', 'ba6b01362a5fe64e').doc.system, ...MOD_RATING_TABLE['medical|Medkit'][5] };
   t.is('…Rating 5 (MJLBB p.65 "medkit 5")', String(mk.system.rating), '5');
   t.is('…at the M&M Rating 5 price', mk.system.cost, mm5.cost);
   t.is('…and availability', mk.system.availability, mm5.availability);

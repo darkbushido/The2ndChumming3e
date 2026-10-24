@@ -9,7 +9,7 @@
  *     (world actors, world items, unlinked token actors) through `ModBookFixes.fixItem`.
  *
  * Each entry is `{ kind, name, rating, field, from, to, source }`:
- *   - `kind` / `name` — the table key (`ModRatings.keyOf`): `vehicle` mods, `cyberlimb` mods;
+ *   - `kind` / `name` — the table key (`ModRatings.keyOf`): `vehicle` mods, `cyberlimb` mods, `cyberware` (Bodyware, Rigger…);
  *   - `rating` — the level (`system.rating`), or null for every level of the mod;
  *   - `from` → `to` — the field is rewritten ONLY while it still holds `from`, the value we shipped.
  *
@@ -51,15 +51,15 @@ const ECCM = [
   E('cyberlimb', 'Remote Control ECCM', 6, 'cost', 280000, 210000, `${MM} p.25: Rating x 35,000¥`),
 ];
 
-/** Hydraulic Jack — M&M p.29: "adds rating x 20 percent to his maximum jump distance" (not running distance). */
-const JACK = [1, 2, 3, 4, 5].map(r => E('cyberlimb', 'Hydraulic Jack', r, 'description',
+/** Hydraulic Jack — M&M p.29: "adds rating x 20 percent to his maximum jump distance" (not running distance). Both the Cyberlimb Mod and the Bodyware implant. */
+const JACK = ['cyberlimb', 'cyberware'].flatMap(kind => [1, 2, 3, 4, 5].map(r => E(kind, 'Hydraulic Jack', r, 'description',
   `+${r} die to Athletics (Running, Jumping) tests, +${r * 20}% running distance, -${r} Power level to falls`,
   `+${r} die to Athletics (Running, Jumping) tests, +${r * 20}% jump distance, -${r} Power level to falls`,
-  `${MM} p.29: rating x 20 percent to maximum jump distance`));
+  `${MM} p.29: rating x 20 percent to maximum jump distance`)));
 
-/** RC Encryption Module — M&M p.25: legality 8P-W at every level. */
-const RCEM = [1, 2, 3, 4, 5, 6, 7, 8].map(r =>
-  E('cyberlimb', 'RC Encryption Module', r, 'legalCode', '4P-W', '8P-W', `${MM} p.25: 8P-W`));
+/** RC Encryption Module — M&M p.25: legality 8P-W at every level (the Cyberlimb Mod and the Rigger implant alike). */
+const RCEM = ['cyberlimb', 'cyberware'].flatMap(kind => [1, 2, 3, 4, 5, 6, 7, 8].map(r =>
+  E(kind, 'RC Encryption Module', r, 'legalCode', '4P-W', '8P-W', `${MM} p.25: 8P-W`)));
 
 /** Cyberlimb body plating — M&M p.37 table: ballistic and impact plating are Legal; ablative is 4P-Q. */
 const PLATING = [

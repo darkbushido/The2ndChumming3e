@@ -7,6 +7,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ModBookFixes } from '../scripts/data/mod-book-fixes.mjs';
 import { fixEntries } from '../tools/fix-mod-book-values.mjs';
+import { readExtraLevels } from '../tools/build-mod-ratings.mjs';
 
 export const name = 'mod-book-fixes';
 
@@ -42,15 +43,22 @@ export async function run(t) {
   t.eq('a copy still named with its level is found (the rename runs first, but need not)', fix(veh('Concealed Armor [9]', { cfCost: '37' })), { 'system.cfCost': '27' });
   t.ok('every entry carries its book and page', ModBookFixes.FIXES.every(f => /p\.\d+/.test(f.source)));
 
-  /* ── The pack tool: same rule, idempotent, adds RCEM 9 and 10 ────────────────── */
+  /* ── The Bodyware twins (M&M pp.25, 29) — the same book values, kind 'cyberware' ─── */
+  const ware = (name, system = {}) => ({ type: 'cyberware', name, system: { cyberwareCategory: 'Rigger', ...system } });
+  t.eq('the Rigger implant RC Encryption Module is 8P-W too (M&M p.25)', fix(ware('RC Encryption Module', { rating: 5, legalCode: '4P-W' })), { 'system.legalCode': '8P-W' });
+  t.eq('the Bodyware Hydraulic Jack says jump distance (M&M p.29)', fix(ware('Hydraulic Jack', { rating: 3, description: '+3 die to Athletics (Running, Jumping) tests, +60% running distance, -3 Power level to falls' })),
+    { 'system.description': '+3 die to Athletics (Running, Jumping) tests, +60% jump distance, -3 Power level to falls' });
+  t.is('…a Cyberlimb Mod of the same name is its own entry, not touched by the Bodyware one', fix(limb('RC Encryption Module', { rating: 5, legalCode: '8P-W' })), null);
+
+  /* ── The pack tool: same rule, idempotent, and it never adds documents (levels 9-10 are table rows) ── */
   const entries = new Map([
     ['!items!a', veh('Concealed Armor', { rating: 9, cfCost: '37' })],
     ['!items!r8', { _id: 'r8', ...limb('RC Encryption Module', { rating: 8, cost: 80000, availability: '8/8 days', legalCode: '4P-W' }) }],
   ]);
-  t.is('the tool changes two documents and adds two levels', fixEntries(entries, 'sr3e-mm-cyberware'), 4);
-  t.is('…RCEM 10 is copied from 8 with its own cost and availability', JSON.stringify([...entries.values()].find(d => d.system.rating === 10)?.system),
-    JSON.stringify({ cyberwareCategory: 'Cyberlimb Mods', rating: 10, cost: 100000, availability: '10/10 days', legalCode: '8P-W' }));
+  t.is('the tool changes two documents', fixEntries(entries, 'sr3e-mm-cyberware'), 2);
+  t.is('…and adds none — every rated item is ONE document (TODO 260)', entries.size, 2);
   t.is('…and a second run changes nothing', fixEntries(entries, 'sr3e-mm-cyberware'), 0);
+  t.eq('RC Encryption Module 9 and 10 are rows of the level table (M&M p.24: ratings 1 through 10)', Object.keys(readExtraLevels()['cyberware|RC Encryption Module']).map(Number), [9, 10]);
 
   /* ── The migration is wired ──────────────────────────────────────────────────── */
   t.ok('a 0.7.1 migration applies the corrections to owned copies', /version: '0\.7\.1',\s*label: 'Mod values corrected[\s\S]{0,2500}fixItem: ModBookFixes\.fixItem/.test(readFileSync(join(ROOT, 'scripts/SR3EMigrations.js'), 'utf8')));

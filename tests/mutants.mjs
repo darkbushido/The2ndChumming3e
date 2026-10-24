@@ -29,6 +29,8 @@ const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDama
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
 const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
 const MODFIX = { module: '../scripts/data/mod-book-fixes.mjs', klass: 'ModBookFixes' };
+const FAMILIES = { module: '../scripts/data/rated-families.mjs', klass: 'RatedFamilies' };
+const MODRATE = { module: '../scripts/data/mod-ratings.mjs', klass: 'ModRatings' };
 const PACKFIX = { module: '../scripts/data/pack-corrections-0-7-0.mjs', klass: 'PackFixes070' };
 const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' };
 const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  };
@@ -3307,6 +3309,49 @@ export const MUTANTS = [
       const kind = item?.type === 'vehiclemod' ? 'vehicle' : 'cyberlimb';
       const name = String(item?.name ?? '').replace(/s*[d+]s*$/, '');
       return this.FIXES.filter(f => f.kind === kind && f.name === name);
+    },
+  },
+  {
+    id:     'family-keeps-the-highest-level',
+    suite:  'mod-ratings',
+    ...FAMILIES, method: 'plan',
+    was:    'collapsing a rated family kept the HIGHEST level\'s document, so the kept id (and its owned copies\' compendium link) belonged to the wrong level '
+          + 'and the lowest level lost its fields (TODO 260: keep the lowest, its id unchanged)',
+    impl:   function (members) {
+      if (!this.collapses(members)) return null;
+      const { levels, unplaced, duplicates, placed } = this.levels(members);
+      const keep = [...placed.values()].at(-1);
+      return { keep, levels, unplaced, duplicates, folded: [], deleted: members.filter(m => m !== keep).map(m => m.key), count: members.length };
+    },
+  },
+  {
+    id:     'family-collapses-a-lone-item',
+    suite:  'mod-ratings',
+    ...FAMILIES, method: 'collapses',
+    was:    'a lone rated document counted as a family, so it was renamed and recorded in the level table with a one-row "dropdown" (TODO 260: only two or more rated documents collapse)',
+    impl:   members => members.filter(m => m.level > 0).length >= 1,
+  },
+  {
+    id:     'family-ignores-a-duplicate-level',
+    suite:  'mod-ratings',
+    ...FAMILIES, method: 'levels',
+    was:    'a level printed twice with different numbers silently kept the first and dropped the second — nothing marked it for the maintainer to check against the book (TODO 260: unplaced)',
+    impl:   function (members) {
+      const placed = new Map();
+      for (const m of [...members].filter(x => x.level > 0).sort((a, b) => a.level - b.level)) if (!placed.has(m.level)) placed.set(m.level, m);
+      const levels = {};
+      for (const [lvl, m] of placed) levels[lvl] = { cost: m.doc.system.cost };
+      return { levels, unplaced: [], duplicates: [], placed };
+    },
+  },
+  {
+    id:     'migration-repoint-overwrites-a-live-link',
+    suite:  'mod-ratings',
+    ...MODRATE, method: 'repointSource',
+    was:    'the 0.7.1 migration repointed any compendium link to the first pack\'s kept document, even one whose source is not a deleted level (TODO 260: only a DEAD link)',
+    impl:   function (item) {
+      const m = /^Compendium\.The2ndChumming3e\.([^.]+)\.Item\.(.+)$/.exec(String(item?._stats?.compendiumSource ?? ''));
+      return m ? `Compendium.The2ndChumming3e.${m[1]}.Item.kept` : null;
     },
   },
 ];
