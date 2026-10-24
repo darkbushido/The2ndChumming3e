@@ -173,10 +173,20 @@ export async function run(t) {
     all.filter(([, s]) => /static _resolve(Ortho)?Roll\(/.test(s)).map(([f]) => f).join(), '');
   const later = all.flatMap(([f, s]) => [...s.matchAll(/\._rollWave\(([^;]*?)\)\s*[;,]/g)]
     .filter(m => !/,\s*true\s*$/.test(m[1].replace(/\/\*.*?\*\//g, '').trim())).map(() => f));
-  t.is('the only later-wave roll is handleExplosionClick — i.e. a 💥 click', later.length, 1);
+  t.is('the only later-wave roll is SR3EActor._nextWave — reached only by a 💥 click', later.length, 1);
   t.is('…and no other call passes isFirstWave = false (the shape of every silent loop)',
     all.flatMap(([, s]) => s.match(/\._rollWave\([^)]*\bfalse\b/g) ?? []).length, 1);
-  t.ok('…and it is in handleExplosionClick', /handleExplosionClick[\s\S]{0,300}_rollWave\(/.test(read('scripts/documents/SR3EActor.js')));
+  {
+    const actorSrc = read('scripts/documents/SR3EActor.js');
+    t.ok('…and it is in _nextWave', /static _nextWave\([^)]*\) \{\s*return actor\._rollWave\(/.test(actorSrc));
+    // TODO 249: the grenade NPC batch card's 💥 rolls every NPC's next wave in one click — still a click.
+    const callers = [...actorSrc.matchAll(/static async (\w+)\([^)]*\) \{(?:(?!\n {2}static )[\s\S])*?SR3EActor\._nextWave\(/g)].map(m => m[1]);
+    t.eq('…called only from the 💥 handlers (handleExplosionClick, handleBlastBatchExplode)',
+      callers.sort(), ['handleBlastBatchExplode', 'handleExplosionClick']);
+    t.is('…and nowhere else in scripts/', all.flatMap(([, s]) => s.match(/_nextWave\(/g) ?? []).length, 3);
+    t.ok('the batch 💥 is a GM click, claimed once per wave on the message',
+      /sr-blast-batch-explode-btn[\s\S]{0,900}_claimExplosion\(mid, 'blastbatchexplode', wave\)[\s\S]{0,120}handleBlastBatchExplode\(mid\)/.test(read('scripts/sr3e.js')));
+  }
   t.ok('the Chase Scene no longer loops its 6s', !/while \(roll === 6\)/.test(read('scripts/SR3EVehicleChase.js')));
 
   const actor = read('scripts/documents/SR3EActor.js');

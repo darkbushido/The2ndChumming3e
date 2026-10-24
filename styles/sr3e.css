@@ -258,6 +258,8 @@ background-color: var(--sr-surface) !important;
 .sr-fd-dodge-btn,
 .sr-charge-quickness-btn,
 .sr-blast-wall-btn,
+.sr-blast-npc-btn,
+.sr-blast-batch-explode-btn,
 .sr-karma-btn,
 .sr-karma-done-btn,
 .sr-clear-blast-btn,
@@ -301,6 +303,8 @@ background-color: var(--sr-surface) !important;
 .sr-buy-pay-btn,
 .sr-charge-quickness-btn,
 .sr-blast-wall-btn,
+.sr-blast-npc-btn,
+.sr-blast-batch-explode-btn,
 .sr-karma-btn,
 .sr-karma-done-btn,
 .sr-gas-resist-btn,
@@ -362,7 +366,9 @@ background-color: var(--sr-surface) !important;
 .sr-stress-roll-btn:hover:not(:disabled),
 .sr-stress-apply-btn:hover:not(:disabled),
 .sr-charge-quickness-btn:hover:not(:disabled),
-.sr-blast-wall-btn:hover:not(:disabled) {
+.sr-blast-wall-btn:hover:not(:disabled),
+.sr-blast-npc-btn:hover:not(:disabled),
+.sr-blast-batch-explode-btn:hover:not(:disabled) {
   background: color-mix(in srgb, var(--sr-gold) 25%, transparent);
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-gold) 30%, transparent);
 }

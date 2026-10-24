@@ -38,6 +38,7 @@ const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
+const BLASTBATCH = { module: '../scripts/data/blast-batch.mjs', klass: 'BlastBatch' };
 const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
 const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots' };
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
@@ -3323,5 +3324,68 @@ export const MUTANTS = [
     was:    'the easy inversion of p.123 "Opponent prone -2": the bonus given to the fighter lying down instead of the '
           + 'one still standing',
     impl:   who => ({ atk: (who === 'attacker' || who === 'both') ? -2 : 0, def: (who === 'defender' || who === 'both') ? -2 : 0 }),
+  },
+  /* ── TODO 249 / 250: a grenade's NPC batch and its marker. Regressions the rules must not take back. ── */
+  {
+    id:     'blast-batch-takes-player-characters',
+    suite:  'blast-batch',
+    ...BLASTBATCH, method: 'split',
+    was:    'every caught person went into the GM\x27s NPC batch, so a player\x27s character was rolled for them (TODO 249: "for NPCs only")',
+    impl:   (targets = []) => ({
+      individual: targets.filter(t => !['character', 'npc'].includes(t?.actor?.type)),
+      batch:      targets.filter(t => ['character', 'npc'].includes(t?.actor?.type)),
+    }),
+  },
+  {
+    id:     'blast-batch-takes-player-rigged-drones',
+    suite:  'blast-batch',
+    ...BLASTBATCH, method: 'split',
+    was:    'a drone joined the GM\x27s batch whoever rigged it, so a player\x27s drone was rolled for them (the maintainer, 2026-10-24: only drones with no player controller)',
+    impl:   (targets = [], isPC = () => true) => {
+      const individual = [], batch = [];
+      for (const t of targets) {
+        const a = t?.actor;
+        const gm = (a?.type === 'character' || a?.type === 'npc') ? !isPC(a)
+          : (a?.type === 'vehicle' && a?.system?.vehicleType === 'drone' && !isPC(a));
+        (gm ? batch : individual).push(t);
+      }
+      return { individual, batch };
+    },
+  },
+  {
+    id:     'blast-batch-clears-while-explosions-pending',
+    suite:  'blast-batch',
+    ...BLASTBATCH, method: 'resolved',
+    was:    'the blast counted a target as resisted once its roll was clicked, with 💥 explosions still owed, so the marker vanished early (the maintainer, 2026-10-24: "no early clear")',
+    impl:   ({ individualIds = [], batchIds = [], acted = {}, soakCards = [], soakResults = [] } = {}) => {
+      const a = acted ?? {};
+      const done = (id, i) => !!a[`step:sr-soak-btn:${i}`] || soakResults.includes(id) || soakCards.some(c => c?.actorId === id);
+      return individualIds.every(done) && (!batchIds.length || !!a['step:sr-blast-npc-btn:0']);
+    },
+  },
+  {
+    id:     'blast-batch-forgets-separate-npcs',
+    suite:  'blast-batch',
+    ...BLASTBATCH, method: 'resolved',
+    was:    'an NPC the GM sent to a soak card of its own was forgotten once the batch rolled, so the marker went before it resisted (TODO 250)',
+    needsOriginal: '_resolvedReal',
+    impl:   function (p = {}) {
+      const acted = p.acted ?? {};
+      const entry = acted['step:sr-blast-npc-btn:0'];
+      const stripped = entry ? { ...acted, 'step:sr-blast-npc-btn:0': { ...entry, data: { ...(entry.data ?? {}), separate: [] } } } : acted;
+      return this._resolvedReal({ ...p, acted: stripped });
+    },
+  },
+  {
+    id:     'blast-batch-dismissal-ignored',
+    suite:  'blast-batch',
+    ...BLASTBATCH, method: 'resolved',
+    was:    'a step the GM ✕\x27d in the ⏳ panel ("nobody will take it") still held the blast open, so the marker never cleared',
+    needsOriginal: '_resolvedReal',
+    impl:   function (p = {}) {
+      const acted = Object.fromEntries(Object.entries(p.acted ?? {}).filter(([, v]) => v?.label !== 'dismissed by the GM'));
+      const soakCards = (p.soakCards ?? []).map(c => ({ ...c, dismissed: false }));
+      return this._resolvedReal({ ...p, acted, soakCards });
+    },
   },
 ];

@@ -3222,6 +3222,40 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
+  // 💥 A grenade's NPCs resist in one go (TODO 249). GM only — the NPCs are the GM's — and once: the click is
+  // claimed here, and the ⏳ step is recorded by the handler once the dialog is confirmed (cancel hands it back).
+  html.querySelectorAll('.sr-blast-npc-btn').forEach((btn, i) => {
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM rolls the NPCs\' resistance.');
+    if (_actedOn(message)[OpenSteps.key('sr-blast-npc-btn', i)]) { btn.disabled = true; return; }
+    if (!_checkBtn(btn, mid, 'blastnpc', i)) return;
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'blastnpc', i)) return;
+      if (await SR3EActor.handleBlastBatch(mid, _payload(btn) ?? {}) === false) {
+        _usedButtons.delete(`${mid}|blastnpc|${i}`);
+        btn.disabled = false;
+      }
+    });
+  });
+
+  // 💥 The NPC batch card's explosions — one click rolls the next wave for every NPC (TODO 249). GM only, and
+  // each wave once, recorded on the message like any 💥 (`_claimExplosion`), so a reload cannot roll it twice.
+  html.querySelectorAll('.sr-blast-batch-explode-btn').forEach(btn => {
+    const wave = Number(btn.dataset.wave) || 0;
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM rolls the NPCs\' explosions.');
+    if (!_checkBtn(btn, mid, 'blastbatchexplode', wave)) return;
+    if (_explosionRolled(message, 'blastbatchexplode', wave)) return _spentExplodeBtn(btn);
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'blastbatchexplode', wave)) return;
+      btn.textContent = '⏳ Rolling…';
+      if (!await _claimExplosion(mid, 'blastbatchexplode', wave)) return _spentExplodeBtn(btn);
+      await SR3EActor.handleBlastBatchExplode(mid);
+    });
+  });
+
   // ☣ A gas cloud's resistance card (SR3 p.249-250, TODO 164): posts the toxin's soak card — Body, no armour.
   // Posts onward, so any owner of that character (or the GM): `_mineId`.
   html.querySelectorAll('.sr-gas-resist-btn').forEach((btn, i) => {
@@ -3907,3 +3941,22 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
  * run after the button's own handler has claimed it (`_claimBtn`). It also greys steps already done,
  * highlights a card waiting on this user and folds a finished one. See scripts/SR3EOpenSteps.js. */
 Hooks.on('renderChatMessageHTML', (message, html) => SR3EOpenSteps.decorate(message, html));
+
+/* ── A grenade's blast marker goes once everyone has resisted (TODO 250) ──────────────────────────
+ *
+ * Every client, whenever a blast's card is posted (a soak roll's FINAL wave, the NPC batch card) or a blast
+ * card's acted-ledger or batch record changes (a ✕, a click, a batch 💥): if every target of that blast has
+ * COMPLETELY resisted — every explosion rolled — the marker goes (the active GM deletes the Region; a client
+ * holding the local PIXI fallback destroys its own). Read from the cards, not memory, so it holds across
+ * reloads. 🧹 Clear stays the manual path. See SR3EActor.autoClearBlast and BlastBatch.resolved. */
+const _blastCheck = message => {
+  if (!message?.getFlag?.('The2ndChumming3e', 'blast')) return;
+  SR3EActor.autoClearBlast(message).catch(err => console.warn('SR3E | blast marker auto-clear failed:', err));
+};
+Hooks.on('createChatMessage', message => _blastCheck(message));
+Hooks.on('updateChatMessage', (message, changes) => {
+  const c = changes ?? {};
+  if (!foundry.utils.hasProperty(c, 'flags.The2ndChumming3e.acted')
+      && !foundry.utils.hasProperty(c, 'flags.The2ndChumming3e.blastBatch')) return;
+  _blastCheck(message);
+});

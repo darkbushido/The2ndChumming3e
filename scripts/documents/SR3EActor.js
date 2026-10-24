@@ -7,9 +7,10 @@ import * as Sustaining from '../data/sustaining.mjs';
 import { DrugRules } from '../data/drug-rules.mjs';
 import { Ledger } from '../data/ledger.mjs';
 import { Blast } from '../data/blast.mjs';
+import { BlastBatch, BATCH_STEP } from '../data/blast-batch.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
 import { MeleeProne } from '../data/melee-prone.mjs';
-import { OpenSteps } from '../data/open-steps.mjs';
+import { OpenSteps, STEP_BUTTONS } from '../data/open-steps.mjs';
 import { WillingTarget } from '../data/willing-target.mjs';
 import { AreaShape } from '../data/area-shape.mjs';
 import { RiggerShock, DISORIENT_MOD, DISORIENT_TN, DISORIENT_TURNS } from '../data/rigger-shock.mjs';
@@ -3504,6 +3505,20 @@ _prepareCharacter(sys, attr) {
     return ({ L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' })[String(level).toUpperCase()] ?? String(level);
   }
 
+  /** One die's glyph on a wave card (and a grenade's NPC batch card) — exploding dice show their running total. */
+  static _dieHtml(d) {
+    const cls = ['sr-die'];
+    if (d.done && d.success)  cls.push('sr-hit');
+    else if (d.done)          cls.push('sr-miss');
+    else                      cls.push('sr-exploding');
+    if (d.isOne)              cls.push('sr-one');
+
+    // 🍀 A success bought with Karma Pool (p.246) — a die with no faces that always hits.
+    if (d.karma) return `<span class="${cls.join(' ')}" title="Bought with Karma Pool">🍀</span>`;
+    const title = d.faces.length > 1 ? `${d.faces.join(' + ')} = ${d.total}` : `${d.total}`;
+    return `<span class="${cls.join(' ')}" title="${title}${d.karmaRerolled ? ' (Karma re-roll)' : ''}">${d.total}</span>`;
+  }
+
   /**
    * Post a wave result as a chat card.
    *
@@ -3517,22 +3532,13 @@ _prepareCharacter(sys, attr) {
     const allDone       = state.physicalDice || explodingDice.length === 0;
     // Steps that must land BELOW this wave card (a second roller's own wave card) — run after it posts.
     const afterCard     = [];
+    // Flags for this card — a grenade card names its blast and who it caught (TODO 250).
+    let cardFlags       = null;
 
     // Build dice display — exploding dice get a pending style (no glyph, just the running total).
     const diceHtml = state.physicalDice
       ? `<span class="sr-phys-summary">📋 ${successes} success${successes !== 1 ? 'es' : ''} entered</span>`
-      : dice.map(d => {
-          const cls = ['sr-die'];
-          if (d.done && d.success)  cls.push('sr-hit');
-          else if (d.done)          cls.push('sr-miss');
-          else                      cls.push('sr-exploding');
-          if (d.isOne)              cls.push('sr-one');
-
-          // 🍀 A success bought with Karma Pool (p.246) — a die with no faces that always hits.
-          if (d.karma) return `<span class="${cls.join(' ')}" title="Bought with Karma Pool">🍀</span>`;
-          const title = d.faces.length > 1 ? `${d.faces.join(' + ')} = ${d.total}` : `${d.total}`;
-          return `<span class="${cls.join(' ')}" title="${title}${d.karmaRerolled ? ' (Karma re-roll)' : ''}">${d.total}</span>`;
-        }).join('');
+      : dice.map(d => SR3EActor._dieHtml(d)).join('');
 
     /* 🍀 Held for Karma (p.246): the roller ticked "Hold the roll for Karma", so the finished dice
      * stop HERE, before anything resolves, and wait on the 🍀 card. ✔ Done comes back through this
@@ -3743,9 +3749,38 @@ _prepareCharacter(sys, attr) {
             stagingHtml = `<div class="sr-staging-result">💥 ${basePower}${level}${isStun ? ' Stun' : ''} grenade — ${successes} hit${successes !== 1 ? 's' : ''}<div style="margin-top:3px">${scatterDesc}</div>${hitLines}${clearBtn}</div>`;
           }
 
-          for (const t of codes) {
-            const tActor = actorFrom(t.actorId);
-            if (!tActor) continue;
+          /* TODO 249: player characters (and vehicles) resist on their own cards; every caught NPC is rolled by
+           * ONE GM click (`sr-blast-npc-btn` → `handleBlastBatch`) onto one summary card. Nothing is applied.
+           * TODO 250: the card names its blast and who it caught, so the marker can go once all have resisted. */
+          const caught = codes.map(t => ({ ...t, actor: actorFrom(t.actorId) })).filter(t => t.actor);
+          const { individual, batch } = state.aoeEffect
+            ? { individual: [], batch: [] }
+            : BlastBatch.split(caught, a => game.sr3e.SR3EQuery.isPlayerCharacter(a),
+                a => (a?.system?.driverActorId ? actorFrom(a.system.driverActorId) ?? null : null));
+          const blastKey = state.aoeEffect ? null : BlastBatch.key(resultRegionId, resultMarkerId);
+          const individualIds = individual.map(t => t.actorId);
+          const batchIds      = batch.map(t => t.actorId);
+          if (blastKey && BlastBatch.tracks({ individualIds, batchIds })) {
+            cardFlags = { blast: { key: blastKey, role: 'grenade', regionId: resultRegionId ?? null,
+              markerId: resultMarkerId ?? null, sceneId: canvas?.scene?.id ?? null, individualIds, batchIds } };
+          }
+          if (batch.length) {
+            const batchPayload = JSON.stringify({
+              blastKey,
+              attackerActorId: state.attackerActorId,
+              weaponItemId:    state.weaponItemId,
+              ammoType:        state.ammoType ?? null,
+              isStun,
+              attackHits:      successes,
+              targets:         batch.map(t => ({ actorId: t.actorId, name: t.actor.name, power: t.power,
+                level: t.level, baseLevel: t.baseLevel ?? t.level })),
+            }).replace(/'/g, '&#39;');
+            postRollHtml += `<div class="sr-soak-action"><button class="sr-blast-npc-btn" data-payload='${batchPayload}'
+              title="Rolls every GM-side NPC's and drone's Damage Resistance Test at once and lists the results on one card — nothing is applied">💥 GM: Resist for the ${batch.length} NPC${batch.length !== 1 ? 's' : ''}${batch.some(t => BlastBatch.isDrone(t.actor)) ? ' and drones' : ''} in the blast (${batch.map(t => t.actor.name).join(', ')})</button></div>`;
+          }
+
+          for (const t of individual) {
+            const tActor = t.actor;
             const soakCtx = JSON.stringify({
               attackerActorId: state.attackerActorId,
               targetActorId:   t.actorId,
@@ -3758,6 +3793,7 @@ _prepareCharacter(sys, attr) {
               rawDamage:       `${t.power}${t.level}`,
               // p.119 compares the thrower's successes with the target's total — TODO 165.
               net:             { attackHits: successes, basePower: t.power, baseLevel: t.baseLevel ?? t.level },
+              blastKey,                                 // the soak card names its blast (TODO 250)
             }).replace(/'/g, '&#39;');
             postRollHtml += `<div class="sr-soak-action"><button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${tActor.name}: Resist Damage (${t.power}${t.level})</button></div>`;
           }
@@ -4672,83 +4708,11 @@ _prepareCharacter(sys, attr) {
     }
 
     // Soak result announcement — shown when soak wave fully resolves
-    let soakResultHtml = '';
-    if (allDone && state.isSoakRoll && state.soakPayload) {
-      const sp      = state.soakPayload;
-      const STAGES  = ['L', 'M', 'S', 'D'];
-      let idx       = STAGES.indexOf(sp.stagedLevel);
-      let power     = sp.stagedPower;
-      const origIdx = idx;
-
-      // SR3: "Even if you don't dodge completely, the successes still count and are
-      // added to the Damage Resistance Successes to determine the final outcome."
-      const carried    = Math.max(0, sp.carriedSuccesses ?? 0);
-      const totalSoak  = successes + carried;
-      let   remaining  = totalSoak;
-      let   netLine    = '';
-
-      if (sp.net) {
-        // SR3 p.113: the NET of the attacker's successes and the target's total — TODO 165.
-        const r = SR3EActor.netStagedDamage(
-          { power: sp.net.basePower ?? power, level: sp.net.baseLevel ?? sp.stagedLevel, isStun: sp.isStun },
-          sp.net.attackHits, totalSoak);
-        idx   = r.soaked ? -1 : STAGES.indexOf(r.level);
-        power = r.power;
-        netLine = `<div class="sr-roll-meta" style="font-size:11px">${sp.net.attackHits} attack vs ${totalSoak} `
-                + `— net ${r.net > 0 ? '+' : ''}${r.net} from base <strong>${sp.net.basePower}${sp.net.baseLevel}</strong> (SR3 p.113)</div>`;
-      } else {
-        while (remaining >= 2 && idx >= 0) {
-          remaining -= 2;
-          idx--;
-        }
-      }
-
-      if (idx < 0) {
-        soakResultHtml = `<div class="sr-soak-result sr-soak-blocked">🛡 Damage completely soaked!</div>${netLine}`;
-      } else {
-        const finalLevel = STAGES[idx];
-        const trackLabel = sp.isStun ? 'Stun' : 'Physical';
-        const unchanged  = idx === origIdx && power === sp.stagedPower;
-        // Show the sum AND its parts, so a player can see the dodge was credited
-        // rather than silently folded in.
-        const hitsLabel  = carried > 0
-          ? `${totalSoak} hit${totalSoak !== 1 ? 's' : ''} (${successes} soak + ${carried} dodge)`
-          : `${successes} soak hit${successes !== 1 ? 's' : ''}`;
-        const resultLine = unchanged
-          ? `${hitsLabel} — damage unchanged: <strong>${power}${finalLevel} ${trackLabel}</strong>`
-          : `${hitsLabel} — <strong>${sp.stagedPower}${sp.stagedLevel}</strong> staged down to <strong>${power}${finalLevel} ${trackLabel}</strong>`;
-        const soakBoxes      = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
-        const soakTrack      = sp.isStun ? 'stun' : 'physical';
-        const soakTargetName = actorFrom(sp.actorId)?.name ?? 'Target';
-        const soakAssignPayload = JSON.stringify({ actorId: sp.actorId, track: soakTrack, boxes: soakBoxes }).replace(/'/g, '&#39;');
-        // Knockdown (p.124) is a THIRD stage, after damage resolves. Offered only when a
-        // wound actually lands — fully soaked means there is no wound level to test against.
-        const kdPayload = JSON.stringify({
-          actorId:         sp.actorId,
-          targetActorId:   sp.actorId,
-          attackerActorId: sp.attackerActorId ?? null,
-          level:           finalLevel,
-          power:           sp.stagedPower,
-          isMelee:         sp.isMelee ?? false,
-          ammoType:        sp.ammoType ?? null,
-        }).replace(/'/g, '&#39;');
-
-        soakResultHtml = `
-          <div class="sr-soak-result">🛡 ${resultLine}</div>${netLine}
-          <div class="sr-soak-action">
-            <button class="sr-assign-damage-btn" data-payload='${soakAssignPayload}'>
-              🩸 Assign ${SR3EActor._woundName(finalLevel)} ${trackLabel} Wound to ${soakTargetName}
-            </button>
-          </div>
-          ${sp.noKnockdown ? '' : `<div class="sr-soak-action">
-            <button class="sr-knockdown-btn" data-payload='${kdPayload}'>
-              ${finalLevel === 'D'
-                ? `💥 ${soakTargetName} — Deadly wound: knocked down automatically (p.124)`
-                : `💥 ${soakTargetName} — Knockdown Test`}
-            </button>
-          </div>`}
-        `;
-      }
+    const soakResultHtml = (allDone && state.isSoakRoll && state.soakPayload)
+      ? SR3EActor._soakResultHtml(state.soakPayload, successes) : '';
+    // TODO 250: this is the FINAL wave of a blast soak (every 💥 rolled) — the marker waits for this card.
+    if (allDone && state.isSoakRoll && state.soakPayload?.blastKey) {
+      cardFlags = { blast: { key: state.soakPayload.blastKey, role: 'soakResult', actorId: state.soakPayload.actorId } };
     }
 
     let vehicleSoakResultHtml = '';
@@ -4787,6 +4751,7 @@ _prepareCharacter(sys, attr) {
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
+      ...(cardFlags ? { flags: { 'The2ndChumming3e': cardFlags } } : {}),
       content: `
         <div class="sr-roll-card">
           <div class="sr-roll-header">${label}</div>
@@ -5010,6 +4975,96 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
+   * A Damage Resistance Test's result: the staged wound (netted against the attacker's successes when the
+   * payload carries them, SR3 p.113/p.119 — `netStagedDamage`), and the 🩸 Assign the wound and 💥 Knockdown
+   * buttons. Offered, never applied. Read by the soak roll's wave card and by each row of a grenade's NPC
+   * batch card (TODO 249), so a batched NPC is staged exactly as one rolled on its own card.
+   * @param {object} sp         the Roll-to-Resist payload (`_soakRollPayload`)
+   * @param {number} successes  the soak roll's successes
+   */
+  static _soakResultHtml(sp, successes) {
+    let soakResultHtml = '';
+    const STAGES  = ['L', 'M', 'S', 'D'];
+    let idx       = STAGES.indexOf(sp.stagedLevel);
+    let power     = sp.stagedPower;
+    const origIdx = idx;
+
+    // SR3: "Even if you don't dodge completely, the successes still count and are
+    // added to the Damage Resistance Successes to determine the final outcome."
+    const carried    = Math.max(0, sp.carriedSuccesses ?? 0);
+    const totalSoak  = successes + carried;
+    let   remaining  = totalSoak;
+    let   netLine    = '';
+
+    if (sp.net) {
+      // SR3 p.113: the NET of the attacker's successes and the target's total — TODO 165.
+      const r = SR3EActor.netStagedDamage(
+        { power: sp.net.basePower ?? power, level: sp.net.baseLevel ?? sp.stagedLevel, isStun: sp.isStun },
+        sp.net.attackHits, totalSoak);
+      idx   = r.soaked ? -1 : STAGES.indexOf(r.level);
+      power = r.power;
+      netLine = `<div class="sr-roll-meta" style="font-size:11px">${sp.net.attackHits} attack vs ${totalSoak} `
+              + `— net ${r.net > 0 ? '+' : ''}${r.net} from base <strong>${sp.net.basePower}${sp.net.baseLevel}</strong> (SR3 p.113)</div>`;
+    } else {
+      while (remaining >= 2 && idx >= 0) {
+        remaining -= 2;
+        idx--;
+      }
+    }
+
+    if (idx < 0) {
+      soakResultHtml = `<div class="sr-soak-result sr-soak-blocked">🛡 Damage completely soaked!</div>${netLine}`;
+    } else {
+      const finalLevel = STAGES[idx];
+      const trackLabel = sp.isStun ? 'Stun' : 'Physical';
+      const unchanged  = idx === origIdx && power === sp.stagedPower;
+      // Show the sum AND its parts, so a player can see the dodge was credited
+      // rather than silently folded in.
+      const hitsLabel  = carried > 0
+        ? `${totalSoak} hit${totalSoak !== 1 ? 's' : ''} (${successes} soak + ${carried} dodge)`
+        : `${successes} soak hit${successes !== 1 ? 's' : ''}`;
+      const resultLine = unchanged
+        ? `${hitsLabel} — damage unchanged: <strong>${power}${finalLevel} ${trackLabel}</strong>`
+        : `${hitsLabel} — <strong>${sp.stagedPower}${sp.stagedLevel}</strong> staged down to <strong>${power}${finalLevel} ${trackLabel}</strong>`;
+      const soakBoxes      = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
+      const soakTrack      = sp.isStun ? 'stun' : 'physical';
+      const soakTargetName = actorFrom(sp.actorId)?.name ?? 'Target';
+      // ⚠ A vehicle or drone (a grenade's blast reaches it through this card too) has ONE Condition Monitor,
+      // `system.damage` — `vehicleActorId` routes the boxes there; `track` on a vehicle wrote nowhere.
+      const soakAssignPayload = JSON.stringify(sp.isVehicle
+        ? { vehicleActorId: sp.actorId, boxes: soakBoxes }
+        : { actorId: sp.actorId, track: soakTrack, boxes: soakBoxes }).replace(/'/g, '&#39;');
+      // Knockdown (p.124) is a THIRD stage, after damage resolves. Offered only when a
+      // wound actually lands — fully soaked means there is no wound level to test against.
+      const kdPayload = JSON.stringify({
+        actorId:         sp.actorId,
+        targetActorId:   sp.actorId,
+        attackerActorId: sp.attackerActorId ?? null,
+        level:           finalLevel,
+        power:           sp.stagedPower,
+        isMelee:         sp.isMelee ?? false,
+        ammoType:        sp.ammoType ?? null,
+      }).replace(/'/g, '&#39;');
+
+      soakResultHtml = `
+        <div class="sr-soak-result">🛡 ${resultLine}</div>${netLine}
+        <div class="sr-soak-action">
+          <button class="sr-assign-damage-btn" data-payload='${soakAssignPayload}'>
+            🩸 Assign ${SR3EActor._woundName(finalLevel)} ${trackLabel} Wound to ${soakTargetName}
+          </button>
+        </div>
+        ${sp.noKnockdown || sp.isVehicle ? '' : `<div class="sr-soak-action">
+          <button class="sr-knockdown-btn" data-payload='${kdPayload}'>
+            ${finalLevel === 'D'
+              ? `💥 ${soakTargetName} — Deadly wound: knocked down automatically (p.124)`
+              : `💥 ${soakTargetName} — Knockdown Test`}
+          </button>
+        </div>`}
+      `;
+    }
+    return soakResultHtml;
+  }
+  /**
    * Handle a click on "Roll explosions".
    * Registered as a static handler in sr3e.js via a delegated click listener
    * on the chat log. Deserialises state from the button payload and fires the
@@ -5022,19 +5077,312 @@ _prepareCharacter(sys, attr) {
     const actor = actorFrom(state.actorId);
     if (!actor) return;
 
-    const newDice = actor._rollWave(
-      state.explodeIdx.length,
-      state.tn,
-      /* isFirstWave */ false,
-      state.dice,
-      state.explodeIdx,
-    );
+    const newDice = SR3EActor._nextWave(actor, state.dice, state.tn, state.explodeIdx);
 
     await actor._postWaveCard({
       ...state,
       dice: newDice,
       wave: state.wave,
     });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  A grenade's NPCs, resisted in one go — TODO 249                     */
+  /* ------------------------------------------------------------------ */
+
+  /*
+   * The maintainer, in play 2026-10-23: "dealing with all the npcs in a grenade blast is annoying it should be
+   * all done at once for NPCs only". The grenade card offers the GM ONE button for every caught NPC
+   * (`BlastBatch.split` — player characters and vehicles keep their own soak cards). It opens a dialog with a
+   * row per NPC, pre-filled exactly as that NPC's soak card would be (`_soakSetup`): Body dice, Combat Pool,
+   * armour, TN — all editable, and a tick to send an NPC to a card of its own instead. Confirm rolls every
+   * ticked row and posts ONE summary card; each row's result is staged by the same code as a soak card's
+   * (`_soakResultHtml` → `netStagedDamage` with the throw's successes) and offers the same 🩸 Assign the wound
+   * and 💥 Knockdown buttons. ⚠ Nothing is applied.
+   *
+   * ⚠ **Combat Pool defaults to 0.** Spending an NPC's pool is a tactical choice and the batch is the quick
+   * path; the field is there (capped at what is left, charged after the roll as the soak card does) for the
+   * GM who wants it.
+   * ⚠ **Explosions are still clicks** — one 💥 on the summary card rolls the next wave for every NPC that has
+   * one (`_nextWave`), and the card is updated in place. Results show once nothing is left to explode.
+   */
+
+  /** The incoming payload one batched NPC would have carried on its own soak button. */
+  static _blastBatchIncoming(p, t) {
+    return {
+      attackerActorId: p.attackerActorId,
+      targetActorId:   t.actorId,
+      weaponItemId:    p.weaponItemId,
+      isMelee:         false,
+      ammoType:        p.ammoType ?? null,
+      stagedPower:     t.power,
+      stagedLevel:     t.level,
+      isStun:          p.isStun === true,
+      rawDamage:       `${t.power}${t.level}`,
+      net:             { attackHits: p.attackHits ?? 0, basePower: t.power, baseLevel: t.baseLevel ?? t.level },
+      blastKey:        p.blastKey ?? null,
+    };
+  }
+
+  /**
+   * 💥 GM: Resist for the NPCs in the blast. Returns false when cancelled (the button is handed back).
+   * @param {string} messageId  the grenade card
+   * @param {object} p          the button's payload
+   */
+  static async handleBlastBatch(messageId, p) {
+    const stepKey = OpenSteps.key(BATCH_STEP, 0);
+    const grenadeMsg = game.messages.get(messageId);
+    if (grenadeMsg?.getFlag('The2ndChumming3e', 'acted')?.[stepKey]) {
+      ui.notifications.info('These NPCs have already resisted — see the batch card.');
+      return true;
+    }
+    const rows = (p?.targets ?? []).map((t, i) => {
+      const actor = actorFrom(t.actorId);
+      if (!actor) return null;
+      const incoming = SR3EActor._blastBatchIncoming(p, t);
+      return { i, t, actor, incoming, s: actor._soakSetup(incoming) };
+    }).filter(Boolean);
+    if (!rows.length) {
+      ui.notifications.warn('None of the NPCs caught in the blast could be found.');
+      return false;
+    }
+
+    const trackOf = isStun => (isStun ? 'Stun' : 'Physical');
+    const rowHtml = r => {
+      const { s, t } = r;
+      const sel = k => (k === (s.usesImpact ? 'impact' : 'ballistic') ? 'selected' : '');
+      return `<tr class="sr-batch-row" data-i="${r.i}" data-power="${t.power}" data-stunned="${s.stunnedNow ? 1 : 0}"
+          data-ballistic="${s.ballistic}" data-impact="${s.impact}">
+        <td><label style="display:flex;gap:4px;align-items:center" title="Untick to give this NPC a soak card of its own">
+          <input type="checkbox" class="sr-batch-in" checked style="appearance:auto;-webkit-appearance:checkbox"/> ${r.actor.name}</label></td>
+        <td>${t.power}${s.effStagedLevel} ${trackOf(r.incoming.isStun)}</td>
+        <td><input type="number" class="sr-batch-body" value="${s.body}" min="0" max="30" style="width:44px" title="${s.resistName} dice"/></td>
+        <td><input type="number" class="sr-batch-cp" value="0" min="0" max="${s.availPool}" style="width:44px"
+          ${s.availPool > 0 ? '' : 'disabled'} title="Combat Pool — ${s.availPool} left"/></td>
+        <td><select class="sr-batch-armor">
+          <option value="ballistic" ${sel('ballistic')}>Ballistic ${s.ballistic}</option>
+          <option value="impact" ${sel('impact')}>Impact ${s.impact}</option></select></td>
+        <td><input type="number" class="sr-batch-tn" value="${s.soakTN}" min="2" max="30" style="width:44px"/></td>
+      </tr>${(s.ammoNote || s.adeptArmorNotes.length)
+        ? `<tr><td colspan="6" style="font-size:10px;color:var(--sr-gold)">${[s.ammoNote, ...s.adeptArmorNotes].filter(Boolean).join(' · ')}</td></tr>`
+        : ''}`;
+    };
+
+    // The armour picked sets the TN (Power − armour, +2 stunned — `ShockStun.soakTN`); the TN stays editable.
+    const wireDialog = (_app, html) => {
+      html.querySelectorAll('.sr-batch-row').forEach(tr => {
+        tr.querySelector('.sr-batch-armor')?.addEventListener('change', ev => {
+          const armor = Number(tr.dataset[ev.target.value]) || 0;
+          const tnEl = tr.querySelector('.sr-batch-tn');
+          if (tnEl) tnEl.value = ShockStun.soakTN(Number(tr.dataset.power) || 0, armor, tr.dataset.stunned === '1');
+        });
+      });
+      html.querySelectorAll('input').forEach(inp => inp.addEventListener('keydown', ev => {
+        if (ev.key === 'Enter') ev.preventDefault();
+      }));
+    };
+
+    let picked = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'GM — Damage Resistance for the NPCs in the blast' },
+      position: { width: 620 },
+      content: `<p style="font-size:12px;margin:0 0 6px">Every ticked NPC rolls its Damage Resistance Test now; the results go on
+        one card and <strong>nothing is applied</strong> — assign each wound from the card. The throw's
+        ${p.attackHits ?? 0} success${(p.attackHits ?? 0) !== 1 ? 'es are' : ' is'} netted against each NPC's (SR3 p.119, p.113).
+        Untick an NPC to give it a soak card of its own. Combat Pool starts at 0.</p>
+        <table style="width:100%;font-size:12px"><thead><tr><th>NPC</th><th>Incoming</th><th>Dice</th><th>Pool</th><th>Armour</th><th>TN</th></tr></thead>
+        <tbody>${rows.map(rowHtml).join('')}</tbody></table>`,
+      buttons: [
+        { label: 'Roll them all', action: 'roll', default: true,
+          callback: (_e, _b, dlg) => {
+            picked = [...dlg.element.querySelectorAll('.sr-batch-row')].map(tr => ({
+              i:      Number(tr.dataset.i),
+              roll:   !!tr.querySelector('.sr-batch-in')?.checked,
+              body:   Math.max(0, parseInt(tr.querySelector('.sr-batch-body')?.value) || 0),
+              cp:     Math.max(0, parseInt(tr.querySelector('.sr-batch-cp')?.value) || 0),
+              armor:  tr.querySelector('.sr-batch-armor')?.value === 'impact' ? 'impact' : 'ballistic',
+              tn:     Math.max(2, parseInt(tr.querySelector('.sr-batch-tn')?.value) || 2),
+            }));
+          } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+      render: (_event, dialog) => wireDialog(dialog, dialog.element),
+    });
+    if (!picked) return false;
+
+    const byI = new Map(rows.map(r => [r.i, r]));
+    const rolled = [];
+    const separate = [];
+    for (const choice of picked) {
+      const r = byI.get(choice.i);
+      if (!r) continue;
+      if (!choice.roll) { separate.push(r); continue; }
+      const { actor, s, incoming } = r;
+      const useCP = Math.min(choice.cp, s.availPool);
+      const pool  = Math.max(1, choice.body + useCP);
+      const dice  = actor._rollWave(pool, choice.tn, true);
+      const glitch = SR3EActor.isRuleOfOne(dice.filter(d => d.isOne).length, pool);
+      // Charged after the roll, as the soak card does; `spendCombatPool` clamps and says what it took.
+      let spent = 0;
+      if (useCP > 0) spent = await actor.spendCombatPool(useCP);
+      rolled.push({
+        actorId:  actorRef(actor),
+        name:     actor.name,
+        incoming: `${incoming.stagedPower}${s.effStagedLevel} ${trackOf(incoming.isStun)}`,
+        resist:   s.resistName,
+        body:     choice.body,
+        cp:       useCP,
+        cpShort:  useCP > 0 && spent < useCP ? useCP - spent : 0,
+        armor:    `${choice.armor === 'impact' ? 'Impact' : 'Ballistic'} ${choice.armor === 'impact' ? s.impact : s.ballistic}`,
+        tn:       choice.tn,
+        pool,
+        dice,
+        glitch,
+        notes:    [s.ammoNote, ...s.adeptArmorNotes].filter(Boolean),
+        sp:       actor._soakRollPayload(incoming, s),
+        extraHtml: actor._shockStunHtml(incoming, s),
+      });
+    }
+
+    const record = { blastKey: p.blastKey ?? null, attackHits: p.attackHits ?? 0, wave: 0, rows: rolled };
+    if (rolled.length) {
+      await ChatMessage.create({
+        content: SR3EActor._blastBatchHtml(record),
+        style:   CONST.CHAT_MESSAGE_STYLES.ROLL,
+        flags:   { 'The2ndChumming3e': { blastBatch: record,
+          ...(record.blastKey ? { blast: { key: record.blastKey, role: 'batch' } } : {}) } },
+      });
+    }
+    // An unticked NPC gets the soak card it would have had (naming the blast, so the marker waits for it).
+    for (const r of separate) await r.actor._postSoakCard(r.incoming);
+
+    // ⚠ Recorded HERE, not on click: the dialog can be cancelled, and the record names the NPCs sent to cards
+    // of their own (`BlastBatch.resolved` waits for those). Bookkeeping never blocks the action.
+    try {
+      await game.sr3e.SR3EQuery.asGM('sr3e.card.mark', {
+        messageId, role: stepKey, label: `${STEP_BUTTONS[BATCH_STEP].label}`,
+        data: { separate: separate.map(r => r.actor.id), rolled: rolled.length },
+      });
+    } catch (err) { console.warn('SR3E | could not record the NPC batch:', err); }
+    return true;
+  }
+
+  /** The NPC batch card from its record (the message flag) — rows, dice, and the results once all are rolled. */
+  static _blastBatchHtml(record) {
+    const rows = record?.rows ?? [];
+    const done = BlastBatch.allDone(rows);
+    const pending = rows.reduce((n, r) => n + BlastBatch.explodeIdx(r.dice).length, 0);
+    const pendingRows = rows.filter(r => BlastBatch.explodeIdx(r.dice).length).length;
+    const body = rows.map(r => {
+      const hits = BlastBatch.successes(r.dice);
+      const exploding = BlastBatch.explodeIdx(r.dice).length;
+      const poolLabel = r.cp > 0 ? `${r.body} ${r.resist} + ${r.cp} Combat Pool` : `${r.body} ${r.resist}`;
+      return `<div class="sr-blast-batch-row" style="border-top:1px solid var(--sr-border);margin-top:6px;padding-top:4px">
+        <div style="font-size:12px"><strong>${r.name}</strong> — incoming <strong>${r.incoming}</strong></div>
+        <div class="sr-roll-meta" style="font-size:11px">${poolLabel} vs TN ${r.tn} (${r.armor})${r.cpShort ? ` · ⚠ only ${r.cp - r.cpShort} Combat Pool was left` : ''}</div>
+        ${r.notes?.length ? `<div class="sr-roll-meta" style="font-size:10px;color:var(--sr-gold)">🔸 ${r.notes.join(' · ')}</div>` : ''}
+        <div class="sr-roll-dice">${(r.dice ?? []).map(d => SR3EActor._dieHtml(d)).join('')}</div>
+        ${r.glitch ? '<div class="sr-rule-of-one">⚠ RULE OF ONE — every die came up 1. The GM decides what it costs.</div>' : ''}
+        ${done
+          ? `${SR3EActor._soakResultHtml(r.sp, hits)}${r.extraHtml ?? ''}`
+          : exploding
+            ? `<div class="sr-roll-meta" style="font-size:11px;color:var(--sr-gold)">💥 ${exploding} di${exploding !== 1 ? 'ce' : 'e'} still to explode</div>`
+            : `<div class="sr-roll-meta" style="font-size:11px">${hits} success${hits !== 1 ? 'es' : ''} — waiting on the others' explosions</div>`}
+      </div>`;
+    }).join('');
+    const explodeBtn = done ? '' : `<div class="sr-soak-action"><button class="sr-blast-batch-explode-btn" data-wave="${record.wave ?? 0}">
+        💥 GM: Roll explosions (${pending} di${pending !== 1 ? 'ce' : 'e'}, ${pendingRows} NPC${pendingRows !== 1 ? 's' : ''})</button></div>`;
+    return `<div class="sr-roll-card sr-blast-batch-card">
+      <div class="sr-roll-header">💥 Grenade — the NPCs resist</div>
+      <div class="sr-roll-meta" style="font-size:11px">The GM rolled every NPC caught at once; the throw's ${record.attackHits ?? 0}
+        success${(record.attackHits ?? 0) !== 1 ? 'es are' : ' is'} netted against each (SR3 p.119, p.113).
+        <strong>Nothing is applied</strong> — assign each wound below.${record.wave ? ` Explosions: wave ${record.wave}.` : ''}</div>
+      ${body}
+      ${explodeBtn}
+    </div>`;
+  }
+
+  /** 💥 on the NPC batch card: the next wave for every NPC with dice to explode, the card updated in place. */
+  static async handleBlastBatchExplode(messageId) {
+    const msg = game.messages.get(messageId);
+    const record = foundry.utils.deepClone(msg?.getFlag('The2ndChumming3e', 'blastBatch') ?? null);
+    if (!record) return;
+    for (const r of record.rows ?? []) {
+      const idx = BlastBatch.explodeIdx(r.dice);
+      if (!idx.length) continue;
+      const actor = actorFrom(r.actorId);
+      if (!actor) continue;
+      r.dice = SR3EActor._nextWave(actor, r.dice, r.tn, idx);
+    }
+    record.wave = (record.wave ?? 0) + 1;
+    await msg.update({ content: SR3EActor._blastBatchHtml(record), 'flags.The2ndChumming3e.blastBatch': record });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /*  The blast marker goes once the blast is resolved — TODO 250          */
+  /* ------------------------------------------------------------------ */
+
+  /**
+   * The maintainer: "the blast marker should go away as soon as everything has been resolved". Called on every
+   * client when a blast's card is posted or its acted-ledger / batch record changes (hooks in sr3e.js). If the card belongs to a
+   * grenade blast (`flags.blast`) and every target of that blast has resisted (`BlastBatch.resolved`, read from
+   * the cards themselves, so it holds after a reload and on every client), the marker goes: the active GM deletes
+   * the Region; a client holding the local PIXI fallback destroys its own. 🧹 Clear stays as the manual path.
+   *
+   * ⚠ Only grenade blasts carry `flags.blast` — smoke, gas and flash clouds (TODO 164) never do, and a spell's
+   * area marker (purple) is cleared by hand: a sustained area spell's marker shows where it still holds.
+   * @returns {Promise<boolean>} whether the blast was found resolved
+   */
+  static async autoClearBlast(message) {
+    const flag = message?.getFlag?.('The2ndChumming3e', 'blast');
+    if (!flag?.key) return false;
+    const recent = (game.messages?.contents ?? []).slice(-300);
+    const ofBlast = recent.filter(m => m.getFlag?.('The2ndChumming3e', 'blast')?.key === flag.key);
+    const grenade = ofBlast.find(m => m.getFlag('The2ndChumming3e', 'blast')?.role === 'grenade');
+    if (!grenade) return false;
+    const g = grenade.getFlag('The2ndChumming3e', 'blast');
+    const roleOf = m => m.getFlag('The2ndChumming3e', 'blast')?.role;
+    // A soak card counts only when its roll step was ✕'d; a roll counts only once its FINAL wave is posted.
+    const soakCards = ofBlast.filter(m => roleOf(m) === 'soak')
+      .map(m => ({ actorId: m.getFlag('The2ndChumming3e', 'blast').actorId,
+        dismissed: OpenSteps.isDismissed(m.getFlag('The2ndChumming3e', 'acted') ?? {}, OpenSteps.key('sr-soak-roll-btn', 0)) }));
+    const soakResults = ofBlast.filter(m => roleOf(m) === 'soakResult')
+      .map(m => m.getFlag('The2ndChumming3e', 'blast').actorId);
+    const batchMsg = ofBlast.find(m => roleOf(m) === 'batch');
+    const batchRows = batchMsg ? (batchMsg.getFlag('The2ndChumming3e', 'blastBatch')?.rows ?? []) : null;
+    const resolved = BlastBatch.resolved({ individualIds: g.individualIds ?? [], batchIds: g.batchIds ?? [],
+      acted: grenade.getFlag('The2ndChumming3e', 'acted') ?? {}, soakCards, soakResults, batchRows });
+    if (!resolved) return false;
+
+    if (g.regionId && game.user?.id === game.users?.activeGM?.id) {
+      const scene  = game.scenes?.get(g.sceneId) ?? canvas?.scene;
+      const region = scene?.regions?.get(g.regionId);
+      if (region) { try { await region.delete(); } catch { /* already gone */ } }
+    }
+    if (g.markerId) {
+      const marker = game.sr3e?._blastMarkers?.get(g.markerId);
+      if (marker) {
+        try { marker.destroy(); } catch { /* already gone */ }
+        game.sr3e._blastMarkers.delete(g.markerId);
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Roll the next wave of a roll's exploding dice (the Rule of Six, SR3 p.38). ⚠ The ONLY later-wave roll in
+   * the system, and only a 💥 click may reach it: `handleExplosionClick` and a grenade's NPC batch card
+   * (`handleBlastBatchExplode`, TODO 249). Never loop it — every wave is a click (the maintainer, 2026-09-14;
+   * tests/interactive-explosions.test.mjs).
+   */
+  static _nextWave(actor, dice, tn, explodeIdx) {
+    return actor._rollWave(
+      explodeIdx.length,
+      tn,
+      /* isFirstWave */ false,
+      dice,
+      explodeIdx,
+    );
   }
 
   /* ------------------------------------------------------------------ */
@@ -9505,8 +9853,77 @@ _prepareCharacter(sys, attr) {
    * Post an editable resist card for this actor.
    */
   async _postSoakCard(payload) {
-    const { stagedPower, stagedLevel, isStun, isMelee, rawDamage } = payload;
+    const { stagedPower, isStun } = payload;
     const trackLabel = isStun ? 'Stun' : 'Physical';
+    const s = this._soakSetup(payload);
+    const { resistName, body, availPool, ballistic, impact, usesImpact, soakTN, stunnedNow,
+      effStagedLevel, ammoNote, adeptArmorNotes } = s;
+    const soakPayload = JSON.stringify(this._soakRollPayload(payload, s)).replace(/'/g, '&#39;');
+    // A successful hit by a shock weapon also stuns (SR3 p.124-125): offered on the same card, rolled by the target.
+    const stunHtml = this._shockStunHtml(payload, s);
+    // A grenade's soak card names its blast, so the marker can go once everyone has resisted (TODO 250).
+    const blastFlag = payload.blastKey ? { blast: { key: payload.blastKey, role: 'soak', actorId: actorRef(this) } } : null;
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      ...(blastFlag ? { flags: { 'The2ndChumming3e': blastFlag } } : {}),
+      content: `
+        <div class="sr-roll-card sr-soak-card">
+          <div class="sr-roll-header">🛡 ${this.name} — Resist Damage</div>
+          <div class="sr-roll-meta">
+            Incoming: <strong>${stagedPower}${effStagedLevel} ${trackLabel}</strong>
+          </div>
+          ${ammoNote ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">🔸 ${ammoNote}</div>` : ''}
+          ${adeptArmorNotes.length ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">✨ ${adeptArmorNotes.join(' · ')}</div>` : ''}
+          <div class="sr-soak-fields">
+            <label class="sr-soak-label">
+              ${resistName} dice:
+              <input type="number" class="sr-soak-body" value="${body}" min="0" max="30" style="width:55px"/>
+            </label>
+            ${payload.noPools
+              ? `<div class="sr-roll-meta" style="font-size:11px;color:var(--sr-amber)">
+                   ${payload.noPoolsNote ?? 'No Combat or Control Pool dice on this test (SR3 p.145).'}
+                 </div>`
+              : availPool > 0
+              ? `<label class="sr-soak-label">
+                   Combat Pool (<strong>${availPool}</strong> left):
+                   <input type="number" class="sr-soak-cp" value="0" min="0" max="${availPool}" style="width:55px"/>
+                 </label>`
+              : `<div class="sr-roll-meta" style="font-size:11px;color:var(--sr-amber)">
+                   No Combat Pool left to soak with.
+                 </div>`}
+            <label class="sr-soak-label">
+              TN (Power ${stagedPower} − Armour${stunnedNow ? ' + 2 stunned' : ''}):
+              <input type="number" class="sr-soak-tn" value="${soakTN}" min="2" max="30" style="width:55px"/>
+            </label>
+            <label class="sr-soak-label">
+              Armour type:
+              <select class="sr-soak-armor-type">
+                <option value="ballistic" ${!usesImpact ? 'selected' : ''}>Ballistic (${ballistic})</option>
+                <option value="impact"    ${usesImpact  ? 'selected' : ''}>Impact (${impact})</option>
+              </select>
+            </label>
+          </div>
+          <div class="sr-soak-action">
+            <button class="sr-soak-roll-btn" data-payload='${soakPayload}'>
+              🎲 ${this.name}: Roll to Resist
+            </button>
+          </div>
+          ${stunHtml}
+        </div>
+      `,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
+    });
+  }
+
+  /**
+   * Everything a Damage Resistance Test for this actor needs, worked out from an incoming payload: the
+   * resisting attribute, Combat Pool left, armour (implants, Mystic Armor, ammo, shock, elemental), the TN and
+   * any level change (flechette). One place, read by the soak card (`_postSoakCard`) and by the GM's batch
+   * roll for a grenade's NPCs (`handleBlastBatch`, TODO 249) — so the two cannot drift apart.
+   */
+  _soakSetup(payload) {
+    const { stagedPower, stagedLevel, isMelee, rawDamage } = payload;
     let   effStagedLevel = stagedLevel;
     let   netBaseLevel   = payload.net?.baseLevel ?? null;
 
@@ -9674,8 +10091,15 @@ _prepareCharacter(sys, attr) {
       ammoNote = [ammoNote, `Power ${hardPower} (without any burst/full-auto bonus) does not exceed armour ${defaultArmor} — hardened armour deflects it: no damage to the vehicle (p.132, p.149)`]
         .filter(Boolean).join(' · ');
     }
+    return { resistAttr, resistName, body, bodyOf, availPool, ballistic, impact, usesImpact, defaultArmor,
+      soakTN, stunnedNow, effStagedLevel, netBaseLevel, ammoNote, adeptArmorNotes, shockCode, impactWorn };
+  }
 
-    const soakPayload = JSON.stringify({
+  /** The Roll-to-Resist payload (`soakPayload` on the wave) from an incoming payload and `_soakSetup`. */
+  _soakRollPayload(payload, s) {
+    const { stagedPower, isStun, isMelee, rawDamage } = payload;
+    const { resistAttr, ballistic, impact, effStagedLevel, netBaseLevel } = s;
+    return {
       actorId:         actorRef(this),
       attackerActorId: payload.attackerActorId,
       targetActorId:   payload.targetActorId ?? this.id,
@@ -9694,9 +10118,17 @@ _prepareCharacter(sys, attr) {
       noPools:         payload.noPools === true,
       noPoolsNote:     payload.noPoolsNote ?? undefined,
       noKnockdown:     payload.noKnockdown === true,
-    }).replace(/'/g, '&#39;');
+      // A vehicle's wound goes on its Condition Monitor (`vehicleActorId`), never a person's track.
+      isVehicle:       this.type === 'vehicle' || undefined,
+      // The final wave of a soak from a grenade names its blast, so the marker can wait for it (TODO 250).
+      blastKey:        payload.blastKey ?? undefined,
+    };
+  }
 
-    // A successful hit by a shock weapon also stuns (SR3 p.124-125): offered on the same card, rolled by the target.
+  /** A shock weapon's "Resist the stun" offer (SR3 p.124-125), or '' — on the soak card and a batch row. */
+  _shockStunHtml(payload, s) {
+    const { stagedPower } = payload;
+    const { shockCode, impactWorn, bodyOf } = s;
     let stunHtml = '';
     if (shockCode) {
       const stunPower = ShockStun.printedPower(shockCode) ?? Math.max(0, Math.trunc(Number(stagedPower) || 0));
@@ -9715,56 +10147,7 @@ _prepareCharacter(sys, attr) {
             </button>
           </div>`;
     }
-
-    await ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor: this }),
-      content: `
-        <div class="sr-roll-card sr-soak-card">
-          <div class="sr-roll-header">🛡 ${this.name} — Resist Damage</div>
-          <div class="sr-roll-meta">
-            Incoming: <strong>${stagedPower}${effStagedLevel} ${trackLabel}</strong>
-          </div>
-          ${ammoNote ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">🔸 ${ammoNote}</div>` : ''}
-          ${adeptArmorNotes.length ? `<div class="sr-roll-meta" style="color:var(--sr-gold);font-size:11px">✨ ${adeptArmorNotes.join(' · ')}</div>` : ''}
-          <div class="sr-soak-fields">
-            <label class="sr-soak-label">
-              ${resistName} dice:
-              <input type="number" class="sr-soak-body" value="${body}" min="0" max="30" style="width:55px"/>
-            </label>
-            ${payload.noPools
-              ? `<div class="sr-roll-meta" style="font-size:11px;color:var(--sr-amber)">
-                   ${payload.noPoolsNote ?? 'No Combat or Control Pool dice on this test (SR3 p.145).'}
-                 </div>`
-              : availPool > 0
-              ? `<label class="sr-soak-label">
-                   Combat Pool (<strong>${availPool}</strong> left):
-                   <input type="number" class="sr-soak-cp" value="0" min="0" max="${availPool}" style="width:55px"/>
-                 </label>`
-              : `<div class="sr-roll-meta" style="font-size:11px;color:var(--sr-amber)">
-                   No Combat Pool left to soak with.
-                 </div>`}
-            <label class="sr-soak-label">
-              TN (Power ${stagedPower} − Armour${stunnedNow ? ' + 2 stunned' : ''}):
-              <input type="number" class="sr-soak-tn" value="${soakTN}" min="2" max="30" style="width:55px"/>
-            </label>
-            <label class="sr-soak-label">
-              Armour type:
-              <select class="sr-soak-armor-type">
-                <option value="ballistic" ${!usesImpact ? 'selected' : ''}>Ballistic (${ballistic})</option>
-                <option value="impact"    ${usesImpact  ? 'selected' : ''}>Impact (${impact})</option>
-              </select>
-            </label>
-          </div>
-          <div class="sr-soak-action">
-            <button class="sr-soak-roll-btn" data-payload='${soakPayload}'>
-              🎲 ${this.name}: Roll to Resist
-            </button>
-          </div>
-          ${stunHtml}
-        </div>
-      `,
-      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
-    });
+    return stunHtml;
   }
 
   /**
