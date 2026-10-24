@@ -96,7 +96,10 @@ const FOLDER = { gear: 'Gear', medical: 'Medical', ammunition: 'Ammunition', dru
 // M&M also prints "Neuro-stun" (p.121) and "CS/Tear Gas" (p.118) — upstream's Toxins table spells
 // them "Neurostun" and "CS", which slipped past the already-shipped check and shipped each drug twice.
 const NAME_FIXES = [[/\bHosptial\b/g, 'Hospital'], [/\bApparartus\b/g, 'Apparatus'], [/\bGrappel\b/g, 'Grapple'], [/\bDiplay\b/g, 'Display'],
-  [/\bWitchs Moss\b/g, "Witch's Moss"], [/\bNovocoke\b/g, 'Novacoke'], [/\bNeurostun\b/g, 'Neuro-stun'], [/^CS$/, 'CS/Tear Gas']];
+  [/\bWitchs Moss\b/g, "Witch's Moss"], [/\bNovocoke\b/g, 'Novacoke'], [/\bNeurostun\b/g, 'Neuro-stun'], [/^CS$/, 'CS/Tear Gas'],
+  // Cannon Companion p.81 prints "Extended Clip" (DP +2/round added, x 8 = 16 nuyen); upstream truncated the cell to
+  // "Extended Clip (". normName drops the stray "(", so the id derived from it is unchanged (owned copies keep their link).
+  [/^Extended Clip \($/, 'Extended Clip']];
 /** The generator's "specify" (`->`) and credstick (`>>`) markers off a name, spaces tidied, slips fixed. */
 export const cleanName = s => NAME_FIXES.reduce((n, [re, to]) => n.replace(re, to),
   String(s ?? '').replace(/\s*(->|>>)\s*$/, '').replace(/\s+/g, ' ').trim());

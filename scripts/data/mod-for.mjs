@@ -24,6 +24,7 @@
  * Pure — no Foundry.
  */
 import { ModRatings, MOD_TAGS } from './mod-ratings.mjs';
+import { NameFixes } from './name-fixes.mjs';
 
 export const MOD_FOR_CHOICES = ['', ...Object.keys(MOD_TAGS)];
 
@@ -78,7 +79,11 @@ export const ModFor = {
    * option, only by appending " (Armor)" / " (Weapon)" / … — the name's own text is never touched, and the
    * level stays after the tag. `system.modFor` is filled only while blank.
    */
-  migrateDelta(item) {
+  migrateDelta(original) {
+    // A name the books correct (`NameFixes`: the broken "Extended Clip (") is fixed FIRST, so the level, the tag and the
+    // dead-link repoint below all work on the right name.
+    const fixed = NameFixes.fixedName(original);
+    const item = fixed ? { ...original, name: fixed } : original;
     const delta = ModRatings.migrateDelta(item) ?? {};
     const modFor = ModFor.of(item);
     if (modFor) {
@@ -88,6 +93,7 @@ export const ModFor = {
       if (name !== item.name) delta.name = name;
       else delete delta.name;
     }
+    if (fixed && !delta.name) delta.name = fixed;
     return Object.keys(delta).length ? delta : null;
   },
 };
