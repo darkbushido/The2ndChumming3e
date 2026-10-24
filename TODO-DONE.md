@@ -7644,3 +7644,96 @@ generated, so the corrections are `ACCESSORY_FIXES` in `tools/build-default-gear
   does not print it (source not found).
 - **Low-power laser sight**: the two SR2 *Fields of Fire* copies become one *Cannon Companion* customisation,
   800¥ (DP +100 × 8), Top/Under, cc.82 — the maintainer's choice, so it stays in an SR3 book.
+
+## 261. ✅ Every rated item is ONE document — its level is its rating, picked from a dropdown, never part of its name — **requested 2026-10-24** — merged in 74d8fcf6
+
+The maintainer: *"remove the level from all mods and put them as a dropdown inside the mod"* (cyber, weapon and
+vehicle mods), then, the same day: *"We shouldn't have any [N] gear — the point is to move the level into the
+gear's doc."* — **all gear, ONE document per item**, like Vehicle Armor. This folds the rename half of
+[#130](TODO.md#130) into this item.
+
+**Built (branch `feature/cyberlimb-mods-marked`):**
+- **One document per family.** A family is the documents of one pack that are the same type and the same item
+  apart from their level (`RatedFamilies`, `scripts/data/rated-families.mjs`): the lowest level's document stays
+  with its `_id` unchanged, named for the item (`system.rating` = that level); every field that differs between
+  the levels is a row of the level table (`MOD_RATING_TABLE`, generated); the other documents are deleted
+  (**196 families, 1296 documents deleted**; the list is `tools/data/collapsed-mods.json`). The rule for the name is
+  `ModRatings` (`scripts/data/mod-ratings.mjs`): " [N]", " Rating [N]", " Lvl [N]", " Lv [N]" and a bare " Rating N"
+  come off. Kinds: vehicle mods, Cyberlimb Mods, Firearms Accessories, other gear, other cyberware, bioware, medical,
+  ammunition (tracker rounds) and vehicle weapons (the AM-56 lure launcher) — the last two got a nullable `rating`
+  field and the vehicle weapon its first item sheet.
+- **Generated packs collapse inside the generator** (`tools/build-default-gear.mjs`, after the id is derived from the
+  original upstream name), so a regeneration cannot bring a level back; the hand-kept packs by
+  `tools/build-mod-ratings.mjs`. `tools/lib/collapsed-mods.mjs` keeps the records; `COLLAPSED_SOURCES` (pack → deleted
+  id → kept id) is written into the table file.
+- **The Level dropdown** works for every kind (cost, availability, Essence / Bio Index, Street Index, legality,
+  description, the bonus fields…); graded cyberware **and bioware** re-apply their grade.
+- **🛒 Buy gear / drop:** a family is ONE row; the dialog has a Level picker (default the lowest) that brings that level's
+  price and availability; the bought copy gets the level's rating and fields (`ModRatings.withLevel`). The search shows
+  the plain name. The compendium window shows no "[N]" (the `renderCompendium` hook is gone). Owned items on sheets
+  still show "[rating]" (`displayName`).
+- **An owned or world item's NAME follows its level** (the maintainer, 2026-10-24, "option 1"): `ModRatings.syncName`
+  swaps a trailing " [N]" for the current rating (a custom name keeps its text; a cleared rating drops the bracket;
+  rating 0 / missing is legacy and left alone). `preCreateItem` and `preUpdateItem` (only when `name` or
+  `system.rating` is in the change) in `sr3e.js` apply it to world and embedded items, **never to a compendium
+  document** (`options.pack`, `document.pack`, an item in a pack actor) — the packs stay plain. 🛒 Buy and a drop
+  from a compendium get "Medkit [7]" through the same hook (the bought data already carries the level's rating).
+- **The 0.7.1 migration** names every owned copy of a rated type by `syncName` ("ECCM [3]" stays "ECCM [3]" with rating 3;
+  "Chemical Seal Rating [4]" becomes "Chemical Seal [4]"; rating filled only while blank; a different
+  rating is kept, put in the name, and logged) and repoints a `_stats.compendiumSource` that names a deleted level document to the kept one.
+- **Bodyware twins fixed to the book:** RC Encryption Module [1]-[8] 8P-W, levels 9-10 as table rows
+  (`tools/data/extra-levels.json`, M&M p.25); Hydraulic Jack [1]-[5] says jump distance (M&M p.29); both added to
+  `ModBookFixes` for owned copies (kind `cyberware`).
+- `tests/mod-ratings.test.mjs` (incl. the ratchet: no Item pack document outside the contacts pack ends in "[digits]"),
+  mutants `family-*` and `migration-repoint-*`.
+
+**For the maintainer:**
+- **One Vehicle Armor** (the maintainer, 2026-10-24); the second "[11]" (was `sr3e-vehiclemod-0055`) is dropped; levels
+  1-11. Book corrections (R3 pp.131-147, M&M pp.24-37) are one list `ModBookFixes`.
+- **Radio Receiver** (decided 2026-10-24, SR3 p.298 Headware table "Radio Receiver .4 Rating x 1,000¥ 2/24 hrs .8 Legal"; p.297
+  "Rating x 2 … frequencies"): the second "[4]" (`sr3e-cyberware-0293`, 5,000¥, 10 frequencies) is **level 5**; levels 1-8
+  are contiguous (the book prints no maximum; 8 is the data's top). Nothing is unplaced any more.
+- **Cross-pack same name:** `weapon|Gyro Mount` is SR3 levels 5-6 and Cannon Companion level 7; its table rows merge
+  (levels 5-7) but a row carries only the fields that differ within its own book.
+- **Decisions to confirm:** the unbracketed "Medkit Rating N" / "Hospital Rating N" families were collapsed too; "Lv" was
+  dropped from names (Bug Scanner Lv [N] → Bug Scanner); ammunition and vehicle weapons got a rating field.
+- `sr3e-mr-johnsons-contacts` is left alone (embedded "Wired Reflexes [2]"… stay; only their dead compendium links are repointed).
+- `scripts/macros/generate-chrome-threat.js` now creates the plain implant ("Wired Reflexes") with `system.rating`, the
+  level's printed fields from `game.sr3e.ModRatings.ratingChange`, and the name hook makes "Wired Reflexes [2]";
+  `tools/import-johnson-cyberware.mjs` names its contacts-pack copies with `syncName` (a pack never runs the hook).
+  `npm run packs:install` was not run — run it with Foundry closed.
+
+**🧪 Test in Foundry** (full Foundry restart first — two data models gained a field)
+1. The vehicle-mods compendium shows ONE "Anti-Theft System" — no "[N]" anywhere in a compendium window.
+2. Drag it onto a vehicle; its Level dropdown shows 3-10. Pick 10: cost 50,000¥, availability 6/14days. The Mods tab
+   reads "Anti-Theft System [10]".
+3. A Cyberlimb Mod (Armor: Ballistic) at Alpha grade: change the level — the cost follows, doubled for Alpha. Same for a
+   cultured bioware (Muscle Toner) at Alpha: the Bio Index follows.
+4. A 0.7.0 world with "ECCM [3]" on a vehicle and "Wired Reflexes [2]" on a character: after the reload as GM they still read
+   "ECCM [3]" / "Wired Reflexes [2]", now with rating 3 / 2 in the field (no double "[3] [3]"), and the console logs nothing.
+5. 🛒 Buy gear: search "STS" — ONE "STS (Beacon)" with a Level picker 1-6; level 4 shows 800¥ and 4/48hrs.
+6. 🛒 buy "Chemical Seal" at level 4: the bought item is named "Chemical Seal [4]", rating 4, level-4 price (1,000¥ asking base).
+7. An owned "Chemical Seal Rating [4]" in a 0.7.0 world becomes "Chemical Seal [4]", level 4, and still links to the compendium
+   (open its source from the sheet header).
+8. A Vehicle Armor mod's Level dropdown shows 1-11 only; pick 7: cost 8,750¥. A Power Amplifier at 3: CF consumed 2.
+9. A Medkit (medical) at level 5: the Level dropdown shows 1-10 and the cost reads 280¥; a Tracker AOD (ammunition) level 3; a Lure
+   Launcher AM-56 (vehicle weapon) now has a sheet with a Level dropdown.
+10. A vehicle with an owned Concealed Armor (level 9, CF 37): after the reload as GM its CF reads 27; one whose CF you had
+    edited is left as you set it.
+11. **The name follows the level:** change an owned Medkit's Level to 5 — its name, its sidebar entry, the sheet title and the
+    chat card when it is used all read "Medkit [5]"; change it to 3 — "Medkit [3]" (never "[5] [3]"); clear the rating —
+    "Medkit". The compendium entry still reads "Medkit", and drag a Medkit out of the compendium onto a character:
+    the copy reads "Medkit [1]" (its lowest level); 🛒 buy it at level 7 — "Medkit [7]".
+12. A Radio Receiver's Level dropdown shows 1-8; level 5 costs 5,000¥ and says "10 programmed frequencies".
+13. Run **SR3E Chrome Threat Generator** at any level: the new actor's implants read "Wired Reflexes [2]", "Dermal Plating [3]"…
+    with the matching rating in each sheet's Level dropdown, and the Reaction and Initiative are unchanged.
+14. 🛒 Buy gear: search "STS", pick "STS (Beacon)" (Street Index 2), change the Level 1 to 4 — the Street Index stays 2 (and the TN/time follow the level).
+15. An older world's **SR3E Chrome Threat Generator** macro (no ModRatings, implants costing 0¥) updates after a reload as the active GM: open it — the body now builds "Wired Reflexes" with a rating field; the console logs one "Refreshed world macro" line, and a second reload logs nothing. A macro you wrote yourself (another name) is untouched.
+
+**Walked live 2026-10-24 (agent, `test-shadowrun`, mcp-api): all 15 pass.** Steps 1-13 on the branch install, 14-15
+and 11's card again on merged main (74d8fcf6) after `packs:install` and a full restart. Step 11's chat card: the
+first-aid card reads the medkit's level ("the medkit's Biotech 5"); its name prints on the supplies check after the
+roll, and the setup dialog names it "Medkit [5]". Step 13 with the macro's new body (the world's old copy, before 15
+refreshed it, still built "[N]" names with 0¥ implants). Not ours: Foundry 14.365 leaves `_stats.compendiumSource`
+null on any item created from a compendium (a plain firearm too), so step 7's link check only proves the migration's
+repoint of an existing dead link.
