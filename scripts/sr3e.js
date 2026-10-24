@@ -3879,12 +3879,19 @@ Hooks.on('renderChatMessageHTML', (message, html) => SR3EOpenSteps.decorate(mess
 
 /* ── A grenade's blast marker goes once everyone has resisted (TODO 250) ──────────────────────────
  *
- * Every client, on any change to a card's acted-ledger: if the card belongs to a grenade blast and every
- * target of that blast has resisted, the marker goes (the active GM deletes the Region; a client holding the
- * local PIXI fallback destroys its own). Read from the cards, not memory, so it holds across reloads.
- * 🧹 Clear stays the manual path. See SR3EActor.autoClearBlast. */
-Hooks.on('updateChatMessage', (message, changes) => {
-  if (!foundry.utils.hasProperty(changes ?? {}, 'flags.The2ndChumming3e.acted')) return;
+ * Every client, whenever a blast's card is posted (a soak roll's FINAL wave, the NPC batch card) or a blast
+ * card's acted-ledger or batch record changes (a ✕, a click, a batch 💥): if every target of that blast has
+ * COMPLETELY resisted — every explosion rolled — the marker goes (the active GM deletes the Region; a client
+ * holding the local PIXI fallback destroys its own). Read from the cards, not memory, so it holds across
+ * reloads. 🧹 Clear stays the manual path. See SR3EActor.autoClearBlast and BlastBatch.resolved. */
+const _blastCheck = message => {
   if (!message?.getFlag?.('The2ndChumming3e', 'blast')) return;
   SR3EActor.autoClearBlast(message).catch(err => console.warn('SR3E | blast marker auto-clear failed:', err));
+};
+Hooks.on('createChatMessage', message => _blastCheck(message));
+Hooks.on('updateChatMessage', (message, changes) => {
+  const c = changes ?? {};
+  if (!foundry.utils.hasProperty(c, 'flags.The2ndChumming3e.acted')
+      && !foundry.utils.hasProperty(c, 'flags.The2ndChumming3e.blastBatch')) return;
+  _blastCheck(message);
 });

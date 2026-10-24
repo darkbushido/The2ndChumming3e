@@ -3752,7 +3752,8 @@ _prepareCharacter(sys, attr) {
           const caught = codes.map(t => ({ ...t, actor: game.actors.get(t.actorId) })).filter(t => t.actor);
           const { individual, batch } = state.aoeEffect
             ? { individual: [], batch: [] }
-            : BlastBatch.split(caught, a => game.sr3e.SR3EQuery.isPlayerCharacter(a));
+            : BlastBatch.split(caught, a => game.sr3e.SR3EQuery.isPlayerCharacter(a),
+                a => (a?.system?.driverActorId ? game.actors.get(a.system.driverActorId) ?? null : null));
           const blastKey = state.aoeEffect ? null : BlastBatch.key(resultRegionId, resultMarkerId);
           const individualIds = individual.map(t => t.actorId);
           const batchIds      = batch.map(t => t.actorId);
@@ -3772,7 +3773,7 @@ _prepareCharacter(sys, attr) {
                 level: t.level, baseLevel: t.baseLevel ?? t.level })),
             }).replace(/'/g, '&#39;');
             postRollHtml += `<div class="sr-soak-action"><button class="sr-blast-npc-btn" data-payload='${batchPayload}'
-              title="Rolls every NPC's Damage Resistance Test at once and lists the results on one card — nothing is applied">💥 GM: Resist for the ${batch.length} NPC${batch.length !== 1 ? 's' : ''} in the blast (${batch.map(t => t.actor.name).join(', ')})</button></div>`;
+              title="Rolls every GM-side NPC's and drone's Damage Resistance Test at once and lists the results on one card — nothing is applied">💥 GM: Resist for the ${batch.length} NPC${batch.length !== 1 ? 's' : ''}${batch.some(t => BlastBatch.isDrone(t.actor)) ? ' and drones' : ''} in the blast (${batch.map(t => t.actor.name).join(', ')})</button></div>`;
           }
 
           for (const t of individual) {
@@ -4706,6 +4707,10 @@ _prepareCharacter(sys, attr) {
     // Soak result announcement — shown when soak wave fully resolves
     const soakResultHtml = (allDone && state.isSoakRoll && state.soakPayload)
       ? SR3EActor._soakResultHtml(state.soakPayload, successes) : '';
+    // TODO 250: this is the FINAL wave of a blast soak (every 💥 rolled) — the marker waits for this card.
+    if (allDone && state.isSoakRoll && state.soakPayload?.blastKey) {
+      cardFlags = { blast: { key: state.soakPayload.blastKey, role: 'soakResult', actorId: state.soakPayload.actorId } };
+    }
 
     let vehicleSoakResultHtml = '';
     if (allDone && state.isVehicleSoakRoll && state.vehicleSoakContext) {
@@ -5021,7 +5026,11 @@ _prepareCharacter(sys, attr) {
       const soakBoxes      = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
       const soakTrack      = sp.isStun ? 'stun' : 'physical';
       const soakTargetName = game.actors.get(sp.actorId)?.name ?? 'Target';
-      const soakAssignPayload = JSON.stringify({ actorId: sp.actorId, track: soakTrack, boxes: soakBoxes }).replace(/'/g, '&#39;');
+      // ⚠ A vehicle or drone (a grenade's blast reaches it through this card too) has ONE Condition Monitor,
+      // `system.damage` — `vehicleActorId` routes the boxes there; `track` on a vehicle wrote nowhere.
+      const soakAssignPayload = JSON.stringify(sp.isVehicle
+        ? { vehicleActorId: sp.actorId, boxes: soakBoxes }
+        : { actorId: sp.actorId, track: soakTrack, boxes: soakBoxes }).replace(/'/g, '&#39;');
       // Knockdown (p.124) is a THIRD stage, after damage resolves. Offered only when a
       // wound actually lands — fully soaked means there is no wound level to test against.
       const kdPayload = JSON.stringify({
@@ -5041,7 +5050,7 @@ _prepareCharacter(sys, attr) {
             🩸 Assign ${SR3EActor._woundName(finalLevel)} ${trackLabel} Wound to ${soakTargetName}
           </button>
         </div>
-        ${sp.noKnockdown ? '' : `<div class="sr-soak-action">
+        ${sp.noKnockdown || sp.isVehicle ? '' : `<div class="sr-soak-action">
           <button class="sr-knockdown-btn" data-payload='${kdPayload}'>
             ${finalLevel === 'D'
               ? `💥 ${soakTargetName} — Deadly wound: knocked down automatically (p.124)`
@@ -5237,7 +5246,8 @@ _prepareCharacter(sys, attr) {
       await ChatMessage.create({
         content: SR3EActor._blastBatchHtml(record),
         style:   CONST.CHAT_MESSAGE_STYLES.ROLL,
-        flags:   { 'The2ndChumming3e': { blastBatch: record } },
+        flags:   { 'The2ndChumming3e': { blastBatch: record,
+          ...(record.blastKey ? { blast: { key: record.blastKey, role: 'batch' } } : {}) } },
       });
     }
     // An unticked NPC gets the soak card it would have had (naming the blast, so the marker waits for it).
@@ -5248,7 +5258,7 @@ _prepareCharacter(sys, attr) {
     try {
       await game.sr3e.SR3EQuery.asGM('sr3e.card.mark', {
         messageId, role: stepKey, label: `${STEP_BUTTONS[BATCH_STEP].label}`,
-        data: { separate: separate.map(r => r.actor.id) },
+        data: { separate: separate.map(r => r.actor.id), rolled: rolled.length },
       });
     } catch (err) { console.warn('SR3E | could not record the NPC batch:', err); }
     return true;
@@ -5311,7 +5321,7 @@ _prepareCharacter(sys, attr) {
 
   /**
    * The maintainer: "the blast marker should go away as soon as everything has been resolved". Called on every
-   * client when a card's acted-ledger changes (the `updateChatMessage` hook in sr3e.js). If the card belongs to a
+   * client when a blast's card is posted or its acted-ledger / batch record changes (hooks in sr3e.js). If the card belongs to a
    * grenade blast (`flags.blast`) and every target of that blast has resisted (`BlastBatch.resolved`, read from
    * the cards themselves, so it holds after a reload and on every client), the marker goes: the active GM deletes
    * the Region; a client holding the local PIXI fallback destroys its own. 🧹 Clear stays as the manual path.
@@ -5328,12 +5338,17 @@ _prepareCharacter(sys, attr) {
     const grenade = ofBlast.find(m => m.getFlag('The2ndChumming3e', 'blast')?.role === 'grenade');
     if (!grenade) return false;
     const g = grenade.getFlag('The2ndChumming3e', 'blast');
-    const soakCards = ofBlast
-      .filter(m => m.getFlag('The2ndChumming3e', 'blast')?.role === 'soak')
+    const roleOf = m => m.getFlag('The2ndChumming3e', 'blast')?.role;
+    // A soak card counts only when its roll step was ✕'d; a roll counts only once its FINAL wave is posted.
+    const soakCards = ofBlast.filter(m => roleOf(m) === 'soak')
       .map(m => ({ actorId: m.getFlag('The2ndChumming3e', 'blast').actorId,
-        rolled: OpenSteps.isDone('sr-soak-roll-btn', 0, m.getFlag('The2ndChumming3e', 'acted') ?? {}) }));
+        dismissed: OpenSteps.isDismissed(m.getFlag('The2ndChumming3e', 'acted') ?? {}, OpenSteps.key('sr-soak-roll-btn', 0)) }));
+    const soakResults = ofBlast.filter(m => roleOf(m) === 'soakResult')
+      .map(m => m.getFlag('The2ndChumming3e', 'blast').actorId);
+    const batchMsg = ofBlast.find(m => roleOf(m) === 'batch');
+    const batchRows = batchMsg ? (batchMsg.getFlag('The2ndChumming3e', 'blastBatch')?.rows ?? []) : null;
     const resolved = BlastBatch.resolved({ individualIds: g.individualIds ?? [], batchIds: g.batchIds ?? [],
-      acted: grenade.getFlag('The2ndChumming3e', 'acted') ?? {}, soakCards });
+      acted: grenade.getFlag('The2ndChumming3e', 'acted') ?? {}, soakCards, soakResults, batchRows });
     if (!resolved) return false;
 
     if (g.regionId && game.user?.id === game.users?.activeGM?.id) {
@@ -10070,6 +10085,10 @@ _prepareCharacter(sys, attr) {
       noPools:         payload.noPools === true,
       noPoolsNote:     payload.noPoolsNote ?? undefined,
       noKnockdown:     payload.noKnockdown === true,
+      // A vehicle's wound goes on its Condition Monitor (`vehicleActorId`), never a person's track.
+      isVehicle:       this.type === 'vehicle' || undefined,
+      // The final wave of a soak from a grenade names its blast, so the marker can wait for it (TODO 250).
+      blastKey:        payload.blastKey ?? undefined,
     };
   }
 

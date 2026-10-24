@@ -9,9 +9,9 @@
  *
  * TODO 250 — "the blast marker should go away as soon as everything has been resolved". The grenade card
  * names who it caught (`flags.The2ndChumming3e.blast`); each soak card it leads to names the blast too. The
- * blast is resolved when every individual target's soak has been rolled (or the GM ✕'d its step) and the
- * NPC batch has been rolled (or ✕'d) — read from the cards' `acted` ledgers, so it holds on every client
- * and after a reload. The Foundry side (SR3EActor.autoClearBlast) then deletes the marker.
+ * blast is resolved when every individual target's soak roll has posted its final result (every 💥 rolled)
+ * or the GM ✕'d its step, and the NPC batch has been rolled with no 6 still pending (or ✕'d) — read from
+ * the cards themselves, so it holds on every client and after a reload. The Foundry side (SR3EActor.autoClearBlast) then deletes the marker.
  */
 import { OpenSteps } from './open-steps.mjs';
 
@@ -23,25 +23,39 @@ export const SOAK_ROLL_STEP = 'sr-soak-roll-btn';
 export const BATCH_STEP = 'sr-blast-npc-btn';
 
 export const BlastBatch = {
+  /** A drone: a vehicle actor whose type is `drone` (`system.vehicleType`, as the sr3e-*-drones packs set it). */
+  isDrone(actor) {
+    return actor?.type === 'vehicle' && actor?.system?.vehicleType === 'drone';
+  },
+
   /**
    * Split the caught targets. `isPC(actor)` is `SR3EQuery.isPlayerCharacter` — a player's character, never
-   * merely "has a player owner" (a GM-run NPC lent to a player for a scene is still an NPC to the table).
+   * merely "has a player owner".
    *
-   * Batched: characters and NPCs that are not a player's character. Individual: player characters, and
-   * anything that is not a person — a vehicle or drone resists with its own armour rules (hardened armour,
-   * p.132) on its own card, as before.
+   * Batched (the GM's): characters and NPCs that are not a player's character, and **drones on the GM's side**
+   * — the maintainer, 2026-10-24: a drone is the player's when it is itself a player's (`isPC`) OR its
+   * controlling rigger (`system.driverActorId`, via `controllerOf`) is a player character; only drones with no
+   * player controller join the batch. Individual: player characters, player-side drones, and every other
+   * vehicle, which resists on its own card as before.
    *
-   * @param {{actorId:string, actor:{type:string}}[]} targets  in card order
+   * @param {{actorId:string, actor:object}[]} targets  in card order
    * @param {(actor) => boolean} isPC
+   * @param {(actor) => object|null} controllerOf  the drone's rigger/driver actor, or null
    * @returns {{ individual: object[], batch: object[] }}  both keep the input order
    */
-  split(targets = [], isPC = () => true) {
+  split(targets = [], isPC = () => true, controllerOf = () => null) {
     const individual = [];
     const batch = [];
     for (const t of targets) {
-      const type = t?.actor?.type;
-      const person = type === 'character' || type === 'npc';
-      if (person && !isPC(t.actor)) batch.push(t); else individual.push(t);
+      const a = t?.actor;
+      const type = a?.type;
+      let gmSide = false;
+      if (type === 'character' || type === 'npc') gmSide = !isPC(a);
+      else if (BlastBatch.isDrone(a)) {
+        const ctrl = controllerOf(a);
+        gmSide = !isPC(a) && !(ctrl && isPC(ctrl));
+      }
+      if (gmSide) batch.push(t); else individual.push(t);
     }
     return { individual, batch };
   },
@@ -54,33 +68,37 @@ export const BlastBatch = {
   },
 
   /**
-   * Has every target of this blast resisted?
+   * Has every target of this blast resisted — COMPLETELY? (The maintainer, 2026-10-24: "no early clear".)
    *
-   * - An individual target (button `i` of SOAK_STEP on the grenade card) is done when a soak card for it,
-   *   from this blast, has had its roll clicked — or when the GM ✕'d its Resist button (nobody will take it).
-   *   ⚠ The Resist button being clicked is NOT enough: the soak card it posts is still to be rolled.
-   * - The NPC batch is done when its button was used (its record names any NPC the GM sent to a card of its
-   *   own, `separate`, and those must be rolled like an individual target) or ✕'d.
+   * - A target rolling on its own card is finished when its Damage Resistance roll has posted its RESULT — the
+   *   final wave, after every 💥 (`soakResults`, the actor ids of this blast's final soak waves). Clicking Resist,
+   *   or Roll, is not enough: explosions may still be owed.
+   * - ✕ in the ⏳ panel still counts: the grenade card's Resist step for that target, or its soak card's roll step.
+   * - The NPC batch is finished when its step was ✕'d, or when it was used AND no NPC or drone on its card still
+   *   has a pending 6 (`batchRows`, the card's rows) AND every NPC the GM sent to a card of its own is finished
+   *   as above. A batch that rolled no one (`data.rolled: 0`) has no card to wait for.
    *
    * @param {object} p
-   * @param {string[]} p.individualIds   actor ids, in the order of the grenade card's SOAK_STEP buttons
-   * @param {string[]} p.batchIds        actor ids the batch covers
-   * @param {object}   p.acted           the grenade card's acted-ledger
-   * @param {{actorId:string, rolled:boolean}[]} p.soakCards  this blast's soak cards
+   * @param {string[]} p.individualIds  actor ids, in the order of the grenade card's SOAK_STEP buttons
+   * @param {string[]} p.batchIds       actor ids the batch covers
+   * @param {object}   p.acted          the grenade card's acted-ledger
+   * @param {{actorId:string, dismissed:boolean}[]} p.soakCards  this blast's soak cards (roll step ✕'d?)
+   * @param {string[]} p.soakResults    actor ids whose soak roll has posted its final result
+   * @param {{dice:object[]}[]|null} p.batchRows  the batch card's rows, or null when there is none
    */
-  resolved({ individualIds = [], batchIds = [], acted = {}, soakCards = [] } = {}) {
+  resolved({ individualIds = [], batchIds = [], acted = {}, soakCards = [], soakResults = [], batchRows = null } = {}) {
     const a = acted ?? {};
-    const rolled = id => soakCards.some(c => c?.actorId === id && c.rolled);
-    const indivOk = individualIds.every((id, i) => {
-      const key = OpenSteps.key(SOAK_STEP, i);
-      return OpenSteps.isDismissed(a, key) || (!!a[key] && rolled(id));
-    });
+    const finished = id => soakResults.includes(id) || soakCards.some(c => c?.actorId === id && c.dismissed);
+    const indivOk = individualIds.every((id, i) => OpenSteps.isDismissed(a, OpenSteps.key(SOAK_STEP, i)) || finished(id));
     if (!indivOk) return false;
     if (!batchIds.length) return true;
-    const entry = a[OpenSteps.key(BATCH_STEP, 0)];
+    const key = OpenSteps.key(BATCH_STEP, 0);
+    const entry = a[key];
     if (!entry) return false;
-    if (OpenSteps.isDismissed(a, OpenSteps.key(BATCH_STEP, 0))) return true;
-    return (entry.data?.separate ?? []).every(rolled);
+    if (OpenSteps.isDismissed(a, key)) return true;
+    const rolled = Number(entry.data?.rolled ?? batchIds.length) || 0;
+    if (rolled > 0 && !(Array.isArray(batchRows) && BlastBatch.allDone(batchRows))) return false;
+    return (entry.data?.separate ?? []).every(finished);
   },
 
   /**

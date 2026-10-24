@@ -280,22 +280,28 @@ Requires a scene.
   `SR3E.barrierRatings`/`barrierEffects`, shared with Barrier Damage). ⚠ The marker still draws its full circle.
   p.119's optional half-Power roll is not implemented.
 - **NPCs in one go** (TODO 249, `scripts/data/blast-batch.mjs`): `BlastBatch.split` — player characters
-  (`SR3EQuery.isPlayerCharacter`, never `hasPlayerOwner`) and vehicles keep their own `sr-soak-btn`; every other
-  character/npc is covered by ONE GM-only `sr-blast-npc-btn` (a ⏳ step, `recordsItself`). `handleBlastBatch`: a
-  dialog row per NPC pre-filled by `_soakSetup` (the soak card's own armour/TN/pool reader — shared, never copied),
-  all editable, **Combat Pool defaults to 0** (charged after the roll); untick → that NPC gets its own soak card.
+  (`SR3EQuery.isPlayerCharacter`, never `hasPlayerOwner`), ordinary vehicles and **player-side drones** keep their own
+  `sr-soak-btn`; every other character/npc and every **GM-side drone** (`BlastBatch.isDrone`: `system.vehicleType ===
+  'drone'`; player-side = the drone is a PC's OR its rigger `system.driverActorId` is — the maintainer, 2026-10-24) is
+  covered by ONE GM-only `sr-blast-npc-btn` (a ⏳ step, `recordsItself`). `handleBlastBatch`: a dialog row per target
+  pre-filled by `_soakSetup` (the soak card's own reader — armour, hardened-armour note, TN, pool; shared, never
+  copied), all editable, **Combat Pool defaults to 0** (charged after the roll); untick → its own soak card.
   ONE summary card (`_blastBatchHtml`, record in `flags.blastBatch`); each row staged by `_soakResultHtml` (the soak
   wave card's own, `netStagedDamage` with the throw's successes) with 🩸 Assign / 💥 Knockdown — nothing applied.
-  ⚠ Explosions stay clicks: the card's GM 💥 (`sr-blast-batch-explode-btn`, claimed per wave) rolls every NPC's
-  next wave via `_nextWave` — the only later-wave roll — and updates the card in place. The step is recorded after
-  the dialog, with `data.separate` (NPCs sent to their own cards).
+  A vehicle/drone result (`isVehicle` on the roll payload) assigns to its Condition Monitor (`vehicleActorId`), no
+  Knockdown. ⚠ Explosions stay clicks: the card's GM 💥 (`sr-blast-batch-explode-btn`, claimed per wave) rolls every
+  row's next wave via `_nextWave` — the only later-wave roll — and updates the card in place. The step is recorded
+  after the dialog, with `data.separate` (sent to their own cards) and `data.rolled`.
 - **The marker clears itself** (TODO 250): the grenade card carries `flags.blast` `{key, role:'grenade', regionId,
-  markerId, individualIds, batchIds}`; each soak card it leads to `{key, role:'soak', actorId}` (via `blastKey` on
-  the soak payload). On any `acted` change (`updateChatMessage`), `SR3EActor.autoClearBlast` checks
-  `BlastBatch.resolved` (each individual's soak card rolled or its Resist ✕'d; the batch used — and its `separate`
-  NPCs rolled — or ✕'d); then the active GM deletes the Region, the client holding a PIXI fallback destroys it.
-  🧹 Clear stays. Not tracked: a blast that caught no one, targets behind a wall (🧱), clouds (TODO 164), and
-  **spell AoE** (cleared by hand — a sustained area spell's marker still means something).
+  markerId, individualIds, batchIds}`; its soak cards `{key, role:'soak', actorId}`; the soak roll's **final** wave
+  `{role:'soakResult'}` (`blastKey` rides the roll payload through every 💥); the batch card `{role:'batch'}`. On a
+  blast card being posted or its `acted`/`blastBatch` changing, `SR3EActor.autoClearBlast` asks `BlastBatch.resolved`
+  — ⚠ **no early clear**: an individual is done only when its final soak result is posted (every 💥 rolled) or a step
+  of it was ✕'d; the batch only when no row has a pending 6 and its `separate` targets are done, or it was ✕'d. Then
+  the active GM deletes the Region; a client holding a PIXI fallback destroys it. 🧹 Clear stays.
+  Not tracked: a blast that caught no one, clouds (TODO 164), **spell AoE** (cleared by hand — a sustained area
+  spell's marker still means something), and **targets behind a wall**: the marker is only visual, so it may clear
+  before a 🧱 "the wall fell" target resists, and that button keeps working afterwards (the maintainer, 2026-10-24).
 - `_openChunkySalsaCalculator(opts)` posts soak cards itself unless `returnOnly`.
 - **Shared blast marker**: `SR3EActor._drawBlastArea(center, radiusM, {name,color})` → `{regionId, markerId}`
   and `SR3EActor._clearBlastButton(...)` — used by grenades and **spell AoE** (purple; no scatter or falloff,

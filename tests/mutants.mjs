@@ -3259,13 +3259,31 @@ export const MUTANTS = [
     }),
   },
   {
-    id:     'blast-batch-clears-on-the-resist-click',
+    id:     'blast-batch-takes-player-rigged-drones',
+    suite:  'blast-batch',
+    ...BLASTBATCH, method: 'split',
+    was:    'a drone joined the GM\x27s batch whoever rigged it, so a player\x27s drone was rolled for them (the maintainer, 2026-10-24: only drones with no player controller)',
+    impl:   (targets = [], isPC = () => true) => {
+      const individual = [], batch = [];
+      for (const t of targets) {
+        const a = t?.actor;
+        const gm = (a?.type === 'character' || a?.type === 'npc') ? !isPC(a)
+          : (a?.type === 'vehicle' && a?.system?.vehicleType === 'drone' && !isPC(a));
+        (gm ? batch : individual).push(t);
+      }
+      return { individual, batch };
+    },
+  },
+  {
+    id:     'blast-batch-clears-while-explosions-pending',
     suite:  'blast-batch',
     ...BLASTBATCH, method: 'resolved',
-    was:    'the blast counted a PC as resisted when they clicked Resist Damage, before the soak card was rolled, so the marker vanished while a player still owed a roll (TODO 250)',
-    impl:   ({ individualIds = [], batchIds = [], acted = {} } = {}) =>
-      individualIds.every((_id, i) => !!acted?.[`step:sr-soak-btn:${i}`])
-      && (!batchIds.length || !!acted?.['step:sr-blast-npc-btn:0']),
+    was:    'the blast counted a target as resisted once its roll was clicked, with 💥 explosions still owed, so the marker vanished early (the maintainer, 2026-10-24: "no early clear")',
+    impl:   ({ individualIds = [], batchIds = [], acted = {}, soakCards = [], soakResults = [] } = {}) => {
+      const a = acted ?? {};
+      const done = (id, i) => !!a[`step:sr-soak-btn:${i}`] || soakResults.includes(id) || soakCards.some(c => c?.actorId === id);
+      return individualIds.every(done) && (!batchIds.length || !!a['step:sr-blast-npc-btn:0']);
+    },
   },
   {
     id:     'blast-batch-forgets-separate-npcs',
@@ -3276,7 +3294,7 @@ export const MUTANTS = [
     impl:   function (p = {}) {
       const acted = p.acted ?? {};
       const entry = acted['step:sr-blast-npc-btn:0'];
-      const stripped = entry ? { ...acted, 'step:sr-blast-npc-btn:0': { ...entry, data: { separate: [] } } } : acted;
+      const stripped = entry ? { ...acted, 'step:sr-blast-npc-btn:0': { ...entry, data: { ...(entry.data ?? {}), separate: [] } } } : acted;
       return this._resolvedReal({ ...p, acted: stripped });
     },
   },
@@ -3285,11 +3303,11 @@ export const MUTANTS = [
     suite:  'blast-batch',
     ...BLASTBATCH, method: 'resolved',
     was:    'a step the GM ✕\x27d in the ⏳ panel ("nobody will take it") still held the blast open, so the marker never cleared',
-    impl:   ({ individualIds = [], batchIds = [], acted = {}, soakCards = [] } = {}) => {
-      const rolled = id => soakCards.some(c => c?.actorId === id && c.rolled);
-      return individualIds.every((id, i) => !!acted?.[`step:sr-soak-btn:${i}`] && rolled(id))
-        && (!batchIds.length || ((acted?.['step:sr-blast-npc-btn:0']?.data?.separate) ?? null) !== null
-          && acted['step:sr-blast-npc-btn:0'].data.separate.every(rolled));
+    needsOriginal: '_resolvedReal',
+    impl:   function (p = {}) {
+      const acted = Object.fromEntries(Object.entries(p.acted ?? {}).filter(([, v]) => v?.label !== 'dismissed by the GM'));
+      const soakCards = (p.soakCards ?? []).map(c => ({ ...c, dismissed: false }));
+      return this._resolvedReal({ ...p, acted, soakCards });
     },
   },
 ];

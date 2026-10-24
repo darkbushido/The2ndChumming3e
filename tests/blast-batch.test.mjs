@@ -25,53 +25,72 @@ const die = (total, { done = true, tn = 4 } = {}) =>
 
 export async function run(t) {
   /* ── Who batches ────────────────────────────────────────────────────────────── */
-  const pcs = new Set(['pc1']);
+  const pcs = new Set(['pc1', 'rigger']);
   const isPC = a => pcs.has(a.id);
+  const actors = { rigger: { id: 'rigger', type: 'character' }, npcRigger: { id: 'npcRigger', type: 'npc' } };
+  const controllerOf = a => actors[a?.system?.driverActorId] ?? null;
+  const drone = (id, driverActorId = '') => ({ actorId: id, actor: { id, type: 'vehicle', system: { vehicleType: 'drone', driverActorId } } });
   const targets = [
     { actorId: 'pc1', actor: { id: 'pc1', type: 'character' } },
     { actorId: 'n1',  actor: { id: 'n1',  type: 'npc' } },
-    { actorId: 'car', actor: { id: 'car', type: 'vehicle' } },
+    { actorId: 'car', actor: { id: 'car', type: 'vehicle', system: { vehicleType: 'car', driverActorId: '' } } },
     { actorId: 'n2',  actor: { id: 'n2',  type: 'character' } },   // a character no player owns is an NPC
   ];
-  const { individual, batch } = BlastBatch.split(targets, isPC);
-  t.eq('player characters keep their own soak cards', individual.map(x => x.actorId), ['pc1', 'car']);
+  const { individual, batch } = BlastBatch.split(targets, isPC, controllerOf);
+  t.eq('player characters and vehicles keep their own soak cards', individual.map(x => x.actorId), ['pc1', 'car']);
   t.eq('every non-player person is batched, in card order', batch.map(x => x.actorId), ['n1', 'n2']);
-  t.eq('a vehicle is never batched — its hardened armour (p.132) resists on its own card',
-    BlastBatch.split([targets[2]], () => false).batch, []);
+  t.eq('an ordinary vehicle is never batched, even the GM\'s', BlastBatch.split([targets[2]], () => false, controllerOf).batch, []);
   t.eq('no targets: nothing either way', BlastBatch.split([], isPC), { individual: [], batch: [] });
+
+  // Drones (the maintainer, 2026-10-24): GM-side drones batch; a player's drone keeps its own card.
+  t.ok('a drone is a vehicle whose vehicleType is drone', BlastBatch.isDrone(drone('d').actor) && !BlastBatch.isDrone(targets[2].actor));
+  t.eq('an unrigged drone joins the batch', BlastBatch.split([drone('d0')], isPC, controllerOf).batch.map(x => x.actorId), ['d0']);
+  t.eq('an NPC-rigged drone joins the batch', BlastBatch.split([drone('d1', 'npcRigger')], isPC, controllerOf).batch.map(x => x.actorId), ['d1']);
+  t.eq('a player-rigged drone keeps its own card', BlastBatch.split([drone('d2', 'rigger')], isPC, controllerOf).individual.map(x => x.actorId), ['d2']);
+  pcs.add('d3');
+  t.eq('a drone that is itself a player\'s keeps its own card', BlastBatch.split([drone('d3')], isPC, controllerOf).individual.map(x => x.actorId), ['d3']);
+  t.eq('a rigger id that names no actor is no player controller', BlastBatch.split([drone('d4', 'ghost')], isPC, controllerOf).batch.length, 1);
 
   t.is('the blast key names the Region', BlastBatch.key('R1', null), 'region:R1');
   t.is('…or the local marker', BlastBatch.key(null, 'M1'), 'marker:M1');
   t.is('…and nothing when no marker was drawn', BlastBatch.key(null, null), null);
 
-  /* ── When the blast is resolved ─────────────────────────────────────────────── */
+  /* ── When the blast is resolved — completely, every 💥 rolled ───────────────── */
   const soakKey = i => OpenSteps.key(SOAK_STEP, i);
   const batchKey = OpenSteps.key(BATCH_STEP, 0);
   const base = { individualIds: ['pc1', 'pc2'], batchIds: ['n1', 'n2'] };
-  const rolled = (...ids) => ids.map(actorId => ({ actorId, rolled: true }));
   const clicked = { label: 'Resist damage' };
+  const used = (separate = [], rolled = 2) => ({ label: 'x', data: { separate, rolled } });
+  const doneRows = [{ dice: [die(5)] }, { dice: [die(2)] }];
+  const pendingRows = [{ dice: [die(5)] }, { dice: [die(6, { done: false })] }];
+  const allClicked = { [soakKey(0)]: clicked, [soakKey(1)]: clicked };
 
-  t.ok('nothing done: not resolved', !BlastBatch.resolved({ ...base, acted: {}, soakCards: [] }));
-  t.ok('a PC clicked Resist but has not rolled: NOT resolved (the soak card is still owed)',
-    !BlastBatch.resolved({ ...base, acted: { [soakKey(0)]: clicked, [soakKey(1)]: clicked, [batchKey]: { data: { separate: [] } } },
-      soakCards: [{ actorId: 'pc1', rolled: false }, ...rolled('pc2')] }));
-  t.ok('every PC rolled and the NPC batch rolled: resolved',
-    BlastBatch.resolved({ ...base, acted: { [soakKey(0)]: clicked, [soakKey(1)]: clicked, [batchKey]: { data: { separate: [] } } },
-      soakCards: rolled('pc1', 'pc2') }));
+  t.ok('nothing done: not resolved', !BlastBatch.resolved({ ...base }));
+  t.ok('PCs clicked Resist (and Roll) but no final result yet: NOT resolved',
+    !BlastBatch.resolved({ ...base, acted: { ...allClicked, [batchKey]: used() }, soakCards: [{ actorId: 'pc1', dismissed: false }],
+      soakResults: ['pc2'], batchRows: doneRows }));
+  t.ok('every PC\'s final soak result posted and the batch finished: resolved',
+    BlastBatch.resolved({ ...base, acted: { ...allClicked, [batchKey]: used() }, soakResults: ['pc1', 'pc2'], batchRows: doneRows }));
   t.ok('…but not while the NPC batch is still owed',
-    !BlastBatch.resolved({ ...base, acted: { [soakKey(0)]: clicked, [soakKey(1)]: clicked }, soakCards: rolled('pc1', 'pc2') }));
-  t.ok('a soak card rolled for someone else does not count for this PC',
-    !BlastBatch.resolved({ individualIds: ['pc1'], acted: { [soakKey(0)]: clicked }, soakCards: rolled('pc2') }));
-  t.ok('a soak card with no click on the grenade card does not count (a different button index)',
-    !BlastBatch.resolved({ individualIds: ['pc1'], acted: {}, soakCards: rolled('pc1') }));
-  t.ok('an NPC the GM sent to its own card must roll it',
-    !BlastBatch.resolved({ batchIds: ['n1', 'n2'], acted: { [batchKey]: { data: { separate: ['n2'] } } }, soakCards: [] }));
-  t.ok('…and once it has, the blast is resolved',
-    BlastBatch.resolved({ batchIds: ['n1', 'n2'], acted: { [batchKey]: { data: { separate: ['n2'] } } }, soakCards: rolled('n2') }));
+    !BlastBatch.resolved({ ...base, acted: allClicked, soakResults: ['pc1', 'pc2'] }));
+  t.ok('…nor while an NPC on the batch card still has a 6 to explode',
+    !BlastBatch.resolved({ ...base, acted: { ...allClicked, [batchKey]: used() }, soakResults: ['pc1', 'pc2'], batchRows: pendingRows }));
+  t.ok('…nor when the batch card is out of sight (rows unknown)',
+    !BlastBatch.resolved({ batchIds: ['n1'], acted: { [batchKey]: used([], 1) }, batchRows: null }));
+  t.ok('a batch that sent every NPC to its own card has no card to wait for',
+    BlastBatch.resolved({ batchIds: ['n1'], acted: { [batchKey]: used(['n1'], 0) }, soakResults: ['n1'] }));
+  t.ok('a result posted for someone else does not count for this PC',
+    !BlastBatch.resolved({ individualIds: ['pc1'], acted: { [soakKey(0)]: clicked }, soakResults: ['pc2'] }));
+  t.ok('an NPC the GM sent to its own card must finish its roll',
+    !BlastBatch.resolved({ batchIds: ['n1', 'n2'], acted: { [batchKey]: used(['n2'], 1) }, batchRows: doneRows }));
+  t.ok('…and once its final result is posted, the blast is resolved',
+    BlastBatch.resolved({ batchIds: ['n1', 'n2'], acted: { [batchKey]: used(['n2'], 1) }, batchRows: doneRows, soakResults: ['n2'] }));
   const dismissed = { label: OpenSteps.DISMISSED };
-  t.ok('a PC step the GM ✕\'d counts as done — nobody will take it',
-    BlastBatch.resolved({ individualIds: ['pc1'], acted: { [soakKey(0)]: dismissed }, soakCards: [] }));
-  t.ok('…and so does a ✕\'d batch', BlastBatch.resolved({ batchIds: ['n1'], acted: { [batchKey]: dismissed }, soakCards: [] }));
+  t.ok('a PC Resist step the GM ✕\'d counts as resolved — nobody will take it',
+    BlastBatch.resolved({ individualIds: ['pc1'], acted: { [soakKey(0)]: dismissed } }));
+  t.ok('…and so does a ✕\'d soak-card roll step', BlastBatch.resolved({ individualIds: ['pc1'], acted: { [soakKey(0)]: clicked },
+    soakCards: [{ actorId: 'pc1', dismissed: true }] }));
+  t.ok('…and a ✕\'d batch', BlastBatch.resolved({ batchIds: ['n1'], acted: { [batchKey]: dismissed } }));
   t.ok('isDismissed reads the ✕ label only', OpenSteps.isDismissed({ k: dismissed }, 'k') && !OpenSteps.isDismissed({ k: clicked }, 'k'));
   t.ok('the ⏳ panel\'s ✕ records that label', /OpenSteps\.DISMISSED/.test(read('scripts/SR3EOpenSteps.js')));
   t.ok('a blast that caught no one is not tracked (its marker stays until 🧹 Clear)', !BlastBatch.tracks({}));
@@ -138,36 +157,47 @@ export async function run(t) {
   const mk = (flags) => ({ flags, getFlag(scope, k) { return this.flags?.[k]; } });
   const grenade = mk({ blast: { key: 'region:R1', role: 'grenade', regionId: 'R1', markerId: null, sceneId: 'S1',
     individualIds: ['pc1'], batchIds: ['n1'] }, acted: { [soakKey(0)]: clicked } });
-  const soakCard = mk({ blast: { key: 'region:R1', role: 'soak', actorId: 'pc1' }, acted: {} });
+  const soakCard = mk({ blast: { key: 'region:R1', role: 'soak', actorId: 'pc1' }, acted: { soaker: { label: 'Target' } } });
+  const batchCard = mk({ blast: { key: 'region:R1', role: 'batch' }, blastBatch: { rows: [{ dice: [die(6, { done: false })] }] } });
   let deleted = 0;
   game.user = { id: 'gm' };
   game.users = { activeGM: { id: 'gm' } };
   game.scenes = { get: () => ({ regions: { get: id => (id === 'R1' ? { delete: async () => { deleted++; } } : null) } }) };
-  game.messages = { contents: [grenade, soakCard] };
-  t.ok('PC not rolled yet: the marker stays', !(await SR3EActor.autoClearBlast(soakCard)) && deleted === 0);
-  soakCard.flags.acted = { soaker: { label: 'Target' } };
-  t.ok('PC rolled, NPC batch still owed: the marker stays', !(await SR3EActor.autoClearBlast(soakCard)) && deleted === 0);
-  grenade.flags.acted[batchKey] = { label: 'x', data: { separate: [] } };
-  t.ok('everyone has resisted: resolved', await SR3EActor.autoClearBlast(grenade));
+  grenade.flags.acted[batchKey] = { label: 'x', data: { separate: [], rolled: 1 } };
+  game.messages = { contents: [grenade, soakCard, batchCard] };
+  t.ok('PC clicked Roll, explosions still owed (no final wave): the marker stays', !(await SR3EActor.autoClearBlast(soakCard)) && deleted === 0);
+  const result = mk({ blast: { key: 'region:R1', role: 'soakResult', actorId: 'pc1' } });
+  game.messages = { contents: [grenade, soakCard, batchCard, result] };
+  t.ok('PC finished, an NPC still has a 6 pending on the batch card: the marker stays', !(await SR3EActor.autoClearBlast(result)) && deleted === 0);
+  batchCard.flags.blastBatch.rows = [{ dice: [die(9, { tn: 8 })] }];
+  t.ok('every explosion rolled: resolved', await SR3EActor.autoClearBlast(batchCard));
   t.is('…and the active GM deletes the Region', deleted, 1);
   game.user = { id: 'player' };
   await SR3EActor.autoClearBlast(grenade);
   t.is('a player\'s client never deletes the Region', deleted, 1);
   let destroyed = 0;
   const local = mk({ blast: { key: 'marker:M1', role: 'grenade', regionId: null, markerId: 'M1', individualIds: [], batchIds: ['n1'] },
-    acted: { [batchKey]: { label: 'x', data: { separate: [] } } } });
+    acted: { [batchKey]: { label: 'x', data: { separate: [], rolled: 0 } } } });
   game.messages = { contents: [local] };
   game.sr3e._blastMarkers = new Map([['M1', { destroy: () => { destroyed++; } }]]);
   await SR3EActor.autoClearBlast(local);
   t.ok('the client holding the local PIXI marker destroys it', destroyed === 1 && !game.sr3e._blastMarkers.has('M1'));
   t.ok('a card with no blast flag (a smoke cloud, a spell) is left alone', !(await SR3EActor.autoClearBlast(mk({}))));
 
+  /* ── A vehicle's result goes on its Condition Monitor ───────────────────────── */
+  game.actors = { get: id => ({ id, name: 'Doberman' }) };
+  const vHtml = SR3EActor._soakResultHtml({ actorId: 'd0', stagedPower: 8, stagedLevel: 'M', isStun: false, isVehicle: true,
+    net: { attackHits: 2, basePower: 8, baseLevel: 'M' } }, 0);
+  t.ok('a drone\'s Assign names it as a vehicle (system.damage), not a person\'s track',
+    /"vehicleActorId":"d0"/.test(vHtml) && !/"track"/.test(vHtml));
+  t.ok('…and offers no Knockdown test', !/sr-knockdown-btn/.test(vHtml));
+
   /* ── Source: wiring ─────────────────────────────────────────────────────────── */
   const actor = read('scripts/documents/SR3EActor.js');
   const sr3e  = read('scripts/sr3e.js');
   const aoe = actor.slice(actor.indexOf('if (state.isAoE && state.aoeCenter) {'), actor.indexOf('} else if (successes === 0) {'));
   t.ok('the grenade card splits its targets with isPlayerCharacter, never hasPlayerOwner',
-    /BlastBatch\.split\(caught, a => game\.sr3e\.SR3EQuery\.isPlayerCharacter\(a\)\)/.test(aoe) && !/hasPlayerOwner/.test(aoe));
+    /BlastBatch\.split\(caught, a => game\.sr3e\.SR3EQuery\.isPlayerCharacter\(a\),/.test(aoe) && !/hasPlayerOwner/.test(aoe));
   t.ok('…posts individual Resist buttons for the individual targets only', /for \(const t of individual\)[\s\S]{0,1200}sr-soak-btn/.test(aoe));
   t.ok('…each carrying the blast key to its soak card', /blastKey,\s+\/\/ the soak card names its blast/.test(aoe));
   t.ok('…and one GM batch button for the NPCs', /class="sr-blast-npc-btn"/.test(aoe));
@@ -190,8 +220,16 @@ export async function run(t) {
   t.ok('…and handed back when the dialog is cancelled', /=== false\) \{\s*_usedButtons\.delete\(`\$\{mid\}\|blastnpc\|\$\{i\}`\)/.test(npcBtn));
   const exBtn = sr3e.slice(sr3e.indexOf("html.querySelectorAll('.sr-blast-batch-explode-btn')"), sr3e.indexOf('// ☣ A gas cloud'));
   t.ok('batch 💥: GM only, one-shot per wave', /isGM\) return _denyBtn/.test(exBtn) && /_checkBtn\(btn, mid, 'blastbatchexplode', wave\)/.test(exBtn));
-  t.ok('auto-clear runs on acted changes to a blast card',
-    /Hooks\.on\('updateChatMessage'[\s\S]{0,200}flags\.The2ndChumming3e\.acted[\s\S]{0,200}SR3EActor\.autoClearBlast\(message\)/.test(sr3e));
+  t.ok('auto-clear runs when a blast card is posted (a final soak wave, the batch card)',
+    /Hooks\.on\('createChatMessage', message => _blastCheck\(message\)\)/.test(sr3e));
+  t.ok('…and when its acted-ledger or batch record changes',
+    /Hooks\.on\('updateChatMessage'[\s\S]{0,200}flags\.The2ndChumming3e\.acted[\s\S]{0,120}flags\.The2ndChumming3e\.blastBatch[\s\S]{0,60}_blastCheck\(message\)/.test(sr3e));
+  t.ok('a final soak wave from a blast names it (role soakResult)',
+    /allDone && state\.isSoakRoll && state\.soakPayload\?\.blastKey\) \{\s*cardFlags = \{ blast: \{ key: state\.soakPayload\.blastKey, role: 'soakResult'/.test(actor));
+  t.ok('the roll payload carries the blast key on through every 💥', /blastKey:\s+payload\.blastKey \?\? undefined/.test(actor));
+  t.ok('the drone split asks for its rigger (system.driverActorId)', /a\?\.system\?\.driverActorId \? game\.actors\.get\(a\.system\.driverActorId\)/.test(actor));
+  t.ok('the batch card names its blast', /blast: \{ key: record\.blastKey, role: 'batch' \}/.test(actor));
+  t.ok('the batch record counts who it rolled', /rolled: rolled\.length/.test(actor));
   t.ok('🧹 Clear is still there', /html\.querySelectorAll\('\.sr-clear-blast-btn'\)/.test(sr3e));
   t.ok('auto-clear deletes Regions on the active GM only', /g\.regionId && game\.user\?\.id === game\.users\?\.activeGM\?\.id/.test(actor));
 }
