@@ -608,7 +608,20 @@ export class SR3ECombat extends Combat {
   }
 
   async _newRound() {
-    await this.nextRound();                       // increments round, resets turn
+    return this.nextRound();
+  }
+
+  /**
+   * A new Combat Turn, however it is reached — the last End Turn of a round (`nextTurn` → `_newRound`) or the
+   * tracker's own Next Round control, which calls this directly. That control used to skip all of it (TODO 243,
+   * seen in play 2026-10-23 as "Full Defense stays in effect on the next round"): no Full Defense clear, no pool
+   * refresh, no stun count-down, no initiative re-roll.
+   * @override
+   */
+  async nextRound() {
+    // The upkeep writes other people's actors and the queue flags — a GM's job (core gives the control to GMs).
+    if (!game.user.isGM) { ui.notifications.warn('Only the GM can start the next round.'); return this; }
+    await super.nextRound();                      // increments round, resets turn
     await this._endOfTurnReset();
     await this._countDownStun();
     await this.rollInitiative();                  // RAW: re-roll every round

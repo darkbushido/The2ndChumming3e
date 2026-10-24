@@ -136,7 +136,8 @@ export async function run(t) {
   t.ok('removing the status by hand clears the count (active GM)', /deleteActiveEffect[\s\S]{0,400}unsetFlag\('The2ndChumming3e', 'stunTurns'\)/.test(main));
 
   const combat = read('scripts/documents/SR3ECombat.js');
-  t.ok('the count goes down once per Combat Turn, from _newRound', /async _newRound\(\) \{[\s\S]{0,260}await this\._countDownStun\(\);/.test(combat));
+  t.ok('the count goes down once per Combat Turn, from nextRound — End Turn and the Next Round control both reach it (TODO 243)',
+    /async nextRound\(\) \{[\s\S]{0,600}await this\._countDownStun\(\);/.test(combat));
   t.ok('…and NOT from _endOfTurnReset (it also runs at the start and end of the fight)',
     !combat.slice(combat.indexOf('async _endOfTurnReset()'), combat.indexOf('async _countDownStun()')).includes('_countDownStun'));
   t.ok('…it counts with ShockStun.countDown and clears at 0', /ShockStun\.countDown\(turns\)[\s\S]{0,300}actor\.clearStunned\(\)/.test(combat));

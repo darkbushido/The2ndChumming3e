@@ -283,6 +283,39 @@ export async function run(t) {
     /Hooks\.on\('updateCombatant'[\s\S]{0,900}rebuildQueue\(\)[\s\S]{0,300}_applySlot\(queue, index\)/.test(
       (await import('node:fs')).readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8')));
 
+  /* ---- TODO 243: the Next Round control runs the same upkeep as End Turn ---- */
+  // Seen in play, 2026-10-23: Full Defense stayed on into the next round. Core's Next Round calls
+  // Combat#nextRound directly, and only the End Turn route (_newRound) ran the reset.
+  {
+    const base = Object.getPrototypeOf(SR3ECombat.prototype);
+    const had  = Object.prototype.hasOwnProperty.call(base, 'nextRound');
+    const old  = base.nextRound;
+    const steps = [];
+    base.nextRound = async function () { steps.push('core'); this.round = (this.round ?? 1) + 1; return this; };
+    const mk = () => {
+      const combat = Object.create(SR3ECombat.prototype);
+      combat.combatants      = { contents: [] };
+      combat._endOfTurnReset = async () => { steps.push('reset'); };
+      combat._countDownStun  = async () => { steps.push('stun'); };
+      combat.rollInitiative  = async () => { steps.push('roll'); };
+      combat.rebuildQueue    = async () => [{ id: 'a', score: 9, pass: 1 }];
+      combat._applySlot      = async () => { steps.push('apply'); };
+      return combat;
+    };
+    const prevGame = globalThis.game;
+    globalThis.game = { ...prevGame, user: { isGM: true } };
+    await mk().nextRound();
+    t.eq('Next Round (the tracker control): core, then Full Defense/pools reset, stun, re-roll, first slot',
+      steps.splice(0), ['core', 'reset', 'stun', 'roll', 'apply']);
+    await mk()._newRound();
+    t.eq('…the last End Turn of a round takes exactly the same path', steps.splice(0), ['core', 'reset', 'stun', 'roll', 'apply']);
+    globalThis.game = { ...prevGame, user: { isGM: false } };
+    await mk().nextRound();
+    t.eq('…a player cannot start the round (the upkeep writes other people\'s actors)', steps.splice(0), []);
+    globalThis.game = prevGame;
+    if (had) base.nextRound = old; else delete base.nextRound;
+  }
+
   /* ---- TODO 252: the unconscious get no turns from the next round ---- */
   // Requested in play, 2026-10-23 ("a bug", the maintainer): someone knocked unconscious leaves the order at the
   // next round. A full track marks the combatant defeated (sr3e.js updateActor); they stay on the tracker.
