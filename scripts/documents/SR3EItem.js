@@ -420,6 +420,11 @@ export class SR3EItem extends Item {
     const { detectVision, visionReminder } = await import('../SR3ECombatModifiers.js');
     const atkVis = detectVision(actor);
     const defVis = detectVision(targetActor);
+    // Who is lying down (TODO 245, p.123 "Opponent prone −2"): the core `prone` status on the actor or on
+    // its token (an unlinked token keeps its own). Booleans travel; the GM window preselects its row.
+    const { MeleeProne } = await import('../data/melee-prone.mjs');
+    const atkProne = MeleeProne.isProne(actor, atkTok);
+    const defProne = MeleeProne.isProne(targetActor, tgtTok);
     // Multiple targets, p.122: "+2 per additional target struck in that Combat Phase". Who this attacker
     // already engaged is the same per-phase record the fire dialog reads (TODO 56.2); the GM window's
     // count is PREFILLED from it, never enforced.
@@ -440,6 +445,8 @@ export class SR3EItem extends Item {
       defVision:  visionReminder(targetActor.name, defVis),
       atkVisionData: atkVis,
       defVisionData: defVis,
+      atkProne,
+      defProne,
       baseAtkTN:  dfltAtkTN,
       baseDefTN:  dfltDefTN,
       baseNote:   [reachHolder && `Reach ${reachDiff} to ${reachHolder === 'attacker' ? actor.name : targetActor.name}`, woundNote]
@@ -449,6 +456,14 @@ export class SR3EItem extends Item {
     if (gm.adjudicated === false && _mExtra > 0) {
       // No window to prefill, so the flow applies the +2s itself (p.122) — the ranged SS shortcut's rule.
       gm.atkTN = Math.max(2, (Number(gm.atkTN) || 0) + 2 * _mExtra);
+    }
+    // Prone follows the same precedent (TODO 245): no window to preselect, so the flow applies the
+    // p.123 −2 to whoever faces a prone opponent. With a window the GM's TNs already carry it.
+    const _mProne = gm.adjudicated === false ? MeleeProne.side(atkProne, defProne) : null;
+    if (_mProne) {
+      const d = MeleeProne.deltas(_mProne);
+      gm.atkTN = Math.max(2, (Number(gm.atkTN) || 0) + d.atk);
+      gm.defTN = Math.max(2, (Number(gm.defTN) || 0) + d.def);
     }
     await actor.update({ 'system.targetsThisPhase': PhaseTargets.add(actor.system.targetsThisPhase, _mPhase, _mKey, tgtTok?.id ?? null, { melee: true }) });
 
@@ -492,6 +507,9 @@ export class SR3EItem extends Item {
       gmSituational:     Math.trunc(Number(gm.situational) || 0),
       gmSituationalSide: gm.situationalSide ?? null,
       gmSetTN:          gm.adjudicated === true,
+      // Who was down when the flow applied prone ITSELF (no window, TODO 245) — the card says so.
+      // Null whenever the GM window opened: the GM's TNs already carry it.
+      autoProne:        _mProne,
       calledShot:       calledShot.calledShot,
       charging:         calledShot.charging === true,
       calledShotTarget: calledShot.calledShotTarget,
@@ -3010,6 +3028,7 @@ export class SR3EItem extends Item {
     const { meleeModifierGroups, sumMeleeModifiers, meleeVisibilityModifier,
             SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES, bestVisionKey, escapeHTML } =
       await import('../SR3ECombatModifiers.js');
+    const { MeleeProne } = await import('../data/melee-prone.mjs');
 
     const groups  = meleeModifierGroups();
     const baseAtk = Number(ctx.baseAtkTN) || 4;
@@ -3027,15 +3046,25 @@ export class SR3EItem extends Item {
       .map(v => `<option value="${v.key}"${v.key === pre ? ' selected' : ''}>${v.label}</option>`).join('');
     const preVis  = data => (data ? bestVisionKey(data, '') : 'normal');
 
-    const sideSelect = (id, label) => `
+    // `pre` preselects an option; `both` adds "both of them" (prone: each has a prone opponent).
+    const selAttr = (v, pre) => (v === pre ? ' selected' : '');
+    const sideSelect = (id, label, { pre = '', both = false } = {}) => `
       <label style="display:flex;align-items:center;gap:6px;margin:3px 0;font-size:12px">
         <span style="min-width:200px">${label}</span>
         <select id="${id}" style="flex:1">
-          <option value="">— neither —</option>
-          <option value="attacker">${atkName}</option>
-          <option value="defender">${defName}</option>
+          <option value=""${selAttr('', pre)}>— neither —</option>
+          <option value="attacker"${selAttr('attacker', pre)}>${atkName}</option>
+          <option value="defender"${selAttr('defender', pre)}>${defName}</option>
+          ${both ? `<option value="both"${selAttr('both', pre)}>both of them</option>` : ''}
         </select>
       </label>`;
+
+    // Prone (TODO 245): PRESELECTED from each fighter's core `prone` status, read by `rollMeleeAttack`
+    // (`MeleeProne.isProne`) and carried as booleans — the payload has names, not actors. Offered, never
+    // forced: the GM can set the row to anything, and the hint says where the preselection came from.
+    const pronePre  = MeleeProne.side(ctx.atkProne === true, ctx.defProne === true) ?? '';
+    const proneHint = [ctx.atkProne === true && atkName, ctx.defProne === true && defName]
+      .filter(Boolean).map(n => escapeHTML(n)).join(' and ');
 
     const numberRow = (id, label, note, min, max, value = 0) => `
       <label style="display:flex;align-items:center;gap:6px;margin:3px 0;font-size:12px">
@@ -3050,7 +3079,8 @@ export class SR3EItem extends Item {
         // Prefilled from who the attacker already struck this phase (TODO 56.2 / 38).
         case 'perAtk':     return numberRow('gmm-multi',   row.label, row.note, 0, 9, Math.max(0, Number(ctx.multiPrefill) || 0));
         case 'side':       return sideSelect('gmm-superior', row.label);
-        case 'sideOpposed': return sideSelect('gmm-prone', `${row.label} — who is DOWN`);
+        case 'sideOpposed': return sideSelect('gmm-prone', `${row.label} — who is DOWN`, { pre: pronePre, both: true })
+          + (proneHint ? `<div class="gmm-prone-hint" style="font-size:11px;color:var(--sr-muted);margin-left:206px">🔻 ${proneHint} marked prone — preselected; change it if they have stood up</div>` : '');
         case 'situational':
           // A number AND a side. `sumMeleeModifiers` returns a pair of deltas, so a bare
           // number here would have no defined meaning — see its situational branch.

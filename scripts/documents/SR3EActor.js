@@ -8,6 +8,7 @@ import { DrugRules } from '../data/drug-rules.mjs';
 import { Ledger } from '../data/ledger.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
+import { MeleeProne } from '../data/melee-prone.mjs';
 import { OpenSteps } from '../data/open-steps.mjs';
 import { WillingTarget } from '../data/willing-target.mjs';
 import { AreaShape } from '../data/area-shape.mjs';
@@ -6268,6 +6269,10 @@ _prepareCharacter(sys, attr) {
               <span style="color:var(--sr-dim)">(already in the target numbers)</span>
             </div>` : ''}
           ${SR3EActor.multiOpponentLine(ctx.multiOpponent, atk.name)}
+          ${MeleeProne.cardNote(ctx.autoProne ?? null, atk.name, def.name) ? `
+            <div class="sr-melee-prone-note" style="font-size:11px;color:var(--sr-accent);margin:-2px 0 6px;text-align:center">
+              ${MeleeProne.cardNote(ctx.autoProne ?? null, atk.name, def.name)}
+            </div>` : ''}
           <div class="sr-melee-boxing">
             ${_corner(atk.name, ctx.atkInfo, ctx.atkWeaponName, ctx.atkRawDamage, ctx.atkDamageBase,
                       ctx.atkReach ?? 0, ctx.atkTN, 'sr-melee-atk-pool', 'sr-melee-atk-tn', 'sr-melee-atk-damage', 'sr-melee-atk-skill-dice', 'attacker', ctx.attackerActorId)}

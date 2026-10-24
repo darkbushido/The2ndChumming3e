@@ -26,6 +26,7 @@ import { Hands } from './data/hands.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { WeaponAccessories } from './data/weapon-accessories.mjs';
 import { Shotgun } from './data/shotgun.mjs';
+import { MeleeProne } from './data/melee-prone.mjs';
 
 /**
  * The full p.112 table. Reference + future automation; only `mvp:true` rows render.
@@ -577,7 +578,7 @@ export function meleeModifierGroups() {
  * @param {object} state
  * @param {number} [state.friends]            attacker's surplus friends (may be negative)
  * @param {'attacker'|'defender'|null} [state.superiorPosition]
- * @param {'attacker'|'defender'|null} [state.prone]   who is DOWN
+ * @param {'attacker'|'defender'|'both'|null} [state.prone]   who is DOWN
  * @param {number} [state.multiTargetAtk]     additional targets the attacker is striking
  * @param {string} [state.visibilityCondition]
  * @param {string} [state.visibilityVisionAtk]  the attacker's vision (TODO 36)
@@ -599,9 +600,10 @@ export function sumMeleeModifiers(state = {}) {
   if (state.superiorPosition === 'attacker') atk -= 1;
   if (state.superiorPosition === 'defender') def -= 1;
 
-  // "Opponent prone" is a bonus to the one still standing.
-  if (state.prone === 'defender') atk -= 2;
-  if (state.prone === 'attacker') def -= 2;
+  // "Opponent prone" is a bonus to the one still standing; both down → both have a prone
+  // opponent (TODO 245, `MeleeProne.deltas`).
+  const pr = MeleeProne.deltas(state.prone ?? null);
+  atk += pr.atk; def += pr.def;
 
   const extra = Math.max(0, Math.trunc(Number(state.multiTargetAtk) || 0));
   if (extra) atk += 2 * extra;
