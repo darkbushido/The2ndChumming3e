@@ -124,6 +124,21 @@ export class SR3ECombat extends Combat {
   }
 
   /**
+   * The tracker's row order (TODO 242). Core sorts by initiative, then by combatant id, so tied combatants were
+   * listed in an arbitrary order while the queue plays them by the `tieBreak` rank (Reaction, then a dice-off —
+   * `_assignTieBreaks`). Same key here, so the rows read in the order people act. Core passes this to
+   * `Array#sort` unbound — no `this`.
+   * @override
+   */
+  _sortCombatants(a, b) {
+    const ia = Number.isNumeric(a.initiative) ? a.initiative : -Infinity;
+    const ib = Number.isNumeric(b.initiative) ? b.initiative : -Infinity;
+    const ra = a.flags?.The2ndChumming3e?.tieBreak ?? 0;
+    const rb = b.flags?.The2ndChumming3e?.tieBreak ?? 0;
+    return (ib - ia) || (ra - rb) || (a.id > b.id ? 1 : -1);
+  }
+
+  /**
    * Start the combat encounter
    * @override
    */
@@ -139,7 +154,10 @@ export class SR3ECombat extends Combat {
     // Spell Defense card is built against full pools. This call covers every other entry
     // point; it is dirty-checked, so arriving here already clean writes nothing.
     await this._endOfTurnReset();
-    await this.rebuildQueue({ resetIndex: true });
+    const queue = await this.rebuildQueue({ resetIndex: true });
+    // Point the tracker at the first slot: the tie-break writes can re-sort the rows (TODO 242), and core keeps
+    // `turn` on the same COMBATANT across a re-sort — which was the id-first one, not whoever acts first.
+    if (queue?.length) await this._applySlot(queue, 0);
     return this;
   }
 

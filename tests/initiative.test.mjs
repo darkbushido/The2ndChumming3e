@@ -253,6 +253,36 @@ export async function run(t) {
     t.is('a combatant with no actor is skipped, not fatal', threw, false);
   }
 
+  /* ---- TODO 242: the tracker lists tied combatants in the order they act ---- */
+  // Seen in play, 2026-10-23. Core's _sortCombatants breaks ties by id; the queue by the tieBreak rank.
+  {
+    Number.isNumeric ??= n => typeof n === 'number' ? Number.isFinite(n) : (n !== '' && n !== null && Number.isFinite(Number(n)));
+    // 'zz' wins on Reaction, so acts before 'aa' — the id order says the opposite.
+    const { combat } = makeCombat([['aa', 12, 3], ['zz', 12, 6], ['mid', 20], ['none', null]]);
+    await combat._assignTieBreaks();
+    const rows = combat.combatants.contents.slice().sort(SR3ECombat.prototype._sortCombatants).map(c => c.id);
+    const acts = combat.buildRoundQueue().filter(s => s.pass === 1).map(s => s.id);
+    t.eq('tracker rows: initiative first, then the tie-break rank', rows, ['mid', 'zz', 'aa', 'none']);
+    t.eq('…the same order the queue plays them', rows.slice(0, 3), acts);
+    t.is('the comparator works unbound, as core calls it', [combat.combatants.contents[0], combat.combatants.contents[1]]
+      .sort(SR3ECombat.prototype._sortCombatants)[0].id, 'zz');
+  }
+  {
+    // Found checking 242 live: core keeps `turn` on the same combatant across the tie-break re-sort, so a fresh
+    // combat pointed at the id-first combatant instead of whoever acts first.
+    const applied = [];
+    const combat = Object.create(SR3ECombat.prototype);
+    combat.combatants      = { contents: [] };
+    combat._endOfTurnReset = async () => {};
+    combat.rebuildQueue    = async () => [{ id: 'first', score: 12, pass: 1 }, { id: 'second', score: 12, pass: 1 }];
+    combat._applySlot      = async (q, i) => { applied.push(q[i].id); };
+    await combat.startCombat();
+    t.eq('starting combat points the tracker at the first slot of the queue', applied, ['first']);
+  }
+  t.ok('a GM\'s initiative edit re-points the turn after the re-sort',
+    /Hooks\.on\('updateCombatant'[\s\S]{0,900}rebuildQueue\(\)[\s\S]{0,300}_applySlot\(queue, index\)/.test(
+      (await import('node:fs')).readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8')));
+
   /* ---- TODO 252: the unconscious get no turns from the next round ---- */
   // Requested in play, 2026-10-23 ("a bug", the maintainer): someone knocked unconscious leaves the order at the
   // next round. A full track marks the combatant defeated (sr3e.js updateActor); they stay on the tracker.

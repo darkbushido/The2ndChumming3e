@@ -1833,7 +1833,13 @@ Hooks.on('updateCombatant', (combatant, changed) => {
   if (!game.users?.activeGM?.isSelf) return;
   const combat = combatant.parent;
   if (!combat?.started || typeof combat.rebuildQueue !== 'function') return;
-  combat.rebuildQueue().then(() => ui.combat?.render());
+  // Re-point `turn` at the acting slot afterwards: the tie-break writes re-sort the tracker's rows (TODO 242,
+  // `_sortCombatants`), and `turn` is a row index.
+  combat.rebuildQueue().then(async queue => {
+    const index = combat.flags?.The2ndChumming3e?.queueIndex ?? 0;
+    if (queue?.length && index < queue.length) await combat._applySlot(queue, index);
+    ui.combat?.render();
+  });
 });
 
 // A combatant removed mid-round (the GM taking out someone knocked out) must leave the round's queue too, or
