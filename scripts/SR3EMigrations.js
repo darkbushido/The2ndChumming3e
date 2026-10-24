@@ -34,6 +34,7 @@ import { restockImage, restockActorImage } from './data/item-icons.mjs';
 import { PackFixes070 } from './data/pack-corrections-0-7-0.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { VehicleArt } from './data/vehicle-art.mjs';
+import { ModRatings } from './data/mod-ratings.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -504,6 +505,21 @@ const MIGRATIONS = [
      * is left alone; tokens already placed on a scene keep theirs. Matched by name. Idempotent.
      */
     fixActor: VehicleArt.fixActor,
+  },
+  {
+    version: '0.7.1',
+    label: 'Mod levels move out of the name into the rating: cyber, weapon and vehicle mods (TODO 260)',
+    /**
+     * The packs now name a mod plainly ("Anti-Theft System") and keep its level in `system.rating`, which
+     * the item sheet offers as a dropdown (`ModRatings`). A copy already in a world still reads
+     * "Anti-Theft System [10]" — and a vehicle mod had no rating field at all until now.
+     *
+     * ⚠ **This RENAMES, and argues for it:** only the three mod kinds (vehicle mods, Cyberlimb Mods,
+     * Firearms Accessories), only a name ENDING in a bracketed level, and the level is kept — moved into
+     * the rating when that is blank. A GM who typed a different rating keeps it. A name someone wrote
+     * without a bracket is never touched. Idempotent: a plain name yields null.
+     */
+    fixItem: ModRatings.renameDelta,
   },
 
 ];

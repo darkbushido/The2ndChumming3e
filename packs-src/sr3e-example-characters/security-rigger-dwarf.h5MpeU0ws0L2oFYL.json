@@ -855,7 +855,7 @@
       }
     },
     "!actors.items!h5MpeU0ws0L2oFYL.jIVa6EtSwycDqMcP": {
-      "name": "Remote Control ECCM [5]",
+      "name": "Remote Control ECCM",
       "type": "cyberware",
       "_id": "jIVa6EtSwycDqMcP",
       "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
@@ -1032,7 +1032,7 @@
       }
     },
     "!actors.items!h5MpeU0ws0L2oFYL.zLzFbjm6mGVXHMrD": {
-      "name": "Remote Control Deck [6]",
+      "name": "Remote Control Deck",
       "type": "cyberware",
       "_id": "zLzFbjm6mGVXHMrD",
       "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",

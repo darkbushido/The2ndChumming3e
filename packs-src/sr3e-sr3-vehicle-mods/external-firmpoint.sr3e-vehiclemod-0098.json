@@ -14,7 +14,8 @@
       "cfCost": "1",
       "load": "10kg+Weapon",
       "bookPage": "sr3.312,r3.136",
-      "description": ""
+      "description": "",
+      "rating": null
     },
     "effects": []
   },

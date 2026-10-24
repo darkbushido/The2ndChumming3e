@@ -10,7 +10,7 @@
  *
  * **The FIELD is the rating, and no value means no rating** (the maintainer, 2026-09-14: *"I would
  * prefer that it were in a column where nil means no rating"*). `system.rating` is nullable on
- * **gear, medical, cyberware and bioware** (TODO 118, then TODO 122):
+ * **gear, medical, cyberware, bioware and vehicle mods** (TODO 118, then TODO 122, then TODO 260):
  *
  * | `system.rating` | reads as |
  * |---|---|
@@ -60,7 +60,7 @@ export const ItemRating = {
   },
 
   /** Types whose `rating` field is authoritative — null on one of these means NO rating. */
-  RATED_TYPES: ['gear', 'medical', 'cyberware', 'bioware'],
+  RATED_TYPES: ['gear', 'medical', 'cyberware', 'bioware', 'vehiclemod'],
 
   /** The item's rating (0 = none). See the table above: a number wins, null is none, 0/missing is legacy. */
   itemRating(item) {

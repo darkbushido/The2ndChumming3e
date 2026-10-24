@@ -14,7 +14,8 @@
       "cfCost": "1",
       "load": "25kg",
       "bookPage": "r3.138",
-      "description": "-6 Recoil"
+      "description": "-6 Recoil",
+      "rating": null
     },
     "effects": []
   },

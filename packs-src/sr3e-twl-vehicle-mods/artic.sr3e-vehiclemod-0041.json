@@ -14,7 +14,8 @@
       "cfCost": "1",
       "load": "0kg",
       "bookPage": "twl.132",
-      "description": "Parts Cost for Ground Vehicle: Body x 250; Parts Cost for Air Vehicle: Body x 500"
+      "description": "Parts Cost for Ground Vehicle: Body x 250; Parts Cost for Air Vehicle: Body x 500",
+      "rating": null
     },
     "effects": []
   },
