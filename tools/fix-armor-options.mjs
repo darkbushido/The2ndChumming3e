@@ -2,7 +2,7 @@
 /**
  * The SR3 armour options the maintainer settled against the books, 2026-10-24 · TODO 266. Idempotent.
  *
- *   node tools/fix-armor-options.mjs [--check] [--only transceiver|vision]   then: node tools/build-mod-ratings.mjs && npm run packs:build
+ *   node tools/fix-armor-options.mjs [--check] [--only transceiver|vision|magnification|thermographic]   then: node tools/build-mod-ratings.mjs && npm run packs:build
  *
  *   transceiver — ONE Helmet/Wrist Transceiver, the Cannon Companion's. SR3 p.284: "Communications: Helmet or Wrist
  *     Transceiver (2,500¥)"; Cannon Companion p.51: "Helmet or Wrist Transceiver (250¥ x Rating)". The sr3e-sr3-armor
@@ -14,7 +14,10 @@
  *   magnification — magnification is a RATING, not part of the name (the maintainer): "Electronic Magnification (Armor)" and
  *     "Optical Magnification (Armor)", `system.rating` 3, in both packs (SR3 p.284 and Cannon Companion p.51 print only
  *     "Electronic Magnification 3 (900¥)", "Optical Magnification 3 (1,200¥)"). The Cannon Companion pack's two duplicates
- *     ("Electric Vision Mag 3", "Optical Vision Mag 3") are removed. "Therm Vision" / "Thermo Vision" are left alone.
+ *     ("Electric Vision Mag 3", "Optical Vision Mag 3") are removed.
+ *   thermographic — ONE Thermographic helmet option (SR3 p.284 / Cannon Companion p.51: 700¥). The maintainer, 2026-10-24: "there
+ *     can be only one and it will be Thermo Vision" — the generated "Therm Vision (Armor)" (ce8f1144b1d5cd50) goes, the
+ *     hand-kept "Thermo Vision (Armor)" (sr3e-armor-0176) stays.
  *
  * Each removed document is recorded in `tools/data/collapsed-mods.json` with the document that replaces it
  * (`keep`, `keepPack`), so `COLLAPSED_SOURCES` repoints a copy linked to it (`ModRatings.repointSource`).
@@ -40,6 +43,9 @@ export const REMOVALS = {
     { pack: SR3, id: 'sr3e-armor-0245', name: 'Low-light Vision (Armor)', key: 'armor|Low-light Vision', keep: 'sr3e-armor-0175', keepPack: CC },
     { pack: SR3, id: 'f49a41875c21af8d', name: 'Elec. Vis. Mag 38 (Armor)', key: 'armor|Elec. Vis. Mag 38', keep: 'sr3e-armor-0242', keepPack: SR3 },
     { pack: SR3, id: '5f7e478c061e9a1c', name: 'Optical Vis. Mag 38 (Armor)', key: 'armor|Optical Vis. Mag 38', keep: 'sr3e-armor-0243', keepPack: SR3 },
+  ],
+  thermographic: [
+    { pack: CC, id: 'ce8f1144b1d5cd50', name: 'Therm Vision (Armor)', key: 'armor|Therm Vision', keep: 'sr3e-armor-0176', keepPack: CC },
   ],
 };
 
@@ -86,7 +92,7 @@ const MAGNIFICATION = [
   { pack: CC, id: 'sr3e-armor-0173', name: 'Optical Magnification (Armor)' },
 ];
 
-for (const step of ['vision', 'magnification']) {
+for (const step of ['vision', 'magnification', 'thermographic']) {
   if (only && only !== step) continue;
   const packs = new Map();
   const entries = pack => packs.get(pack) ?? packs.set(pack, readSourceDir(join(SRC, pack))).get(pack);

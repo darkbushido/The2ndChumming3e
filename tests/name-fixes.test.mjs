@@ -83,6 +83,23 @@ export async function run(t) {
   t.is('…the Cannon Companion duplicates', ModRatings.repointSource(src('sr3e-cc-armor', 'c6012ca9ce44ab83')), link('sr3e-cc-armor', 'sr3e-armor-0172'));
   t.is('…', ModRatings.repointSource(src('sr3e-cc-armor', 'bed77e28caee56ae')), link('sr3e-cc-armor', 'sr3e-armor-0173'));
 
+  /* ── One Thermographic: Thermo Vision ────────────────────────────────────────── */
+  const TV = 'Thermo Vision (Armor)';
+  t.is('the pack name "Therm Vision (Armor)"', NameFixes.fixedName(arm('Therm Vision (Armor)')), TV);
+  t.is('the 0.7.0 "+Therm Vision" spelling', NameFixes.fixedName(arm('+Therm Vision')), TV);
+  t.is('the bare "Therm Vision"', NameFixes.fixedName(arm('Therm Vision')), TV);
+  t.is('with a level', NameFixes.fixedName(arm('Therm Vision (Armor) [2]')), `${TV} [2]`);
+  t.is('Thermo Vision needs nothing (idempotent)', NameFixes.fixedName(arm(TV)), null);
+  t.is('a houserule name is left alone', NameFixes.fixedName(arm('Therm Vision Mk II (Armor)')), null);
+  t.is('only armour', NameFixes.fixedName(gear('Therm Vision')), null);
+  t.eq('the migration renames and tags', ModFor.migrateDelta(arm('Therm Vision (Armor)')), { 'system.modFor': 'armor', name: TV });
+  t.is('a second run yields null', ModFor.migrateDelta(arm(TV, { modFor: 'armor' })), null);
+  t.is('a link to the deleted Therm Vision goes to Thermo Vision', ModRatings.repointSource(src('sr3e-cc-armor', 'ce8f1144b1d5cd50')), link('sr3e-cc-armor', 'sr3e-armor-0176'));
+  t.is('the repoint is idempotent', ModRatings.repointSource(src('sr3e-cc-armor', 'sr3e-armor-0176')), null);
+  t.eq('the migration repoints and renames together',
+    ModFor.migrateDelta({ ...arm('+Therm Vision', { modFor: 'armor' }), ...src('sr3e-cc-armor', 'ce8f1144b1d5cd50') }),
+    { '_stats.compendiumSource': link('sr3e-cc-armor', 'sr3e-armor-0176'), name: TV });
+
   /* ── The generator ───────────────────────────────────────────────────────────── */
   t.is('the generator names the row Extended Clip', cleanName('Extended Clip ('), 'Extended Clip');
   t.is('…and the id it derives is the one the truncated name always produced', idFor(`build-default-gear|cc|gear|${normName('Extended Clip (')}`), '6f5ad6755534010f');
@@ -99,6 +116,8 @@ export async function run(t) {
   const hw = named(HW)[0];
   t.is('…it is Cannon Companion p.51, a mod for armour', [hw.system.bookPage, hw.system.modFor].join(' '), 'cc.51 armor');
   t.is('…rated by the Level dropdown (250 x Rating)', ModRatings.levelsOf(hw)?.[10]?.cost, 2500);
+  t.is('RATCHET: sr3e-cc-armor has one Thermographic, "Thermo Vision (Armor)" at 700 nuyen, and no "Therm Vision"',
+    cc.filter(d => /^\+?Therm(o)? Vision/.test(d.name ?? '')).map(d => `${d.name} ${d.system.cost}`).join(), 'Thermo Vision (Armor) 700');
   const low = named('Low-light Vision (Armor)');
   t.is('Low-light Vision stays in the Cannon Companion pack, once: cc.51, 700 nuyen', low.map(d => `${d.system.bookPage} ${d.system.cost}`).join(), 'cc.51 700');
   for (const [n, cost] of [[EM, 900], [OM, 1200]]) {

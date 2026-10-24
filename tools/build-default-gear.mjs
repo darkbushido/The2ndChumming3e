@@ -319,6 +319,7 @@ export const DROPPED_ARMOR_ROWS = [
   { re: /^\+Low-light Vision$/, pages: ['sr3.284'] },
   { re: /^\+(?:Elec\. |Optical )Vis\. Mag 38$/, pages: ['sr3.284'] },
   { re: /^\+(?:Electric|Optical) Vision Mag 3$/, pages: ['cc.51'] },
+  { re: /^\+Therm Vision$/, pages: ['cc.51'] },
 ];
 
 /** The upstream rows without DROPPED_ARMOR_ROWS. Pure. */

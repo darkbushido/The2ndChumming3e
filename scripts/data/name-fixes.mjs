@@ -15,6 +15,10 @@
  *     2026-10-24). The packs said "Elec. Vis. Mag 3", "Electric Vision Mag 3", "Optical Vis. Mag 3", "Optical Vision
  *     Mag 3" and two typo rows "… Mag 38"; every one reads "Electronic Magnification (Armor) [3]" now, the 3 in the rating.
  *     ⚠ Magnification is NOT a bare-number level elsewhere ("Smart Goggles 1" is a model) — this rule names these two items only.
+ *   - **Thermo Vision** — SR3 p.284 / Cannon Companion p.51 print one "Thermographic (700¥)". The pack had it twice, the
+ *     generated "Therm Vision (Armor)" and the hand-kept "Thermo Vision (Armor)"; the maintainer (2026-10-24): "there can
+ *     be only one and it will be Thermo Vision". "Therm Vision", "+Therm Vision" and "Therm Vision (Armor)" (a level kept
+ *     if present) read "Thermo Vision (Armor)" now. "Thermo Vision" itself and any other name are untouched.
  *
  * ⚠ **These RENAME, and argue for it:** only the exact old pack names (with their level and tag), only of the right
  * item TYPE (gear / armour); the level is kept in the name when it had one (the magnification's is always 3). A name a
@@ -27,6 +31,7 @@ export const EXTENDED_CLIP = 'Extended Clip (Weapon)';
 export const HELMET_TRANSCEIVER = 'Helmet/Wrist Transceiver (Armor)';
 export const ELECTRONIC_MAGNIFICATION = 'Electronic Magnification (Armor)';
 export const OPTICAL_MAGNIFICATION = 'Optical Magnification (Armor)';
+export const THERMO_VISION = 'Thermo Vision (Armor)';
 
 /** "Extended Clip (" / "Extended Clip ( (Weapon)" with an optional " [N]". */
 const BROKEN_CLIP = /^Extended Clip \((?: \(Weapon\))?(?:\s*\[(\d+)\])?\s*$/;
@@ -49,6 +54,10 @@ export const NameFixes = {
       if (base === 'Transceiver') {
         const rating = ModRatings.splitName(name)?.rating;
         return `${HELMET_TRANSCEIVER}${rating ? ` [${rating}]` : ''}`;
+      }
+      if (base === 'Therm Vision') {
+        const rating = ModRatings.splitName(name)?.rating;
+        return `${THERMO_VISION}${rating ? ` [${rating}]` : ''}`;
       }
       if (ELECTRONIC_MAG.test(base)) return `${ELECTRONIC_MAGNIFICATION} [3]`;
       if (OPTICAL_MAG.test(base)) return `${OPTICAL_MAGNIFICATION} [3]`;

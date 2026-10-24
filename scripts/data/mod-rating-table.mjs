@@ -1972,6 +1972,7 @@ export const COLLAPSED_SOURCES = {
   "sr3e-cc-armor": {
     "bed77e28caee56ae": "sr3e-armor-0173",
     "c6012ca9ce44ab83": "sr3e-armor-0172",
+    "ce8f1144b1d5cd50": "sr3e-armor-0176",
     "sr3e-armor-0182": "sr3e-armor-0181",
     "sr3e-armor-0183": "sr3e-armor-0181",
     "sr3e-armor-0184": "sr3e-armor-0181",

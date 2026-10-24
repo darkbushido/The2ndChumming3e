@@ -296,6 +296,17 @@
         "sr3e-armor-0260"
       ]
     },
+    "armor|Therm Vision@sr3e-cc-armor": {
+      "pack": "sr3e-cc-armor",
+      "by": "fix-armor-options",
+      "keep": "sr3e-armor-0176",
+      "levels": {},
+      "deleted": [
+        "ce8f1144b1d5cd50"
+      ],
+      "keepPack": "sr3e-cc-armor",
+      "removed": true
+    },
     "armor|Tracking Signal": {
       "pack": "sr3e-cc-armor",
       "by": "build-mod-ratings",
