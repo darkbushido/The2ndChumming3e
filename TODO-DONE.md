@@ -7527,6 +7527,27 @@ a line saying how (or that this is a further opponent). Tests in `phase-targets`
 `melee-each-opponent-a-new-action`. **Walked live 2026-10-23** (`test-shadowrun`, SWAT vs Troll then Ploder in one
 phase): the second card says "Opponent 2 … same Complex Action", the ledger holds one Complex, attacker TN 4 → 6.
 
+## 245. ✅ The melee GM window should pick up Prone — **requested in play, 2026-10-23** — merged in c79ec332
+
+Wanted: when a combatant is prone, the melee GM difficulty window knows it and ticks Prone itself. A feature, on
+a branch.
+
+**Done 2026-10-24.** Built on `feature/melee-prone` (dd03058e, 9b23ce0c) and merged. SR3 p.123 "Opponent prone −2": the GM window preselects its "who is DOWN" row from the fighters' Prone status (token or actor, `MeleeProne`), adds "both of them" (−2 each — the maintainer, 2026-10-24); with no window the flow applies it and the card says so. Tests `melee-prone`, 3 mutants. **Not yet walked live** — the agent's Foundry checklist is in the merge's branch report.
+
+## 246. ✅ NPC-side buttons in their own colour — **requested in play, 2026-10-23** — merged in 1609522d
+
+Observed: on a melee card the GM rolled the player's side by accident. Wanted: buttons for an NPC's side in a
+different colour so the GM can tell them apart. A feature, on a branch.
+
+**Done 2026-10-24.** Built on `feature/npc-corner-colour` (5b699258) and merged. The NPC corner's Submit on all eight two-corner cards is violet (`--sr-npc`, `NpcCorner`), set when the card is posted (the maintainer: "I just need to know what not to click"). Tests `npc-corner`. **Not yet walked live** — the agent's Foundry checklist is in the merge's branch report.
+
+## 247. ✅ Trim the token status list to what Shadowrun uses — **requested in play, 2026-10-23** — merged in 7e5e6ccc
+
+Wanted: a shorter status-effect list. Today the system appends its six statuses to Foundry's list and removes
+none of the core ones; there is no setting. A feature, on a branch.
+
+**Done 2026-10-24.** Built on `feature/status-effects-trim` (30c54cb7) and merged. GM menu Configure Status Effects; 13 of 34 core statuses shown by default, hidden ones kept (`hud: false`) and still removable from a token; existing worlds get the trimmed list too (the maintainer, 2026-10-24). Tests `status-effects`. **Not yet walked live** — the agent's Foundry checklist is in the merge's branch report.
+
 ## 248. ✅ Flechette seemed to do nothing against armour — **reported in play, 2026-10-23** — not a bug, closed in ef3b7cf3
 
 Observed: flechette did not appear to affect armour. SR3 p.116 makes flechette *stronger* only against
@@ -7534,6 +7555,19 @@ unarmoured targets (armoured: max(Impact × 2, Ballistic)), so this may be corre
 
 **Closed 2026-10-23, the maintainer:** a misremembered rule (flechette assumed to be better against armour).
 The system follows p.116; no change.
+
+## 249. ✅ Resolve every NPC in a grenade blast at once — **requested in play, 2026-10-23** — merged in 84588b41
+
+Observed: the GM resolves each NPC in a blast one by one. Wanted: all NPCs resolved in one step; player
+characters unchanged. A feature, on a branch.
+
+**Done 2026-10-24.** Built on `feature/blast-batch` (a540dad7, 3cceee7d) and merged. One GM button resists every NPC and GM-side drone in a blast onto one summary card; player characters, ordinary vehicles and player-rigged drones keep their own cards (the maintainer, 2026-10-24). Nothing applied. Tests `blast-batch`, 5 mutants. **Not yet walked live** — the agent's Foundry checklist is in the merge's branch report.
+
+## 250. ✅ Remove the blast marker once the blast is resolved — **requested in play, 2026-10-23** — merged in 84588b41
+
+Wanted: the blast marker disappears as soon as everyone in the blast has been resolved. A feature, on a branch.
+
+**Done 2026-10-24.** Built with #249 and merged. The marker clears once every caught target's resistance has FULLY finished (every 💥 rolled) or been ✕'d; walls stay out (the maintainer, 2026-10-24). Spell AoE and clouds stay manual. **Not yet walked live** — the agent's Foundry checklist is in the merge's branch report.
 
 ## 251. ✅ The initiative tracker stops working after 4–5 rounds — **reported in play, 2026-10-23** — fixed in 7cd2a4f9
 
