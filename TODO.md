@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**69 open.** 184 done — see [TODO-DONE.md](TODO-DONE.md).
+**69 open.** 185 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -519,7 +519,8 @@ row cannot be done properly until accessories are structured data.
   one-handed weapon if the need arises but that's a problem for another day."* It is specified in
   #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
 
-**Seen in play, 2026-10-23:** grenades that were only carried counted as being in hand. Not investigated yet.
+**Seen in play, 2026-10-23:** grenades that were only carried counted as being in hand — an old sheet's
+pre-Ready-Weapon default; fixed by the 0.7.1 migration, [#254](TODO-DONE.md#254).
 
 ## 176. Rules check 0.6.1 — Rules the guides state that the code does not implement
 

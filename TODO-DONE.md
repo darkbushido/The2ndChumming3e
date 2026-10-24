@@ -7566,3 +7566,12 @@ this morning's scripts (`73af510a`), so it predates the day's fixes.
 **Cause:** the test's 2-minute budget, not the code — the error was the *test* timeout firing inside a poll. Every
 client runs software WebGL; with `--timeout=360000` it passed in 4.6 min, with or without the Gamemaster tab.
 **Fix:** `test.slow()` on that test, as `melee-wounds` already has. Passed at 4.3 min.
+
+## 254. ✅ Carried grenades count as in hand — **reported in play, 2026-10-23** — fixed in 6d583aa0
+
+Observed (the maintainer, on an old player character): grenades that were only carried counted as being in hand.
+**Cause:** weapons from before Ready Weapon (0.6) hold `ready: true`, the field's initial; new ones arrive put away
+(TODO 135). **Fix:** migration **0.7.1** puts away grenades on characters and NPCs (`ReadyWeapon.putAwayCarriedGrenade`).
+Tests in `ready-weapon`, mutant `old-sheet-grenades-stay-in-hand`; live: an old-style grenade put away on load.
+⚠ `tests/migrations.test.mjs` is red until the release bumps `system.json` to 0.7.1 — **the maintainer's decision,
+2026-10-23** ("Main, red until release"). Until then the migration also re-runs on every GM load.
