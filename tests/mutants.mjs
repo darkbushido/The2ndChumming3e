@@ -57,6 +57,7 @@ const AREAEFFECT = { module: '../scripts/data/area-effect.mjs', klass: 'AreaEffe
 const AREASHAPE = { module: '../scripts/data/area-shape.mjs', klass: 'AreaShape' };
 const SPELLTN = { module: '../scripts/data/spell-target.mjs', klass: 'SpellTarget' };
 const FLING = { module: '../scripts/data/fling.mjs', klass: 'Fling' };
+const MPRONE = { module: '../scripts/data/melee-prone.mjs', klass: 'MeleeProne' };
 const WILLING = { module: '../scripts/data/willing-target.mjs', klass: 'WillingTarget' };
 
 const RANGEB = { module: '../scripts/data/range-bands.mjs', klass: 'RangeBands' };
@@ -3245,5 +3246,29 @@ export const MUTANTS = [
     ...INTEGRALRC, method: 'has',
     was:    'a weapon with no bracketed RC (null) read as having one worth 0, so ticking the box on an Ares Predator dropped its compensation',
     impl:   system => system?.recoilModIntegral !== undefined,
+  },
+  {
+    id:     'melee-prone-ignores-the-token',
+    suite:  'melee-prone',
+    ...MPRONE, method: 'isProne',
+    was:    'a plausible miss (TODO 245): reading only the world actor, so an unlinked goon knocked prone from its '
+          + 'token HUD stood in the melee window — its prone lives on the token\x27s own synthetic actor (SR3 p.123)',
+    impl:   actor => actor?.statuses?.has?.('prone') === true,
+  },
+  {
+    id:     'melee-prone-both-down-drops-one',
+    suite:  'melee-prone',
+    ...MPRONE, method: 'side',
+    was:    'the single "who is DOWN" select could only name one fighter, so two fighters on the floor gave only the '
+          + 'defender -2; each has a prone opponent (SR3 p.123 "Opponent prone -2")',
+    impl:   (atkProne, defProne) => (atkProne ? 'attacker' : defProne ? 'defender' : null),
+  },
+  {
+    id:     'melee-prone-bonus-to-the-one-down',
+    suite:  'melee-prone',
+    ...MPRONE, method: 'deltas',
+    was:    'the easy inversion of p.123 "Opponent prone -2": the bonus given to the fighter lying down instead of the '
+          + 'one still standing',
+    impl:   who => ({ atk: (who === 'attacker' || who === 'both') ? -2 : 0, def: (who === 'defender' || who === 'both') ? -2 : 0 }),
   },
 ];

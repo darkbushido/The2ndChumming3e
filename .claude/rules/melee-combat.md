@@ -32,6 +32,11 @@ paths:
   character is on either side**; skips only NPC vs NPC (TODO 94). ⚠ "A player's character" =
   `SR3EQuery.isPlayerCharacter` (assigned or **explicit** Owner), never `hasPlayerOwner` (default ownership
   would make every goon a PC). `adjudicated` is the only reliable signal a GM looked (TODO 50).
+- **Prone** (p.123 *"Opponent prone –2"* — the bonus goes to the one STANDING; TODO 245): `rollMeleeAttack` reads
+  each fighter's core `prone` status (`MeleeProne.isProne`, `scripts/data/melee-prone.mjs` — actor **or token**:
+  an unlinked token keeps its own) and carries `atkProne`/`defProne`; the window **preselects** "who is DOWN"
+  (`MeleeProne.side`, with **both** — each has a prone opponent, −2/−2) and shows a 🔻 hint. Never locked. With no
+  window the flow applies `MeleeProne.deltas` itself, like the +2s above.
 - ⚠ **Visibility halves in melee** (p.123: half, round down, except Full Darkness) — `meleeVisibilityModifier`.
 
 #### ⚠ Reach is a DIFFERENTIAL, and applying it is the fighter's CHOICE  · *p.121*
