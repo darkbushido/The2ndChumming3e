@@ -1,5 +1,6 @@
 import { QuickStrike } from '../data/quick-strike.mjs';
 import { ShockStun } from '../data/shock-stun.mjs';
+import { RoundQueue } from '../data/round-queue.mjs';
 
 /**
  * SR3ECombat - Custom Combat with SR2/SR3 initiative modes
@@ -11,7 +12,9 @@ export class SR3ECombat extends Combat {
    * @override
    */
   async rollInitiative(ids, options = {}) {
-    const combatants = ids?.length ? ids.map(id => this.combatants.get(id)) : this.combatants.contents;
+    // The whole-combat roll (each new round) skips the defeated — unconscious or dead — who get no turns this
+    // round (TODO 252, see buildRoundQueue). Asked for by id, anyone still rolls: the GM decides.
+    const combatants = ids?.length ? ids.map(id => this.combatants.get(id)) : this.combatants.contents.filter(c => !c.isDefeated);
 
     // Clear Spell Defense from the previous round — Sorcery dice return, Spell Pool stays spent
     for (const c of combatants) {
@@ -121,6 +124,21 @@ export class SR3ECombat extends Combat {
   }
 
   /**
+   * The tracker's row order (TODO 242). Core sorts by initiative, then by combatant id, so tied combatants were
+   * listed in an arbitrary order while the queue plays them by the `tieBreak` rank (Reaction, then a dice-off —
+   * `_assignTieBreaks`). Same key here, so the rows read in the order people act. Core passes this to
+   * `Array#sort` unbound — no `this`.
+   * @override
+   */
+  _sortCombatants(a, b) {
+    const ia = Number.isNumeric(a.initiative) ? a.initiative : -Infinity;
+    const ib = Number.isNumeric(b.initiative) ? b.initiative : -Infinity;
+    const ra = a.flags?.The2ndChumming3e?.tieBreak ?? 0;
+    const rb = b.flags?.The2ndChumming3e?.tieBreak ?? 0;
+    return (ib - ia) || (ra - rb) || (a.id > b.id ? 1 : -1);
+  }
+
+  /**
    * Start the combat encounter
    * @override
    */
@@ -136,7 +154,10 @@ export class SR3ECombat extends Combat {
     // Spell Defense card is built against full pools. This call covers every other entry
     // point; it is dirty-checked, so arriving here already clean writes nothing.
     await this._endOfTurnReset();
-    await this.rebuildQueue({ resetIndex: true });
+    const queue = await this.rebuildQueue({ resetIndex: true });
+    // Point the tracker at the first slot: the tie-break writes can re-sort the rows (TODO 242), and core keeps
+    // `turn` on the same COMBATANT across a re-sort — which was the id-first one, not whoever acts first.
+    if (queue?.length) await this._applySlot(queue, 0);
     return this;
   }
 
@@ -172,6 +193,9 @@ export class SR3ECombat extends Combat {
     const rank  = new Map();
 
     for (const c of this.combatants.contents) {
+      // Unconscious or dead (a full track marks the combatant defeated, sr3e.js updateActor) — no turns. They
+      // stay on the tracker, so one who is healed and wakes acts again from the next round (TODO 252).
+      if (c.isDefeated) continue;
       const base = Number(c.initiative);
       if (!Number.isFinite(base) || base <= 0) continue;
       rank.set(c.id, c.flags?.The2ndChumming3e?.tieBreak ?? 0);
@@ -208,6 +232,7 @@ export class SR3ECombat extends Combat {
   async _assignTieBreaks() {
     const byScore = new Map();
     for (const c of this.combatants.contents) {
+      if (c.isDefeated) continue;   // no turns, so no tie to break (TODO 252)
       const init = Number(c.initiative);
       if (!Number.isFinite(init) || init <= 0) continue;
       if (!byScore.has(init)) byScore.set(init, []);
@@ -298,6 +323,28 @@ export class SR3ECombat extends Combat {
    * @override
    */
   async nextTurn() {
+    // A player's End Turn runs on the GM (TODO 241). Core lets a player write only `round`, `turn` and
+    // `combatants` on a Combat (common/documents/combat.mjs `#canUpdate`), but advancing writes the queue flags,
+    // the next combatant's display flags and recoil on other people's actors — so a player was refused outright.
+    if (!game.user.isGM) {
+      const res = await game.sr3e.SR3EQuery.asGM('sr3e.combat.nextTurn', { combatId: this.id, combatantId: this.combatant?.id ?? '' })
+        .catch(err => ({ ok: false, reason: String(err?.message ?? err) }));
+      if (res && !res.ok) ui.notifications.warn(`End Turn: ${res.reason}.`);
+      return this;
+    }
+
+    // Backstop for TODO 251: the deleteCombatant hook normally prunes as the combatant leaves. If it did not
+    // (no GM connected then), the acting slot may be the removed one — play the next survivor, don't skip them.
+    const pruned = await this.pruneQueue();
+    if (pruned?.actingRemoved) {
+      if (pruned.index >= pruned.queue.length) return this._newRound();
+      if (pruned.queue[pruned.index].pass !== pruned.removedSlot.pass) {
+        for (const c of this.combatants.contents) await c.actor?.resetRecoil?.();
+      }
+      await this._applySlot(pruned.queue, pruned.index);
+      return this;
+    }
+
     let queue = this.flags?.The2ndChumming3e?.queue ?? null;
     if (!queue?.length) queue = await this.rebuildQueue({ resetIndex: true });
     if (!queue.length) return this._newRound();   // nobody has initiative yet
@@ -315,6 +362,19 @@ export class SR3ECombat extends Combat {
 
     await this._applySlot(queue, next);
     return this;
+  }
+
+  /**
+   * Drop the slots of combatants no longer in this combat (TODO 251, `RoundQueue.prune`), keeping the index on
+   * whoever is acting. Writes only when something was removed; returns the prune result, or null.
+   */
+  async pruneQueue() {
+    const flags = this.flags?.The2ndChumming3e ?? {};
+    if (!flags.queue?.length) return null;
+    const r = RoundQueue.prune(flags.queue, flags.queueIndex ?? 0, this.combatants.contents.map(c => c.id));
+    if (!r.changed) return null;
+    await this.update({ flags: { The2ndChumming3e: { queue: r.queue, queueIndex: r.index } } });
+    return r;
   }
 
   /**
@@ -418,6 +478,27 @@ export class SR3ECombat extends Combat {
    * unconditional, so a confirmation every round would be pure noise.
    * @private
    */
+  /**
+   * `sr3e.combat.nextTurn` — a player's End Turn, carried out on the GM (TODO 241). Only the owner of the acting
+   * combatant may end the turn, and only while it is still theirs: `combatantId` is who the player saw acting, so
+   * a double click or a click that crossed the GM's own advance does not skip the next combatant.
+   */
+  static registerNextTurn() {
+    CONFIG.queries['sr3e.combat.nextTurn'] = async ({ rid, combatId, combatantId, _requesterId }) =>
+      game.sr3e.SR3EQuery.once(rid, async () => {
+        game.sr3e.SR3EQuery.assertActiveGM();
+        const combat = game.combats.get(combatId);
+        if (!combat?.started) return { ok: false, reason: 'that combat is not running' };
+        const cbt  = combat.combatant;
+        const user = game.users.get(_requesterId);
+        if (!cbt || cbt.id !== combatantId) return { ok: false, reason: 'the turn has already moved on' };
+        const owns = cbt.testUserPermission?.(user, 'OWNER') || cbt.actor?.testUserPermission?.(user, 'OWNER');
+        if (!user?.isGM && !owns) return { ok: false, reason: 'it is not your turn' };
+        await combat.nextTurn();
+        return { ok: true };
+      });
+  }
+
   /** `sr3e.combat.quickStrike` — a player's declaration, carried out on the GM. */
   static registerQuickStrike() {
     CONFIG.queries['sr3e.combat.quickStrike'] = async ({ rid, combatId, combatantId, force, _requesterId }) =>
@@ -527,7 +608,20 @@ export class SR3ECombat extends Combat {
   }
 
   async _newRound() {
-    await this.nextRound();                       // increments round, resets turn
+    return this.nextRound();
+  }
+
+  /**
+   * A new Combat Turn, however it is reached — the last End Turn of a round (`nextTurn` → `_newRound`) or the
+   * tracker's own Next Round control, which calls this directly. That control used to skip all of it (TODO 243,
+   * seen in play 2026-10-23 as "Full Defense stays in effect on the next round"): no Full Defense clear, no pool
+   * refresh, no stun count-down, no initiative re-roll.
+   * @override
+   */
+  async nextRound() {
+    // The upkeep writes other people's actors and the queue flags — a GM's job (core gives the control to GMs).
+    if (!game.user.isGM) { ui.notifications.warn('Only the GM can start the next round.'); return this; }
+    await super.nextRound();                      // increments round, resets turn
     await this._endOfTurnReset();
     await this._countDownStun();
     await this.rollInitiative();                  // RAW: re-roll every round

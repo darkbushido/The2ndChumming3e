@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0114",
     "name": "Renault-Fiat Eurovan(Pickup)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/pickup-yellow.svg",
     "system": {
       "vehicleType": "car",
       "cost": 38000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2,
+      "height": 5.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/pickup-yellow.svg"
+      }
+    }
   },
   "embedded": {}
 }

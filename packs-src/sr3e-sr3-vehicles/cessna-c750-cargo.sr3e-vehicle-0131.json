@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0131",
     "name": "Cessna C750(Cargo)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/light-plane-teal.svg",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 177000,
@@ -69,7 +69,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 11,
+      "height": 9,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/light-plane-teal.svg"
+      }
+    }
   },
   "embedded": {}
 }

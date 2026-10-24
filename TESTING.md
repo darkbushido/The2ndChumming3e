@@ -3108,3 +3108,18 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] **Shock Glove.** Win a melee exchange with the glove: the fist's Resist Damage card has **no** stun button; the **Resist the Shock (7S Stun)** card has one, and its Power is **7** (not the staged Power).
 - [ ] **Ranged.** Shoot the Super Shock (10S Stun): the soak card's Armour type defaults to **Impact** at half, and the stun button states Power 10.
 - [ ] A hit with an ordinary weapon (Club, Predator) shows no stun button.
+
+## 69. Cyberlimb Mods — book corrections and in-limb cyberweapons (TODO 255, SR3 p.303, M&M pp.36-41)
+
+The packs change (`npm run packs:install`, Foundry closed). Copies already on characters keep their old numbers until the 0.7.1 migration (TODO 256).
+
+- [x] **In-limb weapons.** Install the Cyberlimb Mods **Spur** (SR3 Cyberware) and **CyGun Shotgun(ShtG)(CYB)** (M&M Cyberware) on a new character: a melee **Spur** (STR)M and a firearm **CyGun Shotgun** 8S appear on the weapons tab, each linked to its implant. The in-limb **Venom Sack** makes no weapon. *Walked by the agent 2026-10-23 (mcp-api as active GM, a disposable actor, deleted).*
+- [ ] **Pack values.** After `packs:install`, drag from the compendiums: Direct Neural Interface 4,500¥ 5P-Q; the SR3 in-limb Smartlink 6/4 days, Street Index 1.5; Mount, Tracking 25,000¥; Cyber Holster 5P-N; the Cyberlimbs Fingertip Compartment 0 Essence; Rigger Decryption Module **[10]** (Cyberlimb Mods) at 175,000¥, and only one [1].
+
+## 70. Weapon mods — book corrections in the generated accessories (TODO 258, SR3 p.281-282, CC pp.33, 80-83)
+
+The gear packs change (`npm run packs:install`, Foundry closed).
+
+- [ ] **Cannon Companion gear:** Sawed-Off Shotgun Barrel 64¥; Rangefinder's description reads **Mount: Top**; **Laser Sight, Low-Power** 800¥, Mount Top/Under, page cc.82, and its description gives Design Points +100 × 8.
+- [ ] **SR3 core gear:** no low-power laser sight remains; Smart Shades I (Cost 6000¥) shows page sr3.281 and the "double the nuyen" line; Ultrasound Shades and Gas Vent I carry their source notes.
+- [ ] **Man & Machine gear:** Smart Shades II say "Derived; not printed".

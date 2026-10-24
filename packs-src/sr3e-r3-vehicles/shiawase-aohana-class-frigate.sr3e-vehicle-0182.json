@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0182",
     "name": "Shiawase Aohana-Class Frigate",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/warship-slate.svg",
     "system": {
       "vehicleType": "ship",
       "cost": 116000000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 14,
+      "height": 120,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/warship-slate.svg"
+      }
+    }
   },
   "embedded": {}
 }

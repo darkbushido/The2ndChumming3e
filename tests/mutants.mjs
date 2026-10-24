@@ -84,6 +84,13 @@ export const MUTANTS = [
     impl:   () => null,
   },
   {
+    id:     'limb-weapon-is-no-weapon',
+    suite:  'cyber-weapons',
+    module: '../scripts/data/cyber-weapons.mjs', klass: 'CyberWeapons', method: 'isCyberweapon',
+    was:    'a spur, blade or cybergun built into a cyberlimb (category Cyberlimb Mods) installed with no attack, because only the Cyberweapons category was read (TODO 255)',
+    impl:   item => item?.type === 'cyberware' && item?.system?.cyberwareCategory === 'Cyberweapons',
+  },
+  {
     id:     'cybergun-as-melee',
     suite:  'cyber-weapons',
     module: '../scripts/data/cyber-weapons.mjs', klass: 'CyberWeapons', method: 'gunCode',
@@ -3245,5 +3252,37 @@ export const MUTANTS = [
     ...INTEGRALRC, method: 'has',
     was:    'a weapon with no bracketed RC (null) read as having one worth 0, so ticking the box on an Ares Predator dropped its compensation',
     impl:   system => system?.recoilModIntegral !== undefined,
+  },
+  {
+    id:     'old-sheet-grenades-stay-in-hand',
+    suite:  'ready-weapon',
+    module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon', method: 'putAwayCarriedGrenade',
+    was:    'grenades on a pre-0.6 sheet kept ready: true, so every carried grenade counted as in hand (TODO 254, seen in play 2026-10-23)',
+    impl:   () => null,
+  },
+  {
+    id:     'melee-each-opponent-a-new-action',
+    suite:  'phase-targets',
+    module: '../scripts/data/phase-targets.mjs', klass: 'PhaseTargets', method: 'sameMeleeAction',
+    was:    'every melee opponent in a phase was charged its own Complex Action; SR3 p.122 makes several opponents one Complex Action (TODO 244)',
+    impl:   () => false,
+  },
+  {
+    id:     'round-queue-keeps-removed',
+    suite:  'round-queue',
+    module: '../scripts/data/round-queue.mjs', klass: 'RoundQueue', method: 'prune',
+    was:    'a combatant removed mid-round left its slots in the queue: the next combatant acted twice and a leftover slot gave the top tracker row an extra turn (TODO 251, seen in play 2026-10-23)',
+    impl:   (queue, index) => ({ queue: queue ?? [], index: Number(index) || 0, changed: false, actingRemoved: false, removedSlot: null }),
+  },
+  {
+    id:     'round-queue-skips-next-survivor',
+    suite:  'round-queue',
+    module: '../scripts/data/round-queue.mjs', klass: 'RoundQueue', method: 'prune',
+    was:    'pruning the acting combatant without saying so — End Turn then advanced past the survivor the tracker already showed, so they lost their action (TODO 251)',
+    impl:   (queue, index, liveIds) => {
+      const live = new Set(liveIds); const q = queue ?? [];
+      const kept = q.filter(s => live.has(s.id));
+      return { queue: kept, index: q.slice(0, index).filter(s => live.has(s.id)).length, changed: kept.length !== q.length, actingRemoved: false, removedSlot: null };
+    },
   },
 ];

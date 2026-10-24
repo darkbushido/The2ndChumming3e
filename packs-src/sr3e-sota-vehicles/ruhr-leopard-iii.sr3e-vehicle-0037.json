@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0037",
     "name": "Ruhr. Leopard III",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/tank-olive.svg",
     "system": {
       "vehicleType": "military",
       "cost": 7290000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 3.5,
+      "height": 10,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/tank-olive.svg"
+      }
+    }
   },
   "embedded": {}
 }

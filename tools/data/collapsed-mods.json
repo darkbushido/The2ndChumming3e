@@ -1,0 +1,90 @@
+{
+  "about": "Mods collapsed to ONE pack document (tools/build-mod-ratings.mjs --collapse). Their levels live here and are merged into scripts/data/mod-rating-table.mjs. TODO 260.",
+  "families": {
+    "vehicle|Vehicle Armor": {
+      "pack": "sr3e-r3-vehicle-mods",
+      "keep": "sr3e-vehiclemod-0044",
+      "levels": {
+        "1": {
+          "cost": 1250,
+          "description": "",
+          "installTime": "8 hrs/Vehicle B/R(1)",
+          "load": "Body^2*5kg"
+        },
+        "2": {
+          "cost": 2500,
+          "description": "",
+          "installTime": "16 hrs/Vehicle B/R(1)",
+          "load": "Body^2*10kg"
+        },
+        "3": {
+          "cost": 3750,
+          "description": "",
+          "installTime": "24 hrs/Vehicle B/R(1)",
+          "load": "Body^2*15kg"
+        },
+        "4": {
+          "cost": 5000,
+          "description": "",
+          "installTime": "32 hrs/Vehicle B/R(2)",
+          "load": "Body^2*20kg"
+        },
+        "5": {
+          "cost": 6250,
+          "description": "",
+          "installTime": "40 hrs/Vehicle B/R(2)",
+          "load": "Body^2*25kg"
+        },
+        "6": {
+          "cost": 7500,
+          "description": "Handling+1",
+          "installTime": "48 hrs/Vehicle B/R(2)",
+          "load": "Body^2*30kg"
+        },
+        "7": {
+          "cost": 9750,
+          "description": "Handling+1",
+          "installTime": "56 hrs/Vehicle B/R(3)",
+          "load": "Body^2*35kg"
+        },
+        "8": {
+          "cost": 10000,
+          "description": "Handling+1",
+          "installTime": "64 hrs/Vehicle B/R(3)",
+          "load": "Body^2*40kg"
+        },
+        "9": {
+          "cost": 12500,
+          "description": "Handling+1",
+          "installTime": "72 hrs/Vehicle B/R(3)",
+          "load": "Body^2*45kg"
+        },
+        "10": {
+          "cost": 13750,
+          "description": "Handling+1",
+          "installTime": "80 hrs/Vehicle B/R(4)",
+          "load": "Body^2*50kg"
+        },
+        "11": {
+          "cost": 15000,
+          "description": "Handling+1",
+          "installTime": "88 hrs/Vehicle B/R(5)",
+          "load": "Body^2*55kg"
+        }
+      },
+      "unplaced": [
+        {
+          "id": "sr3e-vehiclemod-0055",
+          "rating": 11,
+          "row": {
+            "cost": 16250,
+            "description": "Handling+2",
+            "installTime": "93 hrs/Vehicle B/R(6)",
+            "load": "Body^2*60kg"
+          },
+          "why": "printed at a level another document already has, with different numbers — check the book"
+        }
+      ]
+    }
+  }
+}

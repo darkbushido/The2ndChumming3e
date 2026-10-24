@@ -38,10 +38,24 @@ export const PhaseTargets = {
     return list.length ? list[list.length - 1] : null;
   },
 
-  /** The record with `key` added (once), for `phase`. */
-  add(record, phase, key, tokenId = null) {
+  /** The record with `key` added (once), for `phase`. `melee` marks a melee opponent (`sameMeleeAction`). */
+  add(record, phase, key, tokenId = null, { melee = false } = {}) {
     const targets = PhaseTargets.current(record, phase);
     if (targets.some(t => t.key === key)) return { phase, targets };
-    return { phase, targets: [...targets, { key, tokenId }] };
+    return { phase, targets: [...targets, { key, tokenId, ...(melee ? { melee: true } : {}) }] };
+  },
+
+  /**
+   * Is a melee attack on `key` another opponent in the SAME Complex Action? · SR3 p.122 (TODO 244)
+   *
+   * > "Characters may attack more than one opponent with a Complex Action. Each attack uses the attacking
+   * > character's base Combat Skill dice, plus dice from the Combat Pool…"
+   *
+   * True when this phase already has a MELEE opponent and `key` is a new one — that attack costs no further
+   * action. Swinging at the same opponent again is a new action; so is a melee attack after only ranged fire.
+   */
+  sameMeleeAction(targets, key) {
+    const list = targets ?? [];
+    return list.some(t => t.melee) && !list.some(t => t.key === key);
   },
 };

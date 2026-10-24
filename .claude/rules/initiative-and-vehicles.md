@@ -30,6 +30,15 @@ Two modes (game setting):
 Both end the round and prompt the GM to re-roll.
 
 - **Shift-click** any initiative button (sheet bolt, tracker d20) → physical-dice dialog for typing the result.
+- **Removing a combatant mid-round** (TODO 251, `scripts/data/round-queue.mjs`): a `deleteCombatant` hook (active
+  GM) prunes its slots from the stored queue, holding position; if it was acting, the next one acts now.
+  `nextTurn` prunes too, as a backstop. ⚠ Stale slots made the next combatant act twice and gave the top row extra turns.
+- **The defeated get no turns** (TODO 252): `buildRoundQueue` and `_assignTieBreaks` skip `isDefeated` (a full
+  track sets it, `updateActor` in sr3e.js), and the round's whole-combat re-roll skips them. They stay on the
+  tracker; healed, they act again from the next round. Knocked out mid-round, they keep that round's slots.
+- **A player's End Turn runs on the GM** (TODO 241): core lets a player write only `round`/`turn`/`combatants`
+  on a Combat, and `nextTurn` writes queue flags — so a non-GM `nextTurn` asks `sr3e.combat.nextTurn`, which
+  checks the requester owns the acting combatant and that it is still the one they saw acting.
 - **Pre-start lock**: before `combat.started` the tracker's per-combatant roll icons are dimmed and
   `pointer-events:none`; initiative is rolled only through "Begin Encounter".
 

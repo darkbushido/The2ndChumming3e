@@ -34,18 +34,18 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**64 open.** 176 done — see [TODO-DONE.md](TODO-DONE.md).
+**73 open.** 187 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
-| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings" |
+| 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses` |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[245](#245) The melee GM window should pick up Prone<br>[246](#246) NPC-side buttons in their own colour<br>[247](#247) Trim the token status list to what Shadowrun uses<br>[249](#249) Resolve every NPC in a grenade blast at once<br>[250](#250) Remove the blast marker once the blast is resolved<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) A mod's level is its rating, picked from a dropdown — not part of its name |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -444,6 +444,13 @@ Action economy is **bookkeeping**, not an outcome, so tracking it does not cross
 *"all stats are manually editable"* still applies: every auto-charge must be reversible by the GM
 with one click, and the existing three buttons stay as the manual path.
 
+### Seen in play, 2026-10-23
+
+Melee attacks did not mark the attacker's action on the initiative tracker. **Re-checked live the same day, after
+the tracker fixes (#251, #242):** a melee attack by the acting combatant marks one Complex. A charge is recorded only
+for the tracker's *acting* combatant (`SR3EActionLedger.activeFor`), and before #251 a removed combatant's leftover
+slot pointed the tracker at the wrong row — the likely cause. Watch for it in the next session.
+
 ## 49. Nothing models hands — what is held, and how many can be held
 
 > **Built 2026-09-15 on `feature/action-economy`** (0.6; not merged). `hands` on every weapon (0-2,
@@ -511,6 +518,9 @@ row cannot be done properly until accessories are structured data.
 - **Quick Draw is explicitly out of scope** — *"we will need some way for someone to quick draw a
   one-handed weapon if the need arises but that's a problem for another day."* It is specified in
   #47 (p.107, Reaction (4) Test, +2 unholstered, +2 each for two weapons); do not build it here.
+
+**Seen in play, 2026-10-23:** grenades that were only carried counted as being in hand — an old sheet's
+pre-Ready-Weapon default; fixed by the 0.7.1 migration, [#254](TODO-DONE.md#254).
 
 ## 176. Rules check 0.6.1 — Rules the guides state that the code does not implement
 
@@ -587,6 +597,9 @@ The system stores `initiateGrade` and nothing else of *Magic in the Shadows* pp.
   masking, possessing, quickening, reflecting, shielding.
 - **Geasa** (MitS pp.30-33): take one on a lost Magic point, at most unaugmented Willpower, break one and lose all.
 A feature, on a branch; the initiate's Astral Pool and Astral Reaction bonus are being fixed separately (0.7.0).
+
+**Seen in play, 2026-10-23:** an adept can spend Karma on a power point without initiating. The maintainer:
+that purchase should follow the *Magic in the Shadows* rules for it. Not investigated yet (page to find in MitS).
 
 ## 229. Learning spells, and starting Spell Points — **found in the 0.7.0 rules check, 2026-10-18**
 
@@ -697,6 +710,9 @@ Found while adding stall speeds: three Rigger 3 vehicles are named just **"A"** 
 **"Lockheed"** (r3.178), and three aircraft are typed **car** (the Lockheed C-260 Transport, "Lockheed", "A"). Read
 the R3 rows for the full names and types, fix the pack (`packs-src/sr3e-r3-vehicles/`) and its source data, with a
 migration that renames owned copies still carrying the short names.
+
+**Also found 2026-10-24 (TODO 257):** the **N-C Bergen (tractor)** and **(trailer)** (r3.192) are a road train typed
+**fixedwing**, and the **Vulkan Electronaut** is a minisub typed **ship**. Check both against the R3 rows.
 
 ### 🪄 Spells & drugs
 
@@ -985,6 +1001,45 @@ wants this rethought before the next release. Not diagnosed yet: settle first *w
 (SR3 gear tables list Cost and Weight per Rating on some items, a flat figure on others — cite each), then
 where the multiplication happens (`itemRating()`, the buy flow, encumbrance, the ledger) and where it is
 shown. Design question for the maintainer before any code.
+
+## 257. Top-down token art for every vehicle and drone — **requested 2026-10-24, branch `claude/inspiring-wright-vggxfj`**
+
+The token half of [#104](#104): original, code-drawn art that can ship in the public packs (the private
+table's map art is licensed and never can). **Built:** `tools/build-vehicle-art.mjs` draws 60 parameterised
+archetypes (cars, vans, bikes, military, boats, ships, subs, hovercraft, airships, helicopters, planes,
+drones — `ARCHETYPES`) as SVG, top-down, front facing **south**
+(rotation 0), transparent, in centimetres so the viewBox is the footprint. Every actor of every
+`sr3e-*-vehicles` and `sr3e-*-drones` pack — 263 in all — is mapped
+by name in the reviewed `tools/data/vehicle-archetypes.json`; its paint is the archetype palette's pick by a
+hash of the name (Lone Star and DocWagon have liveries). The tool writes `styles/textures/vehicles/<archetype>-<paint>.svg`
+and sets `img`, `prototypeToken.texture.src` and `prototypeToken.width/height` (metres = 1 m squares) in
+`packs-src`. Contact sheet: `audit/vehicle-art-contact-sheet.png` (`--sheet`). `tests/vehicle-art.test.mjs`
+fails on an unmapped entry, a missing or drifted SVG, an orphan, or a token size off Foundry's ½ step.
+
+- **Owned copies:** the **0.8.0 migration** gives owned VEHICLES the art (`scripts/data/vehicle-art.mjs`,
+  reading the generated `scripts/data/vehicle-art-map.mjs`) — picture and prototype token while still stock,
+  size only while still 1 × 1. Drones are not migrated (the maintainer, 2026-10-24: *"for vehicals yes"*).
+  ⚠ `tests/migrations.test.mjs` fails ("0.8.0 is not newer than 0.7.0") until the 0.8.0 release bumps
+  `system.json` — the same as the 0.7.0 migration did before its release.
+- Misfiled entries ([#240](#240)) are mapped to what they ARE: "A" and "Lockheed" → `airliner`, the
+  Lockheed C-260 → `transport` (all typed car); the N-C Bergen tractor and trailer → `truck` / `trailer`
+  (typed fixedwing); the Vulkan Electronaut → `minisub` (typed ship).
+- Ships are their real size (the Akihito carrier is 75 × 330 squares); big hulls get a coarser texture
+  (4096 px cap) and a thicker outline.
+
+**🧪 Test in Foundry** (Foundry restarted after `npm run packs:install`)
+1. Drag a sedan, a bus, a sport bike, a tank and a rotor drone from the packs onto a 1 m grid scene: each
+   token is its real size (sedan 2 × 5 squares, bus 2.5 × 12, rotor drone 1 × 1) and the art fills it.
+2. At rotation 0 every token's nose (head lamps, gun, camera) points **down** the screen; rotating the
+   token turns the art with it.
+3. The actor sheet's portrait and the compendium list show the same art, with no broken-image icon on
+   a Linux server (case-exact paths).
+4. A crawler and a micro drone (½ × ½ m) are still legible at the scene's default zoom.
+6. Migration: in a world stamped 0.7.0 holding a vehicle dragged in before this branch (old texture,
+   1 × 1 token) and a drone, reload as GM after the 0.8.0 bump: the vehicle gets the drawn picture and
+   its real token size; the drone keeps its old picture; a vehicle with a chosen picture is untouched.
+5. A helicopter, a speedboat and the supercarrier: the carrier token loads (texture ≤ 4096 px) and
+   reads at a zoomed-out view; rotor discs are see-through.
 
 ### 📦 Content gaps
 
@@ -2682,6 +2737,101 @@ the ⏳ panel row; a gear "Power Focus (Rating 2)"; the amber "over N"; undoing 
 13. As GM, each purchase's ledger line has a **↺**. It lists the refund and every change, each
     untickable; undoing refunds as a new "↺ Undid: …" line, marks the old one "(undone)", and puts the
     stat back. Undo "Learned <new skill>": the skill item is removed. Players see no ↺.
+
+## 245. The melee GM window should pick up Prone — **requested in play, 2026-10-23**
+
+Wanted: when a combatant is prone, the melee GM difficulty window knows it and ticks Prone itself. A feature, on
+a branch.
+
+## 246. NPC-side buttons in their own colour — **requested in play, 2026-10-23**
+
+Observed: on a melee card the GM rolled the player's side by accident. Wanted: buttons for an NPC's side in a
+different colour so the GM can tell them apart. A feature, on a branch.
+
+## 247. Trim the token status list to what Shadowrun uses — **requested in play, 2026-10-23**
+
+Wanted: a shorter status-effect list. Today the system appends its six statuses to Foundry's list and removes
+none of the core ones; there is no setting. A feature, on a branch.
+
+## 249. Resolve every NPC in a grenade blast at once — **requested in play, 2026-10-23**
+
+Observed: the GM resolves each NPC in a blast one by one. Wanted: all NPCs resolved in one step; player
+characters unchanged. A feature, on a branch.
+
+## 250. Remove the blast marker once the blast is resolved — **requested in play, 2026-10-23**
+
+Wanted: the blast marker disappears as soon as everyone in the blast has been resolved. A feature, on a branch.
+
+## 256. Show which cyberware goes inside a cyberlimb — **requested 2026-10-23**
+
+82 `Cyberlimb Mods` entries share a name with the ordinary implant (`Smartlink II` at .25 and at .5), and
+nothing in the compendium, on the item or on the sheet says which is which. The maintainer chose all four
+markings, and a book-dependent price for built-in gear. A feature, on branch `feature/cyberlimb-mods-marked`.
+
+- **Rename** to `<name> (Cyberlimb) [N]` (the suffix before the rating, so TODO 130's later `[N]` strip leaves a
+  clean name), after moving any name-keyed reader to a stem (`CyberWeapons.weaponName`, `CYBERWARE_NAMES`,
+  `item-icons.mjs`, the Johnson alias tools).
+- **A "Built into a cyberlimb" folder** in `sr3e-sr3-cyberware`, `sr3e-mm-cyberware` and `sr3e-cc-cyberware`.
+- **A first line in the description** citing SR3 p.303 and M&M pp.35–36.
+- **A 🦾 chip on the actor sheet's cyberware row**, read from the category, so owned copies show it at once.
+- **Built-in gear price** (the 14 comm units, memory chips and pocket secretary): SR3 p.303 prices a built-in
+  device at **4 × normal cost**; M&M pp.35–36 gives capacity units and no multiplier. The maintainer: ×4 when
+  *Man & Machine* is off, the normal price when it is on (`optionalRuleAllowed('mm')`), in the purchase dialog.
+- **Migration 0.7.1**: [#255](TODO-DONE.md#255)'s corrections onto owned copies (only while a field still holds the old
+  value), the rename (only an untouched name), the flag and the description line. Three populations.
+
+## 259. Show where each weapon mod mounts — **requested 2026-10-23**
+
+The maintainer, after [#256](#256): "we should also do something similar for weapon mods". Decided 2026-10-23
+(`audit/weapon-mods-audit.md`): a **`mount` field** on gear (Top / Under / Barrel / Top-Under / Internal / none),
+filled from the book's Mount column, **and** the same four markings as #256 — the book's variant names
+(Gyro Mount, Standard / Deluxe; Max-Gyro; Imaging Scope, Magnification 1-3; Smartgun, external; Smartlink-2
+Modification, External; the truncated "Extended Clip (", "Shock Pads (RC", "Stock (Rigid"), pack folders by
+mount, a description line, a mount chip on the sheet. Add **Smartgun, internal** (SR3 p.282, +100% of the gun)
+and **Smartlink-2 Modification, Internal** (M&M p.32, ×150%) at 0¥ with the rule in the text.
+⚠ The builder derives a generated item's id from its name and book, so a rename changes the id; the 0.7.1
+migration maps the old ids. Same branch as #256.
+
+## 260. A mod's level is its rating, picked from a dropdown — not part of its name — **requested 2026-10-24**
+
+The maintainer: *"remove the level from all mods and put them as a dropdown inside the mod"* — for **cyber,
+weapon and vehicle mods** ("Anti-Theft System [10]"). The mods half of [#130](#130); implants outside a
+cyberlimb keep their bracketed names until #130 itself.
+
+**Built (branch `feature/cyberlimb-mods-marked`):**
+- **Names:** 299 documents now name the mod and keep the level in `system.rating` (193 vehicle mods, 86
+  Cyberlimb Mods incl. 2 on an example character, 18 Firearms Accessories). The rule is
+  `ModRatings` (`scripts/data/mod-ratings.mjs`). `tools/build-mod-ratings.mjs` renames the hand-kept packs;
+  the weapon mods are generated, so `tools/build-default-gear.mjs` strips them — **after** deriving the id from
+  the original upstream name, so owned copies keep their compendium link. Ids never change.
+- **Vehicle mods** get a nullable `rating` field (`VehicleModData`) and an item sheet of their own (they had
+  none: "No fields defined"). Every unlevelled one ships `rating: null`.
+- **The dropdown:** the item sheet's Level box offers the levels the packs print
+  (`MOD_RATING_TABLE`, generated) and brings that level's cost, CF, load, Essence, availability, Street Index
+  and description with it; graded cyberware re-applies its grade. A houserule level stays selectable; a
+  renamed mod keeps the plain box.
+- **Lists show "[N]":** `displayName` (vehicle mods are a rated type now), the vehicle sheet's Mods tab, the
+  🛒 search and drop, and a `renderCompendium` hook on the compendium window (`system.rating` is in the index).
+- **Owned copies:** the 0.7.1 migration renames them (`ModRatings.renameDelta`): only the three kinds, only a
+  name ending in a bracketed level, the level kept in the rating.
+- `tests/mod-ratings.test.mjs`.
+
+**For the maintainer:**
+- **One Vehicle Armor** (the maintainer, 2026-10-24: *"we should just have one Vehicle Armor mod"*): the pack
+  keeps ONE document (level 1, id `sr3e-vehiclemod-0044`); its levels live in `tools/data/collapsed-mods.json`
+  (`build-mod-ratings.mjs --collapse`), merged into the table. Any other mod can be collapsed the same way.
+- ⚠ **The second "Vehicle Armor [11]"** (was `sr3e-vehiclemod-0055`: 16,250¥, load Body²×60 kg, 93 hrs, Handling+2)
+  reads like level 12 but was not guessed: it is kept as `unplaced` in `collapsed-mods.json` and the dropdown
+  offers 1-11. Check R3 p.131 and move it into `levels` (or drop it), then re-run the tool.
+- `npm run packs:install` was not run (cloud session) — run it with Foundry closed.
+
+**🧪 Test in Foundry**
+1. A compendium of vehicle mods lists "Anti-Theft System [3]" … "[10]", not eight identical names.
+2. Drag "Anti-Theft System [7]" onto a vehicle; its sheet's Level dropdown shows 3-10 with 7 selected. Pick
+   10: cost 50,000¥, availability 6/14days. The Mods tab reads "Anti-Theft System [10]".
+3. A Cyberlimb Mod (Armor: Ballistic) at Alpha grade: change the level — the cost follows, doubled for Alpha.
+4. A world from 0.7.0 with "ECCM [3]" on a vehicle: after the reload as GM it reads "ECCM", level 3.
+5. 🛒 Buy gear: search "STS" — "STS (Beacon) [1]" … "[6]".
 
 ### 📌 Notes & parked
 

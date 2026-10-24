@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0018",
     "name": "Biohm",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/speedboat-black.svg",
     "system": {
       "vehicleType": "boat",
       "cost": 260000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2.5,
+      "height": 9,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/speedboat-black.svg"
+      }
+    }
   },
   "embedded": {}
 }

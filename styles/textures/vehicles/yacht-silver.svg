@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1020" height="4080" viewBox="0 0 600 2400">
+<!-- yacht (motor yacht), silver, 6 × 24 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<path d="M8 62.4 Q8 4 66.4 4 H533.6 Q592 4 592 62.4 V1440 Q592 1965.8 300 2396 Q8 1965.8 8 1440 Z" fill="#a8adb3" stroke="#141518" stroke-width="6" stroke-linejoin="round"/><path d="M24 71.2 Q24 16 79.2 16 H520.8 Q576 16 576 71.2 V1440 Q576 1902 300 2280 Q24 1902 24 1440 Z" fill="#c9a877" stroke="#141518" stroke-width="2" stroke-linejoin="round"/><rect x="84" y="384" width="432" height="1296" rx="60" fill="#ecebe6" stroke="#141518" stroke-width="6"/><rect x="108" y="1488" width="384" height="120" rx="20" fill="#26313b" stroke="#141518" stroke-width="2"/><rect x="144" y="624" width="312" height="768" rx="40" fill="#f7f6f2" stroke="#141518" stroke-width="2"/><rect x="180" y="1200" width="240" height="96" rx="14" fill="#26313b" stroke="#141518" stroke-width="2"/><rect x="180" y="96" width="240" height="192" rx="20" fill="#46b3e6" stroke="#141518" stroke-width="2"/>
+</g>
+</svg>

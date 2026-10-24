@@ -14,7 +14,8 @@
       "cfCost": "0",
       "load": "100kg x Body",
       "bookPage": "twl.133",
-      "description": "Cost: 500 x (Body + Armor)"
+      "description": "Cost: 500 x (Body + Armor)",
+      "rating": null
     },
     "effects": []
   },

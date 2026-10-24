@@ -6045,6 +6045,20 @@ _prepareCharacter(sys, attr) {
    * Post the boxing card — shows both combatants side by side.
    * GM can edit TN and pool before clicking Roll.
    */
+  /**
+   * The melee card's line on attacking several opponents · SR3 p.122 (TODO 244). Seen in play, 2026-10-23: the
+   * rule was built (+2 TN per further opponent, prefilled in the GM window) but nothing said how to use it, so it
+   * read as missing. In combat only (`multi` is null otherwise). Pure — returns HTML.
+   */
+  static multiOpponentLine(multi, attackerName) {
+    if (!multi) return '';
+    const name = foundry.utils.escapeHTML(attackerName ?? '');
+    const text = multi.sameAction
+      ? `⚔ Opponent ${multi.ordinal} in ${name}'s same Complex Action — no further action charged; +2 TN per extra opponent (SR3 p.122)`
+      : `⚔ More opponents this phase? Make another melee attack against each — the same Complex Action, +2 TN per extra opponent (SR3 p.122)`;
+    return `<div class="sr-melee-multi" style="font-size:11px;color:var(--sr-dim);margin:-2px 0 6px;text-align:center">${text}</div>`;
+  }
+
   static async postMeleeCard(ctx) {
     const atk = game.actors.get(ctx.attackerActorId);
     const def = game.actors.get(ctx.defenderActorId);
@@ -6251,6 +6265,7 @@ _prepareCharacter(sys, attr) {
                 : `— ${atk.name}`}
               <span style="color:var(--sr-dim)">(already in the target numbers)</span>
             </div>` : ''}
+          ${SR3EActor.multiOpponentLine(ctx.multiOpponent, atk.name)}
           <div class="sr-melee-boxing">
             ${_corner(atk.name, ctx.atkInfo, ctx.atkWeaponName, ctx.atkRawDamage, ctx.atkDamageBase,
                       ctx.atkReach ?? 0, ctx.atkTN, 'sr-melee-atk-pool', 'sr-melee-atk-tn', 'sr-melee-atk-damage', 'sr-melee-atk-skill-dice', 'attacker', ctx.attackerActorId)}

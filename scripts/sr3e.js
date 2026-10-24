@@ -66,6 +66,7 @@ Hooks.once('init', () => {
   SR3EQuery.register();
   SR3EActionLedger.register();   // sr3e.action.charge — TODO 48
   SR3ECombat.registerQuickStrike();   // sr3e.combat.quickStrike — TODO 78
+  SR3ECombat.registerNextTurn();      // sr3e.combat.nextTurn — a player's End Turn, TODO 241
 
   async function buildSkillsCompendium() {
     const PACK_ID = 'The2ndChumming3e.sr3e-skills';
@@ -164,6 +165,8 @@ Hooks.once('init', () => {
   CONFIG.Item.dataModels.adeptpower   = AdeptPowerData;
   CONFIG.Item.dataModels.vehicleweapon = VehicleWeaponData;
   CONFIG.Item.dataModels.vehiclemod    = VehicleModData;
+  // A rated item's level is its rating, not its name (TODO 260) — the index carries it so lists can show "[N]".
+  if (!CONFIG.Item.compendiumIndexFields.includes('system.rating')) CONFIG.Item.compendiumIndexFields.push('system.rating');
   CONFIG.Item.dataModels.program      = ProgramData;
   CONFIG.Item.dataModels.cyberdeck    = CyberdeckData;
   CONFIG.Item.dataModels.contact      = ContactData;
@@ -1832,7 +1835,29 @@ Hooks.on('updateCombatant', (combatant, changed) => {
   if (!game.users?.activeGM?.isSelf) return;
   const combat = combatant.parent;
   if (!combat?.started || typeof combat.rebuildQueue !== 'function') return;
-  combat.rebuildQueue().then(() => ui.combat?.render());
+  // Re-point `turn` at the acting slot afterwards: the tie-break writes re-sort the tracker's rows (TODO 242,
+  // `_sortCombatants`), and `turn` is a row index.
+  combat.rebuildQueue().then(async queue => {
+    const index = combat.flags?.The2ndChumming3e?.queueIndex ?? 0;
+    if (queue?.length && index < queue.length) await combat._applySlot(queue, index);
+    ui.combat?.render();
+  });
+});
+
+// A combatant removed mid-round (the GM taking out someone knocked out) must leave the round's queue too, or
+// its slots stay behind: the next combatant acts twice, and a leftover slot hands someone an extra turn
+// (TODO 251). Pruned as it leaves, holding position; if the ACTING combatant left, the next one acts now —
+// which is also the row Foundry's tracker has already moved to. GM client only, since it writes.
+Hooks.on('deleteCombatant', combatant => {
+  if (!game.users?.activeGM?.isSelf) return;
+  const combat = combatant.parent;
+  if (!combat?.started || typeof combat.pruneQueue !== 'function') return;
+  combat.pruneQueue().then(async r => {
+    // Re-point the tracker at the slot the index now names (its row may have shifted too). Index past the end:
+    // the round is over, and the next End Turn starts the next one.
+    if (r && r.index < r.queue.length) await combat._applySlot(r.queue, r.index);
+    ui.combat?.render();
+  }).catch(err => console.warn('SR3E | pruning the round queue failed', err));
 });
 
 // Action Tracker state resets whenever the combat turn or round changes (covers both the
@@ -2587,6 +2612,24 @@ Hooks.on('renderSettingsConfig', (_app, html) => {
 // Attach action button handlers to each chat message as it renders.
 // renderChatMessageHTML fires for every render (new message AND pop-up notification),
 // so the guard above is what prevents double-firing across the two DOM instances.
+/**
+ * A rated item lists its level in a compendium window (TODO 260): the packs name the mod ("ECCM") and
+ * keep the level in `system.rating`, so without this ten entries would read "ECCM". Text only — the
+ * entry, its drag data and its document are untouched.
+ */
+Hooks.on('renderCompendium', (app, html) => {
+  const pack = app.collection;
+  if (pack?.documentName !== 'Item') return;
+  const root = html instanceof HTMLElement ? html : app.element;
+  root?.querySelectorAll('[data-entry-id]').forEach(li => {
+    const entry = pack.index.get(li.dataset.entryId);
+    const label = entry ? ItemRating.displayName(entry) : null;
+    if (!label || label === entry.name) return;
+    const el = li.querySelector('.entry-name a, .entry-name, .document-name a, .document-name');
+    if (el && el.textContent.trim() === entry.name) el.textContent = label;
+  });
+});
+
 Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   const mid = message.id;
 

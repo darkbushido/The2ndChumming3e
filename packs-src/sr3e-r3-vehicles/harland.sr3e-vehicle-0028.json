@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0028",
     "name": "Harland",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/yacht-silver.svg",
     "system": {
       "vehicleType": "boat",
       "cost": 207500,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 6,
+      "height": 24,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/yacht-silver.svg"
+      }
+    }
   },
   "embedded": {}
 }

@@ -50,5 +50,22 @@ export async function run(t) {
     /multiPrefill: _mExtra/.test(item) && /numberRow\('gmm-multi',[^\n]*Number\(ctx\.multiPrefill\)/.test(item));
   t.ok('…the +2s are applied by the flow when no GM window opens', /gm\.adjudicated === false && _mExtra > 0/.test(item) && /gm\.atkTN = Math\.max\(2, \(Number\(gm\.atkTN\) \|\| 0\) \+ 2 \* _mExtra\)/.test(item));
   t.ok('…and the melee target is recorded too', /PhaseTargets\.add\(actor\.system\.targetsThisPhase, _mPhase, _mKey/.test(item));
+  /* ── Several melee opponents are ONE Complex Action · SR3 p.122 (TODO 244, seen in play 2026-10-23) ── */
+  {
+    let m = P.add({}, '2|1', 'goonA', 'tA', { melee: true });
+    t.ok('the first melee opponent is not a follow-on — it is the action', !P.sameMeleeAction(P.current({}, '2|1'), 'goonA'));
+    t.ok('a second, different melee opponent is the same Complex Action', P.sameMeleeAction(P.current(m, '2|1'), 'goonB'));
+    t.ok('…the same opponent again is a new action', !P.sameMeleeAction(P.current(m, '2|1'), 'goonA'));
+    const shot = P.add({}, '2|1', 'sniper', 'tS');
+    t.ok('a melee attack after only ranged fire is its own action', !P.sameMeleeAction(P.current(shot, '2|1'), 'goonA'));
+    m = P.add(m, '2|1', 'goonB', 'tB', { melee: true });
+    t.eq('melee opponents are marked, ranged targets are not', P.current(P.add(m, '2|1', 'x', null), '2|1').map(e => !!e.melee), [true, true, false]);
+    t.ok('the mark survives the ↺ snapshot', P.normalize(m).targets.every(e => e.melee === true));
+  }
+  t.ok('the melee flow records its opponent as melee', /PhaseTargets\.add\([^)]*\{ melee: true \}\)/.test(item));
+  t.ok('…and charges the Complex Action only when it is not a further opponent',
+    /if \(!_mSameAction\) game\.sr3e\.SR3EActionLedger\?\.charge\(actor, 'meleeAttack'/.test(item));
+  t.ok('the melee card says how to attack more opponents', /SR3EActor\.multiOpponentLine\(ctx\.multiOpponent/.test(read('scripts/documents/SR3EActor.js')));
+
   t.ok('resetRecoil clears it with the full empty record', (read('scripts/documents/SR3EActor.js').match(/'system\.targetsThisPhase': \{ phase: '', targets: \[\] \}/g) ?? []).length === 2);
 }

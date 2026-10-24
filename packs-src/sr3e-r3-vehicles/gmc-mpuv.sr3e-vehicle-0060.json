@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0060",
     "name": "GMC MPUV",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/jeep-olive.svg",
     "system": {
       "vehicleType": "car",
       "cost": 70000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2,
+      "height": 4,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/jeep-olive.svg"
+      }
+    }
   },
   "embedded": {}
 }

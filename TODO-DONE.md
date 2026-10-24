@@ -7487,3 +7487,126 @@ a gyro the two agree. **Fix:** `CombatPool.modForTotal` (`scripts/data/combat-po
 exactly — the smallest modifier that reads the typed total; the sheet passes base + Combat Sense − armour and a
 `data-pool-gyro` flag. A total that cannot be hit (negative, fractional) is rounded to the nearest and warned,
 never refused. Live step: TESTING.md §50. This is a bug fix, so it goes on `main`.
+
+## 241. ✅ A player can't end their own turn — **reported in play, 2026-10-23** — fixed in 7732baf9
+
+Observed: a player moved their character and clicked End Turn; Foundry said they did not have permission.
+
+**Cause:** core lets a player write only `round`, `turn` and `combatants` on a Combat (`common/documents/combat.mjs`
+`#canUpdate`); `SR3ECombat.nextTurn` also writes the queue flags. **Fix:** a non-GM `nextTurn` asks the GM
+(`sr3e.combat.nextTurn`): owner of the acting combatant only, and only while it is still the one they saw acting.
+Tests `end-turn`; e2e `end-turn.spec.mjs` (Player2 ends it, Player3 cannot) passed 2026-10-23.
+
+## 242. ✅ Tied initiative is listed out of acting order — **reported in play, 2026-10-23** — fixed in 63291fe0
+
+Observed: when several combatants roll the same initiative, the tracker does not list them in the order they
+will act.
+
+**Cause:** core's `_sortCombatants` breaks ties by combatant id; the queue by the `tieBreak` rank (Reaction, then
+a dice-off). **Fix:** `SR3ECombat._sortCombatants` uses the rank; `startCombat` and the initiative-edit hook
+re-point `turn` after the re-sort (core keeps it on the same combatant). Tests in `initiative`; live: four tied
+on 12, rows = queue = turns walked.
+
+## 243. ✅ Full Defense carries into the next round — **reported in play, 2026-10-23** — fixed in 7de126d0
+
+**Cause:** the tracker's Next Round control bypassed the round upkeep (only End Turn ran it). Fixed by an `SR3ECombat.nextRound` override; tests in `initiative`, `shock-stun`. Verified live 2026-10-23: Next Round clears Full Defense, advances one round, re-rolls.
+
+Observed: Full Defense stayed in effect the next round. Possibly a regression of `30bab18` ("Full Defense ending
+at a turn boundary", see #7). Not investigated yet. A bug fix, on `main`.
+
+## 244. ✅ Can't find how to make one melee attack against several opponents — **reported in play, 2026-10-23** — fixed in e6e21e21
+
+Observed: the maintainer could not see how to attack more than one opponent in melee. [#38](#38)
+says both halves (ranged and melee, SR3 pp.122-123) were done 2026-08-19.
+
+**Found:** both. The rule is one melee attack per opponent, +2 TN per further opponent (prefilled in the GM
+window) — but nothing on screen said so, and each further opponent was charged another Complex Action, where
+SR3 p.122 reads *"Characters may attack more than one opponent with a Complex Action."* **Fix:** melee opponents
+are marked in `targetsThisPhase`; `PhaseTargets.sameMeleeAction` stops the second charge; the melee card carries
+a line saying how (or that this is a further opponent). Tests in `phase-targets`, mutant
+`melee-each-opponent-a-new-action`. **Walked live 2026-10-23** (`test-shadowrun`, SWAT vs Troll then Ploder in one
+phase): the second card says "Opponent 2 … same Complex Action", the ledger holds one Complex, attacker TN 4 → 6.
+
+## 248. ✅ Flechette seemed to do nothing against armour — **reported in play, 2026-10-23** — not a bug, closed in ef3b7cf3
+
+Observed: flechette did not appear to affect armour. SR3 p.116 makes flechette *stronger* only against
+unarmoured targets (armoured: max(Impact × 2, Ballistic)), so this may be correct.
+
+**Closed 2026-10-23, the maintainer:** a misremembered rule (flechette assumed to be better against armour).
+The system follows p.116; no change.
+
+## 251. ✅ The initiative tracker stops working after 4–5 rounds — **reported in play, 2026-10-23** — fixed in 7cd2a4f9
+
+Observed: after four or five rounds the tracker failed. The maintainer had been removing knocked-out
+combatants from combat and suspects that.
+
+**Cause (reproduced in `test-shadowrun`):** a removed combatant's slots stayed in the round's stored queue
+until the next round. Removing the acting combatant made the next one act twice; a leftover later slot fell
+back to `turn: 0` and gave the top tracker row an extra turn. **Fix:** `RoundQueue.prune`
+(`scripts/data/round-queue.mjs`) from a `deleteCombatant` hook and from `nextTurn`. Tests `round-queue`, mutants
+`round-queue-keeps-removed` / `round-queue-skips-next-survivor`; live: 7 rounds with mid-round removals, clean.
+
+## 252. ✅ Unconscious combatants leave the initiative order at the next round — **requested in play, 2026-10-23** — fixed in 7732baf9
+
+Wanted (the maintainer): someone knocked unconscious is taken out of the initiative tracker automatically at the
+start of the next round. **Agreed 2026-10-23 (the maintainer: "skip is fine"):** keep them on the tracker but give them no slots in the
+new round's queue (they are already marked defeated when a track fills), so one who wakes acts again without the
+GM re-adding them. **A bug fix, on `main`** — the maintainer's call, 2026-10-23.
+
+**Done:** `buildRoundQueue`, `_assignTieBreaks` and the round's re-roll skip `isDefeated`. Knocked out mid-round, they
+keep that round's slots ("on the next round"). Tests in `initiative`; live in `test-shadowrun`: out of round 2,
+back in round 3 once no longer defeated.
+
+## 253. ✅ e2e `melee-two-corner` times out on the attacker's pool charge — **found 2026-10-23** — fixed in 9bcea9d2
+
+Observed: `npx playwright test tests/e2e/melee-two-corner.spec.mjs` fails three runs in a row: the card resolves
+(Melee Result posted) but the poll for the attacker's `combatPoolSpent` = before + 2 times out. Also fails with
+this morning's scripts (`73af510a`), so it predates the day's fixes.
+
+**Cause:** the test's 2-minute budget, not the code — the error was the *test* timeout firing inside a poll. Every
+client runs software WebGL; with `--timeout=360000` it passed in 4.6 min, with or without the Gamemaster tab.
+**Fix:** `test.slow()` on that test, as `melee-wounds` already has. Passed at 4.3 min.
+
+## 254. ✅ Carried grenades count as in hand — **reported in play, 2026-10-23** — fixed in 6d583aa0
+
+Observed (the maintainer, on an old player character): grenades that were only carried counted as being in hand.
+**Cause:** weapons from before Ready Weapon (0.6) hold `ready: true`, the field's initial; new ones arrive put away
+(TODO 135). **Fix:** migration **0.7.1** puts away grenades on characters and NPCs (`ReadyWeapon.putAwayCarriedGrenade`).
+Tests in `ready-weapon`, mutant `old-sheet-grenades-stay-in-hand`; live: an old-style grenade put away on load.
+⚠ `tests/migrations.test.mjs` is red until the release bumps `system.json` to 0.7.1 — **the maintainer's decision,
+2026-10-23** ("Main, red until release"). Until then the migration also re-runs on every GM load.
+
+## 255. ✅ Cyberlimb Mods: book errors in the packs, and in-limb cyberweapons have no attack — **found 2026-10-23** — fixed in adda40fc
+
+Found while answering "Smartlink-2 is .5 in Nullsheen but .25 here". The .25 entry is the copy built INTO a
+cyberlimb (category `Cyberlimb Mods`; SR3 p.303, M&M p.36), which is correct for that install. The audit of all
+145 such entries (`audit/cyberlimb-mods-audit.md`) found:
+
+- **17 fields in 12 entries disagree with the book**: the DNI's price and legality (SR3 p.303, M&M p.39), the
+  Built-In Smartgun Link's availability and Street Index (SR3 p.303), the Tracking Mount's price (M&M p.41),
+  four legality codes (M&M pp.37, 39, 40), a fingertip compartment in a cyberlimb at .1 Essence (SR3 p.303 says
+  none), Smartlink II (Internal) at an unprinted 3,200¥ (M&M p.32), and a second Rigger Decryption Module [1]
+  that is the [10]. The list is `PACK_CORRECTIONS` (`scripts/data/cyberlimb-mods.mjs`), applied by
+  `tools/fix-cyberlimb-mods.mjs`, pinned by `tests/cyberlimb-mods.test.mjs`.
+- **In-limb cyberweapons install with no attack**: `CyberWeapons.isCyberweapon` read only the `Cyberweapons`
+  category, so a spur, blade, razor or cybergun built into a cyberlimb never got its weapon entry (TODO 151's
+  symptom). It now also reads the weapons among `Cyberlimb Mods` by name (`LIMB_WEAPON`); mutant
+  `limb-weapon-is-no-weapon`.
+
+⚠ Copies characters already own keep the old numbers until the 0.7.1 migration, which rides with [#256](TODO.md#256)
+(agreed with the maintainer 2026-10-23: main stays green, and the migration lands with the release).
+
+## 258. ✅ Weapon mods: book errors in the generated accessories — **found 2026-10-23** — fixed in 176bd094
+
+The weapon-mods audit (`audit/weapon-mods-audit.md`, asked for after [#255](#255)) checked the 87
+`Firearms Accessories` against SR3 pp.280-282, *Cannon Companion* pp.33-35 and 80-83, and M&M pp.32-33. They are
+generated, so the corrections are `ACCESSORY_FIXES` in `tools/build-default-gear.mjs`, pinned by
+`tests/weapon-mods.test.mjs`:
+
+- **Sawed-Off Shotgun Barrel** 64¥, not 68¥ — Design Points +8 × 8 (CC p.80, p.83).
+- **Rangefinder** is Top-mounted (CC p.33).
+- **Citations**: Smart Shades I are SR3 **p.281** (goggles "rigged as mirrored sunglasses" at double the nuyen);
+  Smart Shades II and Ultrasound Shades apply that rule and now say they are derived; Gas Vent I says SR3
+  does not print it (source not found).
+- **Low-power laser sight**: the two SR2 *Fields of Fire* copies become one *Cannon Companion* customisation,
+  800¥ (DP +100 × 8), Top/Under, cc.82 — the maintainer's choice, so it stays in an SR3 book.

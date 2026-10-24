@@ -32,6 +32,9 @@ import { knownRating } from './data/item-rating.mjs';
 import { AmmoStock } from './data/ammo-stock.mjs';
 import { restockImage, restockActorImage } from './data/item-icons.mjs';
 import { PackFixes070 } from './data/pack-corrections-0-7-0.mjs';
+import { ReadyWeapon } from './data/ready-weapon.mjs';
+import { VehicleArt } from './data/vehicle-art.mjs';
+import { ModRatings } from './data/mod-ratings.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -475,6 +478,48 @@ const MIGRATIONS = [
      */
     fixItem: PackFixes070.fixItem,
     fixActor: PackFixes070.fixActor,
+  },
+  {
+    version: '0.7.1',
+    label: 'Carried grenades are put away, not held (TODO 254); vehicle token art for owned vehicles (TODO 257)',
+    /**
+     * Seen in play, 2026-10-23, on an old player character: every grenade counted as in hand. Weapons from
+     * before Ready Weapon (0.6) hold `ready: true` — the field's initial, so sheets kept fighting — while new
+     * ones arrive put away (`putAwayOnCreate`). Rule in `ReadyWeapon.putAwayCarriedGrenade` (pure, tested).
+     *
+     * ⚠ **This OVERWRITES `ready`, and argues for it:** on a grenade from an old sheet the `true` is the
+     * default, not anyone's choice, and a stack of grenades all "in hand" over-fills the hands on every check.
+     * A grenade someone did ready on purpose since 0.6 is put away too — the migration cannot tell — which
+     * costs one Ready Weapon (Simple, p.107) to undo. Characters and NPCs only (world, unlinked tokens); the
+     * Items sidebar is not a character. Idempotent: a put-away grenade yields null.
+     */
+    fixItem: (item) => ReadyWeapon.putAwayCarriedGrenade(item, item?.parent?.type ?? null),
+    /**
+     * Vehicle token art (TODO 257) — numbered 0.7.1 by the maintainer's call (2026-10-24), shipping with the
+     * grenade fix rather than as 0.8.0. The packs now carry drawn art (`tools/build-vehicle-art.mjs`); a vehicle already in a world is its
+     * own copy and kept the old texture. The maintainer asked for vehicles, not drones (2026-10-24).
+     *
+     * ⚠ **This OVERWRITES, and argues for it:** `VehicleArt.fixActor` changes the picture and the
+     * prototype token only while they are still stock (blank, mystery man, the old type textures), and
+     * the token's size only while it is still Foundry's 1 × 1 default. A chosen picture or a sized token
+     * is left alone; tokens already placed on a scene keep theirs. Matched by name. Idempotent.
+     */
+    fixActor: VehicleArt.fixActor,
+  },
+  {
+    version: '0.7.1',
+    label: 'Mod levels move out of the name into the rating: cyber, weapon and vehicle mods (TODO 260)',
+    /**
+     * The packs now name a mod plainly ("Anti-Theft System") and keep its level in `system.rating`, which
+     * the item sheet offers as a dropdown (`ModRatings`). A copy already in a world still reads
+     * "Anti-Theft System [10]" — and a vehicle mod had no rating field at all until now.
+     *
+     * ⚠ **This RENAMES, and argues for it:** only the three mod kinds (vehicle mods, Cyberlimb Mods,
+     * Firearms Accessories), only a name ENDING in a bracketed level, and the level is kept — moved into
+     * the rating when that is blank. A GM who typed a different rating keeps it. A name someone wrote
+     * without a bracket is never touched. Idempotent: a plain name yields null.
+     */
+    fixItem: ModRatings.renameDelta,
   },
 
 ];

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="1800" viewBox="0 0 250 900">
+<!-- speedboat (speedboat / launch), orange, 2.5 × 9 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<path d="M6 27.8 Q6 4 29.8 4 H220.2 Q244 4 244 27.8 V450 Q244 695.9 125 897 Q6 695.9 6 450 Z" fill="#d06f2a" stroke="#141518" stroke-width="3" stroke-linejoin="round"/><path d="M22 38.6 Q22 18 42.6 18 H207.4 Q228 18 228 38.6 V450 Q228 664.5 125 840 Q22 664.5 22 450 Z" fill="#dc935f" stroke-linejoin="round"/><rect x="26" y="108" width="198" height="324" rx="20" fill="#e4e1d6" stroke="#141518" stroke-width="2"/><path d="M26 432 Q125 540 224 432 L216 405 Q125 495 34 405 Z" fill="#26313b" stroke="#141518" stroke-width="2" stroke-linejoin="round"/><rect x="77" y="288" width="40" height="46" rx="8" fill="#2d2e31" stroke="#141518" stroke-width="2"/><rect x="133" y="288" width="40" height="46" rx="8" fill="#2d2e31" stroke="#141518" stroke-width="2"/><rect x="65" y="135" width="120" height="34" rx="10" fill="#2d2e31" stroke="#141518" stroke-width="2"/><rect x="103" y="0" width="44" height="30" rx="6" fill="#1d1e21" stroke="#141518" stroke-width="2"/>
+</g>
+</svg>

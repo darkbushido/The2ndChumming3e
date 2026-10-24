@@ -14,7 +14,8 @@
       "cfCost": "3*Armor",
       "load": "Body*50kg",
       "bookPage": "r3.133",
-      "description": "Replacement: Body*500Y"
+      "description": "Replacement: Body*500Y",
+      "rating": null
     },
     "effects": []
   },

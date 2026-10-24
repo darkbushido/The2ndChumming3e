@@ -525,6 +525,8 @@ export class VehicleWeaponData extends foundry.abstract.TypeDataModel {
 export class VehicleModData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      // The mod's level — "Anti-Theft System" at 10, not "Anti-Theft System [10]" (TODO 260). null = no level.
+      rating:           new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
       cost:             new NumberField({ integer: true, initial: 0, min: 0 }),
       availability:     new StringField({ initial: '' }),
       streetIndex:      new StringField({ initial: '' }),

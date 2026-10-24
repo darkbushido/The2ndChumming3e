@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0002",
     "name": "Harley-Davidson Scorpion",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/cruiser-white.svg",
     "system": {
       "vehicleType": "motorcycle",
       "cost": 13500,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 1,
+      "height": 2.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/cruiser-white.svg"
+      }
+    }
   },
   "embedded": {}
 }

@@ -14,7 +14,8 @@
       "cfCost": "15",
       "load": "500kg",
       "bookPage": "r3.155",
-      "description": "See MM-139"
+      "description": "See MM-139",
+      "rating": null
     },
     "effects": []
   },

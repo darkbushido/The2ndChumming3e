@@ -4,7 +4,7 @@
     "_id": "sr3e-drone-0051",
     "name": "LS Spectator Surv. Drone",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/micro-lonestar.svg",
     "system": {
       "vehicleType": "drone",
       "cost": 67000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 0.5,
+      "height": 0.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/micro-lonestar.svg"
+      }
+    }
   },
   "embedded": {}
 }

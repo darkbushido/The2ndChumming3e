@@ -15,9 +15,10 @@
  * (a few thousand rows is not a list), and a drop that is not gear is explained, not silently ignored.
  */
 import { Purchasing } from './purchasing.mjs';
+import { displayName } from './item-rating.mjs';
 
 /** The index fields the search reads — `pack.getIndex({ fields })`. */
-export const INDEX_FIELDS = ['system.availability', 'system.cost', 'system.streetIndex', 'system.bookPage'];
+export const INDEX_FIELDS = ['system.availability', 'system.cost', 'system.streetIndex', 'system.bookPage', 'system.rating'];
 
 /** At most this many hits are drawn. */
 export const MAX_HITS = 40;
@@ -71,7 +72,8 @@ export const GearSearch = {
   fromIndex(row, pack) {
     const sys = row?.system ?? {};
     return {
-      name: row?.name ?? '',
+      // A rated item's level is in its rating, not its name (TODO 260): "Anti-Theft System [10]".
+      name: row ? displayName(row) : '',
       type: row?.type ?? '',
       uuid: row?.uuid ?? (pack?.collection && row?._id ? `Compendium.${pack.collection}.Item.${row._id}` : ''),
       pack: pack?.collection ?? '',

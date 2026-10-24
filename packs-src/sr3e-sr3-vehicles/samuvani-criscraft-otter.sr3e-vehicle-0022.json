@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0022",
     "name": "Samuvani-Criscraft Otter",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/suv-silver.svg",
     "system": {
       "vehicleType": "car",
       "cost": 32500,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 2,
+      "height": 5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/suv-silver.svg"
+      }
+    }
   },
   "embedded": {}
 }

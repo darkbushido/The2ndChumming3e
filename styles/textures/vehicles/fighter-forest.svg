@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="3200" viewBox="0 0 1000 1600">
+<!-- fighter (fighter / ground-attack jet), forest, 10 × 16 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<polygon points="420,224 580,224 780,96 780,16 580,16 420,16 220,16 220,96" fill="#39432e" stroke="#141518" stroke-width="4" stroke-linejoin="round"/><polygon points="420,992 580,992 1000,384 1000,256 580,288 420,288 0,256 0,384" fill="#39432e" stroke="#141518" stroke-width="4" stroke-linejoin="round"/><path d="M420 16 H580 V1088 Q580 1600 500 1600 Q420 1600 420 1088 Z" fill="#3f4a33" stroke="#141518" stroke-width="4" stroke-linejoin="round"/><rect x="472" y="192" width="56" height="960" rx="24" fill="#6f7766"/><rect x="436" y="16" width="16" height="224" rx="10" fill="#2c3424" stroke="#141518" stroke-width="2"/><rect x="548" y="16" width="16" height="224" rx="10" fill="#2c3424" stroke="#141518" stroke-width="2"/><ellipse cx="500" cy="1248" rx="48" ry="56" fill="#26313b" stroke="#141518" stroke-width="2.4"/>
+</g>
+</svg>

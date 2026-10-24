@@ -4,7 +4,7 @@
     "_id": "sr3e-drone-0025",
     "name": "A.S. Condor LDSD-41",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/drone-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/fixedwing-matte.svg",
     "system": {
       "vehicleType": "drone",
       "cost": 33650,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 3,
+      "height": 2,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/fixedwing-matte.svg"
+      }
+    }
   },
   "embedded": {}
 }

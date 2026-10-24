@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2336" height="4088" viewBox="0 0 1600 2800">
+<!-- heli-heavy (tandem-rotor heavy lifter), orange, 16 × 28 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<rect x="624" y="140" width="352" height="2520" rx="140.8" fill="#d06f2a" stroke="#141518" stroke-width="7"/><rect x="694.4" y="2408" width="211.2" height="168" rx="30" fill="#26313b" stroke="#141518" stroke-width="7"/><rect x="694.4" y="420" width="211.2" height="1680" rx="20" fill="#d7854a"/><circle cx="800" cy="700" r="796" fill="#d8dde3" stroke="#9aa3ad" stroke-width="1.5" fill-opacity="0.35"/><line x1="163.2" y1="700" x2="1436.8" y2="700" stroke="#3a3d42" stroke-width="2.5" stroke-linecap="round"/><circle cx="800" cy="700" r="143.3" fill="#3a3d42" stroke="#141518" stroke-width="1.5"/><circle cx="800" cy="2044" r="796" fill="#d8dde3" stroke="#9aa3ad" stroke-width="1.5" fill-opacity="0.35"/><line x1="163.2" y1="2044" x2="1436.8" y2="2044" stroke="#3a3d42" stroke-width="2.5" stroke-linecap="round"/><circle cx="800" cy="2044" r="143.3" fill="#3a3d42" stroke="#141518" stroke-width="1.5"/>
+</g>
+</svg>

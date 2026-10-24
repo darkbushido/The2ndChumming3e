@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0129",
     "name": "Fiat-Fokker Cloud Nine",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/light-plane-maroon.svg",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 315000,
@@ -69,7 +69,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 11,
+      "height": 9,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/light-plane-maroon.svg"
+      }
+    }
   },
   "embedded": {}
 }

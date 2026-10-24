@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0090",
     "name": "Volkswagen Beetle III",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/compact-teal.svg",
     "system": {
       "vehicleType": "car",
       "cost": 12000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 1.5,
+      "height": 3.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/compact-teal.svg"
+      }
+    }
   },
   "embedded": {}
 }

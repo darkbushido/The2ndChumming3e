@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0145",
     "name": "GMC Beachcraft Patroller",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/hovercraft-teal.svg",
     "system": {
       "vehicleType": "hovercraft",
       "cost": 176000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 5,
+      "height": 12,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/hovercraft-teal.svg"
+      }
+    }
   },
   "embedded": {}
 }

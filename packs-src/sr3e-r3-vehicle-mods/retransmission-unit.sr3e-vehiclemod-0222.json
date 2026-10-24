@@ -14,7 +14,8 @@
       "cfCost": "1.5",
       "load": "5kg",
       "bookPage": "r3.147",
-      "description": ""
+      "description": "",
+      "rating": null
     },
     "effects": []
   },

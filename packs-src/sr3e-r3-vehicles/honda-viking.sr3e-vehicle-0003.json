@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0003",
     "name": "Honda Viking",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/cruiser-green.svg",
     "system": {
       "vehicleType": "motorcycle",
       "cost": 20000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 1,
+      "height": 2.5,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/cruiser-green.svg"
+      }
+    }
   },
   "embedded": {}
 }

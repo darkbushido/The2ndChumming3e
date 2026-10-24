@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="1000" viewBox="0 0 200 500">
+<!-- racer (open-wheel race car), maroon, 2 × 5 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<rect x="0" y="67" width="30" height="66" rx="9" fill="#1d1e21" stroke="#141518" stroke-width="2"/><rect x="170" y="67" width="30" height="66" rx="9" fill="#1d1e21" stroke="#141518" stroke-width="2"/><rect x="4" y="382" width="26" height="56" rx="7.8" fill="#1d1e21" stroke="#141518" stroke-width="2"/><rect x="170" y="382" width="26" height="56" rx="7.8" fill="#1d1e21" stroke="#141518" stroke-width="2"/><rect x="18" y="0" width="164" height="24" rx="4" fill="#4c1924" stroke="#141518" stroke-width="3"/><polygon points="60,30 140,30 132,310 110,480 90,480 68,310" fill="#6d2433" stroke="#141518" stroke-width="3" stroke-linejoin="round"/><polygon points="34,70 166,70 156,250 44,250" fill="#6d2433" stroke="#141518" stroke-width="3" stroke-linejoin="round"/><rect x="82" y="200" width="36" height="60" rx="16" fill="#26313b" stroke="#141518" stroke-width="3"/><circle cx="100" cy="224" r="11" fill="#a77c85" stroke="#141518" stroke-width="2"/><rect x="14" y="478" width="172" height="18" rx="4" fill="#4c1924" stroke="#141518" stroke-width="3"/><rect x="94" y="300" width="12" height="150" rx="4" fill="#925b66"/>
+</g>
+</svg>

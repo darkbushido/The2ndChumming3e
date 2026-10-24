@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0183",
     "name": "Cunard Princess Victoria Liner",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/liner-yellow.svg",
     "system": {
       "vehicleType": "ship",
       "cost": 40000000,
@@ -68,7 +68,14 @@
       }
     },
     "items": [],
-    "effects": []
+    "effects": [],
+    "prototypeToken": {
+      "width": 36,
+      "height": 290,
+      "texture": {
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/liner-yellow.svg"
+      }
+    }
   },
   "embedded": {}
 }

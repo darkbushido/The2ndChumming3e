@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="500" viewBox="0 0 150 250">
+<!-- helidrone (single-rotor helicopter drone), bone, 1.5 × 2.5 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<line x1="75" y1="18" x2="75" y2="125" stroke="#949593" stroke-width="9" stroke-linecap="round"/><rect x="45" y="6" width="60" height="10" rx="4" fill="#d4d5d2" stroke="#141518" stroke-width="2"/><ellipse cx="87" cy="20" rx="4" ry="16" fill="#d8dde3" stroke="#141518" stroke-width="1.5"/><line x1="45" y1="125" x2="45" y2="212.5" stroke="#2a2b2e" stroke-width="4" stroke-linecap="round"/><line x1="105" y1="125" x2="105" y2="212.5" stroke="#2a2b2e" stroke-width="4" stroke-linecap="round"/><ellipse cx="75" cy="165" rx="26" ry="55" fill="#d4d5d2" stroke="#141518" stroke-width="3"/><ellipse cx="75" cy="195" rx="18" ry="20" fill="#26313b" stroke="#141518" stroke-width="2"/><circle cx="75" cy="155" r="72" fill="#d8dde3" stroke="#9aa3ad" stroke-width="1.5" fill-opacity="0.35"/><line x1="17.4" y1="155" x2="132.6" y2="155" stroke="#3a3d42" stroke-width="2.5" stroke-linecap="round"/><circle cx="75" cy="155" r="13" fill="#3a3d42" stroke="#141518" stroke-width="1.5"/>
+</g>
+</svg>
