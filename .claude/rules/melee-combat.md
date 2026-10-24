@@ -18,7 +18,10 @@ paths:
 3. Either side lacking the skill defaults — **on their own client**.
 4. Called shot (attacker only).
 5. **The GM sets BOTH TNs** — `sr3e.melee.negotiate` → `SR3EItem._promptGMMeleeWindow`.
-6. Two-corner boxing card; the last submission resolves (see *Two-corner cards* in CLAUDE.md).
+6. Two-corner boxing card; the last submission resolves (see *Two-corner cards* in CLAUDE.md). The NPC
+   corner's Submit is violet (`sr-corner-npc`, TODO 246) so the GM doesn't roll the player's side by mistake.
+   The Full Defense dodge and the Result's resist buttons are one-sided (only the defender / loser), so they
+   keep their colours.
 7. Most successes wins; **a tie goes to the attacker** (below). The winner's code stages up by net
    successes; the loser gets Resist Damage → the soak flow.
 

@@ -598,6 +598,10 @@ corner declares `data-corner-role` / `-owner` / `-label`; `SR3EActor.cornerActio
 - **The submission that completes the set resolves.** `sr3e.card.mark` is append-only and GM-serialised, so
   exactly one client sees the ledger fill.
 - **`.sr-corner-resolve-btn` (GM-only) is the AFK escape**: unanswered corners fall to the card's defaults.
+- **The NPC's Submit button is violet** (`sr-corner-npc`, `--sr-npc`, tooltip "NPC — name") · TODO 246: the GM
+  owns every actor, so both buttons are live for them. `cornerActions` asks `NpcCorner.decorate`
+  (`scripts/data/npc-corner.mjs`): not `SR3EQuery.isPlayerCharacter` (never `hasPlayerOwner`), or no actor → NPC.
+  Applied by actor, not viewer — players see the NPC corner violet too. Baked in when the card is posted.
 - ⚠ **`_cornerDrafts` keeps unsubmitted edits** (keyed `messageId|role`, restored into your own unacted corner):
   the other side's submission re-renders the card from its payload. Don't remove it as redundant.
 - **A setup dialog configures ONE side.** The initiator names the opponent only; the opponent's pool source,
