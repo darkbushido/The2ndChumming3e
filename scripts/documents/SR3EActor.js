@@ -23,6 +23,7 @@ import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { AdeptLevels } from '../data/adept-levels.mjs';
 import { ExtraDamage } from '../data/extra-damage.mjs';
 import { ShockStun, STUN_TN, STUN_STATUS, STUN_PAGE } from '../data/shock-stun.mjs';
+import { NpcCorner } from '../data/npc-corner.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -6304,13 +6305,24 @@ _prepareCharacter(sys, attr) {
    *
    * `sides` is `[{ role, label, owner }]` — `role` must match the corner's
    * `data-corner-role`, and `owner` is the actor id whose decider may submit it.
+   *
+   * A corner whose actor is not a player's character gets `sr-corner-npc` (its own colour)
+   * and an "NPC — name" tooltip (TODO 246): the GM owns every actor, so both buttons are
+   * live for them and they once rolled the player's side by mistake. `NpcCorner` decides.
    */
   static cornerActions(payload, sides) {
+    const isPC = a => !!game.sr3e?.SR3EQuery?.isPlayerCharacter?.(a);
+    const esc  = v => String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
     return `
       <div class="sr-corner-submit-row" style="display:flex;gap:6px;justify-content:center;margin-top:6px;flex-wrap:wrap">
-        ${sides.map(s => `
-          <button class="sr-corner-submit-btn" data-role="${s.role}" data-owner="${s.owner ?? ''}"
-                  data-payload='${payload}'>✋ ${s.label}: Submit</button>`).join('')}
+        ${sides.map(s => {
+          const actor = s.owner ? game.actors?.get(s.owner) ?? null : null;
+          const npc   = NpcCorner.decorate(actor, s.label, isPC);
+          return `
+          <button class="sr-corner-submit-btn${npc.cls ? ` ${npc.cls}` : ''}" data-role="${s.role}" data-owner="${s.owner ?? ''}"
+                  ${npc.title ? `title="${esc(npc.title)}"` : ''}
+                  data-payload='${payload}'>✋ ${s.label}: Submit</button>`;
+        }).join('')}
       </div>
       <div class="sr-soak-action">
         <button class="sr-corner-resolve-btn" data-payload='${payload}'

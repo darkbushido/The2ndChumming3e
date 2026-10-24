@@ -527,6 +527,20 @@ background-color: var(--sr-surface) !important;
   box-shadow: 0 0 10px color-mix(in srgb, var(--sr-accent) 30%, transparent);
 }
 
+/* violet — the NPC's corner on a two-corner card (TODO 246). The GM owns every actor, so both
+ * Submit buttons are live for them; this marks which one is the GM's side. Set by
+ * SR3EActor.cornerActions via NpcCorner (scripts/data/npc-corner.mjs). Before :disabled so a
+ * locked NPC button still dims. */
+.sr-corner-submit-btn.sr-corner-npc {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--sr-npc) 18%, transparent) 0%, color-mix(in srgb, var(--sr-npc) 6%, transparent) 100%);
+  border: 1px solid var(--sr-npc);
+  color: var(--sr-npc);
+}
+.sr-corner-submit-btn.sr-corner-npc:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--sr-npc) 28%, transparent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--sr-npc) 35%, transparent);
+}
+
 .sr-soak-btn:disabled,
 .sr-rigger-disorient-btn:disabled,
 .sr-shock-stun-btn:disabled,
@@ -1222,7 +1236,11 @@ background-color: var(--sr-surface) !important;
   --sr-red-bg:     #2a1410;
   --sr-amber:      #f7bd59;
   --sr-amber-bg:   #2b2008;
-  --r:             6px;
+  /* NPC-side buttons on two-corner cards (TODO 246). Its own hue because every other token
+   * already means something on those cards: accent = roll, gold = soak/karma, amber =
+   * warning/defaulting, red = damage, green = success. */
+  --sr-npc:        #b08cd8;
+  --r:           6px;
   --r-lg:          10px;
   --sr-font-display: 'Teko', 'Segoe UI', system-ui, sans-serif;
   --sr-font-body:     'Quantico', 'Segoe UI', system-ui, sans-serif;
