@@ -252,5 +252,40 @@ export async function run(t) {
     try { await combat._endOfTurnReset(); } catch { threw = true; }
     t.is('a combatant with no actor is skipped, not fatal', threw, false);
   }
+
+  /* ---- TODO 252: the unconscious get no turns from the next round ---- */
+  // Requested in play, 2026-10-23 ("a bug", the maintainer): someone knocked unconscious leaves the order at the
+  // next round. A full track marks the combatant defeated (sr3e.js updateActor); they stay on the tracker.
+  {
+    const { combat } = makeCombat([['a', 21], ['ko', 15], ['b', 4]]);
+    combat.combatants.contents.find(c => c.id === 'ko').isDefeated = true;
+    t.eq('a defeated combatant has no slot in the round', combat.buildRoundQueue().map(s => `${s.id}@${s.score}`),
+      ['a@21', 'b@4', 'a@11', 'a@1']);
+    combat.combatants.contents.find(c => c.id === 'ko').isDefeated = false;
+    t.ok('…and once healed (no longer defeated), acts again', combat.buildRoundQueue().some(s => s.id === 'ko'));
+  }
+  {
+    const { combat, written } = makeCombat([['x', 12, 3], ['ko', 12, 3]]);
+    combat.combatants.contents.find(c => c.id === 'ko').isDefeated = true;
+    await combat._assignTieBreaks();
+    t.ok('no tie-break dice-off with an unconscious combatant', !('ko' in written) && written.x === 0);
+  }
+  {
+    // The round's re-roll skips them; asked for by id (the GM, deliberately), anyone still rolls.
+    const rolled = [];
+    const mk = (id, isDefeated) => ({ id, isDefeated, initiative: 10, actor: {
+      type: 'character', system: {}, clearSpellDefense: async () => {}, rollInitiative: async () => { rolled.push(id); return 10; },
+    }, update: async () => {} });
+    const list = [mk('a', false), mk('ko', true)];
+    const combat = Object.create(SR3ECombat.prototype);
+    combat.combatants = { contents: list, get: id => list.find(c => c.id === id), find: f => list.find(f) };
+    combat.rebuildQueue = async () => [];
+    globalThis.game = { ...globalThis.game, sr3e: { SR3EActor: { promptSpellDefenseDeclaration: async () => {} } } };
+    await combat.rollInitiative();
+    t.eq('the new round\'s initiative roll skips the defeated', rolled, ['a']);
+    rolled.length = 0;
+    await combat.rollInitiative(['ko']);
+    t.eq('…a roll asked for by id still rolls them', rolled, ['ko']);
+  }
 }
 

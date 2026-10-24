@@ -12,7 +12,9 @@ export class SR3ECombat extends Combat {
    * @override
    */
   async rollInitiative(ids, options = {}) {
-    const combatants = ids?.length ? ids.map(id => this.combatants.get(id)) : this.combatants.contents;
+    // The whole-combat roll (each new round) skips the defeated — unconscious or dead — who get no turns this
+    // round (TODO 252, see buildRoundQueue). Asked for by id, anyone still rolls: the GM decides.
+    const combatants = ids?.length ? ids.map(id => this.combatants.get(id)) : this.combatants.contents.filter(c => !c.isDefeated);
 
     // Clear Spell Defense from the previous round — Sorcery dice return, Spell Pool stays spent
     for (const c of combatants) {
@@ -173,6 +175,9 @@ export class SR3ECombat extends Combat {
     const rank  = new Map();
 
     for (const c of this.combatants.contents) {
+      // Unconscious or dead (a full track marks the combatant defeated, sr3e.js updateActor) — no turns. They
+      // stay on the tracker, so one who is healed and wakes acts again from the next round (TODO 252).
+      if (c.isDefeated) continue;
       const base = Number(c.initiative);
       if (!Number.isFinite(base) || base <= 0) continue;
       rank.set(c.id, c.flags?.The2ndChumming3e?.tieBreak ?? 0);
@@ -209,6 +214,7 @@ export class SR3ECombat extends Combat {
   async _assignTieBreaks() {
     const byScore = new Map();
     for (const c of this.combatants.contents) {
+      if (c.isDefeated) continue;   // no turns, so no tie to break (TODO 252)
       const init = Number(c.initiative);
       if (!Number.isFinite(init) || init <= 0) continue;
       if (!byScore.has(init)) byScore.set(init, []);
@@ -299,6 +305,16 @@ export class SR3ECombat extends Combat {
    * @override
    */
   async nextTurn() {
+    // A player's End Turn runs on the GM (TODO 241). Core lets a player write only `round`, `turn` and
+    // `combatants` on a Combat (common/documents/combat.mjs `#canUpdate`), but advancing writes the queue flags,
+    // the next combatant's display flags and recoil on other people's actors — so a player was refused outright.
+    if (!game.user.isGM) {
+      const res = await game.sr3e.SR3EQuery.asGM('sr3e.combat.nextTurn', { combatId: this.id, combatantId: this.combatant?.id ?? '' })
+        .catch(err => ({ ok: false, reason: String(err?.message ?? err) }));
+      if (res && !res.ok) ui.notifications.warn(`End Turn: ${res.reason}.`);
+      return this;
+    }
+
     // Backstop for TODO 251: the deleteCombatant hook normally prunes as the combatant leaves. If it did not
     // (no GM connected then), the acting slot may be the removed one — play the next survivor, don't skip them.
     const pruned = await this.pruneQueue();
@@ -444,6 +460,27 @@ export class SR3ECombat extends Combat {
    * unconditional, so a confirmation every round would be pure noise.
    * @private
    */
+  /**
+   * `sr3e.combat.nextTurn` — a player's End Turn, carried out on the GM (TODO 241). Only the owner of the acting
+   * combatant may end the turn, and only while it is still theirs: `combatantId` is who the player saw acting, so
+   * a double click or a click that crossed the GM's own advance does not skip the next combatant.
+   */
+  static registerNextTurn() {
+    CONFIG.queries['sr3e.combat.nextTurn'] = async ({ rid, combatId, combatantId, _requesterId }) =>
+      game.sr3e.SR3EQuery.once(rid, async () => {
+        game.sr3e.SR3EQuery.assertActiveGM();
+        const combat = game.combats.get(combatId);
+        if (!combat?.started) return { ok: false, reason: 'that combat is not running' };
+        const cbt  = combat.combatant;
+        const user = game.users.get(_requesterId);
+        if (!cbt || cbt.id !== combatantId) return { ok: false, reason: 'the turn has already moved on' };
+        const owns = cbt.testUserPermission?.(user, 'OWNER') || cbt.actor?.testUserPermission?.(user, 'OWNER');
+        if (!user?.isGM && !owns) return { ok: false, reason: 'it is not your turn' };
+        await combat.nextTurn();
+        return { ok: true };
+      });
+  }
+
   /** `sr3e.combat.quickStrike` — a player's declaration, carried out on the GM. */
   static registerQuickStrike() {
     CONFIG.queries['sr3e.combat.quickStrike'] = async ({ rid, combatId, combatantId, force, _requesterId }) =>

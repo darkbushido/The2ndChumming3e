@@ -54,7 +54,7 @@ export async function run(t) {
   const sr3e = read('scripts/sr3e.js');
   t.ok('SR3ECombat.pruneQueue prunes through RoundQueue.prune', /async pruneQueue\(\)[\s\S]{0,400}RoundQueue\.prune\(/.test(combat));
   t.ok('nextTurn prunes before advancing (the backstop when no GM saw the delete)',
-    /async nextTurn\(\)\s*\{[\s\S]{0,400}await this\.pruneQueue\(\)/.test(combat));
+    /async nextTurn\(\)\s*\{[\s\S]{0,1500}await this\.pruneQueue\(\)/.test(combat));
   t.ok('…and plays the next survivor when the acting slot went, rather than advancing past them',
     /pruned\?\.actingRemoved[\s\S]{0,400}this\._applySlot\(pruned\.queue, pruned\.index\)/.test(combat));
   t.ok('a deleteCombatant hook prunes on the active GM as the combatant leaves',

@@ -66,6 +66,7 @@ Hooks.once('init', () => {
   SR3EQuery.register();
   SR3EActionLedger.register();   // sr3e.action.charge — TODO 48
   SR3ECombat.registerQuickStrike();   // sr3e.combat.quickStrike — TODO 78
+  SR3ECombat.registerNextTurn();      // sr3e.combat.nextTurn — a player's End Turn, TODO 241
 
   async function buildSkillsCompendium() {
     const PACK_ID = 'The2ndChumming3e.sr3e-skills';
