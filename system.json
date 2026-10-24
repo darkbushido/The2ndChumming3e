@@ -1897,7 +1897,7 @@
       ]
     }
   ],
-  "url": "https://github.com/darkbushido/The2ndChumming3e/tree/main",
-  "manifest": "https://raw.githubusercontent.com/darkbushido/The2ndChumming3e/refs/heads/main/system.json",
-  "download": "https://github.com/darkbushido/The2ndChumming3e/archive/refs/heads/main.zip"
+  "url": "https://github.com/darkbushido/The2ndChumming3e/tree/feature/cyberlimb-mods-marked",
+  "manifest": "https://raw.githubusercontent.com/darkbushido/The2ndChumming3e/refs/heads/feature/cyberlimb-mods-marked/system.json",
+  "download": "https://github.com/darkbushido/The2ndChumming3e/archive/refs/heads/feature/cyberlimb-mods-marked.zip"
 }
