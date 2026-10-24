@@ -28,6 +28,7 @@ const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun'
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
 const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
+const MODFIX = { module: '../scripts/data/mod-book-fixes.mjs', klass: 'ModBookFixes' };
 const PACKFIX = { module: '../scripts/data/pack-corrections-0-7-0.mjs', klass: 'PackFixes070' };
 const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' };
 const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  };
@@ -3283,6 +3284,29 @@ export const MUTANTS = [
       const live = new Set(liveIds); const q = queue ?? [];
       const kept = q.filter(s => live.has(s.id));
       return { queue: kept, index: q.slice(0, index).filter(s => live.has(s.id)).length, changed: kept.length !== q.length, actingRemoved: false, removedSlot: null };
+    },
+  },
+  {
+    id:     'mod-fix-overwrites-a-houserule',
+    suite:  'mod-book-fixes',
+    ...MODFIX, method: 'fixItem', needsOriginal: '_fixItemOriginal',
+    was:    'the 0.7.1 mod-value migration set the corrected value whatever the field held, overwriting a GM\'s edited cost, CF or legality '
+          + 'instead of correcting only the value we shipped (TODO 260)',
+    impl:   function (item) {
+      const delta = {};
+      for (const f of this.matching(item)) delta[`system.${f.field}`] = f.to;
+      return Object.keys(delta).length ? delta : null;
+    },
+  },
+  {
+    id:     'mod-fix-hits-every-level',
+    suite:  'mod-book-fixes',
+    ...MODFIX, method: 'matching',
+    was:    'the mod-value fixes matched on the mod name alone, so Concealed Armor 8 (CF 24) was corrected as if it were level 9 (R3 p.132)',
+    impl:   function (item) {
+      const kind = item?.type === 'vehiclemod' ? 'vehicle' : 'cyberlimb';
+      const name = String(item?.name ?? '').replace(/s*[d+]s*$/, '');
+      return this.FIXES.filter(f => f.kind === kind && f.name === name);
     },
   },
 ];

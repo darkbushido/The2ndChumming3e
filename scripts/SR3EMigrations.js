@@ -35,6 +35,7 @@ import { PackFixes070 } from './data/pack-corrections-0-7-0.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { VehicleArt } from './data/vehicle-art.mjs';
 import { ModRatings } from './data/mod-ratings.mjs';
+import { ModBookFixes } from './data/mod-book-fixes.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -520,6 +521,23 @@ const MIGRATIONS = [
      * without a bracket is never touched. Idempotent: a plain name yields null.
      */
     fixItem: ModRatings.renameDelta,
+  },
+  {
+    version: '0.7.1',
+    label: 'Mod values corrected to the books: Vehicle Armor costs, Concealed Armor CF, Power Amplifier CF, Remote Control ECCM, Hydraulic Jack, RC Encryption Module and cyberlimb plating legality (TODO 260)',
+    /**
+     * The maintainer checked the mod level tables against R3 pp.131-147 and M&M pp.24-37 and approved the
+     * corrections (2026-10-24, "fix all to the book"). The packs carry them; a copy already in a world is its
+     * own. The list is `ModBookFixes.FIXES` (`scripts/data/mod-book-fixes.mjs`, pure, tested, with each
+     * entry's book and page) — vehicle mods on vehicle actors, cyberlimb mods on characters, the Items
+     * sidebar, and unlinked tokens.
+     *
+     * ⚠ **This OVERWRITES, and argues for it:** a field is rewritten ONLY while it still equals the exact
+     * wrong value we shipped (`from`), on a mod of that name and level. A GM who edited the cost, the CF or
+     * the legality holds some other value and keeps it — the guard is the houserule protection. Idempotent:
+     * once corrected nothing equals `from`, so a second run yields null.
+     */
+    fixItem: ModBookFixes.fixItem,
   },
 
 ];

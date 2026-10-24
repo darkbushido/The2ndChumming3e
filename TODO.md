@@ -2820,9 +2820,16 @@ cyberlimb keep their bracketed names until #130 itself.
 - **One Vehicle Armor** (the maintainer, 2026-10-24: *"we should just have one Vehicle Armor mod"*): the pack
   keeps ONE document (level 1, id `sr3e-vehiclemod-0044`); its levels live in `tools/data/collapsed-mods.json`
   (`build-mod-ratings.mjs --collapse`), merged into the table. Any other mod can be collapsed the same way.
-- ⚠ **The second "Vehicle Armor [11]"** (was `sr3e-vehiclemod-0055`: 16,250¥, load Body²×60 kg, 93 hrs, Handling+2)
-  reads like level 12 but was not guessed: it is kept as `unplaced` in `collapsed-mods.json` and the dropdown
-  offers 1-11. Check R3 p.131 and move it into `levels` (or drop it), then re-run the tool.
+- **The second "Vehicle Armor [11]"** (was `sr3e-vehiclemod-0055`: 16,250¥, Handling+2) is **dropped** (the
+  maintainer, 2026-10-24); the dropdown offers 1-11. The level costs are fixed to R3 p.131 ("1,250¥ per Armor
+  point", "Armor value x 8 hrs", "Target Number: Desired Armor rating ÷ 3"): level 7 8,750¥, 9 11,250¥, 10 12,500¥,
+  11 13,750¥ and B/R(4).
+- **Book corrections** (the maintainer checked the level tables against the PDFs, 2026-10-24: "fix all to the
+  book"), one list `ModBookFixes` (`scripts/data/mod-book-fixes.mjs`) read by `tools/fix-mod-book-values.mjs`
+  (packs) and the 0.7.1 migration (owned copies — only a field still holding the old shipped value changes):
+  Concealed Armor 9 CF 27 (R3 p.132) · Ablative Armor 2 availability 12/14 days (R3 p.131) · Power Amplifier CF
+  rounded up (R3 p.147) · Remote Control ECCM 5 and 6 cost (M&M p.25) · Hydraulic Jack "jump distance" (M&M p.29) ·
+  RC Encryption Module 8P-W and levels 9-10 (M&M pp.24-25) · cyberlimb plating legality (M&M p.37).
 - `npm run packs:install` was not run (cloud session) — run it with Foundry closed.
 
 **🧪 Test in Foundry**
@@ -2832,6 +2839,10 @@ cyberlimb keep their bracketed names until #130 itself.
 3. A Cyberlimb Mod (Armor: Ballistic) at Alpha grade: change the level — the cost follows, doubled for Alpha.
 4. A world from 0.7.0 with "ECCM [3]" on a vehicle: after the reload as GM it reads "ECCM", level 3.
 5. 🛒 Buy gear: search "STS" — "STS (Beacon) [1]" … "[6]".
+6. A Vehicle Armor mod's Level dropdown shows 1-11 only (no 12th); pick 7: cost 8,750¥.
+7. A Power Amplifier: pick level 3 — CF consumed 2.
+8. A vehicle with an owned Concealed Armor (level 9, CF 37): after the reload as GM its CF reads 27; one whose CF
+   you had edited is left as you set it.
 
 ### 📌 Notes & parked
 

@@ -91,7 +91,30 @@ export async function run(t) {
   t.eq('…and its dropdown still offers levels 1-11', ModRatings.options(veh('Vehicle Armor', { rating: 1 })).map(o => o.value), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
   t.ok('…level 6 adds the Handling note', ModRatings.ratingChange(veh('Vehicle Armor'), 6)['system.description'] === 'Handling+1');
   const va = readCollapsed()['vehicle|Vehicle Armor'];
-  t.ok('the second "[11]" is kept unplaced for a person to check, not guessed', va?.unplaced?.length === 1 && va.unplaced[0].id === 'sr3e-vehiclemod-0055' && va.unplaced[0].row.cost === 16250);
+  t.ok('the second "[11]" was dropped (the maintainer, 2026-10-24) — no unplaced level is kept', va && !('unplaced' in va));
+  const L = MOD_RATING_TABLE['vehicle|Vehicle Armor'];
+  t.is('…so the dropdown has no 12th level', Math.max(...Object.keys(L).map(Number)), 11);
+  for (let n = 1; n <= 11; n++) {
+    t.is(`Vehicle Armor ${n} costs 1,250¥ x ${n} (R3 p.131: 1,250¥ per Armor point)`, L[n].cost, 1250 * n);
+    t.is(`Vehicle Armor ${n} takes Vehicle B/R(${Math.ceil(n / 3)}) (R3 p.131: desired Armor rating ÷ 3)`, /B\/R\((\d+)\)/.exec(L[n].installTime)?.[1], String(Math.ceil(n / 3)));
+    t.is(`Vehicle Armor ${n} takes ${8 * n} hrs (R3 p.131: Armor value x 8 hrs)`, /^(\d+) hrs/.exec(L[n].installTime)?.[1], String(8 * n));
+  }
+  t.ok('Vehicle Armor has no level 12', L[12] === undefined);
+  const CA = MOD_RATING_TABLE['vehicle|Concealed Armor'];
+  for (const n of Object.keys(CA).map(Number)) t.is(`Concealed Armor ${n} consumes ${3 * n} CF (R3 p.132: 3 CF per Armor Point)`, CA[n].cfCost, String(3 * n));
+  const PA = MOD_RATING_TABLE['vehicle|Power Amplifier'];
+  for (let n = 1; n <= 10; n++) t.is(`Power Amplifier ${n} consumes ${Math.ceil(n / 2)} CF (R3 p.147: 0.5 CF per rating, round up)`, PA[n].cfCost, String(Math.ceil(n / 2)));
+  t.is('Ablative Armor 2 is 12/14 days (R3 p.131)', MOD_RATING_TABLE['vehicle|Ablative Armor'][2].availability, '12/14days');
+  const EC = MOD_RATING_TABLE['cyberlimb|Remote Control ECCM'];
+  t.is('Remote Control ECCM 5 is 175,000¥ (M&M p.25: ratings 4-6 are Rating x 35,000¥)', EC[5].cost, 175000);
+  t.is('Remote Control ECCM 6 is 210,000¥ (M&M p.25)', EC[6].cost, 210000);
+  const RC = MOD_RATING_TABLE['cyberlimb|RC Encryption Module'];
+  t.eq('RC Encryption Module has levels 1-10 (M&M p.24)', Object.keys(RC).map(Number), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  t.eq('RC Encryption Module 10 costs 100,000¥, 10/10 days (M&M p.24)', RC[10], { availability: '10/10 days', cost: 100000 });
+  const rcem = docs.filter(x => x.d.name === 'RC Encryption Module' && x.d.type === 'cyberware');
+  t.ok('RC Encryption Module levels 9 and 10 are one document each, with distinct ids', [9, 10].every(r => rcem.filter(x => x.d.system.rating === r).length === 1)
+    && new Set(rcem.map(x => x.key)).size === rcem.length);
+  t.ok('RC Encryption Module is 8P-W at every level (M&M p.25)', rcem.every(x => x.d.system.legalCode === '8P-W'));
   const fam = new Map([['!items!a', veh('Y', { rating: 2, cost: 20 })], ['!items!b', veh('Y', { rating: 1, cost: 10 })], ['!items!c', veh('Other', { rating: 1 })]]);
   const out = collapse(fam, 'p', 'vehicle|Y');
   t.ok('collapse keeps the lowest level\'s document and only that one', out.keep === 'b' && fam.has('!items!b') && !fam.has('!items!a') && fam.has('!items!c'));

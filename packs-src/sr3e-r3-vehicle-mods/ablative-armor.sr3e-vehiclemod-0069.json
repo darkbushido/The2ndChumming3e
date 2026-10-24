@@ -7,7 +7,7 @@
     "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
     "system": {
       "cost": 1600,
-      "availability": "12/12days",
+      "availability": "12/14days",
       "streetIndex": "2",
       "installEquipment": "Vehicle Facility",
       "installTime": "6 hrs/no test needed",

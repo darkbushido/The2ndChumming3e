@@ -42,7 +42,7 @@
           "load": "Body^2*30kg"
         },
         "7": {
-          "cost": 9750,
+          "cost": 8750,
           "description": "Handling+1",
           "installTime": "56 hrs/Vehicle B/R(3)",
           "load": "Body^2*35kg"
@@ -54,37 +54,24 @@
           "load": "Body^2*40kg"
         },
         "9": {
-          "cost": 12500,
+          "cost": 11250,
           "description": "Handling+1",
           "installTime": "72 hrs/Vehicle B/R(3)",
           "load": "Body^2*45kg"
         },
         "10": {
-          "cost": 13750,
+          "cost": 12500,
           "description": "Handling+1",
           "installTime": "80 hrs/Vehicle B/R(4)",
           "load": "Body^2*50kg"
         },
         "11": {
-          "cost": 15000,
+          "cost": 13750,
           "description": "Handling+1",
-          "installTime": "88 hrs/Vehicle B/R(5)",
+          "installTime": "88 hrs/Vehicle B/R(4)",
           "load": "Body^2*55kg"
         }
-      },
-      "unplaced": [
-        {
-          "id": "sr3e-vehiclemod-0055",
-          "rating": 11,
-          "row": {
-            "cost": 16250,
-            "description": "Handling+2",
-            "installTime": "93 hrs/Vehicle B/R(6)",
-            "load": "Body^2*60kg"
-          },
-          "why": "printed at a level another document already has, with different numbers — check the book"
-        }
-      ]
+      }
     }
   }
 }
