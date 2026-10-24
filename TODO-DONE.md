@@ -7595,3 +7595,18 @@ cyberlimb (category `Cyberlimb Mods`; SR3 p.303, M&M p.36), which is correct for
 
 ⚠ Copies characters already own keep the old numbers until the 0.7.1 migration, which rides with [#256](TODO.md#256)
 (agreed with the maintainer 2026-10-23: main stays green, and the migration lands with the release).
+
+## 258. ✅ Weapon mods: book errors in the generated accessories — **found 2026-10-23** — fixed in 176bd094
+
+The weapon-mods audit (`audit/weapon-mods-audit.md`, asked for after [#255](#255)) checked the 87
+`Firearms Accessories` against SR3 pp.280-282, *Cannon Companion* pp.33-35 and 80-83, and M&M pp.32-33. They are
+generated, so the corrections are `ACCESSORY_FIXES` in `tools/build-default-gear.mjs`, pinned by
+`tests/weapon-mods.test.mjs`:
+
+- **Sawed-Off Shotgun Barrel** 64¥, not 68¥ — Design Points +8 × 8 (CC p.80, p.83).
+- **Rangefinder** is Top-mounted (CC p.33).
+- **Citations**: Smart Shades I are SR3 **p.281** (goggles "rigged as mirrored sunglasses" at double the nuyen);
+  Smart Shades II and Ultrasound Shades apply that rule and now say they are derived; Gas Vent I says SR3
+  does not print it (source not found).
+- **Low-power laser sight**: the two SR2 *Fields of Fire* copies become one *Cannon Companion* customisation,
+  800¥ (DP +100 × 8), Top/Under, cc.82 — the maintainer's choice, so it stays in an SR3 book.
