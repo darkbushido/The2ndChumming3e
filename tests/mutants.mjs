@@ -28,6 +28,9 @@ const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun'
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
 const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
+const MODFIX = { module: '../scripts/data/mod-book-fixes.mjs', klass: 'ModBookFixes' };
+const FAMILIES = { module: '../scripts/data/rated-families.mjs', klass: 'RatedFamilies' };
+const MODRATE = { module: '../scripts/data/mod-ratings.mjs', klass: 'ModRatings' };
 const PACKFIX = { module: '../scripts/data/pack-corrections-0-7-0.mjs', klass: 'PackFixes070' };
 const ACTOR = { module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor' };
 const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  };
@@ -45,6 +48,7 @@ const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 const PORDER = { module: '../scripts/data/patient-order.mjs', klass: 'PatientOrder' };
+const MACROREF = { module: '../scripts/data/macro-refresh.mjs', klass: 'MacroRefresh' };
 const GSEARCH = { module: '../scripts/data/gear-search.mjs', klass: 'GearSearch' };
 const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 const SKILLRULES = { module: '../scripts/data/skill-rules.mjs', klass: 'SkillRules' };
@@ -3387,5 +3391,135 @@ export const MUTANTS = [
       const soakCards = (p.soakCards ?? []).map(c => ({ ...c, dismissed: false }));
       return this._resolvedReal({ ...p, acted, soakCards });
     },
+  },
+  {
+    id:     'mod-fix-overwrites-a-houserule',
+    suite:  'mod-book-fixes',
+    ...MODFIX, method: 'fixItem', needsOriginal: '_fixItemOriginal',
+    was:    'the 0.7.1 mod-value migration set the corrected value whatever the field held, overwriting a GM\'s edited cost, CF or legality '
+          + 'instead of correcting only the value we shipped (TODO 261)',
+    impl:   function (item) {
+      const delta = {};
+      for (const f of this.matching(item)) delta[`system.${f.field}`] = f.to;
+      return Object.keys(delta).length ? delta : null;
+    },
+  },
+  {
+    id:     'mod-fix-hits-every-level',
+    suite:  'mod-book-fixes',
+    ...MODFIX, method: 'matching',
+    was:    'the mod-value fixes matched on the mod name alone, so Concealed Armor 8 (CF 24) was corrected as if it were level 9 (R3 p.132)',
+    impl:   function (item) {
+      const kind = item?.type === 'vehiclemod' ? 'vehicle' : 'cyberlimb';
+      const name = String(item?.name ?? '').replace(/s*[d+]s*$/, '');
+      return this.FIXES.filter(f => f.kind === kind && f.name === name);
+    },
+  },
+  {
+    id:     'family-keeps-the-highest-level',
+    suite:  'mod-ratings',
+    ...FAMILIES, method: 'plan',
+    was:    'collapsing a rated family kept the HIGHEST level\'s document, so the kept id (and its owned copies\' compendium link) belonged to the wrong level '
+          + 'and the lowest level lost its fields (TODO 261: keep the lowest, its id unchanged)',
+    impl:   function (members) {
+      if (!this.collapses(members)) return null;
+      const { levels, unplaced, duplicates, placed } = this.levels(members);
+      const keep = [...placed.values()].at(-1);
+      return { keep, levels, unplaced, duplicates, folded: [], deleted: members.filter(m => m !== keep).map(m => m.key), count: members.length };
+    },
+  },
+  {
+    id:     'family-collapses-a-lone-item',
+    suite:  'mod-ratings',
+    ...FAMILIES, method: 'collapses',
+    was:    'a lone rated document counted as a family, so it was renamed and recorded in the level table with a one-row "dropdown" (TODO 261: only two or more rated documents collapse)',
+    impl:   members => members.filter(m => m.level > 0).length >= 1,
+  },
+  {
+    id:     'family-ignores-a-duplicate-level',
+    suite:  'mod-ratings',
+    ...FAMILIES, method: 'levels',
+    was:    'a level printed twice with different numbers silently kept the first and dropped the second — nothing marked it for the maintainer to check against the book (TODO 261: unplaced)',
+    impl:   function (members) {
+      const placed = new Map();
+      for (const m of [...members].filter(x => x.level > 0).sort((a, b) => a.level - b.level)) if (!placed.has(m.level)) placed.set(m.level, m);
+      const levels = {};
+      for (const [lvl, m] of placed) levels[lvl] = { cost: m.doc.system.cost };
+      return { levels, unplaced: [], duplicates: [], placed };
+    },
+  },
+  {
+    id:     'migration-repoint-overwrites-a-live-link',
+    suite:  'mod-ratings',
+    ...MODRATE, method: 'repointSource',
+    was:    'the 0.7.1 migration repointed any compendium link to the first pack\'s kept document, even one whose source is not a deleted level (TODO 261: only a DEAD link)',
+    impl:   function (item) {
+      const m = /^Compendium\.The2ndChumming3e\.([^.]+)\.Item\.(.+)$/.exec(String(item?._stats?.compendiumSource ?? ''));
+      return m ? `Compendium.The2ndChumming3e.${m[1]}.Item.kept` : null;
+    },
+  },
+  {
+    id:     'syncname-does-not-swap-the-old-level',
+    suite:  'mod-ratings',
+    ...MODRATE, method: 'syncName',
+    was:    'the name sync appended the new level without taking the old one off — "Medkit [3]" went to "Medkit [3] [5]" (TODO 261, name follows level)',
+    impl:   function (name, rating) {
+      const n = Number(rating);
+      return n > 0 ? `${String(name ?? '').trim()} [${n}]` : String(name ?? '');
+    },
+  },
+  {
+    id:     'syncname-eats-any-bracket',
+    suite:  'mod-ratings',
+    ...MODRATE, method: 'syncName',
+    was:    'the name sync stripped ANY trailing bracket or parenthesis, so "Gyro Mount (Deluxe)" lost its text (TODO 261: only a level is swapped)',
+    impl:   function (name, rating) {
+      const n = Number(rating);
+      const base = String(name ?? '').replace(/\s*[[(][^\])]*[\])]\s*$/, '').trim();
+      return n > 0 ? `${base} [${n}]` : base;
+    },
+  },
+  {
+    id:     'syncname-writes-into-the-compendium',
+    suite:  'mod-ratings',
+    ...MODRATE, method: 'inPack',
+    was:    'the name hooks treated a compendium document like a world item, so a pack would have been renamed "Medkit [1]" (TODO 261: the packs stay plain)',
+    impl:   function () { return false; },
+  },
+  {
+    id:     'gear-level-change-forgets-street-index',
+    suite:  'gear-search',
+    ...GSEARCH, method: 'fields',
+    was:    'fields() read only `streetIndex`, so the Buy dialog level picker (which holds a fields() result, with `index`) reset the Street Index to 1 on every level change (TODO 261, STS (Beacon))',
+    impl:   function (entry) {
+      return {
+        name: entry?.name ?? '', type: entry?.type ?? 'gear', tn: entry?.tn || 4, time: entry?.time || 1, unit: entry?.unit || 'day',
+        cost: Number(entry?.cost ?? entry?.system?.cost) || 0,
+        index: Number(entry?.streetIndex ?? entry?.system?.streetIndex) || 1,
+        uuid: entry?.uuid ?? '', levels: entry?.levels ?? null, rating: entry?.rating ?? null,
+        always: !!entry?.always, unknown: !!entry?.unknown,
+      };
+    },
+  },
+  {
+    id:     'macro-never-refreshed',
+    suite:  'macro-refresh',
+    ...MACROREF, method: 'decide',
+    was:    'an existing world macro was left alone, so a fixed scripts/macros body never reached an older world (TODO 261, Chrome Threat Generator)',
+    impl:   (_def, existing) => (existing ? 'skip' : 'create'),
+  },
+  {
+    id:     'macro-refresh-takes-any-name-match',
+    suite:  'macro-refresh',
+    ...MACROREF, method: 'find',
+    was:    'the refresh adopted a macro by name whatever its type or flag, overwriting a chat macro or another managed macro (TODO 261)',
+    impl:   (def, macros) => [...(macros ?? [])].find(m => m?.name === def.name) ?? null,
+  },
+  {
+    id:     'macro-refresh-touches-gm-macros',
+    suite:  'macro-refresh',
+    ...MACROREF, method: 'find',
+    was:    'the refresh took any script macro, so a GM-authored macro with another name was overwritten (TODO 261)',
+    impl:   (_def, macros) => [...(macros ?? [])].find(m => m?.type === 'script') ?? null,
   },
 ];

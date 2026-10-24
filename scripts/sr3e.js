@@ -18,6 +18,8 @@ import { MoveByWire } from './data/move-by-wire.mjs';
 import { Cyberzombie } from './data/cyberzombie.mjs';
 import { CyberSlots } from './data/cyber-slots.mjs';
 import { ItemRating, ratingOnCreate } from './data/item-rating.mjs';
+import { ModRatings } from './data/mod-ratings.mjs';
+import { MacroRefresh } from './data/macro-refresh.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
 import { ActorRef, actorFrom, actorRef } from './data/actor-ref.mjs';
 import { SR3ENpcReset } from './SR3ENpcReset.js';
@@ -124,7 +126,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, ActorRef, SR3EStatusEffects };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, ActorRef, SR3EStatusEffects };
 
   // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
   // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
@@ -422,8 +424,14 @@ Hooks.once('ready', async () => {
     // that could only fail. Agents and hosts ship in `sr3e-mdf-agents` / `sr3e-mdf-hosts` (TODO 1).
   ];
 
-  for (const def of macros) {
-    if (game.macros.find(m => m.name === def.name)) continue;
+  // Create each managed macro, and REFRESH one a world already holds (TODO 261): a macro keeps the command text it
+  // was created with, so a fix to scripts/macros never reached an older world. Managed = flagged with its path, or
+  // an old script macro of exactly the managed name (adopted). The GM's own macros are never touched. Rules:
+  // `MacroRefresh` (scripts/data/macro-refresh.mjs). A fetch failure is logged and never blocks the load.
+  const refreshed = [];
+  // Active GM only — two GM tabs would otherwise write the same macro twice.
+  const isActiveGM = game.users.activeGM?.id === game.user.id;
+  for (const def of isActiveGM ? macros : []) {
     try {
       // fetch() resolves for 404s too, and the body is Foundry's HTML error page.
       // Without this check that HTML is handed to Macro.create as script source,
@@ -431,12 +439,20 @@ Hooks.once('ready', async () => {
       const res = await fetch(`systems/The2ndChumming3e/${def.path}`);
       if (!res.ok) throw new Error(`${res.status} ${res.statusText} fetching ${def.path}`);
       const src = await res.text();
-      await Macro.create({ name: def.name, type: 'script', command: src, img: def.img });
-      ui.notifications.info(`SR3E: "${def.name}" macro added to your macro library.`);
+      const existing = MacroRefresh.find(def, game.macros);
+      const action = MacroRefresh.decide(def, existing, src);
+      if (action === 'create') {
+        await Macro.create(MacroRefresh.createData(def, src));
+        ui.notifications.info(`SR3E: "${def.name}" macro added to your macro library.`);
+      } else if (action !== 'skip') {
+        await existing.update(MacroRefresh.changes(def, existing, src));
+        refreshed.push(def.name);
+      }
     } catch (err) {
-      console.warn(`SR3E | Could not auto-create macro "${def.name}":`, err);
+      console.warn(`SR3E | Could not create or refresh macro "${def.name}":`, err);
     }
   }
+  if (refreshed.length) console.log(`SR3E | Refreshed world macro${refreshed.length === 1 ? '' : 's'} from the system: ${refreshed.join(', ')}`);
 
   // Auto-create organisational folders for non-character actor types.
   // These folders keep the world actors directory tidy — IC, agents, hosts,
@@ -471,6 +487,27 @@ Hooks.on('deleteActor', async (actor) => {
 Hooks.on('preCreateItem', (document, data) => {
   const fill = ratingOnCreate(document.type, data?.system?.rating, document.name);
   if (fill !== undefined) document.updateSource({ 'system.rating': fill });
+});
+
+/* An owned or world item's NAME follows its level (TODO 261, the maintainer 2026-10-24): the packs name an item
+ * plainly ("Medkit"), a copy reads "Medkit [5]". `ModRatings.syncName` swaps the trailing bracket; a custom name
+ * keeps its text. ⚠ NEVER for a compendium document — `options.pack`, `document.pack`, or an item inside a pack
+ * actor — the packs stay plain. Pre-hooks run on the client doing the write, and `updateSource` / editing `changes`
+ * re-fires nothing, so there is no loop. Registered AFTER the rating fill above, so it sees the filled rating. */
+Hooks.on('preCreateItem', (document, _data, options) => {
+  if (ModRatings.inPack(document, options)) return;
+  const name = ModRatings.syncName(document.name, document.system?.rating, document.type);
+  if (name !== document.name) document.updateSource({ name });
+});
+Hooks.on('preUpdateItem', (document, changes, options) => {
+  if (ModRatings.inPack(document, options)) return;
+  const hasName = foundry.utils.hasProperty(changes, 'name');
+  const hasRating = foundry.utils.hasProperty(changes, 'system.rating');
+  if (!hasName && !hasRating) return;
+  const rating = hasRating ? foundry.utils.getProperty(changes, 'system.rating') : document.system?.rating;
+  const current = hasName ? changes.name : document.name;
+  const name = ModRatings.syncName(current, rating, document.type);
+  if (name !== current) changes.name = name;
 });
 
 /* Nothing arrives in hand (TODO 135/136). `system.ready` starts true so sheets from before Ready
@@ -2634,23 +2671,9 @@ Hooks.on('renderSettingsConfig', (_app, html) => {
 // Attach action button handlers to each chat message as it renders.
 // renderChatMessageHTML fires for every render (new message AND pop-up notification),
 // so the guard above is what prevents double-firing across the two DOM instances.
-/**
- * A rated item lists its level in a compendium window (TODO 261): the packs name the mod ("ECCM") and
- * keep the level in `system.rating`, so without this ten entries would read "ECCM". Text only — the
- * entry, its drag data and its document are untouched.
- */
-Hooks.on('renderCompendium', (app, html) => {
-  const pack = app.collection;
-  if (pack?.documentName !== 'Item') return;
-  const root = html instanceof HTMLElement ? html : app.element;
-  root?.querySelectorAll('[data-entry-id]').forEach(li => {
-    const entry = pack.index.get(li.dataset.entryId);
-    const label = entry ? ItemRating.displayName(entry) : null;
-    if (!label || label === entry.name) return;
-    const el = li.querySelector('.entry-name a, .entry-name, .document-name a, .document-name');
-    if (el && el.textContent.trim() === entry.name) el.textContent = label;
-  });
-});
+// ⚠ No "[N]" in a compendium window (TODO 261): a rated item is ONE document there, its level picked on the
+// item sheet or when bought, so the stored level of a collapsed document means nothing in a list. (A
+// `renderCompendium` hook used to append it; it is gone on purpose — tests/mod-ratings.test.mjs.)
 
 Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   const mid = message.id;

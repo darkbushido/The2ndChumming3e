@@ -485,7 +485,7 @@
       }
     },
     "!actors.items!ltiJ2SPBBe9G2pd2.EuoSrYrBheJZSqWS": {
-      "name": "Muscle Replacement [2]",
+      "name": "Muscle Replacement",
       "type": "cyberware",
       "_id": "EuoSrYrBheJZSqWS",
       "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
@@ -1085,7 +1085,7 @@
       }
     },
     "!actors.items!ltiJ2SPBBe9G2pd2.uuVDArUrxB7Rzb2w": {
-      "name": "Wired Reflexes [2]",
+      "name": "Wired Reflexes",
       "type": "cyberware",
       "_id": "uuVDArUrxB7Rzb2w",
       "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",

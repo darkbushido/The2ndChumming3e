@@ -4,6 +4,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { GearSearch } from '../scripts/data/gear-search.mjs';
+import { Purchasing } from '../scripts/data/purchasing.mjs';
 
 export const name = 'gear-search';
 const read = rel => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
@@ -78,7 +79,7 @@ export async function run(t) {
   t.ok('a drop is checked against packAllowed for the pack it came from', /game\.packs\.get\(dropped\.pack\)/.test(drop) && /SR3ESourceBooks\?\.packAllowed\(pack\)/.test(drop));
   t.ok('a drop FILLS even when warned: resolveDrop returns the fields after the warnings, with no early return for book or type',
     drop.includes('dropWarnings(')
-    && drop.indexOf('dropWarnings(') < drop.indexOf('return { ...GearSearch.fields(dropped)')
+    && drop.indexOf('dropWarnings(') < drop.indexOf('const entry = { ...GearSearch.fields(dropped)')
     && (drop.match(/return null/g) ?? []).length === 2);
   t.ok('the search uses pack indexes, not full documents', /pack\.getIndex\(\{ fields: GearSearch\.INDEX_FIELDS \}\)/.test(idxFn) && !/getDocuments?\(/.test(idxFn));
   t.ok('only Item packs holding a buyable type are searched', /documentName !== 'Item'/.test(packs) && /itemTypes/.test(packs) && /BUYABLE\.includes/.test(packs));
@@ -89,4 +90,15 @@ export async function run(t) {
   t.ok('both paths fill the fields through one take()', (src.match(/take\(/g) ?? []).length >= 3);
   t.ok('the chosen item\'s uuid wins over the row\'s when the buyer pays', /itemUuid: picked\?\.uuid \|\| item\?\.uuid \|\| ''/.test(src));
   t.ok('the dialog is wired through wait()\'s render option, never the global hook', /render: \(_event, dialog\) =>/.test(src) && !/renderDialogV2/.test(src));
+  /* ── A level change keeps the Street Index (TODO 261, seen live on STS (Beacon)) ─────────────── */
+  const sts = G.fromIndex({ _id: 's', name: 'STS (Beacon)', type: 'gear', system: { rating: 1, cost: 200, availability: '4/48hrs', streetIndex: '2' } }, { collection: 'p' });
+  const shaped = { ...G.atLevel(sts, 1), levels: { 1: {}, 2: {}, 4: { cost: 800, availability: '4/48hrs' } }, rating: 1 };   // what showLevels(f) stores
+  t.is('the fields() result names its Street Index "index"', shaped.index, 2);
+  t.is('a fields()-shaped entry keeps Street Index 2 when the level row prints none', G.atLevel(shaped, 4).index, 2);
+  t.is('…across every level', [1, 2, 4].map(l => G.atLevel(shaped, l).index).join(','), '2,2,2');
+  t.is('…and keeps its availability (TN, time, unit) rather than falling to 4/1 day', [G.atLevel(shaped, 2).tn, G.atLevel(shaped, 2).time, G.atLevel(shaped, 2).unit].join('|'), '4|48|hour');
+  t.is('…and a level row that prints its availability still wins', G.atLevel({ ...shaped, levels: { 3: { availability: '8/3days' } } }, 3).tn, 8);
+  t.is('a level row that prints its own Street Index wins over the entry own', G.atLevel({ ...shaped, levels: { 3: { streetIndex: 3 } } }, 3).index, 3);
+  t.is('an entry with no Street Index at all is 1', G.atLevel({ name: 'x', levels: { 1: {} } }, 1).index, 1);
+  t.is('the asking price uses the kept Street Index (800 x 2)', Purchasing.askingPrice(G.atLevel({ ...shaped, levels: { 4: { cost: 800 } } }, 4).cost, G.atLevel({ ...shaped, levels: { 4: { cost: 800 } } }, 4).index).total, 1600);
 }

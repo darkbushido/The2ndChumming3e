@@ -43,6 +43,7 @@ import { readdirSync } from 'node:fs';
 import { readSourceDir, writeSourceDir, rebuildPack } from './lib/pack-source.mjs';
 import { splitCyberware } from './lib/cyberware-split.mjs';
 import { resolveImplant, resolveMod, resolveSpell, MODS_CONSUMED_BY } from './lib/johnson-aliases.mjs';
+import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 
 const HERE     = dirname(fileURLToPath(import.meta.url));
 const REPO     = join(HERE, '..');
@@ -150,9 +151,15 @@ for (const a of actors) {
     for (const part of parts) {
       const host = /cyberear/i.test(part.name) ? 'ear' : 'eye';
       const target = resolveImplant(part.name, part.mods) ?? part.name;
-      const hit = idx.get(norm(target));
+      // A rated implant is ONE pack document now, its levels in the table (TODO 261): the alias names the level
+      // ("Wired Reflexes [2]"), so look up the plain name and apply the level to the copy.
+      const sp = ModRatings.splitName(target);
+      const hit = idx.get(norm(sp ? sp.stem : target));
       if (hit) {
-        resolvedHere.push({ src: hit, grade: part.grade });
+        // The contacts pack is a pack, so the name-sync hook never runs for it: name the copy "Wired Reflexes [2]" here.
+        const leveled = sp ? ModRatings.withLevel(hit.doc, sp.rating) : null;
+        if (leveled) leveled.name = ModRatings.syncName(leveled.name, sp.rating, leveled.type);
+        resolvedHere.push({ src: leveled ? { ...hit, doc: leveled } : hit, grade: part.grade });
       } else {
         unresolved.set(part.name, (unresolved.get(part.name) ?? 0) + 1);
       }

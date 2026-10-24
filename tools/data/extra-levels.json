@@ -1,0 +1,12 @@
+{
+  "about": "Levels the books print that no pack document carries — rows of the level table, not documents (every rated item is one document, TODO 261). Merged by tools/build-mod-ratings.mjs. The key is 'kind|item name'; a level is the fields that differ between that item's levels.",
+  "levels": {
+    "cyberware|RC Encryption Module": {
+      "9": { "availability": "9/9 days", "cost": 90000 },
+      "10": { "availability": "10/10 days", "cost": 100000 }
+    }
+  },
+  "sources": {
+    "cyberware|RC Encryption Module": "Man & Machine p.25: RC Encryption Module, ratings 1-10, Rating x 10,000¥, (Rating)/(Rating) days, legality 8P-W"
+  }
+}

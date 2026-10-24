@@ -584,7 +584,7 @@
       }
     },
     "!actors.items!e6hEWEVm4CWUqJh7.DqyLImPUIJYaQE6j": {
-      "name": "Boosted Reflexes [1]",
+      "name": "Boosted Reflexes",
       "type": "cyberware",
       "_id": "DqyLImPUIJYaQE6j",
       "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
@@ -1044,7 +1044,7 @@
       }
     },
     "!actors.items!e6hEWEVm4CWUqJh7.y3HyTPuGQLPa1oBQ": {
-      "name": "Radio [3]",
+      "name": "Radio",
       "type": "cyberware",
       "_id": "y3HyTPuGQLPa1oBQ",
       "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",

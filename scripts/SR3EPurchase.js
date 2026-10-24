@@ -1,7 +1,7 @@
 import { Purchasing } from './data/purchasing.mjs';
 import { GearSearch } from './data/gear-search.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
-import { displayName } from './data/item-rating.mjs';
+import { ModRatings } from './data/mod-ratings.mjs';
 
 /**
  * Buying gear — the flow · *SR3 pp.272-273* (TODO 82).
@@ -91,7 +91,10 @@ export const SR3EPurchase = {
     // Ruled 2026-10-17: a switched-off book or a non-buyable type WARNS and still fills the form.
     const packAllowed = !pack || (game.sr3e?.SR3ESourceBooks?.packAllowed(pack) ?? true);
     for (const w of GearSearch.dropWarnings({ name: dropped.name, type: dropped.type, packAllowed }, SR3EPurchase.BUYABLE)) ui.notifications.warn(w);
-    return { ...GearSearch.fields(dropped), name: displayName(dropped), type: dropped.type, uuid: dropped.uuid };
+    // ⚠ The plain name — no "[N]" (TODO 261). The dialog offers the item's levels when the table has them.
+    const entry = { ...GearSearch.fields(dropped), name: dropped.name, type: dropped.type, uuid: dropped.uuid,
+      levels: ModRatings.levelsOf(dropped), rating: Number(dropped.system?.rating) || null };
+    return GearSearch.atLevel(entry, GearSearch.startLevel(entry));
   },
 
   /** The character's contacts, with what each is good for. */
@@ -118,6 +121,12 @@ export const SR3EPurchase = {
     const cost  = Number(item?.system?.cost) || 0;
     let   type  = item?.type ?? 'gear';   // a search hit or a drop changes it
     let   picked = null;                  // the item the search or a drop chose, over the row's
+    // A rated item is one document with its levels in a table (TODO 261): bought at a level, default the lowest.
+    const rowEntry = item ? { ...GearSearch.fields(item), levels: ModRatings.levelsOf(item), rating: Number(item.system?.rating) || null } : null;
+    let   levelEntry = rowEntry?.levels ? rowEntry : null;
+    let   level = levelEntry ? GearSearch.startLevel(levelEntry) : null;
+    const levelOptions = e => Object.keys(e?.levels ?? {}).map(Number).sort((a, b) => a - b)
+      .map(l => `<option value="${l}"${l === level ? ' selected' : ''}>${l}</option>`).join('');
 
     const cons = SR3EPurchase.contacts(actor);
     const conOpts = cons.length
@@ -150,6 +159,10 @@ export const SR3EPurchase = {
         ${empty.length ? `<p style="font-size:11px;color:var(--sr-amber);margin:0 0 6px">
           🧰 Out of supplies: ${empty.map(i => esc(i.name)).join(', ')}.
           <button type="button" id="sr-buy-supplies" class="btn-sm">Buy ${esc(supplies.name)}</button></p>` : ''}
+        <label id="sr-buy-level-row" style="display:${levelEntry ? 'block' : 'none'};margin-bottom:6px">Level
+          <select id="sr-buy-level" style="width:80px">${levelEntry ? levelOptions(levelEntry) : ''}</select>
+          <span style="font-size:11px;color:var(--sr-muted)"> — each level has its own price and availability</span>
+        </label>
         <div id="sr-buy-find" style="margin-bottom:6px">
           <label style="display:block">🔎 Search the gear compendiums
             <input type="text" id="sr-buy-search" placeholder="e.g. Ares Predator, medkit, flak jacket…" autocomplete="off" style="width:100%"/>
@@ -209,7 +222,9 @@ export const SR3EPurchase = {
               dice: n('#sr-buy-dice'), reduce: n('#sr-buy-reduce'),
               contactId: el.querySelector('#sr-buy-contact')?.value || '',
               itemUuid: picked?.uuid || item?.uuid || '',
+              level: el.querySelector('#sr-buy-level-row')?.style.display === 'none' ? null : (Number(el.querySelector('#sr-buy-level')?.value) || null),
             };
+            if (result.level && !/\]\s*$/.test(result.name)) result.name = `${result.name} [${result.level}]`;
           } },
         { label: 'Cancel', action: 'cancel' },
       ],
@@ -239,8 +254,17 @@ export const SR3EPurchase = {
         };
         // ── Find the item: search the allowed gear packs' indexes, or drop one (TODO 154) ──
         const set = (id, v) => { const f = el.querySelector(id); if (f) f.value = v; };
+        const levelRow = el.querySelector('#sr-buy-level-row');
+        const levelSel = el.querySelector('#sr-buy-level');
+        const showLevels = f => {
+          levelEntry = f?.levels ? f : null;
+          level = levelEntry ? (f.level ?? GearSearch.startLevel(levelEntry)) : null;
+          if (levelRow) levelRow.style.display = levelEntry ? 'block' : 'none';
+          if (levelSel) levelSel.innerHTML = levelEntry ? levelOptions(levelEntry) : '';
+        };
         const take = f => {
           picked = f; type = f.type;
+          showLevels(f);
           set('#sr-buy-name', f.name); set('#sr-buy-tn', f.tn); set('#sr-buy-time', f.time);
           set('#sr-buy-unit', f.unit); set('#sr-buy-cost', f.cost); set('#sr-buy-index', f.index);
           const note = el.querySelector('#sr-buy-avail-note');
@@ -269,12 +293,12 @@ export const SR3EPurchase = {
         search?.addEventListener('keydown', ev => {
           if (ev.key !== 'Enter') return;
           ev.preventDefault();
-          if (hits[0]) take(GearSearch.fields(hits[0]));
+          if (hits[0]) take(GearSearch.atLevel(hits[0], GearSearch.startLevel(hits[0])));
         });
         hitsEl?.addEventListener('click', ev => {
           ev.preventDefault();
           const h = hits[Number(ev.target.closest?.('.sr-buy-hit')?.dataset.i)];
-          if (h) take(GearSearch.fields(h));
+          if (h) take(GearSearch.atLevel(h, GearSearch.startLevel(h)));
         });
         el.addEventListener('dragover', ev => ev.preventDefault());
         el.addEventListener('drop', async ev => {
@@ -285,9 +309,21 @@ export const SR3EPurchase = {
         });
 
         con?.addEventListener('change', sync);
+        // Picking a level brings that level's price, availability and Street Index (TODO 261).
+        levelSel?.addEventListener('change', () => {
+          if (!levelEntry) return;
+          level = Number(levelSel.value) || null;
+          const f = GearSearch.atLevel(levelEntry, level);
+          set('#sr-buy-tn', f.tn); set('#sr-buy-time', f.time); set('#sr-buy-unit', f.unit);
+          set('#sr-buy-cost', f.cost); set('#sr-buy-index', f.index);
+          const note = el.querySelector('#sr-buy-avail-note');
+          if (note) note.innerHTML = availNote(f.always, f.unknown);
+          sync();
+        });
         el.querySelector('#sr-buy-supplies')?.addEventListener('click', ev => {
           ev.preventDefault();
           picked = null;   // supplies refill a medkit; they are not a catalogue item
+          showLevels(null);
           set('#sr-buy-name', supplies.name);
           set('#sr-buy-tn', suppliesAvail.tn);
           set('#sr-buy-time', suppliesAvail.time);
@@ -476,8 +512,10 @@ export const SR3EPurchase = {
     } else if (payload.itemUuid) {
       const src = await fromUuid(payload.itemUuid).catch(() => null);
       if (src) {
-        const data = src.toObject();
+        let data = src.toObject();
         delete data._id;
+        // The picked level's rating and printed numbers; the price paid is the deal's, not the table's.
+        if (payload.level) data = ModRatings.withLevel(data, payload.level);
         await actor.createEmbeddedDocuments('Item', [data]);
         added = ' and added to the sheet';
       }

@@ -35,6 +35,7 @@ import { PackFixes070 } from './data/pack-corrections-0-7-0.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { VehicleArt } from './data/vehicle-art.mjs';
 import { ModRatings } from './data/mod-ratings.mjs';
+import { ModBookFixes } from './data/mod-book-fixes.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -508,18 +509,44 @@ const MIGRATIONS = [
   },
   {
     version: '0.7.1',
-    label: 'Mod levels move out of the name into the rating: cyber, weapon and vehicle mods (TODO 261)',
+    label: 'Every rated item\'s level moves out of its name into the rating; a link to a deleted level document is repointed (TODO 261)',
     /**
-     * The packs now name a mod plainly ("Anti-Theft System") and keep its level in `system.rating`, which
-     * the item sheet offers as a dropdown (`ModRatings`). A copy already in a world still reads
-     * "Anti-Theft System [10]" — and a vehicle mod had no rating field at all until now.
+     * The packs now ship ONE document per rated item ("Chemical Seal", its levels in the Level dropdown) and
+     * name it plainly; the level is `system.rating`. A copy already in a world still reads "Chemical Seal
+     * Rating [4]" / "Wired Reflexes [2]" / "Bug Scanner Lv [3]" — and may link to a level document the collapse
+     * deleted.
      *
-     * ⚠ **This RENAMES, and argues for it:** only the three mod kinds (vehicle mods, Cyberlimb Mods,
-     * Firearms Accessories), only a name ENDING in a bracketed level, and the level is kept — moved into
-     * the rating when that is blank. A GM who typed a different rating keeps it. A name someone wrote
-     * without a bracket is never touched. Idempotent: a plain name yields null.
+     * ⚠ **This RENAMES, and argues for it:** only the rated item types (gear, cyberware, bioware, medical,
+     * vehicle mods, ammunition, vehicle weapons), only a name ENDING in a level ("[N]", "Rating [N]", "Rating N"),
+     * and the level is kept — moved into the rating when that is blank. A GM who typed a different rating keeps
+     * it (and the line is logged). A name written without a level is never touched. Idempotent: a plain name
+     * yields null.
+     * ⚠ **It also OVERWRITES `_stats.compendiumSource`, and argues for it:** only when it names a document the
+     * collapse DELETED (`COLLAPSED_SOURCES`), so nothing anyone chose can be there — it restores a dead link to
+     * the document that kept the family. The kept document is never in that table, so a second run yields null.
      */
-    fixItem: ModRatings.renameDelta,
+    fixItem: (item) => {
+      const note = ModRatings.renameConflict(item);
+      if (note) console.log(`SR3E | 0.7.1: ${note}`);
+      return ModRatings.migrateDelta(item);
+    },
+  },
+  {
+    version: '0.7.1',
+    label: 'Mod values corrected to the books: Vehicle Armor costs, Concealed Armor CF, Power Amplifier CF, Remote Control ECCM, Hydraulic Jack, RC Encryption Module and cyberlimb plating legality (TODO 261)',
+    /**
+     * The maintainer checked the mod level tables against R3 pp.131-147 and M&M pp.24-37 and approved the
+     * corrections (2026-10-24, "fix all to the book"). The packs carry them; a copy already in a world is its
+     * own. The list is `ModBookFixes.FIXES` (`scripts/data/mod-book-fixes.mjs`, pure, tested, with each
+     * entry's book and page) — vehicle mods on vehicle actors, cyberlimb mods on characters, the Items
+     * sidebar, and unlinked tokens.
+     *
+     * ⚠ **This OVERWRITES, and argues for it:** a field is rewritten ONLY while it still equals the exact
+     * wrong value we shipped (`from`), on a mod of that name and level. A GM who edited the cost, the CF or
+     * the legality holds some other value and keeps it — the guard is the houserule protection. Idempotent:
+     * once corrected nothing equals `from`, so a second run yields null.
+     */
+    fixItem: ModBookFixes.fixItem,
   },
 
 ];

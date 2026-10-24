@@ -15,10 +15,11 @@
  * (a few thousand rows is not a list), and a drop that is not gear is explained, not silently ignored.
  */
 import { Purchasing } from './purchasing.mjs';
-import { displayName } from './item-rating.mjs';
+import { ModRatings } from './mod-ratings.mjs';
 
 /** The index fields the search reads — `pack.getIndex({ fields })`. */
-export const INDEX_FIELDS = ['system.availability', 'system.cost', 'system.streetIndex', 'system.bookPage', 'system.rating'];
+export const INDEX_FIELDS = ['system.availability', 'system.cost', 'system.streetIndex', 'system.bookPage', 'system.rating',
+  'system.category', 'system.cyberwareCategory'];   // the last two tell ModRatings which kind of item a row is
 
 /** At most this many hits are drawn. */
 export const MAX_HITS = 40;
@@ -72,8 +73,9 @@ export const GearSearch = {
   fromIndex(row, pack) {
     const sys = row?.system ?? {};
     return {
-      // A rated item's level is in its rating, not its name (TODO 261): "Anti-Theft System [10]".
-      name: row ? displayName(row) : '',
+      // ⚠ NO "[N]": a rated item is ONE document and the level is picked when it is bought (TODO 261), so the
+      // stored level of a collapsed document means nothing in a list. The plain name.
+      name: row?.name ?? '',
       type: row?.type ?? '',
       uuid: row?.uuid ?? (pack?.collection && row?._id ? `Compendium.${pack.collection}.Item.${row._id}` : ''),
       pack: pack?.collection ?? '',
@@ -82,12 +84,40 @@ export const GearSearch = {
       cost: sys.cost ?? 0,
       streetIndex: sys.streetIndex ?? 1,
       bookPage: sys.bookPage ?? '',
+      // The levels the books print for this item (the level table), or null — the dialog offers them.
+      levels: ModRatings.levelsOf(row),
+      rating: Number(sys.rating) || null,
     };
+  },
+
+  /**
+   * The dialog fields for an entry at a picked level: the entry's own, with that level's printed cost,
+   * availability and Street Index over them. `level` null or not in the table leaves the entry as it is.
+   */
+  atLevel(entry, level) {
+    const row = entry?.levels?.[Number(level)];
+    const e = { ...entry };
+    if (row) for (const k of ['cost', 'availability', 'streetIndex']) if (row[k] !== undefined && row[k] !== null) e[k] = row[k];
+    return { ...GearSearch.fields(e), level: row ? Number(level) : null };
+  },
+
+  /** The level a freshly picked entry starts at: its own if the table prints it, else the lowest. */
+  startLevel(entry) {
+    const keys = Object.keys(entry?.levels ?? {}).map(Number).sort((a, b) => a - b);
+    if (!keys.length) return null;
+    return keys.includes(Number(entry.rating)) ? Number(entry.rating) : keys[0];
   },
 
   /** The dialog fields an entry (or an item) fills in, in the dialog's own terms. */
   fields(entry) {
-    const avail = Purchasing.parseAvailability(entry?.availability ?? entry?.system?.availability ?? '');
+    const availStr = entry?.availability ?? entry?.system?.availability ?? '';
+    // ⚠ An entry that is ALREADY a fields() result (the Buy dialog keeps one for its Level picker) carries
+    // `index` and `tn`/`time`/`unit`, not `streetIndex`/`availability` — read them as the fallback, or a level
+    // change resets the Street Index to 1 and the availability to 4/1 day (TODO 261, seen live on STS (Beacon)).
+    const shaped = !String(availStr).trim() && entry?.tn !== undefined;
+    const avail = shaped
+      ? { tn: entry.tn, time: entry.time, unit: entry.unit, always: !!entry.always, unknown: !!entry.unknown }
+      : Purchasing.parseAvailability(availStr);
     return {
       name: entry?.name ?? '',
       type: entry?.type ?? 'gear',
@@ -95,8 +125,10 @@ export const GearSearch = {
       time: avail.time || 1,
       unit: avail.unit || 'day',
       cost: Number(entry?.cost ?? entry?.system?.cost) || 0,
-      index: Number(entry?.streetIndex ?? entry?.system?.streetIndex) || 1,
+      index: Number(entry?.streetIndex ?? entry?.system?.streetIndex ?? entry?.index) || 1,
       uuid: entry?.uuid ?? '',
+      levels: entry?.levels ?? null,
+      rating: entry?.rating ?? null,
       always: !!avail.always,
       unknown: !!avail.unknown && !avail.always,
     };

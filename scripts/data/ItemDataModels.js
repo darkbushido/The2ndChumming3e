@@ -203,6 +203,8 @@ export class AmmunitionData extends foundry.abstract.TypeDataModel {
 
   static defineSchema() {
     return {
+      // The item's level — "Tracker AOD" at 3, not "Tracker AOD Rating [3]" (TODO 261). null = no level.
+      rating:         new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
       concealability: new StringField({ initial: '' }),
       damage:         new StringField({ initial: '' }),
       ammoType:       new StringField({ initial: 'regular' }),
@@ -508,6 +510,8 @@ export class SpellData extends foundry.abstract.TypeDataModel {
 export class VehicleWeaponData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
+      // The item's level — "Lure Launcher AM-56" at 3, not "Lure Launcher AM-56 [3]" (TODO 261). null = no level.
+      rating:       new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
       weaponType:   new StringField({ initial: '' }),
       mode:         new StringField({ initial: '' }),
       damage:       new StringField({ initial: '' }),

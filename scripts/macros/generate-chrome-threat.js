@@ -64,12 +64,18 @@ function skill(name, rating, linkedAttribute, spec = null, category = 'Combat sk
   };
 }
 
+// A RATED implant is ONE item whose level is `system.rating` (TODO 261): the name is the plain implant
+// ("Wired Reflexes"), and the `preCreateItem` name-sync hook makes the copy read "Wired Reflexes [2]". The
+// level's printed numbers (cost, availability, legality, description, `mods`) come from the same table the
+// item sheet's Level dropdown uses — `game.sr3e.ModRatings.ratingChange` — and the values THIS macro sets on
+// purpose (Essence, grade, the bonus fields) win over it. No table (an old build) = just the macro's own.
 function cyberware(name, essenceCost, grade, extra = {}) {
-  return {
-    name, type: 'cyberware',
-    system: { essenceCost, grade, cyberwareCategory: extra.category ?? 'Bodyware',
-              bookPage: extra.bookPage ?? '', ...extra.system },
-  };
+  const system = { essenceCost, grade, cyberwareCategory: extra.category ?? 'Bodyware',
+                   bookPage: extra.bookPage ?? '', ...extra.system };
+  const level = Number(system.rating) > 0 ? game.sr3e?.ModRatings?.ratingChange({ type: 'cyberware', name, system }, system.rating) : null;
+  const printed = {};
+  for (const [path, value] of Object.entries(level ?? {})) printed[path.slice('system.'.length)] = value;
+  return { name, type: 'cyberware', system: { ...printed, ...system } };
 }
 
 function melee(name, category, damage, reach, extra = {}) {
@@ -103,21 +109,21 @@ const essenceOf = items => items.reduce((s, i) => s + gradedEssence(i.system.ess
 
 // Wired Reflexes is the LAST thing given back when the Essence budget runs out.
 const wired = (r, g) => r > 0 && Object.assign(
-  cyberware(`Wired Reflexes [${r}]`, [0, 2, 3, 5][r], g,
+  cyberware('Wired Reflexes', [0, 2, 3, 5][r], g,
     { category: 'Headware', bookPage: 'sr3.302',
       system: { rating: r, bonusRea: 2 * r, bonusInitDice: r } }),
   { _wired: r });
 
-const reactionEnh = (r, g) => r > 0 && cyberware(`Reaction Enhancer [${r}]`, 0.3 * r, g,
+const reactionEnh = (r, g) => r > 0 && cyberware('Reaction Enhancer', 0.3 * r, g,
   { category: 'Headware', bookPage: 'sr3.302', system: { rating: r, bonusRea: r } });
 
 // Dermal plating is the first thing given back when the Essence budget runs out.
 const dermal = (r, g) => r > 0 && Object.assign(
-  cyberware(`Dermal Plating [${r}]`, 0.5 * r, g,
+  cyberware('Dermal Plating', 0.5 * r, g,
     { bookPage: 'sr3.302', system: { rating: r, bonusBod: r } }),
   { _dermal: r });
 
-const moveByWire = (r, g) => cyberware(`Move-by-Wire [${r}]`, [0, 2.5, 4, 5.5, 7][r], g,
+const moveByWire = (r, g) => cyberware('Move-by-Wire', [0, 2.5, 4, 5.5, 7][r], g,
   { category: 'Headware', bookPage: 'mm.30',
     system: { rating: r, bonusQui: r, bonusRea: 2 * r, bonusInitDice: r } });
 
@@ -315,7 +321,7 @@ const ARCHETYPES = {
       }
       if (tc >= 4) {
         eyes.push(cyberware('Eyes, Ultrasound', 0.5, g, { category: 'Headware', bookPage: 'mm.18' }),
-                  cyberware('Olfactory Boost [2]', 0.2, g, { category: 'Headware', bookPage: 'mm.17',
+                  cyberware('Olfactory Boost', 0.2, g, { category: 'Headware', bookPage: 'mm.17',
                     system: { rating: 2 } }));
         senses.push('ultrasound', 'smell');
       }

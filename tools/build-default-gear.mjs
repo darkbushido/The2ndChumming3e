@@ -44,6 +44,8 @@ import { PLAYABLE_EDITIONS } from '../scripts/config.js';
 import { knownRating, ratingFromName } from '../scripts/data/item-rating.mjs';
 import { defaultImage } from '../scripts/data/item-icons.mjs';
 import { ModRatings } from '../scripts/data/mod-ratings.mjs';
+import { RatedFamilies } from '../scripts/data/rated-families.mjs';
+import { replaceFamilies } from './lib/collapsed-mods.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..');
@@ -402,18 +404,37 @@ export async function plan(manifest, shippedNames) {
         doc._id = idFor(`${GENERATOR}|${key}|${variant}`);
         report.variants.push(`${doc.book} ${doc.type}: ${doc.name}${ratingOnly ? ` [${doc.system.rating}]` : ''}`);
       }
-      // A weapon mod's level is its rating, not part of its name (TODO 261): "STS (Beacon) Rating [3]"
-      // ships as "STS (Beacon)", rating 3. ⚠ AFTER the id is derived — it stays the one computed from
-      // the upstream name, so a copy someone already owns keeps its compendium link.
+      // A rated item's level is its rating, not part of its name (TODO 261): "STS (Beacon) Rating [3]" ships
+      // as "STS (Beacon)", rating 3 — and, below, the whole family as ONE document. ⚠ AFTER the id is
+      // derived — it stays the one computed from the upstream name, so a copy someone already owns keeps its link.
       const split = ModRatings.kindOf(doc) ? ModRatings.splitName(doc.name) : null;
-      if (split) { doc.name = split.stem; doc.system.rating ??= split.rating; }
+      if (split) {
+        doc.name = split.stem;
+        if (!(Number(doc.system.rating) > 0)) doc.system.rating = doc.type === 'medical' ? String(split.rating) : split.rating;
+      }
       const { book, ...clean } = doc;
       (byPack.get(pack) ?? byPack.set(pack, { book, type: doc.type, docs: [] }).get(pack)).docs.push(clean);
       bump(report.written, `${book} ${doc.type}`);
     }
   }
   for (const [k, v] of Object.entries(report.repeatedUpstream)) if (!v) delete report.repeatedUpstream[k];
-  return { byPack, report };
+  // Every rated family becomes ONE document (TODO 261) — here, so a regeneration never brings the levels back.
+  // The kept document is the lowest level's, with the id this builder derived for it; the rest of the family's
+  // numbers go to tools/data/collapsed-mods.json, which the level table is built from.
+  const families = [];
+  report.collapsed = {};
+  for (const [pack, g] of byPack) {
+    const entries = new Map(g.docs.map(d => [`!items!${d._id}`, d]));
+    const before = entries.size;
+    for (const f of RatedFamilies.collapseEntries(entries)) families.push({ ...f, pack, by: GENERATOR });
+    if (entries.size !== before) {
+      report.collapsed[pack] = before - entries.size;
+      g.docs = [...entries.values()];
+    }
+  }
+  report.written = {};
+  for (const [, g] of byPack) for (const d of g.docs) bump(report.written, `${g.book} ${d.type}`);
+  return { byPack, report, families };
 }
 
 /** Add the packs (with their book flag) and their sidebar folders to system.json. */
@@ -465,7 +486,7 @@ async function main() {
   let shippedNames;
   try { shippedNames = await shippedNamesIn(copy.dir, manifest); } finally { copy.cleanup(); }
 
-  const { byPack, report } = await plan(manifest, shippedNames);
+  const { byPack, report, families } = await plan(manifest, shippedNames);
   const total = Object.values(report.written).reduce((a, b) => a + b, 0);
   console.log(`${total} documents into ${byPack.size} packs.`);
   for (const [k, v] of Object.entries(report)) console.log(`  ${k}:`, Array.isArray(v) ? `${v.length}\n    ${v.join('\n    ')}` : JSON.stringify(Object.fromEntries(Object.entries(v).sort())));
@@ -488,6 +509,8 @@ async function main() {
       if (await rebuildPack(REPO, name)) { rebuilt++; console.log(`  rebuilt ${name}: ${docs.length}`); }
     }
     console.log(`  ${rebuilt} of ${byPack.size} packs changed`);
+    replaceFamilies(GENERATOR, families);
+    console.log(`  ${families.length} rated families recorded in tools/data/collapsed-mods.json`);
     writeFileSync(manifestPath, JSON.stringify(declarePacks(manifest, byPack), null, 2) + '\n');
     console.log(`declared in ${manifestPath}`);
     return;
