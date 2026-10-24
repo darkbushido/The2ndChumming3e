@@ -2803,6 +2803,13 @@ made all three prone. Through Goon A's own token uuid, only Goon A changed.
 inherits. Affects at least: Assign the wound (soak result), Mark prone (Knockdown, failed charge), Mark stunned
 (shock), Knockdown's target; likely more (~60 `actorId:` payloads in SR3EActor.js). A bug fix, on `main`.
 
+**Fixed in 216fe433 (2026-10-24), not yet walked live** (Foundry was down): `actorRef`/`actorFrom`
+(`scripts/data/actor-ref.mjs`), 94 payload writers, every `game.actors.get` read, token-per-row target dialogs,
+spell AoE dedupe, the auto-defeated hook. Tests `actor-ref` (ratchet), `targeting`; 2 mutants.
+**Still to do before closing:** (1) the live check — two unlinked goons; ranged, melee, grenade and spell damage plus
+Mark prone / Mark stunned land on one goon only; a PC is unchanged; (2) the maintainer's call on a one-off GM tool to
+clear wounds and statuses that sidebar NPCs already collected this way (offered, not built).
+
 ### 📌 Notes & parked
 
 ## Open questions carried from the combat audit
