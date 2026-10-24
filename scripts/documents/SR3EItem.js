@@ -424,7 +424,10 @@ export class SR3EItem extends Item {
     // count is PREFILLED from it, never enforced.
     const _mPhase   = game.combat ? game.sr3e.SR3EActionLedger?.phase(game.combat) ?? 'none' : 'none';
     const _mKey     = tgtTok?.id ?? targetActor.id;
-    const _mExtra   = PhaseTargets.ordinal(PhaseTargets.current(actor.system.targetsThisPhase, _mPhase), _mKey) - 1;
+    const _mEngaged = PhaseTargets.current(actor.system.targetsThisPhase, _mPhase);
+    const _mExtra   = PhaseTargets.ordinal(_mEngaged, _mKey) - 1;
+    // Another opponent in the same Complex Action (p.122, TODO 244) — charged nothing further below.
+    const _mSameAction = !!game.combat?.started && PhaseTargets.sameMeleeAction(_mEngaged, _mKey);
     const gm = await game.sr3e.SR3EQuery.asGM('sr3e.melee.negotiate', {
       multiPrefill: _mExtra,
       atkName:    actor.name,
@@ -446,11 +449,12 @@ export class SR3EItem extends Item {
       // No window to prefill, so the flow applies the +2s itself (p.122) — the ranged SS shortcut's rule.
       gm.atkTN = Math.max(2, (Number(gm.atkTN) || 0) + 2 * _mExtra);
     }
-    await actor.update({ 'system.targetsThisPhase': PhaseTargets.add(actor.system.targetsThisPhase, _mPhase, _mKey, tgtTok?.id ?? null) });
+    await actor.update({ 'system.targetsThisPhase': PhaseTargets.add(actor.system.targetsThisPhase, _mPhase, _mKey, tgtTok?.id ?? null, { melee: true }) });
 
     // Melee/Unarmed Attack — Complex, SR3 p.108 (TODO 48). The ATTACKER only: the defender's
-    // half of the exchange is reactive and costs them nothing from their own phase.
-    game.sr3e.SR3EActionLedger?.charge(actor, 'meleeAttack', atkWeapon?.name ?? 'Unarmed');
+    // half of the exchange is reactive and costs them nothing from their own phase. A further opponent
+    // in the same phase is the SAME Complex Action (p.122, TODO 244): it used to be charged a second one.
+    if (!_mSameAction) game.sr3e.SR3EActionLedger?.charge(actor, 'meleeAttack', atkWeapon?.name ?? 'Unarmed');
 
     await game.sr3e.SR3EActor.postMeleeCard({
       attackerActorId:  actor.id,
@@ -464,6 +468,8 @@ export class SR3EItem extends Item {
       // Declared per attack (p.170). Carried so the card can say so, and so the result can
       // note that it bypasses Immunity to Normal Weapons.
       killingHands:     khDeclared,
+      // Multiple opponents, p.122 (TODO 244): the card says how, and when this IS a further opponent.
+      multiOpponent:    game.combat?.started ? { sameAction: _mSameAction, ordinal: _mExtra + 1 } : null,
       // The Shock Glove's second code (SR3 p.276): the result card posts its own Resist button for it.
       atkExtraDamage:   atkWeapon?.system?.extraDamage ?? '',
       defExtraDamage:   defWeapon?.system?.extraDamage ?? '',

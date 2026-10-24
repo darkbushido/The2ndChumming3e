@@ -3247,6 +3247,13 @@ export const MUTANTS = [
     impl:   system => system?.recoilModIntegral !== undefined,
   },
   {
+    id:     'melee-each-opponent-a-new-action',
+    suite:  'phase-targets',
+    module: '../scripts/data/phase-targets.mjs', klass: 'PhaseTargets', method: 'sameMeleeAction',
+    was:    'every melee opponent in a phase was charged its own Complex Action; SR3 p.122 makes several opponents one Complex Action (TODO 244)',
+    impl:   () => false,
+  },
+  {
     id:     'round-queue-keeps-removed',
     suite:  'round-queue',
     module: '../scripts/data/round-queue.mjs', klass: 'RoundQueue', method: 'prune',
