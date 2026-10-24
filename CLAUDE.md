@@ -356,6 +356,11 @@ static defineSchema() {
   `CONFIG.statusEffects`. The `updateActor` hook (active GM only) toggles them from `astralMode`,
   `matrixUserMode`, `fullDefense`, `sustainedSpells`, and marks **defeated/unconscious** when a track is full,
   **dead** when physical overflow is **more than** Body (SR3 p.125, `SR3EActor.deadFromOverflow`). Reversible.
+  **Trimmed list** (TODO 247): the GM picks which CORE statuses the Token HUD offers (System settings →
+  Configure Status Effects; world setting `shownStatuses`, default = the SR3 set in `data/status-effects.mjs`,
+  live, no reload). ⚠ **Hide with `hud: false`, never remove** — `toggleStatusEffect` throws on a missing id
+  and `specialStatusEffects` must resolve. `SR3ETokenHUD` still lists a hidden status a token carries, so it
+  can be cleared. A core id the code toggles must be in `ALWAYS_SHOWN` (`tests/status-effects.test.mjs` ratchets it).
 - **Drops** (TODO 97): items ride core `ActorSheetV2` handling; `SR3EActorSheet._onDrop`/`_onDropDocument` warn on
   damaged pack entries; `_onDropActor` deploys/links a vehicle via `sr3e.actor.create` / `sr3e.vehicle.link`,
   taking the id from the drag data's uuid.

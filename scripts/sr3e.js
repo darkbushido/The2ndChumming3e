@@ -48,6 +48,7 @@ import { Purchasing } from './data/purchasing.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { Hands } from './data/hands.mjs';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
+import { SR3EStatusEffects } from './SR3EStatusEffects.js';
 import { SR3EOpenSteps } from './SR3EOpenSteps.js';
 import { OpenSteps } from './data/open-steps.mjs';
 import { CyberWeapons } from './data/cyber-weapons.mjs';
@@ -120,7 +121,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, SR3EStatusEffects, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma };
 
   // When THIS client loaded the system's code.
   //
@@ -168,6 +169,9 @@ Hooks.once('init', () => {
   CONFIG.Item.dataModels.cyberdeck    = CyberdeckData;
   CONFIG.Item.dataModels.contact      = ContactData;
 
+  // Foundry's own status ids, captured BEFORE ours go in — the setting below only ever hides these (TODO 247).
+  SR3EStatusEffects.captureCore();
+
   // SR3 token status conditions. The auto-synced ones (astral/dual/VR/full-defense) are
   // driven from system state by an updateActor hook; the rest are manual GM toggles.
   CONFIG.statusEffects.push(
@@ -180,6 +184,11 @@ Hooks.once('init', () => {
     // Stunned by a shock weapon (SR3 p.124-125): +2 to all tests. Marked from the result card; counts down in combat.
     { id: 'sr3e-stunned',     name: 'Stunned (shock weapon)', img: 'icons/svg/lightning.svg' },
   );
+
+  // Token Status Effects (TODO 247): the GM picks which CORE statuses the Token HUD offers (default: the SR3
+  // set in data/status-effects.mjs). Hidden = `hud: false`, never removed — toggleStatusEffect and
+  // specialStatusEffects keep working, and a token already carrying one can still clear it. Live, no reload.
+  SR3EStatusEffects.register();
 
   // Default icons for each item type (must reference paths that exist in Foundry v14)
   CONFIG.Item.typeIcons = {
