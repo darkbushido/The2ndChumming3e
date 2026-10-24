@@ -7507,6 +7507,13 @@ a dice-off). **Fix:** `SR3ECombat._sortCombatants` uses the rank; `startCombat` 
 re-point `turn` after the re-sort (core keeps it on the same combatant). Tests in `initiative`; live: four tied
 on 12, rows = queue = turns walked.
 
+## 243. ✅ Full Defense carries into the next round — **reported in play, 2026-10-23** — fixed in 7de126d0
+
+**Cause:** the tracker's Next Round control bypassed the round upkeep (only End Turn ran it). Fixed by an `SR3ECombat.nextRound` override; tests in `initiative`, `shock-stun`. Not yet re-checked live after the fix.
+
+Observed: Full Defense stayed in effect the next round. Possibly a regression of `30bab18` ("Full Defense ending
+at a turn boundary", see #7). Not investigated yet. A bug fix, on `main`.
+
 ## 248. ✅ Flechette seemed to do nothing against armour — **reported in play, 2026-10-23** — not a bug, closed in ef3b7cf3
 
 Observed: flechette did not appear to affect armour. SR3 p.116 makes flechette *stronger* only against
