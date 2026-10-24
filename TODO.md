@@ -670,6 +670,16 @@ the bracketed integral-accessory RC is a fire-dialog tick the shooter remembers 
   whether a folding stock or tripod is deployed, replacing the tick), scopes (magnifying scopes shift the range
   column one per rating point, p.110 `#64`; imaging scopes can't be used with a smartlink, p.280 `#233`),
   laser sights, smartguns.
+  - **Magnification is any image-magnification device, not only scopes** (the maintainer, 2026-10-24). SR3 p.110: these
+    systems *"change a weapon's range category by a number equal to the device's rating"* (a Rating 2 scope at long range
+    shifts two places left; never below short range); p.113 *"Image magnification equipment reduces the weapon's range to its
+    target and the associated base target number."* So the attack flow reads the rating from the shooter's mounted Imaging
+    Scope, a worn helmet's Electronic/Optical Magnification (Armor) (rating 3, [#266](#266)) and cybereye vision
+    magnification ("Eyes, Vision Magnification, Electronic/Optical", rated), and decides how they combine. ⚠ The core
+    book is silent on stacking (pp.110, 113, 280, and the cyberware entry "Vision Magnification", which says only that it
+    works "in the same manner as an imaging scope" and "can modify a target number based on range"): **question for the
+    maintainer — do two devices add, or does the best one apply?** Check the other source books before settling it. Today the GM TN
+    window's "Image magnification — Special" line (`scripts/SR3ECombatModifiers.js`) applies nothing.
 - **Compatibility** (SR3 p.276-277, `#194`): revolvers take no silencer or sound suppressor, hold-outs …
 - **Costs** (SR3 p.282): an internal smartgun doubles the gun's price (`#229`); combo imaging scopes add their
   components' costs (p.280).
