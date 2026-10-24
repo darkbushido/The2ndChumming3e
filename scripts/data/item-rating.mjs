@@ -10,7 +10,7 @@
  *
  * **The FIELD is the rating, and no value means no rating** (the maintainer, 2026-09-14: *"I would
  * prefer that it were in a column where nil means no rating"*). `system.rating` is nullable on
- * **gear, medical, cyberware, bioware, vehicle mods, ammunition and vehicle weapons** (TODO 118, then TODO 122, then TODO 260 — tracker rounds and the AM-56 lure launcher carry a level):
+ * **gear, medical, cyberware, bioware, vehicle mods, ammunition and vehicle weapons** (TODO 118, then TODO 122, then TODO 261 — tracker rounds and the AM-56 lure launcher carry a level):
  *
  * | `system.rating` | reads as |
  * |---|---|

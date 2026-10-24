@@ -34,7 +34,7 @@ for (const [pack, list] of byPack) {
   let changed = 0;
   for (const c of list) {
     const doc = entries.get(`!items!${c.id}`);
-    // A level document the collapse deleted (TODO 260): its correction is in the family's kept document / the table.
+    // A level document the collapse deleted (TODO 261): its correction is in the family's kept document / the table.
     if (!doc && COLLAPSED_SOURCES[pack]?.[c.id]) { console.log(`· ${pack}/${c.id}: collapsed into ${COLLAPSED_SOURCES[pack][c.id]}`); continue; }
     if (!doc) { console.log(`✗ ${pack}/${c.id}: not in the pack`); unexpected++; continue; }
     for (const [path, value] of Object.entries(c.set)) {

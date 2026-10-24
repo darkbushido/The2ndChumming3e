@@ -1,5 +1,5 @@
 /**
- * Keeping the system's world macros current — TODO 260 (found in the live walk, 2026-10-24).
+ * Keeping the system's world macros current — TODO 261 (found in the live walk, 2026-10-24).
  *
  * `sr3e.js` creates the system's world macros from `scripts/macros/*.js` on first load, and used to skip any
  * macro that already existed — so a world kept the command text it was created with, and a fix to the file

@@ -3294,7 +3294,7 @@ export const MUTANTS = [
     suite:  'mod-book-fixes',
     ...MODFIX, method: 'fixItem', needsOriginal: '_fixItemOriginal',
     was:    'the 0.7.1 mod-value migration set the corrected value whatever the field held, overwriting a GM\'s edited cost, CF or legality '
-          + 'instead of correcting only the value we shipped (TODO 260)',
+          + 'instead of correcting only the value we shipped (TODO 261)',
     impl:   function (item) {
       const delta = {};
       for (const f of this.matching(item)) delta[`system.${f.field}`] = f.to;
@@ -3317,7 +3317,7 @@ export const MUTANTS = [
     suite:  'mod-ratings',
     ...FAMILIES, method: 'plan',
     was:    'collapsing a rated family kept the HIGHEST level\'s document, so the kept id (and its owned copies\' compendium link) belonged to the wrong level '
-          + 'and the lowest level lost its fields (TODO 260: keep the lowest, its id unchanged)',
+          + 'and the lowest level lost its fields (TODO 261: keep the lowest, its id unchanged)',
     impl:   function (members) {
       if (!this.collapses(members)) return null;
       const { levels, unplaced, duplicates, placed } = this.levels(members);
@@ -3329,14 +3329,14 @@ export const MUTANTS = [
     id:     'family-collapses-a-lone-item',
     suite:  'mod-ratings',
     ...FAMILIES, method: 'collapses',
-    was:    'a lone rated document counted as a family, so it was renamed and recorded in the level table with a one-row "dropdown" (TODO 260: only two or more rated documents collapse)',
+    was:    'a lone rated document counted as a family, so it was renamed and recorded in the level table with a one-row "dropdown" (TODO 261: only two or more rated documents collapse)',
     impl:   members => members.filter(m => m.level > 0).length >= 1,
   },
   {
     id:     'family-ignores-a-duplicate-level',
     suite:  'mod-ratings',
     ...FAMILIES, method: 'levels',
-    was:    'a level printed twice with different numbers silently kept the first and dropped the second — nothing marked it for the maintainer to check against the book (TODO 260: unplaced)',
+    was:    'a level printed twice with different numbers silently kept the first and dropped the second — nothing marked it for the maintainer to check against the book (TODO 261: unplaced)',
     impl:   function (members) {
       const placed = new Map();
       for (const m of [...members].filter(x => x.level > 0).sort((a, b) => a.level - b.level)) if (!placed.has(m.level)) placed.set(m.level, m);
@@ -3349,7 +3349,7 @@ export const MUTANTS = [
     id:     'migration-repoint-overwrites-a-live-link',
     suite:  'mod-ratings',
     ...MODRATE, method: 'repointSource',
-    was:    'the 0.7.1 migration repointed any compendium link to the first pack\'s kept document, even one whose source is not a deleted level (TODO 260: only a DEAD link)',
+    was:    'the 0.7.1 migration repointed any compendium link to the first pack\'s kept document, even one whose source is not a deleted level (TODO 261: only a DEAD link)',
     impl:   function (item) {
       const m = /^Compendium\.The2ndChumming3e\.([^.]+)\.Item\.(.+)$/.exec(String(item?._stats?.compendiumSource ?? ''));
       return m ? `Compendium.The2ndChumming3e.${m[1]}.Item.kept` : null;
@@ -3359,7 +3359,7 @@ export const MUTANTS = [
     id:     'syncname-does-not-swap-the-old-level',
     suite:  'mod-ratings',
     ...MODRATE, method: 'syncName',
-    was:    'the name sync appended the new level without taking the old one off — "Medkit [3]" went to "Medkit [3] [5]" (TODO 260, name follows level)',
+    was:    'the name sync appended the new level without taking the old one off — "Medkit [3]" went to "Medkit [3] [5]" (TODO 261, name follows level)',
     impl:   function (name, rating) {
       const n = Number(rating);
       return n > 0 ? `${String(name ?? '').trim()} [${n}]` : String(name ?? '');
@@ -3369,7 +3369,7 @@ export const MUTANTS = [
     id:     'syncname-eats-any-bracket',
     suite:  'mod-ratings',
     ...MODRATE, method: 'syncName',
-    was:    'the name sync stripped ANY trailing bracket or parenthesis, so "Gyro Mount (Deluxe)" lost its text (TODO 260: only a level is swapped)',
+    was:    'the name sync stripped ANY trailing bracket or parenthesis, so "Gyro Mount (Deluxe)" lost its text (TODO 261: only a level is swapped)',
     impl:   function (name, rating) {
       const n = Number(rating);
       const base = String(name ?? '').replace(/\s*[[(][^\])]*[\])]\s*$/, '').trim();
@@ -3380,14 +3380,14 @@ export const MUTANTS = [
     id:     'syncname-writes-into-the-compendium',
     suite:  'mod-ratings',
     ...MODRATE, method: 'inPack',
-    was:    'the name hooks treated a compendium document like a world item, so a pack would have been renamed "Medkit [1]" (TODO 260: the packs stay plain)',
+    was:    'the name hooks treated a compendium document like a world item, so a pack would have been renamed "Medkit [1]" (TODO 261: the packs stay plain)',
     impl:   function () { return false; },
   },
   {
     id:     'gear-level-change-forgets-street-index',
     suite:  'gear-search',
     ...GSEARCH, method: 'fields',
-    was:    'fields() read only `streetIndex`, so the Buy dialog level picker (which holds a fields() result, with `index`) reset the Street Index to 1 on every level change (TODO 260, STS (Beacon))',
+    was:    'fields() read only `streetIndex`, so the Buy dialog level picker (which holds a fields() result, with `index`) reset the Street Index to 1 on every level change (TODO 261, STS (Beacon))',
     impl:   function (entry) {
       return {
         name: entry?.name ?? '', type: entry?.type ?? 'gear', tn: entry?.tn || 4, time: entry?.time || 1, unit: entry?.unit || 'day',
@@ -3402,21 +3402,21 @@ export const MUTANTS = [
     id:     'macro-never-refreshed',
     suite:  'macro-refresh',
     ...MACROREF, method: 'decide',
-    was:    'an existing world macro was left alone, so a fixed scripts/macros body never reached an older world (TODO 260, Chrome Threat Generator)',
+    was:    'an existing world macro was left alone, so a fixed scripts/macros body never reached an older world (TODO 261, Chrome Threat Generator)',
     impl:   (_def, existing) => (existing ? 'skip' : 'create'),
   },
   {
     id:     'macro-refresh-takes-any-name-match',
     suite:  'macro-refresh',
     ...MACROREF, method: 'find',
-    was:    'the refresh adopted a macro by name whatever its type or flag, overwriting a chat macro or another managed macro (TODO 260)',
+    was:    'the refresh adopted a macro by name whatever its type or flag, overwriting a chat macro or another managed macro (TODO 261)',
     impl:   (def, macros) => [...(macros ?? [])].find(m => m?.name === def.name) ?? null,
   },
   {
     id:     'macro-refresh-touches-gm-macros',
     suite:  'macro-refresh',
     ...MACROREF, method: 'find',
-    was:    'the refresh took any script macro, so a GM-authored macro with another name was overwritten (TODO 260)',
+    was:    'the refresh took any script macro, so a GM-authored macro with another name was overwritten (TODO 261)',
     impl:   (_def, macros) => [...(macros ?? [])].find(m => m?.type === 'script') ?? null,
   },
 ];

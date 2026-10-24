@@ -140,7 +140,7 @@ export async function run(t) {
   t.is('How many = 3 makes three', three.made.length, 3);
   t.ok('…and says so', three.notes.some(([l, m]) => l === 'info' && /3 level-3 chrome threat/.test(m)));
 
-  /* ── One document per rated implant (TODO 260): the macro names it plainly, the level is system.rating ── */
+  /* ── One document per rated implant (TODO 261): the macro names it plainly, the level is system.rating ── */
   const named = [...SRC.matchAll(/cyberware\(\s*([`'])([^`']*)\1/g)].map(m => m[2]);
   t.ok('no rated implant is named with a level any more — the name-sync hook makes "Wired Reflexes [2]"',
     named.length > 5 && named.every(n => !/\[\$\{(?!enh\})/.test(n) && !/\[\d+\]$/.test(n)), named.join(' | '));

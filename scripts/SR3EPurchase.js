@@ -90,7 +90,7 @@ export const SR3EPurchase = {
     // Ruled 2026-10-17: a switched-off book or a non-buyable type WARNS and still fills the form.
     const packAllowed = !pack || (game.sr3e?.SR3ESourceBooks?.packAllowed(pack) ?? true);
     for (const w of GearSearch.dropWarnings({ name: dropped.name, type: dropped.type, packAllowed }, SR3EPurchase.BUYABLE)) ui.notifications.warn(w);
-    // ⚠ The plain name — no "[N]" (TODO 260). The dialog offers the item's levels when the table has them.
+    // ⚠ The plain name — no "[N]" (TODO 261). The dialog offers the item's levels when the table has them.
     const entry = { ...GearSearch.fields(dropped), name: dropped.name, type: dropped.type, uuid: dropped.uuid,
       levels: ModRatings.levelsOf(dropped), rating: Number(dropped.system?.rating) || null };
     return GearSearch.atLevel(entry, GearSearch.startLevel(entry));
@@ -120,7 +120,7 @@ export const SR3EPurchase = {
     const cost  = Number(item?.system?.cost) || 0;
     let   type  = item?.type ?? 'gear';   // a search hit or a drop changes it
     let   picked = null;                  // the item the search or a drop chose, over the row's
-    // A rated item is one document with its levels in a table (TODO 260): bought at a level, default the lowest.
+    // A rated item is one document with its levels in a table (TODO 261): bought at a level, default the lowest.
     const rowEntry = item ? { ...GearSearch.fields(item), levels: ModRatings.levelsOf(item), rating: Number(item.system?.rating) || null } : null;
     let   levelEntry = rowEntry?.levels ? rowEntry : null;
     let   level = levelEntry ? GearSearch.startLevel(levelEntry) : null;
@@ -308,7 +308,7 @@ export const SR3EPurchase = {
         });
 
         con?.addEventListener('change', sync);
-        // Picking a level brings that level's price, availability and Street Index (TODO 260).
+        // Picking a level brings that level's price, availability and Street Index (TODO 261).
         levelSel?.addEventListener('change', () => {
           if (!levelEntry) return;
           level = Number(levelSel.value) || null;

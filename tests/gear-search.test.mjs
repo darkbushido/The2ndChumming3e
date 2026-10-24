@@ -90,7 +90,7 @@ export async function run(t) {
   t.ok('both paths fill the fields through one take()', (src.match(/take\(/g) ?? []).length >= 3);
   t.ok('the chosen item\'s uuid wins over the row\'s when the buyer pays', /itemUuid: picked\?\.uuid \|\| item\?\.uuid \|\| ''/.test(src));
   t.ok('the dialog is wired through wait()\'s render option, never the global hook', /render: \(_event, dialog\) =>/.test(src) && !/renderDialogV2/.test(src));
-  /* ── A level change keeps the Street Index (TODO 260, seen live on STS (Beacon)) ─────────────── */
+  /* ── A level change keeps the Street Index (TODO 261, seen live on STS (Beacon)) ─────────────── */
   const sts = G.fromIndex({ _id: 's', name: 'STS (Beacon)', type: 'gear', system: { rating: 1, cost: 200, availability: '4/48hrs', streetIndex: '2' } }, { collection: 'p' });
   const shaped = { ...G.atLevel(sts, 1), levels: { 1: {}, 2: {}, 4: { cost: 800, availability: '4/48hrs' } }, rating: 1 };   // what showLevels(f) stores
   t.is('the fields() result names its Street Index "index"', shaped.index, 2);

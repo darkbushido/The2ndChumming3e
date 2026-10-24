@@ -1,5 +1,5 @@
 /**
- * Rated items — ONE document per item, its level in `system.rating`, its levels in a dropdown (TODO 260):
+ * Rated items — ONE document per item, its level in `system.rating`, its levels in a dropdown (TODO 261):
  * `scripts/data/mod-ratings.mjs`, `scripts/data/rated-families.mjs`, the table `tools/build-mod-ratings.mjs`
  * generates, the gear `tools/build-default-gear.mjs` generates, and the packs.
  *

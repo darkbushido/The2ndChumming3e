@@ -64,7 +64,7 @@ function skill(name, rating, linkedAttribute, spec = null, category = 'Combat sk
   };
 }
 
-// A RATED implant is ONE item whose level is `system.rating` (TODO 260): the name is the plain implant
+// A RATED implant is ONE item whose level is `system.rating` (TODO 261): the name is the plain implant
 // ("Wired Reflexes"), and the `preCreateItem` name-sync hook makes the copy read "Wired Reflexes [2]". The
 // level's printed numbers (cost, availability, legality, description, `mods`) come from the same table the
 // item sheet's Level dropdown uses — `game.sr3e.ModRatings.ratingChange` — and the values THIS macro sets on

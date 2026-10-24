@@ -509,7 +509,7 @@ const MIGRATIONS = [
   },
   {
     version: '0.7.1',
-    label: 'Every rated item\'s level moves out of its name into the rating; a link to a deleted level document is repointed (TODO 260)',
+    label: 'Every rated item\'s level moves out of its name into the rating; a link to a deleted level document is repointed (TODO 261)',
     /**
      * The packs now ship ONE document per rated item ("Chemical Seal", its levels in the Level dropdown) and
      * name it plainly; the level is `system.rating`. A copy already in a world still reads "Chemical Seal
@@ -533,7 +533,7 @@ const MIGRATIONS = [
   },
   {
     version: '0.7.1',
-    label: 'Mod values corrected to the books: Vehicle Armor costs, Concealed Armor CF, Power Amplifier CF, Remote Control ECCM, Hydraulic Jack, RC Encryption Module and cyberlimb plating legality (TODO 260)',
+    label: 'Mod values corrected to the books: Vehicle Armor costs, Concealed Armor CF, Power Amplifier CF, Remote Control ECCM, Hydraulic Jack, RC Encryption Module and cyberlimb plating legality (TODO 261)',
     /**
      * The maintainer checked the mod level tables against R3 pp.131-147 and M&M pp.24-37 and approved the
      * corrections (2026-10-24, "fix all to the book"). The packs carry them; a copy already in a world is its

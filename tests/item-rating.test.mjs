@@ -110,7 +110,7 @@ export async function run(t) {
   }
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
   const gearCase = sheet.slice(sheet.indexOf("case 'gear':"), sheet.indexOf("case 'gear':") + 900);
-  // `_modRatingField` is the box for every rated item that is not a mod (TODO 260 — it falls back to `_ratingField`).
+  // `_modRatingField` is the box for every rated item that is not a mod (TODO 261 — it falls back to `_ratingField`).
   t.ok('the gear sheet has a Rating box', /this\._(?:modR|r)atingField\(s\)/.test(gearCase));
   t.ok('…and Book / Page', /_bookPageField\(s\)/.test(gearCase));
   t.ok('cyberware and bioware use the same Rating box', /case 'bioware'[\s\S]{0,2500}this\._(?:modR|r)atingField\(s\)/.test(sheet));

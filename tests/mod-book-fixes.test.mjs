@@ -1,5 +1,5 @@
 /**
- * Mod values corrected to the books (TODO 260) — the pure rule shared by the pack tool and the 0.7.1
+ * Mod values corrected to the books (TODO 261) — the pure rule shared by the pack tool and the 0.7.1
  * migration, the migration's wiring, and the packs themselves.
  */
 import { readFileSync } from 'node:fs';
@@ -56,7 +56,7 @@ export async function run(t) {
     ['!items!r8', { _id: 'r8', ...limb('RC Encryption Module', { rating: 8, cost: 80000, availability: '8/8 days', legalCode: '4P-W' }) }],
   ]);
   t.is('the tool changes two documents', fixEntries(entries, 'sr3e-mm-cyberware'), 2);
-  t.is('…and adds none — every rated item is ONE document (TODO 260)', entries.size, 2);
+  t.is('…and adds none — every rated item is ONE document (TODO 261)', entries.size, 2);
   t.is('…and a second run changes nothing', fixEntries(entries, 'sr3e-mm-cyberware'), 0);
   t.eq('RC Encryption Module 9 and 10 are rows of the level table (M&M p.24: ratings 1 through 10)', Object.keys(readExtraLevels()['cyberware|RC Encryption Module']).map(Number), [9, 10]);
 

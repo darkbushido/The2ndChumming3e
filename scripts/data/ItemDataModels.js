@@ -203,7 +203,7 @@ export class AmmunitionData extends foundry.abstract.TypeDataModel {
 
   static defineSchema() {
     return {
-      // The item's level — "Tracker AOD" at 3, not "Tracker AOD Rating [3]" (TODO 260). null = no level.
+      // The item's level — "Tracker AOD" at 3, not "Tracker AOD Rating [3]" (TODO 261). null = no level.
       rating:         new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
       concealability: new StringField({ initial: '' }),
       damage:         new StringField({ initial: '' }),
@@ -510,7 +510,7 @@ export class SpellData extends foundry.abstract.TypeDataModel {
 export class VehicleWeaponData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
-      // The item's level — "Lure Launcher AM-56" at 3, not "Lure Launcher AM-56 [3]" (TODO 260). null = no level.
+      // The item's level — "Lure Launcher AM-56" at 3, not "Lure Launcher AM-56 [3]" (TODO 261). null = no level.
       rating:       new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
       weaponType:   new StringField({ initial: '' }),
       mode:         new StringField({ initial: '' }),
@@ -529,7 +529,7 @@ export class VehicleWeaponData extends foundry.abstract.TypeDataModel {
 export class VehicleModData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
-      // The mod's level — "Anti-Theft System" at 10, not "Anti-Theft System [10]" (TODO 260). null = no level.
+      // The mod's level — "Anti-Theft System" at 10, not "Anti-Theft System [10]" (TODO 261). null = no level.
       rating:           new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
       cost:             new NumberField({ integer: true, initial: 0, min: 0 }),
       availability:     new StringField({ initial: '' }),

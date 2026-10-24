@@ -234,7 +234,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
   }
 
   /**
-   * A rated item's level as a dropdown of the levels the books print (TODO 260): picking one sets that
+   * A rated item's level as a dropdown of the levels the books print (TODO 261): picking one sets that
    * level's cost, availability, Essence / Bio Index, description and the rest (`ModRatings.ratingChange`,
    * wired in `_onRender`). Every rated item is ONE document now — gear, cyberware, bioware, medical,
    * vehicle mods — and its levels are this dropdown. An item with no printed levels — or one someone

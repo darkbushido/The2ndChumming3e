@@ -1,5 +1,5 @@
 /**
- * The system's world macros are refreshed, not just created · TODO 260.
+ * The system's world macros are refreshed, not just created · TODO 261.
  * The decision is pure (MacroRefresh); the hook's wiring is source-level.
  */
 import { readFileSync } from 'node:fs';

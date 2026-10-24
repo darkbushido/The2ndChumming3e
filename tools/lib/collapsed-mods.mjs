@@ -1,5 +1,5 @@
 /**
- * `tools/data/collapsed-mods.json` — every rated family collapsed to ONE pack document · TODO 260.
+ * `tools/data/collapsed-mods.json` — every rated family collapsed to ONE pack document · TODO 261.
  *
  * Their levels can no longer be read off the packs, so they live here and are merged into the generated level
  * table (`scripts/data/mod-rating-table.mjs`). Two tools write it, each its own records:
@@ -18,7 +18,7 @@ import { dirname, join } from 'node:path';
 
 export const COLLAPSED_FILE = join(dirname(fileURLToPath(import.meta.url)), '..', 'data', 'collapsed-mods.json');
 
-const ABOUT = 'Rated families collapsed to ONE pack document (tools/build-mod-ratings.mjs, tools/build-default-gear.mjs). Their levels live here and are merged into scripts/data/mod-rating-table.mjs; `deleted` lists the level documents that went, so a copy linked to one is repointed. TODO 260.';
+const ABOUT = 'Rated families collapsed to ONE pack document (tools/build-mod-ratings.mjs, tools/build-default-gear.mjs). Their levels live here and are merged into scripts/data/mod-rating-table.mjs; `deleted` lists the level documents that went, so a copy linked to one is repointed. TODO 261.';
 
 /** The file's `{ about, families }`, or an empty one. */
 export const readDoc = (file = COLLAPSED_FILE) => (existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : { about: ABOUT, families: {} });

@@ -167,7 +167,7 @@ Hooks.once('init', () => {
   CONFIG.Item.dataModels.adeptpower   = AdeptPowerData;
   CONFIG.Item.dataModels.vehicleweapon = VehicleWeaponData;
   CONFIG.Item.dataModels.vehiclemod    = VehicleModData;
-  // A rated item's level is its rating, not its name (TODO 260) — the index carries it so lists can show "[N]".
+  // A rated item's level is its rating, not its name (TODO 261) — the index carries it so lists can show "[N]".
   if (!CONFIG.Item.compendiumIndexFields.includes('system.rating')) CONFIG.Item.compendiumIndexFields.push('system.rating');
   CONFIG.Item.dataModels.program      = ProgramData;
   CONFIG.Item.dataModels.cyberdeck    = CyberdeckData;
@@ -406,7 +406,7 @@ Hooks.once('ready', async () => {
     // that could only fail. Agents and hosts ship in `sr3e-mdf-agents` / `sr3e-mdf-hosts` (TODO 1).
   ];
 
-  // Create each managed macro, and REFRESH one a world already holds (TODO 260): a macro keeps the command text it
+  // Create each managed macro, and REFRESH one a world already holds (TODO 261): a macro keeps the command text it
   // was created with, so a fix to scripts/macros never reached an older world. Managed = flagged with its path, or
   // an old script macro of exactly the managed name (adopted). The GM's own macros are never touched. Rules:
   // `MacroRefresh` (scripts/data/macro-refresh.mjs). A fetch failure is logged and never blocks the load.
@@ -471,7 +471,7 @@ Hooks.on('preCreateItem', (document, data) => {
   if (fill !== undefined) document.updateSource({ 'system.rating': fill });
 });
 
-/* An owned or world item's NAME follows its level (TODO 260, the maintainer 2026-10-24): the packs name an item
+/* An owned or world item's NAME follows its level (TODO 261, the maintainer 2026-10-24): the packs name an item
  * plainly ("Medkit"), a copy reads "Medkit [5]". `ModRatings.syncName` swaps the trailing bracket; a custom name
  * keeps its text. ⚠ NEVER for a compendium document — `options.pack`, `document.pack`, or an item inside a pack
  * actor — the packs stay plain. Pre-hooks run on the client doing the write, and `updateSource` / editing `changes`
@@ -2649,7 +2649,7 @@ Hooks.on('renderSettingsConfig', (_app, html) => {
 // Attach action button handlers to each chat message as it renders.
 // renderChatMessageHTML fires for every render (new message AND pop-up notification),
 // so the guard above is what prevents double-firing across the two DOM instances.
-// ⚠ No "[N]" in a compendium window (TODO 260): a rated item is ONE document there, its level picked on the
+// ⚠ No "[N]" in a compendium window (TODO 261): a rated item is ONE document there, its level picked on the
 // item sheet or when bought, so the stored level of a collapsed document means nothing in a list. (A
 // `renderCompendium` hook used to append it; it is gone on purpose — tests/mod-ratings.test.mjs.)
 

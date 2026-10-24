@@ -73,7 +73,7 @@ export const GearSearch = {
   fromIndex(row, pack) {
     const sys = row?.system ?? {};
     return {
-      // ⚠ NO "[N]": a rated item is ONE document and the level is picked when it is bought (TODO 260), so the
+      // ⚠ NO "[N]": a rated item is ONE document and the level is picked when it is bought (TODO 261), so the
       // stored level of a collapsed document means nothing in a list. The plain name.
       name: row?.name ?? '',
       type: row?.type ?? '',
@@ -113,7 +113,7 @@ export const GearSearch = {
     const availStr = entry?.availability ?? entry?.system?.availability ?? '';
     // ⚠ An entry that is ALREADY a fields() result (the Buy dialog keeps one for its Level picker) carries
     // `index` and `tn`/`time`/`unit`, not `streetIndex`/`availability` — read them as the fallback, or a level
-    // change resets the Street Index to 1 and the availability to 4/1 day (TODO 260, seen live on STS (Beacon)).
+    // change resets the Street Index to 1 and the availability to 4/1 day (TODO 261, seen live on STS (Beacon)).
     const shaped = !String(availStr).trim() && entry?.tn !== undefined;
     const avail = shaped
       ? { tn: entry.tn, time: entry.time, unit: entry.unit, always: !!entry.always, unknown: !!entry.unknown }

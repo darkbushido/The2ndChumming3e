@@ -125,7 +125,7 @@ export async function run(t) {
     ...Object.values(IMPLANT_ALIASES), ...Object.values(EYE_MOD_ALIASES),
     ...Object.values(EAR_MOD_ALIASES), ...Object.values(SPELL_ALIASES),
   ];
-  // A rated alias names its level ("Radio [3]"); the pack holds ONE "Radio" now (TODO 260), so compare the plain name.
+  // A rated alias names its level ("Radio [3]"); the pack holds ONE "Radio" now (TODO 261), so compare the plain name.
   const plain = n => ModRatings.splitName(n)?.stem ?? n;
   const dead = [...new Set(targets)].filter(n => !names.has(plain(n)));
   t.is(dead.length ? `aliases naming nothing that ships: ${dead.join(', ')}`

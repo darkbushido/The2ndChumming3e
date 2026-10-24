@@ -404,7 +404,7 @@ export async function plan(manifest, shippedNames) {
         doc._id = idFor(`${GENERATOR}|${key}|${variant}`);
         report.variants.push(`${doc.book} ${doc.type}: ${doc.name}${ratingOnly ? ` [${doc.system.rating}]` : ''}`);
       }
-      // A rated item's level is its rating, not part of its name (TODO 260): "STS (Beacon) Rating [3]" ships
+      // A rated item's level is its rating, not part of its name (TODO 261): "STS (Beacon) Rating [3]" ships
       // as "STS (Beacon)", rating 3 — and, below, the whole family as ONE document. ⚠ AFTER the id is
       // derived — it stays the one computed from the upstream name, so a copy someone already owns keeps its link.
       const split = ModRatings.kindOf(doc) ? ModRatings.splitName(doc.name) : null;
@@ -418,7 +418,7 @@ export async function plan(manifest, shippedNames) {
     }
   }
   for (const [k, v] of Object.entries(report.repeatedUpstream)) if (!v) delete report.repeatedUpstream[k];
-  // Every rated family becomes ONE document (TODO 260) — here, so a regeneration never brings the levels back.
+  // Every rated family becomes ONE document (TODO 261) — here, so a regeneration never brings the levels back.
   // The kept document is the lowest level's, with the id this builder derived for it; the rest of the family's
   // numbers go to tools/data/collapsed-mods.json, which the level table is built from.
   const families = [];

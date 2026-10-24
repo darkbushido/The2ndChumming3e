@@ -1,5 +1,5 @@
 {
-  "about": "Rated families collapsed to ONE pack document (tools/build-mod-ratings.mjs, tools/build-default-gear.mjs). Their levels live here and are merged into scripts/data/mod-rating-table.mjs; `deleted` lists the level documents that went, so a copy linked to one is repointed. TODO 260.",
+  "about": "Rated families collapsed to ONE pack document (tools/build-mod-ratings.mjs, tools/build-default-gear.mjs). Their levels live here and are merged into scripts/data/mod-rating-table.mjs; `deleted` lists the level documents that went, so a copy linked to one is repointed. TODO 261.",
   "families": {
     "ammunition|Tracker AOD": {
       "pack": "sr3e-cc-ammunition",

@@ -151,7 +151,7 @@ for (const a of actors) {
     for (const part of parts) {
       const host = /cyberear/i.test(part.name) ? 'ear' : 'eye';
       const target = resolveImplant(part.name, part.mods) ?? part.name;
-      // A rated implant is ONE pack document now, its levels in the table (TODO 260): the alias names the level
+      // A rated implant is ONE pack document now, its levels in the table (TODO 261): the alias names the level
       // ("Wired Reflexes [2]"), so look up the plain name and apply the level to the copy.
       const sp = ModRatings.splitName(target);
       const hit = idx.get(norm(sp ? sp.stem : target));

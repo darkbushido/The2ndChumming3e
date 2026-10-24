@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Mod values corrected against the books, in the hand-kept packs — TODO 260.
+ * Mod values corrected against the books, in the hand-kept packs — TODO 261.
  *
  *   node tools/fix-mod-book-values.mjs           correct packs-src, then run:
  *                                                node tools/build-mod-ratings.mjs && npm run packs:build
@@ -12,7 +12,7 @@
  *
  * ⚠ It does NOT add documents. RC Encryption Module "is available in ratings of 1 through 10" (M&M p.24), and the
  * Rigger implant's packs print 1-8: levels 9 and 10 are rows of the level table (`tools/data/extra-levels.json`),
- * not documents — every rated item is one document now (TODO 260).
+ * not documents — every rated item is one document now (TODO 261).
  */
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';

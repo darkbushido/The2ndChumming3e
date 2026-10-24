@@ -1,5 +1,5 @@
 {
-  "about": "Levels the books print that no pack document carries — rows of the level table, not documents (every rated item is one document, TODO 260). Merged by tools/build-mod-ratings.mjs. The key is 'kind|item name'; a level is the fields that differ between that item's levels.",
+  "about": "Levels the books print that no pack document carries — rows of the level table, not documents (every rated item is one document, TODO 261). Merged by tools/build-mod-ratings.mjs. The key is 'kind|item name'; a level is the fields that differ between that item's levels.",
   "levels": {
     "cyberware|RC Encryption Module": {
       "9": { "availability": "9/9 days", "cost": 90000 },

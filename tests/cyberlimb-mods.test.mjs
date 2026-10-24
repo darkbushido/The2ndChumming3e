@@ -30,14 +30,14 @@ export async function run(t) {
   t.is('Cyber Holster 5P-N (M&M p.39)', byId['sr3e-cyberware-0727']?.set['system.legalCode'], '5P-N');
   t.is('a fingertip compartment in a cyberlimb costs no Essence (SR3 p.303)', byId['sr3e-cyberware-0622']?.set['system.essenceCost'], 0);
   t.is('the second Rigger Decryption Module [1] is the [10]', byId['sr3e-cyberware-0833']?.set['system.rating'], 10);
-  t.is('…named plainly, the level in its rating (TODO 260)', byId['sr3e-cyberware-0833']?.set.name, 'Rigger Decryption Module');
+  t.is('…named plainly, the level in its rating (TODO 261)', byId['sr3e-cyberware-0833']?.set.name, 'Rigger Decryption Module');
   t.ok('every correction names its book and page', PACK_CORRECTIONS.every(c => /\b(SR3|M&M) p\.\d+/.test(c.source)));
   t.ok('every changed field records its old value (the migration needs it)',
     PACK_CORRECTIONS.every(c => Object.keys(c.set).every(k => Object.prototype.hasOwnProperty.call(c.was, k))));
 
   /* ── …and the packs carry it ───────────────────────────────────────────────────── */
   for (const c of PACK_CORRECTIONS) {
-    if (COLLAPSED_SOURCES[c.pack]?.[c.id]) continue;   // a level document the collapse deleted (TODO 260) — its numbers are in the table
+    if (COLLAPSED_SOURCES[c.pack]?.[c.id]) continue;   // a level document the collapse deleted (TODO 261) — its numbers are in the table
     const doc = docById(c.pack, c.id);
     t.ok(`${c.pack}/${c.id} exists`, !!doc);
     for (const [path, value] of Object.entries(c.set)) t.is(`${doc?.name} ${path} (${c.source})`, getPath(doc, path), value);

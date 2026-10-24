@@ -1,5 +1,5 @@
 /**
- * A rated item is ONE document — the pure rule that collapses a family of per-level documents · TODO 260.
+ * A rated item is ONE document — the pure rule that collapses a family of per-level documents · TODO 261.
  *
  * The maintainer, 2026-10-24: *"We shouldn't have any [N] gear — the point is to move the level into the gear's
  * doc"* — all gear, one document per item, like Vehicle Armor already was. The packs shipped one document per

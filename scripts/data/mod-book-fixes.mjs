@@ -1,5 +1,5 @@
 /**
- * Mod values corrected against the books — TODO 260 (the maintainer: "fix all to the book", 2026-10-24).
+ * Mod values corrected against the books — TODO 261 (the maintainer: "fix all to the book", 2026-10-24).
  *
  * The maintainer checked the mod level tables against the rulebook PDFs and approved these corrections.
  * ONE list, read by two callers:
