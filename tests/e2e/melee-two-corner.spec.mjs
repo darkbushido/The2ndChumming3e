@@ -68,6 +68,10 @@ test.describe('melee two-corner card', () => {
 
   test('each side submits its own corner and only the last submission resolves',
     async ({ player2, player3, janitor }) => {
+    // Two clients each submitting a corner, plus the GM window: it ran out of the 2-minute budget three runs in a
+    // row on 2026-10-23 (software WebGL — every client warns there is no hardware acceleration) and passed in
+    // 4.6 min given more (TODO 253). Same remedy as melee-wounds: triple this test's timeout only.
+    test.slow();
     const atk = player2;
     const def = player3;
     // ── ARRANGE: put both actors into a state this test defines ─────────────────
