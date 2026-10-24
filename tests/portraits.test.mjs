@@ -122,6 +122,25 @@ export async function run(t) {
   }
   t.is('same seed, same name (repeatable)', Names.generate({ rng: seeded(9) }).full, Names.generate({ rng: seeded(9) }).full);
 
+  /* ── The dialog: offer, never apply (source-level — it cannot run without Foundry) ── */
+  {
+    const src = read('scripts/SR3EMeetContact.js').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+    const apply = src.slice(src.indexOf('static async _apply('));
+    const before = src.slice(0, src.indexOf('static async _apply('));
+    t.ok('no document write before _apply (nothing is saved until Create NPC)', !/\.update\(|asGM\(|\.create\(/.test(before));
+    t.ok('_apply creates through the GM verb, never Actor.create', /asGM\('sr3e\.actor\.create'/.test(apply) && !/Actor(\.implementation)?\.create\(/.test(apply));
+    t.ok('a contact picture is replaced only when it is stock', /if \(img && Portraits\.isStockImg\(contact\.img\)\) changes\.img = img;/.test(apply));
+    t.ok('the dialog is GM-only', /if \(!game\.user\.isGM\)/.test(before));
+    t.ok('the result is held in a variable only the Create button assigns', /let result = null;/.test(before) && /action: 'create'[\s\S]*?result = \{/.test(before));
+    const sheet = read('scripts/sheets/SR3EActorSheet.js');
+    t.ok('the 🎲 is rendered for the GM only', /const meet = game\.user\.isGM && c\.system\.archetypeUuid/.test(sheet));
+    t.ok('…and its handler re-checks', /static async _onMeetContact\(_ev, target\) \{\s*if \(!game\.user\.isGM\) return;/.test(sheet));
+    const verb = read('scripts/SR3EQuery.js');
+    const setBlock = verb.slice(verb.indexOf("if (set && typeof set === 'object')"), verb.indexOf("flags.The2ndChumming3e.isTemplate', false);"));
+    t.ok('the verb\'s set is a whitelist: img, token art, metatype, gender, ethnicity — nothing else', setBlock
+      && /\['metatype', 'gender', 'ethnicity'\]/.test(setBlock) && !/Object\.(assign|entries)|mergeObject|\.\.\.set/.test(setBlock));
+  }
+
   /* ── The system never names the private module ───────────────────────────── */
   for (const rel of ['scripts/data/portraits.mjs', 'scripts/data/names.mjs', 'scripts/SR3EMeetContact.js', 'system.json']) {
     let src = '';
