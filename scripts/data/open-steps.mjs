@@ -28,6 +28,9 @@ export const STEP_BUTTONS = {
   'sr-fd-dodge-btn':                { icon: '🛡', label: 'Full Defense dodge' },
   'sr-soak-btn':                    { icon: '🛡', label: 'Resist damage' },
   'sr-soak-roll-btn':               { icon: '🛡', label: 'Roll the Damage Resistance Test', doneBy: ['soaker'] },
+  // A grenade's NPCs, rolled by the GM in one go (TODO 249). Records ITSELF: its dialog can be cancelled, and
+  // its record names any NPC the GM sent to a card of its own (`data.separate`, scripts/data/blast-batch.mjs).
+  'sr-blast-npc-btn':               { icon: '💥', label: 'Roll Damage Resistance for the NPCs in the blast', recordsItself: true },
   'sr-spell-soak-btn':              { icon: '🔮', label: 'Resist the spell' },
   'sr-spell-resist-roll-btn':       { icon: '🔮', label: 'Roll the Spell Resistance Test' },
   'sr-astral-soak-btn':             { icon: '✨', label: 'Resist astral damage' },
@@ -63,6 +66,14 @@ export const OWNER_KEYS = ['actorId', 'icActorId', 'vehicleActorId', 'wardActorI
   'deckerActorId', 'passengerActorId'];
 
 export const OpenSteps = {
+  /** The label the GM's ✕ in the ⏳ panel records — "nobody will take this step". */
+  DISMISSED: 'dismissed by the GM',
+
+  /** Was this step ✕'d by the GM rather than taken? */
+  isDismissed(acted, key) {
+    return acted?.[key]?.label === OpenSteps.DISMISSED;
+  },
+
   /** The acted-ledger key for the `index`-th button of `cls` on a card. */
   key(cls, index) {
     return `step:${cls}:${index}`;

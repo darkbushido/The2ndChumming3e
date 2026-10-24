@@ -5,6 +5,8 @@ paths:
   - "scripts/data/ammo-stock.mjs"
   - "scripts/data/phase-targets.mjs"
   - "scripts/data/blast.mjs"
+  - "scripts/data/blast-batch.mjs"
+  - "tests/blast-batch.test.mjs"
   - "tests/net-staging.test.mjs"
   - "tests/flechette-weapons.test.mjs"
   - "tests/grenade-skill.test.mjs"
@@ -266,7 +268,7 @@ Requires a scene.
    marker = **Region** (`visibility: ALWAYS`), fallback a local PIXI circle (`game.sr3e._blastMarkers`); 🧹
    Clear removes either. Per-target Power = base − distance × the grenade's own falloff (`system.blast`,
    `scripts/data/blast.mjs`: Offensive −1/m, Defensive −1/.5 m, p.119, TODO 150; blank = −1/m), or the Chunky Salsa GUI
-   (`game.sr3e.openChunkySalsa({...returnOnly})`) when confined. A soak card per caught token.
+   (`game.sr3e.openChunkySalsa({...returnOnly})`) when confined. A soak button per caught PC or vehicle; NPCs batch (below).
 - ⚠ **The throw's successes STAGE THE LEVEL** (p.119): each soak nets the two (`netStagedDamage`); the grenade
   card's staged level is a preview. ⚠ **POWER is never staged** (it's also the soak TN).
 - ⚠ **Walls** (TODO 149, `SR3EActor._wallBetween` — movement-wall `testCollision`, so an open door isn't a wall):
@@ -277,6 +279,23 @@ Requires a scene.
   rating, p.124) is the GM's; tooltip and dialog show both p.124 tables (`SR3EActor.barrierTablesHtml`, from
   `SR3E.barrierRatings`/`barrierEffects`, shared with Barrier Damage). ⚠ The marker still draws its full circle.
   p.119's optional half-Power roll is not implemented.
+- **NPCs in one go** (TODO 249, `scripts/data/blast-batch.mjs`): `BlastBatch.split` — player characters
+  (`SR3EQuery.isPlayerCharacter`, never `hasPlayerOwner`) and vehicles keep their own `sr-soak-btn`; every other
+  character/npc is covered by ONE GM-only `sr-blast-npc-btn` (a ⏳ step, `recordsItself`). `handleBlastBatch`: a
+  dialog row per NPC pre-filled by `_soakSetup` (the soak card's own armour/TN/pool reader — shared, never copied),
+  all editable, **Combat Pool defaults to 0** (charged after the roll); untick → that NPC gets its own soak card.
+  ONE summary card (`_blastBatchHtml`, record in `flags.blastBatch`); each row staged by `_soakResultHtml` (the soak
+  wave card's own, `netStagedDamage` with the throw's successes) with 🩸 Assign / 💥 Knockdown — nothing applied.
+  ⚠ Explosions stay clicks: the card's GM 💥 (`sr-blast-batch-explode-btn`, claimed per wave) rolls every NPC's
+  next wave via `_nextWave` — the only later-wave roll — and updates the card in place. The step is recorded after
+  the dialog, with `data.separate` (NPCs sent to their own cards).
+- **The marker clears itself** (TODO 250): the grenade card carries `flags.blast` `{key, role:'grenade', regionId,
+  markerId, individualIds, batchIds}`; each soak card it leads to `{key, role:'soak', actorId}` (via `blastKey` on
+  the soak payload). On any `acted` change (`updateChatMessage`), `SR3EActor.autoClearBlast` checks
+  `BlastBatch.resolved` (each individual's soak card rolled or its Resist ✕'d; the batch used — and its `separate`
+  NPCs rolled — or ✕'d); then the active GM deletes the Region, the client holding a PIXI fallback destroys it.
+  🧹 Clear stays. Not tracked: a blast that caught no one, targets behind a wall (🧱), clouds (TODO 164), and
+  **spell AoE** (cleared by hand — a sustained area spell's marker still means something).
 - `_openChunkySalsaCalculator(opts)` posts soak cards itself unless `returnOnly`.
 - **Shared blast marker**: `SR3EActor._drawBlastArea(center, radiusM, {name,color})` → `{regionId, markerId}`
   and `SR3EActor._clearBlastButton(...)` — used by grenades and **spell AoE** (purple; no scatter or falloff,

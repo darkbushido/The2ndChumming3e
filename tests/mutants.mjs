@@ -38,6 +38,7 @@ const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
+const BLASTBATCH = { module: '../scripts/data/blast-batch.mjs', klass: 'BlastBatch' };
 const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
 const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots' };
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
@@ -3245,5 +3246,50 @@ export const MUTANTS = [
     ...INTEGRALRC, method: 'has',
     was:    'a weapon with no bracketed RC (null) read as having one worth 0, so ticking the box on an Ares Predator dropped its compensation',
     impl:   system => system?.recoilModIntegral !== undefined,
+  },
+  /* ── TODO 249 / 250: a grenade's NPC batch and its marker. Regressions the rules must not take back. ── */
+  {
+    id:     'blast-batch-takes-player-characters',
+    suite:  'blast-batch',
+    ...BLASTBATCH, method: 'split',
+    was:    'every caught person went into the GM\x27s NPC batch, so a player\x27s character was rolled for them (TODO 249: "for NPCs only")',
+    impl:   (targets = []) => ({
+      individual: targets.filter(t => !['character', 'npc'].includes(t?.actor?.type)),
+      batch:      targets.filter(t => ['character', 'npc'].includes(t?.actor?.type)),
+    }),
+  },
+  {
+    id:     'blast-batch-clears-on-the-resist-click',
+    suite:  'blast-batch',
+    ...BLASTBATCH, method: 'resolved',
+    was:    'the blast counted a PC as resisted when they clicked Resist Damage, before the soak card was rolled, so the marker vanished while a player still owed a roll (TODO 250)',
+    impl:   ({ individualIds = [], batchIds = [], acted = {} } = {}) =>
+      individualIds.every((_id, i) => !!acted?.[`step:sr-soak-btn:${i}`])
+      && (!batchIds.length || !!acted?.['step:sr-blast-npc-btn:0']),
+  },
+  {
+    id:     'blast-batch-forgets-separate-npcs',
+    suite:  'blast-batch',
+    ...BLASTBATCH, method: 'resolved',
+    was:    'an NPC the GM sent to a soak card of its own was forgotten once the batch rolled, so the marker went before it resisted (TODO 250)',
+    needsOriginal: '_resolvedReal',
+    impl:   function (p = {}) {
+      const acted = p.acted ?? {};
+      const entry = acted['step:sr-blast-npc-btn:0'];
+      const stripped = entry ? { ...acted, 'step:sr-blast-npc-btn:0': { ...entry, data: { separate: [] } } } : acted;
+      return this._resolvedReal({ ...p, acted: stripped });
+    },
+  },
+  {
+    id:     'blast-batch-dismissal-ignored',
+    suite:  'blast-batch',
+    ...BLASTBATCH, method: 'resolved',
+    was:    'a step the GM ✕\x27d in the ⏳ panel ("nobody will take it") still held the blast open, so the marker never cleared',
+    impl:   ({ individualIds = [], batchIds = [], acted = {}, soakCards = [] } = {}) => {
+      const rolled = id => soakCards.some(c => c?.actorId === id && c.rolled);
+      return individualIds.every((id, i) => !!acted?.[`step:sr-soak-btn:${i}`] && rolled(id))
+        && (!batchIds.length || ((acted?.['step:sr-blast-npc-btn:0']?.data?.separate) ?? null) !== null
+          && acted['step:sr-blast-npc-btn:0'].data.separate.every(rolled));
+    },
   },
 ];

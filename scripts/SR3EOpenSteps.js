@@ -239,7 +239,7 @@ export class SR3EOpenSteps {
       });
       li.querySelector('.sr3e-step-dismiss')?.addEventListener('click', async ev => {
         ev.stopPropagation();
-        await SR3EOpenSteps.mark(li.dataset.messageId, li.dataset.stepKey, 'dismissed by the GM');
+        await SR3EOpenSteps.mark(li.dataset.messageId, li.dataset.stepKey, OpenSteps.DISMISSED);
       });
     });
   }

@@ -128,8 +128,8 @@ export async function run(t) {
     actor.indexOf('static _soakButtonHtml(') + 1500);
   t.ok('the failed-dodge soak button carries the elemental flag', /elemental:\s+payload\.elemental === true/.test(soakBtn));
 
-  const soak = actor.slice(actor.indexOf('async _postSoakCard(payload)'),
-    actor.indexOf('async _postSoakCard(payload)') + 10500);
+  // The soak card's armour is worked out by `_soakSetup` (shared with the grenade NPC batch, TODO 249).
+  const soak = actor.slice(actor.indexOf('  _soakSetup(payload) {'), actor.indexOf('  _soakRollPayload(payload, s) {'));
   t.ok('the soak card halves Impact for an elemental spell',
     /if \(payload\.elemental === true\)[\s\S]{0,200}SR3EActor\.elementalImpact\(\{ ballistic, impact \}\)/.test(soak));
   t.ok('…and resists with Impact, not Ballistic',
