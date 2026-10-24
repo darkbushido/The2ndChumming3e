@@ -477,6 +477,7 @@ export const MOD_RATING_TABLE = {
     2: {"cost":2000,"description":"4 programmed frequencies"},
     3: {"cost":3000,"description":"6 programmed frequencies"},
     4: {"cost":4000,"description":"8 programmed frequencies"},
+    5: {"cost":5000,"description":"10 programmed frequencies"},
     6: {"cost":6000,"description":"12 programmed frequencies"},
     7: {"cost":7000,"description":"14 programmed frequencies"},
     8: {"cost":8000,"description":"16 programmed frequencies"},

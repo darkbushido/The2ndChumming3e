@@ -57,15 +57,15 @@ export async function run(t) {
   t.is('a plain name has no level', split('Anti-Theft System'), null);
 
   /* ── The rename (packs tool and the 0.7.1 migration) ─────────────────────────── */
-  t.eq('a levelled vehicle mod is renamed and its level saved', ModRatings.renameDelta(veh('ECCM [3]')), { name: 'ECCM', 'system.rating': 3 });
-  t.eq('…a rating already agreeing is left as it is', ModRatings.renameDelta(limb('Signal Booster [3]', { rating: 3 })), { name: 'Signal Booster' });
-  t.eq('…a GM\'s different rating wins over the stale name', ModRatings.renameDelta(veh('ECCM [3]', { rating: 5 })), { name: 'ECCM' });
+  t.eq('a levelled vehicle mod keeps its name ("ECCM [3]") and its level is saved', ModRatings.renameDelta(veh('ECCM [3]')), { 'system.rating': 3 });
+  t.eq('…a rating already agreeing is left as it is', ModRatings.renameDelta(limb('Signal Booster [3]', { rating: 3 })), null);
+  t.eq('…a GM\'s different rating wins over the stale name', ModRatings.renameDelta(veh('ECCM [3]', { rating: 5 })), { name: 'ECCM [5]' });
   t.ok('…and that disagreement is reported (the migration logs it)', /keeping 5/.test(ModRatings.renameConflict(veh('ECCM [3]', { rating: 5 })) ?? ''));
   t.is('…an agreeing one is not', ModRatings.renameConflict(veh('ECCM [3]', { rating: 3 })), null);
   t.is('a plain name is left alone (idempotent)', ModRatings.renameDelta(veh('ECCM', { rating: 3 })), null);
-  t.eq('ordinary cyberware is renamed now — "Wired Reflexes [2]"', ModRatings.renameDelta({ type: 'cyberware', name: 'Wired Reflexes [2]', system: {} }), { name: 'Wired Reflexes', 'system.rating': 2 });
-  t.eq('…gear: "Chemical Seal Rating [4]"', ModRatings.renameDelta(gear('Chemical Seal Rating [4]', { rating: null })), { name: 'Chemical Seal', 'system.rating': 4 });
-  t.eq('…medical keeps its string rating', ModRatings.renameDelta({ type: 'medical', name: 'Medkit Rating 6', system: { rating: '' } }), { name: 'Medkit', 'system.rating': '6' });
+  t.eq('ordinary cyberware: "Wired Reflexes [2]" stays, its level is filled', ModRatings.renameDelta({ type: 'cyberware', name: 'Wired Reflexes [2]', system: {} }), { 'system.rating': 2 });
+  t.eq('…gear: "Chemical Seal Rating [4]"', ModRatings.renameDelta(gear('Chemical Seal Rating [4]', { rating: null })), { name: 'Chemical Seal [4]', 'system.rating': 4 });
+  t.eq('…medical keeps its string rating', ModRatings.renameDelta({ type: 'medical', name: 'Medkit Rating 6', system: { rating: '' } }), { name: 'Medkit [6]', 'system.rating': '6' });
   t.is('an item type with no level is never renamed', ModRatings.renameDelta({ type: 'firearm', name: 'Thing [2]', system: {} }), null);
 
   /* ── A copy linked to a deleted level document is repointed ──────────────────── */
@@ -82,7 +82,7 @@ export async function run(t) {
     `Compendium.The2ndChumming3e.${anyPack}.Item.${anyKept}`);
   t.eq('migrateDelta is the rename and the repoint together',
     ModRatings.migrateDelta({ ...linked('x'), name: 'X [2]', system: { rating: null }, _stats: { compendiumSource: `Compendium.The2ndChumming3e.${anyPack}.Item.${anyDead}` } }),
-    { name: 'X', 'system.rating': 2, '_stats.compendiumSource': `Compendium.The2ndChumming3e.${anyPack}.Item.${anyKept}` });
+    { 'system.rating': 2, '_stats.compendiumSource': `Compendium.The2ndChumming3e.${anyPack}.Item.${anyKept}` });
   t.is('…and is null for a copy with nothing to do', ModRatings.migrateDelta(gear('Plain', { rating: 2 })), null);
   t.ok('no deleted id is also a kept id', Object.values(COLLAPSED_SOURCES).every(m => Object.keys(m).every(id => !Object.values(m).includes(id))));
 
@@ -197,8 +197,12 @@ export async function run(t) {
     Object.values(records).some(f => f.by === 'build-default-gear') && Object.values(records).some(f => f.by === 'build-mod-ratings'));
   t.ok('a record\'s kept document is never listed as deleted', Object.values(records).every(f => !(f.deleted ?? []).includes(f.keep)));
   t.ok('the unplaced rows are all recorded with their ids (nothing is lost)', Object.values(records).flatMap(f => f.unplaced ?? []).every(u => u.id && u.row && u.rating > 0));
-  t.eq('…and there is exactly one: the second Radio Receiver [4] (5,000¥, 10 frequencies — level 5?) for the maintainer',
-    Object.values(records).flatMap(f => f.unplaced ?? []).map(u => `${u.name}@${u.rating}`), ['Radio Receiver@4']);
+  t.eq('…and none is left: the second Radio Receiver [4] (5,000¥, 10 frequencies) is level 5 — the maintainer, 2026-10-24',
+    Object.values(records).flatMap(f => f.unplaced ?? []).map(u => `${u.name}@${u.rating}`), []);
+  const RR = MOD_RATING_TABLE['cyberware|Radio Receiver'];
+  t.eq('Radio Receiver has levels 1-8, contiguous', Object.keys(RR).map(Number), [1, 2, 3, 4, 5, 6, 7, 8]);
+  t.ok('…costing Rating x 1,000¥ (SR3 p.298 Headware table: "Radio Receiver .4 Rating x 1,000¥ 2/24 hrs .8 Legal")', Object.entries(RR).every(([l, r]) => r.cost === 1000 * Number(l)));
+  t.ok('…each level programming Rating x 2 frequencies (SR3 p.297: "Rating x 2 radio or telephone frequencies")', Object.entries(RR).every(([l, r]) => r.description === `${2 * Number(l)} programmed frequencies`));
 
   /* ── One Vehicle Armor (the maintainer, 2026-10-24) ──────────────────────────── */
   const armour = docs.filter(x => x.d.type === 'vehiclemod' && x.d.name === 'Vehicle Armor');
@@ -261,6 +265,37 @@ export async function run(t) {
   t.ok('a vehicle mod is a rated type', ItemRating.RATED_TYPES.includes('vehiclemod'));
   t.is('…an owned one is shown with its level', displayName(veh('Anti-Theft System', { rating: 10 })), 'Anti-Theft System [10]');
   t.is('…and an unlevelled one plainly', displayName(veh('Roll Bars', { rating: null })), 'Roll Bars');
+  t.is('a name already ending in the current level is not bracketed twice', displayName(veh('Anti-Theft System [10]', { rating: 10 })), 'Anti-Theft System [10]');
+
+  /* ── The name follows the level (the maintainer, 2026-10-24: "option 1") ─────── */
+  const sync = (name, rating, type = 'gear') => ModRatings.syncName(name, rating, type);
+  t.is('a plain name gains its level', sync('Medkit', 5), 'Medkit [5]');
+  t.is('a changed level swaps the bracket', sync('Medkit [3]', 5), 'Medkit [5]');
+  t.is('the book\'s other spellings are swapped too', [sync('Chemical Seal Rating [4]', 6), sync('Bug Scanner Lv [3]', 2), sync('Medkit Rating 6', 4)].join('|'), 'Chemical Seal [6]|Bug Scanner [2]|Medkit [4]');
+  t.is('a cleared rating (null) drops the bracket', sync('Medkit [5]', null), 'Medkit');
+  t.is('…and a blank one (medical\'s string field)', sync('Medkit [5]', '', 'medical'), 'Medkit');
+  t.is('a medical string rating is a rating', sync('Medkit', '7', 'medical'), 'Medkit [7]');
+  t.is('a custom name keeps its text, only the bracket changes', sync('Doc Holliday\'s Kit [2]', 8), 'Doc Holliday\'s Kit [8]');
+  t.is('idempotent', sync(sync('Medkit', 5), 5), 'Medkit [5]');
+  t.is('…unchanged when already right', sync('Medkit [5]', 5), 'Medkit [5]');
+  t.is('legacy rating 0 leaves the name (itemRating reads it then)', sync('Medkit [6]', 0), 'Medkit [6]');
+  t.is('a missing rating leaves the name', sync('Medkit [6]', undefined), 'Medkit [6]');
+  t.is('a type with no level is untouched', ModRatings.syncName('Ares Predator', 5, 'firearm'), 'Ares Predator');
+  t.is('a parenthesis is not a level', sync('Gyro Mount (Deluxe)', 5), 'Gyro Mount (Deluxe) [5]');
+  t.is('…and is kept when the rating is cleared', sync('Gyro Mount (Deluxe)', null), 'Gyro Mount (Deluxe)');
+  t.is('a bracket that is not last is part of the name, not a level', sync('Strength Enhancement [4] w/Torso', 4, 'cyberware'), 'Strength Enhancement [4] w/Torso');
+  t.is('a non-level bracket is not eaten', sync('Widget [Mk II]', 3), 'Widget [Mk II] [3]');
+  t.is('the rated types all take it', ['gear', 'cyberware', 'bioware', 'medical', 'vehiclemod', 'ammunition', 'vehicleweapon'].map(ty => sync('X', 2, ty)).join('|'), Array(7).fill('X [2]').join('|'));
+  t.is('the migration\'s "ECCM [3]" with rating 3 is already right', sync('ECCM [3]', 3, 'vehiclemod'), 'ECCM [3]');
+  const hookSrc = read('scripts/sr3e.js');
+  const hookAt = ev => { const i = hookSrc.indexOf(`Hooks.on('${ev}', (document, `, hookSrc.indexOf('NAME follows its level')); return hookSrc.slice(i, hookSrc.indexOf('\n});', i) + 4); };
+  t.ok('preCreateItem syncs the name', /syncName\(document\.name, document\.system\?\.rating, document\.type\)/.test(hookAt('preCreateItem')));
+  t.ok('preUpdateItem syncs the name — only when the name or the rating is in the change', /hasProperty\(changes, 'name'\)[\s\S]*hasProperty\(changes, 'system\.rating'\)[\s\S]*if \(!hasName && !hasRating\) return;[\s\S]*changes\.name = name/.test(hookAt('preUpdateItem')));
+  t.ok('both hooks skip a compendium document through ModRatings.inPack', hookAt('preCreateItem').includes('ModRatings.inPack(document, options)') && hookAt('preUpdateItem').includes('ModRatings.inPack(document, options)'));
+  t.ok('…which is true for options.pack, document.pack and an item inside a pack actor, false for a world or owned item', [ModRatings.inPack({}, { pack: 'p.x' }), ModRatings.inPack({ pack: 'p.x' }, {}), ModRatings.inPack({ parent: { pack: 'p.x' } }, {})].every(Boolean) && !ModRatings.inPack({ parent: {} }, {}) && !ModRatings.inPack({}, undefined));
+  t.ok('…and the skip is the first line of each hook', hookAt('preCreateItem').split('\n')[1].includes('if (ModRatings.inPack(document, options)) return;') && hookAt('preUpdateItem').split('\n')[1].includes('if (ModRatings.inPack(document, options)) return;'));
+  t.ok('the name sync is registered after the rating fill (it must see the filled rating)', hookSrc.indexOf('ratingOnCreate(document.type') < hookSrc.indexOf('NAME follows its level'));
+  t.ok('ModRatings is on game.sr3e (macros reach the table through it)', /AmmoStock, ItemRating, ModRatings,/.test(hookSrc));
   const models = read('scripts/data/ItemDataModels.js');
   t.ok('VehicleModData declares the rating (a data model drops undeclared keys)', /class VehicleModData[\s\S]{0,400}rating:\s+new NumberField\(\{ integer: true, nullable: true/.test(models));
   t.ok('AmmunitionData declares the rating (tracker rounds)', /class AmmunitionData[\s\S]{0,900}rating:\s+new NumberField\(\{ integer: true, nullable: true/.test(models));
@@ -296,5 +331,6 @@ export async function run(t) {
   /* ── The migration ───────────────────────────────────────────────────────────── */
   const mig = read('scripts/SR3EMigrations.js');
   t.ok('a 0.7.1 migration renames owned copies and repoints dead links', /version: '0\.7\.1',\s*label: 'Every rated item[\s\S]{0,2600}ModRatings\.migrateDelta\(item\)/.test(mig));
+  t.ok('…the migrated name is the synced name ("ECCM [3]", rating 3) — it never strips the level out of an owned copy', /ModRatings\.syncName\(item\.name, rating, item\.type\)/.test(read('scripts/data/mod-ratings.mjs')));
   t.ok('…and logs a rating that disagrees with the name', /ModRatings\.renameConflict\(item\)/.test(mig));
 }

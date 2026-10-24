@@ -156,7 +156,10 @@ for (const a of actors) {
       const sp = ModRatings.splitName(target);
       const hit = idx.get(norm(sp ? sp.stem : target));
       if (hit) {
-        resolvedHere.push({ src: sp ? { ...hit, doc: ModRatings.withLevel(hit.doc, sp.rating) } : hit, grade: part.grade });
+        // The contacts pack is a pack, so the name-sync hook never runs for it: name the copy "Wired Reflexes [2]" here.
+        const leveled = sp ? ModRatings.withLevel(hit.doc, sp.rating) : null;
+        if (leveled) leveled.name = ModRatings.syncName(leveled.name, sp.rating, leveled.type);
+        resolvedHere.push({ src: leveled ? { ...hit, doc: leveled } : hit, grade: part.grade });
       } else {
         unresolved.set(part.name, (unresolved.get(part.name) ?? 0) + 1);
       }

@@ -3354,4 +3354,32 @@ export const MUTANTS = [
       return m ? `Compendium.The2ndChumming3e.${m[1]}.Item.kept` : null;
     },
   },
+  {
+    id:     'syncname-does-not-swap-the-old-level',
+    suite:  'mod-ratings',
+    ...MODRATE, method: 'syncName',
+    was:    'the name sync appended the new level without taking the old one off — "Medkit [3]" went to "Medkit [3] [5]" (TODO 260, name follows level)',
+    impl:   function (name, rating) {
+      const n = Number(rating);
+      return n > 0 ? `${String(name ?? '').trim()} [${n}]` : String(name ?? '');
+    },
+  },
+  {
+    id:     'syncname-eats-any-bracket',
+    suite:  'mod-ratings',
+    ...MODRATE, method: 'syncName',
+    was:    'the name sync stripped ANY trailing bracket or parenthesis, so "Gyro Mount (Deluxe)" lost its text (TODO 260: only a level is swapped)',
+    impl:   function (name, rating) {
+      const n = Number(rating);
+      const base = String(name ?? '').replace(/\s*[[(][^\])]*[\])]\s*$/, '').trim();
+      return n > 0 ? `${base} [${n}]` : base;
+    },
+  },
+  {
+    id:     'syncname-writes-into-the-compendium',
+    suite:  'mod-ratings',
+    ...MODRATE, method: 'inPack',
+    was:    'the name hooks treated a compendium document like a world item, so a pack would have been renamed "Medkit [1]" (TODO 260: the packs stay plain)',
+    impl:   function () { return false; },
+  },
 ];

@@ -18,6 +18,7 @@ import { MoveByWire } from './data/move-by-wire.mjs';
 import { Cyberzombie } from './data/cyberzombie.mjs';
 import { CyberSlots } from './data/cyber-slots.mjs';
 import { ItemRating, ratingOnCreate } from './data/item-rating.mjs';
+import { ModRatings } from './data/mod-ratings.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
 import { SR3EActorSheet } from './sheets/SR3EActorSheet.js';
@@ -121,7 +122,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma };
 
   // When THIS client loaded the system's code.
   //
@@ -453,6 +454,27 @@ Hooks.on('deleteActor', async (actor) => {
 Hooks.on('preCreateItem', (document, data) => {
   const fill = ratingOnCreate(document.type, data?.system?.rating, document.name);
   if (fill !== undefined) document.updateSource({ 'system.rating': fill });
+});
+
+/* An owned or world item's NAME follows its level (TODO 260, the maintainer 2026-10-24): the packs name an item
+ * plainly ("Medkit"), a copy reads "Medkit [5]". `ModRatings.syncName` swaps the trailing bracket; a custom name
+ * keeps its text. ⚠ NEVER for a compendium document — `options.pack`, `document.pack`, or an item inside a pack
+ * actor — the packs stay plain. Pre-hooks run on the client doing the write, and `updateSource` / editing `changes`
+ * re-fires nothing, so there is no loop. Registered AFTER the rating fill above, so it sees the filled rating. */
+Hooks.on('preCreateItem', (document, _data, options) => {
+  if (ModRatings.inPack(document, options)) return;
+  const name = ModRatings.syncName(document.name, document.system?.rating, document.type);
+  if (name !== document.name) document.updateSource({ name });
+});
+Hooks.on('preUpdateItem', (document, changes, options) => {
+  if (ModRatings.inPack(document, options)) return;
+  const hasName = foundry.utils.hasProperty(changes, 'name');
+  const hasRating = foundry.utils.hasProperty(changes, 'system.rating');
+  if (!hasName && !hasRating) return;
+  const rating = hasRating ? foundry.utils.getProperty(changes, 'system.rating') : document.system?.rating;
+  const current = hasName ? changes.name : document.name;
+  const name = ModRatings.syncName(current, rating, document.type);
+  if (name !== current) changes.name = name;
 });
 
 /* Nothing arrives in hand (TODO 135/136). `system.ready` starts true so sheets from before Ready

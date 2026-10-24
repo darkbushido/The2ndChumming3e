@@ -2580,6 +2580,10 @@
           "cost": 4000,
           "description": "8 programmed frequencies"
         },
+        "5": {
+          "cost": 5000,
+          "description": "10 programmed frequencies"
+        },
         "6": {
           "cost": 6000,
           "description": "12 programmed frequencies"
@@ -2601,27 +2605,6 @@
         "sr3e-cyberware-0294",
         "sr3e-cyberware-0295",
         "sr3e-cyberware-0296"
-      ],
-      "unplaced": [
-        {
-          "id": "sr3e-cyberware-0293",
-          "name": "Radio Receiver",
-          "rating": 4,
-          "row": {
-            "cyberwareCategory": "Communications",
-            "essenceCost": 0.4,
-            "cost": 5000,
-            "availability": "2/24 hours",
-            "streetIndex": 0.8,
-            "legalCode": "Legal",
-            "mods": "",
-            "capacity": 0,
-            "isReplacement": false,
-            "bookPage": "sr3.298",
-            "description": "10 programmed frequencies"
-          },
-          "why": "printed at a level another document already has, with different numbers — check the book"
-        }
       ]
     },
     "cyberware|Reaction Enhancer": {

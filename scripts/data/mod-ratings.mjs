@@ -71,22 +71,65 @@ export const ModRatings = {
   },
 
   /**
-   * The update that takes a mod's level out of its name, or null. The rating field is filled from the
-   * name only while it is blank (or already agrees) — a GM who typed a different rating keeps theirs,
-   * and the name's stale level simply goes.
+   * An owned or world item's NAME kept in step with its level (the maintainer, 2026-10-24, "option 1"):
+   * the packs name an item plainly ("Medkit"), and a copy of it reads "Medkit [5]" — the rating in square
+   * brackets at the end. A name already carrying a level has that suffix SWAPPED for the current one; a
+   * custom name keeps its own text, only the trailing bracket changes; idempotent.
+   *
+   * | rating | the name becomes |
+   * |---|---|
+   * | a number above 0 | the base name + ` [rating]` |
+   * | `null` / `''` (cleared — "no rating") | the base name, the suffix dropped |
+   * | `0`, missing, not a number | **unchanged** — legacy (`itemRating` reads the name then) |
+   *
+   * ⚠ Only a trailing LEVEL is touched: " [3]", " Rating [3]", " Lvl [3]", " Lv [3]", " Rating 3" (`splitName`).
+   * "Gyro Mount (Deluxe)" and "Strength Enhancement [4] w/Torso" (a bracket that is not last) are not levels
+   * and are returned as written. `type`, when given, must be a rated type — any other is returned unchanged.
+   * Never for a compendium document: the packs stay plain (the hooks in `sr3e.js` skip them).
+   */
+  syncName(name, rating, type = null) {
+    const text = String(name ?? '');
+    if (type !== null && !ModRatings.kindOf({ type })) return text;
+    const split = ModRatings.splitName(text);
+    const cleared = rating === null || rating === '';
+    const n = Number(rating);
+    if (!cleared && !(Number.isFinite(n) && n > 0)) return text;
+    // A bracketed number elsewhere in the name is part of the name, not a level — leave such a name alone.
+    if (!split && /\[\d+\]/.test(text)) return text;
+    const base = split ? split.stem : text.trim();
+    return cleared ? base : `${base} [${n}]`;
+  },
+
+  /**
+   * A compendium document — the name sync never touches one (the packs stay plain: "Medkit"). True for a create
+   * INTO a pack (options.pack), an item that lives in one (document.pack), and an item embedded in a pack's actor.
+   */
+  inPack(document, options) {
+    return !!(options?.pack || document?.pack || document?.parent?.pack);
+  },
+
+  /**
+   * The update that puts a mod's level in its rating and its name in step (`syncName`), or null when the
+   * name carries no level to move. The rating field is filled from the name only while it is blank — a
+   * GM who typed a different rating keeps theirs, and the name's stale level becomes theirs.
    *
    * ⚠ This RENAMES, which a fill-blanks migration never does — and argues for it: it touches only the
-   * rated item types, only a name ending in a bracketed level, and the level is kept, in the field.
+   * rated item types, only a name ending in a level, and the level is kept, in the field AND in the name's
+   * bracket ("ECCM [3]" stays "ECCM [3]"; "Chemical Seal Rating [4]" becomes "Chemical Seal [4]").
    */
   renameDelta(item) {
     if (!ModRatings.kindOf(item)) return null;
     const split = ModRatings.splitName(item.name);
     if (!split) return null;
-    const delta = { name: split.stem };
-    const r = item.system?.rating;
+    let rating = item.system?.rating;
+    const fill = rating === undefined || rating === null || rating === '' || Number(rating) === 0;
     // Medical's rating is a string field (some Biotech rows are signed modifiers).
-    if (r === undefined || r === null || r === '' || Number(r) === 0) delta['system.rating'] = item.type === 'medical' ? String(split.rating) : split.rating;
-    return delta;
+    if (fill) rating = item.type === 'medical' ? String(split.rating) : split.rating;
+    const delta = {};
+    const name = ModRatings.syncName(item.name, rating, item.type);
+    if (name !== item.name) delta.name = name;
+    if (fill) delta['system.rating'] = rating;
+    return Object.keys(delta).length ? delta : null;
   },
 
   /**

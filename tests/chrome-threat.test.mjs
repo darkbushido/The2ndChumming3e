@@ -139,4 +139,13 @@ export async function run(t) {
   const three = await generate({ level: 3, arch: 'random', race: 'random', count: 3 });
   t.is('How many = 3 makes three', three.made.length, 3);
   t.ok('…and says so', three.notes.some(([l, m]) => l === 'info' && /3 level-3 chrome threat/.test(m)));
+
+  /* ── One document per rated implant (TODO 260): the macro names it plainly, the level is system.rating ── */
+  const named = [...SRC.matchAll(/cyberware\(\s*([`'])([^`']*)\1/g)].map(m => m[2]);
+  t.ok('no rated implant is named with a level any more — the name-sync hook makes "Wired Reflexes [2]"',
+    named.length > 5 && named.every(n => !/\[\$\{(?!enh\})/.test(n) && !/\[\d+\]$/.test(n)), named.join(' | '));
+  t.ok('…the rated builders pass the plain name and a rating',
+    ['Wired Reflexes', 'Reaction Enhancer', 'Dermal Plating', 'Move-by-Wire'].every(n => new RegExp(`cyberware\\('${n}',[\\s\\S]{0,200}?rating: r`).test(SRC)));
+  t.ok('…and take the level\'s printed fields from ModRatings (what the Level dropdown uses), the macro\'s own values winning',
+    /game\.sr3e\?\.ModRatings\?\.ratingChange\(/.test(SRC) && /\{ \.\.\.printed, \.\.\.system \}/.test(SRC));
 }
