@@ -1,8 +1,8 @@
 {
-  "_key": "!items!7d6e085b7cc2c1e7",
+  "_key": "!items!718dcff52daa7dcd",
   "doc": {
-    "_id": "7d6e085b7cc2c1e7",
-    "name": "Low Power Laser Sight",
+    "_id": "718dcff52daa7dcd",
+    "name": "Laser Sight, Low-Power",
     "type": "gear",
     "img": "systems/The2ndChumming3e/styles/icons/gear-scope.svg",
     "effects": [],
@@ -18,12 +18,12 @@
       "category": "Firearms Accessories",
       "concealability": "(-1)",
       "rating": null,
-      "cost": 500,
+      "cost": 800,
       "weight": 0.25,
-      "availability": "6/36hrs",
-      "streetIndex": ".9",
-      "bookPage": "sr3.282,fof.60",
-      "description": "<p><strong>Mount:</strong> Top/Under/Hand</p>"
+      "availability": "",
+      "streetIndex": "",
+      "bookPage": "cc.82",
+      "description": "<p><strong>Mount:</strong> Top/Under<br><strong>Source:</strong> A Cannon Companion customisation: Design Points +100 × 8 (p.80, p.82). No Street Index (p.80).</p>"
     }
   },
   "embedded": {}

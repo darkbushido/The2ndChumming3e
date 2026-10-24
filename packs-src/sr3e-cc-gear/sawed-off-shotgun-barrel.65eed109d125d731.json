@@ -18,12 +18,12 @@
       "category": "Firearms Accessories",
       "concealability": "(+2)",
       "rating": null,
-      "cost": 68,
+      "cost": 64,
       "weight": 1,
       "availability": "1/2hrs",
       "streetIndex": "1",
       "bookPage": "cc.83",
-      "description": "<p><strong>Notes:</strong> -1 power, use heavy pistol ranges, max choke 6, Available at GM option</p>"
+      "description": "<p><strong>Notes:</strong> -1 power, use heavy pistol ranges, max choke 6, Available at GM option<br><strong>Source:</strong> Design Points +8 × 8 (Cannon Companion p.80, p.83).</p>"
     }
   },
   "embedded": {}

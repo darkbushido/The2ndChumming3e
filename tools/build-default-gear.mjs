@@ -257,6 +257,40 @@ export function splitImagingScopes(rows) {
   });
 }
 
+/**
+ * Firearm accessories the upstream data gets wrong, each checked against the book (TODO 258,
+ * `audit/weapon-mods-audit.md`). Matched on the upstream Name and BookPage; `set` replaces cells (a `Source`
+ * cell becomes a line of the description); `drop: true` removes the row.
+ */
+export const ACCESSORY_FIXES = [
+  // CC prices its customisations in Design Points: nuyen = DP × 8 (p.80). The barrel is DP +8 (p.83).
+  { name: 'Sawed-Off Shotgun Barrel', page: 'cc.83', set: { Cost: '64', Source: 'Design Points +8 × 8 (Cannon Companion p.80, p.83).' } },
+  { name: 'Rangefinder', page: 'cc.33', set: { Mount: 'Top' } },
+  // SR3 p.281: smart goggles "may be built into a helmet or, for double the nuyen, rigged as mirrored sunglasses".
+  { name: 'Smart Shades I', page: 'sr3.282', set: { BookPage: 'sr3.281',
+    Source: 'Smart goggles rigged as mirrored sunglasses, at double the nuyen (SR3 p.281); 8,000¥ with the +1,000¥ low-light or infrared option, doubled.' } },
+  { name: 'Smart Shades II', page: 'mm.32', set: {
+    Source: "Man & Machine p.32's Smart Goggles at double the nuyen, as sunglasses (SR3 p.281). Derived; not printed." } },
+  { name: 'Ultrasound Shades', page: 'sr3.282', set: {
+    Source: 'SR3 p.282 prices only Ultrasound Goggles (1,100¥) and says they may be built into sunglasses; double, as for smart goggles (p.281). Derived; not printed.' } },
+  { name: 'Gas Vent I', page: 'sr3.282', set: {
+    Source: 'Not printed in SR3, which has Gas-vent II and III (p.281-282); source not found (SR2?).' } },
+  // The SR2 Fields of Fire p.93 low-power laser sight, twice. The maintainer chose the SR3 Cannon Companion's
+  // version: a customisation at Design Points +100 × 8 = 800¥, top or underbarrel (p.80, p.82).
+  { name: 'Laser Sight (Low Power)', page: 'sr3.282', set: { Name: 'Laser Sight, Low-Power', BookPage: 'cc.82', Cost: '800', Mount: 'Top/Under',
+    Availability: '', 'Street Index': '', Source: 'A Cannon Companion customisation: Design Points +100 × 8 (p.80, p.82). No Street Index (p.80).' } },
+  { name: 'Low Power Laser Sight', page: 'sr3.282,fof.60', drop: true },
+];
+
+/** Apply ACCESSORY_FIXES to the upstream rows. Pure. */
+export function fixAccessories(rows) {
+  return rows.flatMap(({ row, category }) => {
+    const fix = ACCESSORY_FIXES.find(f => f.name === row.Name && f.page === row.BookPage);
+    if (!fix) return [{ row, category }];
+    return fix.drop ? [] : [{ row: { ...row, ...fix.set }, category }];
+  });
+}
+
 function rowsByCategory(file) {
   const data = JSON.parse(readFileSync(join(REPO, file), 'utf8'));
   const out = [];
@@ -266,7 +300,7 @@ function rowsByCategory(file) {
       for (const x of Object.values(o)) if (x && typeof x === 'object') walk(x); } };
     walk(v);
   }
-  return splitImagingScopes(out);
+  return fixAccessories(splitImagingScopes(out));
 }
 
 const VARIANT_FIELDS = ['Rating', 'Cost', 'Weight', 'Concealability', 'Damage', 'Ballistic', 'Impact', 'Availability'];
