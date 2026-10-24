@@ -32,6 +32,7 @@ import { knownRating } from './data/item-rating.mjs';
 import { AmmoStock } from './data/ammo-stock.mjs';
 import { restockImage, restockActorImage } from './data/item-icons.mjs';
 import { PackFixes070 } from './data/pack-corrections-0-7-0.mjs';
+import { ReadyWeapon } from './data/ready-weapon.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -475,6 +476,22 @@ const MIGRATIONS = [
      */
     fixItem: PackFixes070.fixItem,
     fixActor: PackFixes070.fixActor,
+  },
+  {
+    version: '0.7.1',
+    label: 'Carried grenades are put away, not held (TODO 254)',
+    /**
+     * Seen in play, 2026-10-23, on an old player character: every grenade counted as in hand. Weapons from
+     * before Ready Weapon (0.6) hold `ready: true` — the field's initial, so sheets kept fighting — while new
+     * ones arrive put away (`putAwayOnCreate`). Rule in `ReadyWeapon.putAwayCarriedGrenade` (pure, tested).
+     *
+     * ⚠ **This OVERWRITES `ready`, and argues for it:** on a grenade from an old sheet the `true` is the
+     * default, not anyone's choice, and a stack of grenades all "in hand" over-fills the hands on every check.
+     * A grenade someone did ready on purpose since 0.6 is put away too — the migration cannot tell — which
+     * costs one Ready Weapon (Simple, p.107) to undo. Characters and NPCs only (world, unlinked tokens); the
+     * Items sidebar is not a character. Idempotent: a put-away grenade yields null.
+     */
+    fixItem: (item) => ReadyWeapon.putAwayCarriedGrenade(item, item?.parent?.type ?? null),
   },
 
 ];

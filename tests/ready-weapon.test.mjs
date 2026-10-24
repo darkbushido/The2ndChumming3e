@@ -58,6 +58,26 @@ export async function run(t) {
   t.ok('🎯 Fire is the one decider\'s, one-shot', /\.sr-quickdraw-fire-btn[\s\S]{0,200}_checkBtn[\s\S]{0,200}_isDeciderId\(pl\.actorId\)[\s\S]{0,300}_claimBtn[\s\S]{0,200}rollWeapon\(\{ quickDrawn: true \}\)/.test(main));
   t.ok('a preCreateItem hook puts new weapons away and takes new armour off (TODO 135/136)',
     /Hooks\.on\('preCreateItem', \(document\) => \{[\s\S]{0,200}ReadyWeapon\.putAwayOnCreate\(document, parentType\)\) document\.updateSource\(\{ 'system\.ready': false \}\)[\s\S]{0,250}'flags\.The2ndChumming3e\.worn': false/.test(main));
+  /* ── TODO 254: carried grenades on old sheets are put away (seen in play 2026-10-23) ── */
+  {
+    const R = ReadyWeapon;
+    const gren = (over = {}) => ({ type: 'projectile', name: 'IPE Offensive HE Grenade', system: { category: 'GR', ready: true, ...over } });
+    t.ok('a pack grenade (projectile, category GR) is a grenade', R.isGrenade(gren()));
+    t.ok('…so is a thrown item named one', R.isGrenade({ type: 'thrown', name: 'Flash-Bang Grenade', system: {} }));
+    t.ok('a throwing knife is not', !R.isGrenade({ type: 'thrown', name: 'Throwing Knife', system: { category: 'THR' } }));
+    t.ok('a grenade LINK (gear) is not', !R.isGrenade({ type: 'gear', name: 'Grenade Link', system: {} }));
+    t.eq('an old sheet\'s grenade in hand is put away', R.putAwayCarriedGrenade(gren(), 'character'), { 'system.ready': false });
+    t.eq('…on an NPC too', R.putAwayCarriedGrenade(gren({ ready: undefined }), 'npc'), { 'system.ready': false });
+    t.is('…already put away: nothing (idempotent)', R.putAwayCarriedGrenade(gren({ ready: false }), 'character'), null);
+    t.is('…in the Items sidebar (no actor): left alone', R.putAwayCarriedGrenade(gren(), null), null);
+    t.is('…on a vehicle: left alone', R.putAwayCarriedGrenade(gren(), 'vehicle'), null);
+    t.is('a ready pistol on an old sheet is not touched — the report was about grenades', R.putAwayCarriedGrenade(
+      { type: 'firearm', name: 'Ares Predator', system: { category: 'HPist', ready: true } }, 'character'), null);
+    const mig = read('scripts/SR3EMigrations.js');
+    t.ok('the 0.7.1 migration applies it to every item on a character or NPC',
+      /version: '0\.7\.1'[\s\S]{0,1500}fixItem: \(item\) => ReadyWeapon\.putAwayCarriedGrenade\(item, item\?\.parent\?\.type \?\? null\)/.test(mig));
+  }
+
   t.ok('the sheet has the ✋ toggle on every weapon row, and readying charges a Simple Action',
     /toggleReady:\s+SR3EActorSheet\._onToggleReady/.test(sheet) && (sheet.match(/\$\{this\._readyIcon\(itemId\)\}/g) ?? []).length === 2
     && /_onToggleReady[\s\S]{0,400}if \(now\) game\.sr3e\.SR3EActionLedger\?\.charge\(this\.actor, 'readyWeapon'/.test(sheet));

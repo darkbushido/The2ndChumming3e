@@ -3247,6 +3247,13 @@ export const MUTANTS = [
     impl:   system => system?.recoilModIntegral !== undefined,
   },
   {
+    id:     'old-sheet-grenades-stay-in-hand',
+    suite:  'ready-weapon',
+    module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon', method: 'putAwayCarriedGrenade',
+    was:    'grenades on a pre-0.6 sheet kept ready: true, so every carried grenade counted as in hand (TODO 254, seen in play 2026-10-23)',
+    impl:   () => null,
+  },
+  {
     id:     'melee-each-opponent-a-new-action',
     suite:  'phase-targets',
     module: '../scripts/data/phase-targets.mjs', klass: 'PhaseTargets', method: 'sameMeleeAction',

@@ -74,6 +74,24 @@ export const ReadyWeapon = {
     return !ReadyWeapon.isBodyWeapon(item);
   },
 
+  /** A grenade: the `GR` category the packs give them (as `projectile`), or a thrown/projectile item named one. */
+  isGrenade(item) {
+    if (!['projectile', 'thrown'].includes(item?.type)) return false;
+    return String(item?.system?.category ?? '').toUpperCase() === 'GR' || /grenade/i.test(String(item?.name ?? ''));
+  },
+
+  /**
+   * The 0.7.1 migration's rule (TODO 254): a grenade on a character or NPC that reads as in hand is put away.
+   * Seen in play, 2026-10-23, on an old player character — "grenades shouldn't count as being in hand when they
+   * are just carried". Weapons from before Ready Weapon (0.6) carry `ready: true`, the field's initial; new ones
+   * arrive put away (`putAwayOnCreate`), so only old sheets hold every grenade at once. Returns the delta or null.
+   */
+  putAwayCarriedGrenade(item, parentType) {
+    if (!['character', 'npc'].includes(parentType)) return null;
+    if (!ReadyWeapon.isGrenade(item) || item?.system?.ready === false) return null;
+    return { 'system.ready': false };
+  },
+
   /** Throwing weapons ready in batches: half Quickness, rounded down, per Ready Weapon (p.107). */
   thrownPerReady(quickness) { return Math.max(1, Math.floor((Number(quickness) || 0) / 2)); },
 };
