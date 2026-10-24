@@ -7556,3 +7556,13 @@ GM re-adding them. **A bug fix, on `main`** — the maintainer's call, 2026-10-2
 **Done:** `buildRoundQueue`, `_assignTieBreaks` and the round's re-roll skip `isDefeated`. Knocked out mid-round, they
 keep that round's slots ("on the next round"). Tests in `initiative`; live in `test-shadowrun`: out of round 2,
 back in round 3 once no longer defeated.
+
+## 253. ✅ e2e `melee-two-corner` times out on the attacker's pool charge — **found 2026-10-23** — fixed in 9bcea9d2
+
+Observed: `npx playwright test tests/e2e/melee-two-corner.spec.mjs` fails three runs in a row: the card resolves
+(Melee Result posted) but the poll for the attacker's `combatPoolSpent` = before + 2 times out. Also fails with
+this morning's scripts (`73af510a`), so it predates the day's fixes.
+
+**Cause:** the test's 2-minute budget, not the code — the error was the *test* timeout firing inside a poll. Every
+client runs software WebGL; with `--timeout=360000` it passed in 4.6 min, with or without the Gamemaster tab.
+**Fix:** `test.slow()` on that test, as `melee-wounds` already has. Passed at 4.3 min.
