@@ -33,6 +33,7 @@ import { dirname, join } from 'node:path';
 import { readSourceDir, writeSourceDir } from './lib/pack-source.mjs';
 import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 import { RatedFamilies } from '../scripts/data/rated-families.mjs';
+import { ModFor } from '../scripts/data/mod-for.mjs';
 import { addFamilies, readCollapsed as readCollapsedFile, tableKeyOf, COLLAPSED_FILE } from './lib/collapsed-mods.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -183,13 +184,24 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     if (EXCLUDED_PACKS.includes(pack)) continue;
     const entries = readSourceDir(join(SRC, pack));
     let n = 0;
+    // Every mod says what it is a mod FOR (TODO 266): `system.modFor` filled and the name tagged — "Chemical Seal
+    // (Armor)". FIRST — before the level moves out of the name and the family collapses — because an armour option is known by its leading "+", which the rename takes off. A generated document is the
+    // generator's (`tools/build-default-gear.mjs` applies the same rule); here it is only reported.
+    for (const { doc } of items(entries, pack)) {
+      const probe = structuredClone(doc);
+      if (!ModFor.apply(probe)) continue;
+      if (isGenerated(doc)) { stale++; console.log(`generated, not tagged: ${pack} ${doc.name} — re-run tools/build-default-gear.mjs`); continue; }
+      if (check) console.log(`would tag  ${pack}: ${doc.name} → ${probe.name}`);
+      else ModFor.apply(doc);
+      n++;
+    }
     for (const { doc } of items(entries, pack)) {
       if (!ModRatings.kindOf(doc)) continue;
       const delta = ModRatings.renameDelta(doc);
       if (delta && isGenerated(doc)) { stale++; console.log(`generated, still levelled: ${pack} ${doc.name} — re-run tools/build-default-gear.mjs`); }
       else if (delta) {
         if (check) console.log(`would rename  ${pack}: ${doc.name} → ${delta.name}`);
-        else { doc.name = delta.name; if ('system.rating' in delta) (doc.system ??= {}).rating = delta['system.rating']; }
+        else { if (delta.name) doc.name = delta.name; if ('system.rating' in delta) (doc.system ??= {}).rating = delta['system.rating']; }
         n++;
       }
       // A vehicle mod with no level says so (null) — the field is new, and a missing one would fall back

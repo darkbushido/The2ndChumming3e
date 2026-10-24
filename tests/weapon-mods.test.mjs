@@ -8,6 +8,7 @@
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { ACCESSORY_FIXES, fixAccessories } from '../tools/build-default-gear.mjs';
+import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 
 export const name = 'weapon-mods';
 
@@ -47,7 +48,8 @@ export async function run(t) {
 
   /* ── What ships ───────────────────────────────────────────────────────────────── */
   const acc = accessories();
-  const one = n => acc.filter(d => d.name === n);
+  // The accessories carry their mod tag ("Gas Vent I (Weapon)", TODO 266) — found by their plain name.
+  const one = n => acc.filter(d => ModRatings.baseName(d.name) === n);
   t.is('Sawed-Off Shotgun Barrel ships at 64¥', one('Sawed-Off Shotgun Barrel')[0]?.system.cost, 64);
   t.ok('Rangefinder is Top-mounted (CC p.33)', /Mount:<\/strong> Top(<|$)/.test(one('Rangefinder')[0]?.system.description ?? ''));
   t.is('one low-power laser sight ships', acc.filter(d => /low.?power/i.test(d.name)).length, 1);

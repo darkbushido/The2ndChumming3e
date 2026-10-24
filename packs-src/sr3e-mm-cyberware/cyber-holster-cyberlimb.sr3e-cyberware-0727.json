@@ -1,0 +1,27 @@
+{
+  "_key": "!items!sr3e-cyberware-0727",
+  "doc": {
+    "_id": "sr3e-cyberware-0727",
+    "name": "Cyber Holster (Cyberlimb)",
+    "type": "cyberware",
+    "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+    "system": {
+      "cyberwareCategory": "Cyberlimb Mods",
+      "essenceCost": 0.1,
+      "cost": 5000,
+      "availability": "4/48 hours",
+      "streetIndex": 1,
+      "legalCode": "5P-N",
+      "mods": "",
+      "capacity": 0,
+      "isReplacement": false,
+      "bookPage": "mm.37",
+      "grade": "Standard",
+      "rating": null,
+      "description": "Hold any pistols, +2 TNs attempting to detect the weapon",
+      "modFor": "cyberlimb"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

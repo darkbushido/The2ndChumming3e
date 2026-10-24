@@ -69,8 +69,9 @@ for (const p of readdirSync(SRC).sort()) {
   for (const [k, v] of byKey(readSourceDir(join(SRC, p)))) {
     if (!k.startsWith('!items!') || !v?.name) continue;
     if (!['cyberware', 'bioware', 'spell'].includes(v.type)) continue;
-    const n = norm(v.name);
-    if (!idx.has(n)) idx.set(n, { doc: v, pack: p });
+    // A mod carries its tag in the pack ("Spur, Retractable (Cyberlimb)", TODO 266) and the book does not: index it under
+    // its plain name too (ModRatings.baseName — the same name-keyed rule everywhere). First in key order still wins.
+    for (const n of new Set([norm(v.name), norm(ModRatings.baseName(v.name))])) if (!idx.has(n)) idx.set(n, { doc: v, pack: p });
   }
 }
 console.log(`Pack index: ${idx.size} cyberware/bioware/spell names (from ${SRC})`);

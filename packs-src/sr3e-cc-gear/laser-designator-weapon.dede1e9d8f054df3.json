@@ -23,7 +23,8 @@
       "availability": "12/2wks",
       "streetIndex": "2",
       "bookPage": "cc.35",
-      "description": "<p><strong>Mount:</strong> Top/Under</p>"
+      "description": "<p><strong>Mount:</strong> Top/Under</p>",
+      "modFor": "weapon"
     }
   },
   "embedded": {}

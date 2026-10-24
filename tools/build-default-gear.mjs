@@ -45,6 +45,7 @@ import { knownRating, ratingFromName } from '../scripts/data/item-rating.mjs';
 import { defaultImage } from '../scripts/data/item-icons.mjs';
 import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 import { RatedFamilies } from '../scripts/data/rated-families.mjs';
+import { ModFor } from '../scripts/data/mod-for.mjs';
 import { replaceFamilies } from './lib/collapsed-mods.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -102,6 +103,20 @@ export const cleanName = s => NAME_FIXES.reduce((n, [re, to]) => n.replace(re, t
 export const normName  = s => cleanName(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 
 /** The book a `BookPage` names first (`sr2.281,fof.51` → `sr2`); `sta2` is the registry's `sota2`. */
+/**
+ * The name an upstream document is compared by against what a book's packs already ship (TODO 266). The shipped mods carry
+ * their tag ("Respirator (Armor)", "Signal Locator (Armor)" — one document for all ten levels), so the upstream row is
+ * tagged the same way first, and a tagged row's LEVEL is dropped ("+Signal Locator 3" is the shipped "Signal Locator
+ * (Armor)"). ⚠ Only for a tagged mod: the gear "Signal Locator" is a different item from the armour option, and a plain
+ * name is still compared exactly as before.
+ */
+export function shippedKey(doc) {
+  const probe = structuredClone(doc);
+  ModFor.apply(probe);
+  const name = probe.system?.modFor ? (ModRatings.splitName(probe.name)?.stem ?? probe.name) : probe.name;
+  return normName(name);
+}
+
 export function bookOf(bookPage) {
   const code = String(bookPage ?? '').split(/[.,]/)[0].trim().toLowerCase();
   return code === 'sta2' ? 'sota2' : code;
@@ -389,7 +404,7 @@ export async function plan(manifest, shippedNames) {
       // Already in this book as ANY gear-like type — Respirator is armour, Shadowtech's Doom a drug.
       // Cyberware is not gear-like: an implanted subvocal mic and a strap-on one are two items.
       const shippedAs = manifest.packs.filter(p => p.flags?.The2ndChumming3e?.book === doc.book
-        && (p.flags?.The2ndChumming3e?.itemTypes ?? []).some(t => t in PACK_SUFFIX) && shippedNames.get(p.name)?.has(normName(doc.name)));
+        && (p.flags?.The2ndChumming3e?.itemTypes ?? []).some(t => t in PACK_SUFFIX) && shippedNames.get(p.name)?.has(shippedKey(doc)));
       if (shippedAs.length) {
         bump(report.alreadyShipped, `${doc.book} ${doc.type}`);
         if (!shippedAs.some(p => p.name === pack)) report.shippedAsOtherType.push(`${doc.book} ${doc.type}: ${doc.name} — in ${shippedAs.map(p => p.name).join(', ')}`);
@@ -407,6 +422,10 @@ export async function plan(manifest, shippedNames) {
       // A rated item's level is its rating, not part of its name (TODO 261): "STS (Beacon) Rating [3]" ships
       // as "STS (Beacon)", rating 3 — and, below, the whole family as ONE document. ⚠ AFTER the id is
       // derived — it stays the one computed from the upstream name, so a copy someone already owns keeps its link.
+      // Every mod says what it is a mod FOR (TODO 266): `system.modFor` set and the name tagged ("Chemical Seal (Armor)",
+      // "Gas Vent IV (Weapon)"; the level, if the name still has one, stays after the tag). FIRST — an armour option is
+      // known by its leading "+", which the tag takes off. Same rule as the hand-kept packs (`ModFor.apply`).
+      ModFor.apply(doc);
       const split = ModRatings.kindOf(doc) ? ModRatings.splitName(doc.name) : null;
       if (split) {
         doc.name = split.stem;
@@ -461,7 +480,13 @@ export async function shippedNamesIn(dir, manifest) {
     const db = new ClassicLevel(join(dir, p.name), { valueEncoding: 'json' }); await db.open();
     const names = new Set();
     for await (const [k, d] of db.iterator()) {
-      if (/^!items!/.test(k) && d?.name && d?.flags?.The2ndChumming3e?.generatedBy !== GENERATOR) names.add(normName(d.name));
+      if (/^!items!/.test(k) && d?.name && d?.flags?.The2ndChumming3e?.generatedBy !== GENERATOR) {
+        names.add(normName(d.name));
+        // An armour OPTION without a level ("Respirator (Armor)") is still, to the book's gear table, "Respirator" — the
+        // shipped "+Respirator" it replaced was matched by that name, so the gear row stays skipped (TODO 266). A levelled
+        // one ("Signal Locator (Armor)") is not: the gear "Signal Locator" is a different item.
+        if (d.type === 'armor' && !(Number(d.system?.rating) > 0)) names.add(normName(ModRatings.untagged(d.name)));
+      }
     }
     await db.close(); shippedNames.set(p.name, names);
   }

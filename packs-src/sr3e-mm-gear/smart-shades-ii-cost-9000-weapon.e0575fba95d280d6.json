@@ -1,0 +1,31 @@
+{
+  "_key": "!items!e0575fba95d280d6",
+  "doc": {
+    "_id": "e0575fba95d280d6",
+    "name": "Smart Shades II (Cost 9000¥) (Weapon)",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scope.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Firearms Accessories"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "-",
+      "rating": null,
+      "cost": 9000,
+      "weight": 0.1,
+      "availability": "4/36hrs",
+      "streetIndex": "2",
+      "bookPage": "mm.32",
+      "description": "<p><strong>Source:</strong> Man & Machine p.32's Smart Goggles at double the nuyen, as sunglasses (SR3 p.281). Derived; not printed.</p>",
+      "modFor": "weapon"
+    }
+  },
+  "embedded": {}
+}

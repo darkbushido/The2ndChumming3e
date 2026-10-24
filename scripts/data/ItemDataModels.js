@@ -1,4 +1,5 @@
 import { CHARGEN_SPEC_GAP } from './skill-rules.mjs';
+import { MOD_FOR_CHOICES } from './mod-for.mjs';
 const {
   StringField, NumberField, BooleanField,
   SchemaField, ArrayField, HTMLField, ObjectField,
@@ -251,6 +252,11 @@ export class ArmorData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       concealability: new StringField({ initial: '' }),
+      // The armour OPTIONS (Signal Locator, Tracking Signal…) carry a level — null = none (TODO 266).
+      rating:         new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
+      // What this mod is a mod FOR — '' (not a mod) | 'armor' | 'weapon' | 'cyberlimb' | 'vehicle' (TODO 266). The truth the
+      // name tag mirrors ("Chemical Seal (Armor)"); TODO 263's attach logic warns on it. Read it with ?? ''.
+      modFor:         new StringField({ initial: '', blank: true, choices: MOD_FOR_CHOICES }),
       ballistic:      new NumberField({ integer: true, initial: 0, min: 0 }),
       impact:         new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:         new NumberField({ initial: 0, min: 0 }),
@@ -285,6 +291,9 @@ export class GearData extends foundry.abstract.TypeDataModel {
       // have survived even if it had been written. Read it through `itemRating()`
       // (`scripts/data/item-rating.mjs`), which falls back to the name while this is 0.
       rating:       new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),   // null = no rating (TODO 118)
+      // What this mod is a mod FOR — '' (not a mod) | 'armor' | 'weapon' | 'cyberlimb' | 'vehicle' (TODO 266). The truth the
+      // name tag mirrors ("Chemical Seal (Armor)"); TODO 263's attach logic warns on it. Read it with ?? ''.
+      modFor:       new StringField({ initial: '', blank: true, choices: MOD_FOR_CHOICES }),
       cost:         new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:       new NumberField({ initial: 0, min: 0 }),
       availability: new StringField({ initial: '' }),
@@ -363,6 +372,9 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       // name — see scripts/data/item-rating.mjs for the three rows and why the 0 has to stay
       // readable. Every bracketed cyberware entry in the shipped packs already stores its rating.
       rating:            new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
+      // What this mod is a mod FOR — '' (not a mod) | 'armor' | 'weapon' | 'cyberlimb' | 'vehicle' (TODO 266). The truth the
+      // name tag mirrors ("Chemical Seal (Armor)"); TODO 263's attach logic warns on it. Read it with ?? ''.
+      modFor:            new StringField({ initial: '', blank: true, choices: MOD_FOR_CHOICES }),
       cost:              new NumberField({ integer: true, initial: 0, min: 0 }),
       availability:      new StringField({ initial: '' }),
       streetIndex:       new NumberField({ initial: 0, min: 0 }),
@@ -531,6 +543,9 @@ export class VehicleModData extends foundry.abstract.TypeDataModel {
     return {
       // The mod's level — "Anti-Theft System" at 10, not "Anti-Theft System [10]" (TODO 261). null = no level.
       rating:           new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
+      // What this mod is a mod FOR — '' (not a mod) | 'armor' | 'weapon' | 'cyberlimb' | 'vehicle' (TODO 266). The truth the
+      // name tag mirrors ("Chemical Seal (Armor)"); TODO 263's attach logic warns on it. Read it with ?? ''.
+      modFor:           new StringField({ initial: '', blank: true, choices: MOD_FOR_CHOICES }),
       cost:             new NumberField({ integer: true, initial: 0, min: 0 }),
       availability:     new StringField({ initial: '' }),
       streetIndex:      new StringField({ initial: '' }),

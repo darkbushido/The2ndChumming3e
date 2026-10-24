@@ -109,7 +109,7 @@ export async function run(t) {
       const db = new ClassicLevel(join(copy.dir, p), { valueEncoding: 'json' });
       try { await db.open(); } catch { readable = false; continue; }
       for await (const [k, v] of db.iterator()) {
-        if (String(k).startsWith('!items!') && v?.name) names.add(v.name);
+        if (String(k).startsWith('!items!') && v?.name) { names.add(v.name); names.add(ModRatings.baseName(v.name)); }   // a mod's pack name carries its tag (TODO 266)
       }
       await db.close();
     }
