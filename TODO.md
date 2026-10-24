@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**73 open.** 187 done — see [TODO-DONE.md](TODO-DONE.md).
+**74 open.** 187 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[245](#245) The melee GM window should pick up Prone<br>[246](#246) NPC-side buttons in their own colour<br>[247](#247) Trim the token status list to what Shadowrun uses<br>[249](#249) Resolve every NPC in a grenade blast at once<br>[250](#250) Remove the blast marker once the blast is resolved<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[245](#245) The melee GM window should pick up Prone<br>[246](#246) NPC-side buttons in their own colour<br>[247](#247) Trim the token status list to what Shadowrun uses<br>[249](#249) Resolve every NPC in a grenade blast at once<br>[250](#250) Remove the blast marker once the blast is resolved<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[261](#261) A mod's level is its rating, picked from a dropdown — not part of its name |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2809,6 +2809,43 @@ spell AoE dedupe, the auto-defeated hook. Tests `actor-ref` (ratchet), `targetin
 **Still to do before closing:** (1) the live check — two unlinked goons; ranged, melee, grenade and spell damage plus
 Mark prone / Mark stunned land on one goon only; a PC is unchanged; (2) the maintainer's call on a one-off GM tool to
 clear wounds and statuses that sidebar NPCs already collected this way (offered, not built).
+
+## 261. A mod's level is its rating, picked from a dropdown — not part of its name — **requested 2026-10-24**
+
+The maintainer: *"remove the level from all mods and put them as a dropdown inside the mod"* — for **cyber,
+weapon and vehicle mods** ("Anti-Theft System [10]"). The mods half of [#130](#130); implants outside a
+cyberlimb keep their bracketed names until #130 itself.
+
+**Built (branch `feature/cyberlimb-mods-marked`):**
+- **Names:** 299 documents now name the mod and keep the level in `system.rating` (193 vehicle mods, 86
+  Cyberlimb Mods incl. 2 on an example character, 18 Firearms Accessories). The rule is
+  `ModRatings` (`scripts/data/mod-ratings.mjs`). `tools/build-mod-ratings.mjs` renames the hand-kept packs;
+  the weapon mods are generated, so `tools/build-default-gear.mjs` strips them — **after** deriving the id from
+  the original upstream name, so owned copies keep their compendium link. Ids never change.
+- **Vehicle mods** get a nullable `rating` field (`VehicleModData`) and an item sheet of their own (they had
+  none: "No fields defined"). Every unlevelled one ships `rating: null`.
+- **The dropdown:** the item sheet's Level box offers the levels the packs print
+  (`MOD_RATING_TABLE`, generated) and brings that level's cost, CF, load, Essence, availability, Street Index
+  and description with it; graded cyberware re-applies its grade. A houserule level stays selectable; a
+  renamed mod keeps the plain box.
+- **Lists show "[N]":** `displayName` (vehicle mods are a rated type now), the vehicle sheet's Mods tab, the
+  🛒 search and drop, and a `renderCompendium` hook on the compendium window (`system.rating` is in the index).
+- **Owned copies:** the 0.7.1 migration renames them (`ModRatings.renameDelta`): only the three kinds, only a
+  name ending in a bracketed level, the level kept in the rating.
+- `tests/mod-ratings.test.mjs`.
+
+**For the maintainer:**
+- ⚠ **"Vehicle Armor [11]" is printed twice** in `sr3e-r3-vehicle-mods` with different numbers; the second
+  (load Body²×60 kg, 16,250¥) reads like [12]. The table keeps the first. Check R3 and fix the pack.
+- `npm run packs:install` was not run (cloud session) — run it with Foundry closed.
+
+**🧪 Test in Foundry**
+1. A compendium of vehicle mods lists "Anti-Theft System [3]" … "[10]", not eight identical names.
+2. Drag "Anti-Theft System [7]" onto a vehicle; its sheet's Level dropdown shows 3-10 with 7 selected. Pick
+   10: cost 50,000¥, availability 6/14days. The Mods tab reads "Anti-Theft System [10]".
+3. A Cyberlimb Mod (Armor: Ballistic) at Alpha grade: change the level — the cost follows, doubled for Alpha.
+4. A world from 0.7.0 with "ECCM [3]" on a vehicle: after the reload as GM it reads "ECCM", level 3.
+5. 🛒 Buy gear: search "STS" — "STS (Beacon) [1]" … "[6]".
 
 ### 📌 Notes & parked
 

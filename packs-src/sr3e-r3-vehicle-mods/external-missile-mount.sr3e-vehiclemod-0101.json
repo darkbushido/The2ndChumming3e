@@ -14,7 +14,8 @@
       "cfCost": "0",
       "load": "weight of the missiles",
       "bookPage": "r3.138",
-      "description": ""
+      "description": "",
+      "rating": null
     },
     "effects": []
   },

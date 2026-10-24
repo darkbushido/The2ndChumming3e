@@ -1,6 +1,7 @@
 import { Purchasing } from './data/purchasing.mjs';
 import { GearSearch } from './data/gear-search.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
+import { displayName } from './data/item-rating.mjs';
 
 /**
  * Buying gear — the flow · *SR3 pp.272-273* (TODO 82).
@@ -90,7 +91,7 @@ export const SR3EPurchase = {
     // Ruled 2026-10-17: a switched-off book or a non-buyable type WARNS and still fills the form.
     const packAllowed = !pack || (game.sr3e?.SR3ESourceBooks?.packAllowed(pack) ?? true);
     for (const w of GearSearch.dropWarnings({ name: dropped.name, type: dropped.type, packAllowed }, SR3EPurchase.BUYABLE)) ui.notifications.warn(w);
-    return { ...GearSearch.fields(dropped), name: dropped.name, type: dropped.type, uuid: dropped.uuid };
+    return { ...GearSearch.fields(dropped), name: displayName(dropped), type: dropped.type, uuid: dropped.uuid };
   },
 
   /** The character's contacts, with what each is good for. */

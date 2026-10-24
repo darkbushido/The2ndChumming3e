@@ -1,4 +1,4 @@
-import { vcrLevel } from '../data/item-rating.mjs';
+import { vcrLevel, displayName } from '../data/item-rating.mjs';
 import { Rigging } from '../data/rigging.mjs';
 import { StallSpeed } from '../data/stall-speed.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
@@ -434,7 +434,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const rows = mods.length ? mods.map(m => `
       <div class="item-row" data-item-id="${m.id}">
-        <span class="item-name">${m.name}</span>
+        <span class="item-name">${displayName(m)}</span>
         <span class="item-cell">${m.system.cfCost || '—'}</span>
         <span class="item-cell">${m.system.installEquipment || '—'}</span>
         <span class="item-cell" style="color:var(--sr-muted);font-size:11px">${m.system.installTime || '—'}</span>

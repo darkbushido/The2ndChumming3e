@@ -18,7 +18,8 @@ export const PACK_CORRECTIONS = [
   { pack: 'sr3e-mm-cyberware', id: 'sr3e-cyberware-0833',
     why: 'the 175,000¥ copy is rank 10 of the series (10 × 17,500¥), not a second [1]; its Rigger twin is [10]',
     source: 'M&M p.23',
-    set: { name: 'Rigger Decryption Module [10]', 'system.rating': 10, 'system.srcgName': 'Rigger Decrypt. Mod [10]' },
+    // The plain name: the level lives in the rating (TODO 261).
+    set: { name: 'Rigger Decryption Module', 'system.rating': 10, 'system.srcgName': 'Rigger Decrypt. Mod [10]' },
     was: { name: 'Rigger Decryption Module [1]', 'system.rating': 1, 'system.srcgName': 'Rigger Decrypt. Mod [1]' } },
   { pack: 'sr3e-sr3-cyberware', id: 'sr3e-cyberware-0743',
     why: 'Direct Neural Interface: 4,500¥, 5P-Q', source: 'SR3 p.303; M&M p.39',

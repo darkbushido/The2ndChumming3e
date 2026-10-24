@@ -43,6 +43,7 @@ import { PLAYABLE_EDITIONS } from '../scripts/config.js';
 // `itemRating`, migration 0.5.2 and `tools/patch-name-ratings.mjs`, which would otherwise fill it later.
 import { knownRating, ratingFromName } from '../scripts/data/item-rating.mjs';
 import { defaultImage } from '../scripts/data/item-icons.mjs';
+import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..');
@@ -401,6 +402,11 @@ export async function plan(manifest, shippedNames) {
         doc._id = idFor(`${GENERATOR}|${key}|${variant}`);
         report.variants.push(`${doc.book} ${doc.type}: ${doc.name}${ratingOnly ? ` [${doc.system.rating}]` : ''}`);
       }
+      // A weapon mod's level is its rating, not part of its name (TODO 261): "STS (Beacon) Rating [3]"
+      // ships as "STS (Beacon)", rating 3. ⚠ AFTER the id is derived — it stays the one computed from
+      // the upstream name, so a copy someone already owns keeps its compendium link.
+      const split = ModRatings.kindOf(doc) ? ModRatings.splitName(doc.name) : null;
+      if (split) { doc.name = split.stem; doc.system.rating ??= split.rating; }
       const { book, ...clean } = doc;
       (byPack.get(pack) ?? byPack.set(pack, { book, type: doc.type, docs: [] }).get(pack)).docs.push(clean);
       bump(report.written, `${book} ${doc.type}`);

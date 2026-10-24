@@ -11,6 +11,7 @@ import {
 } from '../config.js';
 import { SPIRIT_TYPES } from '../documents/SR3ESpiritSummoning.js';
 import { knownRating } from '../data/item-rating.mjs';
+import { ModRatings } from '../data/mod-ratings.mjs';
 import { BookPage } from '../data/book-page.mjs';
 import { AmmoStock, GUN_CLASSES } from '../data/ammo-stock.mjs';
 import { MiniGrenade } from '../data/mini-grenade.mjs';
@@ -65,6 +66,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       ?.addEventListener('change', ev => SR3EItemSheet._onSkillChange.call(this, ev));
     html.querySelector('.grade-select')
       ?.addEventListener('change', ev => SR3EItemSheet._onGradeChange.call(this, ev));
+    html.querySelector('.mod-rating-select')
+      ?.addEventListener('change', ev => SR3EItemSheet._onModRatingChange.call(this, ev));
 
 
     const specAddBtn = html.querySelector('#spec-add-btn');
@@ -205,6 +208,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       contact:      'Contact',
       drug:         'Drug / Toxin',
       medical:      'Medical Equipment / Service',
+      vehiclemod:   'Vehicle Mod',
     };
     return labels[this.item.type] ?? this.item.type;
   }
@@ -227,6 +231,38 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       ? `placeholder="${known}?" title="No rating saved. The name (or the book) suggests ${known} — type it to use it; blank means no rating."`
       : 'placeholder="—" title="Blank = no rating."';
     return this._f('Rating', 'rating', stored ?? '', 'number', `min="0" ${hint}`);
+  }
+
+  /**
+   * A rated mod's level as a dropdown of the levels the books print (TODO 261): picking one sets that
+   * level's cost, CF, Essence and the rest (`ModRatings.ratingChange`, wired in `_onRender`). A mod with
+   * no printed levels — or one someone renamed — keeps the plain Rating box. The select has no `name`,
+   * so the form never saves the bare number without its level's fields.
+   */
+  _modRatingField(s) {
+    const opts = ModRatings.options(this.document);
+    if (!opts) return this._ratingField(s);
+    const none = opts.some(o => o.selected) ? '' : '<option value="" selected>—</option>';
+    return `<label class="form-field">
+      <span class="field-label">Level</span>
+      <select class="mod-rating-select" title="The levels the book prints. Picking one sets its cost and the rest.">
+        ${none}${opts.map(o => `<option value="${o.value}"${o.selected ? ' selected' : ''}>${o.label}</option>`).join('')}
+      </select>
+    </label>`;
+  }
+
+  /** Apply a picked level. Graded cyberware re-applies its grade to the new level's base numbers. */
+  static async _onModRatingChange(ev) {
+    const value = Number(ev.currentTarget.value);
+    if (!(value > 0)) return;
+    const delta = ModRatings.ratingChange(this.item, value);
+    const grade = this.item.system.grade ?? 'Standard';
+    if (this.item.type === 'cyberware' && grade !== 'Standard') {
+      Object.assign(delta, { 'system.costBase': 0, 'system.essenceCostBase': 0, 'system.availabilityBase': '' });
+      await this.item.update(delta);
+      return SR3EItemSheet._onGradeChange.call(this, { currentTarget: { value: grade } });
+    }
+    return this.item.update(delta);
   }
 
   _f(label, name, value, type = 'text', extra = '') {
@@ -768,7 +804,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           </label>
           ${this._sel('Grade', 'grade', grade, SR3E.cyberwareGrades, 'grade-select')}
           ${isBio ? '' : this._check(`Essence Slot (+${game.sr3e.EssenceHoles.THRESHOLD_MOD} Threshold)`, 'essenceSlot', s.essenceSlot)}
-          ${this._ratingField(s)}
+          ${this._modRatingField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Availability', 'availability', availEff, 'text', 'placeholder="8/36 hrs"')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex, 'number', 'step="0.1" min="0"')}
@@ -847,7 +883,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       case 'gear':
         return `<div class="form-grid">
           ${this._f('Category', 'category', s.category, 'text', 'placeholder="Surveillance and Security"')}
-          ${this._ratingField(s)}
+          ${this._modRatingField(s)}
           ${this._f('Quantity', 'quantity', s.quantity, 'number', 'min="0"')}
           ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
@@ -1071,6 +1107,23 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           <textarea name="system.description" class="bio-text">${s.description ?? ''}</textarea>
         </div>`;
       }
+
+      case 'vehiclemod':
+        return `<div class="form-grid">
+          ${this._modRatingField(s)}
+          ${this._f('Cost (¥)', 'cost', s.cost, 'number', 'min="0"')}
+          ${this._f('CF', 'cfCost', s.cfCost, 'text', 'title="Cargo Factor the mod takes"')}
+          ${this._f('Load', 'load', s.load)}
+          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Street Index', 'streetIndex', s.streetIndex)}
+          ${this._f('Install Equipment', 'installEquipment', s.installEquipment)}
+          ${this._f('Install Time', 'installTime', s.installTime)}
+          ${this._bookPageField(s)}
+        </div>
+        <div class="notes-field">
+          <label class="bio-label">Description</label>
+          <textarea name="system.description" class="bio-text">${s.description ?? ''}</textarea>
+        </div>`;
 
       default:
         return `<p class="empty-list">No fields defined for item type: ${type}</p>`;
