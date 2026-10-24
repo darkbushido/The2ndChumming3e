@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**69 open.** 185 done — see [TODO-DONE.md](TODO-DONE.md).
+**71 open.** 185 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[245](#245) The melee GM window should pick up Prone<br>[246](#246) NPC-side buttons in their own colour<br>[247](#247) Trim the token status list to what Shadowrun uses<br>[249](#249) Resolve every NPC in a grenade blast at once<br>[250](#250) Remove the blast marker once the blast is resolved |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[245](#245) The melee GM window should pick up Prone<br>[246](#246) NPC-side buttons in their own colour<br>[247](#247) Trim the token status list to what Shadowrun uses<br>[249](#249) Resolve every NPC in a grenade blast at once<br>[250](#250) Remove the blast marker once the blast is resolved<br>[255](#255) Cyberlimb Mods: book errors in the packs, and in-limb cyberweapons have no attack<br>[256](#256) Show which cyberware goes inside a cyberlimb |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2719,6 +2719,44 @@ characters unchanged. A feature, on a branch.
 ## 250. Remove the blast marker once the blast is resolved — **requested in play, 2026-10-23**
 
 Wanted: the blast marker disappears as soon as everyone in the blast has been resolved. A feature, on a branch.
+
+## 255. Cyberlimb Mods: book errors in the packs, and in-limb cyberweapons have no attack — **found 2026-10-23**
+
+Found while answering "Smartlink-2 is .5 in Nullsheen but .25 here". The .25 entry is the copy built INTO a
+cyberlimb (category `Cyberlimb Mods`; SR3 p.303, M&M p.36), which is correct for that install. The audit of all
+145 such entries (`audit/cyberlimb-mods-audit.md`) found:
+
+- **17 fields in 12 entries disagree with the book**: the DNI's price and legality (SR3 p.303, M&M p.39), the
+  Built-In Smartgun Link's availability and Street Index (SR3 p.303), the Tracking Mount's price (M&M p.41),
+  four legality codes (M&M pp.37, 39, 40), a fingertip compartment in a cyberlimb at .1 Essence (SR3 p.303 says
+  none), Smartlink II (Internal) at an unprinted 3,200¥ (M&M p.32), and a second Rigger Decryption Module [1]
+  that is the [10]. The list is `PACK_CORRECTIONS` (`scripts/data/cyberlimb-mods.mjs`), applied by
+  `tools/fix-cyberlimb-mods.mjs`, pinned by `tests/cyberlimb-mods.test.mjs`.
+- **In-limb cyberweapons install with no attack**: `CyberWeapons.isCyberweapon` read only the `Cyberweapons`
+  category, so a spur, blade, razor or cybergun built into a cyberlimb never got its weapon entry (TODO 151's
+  symptom). It now also reads the weapons among `Cyberlimb Mods` by name (`LIMB_WEAPON`); mutant
+  `limb-weapon-is-no-weapon`.
+
+⚠ Copies characters already own keep the old numbers until the 0.7.1 migration, which rides with [#256](#256)
+(agreed with the maintainer 2026-10-23: main stays green, and the migration lands with the release).
+
+## 256. Show which cyberware goes inside a cyberlimb — **requested 2026-10-23**
+
+82 `Cyberlimb Mods` entries share a name with the ordinary implant (`Smartlink II` at .25 and at .5), and
+nothing in the compendium, on the item or on the sheet says which is which. The maintainer chose all four
+markings, and a book-dependent price for built-in gear. A feature, on branch `feature/cyberlimb-mods-marked`.
+
+- **Rename** to `<name> (Cyberlimb) [N]` (the suffix before the rating, so TODO 130's later `[N]` strip leaves a
+  clean name), after moving any name-keyed reader to a stem (`CyberWeapons.weaponName`, `CYBERWARE_NAMES`,
+  `item-icons.mjs`, the Johnson alias tools).
+- **A "Built into a cyberlimb" folder** in `sr3e-sr3-cyberware`, `sr3e-mm-cyberware` and `sr3e-cc-cyberware`.
+- **A first line in the description** citing SR3 p.303 and M&M pp.35–36.
+- **A 🦾 chip on the actor sheet's cyberware row**, read from the category, so owned copies show it at once.
+- **Built-in gear price** (the 14 comm units, memory chips and pocket secretary): SR3 p.303 prices a built-in
+  device at **4 × normal cost**; M&M pp.35–36 gives capacity units and no multiplier. The maintainer: ×4 when
+  *Man & Machine* is off, the normal price when it is on (`optionalRuleAllowed('mm')`), in the purchase dialog.
+- **Migration 0.7.1**: [#255](#255)'s corrections onto owned copies (only while a field still holds the old
+  value), the rename (only an untouched name), the flag and the description line. Three populations.
 
 ### 📌 Notes & parked
 

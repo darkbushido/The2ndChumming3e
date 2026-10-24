@@ -53,6 +53,17 @@ export async function run(t) {
   t.is('other cyberware is no weapon', CyberWeapons.weaponData({ ...spur, system: { ...spur.system, cyberwareCategory: 'Headware' } }), null);
   t.is('a melee item is not an implant', CyberWeapons.weaponData({ ...spur, type: 'melee' }), null);
 
+  /* ── Built into a cyberlimb (category Cyberlimb Mods) — TODO 255 ─────────────────── */
+  const inLimb = (n, d) => implant(n, d, { system: { cyberwareCategory: 'Cyberlimb Mods', description: d, bookPage: 'sr3.302' } });
+  t.is('a spur built into a cyberlimb is a melee weapon too (SR3 p.303)', CyberWeapons.weaponData(inLimb('Spur', '(STR)M'))?.type, 'melee');
+  t.is('…and a retractable one', CyberWeapons.weaponData(inLimb('Spur, Retractable', '(STR)M'))?.name, 'Spur, Retractable');
+  t.is('a cybergun built into a cyberarm is a firearm', CyberWeapons.weaponData(inLimb('CyGun Heavy(HPist)(CYB)', '9M'))?.type, 'firearm');
+  t.is('the shock hand in a cyberlimb fires its Stun code', CyberWeapons.weaponData(inLimb('Hand, Shock', '8S Stun, 12 uses'))?.system.damage, '8S Stun');
+  t.is('an in-limb venom sack is still no weapon', CyberWeapons.weaponData(inLimb('Venom Sack', 'Holds 2 Doses')), null);
+  t.is('body plating in a cyberlimb is no weapon', CyberWeapons.isCyberweapon(inLimb('Armor: Impact [2]', '')), false);
+  t.is('a tracking mount is no weapon (it holds one)', CyberWeapons.isCyberweapon(inLimb('Mount, Tracking', 'Track targets if linked to target designator')), false);
+  t.is('a smartlink in a cyberlimb is no weapon', CyberWeapons.isCyberweapon(inLimb('Smartlink II', '-2 to TNs for firing a Smartlink-II weapon, +2 Called Shot modifier')), false);
+
   /* ── Which implants still need a weapon entry ─────────────────────────────────── */
   t.eq('an implant with no weapon is missing one', CyberWeapons.missing([spur]).map(i => i.id), [spur.id]);
   const linked = { id: 'w1', name: 'Anything', type: 'melee', flags: { The2ndChumming3e: { [FLAG]: spur.id } } };
@@ -77,6 +88,8 @@ export async function run(t) {
     }
   }
   t.ok('the packs ship cyberweapons to check', shipped.length >= 20);
+  const limbArmed = shipped.filter(d => d.system.cyberwareCategory === 'Cyberlimb Mods' && CyberWeapons.weaponData(d));
+  t.ok(`the in-limb cyberweapons become weapons too (${limbArmed.length})`, limbArmed.length >= 15);
   const armed = shipped.filter(d => CyberWeapons.weaponData(d));
   t.ok('most shipped cyberweapons become a weapon', armed.length >= 20);
   for (const d of armed) {

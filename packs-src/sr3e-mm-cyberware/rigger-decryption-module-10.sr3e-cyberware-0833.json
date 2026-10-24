@@ -2,7 +2,7 @@
   "_key": "!items!sr3e-cyberware-0833",
   "doc": {
     "_id": "sr3e-cyberware-0833",
-    "name": "Rigger Decryption Module [1]",
+    "name": "Rigger Decryption Module [10]",
     "type": "cyberware",
     "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
     "system": {
@@ -17,9 +17,9 @@
       "isReplacement": false,
       "bookPage": "mm.23",
       "grade": "Standard",
-      "rating": 1,
+      "rating": 10,
       "description": "",
-      "srcgName": "Rigger Decrypt. Mod [1]"
+      "srcgName": "Rigger Decrypt. Mod [10]"
     },
     "effects": []
   },

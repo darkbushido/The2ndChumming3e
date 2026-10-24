@@ -31,10 +31,20 @@ export const CYBERGUNS = {
   Tasr:   { mode: 'SA',    ammunition: '2(m)',  concealability: '10', bookPage: 'mm.43' },
 };
 
+/**
+ * The weapons among `Cyberlimb Mods` — the copies built INTO a cyberlimb at no Essence (SR3 p.303 *Built-in
+ * Device*: "hand spurs, fingertip compartments and handblades may be added at no Essence Cost"; M&M p.36).
+ * That category also holds plating, mounts and gear, so it is read by name (TODO 255).
+ */
+export const LIMB_WEAPON = /\(CYB\)|^spur\b|^hand, shock\b|climbing claws|^venom sack\b|external clip port/i;
+
 export const CyberWeapons = {
   /** Is this item an implanted weapon (whether or not a damage code can be read off it)? */
   isCyberweapon(item) {
-    return item?.type === 'cyberware' && item?.system?.cyberwareCategory === 'Cyberweapons';
+    if (item?.type !== 'cyberware') return false;
+    const cat = item?.system?.cyberwareCategory;
+    // A weapon built into a cyberlimb is still a weapon — it was left with no attack before TODO 255.
+    return cat === 'Cyberweapons' || (cat === 'Cyberlimb Mods' && LIMB_WEAPON.test(String(item.name ?? '')));
   },
 
   /** Installed, not in storage — a stored implant is carried, not fitted, so it is no weapon. */

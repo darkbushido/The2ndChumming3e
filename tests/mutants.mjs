@@ -84,6 +84,13 @@ export const MUTANTS = [
     impl:   () => null,
   },
   {
+    id:     'limb-weapon-is-no-weapon',
+    suite:  'cyber-weapons',
+    module: '../scripts/data/cyber-weapons.mjs', klass: 'CyberWeapons', method: 'isCyberweapon',
+    was:    'a spur, blade or cybergun built into a cyberlimb (category Cyberlimb Mods) installed with no attack, because only the Cyberweapons category was read (TODO 255)',
+    impl:   item => item?.type === 'cyberware' && item?.system?.cyberwareCategory === 'Cyberweapons',
+  },
+  {
     id:     'cybergun-as-melee',
     suite:  'cyber-weapons',
     module: '../scripts/data/cyber-weapons.mjs', klass: 'CyberWeapons', method: 'gunCode',
