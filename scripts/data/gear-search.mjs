@@ -110,7 +110,14 @@ export const GearSearch = {
 
   /** The dialog fields an entry (or an item) fills in, in the dialog's own terms. */
   fields(entry) {
-    const avail = Purchasing.parseAvailability(entry?.availability ?? entry?.system?.availability ?? '');
+    const availStr = entry?.availability ?? entry?.system?.availability ?? '';
+    // ⚠ An entry that is ALREADY a fields() result (the Buy dialog keeps one for its Level picker) carries
+    // `index` and `tn`/`time`/`unit`, not `streetIndex`/`availability` — read them as the fallback, or a level
+    // change resets the Street Index to 1 and the availability to 4/1 day (TODO 260, seen live on STS (Beacon)).
+    const shaped = !String(availStr).trim() && entry?.tn !== undefined;
+    const avail = shaped
+      ? { tn: entry.tn, time: entry.time, unit: entry.unit, always: !!entry.always, unknown: !!entry.unknown }
+      : Purchasing.parseAvailability(availStr);
     return {
       name: entry?.name ?? '',
       type: entry?.type ?? 'gear',
@@ -118,7 +125,7 @@ export const GearSearch = {
       time: avail.time || 1,
       unit: avail.unit || 'day',
       cost: Number(entry?.cost ?? entry?.system?.cost) || 0,
-      index: Number(entry?.streetIndex ?? entry?.system?.streetIndex) || 1,
+      index: Number(entry?.streetIndex ?? entry?.system?.streetIndex ?? entry?.index) || 1,
       uuid: entry?.uuid ?? '',
       levels: entry?.levels ?? null,
       rating: entry?.rating ?? null,

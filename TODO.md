@@ -2879,6 +2879,7 @@ gear's doc."* — **all gear, ONE document per item**, like Vehicle Armor. This 
 12. A Radio Receiver's Level dropdown shows 1-8; level 5 costs 5,000¥ and says "10 programmed frequencies".
 13. Run **SR3E Chrome Threat Generator** at any level: the new actor's implants read "Wired Reflexes [2]", "Dermal Plating [3]"…
     with the matching rating in each sheet's Level dropdown, and the Reaction and Initiative are unchanged.
+14. 🛒 Buy gear: search "STS", pick "STS (Beacon)" (Street Index 2), change the Level 1 to 4 — the Street Index stays 2 (and the TN/time follow the level).
 
 ### 📌 Notes & parked
 

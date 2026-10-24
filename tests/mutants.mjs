@@ -3382,4 +3382,19 @@ export const MUTANTS = [
     was:    'the name hooks treated a compendium document like a world item, so a pack would have been renamed "Medkit [1]" (TODO 260: the packs stay plain)',
     impl:   function () { return false; },
   },
+  {
+    id:     'gear-level-change-forgets-street-index',
+    suite:  'gear-search',
+    ...GSEARCH, method: 'fields',
+    was:    'fields() read only `streetIndex`, so the Buy dialog level picker (which holds a fields() result, with `index`) reset the Street Index to 1 on every level change (TODO 260, STS (Beacon))',
+    impl:   function (entry) {
+      return {
+        name: entry?.name ?? '', type: entry?.type ?? 'gear', tn: entry?.tn || 4, time: entry?.time || 1, unit: entry?.unit || 'day',
+        cost: Number(entry?.cost ?? entry?.system?.cost) || 0,
+        index: Number(entry?.streetIndex ?? entry?.system?.streetIndex) || 1,
+        uuid: entry?.uuid ?? '', levels: entry?.levels ?? null, rating: entry?.rating ?? null,
+        always: !!entry?.always, unknown: !!entry?.unknown,
+      };
+    },
+  },
 ];
