@@ -7488,6 +7488,15 @@ exactly — the smallest modifier that reads the typed total; the sheet passes b
 `data-pool-gyro` flag. A total that cannot be hit (negative, fractional) is rounded to the nearest and warned,
 never refused. Live step: TESTING.md §50. This is a bug fix, so it goes on `main`.
 
+## 241. ✅ A player can't end their own turn — **reported in play, 2026-10-23** — fixed in 7732baf9
+
+Observed: a player moved their character and clicked End Turn; Foundry said they did not have permission.
+
+**Cause:** core lets a player write only `round`, `turn` and `combatants` on a Combat (`common/documents/combat.mjs`
+`#canUpdate`); `SR3ECombat.nextTurn` also writes the queue flags. **Fix:** a non-GM `nextTurn` asks the GM
+(`sr3e.combat.nextTurn`): owner of the acting combatant only, and only while it is still the one they saw acting.
+Tests `end-turn`; e2e `end-turn.spec.mjs` (Player2 ends it, Player3 cannot) passed 2026-10-23.
+
 ## 248. ✅ Flechette seemed to do nothing against armour — **reported in play, 2026-10-23** — not a bug, closed in ef3b7cf3
 
 Observed: flechette did not appear to affect armour. SR3 p.116 makes flechette *stronger* only against
@@ -7506,3 +7515,14 @@ until the next round. Removing the acting combatant made the next one act twice;
 back to `turn: 0` and gave the top tracker row an extra turn. **Fix:** `RoundQueue.prune`
 (`scripts/data/round-queue.mjs`) from a `deleteCombatant` hook and from `nextTurn`. Tests `round-queue`, mutants
 `round-queue-keeps-removed` / `round-queue-skips-next-survivor`; live: 7 rounds with mid-round removals, clean.
+
+## 252. ✅ Unconscious combatants leave the initiative order at the next round — **requested in play, 2026-10-23** — fixed in 7732baf9
+
+Wanted (the maintainer): someone knocked unconscious is taken out of the initiative tracker automatically at the
+start of the next round. **Agreed 2026-10-23 (the maintainer: "skip is fine"):** keep them on the tracker but give them no slots in the
+new round's queue (they are already marked defeated when a track fills), so one who wakes acts again without the
+GM re-adding them. **A bug fix, on `main`** — the maintainer's call, 2026-10-23.
+
+**Done:** `buildRoundQueue`, `_assignTieBreaks` and the round's re-roll skip `isDefeated`. Knocked out mid-round, they
+keep that round's slots ("on the next round"). Tests in `initiative`; live in `test-shadowrun`: out of round 2,
+back in round 3 once no longer defeated.
