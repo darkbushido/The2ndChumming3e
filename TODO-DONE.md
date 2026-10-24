@@ -7509,7 +7509,7 @@ on 12, rows = queue = turns walked.
 
 ## 243. ✅ Full Defense carries into the next round — **reported in play, 2026-10-23** — fixed in 7de126d0
 
-**Cause:** the tracker's Next Round control bypassed the round upkeep (only End Turn ran it). Fixed by an `SR3ECombat.nextRound` override; tests in `initiative`, `shock-stun`. Not yet re-checked live after the fix.
+**Cause:** the tracker's Next Round control bypassed the round upkeep (only End Turn ran it). Fixed by an `SR3ECombat.nextRound` override; tests in `initiative`, `shock-stun`. Verified live 2026-10-23: Next Round clears Full Defense, advances one round, re-rolls.
 
 Observed: Full Defense stayed in effect the next round. Possibly a regression of `30bab18` ("Full Defense ending
 at a turn boundary", see #7). Not investigated yet. A bug fix, on `main`.
