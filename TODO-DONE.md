@@ -7575,3 +7575,23 @@ Observed (the maintainer, on an old player character): grenades that were only c
 Tests in `ready-weapon`, mutant `old-sheet-grenades-stay-in-hand`; live: an old-style grenade put away on load.
 ⚠ `tests/migrations.test.mjs` is red until the release bumps `system.json` to 0.7.1 — **the maintainer's decision,
 2026-10-23** ("Main, red until release"). Until then the migration also re-runs on every GM load.
+
+## 255. ✅ Cyberlimb Mods: book errors in the packs, and in-limb cyberweapons have no attack — **found 2026-10-23** — fixed in adda40fc
+
+Found while answering "Smartlink-2 is .5 in Nullsheen but .25 here". The .25 entry is the copy built INTO a
+cyberlimb (category `Cyberlimb Mods`; SR3 p.303, M&M p.36), which is correct for that install. The audit of all
+145 such entries (`audit/cyberlimb-mods-audit.md`) found:
+
+- **17 fields in 12 entries disagree with the book**: the DNI's price and legality (SR3 p.303, M&M p.39), the
+  Built-In Smartgun Link's availability and Street Index (SR3 p.303), the Tracking Mount's price (M&M p.41),
+  four legality codes (M&M pp.37, 39, 40), a fingertip compartment in a cyberlimb at .1 Essence (SR3 p.303 says
+  none), Smartlink II (Internal) at an unprinted 3,200¥ (M&M p.32), and a second Rigger Decryption Module [1]
+  that is the [10]. The list is `PACK_CORRECTIONS` (`scripts/data/cyberlimb-mods.mjs`), applied by
+  `tools/fix-cyberlimb-mods.mjs`, pinned by `tests/cyberlimb-mods.test.mjs`.
+- **In-limb cyberweapons install with no attack**: `CyberWeapons.isCyberweapon` read only the `Cyberweapons`
+  category, so a spur, blade, razor or cybergun built into a cyberlimb never got its weapon entry (TODO 151's
+  symptom). It now also reads the weapons among `Cyberlimb Mods` by name (`LIMB_WEAPON`); mutant
+  `limb-weapon-is-no-weapon`.
+
+⚠ Copies characters already own keep the old numbers until the 0.7.1 migration, which rides with [#256](TODO.md#256)
+(agreed with the maintainer 2026-10-23: main stays green, and the migration lands with the release).
