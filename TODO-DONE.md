@@ -7514,6 +7514,19 @@ on 12, rows = queue = turns walked.
 Observed: Full Defense stayed in effect the next round. Possibly a regression of `30bab18` ("Full Defense ending
 at a turn boundary", see #7). Not investigated yet. A bug fix, on `main`.
 
+## 244. ✅ Can't find how to make one melee attack against several opponents — **reported in play, 2026-10-23** — fixed in e6e21e21
+
+Observed: the maintainer could not see how to attack more than one opponent in melee. [#38](#38)
+says both halves (ranged and melee, SR3 pp.122-123) were done 2026-08-19.
+
+**Found:** both. The rule is one melee attack per opponent, +2 TN per further opponent (prefilled in the GM
+window) — but nothing on screen said so, and each further opponent was charged another Complex Action, where
+SR3 p.122 reads *"Characters may attack more than one opponent with a Complex Action."* **Fix:** melee opponents
+are marked in `targetsThisPhase`; `PhaseTargets.sameMeleeAction` stops the second charge; the melee card carries
+a line saying how (or that this is a further opponent). Tests in `phase-targets`, mutant
+`melee-each-opponent-a-new-action`. **Not yet walked live** — Foundry checklist: attack two opponents in one
+phase; the second card says "Opponent 2 … same Complex Action", the ledger shows one Complex, the GM window +2.
+
 ## 248. ✅ Flechette seemed to do nothing against armour — **reported in play, 2026-10-23** — not a bug, closed in ef3b7cf3
 
 Observed: flechette did not appear to affect armour. SR3 p.116 makes flechette *stronger* only against
