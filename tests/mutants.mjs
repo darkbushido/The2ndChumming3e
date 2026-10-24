@@ -47,6 +47,7 @@ const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 const PORDER = { module: '../scripts/data/patient-order.mjs', klass: 'PatientOrder' };
+const MACROREF = { module: '../scripts/data/macro-refresh.mjs', klass: 'MacroRefresh' };
 const GSEARCH = { module: '../scripts/data/gear-search.mjs', klass: 'GearSearch' };
 const READY  = { module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon' };
 const SKILLRULES = { module: '../scripts/data/skill-rules.mjs', klass: 'SkillRules' };
@@ -3396,5 +3397,26 @@ export const MUTANTS = [
         always: !!entry?.always, unknown: !!entry?.unknown,
       };
     },
+  },
+  {
+    id:     'macro-never-refreshed',
+    suite:  'macro-refresh',
+    ...MACROREF, method: 'decide',
+    was:    'an existing world macro was left alone, so a fixed scripts/macros body never reached an older world (TODO 260, Chrome Threat Generator)',
+    impl:   (_def, existing) => (existing ? 'skip' : 'create'),
+  },
+  {
+    id:     'macro-refresh-takes-any-name-match',
+    suite:  'macro-refresh',
+    ...MACROREF, method: 'find',
+    was:    'the refresh adopted a macro by name whatever its type or flag, overwriting a chat macro or another managed macro (TODO 260)',
+    impl:   (def, macros) => [...(macros ?? [])].find(m => m?.name === def.name) ?? null,
+  },
+  {
+    id:     'macro-refresh-touches-gm-macros',
+    suite:  'macro-refresh',
+    ...MACROREF, method: 'find',
+    was:    'the refresh took any script macro, so a GM-authored macro with another name was overwritten (TODO 260)',
+    impl:   (_def, macros) => [...(macros ?? [])].find(m => m?.type === 'script') ?? null,
   },
 ];

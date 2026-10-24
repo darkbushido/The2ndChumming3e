@@ -2880,6 +2880,7 @@ gear's doc."* — **all gear, ONE document per item**, like Vehicle Armor. This 
 13. Run **SR3E Chrome Threat Generator** at any level: the new actor's implants read "Wired Reflexes [2]", "Dermal Plating [3]"…
     with the matching rating in each sheet's Level dropdown, and the Reaction and Initiative are unchanged.
 14. 🛒 Buy gear: search "STS", pick "STS (Beacon)" (Street Index 2), change the Level 1 to 4 — the Street Index stays 2 (and the TN/time follow the level).
+15. An older world's **SR3E Chrome Threat Generator** macro (no ModRatings, implants costing 0¥) updates after a reload as the active GM: open it — the body now builds "Wired Reflexes" with a rating field; the console logs one "Refreshed world macro" line, and a second reload logs nothing. A macro you wrote yourself (another name) is untouched.
 
 ### 📌 Notes & parked
 

@@ -19,6 +19,7 @@ import { Cyberzombie } from './data/cyberzombie.mjs';
 import { CyberSlots } from './data/cyber-slots.mjs';
 import { ItemRating, ratingOnCreate } from './data/item-rating.mjs';
 import { ModRatings } from './data/mod-ratings.mjs';
+import { MacroRefresh } from './data/macro-refresh.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
 import { SR3EActorSheet } from './sheets/SR3EActorSheet.js';
@@ -405,8 +406,14 @@ Hooks.once('ready', async () => {
     // that could only fail. Agents and hosts ship in `sr3e-mdf-agents` / `sr3e-mdf-hosts` (TODO 1).
   ];
 
-  for (const def of macros) {
-    if (game.macros.find(m => m.name === def.name)) continue;
+  // Create each managed macro, and REFRESH one a world already holds (TODO 260): a macro keeps the command text it
+  // was created with, so a fix to scripts/macros never reached an older world. Managed = flagged with its path, or
+  // an old script macro of exactly the managed name (adopted). The GM's own macros are never touched. Rules:
+  // `MacroRefresh` (scripts/data/macro-refresh.mjs). A fetch failure is logged and never blocks the load.
+  const refreshed = [];
+  // Active GM only — two GM tabs would otherwise write the same macro twice.
+  const isActiveGM = game.users.activeGM?.id === game.user.id;
+  for (const def of isActiveGM ? macros : []) {
     try {
       // fetch() resolves for 404s too, and the body is Foundry's HTML error page.
       // Without this check that HTML is handed to Macro.create as script source,
@@ -414,12 +421,20 @@ Hooks.once('ready', async () => {
       const res = await fetch(`systems/The2ndChumming3e/${def.path}`);
       if (!res.ok) throw new Error(`${res.status} ${res.statusText} fetching ${def.path}`);
       const src = await res.text();
-      await Macro.create({ name: def.name, type: 'script', command: src, img: def.img });
-      ui.notifications.info(`SR3E: "${def.name}" macro added to your macro library.`);
+      const existing = MacroRefresh.find(def, game.macros);
+      const action = MacroRefresh.decide(def, existing, src);
+      if (action === 'create') {
+        await Macro.create(MacroRefresh.createData(def, src));
+        ui.notifications.info(`SR3E: "${def.name}" macro added to your macro library.`);
+      } else if (action !== 'skip') {
+        await existing.update(MacroRefresh.changes(def, existing, src));
+        refreshed.push(def.name);
+      }
     } catch (err) {
-      console.warn(`SR3E | Could not auto-create macro "${def.name}":`, err);
+      console.warn(`SR3E | Could not create or refresh macro "${def.name}":`, err);
     }
   }
+  if (refreshed.length) console.log(`SR3E | Refreshed world macro${refreshed.length === 1 ? '' : 's'} from the system: ${refreshed.join(', ')}`);
 
   // Auto-create organisational folders for non-character actor types.
   // These folders keep the world actors directory tidy — IC, agents, hosts,
