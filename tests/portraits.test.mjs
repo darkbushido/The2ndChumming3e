@@ -4,7 +4,7 @@
  * The system must work with NO portrait module, never name one, and never apply a portrait on its own.
  */
 import { readFileSync } from 'node:fs';
-import { Portraits, SCHEMA } from '../scripts/data/portraits.mjs';
+import { Portraits, SCHEMA, DEMOGRAPHICS, BASES } from '../scripts/data/portraits.mjs';
 import { Names, POOLS, ETHNICITIES, STREET_CHANCE } from '../scripts/data/names.mjs';
 
 export const name = 'portraits';
@@ -76,6 +76,16 @@ export async function run(t) {
   t.ok('mystery man and blank are stock (may be preselected)', Portraits.isStockImg('icons/svg/mystery-man.svg') && Portraits.isStockImg(''));
   t.is('a chosen picture is not stock (offer, never replace)', Portraits.isStockImg('worlds/x/me.webp'), false);
 
+  /* ── Seattle mix ─────────────────────────────────────────────────────────── */
+  t.ok('the population covers exactly the system metatypes', Object.keys(DEMOGRAPHICS).sort().join() === [...BASES].sort().join());
+  {
+    const rng = seeded(21);
+    const rolls = Array.from({ length: 2000 }, () => Portraits.rollMetatype(rng));
+    const share = m => rolls.filter(r => r === m).length / rolls.length;
+    t.ok(`humans about 65% (${Math.round(share('human') * 100)}%)`, Math.abs(share('human') - 0.65) < 0.05);
+    t.ok('trolls rare but present', share('troll') > 0 && share('troll') < 0.06);
+  }
+
   /* ── Names ───────────────────────────────────────────────────────────────── */
   for (const eth of ETHNICITIES) {
     for (const [sub, pool] of Object.entries(POOLS[eth])) {
@@ -104,6 +114,10 @@ export async function run(t) {
     const known = new Set(Object.values(POOLS).flatMap(f => Object.values(f).flatMap(p => [...p.female, ...p.male])));
     t.ok('elves sometimes take an elven given name', elves.some(e => !known.has(e.first)));
     t.ok('…and usually a real-world one', elves.filter(e => known.has(e.first)).length > 150);
+    for (const meta of ['ork', 'troll', 'dwarf', 'human', 'other']) {
+      const rs = Array.from({ length: 200 }, () => Names.generate({ metatype: meta, streetChance: 0, rng }));
+      t.ok(`${meta}s carry real-world names (born to human families — no fantasy names)`, rs.every(r => known.has(r.first)));
+    }
     t.ok('unknown heritage still yields a name', !!Names.generate({ ethnicity: 'Martian', rng }).full);
   }
   t.is('same seed, same name (repeatable)', Names.generate({ rng: seeded(9) }).full, Names.generate({ rng: seeded(9) }).full);

@@ -26,7 +26,20 @@ const MYSTERY_MAN = 'icons/svg/mystery-man.svg';
 /** The system's metatypes (config.js) — what a portrait's `base` must be. */
 export const BASES = ['human', 'elf', 'dwarf', 'ork', 'troll', 'other'];
 
+/** Seattle's population by system metatype, for "🎲 Seattle mix" (the maintainer's figures, 2026-10-24). */
+export const DEMOGRAPHICS = { human: 0.65, ork: 0.16, elf: 0.12, dwarf: 0.03, troll: 0.025, other: 0.015 };
+
 export class Portraits {
+  /** A metatype drawn by population weight. */
+  static rollMetatype(rng = Math.random, weights = DEMOGRAPHICS) {
+    const total = Object.values(weights).reduce((a, b) => a + b, 0);
+    let r = rng() * total;
+    for (const [k, w] of Object.entries(weights)) {
+      if ((r -= w) < 0) return k;
+    }
+    return Object.keys(weights)[0];
+  }
+
   /**
    * Active modules that publish a portrait index: `[{ moduleId, url }]`.
    * @param {Iterable<{id, active, flags?}>} modules  e.g. `game.modules`

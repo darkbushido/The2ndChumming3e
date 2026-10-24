@@ -517,10 +517,12 @@ export class SR3EQuery {
      * @param {string} [source]         `'packCollection|docId'`, or omitted
      * @param {string} [fromActorId]    an existing actor to copy (template deploy)
      * @param {string} [name]           name override, and the name for a blank vehicle
+     * @param {object} [set]            Meet the contact (TODO 262): `{ img, tokenImg, metatype, gender, ethnicity }`.
+     *   ⚠ A WHITELIST — anything else in `set` is ignored, so the verb cannot become a general write.
      * @returns {{uuid: string, id: string}}
      */
     CONFIG.queries['sr3e.actor.create'] = async ({ rid, driverActorId, source, fromActorId,
-                                                     name, _requesterId }) =>
+                                                     name, set, _requesterId }) =>
       SR3EQuery.once(rid, async () => {
         SR3EQuery.assertActiveGM();
 
@@ -547,6 +549,14 @@ export class SR3EQuery {
           delete data._id;
         } else {
           data = { name: String(name || 'New Vehicle').trim() || 'New Vehicle', type: 'vehicle' };
+        }
+
+        if (set && typeof set === 'object') {
+          if (typeof set.img === 'string' && set.img) data.img = set.img;
+          if (typeof set.tokenImg === 'string' && set.tokenImg) foundry.utils.setProperty(data, 'prototypeToken.texture.src', set.tokenImg);
+          for (const key of ['metatype', 'gender', 'ethnicity']) {
+            if (typeof set[key] === 'string') foundry.utils.setProperty(data, `system.${key}`, set[key]);
+          }
         }
 
         foundry.utils.setProperty(data, 'flags.The2ndChumming3e.isTemplate', false);

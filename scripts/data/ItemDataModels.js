@@ -710,6 +710,9 @@ export class ContactData extends foundry.abstract.TypeDataModel {
        * may legitimately be an archetype the book does not have, and a link that quietly
        * renamed the row would fight the GM. Linking fills `archetype` only when it is blank. */
       archetypeUuid: new StringField({ initial: '' }),
+      /* The NPC the GM made from it with Meet the contact · TODO 262 — a world actor uuid, '' until then.
+       * The contact's own name and picture show the result to its player; this lets the GM open the NPC. */
+      npcUuid:    new StringField({ initial: '' }),
       notes:      new HTMLField({ initial: '', required: false }),
     };
   }

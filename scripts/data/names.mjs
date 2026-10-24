@@ -7,6 +7,11 @@
  * mixed heritage), so a name matches the portrait it is offered with. With no portrait module the
  * caller passes none and a heritage is drawn at random.
  *
+ * ⚠ **Shadowrun, not fantasy** (the maintainer, 2026-10-24): orks, dwarves and trolls are people born to human
+ * families or goblinized from them — they carry their family's real-world names, never invented "orc" names.
+ * Only elves sometimes take an elven given name (an adopted one, `ELVEN_CHANCE`), keeping a real-world surname.
+ * Street names are nicknames picked up on the street, flavoured by metatype only in that sense ("Tusk").
+ *
  * A heritage is a family of sub-pools (Japanese / Chinese / Korean / Vietnamese …); the first and last
  * name always come from the SAME sub-pool so they belong together. Elves sometimes take an elven given
  * name, built from syllables — invented, not taken from any book or other setting.

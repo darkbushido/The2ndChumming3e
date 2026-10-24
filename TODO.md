@@ -2843,6 +2843,11 @@ archetypes with no matching portrait job **fall back to the nearest one for now*
 - `scripts/data/names.mjs` — heritage-matched real-world names (first and last from the same sub-pool), elven given
   names for some elves, street names by job group. Pure, seedable.
 - `tests/portraits.test.mjs`.
+- `scripts/SR3EMeetContact.js` — the dialog (DialogV2.wait, wired per dialog) and the only writes: the NPC through
+  `sr3e.actor.create`, whose new `set` is a whitelist (img, token art, metatype, gender, ethnicity); then the contact's
+  `npcUuid`, name and — only when stock — picture. 🎲 on the Contacts tab (GM only), the face on the row for everyone.
+- `contact.npcUuid` — new field: **full Foundry restart**.
+- Live check: TESTING.md, *Meet the contact*.
 
 ### 📌 Notes & parked
 
