@@ -58,4 +58,18 @@ export const MeleeProne = {
     if (who === 'attacker' || who === 'both') def += PRONE_MOD;
     return { atk, def };
   },
+
+  /**
+   * The boxing card's line when the flow applied prone itself — no GM window opened (the maintainer,
+   * 2026-10-23: say so on the card). With a window the GM's TNs carry it and the card says nothing.
+   * @param {'attacker'|'defender'|'both'|null} who
+   * @returns {string|null}
+   */
+  cardNote(who, atkName, defName) {
+    const tail = `(${PRONE_PAGE}), applied without a GM window`;
+    if (who === 'defender') return `\u{1F53B} ${defName} is prone \u2014 ${atkName} ${PRONE_MOD} TN ${tail}`;
+    if (who === 'attacker') return `\u{1F53B} ${atkName} is prone \u2014 ${defName} ${PRONE_MOD} TN ${tail}`;
+    if (who === 'both')     return `\u{1F53B} ${atkName} and ${defName} are prone \u2014 both ${PRONE_MOD} TN ${tail}`;
+    return null;
+  },
 };

@@ -36,7 +36,8 @@ paths:
   each fighter's core `prone` status (`MeleeProne.isProne`, `scripts/data/melee-prone.mjs` — actor **or token**:
   an unlinked token keeps its own) and carries `atkProne`/`defProne`; the window **preselects** "who is DOWN"
   (`MeleeProne.side`, with **both** — each has a prone opponent, −2/−2) and shows a 🔻 hint. Never locked. With no
-  window the flow applies `MeleeProne.deltas` itself, like the +2s above.
+  window the flow applies `MeleeProne.deltas` itself, like the +2s above, and the boxing card says so
+  (`ctx.autoProne` → `MeleeProne.cardNote`; null when the window opened — the maintainer, 2026-10-23).
 - ⚠ **Visibility halves in melee** (p.123: half, round down, except Full Darkness) — `meleeVisibilityModifier`.
 
 #### ⚠ Reach is a DIFFERENTIAL, and applying it is the fighter's CHOICE  · *p.121*

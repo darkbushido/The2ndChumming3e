@@ -500,6 +500,9 @@ export class SR3EItem extends Item {
       gmSituational:     Math.trunc(Number(gm.situational) || 0),
       gmSituationalSide: gm.situationalSide ?? null,
       gmSetTN:          gm.adjudicated === true,
+      // Who was down when the flow applied prone ITSELF (no window, TODO 245) — the card says so.
+      // Null whenever the GM window opened: the GM's TNs already carry it.
+      autoProne:        _mProne,
       calledShot:       calledShot.calledShot,
       charging:         calledShot.charging === true,
       calledShotTarget: calledShot.calledShotTarget,

@@ -78,6 +78,27 @@ export async function run(t) {
     /prone:\s*el\.querySelector\('#gmm-prone'\)\?\.value \|\| null/.test(win));
   t.ok('the preselection is not locked', !/id="gmm-prone"[^>]*disabled/.test(win) && !/#gmm-prone[^\n]*disabled\s*=/.test(win));
 
+  /* ==== The card says when the flow applied it itself (no window) ==== */
+  t.is('card line: prone defender',
+    MeleeProne.cardNote('defender', 'Geist', 'Zip'),
+    '\u{1F53B} Zip is prone \u2014 Geist -2 TN (SR3 p.123), applied without a GM window');
+  t.is('card line: prone attacker',
+    MeleeProne.cardNote('attacker', 'Geist', 'Zip'),
+    '\u{1F53B} Geist is prone \u2014 Zip -2 TN (SR3 p.123), applied without a GM window');
+  t.ok('card line: both prone names both',
+    /Geist and Zip are prone \u2014 both -2 TN/.test(MeleeProne.cardNote('both', 'Geist', 'Zip')));
+  t.is('card line: nobody prone, no line', MeleeProne.cardNote(null, 'Geist', 'Zip'), null);
+  t.ok('postMeleeCard is handed autoProne, which only the no-window branch sets',
+    /autoProne:\s*_mProne,/.test(flow)
+    && /const _mProne = gm\.adjudicated === false \?[^;]*: null;/.test(flow));
+  const actorSrc = read('scripts/documents/SR3EActor.js');
+  const card = actorSrc.slice(actorSrc.indexOf('static async postMeleeCard'),
+    actorSrc.indexOf('<div class="sr-melee-boxing">', actorSrc.indexOf('static async postMeleeCard')));
+  t.ok('the boxing card renders the prone line from ctx.autoProne',
+    /MeleeProne\.cardNote\(ctx\.autoProne \?\? null, atk\.name, def\.name\)/.test(card) && /sr-melee-prone-note/.test(card));
+  t.ok('…and from nothing else (no status read on the card, so an adjudicated exchange shows no line)',
+    !/isProne\(/.test(card) && !/statuses/.test(card));
+
   /* ==== The rule is documented ==== */
   t.ok('melee-combat.md describes the prone preselection',
     /TODO 245/.test(read('.claude/rules/melee-combat.md')));
