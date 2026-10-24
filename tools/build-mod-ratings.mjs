@@ -5,6 +5,9 @@
  *   node tools/build-mod-ratings.mjs           rename in packs-src, write scripts/data/mod-rating-table.mjs,
  *                                              then run: npm run packs:build
  *   node tools/build-mod-ratings.mjs --check   exit 1 if a name or the table would change — changes nothing
+ *   node tools/build-mod-ratings.mjs --collapse "vehicle|Vehicle Armor"
+ *                                              ONE document for that mod: its levels move into
+ *                                              tools/data/collapsed-mods.json and the other documents go
  *
  * "Anti-Theft System [10]" becomes "Anti-Theft System" with `system.rating` 10 (`ModRatings.renameDelta`),
  * in every pack, embedded copies on actors included. The table (`MOD_RATING_TABLE`) is what the item
@@ -15,7 +18,11 @@
  *   strips their names, keeping the ids it derives from the ORIGINAL upstream name. This tool never
  *   renames a generated document — it only reads them for the table, and `--check` fails if one still
  *   carries a level (re-run the builder).
- * ⚠ Ids never change here: a document keeps its key, so owned copies keep their compendium link.
+ * ⚠ Ids never change here: a document keeps its key, so owned copies keep their compendium link —
+ *   except under `--collapse`, which deletes all but one of a mod's documents (the maintainer, 2026-10-24:
+ *   *"we should just have one Vehicle Armor mod"*). A collapsed mod's levels can no longer be read off
+ *   the packs, so they live in `tools/data/collapsed-mods.json` and are merged into the table. A copy a
+ *   world already owns still finds its levels by name; only its link to a deleted entry goes.
  * ⚠ Copies already in worlds are renamed by the 0.7.1 migration (`scripts/SR3EMigrations.js`).
  */
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -27,6 +34,10 @@ import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'packs-src');
 export const TABLE_FILE = join(ROOT, 'scripts', 'data', 'mod-rating-table.mjs');
+export const COLLAPSED_FILE = join(ROOT, 'tools', 'data', 'collapsed-mods.json');
+
+/** The collapsed mods: `{ "kind|name": { pack, keep, levels: { level: fields }, unplaced: [...] } }`. */
+export const readCollapsed = (file = COLLAPSED_FILE) => (existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')).families : {});
 
 /** Fields that are bookkeeping, not a level's printed numbers — never part of a table row. */
 const NOT_PRINTED = new Set(['rating', 'srcgName', 'grade', 'costBase', 'essenceCostBase', 'availabilityBase', 'quantity', 'equipped', 'worn']);
@@ -75,6 +86,38 @@ export function buildTable(docs) {
   return { table, conflicts };
 }
 
+/** The table the dropdown reads: the levels the packs print, plus every collapsed mod's. Pure. */
+export function tableFor(docs, collapsed = readCollapsed()) {
+  const { table, conflicts } = buildTable(docs);
+  for (const [key, fam] of Object.entries(collapsed)) table[key] = fam.levels;
+  const sorted = Object.fromEntries(Object.keys(table).sort().map(k => [k, table[k]]));
+  return { table: sorted, conflicts: conflicts.filter(c => !Object.keys(collapsed).some(k => c.startsWith(`${k} [`))) };
+}
+
+/**
+ * Collapse one mod to ONE document: its levels (from `buildTable`) are returned to be kept in
+ * `collapsed-mods.json`, every document but the lowest level's is removed from `entries`, and a level
+ * printed twice with different numbers is kept as `unplaced` — for a person to check against the book.
+ */
+export function collapse(entries, pack, key) {
+  const fam = [...entries].filter(([k, d]) => k.startsWith('!items!') && ModRatings.keyOf(d) === key)
+    .map(([k, d]) => ({ k, d, rating: Number(d.system?.rating) })).sort((a, b) => a.rating - b.rating);
+  if (fam.length < 2) return null;
+  const levels = buildTable(fam.map(f => f.d)).table[key];
+  const keep = fam[0];
+  const placed = new Set();
+  const unplaced = [];
+  for (const f of fam) {
+    if (!placed.has(f.rating)) { placed.add(f.rating); continue; }
+    const row = Object.fromEntries(Object.keys(levels[f.rating]).map(k => [k, f.d.system[k] ?? null]));
+    if (JSON.stringify(row) !== JSON.stringify(levels[f.rating])) {
+      unplaced.push({ id: f.k.slice('!items!'.length), rating: f.rating, row, why: 'printed at a level another document already has, with different numbers — check the book' });
+    }
+  }
+  for (const f of fam) if (f !== keep) entries.delete(f.k);
+  return { pack, keep: keep.k.slice('!items!'.length), levels, unplaced };
+}
+
 /** The text of `scripts/data/mod-rating-table.mjs`. */
 export function renderTable(table) {
   const rows = Object.entries(table).map(([key, levels]) =>
@@ -92,6 +135,24 @@ ${rows.join('\n')}
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const check = process.argv.includes('--check');
+  const at = process.argv.indexOf('--collapse');
+  if (at >= 0) {
+    const key = process.argv[at + 1];
+    const doc = existsSync(COLLAPSED_FILE) ? JSON.parse(readFileSync(COLLAPSED_FILE, 'utf8'))
+      : { about: 'Mods collapsed to ONE pack document (tools/build-mod-ratings.mjs --collapse). Their levels live here and are merged into scripts/data/mod-rating-table.mjs. TODO 260.', families: {} };
+    for (const pack of readdirSync(SRC).sort()) {
+      const entries = readSourceDir(join(SRC, pack));
+      const fam = collapse(entries, pack, key);
+      if (!fam) continue;
+      doc.families[key] = fam;
+      writeSourceDir(join(SRC, pack), entries);
+      console.log(`collapsed ${key} in ${pack}: kept ${fam.keep}, ${Object.keys(fam.levels).length} levels${fam.unplaced.length ? `, ${fam.unplaced.length} unplaced` : ''}`);
+    }
+    if (!doc.families[key]) { console.error(`no mod "${key}" with two or more documents`); process.exit(1); }
+    writeFileSync(COLLAPSED_FILE, JSON.stringify(doc, null, 2) + '\n');
+    console.log('now run: node tools/build-mod-ratings.mjs && npm run packs:build');
+    process.exit(0);
+  }
   let renamed = 0, stale = 0;
   const forTable = [];
   for (const pack of readdirSync(SRC).sort()) {
@@ -121,7 +182,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     if (!check) writeSourceDir(join(SRC, pack), entries);
     console.log(`${check ? 'would rename' : 'renamed'} ${n} in ${pack}`);
   }
-  const { table, conflicts } = buildTable(forTable);
+  const { table, conflicts } = tableFor(forTable);
   for (const c of conflicts) console.log(`⚠ printed twice with different numbers (first kept): ${c}`);
   const text = renderTable(table);
   const tableStale = !existsSync(TABLE_FILE) || readFileSync(TABLE_FILE, 'utf8') !== text;

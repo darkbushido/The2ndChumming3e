@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 import { MOD_RATING_TABLE } from '../scripts/data/mod-rating-table.mjs';
 import { displayName, ItemRating } from '../scripts/data/item-rating.mjs';
-import { buildTable, renderTable, TABLE_FILE } from '../tools/build-mod-ratings.mjs';
+import { buildTable, renderTable, tableFor, collapse, readCollapsed, TABLE_FILE } from '../tools/build-mod-ratings.mjs';
 import { idFor, normName, GENERATOR } from '../tools/build-default-gear.mjs';
 
 export const name = 'mod-ratings';
@@ -82,7 +82,20 @@ export async function run(t) {
   t.ok('the corrected Rigger Decryption Module is plain at 10 (TODO 255)', rdm?.d.name === 'Rigger Decryption Module' && rdm.d.system.rating === 10);
 
   /* ── The table is build output ───────────────────────────────────────────────── */
-  t.ok('the level table matches the packs', read(TABLE_FILE.slice(ROOT.length + 1)) === renderTable(buildTable(docs.map(x => x.d)).table));
+  t.ok('the level table matches the packs and the collapsed mods', read(TABLE_FILE.slice(ROOT.length + 1)) === renderTable(tableFor(docs.map(x => x.d)).table));
+
+  /* ── One Vehicle Armor (the maintainer, 2026-10-24) ──────────────────────────── */
+  const armour = docs.filter(x => x.d.type === 'vehiclemod' && x.d.name === 'Vehicle Armor');
+  t.is('the packs hold ONE Vehicle Armor', armour.length, 1);
+  t.ok('…at level 1, keeping the level-1 id', armour[0]?.key === '!items!sr3e-vehiclemod-0044' && armour[0].d.system.rating === 1);
+  t.eq('…and its dropdown still offers levels 1-11', ModRatings.options(veh('Vehicle Armor', { rating: 1 })).map(o => o.value), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+  t.ok('…level 6 adds the Handling note', ModRatings.ratingChange(veh('Vehicle Armor'), 6)['system.description'] === 'Handling+1');
+  const va = readCollapsed()['vehicle|Vehicle Armor'];
+  t.ok('the second "[11]" is kept unplaced for a person to check, not guessed', va?.unplaced?.length === 1 && va.unplaced[0].id === 'sr3e-vehiclemod-0055' && va.unplaced[0].row.cost === 16250);
+  const fam = new Map([['!items!a', veh('Y', { rating: 2, cost: 20 })], ['!items!b', veh('Y', { rating: 1, cost: 10 })], ['!items!c', veh('Other', { rating: 1 })]]);
+  const out = collapse(fam, 'p', 'vehicle|Y');
+  t.ok('collapse keeps the lowest level\'s document and only that one', out.keep === 'b' && fam.has('!items!b') && !fam.has('!items!a') && fam.has('!items!c'));
+  t.eq('…and returns every level', out.levels, { 1: { cost: 10 }, 2: { cost: 20 } });
   t.ok('a mod printed at one level only has no dropdown', Object.values(MOD_RATING_TABLE).every(levels => Object.keys(levels).length >= 2));
   t.ok('a table row carries only printed numbers, never bookkeeping', Object.values(MOD_RATING_TABLE).every(levels =>
     Object.values(levels).every(row => !('rating' in row) && !('srcgName' in row) && !('grade' in row))));

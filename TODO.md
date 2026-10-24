@@ -2817,8 +2817,12 @@ cyberlimb keep their bracketed names until #130 itself.
 - `tests/mod-ratings.test.mjs`.
 
 **For the maintainer:**
-- ⚠ **"Vehicle Armor [11]" is printed twice** in `sr3e-r3-vehicle-mods` with different numbers; the second
-  (load Body²×60 kg, 16,250¥) reads like [12]. The table keeps the first. Check R3 and fix the pack.
+- **One Vehicle Armor** (the maintainer, 2026-10-24: *"we should just have one Vehicle Armor mod"*): the pack
+  keeps ONE document (level 1, id `sr3e-vehiclemod-0044`); its levels live in `tools/data/collapsed-mods.json`
+  (`build-mod-ratings.mjs --collapse`), merged into the table. Any other mod can be collapsed the same way.
+- ⚠ **The second "Vehicle Armor [11]"** (was `sr3e-vehiclemod-0055`: 16,250¥, load Body²×60 kg, 93 hrs, Handling+2)
+  reads like level 12 but was not guessed: it is kept as `unplaced` in `collapsed-mods.json` and the dropdown
+  offers 1-11. Check R3 p.131 and move it into `levels` (or drop it), then re-run the tool.
 - `npm run packs:install` was not run (cloud session) — run it with Foundry closed.
 
 **🧪 Test in Foundry**
