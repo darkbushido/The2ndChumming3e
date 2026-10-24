@@ -1,5 +1,6 @@
 import { Purchasing } from './data/purchasing.mjs';
 import { GearSearch } from './data/gear-search.mjs';
+import { actorFrom } from './data/actor-ref.mjs';
 
 /**
  * Buying gear — the flow · *SR3 pp.272-273* (TODO 82).
@@ -315,7 +316,7 @@ export const SR3EPurchase = {
 
   /** The Etiquette Test has resolved · p.272. */
   async onSourced(ctx, res) {
-    const actor = game.actors.get(ctx.buyerId);
+    const actor = actorFrom(ctx.buyerId);
     if (!actor) return;
     const got = Purchasing.acquisitionTime(ctx.baseTime, res?.successes ?? 0);
     const ask = Purchasing.askingPrice(ctx.cost, ctx.streetIndex, { metatype: actor.system?.metatype });
@@ -364,7 +365,7 @@ export const SR3EPurchase = {
 
   /** 🤝 — the Success Contest over price · p.273. Both sides roll; the GM sets the source's. */
   async negotiate(payload) {
-    const actor = game.actors.get(payload?.buyerId);
+    const actor = actorFrom(payload?.buyerId);
     if (!actor) return;
     const mine = SR3EPurchase.negotiationDice(actor);
 
@@ -415,7 +416,7 @@ export const SR3EPurchase = {
 
   /** Both haggles have landed (explosions included) · p.273. */
   async onNegotiated(ctx, atk, def) {
-    const actor = game.actors.get(ctx.buyerId);
+    const actor = actorFrom(ctx.buyerId);
     if (!actor) return;
     const deal = Purchasing.negotiate(ctx.price, atk?.successes ?? 0, def?.successes ?? 0);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -447,7 +448,7 @@ export const SR3EPurchase = {
    * ⚠ Through `actor.update` with a `ledgerReason`, so TODO 79 records the purchase.
    */
   async pay(payload) {
-    const actor = game.actors.get(payload?.buyerId);
+    const actor = actorFrom(payload?.buyerId);
     if (!actor) return;
     const price = Math.max(0, Number(payload.price) || 0);
     const have  = Number(actor.system?.nuyen) || 0;

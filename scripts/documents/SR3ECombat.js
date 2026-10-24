@@ -1,6 +1,7 @@
 import { QuickStrike } from '../data/quick-strike.mjs';
 import { ShockStun } from '../data/shock-stun.mjs';
 import { RoundQueue } from '../data/round-queue.mjs';
+import { actorFrom } from '../data/actor-ref.mjs';
 
 /**
  * SR3ECombat - Custom Combat with SR2/SR3 initiative modes
@@ -100,7 +101,7 @@ export class SR3ECombat extends Combat {
       if (vc.actor.system.controlMode !== 'vcr') continue;
       const driverActId = vc.actor.system.driverActorId?.trim();
       if (!driverActId) continue;
-      const pilotActor = game.actors.get(driverActId);
+      const pilotActor = actorFrom(driverActId);
       const riggerCombatant = pilotActor && this.combatants.find(rc => rc.actor?.id === pilotActor.id);
       if (riggerCombatant) {
         await riggerCombatant.update({

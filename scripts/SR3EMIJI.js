@@ -17,6 +17,7 @@
 // runtime registry to avoid cycles. `ItemDataModels` depends on nothing here, so a direct
 // import is safe — and the alternative was a third copy of SR3 p.57's chargen gap.
 import { CHARGEN_SPEC_GAP } from './data/skill-rules.mjs';
+import { actorFrom } from './data/actor-ref.mjs';
 
 export class SR3EMIJI {
 
@@ -124,7 +125,7 @@ export class SR3EMIJI {
   /** Controlling rigger of a vehicle (its linked driver). */
   static _riggerOf(vehicle) {
     const id = vehicle?.system?.driverActorId?.trim();
-    return id ? game.actors.get(id) : null;
+    return id ? actorFrom(id) : null;
   }
 
   static _liveVehicles(excludeId = null) {
@@ -202,7 +203,7 @@ export class SR3EMIJI {
     });
     if (!result?.intruderVehicleId) return;
 
-    const intVehicle = game.actors.get(result.intruderVehicleId);
+    const intVehicle = actorFrom(result.intruderVehicleId);
     const intRigger  = this._riggerOf(intVehicle);
     const defRigger  = this._riggerOf(targetVehicle);
     const op         = ops[result.operation];
@@ -246,7 +247,7 @@ export class SR3EMIJI {
     // itself — the same fallback `handleMIJIRoll` uses to pick `defActor`. Carried in the
     // payload rather than recomputed, because the result card was rebuilding it as the
     // vehicle name unconditionally and so credited an unmanned drone with its rigger's dice.
-    const defName = (ctx.defenderRiggerId ? game.actors.get(ctx.defenderRiggerId)?.name : null)
+    const defName = (ctx.defenderRiggerId ? actorFrom(ctx.defenderRiggerId)?.name : null)
                     ?? ctx.targetVehicleName;
     const payload = JSON.stringify({ ...ctx, defenderName: defName }).replace(/'/g, '&#39;');
     const _corner = (who, dice, tn, comp, skillName, diceCls, tnCls, tnLabel, role, owner) => `
@@ -300,8 +301,8 @@ export class SR3EMIJI {
     const intTN   = _A.cornerTN(f('intruder', 'sr-miji-int-tn'), ctx.intTN);
     const defTN   = _A.cornerTN(f('defender', 'sr-miji-def-tn'), ctx.defTN);
 
-    const intActor = game.actors.get(ctx.intruderRiggerId) ?? game.actors.get(ctx.intruderVehicleId);
-    const defActor = game.actors.get(ctx.defenderRiggerId) ?? game.actors.get(ctx.targetVehicleId);
+    const intActor = actorFrom(ctx.intruderRiggerId) ?? actorFrom(ctx.intruderVehicleId);
+    const defActor = actorFrom(ctx.defenderRiggerId) ?? actorFrom(ctx.targetVehicleId);
     if (!intActor || !defActor) { ui.notifications.warn('MIJI: missing intruder or defender actor.'); return; }
 
     // Explosions are rolled on wave cards and the result waits for them (see `rollOpposedPair`).
@@ -366,7 +367,7 @@ export class SR3EMIJI {
 
   static async applyDegradation(btn) {
     const ctx = JSON.parse(btn.dataset.payload);
-    const veh = game.actors.get(ctx.targetVehicleId);
+    const veh = actorFrom(ctx.targetVehicleId);
     if (!veh) return;
     btn.disabled = true; btn.textContent = '✓ Applied';
     const cur    = veh.system.signalMonitor?.[ctx.channel] ?? 0;
@@ -384,7 +385,7 @@ export class SR3EMIJI {
       note = `<div class="sr-staging-result" style="color:var(--sr-red)">⚠ ${ctx.channelLabel} CHANNEL LOST — ${chan?.fullEffect ?? ''}</div>`;
       // Simsense full → the VCR-jacked rigger takes Dumpshock.
       if (ctx.channel === 'simsense') {
-        const rigger = veh.system?.controlMode === 'vcr' ? game.actors.get(veh.system?.driverActorId) : null;
+        const rigger = veh.system?.controlMode === 'vcr' ? actorFrom(veh.system?.driverActorId) : null;
         if (rigger) note += `<div class="sr-staging-result" style="color:var(--sr-red)">🧠 ${rigger.name} is jacked in — trigger <strong>Dumpshock</strong> (Matrix tab → ⚡ Dumpshock).</div>`;
       }
     } else {
@@ -425,7 +426,7 @@ export class SR3EMIJI {
     });
     if (!pick) return;
 
-    const intVehicle = game.actors.get(pick);
+    const intVehicle = actorFrom(pick);
     const intRigger  = this._riggerOf(intVehicle);
     if (!intRigger) { ui.notifications.warn(`${intVehicle?.name ?? 'Intruder'} has no linked rigger.`); return; }
     const defRigger  = this._riggerOf(targetVehicle);
@@ -458,9 +459,9 @@ export class SR3EMIJI {
   }
 
   static async _infiltrationRolled({ intRiggerId, intVehicleId, targetVehicleId, tn, skill }, res) {
-    const intRigger     = game.actors.get(intRiggerId);
-    const intVehicle    = game.actors.get(intVehicleId);
-    const targetVehicle = game.actors.get(targetVehicleId);
+    const intRigger     = actorFrom(intRiggerId);
+    const intVehicle    = actorFrom(intVehicleId);
+    const targetVehicle = actorFrom(targetVehicleId);
     if (!intRigger || !intVehicle || !targetVehicle) return;
 
     if (res.successes <= 0) {
@@ -586,8 +587,8 @@ export class SR3EMIJI {
   }
 
   static async _detectRolled({ defRiggerId, targetVehicleId, pool, tn }, res) {
-    const defRigger     = game.actors.get(defRiggerId);
-    const targetVehicle = game.actors.get(targetVehicleId);
+    const defRigger     = actorFrom(defRiggerId);
+    const targetVehicle = actorFrom(targetVehicleId);
     if (!defRigger || !targetVehicle) return;
     const found = res.successes > 0;
     await ChatMessage.create({
@@ -673,7 +674,7 @@ export class SR3EMIJI {
   }
 
   static async _ivisRolled({ riggerId, setup, skill }, res) {
-    const rigger = game.actors.get(riggerId);
+    const rigger = actorFrom(riggerId);
     if (!rigger) return;
     if (res.successes <= 0) {
       await ChatMessage.create({
@@ -766,7 +767,7 @@ export class SR3EMIJI {
 
     // TN = attacker's ECM or protocol-emulation module + 3 (use the recorded intruder).
     const inf      = targetVehicle.system?.infiltration ?? {};
-    const intruder = inf.intruderActorId ? game.actors.get(inf.intruderActorId) : null;
+    const intruder = inf.intruderActorId ? actorFrom(inf.intruderActorId) : null;
     const attackerStat = Math.max(
       intruder?.system?.ew?.protocolModule ?? 0,
       // intruder's vehicle ECM, if we can find it
@@ -782,8 +783,8 @@ export class SR3EMIJI {
   }
 
   static async _eccmRolled({ rollerId, targetVehicleId, channel, pool, tn }, res) {
-    const roller        = game.actors.get(rollerId);
-    const targetVehicle = game.actors.get(targetVehicleId);
+    const roller        = actorFrom(rollerId);
+    const targetVehicle = actorFrom(targetVehicleId);
     if (!roller || !targetVehicle) return;
     // Read the channel NOW — it may have changed while the explosions were rolled.
     const cur     = targetVehicle.system?.signalMonitor?.[channel] ?? 0;
@@ -816,8 +817,8 @@ export class SR3EMIJI {
   }
 
   static async _footprintRolled({ rollerId, targetVehicleId, pool, tn }, res) {
-    const roller        = game.actors.get(rollerId);
-    const targetVehicle = game.actors.get(targetVehicleId);
+    const roller        = actorFrom(rollerId);
+    const targetVehicle = actorFrom(targetVehicleId);
     if (!roller || !targetVehicle) return;
     const ew     = targetVehicle.system?.ew ?? {};
     const rigger = this._riggerOf(targetVehicle);

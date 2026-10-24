@@ -1,3 +1,4 @@
+import { actorFrom } from '../data/actor-ref.mjs';
 export class SR3EWardSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static DEFAULT_OPTIONS = {
@@ -44,7 +45,7 @@ export class SR3EWardSheet extends foundry.applications.sheets.ActorSheetV2 {
     const force     = sys.force ?? Math.max(0, maxForce - damage);
     const destroyed = force <= 0;
     const wardType  = sys.wardType ?? 'standard';
-    const creator   = sys.creatorActorId ? game.actors.get(sys.creatorActorId) : null;
+    const creator   = sys.creatorActorId ? actorFrom(sys.creatorActorId) : null;
 
     const typeOpts = Object.entries(SR3EWardSheet.WARD_TYPES).map(([k, label]) =>
       `<option value="${k}" ${wardType === k ? 'selected' : ''}>${label}</option>`

@@ -19,6 +19,7 @@
  * and the prompts agree. No actor → the GM.
  */
 import { OpenSteps, STEP_BUTTONS } from './data/open-steps.mjs';
+import { actorFrom } from './data/actor-ref.mjs';
 
 const MODULE = 'The2ndChumming3e';
 /** Messages scanned when no combat is running. */
@@ -69,7 +70,7 @@ export class SR3EOpenSteps {
 
   /** The user who owes a step for `actorId` — the flows' own decider; the GM when there is no actor. */
   static deciderOf(actorId) {
-    const actor = actorId ? game.actors.get(actorId) : null;
+    const actor = actorId ? actorFrom(actorId) : null;
     if (!actor) return game.users.activeGM?.id ?? null;
     return game.sr3e.SR3EQuery.deciderFor(actor) ?? game.users.activeGM?.id ?? null;
   }
@@ -89,7 +90,7 @@ export class SR3EOpenSteps {
     const out = [];
     for (const message of SR3EOpenSteps._window()) {
       for (const step of OpenSteps.open(SR3EOpenSteps.stepsOf(message))) {
-        out.push({ message, step, actor: step.ownerId ? game.actors.get(step.ownerId) : null,
+        out.push({ message, step, actor: step.ownerId ? actorFrom(step.ownerId) : null,
           userId: SR3EOpenSteps.deciderOf(step.ownerId) });
       }
     }
@@ -141,7 +142,7 @@ export class SR3EOpenSteps {
       btn.addEventListener('click', () => {
         if (btn.dataset.sr3eStepMarked) return;
         btn.dataset.sr3eStepMarked = '1';
-        const who = step.ownerId ? game.actors.get(step.ownerId)?.name : null;
+        const who = step.ownerId ? actorFrom(step.ownerId)?.name : null;
         SR3EOpenSteps.mark(message.id, step.key, who ? `${step.label} — ${who}` : step.label);
       });
     });

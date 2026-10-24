@@ -88,7 +88,7 @@ export async function run(t) {
   t.ok('the belt/armour dialog opens BEFORE the button is claimed (Cancel keeps it usable)',
     /promptCollisionResist\([\s\S]{0,120}if \(!choice\) return;\s*if \(!_claimBtn\(btn, mid, 'rampassenger'/.test(main0));
   t.ok('the passenger roll names its actor, so Assign Wound has somewhere to go',
-    /soakPayload: \{ actorId: pActor\.id, stagedPower: r\.power/.test(src('documents/SR3EActor.js')));
+    /soakPayload: \{ actorId: actorRef\(pActor\), stagedPower: r\.power/.test(src('documents/SR3EActor.js')));
 
   /* ── TODO 106 — the Crash Test has its own table (p.148), and a VCR is −Rating on a Driving Test ── */
   const S = SR3EActor.crashSpeedModifier;

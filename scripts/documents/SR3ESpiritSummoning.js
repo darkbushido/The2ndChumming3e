@@ -1,3 +1,4 @@
+import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 /**
  * SR3ESpiritSummoning
  *
@@ -255,7 +256,7 @@ export class SR3ESpiritSummoning {
       {
         isConjuringRoll:  true,
         conjuringContext: {
-          conjurerActorId: conjurer.id,
+          conjurerActorId: actorRef(conjurer),
           spiritTypeKey:   typeKey,
           spiritLabel:     spiritDef.label,
           force,
@@ -273,7 +274,7 @@ export class SR3ESpiritSummoning {
   // ---------------------------------------------------------------------------
   static async confirmSummoning(payload) {
     const { conjurerActorId, spiritTypeKey, force, services } = payload;
-    const conjurer  = game.actors.get(conjurerActorId);
+    const conjurer  = actorFrom(conjurerActorId);
     const spiritDef = SPIRIT_TYPES[spiritTypeKey];
     if (!spiritDef) { ui.notifications.error(`Unknown spirit type: ${spiritTypeKey}`); return; }
 

@@ -56,9 +56,9 @@ export async function run(t) {
   t.ok('…and the defender sites do not', !/_buildCCParticipant\(defActor, \{ attacking: true \}\)/.test(actor));
 
   t.ok('contested: the initiator\'s TN starts at 4 + their wounds',
-    /id="\$\{tnId\}" value="\$\{4 \+ SR3EActor\.woundTN\(game\.actors\.get\(defaultAtkId\)\)/.test(actor));
-  t.ok('…and follows the actor picked', /#atk-tn'\)\.value = 4 \+ SR3EActor\.woundTN\((game\.actors\.get\(e\.target\.value\)|picked)\)/.test(actor));
-  t.ok('…and the opponent\'s corner starts at 4 + theirs', /oppTN:\s+4 \+ SR3EActor\.woundTN\(game\.actors\.get\(oppActId\)\)/.test(actor));
+    /id="\$\{tnId\}" value="\$\{4 \+ SR3EActor\.woundTN\(actorFrom\(defaultAtkId\)\)/.test(actor));
+  t.ok('…and follows the actor picked', /#atk-tn'\)\.value = 4 \+ SR3EActor\.woundTN\((actorFrom\(e\.target\.value\)|picked)\)/.test(actor));
+  t.ok('…and the opponent\'s corner starts at 4 + theirs', /oppTN:\s+4 \+ SR3EActor\.woundTN\(actorFrom\(oppActId\)\)/.test(actor));
 
   t.ok('Orthodox System Test: the decker\'s wounds in their TN', /deckerTN\s+= Math\.max\(2, subR \+ alertMod - utilMod \+ SR3EActor\.woundTN\(this\)/.test(actor));
   t.ok('Orthodox attack: the decker\'s wounds in the attack TN', /const tnIntruding = \(SR3EActor\._orthoCCTN\.intruding\[secCode\] \?\? 4\) \+ SR3EActor\.woundTN\(this\)/.test(actor));

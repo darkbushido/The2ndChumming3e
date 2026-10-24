@@ -14,6 +14,7 @@ import { WillingTarget } from '../data/willing-target.mjs';
 import { SpellTarget } from '../data/spell-target.mjs';
 import { RangeBands } from '../data/range-bands.mjs';
 import { Fling } from '../data/fling.mjs';
+import { ActorRef, actorFrom, actorRef, tokenRows } from '../data/actor-ref.mjs';
 
 export class SR3EItem extends Item {
 
@@ -203,19 +204,19 @@ export class SR3EItem extends Item {
     game.sr3e.SR3EActionLedger?.charge(actor, 'quickDraw', item.name);
     await game.sr3e.SR3EActor.rollThen(actor, pool, tn, {
       label: `⚡ ${actor.name} — Quick Draw ${item.name}: Reaction (${tn})`,
-      followUp: { kind: 'quickDraw', ctx: { actorId: actor.id, itemId: item.id, tn } },
+      followUp: { kind: 'quickDraw', ctx: { actorId: actorRef(actor), itemId: item.id, tn } },
     });
     return null;
   }
 
   /** Quick Draw's outcome, after any 💥 — one success clears the weapon (p.107). */
   static async _quickDrawRolled(ctx, res) {
-    const actor = game.actors.get(ctx.actorId);
+    const actor = actorFrom(ctx.actorId);
     const item  = actor?.items.get(ctx.itemId);
     if (!actor || !item) return;
     const cleared = game.sr3e.ReadyWeapon.quickDrawCleared(res?.successes);
     if (cleared) await item.update({ 'system.ready': true });
-    const pay = JSON.stringify({ actorId: actor.id, itemId: item.id }).replace(/'/g, '&#39;');
+    const pay = JSON.stringify({ actorId: actorRef(actor), itemId: item.id }).replace(/'/g, '&#39;');
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
       content: `<div class="sr-roll-card">
@@ -457,8 +458,8 @@ export class SR3EItem extends Item {
     if (!_mSameAction) game.sr3e.SR3EActionLedger?.charge(actor, 'meleeAttack', atkWeapon?.name ?? 'Unarmed');
 
     await game.sr3e.SR3EActor.postMeleeCard({
-      attackerActorId:  actor.id,
-      defenderActorId:  targetActor.id,
+      attackerActorId:  actorRef(actor),
+      defenderActorId:  actorRef(targetActor),
       atkWeaponId:      atkWeapon.id,
       defWeaponId:      defWeapon?.id ?? null,
       atkWeaponName:    atkWeapon.name,
@@ -1719,7 +1720,7 @@ export class SR3EItem extends Item {
     const driverActId = actor.system.driverActorId?.trim() ?? '';
     const controlMode = actor.system.controlMode ?? '';
     const vcrMode     = controlMode === 'vcr';
-    let   pilotActor  = driverActId ? game.actors.get(driverActId) : null;
+    let   pilotActor  = driverActId ? actorFrom(driverActId) : null;
     let   pool          = 0;
     let   poolLabel     = '';
     let   pilotWoundMod = 0;
@@ -3610,32 +3611,37 @@ export class SR3EItem extends Item {
     };
     const _selfBadge = `<span style="font-size:10px;color:var(--sr-green)"> [self]</span>`;
 
-    const others = game.actors.contents.filter(a =>
-      a.id !== attacker.id && game.sr3e.isLiveActor(a)
-    );
-    // Actors with a token on the current scene; the full world list when nothing is on canvas
-    // (theatre-of-the-mind) — the shared rule, `sceneFirst` (F2).
-    const candidates = [...game.sr3e.sceneFirst(others)];
+    // ⚠ One row per TOKEN on the scene (TODO 260): an unlinked goon's actor shares its sidebar actor's id, so a
+    // list of world actors handed back the sidebar NPC and the attack landed on every copy of it. On a scene the
+    // rows are the tokens' own actors; theatre-of-the-mind (no usable token) falls back to the world's actors
+    // through the shared rule, `sceneFirst` (F2).
+    const isSelf = a => ActorRef.same(a, attacker) || (!a.isToken && a.id === attacker.id);
+    const scene  = game.scenes?.viewed ?? game.scenes?.active ?? null;
+    let rows = tokenRows(scene?.tokens?.contents ?? [], a => !isSelf(a) && game.sr3e.isLiveActor(a));
+    if (!rows.length) {
+      rows = [...game.sr3e.sceneFirst(game.actors.contents.filter(a => a.id !== attacker.id && game.sr3e.isLiveActor(a)))]
+        .map(a => ({ ref: a.id, actor: a, name: a.name }));
+    }
 
     // Self is appended AFTER the canvas filter, so a caster with no token placed can
     // still be picked, and goes LAST so it is never the pre-checked default — a stray
     // Confirm should not Manabolt the caster. When it is the only candidate it lands at
     // index 0 and is selected normally.
-    if (allowSelf && game.sr3e.isLiveActor(attacker)) candidates.push(attacker);
+    if (allowSelf && game.sr3e.isLiveActor(attacker)) rows.push({ ref: actorRef(attacker), actor: attacker, name: attacker.name, self: true });
 
-    if (!candidates.length) {
+    if (!rows.length) {
       ui.notifications.warn('No valid targets found.');
       return null;
     }
 
-    const choices = candidates.map((a, i) => `
+    const choices = rows.map((r, i) => `
       <label class="sr-target-row">
-        <input type="radio" name="target-actor" value="${a.id}" ${i === 0 ? 'checked' : ''}
+        <input type="radio" name="target-actor" value="${foundry.utils.escapeHTML(r.ref)}" ${i === 0 ? 'checked' : ''}
                style="width:13px;height:13px;margin:0;accent-color:var(--sr-accent);flex-shrink:0;appearance:auto;-webkit-appearance:radio"/>
-        <span>${a.name}${a.id === attacker.id ? _selfBadge : _typeBadge(a.type)}</span>
+        <span>${foundry.utils.escapeHTML(r.name)}${r.self ? _selfBadge : _typeBadge(r.actor.type)}</span>
       </label>`).join('');
 
-    let targetId = candidates[0].id;
+    let targetId = rows[0].ref;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${attacker.name} — Select Target` },
       content: `<div class="sr-target-list">${choices}</div>`,
@@ -3654,7 +3660,7 @@ export class SR3EItem extends Item {
     });
 
     if (!targetId) return null;
-    return game.actors.get(targetId) ?? null;
+    return actorFrom(targetId) ?? null;
   }
 
   /**
@@ -3668,7 +3674,7 @@ export class SR3EItem extends Item {
     const friendly = globalThis.CONST?.TOKEN_DISPOSITIONS?.FRIENDLY ?? 1;
     const rows = targets.map(t => {
       const facts = {
-        isSelf:          t.id === caster.id,
+        isSelf:          ActorRef.same(t, caster),
         // A player (not the GM, who owns everything) who owns both the caster and this target.
         sameOwner:       !!game.users?.some(u => !u.isGM && caster.testUserPermission?.(u, 'OWNER') && t.testUserPermission?.(u, 'OWNER')),
         bothPlayerOwned: !!(Q?.isPlayerCharacter(caster) && Q?.isPlayerCharacter(t)),
@@ -3677,7 +3683,7 @@ export class SR3EItem extends Item {
       const on = WillingTarget.defaultWilling(facts, category);
       const why = facts.isSelf ? 'the caster' : (facts.sameOwner ? 'same owner' : (facts.bothPlayerOwned ? 'party' : (facts.friendlyToken ? 'friendly token' : '')));
       return `<label class="sr-target-row" style="display:flex;gap:6px;align-items:center">
-        <input type="checkbox" name="willing" value="${t.id}" ${on ? 'checked' : ''}
+        <input type="checkbox" name="willing" value="${foundry.utils.escapeHTML(actorRef(t))}" ${on ? 'checked' : ''}
                style="width:13px;height:13px;margin:0;appearance:auto;-webkit-appearance:checkbox"/>
         <span>${t.name}${why ? ` <span style="font-size:10px;color:var(--sr-muted)">(${why})</span>` : ''}</span>
       </label>`;
@@ -4715,21 +4721,23 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
    */
   static async _promptTargetsMulti(attacker, spellType, spellTarget, force, spellName = '') {
     // The caster is a candidate too — an area spell catches them if they stand in it (SR3 p.181).
-    const all = game.actors.contents
-      .filter(a => a.type !== 'vehicle' && game.sr3e.isLiveActor(a));
-    const candidates = game.sr3e.sceneFirst(all);   // on the scene, else everyone (F2)
-    if (candidates.length === 0) {
+    // One row per token on the scene — each unlinked goon its own target (TODO 260) — else everyone (F2).
+    const ok = a => a.type !== 'vehicle' && game.sr3e.isLiveActor(a);
+    const scene = game.scenes?.viewed ?? game.scenes?.active ?? null;
+    let rows = tokenRows(scene?.tokens?.contents ?? [], ok);
+    if (!rows.length) rows = game.sr3e.sceneFirst(game.actors.contents.filter(ok)).map(a => ({ ref: a.id, actor: a, name: a.name }));
+    if (rows.length === 0) {
       ui.notifications.warn('No valid targets found.');
       return null;
     }
 
-    const choices = candidates.map(a => {
+    const choices = rows.map(({ ref, actor: a, name }) => {
       const parsed = SR3EItem._parseSpellTarget(spellTarget, a, force, spellType, { spellName });
       return `
         <label class="sr-target-row">
-          <input type="checkbox" name="target-actor" value="${a.id}"
+          <input type="checkbox" name="target-actor" value="${foundry.utils.escapeHTML(ref)}"
                  style="width:13px;height:13px;margin:0;accent-color:var(--sr-accent);flex-shrink:0;appearance:auto;-webkit-appearance:checkbox"/>
-          <span>${a.name} <span style="font-size:11px;color:var(--sr-muted)">(${parsed.attrLabel} → TN ${parsed.tn})</span></span>
+          <span>${foundry.utils.escapeHTML(name)} <span style="font-size:11px;color:var(--sr-muted)">(${parsed.attrLabel} → TN ${parsed.tn})</span></span>
         </label>`;
     }).join('');
 
@@ -4754,7 +4762,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     });
 
     if (cancelled || targetIds.length === 0) return null;
-    return targetIds.map(id => game.actors.get(id)).filter(Boolean);
+    return targetIds.map(id => actorFrom(id)).filter(Boolean);
   }
 
   /**
@@ -4982,7 +4990,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     if (WillingTarget.canBeWilling(this.system.category) && !isFling && targetActors.length) {
       const picked = await SR3EItem._promptWillingTargets(actor, targetActors, this.name, this.system.category);
       if (picked === null) return null;   // cancelled
-      willingTargetIds = WillingTarget.carriedIds(this.system.category, targetActors.map(t => t.id), picked);
+      willingTargetIds = WillingTarget.carriedIds(this.system.category, targetActors.map(t => actorRef(t)), picked);
     }
 
     // Step 3: the cast TN. SR3 combat spell = opposed test.
@@ -5115,8 +5123,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const label        = `🔮 ${this.name} [F${force}] ${sorceryLabel} → ${targetNames}`;
 
     const spellContext = {
-      attackerActorId:   actor.id,
-      targetActorIds:    targetActors.map(t => t.id),
+      attackerActorId:   actorRef(actor),
+      targetActorIds:    targetActors.map(t => actorRef(t)),
       // Targets that take no Spell Resistance Test (p.183, TODO 191); non-damaging spells only.
       willingTargetIds,
       touch:             /^\s*T/i.test(String(this.system.range ?? '')),
@@ -5164,8 +5172,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       spellContext,
       rawDamage,
       damageBase,
-      attackerActorId:    actor.id,
-      targetActorId:      primaryTarget?.id ?? actor.id,
+      attackerActorId:    actorRef(actor),
+      targetActorId:      actorRef(primaryTarget) ?? actor.id,
       committedDodgeDice,
       physicalDice:       options.physicalDice ?? false,
     });
@@ -5198,10 +5206,11 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       const a = tok.actor;
       if (!a || a.type === 'vehicle') continue;
       if (!game.sr3e.isLiveActor(a)) continue;
-      if (seen.has(a.id)) continue;
+      // By reference, not id: two unlinked goons of one NPC share an id and are two targets (TODO 260).
+      if (seen.has(actorRef(a))) continue;
       let dM; try { dM = canvas.grid.measurePath([center, tok.center])?.distance ?? Infinity; }
       catch { dM = Infinity; }
-      if (dM <= radiusM) { seen.add(a.id); out.push(a); }
+      if (dM <= radiusM) { seen.add(actorRef(a)); out.push(a); }
     }
     return out;
   }

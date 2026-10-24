@@ -3254,6 +3254,20 @@ export const MUTANTS = [
     impl:   system => system?.recoilModIntegral !== undefined,
   },
   {
+    id:     'actor-ref-bare-id',
+    suite:  'actor-ref',
+    module: '../scripts/data/actor-ref.mjs', klass: 'ActorRef', method: 'of',
+    was:    'cards named an unlinked token\'s actor by its id, which it shares with its sidebar actor — a wound or Mark prone on one goon landed on every goon of that NPC (TODO 260, seen in play 2026-10-24)',
+    impl:   actor => actor?.id ?? null,
+  },
+  {
+    id:     'actor-ref-token-same-as-sidebar',
+    suite:  'actor-ref',
+    module: '../scripts/data/actor-ref.mjs', klass: 'ActorRef', method: 'same',
+    was:    'comparing by id made a goon "the same" as its sidebar NPC and as every other copy (TODO 260)',
+    impl:   (a, b) => !!a && !!b && (a.id ?? a) === (b.id ?? b),
+  },
+  {
     id:     'old-sheet-grenades-stay-in-hand',
     suite:  'ready-weapon',
     module: '../scripts/data/ready-weapon.mjs', klass: 'ReadyWeapon', method: 'putAwayCarriedGrenade',

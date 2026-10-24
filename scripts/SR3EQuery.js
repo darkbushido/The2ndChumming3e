@@ -30,6 +30,7 @@
  */
 
 import { Funds } from './data/funds.mjs';
+import { actorFrom } from './data/actor-ref.mjs';
 
 /** Tagged so callers can distinguish "no GM connected" from a handler failure. */
 export class SR3EGMUnavailable extends Error {
@@ -142,6 +143,7 @@ export class SR3EQuery {
    */
   static resolve(ref) {
     if (!ref || typeof ref !== 'string') return null;
+    // Already id-then-uuid on its own (any document, not only actors), so it keeps the plain lookup.
     const byId = game.actors?.get(ref);
     if (byId) return byId;
     try { return fromUuidSync(ref) ?? null; } catch { return null; }
@@ -524,7 +526,7 @@ export class SR3EQuery {
 
         let data;
         if (fromActorId) {
-          const from = game.actors.get(fromActorId);
+          const from = actorFrom(fromActorId);
           if (!from) throw new Error(`SR3E | vehicle.create: unknown actor '${fromActorId}'`);
           data = from.toObject();
           delete data._id;
@@ -579,7 +581,7 @@ export class SR3EQuery {
     CONFIG.queries['sr3e.vehicle.link'] = async ({ rid, vehicleId, driverActorId, _requesterId }) =>
       SR3EQuery.once(rid, async () => {
         SR3EQuery.assertActiveGM();
-        const vehicle = game.actors.get(vehicleId);
+        const vehicle = actorFrom(vehicleId);
         if (!vehicle || vehicle.type !== 'vehicle') {
           throw new Error(`SR3E | vehicle.link: '${vehicleId}' is not a vehicle`);
         }

@@ -1,4 +1,5 @@
 import { Concealment, MODES, NOTICE, SEARCH_FULL, SEARCH_TABLE } from './data/concealment.mjs';
+import { actorFrom, actorRef } from './data/actor-ref.mjs';
 
 /**
  * 👁 Concealment — what a character carries that can be seen, and how well it is hidden · TODO 195.
@@ -66,7 +67,7 @@ export class SR3EConcealment {
       const q = s => el.querySelector(s);
       let rows = [];
       const draw = () => {
-        const a = game.actors.get(q('#cn-actor').value);
+        const a = actorFrom(q('#cn-actor').value);
         rows = SR3EConcealment.rowsFor(a);
         q('#cn-rows').innerHTML = rows.length ? rows.map((r, i) => `
           <div class="cn-row" data-i="${i}" style="display:grid;grid-template-columns:auto 1fr 5em auto;gap:6px;align-items:center;padding:3px 0;border-bottom:1px solid var(--sr-border)">
@@ -83,7 +84,7 @@ export class SR3EConcealment {
         q('#cn-rows').querySelectorAll('.cn-test').forEach(b => b.addEventListener('click', () => {
           const i = Number(b.closest('.cn-row').dataset.i);
           const c = parseInt(b.closest('.cn-row').querySelector('.cn-num').value);
-          SR3EConcealment.testDialog({ actorId: a?.id ?? '', name: rows[i].name, conceal: Number.isFinite(c) ? c : rows[i].conceal });
+          SR3EConcealment.testDialog({ actorId: actorRef(a) ?? '', name: rows[i].name, conceal: Number.isFinite(c) ? c : rows[i].conceal });
         }));
       };
       q('#cn-actor').addEventListener('change', draw);
@@ -125,7 +126,7 @@ export class SR3EConcealment {
     const body = shown.length ? shown.map(r => {
       const testable = r.needsTest && r.conceal != null;
       const btn = testable
-        ? `<button type="button" class="sr-conceal-test-btn" data-payload='${json({ actorId: actor.id, name: r.name, conceal: r.conceal })}'>🔍 Test</button>` : '';
+        ? `<button type="button" class="sr-conceal-test-btn" data-payload='${json({ actorId: actorRef(actor), name: r.name, conceal: r.conceal })}'>🔍 Test</button>` : '';
       return `<div style="display:flex;justify-content:space-between;gap:8px;align-items:center;padding:2px 0;border-bottom:1px solid var(--sr-border);font-size:12px">
           <span>${ICON[r.kind] ?? ''} ${esc(r.name)}</span>
           <span style="color:var(--sr-muted);white-space:nowrap">${esc(SR3EConcealment.label(r))}</span>${btn}
@@ -140,7 +141,7 @@ export class SR3EConcealment {
   }
 
   static async post(actorId, rows) {
-    const actor = game.actors.get(actorId);
+    const actor = actorFrom(actorId);
     if (!actor) return;
     await ChatMessage.create({ speaker: { alias: 'GM' }, content: SR3EConcealment.cardHtml(actor, rows) });
   }
@@ -158,7 +159,7 @@ export class SR3EConcealment {
     if (!game.user.isGM) { ui.notifications.warn('Only the GM rolls this test.'); return; }
     const observers = SR3EConcealment.people();
     if (!observers.length) { ui.notifications.warn('There is nobody to make the Perception Test.'); return; }
-    const carrier = game.actors.get(actorId);
+    const carrier = actorFrom(actorId);
     const opt = (rows, sel) => rows.map(r => `<option value="${r.key}"${r.key === sel ? ' selected' : ''}>${esc(r.label)}${r.mod != null ? ` (${r.mod >= 0 ? '+' : ''}${r.mod})` : ''}</option>`).join('');
     const FIELD = 'display:flex;flex-direction:column;gap:3px;color:var(--sr-muted);font-size:12px;';
 
@@ -178,7 +179,7 @@ export class SR3EConcealment {
           : Number.isFinite(c) ? `Target number ${Concealment.targetNumber(c, m, extra)} (Concealability ${c}${extra ? `, ${extra > 0 ? '+' : ''}${extra}` : ''})` : 'Enter the Concealability.';
       };
       q('#cn-observer').addEventListener('change', () => {
-        const a = game.actors.get(q('#cn-observer').value);
+        const a = actorFrom(q('#cn-observer').value);
         q('#cn-dice').value = a?.system?.attributes?.intelligence?.value ?? a?.system?.attributes?.intelligence?.base ?? 3;
       });
       el.querySelectorAll('input, select').forEach(n => { n.addEventListener('input', state); n.addEventListener('change', state); });
@@ -229,7 +230,7 @@ export class SR3EConcealment {
       ],
     });
     if (!choice) return;
-    const observer = game.actors.get(choice.observerId);
+    const observer = actorFrom(choice.observerId);
     if (choice.found) {
       await ChatMessage.create({ speaker: { alias: 'GM' }, content: `<div class="sr-roll-card">
         <div class="sr-roll-header">🔍 Strip search — ${esc(name)}</div>

@@ -12,6 +12,7 @@
  *   here is absolute, so the plain set verb is the right one).
  */
 import { DrugRules, ADDICTION_LABEL } from './data/drug-rules.mjs';
+import { actorFrom, actorRef } from './data/actor-ref.mjs';
 
 const FLAG = 'The2ndChumming3e';
 const esc  = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -130,7 +131,7 @@ export class SR3EDrugs {
     let tn   = game.user.isGM ? parseInt(card?.querySelector('.sr-drug-tn')?.value) : NaN;
     if (!Number.isFinite(pool)) pool = saved.pool ?? p.pool;
     if (!Number.isFinite(tn))   tn   = saved.tn ?? p.tn;
-    const roller = game.actors.get(p.rollerId);
+    const roller = actorFrom(p.rollerId);
     if (!roller) { ui.notifications.warn('That character no longer exists.'); return; }
     if (pool <= 0) { ui.notifications.warn(`${roller.name} has no dice for this.`); return; }
     await roller.rollPool(pool, tn, p.title, { drugContext: { ...p, pool, tn }, skipWoundMod: true, skipSustainMod: true });
@@ -138,7 +139,7 @@ export class SR3EDrugs {
 
   /** The final wave of a drug test — what it means, and the button that applies it. */
   static async onRolled(ctx, successes) {
-    const actor = game.actors.get(ctx.rollerId);
+    const actor = actorFrom(ctx.rollerId);
     if (!actor) return;
     const n = Number(successes) || 0;
     const s = SR3EDrugs.record(actor, ctx.key);
@@ -183,7 +184,7 @@ export class SR3EDrugs {
   /* ── Record actions (chat buttons and the sheet) ────────────────────────────────────────── */
 
   static async act(btn, p) {
-    const actor = game.actors.get(p.ownerId);
+    const actor = actorFrom(p.ownerId);
     if (!actor) { ui.notifications.warn('That character no longer exists.'); return false; }
     const s = SR3EDrugs.record(actor, p.key);
     const say = (text, color = '') => ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }),
@@ -212,7 +213,7 @@ export class SR3EDrugs {
         const d = game.sr3e.SR3EItem.parseDamageCode(p.damage);
         if (!d?.power) return false;
         await actor._postSoakCard({ stagedPower: d.power, stagedLevel: d.level, isStun: d.isStun, rawDamage: p.damage,
-          targetActorId: actor.id, noArmor: true, noArmorNote: `${p.what} — resisted with Body; armour does not apply (M&M p.106)` });
+          targetActorId: actorRef(actor), noArmor: true, noArmorNote: `${p.what} — resisted with Body; armour does not apply (M&M p.106)` });
         return true;
       }
       default: return false;

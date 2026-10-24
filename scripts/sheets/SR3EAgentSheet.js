@@ -1,4 +1,5 @@
 import { SR3E } from '../config.js';
+import { actorFrom } from '../data/actor-ref.mjs';
 
 export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
 
@@ -66,7 +67,7 @@ export class SR3EAgentSheet extends foundry.applications.sheets.ActorSheetV2 {
     const mpCost     = derived.mpCost ?? 0;
     const operatorId   = sys.operatorActorId ?? '';
     const activeHostId = sys.activeHostId ?? '';
-    const activeHost   = activeHostId ? game.actors.get(activeHostId) : null;
+    const activeHost   = activeHostId ? actorFrom(activeHostId) : null;
     const isTemplate   = actor.getFlag('The2ndChumming3e', 'isTemplate');
     const appearsInUI  = game.sr3e.isLiveActor(actor);
 

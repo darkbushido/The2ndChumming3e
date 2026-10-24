@@ -329,6 +329,14 @@ if (!sys.attributes) sys.attributes = {};
 const attr = sys.attributes;
 ```
 
+### Naming an actor on a card — `actorRef` / `actorFrom` · TODO 260
+⚠ **An unlinked token's actor has the SAME id as its sidebar actor**, so a card that carried `actorId` and a button
+that did `game.actors.get(actorId)` reached the sidebar NPC — and every unlinked copy of it took the wound or status
+(seen in play, 2026-10-24). Write `actorRef(actor)` (a token actor's uuid, else its id) and read with
+`actorFrom(ref)` (a plain id resolves exactly as before) — both from `scripts/data/actor-ref.mjs`. Pickers list
+tokens with `tokenRows`. Compare with `ActorRef.same`, and match a combatant by `tokenId` for a token actor.
+Linked actors (PCs) are unchanged. `tests/actor-ref.test.mjs` ratchets `…ActorId: x.id` payloads and `game.actors.get`.
+
 ### Cross-module references
 `SR3EActor` ↔ `SR3EItem` would be circular. Register classes on `game.sr3e` in `sr3e.js` and reference them at
 runtime (`game.sr3e.SR3EActor.someStaticMethod(ctx)`).

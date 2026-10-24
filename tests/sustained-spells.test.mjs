@@ -130,7 +130,7 @@ export async function run(t) {
   t.ok('cybercombat: both sides (the defence avoids damage — p.125 spares it wounds, not spells)',
     /\(attacking \? SR3EActor\.woundTN\(actor\) : 0\) \+ SR3EActor\.standingTN\(actor\)/.test(actor));
   t.ok('contested: both corners', /woundTN\(picked\) \+ SR3EActor\.standingTN\(picked\)/.test(actor)
-    && /oppTN:[^\n]*standingTN\(game\.actors\.get\(oppActId\)\)/.test(actor));
+    && /oppTN:[^\n]*standingTN\(actorFrom\(oppActId\)\)/.test(actor));
   t.ok('Orthodox System Test and attack: the decker', /utilMod \+ SR3EActor\.woundTN\(this\) \+ SR3EActor\.standingTN\(this\)/.test(actor)
     && /intruding\[secCode\] \?\? 4\) \+ SR3EActor\.woundTN\(this\) \+ SR3EActor\.standingTN\(this\)/.test(actor));
   t.ok('Orthodox IC attack: the decker\'s defence', /defTN\s+= atkTNOverride \+ SR3EActor\.standingTN\(deckerActor\)/.test(actor));

@@ -1,3 +1,4 @@
+import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 /**
  * SR3EWard — Wards (astral barriers, SR3 Core p.174 / MitS p.88-89).
  *
@@ -106,7 +107,7 @@ export class SR3EWard {
 
   /** "Place Ward on Canvas" button click — aim, create the Actor + Token, draw the boundary. */
   static async confirmPlaceWard(payload) {
-    const caster = game.actors.get(payload.casterActorId);
+    const caster = actorFrom(payload.casterActorId);
     if (!caster) { ui.notifications.warn('Ward: caster actor not found.'); return; }
 
     const placed = await game.sr3e.SR3EItem._placeBlastTemplate(caster, payload.areaRadius);
@@ -197,7 +198,7 @@ export class SR3EWard {
     });
     if (!result) return;
 
-    const attacker = game.actors.get(result.attackerActorId);
+    const attacker = actorFrom(result.attackerActorId);
     if (!attacker) return;
 
     let damageBase, rawDamage;
@@ -232,7 +233,7 @@ export class SR3EWard {
 
     // RAW: the ward's creator is automatically alerted the moment the ward is attacked —
     // no detection test, posted immediately (before the dice even resolve).
-    const creator = ward.system.creatorActorId ? game.actors.get(ward.system.creatorActorId) : null;
+    const creator = ward.system.creatorActorId ? actorFrom(ward.system.creatorActorId) : null;
     const whisperTargets = new Set([...game.users.filter(u => u.isGM).map(u => u.id)]);
     if (creator) for (const u of game.users) if (creator.testUserPermission(u, 'OWNER')) whisperTargets.add(u.id);
     await ChatMessage.create({
@@ -245,8 +246,8 @@ export class SR3EWard {
     await attacker.rollPool(Math.max(1, pool), Math.max(2, ward.system.force + tnMod), `⚔ ${attacker.name} attacks ${ward.name}`, {
       isWardAttackRoll: true,
       wardAttackContext: {
-        wardActorId:      ward.id,
-        attackerActorId:  attacker.id,
+        wardActorId:      actorRef(ward),
+        attackerActorId:  actorRef(attacker),
         damageBase,
         rawDamage,
       },
@@ -256,8 +257,8 @@ export class SR3EWard {
   /** "Ward Resists" button click — rolls the ward's own Force-dice soak. */
   static async handleWardResistClick(btn) {
     const p    = JSON.parse(btn.dataset.payload);
-    const ward = game.actors.get(p.wardActorId);
-    const attacker = game.actors.get(p.attackerActorId);
+    const ward = actorFrom(p.wardActorId);
+    const attacker = actorFrom(p.attackerActorId);
     if (!ward) { ui.notifications.warn('Ward: actor not found.'); return; }
     btn.disabled = true;
     btn.textContent = '⏳ Resisting…';
@@ -266,7 +267,7 @@ export class SR3EWard {
     await ward.rollPool(Math.max(1, ward.system.force), Math.max(2, attackerMagic), `🛡 ${ward.name} Resists`, {
       isWardSoakRoll: true,
       wardSoakContext: {
-        wardActorId:  ward.id,
+        wardActorId:  actorRef(ward),
         stagedPower:  p.stagedPower,
         stagedLevel:  p.stagedLevel,
       },
@@ -303,12 +304,12 @@ export class SR3EWard {
     });
     if (!attackerId) return;
 
-    const attacker = game.actors.get(attackerId);
+    const attacker = actorFrom(attackerId);
     const grade    = Math.max(0, attacker?.system?.initiateGrade ?? 0);
     if (grade <= 0) ui.notifications.warn(`${attacker?.name ?? 'Attacker'} has no Initiate Grade — proceeding anyway (minimal guardrails).`);
 
     // A ward of Force 7+ explodes the Initiate's 6s — rolled on wave cards; the result waits (F4).
-    const ctx = { attackerActorId: attacker.id, wardActorId: ward.id, grade };
+    const ctx = { attackerActorId: actorRef(attacker), wardActorId: actorRef(ward), grade };
     await game.sr3e.SR3EActor.rollOpposedPair('ward-fool', ctx,
       { actor: attacker, pool: grade * 2,         tn: ward.system.force, label: `🌫 ${attacker.name} tries to fool ${ward.name}` },
       { actor: ward,     pool: ward.system.force, tn: grade,             label: `🛡 ${ward.name} resists` });
@@ -316,8 +317,8 @@ export class SR3EWard {
 
   static async _postFoolResult(ctx, atkDice, wardDice) {
     const A        = game.sr3e.SR3EActor;
-    const attacker = game.actors.get(ctx.attackerActorId);
-    const ward     = game.actors.get(ctx.wardActorId);
+    const attacker = actorFrom(ctx.attackerActorId);
+    const ward     = actorFrom(ctx.wardActorId);
     if (!attacker || !ward) return;
     const grade    = ctx.grade;
     const atkRes   = A.diceResult(atkDice);

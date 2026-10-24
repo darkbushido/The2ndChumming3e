@@ -1,3 +1,4 @@
+import { actorFrom } from '../data/actor-ref.mjs';
 const SEC_TIERS = ['Ivory','Blue','Green','Orange','Red','Black','Ultraviolet'];
 
 const TIER_DATA = {
@@ -506,7 +507,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     const nodeBlankOpt   = `<option value="">— node —</option>`;
     const stockedRows = stocked.map((ic, idx) => {
       const isHidden   = ic.hidden ?? false;
-      const icActor    = ic.actorId ? game.actors.get(ic.actorId) : null;
+      const icActor    = ic.actorId ? actorFrom(ic.actorId) : null;
       const icDeployed = icActor?.system?.deployed ?? false;
       const nodeSelOpts = nodeBlankOpt + hostNodes.map(n =>
         `<option value="${n.id}" ${ic.nodeId === n.id ? 'selected' : ''}>${n.abbreviation ?? n.name}</option>`
@@ -1009,7 +1010,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (field === 'currentNodeId') {
       const actorId = users[idx].actorId;
       if (actorId) {
-        const linked = game.actors.get(actorId);
+        const linked = actorFrom(actorId);
         if (linked) await linked.update({ 'system.currentMatrixNode': el.value }, { _sr3eSync: true });
       }
     }
@@ -1392,7 +1393,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     for (const ref of icRefs) {
       if (!ref.actorId) continue;
-      const actor = game.actors.get(ref.actorId);
+      const actor = actorFrom(ref.actorId);
       if (!actor) continue;
       const sceneToken = (canvas.tokens?.placeables ?? []).find(t => t.actor?.id === ref.actorId);
       if (sceneToken) {
@@ -1414,7 +1415,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     const hostId = this.actor.id;
     for (const ref of icRefs) {
       if (!ref.actorId) continue;
-      const icActor = game.actors.get(ref.actorId);
+      const icActor = actorFrom(ref.actorId);
       if (icActor) await icActor.update({ 'system.deployed': true, 'system.activeHostId': hostId });
     }
 
@@ -1453,7 +1454,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
         buttons: [
           { label: 'Add', action: 'add', default: true, callback: (_e, _b, dlg) => {
             const aid = dlg.element.querySelector('#ic-actor').value;
-            const a   = game.actors.get(aid);
+            const a   = actorFrom(aid);
             entry = { actorId: aid, name: a?.name ?? 'IC', memoryRequired: a?.system?.memoryRequired ?? 0 };
           }},
           { label: 'Cancel', action: 'cancel' },
@@ -1502,7 +1503,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const stocked = this.actor.system.stockedIC ?? [];
     const deployable = stocked
-      .map(ic => ({ ...ic, actor: ic.actorId ? game.actors.get(ic.actorId) : null }))
+      .map(ic => ({ ...ic, actor: ic.actorId ? actorFrom(ic.actorId) : null }))
       .filter(ic => ic.actor?.type === 'ic');
 
     if (!deployable.length) {
@@ -1551,7 +1552,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
         toCreate.push({ tokenId: sceneToken.id, actorId, sceneId: canvas.scene?.id });
       } else {
         toCreate.push({ actorId });
-        noToken.push(game.actors.get(actorId)?.name ?? actorId);
+        noToken.push(actorFrom(actorId)?.name ?? actorId);
       }
     }
 
@@ -1560,7 +1561,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     // Mark deployed IC actors for matrix targeting; apply assigned starting node
     const hostId = this.actor.id;
     for (const actorId of selected) {
-      const icActor      = game.actors.get(actorId);
+      const icActor      = actorFrom(actorId);
       const stockedEntry = stocked.find(ic => ic.actorId === actorId);
       if (icActor) {
         const upd = { 'system.deployed': true, 'system.activeHostId': hostId };
@@ -1578,7 +1579,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
   /* ── Active Users ──────────────────────────────────────────────── */
 
   static async _onOpenLinkedActor(_e, target) {
-    const actor = game.actors.get(target.dataset.actorId);
+    const actor = actorFrom(target.dataset.actorId);
     actor?.sheet.render({ force: true });
   }
 
@@ -1637,7 +1638,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const actorId = users[idx].actorId;
     if (actorId) {
-      const linked = game.actors.get(actorId);
+      const linked = actorFrom(actorId);
       if (linked) await linked.update({ 'system.currentMatrixNode': target.value }, { _sr3eSync: true });
     }
   }
@@ -1687,7 +1688,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     // Sync to linked actor's matrixMarks (_sr3eSync prevents the hook from echoing back)
     const actorId = users[userIdx].actorId;
     if (actorId) {
-      const linked = game.actors.get(actorId);
+      const linked = actorFrom(actorId);
       if (linked) {
         const marks = [...new Set([...(linked.system.matrixMarks ?? []), nodeId])];
         await linked.update({ 'system.matrixMarks': marks }, { _sr3eSync: true });
@@ -1706,7 +1707,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
     // Sync removal to linked actor's matrixMarks (_sr3eSync prevents the hook from echoing back)
     const actorId = users[userIdx].actorId;
     if (actorId) {
-      const linked = game.actors.get(actorId);
+      const linked = actorFrom(actorId);
       if (linked) {
         const marks = (linked.system.matrixMarks ?? []).filter(m => m !== nodeId);
         await linked.update({ 'system.matrixMarks': marks }, { _sr3eSync: true });
@@ -1740,7 +1741,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
         buttons: [
           { label: 'Add', action: 'add', default: true, callback: (_e, _b, dlg) => {
             actorId = dlg.element.querySelector('#ag-actor')?.value;
-            const a = actorId ? game.actors.get(actorId) : null;
+            const a = actorId ? actorFrom(actorId) : null;
             entry = {
               actorId:       actorId ?? '',
               name:          a?.name ?? 'Agent',
@@ -1780,7 +1781,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     // Sync activeHostId on the agent actor
     if (actorId) {
-      const agentActor = game.actors.get(actorId);
+      const agentActor = actorFrom(actorId);
       if (agentActor) await agentActor.update({ 'system.activeHostId': this.actor.id });
     }
   }
@@ -1794,7 +1795,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     // Clear activeHostId on the removed agent actor
     if (removed?.actorId) {
-      const agentActor = game.actors.get(removed.actorId);
+      const agentActor = actorFrom(removed.actorId);
       if (agentActor) await agentActor.update({ 'system.activeHostId': '' });
     }
   }

@@ -30,6 +30,7 @@ import { itemRating } from './data/item-rating.mjs';
 import { PatientOrder } from './data/patient-order.mjs';
 import { MagicLoss } from './data/magic-loss.mjs';
 import { SpellTarget } from './data/spell-target.mjs';
+import { actorRef } from './data/actor-ref.mjs';
 
 const LEVEL_NAME = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
 const NEXT_DOWN  = { D: 'S', S: 'M', M: 'L', L: '' };
@@ -377,7 +378,7 @@ export class SR3EHealing {
         if (flag(i, 'stored')) continue;
         if (kind === 'medkit' && flag(i, 'suppliesOut')) continue;
         const rating = itemRating(i);
-        if (!best || rating > best.rating) best = { actorId: a.id, itemId: i.id, name: i.name, rating };
+        if (!best || rating > best.rating) best = { actorId: actorRef(a), itemId: i.id, name: i.name, rating };
       }
     }
     return best;

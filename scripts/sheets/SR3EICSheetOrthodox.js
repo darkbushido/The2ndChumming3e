@@ -1,3 +1,4 @@
+import { actorFrom } from '../data/actor-ref.mjs';
 // SR3E IC Sheet — Orthodox SR3 matrix rules (SR3 Core p.212–223)
 // Registered in place of SR3EICSheet when game setting matrixRuleset === 'orthodox'.
 //
@@ -140,7 +141,7 @@ export class SR3EICSheetOrthodox extends foundry.applications.sheets.ActorSheetV
 
   _buildHostSection(sys) {
     const hostId   = sys.activeHostId ?? '';
-    const host     = hostId ? game.actors.get(hostId) : null;
+    const host     = hostId ? actorFrom(hostId) : null;
     const hostName = host?.name ?? '';
 
     const linkRow = host
@@ -169,7 +170,7 @@ export class SR3EICSheetOrthodox extends foundry.applications.sheets.ActorSheetV
 
   _buildDerivedPanel(sys) {
     const hostId = sys.activeHostId ?? '';
-    const host   = hostId ? game.actors.get(hostId) : null;
+    const host   = hostId ? actorFrom(hostId) : null;
     const hsys   = host?.system;
 
     if (!host || !hsys) {
@@ -226,7 +227,7 @@ export class SR3EICSheetOrthodox extends foundry.applications.sheets.ActorSheetV
   }
 
   _buildRollButtons(sys) {
-    const host   = game.actors.get(sys.activeHostId ?? '');
+    const host   = actorFrom(sys.activeHostId ?? '');
     const noHost = !host;
     const dim    = 'opacity:.4;pointer-events:none;';
 
@@ -267,7 +268,7 @@ export class SR3EICSheetOrthodox extends foundry.applications.sheets.ActorSheetV
 
   static async _onRollInit() {
     const sys    = this.actor.system;
-    const host   = game.actors.get(sys.activeHostId ?? '');
+    const host   = actorFrom(sys.activeHostId ?? '');
     if (!host) return void ui.notifications.warn('No host linked — cannot determine initiative formula.');
 
     const code     = host.system.orthodoxSecurityCode ?? 'Green';
@@ -325,7 +326,7 @@ export class SR3EICSheetOrthodox extends foundry.applications.sheets.ActorSheetV
   }
 
   static _onOpenHost() {
-    game.actors.get(this.actor.system.activeHostId ?? '')?.sheet.render(true);
+    actorFrom(this.actor.system.activeHostId ?? '')?.sheet.render(true);
   }
 
   static async _onToggleProactive() {

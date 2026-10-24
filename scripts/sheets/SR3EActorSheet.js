@@ -10,6 +10,7 @@ import { GmOnlyFields } from '../data/gm-only-fields.mjs';
 import { Funds } from '../data/funds.mjs';
 import { CombatPool } from '../data/combat-pool.mjs';
 import { InitiateAstral } from '../data/initiate-astral.mjs';
+import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -1943,7 +1944,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const currentMode    = sys.matrixUserMode ?? '';
     const activeHostId   = sys.activeHostId ?? '';
-    const activeHost     = activeHostId ? game.actors.get(activeHostId) : null;
+    const activeHost     = activeHostId ? actorFrom(activeHostId) : null;
     const equippedDeckId = sys.equippedCyberdeck ?? '';
     const deck           = equippedDeckId ? actor.items.get(equippedDeckId) : null;
     const decks          = actor.items.filter(i => i.type === 'cyberdeck' && !i.getFlag('The2ndChumming3e', 'stored')).sort((a, b) => a.name.localeCompare(b.name));
@@ -2314,7 +2315,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const alertLevel  = run.alertLevel ?? 'none';
     const tally       = run.securityTally ?? 0;
     const hostId      = run.currentHostId ?? '';
-    const currentHost = hostId ? game.actors.get(hostId) : null;
+    const currentHost = hostId ? actorFrom(hostId) : null;
     const hostBadge   = currentHost
       ? `<span style="color:var(--sr-accent);font-size:11px">📡 ${currentHost.name}</span>`
       : `<span style="font-size:11px;color:var(--sr-muted)">Not logged in</span>`;
@@ -4084,7 +4085,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /** 🎲 — the Sorcery Test to keep a spell after taking damage (p.178). */
   static async _onSustainCheck(_ev, target) {
     const e = (this.actor.system.sustainedSpells ?? []).find(x => x.id === target.dataset.sustainId);
-    if (e) await game.sr3e.SR3EActor.rollSustainCheck({ actorId: this.actor.id, name: e.name, force: e.force });
+    if (e) await game.sr3e.SR3EActor.rollSustainCheck({ actorId: actorRef(this.actor), name: e.name, force: e.force });
   }
 
   static async _onBanishSpirit(_ev, _target) {
@@ -4688,7 +4689,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     // Toggle off — clear mode and host
     if (current === mode) {
       if (oldHostId) {
-        const oldHost = game.actors.get(oldHostId);
+        const oldHost = actorFrom(oldHostId);
         if (oldHost) {
           const users = (oldHost.system.activeUsers ?? []).filter(u => u.actorId !== actor.id);
           await oldHost.update({ 'system.activeUsers': users });
@@ -4757,7 +4758,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     // Remove from old host if switching
     if (oldHostId && oldHostId !== hostId) {
-      const oldHost = game.actors.get(oldHostId);
+      const oldHost = actorFrom(oldHostId);
       if (oldHost) {
         const users = (oldHost.system.activeUsers ?? []).filter(u => u.actorId !== actor.id);
         await oldHost.update({ 'system.activeUsers': users });
@@ -4768,13 +4769,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     // Add to new host's activeUsers list
     if (hostId !== oldHostId) {
-      const host = game.actors.get(hostId);
+      const host = actorFrom(hostId);
       if (host) {
         const existing = host.system.activeUsers ?? [];
         if (!existing.some(u => u.actorId === actor.id)) {
           await host.update({
             'system.activeUsers': [...existing, {
-              actorId: actor.id, name: actor.name,
+              actorId: actorRef(actor), name: actor.name,
               iconType: 'icon', currentNodeId: null,
               hidden: false, linkLocked: false,
               marks: [], marksFalsified: false,
@@ -4866,7 +4867,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onAddMatrixMark(_ev, _target) {
     const actor = this.actor;
-    const nodes = game.actors.get(actor.system.activeHostId ?? '')?.system?.nodes ?? [];
+    const nodes = actorFrom(actor.system.activeHostId ?? '')?.system?.nodes ?? [];
     if (!nodes.length) { ui.notifications.warn('No host nodes found — connect to a host first.'); return; }
     const nodeOpts = nodes.map(n => `<option value="${n.id}">${n.abbreviation ?? n.name}</option>`).join('');
     let nodeId = null;
@@ -4921,12 +4922,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /* ------------------------------------------------------------------ */
 
   static async _onOpenVehicle(_ev, target) {
-    const actor = game.actors.get(target.dataset.actorId);
+    const actor = actorFrom(target.dataset.actorId);
     actor?.sheet.render({ force: true });
   }
 
   static async _onOpenHost(_ev, target) {
-    const actor = game.actors.get(target.dataset.actorId);
+    const actor = actorFrom(target.dataset.actorId);
     actor?.sheet.render({ force: true });
   }
 
@@ -5150,7 +5151,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * an unlink, grants no ownership (CLAUDE.md, *Creating documents*).
    */
   static async _onUnlinkVehicle(_ev, target) {
-    const vehicle = game.actors.get(target.dataset.actorId);
+    const vehicle = actorFrom(target.dataset.actorId);
     if (!vehicle) return;
     if (vehicle.isOwner) {
       await vehicle.update({ 'system.driverActorId': '', 'system.controlMode': '' });
@@ -5167,7 +5168,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async _onToggleVehicleMode(_ev, target) {
     const actorId = target.dataset.actorId;
     const mode    = target.dataset.mode;  // 'vcr', 'rcd', or 'auto'
-    const vActor  = game.actors.get(actorId);
+    const vActor  = actorFrom(actorId);
     if (!vActor) return;
 
     if (mode === 'auto') {
@@ -5255,7 +5256,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     let result;
     try {
       result = await game.sr3e.SR3EQuery.asGM('sr3e.actor.create', {
-        fromActorId: this.actor.id,
+        fromActorId: actorRef(this.actor),
         name:        `${this.actor.name} (copy)`,
       });
     } catch (err) {
@@ -5739,7 +5740,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const have = actor.system.nuyen ?? 0;     // read AFTER the dialog: a gift may have landed while it was open
     if (chosen.mode === 'give') {
-      const target = game.actors.get(chosen.who);
+      const target = actorFrom(chosen.who);
       if (!target) return ui.notifications.warn('Pick who to give it to.');
       const parties = Funds.giftParties(actor, target, isPC);
       if (!parties.ok) return ui.notifications.warn(parties.reason);

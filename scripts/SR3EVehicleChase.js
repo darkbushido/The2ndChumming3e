@@ -2,6 +2,7 @@ import { vcrLevel as vcrLevelOf } from './data/item-rating.mjs';
 import { Rigging } from './data/rigging.mjs';
 import { StallSpeed } from './data/stall-speed.mjs';
 import { openTestFirstWave, openTestExplode, openTestPending, openTestHighest } from './data/open-test.mjs';
+import { actorFrom } from './data/actor-ref.mjs';
 
 const VEHICLE_TYPES = [
   { key: 'car',          label: 'Car',                        score:   0 },
@@ -145,14 +146,14 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     // Vehicle actor select → auto-set chase type, full re-render (structure may change)
     el.querySelector(`#p-${pid}-vehicle`)?.addEventListener('change', ev => {
       p.vehicleActorId = ev.target.value;
-      const vActor = game.actors.get(p.vehicleActorId);
+      const vActor = actorFrom(p.vehicleActorId);
       if (vActor) p.chaseVehicleType = ACTOR_TYPE_DEFAULT[vActor.system.vehicleType] ?? 'car';
       // Start from the vehicle's own passenger list (TODO 74), so the chase and the vehicle
       // sheet stop keeping two unrelated rosters. Only into an empty list — never over names
       // the GM already added here.
       if (vActor && !p.passengerActorIds.length) {
         p.passengerActorIds = (vActor.system.passengerActorIds ?? [])
-          .filter(id => id !== p.driverActorId && game.actors.get(id));
+          .filter(id => id !== p.driverActorId && actorFrom(id));
       }
       p.driverPoints = null;
       this.render();
@@ -351,7 +352,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     ).join('');
 
     const passengerTags = p.passengerActorIds.map(aid => {
-      const a = game.actors.get(aid);
+      const a = actorFrom(aid);
       return `<span class="chase-passenger-tag">
         ${a?.name ?? '?'}
         <a data-remove-passenger data-pid="${pid}" data-actor-id="${aid}">✕</a>
@@ -368,7 +369,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
 
     const allActorIds = [p.driverActorId, ...p.passengerActorIds].filter(Boolean);
     const initRows = allActorIds.map(aid => {
-      const a    = game.actors.get(aid);
+      const a    = actorFrom(aid);
       const init = p.initiatives[aid];
       const role = aid === p.driverActorId ? 'Driver' : 'Passenger';
       return `<div class="chase-init-row">
@@ -501,7 +502,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
   // every driver got their skill rating here (TODO 167). 0 with no applicable vehicle skill too
   // (defaulting → no Control Pool).
   _controlPool(p) {
-    const driver = game.actors.get(p?.driverActorId);
+    const driver = actorFrom(p?.driverActorId);
     if (!driver) return 0;
     const vcr = p.vcrActive ? (p.vcrRating ?? 0) : 0;
     if (!vcr) return 0;
@@ -517,7 +518,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
   }
 
   _detectVcr(actorId) {
-    const actor = game.actors.get(actorId);
+    const actor = actorFrom(actorId);
     if (!actor) return 0;
     const vcr = actor.items.find(i =>
       i.type === 'cyberware' &&
@@ -528,7 +529,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
 
   _vehicleDamageInfo(vehicleActorId) {
     const none = { condition: 'none', label: 'None', tnMod: 0, initPenalty: 0, speedMod: 1.0, isDisabled: false, isDestroyed: false };
-    const vehicle = game.actors.get(vehicleActorId);
+    const vehicle = actorFrom(vehicleActorId);
     if (!vehicle) return none;
     const sys    = vehicle.system;
     const body   = sys.attributes?.body?.base ?? 4;
@@ -555,7 +556,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
   /** Post one wave of a Driver Points roll; when nothing is left to explode, record the result. */
   async _postDriverPointsWave({ pid, dice, wave = 0, header }) {
     const p       = this._participants.find(x => x.id === pid);
-    const driver  = game.actors.get(p?.driverActorId);
+    const driver  = actorFrom(p?.driverActorId);
     const pending = openTestPending(dice);
     const highest = openTestHighest(dice);
 
@@ -603,8 +604,8 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
   }
 
   _driverSkillPool(p) {
-    const driver  = game.actors.get(p.driverActorId);
-    const vehicle = game.actors.get(p.vehicleActorId);
+    const driver  = actorFrom(p.driverActorId);
+    const vehicle = actorFrom(p.vehicleActorId);
     if (!driver) return { pool: 0, label: 'No driver' };
 
     const keywords = SKILL_KEYWORDS[p.chaseVehicleType] ?? [];
@@ -634,8 +635,8 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const p = this._participants.find(x => x.id === pid);
     if (!p?.driverActorId) return;
 
-    const driver  = game.actors.get(p.driverActorId);
-    const vehicle = game.actors.get(p.vehicleActorId);
+    const driver  = actorFrom(p.driverActorId);
+    const vehicle = actorFrom(p.vehicleActorId);
     let { pool: skillPool, label: skillLabel, defaulting } = this._driverSkillPool(p);
 
     // SR3 Default Table — let the user choose how to default. This is an Open Test
@@ -689,7 +690,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const lines      = [];
 
     for (const aid of ordered) {
-      const actor = game.actors.get(aid);
+      const actor = actorFrom(aid);
       if (!actor) continue;
       const isDriver   = aid === p.driverActorId;
       const dmgPenalty = isDriver ? damageInfo.initPenalty : 0;
@@ -719,7 +720,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
         </div>`);
     }
 
-    const vehicle = game.actors.get(p.vehicleActorId);
+    const vehicle = actorFrom(p.vehicleActorId);
     await ChatMessage.create({
       content: `
         <div class="sr-roll-card">
@@ -761,7 +762,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     if (quarry) {
       for (const p of this._participants) {
         if (p.isQuarry || !p.vehicleActorId) continue;
-        const veh   = game.actors.get(p.vehicleActorId);
+        const veh   = actorFrom(p.vehicleActorId);
         const old   = p.distance;
         const delta = Math.round(p.speed - quarry.speed);     // closing distance this turn
         p.distance  = old - delta;
@@ -779,7 +780,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
       p.controlAlloc = this._controlPool(p);
     }
 
-    const quarryName = quarry ? (game.actors.get(quarry.vehicleActorId)?.name ?? 'Quarry') : null;
+    const quarryName = quarry ? (actorFrom(quarry.vehicleActorId)?.name ?? 'Quarry') : null;
     ChatMessage.create({
       content: `
         <div class="sr-roll-card">
@@ -817,7 +818,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
    * resets when the speed is back at or above the stall speed. No altitude is tracked, so the card says "if airborne".
    */
   async _checkStall(p) {
-    const vehicle = game.actors.get(p.vehicleActorId);
+    const vehicle = actorFrom(p.vehicleActorId);
     const stall   = StallSpeed.of(vehicle?.system);
     if (!StallSpeed.below(p.speed, stall)) { p.stallWarned = false; return; }
     if (p.stallWarned) return;
@@ -839,8 +840,8 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
   _getParticipantInfo(pid) {
     const p = this._participants.find(x => x.id === pid);
     if (!p) return null;
-    const driver  = game.actors.get(p.driverActorId);
-    const vehicle = game.actors.get(p.vehicleActorId);
+    const driver  = actorFrom(p.driverActorId);
+    const vehicle = actorFrom(p.vehicleActorId);
     const { pool: skillPool, label: skillLabel } = this._driverSkillPool(p);
     const vcrRating  = p.vcrActive ? (p.vcrRating ?? 0) : 0;
     const handling   = vehicle?.system.attributes?.handling?.base ?? 4;
@@ -881,8 +882,8 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const opts = this._participants
       .filter(p => p.driverActorId)
       .map(p => {
-        const v = game.actors.get(p.vehicleActorId);
-        const d = game.actors.get(p.driverActorId);
+        const v = actorFrom(p.vehicleActorId);
+        const d = actorFrom(p.driverActorId);
         const label = `${v?.name ?? '?'} (${d?.name ?? '?'})`;
         return `<option value="${p.id}" ${p.id === selectedPid ? 'selected' : ''}>${label}</option>`;
       }).join('');
@@ -894,7 +895,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const opts = this._participants
       .filter(p => p.id !== actingPid)
       .map(p => {
-        const v  = game.actors.get(p.vehicleActorId);
+        const v  = actorFrom(p.vehicleActorId);
         const mn = p.driverPoints !== null ? ` [Mnvr: ${this._scores(p).maneuver ?? '?'}]` : ' [not rolled]';
         return `<option value="${p.id}">${v?.name ?? '?'}${mn}</option>`;
       }).join('');
@@ -1237,13 +1238,13 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
 
     const exceedChecked = info0?.exceedsSpeed ? 'checked' : '';
 
-    const atkBody0 = game.actors.get(info0?.p?.vehicleActorId)?.system?.attributes?.body?.base ?? 4;
+    const atkBody0 = actorFrom(info0?.p?.vehicleActorId)?.system?.attributes?.body?.base ?? 4;
     const atkSoak0 = atkBody0 + this._controlPool(info0?.p ?? {});
 
     const buildDefInfo = (oppPid) => {
       const oi = oppPid ? this._getParticipantInfo(oppPid) : null;
       if (!oi) return `<div class="act-info" id="act-def-info"><div class="act-info-row"><span>Opponent</span><span>— select above —</span></div></div>`;
-      const defBody = game.actors.get(oi.p.vehicleActorId)?.system?.attributes?.body?.base ?? 4;
+      const defBody = actorFrom(oi.p.vehicleActorId)?.system?.attributes?.body?.base ?? 4;
       const defSoak = defBody + this._controlPool(oi.p);
       return `
         <div class="act-info" id="act-def-info">
@@ -1375,7 +1376,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           el.querySelector('#act-imx')?.replaceChildren(document.createTextNode(`${Math.round(info.maxSpeedKmct * 1.2)} km/h (${info.speedAttr} km/ct)`));
           el.querySelector('#act-maxspd')?.replaceChildren(document.createTextNode(info.speedAttr));
           el.querySelector('#act-idmg')?.replaceChildren(document.createTextNode(this._dmgInfoText(info.damageInfo)));
-          const atkVehicle = game.actors.get(info.p.vehicleActorId);
+          const atkVehicle = actorFrom(info.p.vehicleActorId);
           const atkBody    = atkVehicle?.system?.attributes?.body?.base ?? 4;
           const atkSoakInp = el.querySelector('#act-atk-soak');
           if (atkSoakInp) atkSoakInp.value = atkBody + this._controlPool(info.p);
@@ -1429,8 +1430,8 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
 
     const atkP = atkInfo.p;
     const defP = defInfo?.p ?? null;
-    const atkVehicle = game.actors.get(atkP.vehicleActorId);
-    const defVehicle = defP ? game.actors.get(defP.vehicleActorId) : null;
+    const atkVehicle = actorFrom(atkP.vehicleActorId);
+    const defVehicle = defP ? actorFrom(defP.vehicleActorId) : null;
 
     const atkSoakPool = parseInt(result.querySelector('#act-atk-soak')?.value ?? 0);
     const defSoakPool = parseInt(result.querySelector('#act-def-soak')?.value ?? 0);
@@ -1482,7 +1483,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const speeds = {};
     for (const p of this._participants) if (p.vehicleActorId) speeds[p.vehicleActorId] = Math.round((p.speed ?? 0) * 1.2);
     const first = this._participants.find(p => p.vehicleActorId && p.driverActorId) ?? this._participants.find(p => p.vehicleActorId);
-    return game.sr3e.SR3ECollision.open({ vehicle: first ? game.actors.get(first.vehicleActorId) : null, chaseSpeeds: speeds });
+    return game.sr3e.SR3ECollision.open({ vehicle: first ? actorFrom(first.vehicleActorId) : null, chaseSpeeds: speeds });
   }
 
   /* ------------------------------------------------------------------ */
@@ -1610,7 +1611,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const info   = pid ? this._getParticipantInfo(pid) : null;
     if (!info?.driver) return;
 
-    const vehicle     = game.actors.get(info.p.vehicleActorId);
+    const vehicle     = actorFrom(info.p.vehicleActorId);
     const vehicleBody = vehicle?.system?.attributes?.body?.base ?? 4;
 
     const crashContext = {
@@ -1806,14 +1807,14 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     // Sensor rating of the acting vehicle
     const sensorOf = (pid) => {
       const p = this._participants.find(x => x.id === pid);
-      const v = game.actors.get(p?.vehicleActorId);
+      const v = actorFrom(p?.vehicleActorId);
       return v?.system.attributes?.sensor?.base ?? 0;
     };
 
     // Signature rating of an opponent participant's vehicle
     const sigOf = (pid) => {
       const p = this._participants.find(x => x.id === pid);
-      const v = game.actors.get(p?.vehicleActorId);
+      const v = actorFrom(p?.vehicleActorId);
       return v?.system.attributes?.sig?.base ?? 4;
     };
 
@@ -1851,7 +1852,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
         </label>
         <div class="act-info" id="act-opp-info">
           <div class="act-info-row"><span>Vehicle</span><span id="act-ov">${
-            (() => { const p = this._participants.find(x => x.id === defaultOppPid); return game.actors.get(p?.vehicleActorId)?.name ?? '—'; })()
+            (() => { const p = this._participants.find(x => x.id === defaultOppPid); return actorFrom(p?.vehicleActorId)?.name ?? '—'; })()
           }</span></div>
           <div class="act-info-row"><span>Signature (base TN)</span>
             <span><input id="act-sig" type="number" value="${initSig}" min="1" max="20"
@@ -1924,7 +1925,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
         const refreshOpponent = () => {
           const oppPid = el.querySelector('#act-opponent')?.value;
           const oppP   = this._participants.find(x => x.id === oppPid);
-          const oppV   = game.actors.get(oppP?.vehicleActorId);
+          const oppV   = actorFrom(oppP?.vehicleActorId);
           const sig    = oppV?.system.attributes?.sig?.base ?? 4;
           el.querySelector('#act-ov')?.replaceChildren(document.createTextNode(oppV?.name ?? '—'));
           const sigInp = el.querySelector('#act-sig');

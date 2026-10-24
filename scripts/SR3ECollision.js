@@ -1,5 +1,6 @@
 import { Collisions } from './data/collisions.mjs';
 import { StallSpeed } from './data/stall-speed.mjs';
+import { actorFrom, actorRef } from './data/actor-ref.mjs';
 
 /**
  * 💥 Collision — a vehicle hits a person, another vehicle or a barrier · TODO 189.
@@ -31,10 +32,10 @@ export class SR3ECollision {
   /** Who is aboard a vehicle: its driver, then its passengers. */
   static aboardOf(vehicle) {
     const sys    = vehicle?.system ?? {};
-    const driver = game.actors.get(String(sys.driverActorId ?? '').trim()) ?? null;
+    const driver = actorFrom(String(sys.driverActorId ?? '').trim()) ?? null;
     return [
       ...(driver ? [{ id: driver.id, name: driver.name, role: 'Driver' }] : []),
-      ...(sys.passengerActorIds ?? []).map(id => game.actors.get(id)).filter(Boolean)
+      ...(sys.passengerActorIds ?? []).map(id => actorFrom(id)).filter(Boolean)
         .filter(a => a.id !== driver?.id).map(a => ({ id: a.id, name: a.name, role: 'Passenger' })),
     ];
   }
@@ -65,7 +66,7 @@ export class SR3ECollision {
       kind:  c.kind,                         // 'pedestrian' | 'vehicle' | 'barrier'
       how:   c.how,                          // 'ram' | 'accident'
       noTest: c.noTest === true,             // no Ramming Test happened (accident, or "post it now")
-      vehicleActorId: v.id,
+      vehicleActorId: actorRef(v),
       vehicleName:    v.name,
       vehicleBody:    sys.attributes?.body?.base ?? 4,
       accel:          sys.attributes?.accel?.base ?? 0,
@@ -76,14 +77,14 @@ export class SR3ECollision {
       speed:          Math.max(0, Number(c.speedMct) || 0),
     };
     if (c.kind === 'pedestrian') {
-      const p = game.actors.get(c.pedestrianId);
+      const p = actorFrom(c.pedestrianId);
       cc.pedestrianActorId = p?.id ?? '';
       cc.pedDodge  = c.pedDodge === true;
       cc.pedBeat   = c.pedBeat == null || c.pedBeat === '' ? null : Math.max(0, Math.trunc(Number(c.pedBeat) || 0));
       cc.pedPower  = Number.isFinite(c.pedPower) && c.pedPower > 0 ? Math.trunc(c.pedPower) : null;
       cc.pedLevel  = ['L', 'M', 'S', 'D'].includes(c.pedLevel) ? c.pedLevel : null;
     } else if (c.kind === 'vehicle') {
-      const o = game.actors.get(c.otherId);
+      const o = actorFrom(c.otherId);
       const os = o?.system ?? {};
       cc.otherActorId = o?.id ?? '';
       cc.otherName    = o?.name ?? 'the other vehicle';
@@ -152,7 +153,7 @@ export class SR3ECollision {
   /** Vehicle-Pedestrian Collision · SR3 p.148. */
   static _pedestrianHtml(cc, successes) {
     const SA   = game.sr3e.SR3EActor;
-    const ped  = game.actors.get(cc.pedestrianActorId);
+    const ped  = actorFrom(cc.pedestrianActorId);
     const r    = Collisions.pedestrian({ speed: cc.speed, table: SA.crashDamage });
     const base = SA.crashDamage(cc.speed);
     const power = cc.pedPower ?? r.pedestrian.power;
@@ -177,7 +178,7 @@ export class SR3ECollision {
     const attackerId = cc.vehicleActorId;
     if (ped) {
       const common = {
-        attackerActorId: attackerId, targetActorId: ped.id, isMelee: false,
+        attackerActorId: attackerId, targetActorId: actorRef(ped), isMelee: false,
         stagedPower: power, stagedLevel: level, isStun: false,
         rawDamage: `${cc.vehicleName} ${pct(power, level)}`,
         // p.148: "Impact armor reduces the damage", and Combat Pool dice may be used. The core Knockdown rule
@@ -261,7 +262,7 @@ export class SR3ECollision {
 
   /** A collision card, posted straight to chat (accident confirmed, or "post it now"). */
   static async post(cc, { successes = 0 } = {}) {
-    const vehicle = game.actors.get(cc.vehicleActorId);
+    const vehicle = actorFrom(cc.vehicleActorId);
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: vehicle }),
       content: `<div class="sr-roll-card">
@@ -303,7 +304,7 @@ export class SR3ECollision {
       ? `<label style="font-size:12px">${esc(cc.otherName)} (km/h)
            <input type="number" class="sr-coll-other" value="${kmh(cc.otherSpeed ?? 0)}" style="width:5em"/></label>` : '';
     await ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor: game.actors.get(cc.vehicleActorId) }),
+      speaker: ChatMessage.getSpeaker({ actor: actorFrom(cc.vehicleActorId) }),
       content: `<div class="sr-roll-card sr-collision-card">
         <div class="sr-roll-header">🛑 Braking — ${esc(cc.vehicleName)}</div>
         <div class="sr-staging-result">
@@ -318,7 +319,7 @@ export class SR3ECollision {
         ${crashBtn}
         <div class="sr-roll-meta" style="font-size:11px">
           The book has no stopping-distance rule, so whether the car stopped in time is the GM's call. Confirm the speed it
-          reaches ${cc.kind === 'pedestrian' ? esc(game.actors.get(cc.pedestrianActorId)?.name ?? 'the pedestrian')
+          reaches ${cc.kind === 'pedestrian' ? esc(actorFrom(cc.pedestrianActorId)?.name ?? 'the pedestrian')
             : cc.kind === 'vehicle' ? esc(cc.otherName) : esc(cc.barrierName)} at — or leave this card alone if it stopped short.
         </div>
         <div style="display:flex;gap:10px;align-items:end;margin:4px 0;flex-wrap:wrap">
@@ -378,7 +379,7 @@ export class SR3ECollision {
       const q = s => el.querySelector(s);
       const SA = game.sr3e.SR3EActor;
       const refreshAboard = () => {
-        const v = game.actors.get(q('#cl-vehicle').value);
+        const v = actorFrom(q('#cl-vehicle').value);
         const aboard = SR3ECollision.aboardOf(v);
         q('#cl-aboard').innerHTML = aboard.length
           ? aboard.map(a => `<label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer">
@@ -523,7 +524,7 @@ export class SR3ECollision {
 
   /** Dialog answers → the test (or the card). */
   static async start(choice) {
-    const vehicle = game.actors.get(choice.vehicleId);
+    const vehicle = actorFrom(choice.vehicleId);
     if (!vehicle) { ui.notifications.warn('That vehicle no longer exists.'); return; }
     if (choice.kind === 'pedestrian' && !choice.pedestrianId) { ui.notifications.warn('Pick who was hit.'); return; }
     if (choice.kind === 'vehicle' && !choice.otherId) { ui.notifications.warn('Pick the other vehicle.'); return; }
@@ -535,7 +536,7 @@ export class SR3ECollision {
       noTest:        !(test && choice.how === 'ram'),
     });
     if (!test) return SR3ECollision.post(cc);
-    if (!cc.driverActorId && !game.actors.get(String(vehicle.system.driverActorId ?? '').trim())) {
+    if (!cc.driverActorId && !actorFrom(String(vehicle.system.driverActorId ?? '').trim())) {
       ui.notifications.warn(`${vehicle.name} has no driver aboard — posting the collision without a test.`);
       return SR3ECollision.post(cc);
     }

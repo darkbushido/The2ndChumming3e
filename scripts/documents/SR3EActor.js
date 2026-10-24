@@ -23,6 +23,7 @@ import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { AdeptLevels } from '../data/adept-levels.mjs';
 import { ExtraDamage } from '../data/extra-damage.mjs';
 import { ShockStun, STUN_TN, STUN_STATUS, STUN_PAGE } from '../data/shock-stun.mjs';
+import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -124,7 +125,7 @@ export class SR3EActor extends Actor {
     // Defragged uses hostSecurityTier; orthodox uses linked host's orthodoxSecurityCode.
     const isOrthodox = (() => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox'; } catch { return false; } })();
     if (isOrthodox) {
-      const hostActor = (sys.activeHostId) ? game.actors?.get(sys.activeHostId) : null;
+      const hostActor = (sys.activeHostId) ? actorFrom(sys.activeHostId) : null;
       const secCode   = hostActor?.system?.orthodoxSecurityCode ?? 'Green';
       const tierDice  = { Blue: 1, Green: 2, Orange: 3, Red: 4 };
       sys.derived.initiativeDice = tierDice[secCode] ?? 2;
@@ -157,7 +158,7 @@ export class SR3EActor extends Actor {
   //   IC   → host's Security Threshold (neither IC nor host has a Firewall stat)
   //   Agent → operator's cyberdeck Firewall (agent runs on the operator's deck)
   static _getMatrixFirewall(actorId) {
-    const actor = game.actors.get(actorId);
+    const actor = actorFrom(actorId);
     if (!actor) return 0;
     if (actor.type === 'ic') {
       for (const host of game.actors.filter(a => a.type === 'host')) {
@@ -169,7 +170,7 @@ export class SR3EActor extends Actor {
     }
     if (actor.type === 'agent') {
       const operatorId = actor.system.operatorActorId ?? '';
-      const operator   = game.actors.get(operatorId);
+      const operator   = actorFrom(operatorId);
       if (!operator) return 0;
       const deckId = operator.system.equippedCyberdeck ?? '';
       const deck   = deckId ? operator.items.get(deckId) : null;
@@ -247,14 +248,14 @@ export class SR3EActor extends Actor {
     });
     if (!confirmed || !targetId) return;
 
-    const defActor = game.actors.get(targetId);
+    const defActor = actorFrom(targetId);
     if (!defActor) return;
 
     const def = await SR3EActor._buildCCParticipant(defActor);
     if (!def) return;   // defaulting cancelled
 
     await SR3EActor.postCybercombatCard({
-      attackerActorId:  this.id,
+      attackerActorId:  actorRef(this),
       defenderActorId:  targetId,
 
       atkLabel:         atk.label,
@@ -289,13 +290,13 @@ export class SR3EActor extends Actor {
   /* ------------------------------------------------------------------ */
 
   static _getMatrixCombatTargets(actorId) {
-    const actor = game.actors.get(actorId);
+    const actor = actorFrom(actorId);
     if (!actor) return [];
     const hostId = actor.system.activeHostId ?? '';
     if (!hostId) return [];
 
     return game.actors.filter(a => {
-      if (a.id === actorId) return false;
+      if (a.id === actor.id) return false;
       // Deployed IC bypass the template filter — deployment is an explicit GM action
       if (a.type === 'ic') return (a.system.activeHostId ?? '') === hostId && (a.system.deployed ?? false);
       // All other types: respect the template flag
@@ -333,7 +334,7 @@ export class SR3EActor extends Actor {
       const rating    = sys.rating ?? 1;
       const firewall  = SR3EActor._getMatrixFirewall(actor.id);
       const opId      = sys.operatorActorId ?? '';
-      const operator  = opId ? game.actors.get(opId) : null;
+      const operator  = opId ? actorFrom(opId) : null;
       let dmgCode     = `${rating}L`;
       let programId   = null;
 
@@ -407,8 +408,8 @@ export class SR3EActor extends Actor {
   /* ------------------------------------------------------------------ */
 
   static async postCybercombatCard(ctx) {
-    const atk = game.actors.get(ctx.attackerActorId);
-    const def = game.actors.get(ctx.defenderActorId);
+    const atk = actorFrom(ctx.attackerActorId);
+    const def = actorFrom(ctx.defenderActorId);
     if (!atk || !def) return;
 
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
@@ -507,8 +508,8 @@ export class SR3EActor extends Actor {
     const atkDmgBase   = SR3EItem.parseDamageCode(atkDmgCode) ?? ctx.atkDamageBase;
     const defDmgBase   = SR3EItem.parseDamageCode(defDmgCode) ?? ctx.defDamageBase;
 
-    const atkActor = game.actors.get(ctx.attackerActorId);
-    const defActor = game.actors.get(ctx.defenderActorId);
+    const atkActor = actorFrom(ctx.attackerActorId);
+    const defActor = actorFrom(ctx.defenderActorId);
     if (!atkActor || !defActor) return;
 
     /**
@@ -543,7 +544,7 @@ export class SR3EActor extends Actor {
     // Program degradation — attacker's program (may be on operator's deck if agent)
     if (ctx.attackerProgramId) {
       const progOwner = ctx.attackerOperatorActorId
-        ? game.actors.get(ctx.attackerOperatorActorId)
+        ? actorFrom(ctx.attackerOperatorActorId)
         : atkActor;
       const prog = progOwner?.items.get(ctx.attackerProgramId);
       if (prog?.system?.degradable) {
@@ -619,8 +620,8 @@ export class SR3EActor extends Actor {
     const defHits = defDice.filter(d => d.success).length;
     const net     = Math.abs(atkHits - defHits);
 
-    const atkActor = game.actors.get(ctx.attackerActorId);
-    const defActor = game.actors.get(ctx.defenderActorId);
+    const atkActor = actorFrom(ctx.attackerActorId);
+    const defActor = actorFrom(ctx.defenderActorId);
 
     let resultHtml;
 
@@ -655,7 +656,7 @@ export class SR3EActor extends Actor {
       let soakBtn;
       if (loserIsIC) {
         const resistCtx = JSON.stringify({
-          icActorId:      loser.id,
+          icActorId:      actorRef(loser),
           stagedPower:    staged.power,
           stagedLevel:    staged.level,
           isStun:         staged.isStun,
@@ -670,8 +671,8 @@ export class SR3EActor extends Actor {
           </div>`;
       } else {
         const resistCtx = JSON.stringify({
-          deckerActorId:  loser.id,
-          icActorId:      winner?.id ?? '',
+          deckerActorId:  actorRef(loser),
+          icActorId:      actorRef(winner) ?? '',
           stagedPower:    staged.power,
           stagedLevel:    staged.level,
           isStun,
@@ -823,7 +824,7 @@ export class SR3EActor extends Actor {
     const pool = ccRating + ccSpent;
     if (pool < 1) { ui.notifications.warn(`${item.name}: roll pool is 0.`); return; }
 
-    const hostActor       = hostActorId ? game.actors.get(hostActorId) : null;
+    const hostActor       = hostActorId ? actorFrom(hostActorId) : null;
     const securityThreshold = hostActor?.system?.securityTierThreshold ?? 0;
 
     // Offensive programs damage = program rating + S by default
@@ -834,7 +835,7 @@ export class SR3EActor extends Actor {
     await this.rollPool(pool, tn, label, {
       isProgramRoll:  true,
       programContext: {
-        actorId:           this.id,
+        actorId:           actorRef(this),
         itemId:            item.id,
         category,
         isOffensive,
@@ -868,7 +869,7 @@ export class SR3EActor extends Actor {
 
     // If actor is already connected to a host, use it without prompting for selection
     const activeHostId   = sys.activeHostId ?? '';
-    const connectedHost  = activeHostId ? game.actors.get(activeHostId) : null;
+    const connectedHost  = activeHostId ? actorFrom(activeHostId) : null;
     const isConnected    = !!connectedHost;
 
     if (!isConnected && !hostActors.length) {
@@ -990,7 +991,7 @@ export class SR3EActor extends Actor {
     await this.rollPool(pool, tn, `${this.name}: ${actionName}${nodeTag}`, {
       isHackingActionRoll:  true,
       hackingActionContext: {
-        attackerActorId: this.id,
+        attackerActorId: actorRef(this),
         hostActorId,
         securityThreshold,
         overwatchOnFail,
@@ -1046,7 +1047,7 @@ export class SR3EActor extends Actor {
     }
 
     const hostId     = sys.activeHostId ?? '';
-    const hostActor  = hostId ? game.actors.get(hostId) : null;
+    const hostActor  = hostId ? actorFrom(hostId) : null;
     const alertPenalty = hostActor?.system?.derived?.alertTNPenalty ?? 0;
     const defaultTN  = (hostActor?.system?.systemRating ?? 6) + mcmPenalty + alertPenalty + defTnMod;   // defaulting TN modifier baked in
     const threshold  = isHacking ? (hostActor?.system?.securityTierThreshold ?? 0) : 0;
@@ -1110,7 +1111,7 @@ export class SR3EActor extends Actor {
       await this.rollPool(pool, tn, label, {
         isHackingActionRoll:  true,
         hackingActionContext: {
-          attackerActorId:   this.id,
+          attackerActorId:   actorRef(this),
           hostActorId:       hostId,
           securityThreshold: threshold,
           overwatchOnFail:   true,
@@ -1141,7 +1142,7 @@ export class SR3EActor extends Actor {
     // SR3 core (Orthodox) Matrix: dump shock is Stun, Power = the host's Security Value, level by its
     // Security Code (p.226-227) — not the Defragged rule below (0.6.3 rules check).
     const ortho    = (() => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox'; } catch { return false; } })();
-    const oHost    = ortho ? game.actors.get(this.system.orthodoxRunState?.currentHostId ?? '') : null;
+    const oHost    = ortho ? actorFrom(this.system.orthodoxRunState?.currentHostId ?? '') : null;
     const oCode    = oHost?.system?.orthodoxSecurityCode ?? 'Green';
     const oValue   = oHost?.system?.orthodoxSecurityValue ?? 6;
     const kindInit = (inVR || oHost) ? 'matrix' : veh ? 'vehicle' : rcDeck > 0 ? 'network' : 'matrix';
@@ -1237,7 +1238,7 @@ export class SR3EActor extends Actor {
     const trackLabel = isStun ? 'Stun' : 'Physical';
     const soakCtx = JSON.stringify({
       attackerActorId: null,
-      targetActorId:   this.id,
+      targetActorId:   actorRef(this),
       isMelee:         false,
       stagedPower:     power,
       stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
@@ -1273,7 +1274,7 @@ export class SR3EActor extends Actor {
     const ds = SR3EActor.orthoDumpShock(code, value);
     const soakCtx = JSON.stringify({
       attackerActorId: null,
-      targetActorId:   this.id,
+      targetActorId:   actorRef(this),
       isMelee:         false,
       stagedPower:     ds.power,
       stagedLevel:     ds.level,
@@ -1312,7 +1313,7 @@ export class SR3EActor extends Actor {
     if (!d) return;
     const soakCtx = JSON.stringify({
       attackerActorId: null,
-      targetActorId:   this.id,
+      targetActorId:   actorRef(this),
       isMelee:         false,
       stagedPower:     d.power,
       stagedLevel:     d.level,
@@ -1323,7 +1324,7 @@ export class SR3EActor extends Actor {
       noArmorNote:     'Neural biofeedback — no armour applies',
       noKnockdown:     true,
     }).replace(/'/g, '&#39;');
-    const disorientCtx = JSON.stringify({ actorId: this.id }).replace(/'/g, '&#39;');
+    const disorientCtx = JSON.stringify({ actorId: actorRef(this) }).replace(/'/g, '&#39;');
     const from = kind === 'network' ? `the remote-control network (RC deck ${deckRating} + 4)` : 'the vehicle';
 
     await ChatMessage.create({
@@ -1360,12 +1361,12 @@ export class SR3EActor extends Actor {
    */
   static async postRiggerFeedbackCard(vehicle, stage) {
     const f      = RiggerShock.feedback(stage);
-    const rigger = game.actors.get(vehicle?.system?.driverActorId ?? '');
+    const rigger = actorFrom(vehicle?.system?.driverActorId ?? '');
     if (!f || !rigger) return;
     const soakCtx = JSON.stringify({
       attackerActorId: null,
       // ⚠ No vehicleActorId: `_payloadActorId` resolves it before targetActorId, and the button is the rigger's.
-      targetActorId:   rigger.id,
+      targetActorId:   actorRef(rigger),
       isMelee:         false,
       stagedPower:     f.power,
       stagedLevel:     f.level,
@@ -1402,19 +1403,19 @@ export class SR3EActor extends Actor {
   /** The disorientation Willpower Test (SR3 p.156) — its result card states how long it lasts. */
   static async handleRiggerDisorientClick(btn) {
     const p     = JSON.parse(btn.dataset.payload ?? '{}');
-    const actor = game.actors.get(p.actorId);
+    const actor = actorFrom(p.actorId);
     if (!actor) return;
     const wp = actor.system.attributes?.willpower;
     const pool = Math.max(1, wp?.value ?? wp?.base ?? 1);
     await SR3EActor.rollThen(actor, pool, DISORIENT_TN, {
       label:    `${actor.name}: Willpower — dump shock disorientation`,
-      followUp: { kind: 'riggerDisorient', ctx: { actorId: actor.id } },
+      followUp: { kind: 'riggerDisorient', ctx: { actorId: actorRef(actor) } },
     });
   }
 
   /** `rollThen` follow-up: post how long the disorientation lasts. */
   static async _riggerDisorientOutcome(ctx, res) {
-    const actor = game.actors.get(ctx.actorId);
+    const actor = actorFrom(ctx.actorId);
     const { seconds, turns } = RiggerShock.disorientation(res.successes);
     await ChatMessage.create({
       speaker: actor ? ChatMessage.getSpeaker({ actor }) : undefined,
@@ -1440,13 +1441,13 @@ export class SR3EActor extends Actor {
    */
   static async handleShockStunClick(btn) {
     const p     = JSON.parse(btn.dataset.payload ?? '{}');
-    const actor = game.actors.get(p.actorId);
+    const actor = actorFrom(p.actorId);
     if (!actor) return;
     actor.prepareDerivedData();
     const val = k => Math.max(actor.system.attributes?.[k]?.value ?? 0, actor.system.attributes?.[k]?.base ?? 0);
     const { dice, attr } = ShockStun.resistDice(val('body'), val('willpower'));
     await actor.rollPool(Math.max(1, dice), STUN_TN, `${actor.name}: ${attr === 'body' ? 'Body' : 'Willpower'} — resist the stun`, {
-      followUp: { kind: 'shockStun', ctx: { actorId: actor.id, power: p.power, impact: p.impact, code: p.code } },
+      followUp: { kind: 'shockStun', ctx: { actorId: actorRef(actor), power: p.power, impact: p.impact, code: p.code } },
     });
   }
 
@@ -1455,7 +1456,7 @@ export class SR3EActor extends Actor {
    * the click on ⚡ Mark stunned does that. 0 Combat Turns = not stunned.
    */
   static async _shockStunOutcome(ctx, res) {
-    const actor = game.actors.get(ctx.actorId);
+    const actor = actorFrom(ctx.actorId);
     const turns = ShockStun.duration({ power: ctx.power, impact: ctx.impact, successes: res.successes });
     const half  = ShockStun.halfImpact(ctx.impact);
     const sum   = `Power ${ctx.power} − ½ Impact ${half} − ${res.successes} success${res.successes === 1 ? '' : 'es'}`;
@@ -1479,7 +1480,7 @@ export class SR3EActor extends Actor {
   /** ⚡ Mark stunned (clicked by the target's owner or the GM). */
   static async handleShockStunMarkClick(btn) {
     const p     = JSON.parse(btn.dataset.payload ?? '{}');
-    const actor = game.actors.get(p.actorId);
+    const actor = actorFrom(p.actorId);
     if (!actor) return;
     await actor.markStunned(p.turns);
     ui.notifications.info(`${actor.name} is stunned for ${p.turns} Combat Turn${p.turns === 1 ? '' : 's'} (+2 to all tests).`);
@@ -1507,7 +1508,7 @@ export class SR3EActor extends Actor {
   /* ------------------------------------------------------------------ */
 
   static async _incrementOverwatch(hostActorId, attackerActorId) {
-    const hostActor = game.actors.get(hostActorId);
+    const hostActor = actorFrom(hostActorId);
     if (!hostActor) return;
     const current = hostActor.system.overwatchCurrent ?? 0;
     const newOW   = Math.min(10, current + 1);
@@ -1566,12 +1567,12 @@ export class SR3EActor extends Actor {
   }
 
   static async _addMatrixMark(actorId, nodeId, hostActorId) {
-    const actor = game.actors.get(actorId);
+    const actor = actorFrom(actorId);
     if (!actor || !nodeId) return;
     const marks = [...new Set([...(actor.system.matrixMarks ?? []), nodeId])];
     await actor.update({ 'system.matrixMarks': marks });
 
-    const host = hostActorId ? game.actors.get(hostActorId) : null;
+    const host = hostActorId ? actorFrom(hostActorId) : null;
     if (host) {
       const activeUsers = foundry.utils.deepClone(host.system.activeUsers ?? []);
       const userEntry   = activeUsers.find(u => u.actorId === actorId);
@@ -1594,7 +1595,7 @@ export class SR3EActor extends Actor {
 
   static async _postConvergenceCard(hostActor, attackerActorId) {
     const systemRating  = hostActor.system.systemRating ?? 6;
-    const attacker      = game.actors.get(attackerActorId);
+    const attacker      = actorFrom(attackerActorId);
     const attackerName  = attacker?.name ?? 'Decker';
     const isVRHot       = (attacker?.system?.matrixUserMode ?? '') === 'VR-Hot';
     const isStun        = !isVRHot;
@@ -1602,7 +1603,7 @@ export class SR3EActor extends Actor {
     const trackLabel    = isStun ? 'Stun' : 'Physical';
 
     const soakCtx = JSON.stringify({
-      attackerActorId: hostActor.id,
+      attackerActorId: actorRef(hostActor),
       targetActorId:   attackerActorId,
       isMelee:         false,
       stagedPower:     systemRating,
@@ -1688,14 +1689,14 @@ export class SR3EActor extends Actor {
     });
     if (!confirmed || !targetId) return;
 
-    const defActor = game.actors.get(targetId);
+    const defActor = actorFrom(targetId);
     if (!defActor) return;
 
     const def = await SR3EActor._buildCCParticipant(defActor);
     if (!def) return;   // defaulting cancelled
 
     await SR3EActor.postCybercombatCard({
-      attackerActorId:  this.id,
+      attackerActorId:  actorRef(this),
       defenderActorId:  targetId,
 
       atkLabel:         atk.label,
@@ -1737,7 +1738,7 @@ export class SR3EActor extends Actor {
     const soakTN     = Math.max(2, stagedPower - firewallRating);
 
     const resistPayload = JSON.stringify({
-      icActorId:   this.id,
+      icActorId:   actorRef(this),
       stagedPower,
       stagedLevel,
       isStun,
@@ -1775,10 +1776,10 @@ export class SR3EActor extends Actor {
     const { stagedPower, stagedLevel, isStun, rawDamage, icActorId, deckerMPCP, firewallRating = 0 } = payload;
     const trackLabel = isStun ? 'Stun' : 'Physical';
     const soakTN     = Math.max(2, stagedPower - firewallRating);
-    const icName     = game.actors.get(icActorId)?.name ?? 'IC';
+    const icName     = actorFrom(icActorId)?.name ?? 'IC';
 
     const rollPayload = JSON.stringify({
-      deckerActorId: this.id,
+      deckerActorId: actorRef(this),
       stagedPower,
       stagedLevel,
       isStun,
@@ -1815,7 +1816,7 @@ export class SR3EActor extends Actor {
 
   static async handleMatrixICResistClick(btn) {
     const payload = JSON.parse(btn.dataset.payload);
-    const actor   = game.actors.get(payload.icActorId);
+    const actor   = actorFrom(payload.icActorId);
     if (!actor) return;
     await actor._postICResistCard(payload);
   }
@@ -1825,7 +1826,7 @@ export class SR3EActor extends Actor {
     const card    = btn.closest('.sr-soak-card');
     const pool    = parseInt(card.querySelector('.sr-matrix-resist-pool')?.value) || 1;
     const tn      = parseInt(card.querySelector('.sr-matrix-resist-tn')?.value)   || 2;
-    const actor   = game.actors.get(payload.icActorId);
+    const actor   = actorFrom(payload.icActorId);
     if (!actor) return;
 
     btn.disabled    = true;
@@ -1846,7 +1847,7 @@ export class SR3EActor extends Actor {
 
   static async handleDeckerMatrixResistClick(btn) {
     const payload = JSON.parse(btn.dataset.payload);
-    const actor   = game.actors.get(payload.deckerActorId);
+    const actor   = actorFrom(payload.deckerActorId);
     if (!actor) return;
     await actor._postDeckerMatrixSoakCard(payload);
   }
@@ -1856,7 +1857,7 @@ export class SR3EActor extends Actor {
     const card    = btn.closest('.sr-soak-card');
     const pool    = parseInt(card.querySelector('.sr-matrix-decker-resist-pool')?.value) || 1;
     const tn      = parseInt(card.querySelector('.sr-matrix-decker-resist-tn')?.value)   || 2;
-    const actor   = game.actors.get(payload.deckerActorId);
+    const actor   = actorFrom(payload.deckerActorId);
     if (!actor) return;
 
     btn.disabled    = true;
@@ -2865,7 +2866,7 @@ _prepareCharacter(sys, attr) {
       const successes = await SR3EActor._promptPhysicalSuccesses(pool, effectiveTN, label, tn, woundDisplay);
       if (successes === null) return null;
       await this._postWaveCard({
-        actorId:             this.id,
+        actorId:             actorRef(this),
         label,
         tn:                  effectiveTN,
         pool,
@@ -2890,7 +2891,7 @@ _prepareCharacter(sys, attr) {
         ammoType:            options.ammoType           ?? null,
         burstRounds:         options.burstRounds        ?? 0,
         shotgunSpread:       options.shotgunSpread      ?? 0,
-        attackerActorId:     this.id,
+        attackerActorId:     actorRef(this),
         targetActorId:       options.targetActorId      ?? null,
         committedDodgeDice:  options.committedDodgeDice ?? 0,
         isSpellRoll:         options.isSpellRoll        ?? false,
@@ -2948,7 +2949,7 @@ _prepareCharacter(sys, attr) {
     const glitch = SR3EActor.isRuleOfOne(ones, pool);
 
     await this._postWaveCard({
-      actorId:         this.id,
+      actorId:         actorRef(this),
       label,
       tn:              effectiveTN,
       pool,
@@ -2972,7 +2973,7 @@ _prepareCharacter(sys, attr) {
       ammoType:              options.ammoType              ?? null,
       burstRounds:           options.burstRounds           ?? 0,
       shotgunSpread:         options.shotgunSpread         ?? 0,
-      attackerActorId:       this.id,
+      attackerActorId:       actorRef(this),
       targetActorId:         options.targetActorId         ?? null,
       committedDodgeDice:    options.committedDodgeDice    ?? 0,
       isSpellRoll:           options.isSpellRoll           ?? false,
@@ -3198,7 +3199,7 @@ _prepareCharacter(sys, attr) {
     if (!held.length) return;
     const unconscious = actor.statuses?.has?.('unconscious');
     const buttons = held.map(e => {
-      const payload = JSON.stringify({ actorId: actor.id, sustainId: e.id, name: e.name, force: e.force }).replace(/'/g, '&#39;');
+      const payload = JSON.stringify({ actorId: actorRef(actor), sustainId: e.id, name: e.name, force: e.force }).replace(/'/g, '&#39;');
       return `<div class="sr-soak-action"><button class="sr-sustain-check-btn" data-payload='${payload}'>
         🎲 Keep ${e.name} — Sorcery vs ${e.force}</button></div>`;
     }).join('');
@@ -3217,7 +3218,7 @@ _prepareCharacter(sys, attr) {
 
   /** 🎲 Keep — the Sorcery Test. `rollPool` adds the injury modifiers and the sustaining ones. */
   static async rollSustainCheck(payload) {
-    const actor = game.actors.get(payload.actorId);
+    const actor = actorFrom(payload.actorId);
     if (!actor) return;
     const sorcery = SR3EActor.sorceryRating(actor);
     if (sorcery < 1) { ui.notifications.warn(`${actor.name} has no Sorcery skill to roll.`); return; }
@@ -3646,7 +3647,7 @@ _prepareCharacter(sys, attr) {
             })) ?? [];
           } else {
             const perM = Blast.rate(state.aoeBlast);   // its own falloff, p.119 (TODO 150)
-            codes = hits.map(h => ({ actorId: h.actor.id, name: h.actor.name, power: Blast.power(basePower, h.dist, perM), level, dist: h.dist }))
+            codes = hits.map(h => ({ actorId: actorRef(h.actor), name: h.actor.name, power: Blast.power(basePower, h.dist, perM), level, dist: h.dist }))
                         .filter(t => t.power > 0);
           }
 
@@ -3688,7 +3689,7 @@ _prepareCharacter(sys, attr) {
           if (shielded.length && !state.aoeEffect) {
             const perM = Blast.rate(state.aoeBlast);
             const behind = shielded
-              .map(s => ({ actorId: s.actor.id, name: s.actor.name, dist: s.dist, power: Blast.power(basePower, s.dist, perM) }))
+              .map(s => ({ actorId: actorRef(s.actor), name: s.actor.name, dist: s.dist, power: Blast.power(basePower, s.dist, perM) }))
               .filter(s => s.power > 0);
             if (behind.length) {
               hitLines += `<div style="font-size:11px;margin-top:4px;color:var(--sr-amber)">🧱 Behind a wall — not caught unless it falls (SR3 p.119): `
@@ -3729,7 +3730,7 @@ _prepareCharacter(sys, attr) {
             if (cloudKind === 'flash') {
               const everyone = (canvas?.tokens?.placeables ?? []).filter(t => t.actor && t.actor.type !== 'vehicle').map(t => {
                 let d; try { d = canvas.grid.measurePath([center, t.center])?.distance ?? Infinity; } catch { d = Infinity; }
-                return { actorId: t.actor.id, name: t.actor.name, dist: Math.round(d),
+                return { actorId: actorRef(t.actor), name: t.actor.name, dist: Math.round(d),
                          walled: !!SR3EActor._wallBetween(center, t.center) };
               }).sort((a, b) => a.dist - b.dist);
               const flashPayload = JSON.stringify({ name: state.aoeEffect.name, tokens: everyone }).replace(/'/g, '&#39;');
@@ -3741,7 +3742,7 @@ _prepareCharacter(sys, attr) {
           }
 
           for (const t of codes) {
-            const tActor = game.actors.get(t.actorId);
+            const tActor = actorFrom(t.actorId);
             if (!tActor) continue;
             const soakCtx = JSON.stringify({
               attackerActorId: state.attackerActorId,
@@ -3764,7 +3765,7 @@ _prepareCharacter(sys, attr) {
           // The shooter is attacked with the weapon's normal damage, resisted without Combat Pool, and the shot misses.
           // Offered, never applied: the shooter (or GM) clicks.
           if (Misfire.applies({ ammoType: state.ammoType, glitch, isMelee: state.isMelee })) {
-            const shooter = game.actors.get(state.attackerActorId);
+            const shooter = actorFrom(state.attackerActorId);
             const weapon  = shooter?.items.get(state.weaponItemId);
             const code    = String(weapon?.system?.damage ?? '').trim();
             const parsed  = code ? SR3EItem.parseDamageCode(code, shooter) : null;
@@ -3785,9 +3786,9 @@ _prepareCharacter(sys, attr) {
               <span style="font-size:11px;color:var(--sr-muted)"> if unresisted — the target's successes are netted against these (p.113)</span>
             </div>`;
 
-          const targetActor  = game.actors.get(state.targetActorId);
+          const targetActor  = actorFrom(state.targetActorId);
           const targetName   = targetActor?.name ?? 'Target';
-          const attackerName = game.actors.get(state.attackerActorId)?.name ?? 'Attacker';
+          const attackerName = actorFrom(state.attackerActorId)?.name ?? 'Attacker';
 
           // SR3 ranged sequence, core rulebook: "3. Make Attacker's Success Test …
           // 4. Resolve Dodge Test — if the target wishes to attempt to dodge …
@@ -3919,14 +3920,14 @@ _prepareCharacter(sys, attr) {
 
           // Counterspelling (Spell Defense) reduces the caster's successes first, if anyone has it.
           const spellDefenders = game.actors.contents.filter(
-            a => (a.system.spellDefensePool ?? 0) > 0 && a.id !== sc.attackerActorId
+            a => (a.system.spellDefensePool ?? 0) > 0 && a.id !== actorFrom(sc.attackerActorId)?.id
           );
           if (spellDefenders.length > 0) {
             state._pendingDefenseCard = { currentSuccesses: bestHits, sc, force: sc.force };
           } else {
             if (Object.keys(hitsByTarget).length > 1 && new Set(Object.values(hitsByTarget)).size > 1) {
               stagingHtml += `<div class="sr-roll-meta" style="font-size:11px">🎯 Hits against each target's own TN (p.182): ${
-                (sc.targetActorIds ?? []).map(id => `${game.actors.get(id)?.name ?? '?'} ${hitsByTarget[id]} (TN ${sc.targetTNs[id] + tnDelta})`).join(' · ')}</div>`;
+                (sc.targetActorIds ?? []).map(id => `${actorFrom(id)?.name ?? '?'} ${hitsByTarget[id]} (TN ${sc.targetTNs[id] + tnDelta})`).join(' · ')}</div>`;
             }
             for (const targetId of (sc.targetActorIds ?? [])) {
               // A target the dice did not reach against its own TN is unaffected.
@@ -3957,7 +3958,7 @@ _prepareCharacter(sys, attr) {
           //   already computed for the dice card and simply never reached the drain.
           castGlitch:       !!glitch,
         }).replace(/'/g, '&#39;');
-        const casterName = game.actors.get(sc.attackerActorId)?.name ?? 'Caster';
+        const casterName = actorFrom(sc.attackerActorId)?.name ?? 'Caster';
         postRollHtml += `
           <div class="sr-soak-action">
             <button class="sr-drain-btn" data-payload='${drainPayload}'>
@@ -3974,7 +3975,7 @@ _prepareCharacter(sys, attr) {
 
       } else if (state.isDispelRoll && state.dispelContext) {
         const dc = state.dispelContext;
-        const dispellerName = game.actors.get(dc.actorId)?.name ?? 'Dispeller';
+        const dispellerName = actorFrom(dc.actorId)?.name ?? 'Dispeller';
         const dispelled    = Math.min(successes, dc.originalSuccesses);
         const remaining    = dc.originalSuccesses - dispelled;
         stagingHtml = `
@@ -4040,7 +4041,7 @@ _prepareCharacter(sys, attr) {
 
       } else if (state.isConjuringRoll && state.conjuringContext) {
         const cc       = state.conjuringContext;
-        const conjurer = game.actors.get(cc.conjurerActorId);
+        const conjurer = actorFrom(cc.conjurerActorId);
         const conjName = conjurer?.name ?? 'Conjurer';
 
         if (successes === 0) {
@@ -4087,7 +4088,7 @@ _prepareCharacter(sys, attr) {
 
       } else if (state.isBanishingRoll && state.banishContext) {
         const bc      = { ...state.banishContext, banisherHits: successes };
-        const spirit  = game.actors.get(bc.spiritActorId);
+        const spirit  = actorFrom(bc.spiritActorId);
         const roller  = spirit ?? this;
         // The spirit resists: Force dice vs TN = the banisher's effective Magic. At Magic 7+ its 6s
         // explode — rolled on its own wave card, and the outcome waits for them.
@@ -4144,7 +4145,7 @@ _prepareCharacter(sys, attr) {
         // Step 1 (SR3 Core p.174): attacker's success test vs TN = ward's current Force.
         // Every 2 net successes stages the attacker's base damage code up.
         const wac    = state.wardAttackContext;
-        const ward   = game.actors.get(wac.wardActorId);
+        const ward   = actorFrom(wac.wardActorId);
         const staged = SR3EItem.stageDamage(wac.damageBase, successes);
 
         if (!ward) {
@@ -4177,7 +4178,7 @@ _prepareCharacter(sys, attr) {
         // back. Surviving Level converts to condition-monitor boxes (same L/M/S/D table used
         // everywhere else in this system) and reduces the ward's Force by that many boxes.
         const wsc     = state.wardSoakContext;
-        const ward    = game.actors.get(wsc.wardActorId);
+        const ward    = actorFrom(wsc.wardActorId);
         const STAGES  = ['L', 'M', 'S', 'D'];
         let idx       = STAGES.indexOf(wsc.stagedLevel);
         let remaining = successes;
@@ -4206,7 +4207,7 @@ _prepareCharacter(sys, attr) {
         // Spell Defense wave resolved — reduce the carried success count
         const sdc         = state.spellDefenseContext;
         const newSuccesses = Math.max(0, sdc.currentSuccesses - successes);
-        const defenderName = game.actors.get(sdc.defenderActorId)?.name ?? 'Defender';
+        const defenderName = actorFrom(sdc.defenderActorId)?.name ?? 'Defender';
 
         stagingHtml = `
           <div class="sr-staging-result">
@@ -4239,7 +4240,7 @@ _prepareCharacter(sys, attr) {
 
         if (pc.isOffensive && pc.targetActorId) {
           // Auto-roll IC defense (program offensive roll vs IC)
-          const targetIC = game.actors.get(pc.targetActorId);
+          const targetIC = actorFrom(pc.targetActorId);
           const icRating = targetIC?.system?.rating ?? 1;
           const icName   = targetIC?.name ?? 'IC';
 
@@ -4306,7 +4307,7 @@ _prepareCharacter(sys, attr) {
             ? `${successes} resist hit${successes !== 1 ? 's' : ''} — damage unchanged: <strong>${msc.stagedPower}${finalLevel} Matrix</strong>`
             : `${successes} resist hit${successes !== 1 ? 's' : ''} — <strong>${msc.stagedPower}${msc.stagedLevel}</strong> staged down to <strong>${msc.stagedPower}${finalLevel} Matrix</strong>`;
           const icBoxes = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
-          const icName  = game.actors.get(msc.icActorId)?.name ?? 'IC';
+          const icName  = actorFrom(msc.icActorId)?.name ?? 'IC';
           const icAssignPayload = JSON.stringify({ icActorId: msc.icActorId, boxes: icBoxes }).replace(/'/g, '&#39;');
           stagingHtml = `
             <div class="sr-staging-result">💻 ${resultLine}</div>
@@ -4498,7 +4499,7 @@ _prepareCharacter(sys, attr) {
     let fdDodgeHtml = '';
     if (allDone && state.isFullDefenseDodge && state.fullDefenseContext) {
       const fc  = state.fullDefenseContext;
-      const dfn = game.actors.get(fc.defenderActorId);
+      const dfn = actorFrom(fc.defenderActorId);
       // ⚠ Successes come OFF the attacker's net before staging — an ordinary dodge instead
       // adds them to the Damage Resistance Test and never touches staging. See
       // fullDefenseOutcome for the two quotations that differ.
@@ -4545,9 +4546,9 @@ _prepareCharacter(sys, attr) {
 
     // A failed charge's Quickness test (CC p.86): any success keeps them upright.
     if (allDone && state.isChargeRecovery && state.chargeContext) {
-      const ca = game.actors.get(state.chargeContext.actorId);
+      const ca = actorFrom(state.chargeContext.actorId);
       if (ca) {
-        const proneP = JSON.stringify({ actorId: ca.id }).replace(/'/g, '&#39;');
+        const proneP = JSON.stringify({ actorId: actorRef(ca) }).replace(/'/g, '&#39;');
         await ChatMessage.create({
           content: successes > 0
             ? `<div class="sr-roll-card"><div class="sr-dodge-result sr-dodge-success">
@@ -4566,7 +4567,7 @@ _prepareCharacter(sys, attr) {
     // because the prone toggle belongs with the announcement.
     if (allDone && state.isKnockdownRoll && state.knockdownContext) {
       const kc  = state.knockdownContext;
-      const tgt = game.actors.get(kc.targetActorId ?? kc.actorId);
+      const tgt = actorFrom(kc.targetActorId ?? kc.actorId);
       if (tgt) {
         // `needed` was settled on the dialog — it is editable, because which wound level
         // drives the threshold is ambiguous in the book. See knockdownOutcome.
@@ -4585,8 +4586,8 @@ _prepareCharacter(sys, attr) {
     let dodgeResultHtml = '';
     if (allDone && state.isDodgeRoll && state.dodgePayload) {
       const dp          = state.dodgePayload;
-      const dodgerName  = game.actors.get(dp.targetActorId)?.name   ?? 'Defender';
-      const attackerName = game.actors.get(dp.attackerActorId)?.name ?? 'Attacker';
+      const dodgerName  = actorFrom(dp.targetActorId)?.name   ?? 'Defender';
+      const attackerName = actorFrom(dp.attackerActorId)?.name ?? 'Attacker';
       const atkHits = dp.attackSuccesses ?? 0;
 
       /* ⚠ Two different rules, and the payload flag is what keeps them apart. A Missile
@@ -4655,7 +4656,7 @@ _prepareCharacter(sys, attr) {
           : `${successes} hit${successes !== 1 ? 's' : ''} — <strong>${dp.drainLevel} ${trackLabel}</strong> staged down to <strong>${finalLevel} ${trackLabel}</strong>`;
         const drainBoxes   = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
         const drainTrack   = dp.drainIsPhysical ? 'physical' : 'stun';
-        const drainActorName = game.actors.get(dp.actorId)?.name ?? 'Caster';
+        const drainActorName = actorFrom(dp.actorId)?.name ?? 'Caster';
         const drainAssignPayload = JSON.stringify({ actorId: dp.actorId, track: drainTrack, boxes: drainBoxes }).replace(/'/g, '&#39;');
         drainResultHtml = `
           <div class="sr-soak-result">⚡ ${resultLine}</div>
@@ -4716,7 +4717,7 @@ _prepareCharacter(sys, attr) {
           : `${hitsLabel} — <strong>${sp.stagedPower}${sp.stagedLevel}</strong> staged down to <strong>${power}${finalLevel} ${trackLabel}</strong>`;
         const soakBoxes      = ({ L: 1, M: 3, S: 6, D: 10 })[finalLevel] ?? 1;
         const soakTrack      = sp.isStun ? 'stun' : 'physical';
-        const soakTargetName = game.actors.get(sp.actorId)?.name ?? 'Target';
+        const soakTargetName = actorFrom(sp.actorId)?.name ?? 'Target';
         const soakAssignPayload = JSON.stringify({ actorId: sp.actorId, track: soakTrack, boxes: soakBoxes }).replace(/'/g, '&#39;');
         // Knockdown (p.124) is a THIRD stage, after damage resolves. Offered only when a
         // wound actually lands — fully soaked means there is no wound level to test against.
@@ -4759,7 +4760,7 @@ _prepareCharacter(sys, attr) {
     if (allDone && state.isSpellResist && state.spellResistContext) {
       const rc    = state.spellResistContext;
       const net   = Math.max(0, (rc.attackSuccesses ?? 0) - successes);
-      const tName = game.actors.get(rc.targetActorId)?.name ?? 'Target';
+      const tName = actorFrom(rc.targetActorId)?.name ?? 'Target';
       if (net <= 0) {
         spellResistResultHtml = `<div class="sr-soak-result sr-soak-blocked">✨ Spell resisted — ${successes} resistance hit${successes !== 1 ? 's' : ''} ≥ ${rc.attackSuccesses ?? 0} casting hit${(rc.attackSuccesses ?? 0) !== 1 ? 's' : ''}. No effect.</div>`;
       } else {
@@ -4822,7 +4823,7 @@ _prepareCharacter(sys, attr) {
 
     // Post assensing result after all explosions resolve
     if (allDone && state.isAssensingRoll) {
-      const actorName = game.actors.get(state.actorId)?.name ?? 'Unknown';
+      const actorName = actorFrom(state.actorId)?.name ?? 'Unknown';
       await SR3EActor._postAssensingResult(successes, state.tn, actorName, { actorId: state.actorId });
     }
 
@@ -4831,7 +4832,7 @@ _prepareCharacter(sys, attr) {
       const arc      = state.auraReadingContext;
       const bonus    = Math.floor(successes / 2);
       const newTotal = arc.originalSuccesses + bonus;
-      await SR3EActor._postAssensingResult(newTotal, state.tn, arc.actorName ?? game.actors.get(arc.actorId)?.name ?? 'Unknown', {
+      await SR3EActor._postAssensingResult(newTotal, state.tn, arc.actorName ?? actorFrom(arc.actorId)?.name ?? 'Unknown', {
         actorId:       arc.actorId,
         auraBonus:     bonus,
         auraSuccesses: successes,
@@ -4849,7 +4850,7 @@ _prepareCharacter(sys, attr) {
     // Escape Artist — post success (with time) or failure (with retry time)
     if (allDone && state.escapeContext) {
       const { restraintName, baseTime, actorId } = state.escapeContext;
-      const actor = game.actors.get(actorId);
+      const actor = actorFrom(actorId);
       if (actor) {
         if (successes > 0) {
           const time = Math.ceil(baseTime / successes);
@@ -4878,7 +4879,7 @@ _prepareCharacter(sys, attr) {
     if (allDone && state.fallingContext) {
       const { netPower, level, actorId } = state.fallingContext;
       const finalPower = Math.max(0, netPower - successes);
-      const actor = game.actors.get(actorId);
+      const actor = actorFrom(actorId);
       if (actor) {
         if (finalPower <= 0) {
           await ChatMessage.create({
@@ -5016,7 +5017,7 @@ _prepareCharacter(sys, attr) {
    */
   static async handleExplosionClick(payloadJson) {
     const state = JSON.parse(payloadJson);
-    const actor = game.actors.get(state.actorId);
+    const actor = actorFrom(state.actorId);
     if (!actor) return;
 
     const newDice = actor._rollWave(
@@ -5213,7 +5214,7 @@ _prepareCharacter(sys, attr) {
   static async _postSideWave(actor, roll, label, extra = {}) {
     const ones = roll.dice.filter(d => d.isOne).length;
     await actor._postWaveCard({
-      actorId: actor.id, label, tn: roll.tn, pool: roll.pool, wave: 0,
+      actorId: actorRef(actor), label, tn: roll.tn, pool: roll.pool, wave: 0,
       dice: roll.dice, ones, glitch: SR3EActor.isRuleOfOne(ones, roll.pool),
       isWeaponRoll: false, ...extra,
     });
@@ -5255,8 +5256,8 @@ _prepareCharacter(sys, attr) {
    * returns the card body. Inline on the banisher's wave card when nothing exploded.
    */
   static async _banishOutcomeHtml(bc, spiritRes) {
-    const banisher     = game.actors.get(bc.banisherActorId);
-    const spirit       = game.actors.get(bc.spiritActorId);
+    const banisher     = actorFrom(bc.banisherActorId);
+    const spirit       = actorFrom(bc.spiritActorId);
     const banisherName = banisher?.name ?? 'Banisher';
     const spiritName   = spirit?.name   ?? bc.spiritLabel;
     const successes    = bc.banisherHits ?? 0;
@@ -5660,10 +5661,10 @@ _prepareCharacter(sys, attr) {
     }
 
     // Driver resists damage as a passenger would
-    const driverActor = game.actors.get(ctx.driverActorId);
+    const driverActor = actorFrom(ctx.driverActorId);
     if (driverActor && resistLevel) {
       const body = driverActor.system?.attributes?.body?.value ?? driverActor.system?.attributes?.body?.base ?? 3;
-      const dCtx = JSON.stringify({ passengerActorId: driverActor.id, passengerName: driverActor.name, power: ctx.power, level: resistLevel, body, breakthrough: ctx.breakthrough === true || undefined }).replace(/'/g, '&#39;');
+      const dCtx = JSON.stringify({ passengerActorId: actorRef(driverActor), passengerName: driverActor.name, power: ctx.power, level: resistLevel, body, breakthrough: ctx.breakthrough === true || undefined }).replace(/'/g, '&#39;');
       html += `
         <div class="sr-soak-action">
           <button class="sr-ram-passenger-resist-btn" data-payload='${dCtx}'>
@@ -5673,7 +5674,7 @@ _prepareCharacter(sys, attr) {
     }
 
     for (const pid of (ctx.passengerActorIds ?? [])) {
-      const pActor = game.actors.get(pid);
+      const pActor = actorFrom(pid);
       if (!pActor || !resistLevel) continue;
       const body = pActor.system?.attributes?.body?.value ?? pActor.system?.attributes?.body?.base ?? 3;
       const pCtx = JSON.stringify({ passengerActorId: pid, passengerName: pActor.name, power: ctx.power, level: resistLevel, body, breakthrough: ctx.breakthrough === true || undefined }).replace(/'/g, '&#39;');
@@ -5692,8 +5693,8 @@ _prepareCharacter(sys, attr) {
     const ctx       = JSON.parse(btn.dataset.payload);
     btn.disabled    = true;
     btn.textContent = '⏳ Posting…';
-    const driverActor = game.actors.get(ctx.driverActorId);
-    const rollActor   = driverActor ?? game.actors.get(ctx.vehicleActorId);
+    const driverActor = actorFrom(ctx.driverActorId);
+    const rollActor   = driverActor ?? actorFrom(ctx.vehicleActorId);
     if (!rollActor) { ui.notifications.warn('No driver/vehicle actor found for soak.'); return; }
     const pool = ctx.soakPool ?? 4;
     const tn   = Math.max(2, ctx.power ?? 4);
@@ -5744,7 +5745,7 @@ _prepareCharacter(sys, attr) {
    * @returns {Promise<{body:number, impact:number, belted:boolean}|null>}
    */
   static async promptCollisionResist(ctx) {
-    const pActor = game.actors.get(ctx.passengerActorId);
+    const pActor = actorFrom(ctx.passengerActorId);
     if (!pActor) { ui.notifications.warn('Passenger actor not found.'); return null; }
     const body   = pActor.system?.attributes?.body?.value ?? pActor.system?.attributes?.body?.base ?? ctx.body ?? 3;
     const impact = SR3EActor.armorRatings(pActor).impact;
@@ -5800,7 +5801,7 @@ _prepareCharacter(sys, attr) {
     const ctx    = JSON.parse(btn.dataset.payload);
     btn.disabled    = true;
     btn.textContent = '⏳ Rolling…';
-    const pActor = game.actors.get(ctx.passengerActorId);
+    const pActor = actorFrom(ctx.passengerActorId);
     if (!pActor) { ui.notifications.warn('Passenger actor not found.'); return; }
     const c = choice ?? { body: ctx.body ?? 3, impact: 0, belted: false };
     const r = SR3EActor.collisionPassengerDamage({ power: ctx.power, level: ctx.level, impact: c.impact, belted: c.belted,
@@ -5823,7 +5824,7 @@ _prepareCharacter(sys, attr) {
         isSoakRoll:  true,
         // ⚠ `actorId` was missing, so the Assign Wound button this roll produces named
         // "Target" and pointed at no actor.
-        soakPayload: { actorId: pActor.id, stagedPower: r.power, stagedLevel: r.level, isStun: false },
+        soakPayload: { actorId: actorRef(pActor), stagedPower: r.power, stagedLevel: r.level, isStun: false },
         physicalDice,
       });
   }
@@ -5947,7 +5948,7 @@ _prepareCharacter(sys, attr) {
     const rerollCost = KarmaPool.rerollCost(state.karmaRerolls ?? 0);
     const btn = (action, text, title) =>
       `<button type="button" class="sr-karma-btn" data-karma="${action}" title="${title}">${text}</button>`;
-    const payload = JSON.stringify({ actorId: actor.id }).replace(/'/g, '&#39;');
+    const payload = JSON.stringify({ actorId: actorRef(actor) }).replace(/'/g, '&#39;');
     const rows = [
       opts.reroll ? btn('reroll', `🎲 Re-roll ${failures} failure${failures !== 1 ? 's' : ''} — ${rerollCost} Karma`,
         'Re-roll every die that failed (p.246). The first re-roll of a test costs 1, the next 2 more, then 3 more.') : '',
@@ -5986,7 +5987,7 @@ _prepareCharacter(sys, attr) {
    * Done resolve the roll. Returns false when nothing was done, so the caller can free the button.
    */
   static async handleKarmaHold(state, action, { n = 1 } = {}) {
-    const actor = game.actors.get(state?.actorId);
+    const actor = actorFrom(state?.actorId);
     if (!actor || !state?.dice) return false;
     const dice      = state.dice;
     const successes = dice.filter(d => d.success).length;
@@ -6060,8 +6061,8 @@ _prepareCharacter(sys, attr) {
   }
 
   static async postMeleeCard(ctx) {
-    const atk = game.actors.get(ctx.attackerActorId);
-    const def = game.actors.get(ctx.defenderActorId);
+    const atk = actorFrom(ctx.attackerActorId);
+    const def = actorFrom(ctx.defenderActorId);
     if (!atk || !def) return;
 
     ctx.atkSkillDice = ctx.atkInfo?.skillDice ?? ctx.atkPool ?? 1;
@@ -6080,7 +6081,7 @@ _prepareCharacter(sys, attr) {
       // roll. ⚠ Until now this was read in ONE place, the Roll Skill dialog, so it reached a
       // skill rolled from the sheet and never a melee attack — which is the case it most
       // obviously applies to. Reported from play 2026-08-21.
-      const _catActor = game.actors.get(owner ?? '') ?? null;
+      const _catActor = actorFrom(owner ?? '') ?? null;
       const _cat = _catActor
         ? SR3EActor.skillCategoryBonus(
             _catActor.system?.derived?.skillCategoryBonuses ?? [], info?.skillCategory)
@@ -6409,7 +6410,7 @@ _prepareCharacter(sys, attr) {
     // reserved for the SECOND stage, the Dodge Test, where "only Combat Pool dice may be
     // used". So this zeroes the allocation rather than rejecting it, and the dice go to the
     // dodge that follows.
-    const _defFullDefense = !!game.actors.get(ctx.defenderActorId)?.system?.fullDefense;
+    const _defFullDefense = !!actorFrom(ctx.defenderActorId)?.system?.fullDefense;
     if (_defFullDefense && defCombatPool > 0) {
       ui.notifications.info('Full Defense: Combat Pool cannot be added to the skill test — it is held for the Dodge Test (p.123).');
       defCombatPool = 0;
@@ -6424,7 +6425,7 @@ _prepareCharacter(sys, attr) {
     // and the corner is already owner-gated.
     const _catDice = (role, cls, actorId, category) => {
       if (!SR3EActor.cornerChecked(sub, role, cls, card)) return 0;
-      const a = game.actors.get(actorId);
+      const a = actorFrom(actorId);
       if (!a) return 0;
       return SR3EActor.skillCategoryBonus(a.system?.derived?.skillCategoryBonuses ?? [], category).dice;
     };
@@ -6467,12 +6468,12 @@ _prepareCharacter(sys, attr) {
     // Read edited damage codes
     const atkRawDamage = String(f('attacker', 'sr-melee-atk-damage') ?? '').trim() || ctx.atkRawDamage;
     const defRawDamage = String(f('defender', 'sr-melee-def-damage') ?? '').trim() || ctx.defRawDamage;
-    const atkDamageBase = game.sr3e.SR3EItem.parseDamageCode(atkRawDamage, game.actors.get(ctx.attackerActorId)) ?? ctx.atkDamageBase;
-    const defDamageBase = game.sr3e.SR3EItem.parseDamageCode(defRawDamage, game.actors.get(ctx.defenderActorId)) ?? ctx.defDamageBase;
+    const atkDamageBase = game.sr3e.SR3EItem.parseDamageCode(atkRawDamage, actorFrom(ctx.attackerActorId)) ?? ctx.atkDamageBase;
+    const defDamageBase = game.sr3e.SR3EItem.parseDamageCode(defRawDamage, actorFrom(ctx.defenderActorId)) ?? ctx.defDamageBase;
 
     // Spend combat pool
-    const atkActor = game.actors.get(ctx.attackerActorId);
-    const defActor = game.actors.get(ctx.defenderActorId);
+    const atkActor = actorFrom(ctx.attackerActorId);
+    const defActor = actorFrom(ctx.defenderActorId);
     // ── Roll what the pool GRANTED, not what was typed ──────────────────────────
     //
     // p.122, on striking several opponents in one phase: "Dice from the Combat Pool must be
@@ -6491,8 +6492,8 @@ _prepareCharacter(sys, attr) {
     atkPool = Math.max(1, atkSkillDice + atkCatDice + atkSpent);
     defPool = Math.max(1, defSkillDice + defCatDice + defSpent);
 
-    const atk = game.actors.get(ctx.attackerActorId);
-    const def = game.actors.get(ctx.defenderActorId);
+    const atk = actorFrom(ctx.attackerActorId);
+    const def = actorFrom(ctx.defenderActorId);
     if (!atk || !def) return;
 
     let atkDice, defDice;
@@ -6575,8 +6576,8 @@ _prepareCharacter(sys, attr) {
    * test outright. That is the cost of the posture, stated twice in the book.
    */
   static async _postFullDefenseResult(ctx, atkSuccesses, defSuccesses) {
-    const atk = game.actors.get(ctx.attackerActorId);
-    const def = game.actors.get(ctx.defenderActorId);
+    const atk = actorFrom(ctx.attackerActorId);
+    const def = actorFrom(ctx.defenderActorId);
     const fd  = SR3EActor.fullDefenseOutcome({ attackHits: atkSuccesses, skillHits: defSuccesses });
 
     const header = `
@@ -6638,7 +6639,7 @@ _prepareCharacter(sys, attr) {
    */
   static async handleFullDefenseDodge(btn) {
     const ctx = JSON.parse(btn.dataset.payload);
-    const def = game.actors.get(ctx.defenderActorId);
+    const def = actorFrom(ctx.defenderActorId);
     if (!def) return;
 
     const avail = def.system.derived?.availableCombatPool ?? 0;
@@ -6694,8 +6695,8 @@ _prepareCharacter(sys, attr) {
     const atkSuccesses = atkDice.filter(d => d.success).length;
     const defSuccesses = defDice.filter(d => d.success).length;
 
-    const atk = game.actors.get(ctx.attackerActorId);
-    const def = game.actors.get(ctx.defenderActorId);
+    const atk = actorFrom(ctx.attackerActorId);
+    const def = actorFrom(ctx.defenderActorId);
 
     // ── Full Defense takes a different shape entirely (p.123-124) ───────────────
     if (ctx.defFullDefense) {
@@ -6768,7 +6769,7 @@ _prepareCharacter(sys, attr) {
 
         const soakPayload = JSON.stringify({
           attackerActorId: ctx.attackerActorId,
-          targetActorId:   loser?.id,
+          targetActorId:   actorRef(loser),
           weaponItemId:    winnerWeaponId || undefined,   // lets the soak card see a shock weapon (SR3 p.124-125)
           isMelee:         true,
           knockdownTNMod:  _chargeFailed ? _kdMod : 0,
@@ -6797,7 +6798,7 @@ _prepareCharacter(sys, attr) {
       const _xTrack = extraBase.isStun ? 'Stun' : 'Physical';
       const _xPayload = JSON.stringify({
         attackerActorId: ctx.attackerActorId,
-        targetActorId:   loser?.id,
+        targetActorId:   actorRef(loser),
         isMelee:         true,
         shock:           true,
         shockCode:       extraCode,   // the Power printed on the shock code sets the stun (SR3 p.124-125)
@@ -6887,7 +6888,7 @@ _prepareCharacter(sys, attr) {
    * Build the soak button HTML — shared between no-dodge and failed-dodge paths.
    */
   static _soakButtonHtml(payload) {
-    const targetActor = game.actors.get(payload.targetActorId);
+    const targetActor = actorFrom(payload.targetActorId);
     const targetName  = targetActor?.name ?? 'Target';
     const soakPayload = JSON.stringify({
       attackerActorId: payload.attackerActorId,
@@ -6933,7 +6934,7 @@ _prepareCharacter(sys, attr) {
    */
   static async handleDodgeDeclare(ctx) {
     const { SR3EQuery, SR3EItem } = game.sr3e;
-    const targetActor = game.actors.get(ctx.targetActorId);
+    const targetActor = actorFrom(ctx.targetActorId);
     if (!targetActor) return;
 
     const exchangeId = foundry.utils.randomID();
@@ -8471,7 +8472,7 @@ _prepareCharacter(sys, attr) {
     await actor.rollPool(magic, tn, `💪 ${item.name} — Magic Test`, {
       isAttributeBoostRoll: true,
       attributeBoostContext: {
-        actorId: actor.id, attribute, attrLabel: label, level, current, cap, limit,
+        actorId: actorRef(actor), attribute, attrLabel: label, level, current, cap, limit,
       },
     });
   }
@@ -8609,7 +8610,7 @@ _prepareCharacter(sys, attr) {
     // crash card came up with no Power and a NaN target number (0.5.2 fix).
     await actor._postSoakCard({
       stagedPower: power, stagedLevel: 'D', isStun: true,
-      rawDamage: `${power}D`, targetActorId: actor.id,
+      rawDamage: `${power}D`, targetActorId: actorRef(actor),
       noArmor: true, noArmorNote: 'System shock — armour does not apply (M&M p.63)',
     });
   }
@@ -8621,7 +8622,7 @@ _prepareCharacter(sys, attr) {
    * player's client, and a player cannot update their own actor in every permission setup.
    */
   static async _commitAttributeBoost({ actorId, attribute, level, turns }) {
-    const actor = game.actors.get(actorId);
+    const actor = actorFrom(actorId);
     if (!actor) return;
     const changes = {
       [`system.attributeBoost.${attribute}.level`]: level,
@@ -8908,7 +8909,7 @@ _prepareCharacter(sys, attr) {
    */
   static async postGasExposureCard(actor, toxin, grenadeName) {
     if (!actor) return;
-    const payload = JSON.stringify({ actorId: actor.id, damage: toxin.damage, toxin: toxin.name }).replace(/'/g, '&#39;');
+    const payload = JSON.stringify({ actorId: actorRef(actor), damage: toxin.damage, toxin: toxin.name }).replace(/'/g, '&#39;');
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
       content: `<div class="sr-roll-card">
@@ -8930,11 +8931,11 @@ _prepareCharacter(sys, attr) {
   /** ☣ The gas card's button: open the soak card for the toxin — Body, no armour (it is breathed or absorbed). */
   static async handleGasResist(btn) {
     const p = JSON.parse(btn.dataset.payload ?? '{}');
-    const actor = game.actors.get(p.actorId);
+    const actor = actorFrom(p.actorId);
     const d = SR3EItem.parseDamageCode(p.damage);
     if (!actor || !d?.power) return false;
     await actor._postSoakCard({
-      stagedPower: d.power, stagedLevel: d.level, isStun: d.isStun, rawDamage: p.damage, targetActorId: actor.id,
+      stagedPower: d.power, stagedLevel: d.level, isStun: d.isStun, rawDamage: p.damage, targetActorId: actorRef(actor),
       noArmor: true, noArmorNote: `${p.toxin} — resisted with Body; armour does not apply (SR3 p.249-250)`,
     });
     return true;
@@ -8949,7 +8950,7 @@ _prepareCharacter(sys, attr) {
   static async handleFlashTick(btn) {
     const p = JSON.parse(btn.dataset.payload ?? '{}');
     const tokens = p.tokens ?? [];
-    const hasFlare = id => (game.actors.get(id)?.items ?? []).some(i => /flare/i.test(i.name));
+    const hasFlare = id => (actorFrom(id)?.items ?? []).some(i => /flare/i.test(i.name));
     const rows = tokens.map(t => `<div style="display:flex;gap:10px;align-items:center;padding:1px 0">
         <label style="flex:1;display:flex;gap:6px;align-items:center">
           <input type="checkbox" class="sr-flash-face" value="${t.actorId}" style="appearance:auto;-webkit-appearance:checkbox"/>
@@ -8973,7 +8974,7 @@ _prepareCharacter(sys, attr) {
       ],
     });
     if (!picked?.length) return false;
-    for (const { id, flare } of picked) await SR3EActor.postFlashCard(game.actors.get(id), flare, p.name);
+    for (const { id, flare } of picked) await SR3EActor.postFlashCard(actorFrom(id), flare, p.name);
     return true;
   }
 
@@ -9102,7 +9103,7 @@ _prepareCharacter(sys, attr) {
     const ones   = rolled.filter(d => d.isOne).length;
 
     await targetActor._postWaveCard({
-      actorId:      targetActor.id,
+      actorId:      actorRef(targetActor),
       label,
       tn:           TN,
       pool:         dice,
@@ -9147,7 +9148,7 @@ _prepareCharacter(sys, attr) {
     }
 
     await targetActor._postWaveCard({
-      actorId:           targetActor.id,
+      actorId:           actorRef(targetActor),
       label,
       tn:                DODGE_TN,
       pool:              dodgeDice,
@@ -9172,7 +9173,7 @@ _prepareCharacter(sys, attr) {
    */
   static async handleChargeQuickness(btn) {
     const ctx   = JSON.parse(btn.dataset.payload);
-    const actor = game.actors.get(ctx.targetActorId ?? ctx.actorId);
+    const actor = actorFrom(ctx.targetActorId ?? ctx.actorId);
     if (!actor) return;
 
     const tn   = Math.max(2, parseInt(ctx.tn) || 5);
@@ -9181,7 +9182,7 @@ _prepareCharacter(sys, attr) {
     const ones = roll.filter(d => d.isOne).length;
 
     await actor._postWaveCard({
-      actorId: actor.id,
+      actorId: actorRef(actor),
       label:   `🏃 ${actor.name} — Quickness (${tn}) after a failed charge`,
       tn,
       pool:    dice,
@@ -9191,7 +9192,7 @@ _prepareCharacter(sys, attr) {
       glitch:  SR3EActor.isRuleOfOne(ones, dice),
       isWeaponRoll:    false,
       isChargeRecovery: true,
-      chargeContext:    { actorId: actor.id, tn },
+      chargeContext:    { actorId: actorRef(actor), tn },
     });
   }
 
@@ -9208,7 +9209,7 @@ _prepareCharacter(sys, attr) {
    */
   static async showDiceBreakdown(btn) {
     const ctx   = JSON.parse(btn.dataset.payload);
-    const actor = ctx.actorId ? game.actors.get(ctx.actorId) : null;
+    const actor = ctx.actorId ? actorFrom(ctx.actorId) : null;
     const d     = actor?.system?.derived ?? {};
 
     const key   = ctx.requiredSkill || ctx.skillName || '';
@@ -9316,7 +9317,7 @@ _prepareCharacter(sys, attr) {
    */
   static async handleKnockdown(btn) {
     const ctx    = JSON.parse(btn.dataset.payload);
-    const target = game.actors.get(ctx.targetActorId ?? ctx.actorId);
+    const target = actorFrom(ctx.targetActorId ?? ctx.actorId);
     if (!target) return;
 
     const level = String(ctx.level ?? '').toUpperCase();
@@ -9328,7 +9329,7 @@ _prepareCharacter(sys, attr) {
       return;
     }
 
-    const attacker  = ctx.attackerActorId ? game.actors.get(ctx.attackerActorId) : null;
+    const attacker  = ctx.attackerActorId ? actorFrom(ctx.attackerActorId) : null;
     const atkStr    = attacker?.system?.attributes?.strength?.value ?? 0;
     // A failed Charging Attack adds +2 here rather than costing a separate Quickness test
     // (CC p.86) — see chargingFailure. Zero for every other attack.
@@ -9407,7 +9408,7 @@ _prepareCharacter(sys, attr) {
     const ones = dice.filter(d => d.isOne).length;
 
     await target._postWaveCard({
-      actorId: target.id,
+      actorId: actorRef(target),
       label:   `💥 ${target.name} — Knockdown Test (TN ${tn}, ${need} to stay up)`,
       tn,
       pool:    bodyDice,
@@ -9437,7 +9438,7 @@ _prepareCharacter(sys, attr) {
 
   /** Announce a knockdown outcome, with a prone toggle when they went down. */
   static async _postKnockdownResult(target, out) {
-    const proneP = JSON.stringify({ actorId: target.id }).replace(/'/g, '&#39;');
+    const proneP = JSON.stringify({ actorId: actorRef(target) }).replace(/'/g, '&#39;');
     let body;
     if (out.automatic) {
       body = `<div class="sr-melee-result sr-melee-win">
@@ -9475,7 +9476,7 @@ _prepareCharacter(sys, attr) {
   }
 
   static async postSoakCard(actorId, payload) {
-    const actor = game.actors.get(actorId);
+    const actor = actorFrom(actorId);
     if (!actor) {
       console.error('SR3E | postSoakCard: actor not found', actorId);
       return;
@@ -9619,7 +9620,7 @@ _prepareCharacter(sys, attr) {
     /* A shock weapon (SR3 p.124-125) — a stun baton, a taser, or the Shock Glove's extra code. The glove's extra
      * payload names its code (`shockCode`); any other shock weapon is found through the attack's weapon, whose main
      * code is the shock. "Impact armor protects against shock weapons, but its rating is halved (rounding down)." */
-    const shockWeapon = game.actors.get(payload.attackerActorId)?.items?.get(payload.weaponItemId);
+    const shockWeapon = actorFrom(payload.attackerActorId)?.items?.get(payload.weaponItemId);
     const shockCode   = this.type === 'vehicle' ? '' : (payload.shockCode || ShockStun.mainCode(shockWeapon, rawDamage));
     const shock       = payload.shock === true || !!shockCode;
     const impactWorn  = impact;     // the full rating, before the halving — the stun's duration halves it itself
@@ -9658,7 +9659,7 @@ _prepareCharacter(sys, attr) {
     }
 
     const soakPayload = JSON.stringify({
-      actorId:         this.id,
+      actorId:         actorRef(this),
       attackerActorId: payload.attackerActorId,
       targetActorId:   payload.targetActorId ?? this.id,
       isMelee,
@@ -9683,7 +9684,7 @@ _prepareCharacter(sys, attr) {
     if (shockCode) {
       const stunPower = ShockStun.printedPower(shockCode) ?? Math.max(0, Math.trunc(Number(stagedPower) || 0));
       const stunPayload = JSON.stringify({
-        actorId: this.id, targetActorId: this.id, power: stunPower, impact: impactWorn, code: shockCode,
+        actorId: actorRef(this), targetActorId: actorRef(this), power: stunPower, impact: impactWorn, code: shockCode,
       }).replace(/'/g, '&#39;');
       const rd = ShockStun.resistDice(bodyOf('body'), bodyOf('willpower'));
       stunHtml = `
@@ -9762,7 +9763,7 @@ _prepareCharacter(sys, attr) {
     btn.disabled    = true;
     btn.textContent = '⏳ Rolling…';
 
-    const actor = game.actors.get(payload.actorId);
+    const actor = actorFrom(payload.actorId);
     if (!actor) return;
 
     // Clamp locally so the physical-dice prompt never asks about dice the actor cannot
@@ -10720,9 +10721,9 @@ _prepareCharacter(sys, attr) {
    */
   static async postSpellDefenseCard({ currentSuccesses, sc, force }) {
     const defenders  = game.actors.contents.filter(
-      a => (a.system.spellDefensePool ?? 0) > 0 && a.id !== sc.attackerActorId
+      a => (a.system.spellDefensePool ?? 0) > 0 && a.id !== actorFrom(sc.attackerActorId)?.id
     );
-    const casterName = game.actors.get(sc.attackerActorId)?.name ?? 'Caster';
+    const casterName = actorFrom(sc.attackerActorId)?.name ?? 'Caster';
 
     if (currentSuccesses === 0 || defenders.length === 0) {
       // Nothing left to defend or no one active — go straight to post-spell cleanup
@@ -10733,7 +10734,7 @@ _prepareCharacter(sys, attr) {
     const defenderHtml = defenders.map(a => {
       const pool       = a.system.spellDefensePool;
       const btnPayload = JSON.stringify({
-        defenderActorId:  a.id,
+        defenderActorId:  actorRef(a),
         currentSuccesses,
         sc,
         force,
@@ -10770,7 +10771,7 @@ _prepareCharacter(sys, attr) {
    * Post the final Resist Spell / drain buttons after defense is resolved.
    */
   static async _postSpellResistOrDoneCard({ currentSuccesses, sc, force }) {
-    const casterName = game.actors.get(sc.attackerActorId)?.name ?? 'Caster';
+    const casterName = actorFrom(sc.attackerActorId)?.name ?? 'Caster';
     let html = `<div class="sr-roll-card">`;
 
     if (currentSuccesses > 0) {
@@ -10819,7 +10820,7 @@ _prepareCharacter(sys, attr) {
     const p        = JSON.parse(btn.dataset.payload);
     const { defenderActorId, currentSuccesses, sc, force } = p;
 
-    const defender = game.actors.get(defenderActorId);
+    const defender = actorFrom(defenderActorId);
     if (!defender) return;
 
     const poolAvail = defender.system.spellDefensePool ?? 0;
@@ -10905,14 +10906,14 @@ _prepareCharacter(sys, attr) {
   // ---------------------------------------------------------------------------
 
   static async postSpellSoakCard(actorId, payload) {
-    const actor = game.actors.get(actorId);
+    const actor = actorFrom(actorId);
     if (!actor) { console.error('SR3E | postSpellSoakCard: actor not found', actorId); return; }
     return actor._postSpellSoakCard(payload);
   }
 
   /** The "🔮 Resist Spell" button markup for one target — carries the caster's successes + base damage. */
   static _spellResistButton(sc, targetId, attackSuccesses) {
-    const tActor = game.actors.get(targetId);
+    const tActor = actorFrom(targetId);
     if (!tActor) return '';
 
     /* ── A willing subject · SR3 p.183 (TODO 191) ─────────────────────────────────────────────
@@ -10948,7 +10949,7 @@ _prepareCharacter(sys, attr) {
      */
     if (sc.isElemental || sc.isFling) {
       const staged       = SR3EItem.stageDamage(sc.damageBase, attackSuccesses);
-      const attackerName = game.actors.get(sc.attackerActorId)?.name ?? 'The caster';
+      const attackerName = actorFrom(sc.attackerActorId)?.name ?? 'The caster';
       const ctx = {
         attackerActorId: sc.attackerActorId,
         targetActorId:   targetId,
@@ -11016,9 +11017,9 @@ _prepareCharacter(sys, attr) {
     const tn     = Math.max(2, force);
 
     const resistPayload = JSON.stringify({
-      actorId:         this.id,
+      actorId:         actorRef(this),
       attackerActorId: payload.attackerActorId,
-      targetActorId:   this.id,
+      targetActorId:   actorRef(this),
       attackSuccesses,
       baseDamage,
       force,
@@ -11061,7 +11062,7 @@ _prepareCharacter(sys, attr) {
     const card    = btn.closest('.sr-soak-card');
     const pool    = parseInt(card?.querySelector('.sr-soak-pool')?.value) || 1;
     const tn      = parseInt(card?.querySelector('.sr-soak-tn')?.value)   || 2;
-    const actor   = game.actors.get(payload.actorId);
+    const actor   = actorFrom(payload.actorId);
     if (!actor) return;
 
     btn.disabled    = true;
@@ -11071,7 +11072,7 @@ _prepareCharacter(sys, attr) {
       isSpellResist:      true,
       spellResistContext: {
         attackerActorId: payload.attackerActorId,
-        targetActorId:   actor.id,
+        targetActorId:   actorRef(actor),
         attackSuccesses: payload.attackSuccesses ?? 0,
         baseDamage:      payload.baseDamage,
         force:           payload.force,
@@ -11086,7 +11087,7 @@ _prepareCharacter(sys, attr) {
   }
 
   static async postDrainCard(actorId, payload) {
-    const actor = game.actors.get(actorId);
+    const actor = actorFrom(actorId);
     if (!actor) { console.error('SR3E | postDrainCard: actor not found', actorId); return; }
     return actor._postDrainCard(payload);
   }
@@ -11142,7 +11143,7 @@ _prepareCharacter(sys, attr) {
     const availSpell = payload.spellPoolForDrain ?? 0;
 
     const drainRollPayload = JSON.stringify({
-      actorId:         this.id,
+      actorId:         actorRef(this),
       drainStr,
       drainLevel,
       drainTN,
@@ -11225,7 +11226,7 @@ _prepareCharacter(sys, attr) {
     btn.disabled    = true;
     btn.textContent = '⏳ Rolling…';
 
-    const actor = game.actors.get(payload.actorId);
+    const actor = actorFrom(payload.actorId);
     if (!actor) return;
 
     // ⚠ Roll what was PAID FOR, not what was typed.
@@ -11283,7 +11284,7 @@ _prepareCharacter(sys, attr) {
       const pilotRating = this.system.attributes?.pilot?.base ?? 0;
 
       if (driverActId) {
-        const rigger = game.actors.get(driverActId);
+        const rigger = actorFrom(driverActId);
         if (rigger) {
           const d = rigger.system.derived ?? {};
 
@@ -11638,7 +11639,7 @@ _prepareCharacter(sys, attr) {
     return this.rollPool(pool, force, label, {
       isDispelRoll:  true,
       dispelContext: {
-        actorId:          this.id,
+        actorId:          actorRef(this),
         force,
         originalSuccesses,
         drainCode,
@@ -11687,7 +11688,7 @@ _prepareCharacter(sys, attr) {
         ],
       });
       if (cancelled) return null;
-      spirit = game.actors.get(spiritId);
+      spirit = actorFrom(spiritId);
       if (!spirit) return null;
     }
 
@@ -11739,8 +11740,8 @@ _prepareCharacter(sys, attr) {
     return this.rollPool(pool, spiritForce, label, {
       isBanishingRoll: true,
       banishContext: {
-        banisherActorId: this.id,
-        spiritActorId:   spirit.id,
+        banisherActorId: actorRef(this),
+        spiritActorId:   actorRef(spirit),
         spiritLabel:     spirit.name,
         spiritForce,
         effectiveMagic,
@@ -11874,8 +11875,8 @@ _prepareCharacter(sys, attr) {
     const defTN = 4 + (defInfo.defaultTnMod ?? 0) + SR3EActor.woundTN(targetActor) + SR3EActor.standingTN(targetActor);
 
     await SR3EActor.postAstralCard({
-      attackerActorId: this.id,
-      defenderActorId: targetActor.id,
+      attackerActorId: actorRef(this),
+      defenderActorId: actorRef(targetActor),
       atkSkillName:    atkInfo.skillName,
       atkSkillDice:    atkInfo.skillDice,
       atkIsDefault:    atkInfo.isDefault,
@@ -11894,8 +11895,8 @@ _prepareCharacter(sys, attr) {
   }
 
   static async postAstralCard(ctx) {
-    const atk = game.actors.get(ctx.attackerActorId);
-    const def = game.actors.get(ctx.defenderActorId);
+    const atk = actorFrom(ctx.attackerActorId);
+    const def = actorFrom(ctx.defenderActorId);
     if (!atk || !def) return;
 
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
@@ -11985,8 +11986,8 @@ _prepareCharacter(sys, attr) {
     const defRawDamage  = String(f('defender', 'sr-astral-def-damage') ?? '').trim() || ctx.defRawDamage;
     const isPhysical    = card.querySelector('.sr-astral-physical-dmg')?.checked ?? false;
 
-    const atkActor = game.actors.get(ctx.attackerActorId);
-    const defActor = game.actors.get(ctx.defenderActorId);
+    const atkActor = actorFrom(ctx.attackerActorId);
+    const defActor = actorFrom(ctx.defenderActorId);
     // Same rule as melee — astral combat "uses the same rules as Melee Combat" (p.174), so
     // the pool grant is what gets rolled, not the request. See handleMeleeRoll.
     const atkAstralSpent = (atkAstralPool > 0 && atkActor) ? await atkActor.spendAstralPool(atkAstralPool) : 0;
@@ -12010,8 +12011,8 @@ _prepareCharacter(sys, attr) {
     atkPool += atkInitSpent;
     defPool += defInitSpent;
 
-    const atk = game.actors.get(ctx.attackerActorId);
-    const def = game.actors.get(ctx.defenderActorId);
+    const atk = actorFrom(ctx.attackerActorId);
+    const def = actorFrom(ctx.defenderActorId);
     if (!atk || !def) return;
 
     let atkDice, defDice;
@@ -12038,7 +12039,7 @@ _prepareCharacter(sys, attr) {
       { atkName: atk.name, defName: def.name, physicalDice });
 
     await atk._postWaveCard({
-      actorId: atk.id, label: `✦ ${atk.name} — Astral Combat`,
+      actorId: actorRef(atk), label: `✦ ${atk.name} — Astral Combat`,
       tn: atkTN, pool: atkPool, wave: 0,
       dice: atkDice, ones: atkOnes, glitch: atkGlitch,
       physicalDice, physicalSuccesses: physicalDice ? atkDice.filter(d => d.success).length : undefined,
@@ -12047,7 +12048,7 @@ _prepareCharacter(sys, attr) {
     });
 
     await def._postWaveCard({
-      actorId: def.id, label: `✦ ${def.name} — Astral Combat`,
+      actorId: actorRef(def), label: `✦ ${def.name} — Astral Combat`,
       tn: defTN, pool: defPool, wave: 0,
       dice: defDice, ones: defOnes, glitch: defGlitch,
       physicalDice, physicalSuccesses: physicalDice ? defDice.filter(d => d.success).length : undefined,
@@ -12063,8 +12064,8 @@ _prepareCharacter(sys, attr) {
     const defSuccesses = defDice.filter(d => d.success).length;
     const net          = Math.abs(atkSuccesses - defSuccesses);
 
-    const atk = game.actors.get(ctx.attackerActorId);
-    const def = game.actors.get(ctx.defenderActorId);
+    const atk = actorFrom(ctx.attackerActorId);
+    const def = actorFrom(ctx.defenderActorId);
 
     let resultHtml;
 
@@ -12093,8 +12094,8 @@ _prepareCharacter(sys, attr) {
       const stagingHtml = `<div class="sr-staging-result">📊 ${winnerRaw} + ${net} net hit${net !== 1 ? 's' : ''} → <strong>${staged.power}${staged.level} ${trackLabel}</strong></div>`;
 
       const soakPayload = JSON.stringify({
-        actorId:         loser?.id,
-        attackerActorId: winner?.id,
+        actorId:         actorRef(loser),
+        attackerActorId: actorRef(winner),
         winnerCha,
         stagedPower:     staged.power,
         stagedLevel:     staged.level,
@@ -12174,7 +12175,7 @@ _prepareCharacter(sys, attr) {
   }
 
   static async postAstralSoakCard(actorId, payload) {
-    const actor = game.actors.get(actorId);
+    const actor = actorFrom(actorId);
     if (!actor) return;
     return actor._postAstralSoakCard(payload);
   }
@@ -12199,7 +12200,7 @@ _prepareCharacter(sys, attr) {
     const soakTN  = SR3EActor.astralSoakTN({ power: stagedPower ?? winnerCha, mysticArmor, naturalArmor });
 
     const soakPayload = JSON.stringify({
-      actorId:         this.id,
+      actorId:         actorRef(this),
       attackerActorId: payload.attackerActorId,
       stagedPower,
       stagedLevel,
@@ -12255,7 +12256,7 @@ _prepareCharacter(sys, attr) {
     btn.disabled    = true;
     btn.textContent = '⏳ Rolling…';
 
-    const actor = game.actors.get(payload.actorId);
+    const actor = actorFrom(payload.actorId);
     if (!actor) return;
 
     // Clamp for the prompt only; spendCombatPool clamps authoritatively (as handleSoakRollClick).
@@ -12398,7 +12399,7 @@ _prepareCharacter(sys, attr) {
 
   static async handleAuraReadingClick(btn, physicalDice = false) {
     const p     = JSON.parse(btn.dataset.payload);
-    const actor = game.actors.get(p.actorId);
+    const actor = actorFrom(p.actorId);
     if (!actor) return;
 
     const skill = actor.items.find(i =>
@@ -12454,7 +12455,7 @@ _prepareCharacter(sys, attr) {
       isAuraReadingRoll:  true,
       auraReadingContext: {
         originalSuccesses: p.originalSuccesses,
-        actorId:           actor.id,
+        actorId:           actorRef(actor),
         actorName:         actor.name,
       },
       physicalDice,
@@ -12557,7 +12558,7 @@ _prepareCharacter(sys, attr) {
           el.querySelector('#atk-source').innerHTML = buildOptions(data.sources);
           el.querySelector('#atk-pool').value = data.firstVal ?? 4;
           // Their own wounds (SR3 p.125) follow the actor chosen.
-          const picked = game.actors.get(e.target.value);
+          const picked = actorFrom(e.target.value);
           el.querySelector('#atk-tn').value = 4 + SR3EActor.woundTN(picked) + SR3EActor.standingTN(picked);
         });
         el.querySelector('#atk-source')?.addEventListener('change', (e) => {
@@ -12579,7 +12580,7 @@ _prepareCharacter(sys, attr) {
         <input type="number" id="${poolId}" value="${defaultData?.firstVal ?? 4}" min="1" max="30" style="width:55px;margin-left:4px"/>
       </label>
       <label style="display:block;margin-bottom:6px;font-size:12px" title="4, plus the actor's own wound modifier (SR3 p.125)">TN:
-        <input type="number" id="${tnId}" value="${4 + SR3EActor.woundTN(game.actors.get(defaultAtkId)) + SR3EActor.standingTN(game.actors.get(defaultAtkId))}" min="2" max="30" style="width:55px;margin-left:4px"/>
+        <input type="number" id="${tnId}" value="${4 + SR3EActor.woundTN(actorFrom(defaultAtkId)) + SR3EActor.standingTN(actorFrom(defaultAtkId))}" min="2" max="30" style="width:55px;margin-left:4px"/>
       </label>
       <label style="display:block;margin-bottom:0;font-size:12px">Damage:
         <input type="text" id="${dmgId}" value="4L" style="width:55px;margin-left:4px"/>
@@ -12631,21 +12632,21 @@ _prepareCharacter(sys, attr) {
               // source, dice, TN and damage before they do.
               const oppData = oppActId === 'other'
                 ? null
-                : SR3EActor.contestedSources(game.actors.get(oppActId));
+                : SR3EActor.contestedSources(actorFrom(oppActId));
 
               result = {
                 atkActorId:     atkActId,
-                atkActorName:   game.actors.get(atkActId)?.name ?? 'Actor',
+                atkActorName:   actorFrom(atkActId)?.name ?? 'Actor',
                 atkSourceLabel: atkSrc?.options[atkSrc.selectedIndex]?.text ?? '',
                 atkPool:   Math.max(1, parseInt(el.querySelector('#atk-pool')?.value)   || 4),
                 atkTN:     Math.max(2, parseInt(el.querySelector('#atk-tn')?.value)     || 4),
                 atkDamage: el.querySelector('#atk-damage')?.value.trim() || '4L',
                 oppActorId:     oppActId === 'other' ? null : oppActId,
-                oppActorName:   oppActId === 'other' ? 'Other' : (game.actors.get(oppActId)?.name ?? 'Other'),
+                oppActorName:   oppActId === 'other' ? 'Other' : (actorFrom(oppActId)?.name ?? 'Other'),
                 oppSourceLabel: oppData?.[0]?.label ?? '',
                 oppPool:   Math.max(1, oppData?.[0]?.value || 4),
                 // A starting point in their corner — their own wounds included (SR3 p.125).
-                oppTN:     4 + SR3EActor.woundTN(game.actors.get(oppActId)) + SR3EActor.standingTN(game.actors.get(oppActId)),
+                oppTN:     4 + SR3EActor.woundTN(actorFrom(oppActId)) + SR3EActor.standingTN(actorFrom(oppActId)),
                 oppDamage: '4L',
                 physicalDice: shiftKey,
               };
@@ -12672,7 +12673,7 @@ _prepareCharacter(sys, attr) {
     // sr3e.js disables it (like every other field) for anyone but that participant, so
     // both sides stay VISIBLE to each other and only one side is editable.
     const _corner = (name, actorId, sourceLabel, pool, tn, damage, srcClass, poolClass, tnClass, dmgClass, color, role, owner) => {
-      const actor = actorId ? game.actors.get(actorId) : null;
+      const actor = actorId ? actorFrom(actorId) : null;
       const opts  = actor ? SR3EActor.contestedSourceOptions(actor, pool) : '';
       return `
       <div class="sr-melee-corner"
@@ -12838,7 +12839,7 @@ _prepareCharacter(sys, attr) {
     await this.rollPool(config.dice, config.tn, `🛡 ${this.name} resists ${config.code} ${trackLabel}`, {
       isSoakRoll:  true,
       soakPayload: {
-        actorId:     this.id,
+        actorId:     actorRef(this),
         stagedPower: config.power,
         stagedLevel: config.level,
         isStun:      config.isStun,
@@ -12867,8 +12868,8 @@ _prepareCharacter(sys, attr) {
     const atkDamage = String(f('attacker', 'sr-contested-atk-damage') ?? '').trim() || ctx.atkDamage;
     const oppDamage = String(f('opponent', 'sr-contested-opp-damage') ?? '').trim() || ctx.oppDamage;
 
-    const atkActor = game.actors.get(ctx.atkActorId);
-    const oppActor = ctx.oppActorId ? game.actors.get(ctx.oppActorId) : null;
+    const atkActor = actorFrom(ctx.atkActorId);
+    const oppActor = ctx.oppActorId ? actorFrom(ctx.oppActorId) : null;
     if (!atkActor) return;
 
     let atkDice, oppDice;
@@ -12936,7 +12937,7 @@ _prepareCharacter(sys, attr) {
       const loserId      = winnerIsAtk ? ctx.oppActorId   : ctx.atkActorId;
       const winnerDamage = winnerIsAtk ? ctx.atkDamage    : ctx.oppDamage;
 
-      const winnerActor  = winnerId ? game.actors.get(winnerId) : null;
+      const winnerActor  = winnerId ? actorFrom(winnerId) : null;
       const winnerDmgBase = SR3EItem.parseDamageCode(winnerDamage ?? '4L', winnerActor);
 
       let stagingHtml = '';
@@ -13034,7 +13035,7 @@ _prepareCharacter(sys, attr) {
     const d    = sys.derived         ?? {};
 
     const hostId = run.currentHostId ?? '';
-    const host   = hostId ? game.actors.get(hostId) : null;
+    const host   = hostId ? actorFrom(hostId) : null;
     if (!host) {
       ui.notifications.warn('Not logged on to a host. Use the Matrix tab to set a host first.');
       return;
@@ -13124,7 +13125,7 @@ _prepareCharacter(sys, attr) {
     if (hpAlloc > 0) await this.update({ 'system.hackingPoolSpent': (sys.hackingPoolSpent ?? 0) + hpAlloc });
 
     const ctx = {
-      deckerActorId: this.id,
+      deckerActorId: actorRef(this),
       hostActorId:   hostId,
       deckerName:    this.name,
       hostName:      host.name,
@@ -13187,8 +13188,8 @@ _prepareCharacter(sys, attr) {
     const deckerTN   = SR3EActor.cornerTN(f('decker', 'sr-ost-decker-tn'), ctx.deckerTN);
     const hostTN     = SR3EActor.cornerTN(f('host',   'sr-ost-host-tn'), ctx.hostTN);
 
-    const deckerActor = game.actors.get(ctx.deckerActorId);
-    const hostActor   = game.actors.get(ctx.hostActorId);
+    const deckerActor = actorFrom(ctx.deckerActorId);
+    const hostActor   = actorFrom(ctx.hostActorId);
     if (!deckerActor || !hostActor) { ui.notifications.warn('Orthodox System Test: missing actor.'); return; }
 
     // Explosions are rolled on wave cards, and the result waits for them.
@@ -13198,7 +13199,7 @@ _prepareCharacter(sys, attr) {
   }
 
   static async _postOrthoSystemResult(ctx, deckerDice, hostDice) {
-    const deckerActor = game.actors.get(ctx.deckerActorId);
+    const deckerActor = actorFrom(ctx.deckerActorId);
     const dRes = SR3EActor.diceResult(deckerDice);
     const hRes = SR3EActor.diceResult(hostDice);
 
@@ -13246,7 +13247,7 @@ _prepareCharacter(sys, attr) {
     const d    = sys.derived         ?? {};
 
     const hostId = run.currentHostId ?? '';
-    const host   = hostId ? game.actors.get(hostId) : null;
+    const host   = hostId ? actorFrom(hostId) : null;
     if (!host) {
       ui.notifications.warn('Not logged on to a host. Use the Matrix tab to set a host first.');
       return;
@@ -13338,7 +13339,7 @@ _prepareCharacter(sys, attr) {
     if (hpAlloc > 0) await this.update({ 'system.hackingPoolSpent': (sys.hackingPoolSpent ?? 0) + hpAlloc });
     const totalAtkDice = atkDice + hpAlloc;
 
-    const icActor = game.actors.get(targetId);
+    const icActor = actorFrom(targetId);
     if (!icActor) return;
     const icType    = icActor.system.orthodoxIcType ?? icActor.system.icType ?? 'IC';
     const icRating  = icActor.system.rating ?? 0;
@@ -13347,7 +13348,7 @@ _prepareCharacter(sys, attr) {
     const soakTN    = Math.max(2, atkPower);
 
     const ctx = {
-      deckerActorId: this.id,
+      deckerActorId: actorRef(this),
       icActorId:     targetId,
       hostActorId:   hostId,
       deckerName:    this.name,
@@ -13402,7 +13403,7 @@ _prepareCharacter(sys, attr) {
 
   async rollOrthodoxICAttack() {
     const sys  = this.system;
-    const host = sys.activeHostId ? game.actors.get(sys.activeHostId) : null;
+    const host = sys.activeHostId ? actorFrom(sys.activeHostId) : null;
     if (!host) return void ui.notifications.warn('No host linked — open the IC sheet and use Set Host.');
 
     const code   = host.system.orthodoxSecurityCode ?? 'Green';
@@ -13475,7 +13476,7 @@ _prepareCharacter(sys, attr) {
     });
     if (!confirmed || !targetId) return;
 
-    const deckerActor = game.actors.get(targetId);
+    const deckerActor = actorFrom(targetId);
     if (!deckerActor) return;
 
     /**
@@ -13501,9 +13502,9 @@ _prepareCharacter(sys, attr) {
     const baseCode     = `${rating}${dmgLevel[0]}`;
 
     const ctx = {
-      icActorId:     this.id,
+      icActorId:     actorRef(this),
       deckerActorId: targetId,
-      hostActorId:   host.id,
+      hostActorId:   actorRef(host),
       icName:        this.name,
       deckerName:    deckerActor.name,
       secCode:       code,
@@ -13571,8 +13572,8 @@ _prepareCharacter(sys, attr) {
     const atkTN   = SR3EActor.cornerTN(f('attacker', 'sr-icia-atk-tn'), ctx.atkTN);
     const defTN   = SR3EActor.cornerTN(f('defender', 'sr-icia-def-tn'), ctx.defTN);
 
-    const icActor     = game.actors.get(ctx.icActorId);
-    const deckerActor = game.actors.get(ctx.deckerActorId);
+    const icActor     = actorFrom(ctx.icActorId);
+    const deckerActor = actorFrom(ctx.deckerActorId);
     if (!icActor || !deckerActor) { ui.notifications.warn('Orthodox IC Attack: missing actor.'); return; }
 
     // The decker's Hacking Pool is charged HERE, from what the decker themselves submitted,
@@ -13643,7 +13644,7 @@ _prepareCharacter(sys, attr) {
   static async handleOrthodoxICAssign(btn) {
     const ctx         = JSON.parse(btn.dataset.payload);
     btn.disabled      = true;
-    const deckerActor = game.actors.get(ctx.deckerActorId);
+    const deckerActor = actorFrom(ctx.deckerActorId);
     if (!deckerActor) { ui.notifications.warn('Target decker not found.'); return; }
 
     const cur    = deckerActor.system.orthodoxMatrixCM?.value ?? 0;
@@ -13652,7 +13653,7 @@ _prepareCharacter(sys, attr) {
 
     if (newVal >= 10 && cur < 10) {
       // Cyberdeck just crashed — trigger dumpshock
-      const host      = ctx.hostActorId ? game.actors.get(ctx.hostActorId) : null;
+      const host      = ctx.hostActorId ? actorFrom(ctx.hostActorId) : null;
       const secCode   = host?.system?.orthodoxSecurityCode ?? 'Green';
       // SR3 p.226-227: Stun, Power = Security Value, level by Security Code (TODO 202).
       const ds        = SR3EActor.orthoDumpShock(secCode, host?.system?.orthodoxSecurityValue ?? 6);
@@ -13706,8 +13707,8 @@ _prepareCharacter(sys, attr) {
     const atkTN    = SR3EActor.cornerTN(f('attacker', 'sr-occ-atk-tn'), ctx.atkTN);
     const soakTN   = SR3EActor.cornerTN(f('defender', 'sr-occ-soak-tn'), ctx.soakTN);
 
-    const deckerActor = game.actors.get(ctx.deckerActorId);
-    const icActor     = game.actors.get(ctx.icActorId);
+    const deckerActor = actorFrom(ctx.deckerActorId);
+    const icActor     = actorFrom(ctx.icActorId);
     if (!deckerActor || !icActor) { ui.notifications.warn('Orthodox Cybercombat: missing actor.'); return; }
 
     await SR3EActor.rollOpposedPair('ortho-cc', ctx,

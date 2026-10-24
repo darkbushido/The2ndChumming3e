@@ -19,6 +19,7 @@ import { Cyberzombie } from './data/cyberzombie.mjs';
 import { CyberSlots } from './data/cyber-slots.mjs';
 import { ItemRating, ratingOnCreate } from './data/item-rating.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
+import { ActorRef, actorFrom, actorRef } from './data/actor-ref.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
 import { SR3EActorSheet } from './sheets/SR3EActorSheet.js';
 import { SR3EVehicleSheet } from './sheets/SR3EVehicleSheet.js';
@@ -121,7 +122,14 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, ActorRef };
+
+  // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
+  // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
+  // actor's id, so game.actors.get(actorId) reached the sidebar NPC — and every unlinked copy of it. Modules
+  // import both from data/actor-ref.mjs; these are for macros and the console.
+  game.sr3e.actorRef  = actorRef;
+  game.sr3e.actorFrom = actorFrom;
 
   // When THIS client loaded the system's code.
   //
@@ -585,7 +593,7 @@ async function _openKarmaRefreshDialog() {
   });
   if (!ids) return;
   if (!ids.length) { ui.notifications.warn('Refresh Karma Pools: nobody was ticked, so nothing changed.'); return; }
-  for (const id of ids) await game.actors.get(id)?.refreshKarmaPool();
+  for (const id of ids) await actorFrom(id)?.refreshKarmaPool();
   ui.notifications.info(`Karma Pool refreshed for ${ids.length} character${ids.length !== 1 ? 's' : ''}.`);
 }
 
@@ -1042,7 +1050,7 @@ async function _openChunkySalsaCalculator(opts = {}) {
           finalTargets = actors.filter(a => a.checked).flatMap(a => {
             const waves = calcBlastM(a.mx, a.my, walls, power);
             if (!waves.length) return [];
-            return [{ actorId: a.id, name: a.name, level, power: Math.round(waves.reduce((s, w) => s + w.power, 0)), waves: waves.map(w => ({ ...w, power: Math.round(w.power) })) }];
+            return [{ actorId: actorRef(a), name: a.name, level, power: Math.round(waves.reduce((s, w) => s + w.power, 0)), waves: waves.map(w => ({ ...w, power: Math.round(w.power) })) }];
           });
         }
       },
@@ -1195,7 +1203,7 @@ async function _openBarrierDamageCalculator() {
     const effect = game.sr3e.SR3EActor.computeBarrierEffect(res.power, res.br, 'blast');
     await game.sr3e.SR3EActor._postBarrierDamageCard(effect, res.mat, res.br, res.power);
   } else {
-    const actor = game.actors.get(res.actorId);
+    const actor = actorFrom(res.actorId);
     if (!actor) { ui.notifications.warn('Select an actor to roll demolitions.'); return; }
     await actor.rollPool(res.pool, res.tn, 'Demolitions Test', {
       barrierContext: { basePower: res.basePower, currentBR: res.br, material: res.mat },
@@ -1218,7 +1226,7 @@ async function _openFallingDamageCalculator() {
     function updatePreview() {
       const actorId  = el.querySelector('#fall-actor')?.value;
       const distance = parseInt(el.querySelector('#fall-distance')?.value) || 0;
-      const actor    = actorId ? game.actors.get(actorId) : null;
+      const actor    = actorId ? actorFrom(actorId) : null;
 
       let impactArmor = 0, athleticsPool = 0, isDefaulting = false;
       if (actor) {
@@ -1290,7 +1298,7 @@ async function _openFallingDamageCalculator() {
           const el       = dialog.element;
           const actorId  = el.querySelector('#fall-actor')?.value;
           const distance = parseInt(el.querySelector('#fall-distance')?.value) || 0;
-          const actor    = game.actors.get(actorId);
+          const actor    = actorFrom(actorId);
           if (!actor || distance < 1) return;
 
           actor.prepareDerivedData();
@@ -1316,7 +1324,7 @@ async function _openFallingDamageCalculator() {
 
   if (!res) return;
 
-  const actor = game.actors.get(res.actorId);
+  const actor = actorFrom(res.actorId);
   if (!actor) { ui.notifications.warn('Actor not found.'); return; }
 
   if (res.netPower <= 0) {
@@ -1369,7 +1377,7 @@ async function _openEscapeArtistCalculator() {
       const actorId = el.querySelector('#ea-actor')?.value;
       const rIdx    = parseInt(el.querySelector('#ea-restraint')?.value) || 0;
       const tnMod   = parseInt(el.querySelector('#ea-tn-mod')?.value) || 0;
-      const actor   = actorId ? game.actors.get(actorId) : null;
+      const actor   = actorId ? actorFrom(actorId) : null;
       const r       = RESTRAINTS[rIdx];
 
       let pool = 0, hasSpec = false, isDefaulting = false;
@@ -1441,7 +1449,7 @@ async function _openEscapeArtistCalculator() {
           const actorId = el.querySelector('#ea-actor')?.value;
           const rIdx    = parseInt(el.querySelector('#ea-restraint')?.value) || 0;
           const tnMod   = parseInt(el.querySelector('#ea-tn-mod')?.value) || 0;
-          const actor   = game.actors.get(actorId);
+          const actor   = actorFrom(actorId);
           if (!actor) return;
 
           const r           = RESTRAINTS[rIdx];
@@ -1470,7 +1478,7 @@ async function _openEscapeArtistCalculator() {
 
   if (!res) return;
 
-  const actor = game.actors.get(res.actorId);
+  const actor = actorFrom(res.actorId);
   if (!actor) { ui.notifications.warn('Actor not found.'); return; }
 
   // SR3 Default Table — if no Athletics skill, let the user choose how to default.
@@ -1508,7 +1516,7 @@ Hooks.on('renderCombatTracker', (_app, html) => {
       if (cbt.actor.type === 'vehicle') {
         const controlMode  = cbt.actor.system.controlMode ?? '';
         const driverActId  = cbt.actor.system.driverActorId?.trim() ?? '';
-        const pilotActor   = driverActId ? game.actors.get(driverActId) : null;
+        const pilotActor   = driverActId ? actorFrom(driverActId) : null;
         const pilotName    = pilotActor?.name ?? '';
         const tag = document.createElement('span');
         tag.style.cssText = 'font-size:10px;font-weight:bold;padding:1px 5px;border-radius:3px;margin-left:4px;';
@@ -2138,7 +2146,10 @@ Hooks.on('updateActor', async (actor, changes) => {
 
     await set('dead', dead, true);                // skull overlay
     await set('unconscious', down && !dead);      // KO when down but not dead
-    for (const cbt of (game.combat?.combatants ?? []).filter(c => c.actorId === actor.id)) {
+    // An unlinked token's actor shares its sidebar actor's id, so match it by TOKEN — else one goon down marks
+    // every combatant copied from the same NPC defeated (TODO 260).
+    const mine = c => actor.isToken ? c.tokenId === actor.token?.id : c.actorId === actor.id;
+    for (const cbt of (game.combat?.combatants ?? []).filter(mine)) {
       if (cbt.isDefeated !== down) await cbt.update({ defeated: down });
     }
   }
@@ -2205,7 +2216,7 @@ Hooks.on('updateActor', async (actor, changes, options) => {
 
   const hostId = actor.system?.activeHostId ?? '';
   if (!hostId) return;
-  const host = game.actors.get(hostId);
+  const host = actorFrom(hostId);
   if (!host) return;
 
   const users = foundry.utils.deepClone(host.system.activeUsers ?? []);
@@ -2380,7 +2391,7 @@ function _mine(p) {
   if (game.user.isGM) return true;
   const id = _payloadActorId(p);
   if (!id) return false;
-  return game.actors.get(id)?.isOwner === true;
+  return actorFrom(id)?.isOwner === true;
 }
 
 /**
@@ -2408,7 +2419,7 @@ function _isDecider(p) {
  * would have every player's decision thrust at them.
  */
 function _isTheDecider(p) {
-  const a = game.actors.get(_payloadActorId(p));
+  const a = actorFrom(_payloadActorId(p));
   if (!a) return false;                    // fail CLOSED — no fail-open `!a` branch
   return game.sr3e.SR3EQuery.deciderFor(a) === game.user.id;
 }
@@ -2441,12 +2452,12 @@ function _claimAuto(key) {
 function _mineId(actorId) {
   if (game.user.isGM) return true;
   if (!actorId) return false;
-  return game.actors.get(actorId)?.isOwner === true;
+  return actorFrom(actorId)?.isOwner === true;
 }
 
 function _isDeciderId(actorId) {
   if (game.user.isGM) return true;
-  const a = actorId ? game.actors.get(actorId) : null;
+  const a = actorId ? actorFrom(actorId) : null;
   if (!a) return false;                    // fail CLOSED
   return game.sr3e.SR3EQuery.deciderFor(a) === game.user.id;
 }
@@ -2872,7 +2883,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'prone', i)) return;
       const { actorId } = JSON.parse(btn.dataset.payload ?? '{}');
-      const actor = game.actors.get(actorId);
+      const actor = actorFrom(actorId);
       if (!actor) return;
       // `prone` is a CORE status, already in CONFIG.statusEffects — no custom id needed.
       await actor.toggleStatusEffect('prone', { active: true });
@@ -2925,7 +2936,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       // spent the reserve and rolled the dodge again. Null = the GM could not be reached:
       // declare anyway — bookkeeping never blocks the action.
       const claimed = await _markActed(mid, 'defender',
-        game.actors.get(_payloadActorId(_p))?.name ?? 'Defender');
+        actorFrom(_payloadActorId(_p))?.name ?? 'Defender');
       if (claimed?.already) {
         btn.textContent = '✓ Defence already declared';
         return;
@@ -2964,7 +2975,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       btn.disabled    = true;
       btn.textContent = '\u23f3 Rolling\u2026';
       const p           = JSON.parse(payload);
-      const targetActor = game.actors.get(p.targetActorId);
+      const targetActor = actorFrom(p.targetActorId);
       if (targetActor) await SR3EActor._rollDodge(targetActor, p.committedDodgeDice, p, event.shiftKey);
     });
   });
@@ -3083,7 +3094,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
         btn.textContent = '⏳ Submitting…';
 
         const data = SR3EActor.readCornerEl(card.querySelector(`[data-corner-role="${role}"]`));
-        const name = game.actors.get(ownerId)?.name ?? role;
+        const name = actorFrom(ownerId)?.name ?? role;
         const res  = await _markActed(mid, role, name, data);
 
         // Resolve only if MY write completed the set. `card.mark` is append-only and
@@ -3241,7 +3252,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       if (!_claimBtn(btn, mid, 'soakroll', i)) return;
       const _sp = _payload(btn);
       await _markActed(mid, 'soaker',
-        game.actors.get(_payloadActorId(_sp ?? {}))?.name ?? 'Target');
+        actorFrom(_payloadActorId(_sp ?? {}))?.name ?? 'Target');
       await SR3EActor.handleSoakRollClick(btn, event.shiftKey);
     });
   });
@@ -3345,7 +3356,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'sustain', i)) return;
-      const actor = game.actors.get(pl?.actorId);
+      const actor = actorFrom(pl?.actorId);
       if (!actor) return;
       await actor.sustainSpell({ name: pl.name, force: pl.force, spellItemId: pl.spellItemId, target: pl.target });
       btn.textContent = `🔒 Sustaining ${pl.name}`;
@@ -3487,7 +3498,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'qdfire', i)) return;
-      await game.actors.get(pl.actorId)?.items.get(pl.itemId)?.rollWeapon({ quickDrawn: true });
+      await actorFrom(pl.actorId)?.items.get(pl.itemId)?.rollWeapon({ quickDrawn: true });
     });
   });
   // ⚙ Stress Test (TODO 109) — an ordinary Success Test; the GM or the owner rolls it.
@@ -3515,7 +3526,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'stressapply', i)) return;
-      const actor = game.actors.get(pl.actorId);
+      const actor = actorFrom(pl.actorId);
       if (actor) await SR3EStress.open(actor, { target: pl.target });
     });
   });
@@ -3617,7 +3628,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     btn.addEventListener('click', async event => {
       event.preventDefault();
       event.stopPropagation();
-      const vehicle = game.actors.get(vid);
+      const vehicle = actorFrom(vid);
       if (!vehicle) { ui.notifications.warn('That vehicle no longer exists.'); return; }
       if (!_claimBtn(btn, mid, 'crashopen', i)) return;
       await SR3EVehicleSheet.runCrash(vehicle);
@@ -3700,7 +3711,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'assign', i)) return;
-      const who = game.actors.get(_payloadActorId(_payload(btn) ?? {}))?.name;
+      const who = actorFrom(_payloadActorId(_payload(btn) ?? {}))?.name;
       const res = await SR3EActor.handleAssignDamage(btn,
         { messageId: mid, role, label: who ? `Assign the wound — ${who}` : 'Assign the wound' });
       // Nothing written: this client may try again.
@@ -3782,7 +3793,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
 
       if (choice === 'no') return;
 
-      const host = game.actors.get(hostId);
+      const host = actorFrom(hostId);
       if (!host) return;
 
       const steps = foundry.utils.deepClone(host.system.triggerSteps ?? []);
@@ -3795,7 +3806,7 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
 
       for (const ref of icRefs) {
         if (!ref.actorId) continue;
-        const icActor = game.actors.get(ref.actorId);
+        const icActor = actorFrom(ref.actorId);
         if (!icActor) continue;
 
         const icTypeLower = (icActor.system.icType ?? '').toLowerCase();

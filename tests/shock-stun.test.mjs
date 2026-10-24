@@ -120,7 +120,7 @@ export async function run(t) {
   t.is('the item sheet shows the tick on melee and firearms', (read('scripts/sheets/SR3EItemSheet.js').match(/'Shock weapon[^']*', 'shock'/g) ?? []).length, 2);
   t.ok('sr3e-stunned is a registered status effect', /id: 'sr3e-stunned'/.test(main));
   t.ok('the soak card offers the stun on a shock hit, only for a shock code', /if \(shockCode\) \{[\s\S]{0,1500}sr-shock-stun-btn/.test(actor));
-  t.ok('…reading the weapon through the attack\'s weaponItemId', /game\.actors\.get\(payload\.attackerActorId\)\?\.items\?\.get\(payload\.weaponItemId\)/.test(actor));
+  t.ok('…reading the weapon through the attack\'s weaponItemId', /actorFrom\(payload\.attackerActorId\)\?\.items\?\.get\(payload\.weaponItemId\)/.test(actor));
   t.ok('…the glove\'s extra payload names its own shock code', /shockCode:\s+extraCode/.test(actor));
   t.ok('…and the melee soak payloads carry the weapon id', (actor.match(/weaponItemId:\s+(winnerWeaponId|fc\.atkWeaponId) \|\| undefined/g) ?? []).length === 2);
   t.ok('a shock hit is resisted with Impact armour, halved (also a taser)', /const shock\s+= payload\.shock === true \|\| !!shockCode;[\s\S]{0,400}if \(shock\) \{\s+const halved = ExtraDamage\.shockImpact\(impact\)/.test(actor)

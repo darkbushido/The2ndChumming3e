@@ -9,6 +9,7 @@
  */
 import { installGlobals, installGame, makeActor } from './helpers/foundry.mjs';
 installGlobals();
+globalThis.foundry.utils.escapeHTML ??= s => String(s).replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
 
 // Capture the dialog markup and answer with whatever is pre-checked, so the assertions
 // see exactly the choices a user would have been shown.
@@ -84,4 +85,31 @@ export async function run(t) {
 
   const offCanvas = await offer([grunt], { canvasReady: false, allowSelf: true });
   t.ok('theatre-of-the-mind still offers the caster', offCanvas.ids.includes('CASTER'));
+
+  /* ---- TODO 260: one row per TOKEN — unlinked goons are separate targets ---- */
+  // Seen in play 2026-10-24: a list of world actors handed back the sidebar NPC, so the attack (and Mark prone)
+  // landed on every unlinked copy of it. Two goons of one NPC share its id; only their uuids differ.
+  {
+    const base = makeActor({ id: 'GOON', name: 'SWAT Team Member', type: 'npc' });
+    const synth = tok => Object.assign(makeActor({ id: 'GOON', name: 'SWAT Team Member', type: 'npc' }),
+      { isToken: true, uuid: `Scene.S.Token.${tok}.Actor.GOON`, documentName: 'Actor' });
+    const goonA = synth('A'), goonB = synth('B');
+    const pc = Object.assign(makeActor({ id: 'PC', name: 'Runner' }), { documentName: 'Actor' });
+    installGame({ actors: [caster, base, pc], sr3e: { isLiveActor: () => true, sceneFirst } });
+    globalThis.game.scenes = { viewed: { tokens: { contents: [
+      { name: 'SWAT Team Member', actor: goonA }, { name: 'SWAT Team Member', actor: goonB },
+      { name: 'Runner', actor: pc }, { name: 'Runner', actor: pc },               // a linked PC with two tokens: one row
+      { name: 'Dave Decker', actor: caster },
+    ] } } };
+    globalThis.fromUuidSync = uuid => ({ 'Scene.S.Token.A.Actor.GOON': goonA, 'Scene.S.Token.B.Actor.GOON': goonB })[uuid] ?? null;
+    globalThis.canvas = { ready: true };
+    rendered = null;
+    const picked = await SR3EItem._promptTarget(caster);
+    const ids = [...(rendered?.matchAll(/value="([^"]+)"/g) ?? [])].map(m => m[1]);
+    t.eq('each unlinked goon is its own row, named by its token; a linked PC once; never the attacker',
+      ids, ['Scene.S.Token.A.Actor.GOON', 'Scene.S.Token.B.Actor.GOON', 'PC']);
+    t.ok('…repeated names are numbered so the GM can tell them apart', /SWAT Team Member 1/.test(rendered) && /SWAT Team Member 2/.test(rendered));
+    t.is('…and the pick is THAT goon\'s own actor, not the sidebar NPC', picked, goonA);
+    delete globalThis.game.scenes; delete globalThis.fromUuidSync;
+  }
 }

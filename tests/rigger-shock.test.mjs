@@ -103,5 +103,5 @@ export async function run(t) {
     /RiggerShock\.feedback\(stage\)/.test(fb) && /resistAttr:\s*f\.resistAttr/.test(fb) && /noPools:\s*true/.test(fb)
     && /noArmor:\s*true/.test(fb) && /isStun:\s*false/.test(fb));
   t.ok('…and the soak button belongs to the rigger, not the vehicle\'s owner (no vehicleActorId key)',
-    !/^\s*vehicleActorId:/m.test(fb) && /targetActorId:\s*rigger\.id/.test(fb));
+    !/^\s*vehicleActorId:/m.test(fb) && /targetActorId:\s*actorRef\(rigger\)/.test(fb));
 }

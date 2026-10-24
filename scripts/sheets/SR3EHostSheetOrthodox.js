@@ -1,3 +1,4 @@
+import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 // SR3E Host Sheet — Orthodox SR3 matrix rules
 // Registered in place of SR3EHostSheet when game setting matrixRuleset === 'orthodox'.
 
@@ -383,7 +384,7 @@ export class SR3EHostSheetOrthodox extends foundry.applications.sheets.ActorShee
           callback: (_e, _b, dialog) => {
             const actorId      = dialog.element.querySelector('#orth-ic-actor')?.value;
             const alertRequired = dialog.element.querySelector('#orth-ic-alert')?.value;
-            const a = game.actors.get(actorId);
+            const a = actorFrom(actorId);
             if (a) result = {
               actorId,
               name:          a.name,
@@ -415,7 +416,7 @@ export class SR3EHostSheetOrthodox extends foundry.applications.sheets.ActorShee
     const entry = (this.actor.system.orthodoxActiveIC ?? [])[idx];
     if (!entry) return;
 
-    const icActor = game.actors.get(entry.actorId);
+    const icActor = actorFrom(entry.actorId);
     if (!icActor) return void ui.notifications.warn(`IC actor "${entry.name}" not found in world.`);
 
     const combat = game.combat;
@@ -423,7 +424,7 @@ export class SR3EHostSheetOrthodox extends foundry.applications.sheets.ActorShee
 
     const token = icActor.getActiveTokens()[0];
     await combat.createEmbeddedDocuments('Combatant', [{
-      actorId: icActor.id,
+      actorId: actorRef(icActor),
       tokenId: token?.id ?? null,
       name:    icActor.name,
     }]);
@@ -431,7 +432,7 @@ export class SR3EHostSheetOrthodox extends foundry.applications.sheets.ActorShee
   }
 
   static _onOpenLinkedActor(_event, btn) {
-    game.actors.get(btn.dataset.actorId)?.sheet.render(true);
+    actorFrom(btn.dataset.actorId)?.sheet.render(true);
   }
 
   static async _onAddTriggerStep() {

@@ -1,6 +1,7 @@
 import { Stress } from './data/stress.mjs';
 import { MoveByWire } from './data/move-by-wire.mjs';
 import { CyberSlots } from './data/cyber-slots.mjs';
+import { actorFrom, actorRef } from './data/actor-ref.mjs';
 
 /**
  * Stress on implants and Attributes — the GM's flow · *M&M pp.124-131* (TODO 109).
@@ -167,7 +168,7 @@ export const SR3EStress = {
     });
 
     const payload = JSON.stringify({
-      actorId: actor.id, targetLabel: label, dice: plan.dice, tn: plan.tn,
+      actorId: actorRef(actor), targetLabel: label, dice: plan.dice, tn: plan.tn,
     }).replace(/'/g, '&#39;');
 
     // Move-by-wire · M&M p.60 (TODO 110): "Each time the character takes Stress, he must make an
@@ -179,7 +180,7 @@ export const SR3EStress = {
            Willpower (${MoveByWire.tlexTN(mbw.rating)}) Test, or TLE-x (${MoveByWire.PAGE}).</div>
          <div class="sr-soak-action">
            <button class="sr-stress-roll-btn" data-payload='${JSON.stringify({
-             actorId: actor.id, targetLabel: `TLE-x — ${actor.name}`, dice: mbw.willpower,
+             actorId: actorRef(actor), targetLabel: `TLE-x — ${actor.name}`, dice: mbw.willpower,
              tn: MoveByWire.tlexTN(mbw.rating), tlex: true,
            }).replace(/'/g, '&#39;')}'>🎲 Willpower vs TLE-x</button>
          </div>`
@@ -349,7 +350,7 @@ export const SR3EStress = {
         const id = byName.get(c.name);
         return id
           ? `<button class="sr-stress-apply-btn" data-payload='${JSON.stringify({
-               actorId: actor.id, target: `item:${id}`,
+               actorId: actorRef(actor), target: `item:${id}`,
              }).replace(/'/g, '&#39;')}'>⚙ Apply Stress — ${esc(c.name)}</button>`
           : '';
       }).join(' ');
@@ -381,7 +382,7 @@ export const SR3EStress = {
 
   /** 🎲 on the card — an ordinary Success Test, so its 6s explode like everything else. */
   async roll(payload) {
-    const actor = game.actors.get(payload?.actorId);
+    const actor = actorFrom(payload?.actorId);
     if (!actor) return;
     const dice = Math.max(0, Number(payload.dice) || 0);
     const tn   = Math.max(2, Number(payload.tn) || 2);

@@ -1,6 +1,7 @@
 import { vcrLevel } from '../data/item-rating.mjs';
 import { Rigging } from '../data/rigging.mjs';
 import { StallSpeed } from '../data/stall-speed.mjs';
+import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 
 export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
@@ -123,7 +124,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     ).join('');
 
     const _driverActorId = sys.driverActorId?.trim() ?? '';
-    const _pilotActor = _driverActorId ? game.actors.get(_driverActorId) : null;
+    const _pilotActor = _driverActorId ? actorFrom(_driverActorId) : null;
     const _pilotName = _pilotActor?.name ?? '';
     const pilotOpts = [
       `<option value="">No pilot</option>`,
@@ -184,7 +185,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
             const ids  = sys.passengerActorIds ?? [];
             const esc  = s => foundry.utils.escapeHTML(String(s ?? ''));
             const tags = ids.map(id => {
-              const a = game.actors.get(id);
+              const a = actorFrom(id);
               return `<span style="display:inline-flex;align-items:center;gap:3px;padding:0 6px;border:1px solid var(--sr-border);border-radius:var(--r);font-size:11px">
                   ${esc(a?.name ?? '(missing actor)')}
                   <a data-action="removePassenger" data-actor-id="${id}" title="Remove" style="cursor:pointer;color:var(--sr-muted)">✕</a>
@@ -459,7 +460,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   // Derived Footprint = round((rigger deck Flux + vehicle Flux + ECM) / 10).
   _ewFootprintDerived(sys) {
-    const rigger   = game.actors.get(sys.driverActorId?.trim() ?? '');
+    const rigger   = actorFrom(sys.driverActorId?.trim() ?? '');
     const deckFlux = rigger?.system?.ew?.fluxRating ?? 0;
     const vehFlux  = sys.ew?.fluxRating ?? 0;
     const ecm      = sys.ew?.ecm ?? 0;
@@ -528,7 +529,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const ew     = sys.ew ?? {};
     const sm     = sys.signalMonitor ?? {};
     const inf    = sys.infiltration ?? {};
-    const rigger = game.actors.get(sys.driverActorId?.trim() ?? '');
+    const rigger = actorFrom(sys.driverActorId?.trim() ?? '');
     const rew    = rigger?.system?.ew ?? {};
     const derivedFp = this._ewFootprintDerived(sys);
     const sigBase   = sys.attributes?.sig?.base ?? 0;
@@ -543,7 +544,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       </div>`;
 
     const channels = game.sr3e.SR3E.electronicWarfare.channels;
-    const intruder = inf.intruderActorId ? game.actors.get(inf.intruderActorId) : null;
+    const intruder = inf.intruderActorId ? actorFrom(inf.intruderActorId) : null;
     const infChannelTag = (k) => inf[k]
       ? `<span class="ew-breach ew-breach-on">breached</span>`
       : `<span class="ew-breach">clear</span>`;
@@ -724,7 +725,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onOpenPilot(_ev, _target) {
     const id    = this.actor.system.driverActorId?.trim();
-    const pilot = id ? game.actors.get(id) : null;
+    const pilot = id ? actorFrom(id) : null;
     if (pilot) pilot.sheet.render({ force: true });
     else if (id) ui.notifications.warn('Pilot actor not found.');
   }
@@ -878,9 +879,9 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     });
 
     if (!result?.vehicleId) return;
-    const vehicle = game.actors.get(result.vehicleId);
+    const vehicle = actorFrom(result.vehicleId);
     if (!vehicle) return;
-    const driverOverride = result.driverId ? game.actors.get(result.driverId) : null;
+    const driverOverride = result.driverId ? actorFrom(result.driverId) : null;
     return SR3EVehicleSheet.runDrivingTest(vehicle, driverOverride);
   }
 
@@ -906,10 +907,10 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
    */
   static async runCrash(vehicle) {
     const sys      = vehicle.system;
-    const driver   = game.actors.get(sys.driverActorId?.trim() ?? '') ?? null;
+    const driver   = actorFrom(sys.driverActorId?.trim() ?? '') ?? null;
     const aboard   = [
       ...(driver ? [{ id: driver.id, name: driver.name, role: 'Driver' }] : []),
-      ...(sys.passengerActorIds ?? []).map(id => game.actors.get(id)).filter(Boolean)
+      ...(sys.passengerActorIds ?? []).map(id => actorFrom(id)).filter(Boolean)
         .filter(a => a.id !== driver?.id).map(a => ({ id: a.id, name: a.name, role: 'Passenger' })),
     ];
     const SA   = game.sr3e.SR3EActor;
@@ -988,7 +989,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const driverAboard = choice.aboard.some(a => a.role === 'Driver');
     const crashContext = {
-      vehicleActorId:    vehicle.id,
+      vehicleActorId:    actorRef(vehicle),
       vehicleName:       vehicle.name,
       driverActorId:     driverAboard ? driver?.id ?? '' : '',
       speedKmct:         choice.speedKmct,
@@ -1036,7 +1037,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
    */
   static async runDrivingTest(actor, driverOverride = null, { crash = null, collision = null } = {}) {
     const sys        = actor.system;
-    const driver = driverOverride ?? game.actors.get(sys.driverActorId?.trim() ?? '');
+    const driver = driverOverride ?? actorFrom(sys.driverActorId?.trim() ?? '');
     /* A drone the rigger isn't jumped into rolls its own Pilot Rating, with no pools: a secondary
      * drone or the captain's chair (RCD), or a drone on its own (SR3 p.154, Rigging.droneTestRoller).
      * A driver picked by hand (the GM tool) drives. */
@@ -1450,7 +1451,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     let result;
     try {
       result = await game.sr3e.SR3EQuery.asGM('sr3e.actor.create', {
-        fromActorId: this.actor.id,
+        fromActorId: actorRef(this.actor),
         name:        `${this.actor.name} (copy)`,
       });
     } catch (err) {
