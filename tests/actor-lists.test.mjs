@@ -31,6 +31,7 @@ const body = (src, decl) => {
 
 /** Internal lookups that must see every actor — none of them is a list a person picks from. */
 const ALLOW = [
+  [/NpcReset\.offer\(game\.actors\.contents\)/, 'Reset shared NPCs (TODO 260): a template\'s goons inherit from it too, so templates are offered'],
   [/_getMatrixFirewall/,                'finds the host an IC is stocked on'],
   [/Deployed IC bypass the template filter/, 'matrix targets on a host: its own template check, deployed IC by design'],
   [/spellDefensePool \?\? 0\) > 0/,     'who declared Spell Defense — only a live combatant can have'],

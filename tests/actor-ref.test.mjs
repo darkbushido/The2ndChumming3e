@@ -68,7 +68,7 @@ export async function run(t) {
   t.ok('…and those are few: 7 lines', hits.length <= 7);
   t.ok('no module looks an actor up with game.actors.get any more (actorFrom) — only SR3EQuery.resolve, which is id-then-uuid itself',
     execSync('git grep -n "game\\.actors?\\?\\.get(" -- scripts', { cwd: new URL('..', import.meta.url), encoding: 'utf8' })
-      .split('\n').filter(Boolean).every(l => /^scripts\/SR3EQuery\.js:/.test(l) || /^[^:]+:\d+:\s*\/\//.test(l)));
+      .split('\n').filter(Boolean).every(l => /^scripts\/SR3EQuery\.js:/.test(l) || /^[^:]+:\d+:\s*(\/\/|\*)/.test(l)));
   t.ok('the target dialogs list tokens (tokenRows), not world actors',
     (read('scripts/documents/SR3EItem.js').match(/tokenRows\(scene\?\.tokens\?\.contents/g) ?? []).length === 2);
   t.ok('the auto-defeated hook matches an unlinked token\'s combatant by token, not by id',

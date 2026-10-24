@@ -20,6 +20,7 @@ import { CyberSlots } from './data/cyber-slots.mjs';
 import { ItemRating, ratingOnCreate } from './data/item-rating.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
 import { ActorRef, actorFrom, actorRef } from './data/actor-ref.mjs';
+import { SR3ENpcReset } from './SR3ENpcReset.js';
 import { SR3EItem } from './documents/SR3EItem.js';
 import { SR3EActorSheet } from './sheets/SR3EActorSheet.js';
 import { SR3EVehicleSheet } from './sheets/SR3EVehicleSheet.js';
@@ -1933,6 +1934,7 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
   mk('sr3e-falling-btn', '🪂 Falling Damage',  _openFallingDamageCalculator, true);
   mk('sr3e-escape-btn',  '🔓 Escape Artist',   _openEscapeArtistCalculator,  true);
   mk('sr3e-conceal-btn', '👁 Concealment',     () => SR3EConcealment.open(), true);
+  mk('sr3e-npc-reset-btn', '🧹 Reset shared NPCs', () => SR3ENpcReset.open(), true);   // TODO 260
 
   if (!tools.childElementCount) return; // non-GM with nothing to show
 
