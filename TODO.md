@@ -1003,8 +1003,11 @@ and sets `img`, `prototypeToken.texture.src` and `prototypeToken.width/height` (
 `packs-src`. Contact sheet: `audit/vehicle-art-contact-sheet.png` (`--sheet`). `tests/vehicle-art.test.mjs`
 fails on an unmapped entry, a missing or drifted SVG, an orphan, or a token size off Foundry's ½ step.
 
-- **Not done:** owned world copies keep the old picture (Foundry embeds, it doesn't link) — no migration
-  unless the maintainer wants one.
+- **Owned copies:** the **0.8.0 migration** gives owned VEHICLES the art (`scripts/data/vehicle-art.mjs`,
+  reading the generated `scripts/data/vehicle-art-map.mjs`) — picture and prototype token while still stock,
+  size only while still 1 × 1. Drones are not migrated (the maintainer, 2026-10-24: *"for vehicals yes"*).
+  ⚠ `tests/migrations.test.mjs` fails ("0.8.0 is not newer than 0.7.0") until the 0.8.0 release bumps
+  `system.json` — the same as the 0.7.0 migration did before its release.
 - Misfiled entries ([#240](#240)) are mapped to what they ARE: "A" and "Lockheed" → `airliner`, the
   Lockheed C-260 → `transport` (all typed car); the N-C Bergen tractor and trailer → `truck` / `trailer`
   (typed fixedwing); the Vulkan Electronaut → `minisub` (typed ship).
@@ -1019,6 +1022,9 @@ fails on an unmapped entry, a missing or drifted SVG, an orphan, or a token size
 3. The actor sheet's portrait and the compendium list show the same art, with no broken-image icon on
    a Linux server (case-exact paths).
 4. A crawler and a micro drone (½ × ½ m) are still legible at the scene's default zoom.
+6. Migration: in a world stamped 0.7.0 holding a vehicle dragged in before this branch (old texture,
+   1 × 1 token) and a drone, reload as GM after the 0.8.0 bump: the vehicle gets the drawn picture and
+   its real token size; the drone keeps its old picture; a vehicle with a chosen picture is untouched.
 5. A helicopter, a speedboat and the supercarrier: the carrier token loads (texture ≤ 4096 px) and
    reads at a zoomed-out view; rotor discs are see-through.
 

@@ -8,7 +8,9 @@ import { fileURLToPath } from 'node:url';
 import {
   ARCHETYPES, PAINTS, PALETTES, IMG_DIR, OUT, isInScope, readMap, artFor, paintFor, renderAll, renderSvg,
   inScopeEntries, applyArt, hashName, pxPerMetre, outlineFor,
+  renderArtMap, ART_MAP_FILE,
 } from '../tools/build-vehicle-art.mjs';
+import { VehicleArt, isStock } from '../scripts/data/vehicle-art.mjs';
 
 export const name = 'vehicle-art';
 
@@ -99,4 +101,31 @@ export async function run(t) {
   const keepTok = { img: stock.img, prototypeToken: { actorLink: true, texture: { tint: '#ffffff' } } };
   applyArt(keepTok, art);
   t.ok('other token settings survive', keepTok.prototypeToken.actorLink === true && keepTok.prototypeToken.texture.tint === '#ffffff');
+
+  /* ── The world migration (0.8.0): owned vehicles, not drones ───────────────────────────── */
+  t.ok('the runtime table matches the reviewed map', readFileSync(ART_MAP_FILE, 'utf8') === renderArtMap(map));
+  const OLD = 'systems/The2ndChumming3e/styles/textures/vehicles-default.webp';
+  const sedanArt = VehicleArt.artFor('Ford Americar');
+  t.ok('a mapped vehicle has art', sedanArt?.img === artFor('Ford Americar', map['Ford Americar']).img && sedanArt.width === 2 && sedanArt.height === 5);
+  const owned = { type: 'vehicle', name: 'Ford Americar', img: OLD, system: { vehicleType: 'car' },
+    prototypeToken: { width: 1, height: 1, texture: { src: 'icons/svg/mystery-man.svg' } } };
+  t.eq('an owned vehicle on the old texture gets the picture, the token art and its size', VehicleArt.fixActor(owned),
+    { img: sedanArt.img, 'prototypeToken.texture.src': sedanArt.img, 'prototypeToken.width': 2, 'prototypeToken.height': 5 });
+  const done = { ...owned, img: sedanArt.img, prototypeToken: { width: 2, height: 5, texture: { src: sedanArt.img } } };
+  t.is('…and a second run changes nothing', VehicleArt.fixActor(done), null);
+  t.is('a picture someone chose is left alone', VehicleArt.fixActor({ ...done, img: 'worlds/x/americar.webp' }), null);
+  t.eq('a token a GM sized keeps its size, but still gets the art',
+    VehicleArt.fixActor({ ...owned, prototypeToken: { width: 3, height: 3, texture: { src: OLD } } }),
+    { img: sedanArt.img, 'prototypeToken.texture.src': sedanArt.img });
+  t.eq('a chosen token texture keeps the token whole',
+    VehicleArt.fixActor({ ...owned, prototypeToken: { width: 1, height: 1, texture: { src: 'worlds/x/tok.webp' } } }), { img: sedanArt.img });
+  t.eq('an unlinked token\'s actor gets the picture only', VehicleArt.fixActor({ ...owned, isToken: true }), { img: sedanArt.img });
+  t.is('a drone is not migrated (vehicles only — the maintainer, 2026-10-24)',
+    VehicleArt.fixActor({ type: 'vehicle', name: 'GM-Nissan Doberman', img: 'systems/The2ndChumming3e/styles/textures/drone-default.webp', system: { vehicleType: 'drone' } }), null);
+  t.is('a renamed vehicle is left alone', VehicleArt.fixActor({ ...owned, name: 'My Americar' }), null);
+  t.is('a character is never touched', VehicleArt.fixActor({ ...owned, type: 'character' }), null);
+  t.ok('a prototype token with nothing stored reads as the 1 × 1 default', VehicleArt.fixActor({ ...owned, prototypeToken: undefined })?.['prototypeToken.height'] === 5);
+  t.ok('stock means blank, mystery man, the old textures or ours', [undefined, '', 'icons/svg/mystery-man.svg', OLD, sedanArt.img].every(isStock) && !isStock('worlds/x/y.webp'));
+  const mig = readFileSync(join(ROOT, 'scripts', 'SR3EMigrations.js'), 'utf8');
+  t.ok('the 0.8.0 migration runs VehicleArt.fixActor', /version: '0\.8\.0'[\s\S]{0,1200}fixActor: VehicleArt\.fixActor/.test(mig));
 }
