@@ -2,6 +2,68 @@
 
 What changed, for the people running games with it. Newest first.
 
+## 0.8.0 — 2026-10-25
+
+Rated gear is one item now. A Medkit, a Signal Locator or an ECCM is a single compendium entry with a **Level** dropdown, and an owned copy's name follows the level ("Medkit [5]"). Every mod says what it is a mod *for* — "Chemical Seal (Armor)", "Gas Vent IV (Weapon)", "Anti-Theft System (Vehicle)" — and the vehicle, cyberlimb and armour mods were checked against the books. Wounds and statuses on one unlinked NPC token no longer land on every copy of that NPC. The initiative tracker, Full Defense and multi-opponent melee behave as the table expects after the 2026-10-23 play session. A grenade's NPCs resist in one GM click. Vehicles and drones get drawn top-down token art. And a GM can turn a Little Black Book contact into a person with a name and a face.
+
+### Before you upgrade
+
+- **Fully restart Foundry** after updating, not just refresh the browser. Vehicle mods, armour, ammunition and vehicle weapons gained a Level field; gear, cyberware, armour and vehicle mods gained a "Mod for" field; vehicle weapons have an item sheet for the first time.
+- **A world migration renames the items your characters already own** (run once, by the GM's client, on the first load):
+  - A level moves out of the name into the Level field, and the name follows it: "ECCM [3]" stays "ECCM [3]" with Level 3; "Chemical Seal Rating [4]" becomes "Chemical Seal (Armor) [4]"; "+Signal Locator 7" becomes "Signal Locator (Armor) [7]". A Level you typed yourself is kept.
+  - Mods get their "(Armor)", "(Weapon)", "(Cyberlimb)" or "(Vehicle)" tag and the matching "Mod for".
+  - Values this release corrects against the book (listed below) change **only while an owned copy still holds the old shipped value** — anything a GM edited is left alone.
+  - Grenades on old sheets that read as "in hand" are put away (they arrived drawn before Ready Weapon).
+  - Vehicles still showing the stock picture or a 1 × 1 token get the new drawn art and their size; a picture you chose is kept.
+- **About 1,400 per-level compendium entries are gone** (one entry per item now). An owned copy keeps its stats; where it still linked to a deleted entry, the migration points the link at the remaining one.
+- **Helmet options changed.** There is one **Helmet/Wrist Transceiver (Armor)** — the *Cannon Companion*'s, 250¥ × Rating (CC p.51) — and the SR3 armour pack no longer carries a transceiver or Low-Light Vision (SR3 p.284 lists neither; Low-Light is CC p.51). Electronic and Optical Magnification are now "Electronic Magnification (Armor)" and "Optical Magnification (Armor)" at Level 3 (SR3 p.284, CC p.51). There is one Thermographic option, "Thermo Vision (Armor)". Owned copies are renamed to match.
+- **System macros refresh themselves.** On the GM's load, a system macro whose stored text differs from the shipped one is updated — the SR3E Chrome Threat Generator first among them. **A GM's edit to a *system* macro is overwritten**; copy it under another name to keep it. Macros you wrote yourself are never touched.
+- **Check your sidebar NPCs once.** Before this release a wound or status on one unlinked token landed on its sidebar NPC, and every token dragged from it afterwards started hurt or prone. The GM tool **🧹 Reset shared NPCs** (Rollable Tables sidebar) lists the NPCs that carry any — nothing ticked — and clears what you tick.
+- **The Token HUD's status list is shorter**: 13 of Foundry's 34 core statuses, the ones Shadowrun uses. Show the others again under System settings → **Configure Status Effects**. A token that already carries a hidden status still shows it, so you can clear it.
+
+### Rules that now resolve differently
+
+**Combat**
+
+- **Several melee opponents are one Complex Action** (SR3 p.122: *"Characters may attack more than one opponent with a Complex Action"*). Each further opponent was charged another Complex Action; the +2 TN per further opponent was already prefilled. The melee card now says how to attack another opponent, and that it is part of the same action.
+- **The melee GM window picks up Prone** (SR3 p.123, "Opponent prone −2"): its "who is down" row is preselected from the fighters' Prone status, a token's own included, and both fighters can be down at once.
+- **Full Defense ends at the next round** whichever control advances it — the tracker's Next Round button skipped the round upkeep, so Full Defense carried over.
+- **Tied initiative is listed in acting order** (Reaction, then a dice-off), not Foundry's id order.
+- **A player can end their own turn.** Foundry refused them; the request now goes through the GM, for the acting combatant's owner only.
+- **Unconscious combatants get no turns from the next round.** They stay on the tracker and act again once they are no longer down; knocked out mid-round, they keep that round's actions.
+- **Removing a combatant mid-round no longer breaks the tracker** (someone acting twice, or the top row getting an extra turn).
+- **Wounds, statuses and targets land on the token** — Assign the wound, Mark prone, Mark stunned, Knockdown, area spells and the auto-defeated marker all reach the one unlinked token, not its sidebar NPC and every other copy. Player characters are unchanged.
+
+**Grenades**
+
+- **One GM button resists every NPC in a blast** — and every GM-side drone — onto one summary card. Player characters, ordinary vehicles and player-rigged drones still get their own cards.
+- **The blast marker clears itself** once everyone caught has fully resisted (every 💥 rolled) or the GM has ✕'d them in the ⏳ panel.
+
+**Gear, levels and prices**
+
+- **Every rated item is one entry with a Level dropdown.** Picking a level brings that level's printed cost, availability, Street Index, Essence, CF, load and description; graded cyberware and bioware keep their grade (an Alpha cost stays doubled). A houserule level can still be typed. 🛒 Buy gear shows one row per item with a Level picker; the Street Index no longer resets to 1 when you change the level.
+- **Vehicle mods checked against *Rigger 3* (pp.126–150)** — changed from what shipped:
+  - **Vehicle Armor** is one mod, levels 1–11: 1,250¥, Body² × 5 kg and 8 hours per point, B/R (rating ÷ 3), Handling +1 per 6 points (R3 p.131). Levels 7, 9, 10 and 11 cost too much (now 8,750 / 11,250 / 12,500 / 13,750¥); a stray second "level 11" is gone.
+  - **Concealed Armor** level 9 consumes 27 CF, not 37 (R3 p.132: 3 CF per point).
+  - **Ablative Armor** level 2 is 12/14 days (R3 p.131).
+  - **Power Amplifier** CF rounds up: 1, 1, 2, 2, 3… (R3 p.147).
+- **Cyberware checked against *Man & Machine***:
+  - **Remote Control ECCM** levels 5 and 6 cost 175,000¥ and 210,000¥ (M&M p.25: Rating × 35,000¥).
+  - **RC Encryption Module** is legal code 8P-W and goes to level 10 (M&M pp.24–25).
+  - **Cyberlimb body plating**: Ballistic and Impact are Legal, Ablative is 4P-Q (M&M p.37).
+  - **Hydraulic Jacks** add to *jump* distance, not running distance (M&M p.29).
+  - **Radio Receiver** has a level 5 (5,000¥, 10 frequencies; SR3 p.297–298).
+  - Twelve built-into-a-cyberlimb entries had book errors — the DNI, the built-in smartgun link, the tracking mount, four legality codes, a fingertip compartment, Smartlink II (Internal), a duplicate decryption module (SR3 p.303, M&M pp.32–41).
+  - **Cyberweapons built into a cyberlimb** — spurs, blades, razors, cyberguns — now get their attack.
+- **Weapon accessories**: the Sawed-Off Barrel is 64¥ (CC p.80, p.83); the Rangefinder is top-mounted (CC p.33); the low-power laser sight is one *Cannon Companion* customisation, 800¥ (CC p.82); "Extended Clip (" is named "Extended Clip" (CC p.81).
+
+### New
+
+- **Meet the contact** (GM only): on a contact that points at a Little Black Book archetype, the dice icon on its row offers a real-world name — sometimes a street name — and, if a portrait module is installed, a face. The book's metatype is an example; change it in the dialog (the stats stay the book's, with a warning). Nothing is applied until you pick it, and a picture someone chose is never replaced. The system works with no portrait module.
+- **Drawn token art for every vehicle and drone** — cars, bikes, trucks, boats, ships, subs, hovercraft, airships, aircraft and drones, top-down, front facing south, sized to the vehicle; Lone Star and DocWagon have their liveries.
+- **NPC buttons are violet** on the eight two-corner cards (melee, astral, contested, cybercombat, MIJI, the three Orthodox Matrix cards), so the GM can tell the NPC's side from the player's.
+- **"Mod for"** on every mod's item sheet — what it attaches to. Attaching mods to armour, weapons and vehicles is the next step; nothing enforces it yet.
+
 ## 0.7.0 — 2026-10-17
 
 The Karma Pool works at last, and Good Karma buys what the book says it can. Vehicles can hit people, cars and walls. Smoke, gas and flash grenades fill the room they land in. Spells cast on a willing friend no longer need to hit them. The sheet gets a Ledger tab, a ± Funds button and a Combat Pool breakdown. And the guides gain six new pages.
