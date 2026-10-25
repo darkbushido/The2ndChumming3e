@@ -10,27 +10,15 @@ below is the maintainer's to decide.
 
 | Verdict | Units |
 | :--- | ---: |
-| match | 1379 |
-| diverges | 20 |
+| match | 1381 |
+| diverges | 19 |
 | guide-differs | 0 |
 | not-implemented | 453 |
-| unverifiable | 262 |
+| unverifiable | 261 |
 | no-rule-claim | 861 |
 | unchecked | 0 |
 
-## Code diverges from the book (20)
-
-### magic/awakened-primer.md#58
-
-Guide: - **Perceiving is not projecting.** A character who is astrally perceiving,
-
-> "their normal physical Attributes, skills and Combat Pool in" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.174
-> "beings use their normal physical Reaction and Initiative." — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.174
-> "Projecting characters and spirits have an" — Shadowrun 3e - Core Rules {FAN25000}.pdf, printed p.174
-
-Code: `scripts/documents/SR3EActor.js:12166`, `scripts/documents/SR3EActor.js:12322`, `scripts/documents/SR3EActor.js:12574`
-
-The ATTACK side of astral combat (rollAstralCombat, both corners) always offers the Astral Combat Pool — (INT+WIL+CHA)/2 — and never the Combat Pool, whatever the fighter's astral state (system.astralMode is not read there). p.174 gives astrally perceiving and other dual beings their normal Combat Pool and keeps the Astral Combat Pool for projecting characters and spirits. The SOAK side already follows it (SR3EActor.astralResistPool: a dual being resists with Body plus Combat Pool). Astral Initiative is mode-aware (audited before). The guide agrees with the book.
+## Code diverges from the book (19)
 
 ### magic/physical-adepts.md#15
 
@@ -4798,7 +4786,7 @@ Guide: - On the Local Fines and Punishment Table, **(T) Class E Magic** covers
 Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 
 
-## Could not be verified (262)
+## Could not be verified (261)
 
 - **hiring/combat-mage.md#6** — Baseline Shadowrun Payment Table, Shadowrun Companion printed p.100 (PDF page 101 of the {FASA7905} scan) — the table sits on a grey shaded panel with no OCR text layer, so pdftotext finds nothing. Read from the rendered page image: the Security Duty row is 200¥/day, agreeing with this unit.
 - **hiring/combat-mage.md#7** — Shadowrun Companion p.100 / p.101 baseline payment row. The PDF has no text layer and the SR-OCR text is too garbled to confirm the figure; the same figures are checked as a group on hiring/index.md. No code counterpart.
@@ -4895,7 +4883,6 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **hiring/street-samurai.md#39** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
 - **hiring/street-samurai.md#40** — House-rule text (hazard pay percentages and worked-example arithmetic): the guide marks it as not from any SR3 book, so there is nothing in the PDFs to check it against. The arithmetic was checked and is consistent.
 - **index.md#3** — Statement about how the guide was produced (gists checked against the rulebooks, each rule carrying a citation) — method, not a game rule.
-- **magic/awakened-primer.md#60** — The Astral Damage Codes Table is on printed p.175, an image-only page in the PDF (no text layer). Read through the SR-OCR text dump instead: Unarmed (Charisma)M, Armed (Charisma) + Weapon Focus damage, Spirit/Focus/Barrier (Force)M — the guide agrees, and the code deals unarmed `${cha}M` and armed `${cha + focus power}` (SR3EActor.js rollAstralCombat). Spirit/focus/barrier (Force)M damage was not traced in the code.
 - **magic/awakened-primer.md#62** — Printed p.175 (astral damage: attacker's choice of Stun or Physical; wounds appear on the physical body; if the astral form dies the body dies) is an image-only page in the PDF. Read via the SR-OCR dump: the guide agrees. The code applies astral damage through the normal condition-monitor buttons, choosing the track from the attack's stun flag; nothing links the astral form's death to the body.
 - **magic/awakened-primer.md#67** — World lore, no code counterpart. Checked against the book: the Ryumyo appeared near Mount Fuji on 24 December 2011 (printed p.25 and p.269); the guide agrees.
 - **magic/awakened-primer.md#70** — World lore / law, no code counterpart. Checked against MitS printed p.11: spells, spirits and foci of Force 3 or higher are legally regulated in the UCAS and CAS, with permits available. The 'killing with magic is treated as premeditated' clause was not searched for.
@@ -5063,7 +5050,7 @@ Searched: `/Local Fines|restriction level|enforcement area/` — no matches.
 - **world/underworld.md#41** — Setting fact, no code counterpart; checked against NS pp.104-106 (the Seoulpa Rings): agrees.
 - **world/underworld.md#52** — Setting fact, no code counterpart; checked against NS p.103 and p.106: agrees. The Eighty-Eights "forged an alliance with the Tigers" (NS p.103); the Ancients, "an all-elf go-gang", control "smuggling from Salem and Portland into Seattle" (NS p.106); the gang write-ups begin on p.106 ("TOP GANGS").
 
-## Matches (1379)
+## Matches (1381)
 
 Each carries its quote and code location in the ledger; not repeated here.
 

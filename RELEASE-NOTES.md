@@ -34,6 +34,11 @@ Rated gear is one item now. A Medkit, a Signal Locator or an ECCM is a single co
 - **Removing a combatant mid-round no longer breaks the tracker** (someone acting twice, or the top row getting an extra turn).
 - **Wounds, statuses and targets land on the token** — Assign the wound, Mark prone, Mark stunned, Knockdown, area spells and the auto-defeated marker all reach the one unlinked token, not its sidebar NPC and every other copy. Player characters are unchanged.
 
+**Astral combat**
+
+- **An astrally perceiving character fights with their Combat Pool** (SR3 p.174: *"Astrally perceiving characters and other dual beings use their normal physical Attributes, skills and Combat Pool in astral combat"*). The astral combat card offered everyone the Astral Combat Pool; it now offers it only to a character set to **Astral Plane** (projecting) or a spirit in astral form, and charges whichever pool it offered.
+- **Astral damage follows the Astral Damage Codes Table** (SR3 p.176). A projecting character still deals (Charisma)M, plus a weapon focus's damage when armed; an astrally perceiving character or other dual being now deals **(Strength)M**, or its weapon's own damage when armed; a spirit deals **(Force)M**. Before, everyone dealt Charisma. The damage stays editable on the card.
+
 **Grenades**
 
 - **One GM button resists every NPC in a blast** — and every GM-side drone — onto one summary card. Player characters, ordinary vehicles and player-rigged drones still get their own cards.
