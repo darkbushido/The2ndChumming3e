@@ -12163,7 +12163,10 @@ _prepareCharacter(sys, attr) {
 
     const _getAstralInfo = (actor) => {
       const cha        = actor.system.attributes?.charisma?.base   ?? 1;
-      const astralPool = actor.system.derived?.availableAstralPool ?? 0;
+      // p.174: a projector adds the Astral Combat Pool; a perceiving / dual being adds the Combat Pool.
+      const poolRule   = SR3EActor.astralAttackPool({ astralMode: actor.system.astralMode ?? '', derived: actor.system.derived });
+      const astralPool = poolRule.available;
+      const poolKind   = poolRule.kind;
       // The initiate's own pool (MitS p.58) — usable on Astral Combat "even when Sorcery is used"; 0 for a non-initiate.
       const initiatePool = actor.system.derived?.availableInitiatePool ?? 0;
 
@@ -12193,6 +12196,7 @@ _prepareCharacter(sys, attr) {
           isDefault: meleeInfo.isDefault,
           rawDamage,
           astralPool: meleeInfo.isDefault ? 0 : astralPool,
+          poolKind,
           initiatePool: meleeInfo.isDefault ? 0 : initiatePool,
         };
       }
@@ -12227,6 +12231,7 @@ _prepareCharacter(sys, attr) {
           isDefault: false,
           rawDamage,
           astralPool,
+          poolKind,
           initiatePool,
         };
       }
@@ -12239,6 +12244,7 @@ _prepareCharacter(sys, attr) {
         defaultTnMod: 0,
         rawDamage,
         astralPool:   0,
+        poolKind,
         initiatePool: 0,
       };
     };
@@ -12261,7 +12267,8 @@ _prepareCharacter(sys, attr) {
       info.skillDice    = def.pool;
       info.skillName    = def.label;
       info.defaultTnMod = def.tnMod;
-      info.astralPool   = Math.min(dActor.system.derived?.availableAstralPool ?? 0, def.poolCap);
+      info.astralPool   = Math.min(SR3EActor.astralAttackPool({
+        astralMode: dActor.system.astralMode ?? '', derived: dActor.system.derived }).available, def.poolCap);
       info.initiatePool = Math.min(dActor.system.derived?.availableInitiatePool ?? 0, def.poolCap);
       return true;
     };
@@ -12280,7 +12287,8 @@ _prepareCharacter(sys, attr) {
       atkSkillName:    atkInfo.skillName,
       atkSkillDice:    atkInfo.skillDice,
       atkIsDefault:    atkInfo.isDefault,
-      atkAstralPool:   atkInfo.astralPool,
+      atkAstralPool:   atkInfo.astralPool,   // the dice offered — of the pool named by atkPoolKind
+      atkPoolKind:     atkInfo.poolKind,
       atkInitiatePool: atkInfo.initiatePool ?? 0,
       atkRawDamage:    atkInfo.rawDamage,
       atkTN,
@@ -12288,6 +12296,7 @@ _prepareCharacter(sys, attr) {
       defSkillDice:    defInfo.skillDice,
       defIsDefault:    defInfo.isDefault,
       defAstralPool:   defInfo.astralPool,
+      defPoolKind:     defInfo.poolKind,
       defInitiatePool: defInfo.initiatePool ?? 0,
       defRawDamage:    defInfo.rawDamage,
       defTN,
@@ -12301,7 +12310,7 @@ _prepareCharacter(sys, attr) {
 
     const payload = JSON.stringify(ctx).replace(/'/g, '&#39;');
 
-    const _corner = (name, skillName, skillDice, isDefault, rawDamage, astralPool, tn, poolClass, tnClass, dmgClass, role, owner, initiatePool, initiateClass) => `
+    const _corner = (name, skillName, skillDice, isDefault, rawDamage, astralPool, tn, poolClass, tnClass, dmgClass, role, owner, initiatePool, initiateClass, poolKind) => `
       <div class="sr-melee-corner sr-astral-corner"
            data-corner-role="${role}" data-corner-owner="${owner ?? ''}" data-corner-label="${name}">
         <div class="sr-melee-name">${name}</div>
@@ -12319,7 +12328,7 @@ _prepareCharacter(sys, attr) {
           <strong class="sr-astral-field-value">${skillDice}</strong>
         </div>
         <div class="sr-astral-field-row">
-          <label class="sr-astral-field-label">+ Astral Combat Pool (avail. ${astralPool})</label>
+          <label class="sr-astral-field-label">+ ${poolKind === 'combat' ? 'Combat Pool' : 'Astral Combat Pool'} (avail. ${astralPool})</label>
           <input type="number" class="${poolClass} sr-astral-input" value="0" min="0" max="${astralPool}"/>
         </div>
         ${initiatePool > 0 ? `
@@ -12341,11 +12350,11 @@ _prepareCharacter(sys, attr) {
           <div class="sr-melee-boxing">
             ${_corner(atk.name, ctx.atkSkillName, ctx.atkSkillDice, ctx.atkIsDefault, ctx.atkRawDamage,
                       ctx.atkAstralPool, ctx.atkTN, 'sr-astral-atk-pool', 'sr-astral-atk-tn', 'sr-astral-atk-damage',
-                      'attacker', ctx.attackerActorId, ctx.atkInitiatePool ?? 0, 'sr-astral-atk-ipool')}
+                      'attacker', ctx.attackerActorId, ctx.atkInitiatePool ?? 0, 'sr-astral-atk-ipool', ctx.atkPoolKind)}
             <div class="sr-melee-vs">VS</div>
             ${_corner(def.name, ctx.defSkillName, ctx.defSkillDice, ctx.defIsDefault, ctx.defRawDamage,
                       ctx.defAstralPool, ctx.defTN, 'sr-astral-def-pool', 'sr-astral-def-tn', 'sr-astral-def-damage',
-                      'defender', ctx.defenderActorId, ctx.defInitiatePool ?? 0, 'sr-astral-def-ipool')}
+                      'defender', ctx.defenderActorId, ctx.defInitiatePool ?? 0, 'sr-astral-def-ipool', ctx.defPoolKind)}
           </div>
           <div style="margin:8px 0 4px;font-size:11px;color:var(--sr-muted)">
             <label style="display:flex;align-items:center;gap:6px">
@@ -12390,14 +12399,21 @@ _prepareCharacter(sys, attr) {
     const defActor = actorFrom(ctx.defenderActorId);
     // Same rule as melee — astral combat "uses the same rules as Melee Combat" (p.174), so
     // the pool grant is what gets rolled, not the request. See handleMeleeRoll.
-    const atkAstralSpent = (atkAstralPool > 0 && atkActor) ? await atkActor.spendAstralPool(atkAstralPool) : 0;
-    const defAstralSpent = (defAstralPool > 0 && defActor) ? await defActor.spendAstralPool(defAstralPool) : 0;
+    // Each corner charges the pool it was offered (p.174): Astral Combat Pool for a projector, Combat Pool for a dual being.
+    // Older cards carry no kind — they were all Astral Combat Pool.
+    const _chargeAstral = (actor, kind, n) => !(n > 0 && actor) ? 0
+      : kind === 'combat' ? actor.spendCombatPool(n) : actor.spendAstralPool(n);
+    const _poolName = kind => kind === 'combat' ? 'Combat Pool' : 'Astral Combat Pool';
+    const atkAstralSpent = await _chargeAstral(atkActor, ctx.atkPoolKind, atkAstralPool);
+    const defAstralSpent = await _chargeAstral(defActor, ctx.defPoolKind, defAstralPool);
     if (atkAstralSpent !== atkAstralPool) {
-      ui.notifications.warn(`${atkActor?.name ?? 'Attacker'}: only ${atkAstralSpent} of ${atkAstralPool} Astral Combat Pool dice were available.`);
+      ui.notifications.warn(`${atkActor?.name ?? 'Attacker'}: only ${atkAstralSpent} of ${atkAstralPool} ${_poolName(ctx.atkPoolKind)} dice were available.`);
     }
     if (defAstralSpent !== defAstralPool) {
-      ui.notifications.warn(`${defActor?.name ?? 'Defender'}: only ${defAstralSpent} of ${defAstralPool} Astral Combat Pool dice were available.`);
+      ui.notifications.warn(`${defActor?.name ?? 'Defender'}: only ${defAstralSpent} of ${defAstralPool} ${_poolName(ctx.defPoolKind)} dice were available.`);
     }
+    atkPool = Math.max(1, (ctx.atkSkillDice ?? 1) + atkAstralSpent);
+    defPool = Math.max(1, (ctx.defSkillDice ?? 1) + defAstralSpent);
 
     // Charge the initiate pool; what is rolled is what it GRANTED (the spend clamps on the GM).
     const atkInitSpent = (atkInitiateWant > 0 && atkActor) ? await atkActor.spendInitiatePool(atkInitiateWant) : 0;
@@ -12572,6 +12588,25 @@ _prepareCharacter(sys, attr) {
       return { key: 'willpower', label: 'Willpower (astral being)', value: attr('willpower'), combatPool: false };
     }
     return { key: 'body', label: 'Body (dual being)', value: attr('body'), combatPool: true };
+  }
+
+  /**
+   * Which pool a fighter adds in astral combat · *SR3 p.174* — the same split as `astralResistPool`.
+   *
+   * > "Astrally perceiving characters and other dual beings use their normal physical Attributes,
+   * > skills and Combat Pool in astral combat." … "Projecting characters and spirits have an Astral
+   * > Combat Pool equal to the sum of their Mental Attributes, divided by two and rounded down"
+   *
+   * Only `astralMode === 'astral'` is an astral being (the Astral Combat Pool); Dual Natured, Physical,
+   * or no mode (a perceiving adept, a materialized spirit) is a dual being and adds the Combat Pool.
+   * ⚠ The shipped bug offered every fighter the Astral Combat Pool. The initiate pool (MitS p.58) is a
+   * separate pool and unchanged. Returns `{ kind: 'astral'|'combat', label, available }`.
+   */
+  static astralAttackPool({ astralMode = '', derived = {} } = {}) {
+    if (astralMode === 'astral') {
+      return { kind: 'astral', label: 'Astral Combat Pool', available: Math.max(0, derived?.availableAstralPool ?? 0) };
+    }
+    return { kind: 'combat', label: 'Combat Pool', available: Math.max(0, derived?.availableCombatPool ?? 0) };
   }
 
   static async postAstralSoakCard(actorId, payload) {

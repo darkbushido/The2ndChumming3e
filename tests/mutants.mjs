@@ -2360,6 +2360,15 @@ export const MUTANTS = [
     impl:   ({ power = 0, mysticArmor = 0 } = {}) => Math.max(2, (Number(power) || 0) - Math.max(0, Number(mysticArmor) || 0)),
   },
   {
+    id:     'every-fighter-adds-the-astral-combat-pool',
+    suite:  'astral-soak',
+    ...ACTOR, method: 'astralAttackPool',
+    was:    'SR3 p.174 - a perceiving / dual being uses its Combat Pool in astral combat; only a projector has the '
+          + 'Astral Combat Pool. Both corners were offered the Astral Combat Pool whatever the astral mode (0.8.0 rules check)',
+    impl:   ({ derived = {} } = {}) => ({ kind: 'astral', label: 'Astral Combat Pool',
+      available: Math.max(0, derived?.availableAstralPool ?? 0) }),
+  },
+  {
     id:     'dual-beings-resist-astral-with-willpower',
     suite:  'astral-soak',
     ...ACTOR, method: 'astralResistPool',

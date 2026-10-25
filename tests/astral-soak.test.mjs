@@ -50,7 +50,33 @@ export async function run(t) {
   t.is('a materialized spirit is a dual being: Body, not Force', res({ astralMode: '', spiritForce: 5 }).key, 'body');
   t.is('no attribute resists with fewer than 1 die', SR3EActor.astralResistPool({ astralMode: 'dual' }).value, 1);
 
+  // p.174 — the pool the attack adds follows the same split as the soak.
+  const derived = { availableAstralPool: 7, availableCombatPool: 4 };
+  const ap = astralMode => SR3EActor.astralAttackPool({ astralMode, derived });
+  t.is('a projecting mage adds the Astral Combat Pool', ap('astral').kind, 'astral');
+  t.is('…all of what is available', ap('astral').available, 7);
+  t.is('a Dual Natured adept adds the Combat Pool', ap('dual').kind, 'combat');
+  t.is('…its available dice', ap('dual').available, 4);
+  t.is('no mode set (astrally perceiving) adds the Combat Pool', ap('').kind, 'combat');
+  t.is('Physical Plane adds the Combat Pool', ap('physical').kind, 'combat');
+  t.is('…labelled Combat Pool', ap('').label, 'Combat Pool');
+  t.is('a non-Awakened/absent pool is 0, never NaN', SR3EActor.astralAttackPool({ astralMode: 'astral' }).available, 0);
+
   const src  = readFileSync(new URL('../scripts/documents/SR3EActor.js', import.meta.url), 'utf8');
+  const combat = src.slice(src.indexOf('async rollAstralCombat('), src.indexOf('static async postAstralCard(') > 0
+    ? src.indexOf('static async postAstralCard(') : undefined);
+  t.ok('rollAstralCombat takes the pool from astralAttackPool', /SR3EActor\.astralAttackPool\(/.test(combat));
+  t.ok('…including the defaulting path', (combat.match(/SR3EActor\.astralAttackPool\(/g) ?? []).length >= 2);
+  t.ok('…and never reads the Astral Combat Pool directly', !/derived\?\.availableAstralPool/.test(combat));
+  t.ok('both corners carry the pool kind', /atkPoolKind:\s+atkInfo\.poolKind/.test(combat) && /defPoolKind:\s+defInfo\.poolKind/.test(combat));
+  const post = src.slice(src.indexOf('static async postAstralCard('), src.indexOf('static async handleAstralRoll('));
+  t.ok('the corner is labelled by its pool kind', /poolKind === 'combat' \? 'Combat Pool' : 'Astral Combat Pool'/.test(post));
+  const aroll = src.slice(src.indexOf('static async handleAstralRoll('), src.indexOf('static async _postAstralResult('));
+  t.ok('the resolver charges the matching pool for each corner',
+    /kind === 'combat' \? actor\.spendCombatPool\(n\) : actor\.spendAstralPool\(n\)/.test(aroll)
+    && /_chargeAstral\(atkActor, ctx\.atkPoolKind/.test(aroll) && /_chargeAstral\(defActor, ctx\.defPoolKind/.test(aroll));
+  t.ok('…and rolls what was deducted, not what was typed',
+    /\(ctx\.atkSkillDice \?\? 1\) \+ atkAstralSpent/.test(aroll) && /\(ctx\.defSkillDice \?\? 1\) \+ defAstralSpent/.test(aroll));
   const card = src.slice(src.indexOf('async _postAstralSoakCard('), src.indexOf('async _postAstralSoakCard(') + 3000);
   t.ok('the astral soak card reads the defender\'s Mystic Armor',
     /this\.system\.derived\?\.mysticArmor/.test(card));
