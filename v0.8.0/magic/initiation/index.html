@@ -1,0 +1,909 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.8.0/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.8.0/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(5)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(3) > ul > li:nth-child(5) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(3) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(3) > ul > li:nth-child(5) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(3) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(3) > ul.nav-list > li.nav-list-item:nth-child(5) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.8.0/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.8.0/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>How to Initiate | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="How to Initiate" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.8.0/magic/initiation/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.8.0/magic/initiation/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="How to Initiate" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"How to Initiate","url":"https://darkbushido.github.io/The2ndChumming3e/v0.8.0/magic/initiation/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.8.0/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.8.0/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/weapons/" class="nav-list-link">Weapons</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/healing/" class="nav-list-link">Healing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/karma/" class="nav-list-link">Karma</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/decking-defragged/" class="nav-list-link">Decking (Matrix Defragged)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/decking/" class="nav-list-link">Decking (SR3 core)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/rigging/" class="nav-list-link">Rigging</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/vehicles/" class="nav-list-link">Vehicles</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/drones/" class="nav-list-link">Drones</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.8.0/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/magic/spells/" class="nav-list-link">Spells</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/magic/physical-adepts/" class="nav-list-link">Physical Adepts</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/magic/initiation/" class="nav-list-link">How to Initiate</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.8.0/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.8.0/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/combat-medic/" class="nav-list-link">Combat Medic</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Sixth World submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.8.0/world/" class="nav-list-link">The Sixth World</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/world/megacorporations/" class="nav-list-link">Megacorporations</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/world/underworld/" class="nav-list-link">The Underworld</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/world/politics-and-security/" class="nav-list-link">Politics, Police & Policlubs</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.8.0</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.8.0/magic/">Magic</a></li>
+    <li class="breadcrumb-nav-list-item"><span>How to Initiate</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="how-to-initiate">
+  
+  
+    <a href="#how-to-initiate" class="anchor-heading" aria-labelledby="how-to-initiate"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> How to Initiate
+  
+  
+</h1>
+    
+
+<p>How an Awakened character climbs the grades of initiation: what it costs,
+the ordeals that make it cheaper, magical groups, metamagic, and the geasa
+that keep a magician’s power when Magic is lost. Initiation isn’t in the
+core rulebook; all of this is from <em>Magic in the Shadows</em> <em>(MitS p.30–33,
+p.57–79)</em>.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#who-can-initiate--mits-p5758" id="markdown-toc-who-can-initiate--mits-p5758">Who can initiate  <em>(MitS p.57–58)</em></a></li>
+  <li><a href="#what-each-grade-gives--mits-p58" id="markdown-toc-what-each-grade-gives--mits-p58">What each grade gives  <em>(MitS p.58)</em></a></li>
+  <li><a href="#the-karma-cost--mits-p58" id="markdown-toc-the-karma-cost--mits-p58">The Karma cost  <em>(MitS p.58)</em></a></li>
+  <li><a href="#ordeals--mits-p5861" id="markdown-toc-ordeals--mits-p5861">Ordeals  <em>(MitS p.58–61)</em></a></li>
+  <li><a href="#magical-groups--mits-p6165" id="markdown-toc-magical-groups--mits-p6165">Magical groups  <em>(MitS p.61–65)</em></a>    <ol>
+      <li><a href="#strictures--mits-p6263" id="markdown-toc-strictures--mits-p6263">Strictures  <em>(MitS p.62–63)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#metamagic" id="markdown-toc-metamagic">Metamagic  <em>(MitS p.69–79)</em></a>    <ol>
+      <li><a href="#learning-a-technique--mits-p6970" id="markdown-toc-learning-a-technique--mits-p6970">Learning a technique  <em>(MitS p.69–70)</em></a></li>
+      <li><a href="#centering" id="markdown-toc-centering">Centering  <em>(MitS p.72–74)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#geasa" id="markdown-toc-geasa">Geasa  <em>(MitS p.30–33)</em></a></li>
+  <li><a href="#doing-it-in-the-2nd-chumming-foundry" id="markdown-toc-doing-it-in-the-2nd-chumming-foundry">Doing it in The 2nd Chumming (Foundry)</a></li>
+</ol><hr />
+<h2 id="who-can-initiate--mits-p5758">
+  
+  
+    <a href="#who-can-initiate--mits-p5758" class="anchor-heading" aria-labelledby="who-can-initiate--mits-p5758"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Who can initiate  <em>(MitS p.57–58)</em>
+  
+  
+</h2>
+    
+
+<p>Only the Awakened: <strong>full magicians, aspected magicians and adepts</strong>. A
+character can initiate <strong>alone</strong> or as a member of a <strong>magical group</strong>,
+which makes it cheaper. Each initiation adds a <strong>grade</strong>: the first makes
+you a Grade 1 initiate, the second Grade 2, and so on.</p>
+
+<p>The gamemaster decides when a character can initiate, and some time should
+pass between having the Karma and taking the next grade. They also decide
+what the process involves, guided by the character’s path: study, practice,
+rituals, or proving themselves <em>(MitS p.57–58)</em>.</p>
+<h2 id="what-each-grade-gives--mits-p58">
+  
+  
+    <a href="#what-each-grade-gives--mits-p58" class="anchor-heading" aria-labelledby="what-each-grade-gives--mits-p58"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> What each grade gives  <em>(MitS p.58)</em>
+  
+  
+</h2>
+    
+
+<p><strong>Every initiate</strong> gets these with each grade:</p>
+
+<ul>
+  <li><strong>Astral Reaction</strong> goes up by the grade.</li>
+  <li>An <strong>Astral Pool</strong> of dice equal to the grade. It can be used on any test
+on the astral plane or the metaplanes, including Astral Combat (even with
+Sorcery) and Astral Perception, except Magical Skill Tests. It refreshes
+like other pools.</li>
+  <li>A full magician’s <strong>first</strong> initiation opens the <strong>metaplanes</strong> of astral
+space (p.91).</li>
+</ul>
+
+<p><strong>Then choose one</strong> of these three, each time:</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Option</th>
+      <th style="text-align: center">Magic</th>
+      <th style="text-align: left">And</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Learn a metamagical technique</strong></td>
+      <td style="text-align: center">+1</td>
+      <td style="text-align: left">One technique you qualify for. <a href="#metamagic">Below</a>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Alter your astral signature</strong></td>
+      <td style="text-align: center">+1</td>
+      <td style="text-align: left">A Magic Test against <strong>6 + the new grade</strong>, with no dice but Karma. Two or more successes change it. Each failure adds +1 to later attempts.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Shed a geas</strong></td>
+      <td style="text-align: center">none</td>
+      <td style="text-align: left">One geas comes off a Magic point you already have, so that point works without it. <a href="#geasa">Geasa</a>.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<ul>
+  <li><strong>Magic can rise above 6</strong> this way.</li>
+  <li><strong>Adepts get a Power Point</strong> for each point of Magic gained. See
+<a href="../physical-adepts/">Physical Adepts</a>.</li>
+</ul>
+
+<blockquote>
+  <p><strong>The book’s example</strong> <em>(MitS p.58)</em>: Bandi, Magic 8, initiates to Grade
+3 and tries to alter her signature. She rolls 8 dice against 6 + 3 = <strong>TN
+9</strong> and gets 1 success, which isn’t enough. Next time her TN is one higher.</p>
+</blockquote><hr />
+<h2 id="the-karma-cost--mits-p58">
+  
+  
+    <a href="#the-karma-cost--mits-p58" class="anchor-heading" aria-labelledby="the-karma-cost--mits-p58"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Karma cost  <em>(MitS p.58)</em>
+  
+  
+</h2>
+    
+
+<p><strong>Base cost = 5 + the grade you’re initiating to.</strong> Multiply by the
+initiation type, and round down.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Initiation Cost Table <em>(MitS p.58)</em></th>
+      <th style="text-align: left">Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Self-initiation</td>
+      <td style="text-align: left">Base Cost × 3</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Self-initiation with an ordeal</td>
+      <td style="text-align: left">Base Cost × 2.5</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Group initiation</td>
+      <td style="text-align: left">Base Cost × 2</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Group initiation with an ordeal</td>
+      <td style="text-align: left">Base Cost × 1.5</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>The same table worked out for the first six grades:</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Grade</th>
+      <th style="text-align: center">Base</th>
+      <th style="text-align: center">Self</th>
+      <th style="text-align: center">Self + ordeal</th>
+      <th style="text-align: center">Group</th>
+      <th style="text-align: center">Group + ordeal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">18</td>
+      <td style="text-align: center">15</td>
+      <td style="text-align: center">12</td>
+      <td style="text-align: center">9</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">7</td>
+      <td style="text-align: center">21</td>
+      <td style="text-align: center">17</td>
+      <td style="text-align: center">14</td>
+      <td style="text-align: center">10</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">8</td>
+      <td style="text-align: center">24</td>
+      <td style="text-align: center">20</td>
+      <td style="text-align: center">16</td>
+      <td style="text-align: center">12</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">9</td>
+      <td style="text-align: center">27</td>
+      <td style="text-align: center">22</td>
+      <td style="text-align: center">18</td>
+      <td style="text-align: center">13</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">5</td>
+      <td style="text-align: center">10</td>
+      <td style="text-align: center">30</td>
+      <td style="text-align: center">25</td>
+      <td style="text-align: center">20</td>
+      <td style="text-align: center">15</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6</td>
+      <td style="text-align: center">11</td>
+      <td style="text-align: center">33</td>
+      <td style="text-align: center">27</td>
+      <td style="text-align: center">22</td>
+      <td style="text-align: center">16</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<blockquote>
+  <p><strong>The book’s example</strong> <em>(MitS p.58)</em>: Eli, an owl shaman, initiates
+alone. Grade 1 costs (5 + 1) × 3 = <strong>18</strong>, or <strong>15</strong> with an ordeal. Grade
+2 costs 7 × 3 = <strong>21</strong>, or 7 × 2.5 = 17.5, rounded down to <strong>17</strong>, with an
+ordeal. In a group he’d have paid 6 × 2 = <strong>12</strong> for Grade 1, or 6 × 1.5 =
+<strong>9</strong> with an ordeal, and <strong>14</strong>, or <strong>10</strong> with an ordeal, for Grade 2.</p>
+</blockquote><hr />
+<h2 id="ordeals--mits-p5861">
+  
+  
+    <a href="#ordeals--mits-p5861" class="anchor-heading" aria-labelledby="ordeals--mits-p5861"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Ordeals  <em>(MitS p.58–61)</em>
+  
+  
+</h2>
+    
+
+<p>An ordeal is a test of the candidate. It lowers the cost multiplier by
+<strong>0.5</strong>. Choose it <strong>before</strong> initiating; only a deed can be done ahead of
+time. Pass it and you gain the grade. Fail and you try again, without paying
+the Karma a second time. An ordeal can be repeated only with the GM’s
+permission, and an oath never.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Ordeal</th>
+      <th style="text-align: left">What it takes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Astral quest</strong></td>
+      <td style="text-align: left">A quest on the metaplanes with a rating of <strong>twice the grade</strong>. Shamans go to their totem’s metaplane, mages to each of the four elemental metaplanes. You must be able to project. After a failure, a Willpower Test against the grade sets the preparation time: 10 days divided by the successes.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Asceticism</strong></td>
+      <td style="text-align: left">Permanently give up <strong>1 point of a Physical Attribute</strong>’s unaugmented rating, and 1 point of its racial modified limit. Not an Attribute at 1. Taken again, it must be a different Attribute first.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Deed</strong></td>
+      <td style="text-align: left">A task fitting the character’s path, group, totem or code, agreed with the GM, or a run that fits. <strong>You give up that run’s Karma award.</strong> It can be saved, but only for the next initiation.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Familiar</strong></td>
+      <td style="text-align: left">Magicians who can summon allies only. Summon an <strong>ally spirit</strong> that costs at least the initiation’s Karma (with the ordeal). It costs no Magic Point, but if it’s ever banished, freed or destroyed you check for Magic loss.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Geas</strong></td>
+      <td style="text-align: left">Take a geas on the new grade’s Magic Point; an adept can put it on the new Power Point. It can never be removed.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Meditation</strong></td>
+      <td style="text-align: left">Pass three tests: Charisma against your Strength, Intelligence against your Quickness, Willpower against your Body. Each takes grade × 4 days, divided by its successes. Fail one and the cycle starts again. +2 to all three on a Squatter or Street lifestyle, unless you’re in the wilderness with Wilderness Survival 4+.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Oath</strong></td>
+      <td style="text-align: left">Swear to obey a magical group’s rules. For group members only, and only the first oath counts.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Thesis</strong></td>
+      <td style="text-align: left">Write or make a formula of all your magical knowledge, as a spell formula of rating 6, 30 days base time. Anyone with a copy has a material link to you, and if every copy is destroyed you lose a Magic Point.</td>
+    </tr>
+  </tbody>
+</table></div><hr />
+<h2 id="magical-groups--mits-p6165">
+  
+  
+    <a href="#magical-groups--mits-p6165" class="anchor-heading" aria-labelledby="magical-groups--mits-p6165"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Magical groups  <em>(MitS p.61–65)</em>
+  
+  
+</h2>
+    
+
+<p>Orders, covens, lodges and circles. What makes one magical is a <strong>magical
+link</strong>, its connection to a spirit <strong>avatar</strong>. Initiating through a group
+is cheaper, but members live by its rules.</p>
+
+<ul>
+  <li><strong>Kinds</strong> <em>(MitS p.62)</em>: <strong>initiatory</strong> (magical study first),
+<strong>dedicated</strong> (a religious or moral cause) and <strong>conspiratorial</strong> (power
+and wealth, often secret and controlling).</li>
+  <li><strong>Joining</strong> costs <strong>3 Karma and the first month’s dues</strong>, which other
+members can pay for you. The group then checks that your “vibes” fit its
+link <em>(MitS p.65)</em>.</li>
+  <li><strong>Founding</strong> one needs two or more Awakened, each paying the 3 Karma.
+Once a month they roll to establish a link, against TN 12 with modifiers;
+extra dice cost 3 Karma each <em>(MitS p.65)</em>.</li>
+  <li><strong>Leaving</strong> a group you swore an oath to means a check for <strong>Magic loss</strong>
+<em>(MitS p.62)</em>.</li>
+</ul>
+<h3 id="strictures--mits-p6263">
+  
+  
+    <a href="#strictures--mits-p6263" class="anchor-heading" aria-labelledby="strictures--mits-p6263"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Strictures  <em>(MitS p.62–63)</em>
+  
+  
+</h3>
+    
+
+<p>A group’s rules, tied to its magic. Most have three or four that bind each
+member:</p>
+
+<blockquote>
+  <p>Attendance · Belief · Deed · Exclusive Membership · Exclusive Ritual ·
+Fraternity · Geas · Obedience · Sacrifice (−1 to every Karma award) ·
+Secrecy</p>
+</blockquote>
+
+<p><strong>Group strictures</strong>, such as <strong>Limited Membership</strong> or <strong>Oath</strong> (every
+member takes the oath ordeal at their first initiation with the group), can
+only be broken by the group itself, and doing so costs it its link.</p>
+
+<p><strong>Breaking a stricture</strong> leaves marks in your aura that fellow members can
+see. When you next initiate, roll <strong>Magic</strong> against <strong>twice the grade
+you’re seeking</strong>, needing at least one success per stricture broken. Pass
+and the slate is wiped clean. Fail and the group must expel you, or lose
+its link <em>(MitS p.62)</em>.</p><hr />
+<h2 id="metamagic">
+  
+  
+    <a href="#metamagic" class="anchor-heading" aria-labelledby="metamagic"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Metamagic  <em>(MitS p.69–79)</em>
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Technique</th>
+      <th style="text-align: center">Page</th>
+      <th style="text-align: left">What it does</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Anchoring</strong></td>
+      <td style="text-align: center">p.70</td>
+      <td style="text-align: left">Store a live spell in an anchoring focus, set off by a trigger.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Centering</strong></td>
+      <td style="text-align: center">p.72</td>
+      <td style="text-align: left">Use a creative skill to add successes, resist Drain, or cancel penalties. <a href="#centering">Below</a>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Cleansing</strong></td>
+      <td style="text-align: center">p.74</td>
+      <td style="text-align: left">Clear temporary background count, once its cause is gone.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Divining</strong></td>
+      <td style="text-align: center">p.74</td>
+      <td style="text-align: left">Read omens for insight into future events.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Invoking</strong></td>
+      <td style="text-align: center">p.75</td>
+      <td style="text-align: left">Summon great form spirits.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Masking</strong></td>
+      <td style="text-align: center">p.76</td>
+      <td style="text-align: left">Disguise your aura, and see through others’ disguises.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Possessing</strong></td>
+      <td style="text-align: center">p.76</td>
+      <td style="text-align: left">Your astral form enters and controls a living being.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Quickening</strong></td>
+      <td style="text-align: center">p.77</td>
+      <td style="text-align: left">Make a sustained spell permanent without a sustaining focus.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Reflecting</strong></td>
+      <td style="text-align: center">p.78</td>
+      <td style="text-align: left">Spell defense that can turn a spell back on its caster.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Shielding</strong></td>
+      <td style="text-align: center">p.79</td>
+      <td style="text-align: left">A stronger form of spell defense.</td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="learning-a-technique--mits-p6970">
+  
+  
+    <a href="#learning-a-technique--mits-p6970" class="anchor-heading" aria-labelledby="learning-a-technique--mits-p6970"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Learning a technique  <em>(MitS p.69–70)</em>
+  
+  
+</h3>
+    
+
+<p>One technique per grade, and only one you can use: conjurers and adepts
+can’t learn Quickening or Shielding, which need Sorcery. <strong>Adepts can learn
+only Centering, Divining and Masking.</strong> There are three ways to learn:</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">From</th>
+      <th style="text-align: left">The test</th>
+      <th style="text-align: left">Time and price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Another initiate</strong> of equal or higher grade who knows it</td>
+      <td style="text-align: left">Magic, TN <strong>8 − the teacher’s grade</strong></td>
+      <td style="text-align: left">14 days ÷ successes. Free within a group; otherwise usually <strong>grade × 1,000¥ a day</strong>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>An astral quest</strong></td>
+      <td style="text-align: left">The quest, rated by the number of techniques you already know (TN at least 2)</td>
+      <td style="text-align: left">Days equal to the quest rating.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>A free spirit</strong></td>
+      <td style="text-align: left">As from an initiate, with Spirit Energy for grade</td>
+      <td style="text-align: left">Karma, at least its Spirit Energy. Invoking costs double.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>Fail the test and you can try that technique again only at your next grade,
+on top of that grade’s technique. A third failure, or a roll of <strong>all 1s</strong>,
+means you can never learn it.</p>
+<h3 id="centering">
+  
+  
+    <a href="#centering" class="anchor-heading" aria-labelledby="centering"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Centering  <em>(MitS p.72–74)</em>
+  
+  
+</h3>
+    
+
+<p>Centering uses two skills: <strong>Centering</strong>, an Active Magical Skill linked to
+Willpower, and a <strong>creative skill</strong> such as singing, dancing, an instrument,
+an arcane language or meditation. Centering can never be higher than the
+creative skill, and the creative skill can’t come from a chip. Centering is
+a <strong>Free Action</strong> in the same phase as the magic it helps, rolled first, and
+you get only one of its benefits per phase:</p>
+
+<ul>
+  <li><strong>For success</strong>: same TN as the magical test. Every 2 successes add a
+success, but only if the magical test scores at least one. A magician has
+to be astrally perceiving to do this.</li>
+  <li><strong>Against Drain</strong>: TN = the Drain Power. Every 2 successes count as one
+Drain Resistance success, if the Drain test scores at least one.</li>
+  <li><strong>Against penalties</strong>: TN = the magical test’s full TN <strong>minus your
+grade</strong>. Every 2 successes cancel 1 point of modifiers, never the base TN.</li>
+</ul>
+
+<p><strong>Adept centering</strong> <em>(MitS p.73–74)</em>. An adept who learns Centering applies
+it to <strong>Athletics and Stealth</strong>. Each later grade can add one more skill
+area instead of another technique: Build and Repair, Melee Combat, Ranged
+Combat, Knowledge, Language, Social, Technical, Vehicle, or a Special Skill
+area. Adepts don’t need astral perception to center for success, and can
+center against the Drain of their powers, such as Attribute Boost.</p>
+
+<blockquote>
+  <p><strong>The book’s example</strong> <em>(MitS p.73)</em>: Beaumains, a Grade 4 initiate,
+casts Powerbolt at a target with Body 4, partial cover (+2), poor light
+(+2), and his own Light Stun (+1): TN 9. He centers on his synthesizer
+against 9 − 4 = <strong>TN 5</strong> and gets 2 successes, cancelling 1 point. He
+casts at <strong>TN 8</strong>.</p>
+</blockquote><hr />
+<h2 id="geasa">
+  
+  
+    <a href="#geasa" class="anchor-heading" aria-labelledby="geasa"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Geasa  <em>(MitS p.30–33)</em>
+  
+  
+</h2>
+    
+
+<p>When a character <strong>loses a point of Magic</strong>, they can take a <strong>geas</strong>, a
+restriction on how they use magic, to keep working as if they still had
+it. A magician with Magic 6 who loses a point is at 5, but with a geas casts
+as if they had 6.</p>
+
+<ul>
+  <li>Decide <strong>when the point is lost</strong>. Turn the geas down then and you can’t
+take one for that point later.</li>
+  <li>At most <strong>unaugmented Willpower</strong> geasa. At Magic 0 nothing helps: the
+character is mundane.</li>
+  <li>A geas only offsets lost points; it never adds Magic.</li>
+  <li><strong>Break any one</strong> and you lose <strong>all</strong> the points your geasa cover, and
+take <strong>+1 to every Magical Skill test per geas</strong> you have, while it stays
+broken. Astral combat and assensing aren’t affected.</li>
+  <li>Initiation can shed one geas per grade, instead of gaining Magic.</li>
+</ul>
+
+<p><strong>Standard geasa</strong> <em>(MitS p.32)</em>: Condition (unwounded, astrally
+perceiving…), Domain (the city, the forest…), Exclusive (adepts only: the
+power can’t be used alongside other magic), Fasting, Gesture, Incantation,
+Shaman’s (only spells and spirits with a totem advantage), Talisman, and
+Time (day or night, or a season).</p>
+
+<blockquote>
+  <p><strong>The book’s example</strong> <em>(MitS p.33)</em>: Rikki Ratboy, Magic 6, loses a
+point to a bad wound and takes the <strong>gesture</strong> geas, then another to
+cyberware and takes <strong>domain</strong> (the city). Shot in a park with a broken
+arm, he’s broken both. He works at Magic <strong>4</strong>, with <strong>+2</strong> to all magical
+tests, until he’s out of the park and his arm is fixed.</p>
+</blockquote><hr />
+<h2 id="doing-it-in-the-2nd-chumming-foundry">
+  
+  
+    <a href="#doing-it-in-the-2nd-chumming-foundry" class="anchor-heading" aria-labelledby="doing-it-in-the-2nd-chumming-foundry"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Doing it in The 2nd Chumming (Foundry)
+  
+  
+</h2>
+    
+
+<p>The system records the grade but doesn’t run initiation yet.</p>
+
+<ul>
+  <li><strong>Initiate Grade</strong> is a field on the <strong>Magic</strong> tab. A ward’s <strong>🌫 Fool This
+Ward</strong> test reads it (Masking, against a ward).</li>
+  <li><strong>The Karma</strong>: work out the cost from the table above, and subtract it
+from Good Karma on the sheet. The Spend Karma calculator doesn’t offer
+initiation yet.</li>
+  <li><strong>Magic</strong>: raise the Magic Attribute by hand. An adept’s Power Point total
+follows Magic, so their new Power Point appears by itself.</li>
+  <li><strong>The Initiate Astral Pool</strong> (grade dice) shows beside the Astral Combat
+Pool. It is offered on astral combat, on Assensing, and on rolls made while
+dual or projecting, and it refreshes with the other pools. A projecting
+initiate’s Initiative adds the grade <em>(MitS p.58)</em>.</li>
+  <li><strong>Not tracked yet</strong>: metamagic, geasa and magical groups. Apply them at the
+table.</li>
+</ul>
+
+<blockquote class="note">
+  <p>Building initiation, metamagic and the other <em>Magic in the Shadows</em> Karma
+costs into the system is planned (TODO 219).</p>
+</blockquote>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+

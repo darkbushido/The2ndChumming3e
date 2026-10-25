@@ -1,0 +1,755 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.8.0/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/v0.8.0/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(1)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(6) > ul > li:nth-child(1) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(6) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(6) > ul > li:nth-child(1) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(6) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(6) > ul.nav-list > li.nav-list-item:nth-child(1) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/v0.8.0/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/v0.8.0/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Megacorporations | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Megacorporations" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/v0.8.0/world/megacorporations/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/v0.8.0/world/megacorporations/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Megacorporations" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"Megacorporations","url":"https://darkbushido.github.io/The2ndChumming3e/v0.8.0/world/megacorporations/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/v0.8.0/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.8.0/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/weapons/" class="nav-list-link">Weapons</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/healing/" class="nav-list-link">Healing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/karma/" class="nav-list-link">Karma</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/decking-defragged/" class="nav-list-link">Decking (Matrix Defragged)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/decking/" class="nav-list-link">Decking (SR3 core)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/rigging/" class="nav-list-link">Rigging</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/vehicles/" class="nav-list-link">Vehicles</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/rules/drones/" class="nav-list-link">Drones</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.8.0/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/magic/spells/" class="nav-list-link">Spells</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/magic/physical-adepts/" class="nav-list-link">Physical Adepts</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/magic/initiation/" class="nav-list-link">How to Initiate</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.8.0/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.8.0/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/hiring/combat-medic/" class="nav-list-link">Combat Medic</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Sixth World submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/v0.8.0/world/" class="nav-list-link">The Sixth World</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/world/megacorporations/" class="nav-list-link">Megacorporations</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/world/underworld/" class="nav-list-link">The Underworld</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/world/politics-and-security/" class="nav-list-link">Politics, Police & Policlubs</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/v0.8.0/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.8.0</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/The2ndChumming3e/v0.8.0/world/">The Sixth World</a></li>
+    <li class="breadcrumb-nav-list-item"><span>Megacorporations</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="megacorporations">
+  
+  
+    <a href="#megacorporations" class="anchor-heading" aria-labelledby="megacorporations"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Megacorporations
+  
+  
+</h1>
+    
+
+<p>The giants as of October 2059: who owns each one, where it’s based, what it
+does in Seattle, and what running against it is like.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#how-they-got-here--sr3-p3135" id="markdown-toc-how-they-got-here--sr3-p3135">How they got here  <em>(SR3 p.31–35)</em></a></li>
+  <li><a href="#the-megacorps" id="markdown-toc-the-megacorps">The megacorps</a>    <ol>
+      <li><a href="#ares-macrotechnology--ns-p8990" id="markdown-toc-ares-macrotechnology--ns-p8990">Ares Macrotechnology  <em>(NS p.89–90)</em></a></li>
+      <li><a href="#aztechnology--ns-p81-p90" id="markdown-toc-aztechnology--ns-p81-p90">Aztechnology  <em>(NS p.81, p.90)</em></a></li>
+      <li><a href="#cross-applied-technologies--sr3-p35-ns-p9091" id="markdown-toc-cross-applied-technologies--sr3-p35-ns-p9091">Cross Applied Technologies  <em>(SR3 p.35; NS p.90–91)</em></a></li>
+      <li><a href="#the-draco-foundation" id="markdown-toc-the-draco-foundation">The Draco Foundation</a></li>
+      <li><a href="#fuchi-industrial-electronics--sr3-p3435" id="markdown-toc-fuchi-industrial-electronics--sr3-p3435">Fuchi Industrial Electronics  <em>(SR3 p.34–35)</em></a></li>
+      <li><a href="#mitsuhama-computer-technologies--ns-p9293" id="markdown-toc-mitsuhama-computer-technologies--ns-p9293">Mitsuhama Computer Technologies  <em>(NS p.92–93)</em></a></li>
+      <li><a href="#renraku-computer-systems--sr3-p3435" id="markdown-toc-renraku-computer-systems--sr3-p3435">Renraku Computer Systems  <em>(SR3 p.34–35)</em></a></li>
+      <li><a href="#saeder-krupp--sr3-p31-ns-p9495" id="markdown-toc-saeder-krupp--sr3-p31-ns-p9495">Saeder-Krupp  <em>(SR3 p.31; NS p.94–95)</em></a></li>
+      <li><a href="#shiawase--ns-p76-p9596" id="markdown-toc-shiawase--ns-p76-p9596">Shiawase  <em>(NS p.76, p.95–96)</em></a></li>
+      <li><a href="#wuxing--sr3-p35-ns-p81-p96" id="markdown-toc-wuxing--sr3-p35-ns-p81-p96">Wuxing  <em>(SR3 p.35; NS p.81, p.96)</em></a></li>
+      <li><a href="#yamatetsu--sr3-p35-ns-p96" id="markdown-toc-yamatetsu--sr3-p35-ns-p96">Yamatetsu  <em>(SR3 p.35; NS p.96)</em></a></li>
+    </ol>
+  </li>
+  <li><a href="#seattles-own-big-players--ns-p8389" id="markdown-toc-seattles-own-big-players--ns-p8389">Seattle’s own big players  <em>(NS p.83–89)</em></a></li>
+</ol>
+
+<blockquote class="note">
+  <p><em>New Seattle</em> lists the megacorps and their Seattle offices <em>(NS p.89–96)</em>,
+but it’s set a little later, in 2060. This page keeps the parts that hold
+for late 2059. Security descriptions are <strong>runners’ claims</strong> from the
+Shadowland posts in that book. They’re good GM material, but they aren’t
+statistics.</p>
+</blockquote><hr />
+<h2 id="how-they-got-here--sr3-p3135">
+  
+  
+    <a href="#how-they-got-here--sr3-p3135" class="anchor-heading" aria-labelledby="how-they-got-here--sr3-p3135"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> How they got here  <em>(SR3 p.31–35)</em>
+  
+  
+</h2>
+    
+
+<ul>
+  <li><strong>2033: Damien Knight’s “Nanosecond Buyout”.</strong> A burst of computer-driven
+trades gave Knight 22% of <strong>Ares</strong>. He and CEO Leonard Aurelius loathed
+each other from the start <em>(SR3 p.31)</em>.</li>
+  <li><strong>2034: Richard Villiers</strong> bought a failed tech company cheaply after its
+founders died, then used its “lost” research to buy his way into
+<strong>Fuchi</strong> <em>(SR3 p.31)</em>.</li>
+  <li><strong>2037: Lofwyr</strong> revealed that he owned 63% of the company behind BMW, and
+renamed it <strong>Saeder-Krupp</strong> <em>(SR3 p.31)</em>.</li>
+  <li><strong>2041–42: Yamatetsu</strong> forced its way onto the Corporate Court, turning
+the Big Seven into the <strong>Big Eight</strong> <em>(SR3 p.31)</em>.</li>
+  <li><strong>2048: Operation Reciprocity.</strong> The corps struck Aztechnology jointly
+after Aztlan nationalised them <em>(SR3 p.31)</em>.</li>
+  <li><strong>2058–59: The corp war begins.</strong> Miles Lanier left Fuchi for Renraku’s
+board, Fuchi’s three factions turned on each other, and Villiers formed
+<strong>Novatech</strong> to take his share out. Yamatetsu’s chairman died in 2059 and
+left his shares to his ork son; rather than depose him, Yamatetsu moved
+its headquarters to <strong>Vladivostok</strong>. <strong>Wuxing</strong> took Fuchi’s Corporate
+Court seat <em>(SR3 p.34–35)</em>.</li>
+</ul><hr />
+<h2 id="the-megacorps">
+  
+  
+    <a href="#the-megacorps" class="anchor-heading" aria-labelledby="the-megacorps"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The megacorps
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Corp</th>
+      <th style="text-align: left">Run by</th>
+      <th style="text-align: left">Home office</th>
+      <th style="text-align: left">In Seattle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Ares Macrotechnology</strong></td>
+      <td style="text-align: left">Damien Knight</td>
+      <td style="text-align: left">Detroit, UCAS</td>
+      <td style="text-align: left">Quiet, but everywhere: Knight Errant, freight, and arms sales. It sub-contracts to Federated-Boeing rather than fight it <em>(NS p.89–90)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Aztechnology</strong></td>
+      <td style="text-align: left">Juan Atzcapotzalco</td>
+      <td style="text-align: left">Tenochtitlán, Aztlan</td>
+      <td style="text-align: left">The Pyramid. HQ of its Northwestern Division, and its beachhead in North America <em>(NS p.90)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Fuchi Industrial Electronics</strong></td>
+      <td style="text-align: left">Three feuding factions, Richard Villiers’s among them</td>
+      <td style="text-align: left">—</td>
+      <td style="text-align: left">The Fuchi compound downtown: seven towers around a central eighth <em>(SR3 p.35; NS p.94)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Mitsuhama Computer Technologies</strong></td>
+      <td style="text-align: left">Toshiro Mitsuhama</td>
+      <td style="text-align: left">Kyoto, Japan</td>
+      <td style="text-align: left">Six towers on Lake Washington <em>(NS p.92)</em>. It also runs the city’s grid-guide traffic system <em>(NS p.76)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Renraku Computer Systems</strong></td>
+      <td style="text-align: left">Inazo Aneki</td>
+      <td style="text-align: left">Chiba, Japan</td>
+      <td style="text-align: left">The <strong>Renraku Arcology</strong>, a self-contained city for nearly 100,000 people <em>(NS p.30)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Saeder-Krupp</strong></td>
+      <td style="text-align: left">Lofwyr</td>
+      <td style="text-align: left">Rhine-Ruhr Megaplex, German Alliance</td>
+      <td style="text-align: left">Officially absent. In practice it owns small subsidiaries and keeps watchers <em>(NS p.94–95)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Shiawase</strong></td>
+      <td style="text-align: left">Tadashi Shiawase</td>
+      <td style="text-align: left">Osaka, Japan</td>
+      <td style="text-align: left">Twin towers in Tacoma, a fusion plant, and public-works contracts <em>(NS p.95)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Yamatetsu</strong></td>
+      <td style="text-align: left">Yuri Shibanokuji</td>
+      <td style="text-align: left">Vladivostok, Russia</td>
+      <td style="text-align: left">Hiring metahumans in Seattle <em>(NS p.96)</em>.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p>Below the Big Eight, newly rich and pushing in:</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Corp</th>
+      <th style="text-align: left">Run by</th>
+      <th style="text-align: left">Home office</th>
+      <th style="text-align: left">In Seattle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Wuxing</strong></td>
+      <td style="text-align: left">Wu Lung-Wei</td>
+      <td style="text-align: left">Hong Kong</td>
+      <td style="text-align: left">Now on the Corporate Court, and hiring aggressively <em>(SR3 p.35; NS p.96)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Cross Applied Technologies</strong></td>
+      <td style="text-align: left">Lucien Cross</td>
+      <td style="text-align: left">Montreal, Quebec</td>
+      <td style="text-align: left">Pushing into the UCAS; Cross Advanced Electronics, in Everett <em>(SR3 p.35; NS p.90–91)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>The Draco Foundation</strong></td>
+      <td style="text-align: left">Nadja Daviar</td>
+      <td style="text-align: left">Federal District of Columbia, UCAS</td>
+      <td style="text-align: left">Five floors downtown, covering the whole Northwest <em>(NS p.91–92)</em>.</td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="ares-macrotechnology--ns-p8990">
+  
+  
+    <a href="#ares-macrotechnology--ns-p8990" class="anchor-heading" aria-labelledby="ares-macrotechnology--ns-p8990"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Ares Macrotechnology  <em>(NS p.89–90)</em>
+  
+  
+</h3>
+    
+
+<p>The military-industrial giant, led mostly by ex-military execs. In Seattle
+it avoids a costly war with Federated-Boeing and works with it instead, as a
+sub-contractor and <strong>ally</strong>. Its security subsidiary <strong>Knight Errant</strong>
+guards its buildings, and Ares Arms tests prototypes on KE. Its feud with
+<strong>Cross</strong> is personal: Leonard Aurelius, Knight’s old rival, sold his Ares
+stock and backed Cross, and his son now runs Cross’s Seattle division
+<em>(NS p.91)</em>.</p>
+<h3 id="aztechnology--ns-p81-p90">
+  
+  
+    <a href="#aztechnology--ns-p81-p90" class="anchor-heading" aria-labelledby="aztechnology--ns-p81-p90"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Aztechnology  <em>(NS p.81, p.90)</em>
+  
+  
+</h3>
+    
+
+<p>Banned from California and Tir Tairngire, so Seattle is where it pulls the
+strings on its business there, through shells and holding companies. At
+least one battalion of <strong>Aztlan troops</strong> is stationed in Seattle. Runners
+describe a layered magical defence of watcher spirits and then elementals,
+and rumours of <strong>blood magic</strong> in the sub-basements. Its Matrix host has a
+link to the Tenochtitlán home office. It is <strong>Aztlan’s corp</strong> in all but
+name, and relations between Aztlan and Seattle are “cool but cordial”
+<em>(NS p.81)</em>.</p>
+<h3 id="cross-applied-technologies--sr3-p35-ns-p9091">
+  
+  
+    <a href="#cross-applied-technologies--sr3-p35-ns-p9091" class="anchor-heading" aria-labelledby="cross-applied-technologies--sr3-p35-ns-p9091"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Cross Applied Technologies  <em>(SR3 p.35; NS p.90–91)</em>
+  
+  
+</h3>
+    
+
+<p>A second-tier corp from Quebec pushing into the UCAS market, and paying for
+it: the Big Eight want no more newcomers, and Lucien Cross survived three
+assassination attempts in 2058 alone <em>(SR3 p.35)</em>. Its black-ops division is
+<strong>the Seraphim</strong>. Runners say Cross prefers to take intruders alive, and its
+Matrix ice traces you so it can collect a favour later. Its people have
+been seen visiting the Draco Foundation.</p>
+<h3 id="the-draco-foundation">
+  
+  
+    <a href="#the-draco-foundation" class="anchor-heading" aria-labelledby="the-draco-foundation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Draco Foundation
+  
+  
+</h3>
+    
+
+<p>Set up by Dunkelzahn’s will to administer his bequests, with Nadja Daviar
+as chair <em>(SR3 p.34)</em>. In Seattle it is run by <strong>Sassinian</strong>, a sasquatch.
+The Council of Princes refused it an office in the Tir, so the Seattle
+office covers the Tir as well. <em>New Seattle</em> calls it “a big-big-big
+employer of shadowrunners”: it has plenty of money and a will to carry out
+<em>(NS p.91–92)</em>. It also sits on the UCC <em>(NS p.83)</em>.</p>
+<h3 id="fuchi-industrial-electronics--sr3-p3435">
+  
+  
+    <a href="#fuchi-industrial-electronics--sr3-p3435" class="anchor-heading" aria-labelledby="fuchi-industrial-electronics--sr3-p3435"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Fuchi Industrial Electronics  <em>(SR3 p.34–35)</em>
+  
+  
+</h3>
+    
+
+<p>A Big Eight computer giant tearing itself apart. Fuchi has <strong>three internal
+factions</strong>, and the corp war with Renraku has made their feud worse. In
+mid-2059 Fuchi accused Renraku of stealing its secrets through Miles Lanier,
+its former security chief; the charges were dropped. <strong>Richard Villiers</strong>,
+expecting the other factions to force him out, has formed <strong>Novatech</strong> and
+is quietly buying his Fuchi North America holdings into it. He has offered
+Lanier the job of Novatech’s head of security. Every faction, and every
+rival, wants to know what happens to Fuchi next, which means steady work
+for runners.</p>
+<h3 id="mitsuhama-computer-technologies--ns-p9293">
+  
+  
+    <a href="#mitsuhama-computer-technologies--ns-p9293" class="anchor-heading" aria-labelledby="mitsuhama-computer-technologies--ns-p9293"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Mitsuhama Computer Technologies  <em>(NS p.92–93)</em>
+  
+  
+</h3>
+    
+
+<p>It aims for the top spot in computing while Fuchi and Renraku fight.
+Runners credit it with the <strong>“zero-zone”</strong>: zero penetration, zero
+survival. That means concealed autoguns, lethal gas, barghest guard dogs,
+bound elementals, and <strong>black ice</strong> that kills. Its wage mages are
+<strong>Unit 13</strong>, which is mostly human, with no shamans. Its Johnsons want the
+job done exactly as planned. For its “special problems” it can call on the
+Seattle yakuza.</p>
+<h3 id="renraku-computer-systems--sr3-p3435">
+  
+  
+    <a href="#renraku-computer-systems--sr3-p3435" class="anchor-heading" aria-labelledby="renraku-computer-systems--sr3-p3435"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Renraku Computer Systems  <em>(SR3 p.34–35)</em>
+  
+  
+</h3>
+    
+
+<p>Fuchi’s great rival, and lately the winner: months after Miles Lanier
+joined its board in 2058, Renraku began producing remarkable technological
+advances. Fuchi’s espionage charges in mid-2059 were dropped, but Lanier
+left Renraku and sold his stock to the Zurich-Orbital bank. In Seattle,
+Renraku is the <strong>Arcology</strong>: a self-contained corporate city that houses
+nearly 100,000 people <em>(NS p.30)</em>.</p>
+<h3 id="saeder-krupp--sr3-p31-ns-p9495">
+  
+  
+    <a href="#saeder-krupp--sr3-p31-ns-p9495" class="anchor-heading" aria-labelledby="saeder-krupp--sr3-p31-ns-p9495"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Saeder-Krupp  <em>(SR3 p.31; NS p.94–95)</em>
+  
+  
+</h3>
+    
+
+<p>Owned by the great dragon <strong>Lofwyr</strong>, and called the world’s largest
+megacorp. Officially it has no presence in Seattle. Unofficially it has
+subsidiaries, small offices, and watchers posted by Lofwyr. “The biggest
+business Saeder-Krupp does in Seattle is shadow business,” and nobody can
+predict what it will want.</p>
+<h3 id="shiawase--ns-p76-p9596">
+  
+  
+    <a href="#shiawase--ns-p76-p9596" class="anchor-heading" aria-labelledby="shiawase--ns-p76-p9596"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Shiawase  <em>(NS p.76, p.95–96)</em>
+  
+  
+</h3>
+    
+
+<p>The Shiawase decision that created extraterritoriality is named after this
+corp <em>(SR3 p.22)</em>. Shiawase Atomics maintains Seattle’s power grid, and
+wants Gaeatronics’s generating contract <em>(NS p.76)</em>. Its spy network often
+knows a run is coming. Its defences use <strong>net-guns and knockout gas</strong>, and
+its ice is mostly trace, because it wants prisoners to interrogate.</p>
+<h3 id="wuxing--sr3-p35-ns-p81-p96">
+  
+  
+    <a href="#wuxing--sr3-p35-ns-p81-p96" class="anchor-heading" aria-labelledby="wuxing--sr3-p35-ns-p81-p96"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Wuxing  <em>(SR3 p.35; NS p.81, p.96)</em>
+  
+  
+</h3>
+    
+
+<p>A small family corp until Dunkelzahn’s money raised it to the top. In 2059
+Wuxing took the Corporate Court seat left empty when Fuchi’s representative
+died <em>(SR3 p.35)</em>. It drives the <strong>Pacific Prosperity Group</strong>, a trade bloc
+against Japanese economic dominance. That makes it an enemy of the Japanese
+corps, and a rival of Federated-Boeing, which is also in the PPG. Runners
+expect the <strong>Triads</strong> to work on its behalf.</p>
+<h3 id="yamatetsu--sr3-p35-ns-p96">
+  
+  
+    <a href="#yamatetsu--sr3-p35-ns-p96" class="anchor-heading" aria-labelledby="yamatetsu--sr3-p35-ns-p96"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Yamatetsu  <em>(SR3 p.35; NS p.96)</em>
+  
+  
+</h3>
+    
+
+<p>When chairman Tadamako Shibanokuji died in 2059, his shares went to his son
+<strong>Yuri</strong>, an ork. Pressed to depose him, Yamatetsu instead moved its
+headquarters to <strong>Vladivostok</strong> <em>(SR3 p.35)</em>. It now sells itself as the
+meta-friendly, “Awakened” corp, and its traditionalist staff are fighting
+that change. It has no friends among the other Japanese corps <em>(NS p.96)</em>.</p><hr />
+<h2 id="seattles-own-big-players--ns-p8389">
+  
+  
+    <a href="#seattles-own-big-players--ns-p8389" class="anchor-heading" aria-labelledby="seattles-own-big-players--ns-p8389"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Seattle’s own big players  <em>(NS p.83–89)</em>
+  
+  
+</h2>
+    
+
+<p>Seattle’s local corps employ more of the city than the megacorps do, and
+they have the home-field advantage <em>(NS p.83)</em>.</p>
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Corp</th>
+      <th style="text-align: left">What it is</th>
+      <th style="text-align: left">Ties</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Federated-Boeing</strong></td>
+      <td style="text-align: left">Seattle’s largest employer: aircraft, drones, ships</td>
+      <td style="text-align: left">Ares and Mitsuhama have both failed to buy it. Member of the PPG <em>(NS p.84, p.96)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Brackhaven Investments</strong></td>
+      <td style="text-align: left">Kenneth Brackhaven’s holding company</td>
+      <td style="text-align: left">Funds politicians across every party. His uncle chairs Humanis <em>(NS p.83–84)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Gaeatronics</strong></td>
+      <td style="text-align: left">Supplies most of Seattle’s power</td>
+      <td style="text-align: left">Owned by the Salish-Shidhe Council. Runners say it backs eco-terrorists against competitors <em>(NS p.84–85)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Pacific Rim Communications</strong></td>
+      <td style="text-align: left">Runs Seattle’s LTG phone network</td>
+      <td style="text-align: left"><em>(NS p.87)</em></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Telestrian Industries</strong></td>
+      <td style="text-align: left">Tir Tairngire’s largest conglomerate</td>
+      <td style="text-align: left">5% owned by the Council of Princes, runners claim <em>(NS p.87–88)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Universal Omnitech</strong></td>
+      <td style="text-align: left">Biotech</td>
+      <td style="text-align: left">Owns Ingersoll &amp; Berkley. Rival of Telestrian <em>(NS p.85, p.88)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>United Oil</strong></td>
+      <td style="text-align: left">Petrochemicals, Dallas (CAS)</td>
+      <td style="text-align: left">Its security chief was once a dragon, Haesslich <em>(NS p.88)</em>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Microdeck, Dassurn, Global Technologies, MegaMedia, VisionCrafters, VisionQuest</strong></td>
+      <td style="text-align: left">Computers, finance, skillsofts, media, optics, simsense</td>
+      <td style="text-align: left">Dassurn and Microdeck are known to hire runners <em>(NS p.84, p.86)</em>.</td>
+    </tr>
+  </tbody>
+</table></div>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+
