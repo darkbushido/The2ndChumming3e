@@ -2935,6 +2935,13 @@ built on branch `feature/karma-npc-hand-of-god`. Rules: `.claude/rules/karma-and
 Tests: `tests/karma-npc-hog.test.mjs`. ⚠ **Two new persisted fields (`NpcData.karmaPool`/`karmaPoolSpent`,
 `CharacterData.handOfGodUsed`) — FULL Foundry restart before the live check.**
 
+**Status 2026-10-25 — walked by the agent in the test world after a full restart (mcp-api, active GM, branch code):
+all five steps passed; actors, tokens, cards and the Troll Street Dealer restored afterwards.** Step 2 burned and spent
+through `burnKarmaPool`/`spendKarmaPool` on token A (what the 🍀 card's buttons call) and checked that the card's
+`actorFrom(actorRef(…))` resolves to token A; the warnings in step 5 were seen and cancelled, not burned through.
+**Not walked:** step 3 from Player2's seat (the summary is read-only and unnamed for everyone, GM included).
+Cosmetic: "→ Attributes" wraps to the start of the next Resources row; the Hand of God ↺'s tooltip says "undo this purchase".
+
 **Live checklist** (test world; restart Foundry first):
 1. A new NPC: its prototype token has Link Actor Data **off**; Attributes shows Karma Pool 0 / 0 and a roll dialog has
    no 🍀 row. As GM type a size of 3 → the roll dialog offers 🍀. A Little Black Book contact dragged from the pack: its
