@@ -30,7 +30,14 @@ paths:
 | `system.karmaPoolSpent` | Karma Pool **spent** since the GM's refresh | spending raises it; the GM's 🍀 Refresh zeroes it |
 | `system.powerPointsBought` | adept Power Points bought with Good Karma, on top of Magic · p.168 | the Spend calculator |
 
-Karma Pool shows on the **Attributes** tab (left / size, like Combat Pool); Good/Total Karma on **Bio → Resources**.
+Karma Pool is typed on the **Attributes** tab (left / size, like Combat Pool); **Bio → Resources** has Good/Total Karma
+and a read-only "Karma Pool left / size" with a → Attributes link (TODO 267).
+- **NPCs have a Karma Pool** (SR3 p.248 — the GM sets it by threat; `NpcData.karmaPool`/`karmaPoolSpent`, initial **0** =
+  none given, so no 🍀 row) but **no Good or Total Karma** (`SR3EActor.hasGoodKarma` false: the sheet hides those
+  controls, Award/Spend warn, Session Rewards skips their karma). ⚠ **NPC tokens are UNLINKED** (`data/token-link.mjs`,
+  `preCreateActor`): `npc` type and Little Black Book contacts (by `isJohnsonNote`) — so a burn lands on the token, not
+  the stat block. Already-created actors keep their link; the GM unticks Link Actor Data. Refresh Karma Pools lists
+  scene NPC tokens by `actorRef`.
 - ⚠ **Karma Pool, Good Karma and Total Karma are typeable by the GM only** (TODO 218, `data/gm-only-fields.mjs`).
   A **render-time** lock: the inputs are `readonly disabled` and **unnamed** for a player, `_prepareSubmitData`
   strips the keys (Foundry hands it the *expanded* form), and `_onFieldChange` refuses them. Spending (roll options,
@@ -62,11 +69,19 @@ re-roll function was never called, and a spend lowered the pool's size so the po
     `sr-karma-done-btn` is a ⏳ step.
 - Not modelled: Karma on opposed rolls (melee, astral, contested — they roll through `_rollWave`), on
   rolls with no dialog (soak, Drain), on physical dice; Open Test re-rolls (`openTestRerollCost` is ready);
-  Extended actions (p.248). NPCs have no pool field (TODO 83), so nothing is offered to them.
+  Extended actions (p.248). A pool of **0** offers no 🍀 row at all (an NPC's default, or after Hand of God).
+- **✋ Hand of God** (p.248, optional; `data/hand-of-god.mjs`, Bio → Resources, TODO 267): burns ALL Good Karma and the
+  whole Pool (size, not just what's left) → 0, `handOfGodUsed` true; Total Karma untouched. Player character, 1+ Pool,
+  once ever are **warned, not refused**. No wound is changed — the card leaves the how to the GM. Undo: the purchase ↺
+  on its Good Karma line (`HandOfGod.revert`); with no Good Karma there is no line, so the GM retypes the Pool.
 
 **Awarding** — **Award Karma…** (GM, Bio → Resources, one character) and **🎖 Session Rewards** (GM, Rollable
 Tables: karma, nuyen, a gear note to ticked PCs) both go through `SR3EActor.karmaAward(totalKarma, amount, metatype)`.
 - The Pool point goes **instead of** Good Karma, not as well.
+- **↺ Undo an award (TODO 267, GM).** Both pass `ledgerRevert: { award: { karma, totalKarma, karmaPool, nuyen? } }`
+  (plain keys); `Ledger.diff` puts it on the **Total Karma** line (an award can be all Pool, leaving no Good Karma line).
+  `Ledger.awardPlan` takes the amounts off the CURRENT values (spent-since Good Karma may go negative, said; Pool/nuyen
+  floor at 0). The ↺ carries `data-kind`; `Ledger.find(…, kind)` because the award's lines share time and reason.
 - ⚠ **Humans: every TENTH karma; others every twentieth** (p.246) — `karmaPoolDivisor`, case-insensitive on
   free-text `system.metatype`; missing metatype → 20.
 - ⚠ When auditing a feature, check that something actually **calls** the function and that sibling tools use it.

@@ -364,6 +364,8 @@ static defineSchema() {
 ### Foundry integrations
 - **Token bars**: `preCreateActor` defaults character/npc tokens to `bar1=wounds.physical`, `bar2=wounds.stun`,
   `OWNER_HOVER` (new actors only).
+- **Token links** (TODO 267): `preCreateActor` links every new actor's tokens **except NPCs** — the `npc` type and Little
+  Black Book contacts are unlinked (`data/token-link.mjs`), so each goon's wounds, pools and burned Karma stay on its token.
 - **Status effects**: `sr3e-sustaining/-fulldefense/-dumpshock/-astral/-dual/-vr` appended to
   `CONFIG.statusEffects`. The `updateActor` hook (active GM only) toggles them from `astralMode`,
   `matrixUserMode`, `fullDefense`, `sustainedSpells`, and marks **defeated/unconscious** when a track is full,

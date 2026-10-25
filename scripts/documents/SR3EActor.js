@@ -6196,7 +6196,7 @@ _prepareCharacter(sys, attr) {
    *    (blast markers, dodge and soak cards); re-running it after a re-roll would post them twice.
    */
 
-  /** Does this actor carry a Karma Pool at all? NPCs have no field (TODO 83), so nothing is offered. */
+  /** Does this actor carry a Karma Pool at all? Characters and, since TODO 267, NPCs (SR3 p.248) do. */
   static hasKarmaPool(actor) { return actor?.system?.karmaPool !== undefined; }
 
   /**
@@ -6240,6 +6240,8 @@ _prepareCharacter(sys, attr) {
   static karmaRollRow(actor, { baseDice = null } = {}) {
     if (!SR3EActor.hasKarmaPool(actor)) return '';
     const { size, available } = KarmaPool.state(actor.system);
+    // A pool of 0 is one the GM never gave (an NPC's default, TODO 267) or one Hand of God emptied — nothing to say.
+    if (size <= 0) return '';
     if (available <= 0) return `<div class="sr-karma-row" style="grid-column:1/-1;font-size:11px;color:var(--sr-muted)">🍀 Karma Pool: none left of ${size} — the GM refreshes it.</div>`;
     const cap = Number.isFinite(baseDice) ? KarmaPool.extraDiceCap(baseDice) : null;
     return `

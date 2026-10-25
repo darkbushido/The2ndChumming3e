@@ -84,9 +84,13 @@ export const Ledger = {
       const from = num(before?.[key]);
       const to   = num(after[key]);
       if (from === to) continue;
-      // A purchase's reversal rides on the Good Karma line only: that is the line that was SPENT.
+      // A purchase's reversal rides on the Good Karma line (the line that was SPENT); an award's on the Total
+      // Karma line, the one an award always moves — all of it can go to the Pool, leaving no Good Karma line.
+      const carries = revert?.award
+        ? spec.kind === 'total' && to > from
+        : spec.kind === 'karma' && to < from;
       out.push(Ledger.entry({ kind: spec.kind, delta: to - from, from, to, reason, by, when,
-        revert: spec.kind === 'karma' && to < from ? revert : null }));
+        revert: carries ? revert : null }));
     }
     return out;
   },
@@ -104,16 +108,48 @@ export const Ledger = {
    * marked. The ledger is a history, and an undo is part of it.
    */
 
-  /** Can this entry be undone? A Good Karma spend that carries its reversal and was not undone yet. */
+  /**
+   * Can this entry be undone? A Good Karma spend that carries its reversal, or (TODO 267) a karma AWARD's Total
+   * Karma line that carries its amounts — and was not undone yet.
+   */
   undoable(e) {
-    return !!e && e.kind === 'karma' && num(e.delta) < 0 && !!e.revert && !e.reverted;
+    if (!e || !e.revert || e.reverted) return false;
+    if (e.kind === 'karma') return num(e.delta) < 0 && !e.revert.award;
+    if (e.kind === 'total') return num(e.delta) > 0 && !!e.revert.award;
+    return false;
   },
 
-  /** The entry an undo button names, by its time and reason (positions shift when old ones are trimmed). */
-  find(entries, when, reason = null) {
+  /**
+   * The entry an undo button names, by its time, kind and reason (positions shift when old ones are trimmed).
+   * ⚠ The kind matters: an award writes its Good Karma and Total Karma lines with the same time and reason.
+   */
+  find(entries, when, reason = null, kind = 'karma') {
     const list = Array.isArray(entries) ? entries : [];
-    return list.findIndex(e => num(e?.when) === num(when) && e?.kind === 'karma'
+    return list.findIndex(e => num(e?.when) === num(when) && e?.kind === kind
       && (reason === null || str(e.reason) === str(reason)));
+  },
+
+  /**
+   * Undoing a karma award (TODO 267, the maintainer 2026-10-25): what to take back off the CURRENT values, as rows
+   * the GM can untick. `revert.award` holds the amounts the award added — `{ karma, totalKarma, karmaPool, nuyen }`
+   * (plain keys: Foundry expands dotted keys in update options). Subtracting the amounts, not restoring the old
+   * values, keeps whatever happened since. ⚠ Good Karma already spent can go below 0 — reported, never refused;
+   * the Pool and nuyen stop at 0 (their fields' minimum). Pure.
+   * @returns {null | Array<{key: string, path: string, label: string, delta: number, from: number, to: number, short: boolean}>}
+   */
+  awardPlan(e, sys) {
+    if (!Ledger.undoable(e) || e.kind !== 'total') return null;
+    const a = e.revert.award ?? {};
+    const FIELDS = [
+      ['karma', 'Good Karma', false], ['totalKarma', 'Total Karma', false],
+      ['karmaPool', 'Karma Pool', true], ['nuyen', 'Nuyen', true],
+    ];
+    return FIELDS.filter(([k]) => num(a[k]) > 0).map(([key, label, floored]) => {
+      const from = num(sys?.[key]);
+      const raw  = from - num(a[key]);
+      const to   = floored ? Math.max(0, raw) : raw;
+      return { key, path: `system.${key}`, label, delta: -num(a[key]), from, to, short: raw < 0 };
+    });
   },
 
   /** A NEW ledger with entry `index` marked reverted. Never mutates what it was given. */
@@ -127,7 +163,7 @@ export const Ledger = {
    * `refund` is the karma given back (the spend's size). Pure — the sheet applies it.
    */
   revertPlan(e) {
-    if (!Ledger.undoable(e)) return null;
+    if (!Ledger.undoable(e) || e.kind !== 'karma') return null;   // an award's line has `awardPlan`
     const r = e.revert ?? {};
     // ⚠ Foundry EXPANDS dotted keys in update options, so `{ 'system.x': 1 }` comes back as
     // `{ system: { x: 1 } }` (found live, 2026-10-11). Flatten to paths again so each row names its field.
