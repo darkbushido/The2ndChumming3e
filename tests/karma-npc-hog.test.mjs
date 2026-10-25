@@ -69,7 +69,7 @@ export async function run(t) {
   const bio = between(sheet, '  _tabBio(sys) {', '  _ledgerTable(');
   const summary = between(bio, 'sr-karma-pool-summary', '</label>');
   t.ok('Resources shows the Karma Pool for an actor that has one',
-    /hasKarmaPool\(this\.actor\)\s*\?\s*`<label class="inline-field sr-karma-pool-summary"/.test(bio));
+    /hasKarmaPool\(this\.actor\)\s*\?\s*`<span[^`]*<label class="inline-field sr-karma-pool-summary"/.test(bio));
   t.ok('…read-only', /readonly disabled/.test(summary));
   t.ok('…and unnamed, so the sheet submit never carries it', !/name=/.test(summary));
   t.ok('…with a link to the Attributes tab', /data-action="switchTab" data-tab="attributes"/.test(bio));
@@ -138,6 +138,19 @@ export async function run(t) {
   t.eq('…and restores the Pool and clears the use',
     Object.fromEntries(hogPlan.actor.map(a => [a.path, a.value])),
     { 'system.karmaPool': 7, 'system.karmaPoolSpent': 2, 'system.handOfGodUsed': false });
+
+  // The ↺ names what it undoes (the maintainer, 2026-10-25: a Hand of God line said "undo this purchase").
+  t.is("the Hand of God line's ↺ is a Hand of God undo", Ledger.undoKind(hogKarma), 'handOfGod');
+  t.is('…even after Foundry expands the dotted keys in update options',
+    Ledger.undoKind({ ...hogKarma, revert: { actor: { system: { karmaPool: 7, karmaPoolSpent: 2, handOfGodUsed: false } } } }), 'handOfGod');
+  t.is("an award line's ↺ is an award undo", Ledger.undoKind(totalLine), 'award');
+  t.is("a purchase line's ↺ is a purchase undo",
+    Ledger.undoKind({ kind: 'karma', delta: -6, revert: { actor: { 'system.attributes.body.base': 4 } } }), 'purchase');
+  t.is('a line that cannot be undone has no kind', Ledger.undoKind({ kind: 'nuyen', delta: 5 }), null);
+  t.ok('the sheet words the ↺ by undoKind', /UNDO_TIP\[L\.undoKind\(e\)\]/.test(sheet)
+    && /handOfGod: 'GM: undo the Hand of God/.test(sheet));
+  t.ok('the Karma Pool box and its → Attributes link wrap together',
+    /<span style="display:inline-flex[^>]*>\s*<label class="inline-field sr-karma-pool-summary"/.test(bio));
 
   t.ok('CharacterData records the use', /handOfGodUsed:\s+new BooleanField\(\{ initial: false \}\)/.test(models));
   t.ok('the sheet registers ✋ Hand of God', /handOfGod:\s+SR3EActorSheet\._onHandOfGod/.test(sheet)

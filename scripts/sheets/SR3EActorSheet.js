@@ -3297,11 +3297,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             * Read-only and UNNAMED, so it never reaches the sheet's submit; it is typed, spent and refreshed on the
             * Attributes tab, where the link goes. TODO 267. */ ''}
         ${game.sr3e.SR3EActor.hasKarmaPool(this.actor)
-          ? `<label class="inline-field sr-karma-pool-summary" title="Left / size. Typed and refreshed on the Attributes tab (SR3 p.246).">Karma Pool
+          ? `<span style="display:inline-flex;align-items:flex-end;gap:6px"${/* one flex item, so the link never wraps away from the box */ ''}>
+            <label class="inline-field sr-karma-pool-summary" title="Left / size. Typed and refreshed on the Attributes tab (SR3 p.246).">Karma Pool
               <input type="text" value="${(sys.derived?.availableKarmaPool ?? sys.karmaPool ?? 0)} / ${sys.karmaPool ?? 0}" style="width:60px" readonly disabled/>
             </label>
-            <a data-action="switchTab" data-tab="attributes" style="align-self:flex-end;font-size:11px;cursor:pointer;color:var(--sr-accent)"
-               title="Open the Attributes tab — the Karma Pool's boxes and the GM's 🍀 Refresh">→ Attributes</a>`
+            <a data-action="switchTab" data-tab="attributes" style="font-size:11px;cursor:pointer;color:var(--sr-accent);white-space:nowrap;padding-bottom:4px"
+               title="Open the Attributes tab — the Karma Pool's boxes and the GM's 🍀 Refresh">→ Attributes</a>
+          </span>`
           : ''}
         ${/* ⚠ The Award button is registered in DEFAULT_OPTIONS.actions but was NEVER RENDERED
             * — the only two references to `awardKarma` in the codebase were that registration
@@ -3362,6 +3364,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       if (!Number.isFinite(d.getTime())) return '';
       return full ? d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
         : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); };
+    const UNDO_TIP = {
+      purchase:  'GM: undo this purchase — refund the karma and put back what it bought (TODO 212)',
+      award:     'GM: undo this award — take back the Good Karma, Total Karma, Karma Pool and nuyen it gave (TODO 267)',
+      handOfGod: 'GM: undo the Hand of God — give back the Good Karma and Karma Pool it burned, and clear its use (TODO 267)',
+    };
     const colour = d => (Number(d) < 0 ? 'var(--sr-red)' : 'var(--sr-green)');
     const amount = (kind, n) => `${kind === 'nuyen' ? '¥' : ''}${Number(n || 0).toLocaleString('en-US')}`;
     const cols = full ? `92px 74px 74px 120px 1fr 80px${gm ? ' 22px' : ''}` : '52px 74px 74px 1fr';
@@ -3378,9 +3385,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           ${full ? `<span style="font-size:11px;color:var(--sr-muted)">${esc(amount(e.kind, e.from))} → ${esc(amount(e.kind, e.to))}</span>` : ''}
           <span style="font-size:11px;color:var(--sr-muted)" title="${esc(e.by ? `by ${e.by}` : '')}">${esc(L.why(e))}${e.reverted ? ' <em>(undone)</em>' : ''}${
             game.user.isGM && L.undoable(e)
-              ? ` <button type="button" class="btn-xs" data-action="undoKarmaSpend" data-when="${e.when}" data-kind="${esc(e.kind)}" title="${e.kind === 'total'
-                  ? 'GM: undo this award — take back the Good Karma, Total Karma, Karma Pool and nuyen it gave (TODO 267)'
-                  : 'GM: undo this purchase — refund the karma and put back what it bought (TODO 212)'}">↺</button>`
+              ? ` <button type="button" class="btn-xs" data-action="undoKarmaSpend" data-when="${e.when}" data-kind="${esc(e.kind)}" title="${UNDO_TIP[L.undoKind(e)] ?? UNDO_TIP.purchase}">↺</button>`
               : ''}</span>
           ${full ? `<span style="font-size:11px;color:var(--sr-muted)">${esc(e.by || '—')}</span>` : ''}
           ${gm ? `<button type="button" class="btn-xs" data-action="deleteLedgerEntry" data-idx="${idx}" data-entry="${esc(JSON.stringify(e))}"

@@ -120,6 +120,16 @@ export const Ledger = {
   },
 
   /**
+   * What an undoable line undoes, for the ↺'s wording: 'award' (TODO 267), 'handOfGod' (its record restores
+   * `handOfGodUsed`, TODO 267) or 'purchase' (TODO 212). Null when the line cannot be undone.
+   */
+  undoKind(e) {
+    if (!Ledger.undoable(e)) return null;
+    if (e.kind === 'total') return 'award';
+    return 'system.handOfGodUsed' in Ledger.flatten(e.revert?.actor ?? {}) ? 'handOfGod' : 'purchase';
+  },
+
+  /**
    * The entry an undo button names, by its time, kind and reason (positions shift when old ones are trimmed).
    * ⚠ The kind matters: an award writes its Good Karma and Total Karma lines with the same time and reason.
    */
