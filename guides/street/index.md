@@ -6,4 +6,4 @@ has_children: true
 
 # The Street
 
-Identity, buying and selling gear, and secondhand chrome.
+Identity, buying and selling gear, secondhand chrome, and contacts and legwork.
