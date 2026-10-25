@@ -28,6 +28,7 @@
 import { SRCG_BONUSES } from './data/srcg-bonuses.js';
 import { expandCyberwareName } from './data/cyberware-names.js';
 import { parseJohnsonNotes, isJohnsonNote } from './data/johnson-notes.mjs';
+import { Ledger } from './data/ledger.mjs';
 import { knownRating } from './data/item-rating.mjs';
 import { AmmoStock } from './data/ammo-stock.mjs';
 import { restockImage, restockActorImage } from './data/item-icons.mjs';
@@ -268,6 +269,11 @@ const MIGRATIONS = [
       const pool  = actor.system?.karmaPool;
       const total = actor.system?.totalKarma ?? 0;
       if (typeof pool !== 'number') return null;
+      /* ⚠ **A Pool the ledger has seen written is somebody's** (Karma audit, 2026-10-25). Burning
+       * (since 2026-10-11) lowers the size for ever (p.246), and can land it on ⌊total / 20⌋ — a
+       * human at 34 career karma with a Pool of 4 burns 3 and sits at 1 — which `force()` then
+       * "corrected" to 2, giving a burned point back. */
+      if (Ledger.touched(actor.system, 'pool')) return null;
       /* ⚠ Deliberately NOT `karmaPoolForTotal`, which since TODO 81 divides by 10 for
        * humans. This migration corrects the STARTING POINT and nothing else, so it must stay
        * pinned to the arithmetic the old code actually used — `⌊total / 20⌋` for every
@@ -320,7 +326,9 @@ const MIGRATIONS = [
         delta['system.professionalRating'] = professionalRating;
       }
       const pool = actor.system?.karmaPool ?? 0;
-      if (karmaPool !== undefined && pool <= 1 && pool !== karmaPool) {
+      // ⚠ Not once the ledger has seen the Pool written: a contact who burned down to 1 is not a
+      // blank (p.246; Karma audit, 2026-10-25) — see 0.4.5.7.
+      if (karmaPool !== undefined && pool <= 1 && pool !== karmaPool && !Ledger.touched(actor.system, 'pool')) {
         delta['system.karmaPool'] = karmaPool;
       }
 
@@ -682,7 +690,8 @@ export const SR3EMigrations = {
     if (m.fixActor) {
       const delta = m.fixActor(actor);
       if (delta) {
-        await actor.update(delta);
+        // Named, so a 📒 Ledger line a migration writes does not read "By hand" (Karma audit, 2026-10-25).
+        await actor.update(delta, { ledgerReason: `Migration ${m.version}: ${m.label}` });
         count++;
         console.log(`SR3E | ${m.version}: ${label} — actor`, delta);
       }

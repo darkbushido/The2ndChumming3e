@@ -20,7 +20,7 @@ paths:
 ---
 # Karma, the ledger, buying gear, encumbrance
 
-### Karma & advancement  · *SR3 p.244-246*
+### Karma & advancement  · *SR3 p.242-246* (the section opens on p.242; p.243 is art)
 
 | Field | Is | Changes when |
 |---|---|---|
@@ -128,7 +128,7 @@ re-crossed the pool threshold from 0 and granted points twice.
   skill/attribute one apart, so `ceil` vs `floor` and skill- vs attribute-gated caps both pass them.
 
 ### The ledger  · TODO 79
-`scripts/data/ledger.mjs`. `system.ledger`: `{ when, kind: 'karma'|'nuyen'|'pool'|'poolSpent', delta, from, to,
+`scripts/data/ledger.mjs`. `system.ledger`: `{ when, kind: 'karma'|'total'|'nuyen'|'pool'|'poolSpent', delta, from, to,
 reason, by, revert?, reverted? }`, on the **📒 Ledger** tab (every entry; From → To, By; GM-only ✕) with the latest
 `BIO_LEDGER_ROWS` (8) on the Bio tab (TODO 153). Labels by `specForKind(kind)`.
 - ⚠ **The GM's ✕ removes history, never the totals**, through `Ledger.without`, which returns null when the entry at

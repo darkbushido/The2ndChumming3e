@@ -144,7 +144,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       essenceHole:             new NumberField({ initial: 0, min: 0 }),
       // The karma / nuyen ledger · TODO 79. Append-only for players; every entry is derived from
       // the WRITE in SR3EActor._preUpdate, so no call site can forget to record one.
-      // { when, kind: 'karma'|'nuyen'|'pool', delta, from, to, reason, by } — scripts/data/ledger.mjs.
+      // { when, kind: 'karma'|'total'|'nuyen'|'pool'|'poolSpent', delta, from, to, reason, by } — scripts/data/ledger.mjs.
       ledger:                  new ArrayField(new ObjectField(), { initial: () => [] }),
       // Attribute Stress · M&M pp.124-131 (TODO 109), keyed by attribute name ({ body: 3, … }).
       // ⚠ An ObjectField because only the attributes that have taken Stress appear.
@@ -287,7 +287,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       essenceHole:      new NumberField({ initial: 0, min: 0 }),   // TODO 53 — see CharacterData
       // The karma / nuyen ledger · TODO 79. Append-only for players; every entry is derived from
       // the WRITE in SR3EActor._preUpdate, so no call site can forget to record one.
-      // { when, kind: 'karma'|'nuyen'|'pool', delta, from, to, reason, by } — scripts/data/ledger.mjs.
+      // { when, kind: 'nuyen' (an NPC has no karma fields, TODO 83), delta, from, to, reason, by } — scripts/data/ledger.mjs.
       ledger:                  new ArrayField(new ObjectField(), { initial: () => [] }),
       attributeStress:  new ObjectField(),   // TODO 109 — see CharacterData
       tlex:             new ObjectField(),   // TODO 110 — see CharacterData

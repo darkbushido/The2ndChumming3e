@@ -2188,6 +2188,15 @@ export const MUTANTS = [
       ? entries.filter((_e, i) => i !== idx) : null),
   },
   {
+    id:     'migration-restores-a-burned-pool',
+    suite:  'migrations',
+    ...LEDGER, method: 'touched',
+    was:    'migrations 0.4.5.7 and 0.4.5.11 recognised a Karma Pool by its old default (Karma audit, '
+          + '2026-10-25). Burning, added later, lowers the size for ever (SR3 p.246) and can land on that '
+          + 'default, so force() gave a burned point back - a human at 34 career karma burning 4 -> 1 got 2',
+    impl:   () => false,
+  },
+  {
     id:     'ledger-duplicate-inherits-history',
     suite:  'ledger',
     ...LEDGER, method: 'inherited',

@@ -1092,13 +1092,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           !!d.combatPoolBreakdown?.gyro)}
         ${/* 🍀 Karma Pool (SR3 p.246): left / size. The left box writes `karmaPoolSpent`; the size box
             * writes `karmaPool` itself (base 0, so the "mod" IS the size). ⚠ It does NOT refresh with
-            * the other pools ("does not refresh every Combat Turn") — the GM's 🍀 button does. */ ''}
-        ${this._poolBlock('Karma Pool',
+            * the other pools ("does not refresh every Combat Turn") — the GM's 🍀 button does.
+            * ⚠ Only for an actor that has the field: an NPC has none (TODO 83), and its boxes were
+            * typeable while the data model dropped every write. */ ''}
+        ${game.sr3e.SR3EActor.hasKarmaPool(this.actor) ? this._poolBlock('Karma Pool',
           d.availableKarmaPool ?? sys.karmaPool ?? 0,
           sys.karmaPool ?? 0,
           0,
           'system.karmaPoolSpent', 'system.karmaPool',   // data-field names: the pool inputs' handler writes them through actor.update
-          'Left / size. Spent comes back when the GM refreshes; burned points leave the size for ever (SR3 p.246).')}
+          'Left / size. Spent comes back when the GM refreshes; burned points leave the size for ever (SR3 p.246).') : ''}
         ${game.user.isGM && (sys.karmaPoolSpent ?? 0) > 0
           ? `<button type="button" class="btn-sm" data-action="refreshKarmaPool" title="Refresh the Karma Pool — the GM's call, roughly once a scene or session (SR3 p.246)">🍀 Refresh</button>`
           : ''}
@@ -3259,6 +3261,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     /* Book / Page · TODO 117 — where a shipped archetype comes from (every Little Black Book
      * contact carries one). Same rule as PR: shown when set, or to a GM who may need to set it. */
+    const karmaFields = game.sr3e.SR3EActor.hasGoodKarma(this.actor);
+
     const bpShown = BookPage.format(sys.bookPage);
     const bpField = (sys.bookPage || game.user.isGM)
       ? `${this._inlineField('Book / Page', 'system.bookPage', sys.bookPage ?? '', 'text', 90)}`
@@ -3283,21 +3287,24 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${this._inlineField('Nuyen (¥)', 'system.nuyen', sys.nuyen, 'number', 100)}
         <button type="button" class="btn-sm" data-action="adjustFunds" style="align-self:flex-end"
                 title="Add or take away an amount, or give nuyen to another character — each leaves a line in the 📒 Ledger (TODO 192)">± Funds…</button>
-        ${this._inlineField('Good Karma', 'system.karma', sys.karma, 'number', 80)}
-        ${this._inlineField('Total Karma', 'system.totalKarma', sys.totalKarma, 'number', 80)}
+        ${/* ⚠ Only for an actor that HAS Good and Total Karma — an NPC has neither (TODO 83), and on the
+            * shared sheet its boxes, Award and Spend wrote fields the data model drops (Karma audit,
+            * 2026-10-25). */ ''}
+        ${karmaFields ? `${this._inlineField('Good Karma', 'system.karma', sys.karma, 'number', 80)}
+        ${this._inlineField('Total Karma', 'system.totalKarma', sys.totalKarma, 'number', 80)}` : ''}
         ${/* ⚠ The Award button is registered in DEFAULT_OPTIONS.actions but was NEVER RENDERED
             * — the only two references to `awardKarma` in the codebase were that registration
             * and the dialog's own title, so the handler was unreachable and Session Rewards
             * (which wrote to the wrong field) was the only way to award anything. TODO 81.
             *
-            * ⚠ GM-only, matching Session Rewards. The Good Karma FIELD beside it stays
-            * editable by the owner — minimal guardrails — but a button captioned "Award" is a
-            * GM action, and it also writes `totalKarma` and the Pool, which a player editing
-            * their own sheet has no business doing silently. */ ''}
-        ${game.user.isGM
+            * ⚠ GM-only, matching Session Rewards: it writes Good Karma, Total Karma and the Pool.
+            * The fields beside it are the GM's to type in too (TODO 218). */ ''}
+        ${karmaFields && game.user.isGM
           ? `<button type="button" class="btn-sm" data-action="awardKarma" style="align-self:flex-end">Award Karma…</button>`
           : ''}
-        <button type="button" class="btn-sm" data-action="spendKarmaCalculator" style="align-self:flex-end">Spend Karma…</button>
+        ${karmaFields
+          ? '<button type="button" class="btn-sm" data-action="spendKarmaCalculator" style="align-self:flex-end">Spend Karma…</button>'
+          : ''}
         <button type="button" class="btn-sm" data-action="buyGear" style="align-self:flex-end"
           title="Find a source for gear — an Etiquette Test against its Availability, then haggle (SR3 pp.272-273).">🛒 Buy gear…</button>
       </div>
@@ -3343,7 +3350,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const amount = (kind, n) => `${kind === 'nuyen' ? '¥' : ''}${Number(n || 0).toLocaleString('en-US')}`;
     const cols = full ? `92px 74px 74px 120px 1fr 80px${gm ? ' 22px' : ''}` : '52px 74px 74px 1fr';
     return `
-      <h3 class="section-hdr" style="margin-top:1rem" title="Every change to Good Karma, Nuyen and the Karma Pool. Append-only — the totals stay editable, and an edit nothing explains reads “By hand”.">📒 Ledger</h3>
+      <h3 class="section-hdr" style="margin-top:1rem" title="Every change to Good Karma, Total Karma, Nuyen and the Karma Pool. Append-only — the totals stay editable, and an edit nothing explains reads “By hand”.">📒 Ledger</h3>
       <div class="list-header" style="grid-template-columns:${cols}">
         <span>When</span><span>What</span><span>Change</span>${full ? '<span>From → To</span>' : ''}<span>Why</span>${full ? '<span>By</span>' : ''}${gm ? '<span></span>' : ''}
       </div>
@@ -5794,6 +5801,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onAwardKarma() {
     const actor = this.actor;
+    // An NPC has no karma fields (TODO 83): the update would be dropped and the notice would lie.
+    if (!game.sr3e.SR3EActor.hasGoodKarma(actor)) { ui.notifications.warn(`${actor.name} has no Good or Total Karma to award (NPCs carry none).`); return; }
     let amount = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `Award Karma — ${actor.name}` },
@@ -5841,6 +5850,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   static async _onSpendKarmaCalculator() {
     const actor  = this.actor;
+    if (!game.sr3e.SR3EActor.hasGoodKarma(actor)) { ui.notifications.warn(`${actor.name} has no Good Karma to spend (NPCs carry none).`); return; }
     const sys    = actor.system;
     const karma  = sys.karma ?? 0;
     const attrs  = sys.attributes ?? {};

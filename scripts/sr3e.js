@@ -664,7 +664,7 @@ async function _openSessionRewardDialog() {
     <label style="display:flex;align-items:center;gap:8px;margin:3px 0;cursor:pointer;">
       <input type="checkbox" data-actor-id="${a.id}"/>
       <span>${a.name}</span>
-      <span style="color:var(--sr-muted);font-size:11px">(${a.system.karma ?? 0} karma | ¥${(a.system.nuyen ?? 0).toLocaleString()})</span>
+      <span style="color:var(--sr-muted);font-size:11px">(${game.sr3e.SR3EActor.hasGoodKarma(a) ? `${a.system.karma ?? 0} karma` : 'no karma — NPC'} | ¥${(a.system.nuyen ?? 0).toLocaleString()})</span>
     </label>`).join('');
 
   let karma = 0, nuyen = 0, gearNotes = '', selectedIds = [], proceed = false;
@@ -727,9 +727,13 @@ async function _openSessionRewardDialog() {
    * twentieth point (TENTH for humans, p.246) goes to the Pool INSTEAD of Good Karma. */
   const targets = allPCs.filter(a => selectedIds.includes(a.id));
   const split   = [];
+  /* ⚠ A player-owned NPC is listed (it can take nuyen) but has no karma fields (TODO 83): the data
+   * model dropped the write and the card named it among those awarded (Karma audit, 2026-10-25). */
+  const noKarma = [];
   for (const actor of targets) {
     const updates = {};
-    if (karma) {
+    if (karma && !game.sr3e.SR3EActor.hasGoodKarma(actor)) noKarma.push(actor.name);
+    else if (karma) {
       const r = game.sr3e.SR3EActor.karmaAward(actor.system.totalKarma ?? 0, karma, actor.system.metatype);
       updates['system.karma']      = (actor.system.karma ?? 0) + r.goodKarma;
       updates['system.totalKarma'] = r.newTotal;
@@ -755,6 +759,9 @@ async function _openSessionRewardDialog() {
          <span style="font-size:11px;color:var(--sr-muted)">to Good Karma, less any twentieth
          point (tenth for humans) that goes to the Karma Pool instead — SR3 p.244, p.246</span></div>`
     : '';
+  const noKarmaLine = noKarma.length
+    ? `<div style="font-size:11px;color:var(--sr-amber)">No karma for ${noKarma.join(', ')} — an NPC carries no karma fields.</div>`
+    : '';
   const nuyenLine = nuyen ? `<div><strong>Nuyen:</strong> +¥${nuyen.toLocaleString()}</div>` : '';
   const gearLine  = gearNotes ? `<div><strong>Gear:</strong> ${gearNotes}</div>` : '';
 
@@ -764,7 +771,7 @@ async function _openSessionRewardDialog() {
       <div class="sr-roll-card">
         <div class="sr-roll-header" style="background:var(--sr-gold,#c8a040);color:#0a0a0a">🎖 Session Rewards</div>
         <div class="sr-roll-body" style="padding:8px">
-          ${karmaLine}${nuyenLine}${gearLine}
+          ${karmaLine}${noKarmaLine}${nuyenLine}${gearLine}
           <div style="margin-top:6px;font-size:11px;color:var(--sr-muted)">Awarded to:</div>
           <ul style="margin:4px 0 0;padding-left:18px;font-size:12px">${lines}</ul>
         </div>
