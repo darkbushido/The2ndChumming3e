@@ -23,6 +23,12 @@ paths:
 **Astral damage resistance** · *SR3 p.174-175* (TODO 132) — `SR3EActor.astralResistPool`: only `'astral'` is an
 astral being (**Willpower**, or a spirit's **Force**, no Combat Pool); every other mode, including none, is a
 dual being in astral combat (**Body + Combat Pool**, p.174). TN is `astralSoakTN` (Power − Mystic Armor).
+**Astral attack side** · *SR3 p.174, p.176* — `SR3EActor.astralAttackPool`: only `'astral'` adds the **Astral Combat Pool**;
+every other mode (dual, physical, none) is a dual being and adds the **Combat Pool**; each corner carries its `poolKind`
+and the resolver charges that pool. `SR3EActor.astralDamageCode` is the Astral Damage Codes Table: a spirit **(Force)M**;
+an astral being **(Charisma)M**, armed **Charisma + the active weapon focus's damage**; any other dual being
+**(Strength)M** (effective Strength) or, armed, the weapon's own code. `rollAstralCombat`'s `_getAstralInfo` uses it
+for both corners; the card's damage field stays editable. ⚠ Never default a fighter to Charisma.
 
 **Two astral pools — never confuse them.** The **Astral Combat Pool** (SR3 p.174, `derived.astralPool`, `astralPoolSpent`):
 ⌊(INT+CHA+WIL)/2⌋, every Awakened actor, spent in astral combat. The **Initiate Astral Pool** (MitS p.58,

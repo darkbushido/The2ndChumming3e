@@ -12162,7 +12162,6 @@ _prepareCharacter(sys, attr) {
     }
 
     const _getAstralInfo = (actor) => {
-      const cha        = actor.system.attributes?.charisma?.base   ?? 1;
       // p.174: a projector adds the Astral Combat Pool; a perceiving / dual being adds the Combat Pool.
       const poolRule   = SR3EActor.astralAttackPool({ astralMode: actor.system.astralMode ?? '', derived: actor.system.derived });
       const astralPool = poolRule.available;
@@ -12170,21 +12169,19 @@ _prepareCharacter(sys, attr) {
       // The initiate's own pool (MitS p.58) — usable on Astral Combat "even when Sorcery is used"; 0 for a non-initiate.
       const initiatePool = actor.system.derived?.availableInitiatePool ?? 0;
 
-      // Damage: armed if active weapon focus, unarmed otherwise
+      // Damage: the Astral Damage Codes Table (p.176) — see astralDamageCode.
       const weaponFocus = actor.items.find(i =>
         i.type === 'melee' && (i.system.isFocus ?? false) && (i.system.focusActive ?? false)
       );
-      let rawDamage;
-      if (weaponFocus) {
-        const focusBase = SR3EItem.parseDamageCode(weaponFocus.system.damage ?? '', actor);
-        if (focusBase) {
-          rawDamage = `${cha + focusBase.power}${focusBase.level}`;
-        } else {
-          rawDamage = `${cha}M`; // fallback if focus has no damage code
-        }
-      } else {
-        rawDamage = `${cha}M`;
-      }
+      const spirits = game.sr3e.SR3ESpiritSummoning;
+      const isSpirit = !!spirits?._spiritFlag(actor, 'isSpirit');
+      const dmg = SR3EActor.astralDamageCode({
+        astralMode: actor.system.astralMode ?? '',
+        attributes: actor.system.attributes,
+        weaponFocus: weaponFocus ? SR3EItem.parseDamageCode(weaponFocus.system.damage ?? '', actor) : null,
+        spiritForce: isSpirit ? spirits._spiritFlag(actor, 'force') : null,
+      });
+      const rawDamage = dmg.code;
 
       // Armed: astral combat uses the same Armed Combat skill resolution as physical melee
       // (matching the focus's weapon category) — Sorcery has nothing to do with it.
@@ -12320,11 +12317,11 @@ _prepareCharacter(sys, attr) {
             : `${skillName} (${skillDice})`}
         </div>
         <div class="sr-astral-field-row">
-          <label class="sr-astral-field-label">Damage</label>
+          <label class="sr-astral-field-label" title="Astral Damage Codes Table, SR3 p.176 - editable">Damage</label>
           <input type="text" class="${dmgClass} sr-astral-input" value="${rawDamage}" style="width:60px"/>
         </div>
         <div class="sr-astral-field-row">
-          <span class="sr-astral-field-label">Charisma dice</span>
+          <span class="sr-astral-field-label">Skill dice</span>
           <strong class="sr-astral-field-value">${skillDice}</strong>
         </div>
         <div class="sr-astral-field-row">
@@ -12607,6 +12604,32 @@ _prepareCharacter(sys, attr) {
       return { kind: 'astral', label: 'Astral Combat Pool', available: Math.max(0, derived?.availableAstralPool ?? 0) };
     }
     return { kind: 'combat', label: 'Combat Pool', available: Math.max(0, derived?.availableCombatPool ?? 0) };
+  }
+
+  /**
+   * The damage code an astral fighter deals · *SR3 p.176*, the Astral Damage Codes Table:
+   *
+   * > Unarmed Attack — (Charisma)M · Armed Attack — (Charisma) + Weapon Focus Damage ·
+   * > Dual Being — (Strength)M or by type · Spirit, Focus or Barrier — (Force)M
+   *
+   * An astral being (`astralMode === 'astral'`) uses Charisma, plus the active weapon focus's damage
+   * when armed. Any other fighter is a dual being (p.174) and deals (Strength)M with EFFECTIVE Strength —
+   * "or by type": armed, the weapon's own damage code as in physical melee. A spirit deals (Force)M.
+   * `weaponFocus` is the focus's parsed `{ power, level }` (STR-relative codes already resolved) or null.
+   * ⚠ The shipped bug gave every fighter (Charisma)M. Returns `{ code, basis, label }`; the card field
+   * stays editable.
+   */
+  static astralDamageCode({ astralMode = '', attributes = {}, weaponFocus = null, spiritForce = null } = {}) {
+    const force = Number(spiritForce) || 0;
+    if (force > 0) return { code: `${force}M`, basis: 'force', label: 'Force (spirit)' };
+    if (astralMode === 'astral') {
+      const cha = Math.max(1, attributes?.charisma?.base ?? 1);
+      if (weaponFocus) return { code: `${cha + weaponFocus.power}${weaponFocus.level}`, basis: 'charisma', label: 'Charisma + focus (astral being)' };
+      return { code: `${cha}M`, basis: 'charisma', label: 'Charisma (astral being)' };
+    }
+    if (weaponFocus) return { code: `${weaponFocus.power}${weaponFocus.level}`, basis: 'weapon', label: 'Weapon damage (dual being)' };
+    const str = Math.max(1, attributes?.strength?.value ?? attributes?.strength?.base ?? 1);
+    return { code: `${str}M`, basis: 'strength', label: 'Strength (dual being)' };
   }
 
   static async postAstralSoakCard(actorId, payload) {

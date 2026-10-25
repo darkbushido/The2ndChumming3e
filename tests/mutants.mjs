@@ -2369,6 +2369,17 @@ export const MUTANTS = [
       available: Math.max(0, derived?.availableAstralPool ?? 0) }),
   },
   {
+    id:     'every-astral-fighter-deals-charisma-damage',
+    suite:  'astral-soak',
+    ...ACTOR, method: 'astralDamageCode',
+    was:    'SR3 p.176 Astral Damage Codes - a dual being deals (Strength)M (or its weapon), a spirit (Force)M; only an '
+          + 'astral being uses Charisma. Every fighter dealt (Charisma)M until the 0.8.0 rules check',
+    impl:   ({ attributes = {}, weaponFocus = null } = {}) => {
+      const cha = Math.max(1, attributes?.charisma?.base ?? 1);
+      return { code: weaponFocus ? `${cha + weaponFocus.power}${weaponFocus.level}` : `${cha}M`, basis: 'charisma', label: '' };
+    },
+  },
+  {
     id:     'dual-beings-resist-astral-with-willpower',
     suite:  'astral-soak',
     ...ACTOR, method: 'astralResistPool',

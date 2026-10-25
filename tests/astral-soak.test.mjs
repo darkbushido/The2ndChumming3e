@@ -62,6 +62,19 @@ export async function run(t) {
   t.is('…labelled Combat Pool', ap('').label, 'Combat Pool');
   t.is('a non-Awakened/absent pool is 0, never NaN', SR3EActor.astralAttackPool({ astralMode: 'astral' }).available, 0);
 
+  // p.176 - the Astral Damage Codes Table.
+  const A = { charisma: { base: 6 }, strength: { value: 5, base: 3 } };
+  const dc = o => SR3EActor.astralDamageCode({ attributes: A, ...o });
+  t.is('astral unarmed is (Charisma)M', dc({ astralMode: 'astral' }).code, '6M');
+  t.is('astral armed adds the focus damage to Charisma', dc({ astralMode: 'astral', weaponFocus: { power: 3, level: 'S' } }).code, '9S');
+  t.is('dual being unarmed is (Strength)M with EFFECTIVE Strength', dc({ astralMode: 'dual' }).code, '5M');
+  t.is('no mode is a dual being', dc({ astralMode: '' }).code, '5M');
+  t.is('Physical Plane is a dual being', dc({ astralMode: 'physical' }).code, '5M');
+  t.is('dual being armed deals the weapon own damage, no Charisma', dc({ astralMode: 'dual', weaponFocus: { power: 7, level: 'M' } }).code, '7M');
+  t.is('a spirit deals (Force)M in astral form', dc({ astralMode: 'astral', spiritForce: 4 }).code, '4M');
+  t.is('...and materialised', dc({ astralMode: '', spiritForce: 4 }).code, '4M');
+  t.is('a dual being never reads Charisma', dc({ astralMode: 'dual' }).basis, 'strength');
+
   const src  = readFileSync(new URL('../scripts/documents/SR3EActor.js', import.meta.url), 'utf8');
   const combat = src.slice(src.indexOf('async rollAstralCombat('), src.indexOf('static async postAstralCard(') > 0
     ? src.indexOf('static async postAstralCard(') : undefined);
@@ -69,6 +82,9 @@ export async function run(t) {
   t.ok('…including the defaulting path', (combat.match(/SR3EActor\.astralAttackPool\(/g) ?? []).length >= 2);
   t.ok('…and never reads the Astral Combat Pool directly', !/derived\?\.availableAstralPool/.test(combat));
   t.ok('both corners carry the pool kind', /atkPoolKind:\s+atkInfo\.poolKind/.test(combat) && /defPoolKind:\s+defInfo\.poolKind/.test(combat));
+  t.ok('rollAstralCombat takes its damage from astralDamageCode (both corners share _getAstralInfo)',
+    /SR3EActor\.astralDamageCode\(/.test(combat) && /_getAstralInfo\(this\)/.test(combat) && /_getAstralInfo\(targetActor\)/.test(combat));
+  t.ok('...and no longer hard-codes Charisma damage', !/\$\{cha\}M/.test(combat));
   const post = src.slice(src.indexOf('static async postAstralCard('), src.indexOf('static async handleAstralRoll('));
   t.ok('the corner is labelled by its pool kind', /poolKind === 'combat' \? 'Combat Pool' : 'Astral Combat Pool'/.test(post));
   const aroll = src.slice(src.indexOf('static async handleAstralRoll('), src.indexOf('static async _postAstralResult('));

@@ -163,8 +163,10 @@ astral. A weapon focus lets you use an armed skill in astral combat.
 - A projecting character uses the **Astral Combat Pool**, (INT + WIL + CHA)
   ÷ 2. *(SR3 p.44, p.174)* Attack with an armed skill if you have a weapon
   focus, Unarmed Combat otherwise, or **Sorcery** in its place.
-- Damage: unarmed **(Charisma)M**; armed, Charisma plus the weapon focus's
-  damage; spirits, foci and barriers **(Force)M**. *(SR3 p.175)*
+- Damage: a projecting character deals unarmed **(Charisma)M**; armed,
+  Charisma plus the weapon focus's damage. An astrally perceiving character
+  or other dual being deals **(Strength)M**, or its weapon's own damage when
+  armed. Spirits, foci and barriers deal **(Force)M**. *(SR3 p.176)*
 - **Worn armor is useless** on the astral. Natural armor, such as a troll's
   or an adept's Mystic Armor, still counts. *(SR3 p.172, p.175)*
 - The attacker picks Stun or Physical damage. **Wounds appear on your
