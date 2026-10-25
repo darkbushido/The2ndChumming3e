@@ -40,6 +40,7 @@ import { SR3EWard } from './documents/SR3EWard.js';
 import { SR3EVehicleChase } from './SR3EVehicleChase.js';
 import { SR3ECollision } from './SR3ECollision.js';
 import { SR3EConcealment } from './SR3EConcealment.js';
+import { SR3ELegwork } from './SR3ELegwork.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
 import { SR3EMeetContact } from './SR3EMeetContact.js';
@@ -127,7 +128,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, ActorRef, SR3EStatusEffects, SR3EMeetContact };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork };
 
   // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
   // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
@@ -1982,6 +1983,7 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
   mk('sr3e-barrier-btn', '🧱 Barrier Damage',  _openBarrierDamageCalculator, true);
   mk('sr3e-falling-btn', '🪂 Falling Damage',  _openFallingDamageCalculator, true);
   mk('sr3e-escape-btn',  '🔓 Escape Artist',   _openEscapeArtistCalculator,  true);
+  mk('sr3e-legwork-btn', '🔎 Legwork',         () => SR3ELegwork.open(),      true);   // TODO 268
   mk('sr3e-conceal-btn', '👁 Concealment',     () => SR3EConcealment.open(), true);
   mk('sr3e-npc-reset-btn', '🧹 Reset shared NPCs', () => SR3ENpcReset.open(), true);   // TODO 260
 
