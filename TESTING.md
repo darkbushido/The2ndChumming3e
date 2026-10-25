@@ -3136,3 +3136,23 @@ The gear packs change (`npm run packs:install`, Foundry closed).
 - [ ] **Cannon Companion gear:** Sawed-Off Shotgun Barrel 64¥; Rangefinder's description reads **Mount: Top**; **Laser Sight, Low-Power** 800¥, Mount Top/Under, page cc.82, and its description gives Design Points +100 × 8.
 - [ ] **SR3 core gear:** no low-power laser sight remains; Smart Shades I (Cost 6000¥) shows page sr3.281 and the "double the nuyen" line; Ultrasound Shades and Gas Vent I carry their source notes.
 - [ ] **Man & Machine gear:** Smart Shades II say "Derived; not printed".
+
+## 71. Karma on NPCs, and Total Karma in the ledger (Karma audit, 2026-10-25, SR3 p.242-246)
+
+**Prerequisites:** an `npc` actor owned by Player2 (so it is a player character), and a non-human character
+owned by a player. JS only — reload the tabs, no restart.
+
+**Walked by the agent 2026-10-25** (mcp-api as active GM, fresh code, test world; actors restored after).
+
+- [x] The NPC's sheet has **no** Good Karma, Total Karma, Award Karma…, Spend Karma… (Bio → Resources) and **no**
+      Karma Pool block (Attributes); Nuyen and Combat Pool are still there. A character's sheet still has all of them.
+- [x] Calling Award Karma / Spend Karma on the NPC's sheet only warns "has no Good or Total Karma to award" / "has no
+      Good Karma to spend" — no dialog, no ledger line.
+- [x] **🎖 Session Rewards** lists the NPC as "(no karma — NPC | ¥…)". Award 25 karma and ¥100 to the NPC and a troll at
+      Total 0, Pool 3: the troll gets Good Karma +24, Total 25, Pool 4; the NPC gets ¥100 only; the card says
+      "No karma for <NPC> — an NPC carries no karma fields" and cites SR3 p.242.
+- [x] The troll's 📒 Ledger has four lines: Good Karma +24, **Total Karma +25 (0 → 25)**, Nuyen +¥100, Karma Pool +1.
+- [ ] By eye: the NPC's Resources row (Nuyen, ± Funds…, 🛒 Buy gear…) lays out sensibly without the karma boxes.
+- [ ] `game.sr3e.SR3EMigrations.force()` on a character whose Karma Pool was burned (a "Karma Pool" ledger line with a
+      negative change) leaves the Pool where it is; the migration's own ledger lines, if any, read "Migration 0.x.y: …",
+      not "By hand".

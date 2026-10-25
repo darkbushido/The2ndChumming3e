@@ -757,7 +757,7 @@ async function _openSessionRewardDialog() {
   const karmaLine = karma
     ? `<div><strong>Karma:</strong> +${karma}
          <span style="font-size:11px;color:var(--sr-muted)">to Good Karma, less any twentieth
-         point (tenth for humans) that goes to the Karma Pool instead — SR3 p.244, p.246</span></div>`
+         point (tenth for humans) that goes to the Karma Pool instead — SR3 p.242</span></div>`
     : '';
   const noKarmaLine = noKarma.length
     ? `<div style="font-size:11px;color:var(--sr-amber)">No karma for ${noKarma.join(', ')} — an NPC carries no karma fields.</div>`
