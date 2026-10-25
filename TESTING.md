@@ -420,7 +420,7 @@ Needs a **full Foundry restart** (new `contact.npcUuid` field). With a portrait 
 - [ ] A contact whose picture someone chose keeps it (the name still changes only if "Show on the contact" is ticked).
 - [ ] No portrait module active: no grid, the note says so, names still work, the NPC keeps the archetype's picture.
 
-## Legwork — TODO 268 (`claude/legwork-tool-985002`) — needs a live pass
+## Legwork — TODO 268 (`feature/legwork`) — needs a live pass
 
 New pack `sr3e-legwork-tables` and a `system.json` change: with Foundry **closed**, `npm run packs:install` and copy
 `system.json` into the install (or `npm run sync:install`), then a **full restart**. Rules and the card are unit-tested

@@ -2948,7 +2948,7 @@ Corporate) vs TN 4 or the success table's, cumulative tiers, fee C × I × 50 ÷
 reporting in 2D6 hours, a rushed meet +2 TN, Matrix searches with Etiquette (Matrix), no Hacking Pool, 2D6 hours,
 ceil(Intelligence ÷ 2) at once, Level 2/3 contacts +1/+2 dice.
 
-**Built (branch `claude/legwork-tool-985002`):**
+**Built (branch `feature/legwork`, with the guide page from `fix/contacts-legwork-guide`):**
 - `scripts/data/legwork.mjs` — fee, TNs, level dice, searches, Etiquette dice and specialisation, revealed tiers,
   a table's TN. Pure. `tests/legwork.test.mjs`; 4 mutants.
 - `scripts/SR3ELegwork.js` — 🔎 Legwork on the Rollable Tables tab (GM only): runner, contact, mode, specialisation,
@@ -2958,6 +2958,7 @@ ceil(Intelligence ÷ 2) at once, Level 2/3 contacts +1/+2 dice.
 - `sr3e-legwork-tables` — a RollTable pack (GM Only folder) with a template success table, rows 1 / 2 / 3+; the TN
   lives in its description. Built by `tools/build-legwork-tables.mjs`. ⚠ **Not yet `packs:install`ed** (Foundry
   must be closed, and the live install follows the main checkout).
+- Guide: `guides/street/contacts.md`, *Legwork in The 2nd Chumming*.
 - Live check: TESTING.md, *Legwork*.
 
 ### 📌 Notes & parked

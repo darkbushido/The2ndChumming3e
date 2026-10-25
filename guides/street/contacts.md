@@ -53,7 +53,9 @@ street shaman about a haunted block:
 | 2 | "It's a bound spirit, not a wild one. Somebody's using it." |
 | 3+ | "A toxic shaman moved into the old water plant. That's who's binding it." |
 
-The table above is an illustration, not a book table.
+The table above is an illustration, not a book table. In Foundry, the GM
+can keep one as a Rollable Table and let the 🔎 Legwork tool read it (see
+[Legwork in The 2nd Chumming](#legwork-tool)).
 
 ### Paying for information  *(SR3 p.254)*
 {: #paying }
@@ -168,6 +170,43 @@ they do remember, they probably don't know where to find you.
 
 ---
 
+## Legwork in The 2nd Chumming
+{: #legwork-tool }
+
+The GM runs legwork with **🔎 Legwork**, one of the GM tools on the
+**Rollable Tables** sidebar tab. Players don't have the button. Tell the GM
+who you're asking and what about.
+
+1. **Pick the runner and the contact.** The contact list is that runner's
+   contacts. A Matrix search needs no contact.
+2. **Pick what they do:** ask the contact, have the contact keep an ear to
+   the ground, or search the Matrix.
+3. **Check the numbers.** The dialog starts on Etiquette (Street), then
+   Corporate, or Etiquette (Matrix) for a search. It adds the contact
+   level's bonus dice when asking. The TN starts at 4, or at the chosen
+   success table's. It adds +2 for a rushed meeting, +2 for an ear to the
+   ground, and the runner's wounds. The GM can change any number.
+4. **Roll.** On a TN of 7 or more, sixes are 💥 rerolls first. The result
+   card shows the successes, **every row of the success table up to that
+   many**, and the fee (Charisma × Intelligence × 50¥ ÷ successes) *(SR3 p.253–254)*. An ear
+   to the ground also shows the 2D6 hours; a Matrix search shows its base
+   time and how many searches the decker can run at once. The card goes to
+   the GM only unless the GM unticks that.
+
+The contact's Charisma and Intelligence come from its linked NPC or Little
+Black Book archetype. A contact with no stat block leaves them blank for
+the GM to fill in. The fee is only shown, never charged: Negotiation still
+sets the price.
+
+**Success tables.** The *GM: Legwork Success Tables* compendium (GM Only
+folder) holds a template with rows for 1, 2 and 3+ successes. The GM
+imports a copy for each mystery, writes the rows, and puts the TN in its
+description as *Target Number: N*. Each row's range is the success count
+that reveals it.
+
+The rushed meeting's own Etiquette Test isn't rolled by the tool. Roll it
+from the sheet first.
+
 ## Loyalty and Connection in The 2nd Chumming
 {: #loyalty-and-connection }
 
@@ -176,9 +215,9 @@ they do remember, they probably don't know where to find you.
 > ratings (1–6). **They aren't in the SR3 core rulebook**, which describes
 > contacts only by level. The character importer sets both to the
 > contact's level, so Loyalty 1 / Connection 1 is a **Level 1 contact**.
-> The system doesn't roll legwork for you: roll the character's Etiquette
-> skill from the sheet at the table's TN, and apply the level's bonus dice
-> yourself.
+> The 🔎 Legwork tool doesn't store a level either: the GM picks Level 1, 2
+> or 3 in the dialog, and it starts at the contact's Loyalty (3 at most).
+> How the two ratings should map to the book's levels is still open.
 >
 > If you want the ratings to mean something, one light reading: use
 > **Connection** to cap how far down the success table the contact can
