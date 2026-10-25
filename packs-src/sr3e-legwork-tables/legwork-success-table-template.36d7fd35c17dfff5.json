@@ -1,0 +1,115 @@
+{
+  "_key": "!tables!36d7fd35c17dfff5",
+  "doc": {
+    "_id": "36d7fd35c17dfff5",
+    "name": "Legwork success table (template)",
+    "img": "icons/svg/book.svg",
+    "description": "<p><strong>Target Number: 4</strong> — change the number to the adventure's, if it gives one.</p>\n<p>Copy this table into the world for each mystery (right-click → Import, or drag it to the Rollable Tables tab),\nrename it, and write what the runners learn at each success count. Rows are <strong>cumulative</strong>: a runner\nwho rolls 3 successes learns rows 1, 2 and 3 <em>(SR3 p.253)</em>. Each row's range is the success count that\nreveals it; add a 0 row for what a failure turns up, or a 4 and 5 row for more, by editing the ranges.</p>\n<p>The 🔎 Legwork tool on the Rollable Tables tab rolls the test and shows the rows reached, with the contact's fee\n<em>(SR3 p.253-254)</em>.</p>",
+    "results": [
+      "fa8f2f37df9cb6af",
+      "e5df72ca09419030",
+      "c46cd7e8d3b65444"
+    ],
+    "formula": "",
+    "replacement": true,
+    "displayRoll": true,
+    "folder": null,
+    "sort": 0,
+    "ownership": {
+      "default": 0
+    },
+    "flags": {
+      "The2ndChumming3e": {
+        "legworkTemplate": true
+      }
+    },
+    "_stats": {
+      "coreVersion": "14.365",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": "0.8.0",
+      "createdTime": 1793000000000,
+      "modifiedTime": 1793000000000,
+      "lastModifiedBy": null,
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    }
+  },
+  "embedded": {
+    "!tables.results!36d7fd35c17dfff5.c46cd7e8d3b65444": {
+      "_id": "c46cd7e8d3b65444",
+      "type": "text",
+      "name": "3+ successes",
+      "img": null,
+      "description": "<p>[The good stuff — what the contact would only tell a friend.]</p>",
+      "weight": 1,
+      "range": [
+        3,
+        30
+      ],
+      "drawn": false,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.365",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.8.0",
+        "createdTime": 1793000000000,
+        "modifiedTime": 1793000000000,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!tables.results!36d7fd35c17dfff5.e5df72ca09419030": {
+      "_id": "e5df72ca09419030",
+      "type": "text",
+      "name": "2 successes",
+      "img": null,
+      "description": "<p>[A real lead — a name, a place, who else is asking.]</p>",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.365",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.8.0",
+        "createdTime": 1793000000000,
+        "modifiedTime": 1793000000000,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    },
+    "!tables.results!36d7fd35c17dfff5.fa8f2f37df9cb6af": {
+      "_id": "fa8f2f37df9cb6af",
+      "type": "text",
+      "name": "1 success",
+      "img": null,
+      "description": "<p>[What any contact on the street has heard — the rumour, the obvious.]</p>",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "flags": {},
+      "_stats": {
+        "coreVersion": "14.365",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": "0.8.0",
+        "createdTime": 1793000000000,
+        "modifiedTime": 1793000000000,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      }
+    }
+  }
+}
