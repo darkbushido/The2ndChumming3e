@@ -3156,3 +3156,16 @@ owned by a player. JS only — reload the tabs, no restart.
 - [ ] `game.sr3e.SR3EMigrations.force()` on a character whose Karma Pool was burned (a "Karma Pool" ledger line with a
       negative change) leaves the Pool where it is; the migration's own ledger lines, if any, read "Migration 0.x.y: …",
       not "By hand".
+
+## 72. Buy gear — the card remembers, the store, one item per level (bugs reported 2026-10-25, SR3 pp.272-273)
+
+**Prerequisites:** a character owned by Player2 with ¥50,000 and an Etiquette skill. JS only for the card; the packs
+need `npm run packs:install` (Foundry closed) and a restart.
+
+**The card is recorded on the message**
+- [ ] Player2 buys a Fichetti Security 500 through a contact and gets a "Source found" card. Player2 presses 🤝 and
+      haggles. **On the GM's tab** the card's 🤝 and 💴 are now greyed out (hover: "Already haggled…" / "The haggle set
+      a new price…"), and only the haggle card's 💴 is live.
+- [ ] Player2 presses 💴 on the haggle card and confirms. On the GM's tab that 💴 is greyed out ("Paid."). **F5 on both
+      tabs**: still greyed out.
+- [ ] Press 💴 on a fresh card and **Cancel** the confirm: the button is live again and nothing was paid.

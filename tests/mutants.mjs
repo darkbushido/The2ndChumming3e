@@ -2242,6 +2242,16 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'buy-haggle-leaves-pay-live',
+    suite:  'purchasing',
+    ...BUY, method: 'cardButtons',
+    was:    'shipped in 0.8.0 (reported 2026-10-25): the Source found card kept its 💴 Pay live after a 🤝 haggle, '
+          + 'at the asking price the haggle had replaced, and only the clicking browser knew the button was used — '
+          + 'the GM saw the card as untouched and could pay it a second time',
+    impl:   (acted = {}) => (acted?.['buy:pay'] ? { negotiate: 'Already paid for.', pay: 'Paid.' }
+      : acted?.['buy:negotiate'] ? { negotiate: 'Already haggled.', pay: null } : { negotiate: null, pay: null }),
+  },
+  {
     id:     'attribute-hover-says-nothing',
     suite:  'attribute-sources',
     ...ACTOR, method: 'attributeBreakdown',

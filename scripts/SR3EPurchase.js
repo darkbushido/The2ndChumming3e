@@ -400,10 +400,14 @@ export const SR3EPurchase = {
     });
   },
 
-  /** 🤝 — the Success Contest over price · p.273. Both sides roll; the GM sets the source's. */
-  async negotiate(payload) {
+  /**
+   * 🤝 — the Success Contest over price · p.273. Both sides roll; the GM sets the source's.
+   * `claim` records the haggle on the card once the dialog is confirmed (false = someone got there first).
+   * @returns {Promise<boolean>} false when nothing happened, so the button is handed back
+   */
+  async negotiate(payload, { claim = async () => true } = {}) {
     const actor = actorFrom(payload?.buyerId);
-    if (!actor) return;
+    if (!actor) return false;
     const mine = SR3EPurchase.negotiationDice(actor);
 
     let opts = null;
@@ -440,7 +444,8 @@ export const SR3EPurchase = {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (!opts) return;
+    if (!opts) return false;
+    if (!(await claim())) { ui.notifications.warn(`${payload.name}: the price has already been haggled.`); return false; }
 
     await game.sr3e.SR3EActor.rollOpposedPair('purchase',
       { ...payload, ...opts },
@@ -449,6 +454,7 @@ export const SR3EPurchase = {
       // The source is not an actor: the buyer's rolls its dice (any actor's `_rollWave` will do) and `name` labels it.
       { actor, pool: opts.dice, tn: Math.max(2, opts.tn), label: `🤝 ${actor.name} haggles` },
       { actor, pool: opts.them, tn: Math.max(2, opts.theirTn), label: '🤝 The source holds out', name: 'The source' });
+    return true;
   },
 
   /** Both haggles have landed (explosions included) · p.273. */
@@ -483,10 +489,13 @@ export const SR3EPurchase = {
   /**
    * 💴 — pay and take delivery. The ONLY place anything is written.
    * ⚠ Through `actor.update` with a `ledgerReason`, so TODO 79 records the purchase.
+   * ⚠ `claim` records the payment on the card AFTER the confirm and BEFORE anything is written, so a
+   *   cancelled confirm leaves the card payable and a second client (the GM's) cannot pay it again.
+   * @returns {Promise<boolean>} false when nothing was paid, so the button is handed back
    */
-  async pay(payload) {
+  async pay(payload, { claim = async () => true } = {}) {
     const actor = actorFrom(payload?.buyerId);
-    if (!actor) return;
+    if (!actor) return false;
     const price = Math.max(0, Number(payload.price) || 0);
     const have  = Number(actor.system?.nuyen) || 0;
 
@@ -497,7 +506,8 @@ export const SR3EPurchase = {
         ${price > have ? '<p style="color:var(--sr-red)">They cannot cover it — the deal is off unless the GM says otherwise (p.273).</p>' : ''}
         ${payload.itemUuid ? '<p style="font-size:11px;color:var(--sr-muted)">A copy of the item will be added to the sheet.</p>' : ''}`,
     });
-    if (!ok) return;
+    if (!ok) return false;
+    if (!(await claim())) { ui.notifications.warn(`${payload.name} has already been paid for.`); return false; }
 
     await actor.update({ 'system.nuyen': Math.max(0, have - price) },
       { ledgerReason: `Bought ${payload.name}` });
@@ -528,5 +538,6 @@ export const SR3EPurchase = {
         Nuyen ¥${have.toLocaleString('en-US')} → ¥${Math.max(0, have - price).toLocaleString('en-US')}.</div></div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
+    return true;
   },
 };

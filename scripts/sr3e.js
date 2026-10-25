@@ -3628,7 +3628,13 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   });
   // 🛒 Buying gear · TODO 82 (SR3 pp.272-273). 🤝 and 💴 belong to the buyer (or the GM);
   // 💴 is the only one that writes anything, and it confirms first.
+  // ⚠ Both clicks are recorded ON THE MESSAGE (`Purchasing.CARD_ROLES`): the in-memory guard is per browser, so
+  //   the GM's tab showed a card live after the player had haggled or paid. A haggle retires the card's 💴.
+  const buySpent = Purchasing.cardButtons(_actedOn(message));
+  const spendBuyBtn = (btn, why) => { btn.disabled = true; btn.title = why; };
+  const buyClaim = (role, label) => async () => !(await _markActed(mid, role, label))?.already;
   html.querySelectorAll('.sr-buy-negotiate-btn').forEach((btn, i) => {
+    if (buySpent.negotiate) return spendBuyBtn(btn, buySpent.negotiate);
     if (!_checkBtn(btn, mid, 'buyneg', i)) return;
     const pl = _payload(btn);
     if (!pl) return;
@@ -3637,10 +3643,15 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'buyneg', i)) return;
-      await SR3EPurchase.negotiate(pl);
+      const done = await SR3EPurchase.negotiate(pl, { claim: buyClaim(Purchasing.CARD_ROLES.negotiate, 'haggled') });
+      if (done === false && !Purchasing.cardButtons(_actedOn(game.messages.get(mid))).negotiate) {
+        _usedButtons.delete(`${mid}|buyneg|${i}`);   // cancelled — the haggle is still there to be had
+        btn.disabled = false;
+      }
     });
   });
   html.querySelectorAll('.sr-buy-pay-btn').forEach((btn, i) => {
+    if (buySpent.pay) return spendBuyBtn(btn, buySpent.pay);
     if (!_checkBtn(btn, mid, 'buypay', i)) return;
     const pl = _payload(btn);
     if (!pl) return;
@@ -3649,7 +3660,11 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'buypay', i)) return;
-      await SR3EPurchase.pay(pl);
+      const done = await SR3EPurchase.pay(pl, { claim: buyClaim(Purchasing.CARD_ROLES.pay, 'paid') });
+      if (done === false && !Purchasing.cardButtons(_actedOn(game.messages.get(mid))).pay) {
+        _usedButtons.delete(`${mid}|buypay|${i}`);   // the confirm was cancelled — still payable
+        btn.disabled = false;
+      }
     });
   });
   html.querySelectorAll('.sr-drug-roll-btn').forEach((btn, i) => {

@@ -87,6 +87,37 @@ export async function run(t) {
   t.is('an unknown archetype has no opinion', P.affinity('Talislegger', 'firearm').rating, 'unknown');
   t.is('…and neither does a blank one', P.affinity('', 'gear').rating, 'unknown');
 
+  /* ── The card's buttons, from the message's acted ledger (reported 2026-10-25) ── */
+  const R = P.CARD_ROLES;
+  t.eq('an untouched card has both buttons live', P.cardButtons({}), { negotiate: null, pay: null });
+  t.eq('…and so does one with no ledger at all', P.cardButtons(undefined), { negotiate: null, pay: null });
+  const haggled = P.cardButtons({ [R.negotiate]: { label: 'haggled' } });
+  t.ok('a haggle spends 🤝', !!haggled.negotiate);
+  t.ok('…and RETIRES 💴, whose price the haggle replaced', !!haggled.pay);
+  const paid = P.cardButtons({ [R.pay]: { label: 'paid' } });
+  t.ok('a payment spends 💴', !!paid.pay);
+  t.ok('…and 🤝 — nothing left to haggle over', !!paid.negotiate);
+  t.ok('the roles are distinct', R.negotiate !== R.pay);
+
+  // Source-level: the chat buttons read and write that ledger, and a cancel hands the button back.
+  const { readFileSync } = await import('node:fs');
+  const hook = readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8');
+  const at = hook.indexOf("html.querySelectorAll('.sr-buy-negotiate-btn')");
+  const buy = hook.slice(at - 900, at + 2400);
+  t.ok('the buy buttons read the card\'s acted ledger', /Purchasing\.cardButtons\(_actedOn\(message\)\)/.test(buy));
+  t.ok('🤝 claims its role on the message', /negotiate\(pl, \{ claim: buyClaim\(Purchasing\.CARD_ROLES\.negotiate/.test(buy));
+  t.ok('💴 claims its role on the message', /pay\(pl, \{ claim: buyClaim\(Purchasing\.CARD_ROLES\.pay/.test(buy));
+  t.ok('a cancelled 🤝 or 💴 is handed back', (buy.match(/_usedButtons\.delete\(`\$\{mid\}\|buy(neg|pay)\|\$\{i\}`\)/g) ?? []).length === 2);
+  const flow = readFileSync(new URL('../scripts/SR3EPurchase.js', import.meta.url), 'utf8');
+  const payFn = flow.slice(flow.indexOf('async pay(payload'), flow.indexOf('async pay(payload') + 2500);
+  t.ok('💴 claims AFTER the confirm and BEFORE the nuyen is written',
+    payFn.indexOf('if (!ok) return false') < payFn.indexOf('await claim()')
+    && payFn.indexOf('await claim()') < payFn.indexOf('await actor.update('));
+  const negFn = flow.slice(flow.indexOf('async negotiate(payload'), flow.indexOf('async negotiate(payload') + 4000);
+  t.ok('🤝 claims after its dialog and before the roll',
+    negFn.indexOf('if (!opts) return false') < negFn.indexOf('await claim()')
+    && negFn.indexOf('await claim()') < negFn.indexOf("rollOpposedPair('purchase'"));
+
   /* ── Display ──────────────────────────────────────────────────────────────── */
   t.is('19 days reads plainly', P.formatTime(19, 'day'), '19 days');
   t.is('…and a half day is kept', P.formatTime(9.5, 'day'), '9.5 days');

@@ -178,6 +178,11 @@ card: delivery N, meet at N/2, price → 🤝 Negotiate (`rollOpposedPair` → `
   `negotiation-loss-is-merely-no-discount`.
 - ⚠ The contact is a **hint** (`SOURCE_AFFINITY`; amber for a poor source, never blocked).
 - ⚠ **Nothing written until 💴** — then one `actor.update` with `ledgerReason`.
+- ⚠ **🤝 and 💴 are recorded ON THE MESSAGE** (`Purchasing.CARD_ROLES` via `sr3e.card.mark`; `Purchasing.cardButtons`
+  reads the ledger at render). The in-memory guard is per browser, so the GM's tab showed a card live after the
+  player had haggled or paid (reported 2026-10-25). **A haggle retires the Source found card's 💴** (its price is
+  superseded). Each claim is made after the dialog/confirm and before the roll/write, so a cancel hands the button
+  back. Mutant `buy-haggle-leaves-pay-live`.
 - ⚠ Every number editable (p.272: a guideline). Dwarf-sized gear **+10%**, troll **+25%** (from `system.metatype`).
 - **Finding the item (TODO 154, `scripts/data/gear-search.mjs`)**: a 🔎 search over the gear packs' **indexes**
   (`pack.getIndex({ fields })`, never `getDocuments`) and a drop onto the dialog fill the same fields through one
