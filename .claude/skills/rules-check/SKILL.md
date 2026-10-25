@@ -12,7 +12,7 @@ hand-write it, and you never edit it. What you produce is the **ledger**, `audit
 
 ## The rule that makes this repeatable: nothing is assumed
 
-- **The PDF is the authority.** Not `guides/`, not the code, not `CLAUDE.md`. Library: `C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`.
+- **The PDF is the authority.** Not `guides/`, not the code, not `CLAUDE.md`. Library: `C:\Users\lance\Documents\Github\Shadowrun 3rd Edition PDFs`.
 - **The book text the ledger reads is the OCR text** (`tools/lib/book-pages.mjs`): the untracked `SR-OCR/` in the checkout, else
   a `darkbushido/Shadowrun-OCR` clone beside the repo; the PDFs only for a book it lacks or with `SR3_BOOK_SOURCE=pdf`
   (`SR3_OCR_DIR` / `SR3_PDF_DIR` override the paths). One `pdftotext -layout` dump

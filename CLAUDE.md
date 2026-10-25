@@ -409,7 +409,7 @@ without Foundry, so nothing on them can be unit-tested or mutated.
 
 > **Citation convention.** Rules carry their source as *· SR3 p.NN* — the **printed** page of the core rulebook.
 > `Shadowrun 3e - Core Rules {FAN25000}.pdf`: **PDF page = book page + 2**. The maintainer's library (32 books,
-> `C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs`) has a real text layer: `pdftotext -layout -f N -l N`,
+> `C:\Users\lance\Documents\Github\Shadowrun 3rd Edition PDFs`) has a real text layer: `pdftotext -layout -f N -l N`,
 > no OCR. Two-column pages merge columns per line — crop with `-x 0 -W 308` then `-x 308 -W 320` (mediabox
 > ~616×795pt). Verify stats and pages there rather than guessing. Poppler (`winget oschwartz10612.Poppler`) adds
 > `pdftoppm` for page images; ⚠ Git Bash finds Git's xpdf `pdftotext` first, PowerShell finds Poppler's.

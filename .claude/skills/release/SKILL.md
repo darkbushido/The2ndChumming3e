@@ -18,7 +18,7 @@ The mechanics are **not** re-implemented here — they live in two skills you lo
 1. **Never `git push` and never `git tag`.** The maintainer publishes. You end by handing them the exact commands.
 2. **Do not perform the TODO 121 rules check as a shortcut, and never write `audit/rules-check-<version>.md` yourself.**
    Only `tools/rules-ledger.mjs report` writes it, from a ledger in which every unit was checked against the PDFs
-   (`C:\Users\lance\Documents\Shadowrun 3rd Edition PDFs` — the authority, not `guides/` and not the code). A missing
+   (`C:\Users\lance\Documents\Github\Shadowrun 3rd Edition PDFs` — the authority, not `guides/` and not the code). A missing
    record means **say so and stop at step 3** — a record claiming a check that never happened is worse than none.
 3. **Never work around a failing gate.** No editing a test to pass, no `--fast` past a failure, no file added to satisfy a
    check. Fix the cause (as its own `Fix:` commit, with a test) or report it.

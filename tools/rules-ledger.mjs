@@ -37,7 +37,8 @@ import { bookPages, wordsOnPage } from './lib/book-pages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const GUIDES = path.join(ROOT, 'guides');
-const PDF_DIR = process.env.SR3_PDF_DIR ?? 'C:\\Users\\lance\\Documents\\Shadowrun 3rd Edition PDFs';
+// The PDF library BESIDE this repo (both live in the maintainer's Documents\Github since 2026-10-25); SR3_PDF_DIR overrides.
+const PDF_DIR = process.env.SR3_PDF_DIR ?? path.join(ROOT, '..', 'Shadowrun 3rd Edition PDFs');
 // The book text is the OCR text (tools/lib/book-pages.mjs) — the SR-OCR folder BESIDE this repo (the one
 // copy; it is not kept inside the checkout), else the Shadowrun-OCR checkout beside it — and the PDFs only
 // without it, or with SR3_BOOK_SOURCE=pdf.
