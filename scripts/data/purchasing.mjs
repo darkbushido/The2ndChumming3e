@@ -158,6 +158,17 @@ export const Purchasing = {
   },
 
   /**
+   * One side's successes in the haggle. ⚠ `postOpposedResult` hands the resolver each side's raw DICE ARRAY
+   * (`rollOpposedPair` and the `sr3e.opposed.settle` query alike), not a `{ successes }` result — reading
+   * `.successes` off the array made every haggle "0 vs 0" (found live, 2026-10-26). Takes either shape.
+   * @param {Array<{success?:boolean}>|{successes?:number}} side
+   */
+  hits(side) {
+    if (Array.isArray(side)) return side.filter(d => d?.success).length;
+    return Math.max(0, Math.floor(num(side?.successes)));
+  },
+
+  /**
    * Is this contact a good source for this item? · p.272. A hint for the dialog.
    * @returns {{rating:'good'|'poor'|'unknown', note:string}}
    */

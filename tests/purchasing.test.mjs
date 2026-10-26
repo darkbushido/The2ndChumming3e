@@ -75,6 +75,18 @@ export async function run(t) {
   t.eq('losing by 3 puts the price UP 15%', [lost.net, lost.price, lost.toBuyer], [-3, 1150, false]);
   t.is('a tie moves nothing', P.negotiate(1000, 2, 2).price, 1000);
   t.is('the step is 5% (p.273)', NEGOTIATION_STEP, 0.05);
+  // ⚠ The resolver gets each side's DICE ARRAY from postOpposedResult; reading `.successes` off it made every
+  //   haggle "0 vs 0" (found live, 2026-10-26).
+  const dice = n => [...Array(n).fill({ success: true }), { success: false }, { success: false, isOne: true }];
+  t.is('a dice array counts its successes', P.hits(dice(4)), 4);
+  t.is('…an empty array is 0', P.hits([]), 0);
+  t.is('a { successes } result still reads', P.hits({ successes: 3 }), 3);
+  t.is('…and nothing is 0', P.hits(undefined), 0);
+  const flowSrc = (await import('node:fs')).readFileSync(new URL('../scripts/SR3EPurchase.js', import.meta.url), 'utf8');
+  const onNeg = flowSrc.slice(flowSrc.indexOf('async onNegotiated('), flowSrc.indexOf('async onNegotiated(') + 1500);
+  t.ok('onNegotiated counts both sides through Purchasing.hits',
+    /Purchasing\.hits\(atk\)/.test(onNeg) && /Purchasing\.hits\(def\)/.test(onNeg));
+  t.ok('…and never reads .successes off a side', !/(atk|def)\?\.successes/.test(onNeg));
 
   /* ── Which contact · p.272 ────────────────────────────────────────────────── */
   // "Talismongers, for example, are an ideal contact for magical items, but not very good at

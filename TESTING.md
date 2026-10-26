@@ -3219,6 +3219,8 @@ need `npm run packs:install` (Foundry closed) and a restart.
 - [ ] Search "ares predator" (6P-E): the dialog opens on 🤝 **Through a contact**; the legality note says a permit is
       needed. Switch to 🏪: the note turns amber but the button still works (warn, never refuse).
 - [ ] Switch a Legal item to 🤝: the contact flow runs as before (Etiquette, Street Index, 🤝 haggle for the discount).
+- [ ] The haggle's result card counts the dice: "N vs M — net K" matches the two roll cards' successes, and the price moves
+      5% per net success (it read "0 vs 0 — no movement" whatever was rolled until 2026-10-26).
 - [ ] The item sheet of a Katana shows Legality "5-B", editable. A clip of Regular rounds reads "As Weapon".
 - [ ] `game.sr3e.SR3EMigrations.force()` on a character with an old Ares Predator from the compendium (Legality blank):
       it reads 6P-E afterwards; one whose Legality was typed keeps it.

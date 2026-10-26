@@ -570,7 +570,9 @@ export const SR3EPurchase = {
   async onNegotiated(ctx, atk, def) {
     const actor = actorFrom(ctx.buyerId);
     if (!actor) return;
-    const deal = Purchasing.negotiate(ctx.price, atk?.successes ?? 0, def?.successes ?? 0);
+    // Each side arrives as its dice array (`postOpposedResult`), so count the successes — see `Purchasing.hits`.
+    const mine = Purchasing.hits(atk), theirs = Purchasing.hits(def);
+    const deal = Purchasing.negotiate(ctx.price, mine, theirs);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const payload = JSON.stringify({ ...ctx, price: deal.price }).replace(/'/g, '&#39;');
 
@@ -579,7 +581,7 @@ export const SR3EPurchase = {
       content: `<div class="sr-roll-card">
         <div class="sr-roll-header">🤝 ${esc(ctx.name)} — ${deal.net === 0 ? 'no movement'
           : deal.toBuyer ? `${Math.round(deal.percent * 100)}% off` : `${Math.round(deal.percent * 100)}% more`}</div>
-        <div class="sr-roll-meta">${atk?.successes ?? 0} vs ${def?.successes ?? 0} —
+        <div class="sr-roll-meta">${mine} vs ${theirs} —
           net ${deal.net} to the ${deal.toBuyer ? 'buyer' : deal.net === 0 ? 'nobody' : 'source'} (5% each, SR3 p.273)</div>
         <div class="sr-roll-meta">¥${Number(ctx.price).toLocaleString('en-US')} →
           <strong>¥${deal.price.toLocaleString('en-US')}</strong></div>

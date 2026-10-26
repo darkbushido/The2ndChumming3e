@@ -2232,6 +2232,14 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'haggle-reads-successes-off-the-dice',
+    suite:  'purchasing',
+    ...BUY, method: 'hits',
+    was:    'onNegotiated read `atk.successes` / `def.successes`, but postOpposedResult hands it each side\'s dice '
+          + 'ARRAY, so every haggle came out "0 vs 0 — no movement" whatever was rolled (TODO 82; found live 2026-10-26)',
+    impl:   side => Math.max(0, Math.floor(Number(side?.successes) || 0)),
+  },
+  {
     id:     'negotiation-loss-is-merely-no-discount',
     suite:  'purchasing',
     ...BUY, method: 'negotiate',
