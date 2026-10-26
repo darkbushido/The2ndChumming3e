@@ -6199,6 +6199,13 @@ _prepareCharacter(sys, attr) {
   /** Does this actor carry a Karma Pool at all? NPCs have no field (TODO 83), so nothing is offered. */
   static hasKarmaPool(actor) { return actor?.system?.karmaPool !== undefined; }
 
+  /**
+   * Does this actor carry Good and Total Karma? NPCs do not (TODO 83). The sheet is shared, so without
+   * this an NPC showed Good Karma, Award Karma… and Spend Karma…, and every write was dropped by the data
+   * model while the notification said it was awarded (Karma audit, 2026-10-25).
+   */
+  static hasGoodKarma(actor) { return actor?.system?.karma !== undefined; }
+
   /** Spend `n` from the pool. Returns what was charged. */
   async spendKarmaPool(n, reason = '') {
     const k = Math.max(0, parseInt(n) || 0);
@@ -7905,7 +7912,10 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
-   * Split a karma award between the Karma Pool and Good Karma · *SR3 p.244*
+   * Split a karma award between the Karma Pool and Good Karma · *SR3 p.242, p.244*
+   *
+   * > "All awarded Karma counts as Good Karma, except for every twentieth point, which is added to
+   * > the character's Karma Pool. Human characters add every tenth point to their Karma Pool." (p.242)
    *
    * > "Shetani, an elf character, has a Total Karma of 62, Good Karma of 10, and Karma Pool of
    * > 4… Every twentieth point has been added to the Karma Pool (each character starts with 1
@@ -7940,11 +7950,12 @@ _prepareCharacter(sys, attr) {
    * ⚠ **Humans accrue at DOUBLE rate.** This is the metatype's whole mechanical compensation
    * for having no attribute advantages, and it was missing until 2026-09-01 (TODO 81).
    *
-   * ⚠ **[#80](TODO.md)'s tests could not have caught it.** The only worked example on p.244 is
-   * Shetani, an **elf**, so every assertion pinned to the book is pinned to the twentieth-point
-   * case — and the human clause lives two pages later, in the Karma Pool chapter rather than
-   * the advancement one. That is the third rule in this family the book's own examples cannot
-   * distinguish.
+   * ⚠ **[#80](TODO.md)'s tests did not catch it** because they pinned only Shetani, an **elf**
+   * (p.244). The human rule is stated where the Karma section opens — p.242, *"Human characters add
+   * every tenth point to their Karma Pool"* — with **Brynn**, a human, worked across p.242/244
+   * (12 karma → Pool 2, Good Karma 11; 9 more → Pool 3, Good Karma 19), and again on p.246. The
+   * Karma audit of 2026-10-25 corrected this note, which said the human clause appeared only on p.246,
+   * and pinned Brynn in `tests/karma.test.mjs`.
    *
    * ⚠ **An unknown or missing metatype gives 20, not 10.** The actor field defaults to
    * `'human'`, so a real character gets the right answer; this default protects a CALL SITE

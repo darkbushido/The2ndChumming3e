@@ -28,12 +28,17 @@
 import { ModRatings } from './mod-ratings.mjs';
 
 /** Fields that are bookkeeping, not a level's printed numbers — never part of a table row. */
-export const NOT_PRINTED = new Set(['rating', 'srcgName', 'grade', 'costBase', 'essenceCostBase', 'bioIndexBase', 'availabilityBase',
-  'quantity', 'equipped', 'worn']);
+export const NOT_PRINTED = new Set(['rating', 'level', 'srcgName', 'grade', 'costBase', 'essenceCostBase', 'bioIndexBase',
+  'availabilityBase', 'quantity', 'equipped', 'worn']);
 
-/** The level a document is at: its `system.rating`, else the one in its name; 0 for neither. */
+/**
+ * The level a document is at: its level field (`ModRatings.levelField` — `rating`, or an adept power's `level`), else
+ * the one in its name; 0 for neither. ⚠ A fixed-level adept power's `level` is always the schema's 1 (`hasLevels:
+ * false`), so its NAME is read first.
+ */
 export const levelOf = doc => {
-  const r = Number(doc?.system?.rating);
+  if (doc?.type === 'adeptpower' && !doc.system?.hasLevels) return ModRatings.splitName(doc?.name)?.rating ?? 0;
+  const r = Number(ModRatings.levelValue(doc));
   return r > 0 ? r : (ModRatings.splitName(doc?.name)?.rating ?? 0);
 };
 
@@ -116,7 +121,8 @@ export const RatedFamilies = {
     const split = ModRatings.splitName(doc.name);
     if (split) doc.name = split.stem;
     doc.system ??= {};
-    if (!(Number(doc.system.rating) > 0)) doc.system.rating = doc.type === 'medical' ? String(level) : level;
+    if (doc.type === 'adeptpower') doc.system.level = level;   // the schema's placeholder 1, made the real level
+    else if (!(Number(doc.system.rating) > 0)) doc.system.rating = doc.type === 'medical' ? String(level) : level;
     return doc;
   },
 

@@ -86,6 +86,7 @@ export const GearSearch = {
       bookPage: sys.bookPage ?? '',
       // The levels the books print for this item (the level table), or null — the dialog offers them.
       levels: ModRatings.levelsOf(row),
+      levelUnit: ModRatings.unitOf(row),   // "Mp" for memory (2026-10-25) — the Level picker says "250 Mp"
       rating: Number(sys.rating) || null,
     };
   },
@@ -128,6 +129,7 @@ export const GearSearch = {
       index: Number(entry?.streetIndex ?? entry?.system?.streetIndex ?? entry?.index) || 1,
       uuid: entry?.uuid ?? '',
       levels: entry?.levels ?? null,
+      levelUnit: entry?.levelUnit ?? '',
       rating: entry?.rating ?? null,
       always: !!avail.always,
       unknown: !!avail.unknown && !avail.always,

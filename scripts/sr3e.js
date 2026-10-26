@@ -497,15 +497,20 @@ Hooks.on('preCreateItem', (document, data) => {
  * re-fires nothing, so there is no loop. Registered AFTER the rating fill above, so it sees the filled rating. */
 Hooks.on('preCreateItem', (document, _data, options) => {
   if (ModRatings.inPack(document, options)) return;
-  const name = ModRatings.syncName(document.name, document.system?.rating, document.type);
+  const name = ModRatings.syncName(document.name, ModRatings.levelValue(document), document.type);
   if (name !== document.name) document.updateSource({ name });
 });
 Hooks.on('preUpdateItem', (document, changes, options) => {
   if (ModRatings.inPack(document, options)) return;
+  // A levelled adept power with no printed levels ("Improved Ability", hasLevels) keeps its name: only a collapsed
+  // fixed-level power (2026-10-25) reads "Combat Sense [2]".
+  if (document.type === 'adeptpower' && !ModRatings.levelsOf(document)) return;
+  // The level's field: `system.rating`, or an adept power's `system.level` (`ModRatings.levelField`).
+  const path = `system.${ModRatings.levelField(document)}`;
   const hasName = foundry.utils.hasProperty(changes, 'name');
-  const hasRating = foundry.utils.hasProperty(changes, 'system.rating');
+  const hasRating = foundry.utils.hasProperty(changes, path);
   if (!hasName && !hasRating) return;
-  const rating = hasRating ? foundry.utils.getProperty(changes, 'system.rating') : document.system?.rating;
+  const rating = hasRating ? foundry.utils.getProperty(changes, path) : ModRatings.levelValue(document);
   const current = hasName ? changes.name : document.name;
   const name = ModRatings.syncName(current, rating, document.type);
   if (name !== current) changes.name = name;
@@ -670,7 +675,7 @@ async function _openSessionRewardDialog() {
     <label style="display:flex;align-items:center;gap:8px;margin:3px 0;cursor:pointer;">
       <input type="checkbox" data-actor-id="${a.id}"/>
       <span>${a.name}</span>
-      <span style="color:var(--sr-muted);font-size:11px">(${a.system.karma ?? 0} karma | ¥${(a.system.nuyen ?? 0).toLocaleString()})</span>
+      <span style="color:var(--sr-muted);font-size:11px">(${game.sr3e.SR3EActor.hasGoodKarma(a) ? `${a.system.karma ?? 0} karma` : 'no karma — NPC'} | ¥${(a.system.nuyen ?? 0).toLocaleString()})</span>
     </label>`).join('');
 
   let karma = 0, nuyen = 0, gearNotes = '', selectedIds = [], proceed = false;
@@ -733,9 +738,13 @@ async function _openSessionRewardDialog() {
    * twentieth point (TENTH for humans, p.246) goes to the Pool INSTEAD of Good Karma. */
   const targets = allPCs.filter(a => selectedIds.includes(a.id));
   const split   = [];
+  /* ⚠ A player-owned NPC is listed (it can take nuyen) but has no karma fields (TODO 83): the data
+   * model dropped the write and the card named it among those awarded (Karma audit, 2026-10-25). */
+  const noKarma = [];
   for (const actor of targets) {
     const updates = {};
-    if (karma) {
+    if (karma && !game.sr3e.SR3EActor.hasGoodKarma(actor)) noKarma.push(actor.name);
+    else if (karma) {
       const r = game.sr3e.SR3EActor.karmaAward(actor.system.totalKarma ?? 0, karma, actor.system.metatype);
       updates['system.karma']      = (actor.system.karma ?? 0) + r.goodKarma;
       updates['system.totalKarma'] = r.newTotal;
@@ -759,7 +768,10 @@ async function _openSessionRewardDialog() {
   const karmaLine = karma
     ? `<div><strong>Karma:</strong> +${karma}
          <span style="font-size:11px;color:var(--sr-muted)">to Good Karma, less any twentieth
-         point (tenth for humans) that goes to the Karma Pool instead — SR3 p.244, p.246</span></div>`
+         point (tenth for humans) that goes to the Karma Pool instead — SR3 p.242</span></div>`
+    : '';
+  const noKarmaLine = noKarma.length
+    ? `<div style="font-size:11px;color:var(--sr-amber)">No karma for ${noKarma.join(', ')} — an NPC carries no karma fields.</div>`
     : '';
   const nuyenLine = nuyen ? `<div><strong>Nuyen:</strong> +¥${nuyen.toLocaleString()}</div>` : '';
   const gearLine  = gearNotes ? `<div><strong>Gear:</strong> ${gearNotes}</div>` : '';
@@ -770,7 +782,7 @@ async function _openSessionRewardDialog() {
       <div class="sr-roll-card">
         <div class="sr-roll-header" style="background:var(--sr-gold,#c8a040);color:#0a0a0a">🎖 Session Rewards</div>
         <div class="sr-roll-body" style="padding:8px">
-          ${karmaLine}${nuyenLine}${gearLine}
+          ${karmaLine}${noKarmaLine}${nuyenLine}${gearLine}
           <div style="margin-top:6px;font-size:11px;color:var(--sr-muted)">Awarded to:</div>
           <ul style="margin:4px 0 0;padding-left:18px;font-size:12px">${lines}</ul>
         </div>
@@ -3627,7 +3639,13 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   });
   // 🛒 Buying gear · TODO 82 (SR3 pp.272-273). 🤝 and 💴 belong to the buyer (or the GM);
   // 💴 is the only one that writes anything, and it confirms first.
+  // ⚠ Both clicks are recorded ON THE MESSAGE (`Purchasing.CARD_ROLES`): the in-memory guard is per browser, so
+  //   the GM's tab showed a card live after the player had haggled or paid. A haggle retires the card's 💴.
+  const buySpent = Purchasing.cardButtons(_actedOn(message));
+  const spendBuyBtn = (btn, why) => { btn.disabled = true; btn.title = why; };
+  const buyClaim = (role, label) => async () => !(await _markActed(mid, role, label))?.already;
   html.querySelectorAll('.sr-buy-negotiate-btn').forEach((btn, i) => {
+    if (buySpent.negotiate) return spendBuyBtn(btn, buySpent.negotiate);
     if (!_checkBtn(btn, mid, 'buyneg', i)) return;
     const pl = _payload(btn);
     if (!pl) return;
@@ -3636,10 +3654,15 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'buyneg', i)) return;
-      await SR3EPurchase.negotiate(pl);
+      const done = await SR3EPurchase.negotiate(pl, { claim: buyClaim(Purchasing.CARD_ROLES.negotiate, 'haggled') });
+      if (done === false && !Purchasing.cardButtons(_actedOn(game.messages.get(mid))).negotiate) {
+        _usedButtons.delete(`${mid}|buyneg|${i}`);   // cancelled — the haggle is still there to be had
+        btn.disabled = false;
+      }
     });
   });
   html.querySelectorAll('.sr-buy-pay-btn').forEach((btn, i) => {
+    if (buySpent.pay) return spendBuyBtn(btn, buySpent.pay);
     if (!_checkBtn(btn, mid, 'buypay', i)) return;
     const pl = _payload(btn);
     if (!pl) return;
@@ -3648,7 +3671,11 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'buypay', i)) return;
-      await SR3EPurchase.pay(pl);
+      const done = await SR3EPurchase.pay(pl, { claim: buyClaim(Purchasing.CARD_ROLES.pay, 'paid') });
+      if (done === false && !Purchasing.cardButtons(_actedOn(game.messages.get(mid))).pay) {
+        _usedButtons.delete(`${mid}|buypay|${i}`);   // the confirm was cancelled — still payable
+        btn.disabled = false;
+      }
     });
   });
   html.querySelectorAll('.sr-drug-roll-btn').forEach((btn, i) => {

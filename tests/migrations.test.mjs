@@ -194,6 +194,15 @@ export async function run(t) {
   t.is('running it twice changes nothing the second time',
     kp.fixActor(act({ karmaPool: once['system.karmaPool'], totalKarma: 62 })), null);
 
+  /* ⚠ **A burned Pool is not the old default** (Karma audit, 2026-10-25). Burning (since 2026-10-11)
+   * lowers the size for ever (SR3 p.246) and can land on ⌊total / 20⌋: a human at 34 career karma
+   * (Pool 4) burns 3 and sits at 1, which is ⌊34 / 20⌋ — and `force()` re-runs every migration. */
+  const burned = { kind: 'pool', delta: -3, from: 4, to: 1, reason: 'Bought 3 successes', when: 1 };
+  t.ok('the fixture would be "corrected" without its ledger (so the next assertion means something)',
+    kp.fixActor(act({ karmaPool: 1, totalKarma: 34 }))?.['system.karmaPool'] === 2);
+  t.is('a Pool the ledger shows was written is left alone — a burned point stays burned',
+    kp.fixActor(act({ karmaPool: 1, totalKarma: 34, ledger: [burned] })), null);
+
   t.is('a vehicle is not a character and is skipped',
     kp.fixActor({ type: 'vehicle', system: { karmaPool: 0, totalKarma: 0 } }), null);
   t.is('an npc IS corrected',
@@ -239,6 +248,15 @@ export async function run(t) {
     lbb.fixActor(jn({ karmaPool: 1 }))?.['system.karmaPool'], 6);
   t.is('a Pool a GM raised is NOT overwritten',
     lbb.fixActor(jn({ karmaPool: 4 }))?.['system.karmaPool'], undefined);
+  // ⚠ A contact who burned down to 1 is not a blank (SR3 p.246; Karma audit, 2026-10-25).
+  t.is('a contact whose Pool the ledger shows burned keeps it',
+    lbb.fixActor(jn({ karmaPool: 1, ledger: [{ kind: 'pool', delta: -5, from: 6, to: 1, when: 1 }] }))?.['system.karmaPool'], undefined);
+  t.is('…while PR is still lifted out of the note',
+    lbb.fixActor(jn({ karmaPool: 1, ledger: [{ kind: 'pool', delta: -5, from: 6, to: 1, when: 1 }] }))?.['system.professionalRating'], 3);
+
+  /* Every migration write is named, so its 📒 line does not read "By hand". */
+  t.ok('a migration names itself in the ledger',
+    /actor\.update\(delta, \{ ledgerReason: `Migration \$\{m\.version\}/.test(mig));
 
   /* Idempotent — rule 2 of this file's contract. */
   t.is('a fully-migrated contact yields nothing',

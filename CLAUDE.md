@@ -249,7 +249,9 @@ correction needs **both** the pack change and a migration.
   identical properly keyed twin exists** (the `--fix` rule), re-locking the pack in a `finally`. Runs every load,
   never blocks the world (`tests/pack-repair.test.mjs`).
 - Changed **setting defaults** go in `SR3EMigrations.DEFAULT_CHANGES` (Foundry stores only set values).
-- Gated to `game.users.activeGM`. `game.sr3e.SR3EMigrations.force()` re-runs everything (safe by rule 1).
+- Gated to `game.users.activeGM`. `game.sr3e.SR3EMigrations.force()` re-runs everything (safe by rule 1 — and an overwriting
+  `fixActor` that recognises an old default must skip a value the 📒 Ledger shows was written, `Ledger.touched`:
+  a burned Karma Pool can land back on the old default).
 
 ### Filtering actors for dialog dropdowns
 

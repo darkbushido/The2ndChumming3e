@@ -162,6 +162,28 @@ export const Purchasing = {
     return { rating: 'unknown', note: spec.note };
   },
 
+  /**
+   * The roles a buy card's clicks are recorded under on its message (`sr3e.card.mark`). In-memory button
+   * guards are per browser, so the GM's tab showed a player's card live after the player had haggled or paid
+   * — and the GM can press any buyer's button (reported 2026-10-25).
+   */
+  CARD_ROLES: { negotiate: 'buy:negotiate', pay: 'buy:pay' },
+
+  /**
+   * What a buy card's buttons may still do, from the message's acted ledger.
+   * ⚠ **A haggle retires the card's 💴 Pay** — its price is the asking price, superseded by the haggle's card.
+   * @returns {{negotiate: string|null, pay: string|null}} null = live, else why it is spent
+   */
+  cardButtons(acted = {}) {
+    const R = Purchasing.CARD_ROLES;
+    if (acted?.[R.pay]) return { negotiate: 'Already paid for.', pay: 'Paid.' };
+    if (acted?.[R.negotiate]) {
+      return { negotiate: 'Already haggled — the new price is on the card that followed.',
+        pay: 'The haggle set a new price — pay from its card.' };
+    }
+    return { negotiate: null, pay: null };
+  },
+
   /** `19 days`, `9.5 hours` — one decimal, because the book's own answers are not whole. */
   formatTime(time, unit) {
     if (time === null || time === undefined) return '—';

@@ -203,6 +203,14 @@ bioware or medical items** (`tests/item-rating.test.mjs` checks).
 - ⚠ Implant `0` and `null` read the same number, so TODO 122 needed no migration (asserted). If that
   ever stops holding, a migration is owed.
 - ⚠ `medical` ratings are **strings** (`"+2"` Biotech) — excluded from the null conversion.
+- **Every rated item is ONE document** (TODO 261; widened 2026-10-25). `ModRatings.splitName` (`data/mod-ratings.mjs`)
+  is the one rule for what is a level in a name: `[N]`, `Rating N`, and the named `BARE_LEVELS` — memory in Mp
+  ("Pocket Computer (250Mp)", headware "Memory (100 Mps)", "Optical Memory Chip 50MP"; the level IS the Mp and
+  `LEVEL_UNITS` labels the dropdown and the 🛒 picker "250 Mp"), "ECCM +3", "Virt Instr Gen. Inst4Lev7", a Jukebox's
+  ports (one item per memory size), and the fixed-level adept powers (level in `system.level`, see adept-powers.md).
+  ⚠ The generator now takes a family's level from the NAME over the upstream Rating column (every Jukebox row says
+  Rating 1). ⚠ **Skillwires** ("Skillwires [3] MP 27") carries a rating AND a memory size and is left as it is.
+  Migration 0.9.0 renames owned copies. Mutant `mp-memory-is-not-a-level`.
 
 ### Cyberware grades  · *M&M p.45* — TODO 86
 

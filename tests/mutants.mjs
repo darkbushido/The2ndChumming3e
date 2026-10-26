@@ -2189,6 +2189,15 @@ export const MUTANTS = [
       ? entries.filter((_e, i) => i !== idx) : null),
   },
   {
+    id:     'migration-restores-a-burned-pool',
+    suite:  'migrations',
+    ...LEDGER, method: 'touched',
+    was:    'migrations 0.4.5.7 and 0.4.5.11 recognised a Karma Pool by its old default (Karma audit, '
+          + '2026-10-25). Burning, added later, lowers the size for ever (SR3 p.246) and can land on that '
+          + 'default, so force() gave a burned point back - a human at 34 career karma burning 4 -> 1 got 2',
+    impl:   () => false,
+  },
+  {
     id:     'ledger-duplicate-inherits-history',
     suite:  'ledger',
     ...LEDGER, method: 'inherited',
@@ -2232,6 +2241,16 @@ export const MUTANTS = [
       return { net, toBuyer: net > 0, percent: net * 0.05, adjustment,
         price: Math.max(0, Math.round((Number(price) || 0) + adjustment)) };
     },
+  },
+  {
+    id:     'buy-haggle-leaves-pay-live',
+    suite:  'purchasing',
+    ...BUY, method: 'cardButtons',
+    was:    'shipped in 0.8.0 (reported 2026-10-25): the Source found card kept its 💴 Pay live after a 🤝 haggle, '
+          + 'at the asking price the haggle had replaced, and only the clicking browser knew the button was used — '
+          + 'the GM saw the card as untouched and could pay it a second time',
+    impl:   (acted = {}) => (acted?.['buy:pay'] ? { negotiate: 'Already paid for.', pay: 'Paid.' }
+      : acted?.['buy:negotiate'] ? { negotiate: 'Already haggled.', pay: null } : { negotiate: null, pay: null }),
   },
   {
     id:     'attribute-hover-says-nothing',
@@ -3082,6 +3101,29 @@ export const MUTANTS = [
     ...ADEPTLEVELS, method: 'levelOf',
     was:    'the Magic cap read the level of a power only from system.level (hasLevels), so Imp. Reflexes Level 3 / Combat Sense +3 were never checked against Magic (SR3 p.168)',
     impl:   (_name, system = {}) => (system?.hasLevels ? Math.max(1, Math.trunc(Number(system.level) || 1)) : 1),
+  },
+  {
+    id:     'collapsed-adept-power-is-level-one',
+    suite:  'adept-levels',
+    ...ADEPTLEVELS, method: 'levelOf',
+    was:    'the name-only reading before 2026-10-25: a collapsed fixed-level power ("Imp. Reflexes [3]", level 3 in system.level) '
+          + 'has no trailing number, so it fell to 1 and an Improved Reflexes 3 on a Magic 2 adept went unwarned (SR3 p.168)',
+    impl:   (name, system = {}) => {
+      if (system?.hasLevels) return Math.max(1, Math.trunc(Number(system.level) || 1));
+      const m = /(?:\s|\+)(\d+)\s*$/.exec(String(name ?? ''));
+      return m ? Math.max(1, Number(m[1])) : 1;
+    },
+  },
+  {
+    id:     'mp-memory-is-not-a-level',
+    suite:  'mod-ratings',
+    ...MODRATE, method: 'splitName',
+    was:    'shipped through 0.8.0 (reported 2026-10-25): only "[N]" / "Rating N" was a level, so "Pocket Computer (250Mp)" and '
+          + 'the rest of the memory, ECCM, Jukebox and adept-power families stayed one document per level',
+    impl:   (name) => {
+      const m = /^(.*?)\s*(?:\b(?:Rating|Lvl|Lv)\s*)?\[(\d+)\](?:\s+\d+)?\s*$/.exec(String(name ?? '')) ?? /^(.*?)\s+(?:Rating|Lvl|Lv)\s+(\d+)\s*$/.exec(String(name ?? ''));
+      return m && m[1].trim() ? { stem: m[1].replace(/\s+/g, ' ').trim(), rating: Number(m[2]) } : null;
+    },
   },
   {
     id:     'astral-initiative-ignores-initiate-grade',

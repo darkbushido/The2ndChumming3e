@@ -60,7 +60,18 @@ const SOURCE = /^Compendium\.The2ndChumming3e\.([^.]+)\.Item\.([A-Za-z0-9_-]+)$/
  *   - **Ritual Sorcery Materials - Combat Force N** — the Force is the level (mits-gear);
  *   - **Thermal Dampening Rat[8]MAX** — the Cannon Companion's level-8 row (p.53), upstream wrote "Rat[8]MAX".
  * The armour options carry a leading "+" in the old packs; it is not part of the stem.
- * `re` captures (1) the stem and (2) the level.
+ *
+ * **The rest of "everything with a level"** (the maintainer, 2026-10-25: *"I want to do the same thing that we did
+ * for mods to all the things that have levels … for the pocket/wrist computer its a rating that's measured in Mp"*):
+ *   - **Memory in Mp** — Pocket / Wrist Computer, Telecom, Table Top PC, Data Display Unit (SR3 p.287) and headware
+ *     Memory (SR3 p.298) written "(250Mp)" / "(250 Mps)"; the Optical Memory Chip "50MP" / "(100 mp) 1 (Cyberlimb)".
+ *     The level IS the memory (`LEVEL_UNITS` labels it "250 Mp");
+ *   - **ECCM +N** (the gear rating) and the **Virtual Instrument** chips, "Inst4Lev7" (level 7);
+ *   - **SkillSoft Jukebox** — one item per memory size, the ports its level ("… 108MP 10 pts" / "8 prts" / "3 ports");
+ *   - **fixed-level adept powers** — Imp. Reflexes / Kinesics / Penetrating Strike "Level N", Combat Sense "+N",
+ *     Delay Damage / Flexibility / Enhanced Balance "N" (their level goes to `system.level`, `levelField`).
+ * ⚠ Skillwires ("Skillwires [3] MP 27") carries a rating AND a memory size, and is left as it is.
+ * `re` captures (1) the stem and (2) the level; a named group `tag` (a mod tag after the level) is put back on the stem.
  */
 const BARE_LEVELS = [
   /^\+?\s*(Signal Locator|Tracking Signal)\s+(\d+)\s*$/,
@@ -68,7 +79,22 @@ const BARE_LEVELS = [
   /^(Personal Comm Unit)\s+(\d+)\s*$/,
   /^(Ritual Sorcery Materials - Combat)\s+Force\s+(\d+)\s*$/,
   /^(Thermal Dampening)\s+Rat\[(\d+)\]\s*MAX\s*$/,
+  /^(Pocket Computer|Wrist Computer|Telecom|Table Top PC|Data Display Unit|Memory)\s*\(\s*(\d+)\s*Mps?\s*\)\s*$/i,
+  /^(Optical Memory Chip)\s+(\d+)\s*MP\s*$/i,
+  /^(Optical Memory Chip)\s*\(\s*(\d+)\s*mp\s*\)\s*1?\s*(?<tag>\(Cyberlimb\))?\s*$/i,
+  /^(ECCM)\s*\+(\d+)\s*$/,
+  /^(Virt Instr (?:Gen\.|Spec))\s+Inst\d+Lev(\d+)\s*$/,
+  /^(SkillSoft Jukebox \d+MP)\s+(\d+)\s*(?:pts|prts|ports)\s*$/i,
+  /^(Imp\. Reflexes|Kinesics|Penetrating Strike)\s+Level\s+(\d+)\s*$/,
+  /^(Combat Sense)\s*\+(\d+)\s*$/,
+  /^(Delay Damage|Flexibility|Enhanced Balance)\s+(\d+)\s*$/,
 ];
+
+/** A level measured in something — the dropdown and the 🛒 picker say "250 Mp", not "250". Keyed by table key. */
+export const LEVEL_UNITS = Object.fromEntries([
+  'gear|Pocket Computer', 'gear|Wrist Computer', 'gear|Telecom', 'gear|Table Top PC', 'gear|Data Display Unit',
+  'gear|Optical Memory Chip', 'cyberlimb|Optical Memory Chip', 'cyberware|Memory',
+].map(k => [k, 'Mp']));
 
 /**
  * The "what is this a mod FOR" tag every mod name ends with, before any level (TODO 266): "Chemical Seal (Armor)",
@@ -93,8 +119,32 @@ export const ModRatings = {
       case 'medical': return 'medical';
       case 'ammunition': return 'ammunition';
       case 'vehicleweapon': return 'vehicleweapon';
+      case 'adeptpower': return 'adeptpower';   // the fixed-level powers (2026-10-25)
       default: return null;
     }
+  },
+
+  /**
+   * The field an item's level lives in: `level` for an adept power (its schema's own field, which the Power Point
+   * cost and the effect readers use), `rating` for everything else.
+   */
+  levelField(item) {
+    return item?.type === 'adeptpower' ? 'level' : 'rating';
+  },
+
+  /**
+   * An item's level, read from `levelField` — what the name sync puts in the bracket. ⚠ For an adept power only when
+   * it HAS printed levels (a collapsed fixed-level power): every power's `level` is at least the schema's 1, so
+   * reading it for any power would name "Killing Hands" "Killing Hands [1]". Otherwise undefined — no sync.
+   */
+  levelValue(item, table = MOD_RATING_TABLE) {
+    if (item?.type === 'adeptpower' && !ModRatings.levelsOf(item, table)) return undefined;
+    return item?.system?.[ModRatings.levelField(item)];
+  },
+
+  /** The unit a level is measured in ("Mp"), or ''. */
+  unitOf(item) {
+    return LEVEL_UNITS[ModRatings.keyOf(item)] ?? '';
   },
 
   /** `{ stem, rating }` for a name carrying a level, else null. Spaces in the stem are tidied. */
@@ -102,7 +152,8 @@ export const ModRatings = {
     const text = String(name ?? '');
     const m = LEVEL.exec(text) ?? BARE.exec(text) ?? BARE_LEVELS.map(re => re.exec(text)).find(Boolean);
     if (!m || !m[1].trim()) return null;
-    return { stem: m[1].replace(/\s+/g, ' ').trim(), rating: Number(m[2]) };
+    const stem = [m[1], m.groups?.tag].filter(Boolean).join(' ');
+    return { stem: stem.replace(/\s+/g, ' ').trim(), rating: Number(m[2]) };
   },
 
   /**
@@ -202,14 +253,18 @@ export const ModRatings = {
     if (!ModRatings.kindOf(item)) return null;
     const split = ModRatings.splitName(item.name);
     if (!split) return null;
-    let rating = item.system?.rating;
-    const fill = rating === undefined || rating === null || rating === '' || Number(rating) === 0;
+    const field = ModRatings.levelField(item);
+    let rating = item.system?.[field];
+    // ⚠ A fixed-level adept power stores `level: 1` whatever its name says (`hasLevels: false` — the schema's
+    //   initial), so its `level` is never a choice anyone made: the name's level always fills it.
+    const fill = rating === undefined || rating === null || rating === '' || Number(rating) === 0
+      || (item.type === 'adeptpower' && !item.system?.hasLevels);
     // Medical's rating is a string field (some Biotech rows are signed modifiers).
     if (fill) rating = item.type === 'medical' ? String(split.rating) : split.rating;
     const delta = {};
     const name = ModRatings.syncName(item.name, rating, item.type);
     if (name !== item.name) delta.name = name;
-    if (fill) delta['system.rating'] = rating;
+    if (fill && rating !== item.system?.[field]) delta[`system.${field}`] = rating;
     return Object.keys(delta).length ? delta : null;
   },
 
@@ -219,7 +274,8 @@ export const ModRatings = {
    */
   renameConflict(item) {
     const split = ModRatings.kindOf(item) ? ModRatings.splitName(item.name) : null;
-    const r = Number(item?.system?.rating);
+    if (item?.type === 'adeptpower' && !item.system?.hasLevels) return null;   // its `level` was never chosen
+    const r = Number(ModRatings.levelValue(item));
     return split && r > 0 && r !== split.rating
       ? `${item.name}: the name says ${split.rating}, the rating field says ${r} — keeping ${r}` : null;
   },
@@ -275,11 +331,12 @@ export const ModRatings = {
   options(item, table = MOD_RATING_TABLE) {
     const levels = ModRatings.levelsOf(item, table);
     if (!levels) return null;
-    const current = Number(item.system?.rating) || null;
+    const current = Number(ModRatings.levelValue(item)) || null;
+    const unit = ModRatings.unitOf(item);
     const values = new Set(Object.keys(levels).map(Number));
     if (current) values.add(current);
     return [...values].sort((a, b) => a - b).map(v => ({
-      value: v, label: levels[v] ? String(v) : `${v} (not in the book)`, selected: v === current,
+      value: v, label: `${v}${unit ? ` ${unit}` : ''}${levels[v] ? '' : ' (not in the book)'}`, selected: v === current,
     }));
   },
 
@@ -289,7 +346,7 @@ export const ModRatings = {
    * the rating. Fields are written under `system.`.
    */
   ratingChange(item, rating, table = MOD_RATING_TABLE) {
-    const delta = { 'system.rating': Number(rating) };
+    const delta = { [`system.${ModRatings.levelField(item)}`]: Number(rating) };
     const row = ModRatings.levelsOf(item, table)?.[Number(rating)];
     for (const [field, value] of Object.entries(row ?? {})) delta[`system.${field}`] = value;
     return delta;

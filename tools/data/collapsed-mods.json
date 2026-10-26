@@ -1,6 +1,150 @@
 {
   "about": "Rated families collapsed to ONE pack document (tools/build-mod-ratings.mjs, tools/build-default-gear.mjs). Their levels live here and are merged into scripts/data/mod-rating-table.mjs; `deleted` lists the level documents that went, so a copy linked to one is repointed. TODO 261.",
   "families": {
+    "adeptpower|Combat Sense": {
+      "pack": "sr3e-sr3-adept-powers",
+      "by": "build-mod-ratings",
+      "keep": "sr3e-adeptpower-0012",
+      "levels": {
+        "1": {
+          "mods": "+1CPL",
+          "powerCost": 1
+        },
+        "2": {
+          "mods": "+2CPL",
+          "powerCost": 2
+        },
+        "3": {
+          "mods": "+3CPL",
+          "powerCost": 3
+        }
+      },
+      "deleted": [
+        "sr3e-adeptpower-0013",
+        "sr3e-adeptpower-0014"
+      ]
+    },
+    "adeptpower|Delay Damage": {
+      "pack": "sr3e-mits-adept-powers",
+      "by": "build-mod-ratings",
+      "keep": "sr3e-adeptpower-0019",
+      "levels": {
+        "1": {
+          "description": "The obvious form of this power is handled as a normal attack, it just appears to do no damage at the time.",
+          "powerCost": 1
+        },
+        "2": {
+          "description": "An adept with the silent form of this power merely needs to bump into, brush against, or otherwise touch the target unobtrusively.",
+          "powerCost": 2
+        }
+      },
+      "deleted": [
+        "sr3e-adeptpower-0020"
+      ]
+    },
+    "adeptpower|Enhanced Balance": {
+      "pack": "sr3e-sota2-adept-powers",
+      "by": "build-mod-ratings",
+      "keep": "sr3e-adeptpower-0027",
+      "levels": {
+        "1": {
+          "powerCost": 0.5
+        },
+        "2": {
+          "powerCost": 1
+        }
+      },
+      "deleted": [
+        "sr3e-adeptpower-0028"
+      ]
+    },
+    "adeptpower|Flexibility": {
+      "pack": "sr3e-mits-adept-powers",
+      "by": "build-mod-ratings",
+      "keep": "sr3e-adeptpower-0033",
+      "levels": {
+        "1": {
+          "description": "This power reduces the target numbers for athletics (escape artist) by 1.",
+          "powerCost": 0.5
+        },
+        "2": {
+          "description": "This power reduces the target numbers for athletics (escape artist) by 2.",
+          "powerCost": 1
+        }
+      },
+      "deleted": [
+        "sr3e-adeptpower-0034"
+      ]
+    },
+    "adeptpower|Imp. Reflexes": {
+      "pack": "sr3e-sr3-adept-powers",
+      "by": "build-mod-ratings",
+      "keep": "sr3e-adeptpower-0050",
+      "levels": {
+        "1": {
+          "bonusInitDice": 1,
+          "bonusRea": 2,
+          "mods": "+2RCT,+1INI",
+          "powerCost": 2
+        },
+        "2": {
+          "bonusInitDice": 2,
+          "bonusRea": 4,
+          "mods": "+4RCT,+2INI",
+          "powerCost": 3
+        },
+        "3": {
+          "bonusInitDice": 3,
+          "bonusRea": 6,
+          "mods": "+6RCT,+3INI",
+          "powerCost": 5
+        }
+      },
+      "deleted": [
+        "sr3e-adeptpower-0051",
+        "sr3e-adeptpower-0052"
+      ]
+    },
+    "adeptpower|Kinesics": {
+      "pack": "sr3e-sota2-adept-powers",
+      "by": "build-mod-ratings",
+      "keep": "sr3e-adeptpower-0074",
+      "levels": {
+        "1": {
+          "powerCost": 1
+        },
+        "2": {
+          "powerCost": 2
+        },
+        "3": {
+          "powerCost": 3
+        }
+      },
+      "deleted": [
+        "sr3e-adeptpower-0075",
+        "sr3e-adeptpower-0076"
+      ]
+    },
+    "adeptpower|Penetrating Strike": {
+      "pack": "sr3e-sota2-adept-powers",
+      "by": "build-mod-ratings",
+      "keep": "sr3e-adeptpower-0094",
+      "levels": {
+        "1": {
+          "powerCost": 0.75
+        },
+        "2": {
+          "powerCost": 1.5
+        },
+        "3": {
+          "powerCost": 2.25
+        }
+      },
+      "deleted": [
+        "sr3e-adeptpower-0095",
+        "sr3e-adeptpower-0096"
+      ]
+    },
     "ammunition|Tracker AOD": {
       "pack": "sr3e-cc-ammunition",
       "by": "build-default-gear",
@@ -1154,6 +1298,26 @@
         "sr3e-cyberware-0756",
         "sr3e-cyberware-0757",
         "sr3e-cyberware-0758"
+      ]
+    },
+    "cyberlimb|Optical Memory Chip": {
+      "pack": "sr3e-sr3-cyberware",
+      "by": "build-mod-ratings",
+      "keep": "sr3e-cyberware-0773",
+      "levels": {
+        "100": {
+          "cost": 750
+        },
+        "500": {
+          "cost": 3750
+        },
+        "1000": {
+          "cost": 7500
+        }
+      },
+      "deleted": [
+        "sr3e-cyberware-0774",
+        "sr3e-cyberware-0775"
       ]
     },
     "cyberlimb|Personal Comm Unit": {
@@ -2513,6 +2677,79 @@
       "deleted": [
         "sr3e-cyberware-0554",
         "sr3e-cyberware-0555"
+      ]
+    },
+    "cyberware|Memory": {
+      "pack": "sr3e-sr3-cyberware",
+      "by": "build-mod-ratings",
+      "keep": "sr3e-cyberware-0557",
+      "levels": {
+        "30": {
+          "cost": 4500,
+          "essenceCost": 0.1
+        },
+        "60": {
+          "cost": 9000,
+          "essenceCost": 0.2
+        },
+        "100": {
+          "cost": 15000,
+          "essenceCost": 0.33
+        },
+        "150": {
+          "cost": 22500,
+          "essenceCost": 0.5
+        },
+        "200": {
+          "cost": 30000,
+          "essenceCost": 0.66
+        },
+        "250": {
+          "cost": 37500,
+          "essenceCost": 0.83
+        },
+        "300": {
+          "cost": 45000,
+          "essenceCost": 1
+        },
+        "350": {
+          "cost": 52500,
+          "essenceCost": 1.16
+        },
+        "400": {
+          "cost": 60000,
+          "essenceCost": 1.33
+        },
+        "450": {
+          "cost": 67500,
+          "essenceCost": 1.5
+        },
+        "500": {
+          "cost": 75000,
+          "essenceCost": 1.66
+        },
+        "550": {
+          "cost": 82500,
+          "essenceCost": 1.83
+        },
+        "600": {
+          "cost": 90000,
+          "essenceCost": 2
+        }
+      },
+      "deleted": [
+        "sr3e-cyberware-0558",
+        "sr3e-cyberware-0559",
+        "sr3e-cyberware-0560",
+        "sr3e-cyberware-0561",
+        "sr3e-cyberware-0562",
+        "sr3e-cyberware-0563",
+        "sr3e-cyberware-0564",
+        "sr3e-cyberware-0565",
+        "sr3e-cyberware-0566",
+        "sr3e-cyberware-0567",
+        "sr3e-cyberware-0568",
+        "sr3e-cyberware-0569"
       ]
     },
     "cyberware|Move-by-Wire": {
@@ -4697,6 +4934,72 @@
         "4c886e0139c84cd5"
       ]
     },
+    "gear|ECCM": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "52129cfbdadb943d",
+      "levels": {
+        "2": {
+          "availability": "+1",
+          "cost": 1000,
+          "streetIndex": "+.5"
+        },
+        "3": {
+          "availability": "+2",
+          "cost": 2000,
+          "streetIndex": "+1"
+        },
+        "4": {
+          "availability": "+3",
+          "cost": 3000,
+          "streetIndex": "+1.5"
+        },
+        "5": {
+          "availability": "+4",
+          "cost": 4000,
+          "streetIndex": "+2"
+        },
+        "6": {
+          "availability": "+5",
+          "cost": 5000,
+          "streetIndex": "+2.5"
+        },
+        "7": {
+          "availability": "+6",
+          "cost": 6000,
+          "streetIndex": "+3"
+        },
+        "8": {
+          "availability": "+7",
+          "cost": 7000,
+          "streetIndex": "+3.5"
+        },
+        "9": {
+          "availability": "+8",
+          "cost": 8000,
+          "streetIndex": "+4"
+        },
+        "10": {
+          "availability": "+9",
+          "cost": 9000,
+          "streetIndex": "+4.5"
+        }
+      },
+      "deleted": [
+        "09acff1b3ccc90b5",
+        "0dc6b549a4505197",
+        "29412d7f6dc50ef1",
+        "31f8bab9d548cfd3",
+        "5187e096c5d001c8",
+        "7a5e58997357d35b",
+        "8bb5bdc28f9cfa62",
+        "c561176906414e0f",
+        "f9a60e770bd41279"
+      ],
+      "folded": [
+        "5187e096c5d001c8"
+      ]
+    },
     "gear|Ebony Credstick": {
       "pack": "sr3e-sr3-gear",
       "by": "build-default-gear",
@@ -6372,6 +6675,24 @@
         "d2b0628b48bc6c93"
       ]
     },
+    "gear|Optical Memory Chip": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "eb2f28f74da856bd",
+      "levels": {
+        "50": {
+          "cost": 250,
+          "description": "<p><strong>Type:</strong> Mem<br><strong>Memory:</strong> 50</p>"
+        },
+        "100": {
+          "cost": 500,
+          "description": "<p><strong>Type:</strong> Mem<br><strong>Memory:</strong> 100</p>"
+        }
+      },
+      "deleted": [
+        "9dd76c376cfbbad1"
+      ]
+    },
     "gear|Personal Comm Unit": {
       "pack": "sr3e-cc-gear",
       "by": "build-default-gear",
@@ -6521,6 +6842,42 @@
         "5fe28c67a60427b3",
         "60e28dfa1440c84e",
         "61e28f8d9a2c92c5"
+      ]
+    },
+    "gear|Pocket Computer": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "2c91795bb158adc3",
+      "levels": {
+        "10": {
+          "cost": 1000
+        },
+        "25": {
+          "cost": 2500
+        },
+        "50": {
+          "cost": 5000
+        },
+        "100": {
+          "cost": 10000
+        },
+        "250": {
+          "cost": 25000
+        },
+        "500": {
+          "cost": 50000
+        },
+        "1000": {
+          "cost": 100000
+        }
+      },
+      "deleted": [
+        "1d12b69bf567d953",
+        "297504e7dc483df3",
+        "619c630f6f4461f7",
+        "6c94ac0b23c22e23",
+        "da07bbdf8754ac47",
+        "e0be620383a9f4a7"
       ]
     },
     "gear|Portable Master Unit": {
@@ -7244,6 +7601,646 @@
         "a8bdae5d76ab182f"
       ]
     },
+    "gear|SkillSoft Jukebox 108MP": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "2f13bcd4a0797686",
+      "levels": {
+        "2": {
+          "cost": 4320
+        },
+        "3": {
+          "cost": 6480
+        },
+        "4": {
+          "cost": 8640
+        },
+        "5": {
+          "cost": 10800
+        },
+        "6": {
+          "cost": 12960
+        },
+        "7": {
+          "cost": 15120
+        },
+        "8": {
+          "cost": 17280
+        },
+        "9": {
+          "cost": 19440
+        },
+        "10": {
+          "cost": 21600
+        },
+        "11": {
+          "cost": 23760
+        },
+        "12": {
+          "cost": 25920
+        },
+        "13": {
+          "cost": 28080
+        },
+        "14": {
+          "cost": 30240
+        },
+        "15": {
+          "cost": 32400
+        }
+      },
+      "deleted": [
+        "04c8c8a210b7a13e",
+        "26819f9c53c95cec",
+        "2b46aaa5ef2ec367",
+        "2c814c1054988a4a",
+        "3bd4131a2ea8142c",
+        "5644d7c696db189a",
+        "730a089732407f15",
+        "8c0159de7a890068",
+        "956591a975523ac3",
+        "9d7bbec541a04f3b",
+        "da5c36536790c559",
+        "ddf51b3f1bafd91d",
+        "f52278f98d813b77"
+      ]
+    },
+    "gear|SkillSoft Jukebox 12MP": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "92dd24cb49ad37c9",
+      "levels": {
+        "2": {
+          "cost": 480
+        },
+        "3": {
+          "cost": 720
+        },
+        "4": {
+          "cost": 960
+        },
+        "5": {
+          "cost": 1200
+        },
+        "6": {
+          "cost": 1440
+        },
+        "7": {
+          "cost": 1680
+        },
+        "8": {
+          "cost": 1920
+        },
+        "9": {
+          "cost": 2160
+        },
+        "10": {
+          "cost": 2400
+        },
+        "11": {
+          "cost": 2640
+        },
+        "12": {
+          "cost": 2880
+        },
+        "13": {
+          "cost": 3120
+        },
+        "14": {
+          "cost": 3360
+        },
+        "15": {
+          "cost": 3600
+        }
+      },
+      "deleted": [
+        "12ef185782a40fe5",
+        "1c4b99726d5d31fa",
+        "27911c817ac49107",
+        "3515cae68dbccc16",
+        "3f677658b3ad4234",
+        "48cda576346659de",
+        "6b37975c67cc55f8",
+        "8f932901e628a3d7",
+        "92caadedc6a57d43",
+        "a3599f74d0e1c5ec",
+        "b53b11bd1f1f7bf3",
+        "f33e4f7ba0b50725",
+        "fc53447897eaedd0"
+      ]
+    },
+    "gear|SkillSoft Jukebox 147MP": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "5f8f3f3f9c165991",
+      "levels": {
+        "2": {
+          "cost": 5880
+        },
+        "3": {
+          "cost": 8820
+        },
+        "4": {
+          "cost": 11760
+        },
+        "5": {
+          "cost": 14700
+        },
+        "6": {
+          "cost": 17640
+        },
+        "7": {
+          "cost": 20580
+        },
+        "8": {
+          "cost": 23520
+        },
+        "9": {
+          "cost": 26460
+        },
+        "10": {
+          "cost": 29400
+        },
+        "11": {
+          "cost": 32340
+        },
+        "12": {
+          "cost": 35280
+        },
+        "13": {
+          "cost": 38220
+        },
+        "14": {
+          "cost": 41160
+        },
+        "15": {
+          "cost": 44100
+        }
+      },
+      "deleted": [
+        "1d13e1ab50356d55",
+        "22e1d942eacba672",
+        "3a852188632da864",
+        "5ab8a5bc2ddd6220",
+        "61f819c50c548449",
+        "745c556670ef1dce",
+        "76bc9cf92a44f737",
+        "91171e563d3d3246",
+        "912186374f663ff7",
+        "9a305a499277fba5",
+        "b0ade0d4174cbc28",
+        "bd6e371a891e1e82",
+        "eecc015d7625e373"
+      ]
+    },
+    "gear|SkillSoft Jukebox 192MP": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "e48d77f9849205bf",
+      "levels": {
+        "2": {
+          "cost": 7680
+        },
+        "3": {
+          "cost": 11520
+        },
+        "4": {
+          "cost": 15360
+        },
+        "5": {
+          "cost": 19200
+        },
+        "6": {
+          "cost": 23040
+        },
+        "7": {
+          "cost": 26880
+        },
+        "8": {
+          "cost": 30720
+        },
+        "9": {
+          "cost": 34560
+        },
+        "10": {
+          "cost": 38400
+        },
+        "11": {
+          "cost": 42240
+        },
+        "12": {
+          "cost": 46080
+        },
+        "13": {
+          "cost": 49920
+        },
+        "14": {
+          "cost": 53760
+        },
+        "15": {
+          "cost": 57600
+        }
+      },
+      "deleted": [
+        "060e0d5216590e4e",
+        "1bec4b1025b8de74",
+        "1e7ebbd47199cab0",
+        "2b3f121affc86856",
+        "3e3f050cd34752a0",
+        "4304101537e1ec25",
+        "74a7e587f4d03077",
+        "761ead50596ac9fc",
+        "7b6c58de4ba95492",
+        "8ce6bdc538b11983",
+        "c5fb523b7af3a7d3",
+        "c9c735535ea18fa1",
+        "cd601a3f12c0a365"
+      ]
+    },
+    "gear|SkillSoft Jukebox 243MP": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "1d84b580a8129a2e",
+      "levels": {
+        "2": {
+          "cost": 9720
+        },
+        "3": {
+          "cost": 14580
+        },
+        "4": {
+          "cost": 19440
+        },
+        "5": {
+          "cost": 24300
+        },
+        "6": {
+          "cost": 29160
+        },
+        "7": {
+          "cost": 34020
+        },
+        "8": {
+          "cost": 38880
+        },
+        "9": {
+          "cost": 43740
+        },
+        "10": {
+          "cost": 48600
+        },
+        "11": {
+          "cost": 53460
+        },
+        "12": {
+          "cost": 58320
+        },
+        "13": {
+          "cost": 63180
+        },
+        "14": {
+          "cost": 68040
+        },
+        "15": {
+          "cost": 72900
+        }
+      },
+      "deleted": [
+        "460dbcc6364137d4",
+        "49cfc4ee1850c4e6",
+        "49dbce445c31adf2",
+        "57d88fdb2348fcc5",
+        "59da90f5951a5f1f",
+        "6608d4e9493972e3",
+        "847b25a85b628094",
+        "9a504c2d7ceb5e6b",
+        "c33930b76f29e901",
+        "e5fb241282222410",
+        "ebcac851f6c7e70f",
+        "f8a4faaa9e743c42",
+        "fd475bf339d9a2bd"
+      ]
+    },
+    "gear|SkillSoft Jukebox 27MP": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "9c17867b363963ad",
+      "levels": {
+        "2": {
+          "cost": 1080
+        },
+        "3": {
+          "cost": 1620
+        },
+        "4": {
+          "cost": 2160
+        },
+        "5": {
+          "cost": 2700
+        },
+        "6": {
+          "cost": 3240
+        },
+        "7": {
+          "cost": 3780
+        },
+        "8": {
+          "cost": 4320
+        },
+        "9": {
+          "cost": 4860
+        },
+        "10": {
+          "cost": 5400
+        },
+        "11": {
+          "cost": 5940
+        },
+        "12": {
+          "cost": 6480
+        },
+        "13": {
+          "cost": 7020
+        },
+        "14": {
+          "cost": 7560
+        },
+        "15": {
+          "cost": 8100
+        }
+      },
+      "deleted": [
+        "1bd0e1c76f303bc9",
+        "2b0b9eb67a48f7fa",
+        "3b355e64bd6df1d0",
+        "513522f1d2b4cfbb",
+        "51c50c2259e95dde",
+        "a416060b8d413309",
+        "ad391a2620f285c2",
+        "bba0df2d0baba7d7",
+        "bca348116750bceb",
+        "c06fa768847719b4",
+        "c972073db331a927",
+        "cba398ac545881dc",
+        "d479a1e8a0396e18"
+      ]
+    },
+    "gear|SkillSoft Jukebox 300MP": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "f033cb36b871f7c0",
+      "levels": {
+        "2": {
+          "cost": 12000
+        },
+        "3": {
+          "cost": 18000
+        },
+        "4": {
+          "cost": 24000
+        },
+        "5": {
+          "cost": 30000
+        },
+        "6": {
+          "cost": 36000
+        },
+        "7": {
+          "cost": 42000
+        },
+        "8": {
+          "cost": 48000
+        },
+        "9": {
+          "cost": 54000
+        },
+        "10": {
+          "cost": 60000
+        },
+        "11": {
+          "cost": 66000
+        },
+        "12": {
+          "cost": 72000
+        },
+        "13": {
+          "cost": 78000
+        },
+        "14": {
+          "cost": 84000
+        },
+        "15": {
+          "cost": 90000
+        }
+      },
+      "deleted": [
+        "1c8ae3fa6c910b84",
+        "3278e208aed399d4",
+        "4ac8718d4a39004f",
+        "4f7915a533a85a57",
+        "693e328ba579bcb1",
+        "728b9d1f072744a1",
+        "81cb74917f894693",
+        "90cbc52c928181a2",
+        "beabec1f5998d075",
+        "c268420a6bc1de26",
+        "c3df09d38d4abbfd",
+        "e0f90bf046a09566",
+        "f9f0efa428b02278"
+      ]
+    },
+    "gear|SkillSoft Jukebox 3MP": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "fc3d267793543a15",
+      "levels": {
+        "2": {
+          "cost": 120
+        },
+        "3": {
+          "cost": 180
+        },
+        "4": {
+          "cost": 240
+        },
+        "5": {
+          "cost": 300
+        },
+        "6": {
+          "cost": 360
+        },
+        "7": {
+          "cost": 420
+        },
+        "8": {
+          "cost": 480
+        },
+        "9": {
+          "cost": 540
+        },
+        "10": {
+          "cost": 600
+        },
+        "11": {
+          "cost": 660
+        },
+        "12": {
+          "cost": 720
+        },
+        "13": {
+          "cost": 780
+        },
+        "14": {
+          "cost": 840
+        },
+        "15": {
+          "cost": 900
+        }
+      },
+      "deleted": [
+        "030c91562c5a082a",
+        "3f44782a7e0d5c2a",
+        "786b4fd88fde9c1c",
+        "993d482968c67e3f",
+        "9e4515752fcfa623",
+        "d20ce26af363300e",
+        "d4e36febcc4b1231",
+        "d5dad9b541a0e615",
+        "e55fea94e191f01c",
+        "e81bbb981a88c838",
+        "ed37e33eb7043446",
+        "efe416617a97be31",
+        "f5a6e82bde1c5223"
+      ]
+    },
+    "gear|SkillSoft Jukebox 48MP": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "9f9a7774db2bacd6",
+      "levels": {
+        "2": {
+          "cost": 1920
+        },
+        "3": {
+          "cost": 2880
+        },
+        "4": {
+          "cost": 3840
+        },
+        "5": {
+          "cost": 4800
+        },
+        "6": {
+          "cost": 5760
+        },
+        "7": {
+          "cost": 6720
+        },
+        "8": {
+          "cost": 7680
+        },
+        "9": {
+          "cost": 8640
+        },
+        "10": {
+          "cost": 9600
+        },
+        "11": {
+          "cost": 10560
+        },
+        "12": {
+          "cost": 11520
+        },
+        "13": {
+          "cost": 12480
+        },
+        "14": {
+          "cost": 13440
+        },
+        "15": {
+          "cost": 14400
+        }
+      },
+      "deleted": [
+        "0f2ff057296962dd",
+        "245f0f465823f250",
+        "3629e25b452bb741",
+        "4086678a77a718e4",
+        "46d05ad5c5e4ceeb",
+        "50b4950a0c430614",
+        "50fd6c09fedba707",
+        "56158b3832337c32",
+        "8f1dfccb62603af9",
+        "a75eb9eff94acb05",
+        "a772701eb09df100",
+        "d5b640cd1f3b4123",
+        "f8941c78142284f2"
+      ]
+    },
+    "gear|SkillSoft Jukebox 75MP": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "f020deb038841344",
+      "levels": {
+        "2": {
+          "cost": 3000
+        },
+        "3": {
+          "cost": 4500
+        },
+        "4": {
+          "cost": 6000
+        },
+        "5": {
+          "cost": 7500
+        },
+        "6": {
+          "cost": 9000
+        },
+        "7": {
+          "cost": 10500
+        },
+        "8": {
+          "cost": 12000
+        },
+        "9": {
+          "cost": 13500
+        },
+        "10": {
+          "cost": 15000
+        },
+        "11": {
+          "cost": 16500
+        },
+        "12": {
+          "cost": 18000
+        },
+        "13": {
+          "cost": 19500
+        },
+        "14": {
+          "cost": 21000
+        },
+        "15": {
+          "cost": 22500
+        }
+      },
+      "deleted": [
+        "19a9a66ab57c58be",
+        "30002ba55c340d75",
+        "3a48391c8f8be2a0",
+        "549456ac717aeb60",
+        "5d424eefbfb8a167",
+        "61fc62eed4ff7f52",
+        "9345c7c386c1c94b",
+        "a4d4195a0df6576e",
+        "afefac59233d3559",
+        "c4c7c73b56a33173",
+        "ed528da6699b6c82",
+        "edf66fcfa2841daf",
+        "f6a1be417c93a791"
+      ]
+    },
     "gear|Standard Credstick": {
       "pack": "sr3e-sr3-gear",
       "by": "build-default-gear",
@@ -7315,6 +8312,102 @@
         "b27bc0855ecfd08b",
         "b37bc218f0932ff0",
         "b47bc3ab6aa76579"
+      ]
+    },
+    "gear|Table Top PC": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "5dc305cac9982e3a",
+      "levels": {
+        "50": {
+          "cost": 1000
+        },
+        "100": {
+          "cost": 2000
+        },
+        "200": {
+          "cost": 4000
+        },
+        "250": {
+          "cost": 5000
+        },
+        "500": {
+          "cost": 10000
+        },
+        "1000": {
+          "cost": 20000
+        },
+        "1500": {
+          "cost": 30000
+        },
+        "2000": {
+          "cost": 40000
+        },
+        "5000": {
+          "cost": 100000
+        }
+      },
+      "deleted": [
+        "1057d2a89063ff48",
+        "337354d645d22506",
+        "58a09c3d2bc965c3",
+        "97d904c9ed7e7a39",
+        "b02b8bdd32d9e9f7",
+        "b2a217a8774463e8",
+        "b3c2c8f2f9f138ca",
+        "c12f1d140a4087ec"
+      ]
+    },
+    "gear|Telecom": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "1294027951d9906d",
+      "levels": {
+        "100": {
+          "cost": 3000
+        },
+        "200": {
+          "cost": 6000
+        },
+        "250": {
+          "cost": 7500
+        },
+        "300": {
+          "cost": 9000
+        },
+        "400": {
+          "cost": 12000
+        },
+        "500": {
+          "cost": 15000
+        },
+        "600": {
+          "cost": 18000
+        },
+        "700": {
+          "cost": 21000
+        },
+        "800": {
+          "cost": 24000
+        },
+        "900": {
+          "cost": 27000
+        },
+        "1000": {
+          "cost": 30000
+        }
+      },
+      "deleted": [
+        "161d82b073626e44",
+        "1ef650c5bedd6c69",
+        "3bbdcfd794eb4c1b",
+        "66808ce23c97a14e",
+        "8d9e85312215e2fd",
+        "95946106b67429f2",
+        "bb249bdcf985e5a0",
+        "bc46f1815e207f25",
+        "c14095c5d7fd07c9",
+        "d733f1031b0ec377"
       ]
     },
     "gear|Thermal Dampening": {
@@ -7704,6 +8797,142 @@
         "c04bf42b1b10e035"
       ]
     },
+    "gear|Virt Instr Gen.": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "6eb8a46819080ba8",
+      "levels": {
+        "1": {
+          "availability": "2/72hrs",
+          "cost": 600,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 6</p>"
+        },
+        "2": {
+          "availability": "4/72hrs",
+          "cost": 2400,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 24</p>"
+        },
+        "3": {
+          "availability": "6/72hrs",
+          "cost": 5400,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 54</p>"
+        },
+        "4": {
+          "availability": "8/72hrs",
+          "cost": 9600,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 96</p>"
+        },
+        "5": {
+          "availability": "9/72hrs",
+          "cost": 12300,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 123</p>"
+        },
+        "6": {
+          "availability": "10/72hrs",
+          "cost": 15600,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 156</p>"
+        },
+        "7": {
+          "availability": "11/72hrs",
+          "cost": 19500,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 195</p>"
+        },
+        "8": {
+          "availability": "12/72hrs",
+          "cost": 24000,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 240</p>"
+        },
+        "9": {
+          "availability": "13/72hrs",
+          "cost": 29100,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 291</p>"
+        },
+        "10": {
+          "availability": "14/72hrs",
+          "cost": 34800,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 348</p>"
+        }
+      },
+      "deleted": [
+        "7420ffa067f15c44",
+        "90a99ac4c07cb3f6",
+        "a72c1a1c0f660492",
+        "a82c1baf9551cf09",
+        "a92c1d421b3d9980",
+        "aa2c1ed5a12963f7",
+        "ab2c206827152e6e",
+        "ac2c21fbad00f8e5",
+        "c46591a9da75403b"
+      ]
+    },
+    "gear|Virt Instr Spec": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "5f5a3b1fe50cf0a7",
+      "levels": {
+        "1": {
+          "availability": "2/72hrs",
+          "cost": 500,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 5</p>"
+        },
+        "2": {
+          "availability": "4/72hrs",
+          "cost": 2000,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 20</p>"
+        },
+        "3": {
+          "availability": "6/72hrs",
+          "cost": 4500,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 45</p>"
+        },
+        "4": {
+          "availability": "8/72hrs",
+          "cost": 8000,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 80</p>"
+        },
+        "5": {
+          "availability": "9/72hrs",
+          "cost": 9800,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 98</p>"
+        },
+        "6": {
+          "availability": "10/72hrs",
+          "cost": 12000,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 120</p>"
+        },
+        "7": {
+          "availability": "11/72hrs",
+          "cost": 14600,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 146</p>"
+        },
+        "8": {
+          "availability": "12/72hrs",
+          "cost": 17600,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 176</p>"
+        },
+        "9": {
+          "availability": "13/72hrs",
+          "cost": 21000,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 210</p>"
+        },
+        "10": {
+          "availability": "14/72hrs",
+          "cost": 24800,
+          "description": "<p><strong>Type:</strong> Virt<br><strong>Memory:</strong> 248</p>"
+        }
+      },
+      "deleted": [
+        "009b6539e7427e7f",
+        "099b73647905dde4",
+        "0a9b74f7f31a136d",
+        "0bfc553f33f64143",
+        "101c369b8c8198f5",
+        "83a31eb43e81e8c4",
+        "fd9b60806156b408",
+        "fe9b6213db6ae991",
+        "ff9b63a66d2e48f6"
+      ]
+    },
     "gear|Voice Identifier": {
       "pack": "sr3e-sr3-gear",
       "by": "build-default-gear",
@@ -7876,6 +9105,34 @@
         "d3e98f7a8e8bb504",
         "d4e9910d14777f7b",
         "d89b389ff2722bf5"
+      ]
+    },
+    "gear|Wrist Computer": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "ba49b5fc5e40d7a4",
+      "levels": {
+        "5": {
+          "cost": 2000
+        },
+        "10": {
+          "cost": 4000
+        },
+        "25": {
+          "cost": 10000
+        },
+        "50": {
+          "cost": 20000
+        },
+        "100": {
+          "cost": 40000
+        }
+      },
+      "deleted": [
+        "1605180a80ca650a",
+        "2607852e56c6638e",
+        "6f7c1a68b8eb99f8",
+        "fb6c3ede531babee"
       ]
     },
     "medical|Alpha Hospital": {

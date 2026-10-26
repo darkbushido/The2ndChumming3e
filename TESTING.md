@@ -3143,3 +3143,49 @@ The gear packs change (`npm run packs:install`, Foundry closed).
 - [ ] **Cannon Companion gear:** Sawed-Off Shotgun Barrel 64¥; Rangefinder's description reads **Mount: Top**; **Laser Sight, Low-Power** 800¥, Mount Top/Under, page cc.82, and its description gives Design Points +100 × 8.
 - [ ] **SR3 core gear:** no low-power laser sight remains; Smart Shades I (Cost 6000¥) shows page sr3.281 and the "double the nuyen" line; Ultrasound Shades and Gas Vent I carry their source notes.
 - [ ] **Man & Machine gear:** Smart Shades II say "Derived; not printed".
+
+## 71. Karma on NPCs, and Total Karma in the ledger (Karma audit, 2026-10-25, SR3 p.242-246)
+
+**Prerequisites:** an `npc` actor owned by Player2 (so it is a player character), and a non-human character
+owned by a player. JS only — reload the tabs, no restart.
+
+**Walked by the agent 2026-10-25** (mcp-api as active GM, fresh code, test world; actors restored after).
+
+- [x] The NPC's sheet has **no** Good Karma, Total Karma, Award Karma…, Spend Karma… (Bio → Resources) and **no**
+      Karma Pool block (Attributes); Nuyen and Combat Pool are still there. A character's sheet still has all of them.
+- [x] Calling Award Karma / Spend Karma on the NPC's sheet only warns "has no Good or Total Karma to award" / "has no
+      Good Karma to spend" — no dialog, no ledger line.
+- [x] **🎖 Session Rewards** lists the NPC as "(no karma — NPC | ¥…)". Award 25 karma and ¥100 to the NPC and a troll at
+      Total 0, Pool 3: the troll gets Good Karma +24, Total 25, Pool 4; the NPC gets ¥100 only; the card says
+      "No karma for <NPC> — an NPC carries no karma fields" and cites SR3 p.242.
+- [x] The troll's 📒 Ledger has four lines: Good Karma +24, **Total Karma +25 (0 → 25)**, Nuyen +¥100, Karma Pool +1.
+- [ ] By eye: the NPC's Resources row (Nuyen, ± Funds…, 🛒 Buy gear…) lays out sensibly without the karma boxes.
+- [ ] `game.sr3e.SR3EMigrations.force()` on a character whose Karma Pool was burned (a "Karma Pool" ledger line with a
+      negative change) leaves the Pool where it is; the migration's own ledger lines, if any, read "Migration 0.x.y: …",
+      not "By hand".
+
+## 72. Buy gear — the card remembers, the store, one item per level (bugs reported 2026-10-25, SR3 pp.272-273)
+
+**Prerequisites:** a character owned by Player2 with ¥50,000 and an Etiquette skill. JS only for the card; the packs
+need `npm run packs:install` (Foundry closed) and a restart.
+
+**The card is recorded on the message**
+- [ ] Player2 buys a Fichetti Security 500 through a contact and gets a "Source found" card. Player2 presses 🤝 and
+      haggles. **On the GM's tab** the card's 🤝 and 💴 are now greyed out (hover: "Already haggled…" / "The haggle set
+      a new price…"), and only the haggle card's 💴 is live.
+- [ ] Player2 presses 💴 on the haggle card and confirms. On the GM's tab that 💴 is greyed out ("Paid."). **F5 on both
+      tabs**: still greyed out.
+- [ ] Press 💴 on a fresh card and **Cancel** the confirm: the button is live again and nothing was paid.
+
+**One item per level** (restart Foundry after `npm run packs:install`)
+- [ ] The SR3 gear compendium has ONE "Pocket Computer". Its sheet's Level dropdown reads 10 Mp, 25 Mp … 1000 Mp, and
+      picking 250 Mp sets the cost to 25,000¥. Dragged onto a character it reads "Pocket Computer [10]".
+- [ ] 🛒 Buy gear → search "pocket computer": one hit; the Level picker says "250 Mp"; buying it adds
+      "Pocket Computer [250]" at 25,000¥ list.
+- [ ] Same for Wrist Computer, Telecom, Table Top PC, headware Memory (cyberware), ECCM, a SkillSoft Jukebox (its
+      ports) and the Virtual Instrument chips.
+- [ ] The SR3 adept powers have ONE "Imp. Reflexes": dropped on an adept it reads "Imp. Reflexes [1]"; picking level 3
+      on its sheet makes it "Imp. Reflexes [3]", 5 Power Points, +3 Initiative dice, and on a Magic 2 adept the sheet
+      warns it is above Magic. "Killing Hands" dropped on the same adept keeps its plain name.
+- [ ] `game.sr3e.SR3EMigrations.force()` on a character holding an old "Pocket Computer (250Mp)" and "Combat Sense +2":
+      they become "Pocket Computer [250]" (rating 250) and "Combat Sense [2]" (level 2, still two Combat Pool dice).

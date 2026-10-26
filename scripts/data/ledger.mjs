@@ -10,7 +10,7 @@
  * exactly what this project does not build.
  *
  * ⚠ **Every entry is derived from the WRITE, not from a call site.** `SR3EActor._preUpdate` diffs
- * the three fields on any update and appends what changed, so the Session Rewards tool, Award Karma,
+ * the tracked fields on any update and appends what changed, so the Session Rewards tool, Award Karma,
  * the Spend calculator, a healing bill and a player typing in the box are all recorded by the same
  * code. Instrumenting the ten call sites instead would silently miss the eleventh — and the eleventh
  * is the one a future feature adds.
@@ -28,7 +28,10 @@ export const PAGE = 'TODO 79';
 /** The fields worth a line in the ledger, and how each is labelled. */
 export const TRACKED = {
   karma:      { label: 'Good Karma', kind: 'karma',  path: 'system.karma' },
-  nuyen:      { label: 'Nuyen',      kind: 'nuyen',  path: 'system.nuyen' },
+  // The career total (SR3 p.242). Untracked until the Karma audit of 2026-10-25: an award left a Good
+  // Karma line and a Pool line but no record of the total behind them, and a GM's edit of it none at all.
+  totalKarma: { label: 'Total Karma', kind: 'total', path: 'system.totalKarma' },
+  nuyen:     { label: 'Nuyen',      kind: 'nuyen',  path: 'system.nuyen' },
   karmaPool:  { label: 'Karma Pool', kind: 'pool',   path: 'system.karmaPool' },
   // Karma Pool spent since the GM's refresh (SR3 p.246). Its own line, because a spend comes back
   // and a burn (a drop in `karmaPool`) does not — the ledger has to tell them apart.
@@ -188,6 +191,16 @@ export const Ledger = {
    */
   inherited(data) {
     return !!data?._stats?.duplicateSource && Ledger.of(data?.system).length > 0;
+  },
+
+  /**
+   * Has anything written this kind since the ledger began? A migration that recognises a value by its
+   * old default asks this first: once the ledger shows a write, the value is somebody's — a burned Karma
+   * Pool point (SR3 p.246, "gone forever") can land back on the old default, and `force()` re-runs
+   * everything (Karma audit, 2026-10-25). ⚠ A GM's ✕ on every such line hides the history from this too.
+   */
+  touched(sys, kind) {
+    return Ledger.of(sys).some(e => e?.kind === kind);
   },
 
   /** A running total per kind, for reconciling the ledger against the sheet's numbers. */

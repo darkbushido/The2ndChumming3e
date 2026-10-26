@@ -20,7 +20,7 @@ paths:
 ---
 # Karma, the ledger, buying gear, encumbrance
 
-### Karma & advancement  · *SR3 p.244-246*
+### Karma & advancement  · *SR3 p.242-246* (the section opens on p.242; p.243 is art)
 
 | Field | Is | Changes when |
 |---|---|---|
@@ -128,7 +128,7 @@ re-crossed the pool threshold from 0 and granted points twice.
   skill/attribute one apart, so `ceil` vs `floor` and skill- vs attribute-gated caps both pass them.
 
 ### The ledger  · TODO 79
-`scripts/data/ledger.mjs`. `system.ledger`: `{ when, kind: 'karma'|'nuyen'|'pool'|'poolSpent', delta, from, to,
+`scripts/data/ledger.mjs`. `system.ledger`: `{ when, kind: 'karma'|'total'|'nuyen'|'pool'|'poolSpent', delta, from, to,
 reason, by, revert?, reverted? }`, on the **📒 Ledger** tab (every entry; From → To, By; GM-only ✕) with the latest
 `BIO_LEDGER_ROWS` (8) on the Bio tab (TODO 153). Labels by `specForKind(kind)`.
 - ⚠ **The GM's ✕ removes history, never the totals**, through `Ledger.without`, which returns null when the entry at
@@ -178,6 +178,11 @@ card: delivery N, meet at N/2, price → 🤝 Negotiate (`rollOpposedPair` → `
   `negotiation-loss-is-merely-no-discount`.
 - ⚠ The contact is a **hint** (`SOURCE_AFFINITY`; amber for a poor source, never blocked).
 - ⚠ **Nothing written until 💴** — then one `actor.update` with `ledgerReason`.
+- ⚠ **🤝 and 💴 are recorded ON THE MESSAGE** (`Purchasing.CARD_ROLES` via `sr3e.card.mark`; `Purchasing.cardButtons`
+  reads the ledger at render). The in-memory guard is per browser, so the GM's tab showed a card live after the
+  player had haggled or paid (reported 2026-10-25). **A haggle retires the Source found card's 💴** (its price is
+  superseded). Each claim is made after the dialog/confirm and before the roll/write, so a cancel hands the button
+  back. Mutant `buy-haggle-leaves-pay-live`.
 - ⚠ Every number editable (p.272: a guideline). Dwarf-sized gear **+10%**, troll **+25%** (from `system.metatype`).
 - **Finding the item (TODO 154, `scripts/data/gear-search.mjs`)**: a 🔎 search over the gear packs' **indexes**
   (`pack.getIndex({ fields })`, never `getDocuments`) and a drop onto the dialog fill the same fields through one
