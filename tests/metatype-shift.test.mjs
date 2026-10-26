@@ -80,6 +80,10 @@ export async function run(t) {
     J({ 'system.metatype': 'troll', 'system.attributes.body.base': 8, 'system.attributes.quickness.base': 5 }));
   t.is('describe', MetatypeShift.describe({ body: 10, quickness: 4 }, { body: 8, quickness: 5 }), 'Body 10 → 8, Quickness 4 → 5');
 
+  t.is('article: an elf, an ork, a troll, a dwarf, a human',
+    ['elf', 'ork', 'troll', 'dwarf', 'Human'].map(m => MetatypeShift.withArticle(m)).join(', '), 'an elf, an ork, a troll, a dwarf, a human');
+  t.ok('the notification uses the article', /is \$\{MetatypeShift\.withArticle\(r\.metatype\)\}/.test(read('scripts/SR3EMeetContact.js')));
+
   /* traits that follow system.metatype on their own (so the shift need not touch them) */
   const cfg = read('scripts/config.js');
   t.ok('troll dermal armour, Reach and racial vision are keyed by metatype',
