@@ -15,6 +15,7 @@ import { WillingTarget } from '../data/willing-target.mjs';
 import { AreaShape } from '../data/area-shape.mjs';
 import { RiggerShock, DISORIENT_MOD, DISORIENT_TN, DISORIENT_TURNS } from '../data/rigger-shock.mjs';
 import { MdfRules } from '../data/mdf-rules.mjs';
+import { HackingPool } from '../data/hacking-pool.mjs';
 import { KarmaPool } from '../data/karma-uses.mjs';
 import { CombatPool } from '../data/combat-pool.mjs';
 import { Collisions } from '../data/collisions.mjs';
@@ -2631,15 +2632,11 @@ _prepareCharacter(sys, attr) {
 
   const deckItem        = sys.equippedCyberdeck ? this.items?.get(sys.equippedCyberdeck) : null;
   const mpcp            = deckItem?.system?.attributes?.mpcp?.base ?? null;
-  // MDF p.11: Intelligence + ⌊MPCP ÷ 3⌋ — not SR3 core's ⌊(INT + MPCP) ÷ 3⌋, which the Orthodox pool below keeps.
-  const hackingPoolBase = mpcp !== null
-    ? MdfRules.hackingPool(attr.intelligence?.value ?? 0, mpcp)
-    : null;
-  // Orthodox SR3 hacking pool: derived from actor-stored deck stats (same formula, different source)
-  const orthodoxMccp         = sys.orthodoxDeck?.mccp ?? 0;
-  const orthodoxHackingPool  = orthodoxMccp > 0
-    ? Math.max(0, Math.floor(((attr.intelligence?.value ?? 0) + orthodoxMccp) / 3))
-    : 0;
+  // TODO 275: ONE Hacking Pool, by the world's Matrix ruleset — Orthodox ⌊(INT + MPCP) ÷ 3⌋ (SR3 p.207),
+  // Defragged INT + ⌊MPCP ÷ 3⌋ (MDF p.11). The equipped deck's MPCP feeds it; an Orthodox decker with no
+  // deck item falls back to the deck stats kept on the actor (`system.orthodoxDeck.mccp`).
+  const matrixRuleset = (() => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset'); } catch { return 'defragged'; } })();
+  const hackingPoolBase = HackingPool.figure(matrixRuleset, attr.intelligence?.value ?? 0, mpcp, sys.orthodoxDeck?.mccp);
 
   const astralPoolBase = magicBase > 0
     ? Math.max(0, Math.floor(
@@ -2763,10 +2760,10 @@ _prepareCharacter(sys, attr) {
     initiatePool,
     availableInitiatePool,
     hackingPoolBase,
-    hackingPool:          hackingPoolBase !== null ? Math.max(0, hackingPoolBase) : null,
+    hackingPoolNote:      hackingPoolBase !== null
+      ? HackingPool.explain(matrixRuleset, attr.intelligence?.value ?? 0, HackingPool.mpcpFor(matrixRuleset, mpcp, sys.orthodoxDeck?.mccp)) : '',
+    hackingPool:         hackingPoolBase !== null ? Math.max(0, hackingPoolBase) : null,
     availableHackingPool: hackingPoolBase !== null ? Math.max(0, hackingPoolBase - (sys.hackingPoolSpent ?? 0)) : null,
-    orthodoxHackingPool,
-    availableOrthodoxHackingPool: Math.max(0, orthodoxHackingPool - (sys.hackingPoolSpent ?? 0)),
     vcrRating,
     vcrActive:          vcrRating > 0,
     /* SR3 p.44: Reaction (unaugmented) + 2 × VCR; 0 without a rig. The per-test cap is the skill. */
@@ -10844,14 +10841,10 @@ _prepareCharacter(sys, attr) {
       return spent;
     }
     return game.sr3e.SR3EQueue.run(this.uuid, async () => {
-      // ⚠ Both rulesets, or Orthodox deckers can never spend a die.
-      //
-      // `availableHackingPool` is derived from an EQUIPPED CYBERDECK ITEM, which only a
-      // Defragged decker has; an Orthodox decker keeps deck stats on the actor, so theirs
-      // is null and this clamped every spend to 0 — silently, since spending nothing looks
-      // exactly like choosing to spend nothing. Whichever pool the actor actually has wins.
+      // TODO 275: one derived pool for both rulesets (an Orthodox decker's actor-held deck stats feed it
+      // too), so a null here means no deck at all. Clamping to 0 for a deckless actor is correct.
       const d      = this.system.derived ?? {};
-      const avail  = d.availableHackingPool ?? d.availableOrthodoxHackingPool ?? 0;
+      const avail  = d.availableHackingPool ?? 0;
       const actual = Math.min(amount, avail);
       if (actual > 0) {
         await this.update({ 'system.hackingPoolSpent': (this.system.hackingPoolSpent ?? 0) + actual });
@@ -13507,13 +13500,9 @@ _prepareCharacter(sys, attr) {
     const compSkill     = this.items.find(i => i.type === 'skill' && /computer|decking/i.test(i.name));
     const compRating    = compSkill?.system?.rating ?? 0;
     const compLabel     = compSkill?.name ?? 'Computer (none)';
-    // ⚠ The ORTHODOX pool, not the Defragged one. An Orthodox decker keeps their deck
-    // stats on the actor (`system.orthodoxDeck`) and owns no cyberdeck ITEM, so
-    // `availableHackingPool` — derived from an equipped item — is null for them
-    // and was silently becoming 0. Two of the three Orthodox cards offered no Hacking Pool
-    // at all while the IC-attack card correctly offered it, which is what gave the bug away.
-    // Falls back to the Defragged pool so a hybrid sheet is not left worse off.
-    const hackPool = d.availableOrthodoxHackingPool ?? d.availableHackingPool ?? 0;
+    // TODO 275: the one derived pool — it follows the world's Matrix ruleset and reads an Orthodox
+    // decker's actor-held deck stats itself.
+    const hackPool = d.availableHackingPool ?? 0;
     const detectFactor  = (() => {
       const m = deck.masking ?? 0, s = deck.sleazeRating ?? 0;
       return s > 0 ? Math.ceil((m + s) / 2) : Math.ceil(m / 2);
@@ -13713,13 +13702,9 @@ _prepareCharacter(sys, attr) {
 
     const secCode = host.system.orthodoxSecurityCode ?? 'Green';
     const secVal  = host.system.orthodoxSecurityValue ?? 0;
-    // ⚠ The ORTHODOX pool, not the Defragged one. An Orthodox decker keeps their deck
-    // stats on the actor (`system.orthodoxDeck`) and owns no cyberdeck ITEM, so
-    // `availableHackingPool` — derived from an equipped item — is null for them
-    // and was silently becoming 0. Two of the three Orthodox cards offered no Hacking Pool
-    // at all while the IC-attack card correctly offered it, which is what gave the bug away.
-    // Falls back to the Defragged pool so a hybrid sheet is not left worse off.
-    const hackPool = d.availableOrthodoxHackingPool ?? d.availableHackingPool ?? 0;
+    // TODO 275: the one derived pool — it follows the world's Matrix ruleset and reads an Orthodox
+    // decker's actor-held deck stats itself.
+    const hackPool = d.availableHackingPool ?? 0;
 
     // IC targets on this host
     const icTargets = game.actors.filter(a =>
@@ -13952,8 +13937,7 @@ _prepareCharacter(sys, attr) {
      */
     const defCcSkill   = deckerActor.items.find(i => i.type === 'skill' && /cybercombat/i.test(i.name));
     const totalDefDice = Math.max(1, defCcSkill?.system?.rating ?? 1);
-    const defHpAvail   = deckerActor.system.derived?.availableOrthodoxHackingPool
-                      ?? deckerActor.system.derived?.availableHackingPool ?? 0;
+    const defHpAvail   = deckerActor.system.derived?.availableHackingPool ?? 0;
     // Same base TN for both sides, plus the decker's sustained spells (p.178 — all tests but Damage
     // Resistance). Not their wounds: the defence avoids damage (p.125).
     const defTN        = atkTNOverride + SR3EActor.standingTN(deckerActor);

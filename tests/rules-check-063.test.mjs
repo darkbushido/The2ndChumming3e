@@ -28,9 +28,8 @@ export async function run(t) {
   t.is('MPCP below 3 adds nothing: INT 4, MPCP 2 → 4', MdfRules.hackingPool(4, 2), 4);
   t.is('no deck stats: 0', MdfRules.hackingPool(0, 0), 0);
   const actor = read('scripts/documents/SR3EActor.js');
-  t.ok('the equipped-deck pool uses it', /\? MdfRules\.hackingPool\(attr\.intelligence\?\.value \?\? 0, mpcp\)/.test(actor));
-  t.ok('…while the Orthodox pool keeps SR3 core\'s ⌊(INT + MPCP) ÷ 3⌋',
-    /orthodoxMccp > 0\s*\n\s*\? Math\.max\(0, Math\.floor\(\(\(attr\.intelligence\?\.value \?\? 0\) \+ orthodoxMccp\) \/ 3\)\)/.test(actor));
+  t.ok('the Defragged pool still uses it (TODO 275 chooses by ruleset in hacking-pool.mjs)',
+    /MdfRules.hackingPool(intelligence, mpcp)/.test(read('scripts/data/hacking-pool.mjs')));
 
   /* 2 ── MDF Matrix Condition Monitor ─────────────────────────────────────────── */
   t.eq('boxes 0…10 → 0,1,1,2,2,2,3,3,3,3,4',
