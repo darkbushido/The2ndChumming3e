@@ -602,6 +602,12 @@ Hooks.on('preCreateActor', (document, _data, options, _userId) => {
       displayBars: CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,
     } });
   }
+
+  // Vision on by default for every new actor (the maintainer, 2026-10-25) — only when the data does
+  // not say: a token someone set to blind, or a pack entry's explicit `false`, is left alone.
+  if (_data.prototypeToken?.sight?.enabled === undefined) {
+    document.updateSource({ prototypeToken: { sight: { enabled: true } } });
+  }
 });
 
 /**

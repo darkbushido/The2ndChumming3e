@@ -38,6 +38,8 @@ const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  
 const VARM  = { module: '../scripts/data/vehicle-armor.mjs', klass: 'VehicleArmor' };
 const STALL = { module: '../scripts/data/stall-speed.mjs', klass: 'StallSpeed' };
 const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  };
+const PORTRAITS = { module: '../scripts/data/portraits.mjs', klass: 'Portraits' };
+const TOKENSIGHT = { module: '../scripts/data/token-sight.mjs', klass: 'TokenSight' };
 const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
@@ -3708,5 +3710,31 @@ export const MUTANTS = [
     ...MACROREF, method: 'find',
     was:    'the refresh took any script macro, so a GM-authored macro with another name was overwritten (TODO 261)',
     impl:   (_def, macros) => [...(macros ?? [])].find(m => m?.type === 'script') ?? null,
+  },
+  {
+    id:     'portraits-job-tier-crosses-metatype',
+    suite:  'portraits',
+    ...PORTRAITS, method: 'candidates', needsOriginal: '_candidatesOriginal',
+    was:    "Meet the contact's face grid had a 'job' tier (same job, ANY metatype), so a thin grid filled with other "
+          + 'races and the metatype dropdown seemed not to filter (TODO 262, 2026-10-25)',
+    impl:   function (index, want) {
+      const out = this._candidatesOriginal(index, want);
+      if (!want?.job) return out;
+      const seen = new Set(out.map(e => e.src));
+      const job = (index?.entries ?? []).filter(e => e.job === want.job && !seen.has(e.src)
+        && (!want.gender || e.gender === want.gender) && !!want.minor === e.minor).map(e => ({ ...e, match: 'job' }));
+      const at = out.findIndex(e => e.match !== 'exact' && e.match !== 'base');
+      out.splice(at < 0 ? out.length : at, 0, ...job);
+      return out;
+    },
+  },
+  {
+    id:     'token-sight-migration-hits-placed-tokens',
+    suite:  'contact-tokens',
+    ...TOKENSIGHT, method: 'fixActor',
+    was:    'a vision migration that ignored isToken would re-sight every unlinked token on every scene, undoing a GM who '
+          + 'blinded one on purpose (the maintainer, 2026-10-25: prototype tokens only)',
+    impl:   (actor) => (actor && ['character', 'npc'].includes(actor.type) && actor.prototypeToken?.sight?.enabled !== true
+      ? { 'prototypeToken.sight.enabled': true } : null),
   },
 ];

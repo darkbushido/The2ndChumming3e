@@ -28,6 +28,7 @@
 import { SRCG_BONUSES } from './data/srcg-bonuses.js';
 import { expandCyberwareName } from './data/cyberware-names.js';
 import { parseJohnsonNotes, isJohnsonNote } from './data/johnson-notes.mjs';
+import { TokenSight } from './data/token-sight.mjs';
 import { Ledger } from './data/ledger.mjs';
 import { knownRating } from './data/item-rating.mjs';
 import { AmmoStock } from './data/ammo-stock.mjs';
@@ -594,6 +595,22 @@ const MIGRATIONS = [
       Object.assign(delta, Legality.fillDelta(linked) ?? {});
       return Object.keys(delta).length ? delta : null;
     },
+  },
+  {
+    version: '0.9.0',
+    label: 'Characters and NPCs see: prototype-token vision on (TODO 262)',
+    /**
+     * Seen in play, 2026-10-25: contacts met from Mr. Johnson's Little Black Book came out blind. The pack and
+     * `preCreateActor` now turn vision on; an actor already in a world is its own copy.
+     *
+     * ⚠ **This OVERWRITES `prototypeToken.sight.enabled` (false → true), and argues for it:** the maintainer's
+     * decision of 2026-10-25 ("Migrate characters/NPCs") — every character and NPC should see, and a blind
+     * PROTOTYPE was the shipped or core default, not a choice anyone made at the table. ⚠ Tokens already placed
+     * on a scene are deliberately left alone (a GM may have blinded one on purpose): `TokenSight.fixActor` yields
+     * null for an unlinked token actor, so of the three populations only world actors change. Vehicles are not
+     * included. Idempotent: a seeing prototype yields null.
+     */
+    fixActor: TokenSight.fixActor,
   },
 
 ];

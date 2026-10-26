@@ -420,6 +420,14 @@ Needs a **full Foundry restart** (new `contact.npcUuid` field). With a portrait 
 - [ ] A contact whose picture someone chose keeps it (the name still changes only if "Show on the contact" is ticked).
 - [ ] No portrait module active: no grid, the note says so, names still work, the NPC keeps the archetype's picture.
 
+**Fixes from play, 2026-10-25** (`claude/fix-meet-the-contact-1bc711`; packs need `npm run packs:install`, Foundry closed):
+- [ ] Create NPC from a pack archetype (e.g. Dock Worker): the world actor AND its prototype token carry the rolled name, not "Dock Worker".
+- [ ] Pick a metatype with few portraits (e.g. dwarf): the grid shows only that metatype (and its variants) — never another race.
+- [ ] Contacts tab → Link Archetype: the list shows ~16 rows (360px tall), not one collapsed row.
+- [ ] Drag a Mr. Johnson's contact onto a scene: the token has vision on and wears the dynamic ring.
+- [ ] Create a brand-new actor (any type) from the sidebar: its prototype token has vision on.
+- [ ] 0.9.0 migration (after the bump; or `game.sr3e.SR3EMigrations.force()`): a world character/NPC whose prototype token was blind now sees; a token already placed on a scene with vision off stays off; vehicles unchanged.
+
 ## Open combat steps — TODO 147 (`feature/open-steps`)
 
 **Checked live by the agent, 2026-09-24** (mcp-api, then with the maintainer's Gamemaster seat also on):

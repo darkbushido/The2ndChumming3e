@@ -5109,7 +5109,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       content: `
         <div style="padding:8px 0">
           <input id="arch-filter" type="text" placeholder="Type to filter…" style="width:100%;margin-bottom:6px"/>
-          <select id="arch-sel" size="12" style="width:100%">
+          <select id="arch-sel" size="16" style="width:100%;height:360px">
             <option value="">— none —</option>
             ${entries.map(e => `<option value="${e.uuid}" data-search="${e.name.toLowerCase()}"
               ${e.uuid === current ? 'selected' : ''}>${e.name}  ·  ${e.pack}</option>`).join('')}

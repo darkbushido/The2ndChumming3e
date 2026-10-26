@@ -538,7 +538,6 @@ export class SR3EQuery {
           // …and the 📒 Ledger is the source's history, not the copy's (TODO 193). With `_stats`
           // gone, `Ledger.inherited` in the `preCreateActor` hook cannot tell this is a copy.
           if (data.system) data.system.ledger = [];
-          if (name) data.name = name;
         } else if (source) {
           const [collection, docId] = String(source).split('|');
           const pack = game.packs.get(collection);
@@ -549,6 +548,14 @@ export class SR3EQuery {
           delete data._id;
         } else {
           data = { name: String(name || 'New Vehicle').trim() || 'New Vehicle', type: 'vehicle' };
+        }
+
+        // ⚠ The name applies to EVERY branch, and the token's with it. It used to apply only to a copy,
+        // so Meet the contact's NPC from a pack kept the archetype's name ("Dock Worker", 2026-10-25).
+        const newName = String(name ?? '').trim();
+        if (newName) {
+          data.name = newName;
+          foundry.utils.setProperty(data, 'prototypeToken.name', newName);
         }
 
         if (set && typeof set === 'object') {
