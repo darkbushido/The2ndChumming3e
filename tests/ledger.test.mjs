@@ -183,9 +183,10 @@ export async function run(t) {
   // The known writers each explain themselves, so the "why" column is not blank where it could be full.
   t.ok('Session Rewards names itself', /ledgerReason: 'Session rewards'/.test(read('scripts/sr3e.js')));
   t.ok('Award Karma names itself', /ledgerReason: 'Karma award'/.test(read('scripts/sheets/SR3EActorSheet.js')));
-  // 6 attribute/skill purchases, + a Power Point, a spell and a focus (2026-10-11), + the GM's ↺ refund line (TODO 212).
+  // 6 attribute/skill purchases, + a Power Point, a spell and a focus (2026-10-11), + the GM's ↺ refund line (TODO 212),
+  // + the ↺ for an award (TODO 267).
   t.is('every Spend-calculator purchase names what it bought',
-    (read('scripts/sheets/SR3EActorSheet.js').match(/ledgerReason: `/g) ?? []).length, 10);
+    (read('scripts/sheets/SR3EActorSheet.js').match(/ledgerReason: `/g) ?? []).length, 11);
   t.ok('a healing bill names the treatment', /ledgerReason: `Medical: /.test(read('scripts/SR3EHealing.js')));
 
   /* ── A copy does not inherit its source's history · TODO 193 ─────────────── */

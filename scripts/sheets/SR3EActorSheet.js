@@ -134,6 +134,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         rollProgram:        SR3EActorSheet._onRollProgram,
         refreshHackingPool:      SR3EActorSheet._onRefreshHackingPool,
         awardKarma:              SR3EActorSheet._onAwardKarma,
+        handOfGod:               SR3EActorSheet._onHandOfGod,
         adjustFunds:             SR3EActorSheet._onAdjustFunds,   // TODO 192
         spendKarmaCalculator:    SR3EActorSheet._onSpendKarmaCalculator,
         useNodePrompt:           SR3EActorSheet._onUseNodePrompt,
@@ -3292,6 +3293,18 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             * 2026-10-25). */ ''}
         ${karmaFields ? `${this._inlineField('Good Karma', 'system.karma', sys.karma, 'number', 80)}
         ${this._inlineField('Total Karma', 'system.totalKarma', sys.totalKarma, 'number', 80)}` : ''}
+        ${/* The Karma Pool beside Good and Total Karma (the maintainer, 2026-10-25 — it could not be found here).
+            * Read-only and UNNAMED, so it never reaches the sheet's submit; it is typed, spent and refreshed on the
+            * Attributes tab, where the link goes. TODO 267. */ ''}
+        ${game.sr3e.SR3EActor.hasKarmaPool(this.actor)
+          ? `<span style="display:inline-flex;align-items:flex-end;gap:6px"${/* one flex item, so the link never wraps away from the box */ ''}>
+            <label class="inline-field sr-karma-pool-summary" title="Left / size. Typed and refreshed on the Attributes tab (SR3 p.246).">Karma Pool
+              <input type="text" value="${(sys.derived?.availableKarmaPool ?? sys.karmaPool ?? 0)} / ${sys.karmaPool ?? 0}" style="width:60px" readonly disabled/>
+            </label>
+            <a data-action="switchTab" data-tab="attributes" style="font-size:11px;cursor:pointer;color:var(--sr-accent);white-space:nowrap;padding-bottom:4px"
+               title="Open the Attributes tab — the Karma Pool's boxes and the GM's 🍀 Refresh">→ Attributes</a>
+          </span>`
+          : ''}
         ${/* ⚠ The Award button is registered in DEFAULT_OPTIONS.actions but was NEVER RENDERED
             * — the only two references to `awardKarma` in the codebase were that registration
             * and the dialog's own title, so the handler was unreachable and Session Rewards
@@ -3304,6 +3317,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           : ''}
         ${karmaFields
           ? '<button type="button" class="btn-sm" data-action="spendKarmaCalculator" style="align-self:flex-end">Spend Karma…</button>'
+          : ''}
+        ${/* ✋ Hand of God (SR3 p.248, TODO 267) — the owner's to call at the moment of death, the GM's to allow. */ ''}
+        ${karmaFields
+          ? `<button type="button" class="btn-sm" data-action="handOfGod" style="align-self:flex-end"
+               title="Hand of God (SR3 p.248, optional): burn ALL Good Karma and the whole Karma Pool at once to escape certain death. Once, ever.">✋ Hand of God…${sys.handOfGodUsed ? ' (used)' : ''}</button>`
           : ''}
         <button type="button" class="btn-sm" data-action="buyGear" style="align-self:flex-end"
           title="Find a source for gear — an Etiquette Test against its Availability, then haggle (SR3 pp.272-273).">🛒 Buy gear…</button>
@@ -3346,6 +3364,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       if (!Number.isFinite(d.getTime())) return '';
       return full ? d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
         : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); };
+    const UNDO_TIP = {
+      purchase:  'GM: undo this purchase — refund the karma and put back what it bought (TODO 212)',
+      award:     'GM: undo this award — take back the Good Karma, Total Karma, Karma Pool and nuyen it gave (TODO 267)',
+      handOfGod: 'GM: undo the Hand of God — give back the Good Karma and Karma Pool it burned, and clear its use (TODO 267)',
+    };
     const colour = d => (Number(d) < 0 ? 'var(--sr-red)' : 'var(--sr-green)');
     const amount = (kind, n) => `${kind === 'nuyen' ? '¥' : ''}${Number(n || 0).toLocaleString('en-US')}`;
     const cols = full ? `92px 74px 74px 120px 1fr 80px${gm ? ' 22px' : ''}` : '52px 74px 74px 1fr';
@@ -3362,7 +3385,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           ${full ? `<span style="font-size:11px;color:var(--sr-muted)">${esc(amount(e.kind, e.from))} → ${esc(amount(e.kind, e.to))}</span>` : ''}
           <span style="font-size:11px;color:var(--sr-muted)" title="${esc(e.by ? `by ${e.by}` : '')}">${esc(L.why(e))}${e.reverted ? ' <em>(undone)</em>' : ''}${
             game.user.isGM && L.undoable(e)
-              ? ` <button type="button" class="btn-xs" data-action="undoKarmaSpend" data-when="${e.when}" title="GM: undo this purchase — refund the karma and put back what it bought (TODO 212)">↺</button>`
+              ? ` <button type="button" class="btn-xs" data-action="undoKarmaSpend" data-when="${e.when}" data-kind="${esc(e.kind)}" title="${UNDO_TIP[L.undoKind(e)] ?? UNDO_TIP.purchase}">↺</button>`
               : ''}</span>
           ${full ? `<span style="font-size:11px;color:var(--sr-muted)">${esc(e.by || '—')}</span>` : ''}
           ${gm ? `<button type="button" class="btn-xs" data-action="deleteLedgerEntry" data-idx="${idx}" data-entry="${esc(JSON.stringify(e))}"
@@ -4140,8 +4163,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const actor = this.actor;
     const L     = game.sr3e.Ledger;
     const all   = L.of(actor.system);
-    const idx   = L.find(all, Number(target?.dataset?.when));
+    const kind  = target?.dataset?.kind || 'karma';
+    const idx   = L.find(all, Number(target?.dataset?.when), null, kind);
     const entry = all[idx];
+    if (kind === 'total') return SR3EActorSheet._undoKarmaAward(actor, entry);
     const plan  = L.revertPlan(entry);
     if (!plan) { ui.notifications.warn('That line cannot be undone — it was undone already, or it carries no record of what it bought.'); return; }
     const esc  = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -4185,9 +4210,44 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (Object.keys(upd).length) await actor.update(upd, { ledgerReason: `↺ Undid: ${entry.reason || 'karma spend'}` });
     // Mark the original line, found again by its time — the refund above appended a line.
     const now = L.of(actor.system);
-    const at  = L.find(now, entry.when, entry.reason);
+    const at  = L.find(now, entry.when, entry.reason, 'karma');
     if (at >= 0) await actor.update({ 'system.ledger': L.markReverted(now, at) });
     ui.notifications.info(`${actor.name}: undid "${entry.reason || 'karma spend'}".`);
+  }
+
+  /**
+   * GM: undo a karma AWARD from its 📒 Total Karma line (TODO 267, asked 2026-10-25). Award Karma and Session Rewards
+   * record what they added; this takes those amounts back off the CURRENT values (so a purchase made since stays),
+   * each an untickable row, as a NEW line, and marks the award undone. ⚠ Good Karma already spent may go below 0 —
+   * said, never refused; the Pool and nuyen stop at 0.
+   */
+  static async _undoKarmaAward(actor, entry) {
+    const L    = game.sr3e.Ledger;
+    const plan = L.awardPlan(entry, actor.system);
+    if (!plan?.length) { ui.notifications.warn('That award cannot be undone — it was undone already, or it carries no record of what it gave.'); return; }
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const rowsHtml = plan.map((r, i) => `<label><input type="checkbox" class="undo-award" data-i="${i}" checked/>
+        ${esc(r.label)} ${r.delta} (${r.from} → ${r.to})${r.short
+          ? ` <span style="color:var(--sr-amber)">— ${r.key === 'karma' ? 'some was spent since; it goes below 0' : 'stops at 0'}</span>` : ''}</label>`).join('');
+    let picked = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `Undo award — ${entry.reason || 'karma award'}` },
+      content: `<div style="display:flex;flex-direction:column;gap:4px;padding:6px;font-size:12px">${rowsHtml}</div>`,
+      buttons: [
+        { label: '↺ Undo', action: 'undo', default: true, callback: (_e, _b, d) => {
+          picked = [...d.element.querySelectorAll('.undo-award:checked')].map(x => Number(x.dataset.i));
+        } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!picked) return;
+    const upd = {};
+    for (const i of picked) upd[plan[i].path] = plan[i].to;
+    if (Object.keys(upd).length) await actor.update(upd, { ledgerReason: `↺ Undid award: ${entry.reason || 'karma award'}` });
+    const now = L.of(actor.system);
+    const at  = L.find(now, entry.when, entry.reason, 'total');
+    if (at >= 0) await actor.update({ 'system.ledger': L.markReverted(now, at) });
+    ui.notifications.info(`${actor.name}: undid the award "${entry.reason || 'karma award'}".`);
   }
 
   /** GM: give back everything spent from the Karma Pool (SR3 p.246). Burned points stay burned. */
@@ -5838,7 +5898,9 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       'system.karma':      karma + goodKarma,
       'system.totalKarma': newTotal,
       'system.karmaPool':  karmaPool + poolGained,
-    }, { ledgerReason: 'Karma award' });
+    }, { ledgerReason: 'Karma award',
+      // What it added, for the GM's ↺ on the Total Karma line (TODO 267). Plain keys — Foundry expands dotted ones.
+      ledgerRevert: { award: { karma: goodKarma, totalKarma: amount, karmaPool: poolGained } } });
 
     let msg = `${actor.name} awarded ${amount} karma (total: ${newTotal}).`;
     if (poolGained > 0) {
@@ -5846,6 +5908,48 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
            + `point${poolGained > 1 ? 's' : ''}!`;
     }
     ui.notifications.info(msg);
+  }
+
+  /**
+   * ✋ The Hand of God (SR3 p.248, TODO 267): burn every point of Good Karma and the whole Karma Pool to escape certain
+   * death. The book's conditions (a player character, 1+ Karma Pool, once ever) are warned, never refused. Nothing
+   * about the wound is changed — how fate intervenes is the GM's to narrate. The GM's ↺ on the Good Karma line undoes it.
+   */
+  static async _onHandOfGod() {
+    const actor = this.actor;
+    const HoG   = game.sr3e.HandOfGod;
+    const sys   = actor.system;
+    const { goodKarma, karmaPool } = HoG.burned(sys);
+    const warn  = HoG.warnings(sys, { isPlayerCharacter: game.sr3e.SR3EQuery.isPlayerCharacter(actor) });
+    let ok = false;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `✋ Hand of God — ${actor.name}` },
+      content: `<div style="display:flex;flex-direction:column;gap:6px;padding:6px;font-size:12px">
+          <p style="margin:0">Burn <strong>everything</strong> at once to escape certain death (SR3 p.248):</p>
+          <div>Good Karma ${goodKarma} → <strong>0</strong></div>
+          <div>Karma Pool ${karmaPool} → <strong>0</strong> — gone, not spent; a refresh brings nothing back</div>
+          <div style="color:var(--sr-muted)">Total Karma stays ${sys.totalKarma ?? 0}; new awards build the Pool again.</div>
+          <div style="color:var(--sr-muted)">Once, ever. Nothing about the wound is changed — the GM says how fate steps in.</div>
+          ${warn.map(w => `<div style="color:var(--sr-amber)">⚠ ${w}</div>`).join('')}
+        </div>`,
+      buttons: [
+        { label: '✋ Burn it all', action: 'burn', callback: () => { ok = true; } },
+        { label: 'Cancel', action: 'cancel', default: true },
+      ],
+    });
+    if (!ok) return;
+    await actor.update(HoG.update(), { ledgerReason: 'Hand of God (SR3 p.248)', ledgerRevert: HoG.revert(sys) });
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card">
+          <div class="sr-roll-header" style="background:var(--sr-gold,#c8a040);color:#0a0a0a">✋ Hand of God</div>
+          <div class="sr-roll-body" style="padding:8px;font-size:12px">
+            <div><strong>${actor.name}</strong> burns all their Karma — ${goodKarma} Good Karma and a Karma Pool of ${karmaPool} —
+              and the Big Wheel of Fate pulls them from the jaws of Death.</div>
+            <div style="margin-top:4px;color:var(--sr-muted)">How is the gamemaster's to say; no damage was changed. Once, ever (SR3 p.248).</div>
+          </div>
+        </div>`,
+    });
   }
 
   static async _onSpendKarmaCalculator() {

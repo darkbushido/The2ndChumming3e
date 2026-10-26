@@ -23,7 +23,7 @@
  *    Level 3 — *"2 extra dice"*. Level 1 gives none.
  *
  * ⚠ **The contact LEVEL is not stored anywhere.** Contacts carry Loyalty and Connection (1-6), which are not
- *   SR3's Level 1-3 (p.255-256). Until TODO 267 settles how they relate, the Legwork dialog lets the GM pick the
+ *   SR3's Level 1-3 (p.255-256). Until TODO 281 settles how they relate, the Legwork dialog lets the GM pick the
  *   level, offering the Loyalty capped at 3 (`levelFromLoyalty`) — the maintainer's stopgap, 2026-10-25.
  * ⚠ **Tiers are CUMULATIVE.** Three successes reveal the 1-, 2- and 3-success rows, never just the third.
  * ⚠ **The +2 for an ear to the ground is on the CONTACT's test**, and the level dice are for the RUNNER's
@@ -74,7 +74,7 @@ export const Legwork = {
     return l >= 3 ? 2 : l === 2 ? 1 : 0;
   },
 
-  /** The level the dialog offers: the contact's Loyalty, held to 1-3 (a stopgap — see TODO 267). */
+  /** The level the dialog offers: the contact's Loyalty, held to 1-3 (a stopgap — see TODO 281). */
   levelFromLoyalty(loyalty) {
     return Math.min(3, Math.max(1, int(loyalty) || 1));
   },

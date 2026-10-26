@@ -23,6 +23,8 @@ import { MacroRefresh } from './data/macro-refresh.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
 import { ActorRef, actorFrom, actorRef } from './data/actor-ref.mjs';
 import { SR3ENpcReset } from './SR3ENpcReset.js';
+import { TokenLink } from './data/token-link.mjs';
+import { HandOfGod } from './data/hand-of-god.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
 import { SR3EActorSheet } from './sheets/SR3EActorSheet.js';
 import { SR3EVehicleSheet } from './sheets/SR3EVehicleSheet.js';
@@ -129,7 +131,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork };
 
   // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
   // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
@@ -590,10 +592,11 @@ Hooks.on('preCreateActor', (document, _data, options, _userId) => {
     document.updateSource({ flags: { 'The2ndChumming3e': { isTemplate: false } } });
   }
 
-  // Ensure tokens are linked by default so token sheet === world actor sheet.
-  // Unlinked tokens create a separate actor instance, causing duplicate sheets.
-  if (!_data.prototypeToken?.actorLink) {
-    document.updateSource({ prototypeToken: { actorLink: true } });
+  // Tokens are linked by default so token sheet === world actor sheet — except an NPC's (TODO 267): each goon on
+  // the map is its own copy, so what it spends, burns or takes stays on that token (data/token-link.mjs).
+  const linked = TokenLink.linked({ type: document.type, notes: document.system?.notes });
+  if (!!_data.prototypeToken?.actorLink !== linked) {
+    document.updateSource({ prototypeToken: { actorLink: linked } });
   }
 
   // Default token bars to the wound tracks (fill as damage rises). Owners see them on hover.
@@ -616,23 +619,33 @@ Hooks.on('preCreateActor', (document, _data, options, _userId) => {
  * 🍀 Refresh Karma Pools — the GM's call (SR3 p.246): *"Karma Pools refresh on an abstract basis,
  * determined by the gamemaster … roughly every new 'scene' … In most cases, Karma Pool should refresh
  * at the beginning of each gaming session"*. Everything SPENT comes back; burned points left the
- * pool's size and stay gone. Player characters only, nobody ticked to start (TODO 96), "All" ticks them.
+ * pool's size and stay gone. Player characters, then the NPC tokens on this scene that have a pool (TODO 267);
+ * nobody ticked to start (TODO 96), "All" ticks them.
  */
 async function _openKarmaRefreshDialog() {
   const pcs = game.actors.filter(a => a.type === 'character' && game.sr3e.isLiveActor(a)
     && game.sr3e.SR3EQuery.isPlayerCharacter(a));
-  if (!pcs.length) {
+  /* NPCs on this scene with a pool (SR3 p.248, TODO 267) — by TOKEN, because an NPC's token is its own copy
+   * (unlinked), so its spent points live on the token, not the sidebar sheet. */
+  const npcTokens = (canvas?.scene?.tokens?.contents ?? []).filter(t => t.actor
+    && !game.sr3e.SR3EQuery.isPlayerCharacter(t.actor) && KarmaPool.state(t.actor.system).size > 0);
+  if (!pcs.length && !npcTokens.length) {
     ui.notifications.warn('No player characters found — assign a character to a player, or give a player Owner of it.');
     return;
   }
-  const rows = pcs.map(a => {
+  const row = (ref, name, a) => {
     const { size, spent } = KarmaPool.state(a.system);
     return `<label style="display:flex;align-items:center;gap:8px;margin:3px 0;cursor:pointer;">
-      <input type="checkbox" data-actor-id="${a.id}"/>
-      <span>${a.name}</span>
+      <input type="checkbox" data-actor-id="${ref}"/>
+      <span>${name}</span>
       <span style="color:var(--sr-muted);font-size:11px">(${size - spent} of ${size} left${spent ? `, ${spent} to come back` : ''})</span>
     </label>`;
-  }).join('');
+  };
+  const rows = pcs.map(a => row(a.id, a.name, a)).join('')
+    + (npcTokens.length
+      ? `<p style="margin:8px 0 2px;font-size:11px;color:var(--sr-muted)">NPCs on this scene (each token its own pool):</p>`
+        + npcTokens.map(t => row(actorRef(t.actor), t.name, t.actor)).join('')
+      : '');
   let ids = null;
   await foundry.applications.api.DialogV2.wait({
     window: { title: '🍀 Refresh Karma Pools' },
@@ -751,18 +764,22 @@ async function _openSessionRewardDialog() {
       updates['system.karma']      = (actor.system.karma ?? 0) + r.goodKarma;
       updates['system.totalKarma'] = r.newTotal;
       if (r.poolGained) updates['system.karmaPool'] = (actor.system.karmaPool ?? 0) + r.poolGained;
-      split.push({ name: actor.name, ...r });
+      split.push({ actor, name: actor.name, ...r });
     }
     if (nuyen)  updates['system.nuyen'] = (actor.system.nuyen ?? 0) + nuyen;
     // The ledger reads this reason (TODO 79) — every write is recorded either way, but a blank
     // "why" column is only half an answer to "where did that 40 karma go?".
-    if (Object.keys(updates).length) await actor.update(updates, { ledgerReason: 'Session rewards' });
+    // What it added rides on the Total Karma line, for the GM's ↺ (TODO 267) — a karma award only: with no karma
+    // there is no Total Karma line to carry it. Plain keys — Foundry expands dotted ones in update options.
+    const sp = split.find(x => x.actor === actor);
+    const ledgerRevert = sp ? { award: { karma: sp.goodKarma, totalKarma: karma, karmaPool: sp.poolGained, nuyen } } : null;
+    if (Object.keys(updates).length) await actor.update(updates, { ledgerReason: 'Session rewards', ledgerRevert });
   }
 
   /* Name anyone whose award crossed a Karma Pool threshold, since that point did NOT reach
    * their Good Karma and the difference is otherwise invisible on the card. */
   const lines = targets.map(a => {
-    const sp = split.find(x => x.name === a.name);
+    const sp = split.find(x => x.actor === a);
     return sp && sp.poolGained
       ? `<li>${a.name} — ${sp.goodKarma} Good Karma, +${sp.poolGained} Karma Pool</li>`
       : `<li>${a.name}</li>`;

@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**75 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**76 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[281](#281) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2917,7 +2917,72 @@ archetypes with no matching portrait job **fall back to the nearest one for now*
 - `contact.npcUuid` — new field: **full Foundry restart**.
 - Live check: TESTING.md, *Meet the contact*.
 
-## 267. Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection — **requested 2026-10-25**
+## 267. Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God — **requested 2026-10-25, from the Karma audit**
+
+The Karma audit of 2026-10-25 (fixes on `main`, `4c9159b9`/`408de246`) found four things the maintainer then asked for;
+built on branch `feature/karma-npc-hand-of-god`. Rules: `.claude/rules/karma-and-economy.md`.
+
+- **NPCs have a Karma Pool** — SR3 p.248: *"NPCs use dice pools just like player characters… Karma Pool is the
+  equalizer for many critters and NPCs"*. `NpcData.karmaPool`/`karmaPoolSpent` (initial 0, the GM sets it); no Good or
+  Total Karma. **NPC tokens come in unlinked** (the maintainer chose this over per-token burn records): `npc` and the
+  Little Black Book contacts, so a burned point stays on the token and the sheet stays the book's stat block.
+  Refresh Karma Pools lists the scene's NPC tokens. ⚠ Actors created before keep their link.
+- **Karma Pool in Bio → Resources** — read-only "left / size" beside Good and Total Karma, → Attributes link.
+- **GM ↺ for an award** — Award Karma and Session Rewards record what they added on the Total Karma line; the ↺ takes
+  those amounts back off the current values.
+- **✋ Hand of God** (SR3 p.248, optional) — burn all Good Karma and the whole Pool, once ever; warned, never refused.
+
+Tests: `tests/karma-npc-hog.test.mjs`. ⚠ **Two new persisted fields (`NpcData.karmaPool`/`karmaPoolSpent`,
+`CharacterData.handOfGodUsed`) — FULL Foundry restart before the live check.**
+
+**Status 2026-10-25 — walked by the agent in the test world after a full restart (mcp-api, active GM, branch code):
+all five steps passed; actors, tokens, cards and the Troll Street Dealer restored afterwards.** Step 2 burned and spent
+through `burnKarmaPool`/`spendKarmaPool` on token A (what the 🍀 card's buttons call) and checked that the card's
+`actorFrom(actorRef(…))` resolves to token A; the warnings in step 5 were seen and cancelled, not burned through.
+**Not walked:** step 3 from Player2's seat (the summary is read-only and unnamed for everyone, GM included).
+Two cosmetic points from the walk, fixed after it and seen live: "→ Attributes" no longer wraps away from the Karma
+Pool box (one inline-flex item), and the Hand of God ↺ says "undo the Hand of God" (`Ledger.undoKind`).
+
+**Live checklist** (test world; restart Foundry first):
+1. A new NPC: its prototype token has Link Actor Data **off**; Attributes shows Karma Pool 0 / 0 and a roll dialog has
+   no 🍀 row. As GM type a size of 3 → the roll dialog offers 🍀. A Little Black Book contact dragged from the pack: its
+   prototype is unlinked too, and its Pool is the book's.
+2. Place two tokens of that NPC. On token A, roll with **Buy successes** (burn 1): token A's Pool is 2 / 2, token B and
+   the sidebar sheet still 3 / 3. Spend 1 on token A, then 🍀 **Refresh Karma Pools** lists both tokens under
+   "NPCs on this scene"; refresh A → 2 / 2 (the burn stays).
+3. A character's Bio → Resources: "Karma Pool L / S" read-only (also as Player2), → Attributes switches tabs. An NPC
+   shows it too, without Good/Total Karma.
+4. Award Karma 25 to a non-human at Total 0: the 📒 Total Karma line has a ↺ (GM only). Spend some Good Karma, then ↺:
+   the rows show Good Karma −24 (amber if it goes below 0), Total −25, Pool −1; confirm → a "↺ Undid award" line, the
+   original marked (undone). Session Rewards with nuyen: the ↺ also takes the nuyen back (stops at 0).
+5. ✋ Hand of God… on a player's character with Good Karma 12, Pool 7 (2 spent): the dialog says what burns, Cancel is the
+   default; Burn → Good Karma 0, Pool 0 / 0, Total unchanged, a gold chat card, the button reads "(used)". A second use,
+   a Pool of 0, or an NPC-owned character each show an amber ⚠ but still go through. The GM's ↺ on the Good Karma line
+   puts back 12 and the Pool 7 with 2 spent, and clears "(used)".
+
+## 268. Legwork — a GM tool for asking contacts and searching the Matrix — **requested 2026-10-25**
+
+The maintainer, after a player asked how to resolve asking a Loyalty 1 / Connection 1 street-shaman contact about a
+magical mystery (the player guide page `guides/street/contacts.md`, branch `fix/contacts-legwork-guide`): build SR3
+legwork into the system. Rules *(SR3 p.253-256, checked against the PDF 2026-10-25)*: Etiquette (Street or
+Corporate) vs TN 4 or the success table's, cumulative tiers, fee C × I × 50 ÷ successes, ear to the ground at +2 TN
+reporting in 2D6 hours, a rushed meet +2 TN, Matrix searches with Etiquette (Matrix), no Hacking Pool, 2D6 hours,
+ceil(Intelligence ÷ 2) at once, Level 2/3 contacts +1/+2 dice.
+
+**Built (branch `feature/legwork`, with the guide page from `fix/contacts-legwork-guide`):**
+- `scripts/data/legwork.mjs` — fee, TNs, level dice, searches, Etiquette dice and specialisation, revealed tiers,
+  a table's TN. Pure. `tests/legwork.test.mjs`; 4 mutants.
+- `scripts/SR3ELegwork.js` — 🔎 Legwork on the Rollable Tables tab (GM only): runner, contact, mode, specialisation,
+  Level (the GM's pick — [#281](#281)), TN, rushed, success table, the contact's Charisma / Intelligence from its NPC
+  or archetype. Rolls through `rollThen` → `FOLLOW_UPS.legwork`; the card (GM-only by default) shows the successes,
+  every table row reached, the fee and the 2D6 hours.
+- `sr3e-legwork-tables` — a RollTable pack (GM Only folder) with a template success table, rows 1 / 2 / 3+; the TN
+  lives in its description. Built by `tools/build-legwork-tables.mjs`. ⚠ **Not yet `packs:install`ed** (Foundry
+  must be closed, and the live install follows the main checkout).
+- Guide: `guides/street/contacts.md`, *Legwork in The 2nd Chumming*.
+- Live check: TESTING.md, *Legwork*.
+
+## 281. Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection — **requested 2026-10-25**
 
 Found building [#268](#268)'s Legwork tool. SR3 rates a contact by **Level** — 1 standard contact, 2 buddy, 3 friend
 for life *(SR3 p.255-256)* — and the level is what the rules read: Level 2 gives the runner **+1 die** on Etiquette
@@ -2938,28 +3003,6 @@ anywhere. To settle with the maintainer:
 
 ⚠ **The stopgap until then:** the Legwork dialog lets the GM pick the Level (1/2/3), defaulted from Loyalty capped at
 3 (`Legwork.levelFromLoyalty`, `scripts/data/legwork.mjs`) — the maintainer's call, 2026-10-25.
-
-## 268. Legwork — a GM tool for asking contacts and searching the Matrix — **requested 2026-10-25**
-
-The maintainer, after a player asked how to resolve asking a Loyalty 1 / Connection 1 street-shaman contact about a
-magical mystery (the player guide page `guides/street/contacts.md`, branch `fix/contacts-legwork-guide`): build SR3
-legwork into the system. Rules *(SR3 p.253-256, checked against the PDF 2026-10-25)*: Etiquette (Street or
-Corporate) vs TN 4 or the success table's, cumulative tiers, fee C × I × 50 ÷ successes, ear to the ground at +2 TN
-reporting in 2D6 hours, a rushed meet +2 TN, Matrix searches with Etiquette (Matrix), no Hacking Pool, 2D6 hours,
-ceil(Intelligence ÷ 2) at once, Level 2/3 contacts +1/+2 dice.
-
-**Built (branch `feature/legwork`, with the guide page from `fix/contacts-legwork-guide`):**
-- `scripts/data/legwork.mjs` — fee, TNs, level dice, searches, Etiquette dice and specialisation, revealed tiers,
-  a table's TN. Pure. `tests/legwork.test.mjs`; 4 mutants.
-- `scripts/SR3ELegwork.js` — 🔎 Legwork on the Rollable Tables tab (GM only): runner, contact, mode, specialisation,
-  Level (the GM's pick — [#267](#267)), TN, rushed, success table, the contact's Charisma / Intelligence from its NPC
-  or archetype. Rolls through `rollThen` → `FOLLOW_UPS.legwork`; the card (GM-only by default) shows the successes,
-  every table row reached, the fee and the 2D6 hours.
-- `sr3e-legwork-tables` — a RollTable pack (GM Only folder) with a template success table, rows 1 / 2 / 3+; the TN
-  lives in its description. Built by `tools/build-legwork-tables.mjs`. ⚠ **Not yet `packs:install`ed** (Foundry
-  must be closed, and the live install follows the main checkout).
-- Guide: `guides/street/contacts.md`, *Legwork in The 2nd Chumming*.
-- Live check: TESTING.md, *Legwork*.
 
 ### 📌 Notes & parked
 
