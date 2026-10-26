@@ -452,6 +452,16 @@ New pack `sr3e-legwork-tables` and a `system.json` change: with Foundry **closed
       hours, "No Hacking Pool", the search limit (half Intelligence, rounded up), no fee.
 - [ ] A row with a secret block: shown on a GM-only card, hidden on a public one.
 
+## NPC loaded guns — TODO 270 (`feature/npc-loaded-guns`)
+
+With `trackAmmo` ON:
+- [ ] Meet the contact (or drag) a Little Black Book archetype with a gun (SWAT Team Member, Mercenary): every gun shows a full magazine of Regular, and one ammunition item per gun with 3–6 reloads (a shotgun/sniper rifle: loose rounds), named for the gun.
+- [ ] ↻ Reload on that gun offers its own stock; a rifle's stock is not offered to the pistol.
+- [ ] The NPC can fire straight away (no "out of ammo").
+- [ ] Deploying a copy of that actor gives it nothing extra (it already carries ammunition).
+- [ ] The example characters pack (already has ammunition) is unchanged on import.
+With `trackAmmo` OFF: the same NPC is created with no ammunition and its guns unchanged.
+
 ## Open combat steps — TODO 147 (`feature/open-steps`)
 
 **Checked live by the agent, 2026-09-24** (mcp-api, then with the maintainer's Gamemaster seat also on):
@@ -3226,7 +3236,7 @@ need `npm run packs:install` (Foundry closed) and a restart.
 - [ ] `game.sr3e.SR3EMigrations.force()` on a character holding an old "Pocket Computer (250Mp)" and "Combat Sense +2":
       they become "Pocket Computer [250]" (rating 250) and "Combat Sense [2]" (level 2, still two Combat Pool dice).
 
-## 73. 🛒 Buy ammo from the gun (TODO 270, branch `feature/buy-ammo-from-gun`)
+## 73. 🛒 Buy ammo from the gun (TODO 271, branch `feature/buy-ammo-from-gun`)
 
 **Prerequisites:** a character owned by Player2 with an Ares Predator (15(c)), a grenade launcher, a bow, and ¥5,000.
 JS only — no restart.

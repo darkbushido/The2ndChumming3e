@@ -11,7 +11,7 @@ import { actorFrom, actorRef } from './data/actor-ref.mjs';
  * `scripts/data/legwork.mjs`, with the book's wording.
  *
  * ⚠ **The contact Level is the GM's pick in the dialog**, offered from Loyalty capped at 3 — contacts store
- *   Loyalty and Connection, not SR3's Level 1-3. A stopgap until TODO 281 goes over contacts.
+ *   Loyalty and Connection, not SR3's Level 1-3. A stopgap until TODO 269 goes over contacts.
  * ⚠ **The contact's Charisma and Intelligence come from its linked NPC or archetype** (`npcUuid`, then
  *   `archetypeUuid`); most contacts are bare items, so the GM can type them.
  * ⚠ **Offer, never apply**: the fee is shown, never charged — the GM adjusts it and Negotiation sets the price.
@@ -194,7 +194,7 @@ export class SR3ELegwork {
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px 10px;align-items:end;margin-top:6px">
           <label style="${FIELD};grid-column:1/3">Specialisation
             <select id="lw-spec"></select></label>
-          <label id="lw-level-row" style="${FIELD}" title="SR3 p.256: Level 2 gives 1 extra die, Level 3 gives 2. Contacts store Loyalty and Connection, not a Level — pick it (TODO 281).">Contact Level
+          <label id="lw-level-row" style="${FIELD}" title="SR3 p.256: Level 2 gives 1 extra die, Level 3 gives 2. Contacts store Loyalty and Connection, not a Level — pick it (TODO 269).">Contact Level
             <select id="lw-level"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
             <span id="lw-level-note" style="font-size:10px"></span></label>
           <label style="${FIELD};grid-column:1/-1">Success table (optional — a world Rollable Table)
