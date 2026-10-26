@@ -2404,6 +2404,27 @@ export const MUTANTS = [
     impl:   ({ power = 0 } = {}) => Math.max(2, Number(power) || 0),
   },
   {
+    id:     'hacking-pool-core-uses-mdf-formula',
+    suite:  'hacking-pool',
+    module: '../scripts/data/hacking-pool.mjs', klass: 'HackingPool', method: 'core',
+    was:    'SR3 p.207: floor((INT + MPCP) / 3); the Orthodox pool was given the Defragged INT + floor(MPCP / 3) (TODO 275)',
+    impl:   (i, m) => (Number(i) || 0) + Math.floor((Number(m) || 0) / 3),
+  },
+  {
+    id:     'hacking-pool-ignores-ruleset',
+    suite:  'hacking-pool',
+    module: '../scripts/data/hacking-pool.mjs', klass: 'HackingPool', method: 'forRuleset',
+    was:    'the derived Hacking Pool always used the Defragged formula whatever the world ruleset (the 2026-10-26 Combat Decker finding, TODO 275)',
+    impl:   (_r, i, m) => (Number(i) || 0) + Math.floor((Number(m) || 0) / 3),
+  },
+  {
+    id:     'hacking-pool-orthodox-ignores-actor-deck',
+    suite:  'hacking-pool',
+    module: '../scripts/data/hacking-pool.mjs', klass: 'HackingPool', method: 'mpcpFor',
+    was:    'an Orthodox decker with deck stats on the actor and no deck item got no Hacking Pool (TODO 275)',
+    impl:   (_r, deck) => deck ?? null,
+  },
+  {
     id:     'mdf-hacking-pool-core-formula',
     suite:  'rules-check-063',
     module: '../scripts/data/mdf-rules.mjs', klass: 'MdfRules', method: 'hackingPool',
