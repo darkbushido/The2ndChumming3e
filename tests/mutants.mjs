@@ -41,6 +41,7 @@ const STALL = { module: '../scripts/data/stall-speed.mjs', klass: 'StallSpeed' }
 const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  };
 const PORTRAITS = { module: '../scripts/data/portraits.mjs', klass: 'Portraits' };
 const TOKENSIGHT = { module: '../scripts/data/token-sight.mjs', klass: 'TokenSight' };
+const NPCAMMO = { module: '../scripts/data/npc-ammo.mjs', klass: 'NpcAmmo' };
 const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
@@ -2278,6 +2279,42 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'ammo-shop-any-clip-size',
+    suite:  'ammo-shop',
+    module: '../scripts/data/ammo-shop.mjs', klass: 'AmmoShop', method: 'fits',
+    was:    'buying for a gun without the magazine-size match: every N-Rnd Clip of the mechanism is offered, so the SR3 pack\'s '
+          + '197 clip documents swamp a 15(c) pistol — the very difficulty reported 2026-10-25',
+    impl:   (sys = {}, crit) => {
+      if (!crit) return true;
+      const mech = String(sys.loadMechanism ?? 'c').toLowerCase();
+      return (!crit.mech || mech === crit.mech) && crit.accepts(sys.ammoType || 'regular') && (!crit.launcher || sys.gunClass === 'GrLn');
+    },
+  },
+  {
+    id:     'ammo-shop-offers-other-weapons-rounds',
+    suite:  'ammo-shop',
+    module: '../scripts/data/ammo-shop.mjs', klass: 'AmmoShop', method: 'fits',
+    was:    'the reload rule alone: a box with no class fits any gun, so Assault Cannon shells, darts and mortar rounds (filed as '
+          + 'ordinary loose rounds) were offered to an Ares Predator',
+    impl:   (sys = {}, crit) => {
+      if (!crit) return true;
+      const reloads = ['c', 'm', 'b', 'cy', 'belt', 'drum'].includes(String(sys.loadMechanism ?? 'c').toLowerCase()) && sys.countedIn === 'reloads';
+      if (reloads && crit.magSize > 0 && Number(sys.roundsPerReload) !== crit.magSize) return false;
+      const mech = String(sys.loadMechanism ?? 'c').toLowerCase();
+      if (crit.launcher) return sys.gunClass === 'GrLn';
+      if (sys.gunClass && crit.classes && !crit.classes.includes(sys.gunClass)) return false;
+      return (!crit.mech || mech === crit.mech || !reloads) && crit.accepts(sys.ammoType || 'regular');
+    },
+  },
+  {
+    id:     'ammo-shop-stamp-overwrites',
+    suite:  'ammo-shop',
+    module: '../scripts/data/ammo-shop.mjs', klass: 'AmmoShop', method: 'stamp',
+    was:    'fill blanks, never overwrite: a box that already states its class (a launcher\'s GrLn mini-grenade) would be '
+          + 're-stamped with the buying gun\'s class',
+    impl:   (_box, crit) => crit?.gunClass || null,
+  },
+  {
     id:     'buy-haggle-leaves-pay-live',
     suite:  'purchasing',
     ...BUY, method: 'cardButtons',
@@ -3793,5 +3830,26 @@ export const MUTANTS = [
     ...LEGWORK, method: 'maxSearches',
     was:    'half Intelligence rounded down; SR3 p.254 says "rounded up"',
     impl:   int => Math.floor((Number(int) || 0) / 2),
+  },
+  {
+    id:     'npc-guns-start-empty',
+    suite:  'npc-ammo',
+    ...NPCAMMO, method: 'plan',
+    was:    "with trackAmmo on, Mr. Johnson's Little Black Book NPCs came out with empty guns and no ammunition (TODO 270, 2026-10-25)",
+    impl:   () => ({ guns: [], ammo: [] }),
+  },
+  {
+    id:     'npc-ammo-overrides-carried-stock',
+    suite:  'npc-ammo',
+    ...NPCAMMO, method: 'plan', needsOriginal: '_planOriginal',
+    was:    'an NPC that already carries ammunition would be given more and have its guns reloaded over what its sheet says (TODO 270)',
+    impl:   function (items, opts) { return this._planOriginal([...(items ?? [])].filter(i => i?.type !== 'ammunition'), opts); },
+  },
+  {
+    id:     'npc-reloads-off-by-one',
+    suite:  'npc-ammo',
+    ...NPCAMMO, method: 'rollReloads',
+    was:    'reloads rolled 3-5 instead of 3-6 (TODO 270)',
+    impl:   (rng = Math.random) => 3 + Math.floor(rng() * 3),
   },
 ];

@@ -1,5 +1,5 @@
 /**
- * The SR3 core rulebook's sample characters, pinned to the book · TODO 270.
+ * The SR3 core rulebook's sample characters, pinned to the book · TODO 274.
  *
  * `BOOK` below is an INDEPENDENT transcription of each character page (pp.65-80) and record sheet
  * (pp.326-329) of *Shadowrun, Third Edition* — printed page numbers (PDF page = printed + 2). It is
@@ -57,12 +57,12 @@ const BOOK = [
     pools: { combat: 7 }, skills: [['Gunnery', 6], ['Pistols', 6], ['Submachine Guns', 6], ['Edged Weapons', 5], ['Heavy Weapons', 5]] },
 ];
 
-/** Where the shipped items cannot reproduce a number the book prints — each is for the maintainer (TODO 270). */
+/** Where the shipped items cannot reproduce a number the book prints — each is for the maintainer (TODO 274). */
 const KNOWN = {
   // Strength Enhancement (Rating 3) in two cyberarms is +3 in the shipped item; the book prints 5 (7), i.e. +2.
   'Street Samurai': { strengthAugmented: 8 },
 };
-/** Essence the shipped cyberware cannot reproduce — installed minus the book's loss. See TODO 270. */
+/** Essence the shipped cyberware cannot reproduce — installed minus the book's loss. See TODO 274. */
 const ESSENCE_RESIDUAL = { 'Street Samurai': -0.08, 'Drone Rigger': -0.04 };
 
 const ATTRS = ['body', 'quickness', 'strength', 'charisma', 'intelligence', 'willpower'];

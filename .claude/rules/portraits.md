@@ -41,8 +41,11 @@ paths:
 
 - **Offer, never apply.** Nothing assigns a portrait on its own. A picture someone chose (`!Portraits.isStockImg`) is
   never replaced; a stock one (mystery man) may be *preselected*, never saved without Confirm.
-- **The book's metatype is an example, not a rule** (the maintainer, 2026-10-24). The GM may change it; the stat block
-  stays the book's, so the dialog warns ("stats are the book's troll") and does not refuse.
+- **The book's metatype is an example, not a rule** (the maintainer, 2026-10-24). The GM may change it; the stats are
+  then restated for the new race by **Metatype Shift** (`scripts/data/metatype-shift.mjs`, TODO 272, 2026-10-25):
+  book race's modifiers off, new race's on (SR3 p.56), capped at the racial maximum (p.245), floor 1; Essence, skills
+  and metavariants untouched. The dialog says what was adjusted. Troll dermal armour, Reach and racial vision follow
+  `system.metatype` on their own.
 - **Minors only when asked for** — `candidates` never returns a minor for an adult contact.
 - **The chosen metatype filters the grid.** Fall back only within the race: exact → base/variant → same job group →
   same metatype. ⚠ No tier may cross metatypes — a "same job, any metatype" tier filled thin grids with other races
@@ -50,3 +53,12 @@ paths:
 - **`sr3e.actor.create` applies `name` to every branch** (pack source, copy, blank vehicle) and to `prototypeToken.name`.
 - Names: `Names.generate({ ethnicity, gender, metatype, group })` — `ethnicity` from the chosen portrait so the name
   fits the face; first and last name from the same heritage sub-pool; street-name chance by job group.
+
+## Generic NPCs — race rolled per token · TODO 273
+
+`flags.The2ndChumming3e.genericNpc = { mix: 'seattle' | { human, ork, elf, dwarf, troll } }` on an NPC
+(`SR3EGenericNpc.mark/create`, Actor Directory context menu). The `preCreateToken` hook in `sr3e.js` is
+**synchronous** (Foundry does not await it) and runs only on the active GM's client, for **unlinked** tokens: it rolls a
+race (`data/generic-npc.mjs`), writes the shifted attributes and metatype into the TOKEN's `delta` — never the sidebar
+actor (TODO 260) — and, from the portrait index `warm()` loaded at `ready`, a face of that race and the archetype's job.
+No portrait module → stats still vary. A generic stays a live actor (`isTemplate: false`).

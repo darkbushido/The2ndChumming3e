@@ -53,7 +53,7 @@ generator's gear data (`mm.064`, `sr3.304`) — not its `Books.json`.
 Packs per book: `sr3` 16 · `sr2` 11 · `mm` 9 · `tss` 9 · `cc` 7 · `sota2` 7 · `matrix-defragged` 5 · `twl` 5 ·
 `fof` 4 · `fra` 4 · `r3` 4 · `ssc` 4 · `mits` 3 · `sota` 3 · `st` 3 · `ct` 2 · `ger` 1 · `pna` 1 · `ssg` 1 · `tal` 1
 
-### The core book's sample characters — `sr3e-sr3-archetypes` (TODO 270)
+### The core book's sample characters — `sr3e-sr3-archetypes` (TODO 274)
 **16** Actor documents — the book prints sixteen (SR3 p.64), not fifteen; the Weapons Specialist is p.80 — from the
 character pages (pp.65-80) and record sheets (pp.326-329). **Generated** by `tools/build-core-archetypes.mjs` from
 `tools/data/core-archetypes.mjs` (never hand-edit the pack source; `tests/core-archetypes.test.mjs` rebuilds the plan).

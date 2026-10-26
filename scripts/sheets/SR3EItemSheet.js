@@ -41,6 +41,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       categoryChange:     SR3EItemSheet._onCategoryChange,
       skillChange:        SR3EItemSheet._onSkillChange,
       pickFromCompendium: SR3EItemSheet._onPickFromCompendium,
+      buyAmmo:            SR3EItemSheet._onBuyAmmo,
     }
   };
 
@@ -181,6 +182,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
             <span class="item-type-badge">${this._typeLabel()}</span>
           </div>
           ${this.isEditable && item.type !== 'skill' ? '<button type="button" class="btn-compendium-pick" data-action="pickFromCompendium" title="Fill from compendium">&#128218; Pick from compendium</button>' : ''}
+          ${this._buyAmmoButton()}
         </header>
         <div class="item-body">
           ${this._withBookPage(this._details())}
@@ -306,6 +308,25 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
   _legalityField(s) {
     if (!LEGALITY_TYPES.includes(this.document.type)) return '';
     return this._f('Legality', 'legality', s.legality ?? '', 'text', 'placeholder="Legal / 6P-V"');
+  }
+
+  /**
+   * 🛒 Buy ammo — on a gun the character carries (requested 2026-10-25: "there should be a way on the guns description to
+   * buy its specific ammo"). Opens 🛒 Buy gear listing only the ammunition this gun loads (`AmmoShop.fits`), and the box
+   * bought is stamped with the gun's class. A firearm or a bow/crossbow that nocks, owned, on an actor.
+   */
+  _buyAmmoButton() {
+    const it = this.document;
+    const takesAmmo = it.type === 'firearm' || (it.type === 'projectile' && it._usesNockedAmmo?.());
+    if (!takesAmmo || !it.actor || !it.isOwner) return '';
+    return '<button type="button" class="btn-compendium-pick" data-action="buyAmmo" title="Buy ammunition this weapon loads">🛒 Buy ammo</button>';
+  }
+
+  static async _onBuyAmmo(ev) {
+    ev?.preventDefault?.();
+    const actor = this.item.actor;
+    if (!actor) return;
+    return game.sr3e.SR3EPurchase.open(actor, null, { forWeapon: this.item });
   }
 
   _f(label, name, value, type = 'text', extra = '') {
