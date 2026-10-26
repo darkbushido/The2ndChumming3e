@@ -17,7 +17,7 @@ paths:
 
 One pack per source book, `sr3e-<book>-<type>`, each declaring `flags.The2ndChumming3e.book` in `system.json`.
 Packs without the flag are system content (exactly four: `sr3e-skills`, `sr3e-example-characters`,
-`sr3e-mr-johnsons-contacts`, and the GM-only journal `sr3e-gm-sixth-world`). **82 packs ship**, all SR3 or system (the core book's sample characters, `sr3e-sr3-archetypes`, are book-gated like any `sr3` pack).
+`sr3e-mr-johnsons-contacts`, and the GM-only journal `sr3e-gm-sixth-world`). **82 packs ship**, all SR3 or system (the core book's sample characters, `sr3e-sr3-archetypes`, carry `book: sr3`, the core book, which is never switchable).
 
 ### The GM-only journal — `sr3e-gm-sixth-world` (2026-10-11)
 The public guide's World pages (`guides/world/`) stop at **October 2059**, the maintainer's campaign date; what
