@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**76 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**77 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) The core rulebook's sample characters as an Actor pack |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -3003,6 +3003,30 @@ anywhere. To settle with the maintainer:
 
 ⚠ **The stopgap until then:** the Legwork dialog lets the GM pick the Level (1/2/3), defaulted from Loyalty capped at
 3 (`Legwork.levelFromLoyalty`, `scripts/data/legwork.mjs`) — the maintainer's call, 2026-10-25.
+
+## 270. The core rulebook's sample characters as an Actor pack — **requested 2026-10-25**
+
+The maintainer wants the SR3 core rulebook's runner archetypes as stat blocks, beside the Little Black Book's 62 contacts
+([#83](#83)), for his GM macros that build NPCs from compendium archetypes. (Provisional number: the coordinator reserved
+275; the branch uses the next free one so `tests/todo-archive.test.mjs` stays green — renumber at merge.)
+
+**Built (branch `claude/core-archetypes-5e8e30`, Foundry not yet run):**
+- Pack `sr3e-sr3-archetypes` — **16** characters, not 15: the book prints sixteen (*"sixteen pre-generated Sample
+  Characters"*, SR3 p.64), the sixteenth being the **Weapons Specialist** (p.80). A book-gated Actor pack (`book: sr3`).
+- Data `tools/data/core-archetypes.mjs`, builder `tools/build-core-archetypes.mjs` (generated — never hand-edit the
+  pack source), suite `tests/core-archetypes.test.mjs`, Foundry steps in TESTING.md, *Core archetypes*.
+- ⚠ **Attributes are the book's natural rating**; cyberware, adept powers and a troll's hide add the parenthesised
+  figure themselves. Race is the book's own, never converted (SR3 p.56 is a rule on top).
+- Gear and weapons come from the record sheets (pp.326-329); firearms are loaded, spare ammunition follows.
+
+**Not representable / book inconsistencies — for the maintainer** (see the suite's `KNOWN`):
+- Essence is entered as printed. 14 of 16 reproduce from the shipped cyberware costs exactly; **Street Samurai** (book
+  .08 above ours) and **Drone Rigger** (.04) do not, and the book's own worked example (p.62) calls the Covert Ops
+  Specialist's cybereyes mods "free" at .64 against a stated .5 threshold.
+- **Street Samurai Strength 5 (7)** prints +2 for Strength Enhancement 3 in two cyberarms; the shipped item gives +3.
+- Read/Write is a separate language skill per language (no system field); "(NA)" markers are dropped.
+- Vehicles, drones and programs are listed as gear / notes, not linked actors or items.
+- Pack gaps: no cyberears replacement item (made from the p.299 table row), no *Increase Reaction* spell (made blank).
 
 ### 📌 Notes & parked
 

@@ -1,0 +1,1860 @@
+{
+  "_key": "!actors!Q3D27XkxcRLTlgH6",
+  "doc": {
+    "name": "Drone Rigger",
+    "type": "character",
+    "system": {
+      "metatype": "dwarf",
+      "nuyen": 460,
+      "karma": 0,
+      "totalKarma": 0,
+      "karmaPool": 1,
+      "notes": "<p>Shadowrun, Third Edition, p.69 (record sheet p.327). Stats as printed; the book's race, not converted.</p><p>Priorities: Race D, Attributes C, Skills A, Resources B. Resources 400,000¥ (spent in creation).</p><p>Starting nuyen: 460¥ + (3D6 × 100¥). Lifestyle: 2 Middle Lifestyles (3 months each).</p><p>Contacts:</p><ul><li>Mafia Bookie (Level 1)</li><li>Mechanic (Level 2)</li><li>Media Snoop (Level 1)</li></ul><p>Record-sheet notes:</p><ul><li>Lost natural thermographic vision due to cyberware</li><li>Resistance (+2 Body) to any Disease or Toxin</li></ul>",
+      "attributes": {
+        "body": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "quickness": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "strength": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "charisma": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "intelligence": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "willpower": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "essence": {
+          "base": 6,
+          "value": 1.43,
+          "force": 0,
+          "lost": 4.57
+        },
+        "magic": {
+          "base": 0,
+          "value": 0,
+          "mod": 0,
+          "force": 0
+        },
+        "reaction": {
+          "base": 3,
+          "value": 3,
+          "reactionBonus": 0,
+          "diceBonus": 0,
+          "override": false,
+          "force": 0
+        }
+      },
+      "biography": "",
+      "gender": "",
+      "age": "",
+      "height": "",
+      "weight": "",
+      "ethnicity": "",
+      "reputation": 0,
+      "notoriety": 0,
+      "streetCred": 0,
+      "hackingBonus": 0,
+      "initiativeDiceBonus": 0,
+      "equippedArmor": "",
+      "equippedMelee": "",
+      "activeVCRItemId": "",
+      "equippedCyberdeck": "",
+      "matrixUserMode": "",
+      "activeHostId": "",
+      "currentMatrixNode": "",
+      "matrixMarks": [],
+      "linkLocked": false,
+      "astralMode": "",
+      "magicTradition": "",
+      "magicType": "",
+      "magicTotem": "",
+      "magicElement": "",
+      "initiateGrade": 0,
+      "combatPoolSpent": 0,
+      "combatPoolMod": 0,
+      "spellPoolSpent": 0,
+      "spellPoolMod": 0,
+      "astralPoolSpent": 0,
+      "astralPoolMod": 0,
+      "hackingPoolSpent": 0,
+      "spellDefensePool": 0,
+      "spellDefenseSorceryDice": 0,
+      "fullDefense": false,
+      "fullDefensePool": 0,
+      "recoilCompensation": 0,
+      "roundsFiredThisPhase": 0,
+      "stimBonus": 0,
+      "wounds": {
+        "stun": {
+          "value": 0,
+          "max": 10
+        },
+        "physical": {
+          "value": 0,
+          "max": 10
+        },
+        "overflow": {
+          "value": 0
+        }
+      },
+      "ew": {
+        "deckRating": 0,
+        "fluxRating": 0,
+        "protocolModule": 0,
+        "ivisPool": {
+          "value": 0,
+          "max": 0
+        }
+      },
+      "orthodoxDeck": {
+        "deckModel": "",
+        "mccp": 0,
+        "bod": 0,
+        "evasion": 0,
+        "masking": 0,
+        "sensor": 0,
+        "hardening": 0,
+        "activeMemory": 0,
+        "storageMemory": 0,
+        "ioSpeed": 0,
+        "responseIncrease": 0,
+        "sleazeRating": 0
+      },
+      "orthodoxRunState": {
+        "securityTally": 0,
+        "alertLevel": "none",
+        "currentHostId": ""
+      },
+      "orthodoxMatrixCM": {
+        "value": 0
+      },
+      "professionalRating": 0,
+      "bookPage": "sr3.69"
+    },
+    "_id": "Q3D27XkxcRLTlgH6",
+    "img": "icons/svg/mystery-man.svg",
+    "prototypeToken": {
+      "name": "Drone Rigger",
+      "displayName": 0,
+      "actorLink": true,
+      "width": 1,
+      "height": 1,
+      "depth": 1,
+      "texture": {
+        "src": "icons/svg/mystery-man.svg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "fit": "contain",
+        "scaleX": 1,
+        "scaleY": 1,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "lockRotation": false,
+      "rotation": 0,
+      "alpha": 1,
+      "disposition": -1,
+      "displayBars": 20,
+      "bar1": {
+        "attribute": "wounds.physical"
+      },
+      "bar2": {
+        "attribute": "wounds.stun"
+      },
+      "light": {
+        "negative": false,
+        "priority": 0,
+        "alpha": 0.5,
+        "angle": 360,
+        "bright": 0,
+        "color": null,
+        "coloration": 1,
+        "dim": 0,
+        "attenuation": 0.5,
+        "luminosity": 0.5,
+        "saturation": 0,
+        "contrast": 0,
+        "shadows": 0,
+        "animation": {
+          "type": null,
+          "speed": 5,
+          "intensity": 5,
+          "reverse": false
+        },
+        "darkness": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      "sight": {
+        "enabled": true,
+        "range": 0,
+        "angle": 360,
+        "visionMode": "basic",
+        "color": null,
+        "attenuation": 0.1,
+        "brightness": 0,
+        "saturation": 0,
+        "contrast": 0
+      },
+      "detectionModes": {},
+      "occludable": {
+        "radius": 0
+      },
+      "ring": {
+        "enabled": true,
+        "colors": {
+          "ring": null,
+          "background": null
+        },
+        "effects": 1,
+        "subject": {
+          "scale": 1,
+          "texture": null
+        }
+      },
+      "turnMarker": {
+        "mode": 1,
+        "animation": null,
+        "src": null,
+        "disposition": false
+      },
+      "movementAction": null,
+      "flags": {},
+      "randomImg": false,
+      "appendNumber": false,
+      "prependAdjective": false
+    },
+    "items": [
+      "bZmsKwP1Aedi1aUO",
+      "5Sm46pYMQnHNepdQ",
+      "BeVUGCXPa4llDr9W",
+      "bKz7OJLWhHlnligT",
+      "slat481KHPJh8hX2",
+      "WX7vUHhDMxneZXWk",
+      "xAJxM9zK1LkmalwP",
+      "zfmJaqdBOLezzCqi",
+      "DJ5z10jIp6Jv7GtY",
+      "5FGJ4h1sWUDGdLBJ",
+      "Pv87byCRoPY5cASu",
+      "35BqGJ8y1PmL3BPZ",
+      "50ftXzpQszlZASTY",
+      "PTNyD7oDZ4IhYEJz",
+      "smGs71mHOavzEEFI",
+      "0uRL47ELbdrfkD4t",
+      "p85agGwNwFyu504U",
+      "cCyi1m3puvmWxqbj",
+      "myH2LCZ4kDvjyLJa",
+      "Ohtt2DZa58mXAPZ1",
+      "P4H85pnQtVDF95Xt",
+      "u2a32K5DeY8yvjTh",
+      "9yiwv3tUbnMyzSmh",
+      "ejyk7g51Wm2nYTJb",
+      "I0rQUG10D9o1xUn3",
+      "CTMF0cQw4aV0SgRE",
+      "d26s61juHxN5ea19",
+      "3P1ED2DTsCjxTlqJ",
+      "4EEFurKXZptScMw0",
+      "fzwe5mxX0ynuXz5z",
+      "8nmNkVsoBwlnN0FZ",
+      "qOe6mnZ4bZTcDNaQ",
+      "hklgsSR4X0g0BZ2u",
+      "F0tbpCNLqjTvasSa",
+      "mz6qLhjRBNEmW9fb",
+      "jC1KTnZ5YblfTjW4",
+      "TW5mxmMWUY58yUcx",
+      "p293k7yzos7KriwK",
+      "WLlbmpb75lsnFRfT",
+      "JftbJlUzquDOeTlP",
+      "8hjyVr0tkaVgG5Fj",
+      "kvkp8FA4X6A4bzED",
+      "G82fBSC954hEyV9q"
+    ],
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0
+    },
+    "flags": {
+      "The2ndChumming3e": {
+        "isTemplate": false,
+        "generatedBy": "build-core-archetypes"
+      }
+    },
+    "_stats": {
+      "coreVersion": "14",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": null,
+      "createdTime": 1788537621572,
+      "modifiedTime": 1788537621572,
+      "lastModifiedBy": null,
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {
+    "!actors.items!Q3D27XkxcRLTlgH6.0uRL47ELbdrfkD4t": {
+      "_id": "0uRL47ELbdrfkD4t",
+      "name": "Mafia Finances",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Mafia Finances",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.35BqGJ8y1PmL3BPZ": {
+      "_id": "35BqGJ8y1PmL3BPZ",
+      "name": "Vector Thrust Aircraft B/R",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Vector Thrust Aircraft B/R",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Build/Repair skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.3P1ED2DTsCjxTlqJ": {
+      "_id": "3P1ED2DTsCjxTlqJ",
+      "name": "Memory",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Headware",
+        "essenceCost": 0.33,
+        "cost": 15000,
+        "availability": "3/24 hours",
+        "streetIndex": 0.8,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "grade": "Alpha",
+        "rating": 100,
+        "description": "Headware Memory, 100 Mp"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0557",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.4EEFurKXZptScMw0": {
+      "_id": "4EEFurKXZptScMw0",
+      "name": "Radio",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Communications",
+        "essenceCost": 0.75,
+        "cost": 10000,
+        "availability": "2/24 hours",
+        "streetIndex": 0.8,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "grade": "Alpha",
+        "rating": 5,
+        "description": "10 programmed frequencies"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0281",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.50ftXzpQszlZASTY": {
+      "_id": "50ftXzpQszlZASTY",
+      "name": "English",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "English",
+        "rating": 6,
+        "linkedAttribute": "lan",
+        "category": "Language",
+        "skillType": "language",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.5FGJ4h1sWUDGdLBJ": {
+      "_id": "5FGJ4h1sWUDGdLBJ",
+      "name": "Rotor Aircraft B/R",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Rotor Aircraft B/R",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Build/Repair skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.5Sm46pYMQnHNepdQ": {
+      "_id": "5Sm46pYMQnHNepdQ",
+      "name": "Car B/R",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Car B/R",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Build/Repair skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.8hjyVr0tkaVgG5Fj": {
+      "_id": "8hjyVr0tkaVgG5Fj",
+      "name": "Remote Control Deck",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-scanner.svg",
+      "system": {
+        "quantity": 1,
+        "category": "Stuff With Ratings",
+        "concealability": "3",
+        "rating": 6,
+        "cost": 30000,
+        "weight": 4,
+        "availability": "4/72hrs",
+        "streetIndex": "2",
+        "bookPage": "sr3.306",
+        "description": "<p>with AV Screen Display, Intercom, and 4 Hitcher Jacks</p>",
+        "legality": "Legal"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.8c61e51800bdfb30",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.8nmNkVsoBwlnN0FZ": {
+      "_id": "8nmNkVsoBwlnN0FZ",
+      "name": "Smartlink",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Bodyware",
+        "essenceCost": 0.5,
+        "cost": 2500,
+        "availability": "3/36 hours",
+        "streetIndex": 1,
+        "legalCode": "5P-N",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.302",
+        "grade": "Alpha",
+        "rating": null,
+        "description": "-2 to TNs for firing a Smartlinked weapon"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0223",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.9yiwv3tUbnMyzSmh": {
+      "_id": "9yiwv3tUbnMyzSmh",
+      "name": "Eyes, Thermographic",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.2,
+        "cost": 3000,
+        "availability": "4/36 hours",
+        "streetIndex": 1.25,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.300",
+        "grade": "Alpha",
+        "rating": null,
+        "description": "Thermographic vision"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "insideReplacement": true
+        }
+      },
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0470",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.BeVUGCXPa4llDr9W": {
+      "_id": "BeVUGCXPa4llDr9W",
+      "name": "Computer",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Computer",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Technical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.CTMF0cQw4aV0SgRE": {
+      "_id": "CTMF0cQw4aV0SgRE",
+      "name": "Datajack",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Headware",
+        "essenceCost": 0.2,
+        "cost": 1000,
+        "availability": "0/0",
+        "streetIndex": 0.9,
+        "legalCode": "Legal",
+        "mods": "+1DJK",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "grade": "Alpha",
+        "rating": null,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0535",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.DJ5z10jIp6Jv7GtY": {
+      "_id": "DJ5z10jIp6Jv7GtY",
+      "name": "Rotor Aircraft",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Rotor Aircraft",
+        "rating": 5,
+        "linkedAttribute": "reaction",
+        "category": "Vehicle skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.F0tbpCNLqjTvasSa": {
+      "_id": "F0tbpCNLqjTvasSa",
+      "name": "10-Rnd Clip (Regular)",
+      "type": "ammunition",
+      "img": "systems/The2ndChumming3e/styles/icons/ammo-mag-pistol.svg",
+      "system": {
+        "concealability": "8",
+        "damage": "-",
+        "ammoType": "regular",
+        "loadMechanism": "c",
+        "countedIn": "reloads",
+        "reloads": 4,
+        "roundsPerReload": 10,
+        "rounds": 0,
+        "weight": 1.25,
+        "cost": 25,
+        "availability": "2/24hrs",
+        "streetIndex": ".75",
+        "bookPage": "sr3.281",
+        "notes": "",
+        "legality": "As Weapon",
+        "gunClass": "HPist"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-ammunition.Item.962e9d7f0b8167ff",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.G82fBSC954hEyV9q": {
+      "_id": "G82fBSC954hEyV9q",
+      "name": "Vehicle Shop",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
+      "system": {
+        "quantity": 1,
+        "category": "Surveillance and Security",
+        "concealability": "-",
+        "rating": null,
+        "cost": 10000,
+        "weight": 0,
+        "availability": "8/72hrs",
+        "streetIndex": "3",
+        "bookPage": "sr3.288",
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.7093dbca69a143e6",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.I0rQUG10D9o1xUn3": {
+      "_id": "I0rQUG10D9o1xUn3",
+      "name": "Commlink",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Communications",
+        "essenceCost": 0.3,
+        "cost": 25000,
+        "availability": "3/48 hours",
+        "streetIndex": 1,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "grade": "Standard",
+        "rating": 5,
+        "description": "Monitor 10 radio or telephone frequencies"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0255",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.JftbJlUzquDOeTlP": {
+      "_id": "JftbJlUzquDOeTlP",
+      "name": "MCT-Nissan Roto-Drone",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "<p>with Internal Firmpoint and Laser Microphone (Rating 6)</p>",
+        "rating": null,
+        "bookPage": "sr3.327"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.Ohtt2DZa58mXAPZ1": {
+      "_id": "Ohtt2DZa58mXAPZ1",
+      "name": "Seattle Junkyards",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Seattle Junkyards",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.P4H85pnQtVDF95Xt": {
+      "_id": "P4H85pnQtVDF95Xt",
+      "name": "Eyes, Cyber Replacement",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.2,
+        "cost": 5000,
+        "availability": "2/24 hours",
+        "streetIndex": 0.75,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0.5,
+        "isReplacement": true,
+        "bookPage": "sr3.300",
+        "grade": "Alpha",
+        "rating": null,
+        "description": "Holds .5 Essence of eye mods free of Essence cost — Cybereyes"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0410",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.PTNyD7oDZ4IhYEJz": {
+      "_id": "PTNyD7oDZ4IhYEJz",
+      "name": "English Read/Write",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "English Read/Write",
+        "rating": 3,
+        "linkedAttribute": "lan",
+        "category": "Language",
+        "skillType": "language",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.Pv87byCRoPY5cASu": {
+      "_id": "Pv87byCRoPY5cASu",
+      "name": "Vector Thrust Aircraft",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Vector Thrust Aircraft",
+        "rating": 5,
+        "linkedAttribute": "reaction",
+        "category": "Vehicle skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.TW5mxmMWUY58yUcx": {
+      "_id": "TW5mxmMWUY58yUcx",
+      "name": "Cyberspace Designs Dalmatian Drone",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null,
+        "bookPage": "sr3.327"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.WLlbmpb75lsnFRfT": {
+      "_id": "WLlbmpb75lsnFRfT",
+      "name": "GM-Nissan Doberman Drone",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "<p>with Ingram Valiant LMG (smartlinked, 100 rounds) and Defiance Supershock (smartlinked, 10 taser darts)</p>",
+        "rating": null,
+        "bookPage": "sr3.327"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.WX7vUHhDMxneZXWk": {
+      "_id": "WX7vUHhDMxneZXWk",
+      "name": "Etiquette",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Etiquette",
+        "rating": 3,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.bKz7OJLWhHlnligT": {
+      "_id": "bKz7OJLWhHlnligT",
+      "name": "Electronics",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Electronics",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Technical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.bZmsKwP1Aedi1aUO": {
+      "_id": "bZmsKwP1Aedi1aUO",
+      "name": "Car",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Car",
+        "rating": 5,
+        "linkedAttribute": "reaction",
+        "category": "Vehicle skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.cCyi1m3puvmWxqbj": {
+      "_id": "cCyi1m3puvmWxqbj",
+      "name": "Pirate Trid Broadcasters",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Pirate Trid Broadcasters",
+        "rating": 5,
+        "linkedAttribute": "intelligence",
+        "category": "Interests",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.d26s61juHxN5ea19": {
+      "_id": "d26s61juHxN5ea19",
+      "name": "Datajack",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Headware",
+        "essenceCost": 0.2,
+        "cost": 1000,
+        "availability": "0/0",
+        "streetIndex": 0.9,
+        "legalCode": "Legal",
+        "mods": "+1DJK",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "grade": "Alpha",
+        "rating": null,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0535",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.ejyk7g51Wm2nYTJb": {
+      "_id": "ejyk7g51Wm2nYTJb",
+      "name": "Eyes, Flare Compensation",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.1,
+        "cost": 2000,
+        "availability": "5/48 hours",
+        "streetIndex": 1.25,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.300",
+        "grade": "Alpha",
+        "rating": null,
+        "description": "Eliminate glare modifiers",
+        "srcgName": "Eyes, Flare Comp"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "insideReplacement": true
+        }
+      },
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0428",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.fzwe5mxX0ynuXz5z": {
+      "_id": "fzwe5mxX0ynuXz5z",
+      "name": "Knowsoft Link",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Headware",
+        "essenceCost": 0.1,
+        "cost": 1000,
+        "availability": "3/24 hours",
+        "streetIndex": 1,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.298",
+        "grade": "Alpha",
+        "rating": null,
+        "description": "Access headware/datajack knowsofts"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0551",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.hklgsSR4X0g0BZ2u": {
+      "_id": "hklgsSR4X0g0BZ2u",
+      "name": "Browning Max-Power",
+      "type": "firearm",
+      "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-heavy.svg",
+      "system": {
+        "category": "HPist",
+        "skill": "Pistols",
+        "attribute": "quickness",
+        "concealability": "6",
+        "ammunition": "10(c)",
+        "mode": "SA",
+        "damage": "9M",
+        "weight": "2",
+        "availability": "3/24hrs",
+        "cost": 450,
+        "streetIndex": "1",
+        "accessories": "None",
+        "bookPage": "sr3.278",
+        "notes": "",
+        "hands": 1,
+        "smartgun": true,
+        "laserSight": false,
+        "legality": "6P-E",
+        "ready": true,
+        "loadedAmmoType": "regular",
+        "loadedRounds": 10
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-firearms.Item.sr3e-firearm-0088",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.jC1KTnZ5YblfTjW4": {
+      "_id": "jC1KTnZ5YblfTjW4",
+      "name": "Chrysler-Nissan Jackrabbit",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "<p>rigged, remote controllable, dwarf-adjusted</p>",
+        "rating": null,
+        "bookPage": "sr3.327"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.kvkp8FA4X6A4bzED": {
+      "_id": "kvkp8FA4X6A4bzED",
+      "name": "Basic Pocket Secretary",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-commlink.svg",
+      "system": {
+        "quantity": 1,
+        "category": "Lifestyle Extras",
+        "concealability": "8",
+        "rating": null,
+        "cost": 2000,
+        "weight": 0.5,
+        "availability": "Always",
+        "streetIndex": "1",
+        "bookPage": "sr3.287",
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.b04d93a0b0117288",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.myH2LCZ4kDvjyLJa": {
+      "_id": "myH2LCZ4kDvjyLJa",
+      "name": "Safehouse Locations",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Safehouse Locations",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.mz6qLhjRBNEmW9fb": {
+      "_id": "mz6qLhjRBNEmW9fb",
+      "name": "Armor Jacket",
+      "type": "armor",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-jacket.svg",
+      "system": {
+        "concealability": "6",
+        "ballistic": 5,
+        "impact": 3,
+        "weight": 2,
+        "availability": "3/36hrs",
+        "cost": 900,
+        "streetIndex": ".75",
+        "bookPage": "sr3.284",
+        "notes": "",
+        "legality": "Legal"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-armor.Item.sr3e-armor-0015",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.p293k7yzos7KriwK": {
+      "_id": "p293k7yzos7KriwK",
+      "name": "Electronic ToolKit",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-camera.svg",
+      "system": {
+        "quantity": 1,
+        "category": "Surveillance and Security",
+        "concealability": "3",
+        "rating": null,
+        "cost": 1500,
+        "weight": 5,
+        "availability": "5/48hrs",
+        "streetIndex": "2",
+        "bookPage": "sr3.288",
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.b93bdd72ed150916",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.p85agGwNwFyu504U": {
+      "_id": "p85agGwNwFyu504U",
+      "name": "Opera",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Opera",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Interests",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.qOe6mnZ4bZTcDNaQ": {
+      "_id": "qOe6mnZ4bZTcDNaQ",
+      "name": "Vehicle Control Rig",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Rigger",
+        "essenceCost": 3,
+        "cost": 60000,
+        "availability": "8/48 hours",
+        "streetIndex": 1.25,
+        "legalCode": "6P-N",
+        "mods": "+4VCT,+2VNI,+2VCR,",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.302",
+        "grade": "Alpha",
+        "rating": 2,
+        "description": "Mods only apply when rigging",
+        "srcgName": "Vehicle Ctrl Rig [1]"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0984",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.slat481KHPJh8hX2": {
+      "_id": "slat481KHPJh8hX2",
+      "name": "Electronics B/R",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Electronics B/R",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Build/Repair skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.smGs71mHOavzEEFI": {
+      "_id": "smGs71mHOavzEEFI",
+      "name": "Computer Background",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Computer Background",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.u2a32K5DeY8yvjTh": {
+      "_id": "u2a32K5DeY8yvjTh",
+      "name": "Eyes, Image Link",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Eyeware",
+        "essenceCost": 0.2,
+        "cost": 1600,
+        "availability": "4/48 hours",
+        "streetIndex": 2,
+        "legalCode": "Legal",
+        "mods": "",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.300",
+        "grade": "Alpha",
+        "rating": null,
+        "description": "Display text and images in field of vision"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "insideReplacement": true
+        }
+      },
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0431",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.xAJxM9zK1LkmalwP": {
+      "_id": "xAJxM9zK1LkmalwP",
+      "name": "Gunnery",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Gunnery",
+        "rating": 6,
+        "linkedAttribute": "intelligence",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!Q3D27XkxcRLTlgH6.zfmJaqdBOLezzCqi": {
+      "_id": "zfmJaqdBOLezzCqi",
+      "name": "Pistols",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Pistols",
+        "rating": 4,
+        "linkedAttribute": "quickness",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    }
+  }
+}

@@ -3225,3 +3225,30 @@ need `npm run packs:install` (Foundry closed) and a restart.
       warns it is above Magic. "Killing Hands" dropped on the same adept keeps its plain name.
 - [ ] `game.sr3e.SR3EMigrations.force()` on a character holding an old "Pocket Computer (250Mp)" and "Combat Sense +2":
       they become "Pocket Computer [250]" (rating 250) and "Combat Sense [2]" (level 2, still two Combat Pool dice).
+
+## 73. The core rulebook's sample characters (TODO 270, SR3 pp.65-80 and record sheets pp.326-329)
+
+**Prerequisites:** `npm run packs:install` (Foundry closed) and a restart; a test world with Player2 and a GM. The numbers
+under each character are the book's — check them against the sheet, not the other way round.
+`node tests/run.mjs core-archetypes` proves the pack matches the book on paper; this walks it in Foundry.
+
+- [ ] Compendium sidebar → Reference → **Sample Characters** holds **16** actors (the book prints sixteen, not fifteen).
+      Open the compendium with the core book's filter off in *Configure Source Books*: it disappears; back on: it returns.
+- [ ] Drag **The Adept** into the world. Body 5, Quickness 6, **Strength 6 → 7** (Improved Strength), Intelligence 6, Willpower 4,
+      Essence 6, Magic 6. **Reaction 8** and Initiative **8 + 2D6** (Increased Reflexes 1). Combat Pool **8**. Unarmed Combat 6, Clubs 5
+      (specialisation Rattan Sticks 7). The five adept powers are on the Magic tab; Pain Resistance at level 3.
+- [ ] **Combat Decker** (ork): Strength 5 → **7**, Reaction 4 → **6**, Essence **1.54**, Combat Pool **7**, Hacking Pool **4** with the
+      CMT Avatar loaded. The Ceska Black Scorpion reads loaded (10/10) and spare clips are in the inventory.
+- [ ] **Combat Mage** (troll): Body 6 → **7** (the hide, nothing else), Spell Pool **5**, Astral Combat Pool **7**, Combat Pool **7**,
+      Essence 6. Seven spells, each at its printed Force in the name; Manaball and Powerball say *Exclusive*.
+- [ ] **The Mercenary** (troll): Body 10 → **13**, Quickness 5 → **7**, Strength 9 → **11**, Reaction 4 → **5**, Initiative 5 + 2D6,
+      Essence **1.02**, Combat Pool **7**. The Ares Antioch is loaded with a mini-grenade stock beside it.
+- [ ] **Street Samurai**: Body 4 → 6, Reaction 6 → **11** (Wired 2 + Reaction Enhancer 1), Initiative 11 + 3D6, Essence **.01**,
+      Combat Pool 7. ⚠ **Strength 5 → 8 here, the book prints 7** — Strength Enhancement 3 is +3 in the packs; known, TODO 270.
+- [ ] **Drone Rigger** and **Vehicle Rigger**: with the rig active, rigged Reaction **9** / **11**, Control Pool **9** / **11**,
+      Combat Pool 7 / 8; Essence 1.43 / 0.44.
+- [ ] **Street Shaman**, **Tribal Shaman**, **Street Mage**: Spell Pool 5, Astral Combat Pool 8 (Street Mage 8, Tribal 8), Magic 6;
+      the shamans' totem reads Rat / Raven, the mage's tradition Hermetic.
+- [ ] Every character: Karma Pool 1, a token with sight and the dynamic ring, `bookPage` shown as the book and page, and the
+      Notes tab names the priorities, lifestyle, contacts and starting nuyen (the 3D6 × 100¥ is rolled by the GM).
+- [ ] Put one of them in a combat: the weapons roll, the loaded magazine counts down, Reload uses the spare clips.

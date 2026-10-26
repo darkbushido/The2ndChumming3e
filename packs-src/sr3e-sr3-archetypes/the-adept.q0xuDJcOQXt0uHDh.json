@@ -1,0 +1,1561 @@
+{
+  "_key": "!actors!q0xuDJcOQXt0uHDh",
+  "doc": {
+    "name": "The Adept",
+    "type": "character",
+    "system": {
+      "metatype": "human",
+      "nuyen": 248,
+      "karma": 0,
+      "totalKarma": 0,
+      "karmaPool": 1,
+      "notes": "<p>Shadowrun, Third Edition, p.65 (record sheet p.326). Stats as printed; the book's race, not converted.</p><p>Priorities: Race E, Attributes A, Skills C, Resources D, Magic B. Resources 20,000¥ (spent in creation).</p><p>Starting nuyen: 248¥ + (3D6 × 100¥). Lifestyle: Low Lifestyle (5 months).</p><p>Contacts:</p><ul><li>Fixer (Level 1)</li><li>Professional Bodyguard (Level 1)</li></ul><p>Record-sheet notes:</p><ul><li>Magic taken as Priority B</li></ul>",
+      "attributes": {
+        "body": {
+          "base": 5,
+          "value": 5,
+          "mod": 0,
+          "force": 0
+        },
+        "quickness": {
+          "base": 6,
+          "value": 6,
+          "mod": 0,
+          "force": 0
+        },
+        "strength": {
+          "base": 6,
+          "value": 6,
+          "mod": 0,
+          "force": 0
+        },
+        "charisma": {
+          "base": 3,
+          "value": 3,
+          "mod": 0,
+          "force": 0
+        },
+        "intelligence": {
+          "base": 6,
+          "value": 6,
+          "mod": 0,
+          "force": 0
+        },
+        "willpower": {
+          "base": 4,
+          "value": 4,
+          "mod": 0,
+          "force": 0
+        },
+        "essence": {
+          "base": 6,
+          "value": 6,
+          "force": 0,
+          "lost": 0
+        },
+        "magic": {
+          "base": 6,
+          "value": 6,
+          "mod": 0,
+          "force": 0
+        },
+        "reaction": {
+          "base": 3,
+          "value": 3,
+          "reactionBonus": 0,
+          "diceBonus": 0,
+          "override": false,
+          "force": 0
+        }
+      },
+      "biography": "",
+      "gender": "",
+      "age": "",
+      "height": "",
+      "weight": "",
+      "ethnicity": "",
+      "reputation": 0,
+      "notoriety": 0,
+      "streetCred": 0,
+      "hackingBonus": 0,
+      "initiativeDiceBonus": 0,
+      "equippedArmor": "",
+      "equippedMelee": "",
+      "activeVCRItemId": "",
+      "equippedCyberdeck": "",
+      "matrixUserMode": "",
+      "activeHostId": "",
+      "currentMatrixNode": "",
+      "matrixMarks": [],
+      "linkLocked": false,
+      "astralMode": "",
+      "magicTradition": "Somatic",
+      "magicType": "Adept",
+      "magicTotem": "",
+      "magicElement": "",
+      "initiateGrade": 0,
+      "combatPoolSpent": 0,
+      "combatPoolMod": 0,
+      "spellPoolSpent": 0,
+      "spellPoolMod": 0,
+      "astralPoolSpent": 0,
+      "astralPoolMod": 0,
+      "hackingPoolSpent": 0,
+      "spellDefensePool": 0,
+      "spellDefenseSorceryDice": 0,
+      "fullDefense": false,
+      "fullDefensePool": 0,
+      "recoilCompensation": 0,
+      "roundsFiredThisPhase": 0,
+      "stimBonus": 0,
+      "wounds": {
+        "stun": {
+          "value": 0,
+          "max": 10
+        },
+        "physical": {
+          "value": 0,
+          "max": 10
+        },
+        "overflow": {
+          "value": 0
+        }
+      },
+      "ew": {
+        "deckRating": 0,
+        "fluxRating": 0,
+        "protocolModule": 0,
+        "ivisPool": {
+          "value": 0,
+          "max": 0
+        }
+      },
+      "orthodoxDeck": {
+        "deckModel": "",
+        "mccp": 0,
+        "bod": 0,
+        "evasion": 0,
+        "masking": 0,
+        "sensor": 0,
+        "hardening": 0,
+        "activeMemory": 0,
+        "storageMemory": 0,
+        "ioSpeed": 0,
+        "responseIncrease": 0,
+        "sleazeRating": 0
+      },
+      "orthodoxRunState": {
+        "securityTally": 0,
+        "alertLevel": "none",
+        "currentHostId": ""
+      },
+      "orthodoxMatrixCM": {
+        "value": 0
+      },
+      "professionalRating": 0,
+      "bookPage": "sr3.65"
+    },
+    "_id": "q0xuDJcOQXt0uHDh",
+    "img": "icons/svg/mystery-man.svg",
+    "prototypeToken": {
+      "name": "The Adept",
+      "displayName": 0,
+      "actorLink": true,
+      "width": 1,
+      "height": 1,
+      "depth": 1,
+      "texture": {
+        "src": "icons/svg/mystery-man.svg",
+        "anchorX": 0.5,
+        "anchorY": 0.5,
+        "fit": "contain",
+        "scaleX": 1,
+        "scaleY": 1,
+        "tint": "#ffffff",
+        "alphaThreshold": 0.75
+      },
+      "lockRotation": false,
+      "rotation": 0,
+      "alpha": 1,
+      "disposition": -1,
+      "displayBars": 20,
+      "bar1": {
+        "attribute": "wounds.physical"
+      },
+      "bar2": {
+        "attribute": "wounds.stun"
+      },
+      "light": {
+        "negative": false,
+        "priority": 0,
+        "alpha": 0.5,
+        "angle": 360,
+        "bright": 0,
+        "color": null,
+        "coloration": 1,
+        "dim": 0,
+        "attenuation": 0.5,
+        "luminosity": 0.5,
+        "saturation": 0,
+        "contrast": 0,
+        "shadows": 0,
+        "animation": {
+          "type": null,
+          "speed": 5,
+          "intensity": 5,
+          "reverse": false
+        },
+        "darkness": {
+          "min": 0,
+          "max": 1
+        }
+      },
+      "sight": {
+        "enabled": true,
+        "range": 0,
+        "angle": 360,
+        "visionMode": "basic",
+        "color": null,
+        "attenuation": 0.1,
+        "brightness": 0,
+        "saturation": 0,
+        "contrast": 0
+      },
+      "detectionModes": {},
+      "occludable": {
+        "radius": 0
+      },
+      "ring": {
+        "enabled": true,
+        "colors": {
+          "ring": null,
+          "background": null
+        },
+        "effects": 1,
+        "subject": {
+          "scale": 1,
+          "texture": null
+        }
+      },
+      "turnMarker": {
+        "mode": 1,
+        "animation": null,
+        "src": null,
+        "disposition": false
+      },
+      "movementAction": null,
+      "flags": {},
+      "randomImg": false,
+      "appendNumber": false,
+      "prependAdjective": false
+    },
+    "items": [
+      "cRHTrmIDlND39rw3",
+      "zowSFO3hlbMn0eR1",
+      "huJtw9DE7pcOjpwE",
+      "5JDaQmtUuefv9U21",
+      "fXNvx6KFscMlzlNo",
+      "FDBz6V1PaaQJA3HC",
+      "8ZSUrAdnxACF4djR",
+      "bztjKfn6Bb1g66YD",
+      "2RkY1PF62tmJwB2z",
+      "0IRQRl51v8XORsg2",
+      "Ctvbf6fpiyRCOTXe",
+      "yGHbMcGjwTC1aQth",
+      "jjUwJDaWXdeBi4gp",
+      "Qf7rf13qDQv6guSf",
+      "c3Yd57ZUQvg9i2Sy",
+      "TxDJiDcjqH1ZOKdq",
+      "3VfzdqaRO74lzn9C",
+      "u5P53zJWmU2mRbJi",
+      "y5rfSx2BQMbVHPxr",
+      "ON4hhXq7rUCWPoFL",
+      "sNXnKv4j9Hg48eeb",
+      "J9DmbAFzoutFIH2u",
+      "tJDPowkzYAZcD5xc",
+      "F70UQ0eoveotXZNe",
+      "DC3pzu8ZR9Ru00PX",
+      "DfCU4woMpBiFcext",
+      "nqqBUsFxchScslJu",
+      "aDidfhG9C8IY5d8v",
+      "TndAU7DG2vbFwStg",
+      "oNV1KsCmpLbJGfNF",
+      "AtKqeNQRwEGQkzrH",
+      "gYrjIASsoZBpscwN",
+      "BO7kceMS9dwIkotN",
+      "8oAkC6RK30cGizja",
+      "BdpCMVTl1jJp0FD2",
+      "N7Q5Wo9SHfxK8AS5"
+    ],
+    "effects": [],
+    "folder": null,
+    "ownership": {
+      "default": 0
+    },
+    "flags": {
+      "The2ndChumming3e": {
+        "isTemplate": false,
+        "generatedBy": "build-core-archetypes"
+      }
+    },
+    "_stats": {
+      "coreVersion": "14",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": null,
+      "createdTime": 1788537621572,
+      "modifiedTime": 1788537621572,
+      "lastModifiedBy": null,
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "exportSource": null
+    },
+    "sort": 0
+  },
+  "embedded": {
+    "!actors.items!q0xuDJcOQXt0uHDh.0IRQRl51v8XORsg2": {
+      "_id": "0IRQRl51v8XORsg2",
+      "name": "English Read/Write",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "English Read/Write",
+        "rating": 2,
+        "linkedAttribute": "lan",
+        "category": "Language",
+        "skillType": "language",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.2RkY1PF62tmJwB2z": {
+      "_id": "2RkY1PF62tmJwB2z",
+      "name": "English",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "English",
+        "rating": 5,
+        "linkedAttribute": "lan",
+        "category": "Language",
+        "skillType": "language",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.3VfzdqaRO74lzn9C": {
+      "_id": "3VfzdqaRO74lzn9C",
+      "name": "Philosophy",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Philosophy",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Academic skills",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.5JDaQmtUuefv9U21": {
+      "_id": "5JDaQmtUuefv9U21",
+      "name": "Stealth",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Stealth",
+        "rating": 6,
+        "linkedAttribute": "quickness",
+        "category": "Physical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.8ZSUrAdnxACF4djR": {
+      "_id": "8ZSUrAdnxACF4djR",
+      "name": "Chinese",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Chinese",
+        "rating": 4,
+        "linkedAttribute": "lan",
+        "category": "Language",
+        "skillType": "language",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.8oAkC6RK30cGizja": {
+      "_id": "8oAkC6RK30cGizja",
+      "name": "Basic Pocket Secretary",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-commlink.svg",
+      "system": {
+        "quantity": 1,
+        "category": "Lifestyle Extras",
+        "concealability": "8",
+        "rating": null,
+        "cost": 2000,
+        "weight": 0.5,
+        "availability": "Always",
+        "streetIndex": "1",
+        "bookPage": "sr3.287",
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.b04d93a0b0117288",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.AtKqeNQRwEGQkzrH": {
+      "_id": "AtKqeNQRwEGQkzrH",
+      "name": "Jammer",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-scanner.svg",
+      "system": {
+        "quantity": 1,
+        "category": "Stuff With Ratings",
+        "concealability": "2",
+        "rating": 5,
+        "cost": 5000,
+        "weight": 5,
+        "availability": "5/72hrs",
+        "streetIndex": "1.5",
+        "bookPage": "sr3.292",
+        "description": "",
+        "legality": "3P-U"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.3a9228dbde477341",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.BO7kceMS9dwIkotN": {
+      "_id": "BO7kceMS9dwIkotN",
+      "name": "Micro-Transceiver",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-scanner.svg",
+      "system": {
+        "quantity": 1,
+        "category": "Stuff With Ratings",
+        "concealability": "10",
+        "rating": 5,
+        "cost": 5000,
+        "weight": 0,
+        "availability": "5/48hrs",
+        "streetIndex": "2",
+        "bookPage": "sr3.290",
+        "description": "",
+        "legality": "8P-U"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.b30d24c382ff42cf",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.BdpCMVTl1jJp0FD2": {
+      "_id": "BdpCMVTl1jJp0FD2",
+      "name": "Stimulant Patch",
+      "type": "medical",
+      "img": "systems/The2ndChumming3e/styles/icons/medical-patch.svg",
+      "system": {
+        "category": "Biotech",
+        "rating": 4,
+        "weight": "-",
+        "cost": 100,
+        "availability": "2/24hrs",
+        "streetIndex": "1",
+        "bookPage": "sr3.304",
+        "notes": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-medical.Item.29096bc02beb3e4c",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.Ctvbf6fpiyRCOTXe": {
+      "_id": "Ctvbf6fpiyRCOTXe",
+      "name": "Filipino",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Filipino",
+        "rating": 4,
+        "linkedAttribute": "lan",
+        "category": "Language",
+        "skillType": "language",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.DC3pzu8ZR9Ru00PX": {
+      "_id": "DC3pzu8ZR9Ru00PX",
+      "name": "Cue Ball",
+      "type": "thrown",
+      "img": "systems/The2ndChumming3e/styles/textures/thrown-weapons-default.webp",
+      "system": {
+        "category": "THR",
+        "concealability": "",
+        "damage": "7L Stun",
+        "quantity": 5,
+        "cost": 0,
+        "weight": 0,
+        "bookPage": "sr3.326",
+        "notes": "",
+        "legal": true
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.DfCU4woMpBiFcext": {
+      "_id": "DfCU4woMpBiFcext",
+      "name": "Rattan Stick",
+      "type": "melee",
+      "img": "systems/The2ndChumming3e/styles/icons/melee-club.svg",
+      "system": {
+        "category": "CLB",
+        "skill": "Clubs",
+        "attribute": "strength",
+        "concealability": "5",
+        "reach": "1",
+        "damage": "(STR+1)M Stun",
+        "weight": ".2",
+        "availability": "2/6hrs",
+        "cost": 10,
+        "streetIndex": "1",
+        "legal": true,
+        "bookPage": "cc.10",
+        "notes": "<p>8L, +1 Reach</p>",
+        "hands": 1,
+        "legality": "8-C"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-cc-melee.Item.sr3e-melee-0070",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.F70UQ0eoveotXZNe": {
+      "_id": "F70UQ0eoveotXZNe",
+      "name": "Pain Resistance (3)",
+      "type": "adeptpower",
+      "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+      "system": {
+        "powerCost": 0.5,
+        "hasLevels": true,
+        "level": 3,
+        "mods": "",
+        "bookPage": "sr3.170",
+        "description": "Pain resistance allows you to ignore the effects of injury.  It does not reduce actualdamage, only it's effects on you."
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-adept-powers.Item.sr3e-adeptpower-0093",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.FDBz6V1PaaQJA3HC": {
+      "_id": "FDBz6V1PaaQJA3HC",
+      "name": "Unarmed Combat",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Unarmed Combat",
+        "rating": 6,
+        "linkedAttribute": "strength",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.J9DmbAFzoutFIH2u": {
+      "_id": "J9DmbAFzoutFIH2u",
+      "name": "Increased Reflexes (1)",
+      "type": "adeptpower",
+      "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+      "system": {
+        "powerCost": 2,
+        "hasLevels": false,
+        "level": 1,
+        "mods": "+2RCT,+1INI",
+        "bookPage": "sr3.169",
+        "description": "This power increases the speed at which you react, just like wired reflexes SR3-301.",
+        "bonusRea": 2,
+        "bonusInitDice": 1,
+        "rating": 1
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-adept-powers.Item.sr3e-adeptpower-0050",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.N7Q5Wo9SHfxK8AS5": {
+      "_id": "N7Q5Wo9SHfxK8AS5",
+      "name": "Tranq Patch",
+      "type": "medical",
+      "img": "systems/The2ndChumming3e/styles/icons/medical-patch.svg",
+      "system": {
+        "category": "Biotech",
+        "rating": 5,
+        "weight": "-",
+        "cost": 100,
+        "availability": "4/48hrs",
+        "streetIndex": "2",
+        "bookPage": "sr3.304",
+        "notes": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-medical.Item.d040e5e5c74bf571",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.ON4hhXq7rUCWPoFL": {
+      "_id": "ON4hhXq7rUCWPoFL",
+      "name": "Improved Strength (1)",
+      "type": "adeptpower",
+      "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+      "system": {
+        "powerCost": 0.5,
+        "hasLevels": true,
+        "level": 1,
+        "mods": "+1STR",
+        "bookPage": "sr3.169",
+        "description": "With this power you can improve a physical attribute.  Each level of the power increases the attribute by 1.",
+        "bonusStr": 1
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-adept-powers.Item.sr3e-adeptpower-0046",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.Qf7rf13qDQv6guSf": {
+      "_id": "Qf7rf13qDQv6guSf",
+      "name": "Magic Background",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Magic Background",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Background knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.TndAU7DG2vbFwStg": {
+      "_id": "TndAU7DG2vbFwStg",
+      "name": "Climbing Gear",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null,
+        "bookPage": "sr3.326"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.TxDJiDcjqH1ZOKdq": {
+      "_id": "TxDJiDcjqH1ZOKdq",
+      "name": "Meditation",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Meditation",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Interests",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.aDidfhG9C8IY5d8v": {
+      "_id": "aDidfhG9C8IY5d8v",
+      "name": "Armor Jacket",
+      "type": "armor",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-jacket.svg",
+      "system": {
+        "concealability": "6",
+        "ballistic": 5,
+        "impact": 3,
+        "weight": 2,
+        "availability": "3/36hrs",
+        "cost": 900,
+        "streetIndex": ".75",
+        "bookPage": "sr3.284",
+        "notes": "",
+        "legality": "Legal"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-armor.Item.sr3e-armor-0015",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.bztjKfn6Bb1g66YD": {
+      "_id": "bztjKfn6Bb1g66YD",
+      "name": "Chinese Read/Write",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Chinese Read/Write",
+        "rating": 2,
+        "linkedAttribute": "lan",
+        "category": "Language",
+        "skillType": "language",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.c3Yd57ZUQvg9i2Sy": {
+      "_id": "c3Yd57ZUQvg9i2Sy",
+      "name": "Medicine",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Medicine",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Academic skills",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.cRHTrmIDlND39rw3": {
+      "_id": "cRHTrmIDlND39rw3",
+      "name": "Athletics",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Athletics",
+        "rating": 6,
+        "linkedAttribute": "body",
+        "category": "Physical skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.fXNvx6KFscMlzlNo": {
+      "_id": "fXNvx6KFscMlzlNo",
+      "name": "Throwing Weapons",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Throwing Weapons",
+        "rating": 6,
+        "linkedAttribute": "strength",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.gYrjIASsoZBpscwN": {
+      "_id": "gYrjIASsoZBpscwN",
+      "name": "Goggles - Low Light",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-goggles.svg",
+      "system": {
+        "quantity": 1,
+        "category": "S+S Vision Enhancers",
+        "concealability": "6",
+        "rating": null,
+        "cost": 2000,
+        "weight": 0,
+        "availability": "6/48hrs",
+        "streetIndex": "2",
+        "bookPage": "sr3.290",
+        "description": "<p><strong>Mag:</strong> 20x</p>"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.fa6e43e098c4964c",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.huJtw9DE7pcOjpwE": {
+      "_id": "huJtw9DE7pcOjpwE",
+      "name": "Etiquette",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Etiquette",
+        "rating": 3,
+        "linkedAttribute": "charisma",
+        "category": "Social skills",
+        "skillType": "active",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.jjUwJDaWXdeBi4gp": {
+      "_id": "jjUwJDaWXdeBi4gp",
+      "name": "Legendary Martial Artists",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Legendary Martial Artists",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Interests",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.nqqBUsFxchScslJu": {
+      "_id": "nqqBUsFxchScslJu",
+      "name": "Shock Glove",
+      "type": "melee",
+      "img": "systems/The2ndChumming3e/styles/icons/melee-unarmed.svg",
+      "system": {
+        "category": "UNA",
+        "skill": "Unarmed Combat",
+        "attribute": "strength",
+        "concealability": "9",
+        "reach": "-",
+        "damage": "(STR-1)M Stun",
+        "extraDamage": "7S Stun",
+        "shock": true,
+        "weight": ".5",
+        "availability": "5/48hrs",
+        "cost": 950,
+        "streetIndex": "2",
+        "legal": true,
+        "bookPage": "sr3.275",
+        "notes": "SR3 p.275 prints the damage as \"(STR - 1)M Stun +7S Stun\": the glove's fist damage is (STR - 1)M Stun (the Damage field) and the gloves deliver an extra +7S Stun (the Extra Damage field), which the melee result resists separately, with Impact armour at half (SR3 p.124). Eight discharges, then a 1-hour recharge (p.276) - not tracked.",
+        "hands": 0,
+        "legality": "5-B"
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-melee.Item.sr3e-melee-0109",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.oNV1KsCmpLbJGfNF": {
+      "_id": "oNV1KsCmpLbJGfNF",
+      "name": "Flash-Pak",
+      "type": "projectile",
+      "img": "systems/The2ndChumming3e/styles/icons/thrown-grenade.svg",
+      "system": {
+        "category": "GR",
+        "skill": "Throwing Weapons",
+        "attribute": "strength",
+        "concealability": "12",
+        "strMin": 0,
+        "damage": "Special",
+        "weight": ".2",
+        "availability": "3/36 hrs",
+        "cost": 250,
+        "streetIndex": "1",
+        "legal": true,
+        "legality": "Legal",
+        "bookPage": "sr3.283",
+        "notes": "<p>The size of a pack of cigarettes, this unit contains four quartz-halogen micro-flashes designed to fire in random strobe sequences to disorient, distract and blind opponents. Anyone facing a flash-pak receives a +4 target number modifier (+2 if the target has flare compensation). The pak also negates modifiers from poor or no lighting, but imposes its own +2 modifier because of the strobing flashes.</p><p>SR3 p.283 — Legality Legal. No blast.</p>",
+        "isAoE": true,
+        "blast": "",
+        "areaEffect": "Anyone facing it takes +4 to target numbers (+2 with flare compensation); it negates poor or no lighting modifiers but adds its own +2 from the strobing.",
+        "hands": 1
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-projectiles.Item.0fd920c94dc885a5",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.sNXnKv4j9Hg48eeb": {
+      "_id": "sNXnKv4j9Hg48eeb",
+      "name": "Improved Unarmed Combat (1)",
+      "type": "adeptpower",
+      "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+      "system": {
+        "powerCost": 0.5,
+        "hasLevels": true,
+        "level": 1,
+        "mods": "",
+        "bookPage": "sr3.169",
+        "description": "This power gives you additional dice for use with a specific Active Skill.",
+        "improvedSkillName": "Unarmed Combat",
+        "improvedSkillDice": 1
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-adept-powers.Item.sr3e-adeptpower-0040",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.tJDPowkzYAZcD5xc": {
+      "_id": "tJDPowkzYAZcD5xc",
+      "name": "Killing Hands (M)",
+      "type": "adeptpower",
+      "img": "systems/The2ndChumming3e/styles/textures/adept-default.webp",
+      "system": {
+        "powerCost": 1,
+        "hasLevels": false,
+        "level": 1,
+        "mods": "",
+        "bookPage": "sr3.170",
+        "description": "This power uses magic to turn unarmed attacks into medium physical damage."
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-adept-powers.Item.sr3e-adeptpower-0071",
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.u5P53zJWmU2mRbJi": {
+      "_id": "u5P53zJWmU2mRbJi",
+      "name": "Professional Bodyguarding",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Professional Bodyguarding",
+        "rating": 4,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.y5rfSx2BQMbVHPxr": {
+      "_id": "y5rfSx2BQMbVHPxr",
+      "name": "Sculpture",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Sculpture",
+        "rating": 3,
+        "linkedAttribute": "intelligence",
+        "category": "Street knowledge",
+        "skillType": "knowledge",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.yGHbMcGjwTC1aQth": {
+      "_id": "yGHbMcGjwTC1aQth",
+      "name": "Filipino Read/Write",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Filipino Read/Write",
+        "rating": 2,
+        "linkedAttribute": "lan",
+        "category": "Language",
+        "skillType": "language",
+        "specialisation": "",
+        "specialisations": [],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    },
+    "!actors.items!q0xuDJcOQXt0uHDh.zowSFO3hlbMn0eR1": {
+      "_id": "zowSFO3hlbMn0eR1",
+      "name": "Clubs",
+      "type": "skill",
+      "img": "systems/The2ndChumming3e/styles/textures/skills-default.webp",
+      "system": {
+        "skillName": "Clubs",
+        "rating": 5,
+        "linkedAttribute": "strength",
+        "category": "Combat skills",
+        "skillType": "active",
+        "specialisation": "Rattan Sticks 7",
+        "specialisations": [
+          {
+            "name": "Rattan Sticks",
+            "level": 2
+          }
+        ],
+        "force": 0,
+        "description": ""
+      },
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0
+      },
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 1788537621572,
+        "modifiedTime": 1788537621572,
+        "lastModifiedBy": null
+      }
+    }
+  }
+}
