@@ -81,6 +81,12 @@ export const MetatypeShift = {
     return update;
   },
 
+  /** "an ork", "a troll" - the metatype with its indefinite article. */
+  withArticle(metatype) {
+    const m = MetatypeShift.normalise(metatype);
+    return `${/^[aeiou]/.test(m) ? 'an' : 'a'} ${m}`;
+  },
+
   /** "Body 10 → 8, Quickness 4 → 5" for the dialog and the chat line. */
   describe(attrs, changed) {
     const label = k => k[0].toUpperCase() + k.slice(1);

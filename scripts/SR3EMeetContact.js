@@ -220,7 +220,7 @@ export class SR3EMeetContact {
     const changed = MetatypeShift.shift(SR3EMeetContact._attrsOf(archetype), bookMeta, r.metatype, SR3EMeetContact._shiftCtx());
     if (npc && Object.keys(changed).length) {
       await npc.update(MetatypeShift.updateFor(changed, r.metatype));
-      ui.notifications.info(`SR3E: ${npc.name} is a ${r.metatype} — ${MetatypeShift.describe(SR3EMeetContact._attrsOf(archetype), changed)}.`);
+      ui.notifications.info(`SR3E: ${npc.name} is ${MetatypeShift.withArticle(r.metatype)} — ${MetatypeShift.describe(SR3EMeetContact._attrsOf(archetype), changed)}.`);
     }
     npc?.sheet?.render(true);
     return npc;
