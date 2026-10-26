@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**73 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**75 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[277](#277) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[278](#278) Race-agnostic generic NPCs |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2917,7 +2917,29 @@ archetypes with no matching portrait job **fall back to the nearest one for now*
 - `contact.npcUuid` — new field: **full Foundry restart**.
 - Live check: TESTING.md, *Meet the contact*.
 
-### 📌 Notes & parked
+## 277. Metatype Shift — Meet the contact restates the stats for the chosen race — **requested 2026-10-25**
+
+The book's metatype was an example but the stat block stayed the book's race. Rule (the maintainer, 2026-10-25):
+subtract the book race's modifiers, add the new race's (Racial Modifications Table, SR3 p.56), cap at the racial
+maximum (p.245), never below 1; Essence and skills unchanged; metavariants out of scope.
+
+**Built (branch `claude/metatype-shift-c4c21d`):** `scripts/data/metatype-shift.mjs` (pure), applied by
+`SR3EMeetContact` after the NPC is created; the amber line says what was adjusted. `tests/metatype-shift.test.mjs`.
+Troll dermal armour, troll Reach and racial vision already follow `system.metatype`. **Not modelled:** a dwarf's
++2 Body against disease and toxins (p.56, TODO 98). Live check: TESTING.md §71.
+
+## 278. Race-agnostic generic NPCs — **requested 2026-10-25**
+
+An archetype marked *Generic* (Actor Directory → right-click → Make Generic NPC…, or
+`game.sr3e.SR3EGenericNpc.create({ archetypeUuid })`) rolls a race from its mix (Seattle mix by default, or a custom
+one, stored in `flags.The2ndChumming3e.genericNpc`) for every UNLINKED token created, shifts that token's actor
+delta (TODO 277) and, with a portrait source active, picks a face of that race and the archetype's job. The sidebar
+actor stays the template and a live actor (TODO 260).
+
+**Built (same branch):** `scripts/data/generic-npc.mjs` (pure), `scripts/SR3EGenericNpc.js`, a synchronous
+`preCreateToken` hook and a `ready` warm-up of the portrait index in `sr3e.js`. `tests/generic-npc.test.mjs`.
+Live check: TESTING.md §71.
+
 
 ## Open questions carried from the combat audit
 
@@ -2928,6 +2950,8 @@ things it explicitly did not resolve:
 - `tempMagicLoss` — the one `endCombat` reset whose correct lifetime was never established (`:352`)
 - Delayed actions and mid-round joins (`:371`) — no delay mechanism; an actor added mid-round
   gets no slot until the next round. Called a design question, not a rules defect.
+
+### 📌 Notes & parked
 
 ### ✅ RESOLVED — the TN floor of 2 *is* enforced everywhere. No bug.
 
