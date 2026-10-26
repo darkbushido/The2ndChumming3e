@@ -46,6 +46,7 @@ import { SR3ELegwork } from './SR3ELegwork.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
 import { SR3EMeetContact } from './SR3EMeetContact.js';
+import { SR3EGenericNpc } from './SR3EGenericNpc.js';
 import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
 import { SR3EActionLedger } from './SR3EActionLedger.js';
@@ -132,7 +133,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc };
 
   // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
   // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
@@ -551,6 +552,22 @@ Hooks.on('preUpdateItem', (document, changes) => {
   if (document.type !== 'ammunition' || !foundry.utils.hasProperty(changes, 'system') || 'img' in changes) return;
   const img = restockImage(foundry.utils.mergeObject(document.toObject(), changes, { inplace: false }));
   if (img) changes.img = img;
+});
+
+// Generic NPCs (TODO 273): an unlinked token of a race-agnostic archetype is rolled as its own person. The hook is
+// SYNCHRONOUS (Foundry does not await it); the portrait index was loaded at `ready` (`SR3EGenericNpc.warm`).
+Hooks.on('preCreateToken', (token) => {
+  try { SR3EGenericNpc.prepareToken(token); } catch (err) { console.error('SR3E | generic NPC token:', err); }
+});
+Hooks.once('ready', () => { SR3EGenericNpc.warm(); });
+// …and the GM's way in: Actor Directory → right-click → Make Generic NPC…
+Hooks.on('getActorContextOptions', (app, options) => {
+  options.push({
+    name: 'Make Generic NPC…',
+    icon: '<i class="fa-solid fa-dice"></i>',
+    condition: li => game.user.isGM && ['npc', 'character'].includes(app.collection.get(li.dataset?.entryId ?? li.dataset?.documentId)?.type),
+    callback: li => SR3EGenericNpc.mark(app.collection.get(li.dataset?.entryId ?? li.dataset?.documentId)),
+  });
 });
 
 // A skill's rating changes (Spend Karma, a sheet edit): its specialisations keep their OWN ratings -

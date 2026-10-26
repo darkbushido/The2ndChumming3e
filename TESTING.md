@@ -3248,3 +3248,16 @@ JS only — no restart.
 - [ ] Buy "Gel Rnds" (at the store or through a contact) and pay: the new box on the sheet has Gun class **HPist**.
 - [ ] The grenade launcher's 🛒 Buy ammo lists only mini-grenades; the bow's only arrows.
 - [ ] ↻ Reload the Predator: the bought box is offered, as before.
+
+## 74. Metatype Shift and Generic NPCs (TODO 272, 273 — SR3 p.56, p.245)
+
+Needs Foundry running with a Little Black Book archetype in an Actor compendium; a portrait module is optional (walk it once with, once without).
+
+- [ ] **Meet the contact shifts the stats.** Open Meet the contact on an ork archetype (e.g. Dock Worker if a troll). Pick **Human**: the amber line reads "Stats are adjusted from the book's ork to human (SR3 p.56): Body 9 → 6, …". Create NPC: the sheet shows those numbers, metatype Human, Essence and skills unchanged, and a notification repeats the changes. Picking the book's own metatype shows no amber line and changes nothing.
+- [ ] **Caps and floor.** Make a human Face-type NPC an ork or troll and check no attribute exceeds round(limit × 1.5) from the Racial Attribute Limit Table (p.245) and none is below 1.
+- [ ] **Traits follow the metatype.** On a troll made from a human archetype: Body shows the dermal-armour +1 (derived), melee Reach has +1, and the vision line says thermographic. Switch the same actor to human by hand: all three go.
+- [ ] **Make a Generic NPC.** GM: Actors tab → right-click an NPC → **Make Generic NPC…** (also `game.sr3e.SR3EGenericNpc.create({ archetypeUuid })` for a compendium archetype). Dialog: Seattle mix is preselected; typing in a race box switches to Custom. Confirm: the actor's prototype token is **unlinked**, numbered, ring and vision on; `actor.getFlag('The2ndChumming3e','genericNpc')` holds the mix; the actor is **not** a template (it appears in target lists).
+- [ ] **Each token is a person.** Drag 10+ tokens onto a scene (GM client, the active GM). Open several: their metatypes differ (roughly 2 in 3 human with the Seattle mix), stats are the book's shifted for that race, and with a portrait module each has a face of its race whose job matches the archetype. With no portrait module the stats still vary and the token keeps the prototype art.
+- [ ] **The sidebar actor is untouched** (still the book's race and numbers), and wounding one token does not wound the others or the sidebar actor (TODO 260).
+- [ ] **A custom mix** of `troll 1` makes every token a troll; a linked copy of the actor is not rolled.
+- [ ] Reload the GM tab after pulling this branch (a stale GM client will not roll — the hook runs on the client that creates the token).
