@@ -200,6 +200,13 @@ SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it w
   their bow/crossbow; a flechette weapon takes nothing else). ⚠ **HOUSE RULE (TODO 203):** a spare clip fits
   any gun of its mechanism; SR3 p.281 says clips are not interchangeable between weapons even of one class and applies `AmmoStock.reloadPlan`,
   reporting losses and cost (`reloadActions`). `trackAmmo` off → only sets the type.
+- **🛒 Buy ammo from the gun** (TODO 271, `scripts/data/ammo-shop.mjs`): a button on a firearm's (or nocking bow's)
+  sheet opens 🛒 Buy gear with `forWeapon` — the list is only what `reload()` would load (`AmmoStock.fits`,
+  `weaponAcceptsAmmoType`, a launcher's mini-grenades) **plus, for shopping, a clip of the gun's magazine size**
+  (SR3 p.281: clips are not interchangeable). ⚠ The packs file weapon-specific munitions (Assault Cannon shells, darts,
+  mortar rounds, mines, gyrojets…) as classless loose rounds, so `AmmoShop.WEAPON_SPECIFIC` offers them only to a gun
+  whose name says it is that weapon. The box bought is **stamped with the gun's class** (`AmmoShop.stamp`, fill
+  blanks). Mutants `ammo-shop-*`.
 - **Firing** decrements `loadedRounds` when tracking (warns when empty).
 - **NPCs start loaded** (TODO 270): with `trackAmmo` on, a character/NPC created as a world actor gets each empty
   firearm filled with regular rounds and 3–6 reloads of its own class (`NpcAmmo.plan`, `createActor` hook). ⚠ An actor

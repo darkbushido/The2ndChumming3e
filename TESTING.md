@@ -3235,3 +3235,16 @@ need `npm run packs:install` (Foundry closed) and a restart.
       warns it is above Magic. "Killing Hands" dropped on the same adept keeps its plain name.
 - [ ] `game.sr3e.SR3EMigrations.force()` on a character holding an old "Pocket Computer (250Mp)" and "Combat Sense +2":
       they become "Pocket Computer [250]" (rating 250) and "Combat Sense [2]" (level 2, still two Combat Pool dice).
+
+## 73. 🛒 Buy ammo from the gun (TODO 271, branch `feature/buy-ammo-from-gun`)
+
+**Prerequisites:** a character owned by Player2 with an Ares Predator (15(c)), a grenade launcher, a bow, and ¥5,000.
+JS only — no restart.
+
+- [ ] The Predator's item sheet has **🛒 Buy ammo** in its header; a melee weapon's and an unowned compendium gun's do not.
+- [ ] Click it: Buy gear opens titled "…ammunition for Ares Predator", a line "🔫 Ammunition for Ares Predator — 15-round
+      (c), HPist class", and the list fills at once: 15-Rnd Clips (Regular, APDS, Gel…) and loose rounds — no 10-Rnd
+      clips, no arrows, no mini-grenades, no Assault Cannon rounds, no darts. Typing "gel" narrows it.
+- [ ] Buy "Gel Rnds" (at the store or through a contact) and pay: the new box on the sheet has Gun class **HPist**.
+- [ ] The grenade launcher's 🛒 Buy ammo lists only mini-grenades; the bow's only arrows.
+- [ ] ↻ Reload the Predator: the bought box is offered, as before.

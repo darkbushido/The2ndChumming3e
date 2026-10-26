@@ -17,11 +17,13 @@
 import { Purchasing } from './purchasing.mjs';
 import { ModRatings } from './mod-ratings.mjs';
 import { Legality } from './legality.mjs';
+import { AMMO_INDEX_FIELDS } from './ammo-shop.mjs';
 
 /** The index fields the search reads — `pack.getIndex({ fields })`. */
 export const INDEX_FIELDS = ['system.availability', 'system.cost', 'system.streetIndex', 'system.bookPage', 'system.rating',
   'system.category', 'system.cyberwareCategory',   // these two tell ModRatings which kind of item a row is
-  'system.legality', 'system.legalCode', 'system.legalityCode'];   // the Legality Code (2026-10-25) — store or contact
+  'system.legality', 'system.legalCode', 'system.legalityCode',   // the Legality Code (2026-10-25) — store or contact
+  ...AMMO_INDEX_FIELDS];   // what a box of ammunition fits — 🛒 Buy ammo from the gun (2026-10-25)
 
 /** At most this many hits are drawn. */
 export const MAX_HITS = 40;
@@ -88,8 +90,10 @@ export const GearSearch = {
       bookPage: sys.bookPage ?? '',
       // The levels the books print for this item (the level table), or null — the dialog offers them.
       levels: ModRatings.levelsOf(row),
-      levelUnit: ModRatings.unitOf(row),
-      legality: Legality.of(row),   // "Mp" for memory (2026-10-25) — the Level picker says "250 Mp"
+      levelUnit: ModRatings.unitOf(row),   // "Mp" for memory (2026-10-25) — the Level picker says "250 Mp"
+      legality: Legality.of(row),
+      // An ammunition row's fit to a gun (`AmmoShop.fits`) — its system subset; null for anything else.
+      ammo: row?.type === 'ammunition' ? Object.fromEntries(AMMO_INDEX_FIELDS.map(k => [k.slice(7), sys[k.slice(7)]])) : null,
       rating: Number(sys.rating) || null,
     };
   },
