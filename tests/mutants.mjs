@@ -27,6 +27,7 @@
 const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
+const BARRIER = { module: '../scripts/data/barrier.mjs', klass: 'Barrier' };
 const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
 const MODFIX = { module: '../scripts/data/mod-book-fixes.mjs', klass: 'ModBookFixes' };
 const FAMILIES = { module: '../scripts/data/rated-families.mjs', klass: 'RatedFamilies' };
@@ -3736,5 +3737,25 @@ export const MUTANTS = [
           + 'blinded one on purpose (the maintainer, 2026-10-25: prototype tokens only)',
     impl:   (actor) => (actor && ['character', 'npc'].includes(actor.type) && actor.prototypeToken?.sight?.enabled !== true
       ? { 'prototypeToken.sight.enabled': true } : null),
+  },
+  {
+    id:     'barrier-doubles-only-blast',
+    suite:  'barrier',
+    ...BARRIER, method: 'multiplier',
+    was:    'the Barrier Damage tool doubled the rating for a blast only, so firearms, melee and combat spells met the normal rating; SR3 p.125 doubles it for each',
+    impl:   attack => (attack === 'blast' ? 2 : 1),
+  },
+  {
+    id:     'barrier-breach-short-of-an-increment',
+    suite:  'barrier',
+    ...BARRIER, method: 'effect',
+    was:    'Power over the adjusted rating but short of one half-rating increment posted a breach of 0 holes and BR −0; p.124 still takes 1 off',
+    impl:   (power, currentBR, attack = 'blast') => {
+      const effectiveBR = currentBR * (attack === 'blast' || attack === 'ranged' ? 2 : 1);
+      if (power < effectiveBR / 2) return { result: 'no_effect', effectiveBR, brReduction: 0, holes: 0, remainingPower: null };
+      if (power <= effectiveBR)    return { result: 'damage', effectiveBR, brReduction: 1, holes: 0, remainingPower: null };
+      const n = Math.floor((power - effectiveBR) / (currentBR / 2));
+      return { result: 'breach', effectiveBR, brReduction: n, holes: n * 0.5, remainingPower: attack === 'blast' ? power - currentBR : null };
+    },
   },
 ];

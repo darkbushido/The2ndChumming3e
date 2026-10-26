@@ -7,6 +7,7 @@ import * as Sustaining from '../data/sustaining.mjs';
 import { DrugRules } from '../data/drug-rules.mjs';
 import { Ledger } from '../data/ledger.mjs';
 import { Blast } from '../data/blast.mjs';
+import { Barrier } from '../data/barrier.mjs';
 import { BlastBatch, BATCH_STEP } from '../data/blast-batch.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
 import { MeleeProne } from '../data/melee-prone.mjs';
@@ -4808,10 +4809,11 @@ _prepareCharacter(sys, attr) {
 
     // Demolitions barrier damage — apply successes to Power and post result
     if (allDone && state.barrierContext) {
-      const { basePower, currentBR, material } = state.barrierContext;
+      const { basePower, currentBR, material, door, originalBR } = state.barrierContext;
       const effectivePower = basePower + successes;
-      const effect = SR3EActor.computeBarrierEffect(effectivePower, currentBR, 'demolitions');
-      await SR3EActor._postBarrierDamageCard(effect, material, currentBR, effectivePower, successes);
+      const effect = Barrier.effect(effectivePower, currentBR, 'demolitions');
+      await SR3EActor._postBarrierDamageCard(effect, material, currentBR, effectivePower, successes,
+        { attack: 'demolitions', door, originalBR });
     }
 
     // Escape Artist — post success (with time) or failure (with retry time)
@@ -4911,25 +4913,21 @@ _prepareCharacter(sys, attr) {
 
   // ── Barrier damage ─────────────────────────────────────────────────────────
 
+  /** The Barrier Effect Table (SR3 p.124) — `Barrier.effect`, kept here for older callers. */
   static computeBarrierEffect(power, currentBR, attackType = 'blast') {
-    const effectiveBR = attackType === 'blast' ? currentBR * 2 : currentBR;
-    const halfEffBR   = effectiveBR / 2;
-    if (power < halfEffBR) {
-      return { result: 'no_effect', effectiveBR, brReduction: 0, holes: 0, remainingPower: null };
-    }
-    if (power <= effectiveBR) {
-      return { result: 'damage', effectiveBR, brReduction: 1, holes: 0, remainingPower: null };
-    }
-    const halfCurrentBR = currentBR / 2;
-    const excess        = power - effectiveBR;
-    const increments    = halfCurrentBR > 0 ? Math.floor(excess / halfCurrentBR) : 1;
-    const remainPower   = attackType === 'blast' ? power - currentBR : null;
-    return { result: 'breach', effectiveBR, brReduction: increments, holes: increments * 0.5, remainingPower: remainPower };
+    return Barrier.effect(power, currentBR, attackType);
   }
 
-  static async _postBarrierDamageCard(effect, material, currentBR, power, demSuccesses = 0) {
+  /**
+   * `opts.attack` names the attack kind (`Barrier.ATTACKS`) for the multiplier note; `opts.door` /
+   * `opts.originalBR` add whether the door now stands open (SR3 p.125). The GM still writes the new rating down.
+   */
+  static async _postBarrierDamageCard(effect, material, currentBR, power, demSuccesses = 0, opts = {}) {
     const { result, effectiveBR, brReduction, holes, remainingPower } = effect;
     const newBR = Math.max(0, currentBR - brReduction);
+    const attack = opts.attack ?? (demSuccesses > 0 ? 'demolitions' : 'blast');
+    const door   = opts.door ?? '';
+    const opens  = Barrier.doorOpens(door, opts.originalBR ?? currentBR, newBR);
 
     let headerBg, headerColor, resultHtml;
     if (result === 'no_effect') {
@@ -4952,10 +4950,16 @@ _prepareCharacter(sys, attr) {
       }
     }
 
+    const kind    = Barrier.ATTACKS[attack];
     const modNote = effectiveBR !== currentBR
-      ? `<span style="color:var(--sr-muted)"> (${currentBR} × 2 for blast)</span>` : '';
+      ? `<span style="color:var(--sr-muted)"> (${currentBR} × ${Barrier.multiplier(attack)} against ${(kind?.label ?? attack).toLowerCase()}, SR3 ${kind?.page ?? 'p.124'})</span>` : '';
     const demNote = demSuccesses > 0
       ? `<div style="font-size:11px;color:var(--sr-muted);">Demolitions: ${demSuccesses} success${demSuccesses !== 1 ? 'es' : ''} added → Power ${power}</div>` : '';
+    const doorAt   = Barrier.doorOpensAt(door, opts.originalBR ?? currentBR);
+    const doorHtml = opens === null ? ''
+      : opens
+        ? `<div style="font-size:13px;margin-top:6px;color:var(--sr-green);"><strong>🚪 The door breaks open.</strong></div>`
+        : `<div style="font-size:12px;margin-top:6px;color:var(--sr-muted);">🚪 The door holds — it breaks open at BR ${doorAt} or less (SR3 p.125).</div>`;
 
     await ChatMessage.create({
       speaker: { alias: 'GM' },
@@ -4968,6 +4972,7 @@ _prepareCharacter(sys, attr) {
               ${demNote}
             </div>
             ${resultHtml}
+            ${doorHtml}
           </div>
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,

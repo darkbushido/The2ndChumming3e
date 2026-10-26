@@ -62,6 +62,7 @@ import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
 import * as Sustaining from './data/sustaining.mjs';
 import { Blast } from './data/blast.mjs';
+import { Barrier } from './data/barrier.mjs';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -1172,6 +1173,13 @@ async function _openBarrierDamageCalculator() {
   const matOpts   = MATERIALS.map((m, i) => `<option value="${i}">${m.name} (BR ${m.br})</option>`).join('');
   const actorOpts = game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))
     .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+  // One radio per attack kind — its multiplier comes from Barrier.ATTACKS (SR3 p.119, p.125).
+  const attackRadios = Object.entries(Barrier.ATTACKS).map(([key, a], i) => `
+          <label style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px;">
+            <input type="radio" name="br-attack" value="${key}"${i === 0 ? ' checked' : ''}/> ${a.label}
+            <span style="color:var(--sr-muted)">· BR ×${a.mult}, ${a.page}</span>
+          </label>`).join('');
+  const doorOpts = Object.entries(Barrier.DOORS).map(([key, d]) => `<option value="${key}">${d.label}</option>`).join('');
 
   const TITLE = '🧱 Barrier Damage';
   const wireDialog = (app, html) => {
@@ -1179,21 +1187,31 @@ async function _openBarrierDamageCalculator() {
     if (!el) return;
 
     function updateEffLabel() {
-      const br  = parseInt(el.querySelector('#br-current')?.value) || 0;
-      const att = el.querySelector('input[name="br-attack"]:checked')?.value ?? 'blast';
-      const eff = att === 'blast' ? br * 2 : br;
-      const lbl = el.querySelector('#br-eff-label');
-      if (lbl) lbl.textContent = `Effective BR: ${eff}${att === 'blast' ? ` (${br} × 2 for blast)` : ''}`;
+      const br   = parseInt(el.querySelector('#br-current')?.value) || 0;
+      const att  = el.querySelector('input[name="br-attack"]:checked')?.value ?? 'blast';
+      const mult = Barrier.multiplier(att);
+      const lbl  = el.querySelector('#br-eff-label');
+      if (lbl) lbl.textContent = `Effective BR: ${br * mult}${mult !== 1 ? ` (${br} × ${mult})` : ''}`;
+      const door = el.querySelector('#br-door')?.value ?? '';
+      el.querySelector('#br-door-row').style.display = door ? '' : 'none';
     }
 
-    el.querySelector('#br-material')?.addEventListener('change', e => {
-      const m = MATERIALS[parseInt(e.target.value)];
-      if (m) { el.querySelector('#br-current').value = m.br; updateEffLabel(); }
-    });
+    // Picking a material or a door kind sets both ratings; the GM can still type over either (a damaged door).
+    function fillRatings() {
+      const m    = MATERIALS[parseInt(el.querySelector('#br-material')?.value)];
+      const door = el.querySelector('#br-door')?.value ?? '';
+      if (!m) return;
+      const br = Barrier.doorRating(m.br, door);
+      el.querySelector('#br-current').value  = br;
+      el.querySelector('#br-original').value = br;
+    }
+
+    el.querySelector('#br-material')?.addEventListener('change', () => { fillRatings(); updateEffLabel(); });
+    el.querySelector('#br-door')?.addEventListener('change', () => { fillRatings(); updateEffLabel(); });
     el.addEventListener('change', e => {
       if (e.target.name === 'br-attack') {
-        const isDemo = e.target.value === 'demo';
-        el.querySelector('#br-blast-row').style.display = isDemo ? 'none' : '';
+        const isDemo = e.target.value === 'demolitions';
+        el.querySelector('#br-power-row').style.display = isDemo ? 'none' : '';
         el.querySelector('#br-demo-rows').style.display = isDemo ? '' : 'none';
       }
       updateEffLabel();
@@ -1216,18 +1234,20 @@ async function _openBarrierDamageCalculator() {
             <input type="number" id="br-current" value="2" min="0" max="200" style="width:60px;margin-top:2px;"/>
           </label>
         </div>
-        <div id="br-eff-label" style="font-size:11px;color:var(--sr-muted);margin-bottom:10px;"></div>
-        <div style="margin-bottom:10px;">
-          <label style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px;">
-            <input type="radio" name="br-attack" value="blast" checked/> Blast (grenade / explosive)
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:6px;">
+          <label style="font-size:12px;">Door:
+            <select id="br-door" style="width:100%;margin-top:2px;">${doorOpts}</select>
           </label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:12px;">
-            <input type="radio" name="br-attack" value="demo"/> Demolitions (placed charge)
+          <label id="br-door-row" style="font-size:12px;display:none;">Undamaged BR:
+            <input type="number" id="br-original" value="2" min="0" max="200" style="width:60px;margin-top:2px;"/>
           </label>
         </div>
-        <div id="br-blast-row" style="margin-bottom:6px;">
-          <label style="font-size:12px;">Blast Power (after distance reduction):
-            <input type="number" id="br-blast-power" value="10" min="0" style="width:60px;margin-left:6px;"/>
+        <div id="br-eff-label" style="font-size:11px;color:var(--sr-muted);margin-bottom:10px;"></div>
+        <div style="margin-bottom:10px;">${attackRadios}
+        </div>
+        <div id="br-power-row" style="margin-bottom:6px;">
+          <label style="font-size:12px;">Power (a blast's after distance reduction):
+            <input type="number" id="br-power" value="10" min="0" style="width:60px;margin-left:6px;"/>
           </label>
         </div>
         <div id="br-demo-rows" style="display:none;">
@@ -1247,17 +1267,19 @@ async function _openBarrierDamageCalculator() {
       {
         label: 'Post / Roll', action: 'confirm', default: true,
         callback: (_e, _b, dialog) => {
-          const el  = dialog.element;
-          const att = el.querySelector('input[name="br-attack"]:checked')?.value ?? 'blast';
-          const br  = parseInt(el.querySelector('#br-current')?.value) || 0;
-          const mat = MATERIALS[parseInt(el.querySelector('#br-material')?.value) || 0]?.name ?? 'Unknown';
-          if (att === 'blast') {
-            res = { type: 'blast', power: parseInt(el.querySelector('#br-blast-power')?.value) || 0, br, mat };
+          const el   = dialog.element;
+          const att  = el.querySelector('input[name="br-attack"]:checked')?.value ?? 'blast';
+          const br   = parseInt(el.querySelector('#br-current')?.value) || 0;
+          const mat  = MATERIALS[parseInt(el.querySelector('#br-material')?.value) || 0]?.name ?? 'Unknown';
+          const door = el.querySelector('#br-door')?.value ?? '';
+          const originalBR = door ? (parseInt(el.querySelector('#br-original')?.value) || 0) : br;
+          if (att !== 'demolitions') {
+            res = { type: att, power: parseInt(el.querySelector('#br-power')?.value) || 0, br, mat, door, originalBR };
           } else {
-            res = { type: 'demo', basePower: parseInt(el.querySelector('#br-demo-power')?.value) || 0,
+            res = { type: 'demolitions', basePower: parseInt(el.querySelector('#br-demo-power')?.value) || 0,
               pool: parseInt(el.querySelector('#br-demo-pool')?.value) || 1,
               tn:   parseInt(el.querySelector('#br-demo-tn')?.value) || 2,
-              actorId: el.querySelector('#br-demo-actor')?.value, br, mat };
+              actorId: el.querySelector('#br-demo-actor')?.value, br, mat, door, originalBR };
           }
         }
       },
@@ -1267,14 +1289,15 @@ async function _openBarrierDamageCalculator() {
 
   if (!res) return;
 
-  if (res.type === 'blast') {
-    const effect = game.sr3e.SR3EActor.computeBarrierEffect(res.power, res.br, 'blast');
-    await game.sr3e.SR3EActor._postBarrierDamageCard(effect, res.mat, res.br, res.power);
+  if (res.type !== 'demolitions') {
+    const effect = Barrier.effect(res.power, res.br, res.type);
+    await game.sr3e.SR3EActor._postBarrierDamageCard(effect, res.mat, res.br, res.power, 0,
+      { attack: res.type, door: res.door, originalBR: res.originalBR });
   } else {
     const actor = actorFrom(res.actorId);
     if (!actor) { ui.notifications.warn('Select an actor to roll demolitions.'); return; }
     await actor.rollPool(res.pool, res.tn, 'Demolitions Test', {
-      barrierContext: { basePower: res.basePower, currentBR: res.br, material: res.mat },
+      barrierContext: { basePower: res.basePower, currentBR: res.br, material: res.mat, door: res.door, originalBR: res.originalBR },
     });
   }
 }

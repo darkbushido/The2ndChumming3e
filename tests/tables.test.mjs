@@ -325,15 +325,16 @@ export async function run(t) {
   /* ⚠ **Blast doubles the barrier; Demolitions does not.** p.119: "compare the remaining
    * Power of the blast … against TWICE the Barrier Rating", and "If a character uses
    * Demolitions Skill to place explosive charges, treat the barrier as though it had a NORMAL
-   * Barrier Rating". The tool offers exactly these two and gets both right.
+   * Barrier Rating".
    *
-   * ⚠ **Not modelled, and it is a scope gap rather than a wrong rule:** p.127 doubles the
-   * barrier against firearms and other ranged attacks, against melee, and against combat
-   * spells — while elemental manipulation spells use the normal rating. The Barrier Damage
-   * tool covers explosives only. */
-  t.ok('the tool offers blast and demolitions',
-    /value="blast"/.test(sr3eSrc) && /value="demo"/.test(sr3eSrc));
-  t.ok('blast doubles the Barrier Rating', /att === 'blast' \? br \* 2 : br/.test(sr3eSrc));
+   * p.125 (Breaking Through) doubles it against firearms and other ranged attacks, against melee
+   * and against combat spells; elemental manipulation uses the normal rating. All six kinds live in
+   * `Barrier.ATTACKS` (scripts/data/barrier.mjs); `tests/barrier.test.mjs` pins each multiplier. */
+  const { Barrier } = await import('../scripts/data/barrier.mjs');
+  t.eq('the tool offers every attack kind with the book\'s multiplier',
+    Object.fromEntries(Object.entries(Barrier.ATTACKS).map(([k, a]) => [k, a.mult])),
+    { blast: 2, demolitions: 1, ranged: 2, melee: 2, combatSpell: 2, elemental: 1 });
+  t.ok('…listed from that one table', /Object\.entries\(Barrier\.ATTACKS\)/.test(sr3eSrc));
 
   /* ════════════════════════════════════════════════════════════════════════════
    *  AMMUNITION · p.116
