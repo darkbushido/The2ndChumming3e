@@ -24,7 +24,8 @@
       "streetIndex": ".8",
       "bookPage": "cc.33",
       "description": "<p><strong>Mount:</strong> Top</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "Legal"
     }
   },
   "embedded": {}

@@ -16,6 +16,7 @@
       "cost": 30,
       "streetIndex": "2",
       "legal": false,
+      "legality": "5-J",
       "bookPage": "sr3.283",
       "notes": "<p>Releases a cloud of smoke that fills an area 20 metres in diameter, lasting for 2 Combat Turns (less in windy areas). Smoke obscures vision, applying visibility modifiers to relevant tests.</p><p>SR3 p.283 — Legality 5-J. No blast.</p>",
       "isAoE": true,

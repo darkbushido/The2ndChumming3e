@@ -1,5 +1,5 @@
 /**
- * Karma & advancement — the costing rules.  · *SR3 p.244-245*
+ * Karma & advancement — the costing rules.  · *SR3 p.242-246*
  *
  * Covers TODO 80, all seven defects.
  *
@@ -243,6 +243,22 @@ export async function run(t) {
   t.is('Shetani: Karma Pool of 4, starting point included',
     SR3EActor.karmaPoolForTotal(62), 4);
 
+  /* The book's Brynn, a HUMAN (p.242/244): "the gamemaster awards her a total of 12 Karma Points.
+   * Because she is human, every tenth point goes into Karma Pool (increasing it to 2), leaving her
+   * with 11 Good Karma. When later Brynn earns another 9 Karma, her Total Karma has reached 21, so
+   * she adds another point to her Karma Pool… Her Karma Pool is now 3, and her Good Karma is now 19
+   * (11 + 8)." Two awards, so the second must count from the first one's total. Pinned by the Karma
+   * audit of 2026-10-25 — the only book example of the human rate, missed until then. */
+  const brynn1 = award(0, 12, 'human');
+  t.is('Brynn: 12 karma gives a human 1 Pool point',  brynn1.poolGained, 1);
+  t.is('Brynn: …and 11 Good Karma',                   brynn1.goodKarma, 11);
+  const brynn2 = award(brynn1.newTotal, 9, 'human');
+  t.is('Brynn: 9 more reaches Total 21',               brynn2.newTotal, 21);
+  t.is('Brynn: …crossing the twentieth, 1 more Pool',  brynn2.poolGained, 1);
+  t.is('Brynn: …and 8 more Good Karma (19 in all)',   brynn1.goodKarma + brynn2.goodKarma, 19);
+  t.is('Brynn: Karma Pool 3 (1 starting + 2)',        1 + brynn1.poolGained + brynn2.poolGained, 3);
+  t.is('Brynn: karmaPoolForTotal agrees',             SR3EActor.karmaPoolForTotal(21, 'human'), 3);
+
   /* ⚠ The pool point is taken FROM the award, not added beside it. The sheet granted both,
    * so a character gained an extra spendable point per 20 earned. */
   t.is('good karma + pool points always equals the award',
@@ -272,9 +288,10 @@ export async function run(t) {
    *   "One-twentieth (one-tenth for humans) of all Karma earned goes into the character's
    *    Karma Pool (every twentieth/tenth point earned)."
    *
-   * ⚠ **Nothing pinned to the book's examples could have caught this.** The only worked
-   * example is Shetani, an ELF, and the human clause lives two pages later in the Karma Pool
-   * chapter rather than the advancement one. Third rule in this family with that shape.
+   * ⚠ **The tests pinned to Shetani alone could not catch this** — Shetani is an ELF. The book
+   * states the human rule where the Karma section opens (p.242) and works it for Brynn, a human,
+   * across p.242/244; that example is pinned below. (This note said the human clause appeared
+   * only on p.246 until the Karma audit of 2026-10-25.)
    * ════════════════════════════════════════════════════════════════════════════ */
   const div = SR3EActor.karmaPoolDivisor;
 
@@ -334,4 +351,49 @@ export async function run(t) {
   t.is('…and Shetani 3 rather than 4',             Math.floor(62 / 20), 3);
   t.is('the correction is always exactly +1',
     SR3EActor.karmaPoolForTotal(62) - Math.floor(62 / 20), 1);
+
+  /* ════════════════════════════════════════════════════════════════════════════
+   *  Both award paths — Karma audit, 2026-10-25
+   *
+   * Session Rewards wrote the wrong field for months while Award Karma had the right shape but no
+   * button (TODO 81). Each path must split the award through `karmaAward` and write all three
+   * fields, and neither may write karma into an actor that has none (an NPC, TODO 83 — the data
+   * model drops the write while the notice says it was awarded).
+   * ════════════════════════════════════════════════════════════════════════════ */
+  const between = (src, from, to) => {
+    const i = src.indexOf(from);
+    const j = i < 0 ? -1 : src.indexOf(to, i + from.length);
+    return i < 0 ? '' : src.slice(i, j < 0 ? undefined : j);
+  };
+  const sheetSrc = read('sheets/SR3EActorSheet.js');
+  const mainSrc  = read('sr3e.js');
+  const paths = {
+    'Award Karma':     between(sheetSrc, 'static async _onAwardKarma()', 'static async _onSpendKarmaCalculator()'),
+    'Session Rewards': between(mainSrc, 'async function _openSessionRewardDialog', '\nasync function '),
+  };
+  for (const [label, body] of Object.entries(paths)) {
+    t.ok(`${label}: found`, body.length > 200);
+    t.ok(`${label}: splits the award through karmaAward`, /SR3EActor\.karmaAward\(/.test(body));
+    for (const f of ['karma', 'totalKarma', 'karmaPool']) {
+      t.ok(`${label}: writes system.${f}`, new RegExp(`['"]system\\.${f}['"]\\]?\\s*[:=]`).test(body));
+    }
+    t.ok(`${label}: skips an actor with no karma fields`, /hasGoodKarma\(/.test(body));
+  }
+
+  /* The shared sheet shows the karma controls only where the fields exist. */
+  const bio = between(sheetSrc, '  _tabBio(sys) {', '  _ledgerTable(');
+  t.ok('Bio: Good/Total Karma, Award and Spend are gated on hasGoodKarma',
+    /const karmaFields = game\.sr3e\.SR3EActor\.hasGoodKarma\(this\.actor\)/.test(bio)
+    && /\$\{karmaFields \? `\$\{this\._inlineField\('Good Karma'/.test(bio)
+    && /karmaFields && game\.user\.isGM/.test(bio)
+    && /karmaFields\s*\?\s*'<button[^']*spendKarmaCalculator/.test(bio));
+  t.ok('Attributes: the Karma Pool block is gated on hasKarmaPool',
+    /hasKarmaPool\(this\.actor\) \? this\._poolBlock\('Karma Pool'/.test(sheetSrc));
+  t.ok('Spend Karma refuses an actor with no Good Karma',
+    /hasGoodKarma\(actor\)/.test(between(sheetSrc, 'static async _onSpendKarmaCalculator()', 'IMPROVABLE_ATTRS')));
+
+  /* hasGoodKarma itself: a character has the field, an NPC (no field) does not. */
+  t.ok('hasGoodKarma: a character',         SR3EActor.hasGoodKarma({ system: { karma: 0 } }));
+  t.ok('hasGoodKarma: not an NPC',          !SR3EActor.hasGoodKarma({ system: { nuyen: 0 } }));
+  t.ok('hasGoodKarma: not nothing',         !SR3EActor.hasGoodKarma(null));
 }

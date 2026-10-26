@@ -110,6 +110,8 @@ const NESTED = new Map([
   ['basePower',     'barrierContext'],
   ['currentBR',     'barrierContext'],
   ['material',      'barrierContext'],
+  ['door',          'barrierContext'],
+  ['originalBR',    'barrierContext'],
   ['baseTime',      'escapeContext'],
   ['restraintName', 'escapeContext'],
   ['netPower',      'fallingContext'],

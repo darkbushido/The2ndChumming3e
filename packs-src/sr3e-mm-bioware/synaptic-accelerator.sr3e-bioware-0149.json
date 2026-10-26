@@ -17,7 +17,8 @@
       "rating": 1,
       "description": "+1INI",
       "bonusInitDice": 1,
-      "srcgName": "Synaptic Accel.[1]"
+      "srcgName": "Synaptic Accel.[1]",
+      "legality": "5P-Q"
     },
     "effects": []
   },

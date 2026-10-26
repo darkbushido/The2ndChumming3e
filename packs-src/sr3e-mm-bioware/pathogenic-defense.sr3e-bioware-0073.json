@@ -16,7 +16,8 @@
       "bookPage": "mm.068",
       "rating": 1,
       "description": "Max half BOD, -1 power to biological attacks",
-      "srcgName": "Pathogenic Def.[1]"
+      "srcgName": "Pathogenic Def.[1]",
+      "legality": "Legal"
     },
     "effects": []
   },

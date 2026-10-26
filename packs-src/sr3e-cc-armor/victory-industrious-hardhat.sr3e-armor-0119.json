@@ -14,7 +14,8 @@
       "cost": 300,
       "streetIndex": ".5",
       "bookPage": "cc.49",
-      "notes": "Impact +1 (additive modifier)"
+      "notes": "Impact +1 (additive modifier)",
+      "legality": "Legal"
     },
     "effects": []
   },

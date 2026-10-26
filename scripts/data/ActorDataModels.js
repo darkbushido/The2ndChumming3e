@@ -144,7 +144,7 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
       essenceHole:             new NumberField({ initial: 0, min: 0 }),
       // The karma / nuyen ledger · TODO 79. Append-only for players; every entry is derived from
       // the WRITE in SR3EActor._preUpdate, so no call site can forget to record one.
-      // { when, kind: 'karma'|'nuyen'|'pool', delta, from, to, reason, by } — scripts/data/ledger.mjs.
+      // { when, kind: 'karma'|'total'|'nuyen'|'pool'|'poolSpent', delta, from, to, reason, by } — scripts/data/ledger.mjs.
       ledger:                  new ArrayField(new ObjectField(), { initial: () => [] }),
       // Attribute Stress · M&M pp.124-131 (TODO 109), keyed by attribute name ({ body: 3, … }).
       // ⚠ An ObjectField because only the attributes that have taken Stress appear.
@@ -178,6 +178,9 @@ export class CharacterData extends foundry.abstract.TypeDataModel {
        * Combat Pool. Before 2026-10-11 a spend lowered `karmaPool` itself, so a spent point never came
        * back. Rules: scripts/data/karma-uses.mjs (KarmaPool). */
       karmaPoolSpent:          new NumberField({ integer: true, initial: 0, min: 0 }),
+      /* The Hand of God has been used · SR3 p.248: "A character may use the Hand of God only once, ever."
+       * Rules: scripts/data/hand-of-god.mjs. TODO 267. */
+      handOfGodUsed:           new BooleanField({ initial: false }),
       /* Adept Power Points bought with Good Karma in play, on top of Magic · SR3 p.168: "adepts may
        * purchase additional Power Points at a cost of 20 Good Karma Points per Power Point". */
       powerPointsBought:       new NumberField({ integer: true, initial: 0, min: 0 }),
@@ -287,7 +290,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       essenceHole:      new NumberField({ initial: 0, min: 0 }),   // TODO 53 — see CharacterData
       // The karma / nuyen ledger · TODO 79. Append-only for players; every entry is derived from
       // the WRITE in SR3EActor._preUpdate, so no call site can forget to record one.
-      // { when, kind: 'karma'|'nuyen'|'pool', delta, from, to, reason, by } — scripts/data/ledger.mjs.
+      // { when, kind: 'nuyen'|'pool'|'poolSpent' (no Good/Total Karma on an NPC, TODO 83), delta, from, to, reason, by }.
       ledger:                  new ArrayField(new ObjectField(), { initial: () => [] }),
       attributeStress:  new ObjectField(),   // TODO 109 — see CharacterData
       tlex:             new ObjectField(),   // TODO 110 — see CharacterData
@@ -295,9 +298,14 @@ export class NpcData extends foundry.abstract.TypeDataModel {
       extraHands:       new NumberField({ integer: true, initial: 0, min: 0 }),   // TODO 49
       sustainedSpells:  sustainedSpellsField(),
       nuyen:           new NumberField({ integer: true, initial: 0, min: 0 }),
-      // ⚠ NpcData has no karma/totalKarma/karmaPool at all — see TODO 83. An NPC that needs
-      // a Karma Pool has to be built as a `character`, which is exactly what the 62 shipped
-      // Little Black Book contacts are.
+      /* Karma Pool · SR3 p.248: "NPCs use dice pools just like player characters… Karma Pool is the
+       * equalizer for many critters and NPCs and should equal the average of the characters' Karma
+       * Pool, adjusted for the threat level". The GM SETS it — an NPC earns nothing, so there is no
+       * Good or Total Karma here (TODO 83). 0 = none given: nothing is offered on a roll. Spent and
+       * burned exactly as a character's (scripts/data/karma-uses.mjs); NPC tokens are unlinked
+       * (data/token-link.mjs), so a burn lands on the token on the map, not on this sheet. TODO 267. */
+      karmaPool:        new NumberField({ integer: true, initial: 0, min: 0 }),
+      karmaPoolSpent:   new NumberField({ integer: true, initial: 0, min: 0 }),
       professionalRating: new NumberField({ integer: true, initial: 0, min: 0 }),
       notes:            new HTMLField({ initial: '', required: false }),
       equippedMelee:    new StringField({ initial: '' }),

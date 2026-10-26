@@ -16,7 +16,8 @@
       "bookPage": "mm.072",
       "rating": 1,
       "description": "-1 box injury modifiers",
-      "srcgName": "Damage Comp.[1]"
+      "srcgName": "Damage Comp.[1]",
+      "legality": "6P-N"
     },
     "effects": []
   },

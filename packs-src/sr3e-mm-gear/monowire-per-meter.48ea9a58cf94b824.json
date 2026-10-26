@@ -23,7 +23,8 @@
       "availability": "24/14days",
       "streetIndex": "3",
       "bookPage": "mm.95",
-      "description": ""
+      "description": "",
+      "legality": "1-K"
     }
   },
   "embedded": {}

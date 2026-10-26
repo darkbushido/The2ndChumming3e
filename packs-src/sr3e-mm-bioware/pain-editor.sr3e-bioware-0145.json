@@ -15,7 +15,8 @@
       "mods": "",
       "bookPage": "mm.073",
       "rating": null,
-      "description": "While engaged, +1WIL, -1INT, ignore Stun Damage penalties, +4 TN tactile Perception, does not feel pain"
+      "description": "While engaged, +1WIL, -1INT, ignore Stun Damage penalties, +4 TN tactile Perception, does not feel pain",
+      "legality": "6P-N"
     },
     "effects": []
   },

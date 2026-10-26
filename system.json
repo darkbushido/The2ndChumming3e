@@ -208,6 +208,18 @@
       }
     },
     {
+      "name": "sr3e-legwork-tables",
+      "label": "GM: Legwork Success Tables",
+      "path": "packs/sr3e-legwork-tables",
+      "type": "RollTable",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "NONE",
+        "TRUSTED": "NONE",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
       "name": "sr3e-mr-johnsons-contacts",
       "label": "Mr. Johnson's Contacts",
       "path": "packs/sr3e-mr-johnsons-contacts",
@@ -1659,7 +1671,8 @@
           "name": "GM Only",
           "sorting": "a",
           "packs": [
-            "sr3e-gm-sixth-world"
+            "sr3e-gm-sixth-world",
+            "sr3e-legwork-tables"
           ]
         }
       ]

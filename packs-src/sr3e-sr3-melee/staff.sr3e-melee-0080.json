@@ -18,7 +18,8 @@
       "legal": true,
       "bookPage": "sr3.275",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "legality": "8-C"
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/icons/melee-pole.svg"

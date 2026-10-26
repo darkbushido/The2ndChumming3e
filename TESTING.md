@@ -420,6 +420,38 @@ Needs a **full Foundry restart** (new `contact.npcUuid` field). With a portrait 
 - [ ] A contact whose picture someone chose keeps it (the name still changes only if "Show on the contact" is ticked).
 - [ ] No portrait module active: no grid, the note says so, names still work, the NPC keeps the archetype's picture.
 
+**Fixes from play, 2026-10-25** (`claude/fix-meet-the-contact-1bc711`; packs need `npm run packs:install`, Foundry closed):
+- [ ] Create NPC from a pack archetype (e.g. Dock Worker): the world actor AND its prototype token carry the rolled name, not "Dock Worker".
+- [ ] Pick a metatype with few portraits (e.g. dwarf): the grid shows only that metatype (and its variants) — never another race.
+- [ ] Contacts tab → Link Archetype: the list shows ~16 rows (360px tall), not one collapsed row.
+- [ ] Drag a Mr. Johnson's contact onto a scene: the token has vision on and wears the dynamic ring.
+- [ ] Create a brand-new actor (any type) from the sidebar: its prototype token has vision on.
+- [ ] 0.9.0 migration (after the bump; or `game.sr3e.SR3EMigrations.force()`): a world character/NPC whose prototype token was blind now sees; a token already placed on a scene with vision off stays off; vehicles unchanged.
+
+## Legwork — TODO 268 (`feature/legwork`) — needs a live pass
+
+New pack `sr3e-legwork-tables` and a `system.json` change: with Foundry **closed**, `npm run packs:install` and copy
+`system.json` into the install (or `npm run sync:install`), then a **full restart**. Rules and the card are unit-tested
+(`legwork`, `legwork-tool`); this is what only a client shows.
+- [ ] Compendium sidebar → *Reference → GM Only* shows **GM: Legwork Success Tables**; a player does not see it.
+- [ ] Import *Legwork success table (template)* into the world; its sheet shows rows 1 / 2 / 3+ (ranges 1-1, 2-2, 3-30)
+      and the description's *Target Number: 4*. Change it to 5.
+- [ ] Rollable Tables tab (GM): **🔎 Legwork** sits after Escape Artist; a player has no button.
+- [ ] The dialog: runner list has no templates, scene tokens first; the contact list is that runner's contacts. Changing
+      runner refills it. Level starts at the contact's Loyalty (capped at 3), and the note shows Loyalty/Connection.
+- [ ] A contact linked to a Little Black Book archetype fills Charisma and Intelligence "From … (archetype)"; one met as
+      an NPC fills them from the NPC; a bare contact leaves them blank with the "links to no stat block" note.
+- [ ] Specialisation starts on Street (or Corporate) for asking, Matrix for a search; Dice = Etiquette (+spec) + Level
+      dice and follows every change; typing Dice by hand sticks until runner / contact / mode / spec / level changes.
+- [ ] Picking the imported table sets TN 5; Rushed adds +2 (ask only, the row hides otherwise); a wounded runner's TN
+      readout includes the wounds; Ear to the ground shows +2 and the contact's dice (amber prompt with no stats).
+- [ ] Roll at TN ≤ 6: the card posts at once, whispered to the GM (untick → public): successes, the dice, every table
+      row up to the successes, the fee (C × I × 50 ÷ successes). Esc / Cancel rolls nothing.
+- [ ] Roll at TN 7+ until a 6 comes up: a 💥 wave card appears and the legwork card waits for the last explosion.
+- [ ] Ear to the ground with a success: "reports back in N hours"; with none: "hears nothing". Matrix: base time in
+      hours, "No Hacking Pool", the search limit (half Intelligence, rounded up), no fee.
+- [ ] A row with a secret block: shown on a GM-only card, hidden on a public one.
+
 ## Open combat steps — TODO 147 (`feature/open-steps`)
 
 **Checked live by the agent, 2026-09-24** (mcp-api, then with the maintainer's Gamemaster seat also on):
@@ -3137,7 +3169,64 @@ The gear packs change (`npm run packs:install`, Foundry closed).
 - [ ] **SR3 core gear:** no low-power laser sight remains; Smart Shades I (Cost 6000¥) shows page sr3.281 and the "double the nuyen" line; Ultrasound Shades and Gas Vent I carry their source notes.
 - [ ] **Man & Machine gear:** Smart Shades II say "Derived; not printed".
 
-## 71. Metatype Shift and Generic NPCs (TODO 277, 278 — SR3 p.56, p.245)
+## 71. Karma on NPCs, and Total Karma in the ledger (Karma audit, 2026-10-25, SR3 p.242-246)
+
+**Prerequisites:** an `npc` actor owned by Player2 (so it is a player character), and a non-human character
+owned by a player. JS only — reload the tabs, no restart.
+
+**Walked by the agent 2026-10-25** (mcp-api as active GM, fresh code, test world; actors restored after).
+
+- [x] The NPC's sheet has **no** Good Karma, Total Karma, Award Karma…, Spend Karma… (Bio → Resources) and **no**
+      Karma Pool block (Attributes); Nuyen and Combat Pool are still there. A character's sheet still has all of them.
+- [x] Calling Award Karma / Spend Karma on the NPC's sheet only warns "has no Good or Total Karma to award" / "has no
+      Good Karma to spend" — no dialog, no ledger line.
+- [x] **🎖 Session Rewards** lists the NPC as "(no karma — NPC | ¥…)". Award 25 karma and ¥100 to the NPC and a troll at
+      Total 0, Pool 3: the troll gets Good Karma +24, Total 25, Pool 4; the NPC gets ¥100 only; the card says
+      "No karma for <NPC> — an NPC carries no karma fields" and cites SR3 p.242.
+- [x] The troll's 📒 Ledger has four lines: Good Karma +24, **Total Karma +25 (0 → 25)**, Nuyen +¥100, Karma Pool +1.
+- [ ] By eye: the NPC's Resources row (Nuyen, ± Funds…, 🛒 Buy gear…) lays out sensibly without the karma boxes.
+- [ ] `game.sr3e.SR3EMigrations.force()` on a character whose Karma Pool was burned (a "Karma Pool" ledger line with a
+      negative change) leaves the Pool where it is; the migration's own ledger lines, if any, read "Migration 0.x.y: …",
+      not "By hand".
+
+## 72. Buy gear — the card remembers, the store, one item per level (bugs reported 2026-10-25, SR3 pp.272-273)
+
+**Prerequisites:** a character owned by Player2 with ¥50,000 and an Etiquette skill. JS only for the card; the packs
+need `npm run packs:install` (Foundry closed) and a restart.
+
+**The card is recorded on the message**
+- [ ] Player2 buys a Fichetti Security 500 through a contact and gets a "Source found" card. Player2 presses 🤝 and
+      haggles. **On the GM's tab** the card's 🤝 and 💴 are now greyed out (hover: "Already haggled…" / "The haggle set
+      a new price…"), and only the haggle card's 💴 is live.
+- [ ] Player2 presses 💴 on the haggle card and confirms. On the GM's tab that 💴 is greyed out ("Paid."). **F5 on both
+      tabs**: still greyed out.
+- [ ] Press 💴 on a fresh card and **Cancel** the confirm: the button is live again and nothing was paid.
+
+**At the store, or through a contact** (needs the restart: new `legality` field)
+- [ ] 🛒 Buy gear → search "armor jacket" (Legal, SR3 p.284): the dialog opens on 🏪 **At the store**, the contact,
+      Etiquette, TN and Street Index rows are hidden, the preview reads "List price ¥900". Buy at the store → a
+      "🏪 At the store" card at ¥900 with 💴 Pay; paying adds the jacket and the 📒 Ledger line. No Etiquette roll.
+- [ ] Search "ares predator" (6P-E): the dialog opens on 🤝 **Through a contact**; the legality note says a permit is
+      needed. Switch to 🏪: the note turns amber but the button still works (warn, never refuse).
+- [ ] Switch a Legal item to 🤝: the contact flow runs as before (Etiquette, Street Index, 🤝 haggle for the discount).
+- [ ] The item sheet of a Katana shows Legality "5-B", editable. A clip of Regular rounds reads "As Weapon".
+- [ ] `game.sr3e.SR3EMigrations.force()` on a character with an old Ares Predator from the compendium (Legality blank):
+      it reads 6P-E afterwards; one whose Legality was typed keeps it.
+
+**One item per level** (restart Foundry after `npm run packs:install`)
+- [ ] The SR3 gear compendium has ONE "Pocket Computer". Its sheet's Level dropdown reads 10 Mp, 25 Mp … 1000 Mp, and
+      picking 250 Mp sets the cost to 25,000¥. Dragged onto a character it reads "Pocket Computer [10]".
+- [ ] 🛒 Buy gear → search "pocket computer": one hit; the Level picker says "250 Mp"; buying it adds
+      "Pocket Computer [250]" at 25,000¥ list.
+- [ ] Same for Wrist Computer, Telecom, Table Top PC, headware Memory (cyberware), ECCM, a SkillSoft Jukebox (its
+      ports) and the Virtual Instrument chips.
+- [ ] The SR3 adept powers have ONE "Imp. Reflexes": dropped on an adept it reads "Imp. Reflexes [1]"; picking level 3
+      on its sheet makes it "Imp. Reflexes [3]", 5 Power Points, +3 Initiative dice, and on a Magic 2 adept the sheet
+      warns it is above Magic. "Killing Hands" dropped on the same adept keeps its plain name.
+- [ ] `game.sr3e.SR3EMigrations.force()` on a character holding an old "Pocket Computer (250Mp)" and "Combat Sense +2":
+      they become "Pocket Computer [250]" (rating 250) and "Combat Sense [2]" (level 2, still two Combat Pool dice).
+
+## 73. Metatype Shift and Generic NPCs (TODO 277, 278 — SR3 p.56, p.245)
 
 Needs Foundry running with a Little Black Book archetype in an Actor compendium; a portrait module is optional (walk it once with, once without).
 

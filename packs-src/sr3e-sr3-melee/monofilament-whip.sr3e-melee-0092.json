@@ -18,7 +18,8 @@
       "legal": true,
       "bookPage": "sr3.275",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "legality": "1-K"
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/icons/melee-whip.svg"

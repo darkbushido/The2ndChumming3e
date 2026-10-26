@@ -15,7 +15,8 @@
       "mods": "",
       "bookPage": "mm.064",
       "rating": 2,
-      "description": "+2QCK,+4STR,+2WIL,+4RCT, damage taken"
+      "description": "+2QCK,+4STR,+2WIL,+4RCT, damage taken",
+      "legality": "5P-R"
     },
     "effects": []
   },

@@ -32,6 +32,24 @@ export async function run(t) {
   t.is('the Karma Pool is tracked separately from Good Karma',
     L.diff(before, { karmaPool: 3 })[0].kind, 'pool');
 
+  /* Total Karma has its own line (Karma audit, 2026-10-25): an award left Good Karma and Pool lines but
+   * no record of the career total, and a GM's edit of it none at all. */
+  t.eq('an award records Good Karma, Total Karma and the Pool, each on its own line',
+    L.diff({ karma: 10, totalKarma: 40, karmaPool: 3 }, { karma: 19, totalKarma: 50, karmaPool: 4 }, { when: 1 })
+      .map(e => [e.kind, e.delta]),
+    [['karma', 9], ['total', 10], ['pool', 1]]);
+  t.is('a hand edit of Total Karma alone is an entry',
+    L.diff({ totalKarma: 40 }, { totalKarma: 45 })[0]?.kind, 'total');
+  t.is('…labelled Total Karma', L.specForKind('total')?.label, 'Total Karma');
+  t.ok('…and is not undoable as a purchase',
+    !L.undoable(L.entry({ kind: 'total', delta: -5, revert: { actor: {} } })));
+
+  /* Ledger.touched — has this kind been written since the ledger began (the migrations ask it). */
+  t.ok('touched: a pool line means the Pool was written',
+    L.touched({ ledger: [L.entry({ kind: 'pool', delta: -3 })] }, 'pool'));
+  t.ok('…a Pool-spent line is not a write to the size', !L.touched({ ledger: [L.entry({ kind: 'poolSpent', delta: 1 })] }, 'pool'));
+  t.ok('…and no ledger is untouched', !L.touched({}, 'pool'));
+
   // ⚠ Foundry re-sends unchanged fields on a form submit; logging those would bury the real ones.
   t.is('a write that changes nothing is NOT an entry', L.diff(before, { karma: 10 }).length, 0);
   t.is('…nor a field the update never mentions', L.diff(before, {}).length, 0);
@@ -165,9 +183,10 @@ export async function run(t) {
   // The known writers each explain themselves, so the "why" column is not blank where it could be full.
   t.ok('Session Rewards names itself', /ledgerReason: 'Session rewards'/.test(read('scripts/sr3e.js')));
   t.ok('Award Karma names itself', /ledgerReason: 'Karma award'/.test(read('scripts/sheets/SR3EActorSheet.js')));
-  // 6 attribute/skill purchases, + a Power Point, a spell and a focus (2026-10-11), + the GM's ↺ refund line (TODO 212).
+  // 6 attribute/skill purchases, + a Power Point, a spell and a focus (2026-10-11), + the GM's ↺ refund line (TODO 212),
+  // + the ↺ for an award (TODO 267).
   t.is('every Spend-calculator purchase names what it bought',
-    (read('scripts/sheets/SR3EActorSheet.js').match(/ledgerReason: `/g) ?? []).length, 10);
+    (read('scripts/sheets/SR3EActorSheet.js').match(/ledgerReason: `/g) ?? []).length, 11);
   t.ok('a healing bill names the treatment', /ledgerReason: `Medical: /.test(read('scripts/SR3EHealing.js')));
 
   /* ── A copy does not inherit its source's history · TODO 193 ─────────────── */

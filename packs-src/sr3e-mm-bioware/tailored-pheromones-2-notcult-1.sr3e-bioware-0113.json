@@ -17,7 +17,8 @@
       "rating": 2,
       "description": "+2CHA,+2 Die Social Test",
       "bonusCha": 2,
-      "srcgName": "Tailored Pherom.[2](NotCult.)  1"
+      "srcgName": "Tailored Pherom.[2](NotCult.)  1",
+      "legality": "Legal"
     },
     "effects": []
   },

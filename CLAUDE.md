@@ -249,7 +249,9 @@ correction needs **both** the pack change and a migration.
   identical properly keyed twin exists** (the `--fix` rule), re-locking the pack in a `finally`. Runs every load,
   never blocks the world (`tests/pack-repair.test.mjs`).
 - Changed **setting defaults** go in `SR3EMigrations.DEFAULT_CHANGES` (Foundry stores only set values).
-- Gated to `game.users.activeGM`. `game.sr3e.SR3EMigrations.force()` re-runs everything (safe by rule 1).
+- Gated to `game.users.activeGM`. `game.sr3e.SR3EMigrations.force()` re-runs everything (safe by rule 1 — and an overwriting
+  `fixActor` that recognises an old default must skip a value the 📒 Ledger shows was written, `Ledger.touched`:
+  a burned Karma Pool can land back on the old default).
 
 ### Filtering actors for dialog dropdowns
 
@@ -362,6 +364,8 @@ static defineSchema() {
 ### Foundry integrations
 - **Token bars**: `preCreateActor` defaults character/npc tokens to `bar1=wounds.physical`, `bar2=wounds.stun`,
   `OWNER_HOVER` (new actors only).
+- **Token links** (TODO 267): `preCreateActor` links every new actor's tokens **except NPCs** — the `npc` type and Little
+  Black Book contacts are unlinked (`data/token-link.mjs`), so each goon's wounds, pools and burned Karma stay on its token.
 - **Status effects**: `sr3e-sustaining/-fulldefense/-dumpshock/-astral/-dual/-vr` appended to
   `CONFIG.statusEffects`. The `updateActor` hook (active GM only) toggles them from `astralMode`,
   `matrixUserMode`, `fullDefense`, `sustainedSpells`, and marks **defeated/unconscious** when a track is full,
@@ -384,7 +388,7 @@ static defineSchema() {
 system.json                ← manifest + documentTypes
 lang/en.json · styles/sr3e.css (all styles, CSS custom properties)
 guides/                    ← the SR3 Table Reference site (Jekyll) — NOT shipped in the zip
-packs/ · packs-src/        ← 80 compendium packs, all SR3 or system (one GM-only journal) (build output · source of truth)
+packs/ · packs-src/        ← 81 compendium packs, all SR3 or system (GM-only: one journal, the legwork table template) (build output · source of truth)
 archive/                   ← non-sr3-content/ (split-out documents) · sr2/ (the parked SR2 packs)
 SR-OCR/                    ← rulebook OCR, local only — NEVER committed (below)
 rawdata/                   ← source data, not loaded by Foundry (ODM-* = Orthodox SR3 Matrix; MDF-* = Matrix

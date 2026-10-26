@@ -23,7 +23,8 @@
       "availability": "3/12hrs",
       "streetIndex": "1",
       "bookPage": "sr3.296",
-      "description": "<p><strong>Type:</strong> BTL<br><strong>Memory:</strong> ?</p>"
+      "description": "<p><strong>Type:</strong> BTL<br><strong>Memory:</strong> ?</p>",
+      "legality": "3-Y"
     }
   },
   "embedded": {}

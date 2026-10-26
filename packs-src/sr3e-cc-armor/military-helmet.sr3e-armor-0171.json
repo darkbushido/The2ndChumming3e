@@ -14,7 +14,8 @@
       "cost": 2500,
       "streetIndex": "3",
       "bookPage": "cc.51",
-      "notes": "Ballistic +2 (additive modifier) | Impact +3 (additive modifier)"
+      "notes": "Ballistic +2 (additive modifier) | Impact +3 (additive modifier)",
+      "legality": "2-L"
     },
     "effects": []
   },

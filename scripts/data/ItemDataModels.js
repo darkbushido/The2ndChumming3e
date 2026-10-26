@@ -38,6 +38,7 @@ export class MeleeData extends foundry.abstract.TypeDataModel {
       shock:          new BooleanField({ initial: false }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
+      legality:       new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:    new StringField({ initial: '' }),
       bookPage:       new StringField({ initial: '' }),
@@ -75,6 +76,7 @@ export class ProjectileData extends foundry.abstract.TypeDataModel {
       loadedRounds:   new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
+      legality:       new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:    new StringField({ initial: '' }),
       legal:          new BooleanField({ initial: true }),
@@ -117,6 +119,7 @@ export class ThrownData extends foundry.abstract.TypeDataModel {
       quantity:       new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
+      legality:       new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:    new StringField({ initial: '' }),
       legal:          new BooleanField({ initial: true }),
@@ -168,6 +171,7 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       loadedRounds:    new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:          new NumberField({ initial: 0, min: 0 }),
       availability:    new StringField({ initial: '' }),
+      legality:        new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       cost:            new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:     new StringField({ initial: '' }),
       accessories:     new StringField({ initial: '' }),
@@ -231,6 +235,7 @@ export class AmmunitionData extends foundry.abstract.TypeDataModel {
       roundsPerReload: new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
+      legality:       new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:    new StringField({ initial: '' }),
       bookPage:       new StringField({ initial: '' }),
@@ -261,6 +266,7 @@ export class ArmorData extends foundry.abstract.TypeDataModel {
       impact:         new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
+      legality:       new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:    new StringField({ initial: '' }),
       bookPage:       new StringField({ initial: '' }),
@@ -297,6 +303,7 @@ export class GearData extends foundry.abstract.TypeDataModel {
       cost:         new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:       new NumberField({ initial: 0, min: 0 }),
       availability: new StringField({ initial: '' }),
+      legality:     new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       streetIndex:  new StringField({ initial: '' }),
       bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document needs one
       description:  new HTMLField({ initial: '', required: false }),
@@ -446,6 +453,7 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
       rating:           new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),   // null = no rating (TODO 122)
       cost:             new NumberField({ integer: true, initial: 0, min: 0 }),
       availability:     new StringField({ initial: '' }),
+      legality:         new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       streetIndex:      new NumberField({ initial: 0, min: 0 }),
       mods:             new StringField({ initial: '' }),
       biowareCategory:  new StringField({ initial: '' }),
@@ -548,6 +556,7 @@ export class VehicleModData extends foundry.abstract.TypeDataModel {
       modFor:           new StringField({ initial: '', blank: true, choices: MOD_FOR_CHOICES }),
       cost:             new NumberField({ integer: true, initial: 0, min: 0 }),
       availability:     new StringField({ initial: '' }),
+      legality:         new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       streetIndex:      new StringField({ initial: '' }),
       installEquipment: new StringField({ initial: '' }),
       installTime:      new StringField({ initial: '' }),
@@ -771,6 +780,7 @@ export class MedicalData extends foundry.abstract.TypeDataModel {
       category:     new StringField({ initial: '' }),  // e.g. "Medical Equipment — General", "Medical Clinics — Alpha Grade", "Hospitals — Delta Grade"
       rating:       new StringField({ initial: '' }),   // some Biotech entries use signed modifiers ("-1", "+2") rather than a plain rating number
       availability: new StringField({ initial: '' }),
+      legality:     new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       weight:       new StringField({ initial: '' }),
       cost:         new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:  new StringField({ initial: '' }),

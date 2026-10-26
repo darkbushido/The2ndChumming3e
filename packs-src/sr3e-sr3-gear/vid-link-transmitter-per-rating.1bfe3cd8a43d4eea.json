@@ -23,7 +23,8 @@
       "availability": "4/1 wk",
       "streetIndex": "2",
       "bookPage": "sr3.302",
-      "description": "<p>Cost Rating×2000¥ — by rating; set the cost for the rating bought.</p><p><strong>Legal:</strong> 8P-L</p>"
+      "description": "<p>Cost Rating×2000¥ — by rating; set the cost for the rating bought.</p><p><strong>Legal:</strong> 8P-L</p>",
+      "legality": "8P-U"
     }
   },
   "embedded": {}

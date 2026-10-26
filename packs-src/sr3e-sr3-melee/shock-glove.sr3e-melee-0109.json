@@ -20,7 +20,8 @@
       "legal": true,
       "bookPage": "sr3.275",
       "notes": "SR3 p.275 prints the damage as \"(STR - 1)M Stun +7S Stun\": the glove's fist damage is (STR - 1)M Stun (the Damage field) and the gloves deliver an extra +7S Stun (the Extra Damage field), which the melee result resists separately, with Impact armour at half (SR3 p.124). Eight discharges, then a 1-hour recharge (p.276) - not tracked.",
-      "hands": 0
+      "hands": 0,
+      "legality": "5-B"
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/icons/melee-unarmed.svg"

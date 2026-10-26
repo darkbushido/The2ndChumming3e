@@ -47,6 +47,10 @@ paths:
   and metavariants untouched. The dialog says what was adjusted. Troll dermal armour, Reach and racial vision follow
   `system.metatype` on their own.
 - **Minors only when asked for** — `candidates` never returns a minor for an adult contact.
+- **The chosen metatype filters the grid.** Fall back only within the race: exact → base/variant → same job group →
+  same metatype. ⚠ No tier may cross metatypes — a "same job, any metatype" tier filled thin grids with other races
+  (2026-10-25); the `portraits-job-tier-crosses-metatype` mutant guards it.
+- **`sr3e.actor.create` applies `name` to every branch** (pack source, copy, blank vehicle) and to `prototypeToken.name`.
 - Names: `Names.generate({ ethnicity, gender, metatype, group })` — `ethnicity` from the chosen portrait so the name
   fits the face; first and last name from the same heritage sub-pool; street-name chance by job group.
 

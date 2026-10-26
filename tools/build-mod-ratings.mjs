@@ -32,7 +32,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { readSourceDir, writeSourceDir } from './lib/pack-source.mjs';
 import { ModRatings } from '../scripts/data/mod-ratings.mjs';
-import { RatedFamilies } from '../scripts/data/rated-families.mjs';
+import { RatedFamilies, levelOf } from '../scripts/data/rated-families.mjs';
 import { ModFor } from '../scripts/data/mod-for.mjs';
 import { addFamilies, readCollapsed as readCollapsedFile, tableKeyOf, COLLAPSED_FILE } from './lib/collapsed-mods.mjs';
 
@@ -60,8 +60,6 @@ function* items(entries, pack) {
     else if (/^![a-z]+\.items!/.test(key)) yield { pack, key, doc, top: false };
   }
 }
-
-const levelOf = doc => (Number(doc.system?.rating) > 0 ? Number(doc.system.rating) : (ModRatings.splitName(doc.name)?.rating ?? 0));
 
 /**
  * The per-level table from a list of item documents: `{ "kind|name": { level: { field: value } } }`, keeping only
@@ -203,7 +201,11 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
       if (delta && isGenerated(doc)) { stale++; console.log(`generated, still levelled: ${pack} ${doc.name} — re-run tools/build-default-gear.mjs`); }
       else if (delta) {
         if (check) console.log(`would rename  ${pack}: ${doc.name} → ${delta.name}`);
-        else { if (delta.name) doc.name = delta.name; if ('system.rating' in delta) (doc.system ??= {}).rating = delta['system.rating']; }
+        else {
+          if (delta.name) doc.name = delta.name;
+          // the level's field — `rating`, or an adept power's `level` (`ModRatings.levelField`)
+          for (const [k, v] of Object.entries(delta)) if (k.startsWith('system.')) (doc.system ??= {})[k.slice(7)] = v;
+        }
         n++;
       }
       // A vehicle mod with no level says so (null) — the field is new, and a missing one would fall back

@@ -16,7 +16,8 @@
       "bookPage": "sr3.312,r3.139",
       "description": "",
       "rating": null,
-      "modFor": "vehicle"
+      "modFor": "vehicle",
+      "legality": "3P-V"
     },
     "effects": []
   },

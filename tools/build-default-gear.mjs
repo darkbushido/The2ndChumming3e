@@ -47,6 +47,7 @@ import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 import { RatedFamilies } from '../scripts/data/rated-families.mjs';
 import { ModFor } from '../scripts/data/mod-for.mjs';
 import { replaceFamilies } from './lib/collapsed-mods.mjs';
+import { fillLegality } from './lib/legality-fill.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..');
@@ -454,7 +455,10 @@ export async function plan(manifest, shippedNames) {
       const split = ModRatings.kindOf(doc) ? ModRatings.splitName(doc.name) : null;
       if (split) {
         doc.name = split.stem;
-        if (!(Number(doc.system.rating) > 0)) doc.system.rating = doc.type === 'medical' ? String(split.rating) : split.rating;
+        // ⚠ The NAME's level wins over the upstream Rating column: every "SkillSoft Jukebox 108MP N pts" row carries
+        //   Rating 1, so trusting the column put the whole family at level 1 (2026-10-25). The level in the name is
+        //   what tells a family's rows apart.
+        doc.system.rating = doc.type === 'medical' ? String(split.rating) : split.rating;
       }
       const { book, ...clean } = doc;
       (byPack.get(pack) ?? byPack.set(pack, { book, type: doc.type, docs: [] }).get(pack)).docs.push(clean);
@@ -476,6 +480,8 @@ export async function plan(manifest, shippedNames) {
       g.docs = [...entries.values()];
     }
   }
+  // The books' Legality Codes (2026-10-25, `scripts/data/legality-table.mjs`) — here, so a regeneration keeps them.
+  for (const [pack, g] of byPack) for (const d of g.docs) fillLegality(pack, d);
   report.written = {};
   for (const [, g] of byPack) for (const d of g.docs) bump(report.written, `${g.book} ${d.type}`);
   return { byPack, report, families };

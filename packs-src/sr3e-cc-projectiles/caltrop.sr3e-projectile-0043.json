@@ -18,7 +18,8 @@
       "legal": false,
       "bookPage": "cc.14",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "legality": "8-A"
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/icons/thrown-caltrops.svg"

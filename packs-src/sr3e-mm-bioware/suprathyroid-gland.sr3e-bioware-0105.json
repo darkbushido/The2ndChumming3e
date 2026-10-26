@@ -19,7 +19,8 @@
       "bonusBod": 1,
       "bonusQui": 1,
       "bonusStr": 1,
-      "bonusRea": 1
+      "bonusRea": 1,
+      "legality": "6P-Q"
     },
     "effects": []
   },

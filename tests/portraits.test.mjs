@@ -55,9 +55,14 @@ export async function run(t) {
 
   /* ── Matching ────────────────────────────────────────────────────────────── */
   const c = Portraits.candidates(merged, { metatype: 'troll', gender: 'male', job: 'cook' });
-  t.is('best match first: exact, then variant, then any metatype, then same group, then same metatype',
+  t.is('best match first: exact, then variant, then same group, then same metatype',
     c.map(e => `${e.match}:${e.n ?? e.path.split('-').pop()}`).join(' '),
-    'exact:1 base:2 job:3 group:4 metatype:5');
+    'exact:1 base:2 group:4 metatype:5');
+  // 2026-10-25: a 'job' tier (same job, ANY metatype) filled a thin grid with other races.
+  t.ok('the chosen metatype filters: a human cook is never offered for a troll cook',
+    c.every(e => e.metatype === 'troll' || e.base === 'troll'));
+  t.is('…and a human asks get only the human', Portraits.candidates(merged, { metatype: 'human', gender: 'male', job: 'cook' })
+    .map(e => e.match).join(), 'exact');
   t.ok('gender filters every tier', c.every(e => e.gender === 'male'));
   t.ok('minors never appear unless asked for', c.every(e => !e.minor));
   t.is('a minor is found only when a minor is asked for',
@@ -139,6 +144,17 @@ export async function run(t) {
     const setBlock = verb.slice(verb.indexOf("if (set && typeof set === 'object')"), verb.indexOf("flags.The2ndChumming3e.isTemplate', false);"));
     t.ok('the verb\'s set is a whitelist: img, token art, metatype, gender, ethnicity — nothing else', setBlock
       && /\['metatype', 'gender', 'ethnicity'\]/.test(setBlock) && !/Object\.(assign|entries)|mergeObject|\.\.\.set/.test(setBlock));
+    // 2026-10-25: `name` applied only to a copy (fromActorId), so an NPC from a pack kept the archetype's name.
+    const createVerb = verb.slice(verb.indexOf("CONFIG.queries['sr3e.actor.create']"), verb.indexOf('Actor.implementation.create(data)'));
+    const nameAt = createVerb.indexOf('data.name = newName;');
+    t.ok('actor.create applies the name AFTER every branch (a pack source too), not inside the copy branch',
+      nameAt > createVerb.indexOf("data = { name: String(name || 'New Vehicle')") && nameAt > 0
+      && !/if \(name\) data\.name = name;/.test(createVerb));
+    t.ok('…and the prototype token takes the same name', /setProperty\(data, 'prototypeToken\.name', newName\)/.test(createVerb));
+    t.ok('Meet the contact passes its name to actor.create', /asGM\('sr3e\.actor\.create', \{[\s\S]*?name: r\.name/.test(apply));
+    const link = sheet.slice(sheet.indexOf('static async _onLinkArchetype'), sheet.indexOf('static async _onLinkArchetype') + 4000);
+    t.ok('Link Archetype: the list has an explicit height (Foundry CSS collapses a bare size= select to one row)',
+      /<select id="arch-sel"[^>]*style="[^"]*height:\s*\d+px/.test(link));
   }
 
   /* ── The system never names the private module ───────────────────────────── */

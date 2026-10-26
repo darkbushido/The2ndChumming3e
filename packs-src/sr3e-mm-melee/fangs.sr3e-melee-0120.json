@@ -18,7 +18,8 @@
       "legal": true,
       "bookPage": "mm.43",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "legality": "Legal"
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/icons/melee-cyber.svg"

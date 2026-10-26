@@ -16,6 +16,7 @@
       "cost": 30,
       "streetIndex": "2",
       "legal": false,
+      "legality": "3-J",
       "bookPage": "sr3.283",
       "notes": "<p>The book prints the Damage Code as \"12M (Stun)\".</p><p>SR3 p.283 — Legality 3-J. Blast –1/m.</p>",
       "isAoE": true,

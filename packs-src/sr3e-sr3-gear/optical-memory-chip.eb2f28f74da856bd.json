@@ -1,0 +1,31 @@
+{
+  "_key": "!items!eb2f28f74da856bd",
+  "doc": {
+    "_id": "eb2f28f74da856bd",
+    "name": "Optical Memory Chip",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-chip.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Chips"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Chips",
+      "concealability": "",
+      "rating": 50,
+      "cost": 250,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.296",
+      "description": "<p><strong>Type:</strong> Mem<br><strong>Memory:</strong> 50</p>",
+      "legality": "Legal"
+    }
+  },
+  "embedded": {}
+}

@@ -18,7 +18,8 @@
       "legal": false,
       "bookPage": "cc.13",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "legality": "5P-D"
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/icons/projectile-bow.svg"

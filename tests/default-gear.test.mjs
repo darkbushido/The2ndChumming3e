@@ -153,7 +153,7 @@ export async function run(t) {
       await db.close();
       for (const id of expected.keys()) drift.push(`${p.name}: ${id} is missing — re-run the builder`);
     }
-    t.ok(`the packs hold ${total} generated documents`, total > 990);   // SR3 only while SR2 is parked (1,788); 1,013 once every rated family is ONE document (TODO 261), 1,000 once the armour-option twins went (TODO 266)
+    t.ok(`the packs hold ${total} generated documents`, total > 800);   // 812 once the memory, ECCM, virtual-instrument and Jukebox families collapse (2026-10-25); SR3 only while SR2 is parked (1,788); 1,013 once every rated family is ONE document (TODO 261), 1,000 once the armour-option twins went (TODO 266)
     t.is(`the packs match rawdata/SRCG-*-Gear.json${drift.length ? ` — ${drift.slice(0, 5).join('; ')}` : ''}`, drift.length, 0);
 
     // ⚠ **An upstream Rating-column typo must be a FAILURE, not a silently wrong number.**

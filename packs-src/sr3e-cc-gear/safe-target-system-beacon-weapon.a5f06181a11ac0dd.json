@@ -24,7 +24,8 @@
       "streetIndex": "2",
       "bookPage": "cc.33",
       "description": "<p>Cost Rating x 200¥ — by rating; set the cost for the rating bought.</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "Legal"
     }
   },
   "embedded": {}

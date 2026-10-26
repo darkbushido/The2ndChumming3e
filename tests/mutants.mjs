@@ -27,6 +27,7 @@
 const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
+const BARRIER = { module: '../scripts/data/barrier.mjs', klass: 'Barrier' };
 const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
 const MODFIX = { module: '../scripts/data/mod-book-fixes.mjs', klass: 'ModBookFixes' };
 const FAMILIES = { module: '../scripts/data/rated-families.mjs', klass: 'RatedFamilies' };
@@ -38,6 +39,8 @@ const ITEM  = { module: '../scripts/documents/SR3EItem.js',  klass: 'SR3EItem'  
 const VARM  = { module: '../scripts/data/vehicle-armor.mjs', klass: 'VehicleArmor' };
 const STALL = { module: '../scripts/data/stall-speed.mjs', klass: 'StallSpeed' };
 const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  };
+const PORTRAITS = { module: '../scripts/data/portraits.mjs', klass: 'Portraits' };
+const TOKENSIGHT = { module: '../scripts/data/token-sight.mjs', klass: 'TokenSight' };
 const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
@@ -57,6 +60,7 @@ const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
 const CPOOL = { module: '../scripts/data/combat-pool.mjs', klass: 'CombatPool' };
 const FUNDS = { module: '../scripts/data/funds.mjs', klass: 'Funds' };
+const LEGWORK = { module: '../scripts/data/legwork.mjs', klass: 'Legwork' };
 const GMONLY = { module: '../scripts/data/gm-only-fields.mjs', klass: 'GmOnlyFields' };
 const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellLimits' };
 const AREAEFFECT = { module: '../scripts/data/area-effect.mjs', klass: 'AreaEffect' };
@@ -2188,6 +2192,15 @@ export const MUTANTS = [
       ? entries.filter((_e, i) => i !== idx) : null),
   },
   {
+    id:     'migration-restores-a-burned-pool',
+    suite:  'migrations',
+    ...LEDGER, method: 'touched',
+    was:    'migrations 0.4.5.7 and 0.4.5.11 recognised a Karma Pool by its old default (Karma audit, '
+          + '2026-10-25). Burning, added later, lowers the size for ever (SR3 p.246) and can land on that '
+          + 'default, so force() gave a burned point back - a human at 34 career karma burning 4 -> 1 got 2',
+    impl:   () => false,
+  },
+  {
     id:     'ledger-duplicate-inherits-history',
     suite:  'ledger',
     ...LEDGER, method: 'inherited',
@@ -2231,6 +2244,48 @@ export const MUTANTS = [
       return { net, toBuyer: net > 0, percent: net * 0.05, adjustment,
         price: Math.max(0, Math.round((Number(price) || 0) + adjustment)) };
     },
+  },
+  {
+    id:     'store-price-uses-street-index',
+    suite:  'legality',
+    ...BUY, method: 'storePrice',
+    was:    'SR3 p.273 — "The price listed for all items in SR3 are the legal retail prices … you can get items for the price '
+          + 'listed": the Street Index is the shadow market\'s multiplier. Charging it at the store makes the legal path cost '
+          + 'what a fixer asks, which is the very thing reported 2026-10-25',
+    impl:   (cost, { metatype = '' } = {}) => ({ base: Number(cost) * 3, surcharge: 0, total: Number(cost) * 3, surchargeRate: 0, metatype }),
+  },
+  {
+    id:     'legality-store-default-for-anything',
+    suite:  'legality',
+    module: '../scripts/data/legality.mjs', klass: 'Legality', method: 'storeByDefault',
+    was:    'SR3 p.273 — only a LEGAL item is a Stuffer Shack purchase; "For restricted items — gear with a Legality Code — a '
+          + 'permit is necessary". Opening every item on the store would quietly make restricted gear look legal',
+    impl:   () => true,
+  },
+  {
+    id:     'legality-permit-misread',
+    suite:  'legality',
+    module: '../scripts/data/legality.mjs', klass: 'Legality', method: 'classify',
+    was:    'SR3 p.273 — "If the restriction level is followed by a "P," then characters may be able to get permits": a '
+          + 'restriction-level pattern that swallowed the P read every code as having no permit (caught while building this)',
+    impl:   (code) => {
+      const c = String(code ?? '').trim().replace(/[–—]/g, '-');
+      if (/^legal$/i.test(c)) return { status: 'legal', code: 'Legal', permit: false, defersTo: '' };
+      const as = /^as\s+(.+)$/i.exec(c);
+      if (as) return { status: 'deferred', code: c, permit: false, defersTo: as[1] };
+      const m = /^(\(?[^)]*\)?|\d+)\s*(P?)\s*-\s*([A-Z]{1,3})/i.exec(c);
+      return m && c ? { status: 'restricted', code: c, permit: m[2].toUpperCase() === 'P', defersTo: '' } : { status: 'unknown', code: c, permit: false, defersTo: '' };
+    },
+  },
+  {
+    id:     'buy-haggle-leaves-pay-live',
+    suite:  'purchasing',
+    ...BUY, method: 'cardButtons',
+    was:    'shipped in 0.8.0 (reported 2026-10-25): the Source found card kept its 💴 Pay live after a 🤝 haggle, '
+          + 'at the asking price the haggle had replaced, and only the clicking browser knew the button was used — '
+          + 'the GM saw the card as untouched and could pay it a second time',
+    impl:   (acted = {}) => (acted?.['buy:pay'] ? { negotiate: 'Already paid for.', pay: 'Paid.' }
+      : acted?.['buy:negotiate'] ? { negotiate: 'Already haggled.', pay: null } : { negotiate: null, pay: null }),
   },
   {
     id:     'attribute-hover-says-nothing',
@@ -3083,6 +3138,29 @@ export const MUTANTS = [
     impl:   (_name, system = {}) => (system?.hasLevels ? Math.max(1, Math.trunc(Number(system.level) || 1)) : 1),
   },
   {
+    id:     'collapsed-adept-power-is-level-one',
+    suite:  'adept-levels',
+    ...ADEPTLEVELS, method: 'levelOf',
+    was:    'the name-only reading before 2026-10-25: a collapsed fixed-level power ("Imp. Reflexes [3]", level 3 in system.level) '
+          + 'has no trailing number, so it fell to 1 and an Improved Reflexes 3 on a Magic 2 adept went unwarned (SR3 p.168)',
+    impl:   (name, system = {}) => {
+      if (system?.hasLevels) return Math.max(1, Math.trunc(Number(system.level) || 1));
+      const m = /(?:\s|\+)(\d+)\s*$/.exec(String(name ?? ''));
+      return m ? Math.max(1, Number(m[1])) : 1;
+    },
+  },
+  {
+    id:     'mp-memory-is-not-a-level',
+    suite:  'mod-ratings',
+    ...MODRATE, method: 'splitName',
+    was:    'shipped through 0.8.0 (reported 2026-10-25): only "[N]" / "Rating N" was a level, so "Pocket Computer (250Mp)" and '
+          + 'the rest of the memory, ECCM, Jukebox and adept-power families stayed one document per level',
+    impl:   (name) => {
+      const m = /^(.*?)\s*(?:\b(?:Rating|Lvl|Lv)\s*)?\[(\d+)\](?:\s+\d+)?\s*$/.exec(String(name ?? '')) ?? /^(.*?)\s+(?:Rating|Lvl|Lv)\s+(\d+)\s*$/.exec(String(name ?? ''));
+      return m && m[1].trim() ? { stem: m[1].replace(/\s+/g, ' ').trim(), rating: Number(m[2]) } : null;
+    },
+  },
+  {
     id:     'astral-initiative-ignores-initiate-grade',
     suite:  'initiate-astral',
     ...INITASTRAL, method: 'initiativeBase',
@@ -3634,5 +3712,86 @@ export const MUTANTS = [
     ...MACROREF, method: 'find',
     was:    'the refresh took any script macro, so a GM-authored macro with another name was overwritten (TODO 261)',
     impl:   (_def, macros) => [...(macros ?? [])].find(m => m?.type === 'script') ?? null,
+  },
+  {
+    id:     'portraits-job-tier-crosses-metatype',
+    suite:  'portraits',
+    ...PORTRAITS, method: 'candidates', needsOriginal: '_candidatesOriginal',
+    was:    "Meet the contact's face grid had a 'job' tier (same job, ANY metatype), so a thin grid filled with other "
+          + 'races and the metatype dropdown seemed not to filter (TODO 262, 2026-10-25)',
+    impl:   function (index, want) {
+      const out = this._candidatesOriginal(index, want);
+      if (!want?.job) return out;
+      const seen = new Set(out.map(e => e.src));
+      const job = (index?.entries ?? []).filter(e => e.job === want.job && !seen.has(e.src)
+        && (!want.gender || e.gender === want.gender) && !!want.minor === e.minor).map(e => ({ ...e, match: 'job' }));
+      const at = out.findIndex(e => e.match !== 'exact' && e.match !== 'base');
+      out.splice(at < 0 ? out.length : at, 0, ...job);
+      return out;
+    },
+  },
+  {
+    id:     'token-sight-migration-hits-placed-tokens',
+    suite:  'contact-tokens',
+    ...TOKENSIGHT, method: 'fixActor',
+    was:    'a vision migration that ignored isToken would re-sight every unlinked token on every scene, undoing a GM who '
+          + 'blinded one on purpose (the maintainer, 2026-10-25: prototype tokens only)',
+    impl:   (actor) => (actor && ['character', 'npc'].includes(actor.type) && actor.prototypeToken?.sight?.enabled !== true
+      ? { 'prototypeToken.sight.enabled': true } : null),
+  },
+  {
+    id:     'barrier-doubles-only-blast',
+    suite:  'barrier',
+    ...BARRIER, method: 'multiplier',
+    was:    'the Barrier Damage tool doubled the rating for a blast only, so firearms, melee and combat spells met the normal rating; SR3 p.125 doubles it for each',
+    impl:   attack => (attack === 'blast' ? 2 : 1),
+  },
+  {
+    id:     'barrier-breach-short-of-an-increment',
+    suite:  'barrier',
+    ...BARRIER, method: 'effect',
+    was:    'Power over the adjusted rating but short of one half-rating increment posted a breach of 0 holes and BR −0; p.124 still takes 1 off',
+    impl:   (power, currentBR, attack = 'blast') => {
+      const effectiveBR = currentBR * (attack === 'blast' || attack === 'ranged' ? 2 : 1);
+      if (power < effectiveBR / 2) return { result: 'no_effect', effectiveBR, brReduction: 0, holes: 0, remainingPower: null };
+      if (power <= effectiveBR)    return { result: 'damage', effectiveBR, brReduction: 1, holes: 0, remainingPower: null };
+      const n = Math.floor((power - effectiveBR) / (currentBR / 2));
+      return { result: 'breach', effectiveBR, brReduction: n, holes: n * 0.5, remainingPower: attack === 'blast' ? power - currentBR : null };
+    },
+  },
+  {
+    id:     'legwork-tiers-not-cumulative',
+    suite:  'legwork',
+    ...LEGWORK, method: 'revealed',
+    was:    'only the success tier the roll hit was shown; SR3 p.253 gives every tier up to it ("all the information available to all previous levels of success")',
+    impl:   (results, successes) => {
+      const s = Math.max(0, Math.trunc(Number(successes) || 0));
+      const rows = [...(results ?? [])].map(r => ({ low: r.range?.[0] ?? r.low ?? 0, high: r.range?.[1] ?? r.high ?? r.low ?? 0, text: r.description ?? r.text ?? '' }));
+      return rows.filter(r => r.low <= s && s <= r.high);
+    },
+  },
+  {
+    id:     'legwork-fee-times-successes',
+    suite:  'legwork',
+    ...LEGWORK, method: 'fee',
+    was:    'the fee multiplied by the successes instead of dividing (SR3 p.254: "Divide that result by the number of successes")',
+    impl:   (cha, int, successes) => {
+      const base = (Number(cha) || 0) * (Number(int) || 0) * 50, s = Math.max(0, Math.trunc(Number(successes) || 0));
+      return { base, successes: s, fee: s > 0 ? base * s : null };
+    },
+  },
+  {
+    id:     'legwork-level-dice-everywhere',
+    suite:  'legwork',
+    ...LEGWORK, method: 'levelDice',
+    was:    "a contact's level dice added to the contact's own ear-to-the-ground test and to Matrix searches; SR3 p.256 gives them to the runner's information test only",
+    impl:   level => (Number(level) >= 3 ? 2 : Number(level) === 2 ? 1 : 0),
+  },
+  {
+    id:     'legwork-matrix-searches-round-down',
+    suite:  'legwork',
+    ...LEGWORK, method: 'maxSearches',
+    was:    'half Intelligence rounded down; SR3 p.254 says "rounded up"',
+    impl:   int => Math.floor((Number(int) || 0) / 2),
   },
 ];

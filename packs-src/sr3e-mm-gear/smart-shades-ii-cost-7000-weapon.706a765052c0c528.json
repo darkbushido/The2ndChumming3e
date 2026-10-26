@@ -24,7 +24,8 @@
       "streetIndex": "2",
       "bookPage": "mm.32",
       "description": "<p><strong>Source:</strong> Man & Machine p.32's Smart Goggles at double the nuyen, as sunglasses (SR3 p.281). Derived; not printed.</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "4P-N"
     }
   },
   "embedded": {}
