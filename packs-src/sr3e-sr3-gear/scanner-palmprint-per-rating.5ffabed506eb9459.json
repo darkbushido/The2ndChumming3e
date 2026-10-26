@@ -23,7 +23,8 @@
       "availability": "(Rating+1)/72 hrs",
       "streetIndex": "2",
       "bookPage": "sr3.302",
-      "description": "<p>Cost Rating×300¥ — by rating; set the cost for the rating bought.</p><p><strong>Legal:</strong> Legal</p>"
+      "description": "<p>Cost Rating×300¥ — by rating; set the cost for the rating bought.</p><p><strong>Legal:</strong> Legal</p>",
+      "legality": "Legal"
     }
   },
   "embedded": {}

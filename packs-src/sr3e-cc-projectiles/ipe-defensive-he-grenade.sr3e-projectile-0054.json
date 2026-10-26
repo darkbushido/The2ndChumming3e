@@ -19,7 +19,8 @@
       "bookPage": "cc.41",
       "notes": "",
       "isAoE": true,
-      "hands": 1
+      "hands": 1,
+      "legality": "3-J"
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/icons/thrown-grenade.svg"

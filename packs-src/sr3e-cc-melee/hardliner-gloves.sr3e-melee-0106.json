@@ -18,7 +18,8 @@
       "legal": true,
       "bookPage": "cc.49",
       "notes": "",
-      "hands": 0
+      "hands": 0,
+      "legality": "8-C"
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/icons/melee-unarmed.svg"

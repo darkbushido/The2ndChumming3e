@@ -18,7 +18,8 @@ export const AdeptLevels = {
     const n = String(name ?? '');
     if (/\bMag\s*\d+\s*$/i.test(n)) return 1;
     const m = /(?:\s|\+)(\d+)\s*$/.exec(n);
-    return m ? Math.max(1, Number(m[1])) : 1;
+    // A collapsed fixed-level power ("Combat Sense [2]", 2026-10-25) keeps its level in `system.level`.
+    return m ? Math.max(1, Number(m[1])) : Math.max(1, Math.trunc(Number(system?.level) || 1));
   },
 
   /** The powers whose level is above `magic`, as `{ name, level }` — warn only, never refuse. */

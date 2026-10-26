@@ -27,7 +27,8 @@
       "availability": "16/2wks",
       "streetIndex": "4",
       "bookPage": "cc.40",
-      "notes": "<p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+      "notes": "<p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>",
+      "legality": "2-M"
     }
   },
   "embedded": {}

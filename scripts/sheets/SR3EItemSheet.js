@@ -13,6 +13,7 @@ import { SPIRIT_TYPES } from '../documents/SR3ESpiritSummoning.js';
 import { knownRating } from '../data/item-rating.mjs';
 import { ModRatings } from '../data/mod-ratings.mjs';
 import { ModFor } from '../data/mod-for.mjs';
+import { LEGALITY_TYPES } from '../data/legality.mjs';
 import { BookPage } from '../data/book-page.mjs';
 import { AmmoStock, GUN_CLASSES } from '../data/ammo-stock.mjs';
 import { MiniGrenade } from '../data/mini-grenade.mjs';
@@ -40,6 +41,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       categoryChange:     SR3EItemSheet._onCategoryChange,
       skillChange:        SR3EItemSheet._onSkillChange,
       pickFromCompendium: SR3EItemSheet._onPickFromCompendium,
+      buyAmmo:            SR3EItemSheet._onBuyAmmo,
     }
   };
 
@@ -180,6 +182,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
             <span class="item-type-badge">${this._typeLabel()}</span>
           </div>
           ${this.isEditable && item.type !== 'skill' ? '<button type="button" class="btn-compendium-pick" data-action="pickFromCompendium" title="Fill from compendium">&#128218; Pick from compendium</button>' : ''}
+          ${this._buyAmmoButton()}
         </header>
         <div class="item-body">
           ${this._withBookPage(this._details())}
@@ -298,6 +301,34 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     return this.item.update(delta);
   }
 
+  /**
+   * The Legality Code as printed ("Legal", "6P-V", "As Weapon") — editable like every stat (2026-10-25). 🛒 Buy gear
+   * reads it to open on "at the store" for a Legal item (SR3 p.273). Only on a type whose model declares it.
+   */
+  _legalityField(s) {
+    if (!LEGALITY_TYPES.includes(this.document.type)) return '';
+    return this._f('Legality', 'legality', s.legality ?? '', 'text', 'placeholder="Legal / 6P-V"');
+  }
+
+  /**
+   * 🛒 Buy ammo — on a gun the character carries (requested 2026-10-25: "there should be a way on the guns description to
+   * buy its specific ammo"). Opens 🛒 Buy gear listing only the ammunition this gun loads (`AmmoShop.fits`), and the box
+   * bought is stamped with the gun's class. A firearm or a bow/crossbow that nocks, owned, on an actor.
+   */
+  _buyAmmoButton() {
+    const it = this.document;
+    const takesAmmo = it.type === 'firearm' || (it.type === 'projectile' && it._usesNockedAmmo?.());
+    if (!takesAmmo || !it.actor || !it.isOwner) return '';
+    return '<button type="button" class="btn-compendium-pick" data-action="buyAmmo" title="Buy ammunition this weapon loads">🛒 Buy ammo</button>';
+  }
+
+  static async _onBuyAmmo(ev) {
+    ev?.preventDefault?.();
+    const actor = this.item.actor;
+    if (!actor) return;
+    return game.sr3e.SR3EPurchase.open(actor, null, { forWeapon: this.item });
+  }
+
   _f(label, name, value, type = 'text', extra = '') {
     return `<label class="form-field">
       <span class="field-label">${label}</span>
@@ -387,7 +418,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Damage', 'damage', s.damage, 'text', 'placeholder="(STR+2)M"')}
           ${this._f('Extra Damage', 'extraDamage', s.extraDamage ?? '', 'text', 'placeholder="7S Stun" title="A second Damage Code resisted on its own, e.g. the Shock Glove +7S Stun (SR3 p.276). Leave blank for an ordinary weapon."')}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
-          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._bookPageField(s)}
@@ -419,7 +450,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     ${this._f('Area effect', 'areaEffect', s.areaEffect ?? '', 'text', 'placeholder="what it does — shown on the card"')}
     ${this._f('Quantity', 'quantity', s.quantity ?? 0, 'number', 'min="0" title="How many you carry. Thrown weapons (not bows) are consumed on use when ammo tracking is enabled."')}
     ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
-    ${this._f('Availability', 'availability', s.availability)}
+    ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
     ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
     ${this._f('Street Index', 'streetIndex', s.streetIndex)}
     ${this._bookPageField(s)}
@@ -453,7 +484,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     ${this._f('Area effect', 'areaEffect', s.areaEffect ?? '', 'text', 'placeholder="what it does — shown on the card"')}
     ${this._f('Quantity', 'quantity', s.quantity ?? 0, 'number', 'min="0" title="How many you carry. Consumed on use when ammo tracking is enabled."')}
     ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
-    ${this._f('Availability', 'availability', s.availability)}
+    ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
     ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
     ${this._f('Street Index', 'streetIndex', s.streetIndex)}
     ${this._bookPageField(s)}
@@ -500,7 +531,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Recoil Comp (integral)', 'recoilModIntegral', s.recoilModIntegral ?? '', 'number', 'min="0" max="20" title="The RC printed in parentheses: the total when every integral accessory (folding or detachable stock, tripod) is in use, SR3 p.276. Blank if the weapon has none."')}
           ${this._f('Range Override', 'rangeOverride', s.rangeOverride ?? '', 'text', 'placeholder="5/15/30/50" title="Short/Medium/Long/Extreme max range in metres. Leave blank to use the category default."')}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
-          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._f('Accessories', 'accessories', s.accessories)}
@@ -557,7 +588,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
             : this._f('Description', 'damage', s.damage, 'text', 'placeholder="Ex-Explosive, Hollow Point…"')}
           ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
-          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._bookPageField(s)}
@@ -573,7 +604,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Ballistic', 'ballistic', s.ballistic, 'number', 'min="0"')}
           ${this._f('Impact', 'impact', s.impact, 'number', 'min="0"')}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
-          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._bookPageField(s)}
@@ -845,7 +876,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Availability', 'availability', availEff, 'text', 'placeholder="8/36 hrs"')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex, 'number', 'step="0.1" min="0"')}
-          ${isBio ? '' : this._f('Legal Code', 'legalCode', s.legalCode, 'text', 'placeholder="R / Legal"')}
+          ${isBio ? this._legalityField(s) : this._f('Legal Code', 'legalCode', s.legalCode, 'text', 'placeholder="R / Legal"')}
           ${this._bookPageField(s)}
         </div>
         <div class="form-section-hdr" style="margin:8px 0 4px;font-size:11px;font-weight:600;color:var(--sr-muted);letter-spacing:.05em;text-transform:uppercase">Attribute Bonuses</div>
@@ -926,7 +957,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
-          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._bookPageField(s)}
         </div>
@@ -943,7 +974,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Effect', 'effect', s.effect)}
           ${this._f('Speed (Onset)', 'speed', s.speed, 'text', 'placeholder="Instant, 10 min, 1D6 hrs…"')}
           ${this._f('Vector', 'vector', s.vector, 'text', 'placeholder="Ingestion, Injection, Inhalation, Contact…"')}
-          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._bookPageField(s)}
@@ -954,7 +985,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         return `<div class="form-grid">
           ${this._f('Category', 'category', s.category, 'text', 'placeholder="Medical Equipment — General, Medical Clinics — Alpha Grade…"')}
           ${this._levelField(s, { plain: this._f('Rating', 'rating', s.rating) })}
-          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Weight (kg)', 'weight', s.weight)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
@@ -1061,7 +1092,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Era', 'era', s.era)}
           ${this._f('Cost (¥)', 'cost', s.cost ?? 0, 'number')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex ?? 0, 'number')}
-          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Legality Code', 'legalityCode', s.legalityCode ?? '4P-S')}
           ${this._f('Weight (kg)', 'weight', s.weight ?? 0, 'number', 'min="0" step="0.1"')}
         </div>
@@ -1131,7 +1162,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         return `<div class="form-grid">
           ${this._f('Power Cost', 'powerCost', s.powerCost ?? 0.5, 'number', 'step="0.25" min="0"')}
           ${this._check('Has Levels', 'hasLevels', s.hasLevels ?? false)}
-          ${s.hasLevels ? this._f('Level', 'level', s.level ?? 1, 'number', 'min="1"') : ''}
+          ${ModRatings.options(this.document) ? this._modRatingField(s)   /* a fixed-level power's printed levels (2026-10-25) */
+            : s.hasLevels ? this._f('Level', 'level', s.level ?? 1, 'number', 'min="1"') : ''}
           ${skillPicker}
           ${this._bookPageField(s)}
         </div>
@@ -1155,7 +1187,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Ammunition', 'ammunition', s.ammunition)}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number', 'min="0"')}
-          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._bookPageField(s)}
         </div>
@@ -1168,7 +1200,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Cost (¥)', 'cost', s.cost, 'number', 'min="0"')}
           ${this._f('CF', 'cfCost', s.cfCost, 'text', 'title="Cargo Factor the mod takes"')}
           ${this._f('Load', 'load', s.load)}
-          ${this._f('Availability', 'availability', s.availability)}
+          ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._f('Install Equipment', 'installEquipment', s.installEquipment)}
           ${this._f('Install Time', 'installTime', s.installTime)}

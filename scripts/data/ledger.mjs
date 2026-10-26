@@ -10,7 +10,7 @@
  * exactly what this project does not build.
  *
  * ⚠ **Every entry is derived from the WRITE, not from a call site.** `SR3EActor._preUpdate` diffs
- * the three fields on any update and appends what changed, so the Session Rewards tool, Award Karma,
+ * the tracked fields on any update and appends what changed, so the Session Rewards tool, Award Karma,
  * the Spend calculator, a healing bill and a player typing in the box are all recorded by the same
  * code. Instrumenting the ten call sites instead would silently miss the eleventh — and the eleventh
  * is the one a future feature adds.
@@ -28,7 +28,10 @@ export const PAGE = 'TODO 79';
 /** The fields worth a line in the ledger, and how each is labelled. */
 export const TRACKED = {
   karma:      { label: 'Good Karma', kind: 'karma',  path: 'system.karma' },
-  nuyen:      { label: 'Nuyen',      kind: 'nuyen',  path: 'system.nuyen' },
+  // The career total (SR3 p.242). Untracked until the Karma audit of 2026-10-25: an award left a Good
+  // Karma line and a Pool line but no record of the total behind them, and a GM's edit of it none at all.
+  totalKarma: { label: 'Total Karma', kind: 'total', path: 'system.totalKarma' },
+  nuyen:     { label: 'Nuyen',      kind: 'nuyen',  path: 'system.nuyen' },
   karmaPool:  { label: 'Karma Pool', kind: 'pool',   path: 'system.karmaPool' },
   // Karma Pool spent since the GM's refresh (SR3 p.246). Its own line, because a spend comes back
   // and a burn (a drop in `karmaPool`) does not — the ledger has to tell them apart.
@@ -81,9 +84,13 @@ export const Ledger = {
       const from = num(before?.[key]);
       const to   = num(after[key]);
       if (from === to) continue;
-      // A purchase's reversal rides on the Good Karma line only: that is the line that was SPENT.
+      // A purchase's reversal rides on the Good Karma line (the line that was SPENT); an award's on the Total
+      // Karma line, the one an award always moves — all of it can go to the Pool, leaving no Good Karma line.
+      const carries = revert?.award
+        ? spec.kind === 'total' && to > from
+        : spec.kind === 'karma' && to < from;
       out.push(Ledger.entry({ kind: spec.kind, delta: to - from, from, to, reason, by, when,
-        revert: spec.kind === 'karma' && to < from ? revert : null }));
+        revert: carries ? revert : null }));
     }
     return out;
   },
@@ -101,16 +108,58 @@ export const Ledger = {
    * marked. The ledger is a history, and an undo is part of it.
    */
 
-  /** Can this entry be undone? A Good Karma spend that carries its reversal and was not undone yet. */
+  /**
+   * Can this entry be undone? A Good Karma spend that carries its reversal, or (TODO 267) a karma AWARD's Total
+   * Karma line that carries its amounts — and was not undone yet.
+   */
   undoable(e) {
-    return !!e && e.kind === 'karma' && num(e.delta) < 0 && !!e.revert && !e.reverted;
+    if (!e || !e.revert || e.reverted) return false;
+    if (e.kind === 'karma') return num(e.delta) < 0 && !e.revert.award;
+    if (e.kind === 'total') return num(e.delta) > 0 && !!e.revert.award;
+    return false;
   },
 
-  /** The entry an undo button names, by its time and reason (positions shift when old ones are trimmed). */
-  find(entries, when, reason = null) {
+  /**
+   * What an undoable line undoes, for the ↺'s wording: 'award' (TODO 267), 'handOfGod' (its record restores
+   * `handOfGodUsed`, TODO 267) or 'purchase' (TODO 212). Null when the line cannot be undone.
+   */
+  undoKind(e) {
+    if (!Ledger.undoable(e)) return null;
+    if (e.kind === 'total') return 'award';
+    return 'system.handOfGodUsed' in Ledger.flatten(e.revert?.actor ?? {}) ? 'handOfGod' : 'purchase';
+  },
+
+  /**
+   * The entry an undo button names, by its time, kind and reason (positions shift when old ones are trimmed).
+   * ⚠ The kind matters: an award writes its Good Karma and Total Karma lines with the same time and reason.
+   */
+  find(entries, when, reason = null, kind = 'karma') {
     const list = Array.isArray(entries) ? entries : [];
-    return list.findIndex(e => num(e?.when) === num(when) && e?.kind === 'karma'
+    return list.findIndex(e => num(e?.when) === num(when) && e?.kind === kind
       && (reason === null || str(e.reason) === str(reason)));
+  },
+
+  /**
+   * Undoing a karma award (TODO 267, the maintainer 2026-10-25): what to take back off the CURRENT values, as rows
+   * the GM can untick. `revert.award` holds the amounts the award added — `{ karma, totalKarma, karmaPool, nuyen }`
+   * (plain keys: Foundry expands dotted keys in update options). Subtracting the amounts, not restoring the old
+   * values, keeps whatever happened since. ⚠ Good Karma already spent can go below 0 — reported, never refused;
+   * the Pool and nuyen stop at 0 (their fields' minimum). Pure.
+   * @returns {null | Array<{key: string, path: string, label: string, delta: number, from: number, to: number, short: boolean}>}
+   */
+  awardPlan(e, sys) {
+    if (!Ledger.undoable(e) || e.kind !== 'total') return null;
+    const a = e.revert.award ?? {};
+    const FIELDS = [
+      ['karma', 'Good Karma', false], ['totalKarma', 'Total Karma', false],
+      ['karmaPool', 'Karma Pool', true], ['nuyen', 'Nuyen', true],
+    ];
+    return FIELDS.filter(([k]) => num(a[k]) > 0).map(([key, label, floored]) => {
+      const from = num(sys?.[key]);
+      const raw  = from - num(a[key]);
+      const to   = floored ? Math.max(0, raw) : raw;
+      return { key, path: `system.${key}`, label, delta: -num(a[key]), from, to, short: raw < 0 };
+    });
   },
 
   /** A NEW ledger with entry `index` marked reverted. Never mutates what it was given. */
@@ -124,7 +173,7 @@ export const Ledger = {
    * `refund` is the karma given back (the spend's size). Pure — the sheet applies it.
    */
   revertPlan(e) {
-    if (!Ledger.undoable(e)) return null;
+    if (!Ledger.undoable(e) || e.kind !== 'karma') return null;   // an award's line has `awardPlan`
     const r = e.revert ?? {};
     // ⚠ Foundry EXPANDS dotted keys in update options, so `{ 'system.x': 1 }` comes back as
     // `{ system: { x: 1 } }` (found live, 2026-10-11). Flatten to paths again so each row names its field.
@@ -188,6 +237,16 @@ export const Ledger = {
    */
   inherited(data) {
     return !!data?._stats?.duplicateSource && Ledger.of(data?.system).length > 0;
+  },
+
+  /**
+   * Has anything written this kind since the ledger began? A migration that recognises a value by its
+   * old default asks this first: once the ledger shows a write, the value is somebody's — a burned Karma
+   * Pool point (SR3 p.246, "gone forever") can land back on the old default, and `force()` re-runs
+   * everything (Karma audit, 2026-10-25). ⚠ A GM's ✕ on every such line hides the history from this too.
+   */
+  touched(sys, kind) {
+    return Ledger.of(sys).some(e => e?.kind === kind);
   },
 
   /** A running total per kind, for reconciling the ledger against the sheet's numbers. */

@@ -16,7 +16,8 @@
       "bookPage": "sota.027",
       "rating": null,
       "description": "+1 Body for damage resistance test barrier rating 6 for bones",
-      "bonusBod": 1
+      "bonusBod": 1,
+      "legality": "6P-N"
     },
     "effects": []
   },

@@ -20,7 +20,7 @@ paths:
 ---
 # Karma, the ledger, buying gear, encumbrance
 
-### Karma & advancement  · *SR3 p.244-246*
+### Karma & advancement  · *SR3 p.242-246* (the section opens on p.242; p.243 is art)
 
 | Field | Is | Changes when |
 |---|---|---|
@@ -30,7 +30,14 @@ paths:
 | `system.karmaPoolSpent` | Karma Pool **spent** since the GM's refresh | spending raises it; the GM's 🍀 Refresh zeroes it |
 | `system.powerPointsBought` | adept Power Points bought with Good Karma, on top of Magic · p.168 | the Spend calculator |
 
-Karma Pool shows on the **Attributes** tab (left / size, like Combat Pool); Good/Total Karma on **Bio → Resources**.
+Karma Pool is typed on the **Attributes** tab (left / size, like Combat Pool); **Bio → Resources** has Good/Total Karma
+and a read-only "Karma Pool left / size" with a → Attributes link (TODO 267).
+- **NPCs have a Karma Pool** (SR3 p.248 — the GM sets it by threat; `NpcData.karmaPool`/`karmaPoolSpent`, initial **0** =
+  none given, so no 🍀 row) but **no Good or Total Karma** (`SR3EActor.hasGoodKarma` false: the sheet hides those
+  controls, Award/Spend warn, Session Rewards skips their karma). ⚠ **NPC tokens are UNLINKED** (`data/token-link.mjs`,
+  `preCreateActor`): `npc` type and Little Black Book contacts (by `isJohnsonNote`) — so a burn lands on the token, not
+  the stat block. Already-created actors keep their link; the GM unticks Link Actor Data. Refresh Karma Pools lists
+  scene NPC tokens by `actorRef`.
 - ⚠ **Karma Pool, Good Karma and Total Karma are typeable by the GM only** (TODO 218, `data/gm-only-fields.mjs`).
   A **render-time** lock: the inputs are `readonly disabled` and **unnamed** for a player, `_prepareSubmitData`
   strips the keys (Foundry hands it the *expanded* form), and `_onFieldChange` refuses them. Spending (roll options,
@@ -62,11 +69,19 @@ re-roll function was never called, and a spend lowered the pool's size so the po
     `sr-karma-done-btn` is a ⏳ step.
 - Not modelled: Karma on opposed rolls (melee, astral, contested — they roll through `_rollWave`), on
   rolls with no dialog (soak, Drain), on physical dice; Open Test re-rolls (`openTestRerollCost` is ready);
-  Extended actions (p.248). NPCs have no pool field (TODO 83), so nothing is offered to them.
+  Extended actions (p.248). A pool of **0** offers no 🍀 row at all (an NPC's default, or after Hand of God).
+- **✋ Hand of God** (p.248, optional; `data/hand-of-god.mjs`, Bio → Resources, TODO 267): burns ALL Good Karma and the
+  whole Pool (size, not just what's left) → 0, `handOfGodUsed` true; Total Karma untouched. Player character, 1+ Pool,
+  once ever are **warned, not refused**. No wound is changed — the card leaves the how to the GM. Undo: the purchase ↺
+  on its Good Karma line (`HandOfGod.revert`); with no Good Karma there is no line, so the GM retypes the Pool.
 
 **Awarding** — **Award Karma…** (GM, Bio → Resources, one character) and **🎖 Session Rewards** (GM, Rollable
 Tables: karma, nuyen, a gear note to ticked PCs) both go through `SR3EActor.karmaAward(totalKarma, amount, metatype)`.
 - The Pool point goes **instead of** Good Karma, not as well.
+- **↺ Undo an award (TODO 267, GM).** Both pass `ledgerRevert: { award: { karma, totalKarma, karmaPool, nuyen? } }`
+  (plain keys); `Ledger.diff` puts it on the **Total Karma** line (an award can be all Pool, leaving no Good Karma line).
+  `Ledger.awardPlan` takes the amounts off the CURRENT values (spent-since Good Karma may go negative, said; Pool/nuyen
+  floor at 0). The ↺ carries `data-kind`; `Ledger.find(…, kind)` because the award's lines share time and reason.
 - ⚠ **Humans: every TENTH karma; others every twentieth** (p.246) — `karmaPoolDivisor`, case-insensitive on
   free-text `system.metatype`; missing metatype → 20.
 - ⚠ When auditing a feature, check that something actually **calls** the function and that sibling tools use it.
@@ -128,7 +143,7 @@ re-crossed the pool threshold from 0 and granted points twice.
   skill/attribute one apart, so `ceil` vs `floor` and skill- vs attribute-gated caps both pass them.
 
 ### The ledger  · TODO 79
-`scripts/data/ledger.mjs`. `system.ledger`: `{ when, kind: 'karma'|'nuyen'|'pool'|'poolSpent', delta, from, to,
+`scripts/data/ledger.mjs`. `system.ledger`: `{ when, kind: 'karma'|'total'|'nuyen'|'pool'|'poolSpent', delta, from, to,
 reason, by, revert?, reverted? }`, on the **📒 Ledger** tab (every entry; From → To, By; GM-only ✕) with the latest
 `BIO_LEDGER_ROWS` (8) on the Bio tab (TODO 153). Labels by `specForKind(kind)`.
 - ⚠ **The GM's ✕ removes history, never the totals**, through `Ledger.without`, which returns null when the entry at
@@ -178,14 +193,32 @@ card: delivery N, meet at N/2, price → 🤝 Negotiate (`rollOpposedPair` → `
   `negotiation-loss-is-merely-no-discount`.
 - ⚠ The contact is a **hint** (`SOURCE_AFFINITY`; amber for a poor source, never blocked).
 - ⚠ **Nothing written until 💴** — then one `actor.update` with `ledgerReason`.
+- ⚠ **🤝 and 💴 are recorded ON THE MESSAGE** (`Purchasing.CARD_ROLES` via `sr3e.card.mark`; `Purchasing.cardButtons`
+  reads the ledger at render). The in-memory guard is per browser, so the GM's tab showed a card live after the
+  player had haggled or paid (reported 2026-10-25). **A haggle retires the Source found card's 💴** (its price is
+  superseded). Each claim is made after the dialog/confirm and before the roll/write, so a cancel hands the button
+  back. Mutant `buy-haggle-leaves-pay-live`.
 - ⚠ Every number editable (p.272: a guideline). Dwarf-sized gear **+10%**, troll **+25%** (from `system.metatype`).
 - **Finding the item (TODO 154, `scripts/data/gear-search.mjs`)**: a 🔎 search over the gear packs' **indexes**
   (`pack.getIndex({ fields })`, never `getDocuments`) and a drop onto the dialog fill the same fields through one
   `take()`. ⚠ **Both go through `SR3ESourceBooks.packAllowed`** (`gearPacks()` / `resolveDrop`); a book switched
   off is not searched, but a **drop** from one (or of a non-buyable type) now only **warns and still fills the form**
   (`GearSearch.dropWarnings`, ruled 2026-10-17); a non-Item drop fills nothing. Enter in the box is `preventDefault`ed. Mutants `gear-search-*`.
-- Not modelled: Legality/permits (p.273), the Etiquette specialisation. `tests/purchasing.test.mjs` pins
-  Cheshire: 38 days, 19 days, ¥12,600, ¥10,080.
+- **🏪 At the store or 🤝 through a contact** (reported 2026-10-25, SR3 p.273 *Making Legal Purchases*): the dialog
+  offers both. **At the store** = the LIST price (`Purchasing.storePrice` — no Street Index, the racial surcharge
+  kept), no Etiquette Test, straight to a card with 💴 Pay (`SR3EPurchase.atStore`; same pay button and click record).
+  **Through a contact** is the flow above — the haggle is where the discount comes from. The dialog opens on the store
+  for a **Legal** or "Always" item, on a contact otherwise; ⚠ **warn, never refuse**: a restricted item can be bought
+  at the store (amber note — a permit, the GM's call). Mutants `store-price-uses-street-index`,
+  `legality-store-default-for-anything`, `legality-permit-misread`.
+- **Legality Codes** (`data/legality.mjs`): read from `system.legality` (ten item models, new 2026-10-25),
+  `legalCode` (cyberware) or `legalityCode` (Defragged decks). The codes were **read from the books' gear tables**
+  (SR3, CC, M&M, MitS, R3, SOTA) into `data/legality-table.mjs` (pack → id → [code, page]) — the source; edit it
+  there, then `tools/fill-legality.mjs` (hand-kept packs) and `tools/build-default-gear.mjs` (generated) fill blanks.
+  A table with no Legality column (most electronics, biotech, magical supplies, programs) leaves the field blank —
+  the GM decides. Ammo is mostly "As Weapon" (p.281). Migration 0.9.0 fills owned copies from their compendium link.
+- Not modelled: permits themselves (p.273 — the Etiquette Test at Availability +2), the Etiquette specialisation.
+  `tests/purchasing.test.mjs` pins Cheshire: 38 days, 19 days, ¥12,600, ¥10,080.
 
 ### Carried load and Encumbrance  · *SR3 p.274* — TODO 126
 `scripts/data/carried-load.mjs`. **⚖ Carried N kg** on the Gear tab from every item not in storage;

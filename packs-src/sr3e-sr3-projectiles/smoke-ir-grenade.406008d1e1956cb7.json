@@ -16,6 +16,7 @@
       "cost": 40,
       "streetIndex": "2",
       "legal": false,
+      "legality": "5-J",
       "bookPage": "sr3.283",
       "notes": "<p>Infra-red smoke contains hot particles that obscure thermographic vision. Otherwise as a smoke grenade.</p><p>SR3 p.283 — Legality 5-J. No blast.</p>",
       "isAoE": true,

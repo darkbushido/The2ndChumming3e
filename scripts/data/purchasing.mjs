@@ -129,6 +129,15 @@ export const Purchasing = {
   },
 
   /**
+   * Buying at the store · p.273, Making Legal Purchases — *"you can get items for the price listed"*: the list
+   * price (no Street Index — that is the shadow market's multiplier), no Etiquette Test, no contact. A metatype's
+   * modified gear still costs more (p.272). Payment in full at delivery.
+   */
+  storePrice(cost, { metatype = '' } = {}) {
+    return Purchasing.askingPrice(cost, 1, { metatype });
+  },
+
+  /**
    * The Success Contest over price · p.273.
    * @param {number} buyerHits  the buyer's Negotiation successes
    * @param {number} sourceHits the source's
@@ -149,6 +158,17 @@ export const Purchasing = {
   },
 
   /**
+   * One side's successes in the haggle. ⚠ `postOpposedResult` hands the resolver each side's raw DICE ARRAY
+   * (`rollOpposedPair` and the `sr3e.opposed.settle` query alike), not a `{ successes }` result — reading
+   * `.successes` off the array made every haggle "0 vs 0" (found live, 2026-10-26). Takes either shape.
+   * @param {Array<{success?:boolean}>|{successes?:number}} side
+   */
+  hits(side) {
+    if (Array.isArray(side)) return side.filter(d => d?.success).length;
+    return Math.max(0, Math.floor(num(side?.successes)));
+  },
+
+  /**
    * Is this contact a good source for this item? · p.272. A hint for the dialog.
    * @returns {{rating:'good'|'poor'|'unknown', note:string}}
    */
@@ -160,6 +180,28 @@ export const Purchasing = {
     if ((spec.bad ?? []).includes(itemType)) return { rating: 'poor', note: spec.note };
     if ((spec.good ?? []).includes(itemType)) return { rating: 'good', note: spec.note };
     return { rating: 'unknown', note: spec.note };
+  },
+
+  /**
+   * The roles a buy card's clicks are recorded under on its message (`sr3e.card.mark`). In-memory button
+   * guards are per browser, so the GM's tab showed a player's card live after the player had haggled or paid
+   * — and the GM can press any buyer's button (reported 2026-10-25).
+   */
+  CARD_ROLES: { negotiate: 'buy:negotiate', pay: 'buy:pay' },
+
+  /**
+   * What a buy card's buttons may still do, from the message's acted ledger.
+   * ⚠ **A haggle retires the card's 💴 Pay** — its price is the asking price, superseded by the haggle's card.
+   * @returns {{negotiate: string|null, pay: string|null}} null = live, else why it is spent
+   */
+  cardButtons(acted = {}) {
+    const R = Purchasing.CARD_ROLES;
+    if (acted?.[R.pay]) return { negotiate: 'Already paid for.', pay: 'Paid.' };
+    if (acted?.[R.negotiate]) {
+      return { negotiate: 'Already haggled — the new price is on the card that followed.',
+        pay: 'The haggle set a new price — pay from its card.' };
+    }
+    return { negotiate: null, pay: null };
   },
 
   /** `19 days`, `9.5 hours` — one decimal, because the book's own answers are not whole. */

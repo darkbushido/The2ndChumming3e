@@ -18,6 +18,13 @@ export async function run(t) {
   t.is('a power with no level in its name is level 1', AdeptLevels.levelOf('Imp. Sense: Thermo Vision', { hasLevels: false }), 1);
   t.is('a magnification is not a level', AdeptLevels.levelOf('Imp. Sense: Vision Mag 3', { hasLevels: false }), 1);
   t.is('a levelled power ignores a trailing number in its name', AdeptLevels.levelOf('Imp. Phys. Attr.(BOD)>RACMOD*  1', { hasLevels: true, level: 2 }), 2);
+  // 2026-10-25: a fixed-level power is ONE document ("Imp. Reflexes", its level picked into system.level), and an owned
+  // copy reads "Imp. Reflexes [3]" — no trailing number for the name reader, so system.level is the level.
+  t.is('a collapsed fixed-level power reads system.level', AdeptLevels.levelOf('Imp. Reflexes [3]', { hasLevels: false, level: 3 }), 3);
+  t.is('…the pack document too ("Combat Sense", level 2)', AdeptLevels.levelOf('Combat Sense', { hasLevels: false, level: 2 }), 2);
+  const { adeptPowerLevel } = await import('../scripts/config.js');
+  t.is('…and the EFFECT reader agrees (Combat Sense [3] is three Combat Pool dice)', adeptPowerLevel('Combat Sense [3]', { hasLevels: false, level: 3 }), 3);
+  t.is('…while the old named copy still reads its name', adeptPowerLevel('Combat Sense +2', { hasLevels: false, level: 1 }), 2);
 
   const powers = [
     { name: 'Imp. Reflexes Level 3', system: { hasLevels: false, level: 1 } },

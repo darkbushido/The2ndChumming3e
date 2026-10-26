@@ -24,7 +24,8 @@
       "streetIndex": "1",
       "bookPage": "sr3.282",
       "description": "<p><strong>Mount:</strong> Under<br><strong>Notes:</strong> RC:5,+1IMP,+1BAL, (Melee:TN+4,1/2CP)</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "Legal"
     }
   },
   "embedded": {}

@@ -27,7 +27,8 @@
       "availability": "3/36hrs",
       "streetIndex": ".8",
       "bookPage": "sr3.281",
-      "notes": "<p>A box of 10. The generator lists these per round (10¥ each); the book prices ammunition per 10 shots.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+      "notes": "<p>A box of 10. The generator lists these per round (10¥ each); the book prices ammunition per 10 shots.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>",
+      "legality": "As Weapon"
     }
   },
   "embedded": {}

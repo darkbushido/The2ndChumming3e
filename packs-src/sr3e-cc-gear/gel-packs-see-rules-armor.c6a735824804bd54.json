@@ -24,7 +24,8 @@
       "streetIndex": "+2",
       "bookPage": "cc.53",
       "description": "",
-      "modFor": "armor"
+      "modFor": "armor",
+      "legality": "4-L"
     }
   },
   "embedded": {}

@@ -24,7 +24,8 @@
       "streetIndex": "2",
       "bookPage": "cc.35",
       "description": "<p><strong>Mount:</strong> Top/Under</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "8-U"
     }
   },
   "embedded": {}

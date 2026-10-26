@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**73 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**81 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2916,6 +2916,166 @@ archetypes with no matching portrait job **fall back to the nearest one for now*
   `npcUuid`, name and — only when stock — picture. 🎲 on the Contacts tab (GM only), the face on the row for everyone.
 - `contact.npcUuid` — new field: **full Foundry restart**.
 - Live check: TESTING.md, *Meet the contact*.
+
+## 267. Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God — **requested 2026-10-25, from the Karma audit**
+
+The Karma audit of 2026-10-25 (fixes on `main`, `4c9159b9`/`408de246`) found four things the maintainer then asked for;
+built on branch `feature/karma-npc-hand-of-god`. Rules: `.claude/rules/karma-and-economy.md`.
+
+- **NPCs have a Karma Pool** — SR3 p.248: *"NPCs use dice pools just like player characters… Karma Pool is the
+  equalizer for many critters and NPCs"*. `NpcData.karmaPool`/`karmaPoolSpent` (initial 0, the GM sets it); no Good or
+  Total Karma. **NPC tokens come in unlinked** (the maintainer chose this over per-token burn records): `npc` and the
+  Little Black Book contacts, so a burned point stays on the token and the sheet stays the book's stat block.
+  Refresh Karma Pools lists the scene's NPC tokens. ⚠ Actors created before keep their link.
+- **Karma Pool in Bio → Resources** — read-only "left / size" beside Good and Total Karma, → Attributes link.
+- **GM ↺ for an award** — Award Karma and Session Rewards record what they added on the Total Karma line; the ↺ takes
+  those amounts back off the current values.
+- **✋ Hand of God** (SR3 p.248, optional) — burn all Good Karma and the whole Pool, once ever; warned, never refused.
+
+Tests: `tests/karma-npc-hog.test.mjs`. ⚠ **Two new persisted fields (`NpcData.karmaPool`/`karmaPoolSpent`,
+`CharacterData.handOfGodUsed`) — FULL Foundry restart before the live check.**
+
+**Status 2026-10-25 — walked by the agent in the test world after a full restart (mcp-api, active GM, branch code):
+all five steps passed; actors, tokens, cards and the Troll Street Dealer restored afterwards.** Step 2 burned and spent
+through `burnKarmaPool`/`spendKarmaPool` on token A (what the 🍀 card's buttons call) and checked that the card's
+`actorFrom(actorRef(…))` resolves to token A; the warnings in step 5 were seen and cancelled, not burned through.
+**Not walked:** step 3 from Player2's seat (the summary is read-only and unnamed for everyone, GM included).
+Two cosmetic points from the walk, fixed after it and seen live: "→ Attributes" no longer wraps away from the Karma
+Pool box (one inline-flex item), and the Hand of God ↺ says "undo the Hand of God" (`Ledger.undoKind`).
+
+**Live checklist** (test world; restart Foundry first):
+1. A new NPC: its prototype token has Link Actor Data **off**; Attributes shows Karma Pool 0 / 0 and a roll dialog has
+   no 🍀 row. As GM type a size of 3 → the roll dialog offers 🍀. A Little Black Book contact dragged from the pack: its
+   prototype is unlinked too, and its Pool is the book's.
+2. Place two tokens of that NPC. On token A, roll with **Buy successes** (burn 1): token A's Pool is 2 / 2, token B and
+   the sidebar sheet still 3 / 3. Spend 1 on token A, then 🍀 **Refresh Karma Pools** lists both tokens under
+   "NPCs on this scene"; refresh A → 2 / 2 (the burn stays).
+3. A character's Bio → Resources: "Karma Pool L / S" read-only (also as Player2), → Attributes switches tabs. An NPC
+   shows it too, without Good/Total Karma.
+4. Award Karma 25 to a non-human at Total 0: the 📒 Total Karma line has a ↺ (GM only). Spend some Good Karma, then ↺:
+   the rows show Good Karma −24 (amber if it goes below 0), Total −25, Pool −1; confirm → a "↺ Undid award" line, the
+   original marked (undone). Session Rewards with nuyen: the ↺ also takes the nuyen back (stops at 0).
+5. ✋ Hand of God… on a player's character with Good Karma 12, Pool 7 (2 spent): the dialog says what burns, Cancel is the
+   default; Burn → Good Karma 0, Pool 0 / 0, Total unchanged, a gold chat card, the button reads "(used)". A second use,
+   a Pool of 0, or an NPC-owned character each show an amber ⚠ but still go through. The GM's ↺ on the Good Karma line
+   puts back 12 and the Pool 7 with 2 spent, and clears "(used)".
+
+## 268. Legwork — a GM tool for asking contacts and searching the Matrix — **requested 2026-10-25**
+
+The maintainer, after a player asked how to resolve asking a Loyalty 1 / Connection 1 street-shaman contact about a
+magical mystery (the player guide page `guides/street/contacts.md`, branch `fix/contacts-legwork-guide`): build SR3
+legwork into the system. Rules *(SR3 p.253-256, checked against the PDF 2026-10-25)*: Etiquette (Street or
+Corporate) vs TN 4 or the success table's, cumulative tiers, fee C × I × 50 ÷ successes, ear to the ground at +2 TN
+reporting in 2D6 hours, a rushed meet +2 TN, Matrix searches with Etiquette (Matrix), no Hacking Pool, 2D6 hours,
+ceil(Intelligence ÷ 2) at once, Level 2/3 contacts +1/+2 dice.
+
+**Built (branch `feature/legwork`, with the guide page from `fix/contacts-legwork-guide`):**
+- `scripts/data/legwork.mjs` — fee, TNs, level dice, searches, Etiquette dice and specialisation, revealed tiers,
+  a table's TN. Pure. `tests/legwork.test.mjs`; 4 mutants.
+- `scripts/SR3ELegwork.js` — 🔎 Legwork on the Rollable Tables tab (GM only): runner, contact, mode, specialisation,
+  Level (the GM's pick — [#269](#269)), TN, rushed, success table, the contact's Charisma / Intelligence from its NPC
+  or archetype. Rolls through `rollThen` → `FOLLOW_UPS.legwork`; the card (GM-only by default) shows the successes,
+  every table row reached, the fee and the 2D6 hours.
+- `sr3e-legwork-tables` — a RollTable pack (GM Only folder) with a template success table, rows 1 / 2 / 3+; the TN
+  lives in its description. Built by `tools/build-legwork-tables.mjs`. ⚠ **Not yet `packs:install`ed** (Foundry
+  must be closed, and the live install follows the main checkout).
+- Guide: `guides/street/contacts.md`, *Legwork in The 2nd Chumming*.
+- Live check: TESTING.md, *Legwork*.
+
+## 269. Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection — **requested 2026-10-25**
+
+Found building [#268](#268)'s Legwork tool. SR3 rates a contact by **Level** — 1 standard contact, 2 buddy, 3 friend
+for life *(SR3 p.255-256)* — and the level is what the rules read: Level 2 gives the runner **+1 die** on Etiquette
+Tests for information, Level 3 **+2** *(p.256)*, and the Opposed Intelligence (6) / Willpower (5) / Willpower (6)
+Tests for what the contact remembers or refuses to tell about the runner are by level too. The system's `contact`
+item stores **Loyalty and Connection, 1-6** (`ContactData`), which are not SR3 fields at all — there is no Level
+anywhere. To settle with the maintainer:
+- **How Level relates to Loyalty / Connection** — a stored Level field, a Level derived from Loyalty, or Loyalty and
+  Connection retired (a migration for existing contacts either way).
+- **Which rating drives the bonus dice.** The book has one number (Level); Loyalty is the obvious analogue, but
+  Connection (how much the contact can find out) is a different question the book answers with the contact's
+  archetype and the GM's judgement *(p.255, Appropriate Contact Restrictions)*.
+- **Not every contact is an actor.** Most are bare items with no stats; only those linked to a Little Black Book
+  archetype (`archetypeUuid`, [#83](#83)) or met as an NPC (`npcUuid`, [#262](#262)) have Charisma,
+  Intelligence and Etiquette. The legwork fee *(C × I × 50 ÷ successes, p.254)* and the contact's own
+  ear-to-the-ground Etiquette Test need them — so the GM types them for a bare contact. Whether contacts should
+  always carry (or point at) stats may need to change.
+
+⚠ **The stopgap until then:** the Legwork dialog lets the GM pick the Level (1/2/3), defaulted from Loyalty capped at
+3 (`Legwork.levelFromLoyalty`, `scripts/data/legwork.mjs`) — the maintainer's call, 2026-10-25.
+
+## 270. NPCs start with loaded guns and 3–6 reloads when ammunition is tracked — **requested in play, 2026-10-25**
+
+The maintainer: *"if track ammo is on, NPCs should start with loaded weapons and 3-6 reloads"*. Mr. Johnson's
+Little Black Book stat blocks carry guns (19 in 16 actors) and no ammunition, so with `trackAmmo` on every contact met
+in play had an empty gun. Built on `feature/npc-loaded-guns`: `NpcAmmo.plan` (`scripts/data/npc-ammo.mjs`, pure,
+`tests/npc-ammo.test.mjs`, three mutants) and a `createActor` hook in `sr3e.js` — on the creating client, once, when a
+character/NPC becomes a world actor: each empty firearm loaded with regular rounds, plus 3–6 reloads stamped with the
+gun's class. An actor already carrying ammunition, a grenade launcher and a gun with no magazine size are left alone.
+Close when merged and checked live (TESTING.md, *NPC loaded guns*).
+- Not covered: NPCs already in a world, and actors made while `trackAmmo` was off — a GM tool, if wanted, is a new item.
+
+## 271. 🛒 Buy ammo from the gun — **requested 2026-10-25**
+
+The maintainer: *"its difficult to buy the right ammo, there should be a way on the guns description to buy its
+specific ammo"* — and the box bought that way stamped with the gun's class (*"yes stamp it"*). The SR3 ammunition pack
+alone is 197 documents, one per clip size and type, so a search for a pistol's ammo drowned.
+
+**Built (branch `feature/buy-ammo-from-gun`):**
+- `scripts/data/ammo-shop.mjs` (pure): `AmmoShop.fits` — `reload()`'s own rule plus the magazine size for a clip, and
+  `WEAPON_SPECIFIC` for the munitions the packs file as classless rounds; `stamp` (fill blanks); `describe`.
+- 🛒 Buy ammo on the firearm / nocking-bow sheet → `SR3EPurchase.open(actor, null, { forWeapon })`: the list shows at
+  once, typing narrows it; the class rides to 💴 on both the store and the contact path.
+- `tests/ammo-shop.test.mjs`, mutants `ammo-shop-*`; live check TESTING.md §73.
+- Not done: the packs still carry no class on the weapon-specific munitions — stating one per box would let
+  `reload()` refuse them for the wrong gun too.
+
+## 272. Metatype Shift — Meet the contact restates the stats for the chosen race — **requested 2026-10-25**
+
+The book's metatype was an example but the stat block stayed the book's race. Rule (the maintainer, 2026-10-25):
+subtract the book race's modifiers, add the new race's (Racial Modifications Table, SR3 p.56), cap at the racial
+maximum (p.245), never below 1; Essence and skills unchanged; metavariants out of scope.
+
+**Built (branch `claude/metatype-shift-c4c21d`):** `scripts/data/metatype-shift.mjs` (pure), applied by
+`SR3EMeetContact` after the NPC is created; the amber line says what was adjusted. `tests/metatype-shift.test.mjs`.
+Troll dermal armour, troll Reach and racial vision already follow `system.metatype`. **Not modelled:** a dwarf's
++2 Body against disease and toxins (p.56, TODO 98). Live check: TESTING.md §74.
+
+## 273. Race-agnostic generic NPCs — **requested 2026-10-25**
+
+An archetype marked *Generic* (Actor Directory → right-click → Make Generic NPC…, or
+`game.sr3e.SR3EGenericNpc.create({ archetypeUuid })`) rolls a race from its mix (Seattle mix by default, or a custom
+one, stored in `flags.The2ndChumming3e.genericNpc`) for every UNLINKED token created, shifts that token's actor
+delta (TODO 272) and, with a portrait source active, picks a face of that race and the archetype's job. The sidebar
+actor stays the template and a live actor (TODO 260).
+
+**Built (same branch):** `scripts/data/generic-npc.mjs` (pure), `scripts/SR3EGenericNpc.js`, a synchronous
+`preCreateToken` hook and a `ready` warm-up of the portrait index in `sr3e.js`. `tests/generic-npc.test.mjs`.
+Live check: TESTING.md §74.
+
+## 274. The core rulebook's sample characters as an Actor pack — **requested 2026-10-25**
+
+The maintainer wants the SR3 core rulebook's runner archetypes as stat blocks, beside the Little Black Book's 62 contacts
+([#83](#83)), for his GM macros that build NPCs from compendium archetypes. (Provisional number: the coordinator reserved
+275; the branch uses the next free one so `tests/todo-archive.test.mjs` stays green — renumber at merge.)
+
+**Built (branch `claude/core-archetypes-5e8e30`, Foundry not yet run):**
+- Pack `sr3e-sr3-archetypes` — **16** characters, not 15: the book prints sixteen (*"sixteen pre-generated Sample
+  Characters"*, SR3 p.64), the sixteenth being the **Weapons Specialist** (p.80). A book-gated Actor pack (`book: sr3`).
+- Data `tools/data/core-archetypes.mjs`, builder `tools/build-core-archetypes.mjs` (generated — never hand-edit the
+  pack source), suite `tests/core-archetypes.test.mjs`, Foundry steps in TESTING.md, *Core archetypes*.
+- ⚠ **Attributes are the book's natural rating**; cyberware, adept powers and a troll's hide add the parenthesised
+  figure themselves. Race is the book's own, never converted (SR3 p.56 is a rule on top).
+- Gear and weapons come from the record sheets (pp.326-329); firearms are loaded, spare ammunition follows.
+
+**Not representable / book inconsistencies — for the maintainer** (see the suite's `KNOWN`):
+- Essence is entered as printed. 14 of 16 reproduce from the shipped cyberware costs exactly; **Street Samurai** (book
+  .08 above ours) and **Drone Rigger** (.04) do not, and the book's own worked example (p.62) calls the Covert Ops
+  Specialist's cybereyes mods "free" at .64 against a stated .5 threshold.
+- **Street Samurai Strength 5 (7)** prints +2 for Strength Enhancement 3 in two cyberarms; the shipped item gives +3.
+- Read/Write is a separate language skill per language (no system field); "(NA)" markers are dropped.
+- Vehicles, drones and programs are listed as gear / notes, not linked actors or items.
+- Pack gaps: no cyberears replacement item (made from the p.299 table row), no *Increase Reaction* spell (made blank).
 
 ### 📌 Notes & parked
 

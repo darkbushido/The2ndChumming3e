@@ -23,7 +23,8 @@
       "availability": "3/24hrs",
       "streetIndex": "1",
       "bookPage": "mits.170",
-      "description": "<p><strong>KarmaCost:</strong> 0</p>"
+      "description": "<p><strong>KarmaCost:</strong> 0</p>",
+      "legality": "8P-T"
     }
   },
   "embedded": {}

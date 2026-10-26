@@ -2,6 +2,9 @@ import { Purchasing } from './data/purchasing.mjs';
 import { GearSearch } from './data/gear-search.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
 import { ModRatings } from './data/mod-ratings.mjs';
+import { Legality } from './data/legality.mjs';
+import { AmmoShop } from './data/ammo-shop.mjs';
+import { MiniGrenade } from './data/mini-grenade.mjs';
 
 /**
  * Buying gear — the flow · *SR3 pp.272-273* (TODO 82).
@@ -93,8 +96,24 @@ export const SR3EPurchase = {
     for (const w of GearSearch.dropWarnings({ name: dropped.name, type: dropped.type, packAllowed }, SR3EPurchase.BUYABLE)) ui.notifications.warn(w);
     // ⚠ The plain name — no "[N]" (TODO 261). The dialog offers the item's levels when the table has them.
     const entry = { ...GearSearch.fields(dropped), name: dropped.name, type: dropped.type, uuid: dropped.uuid,
-      levels: ModRatings.levelsOf(dropped), rating: Number(dropped.system?.rating) || null };
+      levels: ModRatings.levelsOf(dropped), levelUnit: ModRatings.unitOf(dropped), rating: Number(dropped.system?.rating) || null };
     return GearSearch.atLevel(entry, GearSearch.startLevel(entry));
+  },
+
+  /**
+   * What a gun loads, for 🛒 Buy ammo (`AmmoShop.criteria`) — read off the item exactly as `reload()` reads it.
+   */
+  ammoCriteria(gun) {
+    const firearm = gun?.type === 'firearm';
+    return AmmoShop.criteria({
+      system: gun?.system ?? {},
+      name: gun?.name ?? '',
+      mech: gun?._weaponLoadMechanism?.() ?? '',
+      magSize: gun?._weaponMagazineSize?.() ?? 0,
+      launcher: firearm && MiniGrenade.isLauncher(gun.system),
+      accepts: t => game.sr3e.SR3EItem.weaponAcceptsAmmoType(gun?.system ?? {}, t),
+      firearm,
+    });
   },
 
   /** The character's contacts, with what each is good for. */
@@ -111,9 +130,14 @@ export const SR3EPurchase = {
    * 🛒 Buy gear… — the opening dialog.
    * @param {Actor} actor the buyer
    * @param {Item}  [item] a specific item (from its row); otherwise the GM types the details
+   * @param {{forWeapon?: Item}} [opts] `forWeapon` — 🛒 Buy ammo from a gun's sheet (2026-10-25): the search lists only
+   *   the ammunition that gun loads (`AmmoShop.fits`, the rule `reload()` uses) and the box bought is stamped with
+   *   the gun's class
    */
-  async open(actor, item = null) {
+  async open(actor, item = null, { forWeapon = null } = {}) {
     if (!actor) return;
+    const gun = forWeapon;
+    const crit = gun ? SR3EPurchase.ammoCriteria(gun) : null;
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
     const avail = Purchasing.parseAvailability(item?.system?.availability ?? '');
@@ -122,11 +146,16 @@ export const SR3EPurchase = {
     let   type  = item?.type ?? 'gear';   // a search hit or a drop changes it
     let   picked = null;                  // the item the search or a drop chose, over the row's
     // A rated item is one document with its levels in a table (TODO 261): bought at a level, default the lowest.
-    const rowEntry = item ? { ...GearSearch.fields(item), levels: ModRatings.levelsOf(item), rating: Number(item.system?.rating) || null } : null;
+    const rowEntry = item ? { ...GearSearch.fields(item), levels: ModRatings.levelsOf(item), levelUnit: ModRatings.unitOf(item), rating: Number(item.system?.rating) || null } : null;
     let   levelEntry = rowEntry?.levels ? rowEntry : null;
     let   level = levelEntry ? GearSearch.startLevel(levelEntry) : null;
+    // Legal gear needs no contact (SR3 p.273): the dialog opens on "at the store" for a Legal or "Always" item, and
+    // through a contact otherwise — either way both are offered (reported 2026-10-25; warn, never refuse).
+    const startLegal = rowEntry ? (Legality.of(item) || '') : '';
+    let   storeMode = Legality.storeByDefault(startLegal) || avail.always;
+    let   howTouched = false;   // once the buyer picks, a search or a drop no longer flips it
     const levelOptions = e => Object.keys(e?.levels ?? {}).map(Number).sort((a, b) => a - b)
-      .map(l => `<option value="${l}"${l === level ? ' selected' : ''}>${l}</option>`).join('');
+      .map(l => `<option value="${l}"${l === level ? ' selected' : ''}>${l}${e?.levelUnit ? ` ${e.levelUnit}` : ''}</option>`).join('');
 
     const cons = SR3EPurchase.contacts(actor);
     const conOpts = cons.length
@@ -150,9 +179,19 @@ export const SR3EPurchase = {
 
     let result = null;
     await foundry.applications.api.DialogV2.wait({
-      window: { title: `${actor.name}: buy ${item ? item.name : 'gear'} (${Purchasing.PAGE})` },
+      window: { title: `${actor.name}: buy ${gun ? `ammunition for ${gun.name}` : item ? item.name : 'gear'} (${Purchasing.PAGE})` },
       content: `
-        <p style="font-size:11px;color:var(--sr-muted);margin:0 0 6px">
+        <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:6px;font-size:12px">
+          <label><input type="radio" name="sr-buy-how" value="store"${storeMode ? ' checked' : ''}/>
+            🏪 <strong>At the store</strong> — list price, no roll, no contact (SR3 p.273)</label>
+          <label><input type="radio" name="sr-buy-how" value="contact"${storeMode ? '' : ' checked'}/>
+            🤝 <strong>Through a contact</strong> — Etiquette vs Availability, Street Index, and a haggle for a discount (pp.272-273)</label>
+        </div>
+        <label style="display:block;margin-bottom:2px">Legality
+          <input type="text" id="sr-buy-legality" value="${esc(startLegal)}" placeholder="—" style="width:110px"/>
+        </label>
+        <div id="sr-buy-legal-note" style="font-size:11px;color:var(--sr-muted);margin-bottom:6px"></div>
+        <p class="sr-buy-contact-only" style="font-size:11px;color:var(--sr-muted);margin:0 0 6px">
           An <strong>Etiquette Test</strong> against the item's Availability finds a source (SR3 p.272).
           Successes divide the base time. <span id="sr-buy-avail-note">${availNote(avail.always, avail.unknown && !avail.always)}</span>
         </p>
@@ -163,6 +202,8 @@ export const SR3EPurchase = {
           <select id="sr-buy-level" style="width:80px">${levelEntry ? levelOptions(levelEntry) : ''}</select>
           <span style="font-size:11px;color:var(--sr-muted)"> — each level has its own price and availability</span>
         </label>
+        ${crit ? `<p id="sr-buy-forgun" style="font-size:12px;margin:0 0 6px">${esc(AmmoShop.describe(gun.name, crit))}
+          <span style="color:var(--sr-muted);font-size:11px">— only what it loads is listed; the box is stamped for it.</span></p>` : ''}
         <div id="sr-buy-find" style="margin-bottom:6px">
           <label style="display:block">🔎 Search the gear compendiums
             <input type="text" id="sr-buy-search" placeholder="e.g. Ares Predator, medkit, flak jacket…" autocomplete="off" style="width:100%"/>
@@ -173,7 +214,7 @@ export const SR3EPurchase = {
         <label style="display:block;margin-bottom:6px">Item
           <input type="text" id="sr-buy-name" value="${esc(item?.name ?? '')}" style="width:100%"/>
         </label>
-        <div style="display:flex;gap:6px;margin-bottom:6px">
+        <div class="sr-buy-contact-only" style="display:flex;gap:6px;margin-bottom:6px">
           <label style="flex:1">Availability TN
             <input type="number" id="sr-buy-tn" value="${avail.tn || 4}" min="0" max="30" style="width:100%"/>
           </label>
@@ -190,10 +231,11 @@ export const SR3EPurchase = {
           <label style="flex:1">Base cost (¥)
             <input type="number" id="sr-buy-cost" value="${cost}" min="0" style="width:100%"/>
           </label>
-          <label style="flex:1">Street Index
+          <label class="sr-buy-contact-only" style="flex:1">Street Index
             <input type="number" id="sr-buy-index" value="${index}" min="0" step="0.1" style="width:100%"/>
           </label>
         </div>
+        <div class="sr-buy-contact-only">
         <label style="display:block;margin-bottom:6px">Contact
           <select id="sr-buy-contact" style="width:100%">${conOpts}</select>
         </label>
@@ -208,9 +250,10 @@ export const SR3EPurchase = {
           <span style="font-size:11px;color:var(--sr-muted)">— costs ${Purchasing.REDUCTION.daysPerPoint} days
           and +${Purchasing.REDUCTION.streetIndexPerPoint} Street Index each (p.272)</span>
         </label>
+        </div>
         <div id="sr-buy-preview" style="font-size:11px;color:var(--sr-gold)"></div>`,
       buttons: [
-        { label: 'Find a source', action: 'ok', default: true,
+        { label: storeMode ? 'Buy at the store' : 'Find a source', action: 'ok', default: true,
           callback: (_e, _b, dlg) => {
             const el = dlg.element;
             const n = id => Number(el.querySelector(id)?.value) || 0;
@@ -223,6 +266,9 @@ export const SR3EPurchase = {
               contactId: el.querySelector('#sr-buy-contact')?.value || '',
               itemUuid: picked?.uuid || item?.uuid || '',
               level: el.querySelector('#sr-buy-level-row')?.style.display === 'none' ? null : (Number(el.querySelector('#sr-buy-level')?.value) || null),
+              how: storeMode ? 'store' : 'contact',
+              legality: el.querySelector('#sr-buy-legality')?.value?.trim() ?? '',
+              gunClass: crit?.gunClass ?? '',   // stamped on the box (`AmmoShop.stamp`) — bought from the gun
             };
             if (result.level && !/\]\s*$/.test(result.name)) result.name = `${result.name} [${result.level}]`;
           } },
@@ -233,7 +279,21 @@ export const SR3EPurchase = {
         const con = el.querySelector('#sr-buy-contact');
         const aff = el.querySelector('#sr-buy-affinity');
         const pre = el.querySelector('#sr-buy-preview');
+        const legalIn = el.querySelector('#sr-buy-legality');
+        const legalNote = el.querySelector('#sr-buy-legal-note');
+        const okBtn = el.querySelector('button[data-action="ok"]');
+        const showHow = () => {
+          for (const x of el.querySelectorAll('.sr-buy-contact-only')) x.style.display = storeMode ? 'none' : '';
+          for (const r of el.querySelectorAll('input[name="sr-buy-how"]')) r.checked = r.value === (storeMode ? 'store' : 'contact');
+          if (okBtn) okBtn.textContent = storeMode ? 'Buy at the store' : 'Find a source';
+        };
         const sync = () => {
+          if (legalNote) {
+            const k = Legality.classify(legalIn?.value);
+            legalNote.textContent = Legality.note(legalIn?.value);
+            // Warn, never refuse: a restricted item can still be bought at the store — the GM rules on the permit.
+            legalNote.style.color = storeMode && k.status !== 'legal' ? 'var(--sr-amber)' : 'var(--sr-muted)';
+          }
           const chosen = cons.find(c => c.id === con?.value);
           const a = chosen ? Purchasing.affinity(chosen.archetype, type) : { rating: 'unknown', note: '' };
           if (aff) {
@@ -246,7 +306,12 @@ export const SR3EPurchase = {
           const cut = Purchasing.reduceAvailability({ tn: n('#sr-buy-tn'), time: n('#sr-buy-time') },
             n('#sr-buy-index') || 1, n('#sr-buy-reduce'));
           const ask = Purchasing.askingPrice(n('#sr-buy-cost'), cut.streetIndex, { metatype: actor.system?.metatype });
-          if (pre) {
+          if (pre && storeMode) {
+            const list = Purchasing.storePrice(n('#sr-buy-cost'), { metatype: actor.system?.metatype });
+            pre.textContent = `List price ¥${list.total.toLocaleString('en-US')}`
+              + (list.surcharge ? ` (includes +${Math.round(list.surchargeRate * 100)}% ${actor.system?.metatype})` : '')
+              + ' · paid in full at delivery (p.273)';
+          } else if (pre) {
             pre.textContent = `TN ${cut.tn} · base time ${Purchasing.formatTime(cut.baseTime, el.querySelector('#sr-buy-unit')?.value)}`
               + ` · Street Index ${cut.streetIndex} · asking ¥${ask.total.toLocaleString('en-US')}`
               + (ask.surcharge ? ` (includes +${Math.round(ask.surchargeRate * 100)}% ${actor.system?.metatype})` : '');
@@ -265,6 +330,8 @@ export const SR3EPurchase = {
         const take = f => {
           picked = f; type = f.type;
           showLevels(f);
+          if (legalIn) legalIn.value = f.legality ?? '';
+          if (!howTouched) { storeMode = Legality.storeByDefault(f.legality) || !!f.always; showHow(); }
           set('#sr-buy-name', f.name); set('#sr-buy-tn', f.tn); set('#sr-buy-time', f.time);
           set('#sr-buy-unit', f.unit); set('#sr-buy-cost', f.cost); set('#sr-buy-index', f.index);
           const note = el.querySelector('#sr-buy-avail-note');
@@ -277,16 +344,20 @@ export const SR3EPurchase = {
         let hits = [];
         const drawHits = async () => {
           const q = search?.value ?? '';
-          if (!GearSearch.tokens(q).length) { hits = []; hitsEl.innerHTML = ''; return; }
+          // For a gun, the list shows at once — everything it loads — and typing narrows it.
+          if (!crit && !GearSearch.tokens(q).length) { hits = []; hitsEl.innerHTML = ''; return; }
           if (!gearIndex) hitsEl.textContent = 'Reading the compendiums…';
           gearIndex ??= SR3EPurchase.loadGearIndex();   // one load, shared by every keystroke
-          const index = await gearIndex;
+          const all = await gearIndex;
           if ((search?.value ?? '') !== q) return;   // typed on while the index loaded
-          hits = GearSearch.search(index, q, { types: SR3EPurchase.BUYABLE });
+          const index = crit ? all.filter(e => e.type === 'ammunition' && AmmoShop.fits(e.ammo ?? {}, crit, e.name)) : all;
+          hits = crit && !GearSearch.tokens(q).length
+            ? [...index].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+            : GearSearch.search(index, q, { types: SR3EPurchase.BUYABLE });
           hitsEl.innerHTML = hits.length
             ? hits.map((h, i) => `<button type="button" class="sr-buy-hit" data-i="${i}" style="display:block;width:100%;text-align:left;margin:1px 0">
                 ${esc(h.name)} <span style="color:var(--sr-muted)">· ${esc(h.type)}${h.availability ? ` · ${esc(h.availability)}` : ''}${h.bookPage ? ` · ${esc(h.bookPage)}` : ''}</span></button>`).join('')
-            : '<em style="color:var(--sr-muted)">Nothing in the allowed books matches.</em>';
+            : `<em style="color:var(--sr-muted)">${crit ? `Nothing in the allowed books loads into ${esc(gun.name)}${GearSearch.tokens(q).length ? ' and matches' : ''}.` : 'Nothing in the allowed books matches.'}</em>`;
         };
         search?.addEventListener('input', drawHits);
         // Enter in the filter must not press the dialog's default button (Find a source) — it takes the top hit.
@@ -316,6 +387,7 @@ export const SR3EPurchase = {
           const f = GearSearch.atLevel(levelEntry, level);
           set('#sr-buy-tn', f.tn); set('#sr-buy-time', f.time); set('#sr-buy-unit', f.unit);
           set('#sr-buy-cost', f.cost); set('#sr-buy-index', f.index);
+          if (legalIn && f.legality) legalIn.value = f.legality;   // a level can carry its own code
           const note = el.querySelector('#sr-buy-avail-note');
           if (note) note.innerHTML = availNote(f.always, f.unknown);
           sync();
@@ -332,14 +404,22 @@ export const SR3EPurchase = {
           set('#sr-buy-index', supplies.streetIndex);
           sync();
         });
-        for (const id of ['#sr-buy-tn', '#sr-buy-time', '#sr-buy-cost', '#sr-buy-index', '#sr-buy-reduce', '#sr-buy-unit']) {
+        for (const r of el.querySelectorAll('input[name="sr-buy-how"]')) {
+          r.addEventListener('change', () => { storeMode = r.value === 'store' && r.checked; howTouched = true; showHow(); sync(); });
+        }
+        for (const id of ['#sr-buy-tn', '#sr-buy-time', '#sr-buy-cost', '#sr-buy-index', '#sr-buy-reduce', '#sr-buy-unit', '#sr-buy-legality']) {
           el.querySelector(id)?.addEventListener('input', sync);
           el.querySelector(id)?.addEventListener('change', sync);
         }
+        showHow();
         sync();
+        if (crit) drawHits();   // a gun's ammunition is listed straight away
       },
     });
     if (!result) return;
+
+    // 🏪 At the store (SR3 p.273): no roll — straight to a card with the list price and 💴 Pay.
+    if (result.how === 'store') return SR3EPurchase.atStore(actor, result);
 
     const cut = Purchasing.reduceAvailability({ tn: result.tn, time: result.time }, result.index, result.reduce);
     const ctx = { ...result, ...cut, buyerId: actor.id };
@@ -349,6 +429,35 @@ export const SR3EPurchase = {
     await game.sr3e.SR3EActor.rollThen(actor, result.dice, Math.max(2, cut.tn),
       { label: `🛒 Etiquette — sourcing ${result.name}`, skipWoundMod: false,
         followUp: { kind: 'purchaseSourced', ctx } });
+  },
+
+  /**
+   * 🏪 Bought at the store · SR3 p.273, Making Legal Purchases: the list price (no Street Index), no Etiquette Test,
+   * no contact, *"Payment in full is expected at delivery"*, and the purchase is on record. A card with 💴 Pay —
+   * nothing is written until it is pressed, exactly like a contact's deal. A restricted item is allowed and said so.
+   */
+  async atStore(actor, result) {
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const list = Purchasing.storePrice(result.cost, { metatype: actor.system?.metatype });
+    const k = Legality.classify(result.legality);
+    const payload = JSON.stringify({ buyerId: actor.id, name: result.name, price: list.total, itemUuid: result.itemUuid,
+      level: result.level, store: true, gunClass: result.gunClass ?? '' }).replace(/'/g, '&#39;');
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">🏪 At the store — ${esc(result.name)}</div>
+        <div class="sr-roll-meta">List price <strong>¥${list.total.toLocaleString('en-US')}</strong>${
+          list.surcharge ? ` (¥${list.base.toLocaleString('en-US')}, +${Math.round(list.surchargeRate * 100)}% ${esc(actor.system?.metatype)})` : ''}
+          — no contact, no Etiquette Test, paid in full at delivery (${Legality.PAGE}).</div>
+        <div class="sr-roll-meta"${k.status === 'legal' ? '' : ' style="color:var(--sr-amber)"'}>${esc(Legality.note(result.legality))}</div>
+        <div class="sr-roll-meta" style="color:var(--sr-muted);font-size:11px">A legal purchase leaves a record — a credit
+          trail, inventory, perhaps video — under the buyer's SIN (${Legality.PAGE}).</div>
+        <div class="sr-soak-action">
+          <button class="sr-buy-pay-btn" data-payload='${payload}'>💴 Pay ¥${list.total.toLocaleString('en-US')} &amp; receive</button>
+        </div>
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
   },
 
   /** The Etiquette Test has resolved · p.272. */
@@ -400,10 +509,14 @@ export const SR3EPurchase = {
     });
   },
 
-  /** 🤝 — the Success Contest over price · p.273. Both sides roll; the GM sets the source's. */
-  async negotiate(payload) {
+  /**
+   * 🤝 — the Success Contest over price · p.273. Both sides roll; the GM sets the source's.
+   * `claim` records the haggle on the card once the dialog is confirmed (false = someone got there first).
+   * @returns {Promise<boolean>} false when nothing happened, so the button is handed back
+   */
+  async negotiate(payload, { claim = async () => true } = {}) {
     const actor = actorFrom(payload?.buyerId);
-    if (!actor) return;
+    if (!actor) return false;
     const mine = SR3EPurchase.negotiationDice(actor);
 
     let opts = null;
@@ -440,7 +553,8 @@ export const SR3EPurchase = {
         { label: 'Cancel', action: 'cancel' },
       ],
     });
-    if (!opts) return;
+    if (!opts) return false;
+    if (!(await claim())) { ui.notifications.warn(`${payload.name}: the price has already been haggled.`); return false; }
 
     await game.sr3e.SR3EActor.rollOpposedPair('purchase',
       { ...payload, ...opts },
@@ -449,13 +563,16 @@ export const SR3EPurchase = {
       // The source is not an actor: the buyer's rolls its dice (any actor's `_rollWave` will do) and `name` labels it.
       { actor, pool: opts.dice, tn: Math.max(2, opts.tn), label: `🤝 ${actor.name} haggles` },
       { actor, pool: opts.them, tn: Math.max(2, opts.theirTn), label: '🤝 The source holds out', name: 'The source' });
+    return true;
   },
 
   /** Both haggles have landed (explosions included) · p.273. */
   async onNegotiated(ctx, atk, def) {
     const actor = actorFrom(ctx.buyerId);
     if (!actor) return;
-    const deal = Purchasing.negotiate(ctx.price, atk?.successes ?? 0, def?.successes ?? 0);
+    // Each side arrives as its dice array (`postOpposedResult`), so count the successes — see `Purchasing.hits`.
+    const mine = Purchasing.hits(atk), theirs = Purchasing.hits(def);
+    const deal = Purchasing.negotiate(ctx.price, mine, theirs);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const payload = JSON.stringify({ ...ctx, price: deal.price }).replace(/'/g, '&#39;');
 
@@ -464,7 +581,7 @@ export const SR3EPurchase = {
       content: `<div class="sr-roll-card">
         <div class="sr-roll-header">🤝 ${esc(ctx.name)} — ${deal.net === 0 ? 'no movement'
           : deal.toBuyer ? `${Math.round(deal.percent * 100)}% off` : `${Math.round(deal.percent * 100)}% more`}</div>
-        <div class="sr-roll-meta">${atk?.successes ?? 0} vs ${def?.successes ?? 0} —
+        <div class="sr-roll-meta">${mine} vs ${theirs} —
           net ${deal.net} to the ${deal.toBuyer ? 'buyer' : deal.net === 0 ? 'nobody' : 'source'} (5% each, SR3 p.273)</div>
         <div class="sr-roll-meta">¥${Number(ctx.price).toLocaleString('en-US')} →
           <strong>¥${deal.price.toLocaleString('en-US')}</strong></div>
@@ -483,10 +600,13 @@ export const SR3EPurchase = {
   /**
    * 💴 — pay and take delivery. The ONLY place anything is written.
    * ⚠ Through `actor.update` with a `ledgerReason`, so TODO 79 records the purchase.
+   * ⚠ `claim` records the payment on the card AFTER the confirm and BEFORE anything is written, so a
+   *   cancelled confirm leaves the card payable and a second client (the GM's) cannot pay it again.
+   * @returns {Promise<boolean>} false when nothing was paid, so the button is handed back
    */
-  async pay(payload) {
+  async pay(payload, { claim = async () => true } = {}) {
     const actor = actorFrom(payload?.buyerId);
-    if (!actor) return;
+    if (!actor) return false;
     const price = Math.max(0, Number(payload.price) || 0);
     const have  = Number(actor.system?.nuyen) || 0;
 
@@ -497,7 +617,8 @@ export const SR3EPurchase = {
         ${price > have ? '<p style="color:var(--sr-red)">They cannot cover it — the deal is off unless the GM says otherwise (p.273).</p>' : ''}
         ${payload.itemUuid ? '<p style="font-size:11px;color:var(--sr-muted)">A copy of the item will be added to the sheet.</p>' : ''}`,
     });
-    if (!ok) return;
+    if (!ok) return false;
+    if (!(await claim())) { ui.notifications.warn(`${payload.name} has already been paid for.`); return false; }
 
     await actor.update({ 'system.nuyen': Math.max(0, have - price) },
       { ledgerReason: `Bought ${payload.name}` });
@@ -516,6 +637,9 @@ export const SR3EPurchase = {
         delete data._id;
         // The picked level's rating and printed numbers; the price paid is the deal's, not the table's.
         if (payload.level) data = ModRatings.withLevel(data, payload.level);
+        // Bought from a gun's sheet: the box is stamped with that gun's class, while it states none (SR3 p.279).
+        const cls = data.type === 'ammunition' ? AmmoShop.stamp(data.system, { gunClass: payload.gunClass }) : null;
+        if (cls) data.system = { ...data.system, gunClass: cls };
         await actor.createEmbeddedDocuments('Item', [data]);
         added = ' and added to the sheet';
       }
@@ -528,5 +652,6 @@ export const SR3EPurchase = {
         Nuyen ¥${have.toLocaleString('en-US')} → ¥${Math.max(0, have - price).toLocaleString('en-US')}.</div></div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
+    return true;
   },
 };

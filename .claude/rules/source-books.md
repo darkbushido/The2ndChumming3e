@@ -17,7 +17,7 @@ paths:
 
 One pack per source book, `sr3e-<book>-<type>`, each declaring `flags.The2ndChumming3e.book` in `system.json`.
 Packs without the flag are system content (exactly four: `sr3e-skills`, `sr3e-example-characters`,
-`sr3e-mr-johnsons-contacts`, and the GM-only journal `sr3e-gm-sixth-world`). **80 packs ship**, all SR3 or system.
+`sr3e-mr-johnsons-contacts`, and the GM-only journal `sr3e-gm-sixth-world`). **82 packs ship**, all SR3 or system (the core book's sample characters, `sr3e-sr3-archetypes`, carry `book: sr3`, the core book, which is never switchable).
 
 ### The GM-only journal — `sr3e-gm-sixth-world` (2026-10-11)
 The public guide's World pages (`guides/world/`) stop at **October 2059**, the maintainer's campaign date; what
@@ -50,8 +50,23 @@ generator's gear data (`mm.064`, `sr3.304`) — not its `Books.json`.
 
 `tests/default-gear.test.mjs` pins the default-on set against `SOURCE_BOOKS`.
 
-Packs per book: `sr3` 15 · `sr2` 11 · `mm` 9 · `tss` 9 · `cc` 7 · `sota2` 7 · `matrix-defragged` 5 · `twl` 5 ·
+Packs per book: `sr3` 16 · `sr2` 11 · `mm` 9 · `tss` 9 · `cc` 7 · `sota2` 7 · `matrix-defragged` 5 · `twl` 5 ·
 `fof` 4 · `fra` 4 · `r3` 4 · `ssc` 4 · `mits` 3 · `sota` 3 · `st` 3 · `ct` 2 · `ger` 1 · `pna` 1 · `ssg` 1 · `tal` 1
+
+### The core book's sample characters — `sr3e-sr3-archetypes` (TODO 274)
+**16** Actor documents — the book prints sixteen (SR3 p.64), not fifteen; the Weapons Specialist is p.80 — from the
+character pages (pp.65-80) and record sheets (pp.326-329). **Generated** by `tools/build-core-archetypes.mjs` from
+`tools/data/core-archetypes.mjs` (never hand-edit the pack source; `tests/core-archetypes.test.mjs` rebuilds the plan).
+- ⚠ **Attributes are the book's NATURAL number**; the parenthesised figure is what the cyberware, adept-power and troll-hide
+  bonuses add up to. Entering the augmented figure as the base would count the chrome twice. **Race is the book's, never
+  converted** (SR3 p.56 is a rule applied on top by whoever plays it as another race).
+- Items are the shipped ones, rated through `ModRatings.withLevel`; a name the packs lack becomes a typed generic item
+  (reported by `--check`). Firearms are loaded and spare ammunition follows; vehicles and drones are gear items, not actors.
+- ⚠ **Essence is entered as printed** (`essence.lost`). `node tools/build-core-archetypes.mjs --check` audits it against the
+  graded cyberware (p.62's rule: a replacement holds .5 of mods free): 14 of 16 reproduce exactly; the Street Samurai
+  (−.08) and Drone Rigger (−.04) do not, and the suite names them.
+- ⚠ Book inconsistency, kept: Street Samurai Strength prints 5 (7) but Strength Enhancement 3 is +3.
+- Book-gated (`book: sr3`), in the sidebar under Reference → Sample Characters. Read/Write is a separate language skill.
 
 ### How filtering works
 `SR3ESourceBooks.packAllowed(pack)` is the single predicate, used in exactly two places:

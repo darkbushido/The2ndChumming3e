@@ -23,7 +23,8 @@
       "availability": "Always",
       "streetIndex": "1",
       "bookPage": "sr3.296",
-      "description": "<p><strong>Type:</strong> Nav</p>"
+      "description": "<p><strong>Type:</strong> Nav</p>",
+      "legality": "Legal"
     }
   },
   "embedded": {}

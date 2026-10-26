@@ -18,6 +18,7 @@
       "availability": "6/48 hrs",
       "cost": 80,
       "streetIndex": "3",
+      "legality": "5-J",
       "bookPage": "sr3.283",
       "notes": "<p>A mini-grenade for a grenade launcher (SR3 p.283): the Smoke (IR) Grenade's effects, fired rather than thrown. It does not arm until it has travelled about five metres (SR3 p.118).</p><p>SR3 p.283, the Mini-grenade row applied to the Smoke (IR) Grenade row: Conceal 8, Weight .1, Availability 4/48 hrs +2, Cost 40¥ ×2, Street Index 2 +1. Legality 5-J. No blast.</p>",
       "blast": "",

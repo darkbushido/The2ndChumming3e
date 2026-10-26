@@ -1,0 +1,30 @@
+{
+  "_key": "!items!1294027951d9906d",
+  "doc": {
+    "_id": "1294027951d9906d",
+    "name": "Telecom",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-commlink.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Lifestyle Extras"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Lifestyle Extras",
+      "concealability": "-",
+      "rating": 100,
+      "cost": 3000,
+      "weight": 5,
+      "availability": "Always",
+      "streetIndex": "1",
+      "bookPage": "sr3.286",
+      "description": ""
+    }
+  },
+  "embedded": {}
+}

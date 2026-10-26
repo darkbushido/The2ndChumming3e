@@ -16,7 +16,8 @@
       "bookPage": "mm.072",
       "rating": 1,
       "description": "+1INT",
-      "bonusInt": 1
+      "bonusInt": 1,
+      "legality": "Legal"
     },
     "effects": []
   },

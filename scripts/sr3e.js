@@ -23,6 +23,8 @@ import { MacroRefresh } from './data/macro-refresh.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
 import { ActorRef, actorFrom, actorRef } from './data/actor-ref.mjs';
 import { SR3ENpcReset } from './SR3ENpcReset.js';
+import { TokenLink } from './data/token-link.mjs';
+import { HandOfGod } from './data/hand-of-god.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
 import { SR3EActorSheet } from './sheets/SR3EActorSheet.js';
 import { SR3EVehicleSheet } from './sheets/SR3EVehicleSheet.js';
@@ -40,9 +42,11 @@ import { SR3EWard } from './documents/SR3EWard.js';
 import { SR3EVehicleChase } from './SR3EVehicleChase.js';
 import { SR3ECollision } from './SR3ECollision.js';
 import { SR3EConcealment } from './SR3EConcealment.js';
+import { SR3ELegwork } from './SR3ELegwork.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
 import { SR3EMeetContact } from './SR3EMeetContact.js';
+import { SR3EGenericNpc } from './SR3EGenericNpc.js';
 import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
 import { SR3EActionLedger } from './SR3EActionLedger.js';
@@ -62,6 +66,8 @@ import { SR3ECompendiumDirectory } from './SR3ECompendiumDirectory.js';
 import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
 import * as Sustaining from './data/sustaining.mjs';
 import { Blast } from './data/blast.mjs';
+import { Barrier } from './data/barrier.mjs';
+import { NpcAmmo } from './data/npc-ammo.mjs';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -127,7 +133,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, ActorRef, SR3EStatusEffects, SR3EMeetContact };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc };
 
   // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
   // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
@@ -497,15 +503,20 @@ Hooks.on('preCreateItem', (document, data) => {
  * re-fires nothing, so there is no loop. Registered AFTER the rating fill above, so it sees the filled rating. */
 Hooks.on('preCreateItem', (document, _data, options) => {
   if (ModRatings.inPack(document, options)) return;
-  const name = ModRatings.syncName(document.name, document.system?.rating, document.type);
+  const name = ModRatings.syncName(document.name, ModRatings.levelValue(document), document.type);
   if (name !== document.name) document.updateSource({ name });
 });
 Hooks.on('preUpdateItem', (document, changes, options) => {
   if (ModRatings.inPack(document, options)) return;
+  // A levelled adept power with no printed levels ("Improved Ability", hasLevels) keeps its name: only a collapsed
+  // fixed-level power (2026-10-25) reads "Combat Sense [2]".
+  if (document.type === 'adeptpower' && !ModRatings.levelsOf(document)) return;
+  // The level's field: `system.rating`, or an adept power's `system.level` (`ModRatings.levelField`).
+  const path = `system.${ModRatings.levelField(document)}`;
   const hasName = foundry.utils.hasProperty(changes, 'name');
-  const hasRating = foundry.utils.hasProperty(changes, 'system.rating');
+  const hasRating = foundry.utils.hasProperty(changes, path);
   if (!hasName && !hasRating) return;
-  const rating = hasRating ? foundry.utils.getProperty(changes, 'system.rating') : document.system?.rating;
+  const rating = hasRating ? foundry.utils.getProperty(changes, path) : ModRatings.levelValue(document);
   const current = hasName ? changes.name : document.name;
   const name = ModRatings.syncName(current, rating, document.type);
   if (name !== current) changes.name = name;
@@ -541,6 +552,22 @@ Hooks.on('preUpdateItem', (document, changes) => {
   if (document.type !== 'ammunition' || !foundry.utils.hasProperty(changes, 'system') || 'img' in changes) return;
   const img = restockImage(foundry.utils.mergeObject(document.toObject(), changes, { inplace: false }));
   if (img) changes.img = img;
+});
+
+// Generic NPCs (TODO 273): an unlinked token of a race-agnostic archetype is rolled as its own person. The hook is
+// SYNCHRONOUS (Foundry does not await it); the portrait index was loaded at `ready` (`SR3EGenericNpc.warm`).
+Hooks.on('preCreateToken', (token) => {
+  try { SR3EGenericNpc.prepareToken(token); } catch (err) { console.error('SR3E | generic NPC token:', err); }
+});
+Hooks.once('ready', () => { SR3EGenericNpc.warm(); });
+// …and the GM's way in: Actor Directory → right-click → Make Generic NPC…
+Hooks.on('getActorContextOptions', (app, options) => {
+  options.push({
+    name: 'Make Generic NPC…',
+    icon: '<i class="fa-solid fa-dice"></i>',
+    condition: li => game.user.isGM && ['npc', 'character'].includes(app.collection.get(li.dataset?.entryId ?? li.dataset?.documentId)?.type),
+    callback: li => SR3EGenericNpc.mark(app.collection.get(li.dataset?.entryId ?? li.dataset?.documentId)),
+  });
 });
 
 // A skill's rating changes (Spend Karma, a sheet edit): its specialisations keep their OWN ratings -
@@ -583,10 +610,11 @@ Hooks.on('preCreateActor', (document, _data, options, _userId) => {
     document.updateSource({ flags: { 'The2ndChumming3e': { isTemplate: false } } });
   }
 
-  // Ensure tokens are linked by default so token sheet === world actor sheet.
-  // Unlinked tokens create a separate actor instance, causing duplicate sheets.
-  if (!_data.prototypeToken?.actorLink) {
-    document.updateSource({ prototypeToken: { actorLink: true } });
+  // Tokens are linked by default so token sheet === world actor sheet — except an NPC's (TODO 267): each goon on
+  // the map is its own copy, so what it spends, burns or takes stays on that token (data/token-link.mjs).
+  const linked = TokenLink.linked({ type: document.type, notes: document.system?.notes });
+  if (!!_data.prototypeToken?.actorLink !== linked) {
+    document.updateSource({ prototypeToken: { actorLink: linked } });
   }
 
   // Default token bars to the wound tracks (fill as damage rises). Owners see them on hover.
@@ -597,29 +625,59 @@ Hooks.on('preCreateActor', (document, _data, options, _userId) => {
       displayBars: CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,
     } });
   }
+
+  // Vision on by default for every new actor (the maintainer, 2026-10-25) — only when the data does
+  // not say: a token someone set to blind, or a pack entry's explicit `false`, is left alone.
+  if (_data.prototypeToken?.sight?.enabled === undefined) {
+    document.updateSource({ prototypeToken: { sight: { enabled: true } } });
+  }
+});
+
+// TODO 270 — a stat block made into a world actor with `trackAmmo` on starts with its guns loaded and 3–6
+// reloads each (the maintainer, 2026-10-25). Rules in `data/npc-ammo.mjs`: an actor that already carries
+// ammunition is left alone. Runs on the creating client only (a GM: players cannot create actors), once.
+Hooks.on('createActor', async (actor, options, userId) => {
+  if (userId !== game.user.id || options.pack || actor.pack) return;
+  if (!['character', 'npc'].includes(actor.type)) return;
+  const trackAmmo = game.settings.get('The2ndChumming3e', 'trackAmmo');
+  const { guns, ammo } = NpcAmmo.plan(actor.items.map(i => ({ _id: i.id, name: i.name, type: i.type, system: i.system })),
+    { trackAmmo });
+  if (!guns.length) return;
+  await actor.updateEmbeddedDocuments('Item', guns);
+  await actor.createEmbeddedDocuments('Item', ammo);
 });
 
 /**
  * 🍀 Refresh Karma Pools — the GM's call (SR3 p.246): *"Karma Pools refresh on an abstract basis,
  * determined by the gamemaster … roughly every new 'scene' … In most cases, Karma Pool should refresh
  * at the beginning of each gaming session"*. Everything SPENT comes back; burned points left the
- * pool's size and stay gone. Player characters only, nobody ticked to start (TODO 96), "All" ticks them.
+ * pool's size and stay gone. Player characters, then the NPC tokens on this scene that have a pool (TODO 267);
+ * nobody ticked to start (TODO 96), "All" ticks them.
  */
 async function _openKarmaRefreshDialog() {
   const pcs = game.actors.filter(a => a.type === 'character' && game.sr3e.isLiveActor(a)
     && game.sr3e.SR3EQuery.isPlayerCharacter(a));
-  if (!pcs.length) {
+  /* NPCs on this scene with a pool (SR3 p.248, TODO 267) — by TOKEN, because an NPC's token is its own copy
+   * (unlinked), so its spent points live on the token, not the sidebar sheet. */
+  const npcTokens = (canvas?.scene?.tokens?.contents ?? []).filter(t => t.actor
+    && !game.sr3e.SR3EQuery.isPlayerCharacter(t.actor) && KarmaPool.state(t.actor.system).size > 0);
+  if (!pcs.length && !npcTokens.length) {
     ui.notifications.warn('No player characters found — assign a character to a player, or give a player Owner of it.');
     return;
   }
-  const rows = pcs.map(a => {
+  const row = (ref, name, a) => {
     const { size, spent } = KarmaPool.state(a.system);
     return `<label style="display:flex;align-items:center;gap:8px;margin:3px 0;cursor:pointer;">
-      <input type="checkbox" data-actor-id="${a.id}"/>
-      <span>${a.name}</span>
+      <input type="checkbox" data-actor-id="${ref}"/>
+      <span>${name}</span>
       <span style="color:var(--sr-muted);font-size:11px">(${size - spent} of ${size} left${spent ? `, ${spent} to come back` : ''})</span>
     </label>`;
-  }).join('');
+  };
+  const rows = pcs.map(a => row(a.id, a.name, a)).join('')
+    + (npcTokens.length
+      ? `<p style="margin:8px 0 2px;font-size:11px;color:var(--sr-muted)">NPCs on this scene (each token its own pool):</p>`
+        + npcTokens.map(t => row(actorRef(t.actor), t.name, t.actor)).join('')
+      : '');
   let ids = null;
   await foundry.applications.api.DialogV2.wait({
     window: { title: '🍀 Refresh Karma Pools' },
@@ -664,7 +722,7 @@ async function _openSessionRewardDialog() {
     <label style="display:flex;align-items:center;gap:8px;margin:3px 0;cursor:pointer;">
       <input type="checkbox" data-actor-id="${a.id}"/>
       <span>${a.name}</span>
-      <span style="color:var(--sr-muted);font-size:11px">(${a.system.karma ?? 0} karma | ¥${(a.system.nuyen ?? 0).toLocaleString()})</span>
+      <span style="color:var(--sr-muted);font-size:11px">(${game.sr3e.SR3EActor.hasGoodKarma(a) ? `${a.system.karma ?? 0} karma` : 'no karma — NPC'} | ¥${(a.system.nuyen ?? 0).toLocaleString()})</span>
     </label>`).join('');
 
   let karma = 0, nuyen = 0, gearNotes = '', selectedIds = [], proceed = false;
@@ -727,25 +785,33 @@ async function _openSessionRewardDialog() {
    * twentieth point (TENTH for humans, p.246) goes to the Pool INSTEAD of Good Karma. */
   const targets = allPCs.filter(a => selectedIds.includes(a.id));
   const split   = [];
+  /* ⚠ A player-owned NPC is listed (it can take nuyen) but has no karma fields (TODO 83): the data
+   * model dropped the write and the card named it among those awarded (Karma audit, 2026-10-25). */
+  const noKarma = [];
   for (const actor of targets) {
     const updates = {};
-    if (karma) {
+    if (karma && !game.sr3e.SR3EActor.hasGoodKarma(actor)) noKarma.push(actor.name);
+    else if (karma) {
       const r = game.sr3e.SR3EActor.karmaAward(actor.system.totalKarma ?? 0, karma, actor.system.metatype);
       updates['system.karma']      = (actor.system.karma ?? 0) + r.goodKarma;
       updates['system.totalKarma'] = r.newTotal;
       if (r.poolGained) updates['system.karmaPool'] = (actor.system.karmaPool ?? 0) + r.poolGained;
-      split.push({ name: actor.name, ...r });
+      split.push({ actor, name: actor.name, ...r });
     }
     if (nuyen)  updates['system.nuyen'] = (actor.system.nuyen ?? 0) + nuyen;
     // The ledger reads this reason (TODO 79) — every write is recorded either way, but a blank
     // "why" column is only half an answer to "where did that 40 karma go?".
-    if (Object.keys(updates).length) await actor.update(updates, { ledgerReason: 'Session rewards' });
+    // What it added rides on the Total Karma line, for the GM's ↺ (TODO 267) — a karma award only: with no karma
+    // there is no Total Karma line to carry it. Plain keys — Foundry expands dotted ones in update options.
+    const sp = split.find(x => x.actor === actor);
+    const ledgerRevert = sp ? { award: { karma: sp.goodKarma, totalKarma: karma, karmaPool: sp.poolGained, nuyen } } : null;
+    if (Object.keys(updates).length) await actor.update(updates, { ledgerReason: 'Session rewards', ledgerRevert });
   }
 
   /* Name anyone whose award crossed a Karma Pool threshold, since that point did NOT reach
    * their Good Karma and the difference is otherwise invisible on the card. */
   const lines = targets.map(a => {
-    const sp = split.find(x => x.name === a.name);
+    const sp = split.find(x => x.actor === a);
     return sp && sp.poolGained
       ? `<li>${a.name} — ${sp.goodKarma} Good Karma, +${sp.poolGained} Karma Pool</li>`
       : `<li>${a.name}</li>`;
@@ -753,7 +819,10 @@ async function _openSessionRewardDialog() {
   const karmaLine = karma
     ? `<div><strong>Karma:</strong> +${karma}
          <span style="font-size:11px;color:var(--sr-muted)">to Good Karma, less any twentieth
-         point (tenth for humans) that goes to the Karma Pool instead — SR3 p.244, p.246</span></div>`
+         point (tenth for humans) that goes to the Karma Pool instead — SR3 p.242</span></div>`
+    : '';
+  const noKarmaLine = noKarma.length
+    ? `<div style="font-size:11px;color:var(--sr-amber)">No karma for ${noKarma.join(', ')} — an NPC carries no karma fields.</div>`
     : '';
   const nuyenLine = nuyen ? `<div><strong>Nuyen:</strong> +¥${nuyen.toLocaleString()}</div>` : '';
   const gearLine  = gearNotes ? `<div><strong>Gear:</strong> ${gearNotes}</div>` : '';
@@ -764,7 +833,7 @@ async function _openSessionRewardDialog() {
       <div class="sr-roll-card">
         <div class="sr-roll-header" style="background:var(--sr-gold,#c8a040);color:#0a0a0a">🎖 Session Rewards</div>
         <div class="sr-roll-body" style="padding:8px">
-          ${karmaLine}${nuyenLine}${gearLine}
+          ${karmaLine}${noKarmaLine}${nuyenLine}${gearLine}
           <div style="margin-top:6px;font-size:11px;color:var(--sr-muted)">Awarded to:</div>
           <ul style="margin:4px 0 0;padding-left:18px;font-size:12px">${lines}</ul>
         </div>
@@ -1154,6 +1223,13 @@ async function _openBarrierDamageCalculator() {
   const matOpts   = MATERIALS.map((m, i) => `<option value="${i}">${m.name} (BR ${m.br})</option>`).join('');
   const actorOpts = game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))
     .map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+  // One radio per attack kind — its multiplier comes from Barrier.ATTACKS (SR3 p.119, p.125).
+  const attackRadios = Object.entries(Barrier.ATTACKS).map(([key, a], i) => `
+          <label style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px;">
+            <input type="radio" name="br-attack" value="${key}"${i === 0 ? ' checked' : ''}/> ${a.label}
+            <span style="color:var(--sr-muted)">· BR ×${a.mult}, ${a.page}</span>
+          </label>`).join('');
+  const doorOpts = Object.entries(Barrier.DOORS).map(([key, d]) => `<option value="${key}">${d.label}</option>`).join('');
 
   const TITLE = '🧱 Barrier Damage';
   const wireDialog = (app, html) => {
@@ -1161,21 +1237,31 @@ async function _openBarrierDamageCalculator() {
     if (!el) return;
 
     function updateEffLabel() {
-      const br  = parseInt(el.querySelector('#br-current')?.value) || 0;
-      const att = el.querySelector('input[name="br-attack"]:checked')?.value ?? 'blast';
-      const eff = att === 'blast' ? br * 2 : br;
-      const lbl = el.querySelector('#br-eff-label');
-      if (lbl) lbl.textContent = `Effective BR: ${eff}${att === 'blast' ? ` (${br} × 2 for blast)` : ''}`;
+      const br   = parseInt(el.querySelector('#br-current')?.value) || 0;
+      const att  = el.querySelector('input[name="br-attack"]:checked')?.value ?? 'blast';
+      const mult = Barrier.multiplier(att);
+      const lbl  = el.querySelector('#br-eff-label');
+      if (lbl) lbl.textContent = `Effective BR: ${br * mult}${mult !== 1 ? ` (${br} × ${mult})` : ''}`;
+      const door = el.querySelector('#br-door')?.value ?? '';
+      el.querySelector('#br-door-row').style.display = door ? '' : 'none';
     }
 
-    el.querySelector('#br-material')?.addEventListener('change', e => {
-      const m = MATERIALS[parseInt(e.target.value)];
-      if (m) { el.querySelector('#br-current').value = m.br; updateEffLabel(); }
-    });
+    // Picking a material or a door kind sets both ratings; the GM can still type over either (a damaged door).
+    function fillRatings() {
+      const m    = MATERIALS[parseInt(el.querySelector('#br-material')?.value)];
+      const door = el.querySelector('#br-door')?.value ?? '';
+      if (!m) return;
+      const br = Barrier.doorRating(m.br, door);
+      el.querySelector('#br-current').value  = br;
+      el.querySelector('#br-original').value = br;
+    }
+
+    el.querySelector('#br-material')?.addEventListener('change', () => { fillRatings(); updateEffLabel(); });
+    el.querySelector('#br-door')?.addEventListener('change', () => { fillRatings(); updateEffLabel(); });
     el.addEventListener('change', e => {
       if (e.target.name === 'br-attack') {
-        const isDemo = e.target.value === 'demo';
-        el.querySelector('#br-blast-row').style.display = isDemo ? 'none' : '';
+        const isDemo = e.target.value === 'demolitions';
+        el.querySelector('#br-power-row').style.display = isDemo ? 'none' : '';
         el.querySelector('#br-demo-rows').style.display = isDemo ? '' : 'none';
       }
       updateEffLabel();
@@ -1198,18 +1284,20 @@ async function _openBarrierDamageCalculator() {
             <input type="number" id="br-current" value="2" min="0" max="200" style="width:60px;margin-top:2px;"/>
           </label>
         </div>
-        <div id="br-eff-label" style="font-size:11px;color:var(--sr-muted);margin-bottom:10px;"></div>
-        <div style="margin-bottom:10px;">
-          <label style="display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:12px;">
-            <input type="radio" name="br-attack" value="blast" checked/> Blast (grenade / explosive)
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:6px;">
+          <label style="font-size:12px;">Door:
+            <select id="br-door" style="width:100%;margin-top:2px;">${doorOpts}</select>
           </label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:12px;">
-            <input type="radio" name="br-attack" value="demo"/> Demolitions (placed charge)
+          <label id="br-door-row" style="font-size:12px;display:none;">Undamaged BR:
+            <input type="number" id="br-original" value="2" min="0" max="200" style="width:60px;margin-top:2px;"/>
           </label>
         </div>
-        <div id="br-blast-row" style="margin-bottom:6px;">
-          <label style="font-size:12px;">Blast Power (after distance reduction):
-            <input type="number" id="br-blast-power" value="10" min="0" style="width:60px;margin-left:6px;"/>
+        <div id="br-eff-label" style="font-size:11px;color:var(--sr-muted);margin-bottom:10px;"></div>
+        <div style="margin-bottom:10px;">${attackRadios}
+        </div>
+        <div id="br-power-row" style="margin-bottom:6px;">
+          <label style="font-size:12px;">Power (a blast's after distance reduction):
+            <input type="number" id="br-power" value="10" min="0" style="width:60px;margin-left:6px;"/>
           </label>
         </div>
         <div id="br-demo-rows" style="display:none;">
@@ -1229,17 +1317,19 @@ async function _openBarrierDamageCalculator() {
       {
         label: 'Post / Roll', action: 'confirm', default: true,
         callback: (_e, _b, dialog) => {
-          const el  = dialog.element;
-          const att = el.querySelector('input[name="br-attack"]:checked')?.value ?? 'blast';
-          const br  = parseInt(el.querySelector('#br-current')?.value) || 0;
-          const mat = MATERIALS[parseInt(el.querySelector('#br-material')?.value) || 0]?.name ?? 'Unknown';
-          if (att === 'blast') {
-            res = { type: 'blast', power: parseInt(el.querySelector('#br-blast-power')?.value) || 0, br, mat };
+          const el   = dialog.element;
+          const att  = el.querySelector('input[name="br-attack"]:checked')?.value ?? 'blast';
+          const br   = parseInt(el.querySelector('#br-current')?.value) || 0;
+          const mat  = MATERIALS[parseInt(el.querySelector('#br-material')?.value) || 0]?.name ?? 'Unknown';
+          const door = el.querySelector('#br-door')?.value ?? '';
+          const originalBR = door ? (parseInt(el.querySelector('#br-original')?.value) || 0) : br;
+          if (att !== 'demolitions') {
+            res = { type: att, power: parseInt(el.querySelector('#br-power')?.value) || 0, br, mat, door, originalBR };
           } else {
-            res = { type: 'demo', basePower: parseInt(el.querySelector('#br-demo-power')?.value) || 0,
+            res = { type: 'demolitions', basePower: parseInt(el.querySelector('#br-demo-power')?.value) || 0,
               pool: parseInt(el.querySelector('#br-demo-pool')?.value) || 1,
               tn:   parseInt(el.querySelector('#br-demo-tn')?.value) || 2,
-              actorId: el.querySelector('#br-demo-actor')?.value, br, mat };
+              actorId: el.querySelector('#br-demo-actor')?.value, br, mat, door, originalBR };
           }
         }
       },
@@ -1249,14 +1339,15 @@ async function _openBarrierDamageCalculator() {
 
   if (!res) return;
 
-  if (res.type === 'blast') {
-    const effect = game.sr3e.SR3EActor.computeBarrierEffect(res.power, res.br, 'blast');
-    await game.sr3e.SR3EActor._postBarrierDamageCard(effect, res.mat, res.br, res.power);
+  if (res.type !== 'demolitions') {
+    const effect = Barrier.effect(res.power, res.br, res.type);
+    await game.sr3e.SR3EActor._postBarrierDamageCard(effect, res.mat, res.br, res.power, 0,
+      { attack: res.type, door: res.door, originalBR: res.originalBR });
   } else {
     const actor = actorFrom(res.actorId);
     if (!actor) { ui.notifications.warn('Select an actor to roll demolitions.'); return; }
     await actor.rollPool(res.pool, res.tn, 'Demolitions Test', {
-      barrierContext: { basePower: res.basePower, currentBR: res.br, material: res.mat },
+      barrierContext: { basePower: res.basePower, currentBR: res.br, material: res.mat, door: res.door, originalBR: res.originalBR },
     });
   }
 }
@@ -1982,6 +2073,7 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
   mk('sr3e-barrier-btn', '🧱 Barrier Damage',  _openBarrierDamageCalculator, true);
   mk('sr3e-falling-btn', '🪂 Falling Damage',  _openFallingDamageCalculator, true);
   mk('sr3e-escape-btn',  '🔓 Escape Artist',   _openEscapeArtistCalculator,  true);
+  mk('sr3e-legwork-btn', '🔎 Legwork',         () => SR3ELegwork.open(),      true);   // TODO 268
   mk('sr3e-conceal-btn', '👁 Concealment',     () => SR3EConcealment.open(), true);
   mk('sr3e-npc-reset-btn', '🧹 Reset shared NPCs', () => SR3ENpcReset.open(), true);   // TODO 260
 
@@ -3621,7 +3713,13 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
   });
   // 🛒 Buying gear · TODO 82 (SR3 pp.272-273). 🤝 and 💴 belong to the buyer (or the GM);
   // 💴 is the only one that writes anything, and it confirms first.
+  // ⚠ Both clicks are recorded ON THE MESSAGE (`Purchasing.CARD_ROLES`): the in-memory guard is per browser, so
+  //   the GM's tab showed a card live after the player had haggled or paid. A haggle retires the card's 💴.
+  const buySpent = Purchasing.cardButtons(_actedOn(message));
+  const spendBuyBtn = (btn, why) => { btn.disabled = true; btn.title = why; };
+  const buyClaim = (role, label) => async () => !(await _markActed(mid, role, label))?.already;
   html.querySelectorAll('.sr-buy-negotiate-btn').forEach((btn, i) => {
+    if (buySpent.negotiate) return spendBuyBtn(btn, buySpent.negotiate);
     if (!_checkBtn(btn, mid, 'buyneg', i)) return;
     const pl = _payload(btn);
     if (!pl) return;
@@ -3630,10 +3728,15 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'buyneg', i)) return;
-      await SR3EPurchase.negotiate(pl);
+      const done = await SR3EPurchase.negotiate(pl, { claim: buyClaim(Purchasing.CARD_ROLES.negotiate, 'haggled') });
+      if (done === false && !Purchasing.cardButtons(_actedOn(game.messages.get(mid))).negotiate) {
+        _usedButtons.delete(`${mid}|buyneg|${i}`);   // cancelled — the haggle is still there to be had
+        btn.disabled = false;
+      }
     });
   });
   html.querySelectorAll('.sr-buy-pay-btn').forEach((btn, i) => {
+    if (buySpent.pay) return spendBuyBtn(btn, buySpent.pay);
     if (!_checkBtn(btn, mid, 'buypay', i)) return;
     const pl = _payload(btn);
     if (!pl) return;
@@ -3642,7 +3745,11 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'buypay', i)) return;
-      await SR3EPurchase.pay(pl);
+      const done = await SR3EPurchase.pay(pl, { claim: buyClaim(Purchasing.CARD_ROLES.pay, 'paid') });
+      if (done === false && !Purchasing.cardButtons(_actedOn(game.messages.get(mid))).pay) {
+        _usedButtons.delete(`${mid}|buypay|${i}`);   // the confirm was cancelled — still payable
+        btn.disabled = false;
+      }
     });
   });
   html.querySelectorAll('.sr-drug-roll-btn').forEach((btn, i) => {

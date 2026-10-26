@@ -16,10 +16,14 @@
  */
 import { Purchasing } from './purchasing.mjs';
 import { ModRatings } from './mod-ratings.mjs';
+import { Legality } from './legality.mjs';
+import { AMMO_INDEX_FIELDS } from './ammo-shop.mjs';
 
 /** The index fields the search reads — `pack.getIndex({ fields })`. */
 export const INDEX_FIELDS = ['system.availability', 'system.cost', 'system.streetIndex', 'system.bookPage', 'system.rating',
-  'system.category', 'system.cyberwareCategory'];   // the last two tell ModRatings which kind of item a row is
+  'system.category', 'system.cyberwareCategory',   // these two tell ModRatings which kind of item a row is
+  'system.legality', 'system.legalCode', 'system.legalityCode',   // the Legality Code (2026-10-25) — store or contact
+  ...AMMO_INDEX_FIELDS];   // what a box of ammunition fits — 🛒 Buy ammo from the gun (2026-10-25)
 
 /** At most this many hits are drawn. */
 export const MAX_HITS = 40;
@@ -86,6 +90,10 @@ export const GearSearch = {
       bookPage: sys.bookPage ?? '',
       // The levels the books print for this item (the level table), or null — the dialog offers them.
       levels: ModRatings.levelsOf(row),
+      levelUnit: ModRatings.unitOf(row),   // "Mp" for memory (2026-10-25) — the Level picker says "250 Mp"
+      legality: Legality.of(row),
+      // An ammunition row's fit to a gun (`AmmoShop.fits`) — its system subset; null for anything else.
+      ammo: row?.type === 'ammunition' ? Object.fromEntries(AMMO_INDEX_FIELDS.map(k => [k.slice(7), sys[k.slice(7)]])) : null,
       rating: Number(sys.rating) || null,
     };
   },
@@ -98,6 +106,9 @@ export const GearSearch = {
     const row = entry?.levels?.[Number(level)];
     const e = { ...entry };
     if (row) for (const k of ['cost', 'availability', 'streetIndex']) if (row[k] !== undefined && row[k] !== null) e[k] = row[k];
+    // A level can carry its own Legality Code (Wired Reflexes 1-3 Legal… a cyberware family's `legalCode`).
+    const rowLegal = row && Legality.of({ system: row });
+    if (rowLegal) e.legality = rowLegal;
     return { ...GearSearch.fields(e), level: row ? Number(level) : null };
   },
 
@@ -128,6 +139,8 @@ export const GearSearch = {
       index: Number(entry?.streetIndex ?? entry?.system?.streetIndex ?? entry?.index) || 1,
       uuid: entry?.uuid ?? '',
       levels: entry?.levels ?? null,
+      levelUnit: entry?.levelUnit ?? '',
+      legality: entry?.legality ?? Legality.of(entry),
       rating: entry?.rating ?? null,
       always: !!avail.always,
       unknown: !!avail.unknown && !avail.always,

@@ -111,7 +111,12 @@ the GM via **`sr3e.action.charge`**.
 ### GM tools — Rollable Tables sidebar
 Chase Scene, Driving Test, Session Rewards, 🍀 Refresh Karma Pools, Chunky Salsa, Barrier Damage, Falling Damage,
 Escape Artist live on the Rollable Tables tab (`renderRollTableDirectory`). Chase and Driving Test are for all; the
-rest GM-only. Driving Test from there (`SR3EVehicleSheet.promptVehicleDrivingTest` → `runDrivingTest`)
+rest GM-only. **Barrier Damage** (SR3 p.119, p.124-125) — rules in `scripts/data/barrier.mjs` (`Barrier`): six attack
+kinds with their multiplier (blast, firearm/ranged, melee, combat spell ×2; Demolitions, elemental ×1). ⚠ Melee is ×2
+for every weapon — p.125's blunt-normal / edged-double split is *Firing Through*, not breaking a barrier (the
+maintainer, 2026-10-25). A door kind (regular / security ×2 material) puts **opens / holds** on the card: regular at
+half its undamaged rating, security at 0. Power past the adjusted rating but short of one increment loses 1 BR, not 0.
+Only a blast carries Power on past a fallen barrier. Driving Test from there (`SR3EVehicleSheet.promptVehicleDrivingTest` → `runDrivingTest`)
 asks for vehicle + driver.
 
 ⚠ **Multi-actor lists start UNTICKED** (TODO 96) — Session Rewards (with **All**) and Chunky Salsa,

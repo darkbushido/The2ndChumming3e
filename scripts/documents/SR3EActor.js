@@ -7,6 +7,7 @@ import * as Sustaining from '../data/sustaining.mjs';
 import { DrugRules } from '../data/drug-rules.mjs';
 import { Ledger } from '../data/ledger.mjs';
 import { Blast } from '../data/blast.mjs';
+import { Barrier } from '../data/barrier.mjs';
 import { BlastBatch, BATCH_STEP } from '../data/blast-batch.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
 import { MeleeProne } from '../data/melee-prone.mjs';
@@ -4805,10 +4806,11 @@ _prepareCharacter(sys, attr) {
 
     // Demolitions barrier damage — apply successes to Power and post result
     if (allDone && state.barrierContext) {
-      const { basePower, currentBR, material } = state.barrierContext;
+      const { basePower, currentBR, material, door, originalBR } = state.barrierContext;
       const effectivePower = basePower + successes;
-      const effect = SR3EActor.computeBarrierEffect(effectivePower, currentBR, 'demolitions');
-      await SR3EActor._postBarrierDamageCard(effect, material, currentBR, effectivePower, successes);
+      const effect = Barrier.effect(effectivePower, currentBR, 'demolitions');
+      await SR3EActor._postBarrierDamageCard(effect, material, currentBR, effectivePower, successes,
+        { attack: 'demolitions', door, originalBR });
     }
 
     // Escape Artist — post success (with time) or failure (with retry time)
@@ -4908,25 +4910,21 @@ _prepareCharacter(sys, attr) {
 
   // ── Barrier damage ─────────────────────────────────────────────────────────
 
+  /** The Barrier Effect Table (SR3 p.124) — `Barrier.effect`, kept here for older callers. */
   static computeBarrierEffect(power, currentBR, attackType = 'blast') {
-    const effectiveBR = attackType === 'blast' ? currentBR * 2 : currentBR;
-    const halfEffBR   = effectiveBR / 2;
-    if (power < halfEffBR) {
-      return { result: 'no_effect', effectiveBR, brReduction: 0, holes: 0, remainingPower: null };
-    }
-    if (power <= effectiveBR) {
-      return { result: 'damage', effectiveBR, brReduction: 1, holes: 0, remainingPower: null };
-    }
-    const halfCurrentBR = currentBR / 2;
-    const excess        = power - effectiveBR;
-    const increments    = halfCurrentBR > 0 ? Math.floor(excess / halfCurrentBR) : 1;
-    const remainPower   = attackType === 'blast' ? power - currentBR : null;
-    return { result: 'breach', effectiveBR, brReduction: increments, holes: increments * 0.5, remainingPower: remainPower };
+    return Barrier.effect(power, currentBR, attackType);
   }
 
-  static async _postBarrierDamageCard(effect, material, currentBR, power, demSuccesses = 0) {
+  /**
+   * `opts.attack` names the attack kind (`Barrier.ATTACKS`) for the multiplier note; `opts.door` /
+   * `opts.originalBR` add whether the door now stands open (SR3 p.125). The GM still writes the new rating down.
+   */
+  static async _postBarrierDamageCard(effect, material, currentBR, power, demSuccesses = 0, opts = {}) {
     const { result, effectiveBR, brReduction, holes, remainingPower } = effect;
     const newBR = Math.max(0, currentBR - brReduction);
+    const attack = opts.attack ?? (demSuccesses > 0 ? 'demolitions' : 'blast');
+    const door   = opts.door ?? '';
+    const opens  = Barrier.doorOpens(door, opts.originalBR ?? currentBR, newBR);
 
     let headerBg, headerColor, resultHtml;
     if (result === 'no_effect') {
@@ -4949,10 +4947,16 @@ _prepareCharacter(sys, attr) {
       }
     }
 
+    const kind    = Barrier.ATTACKS[attack];
     const modNote = effectiveBR !== currentBR
-      ? `<span style="color:var(--sr-muted)"> (${currentBR} × 2 for blast)</span>` : '';
+      ? `<span style="color:var(--sr-muted)"> (${currentBR} × ${Barrier.multiplier(attack)} against ${(kind?.label ?? attack).toLowerCase()}, SR3 ${kind?.page ?? 'p.124'})</span>` : '';
     const demNote = demSuccesses > 0
       ? `<div style="font-size:11px;color:var(--sr-muted);">Demolitions: ${demSuccesses} success${demSuccesses !== 1 ? 'es' : ''} added → Power ${power}</div>` : '';
+    const doorAt   = Barrier.doorOpensAt(door, opts.originalBR ?? currentBR);
+    const doorHtml = opens === null ? ''
+      : opens
+        ? `<div style="font-size:13px;margin-top:6px;color:var(--sr-green);"><strong>🚪 The door breaks open.</strong></div>`
+        : `<div style="font-size:12px;margin-top:6px;color:var(--sr-muted);">🚪 The door holds — it breaks open at BR ${doorAt} or less (SR3 p.125).</div>`;
 
     await ChatMessage.create({
       speaker: { alias: 'GM' },
@@ -4965,6 +4969,7 @@ _prepareCharacter(sys, attr) {
               ${demNote}
             </div>
             ${resultHtml}
+            ${doorHtml}
           </div>
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
@@ -5438,6 +5443,7 @@ _prepareCharacter(sys, attr) {
     shockStun:         ['SR3EActor', '_shockStunOutcome'],       // Body or Willpower (4) vs a shock weapon, p.124-125
     collisionBraking:  ['SR3ECollision', 'brakingRolled'],      // TODO 189 — the Braking Test, p.142
     concealPerception: ['SR3EConcealment', 'perceptionRolled'],  // TODO 195 — Perception vs Concealability, p.231
+    legwork:           ['SR3ELegwork', 'rolled'],                 // TODO 268 — Etiquette for legwork, p.253-254
   };
 
   static _registryFn([cls, fn] = [], what) {
@@ -6193,8 +6199,15 @@ _prepareCharacter(sys, attr) {
    *    (blast markers, dodge and soak cards); re-running it after a re-roll would post them twice.
    */
 
-  /** Does this actor carry a Karma Pool at all? NPCs have no field (TODO 83), so nothing is offered. */
+  /** Does this actor carry a Karma Pool at all? Characters and, since TODO 267, NPCs (SR3 p.248) do. */
   static hasKarmaPool(actor) { return actor?.system?.karmaPool !== undefined; }
+
+  /**
+   * Does this actor carry Good and Total Karma? NPCs do not (TODO 83). The sheet is shared, so without
+   * this an NPC showed Good Karma, Award Karma… and Spend Karma…, and every write was dropped by the data
+   * model while the notification said it was awarded (Karma audit, 2026-10-25).
+   */
+  static hasGoodKarma(actor) { return actor?.system?.karma !== undefined; }
 
   /** Spend `n` from the pool. Returns what was charged. */
   async spendKarmaPool(n, reason = '') {
@@ -6230,6 +6243,8 @@ _prepareCharacter(sys, attr) {
   static karmaRollRow(actor, { baseDice = null } = {}) {
     if (!SR3EActor.hasKarmaPool(actor)) return '';
     const { size, available } = KarmaPool.state(actor.system);
+    // A pool of 0 is one the GM never gave (an NPC's default, TODO 267) or one Hand of God emptied — nothing to say.
+    if (size <= 0) return '';
     if (available <= 0) return `<div class="sr-karma-row" style="grid-column:1/-1;font-size:11px;color:var(--sr-muted)">🍀 Karma Pool: none left of ${size} — the GM refreshes it.</div>`;
     const cap = Number.isFinite(baseDice) ? KarmaPool.extraDiceCap(baseDice) : null;
     return `
@@ -7902,7 +7917,10 @@ _prepareCharacter(sys, attr) {
   }
 
   /**
-   * Split a karma award between the Karma Pool and Good Karma · *SR3 p.244*
+   * Split a karma award between the Karma Pool and Good Karma · *SR3 p.242, p.244*
+   *
+   * > "All awarded Karma counts as Good Karma, except for every twentieth point, which is added to
+   * > the character's Karma Pool. Human characters add every tenth point to their Karma Pool." (p.242)
    *
    * > "Shetani, an elf character, has a Total Karma of 62, Good Karma of 10, and Karma Pool of
    * > 4… Every twentieth point has been added to the Karma Pool (each character starts with 1
@@ -7937,11 +7955,12 @@ _prepareCharacter(sys, attr) {
    * ⚠ **Humans accrue at DOUBLE rate.** This is the metatype's whole mechanical compensation
    * for having no attribute advantages, and it was missing until 2026-09-01 (TODO 81).
    *
-   * ⚠ **[#80](TODO.md)'s tests could not have caught it.** The only worked example on p.244 is
-   * Shetani, an **elf**, so every assertion pinned to the book is pinned to the twentieth-point
-   * case — and the human clause lives two pages later, in the Karma Pool chapter rather than
-   * the advancement one. That is the third rule in this family the book's own examples cannot
-   * distinguish.
+   * ⚠ **[#80](TODO.md)'s tests did not catch it** because they pinned only Shetani, an **elf**
+   * (p.244). The human rule is stated where the Karma section opens — p.242, *"Human characters add
+   * every tenth point to their Karma Pool"* — with **Brynn**, a human, worked across p.242/244
+   * (12 karma → Pool 2, Good Karma 11; 9 more → Pool 3, Good Karma 19), and again on p.246. The
+   * Karma audit of 2026-10-25 corrected this note, which said the human clause appeared only on p.246,
+   * and pinned Brynn in `tests/karma.test.mjs`.
    *
    * ⚠ **An unknown or missing metatype gives 20, not 10.** The actor field defaults to
    * `'human'`, so a real character gets the right answer; this default protects a CALL SITE

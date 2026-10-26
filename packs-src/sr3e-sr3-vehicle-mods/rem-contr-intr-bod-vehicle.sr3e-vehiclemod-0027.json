@@ -16,7 +16,8 @@
       "bookPage": "sr3.306,r3.130",
       "description": "",
       "rating": 1,
-      "modFor": "vehicle"
+      "modFor": "vehicle",
+      "legality": "Legal"
     },
     "effects": []
   },

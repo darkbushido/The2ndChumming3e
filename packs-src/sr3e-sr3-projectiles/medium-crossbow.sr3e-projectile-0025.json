@@ -18,7 +18,8 @@
       "legal": false,
       "bookPage": "sr3.276",
       "notes": "",
-      "hands": 2
+      "hands": 2,
+      "legality": "6-D"
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/icons/projectile-crossbow.svg"

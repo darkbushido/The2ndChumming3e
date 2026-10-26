@@ -22,7 +22,8 @@
       "notes": "",
       "hands": 1,
       "smartgun": false,
-      "laserSight": true
+      "laserSight": true,
+      "legality": "4-G"
     },
     "effects": []
   },

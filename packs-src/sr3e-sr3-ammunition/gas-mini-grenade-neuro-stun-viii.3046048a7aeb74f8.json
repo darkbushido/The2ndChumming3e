@@ -18,6 +18,7 @@
       "availability": "10/4 days",
       "cost": 120,
       "streetIndex": "3",
+      "legality": "3-J",
       "bookPage": "sr3.283",
       "notes": "<p>A mini-grenade for a grenade launcher (SR3 p.283): the Gas Grenade (Neuro-Stun VIII)'s effects, fired rather than thrown. It does not arm until it has travelled about five metres (SR3 p.118).</p><p>SR3 p.283, the Mini-grenade row applied to the Gas Grenade (Neuro-Stun VIII) row: Conceal 8, Weight .1, Availability 8/4 days +2, Cost 60¥ ×2, Street Index 2 +1. Legality 3-J. No blast.</p>",
       "blast": "",

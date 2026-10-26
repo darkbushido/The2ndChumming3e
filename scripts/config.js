@@ -832,7 +832,9 @@ export function attributeBoostTarget(name) {
 export function adeptPowerLevel(name, system = {}) {
   if (system?.hasLevels) return Math.max(1, Math.trunc(Number(system.level) || 1));
   const m = /(?:\s|\+)(\d+)\s*$/.exec(String(name ?? ''));
-  return m ? Math.max(1, Number(m[1])) : 1;
+  // ⚠ A collapsed fixed-level power (2026-10-25) is ONE document named "Combat Sense" / "Combat Sense [2]", its level
+  //   picked from a dropdown into `system.level` — so with no number in the name, `system.level` is the level.
+  return m ? Math.max(1, Number(m[1])) : Math.max(1, Math.trunc(Number(system?.level) || 1));
 }
 
 /**

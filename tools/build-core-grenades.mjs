@@ -119,6 +119,7 @@ function buildMiniDoc(row) {
         availability: m.avail,
         cost: m.cost,
         streetIndex: m.index,
+        legality: m.legality,   // as printed, SR3 p.283 (2026-10-25)
         bookPage: 'sr3.283',
         notes,
         blast: m.blast,
@@ -156,6 +157,7 @@ function buildDoc(row) {
         cost: row.cost,
         streetIndex: row.index,
         legal: row.legal,
+        legality: row.legality,   // as printed, SR3 p.283 (2026-10-25)
         bookPage: 'sr3.283',
         notes,
         isAoE: true,

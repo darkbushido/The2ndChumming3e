@@ -20,7 +20,8 @@ printed page, verify against the PDF, and put non-book material in a `.house` bo
    thresholds, Stress. The cyberware grades page links here in prose only.
 6. **Called shots, Full Defense and knockdown** could each go on the combat page. All have
    SR3 citations in the Foundry repo's CLAUDE.md to start from.
-16. **Contacts: keeping them and raising their level** (probably `street/contacts.md`).
+16. **Contacts: keeping them and raising their level** (add to `street/contacts.md`, which
+    now has the core-book legwork, fees, Matrix search and level rules, SR3 p.253–256).
     SR3 has no rule for this: contacts are gained and deepened only through roleplaying
     (SR3 p.254), and the level benefits are on p.254–256 (Level 2: +1 die on Etiquette and
     resists with Willpower (5); Level 3: +2 dice and Willpower (6)). The rules are in the

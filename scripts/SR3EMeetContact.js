@@ -13,6 +13,7 @@
  */
 import { Portraits, DEMOGRAPHICS } from './data/portraits.mjs';
 import { Names } from './data/names.mjs';
+import { MetatypeShift, SHIFT_ATTRIBUTES } from './data/metatype-shift.mjs';
 
 const PAGE = 24;
 
@@ -66,6 +67,8 @@ export class SR3EMeetContact {
       shown: PAGE,
       nameEdited: false,
     };
+    const bookAttrs = SR3EMeetContact._attrsOf(archetype);
+    const shiftTo = meta => MetatypeShift.shift(bookAttrs, bookMeta, meta, SR3EMeetContact._shiftCtx());
     const hasPortraits = index.entries.length > 0;
     const showOnContact = !!contact;
 
@@ -107,7 +110,9 @@ export class SR3EMeetContact {
       };
       const drawWarn = () => {
         warn.hidden = state.metatype === bookMeta;
-        warn.textContent = `Stats stay the book's ${bookMeta}: adjust attributes by hand for a ${state.metatype}.`;
+        const changed = shiftTo(state.metatype);
+        warn.textContent = `Stats are adjusted from the book's ${bookMeta} to ${state.metatype} (SR3 p.56): `
+          + (Object.keys(changed).length ? MetatypeShift.describe(bookAttrs, changed) : 'no attribute changes') + '.';
       };
       const drawGrid = () => {
         if (!grid) return;
@@ -176,6 +181,16 @@ export class SR3EMeetContact {
     return SR3EMeetContact._apply(archetype, contact, result);
   }
 
+  /** The base ratings of the six shifted attributes. */
+  static _attrsOf(actor) {
+    return Object.fromEntries(SHIFT_ATTRIBUTES.map(a => [a, Number(actor.system?.attributes?.[a]?.base)]));
+  }
+
+  /** The racial limits and the maximum rule, so Metatype Shift reads the same table as the sheet. */
+  static _shiftCtx() {
+    return { limits: game.sr3e.SR3E.racialLimits, racialMax: l => game.sr3e.SR3EActor.racialMax(l) };
+  }
+
   /** The only writes: create the NPC through the GM verb, then (if ticked) point the contact at it. */
   static async _apply(archetype, contact, r) {
     const img = r.portrait?.src ?? null;
@@ -200,6 +215,13 @@ export class SR3EMeetContact {
       await contact.update({ 'system.npcUuid': created.uuid });
     }
     const npc = await fromUuid(created.uuid);
+    // Metatype Shift (TODO 272): the book's stat block is written for the book's race.
+    const bookMeta = String(archetype.system?.metatype || 'human').toLowerCase();
+    const changed = MetatypeShift.shift(SR3EMeetContact._attrsOf(archetype), bookMeta, r.metatype, SR3EMeetContact._shiftCtx());
+    if (npc && Object.keys(changed).length) {
+      await npc.update(MetatypeShift.updateFor(changed, r.metatype));
+      ui.notifications.info(`SR3E: ${npc.name} is a ${r.metatype} — ${MetatypeShift.describe(SR3EMeetContact._attrsOf(archetype), changed)}.`);
+    }
     npc?.sheet?.render(true);
     return npc;
   }

@@ -15,7 +15,8 @@
       "mods": "",
       "bookPage": "mm.064",
       "rating": null,
-      "description": "must be customized in Bioware.dat via DATeditor"
+      "description": "must be customized in Bioware.dat via DATeditor",
+      "legality": "5-Q"
     },
     "effects": []
   },
