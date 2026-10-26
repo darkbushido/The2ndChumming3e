@@ -29,7 +29,7 @@ export async function run(t) {
   t.is('no deck stats: 0', MdfRules.hackingPool(0, 0), 0);
   const actor = read('scripts/documents/SR3EActor.js');
   t.ok('the Defragged pool still uses it (TODO 275 chooses by ruleset in hacking-pool.mjs)',
-    /MdfRules.hackingPool(intelligence, mpcp)/.test(read('scripts/data/hacking-pool.mjs')));
+    /MdfRules\.hackingPool\(intelligence, mpcp\)/.test(read('scripts/data/hacking-pool.mjs')));
 
   /* 2 ── MDF Matrix Condition Monitor ─────────────────────────────────────────── */
   t.eq('boxes 0…10 → 0,1,1,2,2,2,3,3,3,3,4',
