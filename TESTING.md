@@ -452,6 +452,16 @@ New pack `sr3e-legwork-tables` and a `system.json` change: with Foundry **closed
       hours, "No Hacking Pool", the search limit (half Intelligence, rounded up), no fee.
 - [ ] A row with a secret block: shown on a GM-only card, hidden on a public one.
 
+## NPC loaded guns — TODO 270 (`feature/npc-loaded-guns`)
+
+With `trackAmmo` ON:
+- [ ] Meet the contact (or drag) a Little Black Book archetype with a gun (SWAT Team Member, Mercenary): every gun shows a full magazine of Regular, and one ammunition item per gun with 3–6 reloads (a shotgun/sniper rifle: loose rounds), named for the gun.
+- [ ] ↻ Reload on that gun offers its own stock; a rifle's stock is not offered to the pistol.
+- [ ] The NPC can fire straight away (no "out of ammo").
+- [ ] Deploying a copy of that actor gives it nothing extra (it already carries ammunition).
+- [ ] The example characters pack (already has ammunition) is unchanged on import.
+With `trackAmmo` OFF: the same NPC is created with no ammunition and its guns unchanged.
+
 ## Open combat steps — TODO 147 (`feature/open-steps`)
 
 **Checked live by the agent, 2026-09-24** (mcp-api, then with the maintainer's Gamemaster seat also on):

@@ -41,6 +41,7 @@ const STALL = { module: '../scripts/data/stall-speed.mjs', klass: 'StallSpeed' }
 const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  };
 const PORTRAITS = { module: '../scripts/data/portraits.mjs', klass: 'Portraits' };
 const TOKENSIGHT = { module: '../scripts/data/token-sight.mjs', klass: 'TokenSight' };
+const NPCAMMO = { module: '../scripts/data/npc-ammo.mjs', klass: 'NpcAmmo' };
 const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
@@ -3793,5 +3794,26 @@ export const MUTANTS = [
     ...LEGWORK, method: 'maxSearches',
     was:    'half Intelligence rounded down; SR3 p.254 says "rounded up"',
     impl:   int => Math.floor((Number(int) || 0) / 2),
+  },
+  {
+    id:     'npc-guns-start-empty',
+    suite:  'npc-ammo',
+    ...NPCAMMO, method: 'plan',
+    was:    "with trackAmmo on, Mr. Johnson's Little Black Book NPCs came out with empty guns and no ammunition (TODO 270, 2026-10-25)",
+    impl:   () => ({ guns: [], ammo: [] }),
+  },
+  {
+    id:     'npc-ammo-overrides-carried-stock',
+    suite:  'npc-ammo',
+    ...NPCAMMO, method: 'plan', needsOriginal: '_planOriginal',
+    was:    'an NPC that already carries ammunition would be given more and have its guns reloaded over what its sheet says (TODO 270)',
+    impl:   function (items, opts) { return this._planOriginal([...(items ?? [])].filter(i => i?.type !== 'ammunition'), opts); },
+  },
+  {
+    id:     'npc-reloads-off-by-one',
+    suite:  'npc-ammo',
+    ...NPCAMMO, method: 'rollReloads',
+    was:    'reloads rolled 3-5 instead of 3-6 (TODO 270)',
+    impl:   (rng = Math.random) => 3 + Math.floor(rng() * 3),
   },
 ];

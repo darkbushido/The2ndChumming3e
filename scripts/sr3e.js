@@ -66,6 +66,7 @@ import { SR3EQuery, SR3EQueue, SR3EGMUnavailable } from './SR3EQuery.js';
 import * as Sustaining from './data/sustaining.mjs';
 import { Blast } from './data/blast.mjs';
 import { Barrier } from './data/barrier.mjs';
+import { NpcAmmo } from './data/npc-ammo.mjs';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -613,6 +614,20 @@ Hooks.on('preCreateActor', (document, _data, options, _userId) => {
   if (_data.prototypeToken?.sight?.enabled === undefined) {
     document.updateSource({ prototypeToken: { sight: { enabled: true } } });
   }
+});
+
+// TODO 270 — a stat block made into a world actor with `trackAmmo` on starts with its guns loaded and 3–6
+// reloads each (the maintainer, 2026-10-25). Rules in `data/npc-ammo.mjs`: an actor that already carries
+// ammunition is left alone. Runs on the creating client only (a GM: players cannot create actors), once.
+Hooks.on('createActor', async (actor, options, userId) => {
+  if (userId !== game.user.id || options.pack || actor.pack) return;
+  if (!['character', 'npc'].includes(actor.type)) return;
+  const trackAmmo = game.settings.get('The2ndChumming3e', 'trackAmmo');
+  const { guns, ammo } = NpcAmmo.plan(actor.items.map(i => ({ _id: i.id, name: i.name, type: i.type, system: i.system })),
+    { trackAmmo });
+  if (!guns.length) return;
+  await actor.updateEmbeddedDocuments('Item', guns);
+  await actor.createEmbeddedDocuments('Item', ammo);
 });
 
 /**
