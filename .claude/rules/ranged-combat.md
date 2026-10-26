@@ -201,6 +201,9 @@ SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it w
   any gun of its mechanism; SR3 p.281 says clips are not interchangeable between weapons even of one class and applies `AmmoStock.reloadPlan`,
   reporting losses and cost (`reloadActions`). `trackAmmo` off → only sets the type.
 - **Firing** decrements `loadedRounds` when tracking (warns when empty).
+- **NPCs start loaded** (TODO 280): with `trackAmmo` on, a character/NPC created as a world actor gets each empty
+  firearm filled with regular rounds and 3–6 reloads of its own class (`NpcAmmo.plan`, `createActor` hook). ⚠ An actor
+  already carrying ammunition is never touched; launchers are skipped (they load a grenade item).
 - **Type rules**: Explosive +1 / EX +2 Power; Gel −2 Power + Stun; Shot (above). APDS halves ballistic.
   Flechette: unarmoured → level +1; armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`).
   ⚠ **Double IMPACT only** (p.116). ⚠ *"Dermal armor negates the Damage Level increase"* —
