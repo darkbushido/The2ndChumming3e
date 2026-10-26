@@ -39,6 +39,7 @@ const VARM  = { module: '../scripts/data/vehicle-armor.mjs', klass: 'VehicleArmo
 const STALL = { module: '../scripts/data/stall-speed.mjs', klass: 'StallSpeed' };
 const MIJI  = { module: '../scripts/SR3EMIJI.js',            klass: 'SR3EMIJI'  };
 const PORTRAITS = { module: '../scripts/data/portraits.mjs', klass: 'Portraits' };
+const TOKENSIGHT = { module: '../scripts/data/token-sight.mjs', klass: 'TokenSight' };
 const HEAL  = { module: '../scripts/SR3EHealing.js',         klass: 'SR3EHealing' };
 const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating' };
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
@@ -3694,5 +3695,14 @@ export const MUTANTS = [
       out.splice(at < 0 ? out.length : at, 0, ...job);
       return out;
     },
+  },
+  {
+    id:     'token-sight-migration-hits-placed-tokens',
+    suite:  'contact-tokens',
+    ...TOKENSIGHT, method: 'fixActor',
+    was:    'a vision migration that ignored isToken would re-sight every unlinked token on every scene, undoing a GM who '
+          + 'blinded one on purpose (the maintainer, 2026-10-25: prototype tokens only)',
+    impl:   (actor) => (actor && ['character', 'npc'].includes(actor.type) && actor.prototypeToken?.sight?.enabled !== true
+      ? { 'prototypeToken.sight.enabled': true } : null),
   },
 ];

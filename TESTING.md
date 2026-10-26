@@ -426,6 +426,7 @@ Needs a **full Foundry restart** (new `contact.npcUuid` field). With a portrait 
 - [ ] Contacts tab → Link Archetype: the list shows ~16 rows (360px tall), not one collapsed row.
 - [ ] Drag a Mr. Johnson's contact onto a scene: the token has vision on and wears the dynamic ring.
 - [ ] Create a brand-new actor (any type) from the sidebar: its prototype token has vision on.
+- [ ] 0.9.0 migration (after the bump; or `game.sr3e.SR3EMigrations.force()`): a world character/NPC whose prototype token was blind now sees; a token already placed on a scene with vision off stays off; vehicles unchanged.
 
 ## Open combat steps — TODO 147 (`feature/open-steps`)
 
