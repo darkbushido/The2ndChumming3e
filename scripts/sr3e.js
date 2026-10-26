@@ -497,15 +497,20 @@ Hooks.on('preCreateItem', (document, data) => {
  * re-fires nothing, so there is no loop. Registered AFTER the rating fill above, so it sees the filled rating. */
 Hooks.on('preCreateItem', (document, _data, options) => {
   if (ModRatings.inPack(document, options)) return;
-  const name = ModRatings.syncName(document.name, document.system?.rating, document.type);
+  const name = ModRatings.syncName(document.name, ModRatings.levelValue(document), document.type);
   if (name !== document.name) document.updateSource({ name });
 });
 Hooks.on('preUpdateItem', (document, changes, options) => {
   if (ModRatings.inPack(document, options)) return;
+  // A levelled adept power with no printed levels ("Improved Ability", hasLevels) keeps its name: only a collapsed
+  // fixed-level power (2026-10-25) reads "Combat Sense [2]".
+  if (document.type === 'adeptpower' && !ModRatings.levelsOf(document)) return;
+  // The level's field: `system.rating`, or an adept power's `system.level` (`ModRatings.levelField`).
+  const path = `system.${ModRatings.levelField(document)}`;
   const hasName = foundry.utils.hasProperty(changes, 'name');
-  const hasRating = foundry.utils.hasProperty(changes, 'system.rating');
+  const hasRating = foundry.utils.hasProperty(changes, path);
   if (!hasName && !hasRating) return;
-  const rating = hasRating ? foundry.utils.getProperty(changes, 'system.rating') : document.system?.rating;
+  const rating = hasRating ? foundry.utils.getProperty(changes, path) : ModRatings.levelValue(document);
   const current = hasName ? changes.name : document.name;
   const name = ModRatings.syncName(current, rating, document.type);
   if (name !== current) changes.name = name;

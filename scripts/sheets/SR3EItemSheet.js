@@ -1131,7 +1131,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         return `<div class="form-grid">
           ${this._f('Power Cost', 'powerCost', s.powerCost ?? 0.5, 'number', 'step="0.25" min="0"')}
           ${this._check('Has Levels', 'hasLevels', s.hasLevels ?? false)}
-          ${s.hasLevels ? this._f('Level', 'level', s.level ?? 1, 'number', 'min="1"') : ''}
+          ${ModRatings.options(this.document) ? this._modRatingField(s)   /* a fixed-level power's printed levels (2026-10-25) */
+            : s.hasLevels ? this._f('Level', 'level', s.level ?? 1, 'number', 'min="1"') : ''}
           ${skillPicker}
           ${this._bookPageField(s)}
         </div>

@@ -93,7 +93,7 @@ export const SR3EPurchase = {
     for (const w of GearSearch.dropWarnings({ name: dropped.name, type: dropped.type, packAllowed }, SR3EPurchase.BUYABLE)) ui.notifications.warn(w);
     // ⚠ The plain name — no "[N]" (TODO 261). The dialog offers the item's levels when the table has them.
     const entry = { ...GearSearch.fields(dropped), name: dropped.name, type: dropped.type, uuid: dropped.uuid,
-      levels: ModRatings.levelsOf(dropped), rating: Number(dropped.system?.rating) || null };
+      levels: ModRatings.levelsOf(dropped), levelUnit: ModRatings.unitOf(dropped), rating: Number(dropped.system?.rating) || null };
     return GearSearch.atLevel(entry, GearSearch.startLevel(entry));
   },
 
@@ -122,11 +122,11 @@ export const SR3EPurchase = {
     let   type  = item?.type ?? 'gear';   // a search hit or a drop changes it
     let   picked = null;                  // the item the search or a drop chose, over the row's
     // A rated item is one document with its levels in a table (TODO 261): bought at a level, default the lowest.
-    const rowEntry = item ? { ...GearSearch.fields(item), levels: ModRatings.levelsOf(item), rating: Number(item.system?.rating) || null } : null;
+    const rowEntry = item ? { ...GearSearch.fields(item), levels: ModRatings.levelsOf(item), levelUnit: ModRatings.unitOf(item), rating: Number(item.system?.rating) || null } : null;
     let   levelEntry = rowEntry?.levels ? rowEntry : null;
     let   level = levelEntry ? GearSearch.startLevel(levelEntry) : null;
     const levelOptions = e => Object.keys(e?.levels ?? {}).map(Number).sort((a, b) => a - b)
-      .map(l => `<option value="${l}"${l === level ? ' selected' : ''}>${l}</option>`).join('');
+      .map(l => `<option value="${l}"${l === level ? ' selected' : ''}>${l}${e?.levelUnit ? ` ${e.levelUnit}` : ''}</option>`).join('');
 
     const cons = SR3EPurchase.contacts(actor);
     const conOpts = cons.length

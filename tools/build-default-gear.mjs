@@ -454,7 +454,10 @@ export async function plan(manifest, shippedNames) {
       const split = ModRatings.kindOf(doc) ? ModRatings.splitName(doc.name) : null;
       if (split) {
         doc.name = split.stem;
-        if (!(Number(doc.system.rating) > 0)) doc.system.rating = doc.type === 'medical' ? String(split.rating) : split.rating;
+        // ⚠ The NAME's level wins over the upstream Rating column: every "SkillSoft Jukebox 108MP N pts" row carries
+        //   Rating 1, so trusting the column put the whole family at level 1 (2026-10-25). The level in the name is
+        //   what tells a family's rows apart.
+        doc.system.rating = doc.type === 'medical' ? String(split.rating) : split.rating;
       }
       const { book, ...clean } = doc;
       (byPack.get(pack) ?? byPack.set(pack, { book, type: doc.type, docs: [] }).get(pack)).docs.push(clean);

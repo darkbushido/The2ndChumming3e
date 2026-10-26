@@ -566,6 +566,28 @@ const MIGRATIONS = [
      */
     fixItem: ModBookFixes.fixItem,
   },
+  {
+    version: '0.9.0',
+    label: 'The rest of the levelled items are one item each: memory in Mp (pocket and wrist computers, telecoms, table-top PCs, headware Memory, optical chips), ECCM +N, virtual instruments, SkillSoft Jukeboxes and the fixed-level adept powers',
+    /**
+     * Reported 2026-10-25 ("pocket computer and wrist computers have rating in (250mp) brackets i thought we fixed
+     * that"); the maintainer: "do the same thing that we did for mods to all the things that have levels". The 0.8.0
+     * rename only knew "[N]" / "Rating N"; `ModRatings.splitName` now reads "(250Mp)", "ECCM +3", "Inst4Lev7", a
+     * Jukebox's ports and the adept powers' "Level 2" / "+2" / "2". The packs ship each as ONE document.
+     *
+     * ⚠ **This RENAMES and OVERWRITES, for the reasons the 0.8.0 entry gives** (the same `ModFor.migrateDelta`):
+     * only a name ending in one of those levels; the level moves into the rating (or, for an adept power, into
+     * `system.level` — a fixed-level power's `level` was always the schema's 1, never a choice); a dead link to a
+     * deleted level document is repointed. "Pocket Computer (250Mp)" becomes "Pocket Computer [250]", rating 250;
+     * "Imp. Reflexes Level 2" becomes "Imp. Reflexes [2]", level 2 — whose effect, Power Point cost and Magic cap
+     * read the same as before (`adeptPowerLevel` / `AdeptLevels.levelOf` fall back to `system.level`). Idempotent.
+     */
+    fixItem: (item) => {
+      const note = ModRatings.renameConflict(item);
+      if (note) console.log(`SR3E | 0.9.0: ${note}`);
+      return ModFor.migrateDelta(item);
+    },
+  },
 
 ];
 

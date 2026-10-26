@@ -30,6 +30,14 @@ is reference-only by design.
 - ⚠ **`adeptPowerLevel` is NOT `system.level`** — 19 powers carry their level in the NAME with
   `hasLevels: false` (`Combat Sense +3`, `Kinesics Level 3`). Effects only: Power Point cost and the Level
   column keep `system.level`.
+- **Since 2026-10-25 those fixed-level powers are ONE document each** (Imp. Reflexes, Combat Sense, Kinesics,
+  Penetrating Strike, Delay Damage, Flexibility, Enhanced Balance): the level table (`MOD_RATING_TABLE`,
+  `adeptpower|…`) holds each level's `powerCost`, `mods` and bonus fields, the item sheet offers a Level dropdown, and
+  the level is written to **`system.level`** (`ModRatings.levelField`), `hasLevels` staying false — so the cost is the
+  level's printed cost, not cost × level. With no number in the name (`Imp. Reflexes [3]`), `adeptPowerLevel` and
+  `AdeptLevels.levelOf` read `system.level`; an old "Combat Sense +2" copy still reads its name. ⚠ The name sync
+  (`[N]`) only touches a power WITH printed levels (`ModRatings.levelValue`) — every power's `level` is at least 1.
+  Migration 0.9.0 renames owned copies. Mutant `collapsed-adept-power-is-level-one`.
 - ⚠ **Situational channel exists because `skillBonusDice` promises "always applies"** — Counterstrike
   (counterattacks only), Sixth Sense (one Reaction Test type) can't ride it. Never widen `skillBonusDice`.
 - ⚠ **Situational bonuses SUM** across powers (Rooting + Enhanced Balance) — unlike `reflexBonus`. Both asserted.

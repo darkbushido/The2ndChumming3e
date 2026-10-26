@@ -3102,6 +3102,29 @@ export const MUTANTS = [
     impl:   (_name, system = {}) => (system?.hasLevels ? Math.max(1, Math.trunc(Number(system.level) || 1)) : 1),
   },
   {
+    id:     'collapsed-adept-power-is-level-one',
+    suite:  'adept-levels',
+    ...ADEPTLEVELS, method: 'levelOf',
+    was:    'the name-only reading before 2026-10-25: a collapsed fixed-level power ("Imp. Reflexes [3]", level 3 in system.level) '
+          + 'has no trailing number, so it fell to 1 and an Improved Reflexes 3 on a Magic 2 adept went unwarned (SR3 p.168)',
+    impl:   (name, system = {}) => {
+      if (system?.hasLevels) return Math.max(1, Math.trunc(Number(system.level) || 1));
+      const m = /(?:\s|\+)(\d+)\s*$/.exec(String(name ?? ''));
+      return m ? Math.max(1, Number(m[1])) : 1;
+    },
+  },
+  {
+    id:     'mp-memory-is-not-a-level',
+    suite:  'mod-ratings',
+    ...MODRATE, method: 'splitName',
+    was:    'shipped through 0.8.0 (reported 2026-10-25): only "[N]" / "Rating N" was a level, so "Pocket Computer (250Mp)" and '
+          + 'the rest of the memory, ECCM, Jukebox and adept-power families stayed one document per level',
+    impl:   (name) => {
+      const m = /^(.*?)\s*(?:\b(?:Rating|Lvl|Lv)\s*)?\[(\d+)\](?:\s+\d+)?\s*$/.exec(String(name ?? '')) ?? /^(.*?)\s+(?:Rating|Lvl|Lv)\s+(\d+)\s*$/.exec(String(name ?? ''));
+      return m && m[1].trim() ? { stem: m[1].replace(/\s+/g, ' ').trim(), rating: Number(m[2]) } : null;
+    },
+  },
+  {
     id:     'astral-initiative-ignores-initiate-grade',
     suite:  'initiate-astral',
     ...INITASTRAL, method: 'initiativeBase',

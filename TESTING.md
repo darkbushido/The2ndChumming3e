@@ -3169,3 +3169,16 @@ need `npm run packs:install` (Foundry closed) and a restart.
 - [ ] Player2 presses 💴 on the haggle card and confirms. On the GM's tab that 💴 is greyed out ("Paid."). **F5 on both
       tabs**: still greyed out.
 - [ ] Press 💴 on a fresh card and **Cancel** the confirm: the button is live again and nothing was paid.
+
+**One item per level** (restart Foundry after `npm run packs:install`)
+- [ ] The SR3 gear compendium has ONE "Pocket Computer". Its sheet's Level dropdown reads 10 Mp, 25 Mp … 1000 Mp, and
+      picking 250 Mp sets the cost to 25,000¥. Dragged onto a character it reads "Pocket Computer [10]".
+- [ ] 🛒 Buy gear → search "pocket computer": one hit; the Level picker says "250 Mp"; buying it adds
+      "Pocket Computer [250]" at 25,000¥ list.
+- [ ] Same for Wrist Computer, Telecom, Table Top PC, headware Memory (cyberware), ECCM, a SkillSoft Jukebox (its
+      ports) and the Virtual Instrument chips.
+- [ ] The SR3 adept powers have ONE "Imp. Reflexes": dropped on an adept it reads "Imp. Reflexes [1]"; picking level 3
+      on its sheet makes it "Imp. Reflexes [3]", 5 Power Points, +3 Initiative dice, and on a Magic 2 adept the sheet
+      warns it is above Magic. "Killing Hands" dropped on the same adept keeps its plain name.
+- [ ] `game.sr3e.SR3EMigrations.force()` on a character holding an old "Pocket Computer (250Mp)" and "Combat Sense +2":
+      they become "Pocket Computer [250]" (rating 250) and "Combat Sense [2]" (level 2, still two Combat Pool dice).

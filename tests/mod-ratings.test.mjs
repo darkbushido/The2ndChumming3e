@@ -194,7 +194,7 @@ export async function run(t) {
     const kept = docs.find(x => x.pack === (f.keepPack ?? f.pack) && x.key === `!items!${f.keep}`);
     // A REMOVED document (TODO 266) has no levels of its own: its replacement just has to exist, in its own pack.
     if (f.removed) return !!kept;
-    return kept && !ModRatings.splitName(kept.d.name) && Number(kept.d.system.rating) === Math.min(...Object.keys(f.levels).map(Number));
+    return kept && !ModRatings.splitName(kept.d.name) && Number(kept.d.system[ModRatings.levelField(kept.d)]) === Math.min(...Object.keys(f.levels).map(Number));
   }));
   t.ok('…and no deleted document is still in its pack', Object.values(records).every(f => (f.deleted ?? []).every(id => !docs.some(x => x.pack === f.pack && x.key === `!items!${id}`))));
   t.ok('…the generated families are recorded as the generator\'s, the hand-kept as the tool\'s (a regeneration cannot bring a level back)',
@@ -293,8 +293,11 @@ export async function run(t) {
   t.is('the migration\'s "ECCM [3]" with rating 3 is already right', sync('ECCM [3]', 3, 'vehiclemod'), 'ECCM [3]');
   const hookSrc = read('scripts/sr3e.js');
   const hookAt = ev => { const i = hookSrc.indexOf(`Hooks.on('${ev}', (document, `, hookSrc.indexOf('NAME follows its level')); return hookSrc.slice(i, hookSrc.indexOf('\n});', i) + 4); };
-  t.ok('preCreateItem syncs the name', /syncName\(document\.name, document\.system\?\.rating, document\.type\)/.test(hookAt('preCreateItem')));
-  t.ok('preUpdateItem syncs the name — only when the name or the rating is in the change', /hasProperty\(changes, 'name'\)[\s\S]*hasProperty\(changes, 'system\.rating'\)[\s\S]*if \(!hasName && !hasRating\) return;[\s\S]*changes\.name = name/.test(hookAt('preUpdateItem')));
+  t.ok('preCreateItem syncs the name — from the level\'s own field (an adept power\'s `level`)', /syncName\(document\.name, ModRatings\.levelValue\(document\), document\.type\)/.test(hookAt('preCreateItem')));
+  t.ok('preUpdateItem syncs the name — only when the name or the level field is in the change', /const path = `system\.\$\{ModRatings\.levelField\(document\)\}`[\s\S]*hasProperty\(changes, 'name'\)[\s\S]*hasProperty\(changes, path\)[\s\S]*if \(!hasName && !hasRating\) return;[\s\S]*changes\.name = name/.test(hookAt('preUpdateItem')));
+  t.ok('…and leaves an adept power with no printed levels alone ("Killing Hands" never becomes "Killing Hands [1]")',
+    /document\.type === 'adeptpower' && !ModRatings\.levelsOf\(document\)\) return;/.test(hookAt('preUpdateItem'))
+    && ModRatings.levelValue({ type: 'adeptpower', name: 'Killing Hands', system: { level: 1 } }) === undefined);
   t.ok('both hooks skip a compendium document through ModRatings.inPack', hookAt('preCreateItem').includes('ModRatings.inPack(document, options)') && hookAt('preUpdateItem').includes('ModRatings.inPack(document, options)'));
   t.ok('…which is true for options.pack, document.pack and an item inside a pack actor, false for a world or owned item', [ModRatings.inPack({}, { pack: 'p.x' }), ModRatings.inPack({ pack: 'p.x' }, {}), ModRatings.inPack({ parent: { pack: 'p.x' } }, {})].every(Boolean) && !ModRatings.inPack({ parent: {} }, {}) && !ModRatings.inPack({}, undefined));
   t.ok('…and the skip is the first line of each hook', hookAt('preCreateItem').split('\n')[1].includes('if (ModRatings.inPack(document, options)) return;') && hookAt('preUpdateItem').split('\n')[1].includes('if (ModRatings.inPack(document, options)) return;'));
@@ -337,4 +340,58 @@ export async function run(t) {
   t.ok('a 0.8.0 migration renames owned copies and repoints dead links', /version: '0.8.0',\s*label: 'Every rated item[\s\S]{0,4200}ModFor\.migrateDelta\(item\)/.test(mig));
   t.ok('…the migrated name is the synced name ("ECCM [3]", rating 3) — it never strips the level out of an owned copy', /ModRatings\.syncName\(item\.name, rating, item\.type\)/.test(read('scripts/data/mod-ratings.mjs')));
   t.ok('…and logs a rating that disagrees with the name', /ModRatings\.renameConflict\(item\)/.test(mig));
+
+  /* ── Everything else with a level (reported 2026-10-25: "(250mp) brackets i thought we fixed that") ── */
+  const lvl = n => (s => s && `${s.stem}|${s.rating}`)(ModRatings.splitName(n));
+  t.is('"Pocket Computer (250Mp)" is level 250', lvl('Pocket Computer (250Mp)'), 'Pocket Computer|250');
+  t.is('…headware "Memory (100 Mps)"', lvl('Memory (100 Mps)'), 'Memory|100');
+  t.is('…"Wrist Computer (5Mp)", "Telecom (900Mp)", "Table Top PC (5000Mp)", "Data Display Unit (1000Mp)"',
+    ['Wrist Computer (5Mp)', 'Telecom (900Mp)', 'Table Top PC (5000Mp)', 'Data Display Unit (1000Mp)'].map(lvl).join(' '),
+    'Wrist Computer|5 Telecom|900 Table Top PC|5000 Data Display Unit|1000');
+  t.is('the Optical Memory Chip, gear and cyberlimb (the tag kept on the stem)',
+    [lvl('Optical Memory Chip 50MP'), lvl('Optical Memory Chip (500 mp) 1 (Cyberlimb)')].join(' '),
+    'Optical Memory Chip|50 Optical Memory Chip (Cyberlimb)|500');
+  t.is('…and its key drops the tag, like every mod', ModRatings.keyOf(limb('Optical Memory Chip (500 mp) 1 (Cyberlimb)')), 'cyberlimb|Optical Memory Chip');
+  t.is('"ECCM +3"', lvl('ECCM +3'), 'ECCM|3');
+  t.is('"Virt Instr Gen. Inst4Lev7" is level 7', lvl('Virt Instr Gen. Inst4Lev7'), 'Virt Instr Gen.|7');
+  t.is('a Jukebox: one item per memory size, the ports its level (pts / prts / ports)',
+    ['SkillSoft Jukebox 108MP 10 pts', 'SkillSoft Jukebox 108MP 8 prts', 'SkillSoft Jukebox 3MP 9 ports'].map(lvl).join(' '),
+    'SkillSoft Jukebox 108MP|10 SkillSoft Jukebox 108MP|8 SkillSoft Jukebox 3MP|9');
+  t.is('the fixed-level adept powers', ['Imp. Reflexes Level 3', 'Combat Sense +2', 'Kinesics Level 1', 'Delay Damage 2', 'Enhanced Balance 1']
+    .map(lvl).join(' '), 'Imp. Reflexes|3 Combat Sense|2 Kinesics|1 Delay Damage|2 Enhanced Balance|1');
+  t.is('…but a model number is still a model ("Ares Predator 2", "Smart Goggles 1")', [lvl('Ares Predator 2'), lvl('Smart Goggles 1')].join(), ',');
+  t.is('…and Skillwires (a rating AND a memory size) is left alone', lvl('Skillwires [3] MP 27'), null);
+  t.is('an adept power\'s level lives in system.level', ModRatings.levelField({ type: 'adeptpower' }), 'level');
+  t.is('…everything else\'s in system.rating', ModRatings.levelField({ type: 'gear' }), 'rating');
+
+  // The dropdown says "250 Mp", not "250" — the maintainer: "the dropdown should have 10, 25, 50, 100 not 1,2,3".
+  const pc = { type: 'gear', name: 'Pocket Computer', system: { category: 'Lifestyle Extras', rating: 10 } };
+  t.eq('the Pocket Computer dropdown offers its memory sizes, in Mp', ModRatings.options(pc)?.map(o => o.label),
+    ['10 Mp', '25 Mp', '50 Mp', '100 Mp', '250 Mp', '500 Mp', '1000 Mp']);
+  t.is('…and picking 250 Mp prices it from the table', ModRatings.ratingChange(pc, 250)['system.cost'], MOD_RATING_TABLE['gear|Pocket Computer'][250].cost);
+  t.is('the 🛒 search entry carries the unit for its Level picker',
+    GearSearch.fromIndex({ name: 'Pocket Computer', type: 'gear', system: { category: 'Lifestyle Extras' } }, null).levelUnit, 'Mp');
+  t.is('…a rating with no unit stays bare', ModRatings.unitOf(ware('Wired Reflexes')), '');
+
+  // A collapsed adept power: ONE document, its level in system.level, its Power Point cost per level from the table.
+  const ir = { type: 'adeptpower', name: 'Imp. Reflexes', system: { hasLevels: false, level: 1, powerCost: 2 } };
+  t.eq('Imp. Reflexes offers levels 1-3', ModRatings.options(ir)?.map(o => o.value), [1, 2, 3]);
+  const ir3 = ModRatings.ratingChange(ir, 3);
+  t.eq('…level 3 writes system.level and costs 5 Power Points with +3 Initiative dice (SR3 p.169)',
+    [ir3['system.level'], ir3['system.powerCost'], ir3['system.bonusInitDice'], 'system.rating' in ir3], [3, 5, 3, false]);
+  t.eq('an owned "Imp. Reflexes Level 2" (level 1 — the schema\'s, never chosen) migrates to "Imp. Reflexes [2]", level 2',
+    ModRatings.renameDelta({ type: 'adeptpower', name: 'Imp. Reflexes Level 2', system: { hasLevels: false, level: 1 } }),
+    { name: 'Imp. Reflexes [2]', 'system.level': 2 });
+  t.eq('an owned "Pocket Computer (250Mp)" migrates to "Pocket Computer [250]", rating 250',
+    ModRatings.renameDelta({ type: 'gear', name: 'Pocket Computer (250Mp)', system: { category: 'Lifestyle Extras', rating: null } }),
+    { name: 'Pocket Computer [250]', 'system.rating': 250 });
+  t.is('a fixed-level power never reports a name/level conflict (its level was never chosen)',
+    ModRatings.renameConflict({ type: 'adeptpower', name: 'Combat Sense +3', system: { hasLevels: false, level: 1 } }), null);
+  t.ok('the dead links of the collapsed power levels are repointed',
+    ModRatings.repointSource({ _stats: { compendiumSource: 'Compendium.The2ndChumming3e.sr3e-sr3-adept-powers.Item.sr3e-adeptpower-0052' } })
+      === 'Compendium.The2ndChumming3e.sr3e-sr3-adept-powers.Item.sr3e-adeptpower-0050');
+  t.ok('a 0.9.0 migration renames the newly collapsed families\' owned copies',
+    /version: '0\.9\.0',\s*label: 'The rest of the levelled items[\s\S]{0,2600}ModFor\.migrateDelta\(item\)/.test(mig));
+  t.ok('the adept power sheet shows the Level dropdown when the power has printed levels',
+    /ModRatings\.options\(this\.document\) \? this\._modRatingField\(s\)/.test(sheet));
 }
