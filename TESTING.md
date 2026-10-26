@@ -3268,12 +3268,16 @@ under each character are the book's — check them against the sheet, not the ot
 `node tests/run.mjs core-archetypes` proves the pack matches the book on paper; this walks it in Foundry.
 
 - [ ] Compendium sidebar → Reference → **Sample Characters** holds **16** actors (the book prints sixteen, not fifteen).
-      Open the compendium with the core book's filter off in *Configure Source Books*: it disappears; back on: it returns.
+      The core rulebook is never switchable (`SR3ESourceBooks.isAllowed` always allows a `.core` book), so unticking it in
+      *Configure Source Books* leaves the pack visible — that is expected.
 - [ ] Drag **The Adept** into the world. Body 5, Quickness 6, **Strength 6 → 7** (Improved Strength), Intelligence 6, Willpower 4,
       Essence 6, Magic 6. **Reaction 8** and Initiative **8 + 2D6** (Increased Reflexes 1). Combat Pool **8**. Unarmed Combat 6, Clubs 5
       (specialisation Rattan Sticks 7). The five adept powers are on the Magic tab; Pain Resistance at level 3.
-- [ ] **Combat Decker** (ork): Strength 5 → **7**, Reaction 4 → **6**, Essence **1.54**, Combat Pool **7**, Hacking Pool **4** with the
-      CMT Avatar loaded. The Ceska Black Scorpion reads loaded (10/10) and spare clips are in the inventory.
+- [ ] **Combat Decker** (ork): Strength 5 → **7**, Reaction 4 → **6**, Essence **1.54**, Combat Pool **7**, Hacking Pool **4** by the
+      core formula ⌊(INT+MPCP)÷3⌋ — ⚠ the sheet's default is Matrix Defragged's Int + ⌊MPCP÷3⌋ (**7**) until the Orthodox deck fields
+      are filled in (rule-set dependent; the maintainer decides which should show on the sample). The Ceska Black Scorpion reads
+      loaded **35/35** (35(c)); the record sheet's "50 rounds and 20 explosive rounds" are the 15 spare Regular and 20 Explosive
+      rounds, as two loose-round stacks.
 - [ ] **Combat Mage** (troll): Body 6 → **7** (the hide, nothing else), Spell Pool **5**, Astral Combat Pool **7**, Combat Pool **7**,
       Essence 6. Seven spells, each at its printed Force in the name; Manaball and Powerball say *Exclusive*.
 - [ ] **The Mercenary** (troll): Body 10 → **13**, Quickness 5 → **7**, Strength 9 → **11**, Reaction 4 → **5**, Initiative 5 + 2D6,
