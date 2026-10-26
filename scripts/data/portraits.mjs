@@ -102,9 +102,10 @@ export class Portraits {
   /**
    * Portraits for a person, best match first, each tagged with how it matched.
    * Tiers, in order — a later tier only fills in when the earlier ones are thin:
-   *   1 'exact'     same metatype and job        3 'job'       same job, any metatype
-   *   2 'base'      same base metatype and job   4 'group'     same metatype, a job in the same group
-   *   5 'metatype'  same metatype, any job
+   *   1 'exact'     same metatype and job        3 'group'     same metatype, a job in the same group
+   *   2 'base'      same base metatype and job   4 'metatype'  same metatype, any job
+   * ⚠ **The chosen metatype always filters** — no tier crosses into another race. A 'job' tier (same job,
+   * any metatype) filled a thin grid with other races, so the metatype dropdown seemed not to work (2026-10-25).
    * Gender and age (when given) filter every tier; minors appear only when `minor` is asked for.
    *
    * @param {{entries, jobs}} index  merged index
@@ -123,7 +124,6 @@ export class Portraits {
     const tiers = [
       ['exact',    e => e.metatype === want.metatype && e.job === want.job],
       ['base',     e => base && e.base === base && e.job === want.job],
-      ['job',      e => e.job === want.job],
       ['group',    e => group && e.metatype === want.metatype && jobs[e.job] === group],
       ['metatype', e => e.metatype === want.metatype || (base && e.base === base)],
     ];

@@ -211,7 +211,7 @@
         }
       },
       "sight": {
-        "enabled": false,
+        "enabled": true,
         "range": 0,
         "angle": 360,
         "visionMode": "basic",
@@ -226,7 +226,7 @@
         "radius": 0
       },
       "ring": {
-        "enabled": false,
+        "enabled": true,
         "colors": {
           "ring": null,
           "background": null
