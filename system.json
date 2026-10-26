@@ -1639,6 +1639,22 @@
           "book": "sr3"
         }
       }
+    },
+    {
+      "name": "sr3e-sr3-archetypes",
+      "label": "Shadowrun 3rd — Sample Characters",
+      "path": "packs/sr3e-sr3-archetypes",
+      "type": "Actor",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "book": "sr3"
+        }
+      }
     }
   ],
   "packFolders": [
@@ -1665,6 +1681,13 @@
           "sorting": "a",
           "packs": [
             "sr3e-mr-johnsons-contacts"
+          ]
+        },
+        {
+          "name": "Sample Characters",
+          "sorting": "a",
+          "packs": [
+            "sr3e-sr3-archetypes"
           ]
         },
         {
