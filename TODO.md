@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**73 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**75 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2916,6 +2916,50 @@ archetypes with no matching portrait job **fall back to the nearest one for now*
   `npcUuid`, name and — only when stock — picture. 🎲 on the Contacts tab (GM only), the face on the row for everyone.
 - `contact.npcUuid` — new field: **full Foundry restart**.
 - Live check: TESTING.md, *Meet the contact*.
+
+## 267. Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection — **requested 2026-10-25**
+
+Found building [#268](#268)'s Legwork tool. SR3 rates a contact by **Level** — 1 standard contact, 2 buddy, 3 friend
+for life *(SR3 p.255-256)* — and the level is what the rules read: Level 2 gives the runner **+1 die** on Etiquette
+Tests for information, Level 3 **+2** *(p.256)*, and the Opposed Intelligence (6) / Willpower (5) / Willpower (6)
+Tests for what the contact remembers or refuses to tell about the runner are by level too. The system's `contact`
+item stores **Loyalty and Connection, 1-6** (`ContactData`), which are not SR3 fields at all — there is no Level
+anywhere. To settle with the maintainer:
+- **How Level relates to Loyalty / Connection** — a stored Level field, a Level derived from Loyalty, or Loyalty and
+  Connection retired (a migration for existing contacts either way).
+- **Which rating drives the bonus dice.** The book has one number (Level); Loyalty is the obvious analogue, but
+  Connection (how much the contact can find out) is a different question the book answers with the contact's
+  archetype and the GM's judgement *(p.255, Appropriate Contact Restrictions)*.
+- **Not every contact is an actor.** Most are bare items with no stats; only those linked to a Little Black Book
+  archetype (`archetypeUuid`, [#83](#83)) or met as an NPC (`npcUuid`, [#262](#262)) have Charisma,
+  Intelligence and Etiquette. The legwork fee *(C × I × 50 ÷ successes, p.254)* and the contact's own
+  ear-to-the-ground Etiquette Test need them — so the GM types them for a bare contact. Whether contacts should
+  always carry (or point at) stats may need to change.
+
+⚠ **The stopgap until then:** the Legwork dialog lets the GM pick the Level (1/2/3), defaulted from Loyalty capped at
+3 (`Legwork.levelFromLoyalty`, `scripts/data/legwork.mjs`) — the maintainer's call, 2026-10-25.
+
+## 268. Legwork — a GM tool for asking contacts and searching the Matrix — **requested 2026-10-25**
+
+The maintainer, after a player asked how to resolve asking a Loyalty 1 / Connection 1 street-shaman contact about a
+magical mystery (the player guide page `guides/street/contacts.md`, branch `fix/contacts-legwork-guide`): build SR3
+legwork into the system. Rules *(SR3 p.253-256, checked against the PDF 2026-10-25)*: Etiquette (Street or
+Corporate) vs TN 4 or the success table's, cumulative tiers, fee C × I × 50 ÷ successes, ear to the ground at +2 TN
+reporting in 2D6 hours, a rushed meet +2 TN, Matrix searches with Etiquette (Matrix), no Hacking Pool, 2D6 hours,
+ceil(Intelligence ÷ 2) at once, Level 2/3 contacts +1/+2 dice.
+
+**Built (branch `feature/legwork`, with the guide page from `fix/contacts-legwork-guide`):**
+- `scripts/data/legwork.mjs` — fee, TNs, level dice, searches, Etiquette dice and specialisation, revealed tiers,
+  a table's TN. Pure. `tests/legwork.test.mjs`; 4 mutants.
+- `scripts/SR3ELegwork.js` — 🔎 Legwork on the Rollable Tables tab (GM only): runner, contact, mode, specialisation,
+  Level (the GM's pick — [#267](#267)), TN, rushed, success table, the contact's Charisma / Intelligence from its NPC
+  or archetype. Rolls through `rollThen` → `FOLLOW_UPS.legwork`; the card (GM-only by default) shows the successes,
+  every table row reached, the fee and the 2D6 hours.
+- `sr3e-legwork-tables` — a RollTable pack (GM Only folder) with a template success table, rows 1 / 2 / 3+; the TN
+  lives in its description. Built by `tools/build-legwork-tables.mjs`. ⚠ **Not yet `packs:install`ed** (Foundry
+  must be closed, and the live install follows the main checkout).
+- Guide: `guides/street/contacts.md`, *Legwork in The 2nd Chumming*.
+- Live check: TESTING.md, *Legwork*.
 
 ### 📌 Notes & parked
 

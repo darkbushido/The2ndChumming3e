@@ -428,6 +428,30 @@ Needs a **full Foundry restart** (new `contact.npcUuid` field). With a portrait 
 - [ ] Create a brand-new actor (any type) from the sidebar: its prototype token has vision on.
 - [ ] 0.9.0 migration (after the bump; or `game.sr3e.SR3EMigrations.force()`): a world character/NPC whose prototype token was blind now sees; a token already placed on a scene with vision off stays off; vehicles unchanged.
 
+## Legwork — TODO 268 (`feature/legwork`) — needs a live pass
+
+New pack `sr3e-legwork-tables` and a `system.json` change: with Foundry **closed**, `npm run packs:install` and copy
+`system.json` into the install (or `npm run sync:install`), then a **full restart**. Rules and the card are unit-tested
+(`legwork`, `legwork-tool`); this is what only a client shows.
+- [ ] Compendium sidebar → *Reference → GM Only* shows **GM: Legwork Success Tables**; a player does not see it.
+- [ ] Import *Legwork success table (template)* into the world; its sheet shows rows 1 / 2 / 3+ (ranges 1-1, 2-2, 3-30)
+      and the description's *Target Number: 4*. Change it to 5.
+- [ ] Rollable Tables tab (GM): **🔎 Legwork** sits after Escape Artist; a player has no button.
+- [ ] The dialog: runner list has no templates, scene tokens first; the contact list is that runner's contacts. Changing
+      runner refills it. Level starts at the contact's Loyalty (capped at 3), and the note shows Loyalty/Connection.
+- [ ] A contact linked to a Little Black Book archetype fills Charisma and Intelligence "From … (archetype)"; one met as
+      an NPC fills them from the NPC; a bare contact leaves them blank with the "links to no stat block" note.
+- [ ] Specialisation starts on Street (or Corporate) for asking, Matrix for a search; Dice = Etiquette (+spec) + Level
+      dice and follows every change; typing Dice by hand sticks until runner / contact / mode / spec / level changes.
+- [ ] Picking the imported table sets TN 5; Rushed adds +2 (ask only, the row hides otherwise); a wounded runner's TN
+      readout includes the wounds; Ear to the ground shows +2 and the contact's dice (amber prompt with no stats).
+- [ ] Roll at TN ≤ 6: the card posts at once, whispered to the GM (untick → public): successes, the dice, every table
+      row up to the successes, the fee (C × I × 50 ÷ successes). Esc / Cancel rolls nothing.
+- [ ] Roll at TN 7+ until a 6 comes up: a 💥 wave card appears and the legwork card waits for the last explosion.
+- [ ] Ear to the ground with a success: "reports back in N hours"; with none: "hears nothing". Matrix: base time in
+      hours, "No Hacking Pool", the search limit (half Intelligence, rounded up), no fee.
+- [ ] A row with a secret block: shown on a GM-only card, hidden on a public one.
+
 ## Open combat steps — TODO 147 (`feature/open-steps`)
 
 **Checked live by the agent, 2026-09-24** (mcp-api, then with the maintainer's Gamemaster seat also on):

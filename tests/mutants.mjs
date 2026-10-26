@@ -60,6 +60,7 @@ const KARMA  = { module: '../scripts/data/karma-uses.mjs', klass: 'KarmaPool' };
 const GOODKARMA = { module: '../scripts/data/karma-uses.mjs', klass: 'GoodKarma' };
 const CPOOL = { module: '../scripts/data/combat-pool.mjs', klass: 'CombatPool' };
 const FUNDS = { module: '../scripts/data/funds.mjs', klass: 'Funds' };
+const LEGWORK = { module: '../scripts/data/legwork.mjs', klass: 'Legwork' };
 const GMONLY = { module: '../scripts/data/gm-only-fields.mjs', klass: 'GmOnlyFields' };
 const SPELLLIMITS = { module: '../scripts/data/spell-limits.mjs', klass: 'SpellLimits' };
 const AREAEFFECT = { module: '../scripts/data/area-effect.mjs', klass: 'AreaEffect' };
@@ -3757,5 +3758,40 @@ export const MUTANTS = [
       const n = Math.floor((power - effectiveBR) / (currentBR / 2));
       return { result: 'breach', effectiveBR, brReduction: n, holes: n * 0.5, remainingPower: attack === 'blast' ? power - currentBR : null };
     },
+  },
+  {
+    id:     'legwork-tiers-not-cumulative',
+    suite:  'legwork',
+    ...LEGWORK, method: 'revealed',
+    was:    'only the success tier the roll hit was shown; SR3 p.253 gives every tier up to it ("all the information available to all previous levels of success")',
+    impl:   (results, successes) => {
+      const s = Math.max(0, Math.trunc(Number(successes) || 0));
+      const rows = [...(results ?? [])].map(r => ({ low: r.range?.[0] ?? r.low ?? 0, high: r.range?.[1] ?? r.high ?? r.low ?? 0, text: r.description ?? r.text ?? '' }));
+      return rows.filter(r => r.low <= s && s <= r.high);
+    },
+  },
+  {
+    id:     'legwork-fee-times-successes',
+    suite:  'legwork',
+    ...LEGWORK, method: 'fee',
+    was:    'the fee multiplied by the successes instead of dividing (SR3 p.254: "Divide that result by the number of successes")',
+    impl:   (cha, int, successes) => {
+      const base = (Number(cha) || 0) * (Number(int) || 0) * 50, s = Math.max(0, Math.trunc(Number(successes) || 0));
+      return { base, successes: s, fee: s > 0 ? base * s : null };
+    },
+  },
+  {
+    id:     'legwork-level-dice-everywhere',
+    suite:  'legwork',
+    ...LEGWORK, method: 'levelDice',
+    was:    "a contact's level dice added to the contact's own ear-to-the-ground test and to Matrix searches; SR3 p.256 gives them to the runner's information test only",
+    impl:   level => (Number(level) >= 3 ? 2 : Number(level) === 2 ? 1 : 0),
+  },
+  {
+    id:     'legwork-matrix-searches-round-down',
+    suite:  'legwork',
+    ...LEGWORK, method: 'maxSearches',
+    was:    'half Intelligence rounded down; SR3 p.254 says "rounded up"',
+    impl:   int => Math.floor((Number(int) || 0) / 2),
   },
 ];
