@@ -24,7 +24,8 @@
       "streetIndex": "1",
       "bookPage": "sr3.281",
       "description": "<p><strong>Source:</strong> Smart goggles rigged as mirrored sunglasses, at double the nuyen (SR3 p.281); 8,000¥ with the +1,000¥ low-light or infrared option, doubled.</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "4P-N"
     }
   },
   "embedded": {}

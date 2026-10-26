@@ -2242,6 +2242,38 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'store-price-uses-street-index',
+    suite:  'legality',
+    ...BUY, method: 'storePrice',
+    was:    'SR3 p.273 — "The price listed for all items in SR3 are the legal retail prices … you can get items for the price '
+          + 'listed": the Street Index is the shadow market\'s multiplier. Charging it at the store makes the legal path cost '
+          + 'what a fixer asks, which is the very thing reported 2026-10-25',
+    impl:   (cost, { metatype = '' } = {}) => ({ base: Number(cost) * 3, surcharge: 0, total: Number(cost) * 3, surchargeRate: 0, metatype }),
+  },
+  {
+    id:     'legality-store-default-for-anything',
+    suite:  'legality',
+    module: '../scripts/data/legality.mjs', klass: 'Legality', method: 'storeByDefault',
+    was:    'SR3 p.273 — only a LEGAL item is a Stuffer Shack purchase; "For restricted items — gear with a Legality Code — a '
+          + 'permit is necessary". Opening every item on the store would quietly make restricted gear look legal',
+    impl:   () => true,
+  },
+  {
+    id:     'legality-permit-misread',
+    suite:  'legality',
+    module: '../scripts/data/legality.mjs', klass: 'Legality', method: 'classify',
+    was:    'SR3 p.273 — "If the restriction level is followed by a "P," then characters may be able to get permits": a '
+          + 'restriction-level pattern that swallowed the P read every code as having no permit (caught while building this)',
+    impl:   (code) => {
+      const c = String(code ?? '').trim().replace(/[–—]/g, '-');
+      if (/^legal$/i.test(c)) return { status: 'legal', code: 'Legal', permit: false, defersTo: '' };
+      const as = /^as\s+(.+)$/i.exec(c);
+      if (as) return { status: 'deferred', code: c, permit: false, defersTo: as[1] };
+      const m = /^(\(?[^)]*\)?|\d+)\s*(P?)\s*-\s*([A-Z]{1,3})/i.exec(c);
+      return m && c ? { status: 'restricted', code: c, permit: m[2].toUpperCase() === 'P', defersTo: '' } : { status: 'unknown', code: c, permit: false, defersTo: '' };
+    },
+  },
+  {
     id:     'buy-haggle-leaves-pay-live',
     suite:  'purchasing',
     ...BUY, method: 'cardButtons',

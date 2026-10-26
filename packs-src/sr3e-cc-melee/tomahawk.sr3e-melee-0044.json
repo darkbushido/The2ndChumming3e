@@ -18,7 +18,8 @@
       "legal": true,
       "bookPage": "cc.8",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "legality": "5-A"
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/icons/melee-edged.svg"

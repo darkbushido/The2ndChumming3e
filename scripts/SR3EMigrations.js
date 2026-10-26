@@ -38,6 +38,7 @@ import { VehicleArt } from './data/vehicle-art.mjs';
 import { ModRatings } from './data/mod-ratings.mjs';
 import { ModFor } from './data/mod-for.mjs';
 import { ModBookFixes } from './data/mod-book-fixes.mjs';
+import { Legality } from './data/legality.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -585,7 +586,13 @@ const MIGRATIONS = [
     fixItem: (item) => {
       const note = ModRatings.renameConflict(item);
       if (note) console.log(`SR3E | 0.9.0: ${note}`);
-      return ModFor.migrateDelta(item);
+      // ⚠ The rename can repoint a dead link (a deleted level document) — read the legality from where it now points.
+      const delta = ModFor.migrateDelta(item) ?? {};
+      const linked = delta['_stats.compendiumSource']
+        ? { ...item, _stats: { ...item._stats, compendiumSource: delta['_stats.compendiumSource'] } } : item;
+      // The books' Legality Codes (2026-10-25): FILLED while blank from the item's compendium document — never overwritten.
+      Object.assign(delta, Legality.fillDelta(linked) ?? {});
+      return Object.keys(delta).length ? delta : null;
     },
   },
 

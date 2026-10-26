@@ -18,7 +18,8 @@
       "legal": true,
       "bookPage": "cc.10",
       "notes": "",
-      "hands": 1
+      "hands": 1,
+      "legality": "8-C"
     },
     "effects": [],
     "img": "systems/The2ndChumming3e/styles/icons/melee-club.svg"

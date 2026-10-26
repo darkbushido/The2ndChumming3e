@@ -23,7 +23,8 @@
       "availability": "Always",
       "streetIndex": "1",
       "bookPage": "sr3.296",
-      "description": "<p><strong>Type:</strong> Mem<br><strong>Memory:</strong> 50</p>"
+      "description": "<p><strong>Type:</strong> Mem<br><strong>Memory:</strong> 50</p>",
+      "legality": "Legal"
     }
   },
   "embedded": {}

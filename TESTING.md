@@ -3170,6 +3170,17 @@ need `npm run packs:install` (Foundry closed) and a restart.
       tabs**: still greyed out.
 - [ ] Press 💴 on a fresh card and **Cancel** the confirm: the button is live again and nothing was paid.
 
+**At the store, or through a contact** (needs the restart: new `legality` field)
+- [ ] 🛒 Buy gear → search "armor jacket" (Legal, SR3 p.284): the dialog opens on 🏪 **At the store**, the contact,
+      Etiquette, TN and Street Index rows are hidden, the preview reads "List price ¥900". Buy at the store → a
+      "🏪 At the store" card at ¥900 with 💴 Pay; paying adds the jacket and the 📒 Ledger line. No Etiquette roll.
+- [ ] Search "ares predator" (6P-E): the dialog opens on 🤝 **Through a contact**; the legality note says a permit is
+      needed. Switch to 🏪: the note turns amber but the button still works (warn, never refuse).
+- [ ] Switch a Legal item to 🤝: the contact flow runs as before (Etiquette, Street Index, 🤝 haggle for the discount).
+- [ ] The item sheet of a Katana shows Legality "5-B", editable. A clip of Regular rounds reads "As Weapon".
+- [ ] `game.sr3e.SR3EMigrations.force()` on a character with an old Ares Predator from the compendium (Legality blank):
+      it reads 6P-E afterwards; one whose Legality was typed keeps it.
+
 **One item per level** (restart Foundry after `npm run packs:install`)
 - [ ] The SR3 gear compendium has ONE "Pocket Computer". Its sheet's Level dropdown reads 10 Mp, 25 Mp … 1000 Mp, and
       picking 250 Mp sets the cost to 25,000¥. Dragged onto a character it reads "Pocket Computer [10]".

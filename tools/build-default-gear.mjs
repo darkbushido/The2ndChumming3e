@@ -47,6 +47,7 @@ import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 import { RatedFamilies } from '../scripts/data/rated-families.mjs';
 import { ModFor } from '../scripts/data/mod-for.mjs';
 import { replaceFamilies } from './lib/collapsed-mods.mjs';
+import { fillLegality } from './lib/legality-fill.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..');
@@ -479,6 +480,8 @@ export async function plan(manifest, shippedNames) {
       g.docs = [...entries.values()];
     }
   }
+  // The books' Legality Codes (2026-10-25, `scripts/data/legality-table.mjs`) — here, so a regeneration keeps them.
+  for (const [pack, g] of byPack) for (const d of g.docs) fillLegality(pack, d);
   report.written = {};
   for (const [, g] of byPack) for (const d of g.docs) bump(report.written, `${g.book} ${d.type}`);
   return { byPack, report, families };

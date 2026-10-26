@@ -24,7 +24,8 @@
       "streetIndex": "2",
       "bookPage": "cc.35",
       "description": "<p><strong>Mount:</strong> Tripod</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "5-U"
     }
   },
   "embedded": {}

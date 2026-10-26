@@ -16,6 +16,7 @@
       "cost": 30,
       "streetIndex": "2",
       "legal": false,
+      "legality": "3-J",
       "bookPage": "sr3.283",
       "notes": "<p>Also comes as a mini-grenade for a grenade launcher (SR3 p.283): same effects, weight .1, and it does not arm until it has travelled five metres. The mini-grenade ships in the ammunition pack.</p><p>SR3 p.283 — Legality 3-J. Blast –1/m.</p>",
       "isAoE": true,

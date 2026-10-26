@@ -23,7 +23,8 @@
       "availability": "4/48hrs",
       "streetIndex": "2",
       "bookPage": "sr3.283",
-      "description": "<p>SR3 p.283 — Legality 6–J. Flux Rating 1.</p>"
+      "description": "<p>SR3 p.283 — Legality 6–J. Flux Rating 1.</p>",
+      "legality": "6-J"
     }
   },
   "embedded": {}

@@ -23,7 +23,8 @@
       "availability": "6/48hrs",
       "streetIndex": "1",
       "bookPage": "sr3.283",
-      "description": "<p>SR3 p.283 — Blast –3/m. Damage Code (Rating)D per kilogram. Legality 4P–J.</p>"
+      "description": "<p>SR3 p.283 — Blast –3/m. Damage Code (Rating)D per kilogram. Legality 4P–J.</p>",
+      "legality": "4P-J"
     }
   },
   "embedded": {}

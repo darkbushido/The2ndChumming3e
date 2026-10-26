@@ -27,7 +27,8 @@
       "availability": "5/3days",
       "streetIndex": "2",
       "bookPage": "sr3.281",
-      "notes": "<p>A box of 10. The generator lists these per round (45¥ each); the book prices ammunition per 10 shots.</p><p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+      "notes": "<p>A box of 10. The generator lists these per round (45¥ each); the book prices ammunition per 10 shots.</p><p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>",
+      "legality": "As Weapon"
     }
   },
   "embedded": {}

@@ -2,6 +2,7 @@ import { Purchasing } from './data/purchasing.mjs';
 import { GearSearch } from './data/gear-search.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
 import { ModRatings } from './data/mod-ratings.mjs';
+import { Legality } from './data/legality.mjs';
 
 /**
  * Buying gear — the flow · *SR3 pp.272-273* (TODO 82).
@@ -125,6 +126,11 @@ export const SR3EPurchase = {
     const rowEntry = item ? { ...GearSearch.fields(item), levels: ModRatings.levelsOf(item), levelUnit: ModRatings.unitOf(item), rating: Number(item.system?.rating) || null } : null;
     let   levelEntry = rowEntry?.levels ? rowEntry : null;
     let   level = levelEntry ? GearSearch.startLevel(levelEntry) : null;
+    // Legal gear needs no contact (SR3 p.273): the dialog opens on "at the store" for a Legal or "Always" item, and
+    // through a contact otherwise — either way both are offered (reported 2026-10-25; warn, never refuse).
+    const startLegal = rowEntry ? (Legality.of(item) || '') : '';
+    let   storeMode = Legality.storeByDefault(startLegal) || avail.always;
+    let   howTouched = false;   // once the buyer picks, a search or a drop no longer flips it
     const levelOptions = e => Object.keys(e?.levels ?? {}).map(Number).sort((a, b) => a - b)
       .map(l => `<option value="${l}"${l === level ? ' selected' : ''}>${l}${e?.levelUnit ? ` ${e.levelUnit}` : ''}</option>`).join('');
 
@@ -152,7 +158,17 @@ export const SR3EPurchase = {
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${actor.name}: buy ${item ? item.name : 'gear'} (${Purchasing.PAGE})` },
       content: `
-        <p style="font-size:11px;color:var(--sr-muted);margin:0 0 6px">
+        <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:6px;font-size:12px">
+          <label><input type="radio" name="sr-buy-how" value="store"${storeMode ? ' checked' : ''}/>
+            🏪 <strong>At the store</strong> — list price, no roll, no contact (SR3 p.273)</label>
+          <label><input type="radio" name="sr-buy-how" value="contact"${storeMode ? '' : ' checked'}/>
+            🤝 <strong>Through a contact</strong> — Etiquette vs Availability, Street Index, and a haggle for a discount (pp.272-273)</label>
+        </div>
+        <label style="display:block;margin-bottom:2px">Legality
+          <input type="text" id="sr-buy-legality" value="${esc(startLegal)}" placeholder="—" style="width:110px"/>
+        </label>
+        <div id="sr-buy-legal-note" style="font-size:11px;color:var(--sr-muted);margin-bottom:6px"></div>
+        <p class="sr-buy-contact-only" style="font-size:11px;color:var(--sr-muted);margin:0 0 6px">
           An <strong>Etiquette Test</strong> against the item's Availability finds a source (SR3 p.272).
           Successes divide the base time. <span id="sr-buy-avail-note">${availNote(avail.always, avail.unknown && !avail.always)}</span>
         </p>
@@ -173,7 +189,7 @@ export const SR3EPurchase = {
         <label style="display:block;margin-bottom:6px">Item
           <input type="text" id="sr-buy-name" value="${esc(item?.name ?? '')}" style="width:100%"/>
         </label>
-        <div style="display:flex;gap:6px;margin-bottom:6px">
+        <div class="sr-buy-contact-only" style="display:flex;gap:6px;margin-bottom:6px">
           <label style="flex:1">Availability TN
             <input type="number" id="sr-buy-tn" value="${avail.tn || 4}" min="0" max="30" style="width:100%"/>
           </label>
@@ -190,10 +206,11 @@ export const SR3EPurchase = {
           <label style="flex:1">Base cost (¥)
             <input type="number" id="sr-buy-cost" value="${cost}" min="0" style="width:100%"/>
           </label>
-          <label style="flex:1">Street Index
+          <label class="sr-buy-contact-only" style="flex:1">Street Index
             <input type="number" id="sr-buy-index" value="${index}" min="0" step="0.1" style="width:100%"/>
           </label>
         </div>
+        <div class="sr-buy-contact-only">
         <label style="display:block;margin-bottom:6px">Contact
           <select id="sr-buy-contact" style="width:100%">${conOpts}</select>
         </label>
@@ -208,9 +225,10 @@ export const SR3EPurchase = {
           <span style="font-size:11px;color:var(--sr-muted)">— costs ${Purchasing.REDUCTION.daysPerPoint} days
           and +${Purchasing.REDUCTION.streetIndexPerPoint} Street Index each (p.272)</span>
         </label>
+        </div>
         <div id="sr-buy-preview" style="font-size:11px;color:var(--sr-gold)"></div>`,
       buttons: [
-        { label: 'Find a source', action: 'ok', default: true,
+        { label: storeMode ? 'Buy at the store' : 'Find a source', action: 'ok', default: true,
           callback: (_e, _b, dlg) => {
             const el = dlg.element;
             const n = id => Number(el.querySelector(id)?.value) || 0;
@@ -223,6 +241,8 @@ export const SR3EPurchase = {
               contactId: el.querySelector('#sr-buy-contact')?.value || '',
               itemUuid: picked?.uuid || item?.uuid || '',
               level: el.querySelector('#sr-buy-level-row')?.style.display === 'none' ? null : (Number(el.querySelector('#sr-buy-level')?.value) || null),
+              how: storeMode ? 'store' : 'contact',
+              legality: el.querySelector('#sr-buy-legality')?.value?.trim() ?? '',
             };
             if (result.level && !/\]\s*$/.test(result.name)) result.name = `${result.name} [${result.level}]`;
           } },
@@ -233,7 +253,21 @@ export const SR3EPurchase = {
         const con = el.querySelector('#sr-buy-contact');
         const aff = el.querySelector('#sr-buy-affinity');
         const pre = el.querySelector('#sr-buy-preview');
+        const legalIn = el.querySelector('#sr-buy-legality');
+        const legalNote = el.querySelector('#sr-buy-legal-note');
+        const okBtn = el.querySelector('button[data-action="ok"]');
+        const showHow = () => {
+          for (const x of el.querySelectorAll('.sr-buy-contact-only')) x.style.display = storeMode ? 'none' : '';
+          for (const r of el.querySelectorAll('input[name="sr-buy-how"]')) r.checked = r.value === (storeMode ? 'store' : 'contact');
+          if (okBtn) okBtn.textContent = storeMode ? 'Buy at the store' : 'Find a source';
+        };
         const sync = () => {
+          if (legalNote) {
+            const k = Legality.classify(legalIn?.value);
+            legalNote.textContent = Legality.note(legalIn?.value);
+            // Warn, never refuse: a restricted item can still be bought at the store — the GM rules on the permit.
+            legalNote.style.color = storeMode && k.status !== 'legal' ? 'var(--sr-amber)' : 'var(--sr-muted)';
+          }
           const chosen = cons.find(c => c.id === con?.value);
           const a = chosen ? Purchasing.affinity(chosen.archetype, type) : { rating: 'unknown', note: '' };
           if (aff) {
@@ -246,7 +280,12 @@ export const SR3EPurchase = {
           const cut = Purchasing.reduceAvailability({ tn: n('#sr-buy-tn'), time: n('#sr-buy-time') },
             n('#sr-buy-index') || 1, n('#sr-buy-reduce'));
           const ask = Purchasing.askingPrice(n('#sr-buy-cost'), cut.streetIndex, { metatype: actor.system?.metatype });
-          if (pre) {
+          if (pre && storeMode) {
+            const list = Purchasing.storePrice(n('#sr-buy-cost'), { metatype: actor.system?.metatype });
+            pre.textContent = `List price ¥${list.total.toLocaleString('en-US')}`
+              + (list.surcharge ? ` (includes +${Math.round(list.surchargeRate * 100)}% ${actor.system?.metatype})` : '')
+              + ' · paid in full at delivery (p.273)';
+          } else if (pre) {
             pre.textContent = `TN ${cut.tn} · base time ${Purchasing.formatTime(cut.baseTime, el.querySelector('#sr-buy-unit')?.value)}`
               + ` · Street Index ${cut.streetIndex} · asking ¥${ask.total.toLocaleString('en-US')}`
               + (ask.surcharge ? ` (includes +${Math.round(ask.surchargeRate * 100)}% ${actor.system?.metatype})` : '');
@@ -265,6 +304,8 @@ export const SR3EPurchase = {
         const take = f => {
           picked = f; type = f.type;
           showLevels(f);
+          if (legalIn) legalIn.value = f.legality ?? '';
+          if (!howTouched) { storeMode = Legality.storeByDefault(f.legality) || !!f.always; showHow(); }
           set('#sr-buy-name', f.name); set('#sr-buy-tn', f.tn); set('#sr-buy-time', f.time);
           set('#sr-buy-unit', f.unit); set('#sr-buy-cost', f.cost); set('#sr-buy-index', f.index);
           const note = el.querySelector('#sr-buy-avail-note');
@@ -316,6 +357,7 @@ export const SR3EPurchase = {
           const f = GearSearch.atLevel(levelEntry, level);
           set('#sr-buy-tn', f.tn); set('#sr-buy-time', f.time); set('#sr-buy-unit', f.unit);
           set('#sr-buy-cost', f.cost); set('#sr-buy-index', f.index);
+          if (legalIn && f.legality) legalIn.value = f.legality;   // a level can carry its own code
           const note = el.querySelector('#sr-buy-avail-note');
           if (note) note.innerHTML = availNote(f.always, f.unknown);
           sync();
@@ -332,14 +374,21 @@ export const SR3EPurchase = {
           set('#sr-buy-index', supplies.streetIndex);
           sync();
         });
-        for (const id of ['#sr-buy-tn', '#sr-buy-time', '#sr-buy-cost', '#sr-buy-index', '#sr-buy-reduce', '#sr-buy-unit']) {
+        for (const r of el.querySelectorAll('input[name="sr-buy-how"]')) {
+          r.addEventListener('change', () => { storeMode = r.value === 'store' && r.checked; howTouched = true; showHow(); sync(); });
+        }
+        for (const id of ['#sr-buy-tn', '#sr-buy-time', '#sr-buy-cost', '#sr-buy-index', '#sr-buy-reduce', '#sr-buy-unit', '#sr-buy-legality']) {
           el.querySelector(id)?.addEventListener('input', sync);
           el.querySelector(id)?.addEventListener('change', sync);
         }
+        showHow();
         sync();
       },
     });
     if (!result) return;
+
+    // 🏪 At the store (SR3 p.273): no roll — straight to a card with the list price and 💴 Pay.
+    if (result.how === 'store') return SR3EPurchase.atStore(actor, result);
 
     const cut = Purchasing.reduceAvailability({ tn: result.tn, time: result.time }, result.index, result.reduce);
     const ctx = { ...result, ...cut, buyerId: actor.id };
@@ -349,6 +398,35 @@ export const SR3EPurchase = {
     await game.sr3e.SR3EActor.rollThen(actor, result.dice, Math.max(2, cut.tn),
       { label: `🛒 Etiquette — sourcing ${result.name}`, skipWoundMod: false,
         followUp: { kind: 'purchaseSourced', ctx } });
+  },
+
+  /**
+   * 🏪 Bought at the store · SR3 p.273, Making Legal Purchases: the list price (no Street Index), no Etiquette Test,
+   * no contact, *"Payment in full is expected at delivery"*, and the purchase is on record. A card with 💴 Pay —
+   * nothing is written until it is pressed, exactly like a contact's deal. A restricted item is allowed and said so.
+   */
+  async atStore(actor, result) {
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const list = Purchasing.storePrice(result.cost, { metatype: actor.system?.metatype });
+    const k = Legality.classify(result.legality);
+    const payload = JSON.stringify({ buyerId: actor.id, name: result.name, price: list.total, itemUuid: result.itemUuid,
+      level: result.level, store: true }).replace(/'/g, '&#39;');
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="sr-roll-card">
+        <div class="sr-roll-header">🏪 At the store — ${esc(result.name)}</div>
+        <div class="sr-roll-meta">List price <strong>¥${list.total.toLocaleString('en-US')}</strong>${
+          list.surcharge ? ` (¥${list.base.toLocaleString('en-US')}, +${Math.round(list.surchargeRate * 100)}% ${esc(actor.system?.metatype)})` : ''}
+          — no contact, no Etiquette Test, paid in full at delivery (${Legality.PAGE}).</div>
+        <div class="sr-roll-meta"${k.status === 'legal' ? '' : ' style="color:var(--sr-amber)"'}>${esc(Legality.note(result.legality))}</div>
+        <div class="sr-roll-meta" style="color:var(--sr-muted);font-size:11px">A legal purchase leaves a record — a credit
+          trail, inventory, perhaps video — under the buyer's SIN (${Legality.PAGE}).</div>
+        <div class="sr-soak-action">
+          <button class="sr-buy-pay-btn" data-payload='${payload}'>💴 Pay ¥${list.total.toLocaleString('en-US')} &amp; receive</button>
+        </div>
+      </div>`,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
   },
 
   /** The Etiquette Test has resolved · p.272. */

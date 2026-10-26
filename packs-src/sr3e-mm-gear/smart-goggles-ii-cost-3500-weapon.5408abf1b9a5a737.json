@@ -24,7 +24,8 @@
       "streetIndex": "2",
       "bookPage": "mm.32",
       "description": "",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "4P-N"
     }
   },
   "embedded": {}

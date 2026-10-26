@@ -24,7 +24,8 @@
       "streetIndex": "2",
       "bookPage": "cc.55",
       "description": "",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "2-W"
     }
   },
   "embedded": {}

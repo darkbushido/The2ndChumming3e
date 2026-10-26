@@ -23,7 +23,8 @@
       "availability": "4/4days",
       "streetIndex": "1.25",
       "bookPage": "sr3.296",
-      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> 2</p>"
+      "description": "<p><strong>Type:</strong> Know<br><strong>Memory:</strong> 2</p>",
+      "legality": "Legal"
     }
   },
   "embedded": {}

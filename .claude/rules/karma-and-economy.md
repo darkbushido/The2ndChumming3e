@@ -189,8 +189,21 @@ card: delivery N, meet at N/2, price → 🤝 Negotiate (`rollOpposedPair` → `
   `take()`. ⚠ **Both go through `SR3ESourceBooks.packAllowed`** (`gearPacks()` / `resolveDrop`); a book switched
   off is not searched, but a **drop** from one (or of a non-buyable type) now only **warns and still fills the form**
   (`GearSearch.dropWarnings`, ruled 2026-10-17); a non-Item drop fills nothing. Enter in the box is `preventDefault`ed. Mutants `gear-search-*`.
-- Not modelled: Legality/permits (p.273), the Etiquette specialisation. `tests/purchasing.test.mjs` pins
-  Cheshire: 38 days, 19 days, ¥12,600, ¥10,080.
+- **🏪 At the store or 🤝 through a contact** (reported 2026-10-25, SR3 p.273 *Making Legal Purchases*): the dialog
+  offers both. **At the store** = the LIST price (`Purchasing.storePrice` — no Street Index, the racial surcharge
+  kept), no Etiquette Test, straight to a card with 💴 Pay (`SR3EPurchase.atStore`; same pay button and click record).
+  **Through a contact** is the flow above — the haggle is where the discount comes from. The dialog opens on the store
+  for a **Legal** or "Always" item, on a contact otherwise; ⚠ **warn, never refuse**: a restricted item can be bought
+  at the store (amber note — a permit, the GM's call). Mutants `store-price-uses-street-index`,
+  `legality-store-default-for-anything`, `legality-permit-misread`.
+- **Legality Codes** (`data/legality.mjs`): read from `system.legality` (ten item models, new 2026-10-25),
+  `legalCode` (cyberware) or `legalityCode` (Defragged decks). The codes were **read from the books' gear tables**
+  (SR3, CC, M&M, MitS, R3, SOTA) into `data/legality-table.mjs` (pack → id → [code, page]) — the source; edit it
+  there, then `tools/fill-legality.mjs` (hand-kept packs) and `tools/build-default-gear.mjs` (generated) fill blanks.
+  A table with no Legality column (most electronics, biotech, magical supplies, programs) leaves the field blank —
+  the GM decides. Ammo is mostly "As Weapon" (p.281). Migration 0.9.0 fills owned copies from their compendium link.
+- Not modelled: permits themselves (p.273 — the Etiquette Test at Availability +2), the Etiquette specialisation.
+  `tests/purchasing.test.mjs` pins Cheshire: 38 days, 19 days, ¥12,600, ¥10,080.
 
 ### Carried load and Encumbrance  · *SR3 p.274* — TODO 126
 `scripts/data/carried-load.mjs`. **⚖ Carried N kg** on the Gear tab from every item not in storage;

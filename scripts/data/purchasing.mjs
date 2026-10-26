@@ -129,6 +129,15 @@ export const Purchasing = {
   },
 
   /**
+   * Buying at the store · p.273, Making Legal Purchases — *"you can get items for the price listed"*: the list
+   * price (no Street Index — that is the shadow market's multiplier), no Etiquette Test, no contact. A metatype's
+   * modified gear still costs more (p.272). Payment in full at delivery.
+   */
+  storePrice(cost, { metatype = '' } = {}) {
+    return Purchasing.askingPrice(cost, 1, { metatype });
+  },
+
+  /**
    * The Success Contest over price · p.273.
    * @param {number} buyerHits  the buyer's Negotiation successes
    * @param {number} sourceHits the source's

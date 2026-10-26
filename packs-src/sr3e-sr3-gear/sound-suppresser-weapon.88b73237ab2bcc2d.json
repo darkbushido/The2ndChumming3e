@@ -24,7 +24,8 @@
       "streetIndex": "2",
       "bookPage": "sr3.282",
       "description": "<p><strong>Mount:</strong> Barrel</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "As Weapon"
     }
   },
   "embedded": {}

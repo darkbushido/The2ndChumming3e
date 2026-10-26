@@ -23,7 +23,8 @@
       "availability": ".75",
       "streetIndex": ".75",
       "bookPage": "sr3.282",
-      "description": ""
+      "description": "",
+      "legality": "Legal"
     }
   },
   "embedded": {}

@@ -24,7 +24,8 @@
       "streetIndex": "1.5",
       "bookPage": "mm.33",
       "description": "<p><strong>Notes:</strong> Legal</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "Legal"
     }
   },
   "embedded": {}

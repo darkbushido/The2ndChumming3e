@@ -24,7 +24,8 @@
       "streetIndex": "1",
       "bookPage": "sr3.282",
       "description": "<p><strong>Mount:</strong> NA<br><strong>Source:</strong> SR3 p.282 prices only Ultrasound Goggles (1,100¥) and says they may be built into sunglasses; double, as for smart goggles (p.281). Derived; not printed.</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "Legal"
     }
   },
   "embedded": {}

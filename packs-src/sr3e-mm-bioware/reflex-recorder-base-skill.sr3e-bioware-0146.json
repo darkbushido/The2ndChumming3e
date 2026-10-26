@@ -16,7 +16,8 @@
       "bookPage": "mm.074",
       "rating": null,
       "description": "+1 die base skill, only once per skill",
-      "srcgName": "Reflex Rec. (base skill)"
+      "srcgName": "Reflex Rec. (base skill)",
+      "legality": "Legal"
     },
     "effects": []
   },
