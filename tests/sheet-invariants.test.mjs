@@ -110,4 +110,13 @@ export async function run(t) {
   t.ok('installed Damage Compensators conceal the tracks when the setting is on', /derived\?\.damageCompensators \?\? 0\) > 0\) return true/.test(conceal));
   t.ok('…still never for the GM, and only with the setting on', /if \(game\.user\.isGM\) return false/.test(conceal) && /if \(!on\) return false/.test(conceal)
     && conceal.indexOf('if (!on) return false') < conceal.indexOf('damageCompensators'));
+
+  /* ── Checkboxes are sized through Foundry's --checkbox-size (reported 2026-10-27) ──── */
+  // v14 draws the box as a glyph at --checkbox-size; a rule that sized only the box left the glyph off its outline.
+  const boxRules = [...css.matchAll(/([^{}]*input\[type=["']?checkbox["']?\][^{}]*)\{([^}]*)\}/g)]
+    .filter(m => /(^|[;\s])(width|height)\s*:/.test(m[2]));
+  t.ok('there are checkbox rules to check', boxRules.length >= 4);
+  t.ok('every checkbox rule that sizes the box sets --checkbox-size with it',
+    boxRules.every(m => /--checkbox-size\s*:/.test(m[2]) && /width:\s*var\(--checkbox-size\)/.test(m[2])));
+  t.ok('…and draws no border of its own around the glyph', boxRules.every(m => /border:\s*none/.test(m[2])));
 }

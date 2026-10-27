@@ -801,9 +801,14 @@ background-color: var(--sr-surface) !important;
   border-color: var(--sr-border-hi);
 }
 
+/* Foundry v14 draws a checkbox as a glyph sized by --checkbox-size (1.25rem); sizing the box alone left the
+   glyph spilling right and down past its outline (reported 2026-10-27). Size both together, no border of our own. */
 .form-field input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  --checkbox-size: 16px;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  padding: 0;
+  border: none;
   accent-color: var(--sr-accent);
 }
 
@@ -2316,8 +2321,11 @@ background-color: var(--sr-surface) !important;
 }
 
 .chase-vcr-active input[type=checkbox] {
-  width: 14px;
-  height: 14px;
+  --checkbox-size: 14px;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  padding: 0;
+  border: none;
   cursor: pointer;
 }
 
@@ -2393,8 +2401,11 @@ label.act-field input[type=number] {
 }
 
 .act-check-row input[type=checkbox] {
-  width: 14px;
-  height: 14px;
+  --checkbox-size: 14px;
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  padding: 0;
+  border: none;
   cursor: pointer;
 }
 
@@ -3763,7 +3774,7 @@ label.act-field input[type=number] {
 .ward-field-row span { color: var(--sr-muted); }
 .ward-field-row input, .ward-field-row select { width: 100%; }
 .ward-field-checkbox { grid-template-columns: 130px auto; }
-.ward-field-checkbox input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+.ward-field-checkbox input[type="checkbox"] { --checkbox-size: 16px; width: var(--checkbox-size); height: var(--checkbox-size); padding: 0; border: none; cursor: pointer; }
 .ward-derived-val { color: var(--sr-text); font-weight: 600; }
 
 .ward-box-section { display: flex; flex-direction: column; gap: 6px; }
