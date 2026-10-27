@@ -3491,3 +3491,17 @@ works, and the same implant **built in** now does it too.
       laser-sight flag still includes it". 🗑 the gas vent → "…its RC still includes it". Reload → they do not come back.
 - [ ] **Left as text:** the Panther's "Either: Folding Bipod(2RC) or Shoulder Strap", the Colt M22A2's "Grenade Launcher 6(m)",
       the Ballista's "Laser Designator" — no mod for any of them.
+
+## 78. A vehicle's mods against its Cargo and Load (TODO 265, step c's first slice — R3R p.124)
+
+JS / CSS only (no restart needed beyond a reload). A vehicle from the packs, e.g. an Ares Roadmaster (Body 5, Cargo 80, Load 2000).
+
+- [ ] **Mods tab:** the header reads "CF 0 / 80" and "Load 0 / 2000 kg". Drag in ECM (Vehicle) and Crash Cages (Vehicle) →
+      "CF 3 / 80", "Load 30 / 2000 kg"; each row shows its "CF / Load", and the printed text in the tooltip.
+- [ ] **Per point:** Vehicle Armor at rating 3 → Load 375 kg (Body² × 5 a point, R3R p.131); Concealed Armor 2 → 6 CF, 250 kg.
+- [ ] **Over:** set the vehicle's Cargo to 2 → the CF chip turns amber and the warning reads "… 1 over (R3R p.124 …)" with the
+      passenger room it could scrape (Roadmaster seating 3 → 2 passenger seats → up to 3 CF, +1 Power to crash damage). Set
+      Load to 20 → the Load chip and warning. Nothing is blocked. Put the figures back.
+- [ ] **Unread:** an Internal Missile Mount → "1 not counted" (its tooltip names it); its Load cell shows an amber "?".
+- [ ] **Mount reminder:** an External Hardpoint → its 10 kg counted, and "A weapon mount's Load leaves out the weapon on it".
+- [ ] **A drone** (seating 0): over Cargo shows no passenger-room offer.

@@ -3932,3 +3932,10 @@ label.act-field input[type=number] {
 .sr-mod-warn { margin: 2px 0; padding: 2px 6px; font-size: 11px; border-radius: var(--r); background: var(--sr-amber-bg); color: var(--sr-amber); }
 .sr-mod-repair { font-size: 10px; color: var(--sr-red); }
 .sr-mod-repaired { cursor: pointer; margin-left: 6px; color: var(--sr-green); }
+
+/* A vehicle's mods against its Cargo and Load (TODO 265, R3R p.124) — warned, never refused. */
+.sr-vehicle-budget { display: flex; gap: 10px; align-items: center; margin: 4px 0 6px; font-size: 12px; }
+.sr-budget { border: 1px solid var(--sr-border); border-radius: var(--r); padding: 1px 6px; color: var(--sr-text); }
+.sr-budget.sr-budget-over { border-color: var(--sr-amber); color: var(--sr-amber); background: var(--sr-amber-bg); }
+.sr-budget-unread { color: var(--sr-amber); font-size: 11px; }
+.sr-budget-warn { color: var(--sr-amber); font-size: 11px; margin: 2px 0; }

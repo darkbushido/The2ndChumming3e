@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**85 open.** 194 done — see [TODO-DONE.md](TODO-DONE.md).
+**86 open.** 194 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[280](#280) 21 shipped firearms carry RC 0 where the book prints their integral accessories' RC |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -658,6 +658,12 @@ halved and Signature −1 (rules check `rules/vehicles.md#10`, `#64-67`). The ve
 fields for the mount rows either. Wanted: mounts as vehicle slots with capacity from Body, and their effects on the
 vehicle-weapon roll.
 
+**Read (2026-10-27), R3R p.135-136:** a hardpoint counts 2, a firmpoint 1, the total no more than Body; heavy weapons (MMG and
+larger) and vehicle weapons on hardpoints only, LMGs and small arms on firmpoints; fixed mounts halve recoil before RC (cancelling
+the heavy doubling); an external mount — or an internal one while its weapon is out — is Signature −1; a personal firearm on a
+fixed mount or turret needs a conversion kit (pintle and ring mounts do not). **Decided:** a weapon links to its mount
+([#265](#265)). Next slice after the budget.
+
 ## 235. Weapon accessories as mounted items with effects — **requested 2026-10-18, from the 0.7.0 rules check**
 
 Today a firearm's accessories are a text field plus a few flags (`smartgun`, `laserSight`, [#18](#18)), and
@@ -777,6 +783,31 @@ It starts after #203.
 This uses the [#263](#263) mechanism for vehicle and drone customisation from Rigger 3 Revised. The book's
 design and customisation rules are to be read and cited before any code. It is the largest of the
 three and is built last.
+
+**Read (2026-10-27):** R3R *Vehicle Customization* (printed pp.122-150; PDF page = printed + 2). Each modification lists its
+Parts Cost, Availability, equipment, base time / skill test, max rating, **CF Consumed** and **Load Reduction** (p.124); the
+packs carry them as `vehiclemod` `cfCost` / `load`. Weapon mounts p.135-136 ([#234](#234)).
+
+**Decided (the maintainer, 2026-10-27):**
+- **Customization only** — modifying an existing vehicle or drone. R3R's *Vehicle Design* (a chassis and Design Points) is
+  not in this item; it would be its own.
+- **Slices, in order:** the CF / Load budget → weapon mounts ([#234](#234)) → what the mods change (`modifiers` onto the vehicle's
+  numbers).
+- **A weapon LINKS to its mount** (a `mountId` on the weapon item, the mount a `vehiclemod`), not stored inside it — vehicle
+  weapons roll from their own document. A vehicle is already the container (TODO 276's "inside the host" is for items).
+
+**Built — the CF / Load budget (2026-10-27):** `scripts/data/vehicle-budget.mjs` (`tests/vehicle-budget.test.mjs`; mutants
+`vehicle-armor-load-once`, `vehicle-unread-as-zero`, `vehicle-seats-include-driver`). The vehicle's Mods tab shows **CF used /
+Cargo** and **Load used / Load** (amber when over) and warns, never refuses (R3R p.124: "no vehicle can exceed its Cargo or Load").
+Over Cargo, the warning offers the passenger room: 1.5 CF a passenger seat, rounded down, at +1 Power to crash damage. Each row
+shows its CF / Load as counted, the printed text in the tooltip. Read: numbers, "Nkg", a bare number as kg, "Body*Nkg",
+"Nkg x Body", "Body^2*Nkg", "N*Armor" (Smart Armor: 3 CF per point of the vehicle's Armor, p.133); "Nkg+Weapon" counts the N and
+reminds the GM the weapon weighs extra (p.136). **Per Armor point** (p.131-132, not in the pack fields): Vehicle Armor's Load,
+Concealed Armor's CF and Load (`PER_POINT`). Unread and named "not counted": the missile mounts' "weight of the missiles" and
+FRA's VAUBAN "Upgrade". TESTING.md §78.
+- ⚠ **Read as:** "passenger seats" = `seating` − 1 (the driver's seat is not a passenger's). Not ruled — say if `seating`
+  already excludes the driver.
+- **Pack data, noticed:** Concealed Armor's `cfCost` is "3" — the customization figure, per point (p.132; design is 2 per point).
 
 ## 266. Every mod says what it is a mod FOR; the armour options become one document each — **requested 2026-10-24**
 
@@ -1044,6 +1075,18 @@ barrel repair's, [#278](#278)).
 repair price ([#278](#278)), the mount table per weapon class ([#276](#276) open questions), the internal smartgun price (#276),
 and an FCU capacity rule for `ItemMods` beside the armour caps. Mods already live inside the gun (`system.installed`), so a
 customisation is an installed mod with a DP price and an FCU cost.
+
+## 280. 21 shipped firearms carry RC 0 where the book prints their integral accessories' RC — **found 2026-10-27**
+
+Seen walking TESTING.md §77i: of the 33 shipped guns with an integral RC accessory (TODO 276 step b), 21 have `recoilMod` 0 and
+no bracketed RC — the Ares Crusader, Colt Cobra TZ-110, HK MP-5 TX, Ares MP-LMG, FN MAG-5 MMG, Barret Model 121 and others.
+The book prints the figure: the Cannon Companion's machine-pistol table gives the Crusader **RC 2**, its integral Rating 2 gas
+vent. So these guns fire with no recoil compensation at all — before step b too (the text was never parsed), so not a regression.
+The maintainer's ruling for integral mods (shown, never counted) assumes the printed RC is filled; for these it is not.
+**Wanted:** each gun's RC (and bracketed RC) read from its PDF table, page cited, filled in `packs-src` (a `pack-corrections`
+entry) and in owned copies by migration — fill blanks only (0 / null). List the 21: walk `IntegralMods` over the firearm packs
+for guns whose `recoilMod` and `recoilModIntegral` are below their integral RC mods' total. A rules-data fix: the maintainer
+says whether it goes on main or the branch.
 
 ### 🪄 Spells & drugs
 

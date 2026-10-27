@@ -51,6 +51,7 @@ const BLASTBATCH = { module: '../scripts/data/blast-batch.mjs', klass: 'BlastBat
 const CYBERCAP = { module: '../scripts/data/cyber-capacity.mjs', klass: 'CyberCapacity' };
 const ITEMMODS = { module: '../scripts/data/item-mods.mjs', klass: 'ItemMods' };
 const INTEGRAL = { module: '../scripts/data/integral-mods.mjs', klass: 'IntegralMods' };
+const VBUDGET = { module: '../scripts/data/vehicle-budget.mjs', klass: 'VehicleBudget' };
 // An item with its integral flags taken off — what every reader saw before the ruling (TODO 276, step b).
 const unIntegral = it => ({ ...it,
   flags: { ...(it?.flags ?? {}), The2ndChumming3e: { ...(it?.flags?.The2ndChumming3e ?? {}), integral: false } },
@@ -4103,5 +4104,26 @@ export const MUTANTS = [
       for (const w of words) { const m = this._matchOriginal(w); if (m) return m; }
       return null;
     },
+  },
+  {
+    id:     'vehicle-armor-load-once',
+    suite:  'vehicle-budget',
+    ...VBUDGET, method: 'of', needsOriginal: '_ofOriginal',
+    was:    'Vehicle Armor 3 weighed one point\'s Body² × 5 kg — R3R p.131 prints it per Armor point (TODO 265)',
+    impl:   function (mod, vehicle) { return this._ofOriginal({ ...mod, system: { ...(mod?.system ?? {}), rating: 1 } }, vehicle); },
+  },
+  {
+    id:     'vehicle-unread-as-zero',
+    suite:  'vehicle-budget',
+    ...VBUDGET, method: 'load', needsOriginal: '_loadOriginal',
+    was:    '"weight of the missiles" counted as 0 kg, so a missile mount never showed the GM a figure to supply (TODO 265)',
+    impl:   function (text, ctx) { return this._loadOriginal(text, ctx) ?? 0; },
+  },
+  {
+    id:     'vehicle-seats-include-driver',
+    suite:  'vehicle-budget',
+    ...VBUDGET, method: 'passengerSeats',
+    was:    'the driver\'s seat was scraped for cargo too — R3R p.124 gives 1.5 CF per PASSENGER seat (TODO 265)',
+    impl:   seating => Math.max(0, Math.trunc(Number(seating) || 0)),
   },
 ];

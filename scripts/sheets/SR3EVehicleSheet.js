@@ -1,5 +1,6 @@
 import { vcrLevel, displayName } from '../data/item-rating.mjs';
 import { CyberCapacity } from '../data/cyber-capacity.mjs';
+import { VehicleBudget } from '../data/vehicle-budget.mjs';
 import { Rigging } from '../data/rigging.mjs';
 import { StallSpeed } from '../data/stall-speed.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
@@ -432,11 +433,17 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   _tabMods(actor) {
     const mods = actor.items.filter(i => i.type === 'vehiclemod')
       .sort((a, b) => a.name.localeCompare(b.name));
+    // CF and Load against Cargo and Load (TODO 265, R3R p.124) — shown and warned, never refused.
+    const budget = VehicleBudget.summary(actor, mods);
+    const esc = v => foundry.utils.escapeHTML(String(v ?? ''));
+    const fig = (v, unit, raw) => (v == null
+      ? `<span style="color:var(--sr-amber)" data-tooltip="Not counted: “${esc(raw)}” — the GM's figure">?</span>`
+      : `<span data-tooltip="As printed: ${esc(raw || '—')}">${v}${unit}</span>`);
 
-    const rows = mods.length ? mods.map(m => `
+    const rows = mods.length ? mods.map((m, i) => `
       <div class="item-row" data-item-id="${m.id}">
         <span class="item-name">${displayName(m)}</span>
-        <span class="item-cell">${m.system.cfCost || '—'}</span>
+        <span class="item-cell">${fig(budget.rows[i].cf, '', m.system.cfCost)} / ${fig(budget.rows[i].load, ' kg', m.system.load)}</span>
         <span class="item-cell">${m.system.installEquipment || '—'}</span>
         <span class="item-cell" style="color:var(--sr-muted);font-size:11px">${m.system.installTime || '—'}</span>
         <span class="item-cell">${m.system.cost ? m.system.cost.toLocaleString() + '¥' : '—'}</span>
@@ -446,9 +453,18 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         </span>
       </div>`).join('') : '<p class="empty-list">No mods installed.</p>';
 
+    const over = (b) => (b.over > 0 ? ' sr-budget-over' : '');
+    const head = `<div class="sr-vehicle-budget">
+        <span class="sr-budget${over(budget.cf)}" data-tooltip="Cargo the mods take, against the vehicle's Cargo (${VehicleBudget.PAGE}). Passenger room adds up to ${budget.cf.scrape} CF at +1 Power to crash damage.">CF ${budget.cf.used} / ${budget.cf.of}</span>
+        <span class="sr-budget${over(budget.load)}" data-tooltip="Weight the mods add, against the vehicle's Load (${VehicleBudget.PAGE}).">Load ${budget.load.used} / ${budget.load.of} kg</span>
+        ${budget.unread.length ? `<span class="sr-budget-unread" data-tooltip="${esc(budget.unread.join(', '))}">${budget.unread.length} not counted</span>` : ''}
+      </div>
+      ${budget.warnings.map(w => `<p class="sr-budget-warn">⚠ ${esc(w)}</p>`).join('')}`;
+
     return `<div class="tab ${this._activeTab === 'mods' ? 'active' : ''}" data-tab="mods" style="overflow-y:auto">
+      ${head}
       <div class="list-header">
-        <span>Mod</span><span>CF</span><span>Equipment</span><span>Install Time</span><span>Cost</span><span></span>
+        <span>Mod</span><span>CF / Load</span><span>Equipment</span><span>Install Time</span><span>Cost</span><span></span>
       </div>
       ${rows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="vehiclemod">+ Add Mod</button>
