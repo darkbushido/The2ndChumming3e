@@ -10,7 +10,12 @@
  * the Ares Sonic Beam Rifle's *"use battery back from MP Laser III"*. A token counts as a laser sight
  * only when it IS one: "Laser Sight", "Laser sight", "High-power Laser Sight", "Dual Laser sight", or a
  * bare "Laser" (the Ruger Thunderbolt's entry).
+ *
+ * **An installed mod switches it on** (TODO 276): a Smartgun, external or a laser sight in `system.installed` whose
+ * modifiers set `smartgun` / `laserSight`. A mod never switches a built-in one off.
  */
+import { ItemMods } from './item-mods.mjs';
+
 const LASER_SIGHT = /^(?:[\w-]+\s+)?laser(?:\s+sight)?$/i;
 const SMARTGUN    = /\bsmart/i;
 
@@ -26,8 +31,9 @@ export const WeaponAccessories = {
     return { smartgun: t.some(s => SMARTGUN.test(s)), laserSight: t.some(s => LASER_SIGHT.test(s)) };
   },
 
-  /** The weapon's answer for `field` ('smartgun' | 'laserSight') — the stored boolean wins, else the text. */
+  /** The weapon's answer for `field` ('smartgun' | 'laserSight') — an installed mod, else the stored boolean, else the text. */
   flag(weapon, field) {
+    if (ItemMods.value(weapon, field) > 0) return true;
     const v = weapon?.system?.[field];
     if (v === true || v === false) return v;
     return !!WeaponAccessories.fromText(weapon?.system?.accessories)[field];

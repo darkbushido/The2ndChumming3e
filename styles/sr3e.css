@@ -3890,3 +3890,29 @@ label.act-field input[type=number] {
 .sr3e-card-done .sr-roll-header::after { content: ' ▸ done'; font-size: 10px; font-weight: normal; color: var(--sr-green, #6a6); }
 .sr3e-step-flash { animation: sr3e-step-flash 1.5s ease-out; }
 @keyframes sr3e-step-flash { from { box-shadow: 0 0 0 3px var(--sr-gold, #c8a040); } to { box-shadow: 0 0 0 0 transparent; } }
+
+/* ── Mods installed inside an item · TODO 276 ─────────────────────────────── */
+.sr-mods, .sr-modifiers {
+  margin-top: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--sr-border);
+  border-radius: var(--r);
+  background: var(--sr-card);
+}
+.sr-mods-drop { border-style: dashed; }
+.sr-mods-over { border-color: var(--sr-accent); background: var(--sr-surface); }
+.sr-mods-title { margin: 0 0 4px; font-size: 12px; color: var(--sr-muted); text-transform: uppercase; letter-spacing: .05em; border: none; }
+.sr-mod-row, .sr-modifier-row { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
+.sr-mod-mount { flex: 0 0 48px; font-size: 10px; color: var(--sr-dim); text-transform: uppercase; }
+.sr-mod-img { width: 20px; height: 20px; border: none; flex: 0 0 20px; }
+.sr-mod-name { flex: 1; cursor: pointer; color: var(--sr-text); }
+.sr-mod-changes { font-size: 11px; color: var(--sr-gold); }
+.sr-mod-row a:not(.sr-mod-name), .sr-modifier-remove, .sr-modifier-add { cursor: pointer; color: var(--sr-muted); }
+.sr-mod-row a:not(.sr-mod-name):hover, .sr-modifier-add:hover { color: var(--sr-accent); }
+.sr-modifier-remove:hover { color: var(--sr-red); }
+.sr-modifier-row select { flex: 1; }
+.sr-mod-empty, .sr-mod-hint { margin: 2px 0; font-size: 11px; color: var(--sr-dim); }
+.sr-mods-summary { margin-top: 4px; font-size: 11px; color: var(--sr-muted); display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.sr-mod-chip { padding: 0 6px; border-radius: var(--r-lg); background: var(--sr-surface); border: 1px solid var(--sr-border-hi); color: var(--sr-text); }
+.sr-mod-host { margin: 0 0 6px; padding: 4px 8px; font-size: 11px; border-radius: var(--r); background: var(--sr-amber-bg); color: var(--sr-amber); }
+.sr-mod-count { font-size: 10px; color: var(--sr-gold); cursor: help; }

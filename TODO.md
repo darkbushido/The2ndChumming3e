@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**82 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**83 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -813,6 +813,58 @@ BARE trailing number), and every mod names what it attaches to — the truth [#2
 7. "Electronic Magnification (Armor)" and "Optical Magnification (Armor)" (both armour packs) show Level 3, at 900¥ and 1,200¥; an owned "Elec. Vis. Mag 3" / "Optical Vis. Mag 38" becomes "Electronic Magnification (Armor) [3]" / "Optical Magnification (Armor) [3]".
 8. The Cannon Companion armour compendium shows ONE "Thermo Vision (Armor)" (700¥) and no "Therm Vision"; an owned "+Therm Vision" / "Therm Vision (Armor)" is renamed to it.
 9. The Cannon Companion gear compendium shows "Extended Clip (Weapon)" (cc.81, 16¥); an owned "Extended Clip ( (Weapon)" is renamed to it.
+
+## 276. Mods installed inside the item they modify — weapons first — **requested 2026-10-27**
+
+**The maintainer, 2026-10-27:** "we need a better system for applying weapon mods … it would be nice if the modable systems
+had some way of showing what mods were installed and having their attributes affected by them. This could expand from
+weapons to cyberware, vehicles and drones." Then: "if we were adding a bag I wouldn't want a list in gear of what's in the
+bag, I'd want to open the bag to see what's in there", and "a cybereye with thermal vision [should] add the thermal vision
+attribute to the cybereye, which would then add it to the actor". Branch `claude/quirky-mayer-32wuvg`, off `feature/mods`.
+
+**⚠ Supersedes [#263](#263)'s "a mod is its own item, owned by the actor and pointing at its parent".** A mod lives INSIDE its
+host instead, so it travels with it — another actor, an unlinked token, a sidebar item, a compendium entry — and a deleted
+host takes its mods with it. #263-#265 keep their rules (armour caps, gel packs, vehicle CF); they build on this.
+
+**Decided (design):**
+- **Storage.** A host keeps its mods as full item data in `system.installed` (an array; each entry keeps its `_id`). Not
+  documents. ⚠ Not `system.mods` — cyberware's `mods` is the upstream bonus string. Hosts: firearm, melee, armour,
+  cyberware (`ItemMods.HOST_TYPES`).
+- **Effects are data on the item.** `system.modifiers`, `[{ target, value }]`, from a fixed vocabulary (`ItemMods.TARGETS`):
+  each target says how values combine (`add`; `max` — the highest counts, the "no stacking" ruling for magnification;
+  `any` — on/off) and whether it climbs to the actor. Editable on every item's sheet (the Changes section), so a houseruled
+  mod needs no code.
+- **mod → host → actor.** A host's effective value is its own modifiers plus its mods' (`ItemMods.effective`, 3 levels deep).
+  The actor gets the `toActor` targets from items that pass them up (`ItemMods.passesToActor`): installed cyberware and
+  bioware always, armour only while worn, gear while carried, never anything in Storage, **never a weapon** (the attack asks
+  the gun it fires). Nothing computed is saved; the base fields stay editable.
+- **Warn, never refuse.** A mod for something else (`modFor`, [#266](#266)), or a weapon mount already taken (SR3 p.280,
+  one accessory each on top, barrel, underbarrel; the mount read from `system.mount`, else the description, [#259](#259)).
+
+**Built (first slice):** `scripts/data/item-mods.mjs` (pure, `tests/item-mods.test.mjs`); `scripts/SR3EItemMods.js` (install
+— from the same actor it MOVES, from anywhere else it copies; ⏏ take out to the inventory; 🗑 delete; ✎ open the mod's
+sheet on a temporary item whose `update` writes back into the host); the item sheet's **Installed mods** section (mount,
+changes, drop zone, the effective summary) and **Changes** section; a mod dropped on a host's row on the character sheet
+installs into it (only a mod — tagged or carrying changes — so dragging a gun over a gun still sorts); a 🔧N chip on
+firearm, melee, armour and cyberware rows. Targets wired: **RC** (the fire dialog adds installed RC to the gun's own figure,
+plain or bracketed; a typed total is stored back without it — `IntegralRC.totalComp` / `baseFor`), **smartgun** and **laser
+sight** (`WeaponAccessories.flag`: an installed mod switches it on), **low-light** and **thermographic** vision
+(`detectVision` reads `ItemMods.actorTotals`: "Cybereyes (Thermographic Vision)").
+
+**Still open in this item:**
+1. **Pack data** — fill `modifiers` on the accessories (gas vents RC = rating, shock pads RC 1, Smartgun external, laser
+   sights, imaging scopes) and the cybereye / armour vision options, by a tool from a table, with the owned-copy migration
+   (fill blanks). Until then a GM adds the change by hand.
+2. **Magnification** (`max`, SR3 p.110, p.113) — shift the range band by the highest device in use ([#235](#235)).
+3. **Stock / tripod deployed** — a mod toggle replacing the fire dialog's integral tick ([#235](#235)).
+4. **The free-text `accessories`** — a migration turning it into installed mods where it parses; the rest stays a note.
+5. **Armour** ([#263](#263) caps and gel packs), **cyberlimbs** (Equipment Capacity, M&M pp.35-36; Essence of a built-in
+   item only when paid, M&M p.127), **vehicles and drones** ([#265](#265); their mods stay items on the vehicle actor, which
+   is the container; weapon mounts [#234](#234) are hosts).
+6. **For the maintainer:** does a helmet's or goggles' thermographic count on the Visibility Table's CYBERNETIC column
+   (SR3 p.111)? Today a worn helmet's vision lands there with cybereyes — to check against the book.
+
+**🧪 Test in Foundry** — TESTING.md §77 (full restart: data models gained fields).
 
 ### 🪄 Spells & drugs
 

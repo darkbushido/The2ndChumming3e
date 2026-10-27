@@ -51,13 +51,22 @@ export async function run(t) {
   t.eq('…HK227 and Ingram keep their plain 2', [by('Heckler & Koch HK227').recoilMod, by('Ingram Smartgun Mod. 20t').recoilMod], [2, 2]);
 
   /* ── the wiring, source-level ─────────────────────────────────────────────── */
+  // Installed mods add on top of whichever figure is in use (TODO 276); a typed total is stored back WITHOUT them.
+  const vent = { name: 'Gas Vent II', system: { modifiers: [{ target: 'rc', value: 2 }] } };
+  const hk227v = { ...hk227, installed: [vent] };
+  t.eq('HK227 2(3) + an installed Gas Vent II: 4 carried, 5 with the stock', [IntegralRC.totalComp(hk227v, false), IntegralRC.totalComp(hk227v, true)], [4, 5]);
+  t.is('…its own figure is unchanged (the base stays the printed one)', IntegralRC.weaponComp(hk227v, false), 2);
+  t.is('…the shooter types 5 over the 4: the base becomes 3, not 5', IntegralRC.baseFor(hk227v, 5), 3);
+  t.is('…never below 0', IntegralRC.baseFor(hk227v, 1), 0);
+  t.is('no mods: totalComp is weaponComp', IntegralRC.totalComp(hk227, true), 3);
+
   const item = read('scripts/documents/SR3EItem.js');
-  t.ok('the fire dialog starts from the bracketed-aware figure', /const weaponComp\s+= IntegralRC\.weaponComp\(weapon\.system, inUse0\)/.test(item));
+  t.ok('the fire dialog starts from the bracketed-aware figure', /const weaponComp\s+= IntegralRC\.totalComp\(weapon\.system, inUse0\)/.test(item));
   t.ok('…offers the tick only when the weapon has a bracketed RC', /hasIntegral \? `<label[^`]*id="sr-integral"/.test(item));
-  t.ok('…ticking swaps the weapon figure', /#sr-integral'\)\?\.addEventListener\('change'[\s\S]{0,200}IntegralRC\.weaponComp\(weapon\.system, event\.target\.checked\)/.test(item));
-  t.ok('…a typed figure is saved against the figure that was showing', /\[inUse \? 'system\.recoilModIntegral' : 'system\.recoilMod'\]: wComp/.test(item));
+  t.ok('…ticking swaps the weapon figure', /#sr-integral'\)\?\.addEventListener\('change'[\s\S]{0,200}IntegralRC\.totalComp\(weapon\.system, event\.target\.checked\)/.test(item));
+  t.ok('…a typed figure is saved against the figure that was showing', /\[inUse \? 'system\.recoilModIntegral' : 'system\.recoilMod'\]: IntegralRC\.baseFor\(weapon\.system, wComp\)/.test(item));
   t.ok('…the tick is remembered on the gun', /'system\.integralInUse': inUse/.test(item));
-  t.ok('…the result carries the weapon figure, so a short burst recomputes with it', /weaponComp: wComp/.test(item) && /fireModeResult\.weaponComp \?\? this\.system\.recoilMod/.test(item));
+  t.ok('…the result carries the weapon figure, so a short burst recomputes with it', /weaponComp: wComp/.test(item) && /fireModeResult\.weaponComp \?\? IntegralRC\.totalComp\(this\.system, false\)/.test(item));
   t.ok('FirearmData declares both fields', /recoilModIntegral: new NumberField\(\{ integer: true, nullable: true, initial: null, min: 0 \}\)/.test(read('scripts/data/ItemDataModels.js')) && /integralInUse:\s+new BooleanField\(\{ initial: false \}\)/.test(read('scripts/data/ItemDataModels.js')));
   t.ok('the item sheet has the field', /'recoilModIntegral'/.test(read('scripts/sheets/SR3EItemSheet.js')));
   t.ok('TESTING.md has the live step', /integral accessories in use/i.test(read('TESTING.md')));

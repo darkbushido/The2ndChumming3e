@@ -20,6 +20,13 @@
  * The book says nothing about WHEN a stock or tripod counts as in use, so the dialog asks, and defaults to what the
  * shooter answered last time for that gun (unticked on a new one: the plain figure is the safe, lower one).
  */
+import { ItemMods } from './item-mods.mjs';
+
+/*
+ * **Installed mods add on top** (TODO 276): a gas vent or shock pads installed in the gun (`system.installed`) add their RC
+ * to whichever figure is in use — `modsComp`. `totalComp` is what the shot gets; `weaponComp` stays the gun's own
+ * printed figure, so a number typed over the total is written back to the base WITHOUT the mods (`baseFor`).
+ */
 export const IntegralRC = {
   /** Does this weapon print a bracketed figure? Null / blank / junk: no. */
   has(system) {
@@ -31,6 +38,21 @@ export const IntegralRC = {
   weaponComp(system, inUse = false) {
     if (inUse && IntegralRC.has(system)) return Math.max(0, Math.trunc(Number(system.recoilModIntegral)));
     return Math.max(0, Math.trunc(Number(system?.recoilMod) || 0));
+  },
+
+  /** RC from the mods installed in the weapon (Gas Vent II +2, shock pads +1). */
+  modsComp(system) {
+    return Math.max(0, ItemMods.value({ system }, 'rc'));
+  },
+
+  /** The weapon's whole Recoil Compensation for this shot: its own figure plus its installed mods'. */
+  totalComp(system, inUse = false) {
+    return IntegralRC.weaponComp(system, inUse) + IntegralRC.modsComp(system);
+  },
+
+  /** The base figure to store when the shooter typed `typed` over the total — the mods' part taken back off. */
+  baseFor(system, typed) {
+    return Math.max(0, Math.trunc(Number(typed) || 0) - IntegralRC.modsComp(system));
   },
 
   /** Is the tick pre-set? Only a weapon with a bracketed figure can be ticked; the gun remembers its last answer. */

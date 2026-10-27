@@ -5,6 +5,16 @@ const {
   SchemaField, ArrayField, HTMLField, ObjectField,
 } = foundry.data.fields;
 
+/* Mods installed INSIDE an item, and what an item changes — TODO 276, read only through ItemMods
+ * (scripts/data/item-mods.mjs). `installed`: the mods' full item data, each keeping its `_id` (not documents — they
+ * travel with the host). `modifiers`: `[{ target, value }]` from ItemMods.TARGETS. ⚠ Not `mods`: cyberware's `mods`
+ * is the upstream bonus string. */
+const installedField = () => new ArrayField(new ObjectField());
+const modifiersField = () => new ArrayField(new SchemaField({
+  target: new StringField({ initial: '' }),
+  value:  new NumberField({ initial: 0 }),
+}));
+
 // ── Weapons ───────────────────────────────────────────────────────────────────
 
 export class MeleeData extends foundry.abstract.TypeDataModel {
@@ -41,6 +51,8 @@ export class MeleeData extends foundry.abstract.TypeDataModel {
       legality:       new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:    new StringField({ initial: '' }),
+      installed:       installedField(),
+      modifiers:       modifiersField(),
       bookPage:       new StringField({ initial: '' }),
       legal:          new BooleanField({ initial: true }),
       notes:          new HTMLField({ initial: '', required: false }),
@@ -191,6 +203,8 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       // A shock weapon (SR3 p.124-125) — the Defiance Super Shock and the other tasers. A category Tasr always is
       // (ShockStun.isShock), so the tick is for a taser-like weapon filed elsewhere.
       shock:           new BooleanField({ initial: false }),
+      installed:       installedField(),
+      modifiers:       modifiersField(),
       bookPage:        new StringField({ initial: '' }),
       notes:           new HTMLField({ initial: '', required: false }),
       isAoE:           new BooleanField({ initial: false }),
@@ -269,6 +283,8 @@ export class ArmorData extends foundry.abstract.TypeDataModel {
       legality:       new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:    new StringField({ initial: '' }),
+      installed:      installedField(),
+      modifiers:      modifiersField(),
       bookPage:       new StringField({ initial: '' }),
       notes:          new HTMLField({ initial: '', required: false }),
     };
@@ -305,6 +321,7 @@ export class GearData extends foundry.abstract.TypeDataModel {
       availability: new StringField({ initial: '' }),
       legality:     new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       streetIndex:  new StringField({ initial: '' }),
+      modifiers:    modifiersField(),
       bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document needs one
       description:  new HTMLField({ initial: '', required: false }),
     };
@@ -390,6 +407,8 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       capacity:          new NumberField({ initial: 0, min: 0 }),
       cyberwareCategory: new StringField({ initial: '' }),
       isReplacement:     new BooleanField({ initial: false }),
+      installed:         installedField(),
+      modifiers:         modifiersField(),
       bookPage:          new StringField({ initial: '' }),
       description:       new HTMLField({ initial: '', required: false }),
       // ⚠ NO `min: 0` — these may legitimately be NEGATIVE. Three SR3 entries carry a
@@ -457,6 +476,7 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
       streetIndex:      new NumberField({ initial: 0, min: 0 }),
       mods:             new StringField({ initial: '' }),
       biowareCategory:  new StringField({ initial: '' }),
+      modifiers:         modifiersField(),
       bookPage:         new StringField({ initial: '' }),
       description:      new HTMLField({ initial: '', required: false }),
       bonusBod:         new NumberField({ integer: true, initial: 0 }),
@@ -562,6 +582,7 @@ export class VehicleModData extends foundry.abstract.TypeDataModel {
       installTime:      new StringField({ initial: '' }),
       cfCost:           new StringField({ initial: '0' }),
       load:             new StringField({ initial: '' }),
+      modifiers:        modifiersField(),
       bookPage:         new StringField({ initial: '' }),
       description:      new HTMLField({ initial: '', required: false }),
     };

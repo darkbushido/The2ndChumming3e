@@ -3308,3 +3308,31 @@ copy is fine. Note the world's current `matrixRuleset` and restore it afterwards
 - [ ] **One value everywhere (Orthodox):** an Orthodox cybercombat/IC roll dialog offers up to **4** Hacking Pool dice; spend 2 → the sheet reads 2 / 4.
 - [ ] **Actor-held deck:** under Orthodox, an actor with no deck item and `orthodoxDeck.mccp` 6, INT 5 → pool **3**. Under Defragged the same actor has no pool.
 - [ ] Restore the original ruleset setting and restart.
+
+## 77. Mods installed inside an item (TODO 276, branch `claude/quirky-mayer-32wuvg`)
+
+**Full Foundry restart** — firearm, melee, armour, cyberware, gear, bioware and vehicle-mod models gained `installed` /
+`modifiers`. A character with an Ares Predator (or any firearm) and Cybereyes; a Gas Vent II and a Smartgun, external from
+the gear compendium; a second user (Player2) owning the character.
+
+- [ ] **Install from the compendium:** open the Predator's sheet; **Installed mods** says "Nothing installed". Drag Gas Vent II
+      from the compendium onto that section → it is listed (mount **Barrel**), the inventory does NOT gain a Gas Vent.
+- [ ] **Changes:** ✎ the Gas Vent → its sheet says "🔧 Installed in Ares Predator". **+ Add a change** → Recoil Compensation 2.
+      Close it: the Predator's row shows **RC 2** in Changes, the summary chip "RC 2" (tooltip "RC 2: Gas Vent II +2").
+- [ ] **The fire dialog:** fire the Predator SA → Recoil comp → Weapon reads **2** (tooltip names the Gas Vent). Type 3 over it,
+      fire: reopen the gun's sheet — its own RC is **1**, not 3 (the vent's 2 is never baked in).
+- [ ] **Move, not copy:** drag a Smartgun, external from the compendium into the character's inventory, then drag it from the
+      inventory onto the **Predator's row** on the Combat tab → it is installed and gone from the inventory; the row shows 🔧2.
+      Give it a change "Smartgun system" (ticked) → the fire dialog's Smartgun box is pre-ticked.
+- [ ] **Mount warning, never a refusal:** install a second barrel accessory (a Silencer) → a warning "The barrel mount already
+      holds Gas Vent II…", and it is installed anyway.
+- [ ] **Wrong kind warns:** drop an armour mod (Chemical Seal (Armor)) on the Predator → "is a mod for armour, not a weapon", installed.
+- [ ] **⏏ Take out:** ⏏ the Silencer → it is in the inventory again, gone from the gun. **🗑** the Chemical Seal → confirm → gone entirely.
+- [ ] **It travels:** drag the Predator to another actor → its mods are there. Drag it to the Items sidebar → the world item
+      shows the same mods. An unlinked token of an NPC with a modded gun: install in the token's copy; the sidebar NPC's gun is unchanged.
+- [ ] **Vision climbs:** on the Cybereyes' sheet, drop any gear item into Installed mods, ✎ it, add a change **Thermographic
+      vision**. Fire at a target in darkness: the GM window's vision reminder / pre-selected vision offers **thermo** from
+      "Cybereyes (…)". Move the Cybereyes to Storage → it is gone.
+- [ ] **Player2** (owning the character, not the GM): installs, ✎ edits, ⏏ and 🗑 all work. Player2 opening a GM-only item's mod sees it read-only.
+- [ ] **Dragging a gun over a gun** on the Combat tab still only sorts — nothing is installed.
+

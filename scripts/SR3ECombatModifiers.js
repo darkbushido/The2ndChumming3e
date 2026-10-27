@@ -25,6 +25,7 @@
 import { Hands } from './data/hands.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { WeaponAccessories } from './data/weapon-accessories.mjs';
+import { ItemMods } from './data/item-mods.mjs';
 import { Shotgun } from './data/shotgun.mjs';
 import { MeleeProne } from './data/melee-prone.mjs';
 
@@ -209,6 +210,10 @@ export const SR3E_RACIAL_VISION = { elf: 'lowLight', ork: 'lowLight', dwarf: 'th
  * Name-matched on stems, because the packs abbreviate and the contacts pack uses its own
  * spellings (`Low Light`, `Thermographic Vision`, `Eyes, Low-Light`).
  *
+ * **Then from installed mods** (TODO 276): a cybereye holding a Thermographic option, or a worn helmet holding one, passes
+ * `thermo` / `lowLight` to the actor (`ItemMods.actorTotals`) — the source reads "Cybereyes (Thermographic Vision)". An
+ * item already found by its own name is not listed twice.
+ *
  * @param {{metatype?: string, items?: Iterable<{type:string, name:string}>}} actor
  * @returns {{ metatype: string, racial: string|null, replacedBy: string|null,
  *             natural: Array<{column:string, source:string|null}>,
@@ -235,6 +240,14 @@ export function detectVision(actor) {
     } else if (i?.type === 'bioware' && /cat'?s\s*eyes/i.test(name)) {
       replacedBy ??= name;
       natural.push({ column: 'lowLight', source: name });
+    }
+  }
+  const totals = ItemMods.actorTotals(items);
+  for (const column of ['lowLight', 'thermo']) {
+    for (const p of totals[column]?.parts ?? []) {
+      if (!(p.value > 0)) continue;
+      const source = p.via ? `${p.source} (${p.via})` : p.source;
+      if (!cyber.some(c => c.column === column && (c.source === source || c.source === p.source))) cyber.push({ column, source });
     }
   }
   if (racial && !replacedBy) natural.unshift({ column: racial, source: null });

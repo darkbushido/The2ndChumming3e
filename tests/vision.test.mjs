@@ -131,4 +131,14 @@ export async function run(t) {
   /* Names are free text and go into window markup. */
   t.is('escapeHTML escapes markup', escapeHTML(`<b>"O'Neil" & co</b>`),
     '&lt;b&gt;&quot;O&#39;Neil&quot; &amp; co&lt;/b&gt;');
+
+  // Installed mods reach the actor (TODO 276): the cybereye holds the option, the actor gets the vision.
+  const eyes = { type: 'cyberware', name: 'Cybereyes', system: { installed: [{ _id: 'a', name: 'Thermographic Vision', system: { modifiers: [{ target: 'thermo', value: 1 }] } }] } };
+  const withEyes = { system: { metatype: 'human' }, items: [eyes] };
+  t.eq('a cybereye holding Thermographic gives cyber thermo, named for both', detectVision(withEyes).cyber, [{ column: 'thermo', source: 'Cybereyes (Thermographic Vision)' }]);
+  t.ok('…and still counts as replaced eyes', detectVision(withEyes).replacedBy === 'Cybereyes');
+  const named = { type: 'cyberware', name: 'Eyes, Thermographic', system: { modifiers: [{ target: 'thermo', value: 1 }] } };
+  t.is('an implant found by its name AND its modifier is listed once', detectVision({ system: { metatype: 'human' }, items: [named] }).cyber.length, 1);
+  const helmet = { type: 'armor', name: 'Helmet', system: { worn: false, installed: [{ _id: 'b', name: 'Thermo Vision (Armor)', system: { modifiers: [{ target: 'thermo', value: 1 }] } }] } };
+  t.is('a helmet\'s thermo counts only while it is worn', detectVision({ system: { metatype: 'human' }, items: [helmet] }).cyber.length, 0);
 }

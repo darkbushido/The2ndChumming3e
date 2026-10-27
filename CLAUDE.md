@@ -488,6 +488,11 @@ system.recoilCompensation / .roundsFiredThisPhase / .targetsThisPhase
 - `drug`: `addiction` ("4M+3P"), `tolerance`, `edge` ("5/50"; legacy `effect`), `fixFactor`, `damage`, `speed`,
   `vector`, `legality`, `availability`, `cost`, `streetIndex`, `bookPage`
 - gear/cyberware/bioware/medical: `rating` — read only through `itemRating()` (see essence-and-cyberware.md)
+- **Mods inside items** (TODO 276): a host (firearm, melee, armour, cyberware) keeps its mods as item DATA in
+  `system.installed` — not documents, so they travel with it; ⚠ never `system.mods` (cyberware's upstream bonus string).
+  What any item changes is `system.modifiers` `[{ target, value }]` from `ItemMods.TARGETS`. Effects climb mod → host →
+  actor: read a host with `ItemMods.effective` / `value`, the actor with `ItemMods.actorTotals` (worn armour, carried gear,
+  installed cyber — never a weapon), all in `scripts/data/item-mods.mjs`; install/⏏/✎ in `scripts/SR3EItemMods.js`.
 
 ### Weapon category codes → skills
 ```

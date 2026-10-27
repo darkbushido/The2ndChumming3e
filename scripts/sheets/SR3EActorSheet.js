@@ -11,6 +11,9 @@ import { Funds } from '../data/funds.mjs';
 import { CombatPool } from '../data/combat-pool.mjs';
 import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
+import { ItemMods } from '../data/item-mods.mjs';
+import { ModFor } from '../data/mod-for.mjs';
+import { SR3EItemMods } from '../SR3EItemMods.js';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -516,6 +519,17 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    *   · **a vehicle or drone** — an ACTOR, which core's `_onDropActor` ignores. The Vehicles
    *     tab's "Add a Vehicle" did the job; dragging it did nothing at all.
    */
+  /**
+   * "🔧 2" after a name — the mods installed in it (TODO 276), named in the tooltip. Open the item to see them. Nothing
+   * for an item with none.
+   */
+  static modsChip(item) {
+    const list = ItemMods.installed(item);
+    if (!list.length) return '';
+    const names = list.map(m => foundry.utils.escapeHTML(String(m?.name ?? '?'))).join(', ');
+    return ` <span class="sr-mod-count" title="Installed: ${names}">🔧${list.length}</span>`;
+  }
+
   async _onDrop(event) {
     try {
       return await super._onDrop(event);
@@ -530,6 +544,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (!document) {
       ui.notifications.warn(SR3EActorSheet.dropFailureMessage(null));
       return null;
+    }
+    // A mod dropped on a row of something that holds mods goes INTO it (TODO 276): a gas vent on the gun's row, an
+    // armour option on the helmet's. Only an item that is a mod — tagged (`ModFor.of`) or carrying changes — so dragging a
+    // gun over another gun still just sorts. Anything else dropped on a row lands in the inventory as before.
+    const hostId = event.target?.closest?.('.item-row[data-item-id]')?.dataset.itemId;
+    const host = hostId ? this.actor.items.get(hostId) : null;
+    if (document.documentName === 'Item' && host && host.id !== document.id && ItemMods.isHost(host)
+        && (ModFor.of(document) || ItemMods.modifiersOf(document).length)) {
+      return SR3EItemMods.install(host, document);
     }
     return super._onDropDocument(event, document);
   }
@@ -1359,7 +1382,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   const fRows = categorisedFirearms.length ? categorisedFirearms.map(w => `
     <div class="item-row" data-item-id="${w.id}">
-      <span class="item-name">${w.name}</span>
+      <span class="item-name">${w.name}${SR3EActorSheet.modsChip(w)}</span>
       <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell col-sm">${w.system.mode || '—'}</span>
       <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
@@ -1376,7 +1399,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const focusTag    = isFocus ? ` <span style="color:var(--sr-accent);font-size:10px">[Focus${focusActive ? ' ✦' : ''}]</span>` : '';
     return `
     <div class="item-row ${isEquipped ? 'equipped' : ''}" data-item-id="${w.id}">
-      <span class="item-name">${w.name}${isEquipped ? ' <span class="equipped-badge">✦ Equipped</span>' : ''}${focusTag}</span>
+      <span class="item-name">${w.name}${SR3EActorSheet.modsChip(w)}${isEquipped ? ' <span class="equipped-badge">✦ Equipped</span>' : ''}${focusTag}</span>
       <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell">Reach ${w.system.reach ?? 0}</span>
       <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
@@ -1392,7 +1415,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const focusTag    = isFocus ? ` <span style="color:var(--sr-accent);font-size:10px">[Focus${focusActive ? ' ✦' : ''}]</span>` : '';
     return `
     <div class="item-row ${isEquipped ? 'equipped' : ''}" data-item-id="${w.id}">
-      <span class="item-name">${w.name}${isEquipped ? ' <span class="equipped-badge">✦ Equipped</span>' : ''}${focusTag}</span>
+      <span class="item-name">${w.name}${SR3EActorSheet.modsChip(w)}${isEquipped ? ' <span class="equipped-badge">✦ Equipped</span>' : ''}${focusTag}</span>
       <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell">Reach ${w.system.reach ?? 0}</span>
       <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
@@ -1651,7 +1674,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const isEquipped = wornIds.has(a.id);
       return `
         <div class="item-row ${isEquipped ? 'equipped' : ''}" data-item-id="${a.id}">
-          <span class="item-name">${a.name}</span>
+          <span class="item-name">${a.name}${SR3EActorSheet.modsChip(a)}</span>
           <span class="item-cell col-narrow">${a.system.ballistic ?? 0}B / ${a.system.impact ?? 0}I</span>
           <span class="item-cell col-xs">${a.system.concealability ?? '—'}</span>
           <span class="item-cell col-xs">${a.system.weight ?? 0}</span>
@@ -1832,7 +1855,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const rating = itemRating(c);   // the packs keep most ratings in the name: "Wired Reflexes [2]"
       return `
         <div class="item-row" data-item-id="${c.id}" data-cyber-item-id="${c.id}">
-          <span class="item-name">${c.name}</span>
+          <span class="item-name">${c.name}${SR3EActorSheet.modsChip(c)}</span>
           <span class="item-cell">${c.system.grade ?? '—'}</span>
           <span class="item-cell">${c.system.essenceCost ?? 0}</span>
           <span class="item-cell">${rating}</span>

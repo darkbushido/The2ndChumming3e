@@ -5,6 +5,7 @@ import { AmmoStock } from '../data/ammo-stock.mjs';
 import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
 import { IntegralRC } from '../data/integral-rc.mjs';
 import { WeaponAccessories } from '../data/weapon-accessories.mjs';
+import { ItemMods } from '../data/item-mods.mjs';
 import { PhaseTargets } from '../data/phase-targets.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
@@ -1350,7 +1351,7 @@ export class SR3EItem extends Item {
             mode:           burst.mode,
             roundsBefore:   actor.system.roundsFiredThisPhase ?? 0,
             roundsThisShot: SR3EItem.roundsExpended({ ...fireModeResult, rounds: burst.rounds }),
-            totalComp:      (actor.system.recoilCompensation ?? 0) + (fireModeResult.weaponComp ?? this.system.recoilMod ?? 0),
+            totalComp:      (actor.system.recoilCompensation ?? 0) + (fireModeResult.weaponComp ?? IntegralRC.totalComp(this.system, false)),
             isHeavy, isShotgun, shortBurst,
           });
           ui.notifications.warn(burst.mode === 'SS'
@@ -4182,7 +4183,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   // The bracketed RC (SR3 p.276) replaces the plain figure while the integral accessories are in use.
   const hasIntegral  = IntegralRC.has(weapon.system);
   const inUse0       = IntegralRC.defaultInUse(weapon.system);
-  const weaponComp   = IntegralRC.weaponComp(weapon.system, inUse0);
+  // The gun's own figure plus what its installed mods add (TODO 276).
+  const weaponComp   = IntegralRC.totalComp(weapon.system, inUse0);
+  const modsRC       = ItemMods.effective(weapon).rc;
   const roundsBefore = actor.system.roundsFiredThisPhase ?? 0;
 
   // Delegates to the pure `SR3EItem.recoilTN` so the dialog's preview and the TN actually
@@ -4281,7 +4284,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       <span title="Cyberware, bioware, shock pads etc. (from the actor)">Cyber/Body
         <input type="number" id="sr-actor-comp" value="${actorComp}" min="0" max="20" style="width:42px"/></span>
       <span>+</span>
-      <span title="Gas vents, bipods etc. mounted on this weapon">Weapon
+      <span title="${modsRC ? `The weapon's own RC plus its installed mods — ${ItemMods.describe('rc', modsRC)}` : 'Gas vents, bipods etc. mounted on this weapon'}">Weapon
         <input type="number" id="sr-weapon-comp" value="${weaponComp}" min="0" max="20" style="width:42px"/></span>
       ${hasIntegral ? `<label style="flex-basis:100%;font-size:11px" title="SR3 p.276: numbers in parentheses are the full recoil compensation that only applies when all integral accessories are used (folding or detachable stocks, and so forth)">
         <input type="checkbox" id="sr-integral" ${inUse0 ? 'checked' : ''}/> Integral accessories in use (stock folded out / tripod set up) — RC ${weapon.system.recoilMod ?? 0} → <strong>${weapon.system.recoilModIntegral}</strong>
@@ -4327,7 +4330,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     // Ticking swaps the weapon's figure between the plain RC and the bracketed total (it replaces, never adds).
     el.querySelector('#sr-integral')?.addEventListener('change', event => {
       const wEl = el.querySelector('#sr-weapon-comp');
-      if (wEl) wEl.value = String(IntegralRC.weaponComp(weapon.system, event.target.checked));
+      if (wEl) wEl.value = String(IntegralRC.totalComp(weapon.system, event.target.checked));
       refreshPreviews();
     });
     el.querySelector('#fa-rounds')?.addEventListener('input', refreshPreviews);
@@ -4384,8 +4387,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           // A number typed over the weapon's figure is remembered against whichever figure was showing.
           const inUse = hasIntegral && !!el.querySelector('#sr-integral')?.checked;
           if (hasIntegral && inUse !== inUse0) await weapon.update({ 'system.integralInUse': inUse });
-          if (wComp !== IntegralRC.weaponComp(weapon.system, inUse)) {
-            await weapon.update({ [inUse ? 'system.recoilModIntegral' : 'system.recoilMod']: wComp });
+          if (wComp !== IntegralRC.totalComp(weapon.system, inUse)) {
+            await weapon.update({ [inUse ? 'system.recoilModIntegral' : 'system.recoilMod']: IntegralRC.baseFor(weapon.system, wComp) });
           }
 
           // Recoil per mode (see SR3EItem.recoilTN). BF and FA count their OWN rounds —

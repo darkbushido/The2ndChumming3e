@@ -17,6 +17,8 @@ import { LEGALITY_TYPES } from '../data/legality.mjs';
 import { BookPage } from '../data/book-page.mjs';
 import { AmmoStock, GUN_CLASSES } from '../data/ammo-stock.mjs';
 import { MiniGrenade } from '../data/mini-grenade.mjs';
+import { ItemMods, TARGETS } from '../data/item-mods.mjs';
+import { SR3EItemMods } from '../SR3EItemMods.js';
 
 /** Where a spell's fetish or exclusive limit was taken · SR3 p.180 (TODO 223). Blank = the spell has no such limit. */
 const SPELL_LIMIT_SIDES = [
@@ -47,6 +49,19 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
   get title() { return `${this.item.name} [${this._typeLabel()}]`; }
 
+  /* A mod opened from its host (TODO 276, `SR3EItemMods.open`) is a temporary item: editable by whoever owns the host, and
+   * its form goes straight to its overridden `update`, which writes into the host — never through core's submit, which
+   * would try to update a document the server has never seen. */
+  get isEditable() {
+    const host = this.document._sr3eHost;
+    return host ? host.isOwner : super.isEditable;
+  }
+
+  async _processSubmitData(event, form, submitData, options) {
+    if (this.document._sr3eHost) return this.document.update(submitData);
+    return super._processSubmitData(event, form, submitData, options);
+  }
+
   async _renderHTML(_context, _options) {
     const div = document.createElement('div');
     div.style.cssText = 'flex:1;min-height:0;display:flex;flex-direction:column;';
@@ -59,6 +74,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
   }
 
   _onRender(_context, _options) {
+    this._wireMods(this.element);
     if (!this.isEditable) return;
     const html = this.element;
     html.querySelector('.item-roll')
@@ -185,10 +201,129 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._buyAmmoButton()}
         </header>
         <div class="item-body">
+          ${this._installedIn()}
           ${this._withBookPage(this._details())}
+          ${this._modsSection()}
+          ${this._modifiersSection()}
           ${canRoll ? '<button type="button" class="btn-roll item-roll">Roll</button>' : ''}
         </div>
       </div>`;
+  }
+
+  /* ── Mods installed inside this item, and what this item changes · TODO 276 ─────────────────────────────── */
+
+  /** On a mod opened from its host (✎): which item it is installed in. Its edits save into that item. */
+  _installedIn() {
+    const host = this.document._sr3eHost;
+    if (!host) return '';
+    return `<p class="sr-mod-host">🔧 Installed in <strong>${foundry.utils.escapeHTML(host.name)}</strong> — changes here save into it.</p>`;
+  }
+
+  /**
+   * A host's installed mods (`system.installed`): mount, name, what each changes, ✎ open · ⏏ take out · 🗑 delete, and a
+   * drop zone. Below, what the mods add up to. Only on a type that holds mods (`ItemMods.HOST_TYPES`).
+   */
+  _modsSection() {
+    const item = this.document;
+    if (!ItemMods.isHost(item)) return '';
+    const esc = v => foundry.utils.escapeHTML(String(v ?? ''));
+    const rows = SR3EItemMods.rows(item);
+    const edit = this.isEditable;
+    const body = rows.length
+      ? rows.map(r => `<div class="sr-mod-row" data-mod-id="${esc(r.id)}">
+          <span class="sr-mod-mount" title="${r.mount ? `On the ${r.mount.toLowerCase()} mount (SR3 p.280)` : 'No weapon mount'}">${esc(r.mount || '—')}</span>
+          <img src="${esc(r.img)}" class="sr-mod-img" alt=""/>
+          <a class="sr-mod-name sr-mod-open" title="Open">${esc(r.name)}</a>
+          <span class="sr-mod-changes">${esc(r.changes)}</span>
+          <a class="sr-mod-open" title="Open its sheet">✎</a>
+          ${edit ? `<a class="sr-mod-out" title="Take it out — into the inventory">⏏</a>
+          <a class="sr-mod-remove" title="Delete it">🗑</a>` : ''}
+        </div>`).join('')
+      : '<p class="sr-mod-empty">Nothing installed.</p>';
+    const eff = ItemMods.effective(item);
+    const summary = Object.keys(eff).map(t => `<span class="sr-mod-chip" title="${esc(ItemMods.describe(t, eff[t]))}">${esc(TARGETS[t].combine === 'any' ? TARGETS[t].short : `${TARGETS[t].short} ${eff[t].value}`)}</span>`).join('');
+    return `<div class="sr-mods${edit ? ' sr-mods-drop' : ''}">
+      <h3 class="sr-mods-title">Installed mods</h3>
+      ${body}
+      ${summary ? `<div class="sr-mods-summary">From mods and built in: ${summary}</div>` : ''}
+      ${edit ? '<p class="sr-mod-hint">Drop a mod here to install it. One accessory per weapon mount (SR3 p.280) — you are warned, never stopped.</p>' : ''}
+    </div>`;
+  }
+
+  /**
+   * What this item changes (`system.modifiers`): one row per target and value, from the fixed vocabulary
+   * (`ItemMods.TARGETS`). On every type whose model declares the field. The rows have no `name` — the form would save
+   * them as an object, not a list — so each change writes the whole list (`_onRender`).
+   */
+  _modifiersSection() {
+    const s = this.document.system;
+    if (!s || !Array.isArray(s.modifiers)) return '';
+    const edit = this.isEditable;
+    const opts = now => Object.entries(TARGETS).map(([k, t]) => `<option value="${k}"${k === now ? ' selected' : ''}>${t.label}</option>`).join('');
+    const rows = s.modifiers.map((m, i) => {
+      const t = TARGETS[m.target];
+      const val = t?.combine === 'any'
+        ? `<input type="checkbox" class="sr-modifier-value" data-idx="${i}" ${m.value > 0 ? 'checked' : ''} ${edit ? '' : 'disabled'}/>`
+        : `<input type="number" class="sr-modifier-value" data-idx="${i}" value="${Number(m.value) || 0}" style="width:56px" ${edit ? '' : 'disabled'}/>`;
+      return `<div class="sr-modifier-row">
+        <select class="sr-modifier-target" data-idx="${i}" ${edit ? '' : 'disabled'}>${t ? '' : `<option value="" selected>? ${foundry.utils.escapeHTML(String(m.target ?? ''))}</option>`}${opts(m.target)}</select>
+        ${val}
+        ${edit ? `<a class="sr-modifier-remove" data-idx="${i}" title="Remove">✕</a>` : ''}
+      </div>`;
+    }).join('');
+    if (!rows && !edit) return '';
+    return `<div class="sr-modifiers">
+      <h3 class="sr-mods-title" title="What this item adds — to the item it is installed in, or to itself. Cyberware, bioware, carried gear and worn armour pass vision and the like on to the character.">Changes</h3>
+      ${rows || '<p class="sr-mod-empty">Changes nothing.</p>'}
+      ${edit ? '<a class="sr-modifier-add">+ Add a change</a>' : ''}
+    </div>`;
+  }
+
+  /** Wire the two sections above. */
+  _wireMods(html) {
+    const item = this.document;
+    const idOf = el => el.closest('[data-mod-id]')?.dataset.modId;
+    html.querySelectorAll('.sr-mod-open').forEach(a => a.addEventListener('click', () => SR3EItemMods.open(item, idOf(a))));
+    if (!this.isEditable) return;
+    html.querySelectorAll('.sr-mod-out').forEach(a => a.addEventListener('click', () => SR3EItemMods.uninstall(item, idOf(a))));
+    html.querySelectorAll('.sr-mod-remove').forEach(a => a.addEventListener('click', () => SR3EItemMods.remove(item, idOf(a))));
+    const zone = html.querySelector('.sr-mods-drop');
+    if (zone) {
+      zone.addEventListener('dragover', ev => { ev.preventDefault(); zone.classList.add('sr-mods-over'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('sr-mods-over'));
+      zone.addEventListener('drop', async ev => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        zone.classList.remove('sr-mods-over');
+        const dropped = await SR3EItemMods.droppedItem(ev);
+        if (dropped) await SR3EItemMods.install(item, dropped);
+      });
+    }
+
+    const list = () => (item.system.modifiers ?? []).map(m => ({ target: m.target, value: Number(m.value) || 0 }));
+    const save = mods => item.update({ 'system.modifiers': mods });
+    html.querySelector('.sr-modifier-add')?.addEventListener('click', () => save([...list(), { target: 'rc', value: 1 }]));
+    html.querySelectorAll('.sr-modifier-remove').forEach(a => a.addEventListener('click', () => {
+      const mods = list();
+      mods.splice(Number(a.dataset.idx), 1);
+      save(mods);
+    }));
+    // ⚠ stopPropagation: the rows have no `name`, but their change would still submit the whole form first.
+    html.querySelectorAll('.sr-modifier-target').forEach(sel => sel.addEventListener('change', ev => {
+      ev.stopPropagation();
+      const mods = list();
+      const target = sel.value;
+      mods[Number(sel.dataset.idx)] = { target, value: TARGETS[target]?.combine === 'any' ? 1 : (mods[Number(sel.dataset.idx)]?.value ?? 0) };
+      save(mods);
+    }));
+    html.querySelectorAll('.sr-modifier-value').forEach(inp => inp.addEventListener('change', ev => {
+      ev.stopPropagation();
+      const mods = list();
+      const i = Number(inp.dataset.idx);
+      if (!mods[i]) return;
+      mods[i].value = inp.type === 'checkbox' ? (inp.checked ? 1 : 0) : (Number(inp.value) || 0);
+      save(mods);
+    }));
   }
 
   _typeLabel() {

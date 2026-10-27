@@ -122,8 +122,10 @@ The declaration dialog shows the TN and breakdown.
 - ⚠ **BF and FA count their OWN rounds; SS/SA don't** (p.115) — theirs penalise the next shot.
 - ⚠ **Comp comes off BEFORE the multiplier** — MMG, 10 rounds, 6 comp = (10−6)×2 = **+8**.
   All three worked examples in `tests/fire-modes.test.mjs`.
-- `totalComp = actor.system.recoilCompensation + weapon.system.recoilMod` (both editable in the fire dialog,
-  persisted; actor comp on the Cyber tab). Heavy weapons (LMG/MMG/HMG/MinG) double; shotguns double in
+- `totalComp = actor.system.recoilCompensation + weapon RC` (both editable in the fire dialog,
+  persisted; actor comp on the Cyber tab). Weapon RC = `IntegralRC.totalComp`: the gun's own figure (plain or
+  bracketed) **plus its installed mods' `rc`** (TODO 276). ⚠ A typed total is stored back through `IntegralRC.baseFor`
+  — without the mods' part — or a gas vent would be baked into the base and count twice. Heavy weapons (LMG/MMG/HMG/MinG) double; shotguns double in
   **BF only** (p.111). `roundsFiredThisPhase` resets each phase (`SR3EActor.resetRecoil`).
 
 **Short bursts** (`SR3EItem.resolveBurst`, p.115): 3+ rounds normal; **2 rounds = +2 Power, level
