@@ -290,7 +290,9 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     const edit = this.isEditable;
     const body = rows.length
       ? rows.map(r => `<div class="sr-mod-row" data-mod-id="${esc(r.id)}">
-          <span class="sr-mod-mount" data-tooltip="${r.mount ? `On the ${r.mount.toLowerCase()} mount (SR3 p.280)` : 'No weapon mount'}">${esc(r.mount || '—')}</span>
+          ${r.wants
+            ? `<span class="sr-mod-mount sr-mod-mount-over" data-tooltip="${esc(`Wants the ${r.wants.toLowerCase()} mount, which already holds ${r.heldBy} (SR3 p.280: one accessory per mount) — the GM's call`)}">⚠ ${esc(r.wants)}</span>`
+            : `<span class="sr-mod-mount" data-tooltip="${r.mount ? `On the ${r.mount.toLowerCase()} mount (SR3 p.280)` : 'No weapon mount'}">${esc(r.mount || '—')}</span>`}
           <img src="${esc(r.img)}" class="sr-mod-img" alt=""/>
           <a class="sr-mod-name sr-mod-open" title="Open">${esc(r.name)}</a>
           <span class="sr-mod-changes">${esc(r.changes)}</span>

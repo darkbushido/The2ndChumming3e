@@ -3325,7 +3325,10 @@ the gear compendium; a second user (Player2) owning the character.
       inventory onto the **Predator's row** on the Combat tab → it is installed and gone from the inventory; the row shows 🔧2.
       Give it a change "Smartgun system" (ticked) → the fire dialog's Smartgun box is pre-ticked.
 - [ ] **Mount warning, never a refusal:** install a second barrel accessory (a Silencer) → a warning "The barrel mount already
-      holds Gas Vent II…", and it is installed anyway.
+      holds Gas Vent II…", and it is installed anyway. Its row's mount reads amber **⚠ Barrel** (tooltip: wants the barrel mount,
+      which already holds the Gas Vent) — not "—" / "No weapon mount" (fixed 2026-10-27).
+- [ ] **A Level picked on an installed mod sets its price:** ✎ the Gas Vent, Level 3 → 700¥, Conceal (-2), 0.75 kg on its sheet
+      AND in the gun's Installed mods (it kept level 1's 250¥ before the 2026-10-27 fix — the form's own submit put it back).
 - [ ] **Wrong kind warns:** drop an armour mod (Chemical Seal (Armor)) on the Predator → "is a mod for armour, not a weapon", installed.
 - [ ] **⏏ Take out:** ⏏ the Silencer → it is in the inventory again, gone from the gun. **🗑** the Chemical Seal → confirm → gone entirely.
 - [ ] **It travels:** drag the Predator to another actor → its mods are there. Drag it to the Items sidebar → the world item
@@ -3388,6 +3391,7 @@ Conceal 6, 2 kg) on a character with Quickness 3; from the Cannon Companion gear
 - [ ] **⏏ on the vent** opens "Take Gas Vent (Weapon) off Ares Predator": gunsmith list (the scene's characters first, NPCs marked),
       Pistols B/R dice pre-filled from the chosen gunsmith, TN 5, base 24 h, labour 0 for a player character; picking an NPC sets
       100¥/h; contact Level 2 → 50, 3 → 25.
+- [ ] The dialog's text says a failure destroys **the barrel, and the vent with it** (it said "the vent stays" until 2026-10-27).
 - [ ] **Success** (≥1): the card says the vent is off and **destroyed** — it is gone from Installed mods and NOT in the inventory;
       time = 24 ÷ successes; labour shown, nothing deducted.
 - [ ] **Failure** (0 successes — set the TN high): the card says the **barrel is destroyed, and the vent with it** — the vent is
@@ -3408,6 +3412,8 @@ Conceal 6, 2 kg) on a character with Quickness 3; from the Cannon Companion gear
 - [ ] **Helmet:** no scope; wear a Security Helmet with Electronic Magnification (Armor) installed → shifted 3. Take it off → no shift.
 - [ ] **Cybereyes:** Eyes, Vision Magnification, Electronic at Level 2 → shifted 2.
 - [ ] **No stacking:** scope 2 + helmet 3 → shifted **3**, not 5; the note names the helmet.
+- [ ] **The helmet is worn by its Wear toggle** (the `worn` flag) — before the 2026-10-27 fix a worn helmet's magnification and
+      vision never reached the character (`passesToActor` read a `system.worn` nothing writes).
 - [ ] **Beyond Extreme:** no shift, the usual warning.
 
 ### 77f. Bipod and tripod — the GM's call per shot (TODO 276, SR3 p.280; the maintainer, 2026-10-27)
@@ -3432,6 +3438,8 @@ and eye options (loose).
       a Pair of arms → 20.
 - [ ] **Install** a Smartlink (Internal) (Cyberlimb) from the inventory into the arm → "Holds .5 / 10 ECU"; its sheet's "Takes (ECU)"
       placeholder .5. Essence on the Attributes tab rises by its .25 (it did before, as a loose item — unchanged), nothing double.
+      **No "adds … to the Essence hole" notice**, and ⏏ it back out → Essence and the hole unchanged (fixed 2026-10-27: the move
+      was recorded as a removal). As **Player2** with the GM on line, the same — the GM's hook reads the move's `sr3eModMove` option.
 - [ ] **Over capacity:** fill a Cyber Hand (2 ECU) with a Foot Anchor (4) → warned, installed; the line shows over.
 - [ ] **Unknown size:** install something not on the table → "ECU not known", set "Takes (ECU)" on it → counted.
 - [ ] **Grade:** make the arm Alpha → "Holds … / 8 ECU (Alpha …)"; install a Standard smartlink → "match their host" warning.

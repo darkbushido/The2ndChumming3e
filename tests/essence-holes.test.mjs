@@ -46,7 +46,7 @@ export async function run(t) {
 
   /* ── The wiring, source-level ─────────────────────────────────────────────── */
   const main = read('scripts/sr3e.js');
-  t.ok('a removal adds to the hole, on the GM', /Hooks\.on\('deleteItem', \(item\) => _recordEssenceHoleOnRemoval\(item\)\)/.test(main)
+  t.ok('a removal adds to the hole, on the GM', /Hooks\.on\('deleteItem', \(item, options\) => \{ if \(!options\?\.sr3eModMove\) _recordEssenceHoleOnRemoval\(item\); \}\)/.test(main)
     && /EssenceHoles\.add\(EssenceHoles\.of\(actor\.system\), amount\)/.test(main));
   t.ok('…and NEVER touches essence.lost — removal refunds nothing (M&M p.147)',
     !/essence\.lost/.test(main.slice(main.indexOf('function _recordEssenceHoleOnRemoval'), main.indexOf("Hooks.on('createItem'"))));

@@ -64,7 +64,9 @@ export async function run(t) {
   t.ok('stored cyberware gives nothing', !ItemMods.actorTotals([{ ...eyes, flags: { The2ndChumming3e: { stored: true } } }]).thermo);
   const goggles = { name: 'Helmet', type: 'armor', system: { worn: false, installed: [mod('Thermo Vision (Armor)', [{ target: 'thermo', value: 1 }])] } };
   t.ok('armour passes nothing while not worn…', !ItemMods.actorTotals([goggles]).thermo);
-  t.ok('…and passes it while worn', ItemMods.actorTotals([{ ...goggles, system: { ...goggles.system, worn: true } }]).thermo?.value === 1);
+  t.ok('…and passes it while worn (the worn FLAG — there is no system.worn)', ItemMods.actorTotals([{ ...goggles, flags: { The2ndChumming3e: { worn: true } } }]).thermo?.value === 1);
+  t.ok('…not for a system.worn that nothing writes (seen live 2026-10-27: a worn helmet passed nothing)', !ItemMods.actorTotals([{ ...goggles, system: { ...goggles.system, worn: true } }]).thermo);
+  t.ok('…and the legacy equippedArmor id counts as worn', ItemMods.actorTotals([{ ...goggles, id: 'h1', parent: { system: { equippedArmor: 'h1' } } }]).thermo?.value === 1);
   t.ok('a weapon never passes anything up — not even a vision target', !ItemMods.actorTotals([gun([mod('Thermal scope', [{ target: 'thermo', value: 1 }])])]).thermo);
   t.ok('a gun\'s RC never reaches the actor', !ItemMods.actorTotals([{ name: 'X', type: 'cyberware', system: { modifiers: [{ target: 'rc', value: 2 }] } }]).rc);
 
@@ -94,6 +96,8 @@ export async function run(t) {
   t.eq('an either-or laser goes under when the scope is on top', ItemMods.mountsInUse([laser, scope]), { Top: 'Imaging Scope', Under: 'Laser Sight' });
   t.eq('assignMounts goes by id — two of the same scope: the second holds no mount',
     ItemMods.assignMounts([scope, { ...scope, _id: 'x2' }]).map(m => [m.id, m.mount]), [['id-Imaging Scope', 'Top'], ['x2', '']]);
+  t.eq('…and says which mount it wants and what holds it (not "no mount")',
+    ItemMods.assignMounts([scope, { ...scope, _id: 'x2' }, mod('Bipod', [], {})]).map(m => [m.wants, m.heldBy]), [['', ''], ['Top', 'Imaging Scope'], ['', '']]);
   t.eq('a free mount: no warning', ItemMods.warnings(gun([scope]), sil), []);
   t.eq('the top mount taken', ItemMods.warnings(gun([scope]), mod('Scope 2', [], { description: 'Mount:</strong> Top' })),
     ['The top mount already holds Imaging Scope (SR3 p.280: one accessory per mount).']);
@@ -117,10 +121,20 @@ export async function run(t) {
 
   const glue = read('scripts/SR3EItemMods.js');
   t.ok('a mod opened from its host is a temporary item whose update writes into the host',
-    /tmp\.update = async[\s\S]{0,300}host\.update\(\{ 'system\.installed': ItemMods\.replace/.test(glue));
+    /tmp\.update = async[\s\S]{0,800}host\.update\(\{ 'system\.installed': ItemMods\.replace/.test(glue));
+  // Seen live 2026-10-27 (§77): a Level pick on an installed Gas Vent set level 2 but kept level 1's 250¥ — the form's own
+  // submit followed with the price still on screen and was applied blindly.
+  t.ok('…and applies only what differs from the SAVED mod (a Level pick\'s price is not undone by the form\'s stale submit)',
+    /const saved0 = ItemMods\.installed\(host\)\.find\(m => m\._id === modId\) \?\? data;\s*const diff = foundry\.utils\.diffObject\(saved0, foundry\.utils\.expandObject\(changes\)\);\s*if \(foundry\.utils\.isEmpty\(diff\)\) return tmp;\s*tmp\.updateSource\(diff\);/.test(glue));
   t.ok('…and it knows its host (the sheet reads _sr3eHost)', /tmp\._sr3eHost = host/.test(glue));
   t.ok('install moves a mod from the host\'s own actor, never deletes another actor\'s item',
-    /source\.parent === host\.parent && source\.id !== host\.id\) await source\.delete\(\)/.test(glue));
+    /source\.parent === host\.parent && source\.id !== host\.id\) await source\.delete\(\{ sr3eModMove: true \}\)/.test(glue));
+  // Seen live 2026-10-27 (§77g): a smartlink moved from the inventory into a cyberarm was recorded as an Essence hole.
+  t.ok('an implant moved into a host, or ⏏ out of one, is marked sr3eModMove',
+    /await source\.delete\(\{ sr3eModMove: true \}\)/.test(glue) && /createEmbeddedDocuments\('Item', \[data\], \{ sr3eModMove: true \}\)/.test(glue));
+  t.ok('…and the Essence hooks skip it (neither a hole nor a ratchet)',
+    /Hooks\.on\('createItem', \(item, options\) => \{ if \(!options\?\.sr3eModMove\) _ratchetEssenceOnInstall\(item\); \}\);/.test(read('scripts/sr3e.js'))
+    && /Hooks\.on\('deleteItem', \(item, options\) => \{ if \(!options\?\.sr3eModMove\) _recordEssenceHoleOnRemoval\(item\); \}\);/.test(read('scripts/sr3e.js')));
   t.ok('install warns, never refuses: warnings go to notifications and the install goes ahead',
     /for \(const w of \[\.\.\.ItemMods\.warnings\(host, source\), \.\.\.ArmorMods\.installWarnings\(host, source\.toObject\(\)\),\s*\.\.\.CyberCapacity\.installWarnings\(host, source\.toObject\(\), graded\)\]\) ui\.notifications\.warn\(w\);\s*const installed = ItemMods\.install/.test(glue));
 

@@ -44,7 +44,8 @@ export const SR3EItemMods = {
     const installed = ItemMods.install(ItemMods.installed(host), source.toObject(), newId);
     await host.update({ 'system.installed': installed });
     // Moved, not copied, when it came from the host's own actor — the scope is in the gun now, not in the bag too.
-    if (host.parent && source.parent === host.parent && source.id !== host.id) await source.delete();
+    // `sr3eModMove`: an implant moved into a limb never left the body — no Essence hole (sr3e.js's deleteItem hook).
+    if (host.parent && source.parent === host.parent && source.id !== host.id) await source.delete({ sr3eModMove: true });
     ui.notifications.info(`${source.name} installed in ${host.name}.`);
     return true;
   },
@@ -57,7 +58,8 @@ export const SR3EItemMods = {
     const data = foundry.utils.deepClone(mod);
     delete data._id;
     let created;
-    if (host.parent) [created] = await host.parent.createEmbeddedDocuments('Item', [data]);
+    // `sr3eModMove`: taken out of a limb onto the same body — not a new install (no Essence ratchet, sr3e.js).
+    if (host.parent) [created] = await host.parent.createEmbeddedDocuments('Item', [data], { sr3eModMove: true });
     else created = await Item.implementation.create({ ...data, folder: host.folder?.id ?? null });
     if (!created) return null;
     await host.update({ 'system.installed': installed });
@@ -114,7 +116,7 @@ export const SR3EItemMods = {
       window: { title: `Take ${mod.name} off ${host.name}` },
       content: `<div style="display:flex;flex-direction:column;gap:6px;padding:4px">
         <p style="margin:0;font-size:11px">A gas vent cannot simply be taken off (${esc(rule.page)}). A gunsmith's test: <strong>success destroys
-          the vent</strong>; <strong>failure destroys the barrel</strong> — the gun then needs repair, and the vent stays. The time is the base ÷
+          the vent</strong>; <strong>failure destroys the barrel, and the vent with it</strong> — the gun then needs repair. The time is the base ÷
           the successes; labour is by the hour (a gunsmith contact 100 / 50 / 25¥ at Level 1 / 2 / 3, CC p.79; a player character: nothing).</p>
         <label>Gunsmith <select id="gs-smith">${smiths.map(a => `<option value="${esc(actorRef(a))}"${a === own ? ' selected' : ''}>${esc(a.name)}${isPC(a) ? '' : ' (NPC)'}</option>`).join('')}</select></label>
         <label>${esc(skillName || 'Build/Repair skill')} dice <input id="gs-dice" type="number" min="0" value="${skillDice(own)}" style="width:56px"/></label>
@@ -234,7 +236,12 @@ export const SR3EItemMods = {
     const tmp = new Item.implementation(source);
     tmp._sr3eHost = host;
     tmp.update = async (changes = {}) => {
-      tmp.updateSource(foundry.utils.expandObject(changes));
+      // Only what differs from the SAVED mod, as Foundry diffs a real document. A Level pick writes the level's cost and
+      // the form's own submit follows with the cost still on screen — applied blindly, that put the old price back.
+      const saved0 = ItemMods.installed(host).find(m => m._id === modId) ?? data;
+      const diff = foundry.utils.diffObject(saved0, foundry.utils.expandObject(changes));
+      if (foundry.utils.isEmpty(diff)) return tmp;
+      tmp.updateSource(diff);
       const saved = tmp.toObject();
       delete saved.ownership;
       await host.update({ 'system.installed': ItemMods.replace(ItemMods.installed(host), modId, saved) });
@@ -265,6 +272,8 @@ export const SR3EItemMods = {
       name: m.name ?? '?',
       img: m.img ?? 'icons/svg/item-bag.svg',
       mount: mounts[i].mount,
+      wants: mounts[i].wants,
+      heldBy: mounts[i].heldBy,
       changes: ItemMods.modifiersOf(m).map(x => {
         const t = ItemMods.TARGETS[x.target];
         const v = t.combine === 'any' ? t.short : `${t.short} ${x.value >= 0 && t.combine === 'add' ? '+' : ''}${x.value}`;

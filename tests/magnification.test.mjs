@@ -13,7 +13,8 @@ const read = rel => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
 
 const scope = r => ({ _id: `s${r}`, name: 'Imaging Scope (Weapon)', type: 'gear', system: { rating: r, modifiers: MOD_EFFECTS['gear|Imaging Scope'] } });
 const gun = (...mods) => ({ name: 'Ruger 100', type: 'firearm', system: { installed: mods } });
-const helmet = (worn = true) => ({ name: 'Security Helmet', type: 'armor', system: { worn,
+// Worn is the item's `worn` FLAG (SR3EActor.wornArmorItems) — a system.worn fixture passed while the live helmet did not.
+const helmet = (worn = true) => ({ name: 'Security Helmet', type: 'armor', flags: { The2ndChumming3e: { worn } }, system: {
   installed: [{ _id: 'h', name: 'Electronic Magnification (Armor)', type: 'armor', system: { rating: 3, modifiers: MOD_EFFECTS['armor|Electronic Magnification'] } }] } });
 const eyes = r => ({ name: 'Eyes, Vision Magnification, Electronic', type: 'cyberware', system: { rating: r, modifiers: MOD_EFFECTS['cyberware|Eyes, Vision Magnification, Electronic'] } });
 

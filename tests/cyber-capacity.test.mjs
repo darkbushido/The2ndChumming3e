@@ -66,6 +66,7 @@ export async function run(t) {
   const full = cw('Obvious Cyber Hand', { installed: [mod('Foot Anchor')] });
   t.ok('over capacity warned (M&M p.37)', CyberCapacity.installWarnings(full, mod('Smartlink (Internal)'), graded).some(w => /holds 2 ECU/.test(w)));
   t.ok('another grade warned', CyberCapacity.installWarnings(cw('Obvious Cyberarm', { grade: 'Alpha' }), mod('Smartlink (Internal)'), graded).some(w => /match their host/.test(w)));
+  t.ok('…"an Alpha", not "a Alpha" (seen live 2026-10-27)', CyberCapacity.installWarnings(cw('Obvious Cyberarm', { grade: 'Alpha' }), mod('Smartlink (Internal)'), graded).some(w => /grade in an Alpha Obvious Cyberarm/.test(w)));
   t.ok('an unknown size warned', CyberCapacity.installWarnings(cw('Obvious Cyberarm'), mod('Mystery Box'), graded).some(w => /not known/.test(w)));
   t.eq('a fitting, matching mod: nothing', CyberCapacity.installWarnings(cw('Obvious Cyberarm'), mod('Smartlink (Internal)'), graded), []);
 

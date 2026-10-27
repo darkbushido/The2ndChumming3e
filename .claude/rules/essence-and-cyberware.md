@@ -59,6 +59,9 @@ Removing cyberware adds its graded cost — ⚠ **never touching `essence.lost`*
 `essenceSlot` ticked fills it down at install (M&M p.150's opt-in Essence Slot surgery option, +2
 Threshold; stated, not enforced). ⚠ A partly filled hole keeps its remainder. The GM edits it for
 bookkeeping only; nothing else regains Essence. Player writes are dropped (`stripPlayerEssenceWrites`).
+⚠ **An implant MOVED into or out of a cyberlimb / eye (TODO 276) is neither**: `SR3EItemMods` passes `sr3eModMove` on that
+delete / create, and both Essence hooks skip it. Options already charged as loose items and then moved into an eye are
+**not refunded** (the maintainer, 2026-10-27) — the GM lowers `lost` by hand.
 ⚠ **Not the Essence *slots* of M&M p.127** (installed cyberware; see *Cybersystem damage*).
 
 **Near the edge** (TODO 103, `SR3EActor.essenceState`): below 1 is legal (SR3 p.55) → **amber**; 0 or less

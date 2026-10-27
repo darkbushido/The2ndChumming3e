@@ -151,12 +151,15 @@ export const ItemMods = {
   /**
    * Does this item's effect climb to its actor right now? Installed cyberware and bioware always, armour only while
    * worn, gear while carried — never anything in Storage, and never a weapon (the attack asks the gun it fires).
+   * ⚠ Worn is the `worn` FLAG (or the legacy `equippedArmor` id), as `SR3EActor.wornArmorItems` reads it — there is no
+   * `system.worn`; reading that one (seen live 2026-10-27, §77e) kept a worn helmet's magnification and vision off the actor.
    */
   passesToActor(item) {
     if (item?.flags?.The2ndChumming3e?.stored === true) return false;
     switch (item?.type) {
       case 'cyberware': case 'bioware': case 'gear': return true;
-      case 'armor': return item?.system?.worn === true;
+      case 'armor': return item?.flags?.The2ndChumming3e?.worn === true
+        || (!!item?.id && item?.parent?.system?.equippedArmor === item.id);
       default: return false;
     }
   },
@@ -226,19 +229,23 @@ export const ItemMods = {
   /**
    * Which mount each installed mod holds, in list order: `[{ id, name, mount }]` (`mount` '' when it holds none). One-mount
    * mods first, then the either-or ones take the first mount still free (a Top/Under laser goes under when a scope is on
-   * top).
+   * top). `wants` is the mount a mod needs but found taken ('' when it holds one, or needs none), `heldBy` the mod on it —
+   * the sheet shows "⚠ Barrel", not "no mount" (seen live 2026-10-27: a second barrel accessory read as mountless).
    */
   assignMounts(installed) {
     const list = (Array.isArray(installed) ? installed : []).map(m => ({ id: m?._id ?? null, name: m?.name ?? '?', mounts: ItemMods.mountsOf(m), mount: '' }));
-    const taken = new Set();
+    const taken = new Map();
     for (const m of list.filter(x => x.mounts.length === 1)) {
-      if (!taken.has(m.mounts[0])) { m.mount = m.mounts[0]; taken.add(m.mount); }
+      if (!taken.has(m.mounts[0])) { m.mount = m.mounts[0]; taken.set(m.mount, m.name); }
     }
     for (const m of list.filter(x => x.mounts.length > 1)) {
       const free = m.mounts.find(x => !taken.has(x));
-      if (free) { m.mount = free; taken.add(free); }
+      if (free) { m.mount = free; taken.set(free, m.name); }
     }
-    return list.map(({ id, name, mount }) => ({ id, name, mount }));
+    return list.map(({ id, name, mount, mounts }) => {
+      const wants = !mount && mounts.length ? mounts[0] : '';
+      return { id, name, mount, wants, heldBy: wants ? taken.get(wants) ?? '' : '' };
+    });
   },
 
   /** `{ Top: name, … }` — the mounts in use and what holds each. */

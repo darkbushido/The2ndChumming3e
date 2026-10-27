@@ -2744,8 +2744,11 @@ function _disarmImplant(item) {
     .catch(err => console.error('SR3E | implant weapon delete failed:', err));
 }
 
-Hooks.on('createItem', (item) => _ratchetEssenceOnInstall(item));
-Hooks.on('deleteItem', (item) => _recordEssenceHoleOnRemoval(item));
+// ⚠ Not for an implant MOVED into or out of a cyberlimb / eye (TODO 276, `SR3EItemMods` marks it `sr3eModMove`): it never
+// left the body, so it is neither a new install nor a removal. Seen live 2026-10-27 (§77g): a smartlink put into an arm
+// was recorded as an Essence hole.
+Hooks.on('createItem', (item, options) => { if (!options?.sr3eModMove) _ratchetEssenceOnInstall(item); });
+Hooks.on('deleteItem', (item, options) => { if (!options?.sr3eModMove) _recordEssenceHoleOnRemoval(item); });
 Hooks.on('createItem', (item) => _armImplant(item));
 Hooks.on('deleteItem', (item) => _disarmImplant(item));
 

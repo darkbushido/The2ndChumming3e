@@ -964,6 +964,24 @@ value today; none settled by picking a side):
 - **Combo imaging scopes / two integral top accessories** — one mount each (SR3 p.280); a stock gun printing two top accessories was
   not checked.
 
+**Walked live, 2026-10-27** (§77, §77b-§77g, as mcp-api with a canvas, and Player2 for the owner's moves). Fixed on the way:
+- A Level picked on an INSTALLED mod kept the old price — the ✎ sheet's form submit followed with the stale cost and the temporary
+  item applied it blindly; its `update` now applies only what differs from the saved mod, as Foundry diffs a real document.
+- A worn helmet passed nothing to the actor — `ItemMods.passesToActor` read `system.worn`, which nothing writes; worn is the `worn`
+  flag (or the legacy `equippedArmor`). The unit fixtures used the same wrong field, so they passed. Mutant `worn-armour-read-from-system`.
+- An implant MOVED into a limb (or ⏏ out) went through the delete / create hooks as a removal / install: an Essence hole was
+  recorded. Both moves carry `sr3eModMove`, and the Essence hooks skip it.
+- A second accessory on a taken mount showed "—" / "No weapon mount"; now "⚠ Barrel", naming what holds it (`assignMounts` `wants` / `heldBy`).
+- The gunsmith dialog still said "the vent stays" on a failure; "grade in a Alpha"; `armor-mods.test.mjs` read `packs-src` through
+  `URL.pathname`, which fails on Windows (it had been the second failing suite).
+Not walked: the APDS half (unit-tested), the Delta eye, Player2 opening a GM-only item's mod read-only, the 🛒 Level list with CC off.
+✔ **Ruled (the maintainer, 2026-10-27): no refund.** Eye options already charged as loose items keep their Essence in `essence.lost`
+when moved into the eye; the GM lowers `lost` by hand. Options installed into the eye straight from the compendium are never charged.
+**Pack data:** the Cannon Companion's "Stock (Rigid (Weapon)" — upstream `rawdata/SRCG-SR3-Gear.json` has "Stock (Rigid"; a `NAME_FIXES`
+entry in `tools/build-default-gear.mjs` (and owned copies) when the packs are next rebuilt.
+**Not modelled yet (step a):** an implant weapon (spur, cyber-gun) moved into a limb gets a new id, so `_disarmImplant` drops its
+weapon entry and nothing re-arms it from inside the limb — the built-in cyber-weapons remainder.
+
 **🧪 Test in Foundry** — TESTING.md §77 (full restart: data models gained fields).
 
 ## 278. Weapon damage — a destroyed barrel's repair, and the barrel extension's price — **requested 2026-10-27**

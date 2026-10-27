@@ -3996,6 +3996,17 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'worn-armour-read-from-system',
+    suite:  'item-mods',
+    ...ITEMMODS, method: 'passesToActor',
+    was:    'armour passed its mods up only for a system.worn nothing writes — a worn helmet\'s magnification and vision never reached the actor (seen live 2026-10-27, TODO 276)',
+    impl:   function (item) {
+      if (item?.flags?.The2ndChumming3e?.stored === true) return false;
+      if (item?.type === 'armor') return item?.system?.worn === true;
+      return ['cyberware', 'bioware', 'gear'].includes(item?.type);
+    },
+  },
+  {
     id:     'eye-mods-never-free',
     suite:  'cyber-capacity',
     ...CYBERCAP, method: 'nestedEssence', needsOriginal: '_nestedOriginal',

@@ -191,7 +191,7 @@ export const CyberCapacity = {
     }
     const hg = CyberCapacity.gradeMult(host?.system?.grade), mg = CyberCapacity.gradeMult(mod?.system?.grade);
     if (CYBER.includes(mod?.type) && hg !== mg) {
-      out.push(`${mod?.name} is ${mod?.system?.grade || 'Standard'} grade in a ${host?.system?.grade || 'Standard'} ${host.name} — built-in mods match their host's grade (the maintainer).`);
+      out.push(`${mod?.name} is ${mod?.system?.grade || 'Standard'} grade in ${/^[AEIOU]/i.test(host?.system?.grade || 'Standard') ? 'an' : 'a'} ${host?.system?.grade || 'Standard'} ${host.name} — built-in mods match their host's grade (the maintainer).`);
     }
     return out;
   },

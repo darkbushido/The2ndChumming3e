@@ -41,6 +41,9 @@ export async function run(t) {
   t.ok('the roll goes through rollPool with the modRemoval follow-up (explosion-safe)', /smith\.rollPool\([\s\S]{0,200}followUp: \{ kind: 'modRemoval'/.test(glue));
   t.ok('the vent is removed either way and nothing returns to the inventory', /else \{\s*\/\/ The vent is gone either way[^\n]*\n\s*if \(host\.isOwner\) await host\.update\(\{ 'system\.installed': ItemMods\.uninstall\(ItemMods\.installed\(host\), ctx\.modId\)\.installed \}\);/.test(glue)
     && !/removalRolled[\s\S]*createEmbeddedDocuments/.test(glue.slice(glue.indexOf('async removalRolled'), glue.indexOf('/** Open mod'))));
+  // Seen live 2026-10-27 (§77d): the dialog still said "and the vent stays" after the ruling took the vent with the barrel.
+  t.ok('the gunsmith dialog says what the card does: failure takes the vent with the barrel',
+    /failure destroys the barrel, and the vent with it/.test(glue) && !/the vent stays/.test(glue));
   t.ok('failure marks the gun as needing repair', /setFlag\('The2ndChumming3e', 'needsRepair', \{ part: 'barrel', reason: `Barrel destroyed/.test(glue));
   t.ok('labour is stated, never deducted', /not deducted/.test(glue) && !/nuyen/.test(glue.slice(glue.indexOf('async removalRolled'), glue.indexOf('/** Open mod'))));
   t.ok('the follow-up is registered', /modRemoval:\s+\['SR3EItemMods', 'removalRolled'\]/.test(read('scripts/documents/SR3EActor.js')));
