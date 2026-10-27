@@ -3422,3 +3422,23 @@ GM approves target numbers (`gmApprovesTN` on).
       Tick nothing → no change. An SS shot (no recoil) → ticking saves nothing.
 - [ ] Next shot: both unticked again (nothing remembered).
 - [ ] **Changes editor:** a Bipod's row has "when deployed" ticked; editing its value keeps the tick.
+
+### 77g. Cyberlimbs and cybereyes — what they hold (TODO 276, M&M pp.36-37, SR3 p.299, p.303)
+
+**Full restart** (cyberware gained `ecu`). A character with an Obvious Cyberarm, Eyes, Cyber Replacement and a few Cyberlimb Mods
+and eye options (loose).
+
+- [ ] **The arm's sheet:** "Holds (ECU)" blank with placeholder 10; Installed mods empty, "Holds 0 / 10 ECU". A Synthetic arm → 5;
+      a Pair of arms → 20.
+- [ ] **Install** a Smartlink (Internal) (Cyberlimb) from the inventory into the arm → "Holds .5 / 10 ECU"; its sheet's "Takes (ECU)"
+      placeholder .5. Essence on the Attributes tab rises by its .25 (it did before, as a loose item — unchanged), nothing double.
+- [ ] **Over capacity:** fill a Cyber Hand (2 ECU) with a Foot Anchor (4) → warned, installed; the line shows over.
+- [ ] **Unknown size:** install something not on the table → "ECU not known", set "Takes (ECU)" on it → counted.
+- [ ] **Grade:** make the arm Alpha → "Holds … / 8 ECU (Alpha …)"; install a Standard smartlink → "match their host" warning.
+- [ ] **Strength Enhancement** installed in the arm still raises Strength (Attributes tab source tooltip names it).
+- [ ] **Eyes:** install Low-Light and Thermographic (.2 each) into the replacement → "Holds .4 / .5 Essence free"; the character's
+      Essence counts only the eyes' .2 (it counted .6 with them loose). Add a third .2 option → ".1 Essence over, charged".
+      A Delta eye: holds .25, delta options at half — the same number fit.
+- [ ] **Vision:** a "Low-Light" module inside the eyes still shows as cyber low-light in the GM window's vision reminder.
+- [ ] **Built-in price:** install a pocket secretary (gear) into the arm → "Built in: … ×4" with Man & Machine off, the normal price
+      with it on; add a Direct Neural Interface to the arm → "+50% DNI" on top.

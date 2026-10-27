@@ -906,13 +906,29 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
 3. **The free-text `accessories`** — a migration turning it into installed mods where it parses; the rest stays a note.
 4. **Weapon mounts by weapon class** (SR3 pp.276-279, CC p.75: hold-outs none, pistols barrel + top, …) — warnings; waits on the
    open questions below.
-5. **Cyberlimbs** (Equipment Capacity, M&M pp.35-37; Essence of a built-in item only when paid, M&M p.127), **vehicles and
+5. ~~Cyberlimbs~~ — built (above; its remainders listed there). **Vehicles and
    drones** ([#265](#265); their mods stay items on the vehicle actor, which is the container; weapon mounts [#234](#234) are hosts).
 6. Not modelled from the armour rules: Thermal Dampening's Perception / Signature effect and its fade over time (shown only); the
    SR3 p.284 Respirator / Chemical Seal (12,000¥) options' effects; injection-vector darts against hardened armour (CC p.51).
 7. ✔ **Decided by the maintainer, 2026-10-27:** goggles' and a helmet's vision count on the Visibility Table's
    CYBERNETIC/ELECTRONIC column (SR3 p.111), with cybereyes — "goggles should count with the cybernetic/electronic vision
    side". `detectVision` puts every `toActor` vision from an item in `cyber`; `tests/vision.test.mjs` pins a worn helmet there.
+
+**Built — the cyberlimb slice (2026-10-27):** `scripts/data/cyber-capacity.mjs` (`tests/cyber-capacity.test.mjs`, mutants
+`eye-mods-never-free`, `cyber-capacity-ignores-grade`, `dni-does-not-stack`):
+- **Capacity hosts** — a cyberlimb holds ECU (M&M p.37 table by limb, obvious / synthetic, a Pair is two; `system.capacity`
+  overrides); an eye / ear replacement holds `.5` Essence of mods free (SR3 p.299; its existing `capacity`). Each built-in
+  device takes its ECU — a new `system.ecu` on cyberware, blank = the M&M p.36 table (`ECU_TABLE`), unknown = warned. The item
+  sheet shows "Holds" / "Takes (ECU)" with the book's figure as placeholder, and the host's mods section "Holds N / M ECU".
+- **Grade** — capacity × the grade's Essence factor and a mod's ECU × its own (the ruling below), so a matched host holds as many
+  mods; a mod of another grade than its host is warned.
+- **Built-in implants reach the character** — `CyberCapacity.flatten` (the items, then each host's installed cyberware/bioware):
+  Essence (`installedEssenceCost` + `nestedEssence`: a limb's built-ins at their own reduced figure, an eye's only over .5),
+  attribute / Reaction / Initiative / skill bonuses, implant armour, dermal armour, the Attribute Boost warning, vision names.
+- **Price** — a device (gear) built into a limb shows its built-in price on the limb: ×4 with Man & Machine off, +50% stacking with
+  a direct neural interface in the limb (`builtInCost`). Shown, not charged.
+- **Not yet reading built-ins:** Stress / cybersystem slots, the Concealment view, the VCR finders, healing's implant checks, the
+  cyber-weapon list (a spur built into an arm is not offered as a weapon), and triggered augmentations (keyed by item id).
 
 **Cyberlimb rulings (the maintainer, 2026-10-27)** — for the cyberlimb slice:
 - **Synthetic limbs:** SR3 p.303's +50% on "any modification" does NOT apply to built-in devices.

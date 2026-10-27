@@ -23,6 +23,7 @@ import { Collisions } from '../data/collisions.mjs';
 import { Apds } from '../data/apds.mjs';
 import { VehicleArmor } from '../data/vehicle-armor.mjs';
 import { ArmorMods } from '../data/armor-mods.mjs';
+import { CyberCapacity } from '../data/cyber-capacity.mjs';
 import { Misfire } from '../data/misfire.mjs';
 import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { AdeptLevels } from '../data/adept-levels.mjs';
@@ -2043,7 +2044,8 @@ _prepareCharacter(sys, attr) {
   /** Items that forbid other Reaction/Initiative enhancement, and the ones that conflict. */
   const reactionExclusiveItems = [];
   const otherReactionEnhancers = [];
-  for (const item of (this.items ?? [])) {
+  // Built-in implants too — a Strength Enhancement inside a cyberarm still raises Strength (TODO 276, `CyberCapacity.flatten`).
+  for (const item of CyberCapacity.flatten(this.items ?? [])) {
     if (item.type !== 'cyberware' && item.type !== 'bioware') continue;
     const s = item.system;
     cyberBonus.bod      += s.bonusBod      ?? 0;
@@ -8252,7 +8254,7 @@ _prepareCharacter(sys, attr) {
    */
   static implantArmor(items) {
     const out = { impact: 0, ballistic: 0, sources: [] };
-    for (const i of (items ?? [])) {
+    for (const i of CyberCapacity.flatten(items ?? [])) {   // a cyberlimb's built-in armour too (TODO 276)
       if (i?.type !== 'cyberware' && i?.type !== 'bioware') continue;
       const s = i.system ?? {};
       let fromMods = null;
@@ -8506,7 +8508,7 @@ _prepareCharacter(sys, attr) {
     if (SR3EActor.racialDermalArmor(actor?.system?.metatype) > 0) out.push('troll dermal armor');
     const pats = globalThis.game?.sr3e?.SR3E?.dermalArmorImplants
       ?? [/^\s*dermal\s+(plating|sheath)\b/i, /^\s*d\.\s*sheath\b/i, /^\s*dermal\s+armou?r\b/i];
-    for (const i of (actor?.items ?? [])) {
+    for (const i of CyberCapacity.flatten(actor?.items ?? [])) {
       if (i?.type !== 'cyberware') continue;
       if (pats.some(re => re.test(String(i.name ?? '')))) out.push(i.name);
     }
@@ -8822,7 +8824,7 @@ _prepareCharacter(sys, attr) {
            Re-rolling replaces it, and only the new one will charge Drain.
          </div>` : '';
 
-    const cyber = (actor.items ?? []).some(i =>
+    const cyber = [...CyberCapacity.flatten(actor.items ?? [])].some(i =>
       (i.type === 'cyberware' || i.type === 'bioware')
       && (i.system?.[{ body: 'bonusBod', quickness: 'bonusQui', strength: 'bonusStr' }[attribute]] ?? 0) > 0);
     const cyberWarn = cyber
@@ -10463,10 +10465,14 @@ _prepareCharacter(sys, attr) {
    */
   static installedEssenceCost(items) {
     let total = 0;
+    const graded = i => (i?.type === 'cyberware' ? SR3EActor.gradedEssenceCost(SR3EActor.baseEssenceCost(i), i.system?.grade) : 0);
     for (const item of (items ?? [])) {
       if (item?.type !== 'cyberware') continue;
-      const c = SR3EActor.gradedEssenceCost(SR3EActor.baseEssenceCost(item), item.system?.grade);
+      const c = graded(item);
       if (Number.isFinite(c)) total += c;
+      // Its built-in implants (TODO 276): a limb's at their own reduced Essence (M&M p.36), an eye / ear replacement's only
+      // over the .5 it holds free (SR3 p.299) — `CyberCapacity.nestedEssence`.
+      total += CyberCapacity.nestedEssence(item, graded);
     }
     return parseFloat(total.toFixed(2));
   }

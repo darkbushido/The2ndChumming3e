@@ -122,7 +122,7 @@ export async function run(t) {
   t.ok('install moves a mod from the host\'s own actor, never deletes another actor\'s item',
     /source\.parent === host\.parent && source\.id !== host\.id\) await source\.delete\(\)/.test(glue));
   t.ok('install warns, never refuses: warnings go to notifications and the install goes ahead',
-    /for \(const w of \[\.\.\.ItemMods\.warnings\(host, source\), \.\.\.ArmorMods\.installWarnings\(host, source\.toObject\(\)\)\]\) ui\.notifications\.warn\(w\);\s*const installed = ItemMods\.install/.test(glue));
+    /for \(const w of \[\.\.\.ItemMods\.warnings\(host, source\), \.\.\.ArmorMods\.installWarnings\(host, source\.toObject\(\)\),\s*\.\.\.CyberCapacity\.installWarnings\(host, source\.toObject\(\), graded\)\]\) ui\.notifications\.warn\(w\);\s*const installed = ItemMods\.install/.test(glue));
 
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
   t.ok('the item sheet sends a temporary mod\'s form to its own update, not core\'s submit',

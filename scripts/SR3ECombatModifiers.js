@@ -26,6 +26,7 @@ import { Hands } from './data/hands.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { WeaponAccessories } from './data/weapon-accessories.mjs';
 import { ItemMods } from './data/item-mods.mjs';
+import { CyberCapacity } from './data/cyber-capacity.mjs';
 import { Shotgun } from './data/shotgun.mjs';
 import { MeleeProne } from './data/melee-prone.mjs';
 
@@ -227,6 +228,8 @@ export function detectVision(actor) {
   const metatype = String(actor?.system?.metatype ?? actor?.metatype ?? '').trim().toLowerCase();
   const racial   = SR3E_RACIAL_VISION[metatype] ?? null;
   const items    = [...(actor?.items ?? [])];
+  // Built-in implants are found by name too (TODO 276) — a cybereye's "Low-Light" module inside it.
+  const named    = [...CyberCapacity.flatten(items)];
 
   let replacedBy = null;
   const natural = [];
@@ -234,7 +237,7 @@ export function detectVision(actor) {
   const LOW     = /low[\s-]?light/i;
   const THERMO  = /thermograph/i;
 
-  for (const i of items) {
+  for (const i of named) {
     const name = String(i?.name ?? '');
     if (i?.type === 'cyberware') {
       if (/cyber\s*replacement|\bcybereyes?\b/i.test(name)) replacedBy ??= name;

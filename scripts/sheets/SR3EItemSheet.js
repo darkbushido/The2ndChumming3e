@@ -19,6 +19,7 @@ import { AmmoStock, GUN_CLASSES } from '../data/ammo-stock.mjs';
 import { MiniGrenade } from '../data/mini-grenade.mjs';
 import { ItemMods, TARGETS } from '../data/item-mods.mjs';
 import { ArmorMods } from '../data/armor-mods.mjs';
+import { CyberCapacity } from '../data/cyber-capacity.mjs';
 import { SR3EItemMods } from '../SR3EItemMods.js';
 import { ModRemoval } from '../data/mod-removal.mjs';
 
@@ -220,6 +221,48 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
   /* ── Mods installed inside this item, and what this item changes · TODO 276 ─────────────────────────────── */
 
+  /** A capacity host's line under its mods: what is used of what it holds, and anything to warn about. */
+  _capacityLine(item) {
+    const graded = i => game.sr3e.SR3EActor.gradedEssenceCost(game.sr3e.SR3EActor.baseEssenceCost(i), i.system?.grade);
+    const kind = CyberCapacity.kind(item);
+    const cap = CyberCapacity.capacity(item);
+    const { used, unknown } = CyberCapacity.used(item, graded);
+    const unit = kind === 'ecu' ? 'ECU' : 'Essence free';
+    const over = used > cap;
+    const extra = kind === 'essence' && over ? ` — ${Math.round((used - cap) * 100) / 100} Essence over, charged to the character` : '';
+    const grade = CyberCapacity.gradeMult(item.system?.grade) !== 1 ? ` (${item.system.grade}: the grade's Essence factor)` : '';
+    // A device built in (not cyberware — a pocket secretary, a comm unit): its built-in price, SR3 p.303 — ×4 with Man & Machine
+    // off, +50% with a direct neural interface in the limb (stacks); a synthetic limb adds nothing (the maintainer, 2026-10-27).
+    const mmOn = game.sr3e?.SR3ESourceBooks?.optionalRuleAllowed?.('mm') ?? true;
+    const dni = ItemMods.installed(item).some(m => /direct\s*neural|\bdni\b/i.test(m?.name ?? ''));
+    const devices = ItemMods.installed(item).filter(m => kind === 'ecu' && !['cyberware', 'bioware'].includes(m?.type))
+      .map(m => `${foundry.utils.escapeHTML(m.name ?? '?')} ${CyberCapacity.builtInCost(m.system?.cost, { mmOn, dni }).toLocaleString()}¥`);
+    return `<div class="sr-mods-summary">Holds ${used} / ${cap} ${unit}${grade}${extra}</div>
+      ${devices.length ? `<div class="sr-mods-summary" data-tooltip="Built-in price, SR3 p.303: ×4 with Man & Machine off (normal with it on); +50% with a direct neural interface, stacking.">Built in: ${devices.join(' · ')}${mmOn ? '' : ' (×4)'}${dni ? ' (+50% DNI)' : ''}</div>` : ''}
+      ${over && kind === 'ecu' ? `<p class="sr-mod-warn">⚠ Over capacity (M&M p.37).</p>` : ''}
+      ${unknown.length ? `<p class="sr-mod-warn">⚠ ECU not known for ${foundry.utils.escapeHTML(unknown.join(', '))} — set it on the item.</p>` : ''}`;
+  }
+
+  /**
+   * A cyberlimb's ECU / an eye replacement's free Essence (what it HOLDS), and a built-in device's ECU (what it TAKES) — TODO
+   * 276. Blank shows the book's figure as the placeholder (M&M pp.36-37); a typed number wins.
+   */
+  _capacityFields(s) {
+    const item = this.document;
+    const kind = CyberCapacity.kind(item);
+    const limb = CyberCapacity.limbEcu(item);
+    const holds = kind || limb !== null
+      ? this._f(kind === 'essence' ? 'Holds (Essence)' : 'Holds (ECU)', 'capacity', Number(s.capacity) > 0 ? s.capacity : '', 'number',
+        `min="0" step="0.05" placeholder="${limb ?? ''}" data-tooltip="${kind === 'essence' ? 'Essence of eye / ear mods held free (SR3 p.299)' : 'Equipment Capacity Units (M&M p.37); blank = the book\'s'}"`)
+      : '';
+    const table = CyberCapacity.ecuOf({ ...item, system: { ...s, ecu: null } });
+    const takes = item.system?.cyberwareCategory === 'Cyberlimb Mods' || Number.isFinite(s.ecu) || table !== null
+      ? this._f('Takes (ECU)', 'ecu', Number.isFinite(s.ecu) ? s.ecu : '', 'number',
+        `min="0" step="0.25" placeholder="${table ?? '?'}" data-tooltip="Built into a cyberlimb, it takes this many ECU (M&M p.36); blank = the book's. Unknown: micro .5, small 1, medium 3, large 5 (M&M p.37)."`)
+      : '';
+    return holds + takes;
+  }
+
   /** A gun whose barrel a failed gas-vent removal destroyed (TODO 277): the reason, and ✔ Repaired for its owner. */
   _repairBanner() {
     const r = ModRemoval.needsRepair(this.document);
@@ -264,6 +307,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       ${body}
       ${summary ? `<div class="sr-mods-summary">From mods and built in: ${summary}</div>` : ''}
       ${item.type === 'armor' ? this._armorWithMods(item) : ''}
+      ${CyberCapacity.kind(item) ? this._capacityLine(item) : ''}
       ${edit ? '<p class="sr-mod-hint">Drop a mod here to install it. One accessory per weapon mount (SR3 p.280) — you are warned, never stopped.</p>' : ''}
     </div>`;
   }
@@ -1076,6 +1120,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${isBio ? '' : this._check(`Essence Slot (+${game.sr3e.EssenceHoles.THRESHOLD_MOD} Threshold)`, 'essenceSlot', s.essenceSlot)}
           ${this._modRatingField(s)}
           ${isBio ? '' : this._modForField(s)}
+          ${isBio ? '' : this._capacityFields(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Availability', 'availability', availEff, 'text', 'placeholder="8/36 hrs"')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex, 'number', 'step="0.1" min="0"')}

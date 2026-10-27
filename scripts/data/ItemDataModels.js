@@ -411,7 +411,11 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       streetIndex:       new NumberField({ initial: 0, min: 0 }),
       legalCode:         new StringField({ initial: '' }),
       mods:              new StringField({ initial: '' }),
+      // What it HOLDS: a cyberlimb's ECU (M&M p.37), an eye / ear replacement's free Essence of mods (.5, SR3 p.299). 0 = a
+      // limb's printed ECU (CyberCapacity.limbEcu). Read through CyberCapacity, never directly (TODO 276).
       capacity:          new NumberField({ initial: 0, min: 0 }),
+      // What it TAKES built into a cyberlimb: ECU (M&M p.36). Null = the table's figure (CyberCapacity.ecuOf).
+      ecu:               new NumberField({ nullable: true, initial: null, min: 0 }),
       cyberwareCategory: new StringField({ initial: '' }),
       isReplacement:     new BooleanField({ initial: false }),
       installed:         installedField(),

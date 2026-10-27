@@ -48,6 +48,7 @@ const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating'
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
 const BLASTBATCH = { module: '../scripts/data/blast-batch.mjs', klass: 'BlastBatch' };
+const CYBERCAP = { module: '../scripts/data/cyber-capacity.mjs', klass: 'CyberCapacity' };
 const ITEMMODS = { module: '../scripts/data/item-mods.mjs', klass: 'ItemMods' };
 const MAGNIFY = { module: '../scripts/data/magnification.mjs', klass: 'Magnification' };
 const MODREMOVAL = { module: '../scripts/data/mod-removal.mjs', klass: 'ModRemoval' };
@@ -3993,5 +3994,26 @@ export const MUTANTS = [
         installed: (it?.system?.installed ?? []).map(strip) } });
       return this._effectiveOriginal(strip(item));
     },
+  },
+  {
+    id:     'eye-mods-never-free',
+    suite:  'cyber-capacity',
+    ...CYBERCAP, method: 'nestedEssence', needsOriginal: '_nestedOriginal',
+    was:    'an eye replacement\'s mods cost their full Essence — SR3 p.299: it holds .5 of them free (TODO 276)',
+    impl:   function (host, graded) { return this._nestedOriginal({ ...host, system: { ...(host?.system ?? {}), capacity: 0, cyberwareCategory: 'Cyberlimbs' } }, graded); },
+  },
+  {
+    id:     'cyber-capacity-ignores-grade',
+    suite:  'cyber-capacity',
+    ...CYBERCAP, method: 'gradeMult',
+    was:    'a graded limb kept a standard limb\'s capacity — the maintainer: reduced by the grade\'s Essence factor (TODO 276)',
+    impl:   () => 1,
+  },
+  {
+    id:     'dni-does-not-stack',
+    suite:  'cyber-capacity',
+    ...CYBERCAP, method: 'builtInCost',
+    was:    'a direct neural interface\'s +50% replaced the built-in ×4 — the maintainer: it stacks (SR3 p.303, TODO 276)',
+    impl:   (c, { mmOn = false, dni = false } = {}) => Math.round(Math.max(0, Number(c) || 0) * (dni ? 1.5 : (mmOn ? 1 : 4))),
   },
 ];
