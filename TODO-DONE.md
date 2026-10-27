@@ -7768,3 +7768,31 @@ deducted. 🗑 stays a record fix (it says so).
 (`ModRemoval.outcome`: `removed` always true; mutant `gas-vent-survives-a-failed-removal`). *"we haven't done anything with weapon
 damage. I'd rule that it would cost the same as a barrel extension"* — ✔ Repaired asks the repair cost (`REPAIR.barrel`, pre-filled
 once the figure is known) and posts it; nothing deducted. The barrel extension's figure is [#278](TODO.md#278).
+
+## 280. ✅ 21 shipped firearms carry RC 0 where the book prints their integral accessories' RC — **found 2026-10-27** · fixed `d00a2cb0`
+
+Seen walking TESTING.md §77i: of the 33 shipped guns with an integral RC accessory (TODO 276 step b), 21 have `recoilMod` 0 and
+no bracketed RC — the Ares Crusader, Colt Cobra TZ-110, HK MP-5 TX, Ares MP-LMG, FN MAG-5 MMG, Barret Model 121 and others.
+The book prints the figure: the Cannon Companion's machine-pistol table gives the Crusader **RC 2**, its integral Rating 2 gas
+vent. So these guns fire with no recoil compensation at all — before step b too (the text was never parsed), so not a regression.
+The maintainer's ruling for integral mods (shown, never counted) assumes the printed RC is filled; for these it is not.
+**Wanted:** each gun's RC (and bracketed RC) read from its PDF table, page cited, filled in `packs-src` (a `pack-corrections`
+entry) and in owned copies by migration — fill blanks only (0 / null). List the 21: walk `IntegralMods` over the firearm packs
+for guns whose `recoilMod` and `recoilModIntegral` are below their integral RC mods' total. A rules-data fix: the maintainer
+says whether it goes on main or the branch.
+
+**Done (2026-10-27, on the branch — it rests on step b's integral mods and ships with 0.9.0).** Worse than the 21: no Cannon
+Companion gun carried an RC at all. `scripts/data/printed-rc.mjs` is each gun's RC and bracketed RC read from the printed
+tables — **CC pp.116-118** (the summary tables, read from the page images; the OCR text misplaces the column), the Ares
+Thunderer **CC p.78** ("3 points of recoil compensation"), and the SR3 pp.278-279 rows the 0.7.0 corrections already
+carried, so the contacts' copies get them too. 44 rows, each pinned to its name and book page. `tools/fill-printed-rc.mjs`
+filled 35 guns in `packs-src` (30 CC, 5 in the contacts); the 0.9.0 migration fills owned copies — blanks only (`recoilMod`
+blank or 0, `recoilModIntegral` blank).
+- **The Panther Assault Cannon** prints "(2)/(1)": it comes with a bipod OR a shoulder strap and hip brace (CC p.26). The
+  maintainer (2026-10-27): *"if this is the only case it may be split into two versions"* — it is the only one, so the
+  pack ships **Panther Assault Cannon [Bipod]** (2, the old id) and **[Shoulder Strap Hip-Brace]** (1, `sr3e-firearm-1275`),
+  each with its own accessories text and integral mod. A world's old single Panther is left as it is (which version it is,
+  only the GM knows).
+- **Left:** the Ares Heavy Laser Plus's tripod (the table prints "—"), and the TSS guns whose stocks step b made integral
+  mods — the M-16B, VC Boxlock Hammerless, Win. 1300 Defender SS — whose book is not in the library: [#281](TODO.md#281).
+  `tests/printed-rc.test.mjs` pins that list.
