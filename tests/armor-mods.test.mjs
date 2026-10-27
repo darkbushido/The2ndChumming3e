@@ -147,7 +147,7 @@ export async function run(t) {
   t.is('…an armour jacket is not', ModEffects.fillDelta({ type: 'armor', name: 'Armor Jacket', system: {} }), null);
   t.eq('Gas Vent from the pack: RC = its level, 1-4 (SR3 p.282, CC p.35)', [1, 2, 3, 4].map(r => ItemMods.value({ system: { rating: r, modifiers: MOD_EFFECTS['gear|Gas Vent'] } }, 'rc')), [1, 2, 3, 4]);
   const shipped = [];
-  for (const pack of ['sr3e-sr3-gear', 'sr3e-cc-gear', 'sr3e-mm-gear', 'sr3e-cc-armor', 'sr3e-sr3-armor']) {
+  for (const pack of ['sr3e-sr3-gear', 'sr3e-cc-gear', 'sr3e-mm-gear', 'sr3e-cc-armor', 'sr3e-sr3-armor', 'sr3e-sr3-cyberware']) {
     for (const [k, d] of readSourceDir(new URL(`../packs-src/${pack}/`, import.meta.url).pathname)) if (/^!items!/.test(k)) shipped.push(d);
   }
   const unfilled = shipped.filter(d => ModEffects.fillDelta(d)).map(d => d.name);

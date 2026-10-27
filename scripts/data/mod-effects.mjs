@@ -8,8 +8,8 @@
  * Values are book data. `perRating`: the value is per point of the item's rating, which for these RC accessories IS the
  * printed RC (Gas Vent II is rating 2, SR3 p.282) and for the armour modifications the points bought (CC p.52).
  * ⚠ Left out on purpose — not yet ruled, or not yet a target (TODO 276 open questions): Bipod / Tripod (deployed only —
- * the "deployed" toggle is not built), imaging scopes (magnification), smart goggles (a goggles-smartgun pair, −1, SR3
- * p.112), the Gyro Mount (its own rules, TODO 18).
+ * the "deployed" toggle is not built), smart goggles (a goggles-smartgun pair, −1, SR3 p.112), the Gyro Mount (its own
+ * rules, TODO 18).
  */
 import { ModRatings } from './mod-ratings.mjs';
 
@@ -40,6 +40,13 @@ export const MOD_EFFECTS = {
   'gear|Nonconductive':           per('resistElectric'),
   'gear|Thermal Dampening':       per('thermalMasking'),
   'gear|Gel Packs (See Rules)':   on('gelPacks'),
+  // Image magnification — the level is the magnification (SR3 p.110, p.282 Imaging Scope Magnification 1-3; SR3 p.284 helmet
+  // Electronic / Optical Magnification 3; SR3 p.299 cybereye Vision Magnification).
+  'gear|Imaging Scope':                               per('magnification'),
+  'armor|Electronic Magnification':                   per('magnification'),
+  'armor|Optical Magnification':                      per('magnification'),
+  'cyberware|Eyes, Vision Magnification, Electronic': per('magnification'),
+  'cyberware|Eyes, Vision Magnification, Optical':    per('magnification'),
   // Helmet vision options — SR3 p.284, CC p.51. Goggles / helmets count as cybernetic/electronic vision (the maintainer).
   'armor|Thermo Vision':          on('thermo'),
   'armor|Low-light Vision':       on('lowLight'),

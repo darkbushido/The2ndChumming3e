@@ -3397,3 +3397,15 @@ Conceal 6, 2 kg) on a character with Quickness 3; from the Cannon Companion gear
 - [ ] **An explosion** (TN 7+, a 6): the result card waits for the last 💥, then resolves as above.
 - [ ] **Player2 as the gunsmith on their own gun** works start to finish; an NPC gunsmith's 💥 is the GM's to click.
 - [ ] **🗑 on the vent** asks for confirmation and says it only corrects the record.
+
+### 77e. Image magnification (TODO 276, SR3 p.110 — the highest device counts, TODO 235)
+
+**Full restart** (packs). A rifle with an Imaging Scope installed (Level 2), a target measured at Long range.
+
+- [ ] **Scope:** attack → the roll dialog's Range is **Short** (TN 4), with "🔭 … magnification 2: Long → Short (SR3 p.110; the best
+      device only)"; pick Long by hand → TN 6 (still editable).
+- [ ] **Never below Short:** a Level 3 scope at Medium → Short.
+- [ ] **Helmet:** no scope; wear a Security Helmet with Electronic Magnification (Armor) installed → shifted 3. Take it off → no shift.
+- [ ] **Cybereyes:** Eyes, Vision Magnification, Electronic at Level 2 → shifted 2.
+- [ ] **No stacking:** scope 2 + helmet 3 → shifted **3**, not 5; the note names the helmet.
+- [ ] **Beyond Extreme:** no shift, the usual warning.

@@ -886,9 +886,15 @@ sight** (`WeaponAccessories.flag`: an installed mod switches it on), **low-light
 - **No stock on a rifle** (above) — refused at install, with the reason.
 - **The 🔧 chip's tooltip** (reported live): Foundry's `data-tooltip` listing mount · mod — what it changes, then the totals.
 
+**Built — magnification (2026-10-27):** `magnification` (`max`) and `scripts/data/magnification.mjs` (`tests/magnification.test.mjs`,
+mutants `magnification-stacks`, `magnification-past-short`): the attack pre-sets the Range dropdown to the band shifted toward Short
+by the best device in use — the gun's Imaging Scope (its level), a worn helmet's Electronic / Optical Magnification 3, cybereyes'
+Vision Magnification — never below Short, never stacked (TODO 235's ruling); the dialog names the device, the GM can change the band.
+Pack data for all five (the 0.9.0 migration fills owned copies). ⚠ Chosen, not ruled: no shift for a target beyond Extreme (it is
+off the table, not a band). Imaging scope + smartlink (SR3 p.280) is still an open question below.
+
 **Still open in this item:**
-1. **Magnification** (`max`, SR3 p.110, p.113) — shift the range band by the highest device in use ([#235](#235)); imaging scopes
-   and the helmet magnification then get their pack data.
+1. ~~Magnification~~ — built (above).
 2. **Bipod / tripod / stock deployed** — a mod toggle replacing the fire dialog's integral tick ([#235](#235)); bipod and tripod
    get their RC then (left out of the pack data until the toggle exists).
 3. **The free-text `accessories`** — a migration turning it into installed mods where it parses; the rest stays a note.

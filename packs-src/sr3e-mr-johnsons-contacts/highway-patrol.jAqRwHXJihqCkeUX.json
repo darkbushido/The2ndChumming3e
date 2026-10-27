@@ -1315,7 +1315,14 @@
         "grade": "Standard",
         "rating": 3,
         "description": "Undetectable, see pages SR3-110 and SR3-280 for effects",
-        "srcgName": "Eyes, Vis Mag Ele[3]"
+        "srcgName": "Eyes, Vis Mag Ele[3]",
+        "modifiers": [
+          {
+            "target": "magnification",
+            "value": 1,
+            "perRating": true
+          }
+        ]
       },
       "effects": [],
       "folder": null,

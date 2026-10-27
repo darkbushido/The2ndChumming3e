@@ -17,7 +17,14 @@
       "notes": "",
       "modFor": "armor",
       "rating": 3,
-      "legality": "Legal"
+      "legality": "Legal",
+      "modifiers": [
+        {
+          "target": "magnification",
+          "value": 1,
+          "perRating": true
+        }
+      ]
     },
     "effects": []
   },

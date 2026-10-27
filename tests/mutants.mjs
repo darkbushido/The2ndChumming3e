@@ -48,6 +48,7 @@ const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating'
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
 const BLASTBATCH = { module: '../scripts/data/blast-batch.mjs', klass: 'BlastBatch' };
+const MAGNIFY = { module: '../scripts/data/magnification.mjs', klass: 'Magnification' };
 const MODREMOVAL = { module: '../scripts/data/mod-removal.mjs', klass: 'ModRemoval' };
 const ARMORMODS = { module: '../scripts/data/armor-mods.mjs', klass: 'ArmorMods' };
 const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
@@ -3961,5 +3962,23 @@ export const MUTANTS = [
     ...MODREMOVAL, method: 'repairCost',
     was:    'a destroyed barrel cost the whole gun to repair — the maintainer ruled 50% for now (TODO 278/279)',
     impl:   gun => Math.round(Number(gun?.system?.cost) || 0),
+  },
+  {
+    id:     'magnification-stacks',
+    suite:  'magnification',
+    ...MAGNIFY, method: 'best', needsOriginal: '_bestOriginal',
+    was:    'every magnification device in use added up — the maintainer ruled the highest one counts (TODO 235)',
+    impl:   function (weapon, items) {
+      const one = this._bestOriginal(weapon, []).rating;
+      const rest = (items ?? []).reduce((s, i) => s + this._bestOriginal({}, [i]).rating, 0);
+      return { rating: one + rest, source: 'stacked' };
+    },
+  },
+  {
+    id:     'magnification-past-short',
+    suite:  'magnification',
+    ...MAGNIFY, method: 'shift',
+    was:    'the band could shift past Short — SR3 p.110 never goes below Short range',
+    impl:   (i, r) => Number(i) - (Number(r) || 0),
   },
 ];

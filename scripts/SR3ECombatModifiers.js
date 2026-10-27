@@ -73,7 +73,8 @@ export const SR3E_RANGED_MODIFIERS = [
   // double-count every aimed shot.
   { key: 'aimedShot',      label: 'Aimed shot',                    mod: -1,   auto: true, per: true, group: 'attacker', note: 'declared by the attacker, per Simple Action' },
   { key: 'calledShot',     label: 'Called shot',                   mod: +4,   auto: true, group: 'attacker',   note: 'declared in the fire dialog' },
-  { key: 'imageMag',       label: 'Image magnification',           mod: null,             group: 'gear',       note: 'Special' },
+  // Applied as a RANGE shift, not a TN row: the roll dialog's Range is pre-set to the magnified band (SR3 p.110, TODO 276).
+  { key: 'imageMag',       label: 'Image magnification',           mod: null,             group: 'gear',       note: 'Special — shifts the Range band (SR3 p.110)' },
   // A signed number the GM types. NOT a rule from any table - the point is the cases no
   // table covers. `value: true` so sumModifiers takes the number as given, exactly as it
   // does for the visibility lookup; `situational: true` tells the renderer to draw a

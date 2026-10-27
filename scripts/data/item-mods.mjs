@@ -32,6 +32,9 @@ export const TARGETS = {
   laserSight: { label: 'Laser sight',         short: 'Laser',     combine: 'any', toActor: false, page: 'SR3 p.281' },
   lowLight:   { label: 'Low-light vision',    short: 'Low-light', combine: 'any', toActor: true,  page: 'SR3 p.299' },
   thermo:     { label: 'Thermographic vision', short: 'Thermo',   combine: 'any', toActor: true,  page: 'SR3 p.299' },
+  // Image magnification — the range band shifts toward Short by the rating (SR3 p.110). The HIGHEST device counts, never the
+  // sum (the maintainer, TODO 235): `max`. Read by scripts/data/magnification.mjs.
+  magnification: { label: 'Image magnification', short: 'Mag',     combine: 'max', toActor: true,  page: 'SR3 p.110' },
   // Armour modifications (TODO 276, armour slice; scripts/data/armor-mods.mjs reads them). `capped`: counts toward an
   // armour's mod-point caps (CC p.52). Each lowers the Power of one kind of attack by its value — the GM applies it.
   resistChemical: { label: 'Power − vs contact chemicals', short: 'Chem seal', combine: 'add', toActor: false, capped: true, page: 'CC p.52' },

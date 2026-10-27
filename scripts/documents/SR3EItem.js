@@ -7,6 +7,7 @@ import { IntegralRC } from '../data/integral-rc.mjs';
 import { WeaponAccessories } from '../data/weapon-accessories.mjs';
 import { ItemMods } from '../data/item-mods.mjs';
 import { ModRemoval } from '../data/mod-removal.mjs';
+import { Magnification } from '../data/magnification.mjs';
 import { PhaseTargets } from '../data/phase-targets.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
@@ -1419,6 +1420,13 @@ export class SR3EItem extends Item {
       const band = SR3EItem._rangeBandForDistance(bands, metres);
       rangeInfo = { bandIdx: band.idx, distance: metres, beyond: band.beyond };
       if (band.beyond) ui.notifications.warn(`${targetActor.name} is beyond ${this.name}'s extreme range.`);
+      // Image magnification (SR3 p.110, TODO 276): the best device in use moves the band toward Short by its rating — the
+      // dropdown starts there and stays editable. They never stack (TODO 235).
+      const mag = Magnification.best(this, actor.items);
+      if (mag.rating > 0 && !band.beyond) {
+        const to = Magnification.shift(band.idx, mag.rating);
+        if (to !== band.idx) rangeInfo = { ...rangeInfo, bandIdx: to, magnified: { from: band.idx, rating: mag.rating, source: mag.source } };
+      }
     }
   }
 
@@ -2691,6 +2699,7 @@ export class SR3EItem extends Item {
           </select>
         </label>
         <span style="font-size:11px;color:var(--sr-muted);margin-left:8px">measured ${Math.round(rangeInfo.distance)}m${rangeInfo.beyond ? ' — beyond Extreme' : ''}</span>
+        ${rangeInfo.magnified ? `<div style="font-size:11px;color:var(--sr-accent);margin-top:2px">🔭 ${foundry.utils.escapeHTML(String(rangeInfo.magnified.source ?? ''))} — magnification ${rangeInfo.magnified.rating}: ${rangeLabels[rangeInfo.magnified.from] ?? '?'} → ${rangeLabels[rangeInfo.bandIdx] ?? '?'} (SR3 p.110; the best device only)</div>` : ''}
       </div>` : '';
 
     // Called Shot (SR3 p.114) — declared before the roll. +4 TN for either staging the
