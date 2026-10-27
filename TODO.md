@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**73 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**74 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -44,7 +44,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
-| 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
+| 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches<br>[282](#282) Pack data no book in the library can verify |
 | 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
@@ -2661,6 +2661,88 @@ landing the harness alone, then rebasing the rest.
 `player-combat` and arguably `spell-self-target` are defect fixes — open a bug describing
 the broken behaviour and reference it from the PR. `gh` defaults to origin; confirm the
 target repo on every command.
+
+## 282. Pack data no book in the library can verify — **surveyed 2026-10-27**
+
+While filling each gun's printed Recoil Compensation (TODO 280, on `claude/quirky-mayer-32wuvg`), the TSS guns were ruled out of
+scope because their book isn't in the library, and the maintainer said: *"i'm very tempted to do some house
+cleaning on the data and get rid of anything i cant verify"*. This item sizes it. **Nothing is removed yet.**
+
+**Method.** Every `system.bookPage` in `packs-src/**` (top-level documents **and** every embedded item in the
+actor packs), read through `BookPage.codes` (so `sta2` → `sota2`), mapped against
+`C:\Users\lance\Documents\Github\Shadowrun 3rd Edition PDFs` and `Supplements/`.
+
+### The codes, against the library
+
+| Code | Book | In the library? | Docs (packs + `sr3e-skills`) |
+|---|---|---|---:|
+| `sr3` `cc` `mm` `mits` `sota2` `lbb` `mat` `matrix-defragged` | Core · Cannon Companion · M&M · MitS · SOTA 2064 · LBB · Matrix · MDF v2 | ✅ text layer | — |
+| `r3` | Rigger 3 | ✅ as **Rigger 3 Revised** (spot check: Plutocrat `r3.184`, HSCT `r3.178` sit 3-4 pages on in R3R's PDF — consistent, not a different book) | — |
+| `fof` | Fields of Fire (SR2) | only co-cited with `sr3` (5 docs) — verifiable through `sr3` | — |
+| `sota` | State of the Art 2063 | ⚠ `[no-text]` — OCR in `SR-OCR/3e/Supplements/` | 40 + 9 skills |
+| `twl` | Target: Wastelands | ⚠ `[no-text]` — OCR exists | 19 + 3 skills |
+| `ssg` | Sprawl Survival Guide | ⚠ `[no-text]` — OCR exists | 11 |
+| `tal` | Target: Awakened Lands | ⚠ `[no-text]` — OCR exists | 3 |
+| **`tss`** | The Shadowrun Supplemental (fan, `fan: true`) | ❌ **not in library** | **130 + 28 skills** |
+| **`fra`** | France Sourcebook | ❌ **not in library** (FAM 95, EXOCET, VAUBAN are in no OCR'd book, Shadows of Europe included) | **7** |
+| **`ger`** | Germany Sourcebook | ❌ **not in library** (Zeiss is *named* in SoE/SOTA 2063/Dragons, but not these entries) | **2** |
+
+So the `[no-text]` books are verifiable (OCR, never committed) and are **not** in this clean-up. The
+unverifiable set is exactly **`tss` `fra` `ger`: 167 documents, 14 packs.**
+
+### Per pack
+
+| Pack | Docs |
+|---|---:|
+| `sr3e-tss-spells` | 40 |
+| `sr3e-tss-vehicles` | 33 |
+| `sr3e-tss-firearms` | 32 |
+| `sr3e-tss-adept-powers` | 9 |
+| `sr3e-tss-cyberware` | 9 |
+| `sr3e-tss-bioware` · `-drones` · `-melee` | 2 each |
+| `sr3e-tss-armor` | 1 |
+| `sr3e-fra-vehicle-mods` · `-vehicle-weapons` · `-cyberware` · `-firearms` | 3 · 2 · 1 · 1 |
+| `sr3e-ger-cyberware` | 2 |
+| `sr3e-skills` (system pack) — `tss` knowledge skills: Accounting, Acting, Current Affairs, Forensics, Law, Pharmacology, Stockbroking, … (some names twice) | 28 |
+
+### What references them
+
+- **Embedded copies: none.** No item embedded in `sr3e-mr-johnsons-contacts` (1,324) or
+  `sr3e-example-characters` (80) cites `tss`/`fra`/`ger`. A few contact skills share a *name* with a `tss` skill
+  (Law ×7, Navigation, Acting, Forensics, Pharmacology…) — generic knowledge skills, not links; they stay.
+- **`system.json`** — the 14 book pack declarations. **`scripts/config.js`** — `SOURCE_BOOKS` entries `fra`, `ger`,
+  `tss` (all off by default; `tss` `fan: true`) and a comment naming Ruthenium Skin Implants (tss).
+- **`scripts/data/mod-rating-table.mjs`** — rows keyed `sr3e-fra-vehicle-mods`, `-vehicle-weapons`,
+  `sr3e-ger-cyberware`, `sr3e-tss-cyberware`. **`scripts/data/book-page.mjs`** — labels only (harmless to keep).
+- **`tests/shock-stun.test.mjs:92`** asserts the TSS Yamaha Pulsar (`sr3e-tss-firearms/.sr3e-firearm-0650`) is a
+  shock weapon. No other test names these packs; `tests/source-books.test.mjs` derives from the manifest.
+- **`tools/data/book-pages.json`** (28 `tss.` pages) · **`tools/data/collapsed-mods.json`** (7) ·
+  `tools/patch-pack-bonuses.mjs` comment. No generator emits these packs (no `generatedBy`; `build-default-gear`
+  covers default-on books only). Upstream rows stay in `rawdata/SRCG-SR3-*.json` regardless.
+- **Legality** (`scripts/data/legality*.mjs`, on `claude/quirky-mayer-32wuvg` and `feature/mods`, not `main`) — no
+  mention.
+- **Docs:** `.claude/rules/source-books.md` (packs-per-book line, off-by-default row), `.claude/rules/adept-powers.md`
+  and `audit/adept-powers-audit.md` (*117 powers … `tss` 9*), `audit/rules-check-0.6.0.md` (record — leave),
+  [#9](#9) (cites `tss` as the restore precedent), and **#281** on `claude/quirky-mayer-32wuvg` (TSS/France RC
+  unread — moot if they go).
+- **Worlds:** Foundry embeds, so characters already holding a TSS item keep it whatever happens to the pack.
+
+### Options
+
+1. **Archive like SR2** (`archive/<name>/`, sources + exact `system.json` declarations + restore README, as
+   [#158](TODO-DONE.md#158) did) — out of `system.json`, `packs/`, `packs-src/`; the 28 skills move out of
+   `sr3e-skills` into the same archive; `SOURCE_BOOKS` entries go (or stay as empty checkboxes, like `pw`);
+   mod-rating rows, the shock-stun assertion, the tool data and the docs follow. Reversible if the books turn up.
+2. **Drop** — the same edits without the archive; git history is the only copy (and `rawdata/` still holds the
+   upstream rows, so a regeneration could bring them back).
+3. **Keep, flagged** — leave them shipping (off by default already), mark each document unverifiable (a flag the
+   item sheet shows) and exclude them from rules work (RC fill, audits) explicitly.
+
+Each option also needs `npm run packs:build`, `packs:install` (Foundry closed), a `packs:check:repo`, and the
+install's stale copies removed — and is a **feature-branch** change, not a fix.
+
+**Maintainer's decision (2026-10-27): option 1 — archive, like SR2** — and the 28 `tss` skills in
+`sr3e-skills` go the same way as the packs. To do on a feature branch.
 
 ### 🗂 Unsorted
 
