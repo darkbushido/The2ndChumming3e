@@ -3955,4 +3955,11 @@ export const MUTANTS = [
     was:    'a failed removal left the vent on the gun — the maintainer ruled it is destroyed with the barrel (TODO 277)',
     impl:   function (s, base) { const o = this._outcomeOriginal2(s, base); return { ...o, removed: !o.barrelDestroyed }; },
   },
+  {
+    id:     'barrel-repair-full-price',
+    suite:  'mod-removal',
+    ...MODREMOVAL, method: 'repairCost',
+    was:    'a destroyed barrel cost the whole gun to repair — the maintainer ruled 50% for now (TODO 278/279)',
+    impl:   gun => Math.round(Number(gun?.system?.cost) || 0),
+  },
 ];

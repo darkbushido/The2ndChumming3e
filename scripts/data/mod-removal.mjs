@@ -11,8 +11,9 @@
  *   - **success** (1+): the vent comes off DESTROYED (not back into the inventory); time = base ÷ successes;
  *   - **failure** (0): the BARREL is destroyed, and the vent with it (the maintainer, 2026-10-27: "the vent should be
  *     destroyed with the barrel") — the gun needs repair (`needsRepair`);
- *   - **repair**: the cost of a barrel extension (the maintainer, 2026-10-27 — CC's design options, pp.74-78). Its figure is
- *     not in the repo (`REPAIR.barrel.cost` null): the ✔ Repaired step asks for it.
+ *   - **repair**: the cost of a barrel extension (the maintainer, 2026-10-27 — CC's design options, pp.74-78). Until CC's
+ *     gunsmithing is built (TODO 279) that is taken as **50% of the gun's own cost** (the maintainer, 2026-10-27, an interim
+ *     ruling) — pre-filled in the ✔ Repaired dialog, editable.
  *   - labour: a gunsmith contact charges 100 / 50 / 25¥ an hour at Level 1 / 2 / 3 (CC p.79); a player character doing the
  *     work charges nothing. The card states the cost; nothing is deducted (offer, never apply).
  */
@@ -24,11 +25,12 @@ export const PERMANENT = {
 };
 
 /**
- * What a destroyed part costs to put right. The barrel: *"it would cost the same as a barrel extension"* (the maintainer,
- * 2026-10-27). ⚠ `cost` null = the figure has not been read from the book yet — the repair step asks for it.
+ * What a destroyed part costs to put right, as a share of the gun's own cost. The barrel: *"it would cost the same as a
+ * barrel extension"*, and *"for now assume its 50% the cost of the gun"* (the maintainer, 2026-10-27) — until CC's
+ * gunsmithing (TODO 279) prices a barrel extension properly.
  */
 export const REPAIR = {
-  barrel: { cost: null, as: 'a barrel extension', page: 'CC pp.74-78' },
+  barrel: { share: 0.5, as: 'a barrel extension (for now 50% of the gun)', page: 'CC pp.74-78; interim ruling, TODO 279' },
 };
 
 /** A gunsmith contact's rate, ¥ an hour, by contact Level · CC p.79. */
@@ -81,10 +83,11 @@ export const ModRemoval = {
     return { removed: true, barrelDestroyed: !ok, hours: ModRemoval.hours(baseHours, successes) };
   },
 
-  /** The repair cost of a part (`'barrel'`), or null when its figure is not known yet. */
-  repairCost(part = 'barrel') {
-    const c = REPAIR[part]?.cost;
-    return Number.isFinite(c) ? c : null;
+  /** The repair cost of a part of `gun` (`'barrel'`): its share of the gun's own cost, rounded; null for an unknown part. */
+  repairCost(gun, part = 'barrel') {
+    const share = REPAIR[part]?.share;
+    if (!Number.isFinite(share)) return null;
+    return Math.round(Math.max(0, num(gun?.system?.cost)) * share);
   },
 
   /** The repair record a failed removal leaves on the gun, or null. */

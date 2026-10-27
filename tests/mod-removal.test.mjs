@@ -20,8 +20,11 @@ export async function run(t) {
   t.eq('one success: off, the vent destroyed; 24 h', ModRemoval.outcome(1, 24), { removed: true, barrelDestroyed: false, hours: 24 });
   t.eq('three successes: a third of the time', ModRemoval.outcome(3, 24), { removed: true, barrelDestroyed: false, hours: 8 });
   t.eq('no successes: the barrel is destroyed — and the vent with it (the maintainer, 2026-10-27)', ModRemoval.outcome(0, 24), { removed: true, barrelDestroyed: true, hours: 24 });
-  t.is('the repair costs the same as a barrel extension — not read from the book yet, so null (asked at ✔ Repaired)', ModRemoval.repairCost('barrel'), null);
-  t.is('…an unknown part: null', ModRemoval.repairCost('stock'), null);
+  t.is('the barrel\'s repair is a barrel extension — for now 50% of the gun (interim ruling): a 450¥ Predator → 225¥',
+    ModRemoval.repairCost({ system: { cost: 450 } }, 'barrel'), 225);
+  t.is('…rounded (a 525¥ gun → 263¥)', ModRemoval.repairCost({ system: { cost: 525 } }), 263);
+  t.is('…a gun with no cost: 0', ModRemoval.repairCost({ system: {} }), 0);
+  t.is('…an unknown part: null', ModRemoval.repairCost({ system: { cost: 450 } }, 'stock'), null);
   t.is('time to a tenth (24 ÷ 7)', ModRemoval.hours(24, 7), 3.4);
   t.eq('contact rates by Level (CC p.79)', CONTACT_RATES, { 1: 100, 2: 50, 3: 25 });
   t.is('labour: 50¥ × 8 h', ModRemoval.labour(50, 8), 400);

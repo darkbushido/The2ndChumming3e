@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**84 open.** 194 done — see [TODO-DONE.md](TODO-DONE.md).
+**85 open.** 194 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -934,12 +934,39 @@ The maintainer, after [#277](TODO-DONE.md#277): *"we haven't done anything with 
 a barrel extension."* Today a failed gas-vent removal marks the gun `needsRepair` (part `barrel`); ✔ Repaired on its sheet asks the
 cost and posts it, nothing deducted.
 
+**Interim ruling (the maintainer, 2026-10-27):** *"for now assume its 50% the cost of the gun"* — `REPAIR.barrel.share` 0.5,
+`ModRemoval.repairCost(gun)`, pre-filled (editable) in the ✔ Repaired dialog; mutant `barrel-repair-full-price`. Replaced when
+CC's gunsmithing is built, [#279](#279).
+
 **Open:** the barrel extension's price. It is a Cannon Companion design option (Barrel Extension/Reduction, ±10% ranges, CC
 pp.74-78), priced in Design Points — the figure (and whether it is per frame, CC's "Available Design Options by Frame" table pp.76-77)
 was not read into the repo. Read it from the book, put it in `REPAIR.barrel.cost` (`scripts/data/mod-removal.mjs`) — or a per-frame
 function if the DP depends on the frame — and the ✔ Repaired dialog pre-fills it. Customisation price = DP × 8 (CC p.80).
 **Wider (not started):** nothing else damages a weapon yet (dropping, called shots at a weapon, explosions) — the maintainer's call
 whether and how.
+
+## 279. Cannon Companion gunsmithing — firearm design and customisation — **requested 2026-10-27**
+
+The maintainer: *"add a TODO to implement CCs Gunsmithing. for now assume its 50% the cost of the gun"* (the interim price is the
+barrel repair's, [#278](#278)).
+
+**What the book has** (Cannon Companion pp.74-84 — read the pages before building; nothing here is verified against them):
+- **Two paths.** DESIGN — a gun built from a base frame: its Design Point Value (frame + options + modifications) × a mark-up = nuyen
+  (CC p.78). CUSTOMISATION — modifying a stock gun: each modification costs DP × 8 nuyen, no Street Index (CC p.80); a modification
+  that is also a listed accessory (SR3 p.280, CC p.32) uses that item's price and Availability instead (CC p.79).
+- **Frames** (CC p.75): base DPV, base FCU (Firearm Construction Units — internal space), the mounts each frame has (hold-out none,
+  pistols barrel + top, SMG and up barrel + top + under). The "Available Design Options by Frame" table (pp.76-77) was not read.
+- **Design options** (CC pp.74-78; design time only, not removable): Barrel Extension/Reduction (±10% ranges), Bullpup, Ceramic
+  Components, Heavy Barrel, Improved Concealability, Improved FCU, Increased Power, Recoil Compensation and others.
+- **Modifications** (CC pp.80-84): each with its B/R skill, install TN / base hours, mount, tools, weight, FCU and DP — the gas vent
+  among them (Weapon B/R 5 / 24 h). FCU must be left for each; one item per mount; "(r)" FCU only when permanently built in.
+- **The work** (CC p.79): an install test with the B/R skill, base time ÷ successes; a gunsmith contact 100/50/25¥ an hour by Level;
+  a parts search when the modification is not a listed item (Availability TN, time).
+
+**What it would replace / feed:** the gas-vent removal test's numbers ([#277](TODO-DONE.md#277), `ModRemoval.PERMANENT`), the barrel
+repair price ([#278](#278)), the mount table per weapon class ([#276](#276) open questions), the internal smartgun price (#276),
+and an FCU capacity rule for `ItemMods` beside the armour caps. Mods already live inside the gun (`system.installed`), so a
+customisation is an installed mod with a DP price and an FCU cost.
 
 ### 🪄 Spells & drugs
 

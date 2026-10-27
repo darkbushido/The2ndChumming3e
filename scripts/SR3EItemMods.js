@@ -158,7 +158,7 @@ export const SR3EItemMods = {
         line = `✅ ${esc(ctx.modName)} is off ${esc(ctx.hostName)} — <strong>destroyed</strong> in the work, not returned.`;
       } else {
         if (host.isOwner) await host.setFlag('The2ndChumming3e', 'needsRepair', { part: 'barrel', reason: `Barrel destroyed taking ${ctx.modName} off`, when: Date.now() });
-        const cost = ModRemoval.repairCost('barrel');
+        const cost = ModRemoval.repairCost(host, 'barrel');
         line = `❌ The barrel of ${esc(ctx.hostName)} is <strong>destroyed</strong>, and ${esc(ctx.modName)} with it — the gun needs repair `
           + `(the cost of ${esc(REPAIR.barrel.as)}${cost === null ? '' : `, ${cost.toLocaleString()}¥`}).`;
       }
@@ -184,7 +184,7 @@ export const SR3EItemMods = {
     if (!r) return false;
     const esc = v => foundry.utils.escapeHTML(String(v ?? ''));
     const part = r.part ?? 'barrel';
-    const known = ModRemoval.repairCost(part);
+    const known = ModRemoval.repairCost(gun, part);
     let cost = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${gun.name} — repaired` },
