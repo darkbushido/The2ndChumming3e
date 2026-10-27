@@ -3505,6 +3505,9 @@ works, and the same implant **built in** now does it too.
 - [ ] **An owned copy** of the Crusader with RC 0 (from an older import) → RC 2 after the load. One with RC typed as 1 → still 1.
       Reload → nothing changes.
 - [ ] **Contacts:** a Little Black Book contact's FN HAR / Ranger Arms SM-3 → RC 2; the Ultimax MMG → bracketed 6.
+- [ ] **An old Panther** (a world item or a character's, named "Panther Assault Cannon", from before the split) → after the
+      load it reads **Panther Assault Cannon [Bipod]**, bracketed RC 2, accessories "Folding Bipod(2RC)", a Bipod integral mod
+      in 🔧 (no Hip Pad Bracing System). A mod the GM had installed on it is still there. Reload → nothing changes.
 
 ## 78. A vehicle's mods against its Cargo and Load (TODO 265, step c's first slice — R3R p.124)
 

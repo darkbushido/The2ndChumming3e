@@ -50,7 +50,24 @@ export async function run(t) {
   t.eq('the Panther prints (2)/(1) — the bipod version (2), the strap and hip brace (1)',
     [PrintedRC.fillDelta(gun('Panther Assault Cannon [Bipod]', 'cc.26')), PrintedRC.fillDelta(gun('Panther Assault Cannon [Shoulder Strap Hip-Brace]', 'cc.26'))],
     [{ 'system.recoilModIntegral': 2 }, { 'system.recoilModIntegral': 1 }]);
-  t.is('…an old single "Panther Assault Cannon" is not guessed at', PrintedRC.fillDelta(gun('Panther Assault Cannon', 'cc.26')), null);
+  // A world's old single Panther is the bipod version (the maintainer, 2026-10-27: "assume its a bipod and update").
+  const oldPanther = (system = {}) => gun('Panther Assault Cannon', 'cc.26', {
+    accessories: 'Either: Folding Bipod(2RC) or Shoulder Strap & Hip Brace(1RC)', notes: '',
+    installed: [
+      { _id: 'integral00000001', type: 'gear', name: 'Hip Pad Bracing System (Weapon)', flags: { The2ndChumming3e: { integral: true } } },
+      { _id: 'gmsmartgun000001', type: 'gear', name: 'Smartgun System (Weapon)' }],
+    ...system });
+  const up = PrintedRC.fillDelta(oldPanther());
+  t.eq('…an old single Panther becomes [Bipod], bracketed RC 2, its text the bipod’s',
+    [up?.name, up?.['system.recoilModIntegral'], up?.['system.accessories']], ['Panther Assault Cannon [Bipod]', 2, 'Folding Bipod(2RC)']);
+  t.eq('…its integral hip brace swapped for the bipod; a mod the GM installed stays',
+    up?.['system.installed']?.map(m => m.name), ['Smartgun System (Weapon)', 'Bipod (Weapon)']);
+  const typed = PrintedRC.fillDelta(oldPanther({ accessories: 'Bipod, my own', recoilModIntegral: 3 }));
+  t.eq('…a GM’s own text and RC are kept — only the name changes', [typed?.name, typed?.['system.recoilModIntegral'], typed?.['system.accessories'], typed?.['system.installed']],
+    ['Panther Assault Cannon [Bipod]', undefined, undefined, undefined]);
+  t.is('…on CC p.26 only', PrintedRC.fillDelta(gun('Panther Assault Cannon', '')), null);
+  t.is('…idempotent: the renamed bipod version needs nothing more',
+    PrintedRC.fillDelta(gun('Panther Assault Cannon [Bipod]', 'cc.26', { recoilModIntegral: 2 })), null);
 
   /* ── The packs ────────────────────────────────────────────────────────────── */
   const all = firearms();
@@ -73,5 +90,6 @@ export async function run(t) {
 
   /* ── The migration (source-level) ─────────────────────────────────────────── */
   const mig = read('scripts/SR3EMigrations.js');
+  t.ok('…and says it renames the old Panther', /PrintedRC\.oldPanther/.test(mig) && /assume its a bipod and update/.test(mig));
   t.ok('0.9.0 fills owned copies through PrintedRC', /version: '0\.9\.0',\s*label: "A firearm's printed Recoil Compensation \(TODO 280\)"[\s\S]*?fixItem: item => PrintedRC\.fillDelta\(item\)/.test(mig));
 }

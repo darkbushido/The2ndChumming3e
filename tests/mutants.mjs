@@ -4143,6 +4143,17 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'printed-rc-panther-drops-gm-mods',
+    suite:  'printed-rc',
+    ...PRC, method: 'oldPanther',
+    was:    'renaming an old Panther to its bipod version threw away every installed mod, the GM’s too — only the integral ones are replaced (TODO 280)',
+    impl:   function (item) {
+      if (item?.type !== 'firearm' || item.name !== 'Panther Assault Cannon' || item.system?.bookPage !== 'cc.26') return null;
+      return { name: 'Panther Assault Cannon [Bipod]', 'system.recoilModIntegral': 2, 'system.accessories': 'Folding Bipod(2RC)',
+        'system.installed': [], 'flags.The2ndChumming3e.integralDone': true };
+    },
+  },
+  {
     id:     'printed-rc-any-page',
     suite:  'printed-rc',
     ...PRC, method: 'rowFor',

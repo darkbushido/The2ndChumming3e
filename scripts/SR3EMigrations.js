@@ -653,8 +653,10 @@ const MIGRATIONS = [
      * get the same here. FILL BLANKS ONLY: `recoilMod` while blank or 0, `recoilModIntegral` while blank, and only on a
      * gun of that name AND book page — a figure a GM typed is theirs. Idempotent.
      *
-     * A world copy of the old single "Panther Assault Cannon" is left as it is: the pack now ships it as two versions
-     * ("[Bipod]" (2), "[Shoulder Strap Hip-Brace]" (1)), and which one a world's copy is, only the GM knows.
+     * ⚠ **It also RENAMES one gun, and argues for it (`PrintedRC.oldPanther`):** the pack now ships the Panther Assault
+     * Cannon as two versions ("[Bipod]" (2), "[Shoulder Strap Hip-Brace]" (1)); a world's copy of the old single Panther
+     * becomes the bipod version — the maintainer, 2026-10-27: "assume its a bipod and update". Only the exact old name on
+     * CC p.26; its text and integral mods only while the text is still the shipped "Either: …"; GM-installed mods stay.
      */
     fixItem: item => PrintedRC.fillDelta(item),
   },

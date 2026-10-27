@@ -1078,6 +1078,10 @@ customisation is an installed mod with a DP price and an FCU cost.
 
 ## 281. TSS and France firearms: Recoil Compensation unread — **found 2026-10-27**
 
+**Closed — out of scope (the maintainer, 2026-10-27: *"TSS is out of scope"*).** Nothing is changed for these guns; the
+three TSS stocks stay as step b made them. The maintainer is weighing a wider clean-up — dropping data that cannot be
+verified against a book in the library — which would be its own item.
+
 TODO 280 filled every gun's printed RC from the Cannon Companion and SR3 tables. The TSS guns (`sr3e-tss-firearms`, 32) and
 France's FAM 95 (`fra.141`) carry none, and their books are not in the maintainer's PDF library, so nothing could be read.
 Three TSS guns have a stock that step b (TODO 276) made an integral mod — the M-16B ("Fold Stock"), VC Boxlock Hammerless and

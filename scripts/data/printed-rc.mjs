@@ -20,8 +20,10 @@
  *
  * The Panther Assault Cannon prints "(2)/(1)": it comes with the bipod OR the strap and hip brace (CC p.26), and one field
  * cannot hold both, so it ships as two documents, "[Bipod]" (2) and "[Shoulder Strap Hip-Brace]" (1) — the maintainer,
- * 2026-10-27, for the one gun that does this. Not here: the TSS and France guns (their books are not in the library).
+ * 2026-10-27, for the one gun that does this. A world's copy of the OLD single Panther is taken to be the bipod version (the
+ * maintainer, 2026-10-27: "assume its a bipod and update") — `oldPanther`. Not here: the TSS and France guns (out of scope).
  */
+import { IntegralMods } from './integral-mods.mjs';
 
 /** `[name, bookPage, rc, bracketed]` — `rc` 0 is the table's "—" outside the brackets, `bracketed` null where none. */
 export const PRINTED_RC = [
@@ -78,6 +80,14 @@ export const PRINTED_RC = [
 
 const blank = v => v === undefined || v === null || v === '';
 
+/** The old single Panther, as shipped before the split (CC p.26), and what its bipod version is. */
+export const OLD_PANTHER = {
+  name: 'Panther Assault Cannon', bookPage: 'cc.26',
+  accessories: 'Either: Folding Bipod(2RC) or Shoulder Strap & Hip Brace(1RC)',
+  becomes: 'Panther Assault Cannon [Bipod]', bipod: 'Folding Bipod(2RC)',
+  notes: 'Cannon Companion p.26: the Panther comes with EITHER a detachable underbarrel folding bipod OR a shoulder strap and hip brace; the RC column (p.118) prints (2)/(1). One document per version (the maintainer, 2026-10-27, TODO 280).',
+};
+
 export const PrintedRC = {
   PRINTED_RC,
 
@@ -88,8 +98,34 @@ export const PrintedRC = {
     return PRINTED_RC.find(([name, bookPage]) => name === item.name && bookPage === page) ?? null;
   },
 
+  /**
+   * A world's copy of the OLD single Panther becomes the bipod version — the maintainer, 2026-10-27: "assume its a bipod and
+   * update". ⚠ **This RENAMES, and argues for it:** only a firearm still named exactly "Panther Assault Cannon" on CC p.26 —
+   * the name no shipped document carries any more. Its accessories text and integral mods are rewritten only while the
+   * text is still the shipped "Either: …" (a GM who typed their own keeps it); the bracketed RC and the notes fill blanks.
+   * Mods a GM installed stay. Idempotent: once renamed it is no longer the old name.
+   */
+  oldPanther(item) {
+    if (item?.type !== 'firearm' || item.name !== OLD_PANTHER.name) return null;
+    const sys = item.system ?? {};
+    if (String(sys.bookPage ?? '').trim() !== OLD_PANTHER.bookPage) return null;
+    const delta = { name: OLD_PANTHER.becomes };
+    if (blank(sys.recoilModIntegral)) delta['system.recoilModIntegral'] = 2;
+    if (blank(sys.notes)) delta['system.notes'] = OLD_PANTHER.notes;
+    if (sys.accessories === OLD_PANTHER.accessories) {
+      delta['system.accessories'] = OLD_PANTHER.bipod;
+      const own = (Array.isArray(sys.installed) ? sys.installed : []).filter(m => !IntegralMods.isIntegral(m));
+      const fill = IntegralMods.fillDelta({ type: 'firearm', system: { accessories: OLD_PANTHER.bipod, installed: own } });
+      delta['system.installed'] = fill?.['system.installed'] ?? own;
+      delta['flags.The2ndChumming3e.integralDone'] = true;
+    }
+    return delta;
+  },
+
   /** The fill for one gun: `{ 'system.recoilMod'?, 'system.recoilModIntegral'? }`, or null when nothing is blank. */
   fillDelta(item) {
+    const old = PrintedRC.oldPanther(item);
+    if (old) return old;
     const row = PrintedRC.rowFor(item);
     if (!row) return null;
     const [, , rc, bracketed] = row;
