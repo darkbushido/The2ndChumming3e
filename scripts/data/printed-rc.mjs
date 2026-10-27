@@ -84,7 +84,7 @@ const blank = v => v === undefined || v === null || v === '';
 export const OLD_PANTHER = {
   name: 'Panther Assault Cannon', bookPage: 'cc.26',
   accessories: 'Either: Folding Bipod(2RC) or Shoulder Strap & Hip Brace(1RC)',
-  becomes: 'Panther Assault Cannon [Bipod]', bipod: 'Folding Bipod(2RC)',
+  becomes: 'Panther Assault Cannon [Bipod]', bipod: 'Folding Bipod(2RC)', legality: '2-H',   // CC p.118
   notes: 'Cannon Companion p.26: the Panther comes with EITHER a detachable underbarrel folding bipod OR a shoulder strap and hip brace; the RC column (p.118) prints (2)/(1). One document per version (the maintainer, 2026-10-27, TODO 280).',
 };
 
@@ -102,7 +102,7 @@ export const PrintedRC = {
    * A world's copy of the OLD single Panther becomes the bipod version — the maintainer, 2026-10-27: "assume its a bipod and
    * update". ⚠ **This RENAMES, and argues for it:** only a firearm still named exactly "Panther Assault Cannon" on CC p.26 —
    * the name no shipped document carries any more. Its accessories text and integral mods are rewritten only while the
-   * text is still the shipped "Either: …" (a GM who typed their own keeps it); the bracketed RC and the notes fill blanks.
+   * text is still the shipped "Either: …" (a GM who typed their own keeps it); the bracketed RC, the notes and the Legality (2-H) fill blanks.
    * Mods a GM installed stay. Idempotent: once renamed it is no longer the old name.
    */
   oldPanther(item) {
@@ -112,6 +112,8 @@ export const PrintedRC = {
     const delta = { name: OLD_PANTHER.becomes };
     if (blank(sys.recoilModIntegral)) delta['system.recoilModIntegral'] = 2;
     if (blank(sys.notes)) delta['system.notes'] = OLD_PANTHER.notes;
+    // ⚠ The 0.9.0 legality fill looks up by NAME and runs first — the old name no longer has an entry, so fill it here.
+    if (blank(sys.legality)) delta['system.legality'] = OLD_PANTHER.legality;
     if (sys.accessories === OLD_PANTHER.accessories) {
       delta['system.accessories'] = OLD_PANTHER.bipod;
       const own = (Array.isArray(sys.installed) ? sys.installed : []).filter(m => !IntegralMods.isIntegral(m));

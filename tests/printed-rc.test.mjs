@@ -60,6 +60,8 @@ export async function run(t) {
   const up = PrintedRC.fillDelta(oldPanther());
   t.eq('…an old single Panther becomes [Bipod], bracketed RC 2, its text the bipod’s',
     [up?.name, up?.['system.recoilModIntegral'], up?.['system.accessories']], ['Panther Assault Cannon [Bipod]', 2, 'Folding Bipod(2RC)']);
+  t.is('…and its Legality 2-H while blank (the name-keyed legality fill no longer knows the old name)', up?.['system.legality'], '2-H');
+  t.is('…a typed Legality is kept', PrintedRC.fillDelta(oldPanther({ legality: '3-H' }))?.['system.legality'], undefined);
   t.eq('…its integral hip brace swapped for the bipod; a mod the GM installed stays',
     up?.['system.installed']?.map(m => m.name), ['Smartgun System (Weapon)', 'Bipod (Weapon)']);
   const typed = PrintedRC.fillDelta(oldPanther({ accessories: 'Bipod, my own', recoilModIntegral: 3 }));
