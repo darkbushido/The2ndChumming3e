@@ -5449,6 +5449,7 @@ _prepareCharacter(sys, attr) {
     collisionBraking:  ['SR3ECollision', 'brakingRolled'],      // TODO 189 — the Braking Test, p.142
     concealPerception: ['SR3EConcealment', 'perceptionRolled'],  // TODO 195 — Perception vs Concealability, p.231
     legwork:           ['SR3ELegwork', 'rolled'],                 // TODO 268 — Etiquette for legwork, p.253-254
+    modRemoval:        ['SR3EItemMods', 'removalRolled'],         // TODO 277 — a gunsmith takes a gas vent off, CC p.79-81
   };
 
   static _registryFn([cls, fn] = [], what) {

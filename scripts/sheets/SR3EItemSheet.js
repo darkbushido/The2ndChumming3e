@@ -20,6 +20,7 @@ import { MiniGrenade } from '../data/mini-grenade.mjs';
 import { ItemMods, TARGETS } from '../data/item-mods.mjs';
 import { ArmorMods } from '../data/armor-mods.mjs';
 import { SR3EItemMods } from '../SR3EItemMods.js';
+import { ModRemoval } from '../data/mod-removal.mjs';
 
 /** Where a spell's fetish or exclusive limit was taken · SR3 p.180 (TODO 223). Blank = the spell has no such limit. */
 const SPELL_LIMIT_SIDES = [
@@ -208,6 +209,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         </header>
         <div class="item-body">
           ${this._installedIn()}
+          ${this._repairBanner()}
           ${this._withBookPage(this._details())}
           ${this._modsSection()}
           ${this._modifiersSection()}
@@ -217,6 +219,14 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
   }
 
   /* ── Mods installed inside this item, and what this item changes · TODO 276 ─────────────────────────────── */
+
+  /** A gun whose barrel a failed gas-vent removal destroyed (TODO 277): the reason, and ✔ Repaired for its owner. */
+  _repairBanner() {
+    const r = ModRemoval.needsRepair(this.document);
+    if (!r) return '';
+    return `<p class="sr-mod-warn">⚠ ${foundry.utils.escapeHTML(r.reason ?? 'Damaged')} — needs repair.
+      ${this.isEditable ? '<a class="sr-mod-repaired" title="Clear it once the gun is repaired">✔ Repaired</a>' : ''}</p>`;
+  }
 
   /** On a mod opened from its host (✎): which item it is installed in. Its edits save into that item. */
   _installedIn() {
@@ -317,6 +327,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     const idOf = el => el.closest('[data-mod-id]')?.dataset.modId;
     html.querySelectorAll('.sr-mod-open').forEach(a => a.addEventListener('click', () => SR3EItemMods.open(item, idOf(a))));
     if (!this.isEditable) return;
+    html.querySelector('.sr-mod-repaired')?.addEventListener('click', () => item.unsetFlag('The2ndChumming3e', 'needsRepair'));
     html.querySelectorAll('.sr-mod-out').forEach(a => a.addEventListener('click', () => SR3EItemMods.uninstall(item, idOf(a))));
     html.querySelectorAll('.sr-mod-remove').forEach(a => a.addEventListener('click', () => SR3EItemMods.remove(item, idOf(a))));
     const zone = html.querySelector('.sr-mods-drop');

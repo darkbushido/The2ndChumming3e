@@ -48,6 +48,7 @@ const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating'
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
 const BLASTBATCH = { module: '../scripts/data/blast-batch.mjs', klass: 'BlastBatch' };
+const MODREMOVAL = { module: '../scripts/data/mod-removal.mjs', klass: 'ModRemoval' };
 const ARMORMODS = { module: '../scripts/data/armor-mods.mjs', klass: 'ArmorMods' };
 const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
 const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots' };
@@ -3932,5 +3933,19 @@ export const MUTANTS = [
     ...ARMORMODS, method: 'hardenedRating', needsOriginal: '_hardOriginal',
     was:    'hardened armour kept its full rating against APDS / anti-vehicle rounds — CC p.51 halves it (TODO 276)',
     impl:   function (worn, opts = {}) { return this._hardOriginal(worn, { ...opts, armorPiercing: false }); },
+  },
+  {
+    id:     'gas-vent-removal-needs-two-successes',
+    suite:  'mod-removal',
+    ...MODREMOVAL, method: 'outcome', needsOriginal: '_outcomeOriginal',
+    was:    'one success read as a failure — the maintainer ruled the vent comes off on a successful test (TODO 277)',
+    impl:   function (s, base) { return this._outcomeOriginal((Number(s) || 0) - 1, base); },
+  },
+  {
+    id:     'gas-vent-removal-time-not-divided',
+    suite:  'mod-removal',
+    ...MODREMOVAL, method: 'hours',
+    was:    'the base time stood whatever the successes — CC p.79 divides it by them (TODO 277)',
+    impl:   base => Number(base) || 0,
   },
 ];

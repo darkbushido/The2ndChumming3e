@@ -6,6 +6,7 @@ import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
 import { IntegralRC } from '../data/integral-rc.mjs';
 import { WeaponAccessories } from '../data/weapon-accessories.mjs';
 import { ItemMods } from '../data/item-mods.mjs';
+import { ModRemoval } from '../data/mod-removal.mjs';
 import { PhaseTargets } from '../data/phase-targets.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
@@ -1096,6 +1097,9 @@ export class SR3EItem extends Item {
   if (this.type === 'vehicleweapon') return this.rollVehicleWeapon(options);
 
   const actor = this.actor;
+  // A barrel destroyed by a failed gas-vent removal (TODO 277): warned, never refused — the GM rules what it can still do.
+  const repair = ModRemoval.needsRepair(this);
+  if (repair) ui.notifications.warn(`${this.name}: ${repair.reason ?? 'damaged'} — it needs repair.`);
   game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
   if (!actor) {
     ui.notifications.warn('No actor for this weapon.');

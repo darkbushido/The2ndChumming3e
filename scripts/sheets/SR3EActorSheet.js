@@ -15,6 +15,7 @@ import { ItemMods } from '../data/item-mods.mjs';
 import { ArmorMods } from '../data/armor-mods.mjs';
 import { ModFor } from '../data/mod-for.mjs';
 import { SR3EItemMods } from '../SR3EItemMods.js';
+import { ModRemoval } from '../data/mod-removal.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -529,6 +530,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const rows = SR3EItemMods.rows(item);
     if (!rows.length) return '';
     return ` <span class="sr-mod-count" data-tooltip="${foundry.utils.escapeHTML(SR3EActorSheet.modsTooltip(item, rows))}" data-tooltip-direction="UP">🔧${rows.length}</span>`;
+  }
+
+  /** "⚠ needs repair" after a gun whose barrel a failed gas-vent removal destroyed (TODO 277). */
+  static repairChip(item) {
+    const r = ModRemoval.needsRepair(item);
+    if (!r) return '';
+    return ` <span class="sr-mod-repair" data-tooltip="${foundry.utils.escapeHTML(`${r.reason ?? 'Damaged'} — needs repair. Clear it on the gun's sheet once it is repaired.`)}">⚠ needs repair</span>`;
   }
 
   /** The chip's tooltip, as HTML: one line per mod, the totals, and where to change them. */
@@ -1392,7 +1400,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   const fRows = categorisedFirearms.length ? categorisedFirearms.map(w => `
     <div class="item-row" data-item-id="${w.id}">
-      <span class="item-name">${w.name}${SR3EActorSheet.modsChip(w)}</span>
+      <span class="item-name">${w.name}${SR3EActorSheet.modsChip(w)}${SR3EActorSheet.repairChip(w)}</span>
       <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell col-sm">${w.system.mode || '—'}</span>
       <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>

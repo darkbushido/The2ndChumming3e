@@ -911,8 +911,8 @@ value today; none settled by picking a side):
 - **Imaging scopes and the rangefinder: Top, or Top or Under?** SR3 pp.280, 282 and CC p.33 say Top; CC p.82 says Top or Under.
   Today the mount comes from the pack's description (Top).
 - ✔ **Gas vents removable?** → ruled 2026-10-27: not removable, or removal costs something — its own item, [#277](#277).
-- **Gas Vent level 1 (250¥)** — the coordinator's brief gives SR3 p.282 as printing it; the weapon-mods audit (2026-10-23) found
-  only II and III in SR3 and calls I "source not found (SR2?)". Shipped as level 1 with that note — to check by eye.
+- ✔ **Gas Vent level 1 (250¥)** — ruled 2026-10-27: *"cost for gas vent 1, leave it at 250"*. (The weapon-mods audit found only
+  II and III printed in SR3; level 1 keeps that note in its description.)
 - **Internal smartgun price** — SR3 p.282 +100% of the weapon; CC p.81 the frame's base DPV × 8 (Smartlink-2 ×1.5); M&M p.32 ×150%
   for the Smartlink-2 internal. Not built yet.
 - **Laser sight with a smartlink** — SR3 p.281 says not together, the p.112 table lists both. Today both flags can be on and the GM
@@ -942,8 +942,18 @@ cost: the CC customisation route (a gunsmith's B/R test, base time, labour at 10
 fee, or the vent destroyed (it comes off but is not returned to the inventory)? Warn-never-refuse would make it a warning
 plus the cost; a hard block is the maintainer's call, as for the rifle stock.
 
-**Shape when decided:** a per-item flag (`system.permanent`, or a `MOD_EFFECTS`-style table — gas vents, the Ares Antioch
-underbarrel launcher "once installed cannot be removed", SR3 p.279), read by `SR3EItemMods.uninstall`/`remove`.
+**Ruled 2026-10-27:** *"removable at a gunsmith's test, time and labour. players can be the gunsmith. gas vent is destroyed if the
+test is successful. barrel is destroyed on failure and gun needs to be repaired."*
+
+**Built:** `scripts/data/mod-removal.mjs` (`PERMANENT` — the gas vent: Weapon B/R (5), base 24 h, CC p.81; `CONTACT_RATES` 100/50/25¥
+an hour, CC p.79; `outcome`, `hours` = base ÷ successes, `labour`, `skillFor` the gun's B/R skill), `tests/mod-removal.test.mjs`,
+mutants `gas-vent-removal-needs-two-successes`, `gas-vent-removal-time-not-divided`. ⏏ on a gas vent opens the gunsmith dialog — any
+live character or NPC (scene first), its B/R dice, TN, base hours, labour (0 for a player character, else a contact's rate), all
+editable — and rolls through `rollPool` with the `modRemoval` follow-up (explosion-safe). **Success:** the vent comes off destroyed
+(not returned). **Failure:** the barrel is destroyed — `flags.The2ndChumming3e.needsRepair` on the gun, "⚠ needs repair" on its row,
+a warning (never a refusal) when it is fired, and ✔ Repaired on its sheet to clear it. The card states time and labour; nothing is
+deducted. 🗑 stays a record fix (it says so). ⚠ **Chosen, not ruled:** on a failure the vent STAYS on the gun (the ruling names only
+the barrel). How a destroyed barrel is repaired (a test, a cost) is not ruled — ✔ Repaired is the GM's/owner's call.
 
 ### 🪄 Spells & drugs
 
