@@ -17,6 +17,7 @@
  * medical, drugs), `system.legalCode` (cyberware, from upstream) and `system.legalityCode` (Matrix Defragged decks).
  */
 import { LEGALITY } from './legality-table.mjs';
+import { LEGALITY_BY_NAME } from './legality-names.mjs';
 
 export const PAGE = 'SR3 p.273';
 
@@ -62,11 +63,16 @@ export const Legality = {
   /**
    * The 0.9.0 fill for an owned copy: its compendium document's code (`LEGALITY`), into `system.legality` while blank.
    * ⚠ Fill blanks, never overwrite — a code someone typed stays. Null when there is nothing to fill.
+   *
+   * ⚠ **Name fallback (2026-10-26):** the hand-kept packs' ids (`sr3e-firearm-0072`) are not valid Foundry document
+   * ids, so a copy dropped from them carries a null `compendiumSource` and the link finds nothing. With no usable
+   * source the code is read by exact item type + name (`LEGALITY_BY_NAME`; a name two documents give different codes
+   * is not in it). A source that names one of our documents decides alone — name matching never second-guesses it.
    */
-  fillDelta(item, table = LEGALITY) {
+  fillDelta(item, table = LEGALITY, names = LEGALITY_BY_NAME) {
     if (!LEGALITY_TYPES.includes(item?.type) || String(item.system?.legality ?? '').trim()) return null;
     const m = SOURCE.exec(String(item?._stats?.compendiumSource ?? ''));
-    const code = m && table[m[1]]?.[m[2]]?.[0];
+    const code = m ? table[m[1]]?.[m[2]]?.[0] : names[`${item.type}|${item.name}`];
     return code ? { 'system.legality': code } : null;
   },
 

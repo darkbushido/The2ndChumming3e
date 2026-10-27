@@ -105,6 +105,34 @@ export async function run(t) {
     _stats: { compendiumSource: 'Compendium.The2ndChumming3e.sr3e-sr3-firearms.Item.sr3e-firearm-0072' } }), null);
   t.ok('the 0.9.0 migration fills it, from the repointed link', /version: '0\.9\.0'[\s\S]{0,3500}Legality\.fillDelta\(linked\)/.test(read('scripts/SR3EMigrations.js')));
 
+  /* ── No usable compendiumSource: the name fallback (2026-10-26) ─────────────── */
+  // Reported by the live check: the hand-kept packs' ids ("sr3e-firearm-0072") are not valid document ids, so a dropped gun carries a null source.
+  const bare = (type, name, legality = '') => ({ type, name, system: { legality }, _stats: { compendiumSource: null } });
+  t.eq('a copy with a null source is read by type + exact name', Legality.fillDelta(bare('firearm', 'Ares Predator')), { 'system.legality': '6P-E' });
+  t.is('…the type must match', Legality.fillDelta(bare('melee', 'Ares Predator')), null);
+  t.is('…the name must match exactly', Legality.fillDelta(bare('firearm', 'ares predator')), null);
+  t.is('…never over a code someone typed', Legality.fillDelta(bare('firearm', 'Ares Predator', 'Legal')), null);
+  t.is('…a name no document has stays blank', Legality.fillDelta(bare('firearm', 'Homebrew Popgun')), null);
+  t.is('…a source that names one of our documents decides alone (no name second-guess)',
+    Legality.fillDelta({ ...bare('firearm', 'Ares Predator'), _stats: { compendiumSource: 'Compendium.The2ndChumming3e.sr3e-sr3-firearms.Item.nosuchdoc' } }), null);
+  t.eq('…and a foreign source (another module) still falls back to the name',
+    Legality.fillDelta({ ...bare('firearm', 'Ares Predator'), _stats: { compendiumSource: 'Compendium.other.pack.Item.abcdefghijklmnop' } }), { 'system.legality': '6P-E' });
+  t.is('…cyberware is never filled by name', Legality.fillDelta(bare('cyberware', 'Ares Predator')), null);
+  t.eq('an injected table decides: two documents with different codes are not in the real one',
+    Legality.fillDelta(bare('gear', 'X'), {}, { 'gear|X': '4-A' }), { 'system.legality': '4-A' });
+  {
+    const { LEGALITY_BY_NAME } = await import('../scripts/data/legality-names.mjs');
+    const { nameTable } = await import('../tools/lib/legality-fill.mjs');
+    const doc = (name, type = 'gear') => ({ name, type });
+    const docs = { p: new Map([['!items!a', doc('Same')], ['!items!b', doc('Same')], ['!items!c', doc('Twin')], ['!items!d', doc('Twin')]]) };
+    t.eq('a name two documents give DIFFERENT codes is left out; the same code twice is kept',
+      nameTable(docs, { p: { a: ['1-A'], b: ['1-A'], c: ['2-B'], d: ['3-C'] } }), { 'gear|Same': '1-A' });
+    t.ok('the real name table is built (hundreds of entries)', Object.keys(LEGALITY_BY_NAME).length > 500);
+    const { render } = await import('../tools/build-legality-names.mjs');
+    t.ok('scripts/data/legality-names.mjs is current (node tools/build-legality-names.mjs)', render() === read('scripts/data/legality-names.mjs'));
+  }
+  t.ok('the migration hands the fill the renamed item', /Legality\.fillDelta\(linked\)/.test(read('scripts/SR3EMigrations.js')) && /name: delta\.name \?\? item\.name/.test(read('scripts/SR3EMigrations.js')));
+
   /* ── The dialog and the card (source-level: they need Foundry) ───────────────── */
   const flow = read('scripts/SR3EPurchase.js');
   t.ok('the dialog offers both: at the store, and through a contact', /name="sr-buy-how" value="store"/.test(flow) && /name="sr-buy-how" value="contact"/.test(flow));
