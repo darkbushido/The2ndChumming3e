@@ -60,11 +60,22 @@ export async function run(t) {
   t.is('…never below 0', IntegralRC.baseFor(hk227v, 1), 0);
   t.is('no mods: totalComp is weaponComp', IntegralRC.totalComp(hk227, true), 3);
 
+  // A pod the GM ticks (TODO 276): its RC goes on the shot's compensation, BEFORE the heavy doubling (p.115).
+  const mmg = { mode: 'FA', roundsBefore: 0, roundsThisShot: 10, totalComp: 0, isHeavy: true };
+  const mmgTN = SR3EItem.recoilTN(mmg);
+  t.is('MMG, 10 rounds, no comp: +20', mmgTN, 20);
+  t.is('…a tripod (RC 6) set up saves 12 → +8, the book\'s worked figure', SR3EItem.podSaving({ ...mmg, tn: mmgTN }, 6), 12);
+  const sa = { mode: 'SA', roundsBefore: 1, roundsThisShot: 1, totalComp: 0, isHeavy: false };
+  const saTN = SR3EItem.recoilTN(sa);
+  t.is('…a bipod (RC 2) on a second SA shot saves only the recoil there is', SR3EItem.podSaving({ ...sa, tn: saTN }, 2), saTN);
+  t.is('…no recoil this shot: nothing', SR3EItem.podSaving({ mode: 'SS', roundsBefore: 0, roundsThisShot: 1, totalComp: 0, tn: 0 }, 6), 0);
+  t.is('…no fire-mode data (a bow): nothing', SR3EItem.podSaving(null, 6), 0);
+
   const item = read('scripts/documents/SR3EItem.js');
   t.ok('the fire dialog starts from the bracketed-aware figure', /const weaponComp\s+= IntegralRC\.totalComp\(weapon\.system, inUse0\)/.test(item));
   t.ok('…offers the tick only when the weapon has a bracketed RC', /hasIntegral \? `<label[^`]*id="sr-integral"/.test(item));
-  t.ok('…ticking swaps the weapon figure', /#sr-integral'\)\?\.addEventListener\('change'[\s\S]{0,200}IntegralRC\.totalComp\(sysNow\(\), event\.target\.checked\)/.test(item));
-  t.ok('…a typed figure is saved against the figure that was showing', /\[inUse \? 'system\.recoilModIntegral' : 'system\.recoilMod'\]: IntegralRC\.baseFor\(sysNow\(\), wComp\)/.test(item));
+  t.ok('…ticking swaps the weapon figure', /#sr-integral'\)\?\.addEventListener\('change'[\s\S]{0,200}IntegralRC\.totalComp\(weapon\.system, event\.target\.checked\)/.test(item));
+  t.ok('…a typed figure is saved against the figure that was showing', /\[inUse \? 'system\.recoilModIntegral' : 'system\.recoilMod'\]: IntegralRC\.baseFor\(weapon\.system, wComp\)/.test(item));
   t.ok('…the tick is remembered on the gun', /'system\.integralInUse': inUse/.test(item));
   t.ok('…the result carries the weapon figure, so a short burst recomputes with it', /weaponComp: wComp/.test(item) && /fireModeResult\.weaponComp \?\? IntegralRC\.totalComp\(this\.system, false\)/.test(item));
   t.ok('FirearmData declares both fields', /recoilModIntegral: new NumberField\(\{ integer: true, nullable: true, initial: null, min: 0 \}\)/.test(read('scripts/data/ItemDataModels.js')) && /integralInUse:\s+new BooleanField\(\{ initial: false \}\)/.test(read('scripts/data/ItemDataModels.js')));

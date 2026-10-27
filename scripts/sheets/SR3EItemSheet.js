@@ -251,7 +251,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           <img src="${esc(r.img)}" class="sr-mod-img" alt=""/>
           <a class="sr-mod-name sr-mod-open" title="Open">${esc(r.name)}</a>
           <span class="sr-mod-changes">${esc(r.changes)}</span>
-          ${r.deployable ? `<label class="sr-mod-deploy" data-tooltip="Set up — its RC counts only while deployed (a Simple Action, SR3 p.280). Also in the fire dialog."><input type="checkbox" class="sr-mod-deployed" ${r.deployed ? 'checked' : ''} ${edit ? '' : 'disabled'}/> deployed</label>` : ''}
+          ${r.deployable ? '<span class="sr-mod-deploy" data-tooltip="Its RC counts only when set up and the shooter is stationary — the GM ticks it in the GM\'s TN window for each shot (SR3 p.280).">GM: when set up</span>' : ''}
           <a class="sr-mod-open" title="Open its sheet">✎</a>
           ${edit ? `<a class="sr-mod-out" title="Take it out — into the inventory">⏏</a>
           <a class="sr-mod-remove" title="Delete it">🗑</a>` : ''}
@@ -332,10 +332,6 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     if (!this.isEditable) return;
     html.querySelector('.sr-mod-repaired')?.addEventListener('click', () => SR3EItemMods.repaired(item));
     html.querySelectorAll('.sr-mod-out').forEach(a => a.addEventListener('click', () => SR3EItemMods.uninstall(item, idOf(a))));
-    html.querySelectorAll('.sr-mod-deployed').forEach(inp => inp.addEventListener('change', ev => {
-      ev.stopPropagation();
-      item.update({ 'system.installed': ItemMods.setDeployed(ItemMods.installed(item), idOf(inp), inp.checked) });
-    }));
     html.querySelectorAll('.sr-mod-remove').forEach(a => a.addEventListener('click', () => SR3EItemMods.remove(item, idOf(a))));
     const zone = html.querySelector('.sr-mods-drop');
     if (zone) {

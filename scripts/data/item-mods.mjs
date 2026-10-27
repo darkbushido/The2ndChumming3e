@@ -16,7 +16,7 @@
  *
  * **Effects.** Any item may carry `system.modifiers`, `[{ target, value, perRating, whenDeployed }]`, from the fixed vocabulary
  * `TARGETS` (`perRating`: the value is per point of the item's rating — Fire Resistance [3] at 1 per point is 3;
- * `whenDeployed`: it counts only while the item is set up — a bipod's or tripod's RC, `deployed`). Each
+ * `whenDeployed`: it counts only while the item is set up — a bipod's or tripod's RC, offered in the GM's window, `pods`). Each
  * target says how values combine (`add`, `max` — the highest one counts, the maintainer's "no stacking" for image
  * magnification — or `any`, an on/off feature) and whether it reaches the actor. A host's effective value is its own
  * modifiers plus its installed mods' (and theirs, `MAX_DEPTH` deep). Nothing computed is saved; the host's own fields
@@ -90,23 +90,22 @@ export const ItemMods = {
     });
   },
 
-  /**
-   * Is this mod set up? A bipod or tripod gives its RC only while deployed (SR3 p.280: setting one up is a Simple Action) —
-   * `flags.The2ndChumming3e.deployed` on the installed entry, ticked in the fire dialog or on the gun's sheet.
-   */
-  deployed(item) {
-    return item?.flags?.The2ndChumming3e?.deployed === true;
-  },
-
-  /** Does it have anything that counts only while deployed? */
+  /** Does it have anything that counts only while set up (a bipod's RC)? */
   deployable(item) {
     return ItemMods.modifiersOf(item).some(m => m.whenDeployed);
   },
 
-  /** The installed list with mod `id` deployed or folded away. Pure. */
-  setDeployed(installed, id, on) {
-    return (Array.isArray(installed) ? installed : []).map(m => (m._id !== id ? m
-      : { ...m, flags: { ...(m.flags ?? {}), The2ndChumming3e: { ...(m.flags?.The2ndChumming3e ?? {}), deployed: !!on } } }));
+  /**
+   * The pods on a gun: `[{ id, name, rc }]` — its installed mods whose RC counts only while set up (Bipod 2, Tripod 6,
+   * SR3 p.280, p.282). ⚠ Never counted in `effective`: whether the shooter is stationary with it set up is the GM's call
+   * for each shot, in the GM's TN window (the maintainer, 2026-10-27: "if the player isn't stationary they really
+   * shouldn't get the benefit of a pod").
+   */
+  pods(weapon) {
+    return ItemMods.installed(weapon).filter(m => ItemMods.deployable(m)).map(m => ({
+      id: m._id ?? null, name: m.name ?? '?',
+      rc: ItemMods.modifiersOf(m).filter(x => x.whenDeployed && x.target === 'rc').reduce((s, x) => s + x.value, 0),
+    }));
   },
 
   /**
@@ -116,8 +115,8 @@ export const ItemMods = {
   effective(item) {
     const parts = {};
     const walk = (it, source, depth) => {
-      // A change that needs the mod set up (a bipod's RC) counts only while it is deployed.
-      for (const m of ItemMods.modifiersOf(it)) if (!m.whenDeployed || ItemMods.deployed(it)) (parts[m.target] ??= []).push({ source, value: m.value });
+      // A change that needs the mod set up (a bipod's RC) never counts here — the GM's TN window offers it (`pods`).
+      for (const m of ItemMods.modifiersOf(it)) if (!m.whenDeployed) (parts[m.target] ??= []).push({ source, value: m.value });
       if (depth >= MAX_DEPTH) return;
       for (const mod of ItemMods.installed(it)) walk(mod, mod?.name ?? '?', depth + 1);
     };

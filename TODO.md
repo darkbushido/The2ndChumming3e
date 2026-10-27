@@ -890,17 +890,19 @@ sight** (`WeaponAccessories.flag`: an installed mod switches it on), **low-light
 mutants `magnification-stacks`, `magnification-past-short`): the attack pre-sets the Range dropdown to the band shifted toward Short
 by the best device in use — the gun's Imaging Scope (its level), a worn helmet's Electronic / Optical Magnification 3, cybereyes'
 Vision Magnification — never below Short, never stacked (TODO 235's ruling); the dialog names the device, the GM can change the band.
-Pack data for all five (the 0.9.0 migration fills owned copies). ⚠ Chosen, not ruled: no shift for a target beyond Extreme (it is
-off the table, not a band). Imaging scope + smartlink (SR3 p.280) is still an open question below.
+Pack data for all five (the 0.9.0 migration fills owned copies). ⚠ No shift for a target beyond Extreme (it is off the table, not a
+band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but lets run with it. for now"* — PROVISIONAL, revisit. Imaging scope + smartlink (SR3 p.280) is still an open question below.
 
 **Still open in this item:**
 1. ~~Magnification~~ — built (above).
-2. ~~Bipod / tripod deployed~~ — built 2026-10-27: a change marked `whenDeployed` counts only while the installed mod is set up
-   (`ItemMods.deployed` / `setDeployed`, the entry's `flags.The2ndChumming3e.deployed`); Bipod RC 2 and Tripod RC 6 (their
-   rating, SR3 p.282) ship that way; the fire dialog has a "deployed" tick per such mod (recomputes the weapon's RC, remembered on
-   the gun), and so does the gun's sheet. Mutant `bipod-counts-folded`. The printed bracketed RC of a gun's OWN folding stock or
-   tripod stays the fire dialog's integral tick ([#235](#235)) — it is the gun's, not a mod. Not modelled: the tripod's prone /
-   seated requirement (stated in the tick's tooltip).
+2. ~~Bipod / tripod~~ — built 2026-10-27, then moved by the maintainer's ruling the same day: *"that should be in the GM difficulty
+   screen. if they player isnt stationary they really shouldn't get the benefit of a pod."* A change marked `whenDeployed` never
+   counts in `ItemMods.effective`; `ItemMods.pods(gun)` lists the gun's pods (Bipod RC 2, Tripod RC 6 — their rating, SR3 p.282)
+   and the GM's TN window offers each as "set up — shooter stationary" (tripod: prone or seated). Ticked, its RC goes on this
+   shot's compensation BEFORE the heavy doubling (`SR3EItem.podSaving`: an MMG's 10-round burst, tripod 6 → +20 becomes +8) and
+   the saving comes off the TN. Nothing remembered between shots. Mutant `bipod-counts-without-the-gm`. ⚠ Only where the GM window
+   opens (`gmApprovesTN`): an attack that skips it gets no pod. The gun's own printed bracketed RC (folding stock, integral tripod)
+   stays the fire dialog's integral tick ([#235](#235)).
 3. **The free-text `accessories`** — a migration turning it into installed mods where it parses; the rest stays a note.
 4. **Weapon mounts by weapon class** (SR3 pp.276-279, CC p.75: hold-outs none, pistols barrel + top, …) — warnings; waits on the
    open questions below.
@@ -911,6 +913,16 @@ off the table, not a band). Imaging scope + smartlink (SR3 p.280) is still an op
 7. ✔ **Decided by the maintainer, 2026-10-27:** goggles' and a helmet's vision count on the Visibility Table's
    CYBERNETIC/ELECTRONIC column (SR3 p.111), with cybereyes — "goggles should count with the cybernetic/electronic vision
    side". `detectVision` puts every `toActor` vision from an item in `cyber`; `tests/vision.test.mjs` pins a worn helmet there.
+
+**Cyberlimb rulings (the maintainer, 2026-10-27)** — for the cyberlimb slice:
+- **Synthetic limbs:** SR3 p.303's +50% on "any modification" does NOT apply to built-in devices.
+- **Direct neural interface:** its +50% (SR3 p.303) DOES stack on a built-in device's ×4 price.
+- **Grade:** *"it lowers the capacity but you have to match the grade for addons. an Alpha grade limb has 10% less capacity but
+  alpha grade mods are 20% smaller."* For now: **match the capacity reduction to the Essence reduction**, so a grade-matched limb
+  holds as many mods as a standard one (*"a cyber eye has 0.5 essence in module capacity. a deltaware eye can fix the same number of
+  mods as a normal grade eye"*). ⚠ **To audit against the books** (M&M p.36's 10/20/25% ECU cut vs the grade's Essence multiplier).
+- **Unread prices** (M&M pp.36-39 cost column: DNI adaptation, Cyberskates, the ECU table's costs) — the maintainer will re-read
+  them; the brief re-uploaded 2026-10-27 still has them cut off.
 
 **Open questions — for the maintainer, before the weapon / vehicle / cyberlimb slices merge** (each is a warning or an editable
 value today; none settled by picking a side):

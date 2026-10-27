@@ -1318,6 +1318,7 @@ export class SR3EItem extends Item {
   // --- Step 2: Fire mode selection (firearms only) ---
   let fireModeResult = null;
   let fireModeRounds = 0;
+  let recoilCtx = null;     // this shot's recoil inputs, for the GM window's pod rows (TODO 276)
   let modePowerBonus = 0;   // burst / full-auto Power added to the code (SR3 p.115) — hardened armour ignores it (p.132)
   if (this.type === 'firearm') {
     const availableModes = this._getAvailableModes();
@@ -1369,6 +1370,9 @@ export class SR3EItem extends Item {
       // the phase cap, recoil and the magazine. Only damage uses `rounds` alone. See
       // roundsExpended for why the three used to disagree.
       fireModeRounds = SR3EItem.roundsExpended(fireModeResult);
+      recoilCtx = { mode: fireModeResult.mode, roundsBefore: actor.system.roundsFiredThisPhase ?? 0, roundsThisShot: fireModeRounds,
+        totalComp: (actor.system.recoilCompensation ?? 0) + (fireModeResult.weaponComp ?? IntegralRC.totalComp(this.system, false)),
+        isHeavy, isShotgun, shortBurst, tn: fireModeResult.recoilTN ?? 0 };
 
       // ── Per-phase firing allowance ────────────────────────────────────────
       // Warns, never blocks: the caps are stated in Actions and this system does not model
@@ -1514,6 +1518,9 @@ export class SR3EItem extends Item {
     gyroLeft:     gyro.left,   // TODO 18 — offsets the Attacker movement rows (p.113)
     gyroRating:   game.sr3e.SR3EActor.gyroRating(actor),
     gyroUsed:     gyro.used,
+    // A bipod / tripod on the gun (TODO 276): the GM ticks it when the shooter is stationary with it set up.
+    pods:         ItemMods.pods(this),
+    recoil:       recoilCtx,
     // Smoke on the map (TODO 164): offered to the window as a preselected Visibility Table row, never forced.
     smoke:        await game.sr3e.SR3EActor.smokeOffer(actor, [targetActor]).catch(() => null),
   }, { timeout: 300_000 });
@@ -3382,6 +3389,16 @@ export class SR3EItem extends Item {
           <input type="number" id="sr-gm-gyro" value="${ctx.gyroLeft ?? 0}" min="0" max="${ctx.gyroRating}" style="width:50px"/>
         </label>` : ''}
         <div id="sr-gm-gyro-note" style="font-size:11px;color:var(--sr-dim)"></div>
+        ${(ctx.pods ?? []).length ? `
+        <!-- A bipod / tripod (SR3 p.280): the GM's call per shot — set up, and the shooter stationary (the maintainer,
+             2026-10-27). Its RC comes off this shot's recoil; nothing without recoil to offset. -->
+        <div style="margin-top:6px;font-size:12px">${(ctx.pods ?? []).map((p, i) => `
+          <label style="display:flex;align-items:center;gap:6px">
+            <input type="checkbox" class="sr-gm-pod" data-rc="${Number(p.rc) || 0}" data-idx="${i}"/>
+            ${escapeHTML(String(p.name ?? ''))} set up — shooter stationary (RC ${Number(p.rc) || 0}; SR3 p.280${/tripod/i.test(p.name ?? '') ? ', prone or seated' : ''})
+          </label>`).join('')}
+          <div id="sr-gm-pod-note" style="font-size:11px;color:var(--sr-dim)"></div>
+        </div>` : ''}
       `,
       buttons: [
         // NOT "Roll" — the GM sets the target number, the ATTACKER rolls. Labelling
@@ -3443,7 +3460,12 @@ export class SR3EItem extends Item {
           // A worn gyro's remainder offsets the movement rows ticked (p.113, TODO 18).
           const gyroLeft = gyroEl ? Math.max(0, parseInt(gyroEl.value) || 0) : 0;
           const gyroOff = gyroOffset(state, gyroLeft);
-          const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state) - gyroOff);
+          // A pod the GM ticked takes its RC off this shot's recoil (TODO 276).
+          const podRC = [...el.querySelectorAll('.sr-gm-pod:checked')].reduce((s, b) => s + (Number(b.dataset.rc) || 0), 0);
+          const podOff = SR3EItem.podSaving(ctx.recoil, podRC);
+          const podNote = el.querySelector('#sr-gm-pod-note');
+          if (podNote) podNote.textContent = podRC ? `−${podOff} recoil (${ctx.recoil ? `+${ctx.recoil.tn} uncompensated before it` : 'no recoil this shot'}).` : '';
+          const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state) - gyroOff - podOff);
           if (gyroNote) gyroNote.textContent = ctx.gyroRating
             ? `Offsetting ${gyroOff} of movement${ctx.gyroUsed ? ` (and ${ctx.gyroUsed} came off recoil)` : ''} — a gyro works on both, in full (house ruling; CC p.34).`
             : '';
@@ -3453,7 +3475,7 @@ export class SR3EItem extends Item {
             : '';
         };
 
-        el.querySelectorAll('.sr-gm-mod, .sr-gm-mod-per, .sr-gm-mod-sit, .sr-gm-vis-cond, .sr-gm-vis-type')
+        el.querySelectorAll('.sr-gm-mod, .sr-gm-mod-per, .sr-gm-mod-sit, .sr-gm-vis-cond, .sr-gm-vis-type, .sr-gm-pod')
           .forEach(i => i.addEventListener('change', recompute));
         // `change` alone does not fire until the number input loses focus, so the TN would
         // lag behind what the GM has typed. `input` keeps the two in step.
@@ -4193,17 +4215,26 @@ static fireModeDamage({ power, level = 'M', mode, rounds = 0, isTracer = false,
   return { power: pwr, level: STAGES[lvlIdx] };
 }
 
+/**
+ * What a bipod / tripod the GM ticked takes off this shot's recoil (TODO 276, SR3 p.280): the shot's recoil TN again with
+ * the pod's RC added to its compensation, against what it was. Comp comes off BEFORE the heavy-weapon doubling, so an MG's
+ * tripod saves up to twice its RC. 0 with no recoil to offset. Pure.
+ */
+static podSaving(recoil, extraRC) {
+  const rc = Math.max(0, Number(extraRC) || 0);
+  if (!recoil || !rc) return 0;
+  const after = SR3EItem.recoilTN({ ...recoil, totalComp: (Number(recoil.totalComp) || 0) + rc });
+  return Math.max(0, (Number(recoil.tn) || 0) - after);
+}
+
 static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isShotgun = false, prefill = {}) {
   const weaponName   = weapon.name;
   const actorComp    = actor.system.recoilCompensation ?? 0;
   // The bracketed RC (SR3 p.276) replaces the plain figure while the integral accessories are in use.
   const hasIntegral  = IntegralRC.has(weapon.system);
   const inUse0       = IntegralRC.defaultInUse(weapon.system);
-  // The gun's own figure plus what its installed mods add (TODO 276). A bipod or tripod counts only while deployed: its
-  // tick below changes this LOCAL copy of the installed list, saved on confirm.
-  let installed = ItemMods.installed(weapon).map(m => foundry.utils.deepClone(m));
-  const installed0 = JSON.stringify(installed);
-  const sysNow = () => ({ ...weapon.system, installed });
+  // The gun's own figure plus what its installed mods add (TODO 276). A bipod / tripod is not here: whether the shooter is
+  // stationary with it set up is the GM's call, in the GM's TN window (ItemMods.pods).
   const weaponComp   = IntegralRC.totalComp(weapon.system, inUse0);
   const modsRC       = ItemMods.effective(weapon).rc;
   const roundsBefore = actor.system.roundsFiredThisPhase ?? 0;
@@ -4309,9 +4340,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       ${hasIntegral ? `<label style="flex-basis:100%;font-size:11px" title="SR3 p.276: numbers in parentheses are the full recoil compensation that only applies when all integral accessories are used (folding or detachable stocks, and so forth)">
         <input type="checkbox" id="sr-integral" ${inUse0 ? 'checked' : ''}/> Integral accessories in use (stock folded out / tripod set up) — RC ${weapon.system.recoilMod ?? 0} → <strong>${weapon.system.recoilModIntegral}</strong>
       </label>` : ''}
-      ${installed.filter(m => ItemMods.deployable(m)).map(m => `<label style="flex-basis:100%;font-size:11px" title="Setting it up is a Simple Action (SR3 p.280); a tripod must be fired prone or seated.">
-        <input type="checkbox" class="sr-deploy" data-mod-id="${m._id}" ${ItemMods.deployed(m) ? 'checked' : ''}/> ${foundry.utils.escapeHTML(String(m.name ?? ''))} deployed — RC +${ItemMods.modifiersOf(m).filter(x => x.whenDeployed && x.target === 'rc').reduce((s, x) => s + x.value, 0)}
-      </label>`).join('')}
+      ${ItemMods.pods(weapon).length ? `<span style="flex-basis:100%;font-size:11px;color:var(--sr-muted)">${ItemMods.pods(weapon).map(p => foundry.utils.escapeHTML(p.name)).join(', ')} — the GM decides whether it is set up (shooter stationary), in the GM's window.</span>` : ''}
       <span>= <strong id="sr-total-comp">${totalComp}</strong></span>
       <span>&nbsp;|&nbsp; Rounds fired this phase: <strong id="sr-rounds-fired">${roundsBefore}</strong></span>
       ${isHeavy ? '<span style="color:var(--sr-amber)">&nbsp;|&nbsp; ⚠ Heavy weapon: 2× uncompensated recoil</span>' : ''}
@@ -4353,16 +4382,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     // Ticking swaps the weapon's figure between the plain RC and the bracketed total (it replaces, never adds).
     el.querySelector('#sr-integral')?.addEventListener('change', event => {
       const wEl = el.querySelector('#sr-weapon-comp');
-      if (wEl) wEl.value = String(IntegralRC.totalComp(sysNow(), event.target.checked));
+      if (wEl) wEl.value = String(IntegralRC.totalComp(weapon.system, event.target.checked));
       refreshPreviews();
     });
-    // A bipod / tripod set up or folded (TODO 276): its RC joins or leaves the weapon's figure.
-    el.querySelectorAll('.sr-deploy').forEach(box => box.addEventListener('change', () => {
-      installed = ItemMods.setDeployed(installed, box.dataset.modId, box.checked);
-      const wEl = el.querySelector('#sr-weapon-comp');
-      if (wEl) wEl.value = String(IntegralRC.totalComp(sysNow(), hasIntegral && !!el.querySelector('#sr-integral')?.checked));
-      refreshPreviews();
-    }));
     el.querySelector('#fa-rounds')?.addEventListener('input', refreshPreviews);
     el.querySelector('#fa-metres')?.addEventListener('input', refreshPreviews);
     el.querySelector('#fa-smartgun')?.addEventListener('change', refreshPreviews);
@@ -4417,10 +4439,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           // A number typed over the weapon's figure is remembered against whichever figure was showing.
           const inUse = hasIntegral && !!el.querySelector('#sr-integral')?.checked;
           if (hasIntegral && inUse !== inUse0) await weapon.update({ 'system.integralInUse': inUse });
-          // The bipod / tripod stays as the shooter left it (remembered on the gun, like the integral tick).
-          if (JSON.stringify(installed) !== installed0) await weapon.update({ 'system.installed': installed });
-          if (wComp !== IntegralRC.totalComp(sysNow(), inUse)) {
-            await weapon.update({ [inUse ? 'system.recoilModIntegral' : 'system.recoilMod']: IntegralRC.baseFor(sysNow(), wComp) });
+          if (wComp !== IntegralRC.totalComp(weapon.system, inUse)) {
+            await weapon.update({ [inUse ? 'system.recoilModIntegral' : 'system.recoilMod']: IntegralRC.baseFor(weapon.system, wComp) });
           }
 
           // Recoil per mode (see SR3EItem.recoilTN). BF and FA count their OWN rounds —

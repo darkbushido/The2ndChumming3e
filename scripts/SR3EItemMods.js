@@ -265,10 +265,9 @@ export const SR3EItemMods = {
       changes: ItemMods.modifiersOf(m).map(x => {
         const t = ItemMods.TARGETS[x.target];
         const v = t.combine === 'any' ? t.short : `${t.short} ${x.value >= 0 && t.combine === 'add' ? '+' : ''}${x.value}`;
-        return x.whenDeployed ? `${v} (deployed)` : v;
+        return x.whenDeployed ? `${v} (set up)` : v;
       }).join(', '),
       deployable: ItemMods.deployable(m),
-      deployed: ItemMods.deployed(m),
     }));
   },
 };

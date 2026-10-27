@@ -3983,10 +3983,15 @@ export const MUTANTS = [
     impl:   (i, r) => Number(i) - (Number(r) || 0),
   },
   {
-    id:     'bipod-counts-folded',
+    id:     'bipod-counts-without-the-gm',
     suite:  'item-mods',
-    ...ITEMMODS, method: 'deployed',
-    was:    'a bipod or tripod gave its RC folded away — SR3 p.280: it has to be set up (a Simple Action) (TODO 276)',
-    impl:   () => true,
+    ...ITEMMODS, method: 'effective', needsOriginal: '_effectiveOriginal',
+    was:    'a bipod or tripod gave its RC whether set up or not — the maintainer: the GM decides per shot whether the shooter is stationary (TODO 276)',
+    impl:   function (item) {
+      const strip = it => ({ ...it, system: { ...(it?.system ?? {}),
+        modifiers: (it?.system?.modifiers ?? []).map(m => ({ ...m, whenDeployed: false })),
+        installed: (it?.system?.installed ?? []).map(strip) } });
+      return this._effectiveOriginal(strip(item));
+    },
   },
 ];

@@ -152,23 +152,20 @@ export async function run(t) {
   t.ok('the 🔧 chip uses Foundry\'s data-tooltip — a plain title showed only a "?" (reported live)', /class="sr-mod-count" data-tooltip="/.test(actorSrc) && !/class="sr-mod-count" title=/.test(actorSrc));
   t.ok('…listing mount, name and changes, then the totals', /static modsTooltip\(item[\s\S]{0,500}r\.mount[\s\S]{0,200}r\.changes[\s\S]{0,300}ItemMods\.describe/.test(actorSrc));
 
-  /* ── Deployed: a bipod or tripod counts only while set up (SR3 p.280) ───────── */
+  /* ── Pods: a bipod or tripod is the GM's call per shot (SR3 p.280; the maintainer, 2026-10-27) ── */
   const bipod = { _id: 'bp', name: 'Bipod (Weapon)', type: 'gear', system: { rating: 2, modifiers: MOD_EFFECTS['gear|Bipod'] } };
   const tripod = { _id: 'tp', name: 'Tripod (Weapon)', type: 'gear', system: { rating: 6, modifiers: MOD_EFFECTS['gear|Tripod'] } };
   const lmg = (...m) => ({ name: 'Ultimax', type: 'firearm', system: { recoilMod: 0, installed: m } });
-  t.is('a bipod folded away: no RC', ItemMods.value(lmg(bipod), 'rc'), 0);
-  t.is('…deployed: RC 2 (SR3 p.282)', ItemMods.value(lmg(ItemMods.setDeployed([bipod], 'bp', true)[0]), 'rc'), 2);
-  t.is('a tripod deployed: RC 6', ItemMods.value(lmg(ItemMods.setDeployed([tripod], 'tp', true)[0]), 'rc'), 6);
+  t.is('a pod never counts in the gun\'s own RC — the GM decides per shot', ItemMods.value(lmg(bipod, tripod), 'rc'), 0);
+  t.eq('pods() lists them with their RC (Bipod 2, Tripod 6, SR3 p.282)', ItemMods.pods(lmg(bipod, tripod)), [{ id: 'bp', name: 'Bipod (Weapon)', rc: 2 }, { id: 'tp', name: 'Tripod (Weapon)', rc: 6 }]);
   t.ok('deployable: the bipod yes, a gas vent no', ItemMods.deployable(bipod) && !ItemMods.deployable({ system: { rating: 2, modifiers: MOD_EFFECTS['gear|Gas Vent'] } }));
-  const on = ItemMods.setDeployed([bipod, tripod], 'bp', true);
-  t.eq('setDeployed changes only that mod and never mutates', [ItemMods.deployed(on[0]), ItemMods.deployed(on[1]), ItemMods.deployed(bipod)], [true, false, false]);
-  t.is('…folds it away again', ItemMods.deployed(ItemMods.setDeployed(on, 'bp', false)[0]), false);
-  t.is('the fire dialog\'s figure follows it: a gas vent 2 + a deployed bipod 2 = 4',
-    IntegralRC.totalComp({ recoilMod: 0, installed: [{ name: 'Gas Vent (Weapon)', system: { rating: 2, modifiers: MOD_EFFECTS['gear|Gas Vent'] } }, on[0]] }, false), 4);
+  t.is('the fire dialog\'s figure leaves the pod out: a gas vent 2 + a bipod = 2',
+    IntegralRC.totalComp({ recoilMod: 0, installed: [{ name: 'Gas Vent (Weapon)', system: { rating: 2, modifiers: MOD_EFFECTS['gear|Gas Vent'] } }, bipod] }, false), 2);
   const item = read('scripts/documents/SR3EItem.js');
-  t.ok('the fire dialog offers a tick per deployable mod and recomputes the weapon RC', /class="sr-deploy" data-mod-id=/.test(item)
-    && /installed = ItemMods\.setDeployed\(installed, box\.dataset\.modId, box\.checked\);[\s\S]{0,200}IntegralRC\.totalComp\(sysNow\(\)/.test(item));
-  t.ok('…and remembers it on the gun', /if \(JSON\.stringify\(installed\) !== installed0\) await weapon\.update\(\{ 'system\.installed': installed \}\);/.test(item));
-  t.ok('the gun\'s sheet has the same tick', /class="sr-mod-deployed"/.test(sheet) && /ItemMods\.setDeployed\(ItemMods\.installed\(item\), idOf\(inp\), inp\.checked\)/.test(sheet));
+  t.ok('the fire dialog no longer offers a deploy tick', !/class="sr-deploy"/.test(item));
+  t.ok('the attack hands the pods and the shot\'s recoil to the GM window', /pods:\s+ItemMods\.pods\(this\),\s*recoil:\s+recoilCtx,/.test(item));
+  t.ok('the GM window offers each pod as "set up — shooter stationary" and takes its saving off the TN',
+    /class="sr-gm-pod" data-rc=/.test(item) && /set up — shooter stationary/.test(item) && /clampTN\(baseTN \+ sumModifiers\(state\) - gyroOff - podOff\)/.test(item));
+  t.ok('the gun\'s sheet says it is the GM\'s call (no tick)', !/class="sr-mod-deployed"/.test(sheet) && /GM: when set up/.test(sheet));
   t.ok('the Changes editor keeps whenDeployed and offers it', /whenDeployed: m\.whenDeployed === true/.test(sheet) && /class="sr-modifier-dep"/.test(sheet));
 }

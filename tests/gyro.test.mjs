@@ -107,7 +107,7 @@ export async function run(t) {
   t.ok('rollWeapon spends the gyro on recoil before the TN', /gyroOnRecoil\(game\.sr3e\.SR3EActor\.gyroRating\(actor\)/.test(item)
     && /const recoilTNMod\s+= gyro\.recoil;/.test(item));
   t.ok('…and hands what is left to the GM window', /gyroLeft:\s+gyro\.left/.test(item));
-  t.ok('the GM window subtracts it from the ticked movement', /clampTN\(baseTN \+ sumModifiers\(state\) - gyroOff\)/.test(item));
+  t.ok('the GM window subtracts it from the ticked movement', /clampTN\(baseTN \+ sumModifiers\(state\) - gyroOff - podOff\)/.test(item));
   t.ok('…and the movement offset is the GM\'s number, pre-filled with the full rating',
     /id="sr-gm-gyro" value="\$\{ctx\.gyroLeft \?\? 0\}" min="0" max="\$\{ctx\.gyroRating\}"/.test(item)
     && /gyroOffset\(state, gyroLeft\)/.test(item) && /gyroRating:\s+game\.sr3e\.SR3EActor\.gyroRating\(actor\)/.test(item));
