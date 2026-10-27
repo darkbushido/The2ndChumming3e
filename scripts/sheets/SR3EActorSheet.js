@@ -12,6 +12,7 @@ import { CombatPool } from '../data/combat-pool.mjs';
 import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 import { ItemMods } from '../data/item-mods.mjs';
+import { ArmorMods } from '../data/armor-mods.mjs';
 import { ModFor } from '../data/mod-for.mjs';
 import { SR3EItemMods } from '../SR3EItemMods.js';
 
@@ -1640,11 +1641,17 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       (d.armorPoolPenalty ?? 0) > 0 ? `Combat Pool −${d.armorPoolPenalty}` : '',
       (d.armorQuicknessTN ?? 0) > 0 ? `Quickness tests +${d.armorQuicknessTN} TN (layered)` : '',
     ].filter(Boolean).join(' · ');
+    // Armour mods (TODO 276): what is wrong with what is worn together, and what the worn mods protect against.
+    const wornItems  = SA.wornArmorItems(actor);
+    const wornWarn   = ArmorMods.wornWarnings(wornItems, i => SA.isArmorAccessory(i));
+    const protection = ArmorMods.protections(wornItems)
+      .map(p => `${p.short} ${p.target === 'thermalMasking' ? '+' : '−'}${p.value}`).join(' · ');
+    const hardTag    = wornItems.some(i => ArmorMods.hardened(i)) ? ' <span style="color:var(--sr-gold);font-size:10px">(hardened — CC p.51)</span>' : '';
 
     const activeArmorDisplay = worn.pieces.length ? `
       <div class="active-armor-section">
         <div class="active-armor-header">
-          <i class="fas fa-shield-alt"></i> Currently Worn${worn.pieces.filter(p => p.role === 'layer').length >= 2 ? ' — layered (SR3 p.285)' : ''}
+          <i class="fas fa-shield-alt"></i> Currently Worn${worn.pieces.filter(p => p.role === 'layer').length >= 2 ? ' — layered (SR3 p.285)' : ''}${hardTag}
         </div>
         <div class="active-armor-card" title="${worn.pieces.length > 1 ? 'Best piece + half the next best, per type; helmets and shields add in full (not layering). Worn totals ' + d.armorSumBallistic + 'B / ' + d.armorSumImpact + 'I count against Quickness.' : ''}">
           <span class="active-armor-name">${worn.pieces.map(p => `${p.name} ${p.ballistic}/${p.impact}${roleTag(p)}`).join('<br>')}</span>
@@ -1654,6 +1661,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           </div>
         </div>
         ${burden ? `<div class="armor-burden-note" style="font-size:11px;color:var(--sr-amber);margin:2px 0 6px">⚠ ${burden}</div>` : ''}
+        ${protection ? `<div class="armor-burden-note" style="font-size:11px;color:var(--sr-muted);margin:2px 0 6px" title="Power reductions from armour mods, cumulative with the armour (CC pp.52-53) — the GM applies them to the right kind of attack">Protects: ${protection}</div>` : ''}
+        ${wornWarn.map(w => `<p class="sr-mod-warn">⚠ ${foundry.utils.escapeHTML(w)}</p>`).join('')}
       </div>
     ` : `
       <div class="active-armor-section" style="opacity: 0.7;">
@@ -1674,10 +1683,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const isEquipped = wornIds.has(a.id);
       return `
         <div class="item-row ${isEquipped ? 'equipped' : ''}" data-item-id="${a.id}">
-          <span class="item-name">${a.name}${SR3EActorSheet.modsChip(a)}</span>
-          <span class="item-cell col-narrow">${a.system.ballistic ?? 0}B / ${a.system.impact ?? 0}I</span>
-          <span class="item-cell col-xs">${a.system.concealability ?? '—'}</span>
-          <span class="item-cell col-xs">${a.system.weight ?? 0}</span>
+          <span class="item-name">${a.name}${SR3EActorSheet.modsChip(a)}${ArmorMods.hardened(a) ? ' <span style="color:var(--sr-gold);font-size:10px" title="Hardened armour (CC p.51)">H</span>' : ''}</span>
+          <span class="item-cell col-narrow">${ArmorMods.ratings(a).ballistic}B / ${ArmorMods.ratings(a).impact}I</span>
+          <span class="item-cell col-xs">${ArmorMods.concealability(a).value ?? a.system.concealability ?? '—'}</span>
+          <span class="item-cell col-xs">${ArmorMods.weight(a)}</span>
           <div class="item-controls">
             <i class="fas fa-home" data-action="toggleStored" data-item-id="${a.id}"
                style="color:var(--sr-dim)" title="Put in storage"></i>

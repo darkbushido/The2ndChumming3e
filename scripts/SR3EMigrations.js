@@ -40,6 +40,7 @@ import { ModRatings } from './data/mod-ratings.mjs';
 import { ModFor } from './data/mod-for.mjs';
 import { ModBookFixes } from './data/mod-book-fixes.mjs';
 import { Legality } from './data/legality.mjs';
+import { ModEffects } from './data/mod-effects.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -614,6 +615,18 @@ const MIGRATIONS = [
      * included. Idempotent: a seeing prototype yields null.
      */
     fixActor: TokenSight.fixActor,
+  },
+  {
+    version: '0.9.0',
+    label: 'Mods say what they change, and military armour is hardened (TODO 276)',
+    /**
+     * Mods are installed inside the item they modify now (TODO 276), and what each one changes is `system.modifiers`. The
+     * packs ship it filled for the accessories and armour modifications the books number (`scripts/data/mod-effects.mjs`:
+     * gas vents' RC, smartguns, laser sights, Chemical Seal and the rest, gel packs, helmet vision), and the Cannon
+     * Companion's military armour as hardened (CC p.51). Owned copies get the same — FILL BLANKS ONLY: a copy whose
+     * modifiers hold anything, or already hardened, is left alone (`ModEffects.fillDelta`). Idempotent.
+     */
+    fixItem: item => ModEffects.fillDelta(item),
   },
 
 ];

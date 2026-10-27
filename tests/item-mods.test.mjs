@@ -120,7 +120,7 @@ export async function run(t) {
   t.ok('install moves a mod from the host\'s own actor, never deletes another actor\'s item',
     /source\.parent === host\.parent && source\.id !== host\.id\) await source\.delete\(\)/.test(glue));
   t.ok('install warns, never refuses: warnings go to notifications and the install goes ahead',
-    /for \(const w of ItemMods\.warnings\(host, source\)\) ui\.notifications\.warn\(w\);\s*const installed = ItemMods\.install/.test(glue));
+    /for \(const w of \[\.\.\.ItemMods\.warnings\(host, source\), \.\.\.ArmorMods\.installWarnings\(host, source\.toObject\(\)\)\]\) ui\.notifications\.warn\(w\);\s*const installed = ItemMods\.install/.test(glue));
 
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
   t.ok('the item sheet sends a temporary mod\'s form to its own update, not core\'s submit',
@@ -133,4 +133,7 @@ export async function run(t) {
   t.ok('a mod dropped on a host\'s row is installed — only a mod, so a gun dragged over a gun still sorts',
     /ItemMods\.isHost\(host\)\s*&& \(ModFor\.of\(document\) \|\| ItemMods\.modifiersOf\(document\)\.length\)\) \{\s*return SR3EItemMods\.install\(host, document\);/.test(actorSheet));
   t.is('the 🔧 chip is on firearm, melee (×2), armour and cyberware rows', (actorSheet.match(/SR3EActorSheet\.modsChip\(/g) ?? []).length, 5);
+  t.ok('the Changes editor keeps perRating when it rebuilds a row (a level-scaled mod must not lose it on any edit)',
+    /const list = \(\) => \(item\.system\.modifiers \?\? \[\]\)\.map\(m => \(\{ target: m\.target, value: Number\(m\.value\) \|\| 0, perRating: m\.perRating === true \}\)\)/.test(sheet));
+  t.ok('…and offers a per-level tick', /class="sr-modifier-per"/.test(sheet));
 }

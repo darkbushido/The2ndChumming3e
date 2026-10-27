@@ -13,6 +13,7 @@
  *    document the server has never seen.
  */
 import { ItemMods } from './data/item-mods.mjs';
+import { ArmorMods } from './data/armor-mods.mjs';
 
 /** Open embedded sheets, keyed `hostUuid|modId`, so ✎ twice brings the same window forward. */
 const _open = new Map();
@@ -29,7 +30,7 @@ export const SR3EItemMods = {
     if (!host || !source || source.documentName !== 'Item') return false;
     if (source.uuid === host.uuid) return false;
     if (!host.isOwner) { ui.notifications.warn(`You don't own ${host.name}.`); return false; }
-    for (const w of ItemMods.warnings(host, source)) ui.notifications.warn(w);
+    for (const w of [...ItemMods.warnings(host, source), ...ArmorMods.installWarnings(host, source.toObject())]) ui.notifications.warn(w);
     const installed = ItemMods.install(ItemMods.installed(host), source.toObject(), newId);
     await host.update({ 'system.installed': installed });
     // Moved, not copied, when it came from the host's own actor — the scope is in the gun now, not in the bag too.

@@ -1548,6 +1548,9 @@ export class SR3EItem extends Item {
     damageBase = { ...vd.damage, hardenedPower };
     effectiveRawDamage = `${damageBase.power}${damageBase.level}${damageBase.isStun ? ' Stun' : ''}`;
     if (vd.noEffect) ui.notifications.warn(`${this.name}: ${vd.note}`);
+  } else if (damageBase) {
+    // Worn hardened armour compares the same unaugmented Power (CC p.51, TODO 276).
+    damageBase = { ...damageBase, hardenedPower: VehicleArmor.unaugmentedPower(damageBase.power, weaponOpts.damageCode === modeRawDamage ? modePowerBonus : 0) };
   }
 
   // The defender declares nothing yet — under RAW they decide after this roll

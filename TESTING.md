@@ -3336,3 +3336,29 @@ the gear compendium; a second user (Player2) owning the character.
 - [ ] **Player2** (owning the character, not the GM): installs, ✎ edits, ⏏ and 🗑 all work. Player2 opening a GM-only item's mod sees it read-only.
 - [ ] **Dragging a gun over a gun** on the Combat tab still only sorts — nothing is installed.
 
+### 77b. Armour with mods (TODO 276, armour slice — the maintainer's rulings of 2026-10-27; CC pp.51-54)
+
+**Full restart** (ArmorData gained `hardened`, modifiers gained `perRating`). Use an Armor Jacket (5/3, 900¥, 3/36hrs, SI .75,
+Conceal 6, 2 kg) on a character with Quickness 3; from the Cannon Companion gear compendium Fire Resistance, Insulation, Gel Packs.
+
+- [ ] **Rated mod:** drop Fire Resistance on the jacket's sheet (Installed mods), ✎ it, Level 3 → its Changes row reads "Power − vs fire", 1, **per level** ticked
+      (untick and re-tick it: it stays a per-level change); the jacket reads "With mods: 5B / 3I · Conceal 6 · 2 kg · 1,200¥ · Avail 4/48hrs · SI 1 · mod points 3 / 8".
+- [ ] **Insulation [3]:** Conceal 5, weight 3.5 kg, Avail 5/60hrs (each mod once), mod points 6 / 8.
+- [ ] **Caps warn, never refuse:** set Fire Resistance to 6 → amber "one mod may be at most 5"; add more to pass 8 total → "at most 8".
+- [ ] **Gel packs:** install → "hardened", Conceal halved (5 → 2), weight +25%, cost 4,500¥ + the other mods, Avail TN ×2 / time ×4,
+      mod points unchanged. Install a second set → warned. Drop gel on a Form-fitting Shirt / Diving Armor → warned, installed.
+- [ ] **Wearing it:** Combat tab → Currently Worn says "(hardened — CC p.51)" and "Protects: Fire res. −3 · Insulation −3";
+      Combat Pool loss reads the gel figures (7/4 vs Quickness 3 → −2) — the jacket alone was −1. Wear a Lined Coat too → amber
+      "nothing layers with it". A helmet with it → no warning.
+- [ ] **Soak — deflected:** shoot the wearer with a 6M pistol SA → the soak card says "🛡 Deflected (hardened): Power 6 … does not
+      exceed the hardened armour's … — no damage" only when the Power ≤ 5; a burst (6M + 3) still compares 6, not 9. APDS: compared
+      to half (2). Nothing is applied — the GM still decides. The protections note lists Fire / Insulation for the GM.
+- [ ] **Knockdown** with gel armour: the dialog says "Includes gel-packed armour +2 (CC p.54)".
+- [ ] **Military armour:** the CC compendium's Heavy Military Armor has Hardened ticked; worn alone, a 9M ranged shot reads deflected.
+- [ ] **Host warnings:** Fire Resistance on a Secure Jacket → "SecureTech armour clothing takes no modifications", installed anyway;
+      on a Security Helmet → helmets warning. A Signal Locator (Armor) on the jacket → "SR3 p.284 prints it as an option for security
+      armour and helmets"; on the helmet → nothing.
+- [ ] **Migration:** in a 0.8.0 world, an owned Fire Resistance (Armor) / Gas Vent II with no Changes gains them on load; one a GM
+      edited keeps the GM's; an owned Heavy Military Armor becomes Hardened.
+- [ ] **Concealment view / encumbrance** read the gel jacket at Conceal 2 and its +25% weight.
+

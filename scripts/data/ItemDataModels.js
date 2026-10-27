@@ -13,6 +13,8 @@ const installedField = () => new ArrayField(new ObjectField());
 const modifiersField = () => new ArrayField(new SchemaField({
   target: new StringField({ initial: '' }),
   value:  new NumberField({ initial: 0 }),
+  // The value is per point of the item's rating (Fire Resistance: 1 per point, CC p.52).
+  perRating: new BooleanField({ initial: false }),
 }));
 
 // ── Weapons ───────────────────────────────────────────────────────────────────
@@ -278,6 +280,9 @@ export class ArmorData extends foundry.abstract.TypeDataModel {
       modFor:         new StringField({ initial: '', blank: true, choices: MOD_FOR_CHOICES }),
       ballistic:      new NumberField({ integer: true, initial: 0, min: 0 }),
       impact:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      // Hardened armour (CC p.51 — the Cannon Companion's military armour): deflects an attack whose Power before any
+      // burst bonus does not exceed its rating. Gel packs make any armour hardened too (ArmorMods.hardened, TODO 276).
+      hardened:       new BooleanField({ initial: false }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
       legality:       new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)

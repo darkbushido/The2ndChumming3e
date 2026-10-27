@@ -112,6 +112,14 @@ The declaration dialog shows the TN and breakdown.
   full ratings, **rounded up** (Twitch, 3 over, loses 2). Never lower Quickness itself.
   **Layering** (2+ body pieces) adds +(worn Ballistic − Quickness) TN to Quickness tests and linked skills
   (`derived.armorQuicknessTN`); coat + helmet is not layering. Movement reduction not modelled.
+- **Armour with mods** (TODO 276, `scripts/data/armor-mods.mjs`; the maintainer's rulings 2026-10-27). Every armour reader
+  goes through `ArmorMods`: `ratings` (gel packs on unarmoured clothing → 1/1), `poolRatings` (gel → 50% higher, round down,
+  **Combat Pool only** — `layeredArmor` reads `poolBallistic`/`poolImpact`), `concealability`/`weight`/`cost`/`availability`.
+  **Hardened** (`system.hardened`, CC p.51 military armour, or gel packs): the soak card ANNOUNCES "Deflected (hardened)" when
+  the Power before any burst bonus (`hardenedPower`, now carried for people too) ≤ the worn hardened rating, half vs APDS / AV —
+  the same `VehicleArmor.deflects`; nothing applied. Gel packs +2 Knockdown TN. The mods' Power reductions (fire, cold,
+  electricity, contact chemicals, CC pp.52-53) are a note for the GM on every soak card. Warnings, never refusals: caps (one ≤
+  max(B,I), all ≤ B+I; clothing 2/2; gel outside), hosts off CC p.52's list, gel restrictions, nothing layers with hardened.
 
 ### Firearms — fire modes, recoil  · *SR3 pp.111, 115-116*
 **Fire modes** (`SR3EItem._promptFireMode`, weapon `mode` e.g. "SA/BF/FA"):

@@ -25,7 +25,14 @@
       "bookPage": "sr3.282",
       "description": "<p><strong>Mount:</strong> Barrel<br><strong>Source:</strong> Not printed in SR3, which has Gas-vent II and III (p.281-282); source not found (SR2?).</p>",
       "modFor": "weapon",
-      "legality": "Legal"
+      "legality": "Legal",
+      "modifiers": [
+        {
+          "target": "rc",
+          "value": 1,
+          "perRating": true
+        }
+      ]
     }
   },
   "embedded": {}

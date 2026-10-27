@@ -48,6 +48,8 @@ import { RatedFamilies } from '../scripts/data/rated-families.mjs';
 import { ModFor } from '../scripts/data/mod-for.mjs';
 import { replaceFamilies } from './lib/collapsed-mods.mjs';
 import { fillLegality } from './lib/legality-fill.mjs';
+import { ModEffects } from '../scripts/data/mod-effects.mjs';
+import { setPath } from '../scripts/data/cyberlimb-mods.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, '..');
@@ -499,6 +501,11 @@ export async function plan(manifest, shippedNames) {
   }
   // The books' Legality Codes (2026-10-25, `scripts/data/legality-table.mjs`) — here, so a regeneration keeps them.
   for (const [pack, g] of byPack) for (const d of g.docs) fillLegality(pack, d);
+  // What the mods change (TODO 276, `scripts/data/mod-effects.mjs`) — here too, for the same reason. Fills blanks.
+  for (const [, g] of byPack) for (const d of g.docs) {
+    const delta = ModEffects.fillDelta(d);
+    if (delta) for (const [path, value] of Object.entries(delta)) setPath(d, path, value);
+  }
   report.written = {};
   for (const [, g] of byPack) for (const d of g.docs) bump(report.written, `${g.book} ${d.type}`);
   return { byPack, report, families };

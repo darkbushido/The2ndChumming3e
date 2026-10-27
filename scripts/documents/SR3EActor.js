@@ -22,6 +22,7 @@ import { CombatPool } from '../data/combat-pool.mjs';
 import { Collisions } from '../data/collisions.mjs';
 import { Apds } from '../data/apds.mjs';
 import { VehicleArmor } from '../data/vehicle-armor.mjs';
+import { ArmorMods } from '../data/armor-mods.mjs';
 import { Misfire } from '../data/misfire.mjs';
 import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { AdeptLevels } from '../data/adept-levels.mjs';
@@ -2405,9 +2406,11 @@ _prepareCharacter(sys, attr) {
    * ⚠ Quickness itself is NOT lowered. It used to be (−1 per 2 points over), which also cut
    * Reaction, the Combat Pool by half as much, and every Quickness roll — none of it the book's
    * rule, which takes Combat Pool dice. Implant armour is excluded, as before (M&M p.35). */
+  // Gel-packed armour counts 50% higher for the Combat Pool only (CC p.54, TODO 276): `pool*`.
   const armorBurden = SR3EActor.layeredArmor(
     SR3EActor.wornArmorItems(this).map(i => ({
-      name: i.name, ballistic: i.system?.ballistic ?? 0, impact: i.system?.impact ?? 0,
+      name: i.name, ...ArmorMods.ratings(i),
+      poolBallistic: ArmorMods.poolRatings(i).ballistic, poolImpact: ArmorMods.poolRatings(i).impact,
       accessory: SR3EActor.isArmorAccessory(i),
     })),
     attr.quickness?.value ?? 0);
@@ -3852,6 +3855,8 @@ _prepareCharacter(sys, attr) {
               stagedLevel:     staged.level,
               isStun:          staged.isStun,
               rawDamage:       state.rawDamage,
+              // Hardened armour (worn — CC p.51, TODO 276) compares the Power without burst / full-auto.
+              hardenedPower:   state.damageBase?.hardenedPower,
               // The soak compares these successes with the target's total (p.113) — TODO 165.
               net:             { attackHits: successes, basePower: state.damageBase.power, baseLevel: state.damageBase.level },
             }).replace(/'/g, '&#39;');
@@ -3874,7 +3879,7 @@ _prepareCharacter(sys, attr) {
               stagedLevel:     staged.level,
               isStun:          staged.isStun,
               rawDamage:       state.rawDamage,
-              // Hardened armour compares the Power without burst / full-auto (p.132) — vehicle targets only.
+              // Hardened armour compares the Power without burst / full-auto (SR3 p.132; worn hardened armour, CC p.51).
               hardenedPower:   state.damageBase?.hardenedPower,
               // A vehicle: "Standard staging rules apply" (p.149) — the net comparison. TODO 165.
               net:             { attackHits: successes, basePower: state.damageBase.power, baseLevel: state.damageBase.level },
@@ -8284,8 +8289,9 @@ _prepareCharacter(sys, attr) {
       return { ballistic: v, impact: v, worn: { name: null, ballistic: v, impact: v, pieces: [] },
                implants: { impact: 0, ballistic: 0, sources: [] } };
     }
+    // Each piece's own ratings — gel packs on unarmoured clothing make it 1/1 (CC p.53, TODO 276).
     const pieces = SR3EActor.wornArmorItems(actor).map(i => ({
-      name: i.name, ballistic: i.system?.ballistic ?? 0, impact: i.system?.impact ?? 0,
+      name: i.name, ...ArmorMods.ratings(i),
       accessory: SR3EActor.isArmorAccessory(i),
     }));
     const lay  = SR3EActor.layeredArmor(pieces);
@@ -8453,7 +8459,10 @@ _prepareCharacter(sys, attr) {
    */
   static layeredArmor(pieces = [], quickness = null) {
     const n    = v => Math.max(0, Number(v) || 0);
-    const all  = (pieces ?? []).map(p => ({ ...p, ballistic: n(p.ballistic), impact: n(p.impact) }));
+    // `poolBallistic` / `poolImpact`, where a piece has them, are what the Combat Pool reads — gel packs count 50% higher
+    // there only (CC p.54, TODO 276). Everything else reads the real ratings.
+    const all  = (pieces ?? []).map(p => ({ ...p, ballistic: n(p.ballistic), impact: n(p.impact),
+      poolBallistic: n(p.poolBallistic ?? p.ballistic), poolImpact: n(p.poolImpact ?? p.impact) }));
     const body = all.filter(p => !p.accessory);
     const acc  = all.filter(p => p.accessory);
 
@@ -8467,7 +8476,9 @@ _prepareCharacter(sys, attr) {
 
     const q = Number(quickness);
     const hasQ = quickness !== null && quickness !== undefined && Number.isFinite(q);
-    const over = hasQ ? Math.max(0, Math.max(sumBallistic, sumImpact) - q) : 0;
+    const poolB = all.reduce((s, p) => s + p.poolBallistic, 0);
+    const poolI = all.reduce((s, p) => s + p.poolImpact, 0);
+    const over = hasQ ? Math.max(0, Math.max(poolB, poolI) - q) : 0;
 
     return {
       ballistic: layer('ballistic'),
@@ -9718,9 +9729,11 @@ _prepareCharacter(sys, attr) {
     // resisting or avoiding DAMAGE, and staying upright is neither). The maintainer's ruling,
     // 2026-09-14: applied, though the threshold also scales with the wound (p.124). Editable.
     const kdWound   = SR3EActor.woundTN(target);
+    // Gel-packed armour: +2 to the Knockdown Test's TN (CC p.54, TODO 276).
+    const kdGel     = ArmorMods.knockdownTN(SR3EActor.wornArmorItems(target));
     const tnDefault = SR3EActor.knockdownTN({
       power: ctx.power, strength: atkStr, isMelee: ctx.isMelee, ammoType: ctx.ammoType,
-    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound + SR3EActor.standingTN(target);
+    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound + kdGel + SR3EActor.standingTN(target);
     const needed  = SR3EActor.knockdownOutcome({ level, tested: false }).needed ?? 2;
     /* Rooting and Enhanced Balance add dice to *"all tests to resist being knocked down,
      * thrown, levitated or otherwise moved against his will"* (MITS p.151, SOTA2 p.65).
@@ -9758,7 +9771,8 @@ _prepareCharacter(sys, attr) {
           ${target.name} took a <strong>${SR3EActor._woundName(level)}</strong> wound and must stay on their feet.
         </p>
         <p style="margin-bottom:8px;font-size:11px;color:var(--sr-muted)">${tnNote}${kdWound
-          ? ` <span style="color:var(--sr-amber)">Includes ${target.name}'s wounds +${kdWound} (p.125).</span>` : ''}</p>
+          ? ` <span style="color:var(--sr-amber)">Includes ${target.name}'s wounds +${kdWound} (p.125).</span>` : ''}${kdGel
+          ? ` <span style="color:var(--sr-amber)">Includes gel-packed armour +${kdGel} (CC p.54).</span>` : ''}</p>
         <label style="display:block;margin-bottom:6px">Body dice
           <input type="number" id="kd-body" value="${bodyDef}" min="1" max="50" style="width:60px;margin-left:6px"/>
           ${kdBonus.dice ? `<span style="font-size:11px;color:var(--sr-gold);margin-left:6px">includes +${kdBonus.dice} from ${kdBonus.labels.join(' + ')}</span>` : ''}
@@ -10106,6 +10120,25 @@ _prepareCharacter(sys, attr) {
     if (this.type === 'vehicle' && !payload.noArmor && VehicleArmor.deflects(hardPower, defaultArmor)) {
       ammoNote = [ammoNote, `Power ${hardPower} (without any burst/full-auto bonus) does not exceed armour ${defaultArmor} — hardened armour deflects it: no damage to the vehicle (p.132, p.149)`]
         .filter(Boolean).join(' · ');
+    }
+    /* Worn armour with mods (TODO 276). HARDENED (CC p.51 military armour, or gel packs): a Power before any burst bonus
+     * that does not exceed the hardened rating is deflected; against APDS / anti-vehicle rounds it counts at half. And the
+     * armour's protections — Power − vs fire, cold, electricity, contact chemicals (CC pp.52-53) — named for the GM, who
+     * knows what kind of attack this is. Announced, never applied. */
+    if (this.type !== 'vehicle' && !payload.noArmor) {
+      const worn = SR3EActor.wornArmorItems(this);
+      const hard = ArmorMods.hardenedRating(worn, {
+        useImpact: usesImpact,
+        armorPiercing: ammoRules.armorEffect === 'apds' || ammoRules.armorEffect === 'antiVehicle',
+        layer: ps => SR3EActor.layeredArmor(ps.map(i => ({ name: i.name, ...ArmorMods.ratings(i), accessory: SR3EActor.isArmorAccessory(i) }))),
+      });
+      if (hard !== null && VehicleArmor.deflects(hardPower, hard)) {
+        ammoNote = [ammoNote, `🛡 Deflected (hardened): Power ${hardPower} (without any burst/full-auto bonus) does not exceed the hardened armour's ${hard} — no damage (CC p.51)`]
+          .filter(Boolean).join(' · ');
+      }
+      for (const p of ArmorMods.protections(worn).filter(x => x.target !== 'thermalMasking')) {
+        adeptArmorNotes.push(`${p.sources.join(', ')}: ${p.label.replace('−', `−${p.value}`)} — if this attack is that kind (CC pp.52-53)`);
+      }
     }
     return { resistAttr, resistName, body, bodyOf, availPool, ballistic, impact, usesImpact, defaultArmor,
       soakTN, stunnedNow, effStagedLevel, netBaseLevel, ammoNote, adeptArmorNotes, shockCode, impactWorn };

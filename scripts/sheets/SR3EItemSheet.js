@@ -18,6 +18,7 @@ import { BookPage } from '../data/book-page.mjs';
 import { AmmoStock, GUN_CLASSES } from '../data/ammo-stock.mjs';
 import { MiniGrenade } from '../data/mini-grenade.mjs';
 import { ItemMods, TARGETS } from '../data/item-mods.mjs';
+import { ArmorMods } from '../data/armor-mods.mjs';
 import { SR3EItemMods } from '../SR3EItemMods.js';
 
 /** Where a spell's fetish or exclusive limit was taken · SR3 p.180 (TODO 223). Blank = the spell has no such limit. */
@@ -246,8 +247,33 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       <h3 class="sr-mods-title">Installed mods</h3>
       ${body}
       ${summary ? `<div class="sr-mods-summary">From mods and built in: ${summary}</div>` : ''}
+      ${item.type === 'armor' ? this._armorWithMods(item) : ''}
       ${edit ? '<p class="sr-mod-hint">Drop a mod here to install it. One accessory per weapon mount (SR3 p.280) — you are warned, never stopped.</p>' : ''}
     </div>`;
+  }
+
+  /**
+   * Armour with its mods (TODO 276, `ArmorMods`): the numbers the mods change — Concealability, weight, cost, Availability,
+   * Street Index, hardened, mod points against the caps (CC p.52) — and anything wrong, in amber. The base fields above
+   * stay the armour's own, editable.
+   */
+  _armorWithMods(item) {
+    const esc = v => foundry.utils.escapeHTML(String(v ?? ''));
+    const problems = ArmorMods.problems(item);
+    if (!ItemMods.installed(item).length && !problems.length) return '';
+    const r = ArmorMods.ratings(item), caps = ArmorMods.caps(item), pts = ArmorMods.points(item);
+    const conceal = ArmorMods.concealability(item).value;
+    const bits = [
+      `${r.ballistic}B / ${r.impact}I${ArmorMods.hardened(item) ? ' <strong>hardened</strong>' : ''}`,
+      conceal === null ? '' : `Conceal ${conceal}`,
+      `${ArmorMods.weight(item)} kg`,
+      `${ArmorMods.cost(item).toLocaleString()}¥`,
+      ArmorMods.availability(item) ? `Avail ${esc(ArmorMods.availability(item))}` : '',
+      ArmorMods.streetIndex(item) === null ? '' : `SI ${ArmorMods.streetIndex(item)}`,
+      `mod points ${pts.total} / ${caps.total} (one mod ≤ ${caps.single})`,
+    ].filter(Boolean);
+    return `<div class="sr-mods-summary" title="With its mods (CC pp.52-54). Gel packs: ×5 price, TN ×2 / time ×4, outside the caps.">With mods: ${bits.join(' · ')}</div>
+      ${problems.map(w => `<p class="sr-mod-warn">⚠ ${esc(w)}</p>`).join('')}`;
   }
 
   /**
@@ -264,7 +290,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       const t = TARGETS[m.target];
       const val = t?.combine === 'any'
         ? `<input type="checkbox" class="sr-modifier-value" data-idx="${i}" ${m.value > 0 ? 'checked' : ''} ${edit ? '' : 'disabled'}/>`
-        : `<input type="number" class="sr-modifier-value" data-idx="${i}" value="${Number(m.value) || 0}" style="width:56px" ${edit ? '' : 'disabled'}/>`;
+        : `<input type="number" class="sr-modifier-value" data-idx="${i}" value="${Number(m.value) || 0}" style="width:56px" ${edit ? '' : 'disabled'}/>
+           <label title="The value is per point of this item's level (Fire Resistance [3] at 1 per level is 3)"><input type="checkbox" class="sr-modifier-per" data-idx="${i}" ${m.perRating ? 'checked' : ''} ${edit ? '' : 'disabled'}/> per level</label>`;
       return `<div class="sr-modifier-row">
         <select class="sr-modifier-target" data-idx="${i}" ${edit ? '' : 'disabled'}>${t ? '' : `<option value="" selected>? ${foundry.utils.escapeHTML(String(m.target ?? ''))}</option>`}${opts(m.target)}</select>
         ${val}
@@ -300,7 +327,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       });
     }
 
-    const list = () => (item.system.modifiers ?? []).map(m => ({ target: m.target, value: Number(m.value) || 0 }));
+    // ⚠ Every field of a row, `perRating` included — a row rebuilt from target and value alone would lose it on any edit.
+    const list = () => (item.system.modifiers ?? []).map(m => ({ target: m.target, value: Number(m.value) || 0, perRating: m.perRating === true }));
     const save = mods => item.update({ 'system.modifiers': mods });
     html.querySelector('.sr-modifier-add')?.addEventListener('click', () => save([...list(), { target: 'rc', value: 1 }]));
     html.querySelectorAll('.sr-modifier-remove').forEach(a => a.addEventListener('click', () => {
@@ -313,7 +341,10 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       ev.stopPropagation();
       const mods = list();
       const target = sel.value;
-      mods[Number(sel.dataset.idx)] = { target, value: TARGETS[target]?.combine === 'any' ? 1 : (mods[Number(sel.dataset.idx)]?.value ?? 0) };
+      const was = mods[Number(sel.dataset.idx)] ?? {};
+      mods[Number(sel.dataset.idx)] = TARGETS[target]?.combine === 'any'
+        ? { target, value: 1, perRating: false }
+        : { target, value: was.value ?? 0, perRating: was.perRating === true };
       save(mods);
     }));
     html.querySelectorAll('.sr-modifier-value').forEach(inp => inp.addEventListener('change', ev => {
@@ -322,6 +353,14 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       const i = Number(inp.dataset.idx);
       if (!mods[i]) return;
       mods[i].value = inp.type === 'checkbox' ? (inp.checked ? 1 : 0) : (Number(inp.value) || 0);
+      save(mods);
+    }));
+    html.querySelectorAll('.sr-modifier-per').forEach(inp => inp.addEventListener('change', ev => {
+      ev.stopPropagation();
+      const mods = list();
+      const i = Number(inp.dataset.idx);
+      if (!mods[i]) return;
+      mods[i].perRating = inp.checked;
       save(mods);
     }));
   }
@@ -738,6 +777,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Ballistic', 'ballistic', s.ballistic, 'number', 'min="0"')}
           ${this._f('Impact', 'impact', s.impact, 'number', 'min="0"')}
+          ${this._check('Hardened (CC p.51)', 'hardened', s.hardened)}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
           ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}

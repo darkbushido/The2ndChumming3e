@@ -38,6 +38,8 @@
  * Pure: no Foundry globals.
  */
 
+import { ArmorMods } from './armor-mods.mjs';
+
 export const PAGES = {
   gear:        'SR3 p.45',
   perception:  'SR3 p.231-232',
@@ -187,7 +189,8 @@ export const Concealment = {
         });
       } else if (i.type === 'armor') {
         if (!worn.has(i.id)) continue;
-        const c = Concealment.parse(sys.concealability);
+        // With its mods: Insulation lowers it, gel packs halve it (CC p.53, TODO 276).
+        const c = ArmorMods.concealability(i).value ?? Concealment.parse(sys.concealability);
         out.push({
           id: i.id, name: i.name, kind: 'armor', conceal: c, raw: String(sys.concealability ?? ''),
           state: 'worn', needsTest: true,

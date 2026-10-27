@@ -25,7 +25,14 @@
       "bookPage": "cc.53",
       "description": "",
       "modFor": "armor",
-      "legality": "4-L"
+      "legality": "4-L",
+      "modifiers": [
+        {
+          "target": "gelPacks",
+          "value": 1,
+          "perRating": false
+        }
+      ]
     }
   },
   "embedded": {}

@@ -14,7 +14,8 @@
  * `_id`). They are not documents: they move, copy and delete with the host, in a sidebar item or a compendium too.
  * ⚠ Not `system.mods` — cyberware already has that, the upstream bonus string (`+2RCT`).
  *
- * **Effects.** Any item may carry `system.modifiers`, `[{ target, value }]`, from the fixed vocabulary `TARGETS`. Each
+ * **Effects.** Any item may carry `system.modifiers`, `[{ target, value, perRating }]`, from the fixed vocabulary `TARGETS`
+ * (`perRating`: the value is per point of the item's rating — Fire Resistance [3] at 1 per point is 3). Each
  * target says how values combine (`add`, `max` — the highest one counts, the maintainer's "no stacking" for image
  * magnification — or `any`, an on/off feature) and whether it reaches the actor. A host's effective value is its own
  * modifiers plus its installed mods' (and theirs, `MAX_DEPTH` deep). Nothing computed is saved; the host's own fields
@@ -31,6 +32,14 @@ export const TARGETS = {
   laserSight: { label: 'Laser sight',         short: 'Laser',     combine: 'any', toActor: false, page: 'SR3 p.281' },
   lowLight:   { label: 'Low-light vision',    short: 'Low-light', combine: 'any', toActor: true,  page: 'SR3 p.299' },
   thermo:     { label: 'Thermographic vision', short: 'Thermo',   combine: 'any', toActor: true,  page: 'SR3 p.299' },
+  // Armour modifications (TODO 276, armour slice; scripts/data/armor-mods.mjs reads them). `capped`: counts toward an
+  // armour's mod-point caps (CC p.52). Each lowers the Power of one kind of attack by its value — the GM applies it.
+  resistChemical: { label: 'Power − vs contact chemicals', short: 'Chem seal', combine: 'add', toActor: false, capped: true, page: 'CC p.52' },
+  resistFire:     { label: 'Power − vs fire',              short: 'Fire res.', combine: 'add', toActor: false, capped: true, page: 'CC p.52' },
+  resistCold:     { label: 'Power − vs cold (Insulation)', short: 'Insulation', combine: 'add', toActor: false, capped: true, page: 'CC p.53' },
+  resistElectric: { label: 'Power − vs electricity',       short: 'Nonconductive', combine: 'add', toActor: false, capped: true, page: 'CC p.53' },
+  thermalMasking: { label: 'Thermal dampening (+ to be seen by thermo)', short: 'Thermal damp.', combine: 'add', toActor: false, capped: true, page: 'CC p.53' },
+  gelPacks:       { label: 'Gel packs (hardened)',         short: 'Gel packs', combine: 'any', toActor: false, page: 'CC p.53' },
 };
 
 /** The item types that can hold mods. */
@@ -61,11 +70,12 @@ export const ItemMods = {
     return Array.isArray(list) ? list : [];
   },
 
-  /** The item's own modifiers, unknown targets dropped. */
+  /** The item's own modifiers, unknown targets dropped; a `perRating` value multiplied by the item's rating. */
   modifiersOf(item) {
     const list = item?.system?.modifiers;
     if (!Array.isArray(list)) return [];
-    return list.filter(m => TARGETS[m?.target]).map(m => ({ target: m.target, value: num(m.value) }));
+    const rating = Math.max(0, num(item?.system?.rating));
+    return list.filter(m => TARGETS[m?.target]).map(m => ({ target: m.target, value: m.perRating ? num(m.value) * rating : num(m.value) }));
   },
 
   /**

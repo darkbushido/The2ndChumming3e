@@ -25,7 +25,14 @@
       "bookPage": "cc.35",
       "description": "<p><strong>Mount:</strong> Barrel</p>",
       "modFor": "weapon",
-      "legality": "Legal"
+      "legality": "Legal",
+      "modifiers": [
+        {
+          "target": "rc",
+          "value": 1,
+          "perRating": true
+        }
+      ]
     }
   },
   "embedded": {}

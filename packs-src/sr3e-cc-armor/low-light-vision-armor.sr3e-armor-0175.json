@@ -16,7 +16,14 @@
       "bookPage": "cc.51",
       "notes": "",
       "modFor": "armor",
-      "legality": "Legal"
+      "legality": "Legal",
+      "modifiers": [
+        {
+          "target": "lowLight",
+          "value": 1,
+          "perRating": false
+        }
+      ]
     },
     "effects": []
   },

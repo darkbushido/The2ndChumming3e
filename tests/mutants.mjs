@@ -48,6 +48,7 @@ const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating'
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
 const BLASTBATCH = { module: '../scripts/data/blast-batch.mjs', klass: 'BlastBatch' };
+const ARMORMODS = { module: '../scripts/data/armor-mods.mjs', klass: 'ArmorMods' };
 const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
 const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots' };
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
@@ -3896,5 +3897,40 @@ export const MUTANTS = [
     ...NPCAMMO, method: 'rollReloads',
     was:    'reloads rolled 3-5 instead of 3-6 (TODO 270)',
     impl:   (rng = Math.random) => 3 + Math.floor(rng() * 3),
+  },
+  {
+    id:     'gel-packs-add-five-times',
+    suite:  'armor-mods',
+    ...ARMORMODS, method: 'cost', needsOriginal: '_costOriginal',
+    was:    'gel packs read as an ADDITION of ×5 (900 + 4,500) — the maintainer ruled ×5 in all, 900 → 4,500 (CC p.53, TODO 276)',
+    impl:   function (item) { const base = Number(item?.system?.cost) || 0; return this._costOriginal(item) + (this.gelPacked(item) ? base : 0); },
+  },
+  {
+    id:     'rated-mod-availability-per-point',
+    suite:  'armor-mods',
+    ...ARMORMODS, method: 'availability', needsOriginal: '_availOriginal',
+    was:    'a rated armour mod\'s +1/+12hrs applied per rating point — the maintainer ruled once per mod (CC p.53, TODO 276)',
+    impl:   function (item) {
+      const scaled = { ...item, system: { ...item.system, installed: (item.system?.installed ?? []).flatMap(m => Array(Math.max(1, Number(m?.system?.rating) || 1)).fill(m)) } };
+      return this._availOriginal(scaled);
+    },
+  },
+  {
+    id:     'gel-packs-count-toward-caps',
+    suite:  'armor-mods',
+    ...ARMORMODS, method: 'points', needsOriginal: '_pointsOriginal',
+    was:    'gel packs counted as mod points against the CC p.52 caps — the maintainer ruled they do not (TODO 276)',
+    impl:   function (item) {
+      const r = this._pointsOriginal(item);
+      const gels = (item?.system?.installed ?? []).filter(m => this.isGelPack(m)).map(m => ({ name: m.name, points: 1 }));
+      return { perMod: [...r.perMod, ...gels], total: r.total + gels.length };
+    },
+  },
+  {
+    id:     'hardened-ignores-armor-piercing',
+    suite:  'armor-mods',
+    ...ARMORMODS, method: 'hardenedRating', needsOriginal: '_hardOriginal',
+    was:    'hardened armour kept its full rating against APDS / anti-vehicle rounds — CC p.51 halves it (TODO 276)',
+    impl:   function (worn, opts = {}) { return this._hardOriginal(worn, { ...opts, armorPiercing: false }); },
   },
 ];

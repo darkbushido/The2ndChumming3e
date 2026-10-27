@@ -851,19 +851,67 @@ plain or bracketed; a typed total is stored back without it — `IntegralRC.tota
 sight** (`WeaponAccessories.flag`: an installed mod switches it on), **low-light** and **thermographic** vision
 (`detectVision` reads `ItemMods.actorTotals`: "Cybereyes (Thermographic Vision)").
 
+**Built (armour slice, 2026-10-27)** — the maintainer's rulings of 2026-10-27 applied; `scripts/data/armor-mods.mjs` (pure,
+`tests/armor-mods.test.mjs`, mutants `gel-packs-add-five-times`, `rated-mod-availability-per-point`, `gel-packs-count-toward-caps`,
+`hardened-ignores-armor-piercing`):
+- **Armour with mods** — Concealability, weight, cost, Availability, Street Index from the mods' own figures (the level table
+  holds Insulation's −1 per 2 points and +.5 kg a point, CC p.53); shown under Installed mods ("With mods: …") and used by the
+  Concealment view and encumbrance. A rated mod's Availability applies **once per mod**; **Gel Packs ×5 the armour's own price in
+  all, Availability TN ×2 / time ×4**, Concealability halved (round down), weight +25%, outside the caps.
+- **Protections** — `resistChemical` / `resistFire` / `resistCold` / `resistElectric` (Power − per point) and `thermalMasking`
+  (max +8): the targets of the six CC armour modifications (per rating point, `perRating`). Listed under "Currently Worn" and as a
+  note on every soak card for the GM to apply to the right kind of attack — never applied.
+- **Hardened armour** — `system.hardened` (the CC military armour and helmet, CC p.51) or gel packs (unarmoured clothing 1/1). The
+  soak card ANNOUNCES "Deflected (hardened)" when the Power before any burst bonus does not exceed the worn hardened rating; at
+  half vs APDS / anti-vehicle. Personal targets now carry `hardenedPower` like vehicles (`VehicleArmor.deflects`, one comparison).
+- **Gel packs elsewhere** — Combat Pool penalty reads the ratings 50% higher (round down, `poolBallistic`/`poolImpact` in
+  `layeredArmor`); +2 Knockdown TN.
+- **Warnings, never refusals** — host off CC p.52's list (SecureTech, helmet, shield, forearm guards); an SR3 p.284 helmet option on
+  anything but a helmet or security/military armour; one mod over the higher rating, all over B + I (clothing 2 / 2); Thermal
+  Dampening over +8; two gel sets; gel on form-fitting, diving or hardened armour; a hardened or gel body piece layered with another
+  body piece (a helmet or shield is not layering, SR3 p.285).
+- **Pack data** — `scripts/data/mod-effects.mjs` (`MOD_EFFECTS`, `HARDENED_ARMOR`): the RC accessories (gas vents, shock pads,
+  fore grip, hip pad, underbarrel weight, stock — their rating is the RC), external smartguns, laser sights, the six armour
+  modifications, helmet Thermo / Low-light vision; military armour hardened. `tools/fill-mod-effects.mjs` for the hand-kept packs,
+  `tools/build-default-gear.mjs` for the generated ones, the 0.9.0 migration for owned copies — fill blanks only.
+
 **Still open in this item:**
-1. **Pack data** — fill `modifiers` on the accessories (gas vents RC = rating, shock pads RC 1, Smartgun external, laser
-   sights, imaging scopes) and the cybereye / armour vision options, by a tool from a table, with the owned-copy migration
-   (fill blanks). Until then a GM adds the change by hand.
-2. **Magnification** (`max`, SR3 p.110, p.113) — shift the range band by the highest device in use ([#235](#235)).
-3. **Stock / tripod deployed** — a mod toggle replacing the fire dialog's integral tick ([#235](#235)).
-4. **The free-text `accessories`** — a migration turning it into installed mods where it parses; the rest stays a note.
-5. **Armour** ([#263](#263) caps and gel packs), **cyberlimbs** (Equipment Capacity, M&M pp.35-36; Essence of a built-in
-   item only when paid, M&M p.127), **vehicles and drones** ([#265](#265); their mods stay items on the vehicle actor, which
-   is the container; weapon mounts [#234](#234) are hosts).
-6. ✔ **Decided by the maintainer, 2026-10-27:** goggles' and a helmet's vision count on the Visibility Table's
+1. **Magnification** (`max`, SR3 p.110, p.113) — shift the range band by the highest device in use ([#235](#235)); imaging scopes
+   and the helmet magnification then get their pack data.
+2. **Bipod / tripod / stock deployed** — a mod toggle replacing the fire dialog's integral tick ([#235](#235)); bipod and tripod
+   get their RC then (left out of the pack data until the toggle exists).
+3. **The free-text `accessories`** — a migration turning it into installed mods where it parses; the rest stays a note.
+4. **Weapon mounts by weapon class** (SR3 pp.276-279, CC p.75: hold-outs none, pistols barrel + top, …) — warnings; waits on the
+   open questions below.
+5. **Cyberlimbs** (Equipment Capacity, M&M pp.35-37; Essence of a built-in item only when paid, M&M p.127), **vehicles and
+   drones** ([#265](#265); their mods stay items on the vehicle actor, which is the container; weapon mounts [#234](#234) are hosts).
+6. Not modelled from the armour rules: Thermal Dampening's Perception / Signature effect and its fade over time (shown only); the
+   SR3 p.284 Respirator / Chemical Seal (12,000¥) options' effects; injection-vector darts against hardened armour (CC p.51).
+7. ✔ **Decided by the maintainer, 2026-10-27:** goggles' and a helmet's vision count on the Visibility Table's
    CYBERNETIC/ELECTRONIC column (SR3 p.111), with cybereyes — "goggles should count with the cybernetic/electronic vision
    side". `detectVision` puts every `toActor` vision from an item in `cyber`; `tests/vision.test.mjs` pins a worn helmet there.
+
+**Open questions — for the maintainer, before the weapon / vehicle / cyberlimb slices merge** (each is a warning or an editable
+value today; none settled by picking a side):
+- **Pistol mounts** — SR3 p.276 and CC p.75 give pistols barrel + top only, yet SR3 p.282 lists underbarrel and top/under items
+  without saying pistols can't take them. Warn on an underbarrel mod on a pistol?
+- **Sport rifles and shotguns** — the Remington 750/950 and the Defiance T-250 print no underbarrel (SR3 pp.278-279); CC p.75's
+  frames list Barrel + Top + Under. Which wins for stock weapons?
+- **Imaging scopes and the rangefinder: Top, or Top or Under?** SR3 pp.280, 282 and CC p.33 say Top; CC p.82 says Top or Under.
+  Today the mount comes from the pack's description (Top).
+- **Gas vents removable?** SR3 p.281 and CC p.34: never once installed; CC pp.80-81: a normal, removable customisation. Today ⏏ takes
+  any mod out, gas vents included.
+- **Internal smartgun price** — SR3 p.282 +100% of the weapon; CC p.81 the frame's base DPV × 8 (Smartlink-2 ×1.5); M&M p.32 ×150%
+  for the Smartlink-2 internal. Not built yet.
+- **Laser sight with a smartlink** — SR3 p.281 says not together, the p.112 table lists both. Today both flags can be on and the GM
+  window shows both rows; pick the better (−2) only?
+- **Imaging scope with a smartlink** — barred by SR3 p.280 and CC p.83; M&M p.34 lets goggles / an image link be the smartlink's
+  display. Does a scope still block it then?
+- **Stocks on rifles** — SR3 p.277: rifle stocks don't affect recoil; CC p.34/p.84: the stock accessory (RC 1) is for SMG-sized and
+  smaller. Today a Stock installed on a rifle adds RC 1 — warn?
+- **Fore grip** — CC p.34 limits it to SMGs, assault rifles and shotguns; CC p.82 lists no limit. Warn outside those?
+- **Combo imaging scopes / two integral top accessories** — one mount each (SR3 p.280); a stock gun printing two top accessories was
+  not checked.
 
 **🧪 Test in Foundry** — TESTING.md §77 (full restart: data models gained fields).
 

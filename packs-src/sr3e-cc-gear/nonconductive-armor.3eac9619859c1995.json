@@ -25,7 +25,14 @@
       "bookPage": "cc.53",
       "description": "",
       "modFor": "armor",
-      "legality": "Legal"
+      "legality": "Legal",
+      "modifiers": [
+        {
+          "target": "resistElectric",
+          "value": 1,
+          "perRating": true
+        }
+      ]
     }
   },
   "embedded": {}
