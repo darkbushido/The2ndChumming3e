@@ -141,4 +141,8 @@ export async function run(t) {
   t.is('an implant found by its name AND its modifier is listed once', detectVision({ system: { metatype: 'human' }, items: [named] }).cyber.length, 1);
   const helmet = { type: 'armor', name: 'Helmet', system: { worn: false, installed: [{ _id: 'b', name: 'Thermo Vision (Armor)', system: { modifiers: [{ target: 'thermo', value: 1 }] } }] } };
   t.is('a helmet\'s thermo counts only while it is worn', detectVision({ system: { metatype: 'human' }, items: [helmet] }).cyber.length, 0);
+  const worn = detectVision({ system: { metatype: 'human' }, items: [{ ...helmet, system: { ...helmet.system, worn: true } }] });
+  t.eq('…worn, it is CYBERNETIC/ELECTRONIC vision (the maintainer, 2026-10-27, SR3 p.111) — never natural',
+    [worn.cyber, worn.natural.filter(n => n.column === 'thermo')], [[{ column: 'thermo', source: 'Helmet (Thermo Vision (Armor))' }], []]);
+  t.is('…and worn goggles do not replace the eyes (racial vision stays)', detectVision({ system: { metatype: 'elf' }, items: [{ ...helmet, system: { ...helmet.system, worn: true } }] }).replacedBy, null);
 }

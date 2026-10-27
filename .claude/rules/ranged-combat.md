@@ -54,6 +54,8 @@ paths:
    - **👁 Vision reminder** (TODO 99, `detectVision`/`visionReminder` in `SR3ECombatModifiers.js`).
      ⚠ Replaced eyes lose racial vision (p.299) — only an actual replacement item or **Cat's Eyes** counts.
      ⚠ **Cat's Eyes are NATURAL** (M&M p.64). ⚠ Thermosense Organs are not vision (M&M p.75).
+     ⚠ **Goggles and helmets are CYBERNETIC/ELECTRONIC** (the maintainer, 2026-10-27): vision a worn armour item or
+     carried gear passes up through its installed mods (`ItemMods.actorTotals`, TODO 276) lands in `cyber`.
 6. Attacker allocates Combat Pool — that dialog is the 🎲 Roll trigger. Attack rolls (interactive).
 7. On the final wave the **defender declares a defence knowing the attack's successes**; dodge TN 4.
 8. Dodge result via `SR3EActor.dodgeOutcome` (below). A failed dodge's successes join the target's total.

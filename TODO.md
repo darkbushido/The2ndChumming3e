@@ -861,8 +861,9 @@ sight** (`WeaponAccessories.flag`: an installed mod switches it on), **low-light
 5. **Armour** ([#263](#263) caps and gel packs), **cyberlimbs** (Equipment Capacity, M&M pp.35-36; Essence of a built-in
    item only when paid, M&M p.127), **vehicles and drones** ([#265](#265); their mods stay items on the vehicle actor, which
    is the container; weapon mounts [#234](#234) are hosts).
-6. **For the maintainer:** does a helmet's or goggles' thermographic count on the Visibility Table's CYBERNETIC column
-   (SR3 p.111)? Today a worn helmet's vision lands there with cybereyes — to check against the book.
+6. ✔ **Decided by the maintainer, 2026-10-27:** goggles' and a helmet's vision count on the Visibility Table's
+   CYBERNETIC/ELECTRONIC column (SR3 p.111), with cybereyes — "goggles should count with the cybernetic/electronic vision
+   side". `detectVision` puts every `toActor` vision from an item in `cyber`; `tests/vision.test.mjs` pins a worn helmet there.
 
 **🧪 Test in Foundry** — TESTING.md §77 (full restart: data models gained fields).
 

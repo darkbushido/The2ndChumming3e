@@ -205,14 +205,16 @@ export const SR3E_RACIAL_VISION = { elf: 'lowLight', ork: 'lowLight', dwarf: 'th
  * natural, not cybernetic"*) — bioware, so the better column, unlike cybereyes.
  *
  * ⚠ **Thermosense Organs are not vision** (M&M p.75, a heat sense) and are excluded, though
- * their name matches "thermo". Worn goggles are out of scope for now.
+ * their name matches "thermo".
  *
  * Name-matched on stems, because the packs abbreviate and the contacts pack uses its own
  * spellings (`Low Light`, `Thermographic Vision`, `Eyes, Low-Light`).
  *
  * **Then from installed mods** (TODO 276): a cybereye holding a Thermographic option, or a worn helmet holding one, passes
  * `thermo` / `lowLight` to the actor (`ItemMods.actorTotals`) — the source reads "Cybereyes (Thermographic Vision)". An
- * item already found by its own name is not listed twice.
+ * item already found by its own name is not listed twice. ⚠ **Goggles and helmets count as CYBERNETIC/ELECTRONIC** on the
+ * Visibility Table (SR3 p.111) — the maintainer, 2026-10-27: "goggles should count with the cybernetic/electronic vision
+ * side". So every vision an item passes up lands in `cyber`, never `natural`.
  *
  * @param {{metatype?: string, items?: Iterable<{type:string, name:string}>}} actor
  * @returns {{ metatype: string, racial: string|null, replacedBy: string|null,
