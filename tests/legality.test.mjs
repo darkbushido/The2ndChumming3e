@@ -144,8 +144,17 @@ export async function run(t) {
   t.is('the FAB Strain-I 500 m3 aerosol is 8P-U (MitS p.170)', by('gear', 'FAB Strain-I 500 m3 aerosol'), '8P-U');
   t.is('Matrix, Miscellaneous Component Table (p.169): a Passkey Reader (Blank) is 9P-V', by('gear', 'Passkey Reader (Blank)'), '9P-V');
   t.is('…and a Trode Jack is Legal', by('gear', 'Trode Jack'), 'Legal');
-  t.is('left for the maintainer, not guessed: a Rigger 3 ring mount', by('vehiclemod', 'Ring Mount (Vehicle)'), null);
-  t.is('…an integrated armor option', by('armor', 'Thermo Vision (Armor)'), null);
+  // Rulings, 2026-10-27: the weapon carries the code, not what it is attached to or modified with.
+  t.is('a Rigger 3 ring mount is Legal: the weapon on it carries the code', by('vehiclemod', 'Ring Mount (Vehicle)'), 'Legal');
+  t.is('…and a turret', by('vehiclemod', 'Large Turret (Vehicle)'), 'Legal');
+  t.is('…and vehicle armor', by('vehiclemod', 'Vehicle Armor (Vehicle)'), 'Legal');
+  t.is('…a firearm conversion kit waits for the maintainer', by('vehiclemod', 'Pistol Customization Kit (Vehicle)'), null);
+  t.is('a Cannon Companion weapon mod changes nothing in print: Legal', by('gear', 'Remove Safety (Weapon)'), 'Legal');
+  t.is('a toxin dart takes its chemical code: Fugu-8 3-X', by('ammunition', 'Dart, Fugu 8'), '3-X');
+  t.is('…Cyanide 4P-X (M&M p.158)', by('ammunition', 'Dart, Cyanide'), '4P-X');
+  t.is('…a Narcoject dart is Legal', by('ammunition', 'Dart, Narcoject'), 'Legal');
+  t.is('HOUSE RULING: a magical reagent needs a low-difficulty permit, 8P-X (M&M p.158 prints no column)', by('drug', 'Deepweed'), '8P-X');
+  t.is('Man & Machine medical facilities are Legal', by('medical', 'Beta Hospital'), 'Legal');
   t.is('…a Benelli (not in any book of the library)', by('firearm', 'Benelli M1014'), null);
   t.ok('the migration hands the fill the renamed item', /Legality\.fillDelta\(linked\)/.test(read('scripts/SR3EMigrations.js')) && /name: delta\.name \?\? item\.name/.test(read('scripts/SR3EMigrations.js')));
 

@@ -16,7 +16,8 @@
       "bookPage": "r3.138",
       "description": "-6 Recoil",
       "rating": null,
-      "modFor": "vehicle"
+      "modFor": "vehicle",
+      "legality": "Legal"
     },
     "effects": []
   },

@@ -27,7 +27,8 @@
       "availability": "5/1week",
       "streetIndex": ".5",
       "bookPage": "sr3.250",
-      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>"
+      "notes": "<p>Not one of the types this system models, or a combination of them — its rules are the GM's.</p><p>Loading mechanism set to clip (c); change it for a cylinder, tube or belt.</p>",
+      "legality": "3-X"
     }
   },
   "embedded": {}

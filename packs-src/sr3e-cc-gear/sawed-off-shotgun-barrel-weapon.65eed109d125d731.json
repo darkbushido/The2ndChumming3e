@@ -24,7 +24,8 @@
       "streetIndex": "1",
       "bookPage": "cc.83",
       "description": "<p><strong>Notes:</strong> -1 power, use heavy pistol ranges, max choke 6, Available at GM option<br><strong>Source:</strong> Design Points +8 × 8 (Cannon Companion p.80, p.83).</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "Legal"
     }
   },
   "embedded": {}
