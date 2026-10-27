@@ -3276,8 +3276,8 @@ under each character are the book's — check them against the sheet, not the ot
       Essence 6, Magic 6. **Reaction 8** and Initiative **8 + 2D6** (Increased Reflexes 1). Combat Pool **8**. Unarmed Combat 6, Clubs 5
       (specialisation Rattan Sticks 7). The five adept powers are on the Magic tab; Pain Resistance at level 3.
 - [ ] **Combat Decker** (ork): Strength 5 → **7**, Reaction 4 → **6**, Essence **1.54**, Combat Pool **7**, Hacking Pool **4** by the
-      core formula ⌊(INT+MPCP)÷3⌋ — ⚠ the sheet's default is Matrix Defragged's Int + ⌊MPCP÷3⌋ (**7**) until the Orthodox deck fields
-      are filled in (rule-set dependent; the maintainer decides which should show on the sample). The Ceska Black Scorpion reads
+      core formula ⌊(INT+MPCP)÷3⌋ (SR3 p.207) — that is the **Orthodox SR3** ruleset; under **Matrix Defragged** (the default) the same
+      sheet shows **7** (INT + ⌊MPCP÷3⌋, MDF p.11). The pool follows the world's Matrix ruleset (TODO 275, §76). The Ceska Black Scorpion reads
       loaded **35/35** (35(c)); the record sheet's "50 rounds and 20 explosive rounds" are the 15 spare Regular and 20 Explosive
       rounds, as two loose-round stacks.
 - [ ] **Combat Mage** (troll): Body 6 → **7** (the hide, nothing else), Spell Pool **5**, Astral Combat Pool **7**, Combat Pool **7**,
@@ -3293,3 +3293,18 @@ under each character are the book's — check them against the sheet, not the ot
 - [ ] Every character: Karma Pool 1, a token with sight and the dynamic ring, `bookPage` shown as the book and page, and the
       Notes tab names the priorities, lifestyle, contacts and starting nuyen (the 3D6 × 100¥ is rolled by the GM).
 - [ ] Put one of them in a combat: the weapons roll, the loaded magazine counts down, Reload uses the spare clips.
+
+## 76. The Hacking Pool follows the world's Matrix ruleset (TODO 275, SR3 p.207, MDF p.11)
+
+Found live 2026-10-26: the Combat Decker sample showed 7 where the core book gives 4. One derived value now:
+Orthodox → ⌊(INT + MPCP) ÷ 3⌋ (SR3 p.207); Defragged → INT + ⌊MPCP ÷ 3⌋ (MDF p.11). The equipped deck's MPCP feeds it; an
+Orthodox decker with no deck item uses `system.orthodoxDeck.mccp`. The ruleset setting needs a **full restart** to change.
+
+**Prerequisites:** the **Combat Decker** from Reference → Sample Characters in the world (CMT Avatar equipped); a disposable
+copy is fine. Note the world's current `matrixRuleset` and restore it afterwards.
+
+- [ ] **Defragged** (default): Derived Stats → Hacking Pool reads **7** (tooltip "INT … + floor(MPCP … / 3) (MDF p.11)").
+- [ ] **Orthodox** (Configure Settings → Matrix ruleset, restart): the Hacking Pool reads **4** (tooltip "floor((INT … + MPCP …) / 3) (SR3 p.207)"), on the character tab **and** the Orthodox Matrix tab's Derived Stats — the same number.
+- [ ] **One value everywhere (Orthodox):** an Orthodox cybercombat/IC roll dialog offers up to **4** Hacking Pool dice; spend 2 → the sheet reads 2 / 4.
+- [ ] **Actor-held deck:** under Orthodox, an actor with no deck item and `orthodoxDeck.mccp` 6, INT 5 → pool **3**. Under Defragged the same actor has no pool.
+- [ ] Restore the original ruleset setting and restart.

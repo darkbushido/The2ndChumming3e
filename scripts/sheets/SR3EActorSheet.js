@@ -1135,7 +1135,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           d.hackingPool ?? 0,
           d.hackingPoolBase ?? 0,
           'system.hackingPoolSpent', null,
-          `INT ${intl} + floor(MPCP / 3) = ${d.hackingPoolBase ?? 0} (MDF p.11)`) : ''}
+          `${d.hackingPoolNote ?? ''} = ${d.hackingPoolBase ?? 0}`) : ''}
       </div>
     </div>
 
@@ -2300,7 +2300,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const resp     = deck.responseIncrease ?? 0;
 
     // Derived
-    const hackingPool    = mccp > 0 ? Math.floor((intl + mccp) / 3) : 0;
+    const hackingPool    = actor.system.derived?.hackingPool ?? 0;   // TODO 275: the one derived pool
     const detectFactor   = sleaze > 0
       ? Math.ceil((masking + sleaze) / 2)
       : Math.ceil(masking / 2);

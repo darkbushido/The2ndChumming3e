@@ -30,13 +30,15 @@ Character sheet Matrix tab:
 
 **Orthodox fields** (`CharacterData`/`NpcData`):
 - `system.orthodoxDeck.{ mccp, activeMemory, storageMemory, hardening, responseIncrease, ioPeed }` —
-  ⚠ the MPCP field is named **`mccp`**. Hacking Pool = `⌊(INT + MPCP) / 3⌋`.
+  ⚠ the MPCP field is named **`mccp`**. Hacking Pool = `⌊(INT + MPCP) / 3⌋` (SR3 p.207) — derived once, see below.
 - `system.orthodoxRunState.{ hostId, hostName, securityCode, securityValue, securityTally, personaBod, personaEvasion, personaMasking, personaSensor }`
 - `system.orthodoxMatrixCM.value` (0–10; crash at 10 → dumpshock)
 
-⚠ **The Hacking Pool has TWO derivations.** `availableHackingPool` (equipped deck item, Defragged) is `null`
-for an Orthodox decker, and `?? 0` makes that a silent zero. `availableOrthodoxHackingPool` reads
-`system.orthodoxDeck.mccp`. Always: `d.availableHackingPool ?? d.availableOrthodoxHackingPool ?? 0`.
+⚠ **The Hacking Pool is ONE derived value that follows the world's `matrixRuleset`** (TODO 275, `scripts/data/hacking-pool.mjs`,
+`HackingPool.figure`): Orthodox → ⌊(INT + MPCP) ÷ 3⌋ (SR3 p.207); Defragged → INT + ⌊MPCP ÷ 3⌋ (MDF p.11). The equipped deck
+item's MPCP feeds it; an **Orthodox** decker with no deck item falls back to `system.orthodoxDeck.mccp`; no deck → `null`.
+Every consumer reads `d.availableHackingPool ?? 0` / `d.hackingPool` — there is no separate `orthodoxHackingPool` any more
+(`tests/hacking-pool.test.mjs` fails if one returns). Changing the setting restarts Foundry, so the derivation never flips mid-session.
 
 ⚠ **The Orthodox IC-attack dialog configures ONE side** — `rollOrthodoxICAttack` names the decker and sets the
 IC's dice/TN. The decker's dice and `sr-icia-def-hp` live in **their** corner; the spend happens in
@@ -74,7 +76,7 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
 | Ultraviolet | 6 | Purple | Deadly. The Sixth World's greatest secrets. |
 
 ### Hacking Pool
-`Intelligence + ⌊MPCP / 3⌋`, always paired with the appropriate skill.
+`Intelligence + ⌊MPCP / 3⌋` (MDF p.11), always paired with the appropriate skill. Only under this ruleset — Orthodox uses SR3 p.207's formula (above).
 
 ### User modes  · *MDF p.10, p.27*
 | Mode | Initiative | Biofeedback | Dumpshock |
@@ -131,8 +133,8 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
 - 10 boxes, click-to-toggle; *"When an icon achieves 10 boxes of Overload Damage, it crashes"* (p.26).
 - **Penalties: +1 TN from box 1, +2 from box 3, +3 from box 6, +4 at box 10** — MDF p.12's table, read from
   the page image in the 0.6.3 rules check (`MdfRules.matrixCMPenalty`). Until 0.6.3 the code used 3/6/8.
-- **Hacking Pool is Intelligence + ⌊MPCP ÷ 3⌋** (MDF p.11, `MdfRules.hackingPool`) — ⚠ not SR3 core's
-  ⌊(INT + MPCP) ÷ 3⌋, which only the Orthodox pool uses.
+- **Hacking Pool is Intelligence + ⌊MPCP ÷ 3⌋** under Defragged (MDF p.11, `MdfRules.hackingPool`) — ⚠ Orthodox uses SR3
+  p.207's ⌊(INT + MPCP) ÷ 3⌋; `HackingPool.forRuleset` picks (TODO 275).
 - Not yet a separate track on the host sheet.
 
 ### Sys/Sec modifiers  · *MDF p.14*
