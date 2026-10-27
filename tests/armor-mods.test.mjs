@@ -145,7 +145,7 @@ export async function run(t) {
   t.is('…never over a GM\'s own changes', ModEffects.fillDelta({ type: 'gear', name: 'Fire Resistance (Armor)', system: { modifiers: [{ target: 'resistFire', value: 2 }] } }), null);
   t.eq('military armour is hardened (CC p.51)', ModEffects.fillDelta({ type: 'armor', name: 'Heavy Military Armor', system: { hardened: false } }), { 'system.hardened': true });
   t.is('…an armour jacket is not', ModEffects.fillDelta({ type: 'armor', name: 'Armor Jacket', system: {} }), null);
-  t.is('Gas Vent II from the pack: RC 2 (its rating, SR3 p.282)', ItemMods.value({ system: { rating: 2, modifiers: MOD_EFFECTS['gear|Gas Vent II'] } }, 'rc'), 2);
+  t.eq('Gas Vent from the pack: RC = its level, 1-4 (SR3 p.282, CC p.35)', [1, 2, 3, 4].map(r => ItemMods.value({ system: { rating: r, modifiers: MOD_EFFECTS['gear|Gas Vent'] } }, 'rc')), [1, 2, 3, 4]);
   const shipped = [];
   for (const pack of ['sr3e-sr3-gear', 'sr3e-cc-gear', 'sr3e-mm-gear', 'sr3e-cc-armor', 'sr3e-sr3-armor']) {
     for (const [k, d] of readSourceDir(new URL(`../packs-src/${pack}/`, import.meta.url).pathname)) if (/^!items!/.test(k)) shipped.push(d);

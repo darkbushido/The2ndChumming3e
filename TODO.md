@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**83 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**84 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[277](#277) Gas vents can't simply be taken off |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -875,6 +875,17 @@ sight** (`WeaponAccessories.flag`: an installed mod switches it on), **low-light
   modifications, helmet Thermo / Low-light vision; military armour hardened. `tools/fill-mod-effects.mjs` for the hand-kept packs,
   `tools/build-default-gear.mjs` for the generated ones, the 0.9.0 migration for owned copies — fill blanks only.
 
+**Built (2026-10-27, the maintainer's rulings):**
+- **ONE Gas Vent** — "Gas Vent (Weapon)", Level 1-4 (250 / 450 / 700 / 1,000¥), RC = its level (`perRating`). The roman numeral
+  is a level for the named stem only (`ROMAN_LEVELS` in `mod-ratings.mjs`; Ares Predator II, Smartlink II, Plastic Compound IV …
+  are models). I-III (sr3e-sr3-gear) and IV (sr3e-cc-gear) collapse in the gear builder across packs (`CROSS_PACK_FAMILIES`);
+  the kept document is level I's id; COLLAPSED_SOURCES repoints II/III and IV (across packs); the 0.9.0 migration renames owned
+  copies ("Gas Vent II (Weapon)" → "Gas Vent (Weapon) [2]"). **Level 4 is offered only while the Cannon Companion is on**
+  (`ModRatings.levelsFor` hides a level whose row cites only switched-off books — item sheet and 🛒; a vent already at 4 keeps
+  it). Sweep for other roman-numeral rated families: none (`tests/gas-vent.test.mjs`).
+- **No stock on a rifle** (above) — refused at install, with the reason.
+- **The 🔧 chip's tooltip** (reported live): Foundry's `data-tooltip` listing mount · mod — what it changes, then the totals.
+
 **Still open in this item:**
 1. **Magnification** (`max`, SR3 p.110, p.113) — shift the range band by the highest device in use ([#235](#235)); imaging scopes
    and the helmet magnification then get their pack data.
@@ -899,21 +910,40 @@ value today; none settled by picking a side):
   frames list Barrel + Top + Under. Which wins for stock weapons?
 - **Imaging scopes and the rangefinder: Top, or Top or Under?** SR3 pp.280, 282 and CC p.33 say Top; CC p.82 says Top or Under.
   Today the mount comes from the pack's description (Top).
-- **Gas vents removable?** SR3 p.281 and CC p.34: never once installed; CC pp.80-81: a normal, removable customisation. Today ⏏ takes
-  any mod out, gas vents included.
+- ✔ **Gas vents removable?** → ruled 2026-10-27: not removable, or removal costs something — its own item, [#277](#277).
+- **Gas Vent level 1 (250¥)** — the coordinator's brief gives SR3 p.282 as printing it; the weapon-mods audit (2026-10-23) found
+  only II and III in SR3 and calls I "source not found (SR2?)". Shipped as level 1 with that note — to check by eye.
 - **Internal smartgun price** — SR3 p.282 +100% of the weapon; CC p.81 the frame's base DPV × 8 (Smartlink-2 ×1.5); M&M p.32 ×150%
   for the Smartlink-2 internal. Not built yet.
 - **Laser sight with a smartlink** — SR3 p.281 says not together, the p.112 table lists both. Today both flags can be on and the GM
   window shows both rows; pick the better (−2) only?
 - **Imaging scope with a smartlink** — barred by SR3 p.280 and CC p.83; M&M p.34 lets goggles / an image link be the smartlink's
   display. Does a scope still block it then?
-- **Stocks on rifles** — SR3 p.277: rifle stocks don't affect recoil; CC p.34/p.84: the stock accessory (RC 1) is for SMG-sized and
-  smaller. Today a Stock installed on a rifle adds RC 1 — warn?
+- ✔ **Stocks on rifles** → ruled 2026-10-27: *"you should not be able to install a stock on a rifle since it has one by default"* —
+  REFUSED (`ItemMods.blocked`, the one refusal; rifles = the Rifles-skill categories). **Shotguns** (CC p.84 names them with
+  rifles) are not ruled — still allowed.
 - **Fore grip** — CC p.34 limits it to SMGs, assault rifles and shotguns; CC p.82 lists no limit. Warn outside those?
 - **Combo imaging scopes / two integral top accessories** — one mount each (SR3 p.280); a stock gun printing two top accessories was
   not checked.
 
 **🧪 Test in Foundry** — TESTING.md §77 (full restart: data models gained fields).
+
+## 277. Gas vents can't simply be taken off — **requested 2026-10-27**
+
+The maintainer, while testing TODO 276: *"Gas vents shouldn't be removeable or if removed should have a cost associated with it.
+this should be a new todo."* Today ⏏ takes any installed mod out of its host, gas vents included.
+
+**The books:** SR3 p.281 — gas-vent systems are barrel-mounted and *cannot be removed* once installed; CC p.34 says the same of
+Gas Vent IV. CC pp.80-81 lists gas vents as a firearm customisation, and customisations can be removed to free their FCU (only
+design options cannot) — so the Cannon Companion's gunsmithing route reads as removable, with an install-style test and time.
+
+**To decide (the maintainer):** never removable (⏏ / 🗑 offered with a warning only, or not at all), or removable at a cost — what
+cost: the CC customisation route (a gunsmith's B/R test, base time, labour at 100/50/25¥ an hour by contact level, CC p.79), a flat
+fee, or the vent destroyed (it comes off but is not returned to the inventory)? Warn-never-refuse would make it a warning
+plus the cost; a hard block is the maintainer's call, as for the rifle stock.
+
+**Shape when decided:** a per-item flag (`system.permanent`, or a `MOD_EFFECTS`-style table — gas vents, the Ares Antioch
+underbarrel launcher "once installed cannot be removed", SR3 p.279), read by `SR3EItemMods.uninstall`/`remove`.
 
 ### 🪄 Spells & drugs
 

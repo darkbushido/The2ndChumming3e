@@ -17,11 +17,9 @@ const per = (target, value = 1) => [{ target, value, perRating: true }];
 const on  = target => [{ target, value: 1, perRating: false }];
 
 export const MOD_EFFECTS = {
-  // Recoil compensation — SR3 p.281-282, CC p.34. The rating is the RC.
-  'gear|Gas Vent I':              per('rc'),
-  'gear|Gas Vent II':             per('rc'),
-  'gear|Gas Vent III':            per('rc'),
-  'gear|Gas Vent IV':             per('rc'),
+  // Recoil compensation — SR3 p.281-282, CC p.34. The rating is the RC. ONE Gas Vent, Level 1-4 (the maintainer,
+  // 2026-10-27; IV is the Cannon Companion's, CC p.35): RC = its level, so it follows the Level dropdown.
+  'gear|Gas Vent':                per('rc'),
   'gear|Shock Pads (RC':          per('rc'),
   'gear|Fore Grip':               per('rc'),
   'gear|Hip Pad Bracing System':  per('rc'),

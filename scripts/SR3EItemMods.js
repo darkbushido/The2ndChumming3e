@@ -30,6 +30,9 @@ export const SR3EItemMods = {
     if (!host || !source || source.documentName !== 'Item') return false;
     if (source.uuid === host.uuid) return false;
     if (!host.isOwner) { ui.notifications.warn(`You don't own ${host.name}.`); return false; }
+    // The one refusal (the maintainer, 2026-10-27): a stock on a rifle. Everything else warns and installs.
+    const blocked = ItemMods.blocked(host, source);
+    if (blocked) { ui.notifications.error(blocked); return false; }
     for (const w of [...ItemMods.warnings(host, source), ...ArmorMods.installWarnings(host, source.toObject())]) ui.notifications.warn(w);
     const installed = ItemMods.install(ItemMods.installed(host), source.toObject(), newId);
     await host.update({ 'system.installed': installed });

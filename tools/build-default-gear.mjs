@@ -49,6 +49,16 @@ import { ModFor } from '../scripts/data/mod-for.mjs';
 import { replaceFamilies } from './lib/collapsed-mods.mjs';
 import { fillLegality } from './lib/legality-fill.mjs';
 import { ModEffects } from '../scripts/data/mod-effects.mjs';
+
+/**
+ * Rated families whose levels two books print, so upstream files them in two packs — collapsed into ONE document in
+ * `into` (the maintainer, 2026-10-27). The other book's level stays in the level table with its own `bookPage`, and
+ * `ModRatings.levelsFor` offers it only while that book is on.
+ *   - **Gas Vent** — I-III SR3 p.282 (sr3e-sr3-gear), IV Cannon Companion p.35 (sr3e-cc-gear). The level is the RC.
+ */
+export const CROSS_PACK_FAMILIES = [
+  { key: 'weapon|Gas Vent', into: 'sr3e-sr3-gear', from: 'sr3e-cc-gear' },
+];
 import { setPath } from '../scripts/data/cyberlimb-mods.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -490,10 +500,28 @@ export async function plan(manifest, shippedNames) {
   // numbers go to tools/data/collapsed-mods.json, which the level table is built from.
   const families = [];
   report.collapsed = {};
+  // A family printed across TWO books (CROSS_PACK_FAMILIES): its other book's levels join the family's pack before the
+  // collapse, and are recorded below as removed from their own pack (so a copy linked to one is repointed).
+  const movedFrom = new Map();
+  for (const x of CROSS_PACK_FAMILIES) {
+    const from = byPack.get(x.from), into = byPack.get(x.into);
+    if (!from || !into) continue;
+    const go = from.docs.filter(d => ModRatings.keyOf(d) === x.key);
+    from.docs = from.docs.filter(d => !go.includes(d));
+    into.docs.push(...go);
+    for (const d of go) movedFrom.set(d._id, x.from);
+  }
   for (const [pack, g] of byPack) {
     const entries = new Map(g.docs.map(d => [`!items!${d._id}`, d]));
     const before = entries.size;
-    for (const f of RatedFamilies.collapseEntries(entries)) families.push({ ...f, pack, by: GENERATOR });
+    for (const f of RatedFamilies.collapseEntries(entries)) {
+      const away = f.deleted.filter(id => movedFrom.has(id));
+      families.push({ ...f, deleted: f.deleted.filter(id => !movedFrom.has(id)), pack, by: GENERATOR });
+      for (const other of new Set(away.map(id => movedFrom.get(id)))) {
+        families.push({ key: f.key, pack: other, by: GENERATOR, keep: f.keep, keepPack: pack, levels: {}, removed: true,
+          deleted: away.filter(id => movedFrom.get(id) === other) });
+      }
+    }
     if (entries.size !== before) {
       report.collapsed[pack] = before - entries.size;
       g.docs = [...entries.values()];

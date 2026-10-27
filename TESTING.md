@@ -3362,3 +3362,21 @@ Conceal 6, 2 kg) on a character with Quickness 3; from the Cannon Companion gear
       edited keeps the GM's; an owned Heavy Military Armor becomes Hardened.
 - [ ] **Concealment view / encumbrance** read the gel jacket at Conceal 2 and its +25% weight.
 
+
+### 77c. One Gas Vent, the rifle stock, the 🔧 tooltip (TODO 276 — the maintainer's rulings of 2026-10-27)
+
+**Full restart** (packs changed). Cannon Companion ON to start.
+
+- [ ] **One item:** the SR3 gear compendium has ONE "Gas Vent (Weapon)" (no I/II/III); the Cannon Companion gear compendium has no
+      Gas Vent IV. Its sheet's Level dropdown offers **1-4**; picking 3 sets 700¥, Conceal (-2), 0.75 kg; picking 4 sets 1,000¥ and
+      Book cc.35. Its Changes row: Recoil Compensation 1, **per level** — installed in a gun, the gun's RC rises by the level.
+- [ ] **Cannon Companion OFF** (Configure Source Books): the Level dropdown and 🛒 Buy gear offer **1-3** only; a vent already at
+      level 4 still shows 4 selected.
+- [ ] **Migration:** in a 0.8.0 world, an owned "Gas Vent II (Weapon)" becomes "Gas Vent (Weapon) [2]", level 2, linked to the
+      new document (its sheet's compendium link opens it); an owned "Gas Vent IV (Weapon)" becomes "Gas Vent (Weapon) [4]".
+- [ ] **No stock on a rifle:** drop "Stock (Rigid (Weapon)" on an assault rifle's Installed mods (or its row) → a red
+      "cannot go on …: a rifle has its own stock (SR3 p.277)", nothing installed, the stock stays in the inventory. On an SMG it installs.
+      On a shotgun it still installs (not ruled).
+- [ ] **The 🔧 tooltip:** hover the 🔧1 after a modded gun's name on the Combat tab → a Foundry tooltip: "Installed mods",
+      "Barrel · Gas Vent (Weapon) [2] — RC +2", then "RC 2: …", "Open … to change them." No bare "?" cursor. The Installed mods
+      section's mount and summary chips show tooltips the same way.

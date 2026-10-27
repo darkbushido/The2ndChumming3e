@@ -136,4 +136,17 @@ export async function run(t) {
   t.ok('the Changes editor keeps perRating when it rebuilds a row (a level-scaled mod must not lose it on any edit)',
     /const list = \(\) => \(item\.system\.modifiers \?\? \[\]\)\.map\(m => \(\{ target: m\.target, value: Number\(m\.value\) \|\| 0, perRating: m\.perRating === true \}\)\)/.test(sheet));
   t.ok('…and offers a per-level tick', /class="sr-modifier-per"/.test(sheet));
+
+  /* ── The one refusal: a stock on a rifle (the maintainer, 2026-10-27) ───────── */
+  const stock = { name: 'Stock (Rigid (Weapon)', type: 'gear', system: { rating: 1 } };
+  const rifle = cat => ({ name: `a ${cat}`, type: 'firearm', system: { category: cat } });
+  for (const cat of ['AsRf', 'SptR', 'Snip', 'Carb', 'LCarb']) t.ok(`a stock on a ${cat} is refused`, /has its own stock/.test(ItemMods.blocked(rifle(cat), stock) ?? ''));
+  t.is('…a stock on an SMG is fine', ItemMods.blocked(rifle('SMG'), stock), null);
+  t.is('…on a heavy pistol too', ItemMods.blocked(rifle('HPist'), stock), null);
+  t.is('…a shotgun is not ruled — not refused', ItemMods.blocked(rifle('ShtG'), stock), null);
+  t.is('…a gas vent on a rifle is fine', ItemMods.blocked(rifle('AsRf'), { name: 'Gas Vent (Weapon) [2]', type: 'gear', system: {} }), null);
+  t.ok('install checks it before anything is written', /const blocked = ItemMods\.blocked\(host, source\);\s*if \(blocked\) \{ ui\.notifications\.error\(blocked\); return false; \}[\s\S]*?await host\.update/.test(glue));
+  const actorSrc = read('scripts/sheets/SR3EActorSheet.js');
+  t.ok('the 🔧 chip uses Foundry\'s data-tooltip — a plain title showed only a "?" (reported live)', /class="sr-mod-count" data-tooltip="/.test(actorSrc) && !/class="sr-mod-count" title=/.test(actorSrc));
+  t.ok('…listing mount, name and changes, then the totals', /static modsTooltip\(item[\s\S]{0,500}r\.mount[\s\S]{0,200}r\.changes[\s\S]{0,300}ItemMods\.describe/.test(actorSrc));
 }

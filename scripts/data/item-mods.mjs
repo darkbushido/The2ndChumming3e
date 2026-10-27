@@ -52,6 +52,10 @@ export const MAX_DEPTH = 3;
 export const MOUNTS = ['Top', 'Under', 'Barrel'];
 
 const WEAPON_TYPES = ['firearm', 'melee', 'projectile', 'thrown'];
+/** The Rifles-skill weapon categories (CLAUDE.md, weapon codes) — a rifle has its own stock. */
+export const RIFLES = ['Carb', 'AsRf', 'SptR', 'Snip', 'LCarb'];
+/** A name without its mod tag or level ("Stock (Rigid (Weapon)" → "Stock (Rigid"). Pure, no imports. */
+const baseNameOf = item => String(item?.name ?? '').replace(/\s*\[\d+\]\s*$/, '').replace(/\s*\((?:Weapon|Armor|Cyberlimb|Vehicle)\)\s*$/, '').trim();
 const SCAFFOLDING = ['_stats', 'folder', 'sort', 'ownership'];
 
 const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
@@ -214,6 +218,19 @@ export const ItemMods = {
   mountsInUse(installed) {
     const held = ItemMods.assignMounts(installed).filter(m => m.mount);
     return Object.fromEntries(MOUNTS.filter(k => held.some(m => m.mount === k)).map(k => [k, held.find(m => m.mount === k).name]));
+  },
+
+  /**
+   * Why `mod` may NOT go into `host`, or null. ⚠ **The one refusal** in a system that otherwise warns — the maintainer,
+   * 2026-10-27: *"you should not be able to install a stock on a rifle since it has one by default"* (SR3 p.277: rifle
+   * stocks are part of the gun; CC p.34 / p.84: the Stock accessory is for SMG-sized and smaller weapons). Rifles are
+   * the Rifles-skill categories; shotguns are not included (CC p.84 names them too — not ruled).
+   */
+  blocked(host, mod) {
+    if (host?.type === 'firearm' && RIFLES.includes(host?.system?.category) && /^stock\b/i.test(baseNameOf(mod))) {
+      return `${mod?.name ?? 'A stock'} cannot go on ${host?.name ?? 'a rifle'}: a rifle has its own stock (SR3 p.277).`;
+    }
+    return null;
   },
 
   /** Warnings for installing `mod` into `host` — strings, empty when there is nothing to say. Never a refusal. */

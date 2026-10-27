@@ -3915,5 +3915,5 @@ label.act-field input[type=number] {
 .sr-mods-summary { margin-top: 4px; font-size: 11px; color: var(--sr-muted); display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
 .sr-mod-chip { padding: 0 6px; border-radius: var(--r-lg); background: var(--sr-surface); border: 1px solid var(--sr-border-hi); color: var(--sr-text); }
 .sr-mod-host { margin: 0 0 6px; padding: 4px 8px; font-size: 11px; border-radius: var(--r); background: var(--sr-amber-bg); color: var(--sr-amber); }
-.sr-mod-count { font-size: 10px; color: var(--sr-gold); cursor: help; }
+.sr-mod-count { font-size: 10px; color: var(--sr-gold); cursor: default; }
 .sr-mod-warn { margin: 2px 0; padding: 2px 6px; font-size: 11px; border-radius: var(--r); background: var(--sr-amber-bg); color: var(--sr-amber); }

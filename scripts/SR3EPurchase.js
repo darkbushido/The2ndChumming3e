@@ -40,6 +40,11 @@ export const SR3EPurchase = {
   BUYABLE: ['gear', 'ammunition', 'medical', 'drug', 'armor', 'firearm', 'melee', 'projectile',
     'thrown', 'cyberware', 'bioware', 'vehiclemod', 'cyberdeck', 'program', 'focus'],
 
+  /** Is this book on? A level printed only in a switched-off book is not offered (Gas Vent IV, CC p.35 — 2026-10-27). */
+  bookAllowed(code) {
+    return game.sr3e?.SR3ESourceBooks?.optionalRuleAllowed?.(code) ?? true;
+  },
+
   /** The buyer's Etiquette dice · p.272. Falls back to 0 so the dialog can say "no Etiquette". */
   etiquetteDice(actor) {
     const skill = (actor?.items ?? []).find(i => i.type === 'skill' && /^etiquette$/i.test(i.name));
@@ -74,7 +79,7 @@ export const SR3EPurchase = {
     for (const pack of SR3EPurchase.gearPacks()) {
       try {
         const idx = await pack.getIndex({ fields: GearSearch.INDEX_FIELDS });
-        for (const row of idx) out.push(GearSearch.fromIndex(row, pack));
+        for (const row of idx) out.push(GearSearch.fromIndex(row, pack, { bookAllowed: SR3EPurchase.bookAllowed }));
       } catch (err) { console.warn(`SR3E | Could not index pack ${pack.collection}:`, err); }
     }
     return out.filter(e => GearSearch.isBuyable(e.type, SR3EPurchase.BUYABLE));
@@ -96,7 +101,7 @@ export const SR3EPurchase = {
     for (const w of GearSearch.dropWarnings({ name: dropped.name, type: dropped.type, packAllowed }, SR3EPurchase.BUYABLE)) ui.notifications.warn(w);
     // ⚠ The plain name — no "[N]" (TODO 261). The dialog offers the item's levels when the table has them.
     const entry = { ...GearSearch.fields(dropped), name: dropped.name, type: dropped.type, uuid: dropped.uuid,
-      levels: ModRatings.levelsOf(dropped), levelUnit: ModRatings.unitOf(dropped), rating: Number(dropped.system?.rating) || null };
+      levels: ModRatings.levelsFor(dropped, SR3EPurchase.bookAllowed), levelUnit: ModRatings.unitOf(dropped), rating: Number(dropped.system?.rating) || null };
     return GearSearch.atLevel(entry, GearSearch.startLevel(entry));
   },
 
@@ -146,7 +151,7 @@ export const SR3EPurchase = {
     let   type  = item?.type ?? 'gear';   // a search hit or a drop changes it
     let   picked = null;                  // the item the search or a drop chose, over the row's
     // A rated item is one document with its levels in a table (TODO 261): bought at a level, default the lowest.
-    const rowEntry = item ? { ...GearSearch.fields(item), levels: ModRatings.levelsOf(item), levelUnit: ModRatings.unitOf(item), rating: Number(item.system?.rating) || null } : null;
+    const rowEntry = item ? { ...GearSearch.fields(item), levels: ModRatings.levelsFor(item, SR3EPurchase.bookAllowed), levelUnit: ModRatings.unitOf(item), rating: Number(item.system?.rating) || null } : null;
     let   levelEntry = rowEntry?.levels ? rowEntry : null;
     let   level = levelEntry ? GearSearch.startLevel(levelEntry) : null;
     // Legal gear needs no contact (SR3 p.273): the dialog opens on "at the store" for a Legal or "Always" item, and

@@ -521,14 +521,23 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    *     tab's "Add a Vehicle" did the job; dragging it did nothing at all.
    */
   /**
-   * "🔧 2" after a name — the mods installed in it (TODO 276), named in the tooltip. Open the item to see them. Nothing
-   * for an item with none.
+   * "🔧 2" after a name — the mods installed in it (TODO 276). Its tooltip (Foundry's `data-tooltip`, which a sheet
+   * shows; a plain `title` showed only a "?" cursor — reported live, 2026-10-27) lists each mod with its mount and what
+   * it changes, then what they add up to. Open the item to change them. Nothing for an item with none.
    */
   static modsChip(item) {
-    const list = ItemMods.installed(item);
-    if (!list.length) return '';
-    const names = list.map(m => foundry.utils.escapeHTML(String(m?.name ?? '?'))).join(', ');
-    return ` <span class="sr-mod-count" title="Installed: ${names}">🔧${list.length}</span>`;
+    const rows = SR3EItemMods.rows(item);
+    if (!rows.length) return '';
+    return ` <span class="sr-mod-count" data-tooltip="${foundry.utils.escapeHTML(SR3EActorSheet.modsTooltip(item, rows))}" data-tooltip-direction="UP">🔧${rows.length}</span>`;
+  }
+
+  /** The chip's tooltip, as HTML: one line per mod, the totals, and where to change them. */
+  static modsTooltip(item, rows = SR3EItemMods.rows(item)) {
+    const esc = v => foundry.utils.escapeHTML(String(v ?? ''));
+    const lines = rows.map(r => `${r.mount ? `<em>${esc(r.mount)}</em> · ` : ''}${esc(r.name)}${r.changes ? ` — ${esc(r.changes)}` : ''}`);
+    const eff = ItemMods.effective(item);
+    const total = Object.keys(eff).map(t => esc(ItemMods.describe(t, eff[t]))).join('<br>');
+    return `<strong>Installed mods</strong><br>${lines.join('<br>')}${total ? `<hr>${total}` : ''}<br><small>Open ${esc(item.name)} to change them.</small>`;
   }
 
   async _onDrop(event) {

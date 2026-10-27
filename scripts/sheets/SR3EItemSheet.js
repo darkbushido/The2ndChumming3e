@@ -50,6 +50,11 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
   get title() { return `${this.item.name} [${this._typeLabel()}]`; }
 
+  /** Is this book on? (`SR3ESourceBooks.optionalRuleAllowed` — the levels a switched-off book prints are not offered.) */
+  static _bookAllowed(code) {
+    return game.sr3e?.SR3ESourceBooks?.optionalRuleAllowed?.(code) ?? true;
+  }
+
   /* A mod opened from its host (TODO 276, `SR3EItemMods.open`) is a temporary item: editable by whoever owns the host, and
    * its form goes straight to its overridden `update`, which writes into the host — never through core's submit, which
    * would try to update a document the server has never seen. */
@@ -232,7 +237,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     const edit = this.isEditable;
     const body = rows.length
       ? rows.map(r => `<div class="sr-mod-row" data-mod-id="${esc(r.id)}">
-          <span class="sr-mod-mount" title="${r.mount ? `On the ${r.mount.toLowerCase()} mount (SR3 p.280)` : 'No weapon mount'}">${esc(r.mount || '—')}</span>
+          <span class="sr-mod-mount" data-tooltip="${r.mount ? `On the ${r.mount.toLowerCase()} mount (SR3 p.280)` : 'No weapon mount'}">${esc(r.mount || '—')}</span>
           <img src="${esc(r.img)}" class="sr-mod-img" alt=""/>
           <a class="sr-mod-name sr-mod-open" title="Open">${esc(r.name)}</a>
           <span class="sr-mod-changes">${esc(r.changes)}</span>
@@ -242,7 +247,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         </div>`).join('')
       : '<p class="sr-mod-empty">Nothing installed.</p>';
     const eff = ItemMods.effective(item);
-    const summary = Object.keys(eff).map(t => `<span class="sr-mod-chip" title="${esc(ItemMods.describe(t, eff[t]))}">${esc(TARGETS[t].combine === 'any' ? TARGETS[t].short : `${TARGETS[t].short} ${eff[t].value}`)}</span>`).join('');
+    const summary = Object.keys(eff).map(t => `<span class="sr-mod-chip" data-tooltip="${esc(ItemMods.describe(t, eff[t]))}">${esc(TARGETS[t].combine === 'any' ? TARGETS[t].short : `${TARGETS[t].short} ${eff[t].value}`)}</span>`).join('');
     return `<div class="sr-mods${edit ? ' sr-mods-drop' : ''}">
       <h3 class="sr-mods-title">Installed mods</h3>
       ${body}
@@ -420,7 +425,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
    * number without its level's fields.
    */
   _modRatingField(s) {
-    const opts = ModRatings.options(this.document);
+    // A level printed only in a book that is off (Gas Vent IV, CC p.35) is not offered — unless it is the one already set.
+    const opts = ModRatings.options(this.document, undefined, { bookAllowed: SR3EItemSheet._bookAllowed });
     if (!opts) return this._ratingField(s);
     const none = opts.some(o => o.selected) ? '' : '<option value="" selected>—</option>';
     return `<label class="form-field">
