@@ -51,7 +51,8 @@ export const Legality = {
    */
   classify(code) {
     const c = text(code);
-    if (/^legal$/i.test(c)) return { status: 'legal', code: 'Legal', permit: false, defersTo: '' };
+    // "Legal (3-Y for illegal or restricted skills)" — the Virtual Instructor Chip prints "Legal/3-Y" (SR3 p.296): Legal for an ordinary skill.
+    if (/^legal(?![a-z])/i.test(c)) return { status: 'legal', code: c.length > 5 ? c : 'Legal', permit: false, defersTo: '' };
     const as = /^as\s+(.+)$/i.exec(c);
     if (as) return { status: 'deferred', code: c, permit: false, defersTo: as[1] };
     // "6P-V", "2-K", "8P-W", "(8-Force)P-T", "(-1)P-L": a restriction level, an optional P, a category.

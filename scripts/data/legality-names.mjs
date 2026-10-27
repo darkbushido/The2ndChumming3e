@@ -1090,6 +1090,8 @@ export const LEGALITY_BY_NAME = {
   "gear|Video Playback Unit": "Legal",
   "gear|Video Screen": "Legal",
   "gear|Vidlink Transmitter": "8P-U",
+  "gear|Virt Instr Gen.": "Legal (3-Y for illegal or restricted skills)",
+  "gear|Virt Instr Spec": "Legal (3-Y for illegal or restricted skills)",
   "gear|Voice Activation (Weapon)": "Legal",
   "gear|Voice Identifier": "5P-V",
   "gear|Voice Mask": "5P-V",

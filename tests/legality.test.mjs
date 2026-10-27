@@ -154,6 +154,8 @@ export async function run(t) {
   t.is('CC ammunition with no code of its own is "As Weapon", the book convention (SR3 p.281)', by('ammunition', 'Blowgun Needles (20)'), 'As Weapon');
   t.is('the combat axe Thrusting Point is Legal (a spike, printed NA — maintainer ruling)', by('melee', 'Combat Axe Thrusting Point'), 'Legal');
   t.is('a Pipe is a club: 6-C (SR3 p.275)', by('melee', 'Pipe'), '6-C');
+  t.is('a Virtual Instructor chip prints "Legal/3-Y" (SR3 p.296): Legal for an ordinary skill, 3-Y for a restricted one', by('gear', 'Virt Instr Gen.'), 'Legal (3-Y for illegal or restricted skills)');
+  t.is('…which opens on the store, as a Legal item does', Legality.storeByDefault(by('gear', 'Virt Instr Spec')), true);
   t.is('Rigger Adaptation is vehicle control gear: Legal', by('vehiclemod', 'Rigger Adaptation (Vehicle)'), 'Legal');
   const packNames = pack => [...readSourceDir(join(ROOT, 'packs-src', pack)).values()].map(d => d.name ?? '');
   t.ok('pruned, not in any book of the library: the Benelli shotguns', !packNames('sr3e-cc-firearms').some(n => /^Benelli/.test(n)));
