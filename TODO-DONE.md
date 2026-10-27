@@ -7488,6 +7488,32 @@ exactly — the smallest modifier that reads the typed total; the sheet passes b
 `data-pool-gyro` flag. A total that cannot be hit (negative, fractional) is rounded to the nearest and warned,
 never refused. Live step: TESTING.md §50. This is a bug fix, so it goes on `main`.
 
+## 234. ✅ Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts — **found in the 0.7.0 rules check, 2026-10-18** · built `442ec55e`
+
+**SR3 p.307:** hardpoints carry heavy and vehicle weapons (MMG and larger), firmpoints lighter ones; a vehicle's
+**Body** sets how many it can have (a hardpoint takes 2 points); fixed mounts fire in a fixed arc, with recoil
+halved and Signature −1 (rules check `rules/vehicles.md#10`, `#64-67`). The vehicle-mods data has no Legal or RC
+fields for the mount rows either. Wanted: mounts as vehicle slots with capacity from Body, and their effects on the
+vehicle-weapon roll.
+
+**Read (2026-10-27), R3R p.135-136:** a hardpoint counts 2, a firmpoint 1, the total no more than Body; heavy weapons (MMG and
+larger) and vehicle weapons on hardpoints only, LMGs and small arms on firmpoints; fixed mounts halve recoil before RC (cancelling
+the heavy doubling); an external mount — or an internal one while its weapon is out — is Signature −1; a personal firearm on a
+fixed mount or turret needs a conversion kit (pintle and ring mounts do not). **Decided:** a weapon links to its mount
+([#265](TODO.md#265)). Next slice after the budget.
+
+**Built (2026-10-27):** `scripts/data/vehicle-mounts.mjs` (`tests/vehicle-mounts.test.mjs`; mutants `mount-halve-keeps-heavy-double`,
+`mount-halve-rounds-up`, `mount-vehicle-weapon-on-firmpoint`). A firearm or vehicle weapon carries `system.mountId`, picked on
+the vehicle's Weapons tab. The Mods tab shows **Mounts used / Body** (a hardpoint 2, a firmpoint 1, a pintle 1, a ring 2, turrets
+by the Weapon Values Table, p.140), each mount's weapons, a turret's Weapon Value used / allowed, and warns: over Body, a heavy
+or vehicle weapon on a firmpoint, a vehicle weapon on a ring, a turret over its value, a weapon whose mount is gone. Notes: the
+conversion kit for a personal firearm on a fixed mount or turret (p.136), a fixed mount holding two weapons, a weapon the table
+does not value. **Signature is shown, never changed** (the maintainer, 2026-10-27): external mounts −1, each turret −1 (not a
+concealed pop-up), an internal mount −1 more while its weapon is out. **A firearm on a mount fires with it**: fixed mounts and
+turrets halve the uncompensated recoil, **rounded down** (the maintainer), and cancel the heavy double (the shotgun burst double
+stays); a pintle gives RC 2 (p.138), a ring RC 6 (p.139), in their own box in the fire dialog, never written back. TESTING.md §78a.
+Missile mounts and launch control systems (p.137) are not weapon mounts here. Vehicle weapons' recoil: [#283](TODO.md#283).
+
 ## 241. ✅ A player can't end their own turn — **reported in play, 2026-10-23** — fixed in 7732baf9
 
 Observed: a player moved their character and clicked End Turn; Foundry said they did not have permission.
