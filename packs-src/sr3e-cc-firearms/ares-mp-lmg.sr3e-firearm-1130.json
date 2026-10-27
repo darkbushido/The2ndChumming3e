@@ -106,7 +106,9 @@
             }
           }
         }
-      ]
+      ],
+      "recoilMod": 2,
+      "recoilModIntegral": 3
     },
     "effects": [],
     "flags": {

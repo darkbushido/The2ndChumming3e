@@ -23,7 +23,8 @@
       "hands": 1,
       "smartgun": false,
       "laserSight": false,
-      "legality": "6P-E"
+      "legality": "6P-E",
+      "recoilMod": 1
     },
     "effects": []
   },

@@ -788,7 +788,8 @@
               }
             }
           }
-        ]
+        ],
+        "recoilMod": 1
       },
       "_id": "TaYRGGQBGBmxczgU",
       "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-heavy.svg",

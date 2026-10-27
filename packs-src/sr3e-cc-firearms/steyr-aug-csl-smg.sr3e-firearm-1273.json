@@ -23,7 +23,8 @@
       "hands": 1,
       "smartgun": false,
       "laserSight": false,
-      "legality": "3-G"
+      "legality": "3-G",
+      "recoilMod": 1
     },
     "effects": []
   },

@@ -3489,8 +3489,22 @@ works, and the same implant **built in** now does it too.
       dialog's integral tick). A tripod the GM installs IS.
 - [ ] **⏏ an integral laser sight** → an ordinary Laser Sight in the inventory (no "integral" tag), and a warning "…its
       laser-sight flag still includes it". 🗑 the gas vent → "…its RC still includes it". Reload → they do not come back.
-- [ ] **Left as text:** the Panther's "Either: Folding Bipod(2RC) or Shoulder Strap", the Colt M22A2's "Grenade Launcher 6(m)",
-      the Ballista's "Laser Designator" — no mod for any of them.
+- [ ] **Left as text:** the Colt M22A2's "Grenade Launcher 6(m)", the Ballista's "Laser Designator" — no mod for either.
+      (The Panther is two documents now, §77j — each holds its own bipod or hip brace.)
+
+### 77j. Each gun's printed RC (TODO 280 — CC pp.116-118, p.78; SR3 pp.278-279)
+
+**Foundry CLOSED first: `npm run packs:install`**, then start it. The 0.9.0 migration fills owned copies on load.
+
+- [ ] **Compendium:** CC Firearms → the Ares Crusader's RC reads **2**; the Colt Cobra TZ-110 **2**, its bracketed RC **3**; the
+      Sandler TMP RC 0, bracketed **1**; the Ares Thunderer **3**.
+- [ ] **Fire it:** the Crusader from a character, burst fire → the fire dialog counts RC 2 (its integral gas vent is shown in 🔧,
+      not added again — §77i). The TZ-110 with "Integral accessories in use" ticked → RC 3; unticked → 2.
+- [ ] **The Panther:** CC Firearms lists **Panther Assault Cannon [Bipod]** (bracketed RC 2, a Bipod mod) and **[Shoulder Strap
+      Hip-Brace]** (bracketed RC 1, a Hip Pad Bracing System mod); no plain "Panther Assault Cannon". Both read Legality 2-H.
+- [ ] **An owned copy** of the Crusader with RC 0 (from an older import) → RC 2 after the load. One with RC typed as 1 → still 1.
+      Reload → nothing changes.
+- [ ] **Contacts:** a Little Black Book contact's FN HAR / Ranger Arms SM-3 → RC 2; the Ultimax MMG → bracketed 6.
 
 ## 78. A vehicle's mods against its Cargo and Load (TODO 265, step c's first slice — R3R p.124)
 

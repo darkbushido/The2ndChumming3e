@@ -893,7 +893,8 @@
               }
             }
           }
-        ]
+        ],
+        "recoilMod": 2
       },
       "_id": "EGL9QCTAxSkIN8zZ",
       "img": "systems/The2ndChumming3e/styles/icons/firearm-assault-rifle.svg",

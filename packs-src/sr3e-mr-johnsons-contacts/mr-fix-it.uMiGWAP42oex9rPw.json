@@ -1300,7 +1300,8 @@
         "streetIndex": "2",
         "accessories": "None",
         "bookPage": "sr3.279",
-        "notes": ""
+        "notes": "",
+        "recoilModIntegral": 6
       },
       "_id": "qng9NP8mSAQphohH",
       "img": "systems/The2ndChumming3e/styles/icons/firearm-heavy-mg.svg",

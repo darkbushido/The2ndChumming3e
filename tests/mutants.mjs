@@ -52,6 +52,7 @@ const CYBERCAP = { module: '../scripts/data/cyber-capacity.mjs', klass: 'CyberCa
 const ITEMMODS = { module: '../scripts/data/item-mods.mjs', klass: 'ItemMods' };
 const INTEGRAL = { module: '../scripts/data/integral-mods.mjs', klass: 'IntegralMods' };
 const VBUDGET = { module: '../scripts/data/vehicle-budget.mjs', klass: 'VehicleBudget' };
+const PRC = { module: '../scripts/data/printed-rc.mjs', klass: 'PrintedRC' };
 // An item with its integral flags taken off — what every reader saw before the ruling (TODO 276, step b).
 const unIntegral = it => ({ ...it,
   flags: { ...(it?.flags ?? {}), The2ndChumming3e: { ...(it?.flags?.The2ndChumming3e ?? {}), integral: false } },
@@ -4125,5 +4126,30 @@ export const MUTANTS = [
     ...VBUDGET, method: 'passengerSeats',
     was:    'the driver\'s seat was scraped for cargo too — R3R p.124 gives 1.5 CF per PASSENGER seat (TODO 265)',
     impl:   seating => Math.max(0, Math.trunc(Number(seating) || 0)),
+  },
+  {
+    id:     'printed-rc-overwrites-typed',
+    suite:  'printed-rc',
+    ...PRC, method: 'fillDelta',
+    was:    'the migration wrote the book’s RC over a figure the GM had typed — it must fill blanks only (TODO 280)',
+    impl:   function (item) {
+      const row = this.rowFor(item);
+      if (!row) return null;
+      const [, , rc, bracketed] = row;
+      const delta = {};
+      if (rc > 0) delta['system.recoilMod'] = rc;
+      if (bracketed != null) delta['system.recoilModIntegral'] = bracketed;
+      return Object.keys(delta).length ? delta : null;
+    },
+  },
+  {
+    id:     'printed-rc-any-page',
+    suite:  'printed-rc',
+    ...PRC, method: 'rowFor',
+    was:    'a row matched any gun of that name — a hand-made "Ares Crusader" got the Cannon Companion’s RC; a row is pinned to its book page (TODO 280)',
+    impl:   function (item) {
+      if (item?.type !== 'firearm') return null;
+      return this.PRINTED_RC.find(([name]) => name === item.name) ?? null;
+    },
   },
 ];

@@ -79,7 +79,8 @@
             }
           }
         }
-      ]
+      ],
+      "recoilMod": 1
     },
     "effects": [],
     "flags": {

@@ -1,8 +1,8 @@
 {
-  "_key": "!items!sr3e-firearm-1159",
+  "_key": "!items!sr3e-firearm-1275",
   "doc": {
-    "_id": "sr3e-firearm-1159",
-    "name": "Panther Assault Cannon",
+    "_id": "sr3e-firearm-1275",
+    "name": "Panther Assault Cannon [Shoulder Strap Hip-Brace]",
     "type": "firearm",
     "img": "systems/The2ndChumming3e/styles/icons/firearm-assault-cannon.svg",
     "system": {
@@ -17,9 +17,9 @@
       "availability": "16/14days",
       "cost": 7200,
       "streetIndex": "2",
-      "accessories": "Either: Folding Bipod(2RC) or Shoulder Strap & Hip Brace(1RC)",
+      "accessories": "Shoulder Strap & Hip Brace(1RC)",
       "bookPage": "cc.26",
-      "notes": "",
+      "notes": "Cannon Companion p.26: the Panther comes with EITHER a detachable underbarrel folding bipod OR a shoulder strap and hip brace; the RC column (p.118) prints (2)/(1). One document per version (the maintainer, 2026-10-27, TODO 280).",
       "hands": 2,
       "smartgun": false,
       "laserSight": false,
@@ -52,7 +52,8 @@
             }
           }
         }
-      ]
+      ],
+      "recoilModIntegral": 1
     },
     "effects": [],
     "flags": {

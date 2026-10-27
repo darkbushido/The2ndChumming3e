@@ -934,7 +934,8 @@
               }
             }
           }
-        ]
+        ],
+        "recoilMod": 2
       },
       "_id": "sLdu10HGhgS3D4ys",
       "img": "systems/The2ndChumming3e/styles/icons/firearm-machine-pistol.svg",

@@ -78,7 +78,8 @@
             }
           }
         }
-      ]
+      ],
+      "recoilModIntegral": 1
     },
     "effects": [],
     "flags": {

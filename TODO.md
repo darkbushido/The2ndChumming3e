@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**86 open.** 194 done — see [TODO-DONE.md](TODO-DONE.md).
+**87 open.** 194 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[280](#280) 21 shipped firearms carry RC 0 where the book prints their integral accessories' RC |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[280](#280) 21 shipped firearms carry RC 0 where the book prints their integral accessories' RC<br>[281](#281) TSS and France firearms: Recoil Compensation unread |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -1087,6 +1087,31 @@ The maintainer's ruling for integral mods (shown, never counted) assumes the pri
 entry) and in owned copies by migration — fill blanks only (0 / null). List the 21: walk `IntegralMods` over the firearm packs
 for guns whose `recoilMod` and `recoilModIntegral` are below their integral RC mods' total. A rules-data fix: the maintainer
 says whether it goes on main or the branch.
+
+**Done (2026-10-27, on the branch — it rests on step b's integral mods and ships with 0.9.0).** Worse than the 21: no Cannon
+Companion gun carried an RC at all. `scripts/data/printed-rc.mjs` is each gun's RC and bracketed RC read from the printed
+tables — **CC pp.116-118** (the summary tables, read from the page images; the OCR text misplaces the column), the Ares
+Thunderer **CC p.78** ("3 points of recoil compensation"), and the SR3 pp.278-279 rows the 0.7.0 corrections already
+carried, so the contacts' copies get them too. 44 rows, each pinned to its name and book page. `tools/fill-printed-rc.mjs`
+filled 35 guns in `packs-src` (30 CC, 5 in the contacts); the 0.9.0 migration fills owned copies — blanks only (`recoilMod`
+blank or 0, `recoilModIntegral` blank).
+- **The Panther Assault Cannon** prints "(2)/(1)": it comes with a bipod OR a shoulder strap and hip brace (CC p.26). The
+  maintainer (2026-10-27): *"if this is the only case it may be split into two versions"* — it is the only one, so the
+  pack ships **Panther Assault Cannon [Bipod]** (2, the old id) and **[Shoulder Strap Hip-Brace]** (1, `sr3e-firearm-1275`),
+  each with its own accessories text and integral mod. A world's old single Panther is left as it is (which version it is,
+  only the GM knows).
+- **Left:** the Ares Heavy Laser Plus's tripod (the table prints "—"), and the TSS guns whose stocks step b made integral
+  mods — the M-16B, VC Boxlock Hammerless, Win. 1300 Defender SS — whose book is not in the library: [#281](#281).
+  `tests/printed-rc.test.mjs` pins that list.
+
+## 281. TSS and France firearms: Recoil Compensation unread — **found 2026-10-27**
+
+TODO 280 filled every gun's printed RC from the Cannon Companion and SR3 tables. The TSS guns (`sr3e-tss-firearms`, 32) and
+France's FAM 95 (`fra.141`) carry none, and their books are not in the maintainer's PDF library, so nothing could be read.
+Three TSS guns have a stock that step b (TODO 276) made an integral mod — the M-16B ("Fold Stock"), VC Boxlock Hammerless and
+Win. 1300 Defender SS ("Collapsible stock") — so the 🔧 list shows an RC the gun's own figure does not include. **Wanted:** the
+books' RC column, or the maintainer's word that these are blank (and whether a rifle or shotgun stock gives RC at all — SR3
+p.277 says the core rifle stocks do not). `tests/printed-rc.test.mjs` lists the three.
 
 ### 🪄 Spells & drugs
 

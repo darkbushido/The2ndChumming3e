@@ -42,6 +42,7 @@ import { ModBookFixes } from './data/mod-book-fixes.mjs';
 import { Legality } from './data/legality.mjs';
 import { ModEffects } from './data/mod-effects.mjs';
 import { IntegralMods } from './data/integral-mods.mjs';
+import { PrintedRC } from './data/printed-rc.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -641,6 +642,21 @@ const MIGRATIONS = [
      * never touched. Idempotent.
      */
     fixItem: item => IntegralMods.fillDelta(item),
+  },
+  {
+    version: '0.9.0',
+    label: "A firearm's printed Recoil Compensation (TODO 280)",
+    /**
+     * Found walking TESTING §77i (2026-10-27): the Cannon Companion's guns shipped with no RC, so an Ares Crusader (RC 2)
+     * fired with none. `scripts/data/printed-rc.mjs` holds each gun's RC and bracketed RC as its table prints it (CC
+     * pp.116-118, p.78; SR3 pp.278-279), page per row; the packs ship them (`tools/fill-printed-rc.mjs`) and owned copies
+     * get the same here. FILL BLANKS ONLY: `recoilMod` while blank or 0, `recoilModIntegral` while blank, and only on a
+     * gun of that name AND book page — a figure a GM typed is theirs. Idempotent.
+     *
+     * A world copy of the old single "Panther Assault Cannon" is left as it is: the pack now ships it as two versions
+     * ("[Bipod]" (2), "[Shoulder Strap Hip-Brace]" (1)), and which one a world's copy is, only the GM knows.
+     */
+    fixItem: item => PrintedRC.fillDelta(item),
   },
 
 ];

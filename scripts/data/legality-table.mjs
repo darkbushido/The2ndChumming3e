@@ -375,6 +375,7 @@ export const LEGALITY = {
     "sr3e-firearm-1130": ["2-H","cc.26"],
     "sr3e-firearm-1146": ["2-H","cc.26"],
     "sr3e-firearm-1159": ["2-H","cc.26"],
+    "sr3e-firearm-1275": ["2-H","cc.26"],
     "sr3e-firearm-1160": ["1-K","cc.26"],
     "sr3e-firearm-1183": ["1-K","cc.26"],
     "sr3e-firearm-1184": ["1-K","cc.26"],

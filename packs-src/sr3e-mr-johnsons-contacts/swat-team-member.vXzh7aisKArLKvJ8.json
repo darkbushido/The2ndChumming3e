@@ -781,7 +781,8 @@
               }
             }
           }
-        ]
+        ],
+        "recoilMod": 2
       },
       "_id": "T1fsGyYJFTXa1ZWD",
       "img": "systems/The2ndChumming3e/styles/icons/firearm-sniper-rifle.svg",
