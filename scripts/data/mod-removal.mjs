@@ -9,7 +9,10 @@
  *   - the test: the weapon's Build/Repair skill against the customisation's install TN (Gas Vent: Weapon B/R (5), base
  *     24 hours, CC p.81) — every number editable in the dialog;
  *   - **success** (1+): the vent comes off DESTROYED (not back into the inventory); time = base ÷ successes;
- *   - **failure** (0): the BARREL is destroyed — the gun needs repair (`needsRepair`), the vent stays where it is;
+ *   - **failure** (0): the BARREL is destroyed, and the vent with it (the maintainer, 2026-10-27: "the vent should be
+ *     destroyed with the barrel") — the gun needs repair (`needsRepair`);
+ *   - **repair**: the cost of a barrel extension (the maintainer, 2026-10-27 — CC's design options, pp.74-78). Its figure is
+ *     not in the repo (`REPAIR.barrel.cost` null): the ✔ Repaired step asks for it.
  *   - labour: a gunsmith contact charges 100 / 50 / 25¥ an hour at Level 1 / 2 / 3 (CC p.79); a player character doing the
  *     work charges nothing. The card states the cost; nothing is deducted (offer, never apply).
  */
@@ -18,6 +21,14 @@ import { ModRatings } from './mod-ratings.mjs';
 /** Mods that cannot simply be taken off: `kind|name` → the test. */
 export const PERMANENT = {
   'weapon|Gas Vent': { tn: 5, baseHours: 24, page: 'SR3 p.281; CC p.81' },
+};
+
+/**
+ * What a destroyed part costs to put right. The barrel: *"it would cost the same as a barrel extension"* (the maintainer,
+ * 2026-10-27). ⚠ `cost` null = the figure has not been read from the book yet — the repair step asks for it.
+ */
+export const REPAIR = {
+  barrel: { cost: null, as: 'a barrel extension', page: 'CC pp.74-78' },
 };
 
 /** A gunsmith contact's rate, ¥ an hour, by contact Level · CC p.79. */
@@ -37,7 +48,7 @@ const BR_BY_CATEGORY = [
 const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
 
 export const ModRemoval = {
-  PERMANENT, CONTACT_RATES,
+  PERMANENT, CONTACT_RATES, REPAIR,
 
   /** The removal test for this mod, or null when it comes off freely (⏏). */
   rule(mod) {
@@ -61,10 +72,19 @@ export const ModRemoval = {
     return Math.round(Math.max(0, num(ratePerHour)) * Math.max(0, num(hours)));
   },
 
-  /** What the test did: `{ removed, barrelDestroyed, hours }`. One success is enough. */
+  /**
+   * What the test did: `{ removed, barrelDestroyed, hours }`. One success is enough. Either way the vent is gone — on a
+   * failure it goes with the barrel (the maintainer, 2026-10-27).
+   */
   outcome(successes, baseHours) {
     const ok = Math.trunc(num(successes)) > 0;
-    return { removed: ok, barrelDestroyed: !ok, hours: ModRemoval.hours(baseHours, successes) };
+    return { removed: true, barrelDestroyed: !ok, hours: ModRemoval.hours(baseHours, successes) };
+  },
+
+  /** The repair cost of a part (`'barrel'`), or null when its figure is not known yet. */
+  repairCost(part = 'barrel') {
+    const c = REPAIR[part]?.cost;
+    return Number.isFinite(c) ? c : null;
   },
 
   /** The repair record a failed removal leaves on the gun, or null. */

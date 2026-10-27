@@ -3948,4 +3948,11 @@ export const MUTANTS = [
     was:    'the base time stood whatever the successes — CC p.79 divides it by them (TODO 277)',
     impl:   base => Number(base) || 0,
   },
+  {
+    id:     'gas-vent-survives-a-failed-removal',
+    suite:  'mod-removal',
+    ...MODREMOVAL, method: 'outcome', needsOriginal: '_outcomeOriginal2',
+    was:    'a failed removal left the vent on the gun — the maintainer ruled it is destroyed with the barrel (TODO 277)',
+    impl:   function (s, base) { const o = this._outcomeOriginal2(s, base); return { ...o, removed: !o.barrelDestroyed }; },
+  },
 ];

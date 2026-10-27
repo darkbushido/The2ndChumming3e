@@ -327,7 +327,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     const idOf = el => el.closest('[data-mod-id]')?.dataset.modId;
     html.querySelectorAll('.sr-mod-open').forEach(a => a.addEventListener('click', () => SR3EItemMods.open(item, idOf(a))));
     if (!this.isEditable) return;
-    html.querySelector('.sr-mod-repaired')?.addEventListener('click', () => item.unsetFlag('The2ndChumming3e', 'needsRepair'));
+    html.querySelector('.sr-mod-repaired')?.addEventListener('click', () => SR3EItemMods.repaired(item));
     html.querySelectorAll('.sr-mod-out').forEach(a => a.addEventListener('click', () => SR3EItemMods.uninstall(item, idOf(a))));
     html.querySelectorAll('.sr-mod-remove').forEach(a => a.addEventListener('click', () => SR3EItemMods.remove(item, idOf(a))));
     const zone = html.querySelector('.sr-mods-drop');

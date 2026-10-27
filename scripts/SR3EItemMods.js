@@ -16,7 +16,7 @@
  */
 import { ItemMods } from './data/item-mods.mjs';
 import { ArmorMods } from './data/armor-mods.mjs';
-import { ModRemoval, CONTACT_RATES } from './data/mod-removal.mjs';
+import { ModRemoval, CONTACT_RATES, REPAIR } from './data/mod-removal.mjs';
 import { actorFrom, actorRef } from './data/actor-ref.mjs';
 
 /** Open embedded sheets, keyed `hostUuid|modId`, so ✎ twice brings the same window forward. */
@@ -150,13 +150,18 @@ export const SR3EItemMods = {
     const host = await fromUuid(ctx.hostUuid).catch(() => null);
     let line;
     if (!host) line = `${esc(ctx.hostName)} is gone — nothing changed.`;
-    else if (out.removed) {
+    else {
+      // The vent is gone either way — on a failure it goes with the barrel (the maintainer, 2026-10-27).
       if (host.isOwner) await host.update({ 'system.installed': ItemMods.uninstall(ItemMods.installed(host), ctx.modId).installed });
       SR3EItemMods._close(host, ctx.modId);
-      line = `✅ ${esc(ctx.modName)} is off ${esc(ctx.hostName)} — <strong>destroyed</strong> in the work, not returned.`;
-    } else {
-      if (host.isOwner) await host.setFlag('The2ndChumming3e', 'needsRepair', { reason: `Barrel destroyed taking ${ctx.modName} off`, when: Date.now() });
-      line = `❌ The barrel of ${esc(ctx.hostName)} is <strong>destroyed</strong> — the gun needs repair. ${esc(ctx.modName)} is still on it.`;
+      if (out.removed && !out.barrelDestroyed) {
+        line = `✅ ${esc(ctx.modName)} is off ${esc(ctx.hostName)} — <strong>destroyed</strong> in the work, not returned.`;
+      } else {
+        if (host.isOwner) await host.setFlag('The2ndChumming3e', 'needsRepair', { part: 'barrel', reason: `Barrel destroyed taking ${ctx.modName} off`, when: Date.now() });
+        const cost = ModRemoval.repairCost('barrel');
+        line = `❌ The barrel of ${esc(ctx.hostName)} is <strong>destroyed</strong>, and ${esc(ctx.modName)} with it — the gun needs repair `
+          + `(the cost of ${esc(REPAIR.barrel.as)}${cost === null ? '' : `, ${cost.toLocaleString()}¥`}).`;
+      }
     }
     const written = host && !host.isOwner ? ' <span style="color:var(--sr-amber)">(you cannot edit the gun — the GM applies this)</span>' : '';
     await ChatMessage.create({
@@ -167,6 +172,38 @@ export const SR3EItemMods = {
         <div style="font-size:11px;color:var(--sr-muted)">Time ${out.hours} h (base ${ctx.baseHours} h${s > 0 ? ` ÷ ${s}` : ''}) · labour ${cost ? `${cost.toLocaleString()}¥ (${ctx.rate}¥/h)` : 'none'} — not deducted (CC p.79; the maintainer's ruling, TODO 277)</div>
       </div>`,
     });
+  },
+
+  /**
+   * ✔ Repaired — a gun whose barrel was destroyed (TODO 277). The repair costs the same as a barrel extension (the
+   * maintainer, 2026-10-27); the dialog asks the cost (pre-filled when the figure is known), posts it and clears the mark.
+   * Nothing is deducted.
+   */
+  async repaired(gun) {
+    const r = ModRemoval.needsRepair(gun);
+    if (!r) return false;
+    const esc = v => foundry.utils.escapeHTML(String(v ?? ''));
+    const part = r.part ?? 'barrel';
+    const known = ModRemoval.repairCost(part);
+    let cost = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `${gun.name} — repaired` },
+      content: `<p>${esc(r.reason ?? 'Damaged')}. The repair costs the same as ${esc(REPAIR[part]?.as ?? 'the part')} (${esc(REPAIR[part]?.page ?? '')}).</p>
+        <label>Cost (¥) <input id="rp-cost" type="number" min="0" value="${known ?? ''}" placeholder="${known === null ? 'enter it' : ''}" style="width:90px"/></label>`,
+      buttons: [
+        { label: '✔ Repaired', action: 'ok', default: true, callback: (_e, _b, dlg) => { cost = Math.max(0, Number(dlg.element.querySelector('#rp-cost').value) || 0); } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (cost === null) return false;
+    await gun.unsetFlag('The2ndChumming3e', 'needsRepair');
+    await ChatMessage.create({
+      speaker: { alias: gun.parent?.name ?? gun.name },
+      content: `<div class="sr-roll-card"><div class="sr-roll-header">🔧 ${esc(gun.name)} repaired</div>
+        <div class="sr-staging-result">${esc(r.reason ?? 'Damaged')} — repaired for <strong>${cost.toLocaleString()}¥</strong>
+        (the cost of ${esc(REPAIR[part]?.as ?? 'the part')}). Not deducted.</div></div>`,
+    });
+    return true;
   },
 
   /** Open mod `modId`'s item sheet. Edits write back into the host. */

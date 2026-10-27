@@ -3390,9 +3390,10 @@ Conceal 6, 2 kg) on a character with Quickness 3; from the Cannon Companion gear
       100¥/h; contact Level 2 → 50, 3 → 25.
 - [ ] **Success** (≥1): the card says the vent is off and **destroyed** — it is gone from Installed mods and NOT in the inventory;
       time = 24 ÷ successes; labour shown, nothing deducted.
-- [ ] **Failure** (0 successes — set the TN high): the card says the **barrel is destroyed**; the vent is still installed; the
-      Combat tab row shows "⚠ needs repair" (tooltip says why); firing it warns but still fires; the gun's sheet shows the banner
-      with **✔ Repaired**, which clears it.
+- [ ] **Failure** (0 successes — set the TN high): the card says the **barrel is destroyed, and the vent with it** — the vent is
+      gone from Installed mods (and not in the inventory); the Combat tab row shows "⚠ needs repair" (tooltip says why); firing it
+      warns but still fires; the gun's sheet shows the banner with **✔ Repaired** → a dialog asking the repair cost ("the same as a
+      barrel extension", blank until TODO 278 fills it) → a card "repaired for N¥ … Not deducted", and the mark is gone.
 - [ ] **An explosion** (TN 7+, a 6): the result card waits for the last 💥, then resolves as above.
 - [ ] **Player2 as the gunsmith on their own gun** works start to finish; an NPC gunsmith's 💥 is the GM's to click.
 - [ ] **🗑 on the vent** asks for confirmation and says it only corrects the record.

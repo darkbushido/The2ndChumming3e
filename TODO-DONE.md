@@ -7762,5 +7762,9 @@ live character or NPC (scene first), its B/R dice, TN, base hours, labour (0 for
 editable — and rolls through `rollPool` with the `modRemoval` follow-up (explosion-safe). **Success:** the vent comes off destroyed
 (not returned). **Failure:** the barrel is destroyed — `flags.The2ndChumming3e.needsRepair` on the gun, "⚠ needs repair" on its row,
 a warning (never a refusal) when it is fired, and ✔ Repaired on its sheet to clear it. The card states time and labour; nothing is
-deducted. 🗑 stays a record fix (it says so). ⚠ **Chosen, not ruled:** on a failure the vent STAYS on the gun (the ruling names only
-the barrel). How a destroyed barrel is repaired (a test, a cost) is not ruled — ✔ Repaired is the GM's/owner's call.
+deducted. 🗑 stays a record fix (it says so).
+
+**Amended 2026-10-27 (the maintainer):** *"the vent should be destroyed with the barrel"* — on a failure the vent is gone too
+(`ModRemoval.outcome`: `removed` always true; mutant `gas-vent-survives-a-failed-removal`). *"we haven't done anything with weapon
+damage. I'd rule that it would cost the same as a barrel extension"* — ✔ Repaired asks the repair cost (`REPAIR.barrel`, pre-filled
+once the figure is known) and posts it; nothing deducted. The barrel extension's figure is [#278](TODO.md#278).
