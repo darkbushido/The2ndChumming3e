@@ -7737,3 +7737,30 @@ roll, and the setup dialog names it "Medkit [5]". Step 13 with the macro's new b
 refreshed it, still built "[N]" names with 0¥ implants). Not ours: Foundry 14.365 leaves `_stats.compendiumSource`
 null on any item created from a compendium (a plain firearm too), so step 7's link check only proves the migration's
 repoint of an existing dead link.
+
+## 277. ✅ Gas vents can't simply be taken off — **requested 2026-10-27** · built `f955968c`
+
+The maintainer, while testing TODO 276: *"Gas vents shouldn't be removeable or if removed should have a cost associated with it.
+this should be a new todo."* Today ⏏ takes any installed mod out of its host, gas vents included.
+
+**The books:** SR3 p.281 — gas-vent systems are barrel-mounted and *cannot be removed* once installed; CC p.34 says the same of
+Gas Vent IV. CC pp.80-81 lists gas vents as a firearm customisation, and customisations can be removed to free their FCU (only
+design options cannot) — so the Cannon Companion's gunsmithing route reads as removable, with an install-style test and time.
+
+**To decide (the maintainer):** never removable (⏏ / 🗑 offered with a warning only, or not at all), or removable at a cost — what
+cost: the CC customisation route (a gunsmith's B/R test, base time, labour at 100/50/25¥ an hour by contact level, CC p.79), a flat
+fee, or the vent destroyed (it comes off but is not returned to the inventory)? Warn-never-refuse would make it a warning
+plus the cost; a hard block is the maintainer's call, as for the rifle stock.
+
+**Ruled 2026-10-27:** *"removable at a gunsmith's test, time and labour. players can be the gunsmith. gas vent is destroyed if the
+test is successful. barrel is destroyed on failure and gun needs to be repaired."*
+
+**Built:** `scripts/data/mod-removal.mjs` (`PERMANENT` — the gas vent: Weapon B/R (5), base 24 h, CC p.81; `CONTACT_RATES` 100/50/25¥
+an hour, CC p.79; `outcome`, `hours` = base ÷ successes, `labour`, `skillFor` the gun's B/R skill), `tests/mod-removal.test.mjs`,
+mutants `gas-vent-removal-needs-two-successes`, `gas-vent-removal-time-not-divided`. ⏏ on a gas vent opens the gunsmith dialog — any
+live character or NPC (scene first), its B/R dice, TN, base hours, labour (0 for a player character, else a contact's rate), all
+editable — and rolls through `rollPool` with the `modRemoval` follow-up (explosion-safe). **Success:** the vent comes off destroyed
+(not returned). **Failure:** the barrel is destroyed — `flags.The2ndChumming3e.needsRepair` on the gun, "⚠ needs repair" on its row,
+a warning (never a refusal) when it is fired, and ✔ Repaired on its sheet to clear it. The card states time and labour; nothing is
+deducted. 🗑 stays a record fix (it says so). ⚠ **Chosen, not ruled:** on a failure the vent STAYS on the gun (the ruling names only
+the barrel). How a destroyed barrel is repaired (a test, a cost) is not ruled — ✔ Repaired is the GM's/owner's call.

@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**84 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**83 open.** 194 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[277](#277) Gas vents can't simply be taken off |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[234](#234) Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -910,7 +910,7 @@ value today; none settled by picking a side):
   frames list Barrel + Top + Under. Which wins for stock weapons?
 - **Imaging scopes and the rangefinder: Top, or Top or Under?** SR3 pp.280, 282 and CC p.33 say Top; CC p.82 says Top or Under.
   Today the mount comes from the pack's description (Top).
-- ✔ **Gas vents removable?** → ruled 2026-10-27: not removable, or removal costs something — its own item, [#277](#277).
+- ✔ **Gas vents removable?** → ruled 2026-10-27: not removable, or removal costs something — its own item, [#277](TODO-DONE.md#277).
 - ✔ **Gas Vent level 1 (250¥)** — ruled 2026-10-27: *"cost for gas vent 1, leave it at 250"*. (The weapon-mods audit found only
   II and III printed in SR3; level 1 keeps that note in its description.)
 - **Internal smartgun price** — SR3 p.282 +100% of the weapon; CC p.81 the frame's base DPV × 8 (Smartlink-2 ×1.5); M&M p.32 ×150%
@@ -927,33 +927,6 @@ value today; none settled by picking a side):
   not checked.
 
 **🧪 Test in Foundry** — TESTING.md §77 (full restart: data models gained fields).
-
-## 277. Gas vents can't simply be taken off — **requested 2026-10-27**
-
-The maintainer, while testing TODO 276: *"Gas vents shouldn't be removeable or if removed should have a cost associated with it.
-this should be a new todo."* Today ⏏ takes any installed mod out of its host, gas vents included.
-
-**The books:** SR3 p.281 — gas-vent systems are barrel-mounted and *cannot be removed* once installed; CC p.34 says the same of
-Gas Vent IV. CC pp.80-81 lists gas vents as a firearm customisation, and customisations can be removed to free their FCU (only
-design options cannot) — so the Cannon Companion's gunsmithing route reads as removable, with an install-style test and time.
-
-**To decide (the maintainer):** never removable (⏏ / 🗑 offered with a warning only, or not at all), or removable at a cost — what
-cost: the CC customisation route (a gunsmith's B/R test, base time, labour at 100/50/25¥ an hour by contact level, CC p.79), a flat
-fee, or the vent destroyed (it comes off but is not returned to the inventory)? Warn-never-refuse would make it a warning
-plus the cost; a hard block is the maintainer's call, as for the rifle stock.
-
-**Ruled 2026-10-27:** *"removable at a gunsmith's test, time and labour. players can be the gunsmith. gas vent is destroyed if the
-test is successful. barrel is destroyed on failure and gun needs to be repaired."*
-
-**Built:** `scripts/data/mod-removal.mjs` (`PERMANENT` — the gas vent: Weapon B/R (5), base 24 h, CC p.81; `CONTACT_RATES` 100/50/25¥
-an hour, CC p.79; `outcome`, `hours` = base ÷ successes, `labour`, `skillFor` the gun's B/R skill), `tests/mod-removal.test.mjs`,
-mutants `gas-vent-removal-needs-two-successes`, `gas-vent-removal-time-not-divided`. ⏏ on a gas vent opens the gunsmith dialog — any
-live character or NPC (scene first), its B/R dice, TN, base hours, labour (0 for a player character, else a contact's rate), all
-editable — and rolls through `rollPool` with the `modRemoval` follow-up (explosion-safe). **Success:** the vent comes off destroyed
-(not returned). **Failure:** the barrel is destroyed — `flags.The2ndChumming3e.needsRepair` on the gun, "⚠ needs repair" on its row,
-a warning (never a refusal) when it is fired, and ✔ Repaired on its sheet to clear it. The card states time and labour; nothing is
-deducted. 🗑 stays a record fix (it says so). ⚠ **Chosen, not ruled:** on a failure the vent STAYS on the gun (the ruling names only
-the barrel). How a destroyed barrel is repaired (a test, a cost) is not ruled — ✔ Repaired is the GM's/owner's call.
 
 ### 🪄 Spells & drugs
 
