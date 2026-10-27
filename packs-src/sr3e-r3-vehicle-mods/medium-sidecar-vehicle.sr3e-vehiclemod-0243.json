@@ -16,7 +16,8 @@
       "bookPage": "r3.154",
       "description": "+1 Hand, CF 8",
       "rating": null,
-      "modFor": "vehicle"
+      "modFor": "vehicle",
+      "legality": "Legal"
     },
     "effects": []
   },

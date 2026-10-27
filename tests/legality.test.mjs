@@ -80,8 +80,8 @@ export async function run(t) {
   t.is('Armor Jacket Legal (SR3 p.284)', code('sr3e-sr3-armor', 'sr3e-armor-0015'), 'Legal');
   t.is('an APDS clip 3-M (SR3 p.281)', code('sr3e-sr3-ammunition', 'f388c161620d1c5f'), '3-M');
   t.is('…a Regular clip "As Weapon" (p.281)', code('sr3e-sr3-ammunition', '962e9d7f0b8167ff'), 'As Weapon');
-  t.ok('a table with no Legality column gives nothing — the Pocket Computer (p.287) is blank, the GM decides',
-    !code('sr3e-sr3-gear', '2c91795bb158adc3'));
+  // The maintainer's ruling (2026-10-27): a table with NO Legality column prints no restriction, so its items are Legal.
+  t.is('a table with no Legality column is Legal — the Pocket Computer (p.287)', code('sr3e-sr3-gear', '2c91795bb158adc3'), 'Legal');
 
   /* ── The models, the search and the migration ────────────────────────────────── */
   const models = read('scripts/data/ItemDataModels.js');
@@ -113,8 +113,10 @@ export async function run(t) {
   t.is('…the name must match exactly', Legality.fillDelta(bare('firearm', 'ares predator')), null);
   t.is('…never over a code someone typed', Legality.fillDelta(bare('firearm', 'Ares Predator', 'Legal')), null);
   t.is('…a name no document has stays blank', Legality.fillDelta(bare('firearm', 'Homebrew Popgun')), null);
-  t.is('…a source that names one of our documents decides alone (no name second-guess)',
-    Legality.fillDelta({ ...bare('firearm', 'Ares Predator'), _stats: { compendiumSource: 'Compendium.The2ndChumming3e.sr3e-sr3-firearms.Item.nosuchdoc' } }), null);
+  t.eq('…a source whose document has gone (moved pack) falls back to the name',
+    Legality.fillDelta({ ...bare('firearm', 'Ares Predator'), _stats: { compendiumSource: 'Compendium.The2ndChumming3e.sr3e-sr3-firearms.Item.nosuchdoc' } }), { 'system.legality': '6P-E' });
+  t.eq('…and a source with a code decides alone',
+    Legality.fillDelta({ ...bare('firearm', 'Homebrew Popgun'), _stats: { compendiumSource: 'Compendium.The2ndChumming3e.sr3e-sr3-firearms.Item.sr3e-firearm-0072' } }), { 'system.legality': '6P-E' });
   t.eq('…and a foreign source (another module) still falls back to the name',
     Legality.fillDelta({ ...bare('firearm', 'Ares Predator'), _stats: { compendiumSource: 'Compendium.other.pack.Item.abcdefghijklmnop' } }), { 'system.legality': '6P-E' });
   t.is('…cyberware is never filled by name', Legality.fillDelta(bare('cyberware', 'Ares Predator')), null);
@@ -131,6 +133,42 @@ export async function run(t) {
     const { render } = await import('../tools/build-legality-names.mjs');
     t.ok('scripts/data/legality-names.mjs is current (node tools/build-legality-names.mjs)', render() === read('scripts/data/legality-names.mjs'));
   }
+  /* ── The audit against the books (2026-10-27): every code below was read from the printed table ───────────────── */
+  const by = (type, name) => Legality.fillDelta(bare(type, name))?.['system.legality'] ?? null;
+  t.is('Broadcast Encryption prints 8P-V, 8P-W from Rating 8 (SR3 p.290)', by('gear', 'Broadcast Encryption'), '8P-V (8P-W at Rating 8+)');
+  t.is('…and a banded code still classifies as restricted with a permit', Legality.classify(by('gear', 'Broadcast Encryption')).permit, true);
+  t.is('Binoculars sit in a table with no Legality column: Legal (SR3 p.289)', by('gear', 'Binoculars'), 'Legal');
+  t.is('Fugu-5, a toxin, is 3-X (M&M p.158)', by('drug', 'Fugu 5'), '3-X');
+  t.is('Arsenic is Legal (M&M p.158)', by('drug', 'Arsenic'), 'Legal');
+  t.is('Green Ring 3 is 2-K (M&M p.158)', by('drug', 'Green Ring 3'), '2-K');
+  t.is('the FAB Strain-I 500 m3 aerosol is 8P-U (MitS p.170)', by('gear', 'FAB Strain-I 500 m3 aerosol'), '8P-U');
+  t.is('Matrix, Miscellaneous Component Table (p.169): a Passkey Reader (Blank) is 9P-V', by('gear', 'Passkey Reader (Blank)'), '9P-V');
+  t.is('…and a Trode Jack is Legal', by('gear', 'Trode Jack'), 'Legal');
+  // Rulings, 2026-10-27: the weapon carries the code, not what it is attached to or modified with.
+  t.is('a Rigger 3 ring mount is Legal: the weapon on it carries the code', by('vehiclemod', 'Ring Mount (Vehicle)'), 'Legal');
+  t.is('…and a turret', by('vehiclemod', 'Large Turret (Vehicle)'), 'Legal');
+  t.is('…and vehicle armor', by('vehiclemod', 'Vehicle Armor (Vehicle)'), 'Legal');
+  t.is('…a firearm conversion kit is Legal (the weapon carries the code)', by('vehiclemod', 'Pistol Customization Kit (Vehicle)'), 'Legal');
+  t.is('…a gunnery smartlink takes the weapon-mod code, SmartLink 4P-N (SR3 p.282)', by('vehiclemod', 'Smartlink-II (Vehicle)'), '4P-N');
+  t.is('…and a gunnery recoil adjuster the recoil compensators code, Legal', by('vehiclemod', 'Gunnery Recoil Adjuster (Vehicle)'), 'Legal');
+  t.is('CC ammunition with no code of its own is "As Weapon", the book convention (SR3 p.281)', by('ammunition', 'Blowgun Needles (20)'), 'As Weapon');
+  t.is('the combat axe Thrusting Point is Legal (a spike, printed NA — maintainer ruling)', by('melee', 'Combat Axe Thrusting Point'), 'Legal');
+  t.is('a Pipe is a club: 6-C (SR3 p.275)', by('melee', 'Pipe'), '6-C');
+  t.is('a Virtual Instructor chip prints "Legal/3-Y" (SR3 p.296): Legal for an ordinary skill, 3-Y for a restricted one', by('gear', 'Virt Instr Gen.'), 'Legal (3-Y for illegal or restricted skills)');
+  t.is('…which opens on the store, as a Legal item does', Legality.storeByDefault(by('gear', 'Virt Instr Spec')), true);
+  t.is('Rigger Adaptation is vehicle control gear: Legal', by('vehiclemod', 'Rigger Adaptation (Vehicle)'), 'Legal');
+  const packNames = pack => [...readSourceDir(join(ROOT, 'packs-src', pack)).values()].map(d => d.name ?? '');
+  t.ok('pruned, not in any book of the library: the Benelli shotguns', !packNames('sr3e-cc-firearms').some(n => /^Benelli/.test(n)));
+  t.ok('…and the Shades, Insulated Gloves, Autotanner and Fuchi RealSense Kosmos', !packNames('sr3e-sr3-gear').some(n => /^(Shades|Insulated Gloves|Autotanner|Fuchi RealSense Kosmos)/.test(n)));
+  t.ok('…and the empty Witch row (Witch Moss is in the drugs pack)', !packNames('sr3e-mm-medical').includes('Witch'));
+
+  t.is('a Cannon Companion weapon mod changes nothing in print: Legal', by('gear', 'Remove Safety (Weapon)'), 'Legal');
+  t.is('a toxin dart takes its chemical code: Fugu-8 3-X', by('ammunition', 'Dart, Fugu 8'), '3-X');
+  t.is('…Cyanide 4P-X (M&M p.158)', by('ammunition', 'Dart, Cyanide'), '4P-X');
+  t.is('…a Narcoject dart is Legal', by('ammunition', 'Dart, Narcoject'), 'Legal');
+  t.is('HOUSE RULING: a magical reagent needs a low-difficulty permit, 8P-X (M&M p.158 prints no column)', by('drug', 'Deepweed'), '8P-X');
+  t.is('Man & Machine medical facilities are Legal', by('medical', 'Beta Hospital'), 'Legal');
+  t.is('…a Benelli (not in any book of the library)', by('firearm', 'Benelli M1014'), null);
   t.ok('the migration hands the fill the renamed item', /Legality\.fillDelta\(linked\)/.test(read('scripts/SR3EMigrations.js')) && /name: delta\.name \?\? item\.name/.test(read('scripts/SR3EMigrations.js')));
 
   /* ── The dialog and the card (source-level: they need Foundry) ───────────────── */

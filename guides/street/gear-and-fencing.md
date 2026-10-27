@@ -92,7 +92,8 @@ negotiation by 4, which is 20% off, and pays **10,080¥**.
 
 ## Legality Codes  *(SR3 p.273–274)*
 
-A code like **`6P-E`** reads as follows:
+The full rules, with permits, buying through a contact versus legally, and the fines, are on
+[Legality Codes & Permits](../legality/). In short, a code like **`6P-E`** reads as follows:
 
 - **6** is the **restriction level**. The lower the number, the more tightly
   it's controlled. When an officer notices the item, they roll their

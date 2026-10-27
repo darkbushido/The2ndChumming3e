@@ -6,5 +6,5 @@ has_children: true
 
 # Rules
 
-Combat, weapons, grenades, healing, Karma, decking, rigging, vehicles and
+Combat, weapons, grenades, healing, Karma, instruction and learning skills, decking, rigging, vehicles and
 drones, from the *Shadowrun, Third Edition* core rulebook.

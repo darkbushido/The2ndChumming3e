@@ -16,7 +16,8 @@
       "bookPage": "r3.155",
       "description": "See MM-139",
       "rating": null,
-      "modFor": "vehicle"
+      "modFor": "vehicle",
+      "legality": "Legal"
     },
     "effects": []
   },

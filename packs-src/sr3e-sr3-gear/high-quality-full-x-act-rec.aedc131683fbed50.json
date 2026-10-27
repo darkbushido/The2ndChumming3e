@@ -23,7 +23,8 @@
       "availability": "always",
       "streetIndex": ".75",
       "bookPage": "sr3.285",
-      "description": "<p>Cost 7.5¥ in the book.</p>"
+      "description": "<p>Cost 7.5¥ in the book.</p>",
+      "legality": "Legal"
     }
   },
   "embedded": {}

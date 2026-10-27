@@ -1,0 +1,31 @@
+{
+  "_key": "!items!163a6a552ecb4211",
+  "doc": {
+    "_id": "163a6a552ecb4211",
+    "name": "Microwave Dish — Large Portable",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-cable.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 10000,
+      "weight": 0,
+      "availability": "8/2 wks",
+      "streetIndex": "1",
+      "bookPage": "mat.169",
+      "description": "<p><strong>Legal:</strong> Legal</p>",
+      "legality": "Legal"
+    }
+  },
+  "embedded": {}
+}

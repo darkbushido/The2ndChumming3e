@@ -24,7 +24,8 @@
       "streetIndex": "1",
       "bookPage": "cc.81",
       "description": "<p><strong>Notes:</strong> Maximum clip size of 50, Available at GM option</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "Legal"
     }
   },
   "embedded": {}

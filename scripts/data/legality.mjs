@@ -51,7 +51,8 @@ export const Legality = {
    */
   classify(code) {
     const c = text(code);
-    if (/^legal$/i.test(c)) return { status: 'legal', code: 'Legal', permit: false, defersTo: '' };
+    // "Legal (3-Y for illegal or restricted skills)" — the Virtual Instructor Chip prints "Legal/3-Y" (SR3 p.296): Legal for an ordinary skill.
+    if (/^legal(?![a-z])/i.test(c)) return { status: 'legal', code: c.length > 5 ? c : 'Legal', permit: false, defersTo: '' };
     const as = /^as\s+(.+)$/i.exec(c);
     if (as) return { status: 'deferred', code: c, permit: false, defersTo: as[1] };
     // "6P-V", "2-K", "8P-W", "(8-Force)P-T", "(-1)P-L": a restriction level, an optional P, a category.
@@ -67,12 +68,13 @@ export const Legality = {
    * ⚠ **Name fallback (2026-10-26):** the hand-kept packs' ids (`sr3e-firearm-0072`) are not valid Foundry document
    * ids, so a copy dropped from them carries a null `compendiumSource` and the link finds nothing. With no usable
    * source the code is read by exact item type + name (`LEGALITY_BY_NAME`; a name two documents give different codes
-   * is not in it). A source that names one of our documents decides alone — name matching never second-guesses it.
+   * is not in it). A source that names a document with a code decides alone; one whose document carries none (or has moved) falls back to the name.
    */
   fillDelta(item, table = LEGALITY, names = LEGALITY_BY_NAME) {
     if (!LEGALITY_TYPES.includes(item?.type) || String(item.system?.legality ?? '').trim()) return null;
     const m = SOURCE.exec(String(item?._stats?.compendiumSource ?? ''));
-    const code = m ? table[m[1]]?.[m[2]]?.[0] : names[`${item.type}|${item.name}`];
+    // ⚠ A source whose document has since moved (the Matrix components went to their own pack, 2026-10-27) finds nothing: read the name.
+    const code = (m && table[m[1]]?.[m[2]]?.[0]) || names[`${item.type}|${item.name}`];
     return code ? { 'system.legality': code } : null;
   },
 

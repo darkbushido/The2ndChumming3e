@@ -1655,6 +1655,25 @@
           "book": "sr3"
         }
       }
+    },
+    {
+      "name": "sr3e-mat-gear",
+      "label": "Matrix",
+      "path": "packs/sr3e-mat-gear",
+      "type": "Item",
+      "system": "The2ndChumming3e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {
+        "The2ndChumming3e": {
+          "itemTypes": [
+            "gear"
+          ],
+          "book": "mat"
+        }
+      }
     }
   ],
   "packFolders": [
@@ -1780,6 +1799,7 @@
           "sorting": "a",
           "packs": [
             "sr3e-cc-gear",
+            "sr3e-mat-gear",
             "sr3e-mits-gear",
             "sr3e-mm-gear",
             "sr3e-sr3-gear"

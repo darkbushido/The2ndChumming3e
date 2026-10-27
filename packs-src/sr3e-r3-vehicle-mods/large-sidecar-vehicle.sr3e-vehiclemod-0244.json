@@ -16,7 +16,8 @@
       "bookPage": "r3.154",
       "description": "+2 Hand, CF 12",
       "rating": null,
-      "modFor": "vehicle"
+      "modFor": "vehicle",
+      "legality": "Legal"
     },
     "effects": []
   },

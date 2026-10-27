@@ -562,7 +562,8 @@
         "availability": "6/72hrs",
         "streetIndex": "2",
         "bookPage": "sr3.304",
-        "notes": ""
+        "notes": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -597,7 +598,8 @@
         "availability": "1/24hrs",
         "streetIndex": "1",
         "bookPage": "sr3.305",
-        "description": "<p>Force 6</p>"
+        "description": "<p>Force 6</p>",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,

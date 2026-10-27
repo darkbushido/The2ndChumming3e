@@ -24,7 +24,8 @@
       "streetIndex": "",
       "bookPage": "cc.82",
       "description": "<p><strong>Mount:</strong> Top/Under<br><strong>Source:</strong> A Cannon Companion customisation: Design Points +100 × 8 (p.80, p.82). No Street Index (p.80).</p>",
-      "modFor": "weapon"
+      "modFor": "weapon",
+      "legality": "Legal"
     }
   },
   "embedded": {}

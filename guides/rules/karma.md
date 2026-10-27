@@ -75,6 +75,7 @@ Good Karma can't raise **Essence** or **Magic**, even if they were reduced. **Re
 directly: raise Quickness and Intelligence instead.
 
 ### Skills  *(SR3 p.244–245)*
+{: #skills }
 
 A **new skill** costs **1** at rating 1, whatever its kind. After that, multiply the number on the
 table by the **new** rating and **round down**. The multiplier depends on the skill's **linked

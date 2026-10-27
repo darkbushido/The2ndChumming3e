@@ -338,7 +338,8 @@
         "availability": "4/48hrs",
         "streetIndex": "1.25",
         "bookPage": "sr3.290",
-        "description": "<p><strong>Mag:</strong> 50x</p>"
+        "description": "<p><strong>Mag:</strong> 50x</p>",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -617,7 +618,8 @@
         "availability": "Always",
         "streetIndex": ".75",
         "bookPage": "sr3.287",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -684,7 +686,8 @@
         "availability": "Always/24hrs",
         "streetIndex": "1.5",
         "bookPage": "mm.138",
-        "notes": ""
+        "notes": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -718,6 +721,7 @@
         "streetIndex": "1",
         "bookPage": "sr3.304",
         "notes": "",
+        "legality": "Legal",
         "description": "<p>1 year</p>"
       },
       "effects": [],
@@ -864,7 +868,8 @@
         "availability": "5/48hrs",
         "streetIndex": "2",
         "bookPage": "sr3.288",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -1272,7 +1277,8 @@
         "availability": "2/24hrs",
         "streetIndex": "1",
         "bookPage": "sr3.304",
-        "notes": ""
+        "notes": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -1442,7 +1448,8 @@
         "availability": "4/48hrs",
         "streetIndex": "2",
         "bookPage": "sr3.304",
-        "notes": ""
+        "notes": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -1728,7 +1735,8 @@
         "availability": "Always",
         "streetIndex": "1",
         "bookPage": "sr3.287",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -1831,7 +1839,8 @@
         "availability": "Always",
         "streetIndex": "1",
         "bookPage": "sr3.290",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,

@@ -651,6 +651,7 @@ export const SOURCE_BOOKS = {
   ger:                { label: 'Germany Sourcebook',       edition: 'SR3', enabled: false },
   ssg:                { label: 'Sprawl Survival Guide',    edition: 'SR3', enabled: false },
   tss:                { label: 'The Shadowrun Supplemental', edition: 'SR3', enabled: false, fan: true },
+  mat:                { label: 'Matrix',                   edition: 'SR3', enabled: true  },
   'matrix-defragged': { label: 'Matrix Defragged v2',      edition: 'SR3', enabled: true, note: 'Community Matrix ruleset — only useful when Matrix Ruleset is set to Defragged.' },
 };
 
