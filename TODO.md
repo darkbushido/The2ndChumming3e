@@ -903,7 +903,18 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
    the saving comes off the TN. Nothing remembered between shots. Mutant `bipod-counts-without-the-gm`. ⚠ Only where the GM window
    opens (`gmApprovesTN`): an attack that skips it gets no pod. The gun's own printed bracketed RC (folding stock, integral tripod)
    stays the fire dialog's integral tick ([#235](#235)).
-3. **The free-text `accessories`** — a migration turning it into installed mods where it parses; the rest stays a note.
+3. ~~The free-text `accessories`~~ — built 2026-10-27 (step b), the maintainer's rulings of that day: each accessory the text
+   clearly names becomes an installed mod flagged `integral` (`scripts/data/integral-mods.mjs`, `tests/integral-mods.test.mjs`).
+   **Shown, never counted** — it takes its mount and shows in the 🔧 list, tagged "integral", its change in brackets, but
+   `ItemMods.effective` / `pods` skip it (the printed RC, bracketed RC and flags already include it); two printed on one mount
+   share it unwarned (the Ranger Arms SM-3's gas vent and silencer). ⏏ takes the flag off (an ordinary mod again) and ⏏ / 🗑
+   warn that the printed figures still include it — the GM edits. **Packs and owned copies**: `tools/fill-integral-mods.mjs`
+   filled 87 shipped guns (129 accessories, archetypes' and contacts' guns included); the 0.9.0 migration fills owned copies —
+   blanks only (`integralDone` marks a gun filled once). **The text is untouched.** **Clear matches only**: laser sights,
+   smartlinks (internal, no mount), gas vents I-III, stocks, silencer / suppressor, scopes, bipod, tripod, shock pads, fore
+   grip, hip brace, gyro mount; launchers, designators, the heavy barrel and every "either / or" stay text. Mutants
+   `integral-accessory-counted-twice`, `integral-tripod-offered-as-pod`, `integral-mount-clash-warned`, `integral-filled-twice`,
+   `integral-greedy-match`. TESTING.md §77i. ⚠ Packs rebuilt: `npm run packs:install` with Foundry CLOSED.
 4. **Weapon mounts by weapon class** (SR3 pp.276-279, CC p.75: hold-outs none, pistols barrel + top, …) — warnings; waits on the
    open questions below.
 5. ~~Cyberlimbs~~ — built (above; its remainders listed there). **Vehicles and

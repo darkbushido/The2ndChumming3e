@@ -3472,3 +3472,22 @@ works, and the same implant **built in** now does it too.
 - [ ] **Healing:** Dermal Plating 2 built into the arm (unusual, but a GM's call) counts in the permanent-damage test's dermal armour.
 - [ ] **Removing the limb:** delete the arm with built-ins → its weapon entries go; the Essence hole grows by the arm's own cost only
       (open question in TODO 276 — note what the maintainer rules).
+
+### 77i. Printed accessories as integral mods (TODO 276, step b — the maintainer's rulings of 2026-10-27)
+
+**Foundry CLOSED first: `npm run packs:install`**, then start it. The 0.9.0 migration runs on load (a branch world re-runs it).
+
+- [ ] **Compendium:** open the Ares Crusader (CC Firearms) → Installed mods: "Laser Sight (Weapon)" on Top, "Gas Vent (Weapon)"
+      on Barrel, each tagged **integral**, their change in brackets "(Laser sight)", "(RC +2)". The Accessories text unchanged.
+- [ ] **Not counted:** fire the Crusader from a character → the fire dialog's RC is the printed figure, not +2 on top. The 🔧
+      chip's totals show no RC from the vent.
+- [ ] **An owned copy** made before this build (a character's gun from an older import): after the load it holds the same
+      integral mods. Reload again → nothing doubles.
+- [ ] **Mounts:** the Ranger Arms SM-3 (gas vent + silencer, both Barrel) shows both on Barrel, no ⚠. Drop a Sound Suppresser on
+      it → warned, "the barrel mount already holds Gas Vent". A Laser Sight onto a gun with an integral top scope → goes Under.
+- [ ] **Pods:** the RPK HMG's integral tripod is NOT offered in the GM's TN window (its RC is the bracketed RC — the fire
+      dialog's integral tick). A tripod the GM installs IS.
+- [ ] **⏏ an integral laser sight** → an ordinary Laser Sight in the inventory (no "integral" tag), and a warning "…its
+      laser-sight flag still includes it". 🗑 the gas vent → "…its RC still includes it". Reload → they do not come back.
+- [ ] **Left as text:** the Panther's "Either: Folding Bipod(2RC) or Shoulder Strap", the Colt M22A2's "Grenade Launcher 6(m)",
+      the Ballista's "Laser Designator" — no mod for any of them.

@@ -50,6 +50,11 @@ const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' }
 const BLASTBATCH = { module: '../scripts/data/blast-batch.mjs', klass: 'BlastBatch' };
 const CYBERCAP = { module: '../scripts/data/cyber-capacity.mjs', klass: 'CyberCapacity' };
 const ITEMMODS = { module: '../scripts/data/item-mods.mjs', klass: 'ItemMods' };
+const INTEGRAL = { module: '../scripts/data/integral-mods.mjs', klass: 'IntegralMods' };
+// An item with its integral flags taken off — what every reader saw before the ruling (TODO 276, step b).
+const unIntegral = it => ({ ...it,
+  flags: { ...(it?.flags ?? {}), The2ndChumming3e: { ...(it?.flags?.The2ndChumming3e ?? {}), integral: false } },
+  system: { ...(it?.system ?? {}), installed: (it?.system?.installed ?? []).map(unIntegral) } });
 const MAGNIFY = { module: '../scripts/data/magnification.mjs', klass: 'Magnification' };
 const MODREMOVAL = { module: '../scripts/data/mod-removal.mjs', klass: 'ModRemoval' };
 const ARMORMODS = { module: '../scripts/data/armor-mods.mjs', klass: 'ArmorMods' };
@@ -4054,5 +4059,49 @@ export const MUTANTS = [
     ...CYBERCAP, method: 'builtInCost',
     was:    'a direct neural interface\'s +50% replaced the built-in ×4 — the maintainer: it stacks (SR3 p.303, TODO 276)',
     impl:   (c, { mmOn = false, dni = false } = {}) => Math.round(Math.max(0, Number(c) || 0) * (dni ? 1.5 : (mmOn ? 1 : 4))),
+  },
+  {
+    id:     'integral-accessory-counted-twice',
+    suite:  'integral-mods',
+    ...ITEMMODS, method: 'effective', needsOriginal: '_effectiveOriginal',
+    was:    'a gun\'s printed gas vent, as an installed mod, added its RC on top of the printed RC that already includes it — the maintainer: shown, never counted (TODO 276)',
+    impl:   function (item) { return this._effectiveOriginal(unIntegral(item)); },
+  },
+  {
+    id:     'integral-tripod-offered-as-pod',
+    suite:  'integral-mods',
+    ...ITEMMODS, method: 'pods', needsOriginal: '_podsOriginal',
+    was:    'the RPK\'s printed fold-out tripod was offered in the GM\'s window too — its RC is already the printed bracketed RC (TODO 276)',
+    impl:   function (weapon) { return this._podsOriginal(unIntegral(weapon)); },
+  },
+  {
+    id:     'integral-mount-clash-warned',
+    suite:  'integral-mods',
+    ...ITEMMODS, method: 'assignMounts', needsOriginal: '_assignOriginal',
+    was:    'a gun printed with a gas vent and a silencer showed "⚠ Barrel" on its own printed accessories (TODO 276)',
+    impl:   function (installed) { return this._assignOriginal((installed ?? []).map(unIntegral)); },
+  },
+  {
+    id:     'integral-filled-twice',
+    suite:  'integral-mods',
+    ...INTEGRAL, method: 'fillDelta',
+    was:    'the migration added a gun\'s printed accessories again on every run, and back after the GM took them out — it must fill blanks only (TODO 276)',
+    impl:   function (item) {
+      if (item?.type !== 'firearm') return null;
+      const found = this.parse(item?.system?.accessories);
+      if (!found.length) return null;
+      return { 'system.installed': [...(item.system.installed ?? []), ...found.map((f, i) => this.entryFor(f, i + 1))], 'flags.The2ndChumming3e.integralDone': true };
+    },
+  },
+  {
+    id:     'integral-greedy-match',
+    suite:  'integral-mods',
+    ...INTEGRAL, method: 'match', needsOriginal: '_matchOriginal',
+    was:    'a token was read as an accessory wherever one was named in it — "Either: Folding Bipod(2RC) or Shoulder Strap" became a bipod; the ruling: clear matches only (TODO 276)',
+    impl:   function (token) {
+      const words = String(token ?? '').split(/[:\[\]]|\s+(?:or|and)\s+/i).map(s => s.trim()).filter(Boolean);
+      for (const w of words) { const m = this._matchOriginal(w); if (m) return m; }
+      return null;
+    },
   },
 ];

@@ -41,6 +41,7 @@ import { ModFor } from './data/mod-for.mjs';
 import { ModBookFixes } from './data/mod-book-fixes.mjs';
 import { Legality } from './data/legality.mjs';
 import { ModEffects } from './data/mod-effects.mjs';
+import { IntegralMods } from './data/integral-mods.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -627,6 +628,19 @@ const MIGRATIONS = [
      * modifiers hold anything, or already hardened, is left alone (`ModEffects.fillDelta`). Idempotent.
      */
     fixItem: item => ModEffects.fillDelta(item),
+  },
+  {
+    version: '0.9.0',
+    label: "A firearm's printed accessories are installed mods, marked integral (TODO 276)",
+    /**
+     * The maintainer's rulings of 2026-10-27 (`scripts/data/integral-mods.mjs`): each accessory the free text clearly names
+     * ("Laser Sight", "Gas Vent II(2RC)", "Fold Stock(1RC)") becomes an installed mod flagged `integral` — it takes its mount
+     * and shows in the 🔧 list, but its RC or flag is never added again (the printed figures include it). The packs ship it
+     * (`tools/fill-integral-mods.mjs`); owned copies get the same here. FILL BLANKS ONLY: a gun already holding an integral
+     * mod, or marked `integralDone` (filled once — a GM who took them out keeps it that way), is left alone; the text is
+     * never touched. Idempotent.
+     */
+    fixItem: item => IntegralMods.fillDelta(item),
   },
 
 ];

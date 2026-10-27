@@ -23,9 +23,92 @@
       "hands": 2,
       "smartgun": true,
       "laserSight": false,
-      "legality": "2-J"
+      "legality": "2-J",
+      "installed": [
+        {
+          "_id": "integral00000001",
+          "type": "gear",
+          "name": "Bipod (Weapon)",
+          "system": {
+            "category": "Firearms Accessories",
+            "modFor": "weapon",
+            "quantity": 1,
+            "rating": 2,
+            "cost": 0,
+            "bookPage": "sr3.282",
+            "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Folding Bipod(2RC)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Under</p>",
+            "modifiers": [
+              {
+                "target": "rc",
+                "value": 1,
+                "perRating": true,
+                "whenDeployed": true
+              }
+            ]
+          },
+          "flags": {
+            "The2ndChumming3e": {
+              "integral": true,
+              "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.6d0d7ade36b511d2"
+            }
+          }
+        },
+        {
+          "_id": "integral00000002",
+          "type": "gear",
+          "name": "Silencer (Weapon)",
+          "system": {
+            "category": "Firearms Accessories",
+            "modFor": "weapon",
+            "quantity": 1,
+            "rating": null,
+            "cost": 0,
+            "bookPage": "sr3.282",
+            "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Silencer\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Barrel</p>",
+            "modifiers": []
+          },
+          "flags": {
+            "The2ndChumming3e": {
+              "integral": true,
+              "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.510317e11b10f1f7"
+            }
+          }
+        },
+        {
+          "_id": "integral00000003",
+          "type": "gear",
+          "name": "Smartlink level I (Weapon)",
+          "system": {
+            "category": "Firearms Accessories",
+            "modFor": "weapon",
+            "quantity": 1,
+            "rating": null,
+            "cost": 0,
+            "bookPage": "sr3.282",
+            "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Smartlink\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276). An internal smartgun system — no mount (SR3 p.281).</p>",
+            "modifiers": [
+              {
+                "target": "smartgun",
+                "value": 1,
+                "perRating": false
+              }
+            ]
+          },
+          "flags": {
+            "The2ndChumming3e": {
+              "integral": true,
+              "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.976939c2631d86f8"
+            }
+          }
+        }
+      ]
     },
-    "effects": []
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "integralDone": true
+      }
+    }
   },
   "embedded": {}
 }

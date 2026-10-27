@@ -63,6 +63,9 @@ const baseNameOf = item => String(item?.name ?? '').replace(/\s*\[\d+\]\s*$/, ''
 const SCAFFOLDING = ['_stats', 'folder', 'sort', 'ownership'];
 
 const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
+// Part of the gun as printed (TODO 276, `integral-mods.mjs`): its change is already in the gun's own figures. Read here, not
+// imported — integral-mods reads weapon-accessories, which reads this module.
+const integral = m => m?.flags?.The2ndChumming3e?.integral === true;
 
 export const ItemMods = {
   TARGETS, HOST_TYPES, MAX_DEPTH, MOUNTS,
@@ -102,7 +105,8 @@ export const ItemMods = {
    * shouldn't get the benefit of a pod").
    */
   pods(weapon) {
-    return ItemMods.installed(weapon).filter(m => ItemMods.deployable(m)).map(m => ({
+    // An integral pod (the RPK's fold-out tripod) is the gun's printed bracketed RC — the fire dialog's integral tick.
+    return ItemMods.installed(weapon).filter(m => ItemMods.deployable(m) && !integral(m)).map(m => ({
       id: m._id ?? null, name: m.name ?? '?',
       rc: ItemMods.modifiersOf(m).filter(x => x.whenDeployed && x.target === 'rc').reduce((s, x) => s + x.value, 0),
     }));
@@ -118,7 +122,8 @@ export const ItemMods = {
       // A change that needs the mod set up (a bipod's RC) never counts here — the GM's TN window offers it (`pods`).
       for (const m of ItemMods.modifiersOf(it)) if (!m.whenDeployed) (parts[m.target] ??= []).push({ source, value: m.value });
       if (depth >= MAX_DEPTH) return;
-      for (const mod of ItemMods.installed(it)) walk(mod, mod?.name ?? '?', depth + 1);
+      // An integral mod (TODO 276) is shown, never counted: the printed RC and flags already include it.
+      for (const mod of ItemMods.installed(it)) if (!integral(mod)) walk(mod, mod?.name ?? '?', depth + 1);
     };
     walk(item, null, 0);
     return Object.fromEntries(Object.entries(parts).map(([t, p]) => [t, { value: ItemMods.combine(t, p.map(x => x.value)), parts: p }]));
@@ -233,10 +238,14 @@ export const ItemMods = {
    * the sheet shows "⚠ Barrel", not "no mount" (seen live 2026-10-27: a second barrel accessory read as mountless).
    */
   assignMounts(installed) {
-    const list = (Array.isArray(installed) ? installed : []).map(m => ({ id: m?._id ?? null, name: m?.name ?? '?', mounts: ItemMods.mountsOf(m), mount: '' }));
+    const list = (Array.isArray(installed) ? installed : []).map(m => ({ id: m?._id ?? null, name: m?.name ?? '?', mounts: ItemMods.mountsOf(m), mount: '', integral: integral(m) }));
     const taken = new Map();
+    const integralOn = new Set();
     for (const m of list.filter(x => x.mounts.length === 1)) {
-      if (!taken.has(m.mounts[0])) { m.mount = m.mounts[0]; taken.set(m.mount, m.name); }
+      if (!taken.has(m.mounts[0])) { m.mount = m.mounts[0]; taken.set(m.mount, m.name); if (m.integral) integralOn.add(m.mount); }
+      // Two integral accessories on one mount are the gun as printed (the Ranger Arms SM-3 prints a gas vent and a silencer):
+      // they share it, unwarned. Anything installed later still finds it taken.
+      else if (m.integral && integralOn.has(m.mounts[0])) m.mount = m.mounts[0];
     }
     for (const m of list.filter(x => x.mounts.length > 1)) {
       const free = m.mounts.find(x => !taken.has(x));

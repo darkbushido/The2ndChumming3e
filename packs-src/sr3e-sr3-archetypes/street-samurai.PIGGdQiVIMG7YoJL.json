@@ -1023,7 +1023,8 @@
         "legality": "8P-E",
         "ready": true,
         "loadedAmmoType": "regular",
-        "loadedRounds": 11
+        "loadedRounds": 11,
+        "installed": []
       },
       "effects": [],
       "folder": null,
@@ -1467,6 +1468,88 @@
         "laserSight": false,
         "recoilMod": 2,
         "legality": "4-G",
+        "installed": [
+          {
+            "_id": "integral00000001",
+            "type": "gear",
+            "name": "Smartlink level I (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": null,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Smartlink\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276). An internal smartgun system — no mount (SR3 p.281).</p>",
+              "modifiers": [
+                {
+                  "target": "smartgun",
+                  "value": 1,
+                  "perRating": false
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.976939c2631d86f8"
+              }
+            }
+          },
+          {
+            "_id": "integral00000002",
+            "type": "gear",
+            "name": "Folding Stock",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": 1,
+              "cost": 0,
+              "bookPage": "cc.35",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Fold. Stock(1RC)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p>",
+              "modifiers": [
+                {
+                  "target": "rc",
+                  "value": 1,
+                  "perRating": true
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true
+              }
+            }
+          },
+          {
+            "_id": "integral00000003",
+            "type": "gear",
+            "name": "Gas Vent (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": 2,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Gas Vent II(2RC)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Barrel</p>",
+              "modifiers": [
+                {
+                  "target": "rc",
+                  "value": 1,
+                  "perRating": true
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.a4b62ae9cd2730a3"
+              }
+            }
+          }
+        ],
         "ready": true,
         "loadedAmmoType": "regular",
         "loadedRounds": 32
@@ -1914,7 +1997,30 @@
         "legality": "6P-E",
         "ready": true,
         "loadedAmmoType": "regular",
-        "loadedRounds": 15
+        "loadedRounds": 15,
+        "installed": [
+          {
+            "_id": "integral00000001",
+            "type": "gear",
+            "name": "Silencer (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": null,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Silencer\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Barrel</p>",
+              "modifiers": []
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.510317e11b10f1f7"
+              }
+            }
+          }
+        ]
       },
       "effects": [],
       "folder": null,

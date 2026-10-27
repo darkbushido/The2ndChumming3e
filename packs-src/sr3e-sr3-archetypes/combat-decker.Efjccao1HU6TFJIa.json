@@ -531,6 +531,34 @@
         "smartgun": true,
         "laserSight": false,
         "legality": "5-G",
+        "installed": [
+          {
+            "_id": "integral00000001",
+            "type": "gear",
+            "name": "Folding Stock",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": 1,
+              "cost": 0,
+              "bookPage": "cc.35",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Fold. Stock(1RC)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p>",
+              "modifiers": [
+                {
+                  "target": "rc",
+                  "value": 1,
+                  "perRating": true
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true
+              }
+            }
+          }
+        ],
         "ready": true,
         "loadedAmmoType": "regular",
         "loadedRounds": 35

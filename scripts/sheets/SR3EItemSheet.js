@@ -295,8 +295,9 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
             : `<span class="sr-mod-mount" data-tooltip="${r.mount ? `On the ${r.mount.toLowerCase()} mount (SR3 p.280)` : 'No weapon mount'}">${esc(r.mount || '—')}</span>`}
           <img src="${esc(r.img)}" class="sr-mod-img" alt=""/>
           <a class="sr-mod-name sr-mod-open" title="Open">${esc(r.name)}</a>
-          <span class="sr-mod-changes">${esc(r.changes)}</span>
-          ${r.deployable ? '<span class="sr-mod-deploy" data-tooltip="Its RC counts only when set up and the shooter is stationary — the GM ticks it in the GM\'s TN window for each shot (SR3 p.280).">GM: when set up</span>' : ''}
+          <span class="sr-mod-changes">${r.integral && r.changes ? `(${esc(r.changes)})` : esc(r.changes)}</span>
+          ${r.integral ? '<span class="sr-mod-integral" data-tooltip="Built into the gun as printed (its accessories). Its change is already in the gun’s own RC and flags, so it is shown, never added again. Taken out, the gun’s printed figures still include it — the GM edits them (TODO 276).">integral</span>' : ''}
+          ${r.deployable && !r.integral ? '<span class="sr-mod-deploy" data-tooltip="Its RC counts only when set up and the shooter is stationary — the GM ticks it in the GM\'s TN window for each shot (SR3 p.280).">GM: when set up</span>' : ''}
           <a class="sr-mod-open" title="Open its sheet">✎</a>
           ${edit ? `<a class="sr-mod-out" title="Take it out — into the inventory">⏏</a>
           <a class="sr-mod-remove" title="Delete it">🗑</a>` : ''}

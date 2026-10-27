@@ -493,6 +493,8 @@ system.recoilCompensation / .roundsFiredThisPhase / .targetsThisPhase
   What any item changes is `system.modifiers` `[{ target, value }]` from `ItemMods.TARGETS`. Effects climb mod → host →
   actor: read a host with `ItemMods.effective` / `value`, the actor with `ItemMods.actorTotals` (worn armour, carried gear,
   installed cyber — never a weapon), all in `scripts/data/item-mods.mjs`; install/⏏/✎ in `scripts/SR3EItemMods.js`.
+  ⚠ A gun's printed `accessories` are installed mods flagged `integral` (`scripts/data/integral-mods.mjs`): shown and holding
+  their mount, **never counted** — the printed RC and flags already include them; `effective` / `pods` skip them.
 
 ### Weapon category codes → skills
 ```

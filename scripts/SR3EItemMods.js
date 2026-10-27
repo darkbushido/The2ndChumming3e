@@ -17,6 +17,7 @@
 import { ItemMods } from './data/item-mods.mjs';
 import { ArmorMods } from './data/armor-mods.mjs';
 import { CyberCapacity } from './data/cyber-capacity.mjs';
+import { IntegralMods } from './data/integral-mods.mjs';
 import { ModRemoval, CONTACT_RATES, REPAIR } from './data/mod-removal.mjs';
 import { actorFrom, actorRef } from './data/actor-ref.mjs';
 
@@ -57,6 +58,8 @@ export const SR3EItemMods = {
     if (ModRemoval.rule(mod)) return SR3EItemMods.gunsmith(host, modId);
     const data = foundry.utils.deepClone(mod);
     delete data._id;
+    // Out of the gun it was printed with, it is an ordinary accessory: it counts wherever it is installed next (TODO 276).
+    if (IntegralMods.isIntegral(mod)) delete data.flags.The2ndChumming3e[IntegralMods.FLAG];
     let created;
     // `sr3eModMove`: taken out of a limb onto the same body — not a new install (no Essence ratchet, sr3e.js).
     if (host.parent) [created] = await host.parent.createEmbeddedDocuments('Item', [data], { sr3eModMove: true });
@@ -65,6 +68,7 @@ export const SR3EItemMods = {
     await host.update({ 'system.installed': installed });
     SR3EItemMods._close(host, modId);
     ui.notifications.info(`${mod.name} taken out of ${host.name}${host.parent ? ` — it is in ${host.parent.name}'s inventory` : ''}.`);
+    if (IntegralMods.isIntegral(mod)) ui.notifications.warn(IntegralMods.removedWarning(host, mod));
     return created;
   },
 
@@ -82,6 +86,7 @@ export const SR3EItemMods = {
     if (!ok) return false;
     await host.update({ 'system.installed': ItemMods.uninstall(ItemMods.installed(host), modId).installed });
     SR3EItemMods._close(host, modId);
+    if (IntegralMods.isIntegral(mod)) ui.notifications.warn(IntegralMods.removedWarning(host, mod));
     return true;
   },
 
@@ -280,6 +285,7 @@ export const SR3EItemMods = {
         return x.whenDeployed ? `${v} (set up)` : v;
       }).join(', '),
       deployable: ItemMods.deployable(m),
+      integral: IntegralMods.isIntegral(m),
     }));
   },
 };

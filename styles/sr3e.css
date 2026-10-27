@@ -3916,6 +3916,7 @@ label.act-field input[type=number] {
 .sr-mod-row, .sr-modifier-row { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
 .sr-mod-mount { flex: 0 0 48px; font-size: 10px; color: var(--sr-dim); text-transform: uppercase; }
 .sr-mod-mount.sr-mod-mount-over { color: var(--sr-amber); }
+.sr-mod-integral { font-size: 10px; color: var(--sr-muted); border: 1px solid var(--sr-border); border-radius: var(--r); padding: 0 4px; }
 .sr-mod-img { width: 20px; height: 20px; border: none; flex: 0 0 20px; }
 .sr-mod-name { flex: 1; cursor: pointer; color: var(--sr-text); }
 .sr-mod-changes { font-size: 11px; color: var(--sr-gold); }

@@ -571,12 +571,45 @@
         "accessories": "Smartlink",
         "bookPage": "cc.19",
         "notes": "",
-        "isAoE": false
+        "isAoE": false,
+        "installed": [
+          {
+            "_id": "integral00000001",
+            "type": "gear",
+            "name": "Smartlink level I (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": null,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Smartlink\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276). An internal smartgun system — no mount (SR3 p.281).</p>",
+              "modifiers": [
+                {
+                  "target": "smartgun",
+                  "value": 1,
+                  "perRating": false
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.976939c2631d86f8"
+              }
+            }
+          }
+        ]
       },
       "effects": [],
       "folder": null,
       "sort": 0,
-      "flags": {},
+      "flags": {
+        "The2ndChumming3e": {
+          "integralDone": true
+        }
+      },
       "_stats": {
         "coreVersion": "14.364",
         "systemId": "The2ndChumming3e",

@@ -621,7 +621,36 @@
         "streetIndex": "1",
         "accessories": "Laser Sight",
         "bookPage": "cc.19",
-        "notes": ""
+        "notes": "",
+        "installed": [
+          {
+            "_id": "integral00000001",
+            "type": "gear",
+            "name": "Laser Sight (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": null,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Laser Sight\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Top/Under</p>",
+              "modifiers": [
+                {
+                  "target": "laserSight",
+                  "value": 1,
+                  "perRating": false
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.dc95a8d435cb7c70"
+              }
+            }
+          }
+        ]
       },
       "_id": "AvZRn7yXI7cmnmo1",
       "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-heavy.svg",
@@ -632,7 +661,11 @@
         "default": 0,
         "ge55aFMax5sNd2Ho": 3
       },
-      "flags": {},
+      "flags": {
+        "The2ndChumming3e": {
+          "integralDone": true
+        }
+      },
       "_stats": {
         "coreVersion": "14.364",
         "systemId": "The2ndChumming3e",
@@ -698,7 +731,57 @@
         "streetIndex": "4",
         "accessories": "Low-Light or Thermo Mag:(3) Scope, Gas Vent II(2RC), Silencer",
         "bookPage": "sr3.278",
-        "notes": ""
+        "notes": "",
+        "installed": [
+          {
+            "_id": "integral00000001",
+            "type": "gear",
+            "name": "Gas Vent (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": 2,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Gas Vent II(2RC)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Barrel</p>",
+              "modifiers": [
+                {
+                  "target": "rc",
+                  "value": 1,
+                  "perRating": true
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.a4b62ae9cd2730a3"
+              }
+            }
+          },
+          {
+            "_id": "integral00000002",
+            "type": "gear",
+            "name": "Silencer (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": null,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Silencer\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Barrel</p>",
+              "modifiers": []
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.510317e11b10f1f7"
+              }
+            }
+          }
+        ]
       },
       "_id": "T1fsGyYJFTXa1ZWD",
       "img": "systems/The2ndChumming3e/styles/icons/firearm-sniper-rifle.svg",
@@ -709,7 +792,11 @@
         "default": 0,
         "ge55aFMax5sNd2Ho": 3
       },
-      "flags": {},
+      "flags": {
+        "The2ndChumming3e": {
+          "integralDone": true
+        }
+      },
       "_stats": {
         "coreVersion": "14.364",
         "systemId": "The2ndChumming3e",
