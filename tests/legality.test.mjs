@@ -113,8 +113,10 @@ export async function run(t) {
   t.is('…the name must match exactly', Legality.fillDelta(bare('firearm', 'ares predator')), null);
   t.is('…never over a code someone typed', Legality.fillDelta(bare('firearm', 'Ares Predator', 'Legal')), null);
   t.is('…a name no document has stays blank', Legality.fillDelta(bare('firearm', 'Homebrew Popgun')), null);
-  t.is('…a source that names one of our documents decides alone (no name second-guess)',
-    Legality.fillDelta({ ...bare('firearm', 'Ares Predator'), _stats: { compendiumSource: 'Compendium.The2ndChumming3e.sr3e-sr3-firearms.Item.nosuchdoc' } }), null);
+  t.eq('…a source whose document has gone (moved pack) falls back to the name',
+    Legality.fillDelta({ ...bare('firearm', 'Ares Predator'), _stats: { compendiumSource: 'Compendium.The2ndChumming3e.sr3e-sr3-firearms.Item.nosuchdoc' } }), { 'system.legality': '6P-E' });
+  t.eq('…and a source with a code decides alone',
+    Legality.fillDelta({ ...bare('firearm', 'Homebrew Popgun'), _stats: { compendiumSource: 'Compendium.The2ndChumming3e.sr3e-sr3-firearms.Item.sr3e-firearm-0072' } }), { 'system.legality': '6P-E' });
   t.eq('…and a foreign source (another module) still falls back to the name',
     Legality.fillDelta({ ...bare('firearm', 'Ares Predator'), _stats: { compendiumSource: 'Compendium.other.pack.Item.abcdefghijklmnop' } }), { 'system.legality': '6P-E' });
   t.is('…cyberware is never filled by name', Legality.fillDelta(bare('cyberware', 'Ares Predator')), null);

@@ -1,0 +1,31 @@
+{
+  "_key": "!items!4a93aae1485906af",
+  "doc": {
+    "_id": "4a93aae1485906af",
+    "name": "Trode Jack",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-cable.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 500,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": "NA",
+      "bookPage": "mat.169",
+      "description": "<p><strong>Legal:</strong> Legal</p>",
+      "legality": "Legal"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,31 @@
+{
+  "_key": "!items!3e21309c7fdb57a8",
+  "doc": {
+    "_id": "3e21309c7fdb57a8",
+    "name": "Casing (Higher Barrier rating)",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-cable.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 500,
+      "weight": 0,
+      "availability": "Rating/(12×rating) hrs",
+      "streetIndex": ".5",
+      "bookPage": "mat.169",
+      "description": "<p><strong>Legal:</strong> Legal</p>",
+      "legality": "Legal"
+    }
+  },
+  "embedded": {}
+}

@@ -67,12 +67,13 @@ export const Legality = {
    * ⚠ **Name fallback (2026-10-26):** the hand-kept packs' ids (`sr3e-firearm-0072`) are not valid Foundry document
    * ids, so a copy dropped from them carries a null `compendiumSource` and the link finds nothing. With no usable
    * source the code is read by exact item type + name (`LEGALITY_BY_NAME`; a name two documents give different codes
-   * is not in it). A source that names one of our documents decides alone — name matching never second-guesses it.
+   * is not in it). A source that names a document with a code decides alone; one whose document carries none (or has moved) falls back to the name.
    */
   fillDelta(item, table = LEGALITY, names = LEGALITY_BY_NAME) {
     if (!LEGALITY_TYPES.includes(item?.type) || String(item.system?.legality ?? '').trim()) return null;
     const m = SOURCE.exec(String(item?._stats?.compendiumSource ?? ''));
-    const code = m ? table[m[1]]?.[m[2]]?.[0] : names[`${item.type}|${item.name}`];
+    // ⚠ A source whose document has since moved (the Matrix components went to their own pack, 2026-10-27) finds nothing: read the name.
+    const code = (m && table[m[1]]?.[m[2]]?.[0]) || names[`${item.type}|${item.name}`];
     return code ? { 'system.legality': code } : null;
   },
 

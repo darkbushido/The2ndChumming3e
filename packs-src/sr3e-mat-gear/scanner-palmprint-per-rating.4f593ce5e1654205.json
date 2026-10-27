@@ -1,0 +1,31 @@
+{
+  "_key": "!items!4f593ce5e1654205",
+  "doc": {
+    "_id": "4f593ce5e1654205",
+    "name": "Scanner — Palmprint (per Rating)",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-cable.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 0,
+      "weight": 0,
+      "availability": "(Rating+1)/72 hrs",
+      "streetIndex": "2",
+      "bookPage": "mat.169",
+      "description": "<p>Cost Rating×300¥ — by rating; set the cost for the rating bought.</p><p><strong>Legal:</strong> Legal</p>",
+      "legality": "Legal"
+    }
+  },
+  "embedded": {}
+}

@@ -38,7 +38,7 @@ import { dirname, join } from 'node:path';
 import { copyPacks } from './lib/pack-copy.mjs';
 import { readSourceDir, writeSourceDir, rebuildPack } from './lib/pack-source.mjs';
 import { AmmoStock } from '../scripts/data/ammo-stock.mjs';
-import { PLAYABLE_EDITIONS } from '../scripts/config.js';
+import { PLAYABLE_EDITIONS, SOURCE_BOOKS } from '../scripts/config.js';
 // The system's own rating reader — the name, then GEAR_RATINGS — so a generated item agrees with
 // `itemRating`, migration 0.5.2 and `tools/patch-name-ratings.mjs`, which would otherwise fill it later.
 import { knownRating, ratingFromName } from '../scripts/data/item-rating.mjs';
@@ -55,7 +55,7 @@ export const GENERATOR = 'build-default-gear';
 
 /** Default-on books per edition — `SOURCE_BOOKS` with `enabled: true` (asserted by a test). */
 export const EDITION_BOOKS = {
-  SR3: ['sr3', 'cc', 'mm', 'mits', 'r3', 'matrix-defragged'],
+  SR3: ['sr3', 'cc', 'mm', 'mits', 'r3', 'mat', 'matrix-defragged'],
   SR2: ['sr2', 'ct', 'ssc', 'st', 'fof', 'pna'],
 };
 const SOURCES = [
@@ -335,6 +335,16 @@ export function fixAccessories(rows) {
   });
 }
 
+/**
+ * The Matrix book's Miscellaneous Component Table (Matrix p.169), filed upstream under core `sr3.302` (the bodyware page).
+ * The maintainer's ruling (2026-10-27): the Matrix book is a default book, and Matrix Defragged points to this table (pp.167-169).
+ * The cyberware rows that share the bogus page (hand blade, razors, spur) are not Matrix gear. Pure.
+ */
+export const MATRIX_COMPONENT_PAGE = 'mat.169';
+export const retagMatrixComponents = rows => rows.map(({ row, category }) =>
+  row.BookPage === 'sr3.302' && !/(hand blade|h\.?\s*razor|razors?|spur)/i.test(row.Name)
+    ? { row: { ...row, BookPage: MATRIX_COMPONENT_PAGE }, category } : { row, category });
+
 function rowsByCategory(file) {
   const data = JSON.parse(readFileSync(join(REPO, file), 'utf8'));
   const out = [];
@@ -344,7 +354,7 @@ function rowsByCategory(file) {
       for (const x of Object.values(o)) if (x && typeof x === 'object') walk(x); } };
     walk(v);
   }
-  return dropArmorRows(fixAccessories(splitImagingScopes(out)));
+  return retagMatrixComponents(dropArmorRows(fixAccessories(splitImagingScopes(out))));
 }
 
 const VARIANT_FIELDS = ['Rating', 'Cost', 'Weight', 'Concealability', 'Damage', 'Ballistic', 'Impact', 'Availability'];
@@ -489,7 +499,7 @@ export async function plan(manifest, shippedNames) {
 
 /** Add the packs (with their book flag) and their sidebar folders to system.json. */
 export function declarePacks(manifest, byPack) {
-  const bookLabel = book => manifest.packs.find(p => p.flags?.The2ndChumming3e?.book === book)?.label ?? book;
+  const bookLabel = book => manifest.packs.find(p => p.flags?.The2ndChumming3e?.book === book)?.label ?? SOURCE_BOOKS[book]?.label ?? book;
   const wg = manifest.packFolders.find(f => f.name === 'Weapons & Gear');
   for (const [name, { book, type }] of byPack) {
     if (!manifest.packs.some(p => p.name === name)) {

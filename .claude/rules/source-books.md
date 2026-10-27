@@ -45,7 +45,7 @@ generator's gear data (`mm.064`, `sr3.304`) — not its `Books.json`.
 | | Codes |
 |---|---|
 | SR2, on by default | `sr2` (core) `ct` `ssc` `st` `fof` `pna` |
-| SR3, on by default | `sr3` (core) `cc` `mm` `mits` `r3` `matrix-defragged` |
+| SR3, on by default | `sr3` (core) `cc` `mm` `mits` `r3` `mat` `matrix-defragged` |
 | Off by default | `sota` `sota2` `tal` `twl` `fra` `ger` `ssg` `tss` (tss is a fan publication) |
 
 `tests/default-gear.test.mjs` pins the default-on set against `SOURCE_BOOKS`.
@@ -109,8 +109,12 @@ file per *original* pack, each `[{ _key, bucket, doc }]` — restore by writing 
 - ⚠ **`pw` has no `SOURCE_BOOKS` entry, deliberately** (empty checkbox). Restoring it needs its own pack **and**
   an off-by-default registry entry in the same commit; the test keeps them in step.
 
-### The Matrix sourcebook (`mat`) — audited, deliberately not registered
+### The Matrix sourcebook (`mat`) — a default book since 2026-10-27
 `Shadowrun 3e - Matrix.pdf` adds skills (pp.22-27; much already in `SR3ESkills`, unattributed and unhideable),
-no spells, and gear (pp.52-103) none of which is imported. Register `mat` only once something carries it.
+no spells, and gear (pp.52-103). The maintainer's ruling (2026-10-27): **it is a default book**, because Matrix Defragged
+sends GMs to its Cyberdeck System Add-ons and Miscellaneous Components (Matrix pp.167-169). Its one pack, `sr3e-mat-gear`,
+is generated: the Miscellaneous Component Table (p.169, **with** a Legality column) is filed upstream under core
+`sr3.302` (the bodyware page), so `tools/build-default-gear.mjs` re-tags those rows to `mat.169`
+(`retagMatrixComponents`; the cyberware rows sharing the page — hand blade, razors, spur — stay out).
 Keep the three Matrix sources distinct: **`sr3`** = core Ch. 8 (ODM-\* rawdata), **`mat`** = this sourcebook,
 **`matrix-defragged`** = the community ruleset (MDF-\* rawdata).

@@ -1,0 +1,31 @@
+{
+  "_key": "!items!b49dec7a0e76b946",
+  "doc": {
+    "_id": "b49dec7a0e76b946",
+    "name": "Off-Line Storage (per Mp)",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-cable.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 50,
+      "weight": 0,
+      "availability": "2/24 hrs",
+      "streetIndex": "2",
+      "bookPage": "mat.169",
+      "description": "<p><strong>Legal:</strong> 9P-V</p>",
+      "legality": "Legal"
+    }
+  },
+  "embedded": {}
+}

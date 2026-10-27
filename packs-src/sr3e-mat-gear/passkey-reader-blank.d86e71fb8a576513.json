@@ -1,0 +1,31 @@
+{
+  "_key": "!items!d86e71fb8a576513",
+  "doc": {
+    "_id": "d86e71fb8a576513",
+    "name": "Passkey Reader (Blank)",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-cable.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 250,
+      "weight": 0,
+      "availability": "2/24 hrs",
+      "streetIndex": "2",
+      "bookPage": "mat.169",
+      "description": "<p><strong>Legal:</strong> Legal</p>",
+      "legality": "9P-V"
+    }
+  },
+  "embedded": {}
+}

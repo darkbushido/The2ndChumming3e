@@ -1,0 +1,31 @@
+{
+  "_key": "!items!877cdac0634e5b64",
+  "doc": {
+    "_id": "877cdac0634e5b64",
+    "name": "Microwave Dish — Fixed Base",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-cable.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 2500,
+      "weight": 0,
+      "availability": "8/1 mo",
+      "streetIndex": "1",
+      "bookPage": "mat.169",
+      "description": "<p><strong>Legal:</strong> Legal</p>",
+      "legality": "Legal"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,31 @@
+{
+  "_key": "!items!b6bf03bd617aa0eb",
+  "doc": {
+    "_id": "b6bf03bd617aa0eb",
+    "name": "Signal Locator — Simlink (per Rating)",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-cable.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 0,
+      "weight": 0,
+      "availability": "8/2 wks",
+      "streetIndex": "2",
+      "bookPage": "mat.169",
+      "description": "<p>Cost 25000+(Rating×5000)¥ — by rating; set the cost for the rating bought.</p><p><strong>Legal:</strong> 8P-L</p>",
+      "legality": "8P-U"
+    }
+  },
+  "embedded": {}
+}

@@ -1,0 +1,31 @@
+{
+  "_key": "!items!2ca70ae76ea72f75",
+  "doc": {
+    "_id": "2ca70ae76ea72f75",
+    "name": "Chip Reader",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-cable.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {
+      "The2ndChumming3e": {
+        "generatedBy": "build-default-gear",
+        "upstreamCategory": "Miscellaneous Components"
+      }
+    },
+    "system": {
+      "quantity": 1,
+      "category": "Miscellaneous Components",
+      "concealability": "",
+      "rating": null,
+      "cost": 200,
+      "weight": 0,
+      "availability": "Always",
+      "streetIndex": ".75",
+      "bookPage": "mat.169",
+      "description": "<p><strong>Legal:</strong> Legal</p>",
+      "legality": "Legal"
+    }
+  },
+  "embedded": {}
+}

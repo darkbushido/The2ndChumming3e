@@ -981,7 +981,7 @@
         "weight": 0,
         "availability": "2/48 hrs",
         "streetIndex": "1",
-        "bookPage": "sr3.302",
+        "bookPage": "mat.169",
         "description": "<p><strong>Legal:</strong> Legal</p>",
         "legality": "Legal"
       },
@@ -993,7 +993,7 @@
       },
       "flags": {},
       "_stats": {
-        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.95ebfcfe395d95ae",
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-mat-gear.Item.8bb0e38e06eda55a",
         "duplicateSource": null,
         "coreVersion": "14",
         "systemId": "The2ndChumming3e",
