@@ -23,7 +23,8 @@
       "availability": "Always",
       "streetIndex": "1",
       "bookPage": "sr3.302",
-      "description": "<p>Cost 100-1000¥ (a range — the book's).</p><p><strong>Legal:</strong> Legal</p>"
+      "description": "<p>Cost 100-1000¥ (a range — the book's).</p><p><strong>Legal:</strong> Legal</p>",
+      "legality": "Legal"
     }
   },
   "embedded": {}

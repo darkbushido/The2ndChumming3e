@@ -23,7 +23,8 @@
       "availability": "2/24 hrs",
       "streetIndex": "2",
       "bookPage": "sr3.302",
-      "description": "<p><strong>Legal:</strong> Legal</p>"
+      "description": "<p><strong>Legal:</strong> Legal</p>",
+      "legality": "9P-V"
     }
   },
   "embedded": {}

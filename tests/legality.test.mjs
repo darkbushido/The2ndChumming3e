@@ -140,6 +140,8 @@ export async function run(t) {
   t.is('Arsenic is Legal (M&M p.158)', by('drug', 'Arsenic'), 'Legal');
   t.is('Green Ring 3 is 2-K (M&M p.158)', by('drug', 'Green Ring 3'), '2-K');
   t.is('the FAB Strain-I 500 m3 aerosol is 8P-U (MitS p.170)', by('gear', 'FAB Strain-I 500 m3 aerosol'), '8P-U');
+  t.is('Matrix, Miscellaneous Component Table (p.169): a Passkey Reader (Blank) is 9P-V', by('gear', 'Passkey Reader (Blank)'), '9P-V');
+  t.is('…and a Trode Jack is Legal', by('gear', 'Trode Jack'), 'Legal');
   t.is('left for the maintainer, not guessed: a Rigger 3 ring mount', by('vehiclemod', 'Ring Mount (Vehicle)'), null);
   t.is('…an integrated armor option', by('armor', 'Thermo Vision (Armor)'), null);
   t.is('…a Benelli (not in any book of the library)', by('firearm', 'Benelli M1014'), null);
