@@ -7794,5 +7794,18 @@ blank or 0, `recoilModIntegral` blank).
   each with its own accessories text and integral mod. A world's old single Panther is left as it is (which version it is,
   only the GM knows).
 - **Left:** the Ares Heavy Laser Plus's tripod (the table prints "—"), and the TSS guns whose stocks step b made integral
-  mods — the M-16B, VC Boxlock Hammerless, Win. 1300 Defender SS — whose book is not in the library: [#281](TODO.md#281).
+  mods — the M-16B, VC Boxlock Hammerless, Win. 1300 Defender SS — whose book is not in the library: [#281](#281).
   `tests/printed-rc.test.mjs` pins that list.
+
+## 281. ✅ TSS and France firearms: Recoil Compensation unread — **found 2026-10-27** · closed out of scope `7bfb0051`
+
+**Closed — out of scope (the maintainer, 2026-10-27: *"TSS is out of scope"*).** Nothing is changed for these guns; the
+three TSS stocks stay as step b made them. The maintainer is weighing a wider clean-up — dropping data that cannot be
+verified against a book in the library — which would be its own item.
+
+TODO 280 filled every gun's printed RC from the Cannon Companion and SR3 tables. The TSS guns (`sr3e-tss-firearms`, 32) and
+France's FAM 95 (`fra.141`) carry none, and their books are not in the maintainer's PDF library, so nothing could be read.
+Three TSS guns have a stock that step b (TODO 276) made an integral mod — the M-16B ("Fold Stock"), VC Boxlock Hammerless and
+Win. 1300 Defender SS ("Collapsible stock") — so the 🔧 list shows an RC the gun's own figure does not include. **Wanted:** the
+books' RC column, or the maintainer's word that these are blank (and whether a rifle or shotgun stock gives RC at all — SR3
+p.277 says the core rifle stocks do not). `tests/printed-rc.test.mjs` lists the three.
