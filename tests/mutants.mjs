@@ -24,6 +24,7 @@
  * mutants will silently survive — which this harness will then report, correctly.
  */
 
+const { LEGALITY: LEGALITY_TABLE } = await import('../scripts/data/legality-table.mjs');
 const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
@@ -2284,6 +2285,21 @@ export const MUTANTS = [
       if (as) return { status: 'deferred', code: c, permit: false, defersTo: as[1] };
       const m = /^(\(?[^)]*\)?|\d+)\s*(P?)\s*-\s*([A-Z]{1,3})/i.exec(c);
       return m && c ? { status: 'restricted', code: c, permit: m[2].toUpperCase() === 'P', defersTo: '' } : { status: 'unknown', code: c, permit: false, defersTo: '' };
+    },
+  },
+  {
+    id:     'legality-fill-source-only',
+    suite:  'legality',
+    module: '../scripts/data/legality.mjs', klass: 'Legality', method: 'fillDelta',
+    was:    'the 0.9.0 Legality fill read the code only through _stats.compendiumSource — but the hand-kept packs\' ids '
+          + '("sr3e-firearm-0072") are not valid document ids, so a dropped gun carries a null source and 35 of 35 world items '
+          + 'stayed blank (live check, 2026-10-26). The fill must fall back to type + exact name',
+    impl:   (item, table = LEGALITY_TABLE) => {
+      if (!['gear', 'firearm', 'melee', 'projectile', 'thrown', 'ammunition', 'armor', 'bioware', 'vehiclemod', 'medical', 'drug'].includes(item?.type)
+        || String(item.system?.legality ?? '').trim()) return null;
+      const m = /^Compendium\.The2ndChumming3e\.([^.]+)\.Item\.([A-Za-z0-9_-]+)$/.exec(String(item?._stats?.compendiumSource ?? ''));
+      const code = m && table?.[m[1]]?.[m[2]]?.[0];
+      return code ? { 'system.legality': code } : null;
     },
   },
   {

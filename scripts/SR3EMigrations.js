@@ -589,8 +589,11 @@ const MIGRATIONS = [
       if (note) console.log(`SR3E | 0.9.0: ${note}`);
       // ⚠ The rename can repoint a dead link (a deleted level document) — read the legality from where it now points.
       const delta = ModFor.migrateDelta(item) ?? {};
-      const linked = delta['_stats.compendiumSource']
-        ? { ...item, _stats: { ...item._stats, compendiumSource: delta['_stats.compendiumSource'] } } : item;
+      // ...and the name it now has, for the copies with no usable source (the hand-kept packs' ids are not valid document ids).
+      const linked = {
+        ...item, name: delta.name ?? item.name,
+        _stats: { ...item._stats, compendiumSource: delta['_stats.compendiumSource'] ?? item._stats?.compendiumSource },
+      };
       // The books' Legality Codes (2026-10-25): FILLED while blank from the item's compendium document — never overwritten.
       Object.assign(delta, Legality.fillDelta(linked) ?? {});
       return Object.keys(delta).length ? delta : null;
