@@ -17,6 +17,7 @@ import { SpellLimits } from '../data/spell-limits.mjs';
 import { WillingTarget } from '../data/willing-target.mjs';
 import { SpellTarget } from '../data/spell-target.mjs';
 import { RangeBands } from '../data/range-bands.mjs';
+import { VehicleMounts } from '../data/vehicle-mounts.mjs';
 import { Fling } from '../data/fling.mjs';
 import { ActorRef, actorFrom, actorRef, tokenRows } from '../data/actor-ref.mjs';
 
@@ -1358,8 +1359,9 @@ export class SR3EItem extends Item {
             mode:           burst.mode,
             roundsBefore:   actor.system.roundsFiredThisPhase ?? 0,
             roundsThisShot: SR3EItem.roundsExpended({ ...fireModeResult, rounds: burst.rounds }),
-            totalComp:      (actor.system.recoilCompensation ?? 0) + (fireModeResult.weaponComp ?? IntegralRC.totalComp(this.system, false)),
-            isHeavy, isShotgun, shortBurst,
+            totalComp:      (actor.system.recoilCompensation ?? 0) + (fireModeResult.weaponComp ?? IntegralRC.totalComp(this.system, false))
+              + (fireModeResult.mountComp ?? 0),
+            isHeavy, isShotgun, shortBurst, halve: !!fireModeResult.halve,
           });
           ui.notifications.warn(burst.mode === 'SS'
             ? `${this.name} has 1 round left — resolving as a single shot, not a burst.`
@@ -1372,8 +1374,9 @@ export class SR3EItem extends Item {
       // roundsExpended for why the three used to disagree.
       fireModeRounds = SR3EItem.roundsExpended(fireModeResult);
       recoilCtx = { mode: fireModeResult.mode, roundsBefore: actor.system.roundsFiredThisPhase ?? 0, roundsThisShot: fireModeRounds,
-        totalComp: (actor.system.recoilCompensation ?? 0) + (fireModeResult.weaponComp ?? IntegralRC.totalComp(this.system, false)),
-        isHeavy, isShotgun, shortBurst, tn: fireModeResult.recoilTN ?? 0 };
+        totalComp: (actor.system.recoilCompensation ?? 0) + (fireModeResult.weaponComp ?? IntegralRC.totalComp(this.system, false))
+          + (fireModeResult.mountComp ?? 0),
+        isHeavy, isShotgun, shortBurst, halve: !!fireModeResult.halve, tn: fireModeResult.recoilTN ?? 0 };
 
       // ── Per-phase firing allowance ────────────────────────────────────────
       // Warns, never blocks: the caps are stated in Actions and this system does not model
@@ -4163,11 +4166,14 @@ static multiTargetTN(ordinal) {
  * @param {number} o.totalComp       actor recoil comp + weapon recoil mod
  * @param {boolean} [o.isHeavy]      LMG/MMG/HMG/MinG
  * @param {boolean} [o.isShotgun]    ShtG
+ * @param {boolean} [o.halve]        on a vehicle's fixed mount or turret: "reduce recoil modifiers by half before applying
+ *                                    recoil compensation", which cancels the heavy-weapon double (R3R pp.136, 140; rounded
+ *                                    down — the maintainer, 2026-10-27; TODO 234). The shotgun burst double still applies.
  * @returns {number} TN penalty, never negative
  */
 static recoilTN({ mode, roundsBefore = 0, roundsThisShot = 0, totalComp = 0,
-                  isHeavy = false, isShotgun = false, shortBurst = false }) {
-  const mult = (isHeavy || (isShotgun && mode === 'BF')) ? 2 : 1;
+                  isHeavy = false, isShotgun = false, shortBurst = false, halve = false }) {
+  const mult = ((isHeavy && !halve) || (isShotgun && mode === 'BF')) ? 2 : 1;
   // A SHORT BURST is its own case, not a burst that happens to fire two: "If a burst ends
   // up being a round short because of insufficient ammunition in the clip… A +2 recoil
   // modifier also applies" (p.115). So it contributes 2, not 3 — and a ONE-round burst is
@@ -4175,7 +4181,8 @@ static recoilTN({ mode, roundsBefore = 0, roundsThisShot = 0, totalComp = 0,
   const own  = mode === 'BF' ? (shortBurst ? 2 : 3)
              : mode === 'FA' ? Math.max(0, Number(roundsThisShot) || 0)
              : 0;
-  return Math.max(0, (roundsBefore + own) - totalComp) * mult;
+  const uncompensated = roundsBefore + own;
+  return Math.max(0, (halve ? Math.floor(uncompensated / 2) : uncompensated) - totalComp) * mult;
 }
 
 /**
@@ -4239,12 +4246,17 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   const weaponComp   = IntegralRC.totalComp(weapon.system, inUse0);
   const modsRC       = ItemMods.effective(weapon).rc;
   const roundsBefore = actor.system.roundsFiredThisPhase ?? 0;
+  // A gun on a vehicle's mount (TODO 234, R3R pp.136-140): a fixed mount or turret halves the recoil before compensation and
+  // cancels the heavy double; a pintle adds RC 2, a ring RC 6 — its own box, never written back to the gun or the vehicle.
+  const mount        = actor.type === 'vehicle' ? VehicleMounts.recoilFor(actor.items, weapon) : null;
+  const mountComp0   = mount?.rc ?? 0;
+  const halve        = !!mount?.halve;
 
   // Delegates to the pure `SR3EItem.recoilTN` so the dialog's preview and the TN actually
   // applied cannot drift apart — they are now the same function, and it is unit-tested.
   const recoilForMode = (mode, rounds, totalComp, faRounds = 3) =>
     SR3EItem.recoilTN({ mode, roundsBefore: rounds, roundsThisShot: faRounds,
-                        totalComp, isHeavy, isShotgun });
+                        totalComp, isHeavy, isShotgun, halve });
 
   // Stage-up helper
   function stageUp(level, times) {
@@ -4260,7 +4272,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     FA: { label: 'FA — Full Auto',        rounds: 3, powerMod: 0, stageMod: 0, note: 'Power +rounds, level +1/3 rounds (3–10 rounds, Complex Action).' },
   };
 
-  const totalComp = actorComp + weaponComp;
+  const totalComp = actorComp + weaponComp + mountComp0;
   const modeRows = availableModes.map((m, i) => {
     const info    = modeInfo[m] ?? { label: m, rounds: 1, powerMod: 0, stageMod: 0, note: '' };
     const isFirst = i === 0;
@@ -4342,9 +4354,12 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
         <input type="checkbox" id="sr-integral" ${inUse0 ? 'checked' : ''}/> Integral accessories in use (stock folded out / tripod set up) — RC ${weapon.system.recoilMod ?? 0} → <strong>${weapon.system.recoilModIntegral}</strong>
       </label>` : ''}
       ${ItemMods.pods(weapon).length ? `<span style="flex-basis:100%;font-size:11px;color:var(--sr-muted)">${ItemMods.pods(weapon).map(p => foundry.utils.escapeHTML(p.name)).join(', ')} — the GM decides whether it is set up (shooter stationary), in the GM's window.</span>` : ''}
+      ${mount ? `${mount.rc ? `<span>+</span><span title="${foundry.utils.escapeHTML(mount.label)}">Mount
+        <input type="number" id="sr-mount-comp" value="${mountComp0}" min="0" max="20" style="width:42px"/></span>` : ''}
+      <span class="sr-mount-recoil" style="flex-basis:100%;font-size:11px;color:var(--sr-muted)">🔩 ${foundry.utils.escapeHTML(mount.label)}</span>` : ''}
       <span>= <strong id="sr-total-comp">${totalComp}</strong></span>
       <span>&nbsp;|&nbsp; Rounds fired this phase: <strong id="sr-rounds-fired">${roundsBefore}</strong></span>
-      ${isHeavy ? '<span style="color:var(--sr-amber)">&nbsp;|&nbsp; ⚠ Heavy weapon: 2× uncompensated recoil</span>' : ''}
+      ${isHeavy && !halve ? '<span style="color:var(--sr-amber)">&nbsp;|&nbsp; ⚠ Heavy weapon: 2× uncompensated recoil</span>' : ''}
       ${isShotgun ? '<span style="color:var(--sr-amber)">&nbsp;|&nbsp; ⚠ Shotgun: 2× uncompensated recoil in Burst Fire</span>' : ''}
       <button id="sr-reset-recoil" type="button" style="margin-left:auto;padding:1px 7px;font-size:10px;cursor:pointer;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-muted)">↺ Reset</button>
     </div>`;
@@ -4363,7 +4378,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const refreshPreviews = () => {
       const aComp = Math.max(0, parseInt(el.querySelector('#sr-actor-comp')?.value)  || 0);
       const wComp = Math.max(0, parseInt(el.querySelector('#sr-weapon-comp')?.value) || 0);
-      const total = aComp + wComp;
+      const mComp = Math.max(0, parseInt(el.querySelector('#sr-mount-comp')?.value)  || 0);
+      const total = aComp + wComp + mComp;
       const rounds = parseInt(el.querySelector('#sr-rounds-fired')?.textContent) || 0;
       const totalEl = el.querySelector('#sr-total-comp');
       if (totalEl) totalEl.textContent = String(total);
@@ -4447,13 +4463,15 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           // Recoil per mode (see SR3EItem.recoilTN). BF and FA count their OWN rounds —
           // `rounds` is what this shot fires — while SS/SA count only what came before.
           // Passing `rounds` here is what makes Wedge's second burst +2 rather than +0.
-          const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp,
+          const mComp = Math.max(0, parseInt(el.querySelector('#sr-mount-comp')?.value) || 0);
+          const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp + mComp,
                                          SR3EItem.roundsExpended({ rounds, roundsWasted }));
           const shotgunSpread = Math.max(0, parseInt(el.querySelector('#sr-shot-spread')?.value) || 0);
           const chokeEl = el.querySelector('#sr-shot-choke');
           const choke   = chokeEl ? Shotgun.choke(chokeEl.value) : null;
           if (choke !== null && choke !== weapon.system.choke) await weapon.update({ 'system.choke': choke });
-          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty, shotgunSpread, choke, weaponComp: wComp, integralInUse: inUse };
+          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty, shotgunSpread, choke, weaponComp: wComp, integralInUse: inUse,
+            mountComp: mComp, halve };
         },
       },
       { label: 'Cancel', action: 'cancel' },

@@ -1,6 +1,7 @@
 import { vcrLevel, displayName } from '../data/item-rating.mjs';
 import { CyberCapacity } from '../data/cyber-capacity.mjs';
 import { VehicleBudget } from '../data/vehicle-budget.mjs';
+import { VehicleMounts } from '../data/vehicle-mounts.mjs';
 import { Rigging } from '../data/rigging.mjs';
 import { StallSpeed } from '../data/stall-speed.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
@@ -80,6 +81,22 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     this._selfUpdateHookId = Hooks.on('updateActor', (updated) => {
       if (updated.id === this.actor.id) this.render();
     });
+    // A weapon's mount (TODO 234): the picker has no form name, so it writes the weapon itself.
+    this.element.querySelectorAll('.sr-mount-pick').forEach(sel => sel.addEventListener('change', event => {
+      event.stopPropagation();
+      this.actor.items.get(sel.dataset.itemId)?.update({ 'system.mountId': sel.value });
+    }));
+  }
+
+  /** The Mount picker on a weapon row — the vehicle's mounts (R3R pp.135-141), or none. */
+  _mountPicker(actor, w) {
+    const mounts = actor.items.filter(i => VehicleMounts.kindOf(i));
+    if (!mounts.length && !w.system.mountId) return '';
+    const cur = String(w.system.mountId ?? '');
+    const opts = [`<option value="" ${cur ? '' : 'selected'}>— no mount —</option>`,
+      ...mounts.map(m => `<option value="${m.id}" ${m.id === cur ? 'selected' : ''}>${foundry.utils.escapeHTML(displayName(m))}</option>`)];
+    if (cur && !mounts.some(m => m.id === cur)) opts.push(`<option value="${cur}" selected>⚠ a mount no longer here</option>`);
+    return `<select class="sr-mount-pick" data-item-id="${w.id}" data-tooltip="The mount this weapon sits on (R3R pp.135-141)">${opts.join('')}</select>`;
   }
 
   _onClose(options) {
@@ -363,7 +380,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const fRows = catFirearms.length
       ? catFirearms.map(w => `
           <div class="item-row" data-item-id="${w.id}">
-            <span class="item-name">${w.name}</span>
+            <span class="item-name">${w.name}${this._mountPicker(actor, w)}</span>
             <span class="item-cell">${w.system.damage || '—'}</span>
             <span class="item-cell">${w.system.mode || '—'}</span>
             <span class="item-cell">${w.system.concealability ?? '—'}</span>
@@ -375,7 +392,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const vwRows = vehWeapons.length
       ? vehWeapons.map(w => `
           <div class="item-row" data-item-id="${w.id}">
-            <span class="item-name">${w.name}</span>
+            <span class="item-name">${w.name}${this._mountPicker(actor, w)}</span>
             <span class="item-cell">${w.system.weaponType || '—'}</span>
             <span class="item-cell">${w.system.damage || '—'}</span>
             <span class="item-cell">${w.system.mode || '—'}</span>
@@ -393,7 +410,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="list-header"><span>Name</span><span>Damage</span><span>Mode</span><span>Conceal</span><span>Ammo</span><span></span></div>
         ${uncatFirearms.map(w => `
           <div class="item-row" data-item-id="${w.id}">
-            <span class="item-name">${w.name}</span>
+            <span class="item-name">${w.name}${this._mountPicker(actor, w)}</span>
             <span class="item-cell">${w.system.damage || '—'}</span>
             <span class="item-cell">${w.system.mode || '—'}</span>
             <span class="item-cell">${w.system.concealability ?? '—'}</span>
@@ -459,7 +476,8 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         <span class="sr-budget${over(budget.load)}" data-tooltip="Weight the mods add, against the vehicle's Load (${VehicleBudget.PAGE}).">Load ${budget.load.used} / ${budget.load.of} kg</span>
         ${budget.unread.length ? `<span class="sr-budget-unread" data-tooltip="${esc(budget.unread.join(', '))}">${budget.unread.length} not counted</span>` : ''}
       </div>
-      ${budget.warnings.map(w => `<p class="sr-budget-warn">⚠ ${esc(w)}</p>`).join('')}`;
+      ${budget.warnings.map(w => `<p class="sr-budget-warn">⚠ ${esc(w)}</p>`).join('')}
+      ${this._mountsSummary(actor, esc)}`;
 
     return `<div class="tab ${this._activeTab === 'mods' ? 'active' : ''}" data-tab="mods" style="overflow-y:auto">
       ${head}
@@ -469,6 +487,25 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       ${rows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="vehiclemod">+ Add Mod</button>
     </div>`;
+  }
+
+  /**
+   * The vehicle's weapon mounts (TODO 234): points against Body, each mount's weapons, the Signature the mounts cost — shown,
+   * never applied (the maintainer, 2026-10-27) — and the warnings. Nothing when it has no mounts.
+   */
+  _mountsSummary(actor, esc) {
+    const m = VehicleMounts.summary(actor, actor.items);
+    if (!m.mounts.length) return '';
+    const over = m.points.over > 0 ? ' sr-budget-over' : '';
+    const rows = m.mounts.map(x => `<li><strong>${esc(x.name)}</strong> — ${x.weapons.length ? esc(x.weapons.join(', ')) : '<em>empty</em>'}`
+      + `${x.kind === 'turret' ? ` · Weapon Value ${x.weaponValueUsed} / ${x.weaponValue}` : ''}</li>`).join('');
+    return `<div class="sr-vehicle-mounts">
+        <span class="sr-budget${over}" data-tooltip="A hardpoint is 2 points, a firmpoint 1; the total may not exceed Body (${VehicleMounts.PAGES.points}).">Mounts ${m.points.used} / ${m.points.of} (Body)</span>
+        ${m.signature.reduction || m.signature.notes.length ? `<span class="sr-mount-sig" data-tooltip="Shown, not applied — edit Sig if you want it there.">Signature −${m.signature.reduction}: ${esc(m.signature.notes.join('; '))}</span>` : ''}
+        <ul class="sr-mount-list">${rows}</ul>
+        ${m.warnings.map(w => `<p class="sr-budget-warn">⚠ ${esc(w)}</p>`).join('')}
+        ${m.notes.map(n => `<p class="sr-mount-note">${esc(n)}</p>`).join('')}
+      </div>`;
   }
 
   /* ------------------------------------------------------------------ */

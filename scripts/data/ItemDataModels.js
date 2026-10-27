@@ -180,6 +180,8 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       // The RC printed in PARENTHESES — the total with every integral accessory (stock, tripod) in use, SR3 p.276.
       // Null = the row prints none. Replaces recoilMod when ticked in the fire dialog (scripts/data/integral-rc.mjs).
       recoilModIntegral: new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
+      // On a vehicle: the id of the `vehiclemod` mount it sits on — '' when not mounted (TODO 234, R3R pp.135-141).
+      mountId:           new StringField({ initial: '', blank: true }),
       // The shooter's last answer to "integral accessories in use" for this gun.
       integralInUse:   new BooleanField({ initial: false }),
       rangeOverride:   new StringField({ initial: '' }),  // "S/M/L/E" metres, e.g. "5/15/30/50"
@@ -564,6 +566,8 @@ export class VehicleWeaponData extends foundry.abstract.TypeDataModel {
       // The item's level — "Lure Launcher AM-56" at 3, not "Lure Launcher AM-56 [3]" (TODO 261). null = no level.
       rating:       new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
       weaponType:   new StringField({ initial: '' }),
+      // The id of the `vehiclemod` mount it sits on — '' when not mounted (TODO 234, R3R pp.135-141).
+      mountId:      new StringField({ initial: '', blank: true }),
       mode:         new StringField({ initial: '' }),
       damage:       new StringField({ initial: '' }),
       ammunition:   new StringField({ initial: '' }),

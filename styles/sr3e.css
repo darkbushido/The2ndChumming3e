@@ -3939,3 +3939,9 @@ label.act-field input[type=number] {
 .sr-budget.sr-budget-over { border-color: var(--sr-amber); color: var(--sr-amber); background: var(--sr-amber-bg); }
 .sr-budget-unread { color: var(--sr-amber); font-size: 11px; }
 .sr-budget-warn { color: var(--sr-amber); font-size: 11px; margin: 2px 0; }
+/* Vehicle weapon mounts (TODO 234) */
+.sr-vehicle-mounts { margin: 4px 0 8px; font-size: 12px; }
+.sr-vehicle-mounts .sr-mount-sig { margin-left: 8px; color: var(--sr-muted); font-size: 11px; }
+.sr-mount-list { margin: 4px 0; padding-left: 18px; }
+.sr-mount-note { color: var(--sr-muted); font-size: 11px; margin: 2px 0; }
+.sr-mount-pick { display: block; margin-top: 2px; font-size: 11px; max-width: 100%; }

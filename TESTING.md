@@ -3522,3 +3522,23 @@ JS / CSS only (no restart needed beyond a reload). A vehicle from the packs, e.g
 - [ ] **Unread:** an Internal Missile Mount → "1 not counted" (its tooltip names it); its Load cell shows an amber "?".
 - [ ] **Mount reminder:** an External Hardpoint → its 10 kg counted, and "A weapon mount's Load leaves out the weapon on it".
 - [ ] **A drone** (seating 0): over Cargo shows no passenger-room offer.
+
+### 78a. Weapon mounts (TODO 234 — R3R pp.135-141; the maintainer's rulings of 2026-10-27)
+
+**Full Foundry restart first** (`mountId` is a new field on firearms and vehicle weapons). A Body 4 vehicle from the packs.
+
+- [ ] **Mods tab:** add External Hardpoint, Internal Firmpoint and Small Turret → "Mounts 7 / 4 (Body)", amber, and "⚠ The mounts
+      take 7 points … 3 over (R3R p.135)". "Signature −2: external mounts −1 (R3R p.136); 1 turret −1 (R3R p.140); −1 more while an
+      internal mount's weapon is out" — the vehicle's Sig on the Stats tab is unchanged.
+- [ ] **Weapons tab:** each weapon row has a Mount dropdown listing the three. Put an Ultimax MMG and a vehicle Autocannon on the
+      Small Turret → the Mods tab lists both under it, "Weapon Value 5 / 3", and warns. A note: "Ultimax MMG on Small Turret: … needs
+      a firearm conversion kit (R3R p.136)".
+- [ ] **Firmpoint:** move the Ultimax to the Internal Firmpoint → "⚠ Ultimax MMG is on Internal Firmpoint …, a firmpoint — heavy
+      weapons … need a hardpoint". Nothing is refused.
+- [ ] **Fire it from the turret** (the vehicle's Weapons tab, 🎲 on the Ultimax, FA 10 rounds): the fire dialog shows "🔩 Small
+      Turret: recoil halved before compensation, no heavy-weapon doubling (R3R p.140)", no "Heavy weapon: 2×" line; with comp 0 the
+      FA 10 preview is +5 (⌊10 ÷ 2⌋), not +20.
+- [ ] **Pintle / ring:** a Pintle Mount → the dialog has a "Mount" box at 2; a Ring Mount → 6; the total includes it. Change it and
+      fire → the gun's own RC and the vehicle's comp are not rewritten with it.
+- [ ] **Delete the turret** with weapons on it → their Mount dropdown reads "⚠ a mount no longer here" and the Mods tab warns.
+- [ ] **A personal gun** on a character fires exactly as before (no mount line, no Mount box).

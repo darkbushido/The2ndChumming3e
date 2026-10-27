@@ -53,6 +53,7 @@ const ITEMMODS = { module: '../scripts/data/item-mods.mjs', klass: 'ItemMods' };
 const INTEGRAL = { module: '../scripts/data/integral-mods.mjs', klass: 'IntegralMods' };
 const VBUDGET = { module: '../scripts/data/vehicle-budget.mjs', klass: 'VehicleBudget' };
 const PRC = { module: '../scripts/data/printed-rc.mjs', klass: 'PrintedRC' };
+const VMOUNT = { module: '../scripts/data/vehicle-mounts.mjs', klass: 'VehicleMounts' };
 // An item with its integral flags taken off — what every reader saw before the ruling (TODO 276, step b).
 const unIntegral = it => ({ ...it,
   flags: { ...(it?.flags ?? {}), The2ndChumming3e: { ...(it?.flags?.The2ndChumming3e ?? {}), integral: false } },
@@ -4152,6 +4153,37 @@ export const MUTANTS = [
       return { name: 'Panther Assault Cannon [Bipod]', 'system.recoilModIntegral': 2, 'system.accessories': 'Folding Bipod(2RC)',
         'system.installed': [], 'flags.The2ndChumming3e.integralDone': true };
     },
+  },
+  {
+    id:     'mount-halve-keeps-heavy-double',
+    suite:  'vehicle-mounts',
+    ...ITEM, method: 'recoilTN',
+    was:    'a fixed mount or turret halved the recoil but the heavy weapon still doubled it — the mount cancels the double (R3R p.136, TODO 234)',
+    impl:   ({ mode, roundsBefore = 0, roundsThisShot = 0, totalComp = 0, isHeavy = false, isShotgun = false, shortBurst = false, halve = false }) => {
+      const mult = (isHeavy || (isShotgun && mode === 'BF')) ? 2 : 1;
+      const own  = mode === 'BF' ? (shortBurst ? 2 : 3) : mode === 'FA' ? Math.max(0, Number(roundsThisShot) || 0) : 0;
+      const raw  = roundsBefore + own;
+      return Math.max(0, (halve ? Math.floor(raw / 2) : raw) - totalComp) * mult;
+    },
+  },
+  {
+    id:     'mount-halve-rounds-up',
+    suite:  'vehicle-mounts',
+    ...ITEM, method: 'recoilTN',
+    was:    'a mount’s halved recoil rounded up — the maintainer ruled down (2026-10-27, TODO 234)',
+    impl:   ({ mode, roundsBefore = 0, roundsThisShot = 0, totalComp = 0, isHeavy = false, isShotgun = false, shortBurst = false, halve = false }) => {
+      const mult = ((isHeavy && !halve) || (isShotgun && mode === 'BF')) ? 2 : 1;
+      const own  = mode === 'BF' ? (shortBurst ? 2 : 3) : mode === 'FA' ? Math.max(0, Number(roundsThisShot) || 0) : 0;
+      const raw  = roundsBefore + own;
+      return Math.max(0, (halve ? Math.ceil(raw / 2) : raw) - totalComp) * mult;
+    },
+  },
+  {
+    id:     'mount-vehicle-weapon-on-firmpoint',
+    suite:  'vehicle-mounts',
+    ...VMOUNT, method: 'needsHardpoint',
+    was:    'only heavy firearms were held to hardpoints — vehicle weapons must go on hardpoints too (R3R p.135, TODO 234)',
+    impl:   weapon => ['MMG', 'HMG', 'MinG', 'ACan'].includes(String(weapon?.system?.category ?? '')),
   },
   {
     id:     'printed-rc-any-page',
