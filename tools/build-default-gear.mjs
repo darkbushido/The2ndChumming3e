@@ -302,6 +302,13 @@ export const ACCESSORY_FIXES = [
   { name: 'Laser Sight (Low Power)', page: 'sr3.282', set: { Name: 'Laser Sight, Low-Power', BookPage: 'cc.82', Cost: '800', Mount: 'Top/Under',
     Availability: '', 'Street Index': '', Source: 'A Cannon Companion customisation: Design Points +100 × 8 (p.80, p.82). No Street Index (p.80).' } },
   { name: 'Low Power Laser Sight', page: 'sr3.282,fof.60', drop: true },
+  // Pruned by the maintainer (2026-10-27) — "if it doesn't have a page you can verify, prune it": not in any book of the library.
+  { name: 'Shades', page: 'sr3.XXX', drop: true }, { name: 'Shades - Low Light', page: 'sr3.XXX', drop: true },
+  { name: 'Shades - Thermographic', page: 'sr3.XXX', drop: true }, { name: 'Shades - Low Light + Thermographic', page: 'sr3.XXX', drop: true },
+  { name: 'Insulated Gloves', page: 'sr3.XXX', drop: true }, { name: 'Autotanner', page: 'sr3.240', drop: true },
+  { name: 'Fuchi RealSense Kosmos XXV', page: 'sr3.290', drop: true },
+  // M&M's "Witch" is Witch's Moss (a magical reagent in sr3e-mm-drugs); this row is an empty duplicate.
+  { name: 'Witch', page: 'mm.123', drop: true },
 ];
 
 /**

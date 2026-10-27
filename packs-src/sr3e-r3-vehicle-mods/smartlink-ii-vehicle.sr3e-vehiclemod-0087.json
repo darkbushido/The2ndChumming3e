@@ -16,7 +16,8 @@
       "bookPage": "r3.139",
       "description": "",
       "rating": null,
-      "modFor": "vehicle"
+      "modFor": "vehicle",
+      "legality": "4P-N"
     },
     "effects": []
   },

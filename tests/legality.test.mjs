@@ -148,7 +148,18 @@ export async function run(t) {
   t.is('a Rigger 3 ring mount is Legal: the weapon on it carries the code', by('vehiclemod', 'Ring Mount (Vehicle)'), 'Legal');
   t.is('…and a turret', by('vehiclemod', 'Large Turret (Vehicle)'), 'Legal');
   t.is('…and vehicle armor', by('vehiclemod', 'Vehicle Armor (Vehicle)'), 'Legal');
-  t.is('…a firearm conversion kit waits for the maintainer', by('vehiclemod', 'Pistol Customization Kit (Vehicle)'), null);
+  t.is('…a firearm conversion kit is Legal (the weapon carries the code)', by('vehiclemod', 'Pistol Customization Kit (Vehicle)'), 'Legal');
+  t.is('…a gunnery smartlink takes the weapon-mod code, SmartLink 4P-N (SR3 p.282)', by('vehiclemod', 'Smartlink-II (Vehicle)'), '4P-N');
+  t.is('…and a gunnery recoil adjuster the recoil compensators code, Legal', by('vehiclemod', 'Gunnery Recoil Adjuster (Vehicle)'), 'Legal');
+  t.is('CC ammunition with no code of its own is "As Weapon", the book convention (SR3 p.281)', by('ammunition', 'Blowgun Needles (20)'), 'As Weapon');
+  t.is('the combat axe Thrusting Point is Legal (a spike, printed NA — maintainer ruling)', by('melee', 'Combat Axe Thrusting Point'), 'Legal');
+  t.is('a Pipe is a club: 6-C (SR3 p.275)', by('melee', 'Pipe'), '6-C');
+  t.is('Rigger Adaptation is vehicle control gear: Legal', by('vehiclemod', 'Rigger Adaptation (Vehicle)'), 'Legal');
+  const packNames = pack => [...readSourceDir(join(ROOT, 'packs-src', pack)).values()].map(d => d.name ?? '');
+  t.ok('pruned, not in any book of the library: the Benelli shotguns', !packNames('sr3e-cc-firearms').some(n => /^Benelli/.test(n)));
+  t.ok('…and the Shades, Insulated Gloves, Autotanner and Fuchi RealSense Kosmos', !packNames('sr3e-sr3-gear').some(n => /^(Shades|Insulated Gloves|Autotanner|Fuchi RealSense Kosmos)/.test(n)));
+  t.ok('…and the empty Witch row (Witch Moss is in the drugs pack)', !packNames('sr3e-mm-medical').includes('Witch'));
+
   t.is('a Cannon Companion weapon mod changes nothing in print: Legal', by('gear', 'Remove Safety (Weapon)'), 'Legal');
   t.is('a toxin dart takes its chemical code: Fugu-8 3-X', by('ammunition', 'Dart, Fugu 8'), '3-X');
   t.is('…Cyanide 4P-X (M&M p.158)', by('ammunition', 'Dart, Cyanide'), '4P-X');
