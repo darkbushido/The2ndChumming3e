@@ -7,14 +7,14 @@
  *
  * Values are book data. `perRating`: the value is per point of the item's rating, which for these RC accessories IS the
  * printed RC (Gas Vent II is rating 2, SR3 p.282) and for the armour modifications the points bought (CC p.52).
- * ⚠ Left out on purpose — not yet ruled, or not yet a target (TODO 276 open questions): Bipod / Tripod (deployed only —
- * the "deployed" toggle is not built), smart goggles (a goggles-smartgun pair, −1, SR3 p.112), the Gyro Mount (its own
+ * ⚠ Left out on purpose — not yet ruled, or not yet a target (TODO 276 open questions): smart goggles (a goggles-smartgun pair, −1, SR3 p.112), the Gyro Mount (its own
  * rules, TODO 18).
  */
 import { ModRatings } from './mod-ratings.mjs';
 
 const per = (target, value = 1) => [{ target, value, perRating: true }];
 const on  = target => [{ target, value: 1, perRating: false }];
+const deployed = target => [{ target, value: 1, perRating: true, whenDeployed: true }];
 
 export const MOD_EFFECTS = {
   // Recoil compensation — SR3 p.281-282, CC p.34. The rating is the RC. ONE Gas Vent, Level 1-4 (the maintainer,
@@ -25,6 +25,9 @@ export const MOD_EFFECTS = {
   'gear|Hip Pad Bracing System':  per('rc'),
   'gear|Under Barrel Weight':     per('rc'),
   'gear|Stock (Rigid':            per('rc'),
+  // Bipod RC 2, Tripod RC 6 — only while set up, a Simple Action (SR3 p.280, p.282). Their rating is the RC.
+  'gear|Bipod':                   deployed('rc'),
+  'gear|Tripod':                  deployed('rc'),
   // Smartgun systems, external — SR3 p.281-282; the Smartlink-2 modification, M&M p.32.
   'gear|Smartlink level I':       on('smartgun'),
   'gear|Smartlink level II':      on('smartgun'),

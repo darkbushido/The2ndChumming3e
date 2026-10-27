@@ -14,8 +14,9 @@
  * `_id`). They are not documents: they move, copy and delete with the host, in a sidebar item or a compendium too.
  * ⚠ Not `system.mods` — cyberware already has that, the upstream bonus string (`+2RCT`).
  *
- * **Effects.** Any item may carry `system.modifiers`, `[{ target, value, perRating }]`, from the fixed vocabulary `TARGETS`
- * (`perRating`: the value is per point of the item's rating — Fire Resistance [3] at 1 per point is 3). Each
+ * **Effects.** Any item may carry `system.modifiers`, `[{ target, value, perRating, whenDeployed }]`, from the fixed vocabulary
+ * `TARGETS` (`perRating`: the value is per point of the item's rating — Fire Resistance [3] at 1 per point is 3;
+ * `whenDeployed`: it counts only while the item is set up — a bipod's or tripod's RC, `deployed`). Each
  * target says how values combine (`add`, `max` — the highest one counts, the maintainer's "no stacking" for image
  * magnification — or `any`, an on/off feature) and whether it reaches the actor. A host's effective value is its own
  * modifiers plus its installed mods' (and theirs, `MAX_DEPTH` deep). Nothing computed is saved; the host's own fields
@@ -82,7 +83,30 @@ export const ItemMods = {
     const list = item?.system?.modifiers;
     if (!Array.isArray(list)) return [];
     const rating = Math.max(0, num(item?.system?.rating));
-    return list.filter(m => TARGETS[m?.target]).map(m => ({ target: m.target, value: m.perRating ? num(m.value) * rating : num(m.value) }));
+    return list.filter(m => TARGETS[m?.target]).map(m => {
+      const out = { target: m.target, value: m.perRating ? num(m.value) * rating : num(m.value) };
+      if (m.whenDeployed) out.whenDeployed = true;
+      return out;
+    });
+  },
+
+  /**
+   * Is this mod set up? A bipod or tripod gives its RC only while deployed (SR3 p.280: setting one up is a Simple Action) —
+   * `flags.The2ndChumming3e.deployed` on the installed entry, ticked in the fire dialog or on the gun's sheet.
+   */
+  deployed(item) {
+    return item?.flags?.The2ndChumming3e?.deployed === true;
+  },
+
+  /** Does it have anything that counts only while deployed? */
+  deployable(item) {
+    return ItemMods.modifiersOf(item).some(m => m.whenDeployed);
+  },
+
+  /** The installed list with mod `id` deployed or folded away. Pure. */
+  setDeployed(installed, id, on) {
+    return (Array.isArray(installed) ? installed : []).map(m => (m._id !== id ? m
+      : { ...m, flags: { ...(m.flags ?? {}), The2ndChumming3e: { ...(m.flags?.The2ndChumming3e ?? {}), deployed: !!on } } }));
   },
 
   /**
@@ -92,7 +116,8 @@ export const ItemMods = {
   effective(item) {
     const parts = {};
     const walk = (it, source, depth) => {
-      for (const m of ItemMods.modifiersOf(it)) (parts[m.target] ??= []).push({ source, value: m.value });
+      // A change that needs the mod set up (a bipod's RC) counts only while it is deployed.
+      for (const m of ItemMods.modifiersOf(it)) if (!m.whenDeployed || ItemMods.deployed(it)) (parts[m.target] ??= []).push({ source, value: m.value });
       if (depth >= MAX_DEPTH) return;
       for (const mod of ItemMods.installed(it)) walk(mod, mod?.name ?? '?', depth + 1);
     };

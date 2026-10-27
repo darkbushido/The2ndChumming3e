@@ -895,8 +895,12 @@ off the table, not a band). Imaging scope + smartlink (SR3 p.280) is still an op
 
 **Still open in this item:**
 1. ~~Magnification~~ — built (above).
-2. **Bipod / tripod / stock deployed** — a mod toggle replacing the fire dialog's integral tick ([#235](#235)); bipod and tripod
-   get their RC then (left out of the pack data until the toggle exists).
+2. ~~Bipod / tripod deployed~~ — built 2026-10-27: a change marked `whenDeployed` counts only while the installed mod is set up
+   (`ItemMods.deployed` / `setDeployed`, the entry's `flags.The2ndChumming3e.deployed`); Bipod RC 2 and Tripod RC 6 (their
+   rating, SR3 p.282) ship that way; the fire dialog has a "deployed" tick per such mod (recomputes the weapon's RC, remembered on
+   the gun), and so does the gun's sheet. Mutant `bipod-counts-folded`. The printed bracketed RC of a gun's OWN folding stock or
+   tripod stays the fire dialog's integral tick ([#235](#235)) — it is the gun's, not a mod. Not modelled: the tripod's prone /
+   seated requirement (stated in the tick's tooltip).
 3. **The free-text `accessories`** — a migration turning it into installed mods where it parses; the rest stays a note.
 4. **Weapon mounts by weapon class** (SR3 pp.276-279, CC p.75: hold-outs none, pistols barrel + top, …) — warnings; waits on the
    open questions below.

@@ -15,6 +15,8 @@ const modifiersField = () => new ArrayField(new SchemaField({
   value:  new NumberField({ initial: 0 }),
   // The value is per point of the item's rating (Fire Resistance: 1 per point, CC p.52).
   perRating: new BooleanField({ initial: false }),
+  // It counts only while the item is set up (a bipod's or tripod's RC, SR3 p.280) — ItemMods.deployed.
+  whenDeployed: new BooleanField({ initial: false }),
 }));
 
 // ── Weapons ───────────────────────────────────────────────────────────────────

@@ -48,6 +48,7 @@ const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating'
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
 const BLASTBATCH = { module: '../scripts/data/blast-batch.mjs', klass: 'BlastBatch' };
+const ITEMMODS = { module: '../scripts/data/item-mods.mjs', klass: 'ItemMods' };
 const MAGNIFY = { module: '../scripts/data/magnification.mjs', klass: 'Magnification' };
 const MODREMOVAL = { module: '../scripts/data/mod-removal.mjs', klass: 'ModRemoval' };
 const ARMORMODS = { module: '../scripts/data/armor-mods.mjs', klass: 'ArmorMods' };
@@ -3980,5 +3981,12 @@ export const MUTANTS = [
     ...MAGNIFY, method: 'shift',
     was:    'the band could shift past Short — SR3 p.110 never goes below Short range',
     impl:   (i, r) => Number(i) - (Number(r) || 0),
+  },
+  {
+    id:     'bipod-counts-folded',
+    suite:  'item-mods',
+    ...ITEMMODS, method: 'deployed',
+    was:    'a bipod or tripod gave its RC folded away — SR3 p.280: it has to be set up (a Simple Action) (TODO 276)',
+    impl:   () => true,
   },
 ];

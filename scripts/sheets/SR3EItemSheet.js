@@ -251,6 +251,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           <img src="${esc(r.img)}" class="sr-mod-img" alt=""/>
           <a class="sr-mod-name sr-mod-open" title="Open">${esc(r.name)}</a>
           <span class="sr-mod-changes">${esc(r.changes)}</span>
+          ${r.deployable ? `<label class="sr-mod-deploy" data-tooltip="Set up — its RC counts only while deployed (a Simple Action, SR3 p.280). Also in the fire dialog."><input type="checkbox" class="sr-mod-deployed" ${r.deployed ? 'checked' : ''} ${edit ? '' : 'disabled'}/> deployed</label>` : ''}
           <a class="sr-mod-open" title="Open its sheet">✎</a>
           ${edit ? `<a class="sr-mod-out" title="Take it out — into the inventory">⏏</a>
           <a class="sr-mod-remove" title="Delete it">🗑</a>` : ''}
@@ -307,9 +308,11 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         ? `<input type="checkbox" class="sr-modifier-value" data-idx="${i}" ${m.value > 0 ? 'checked' : ''} ${edit ? '' : 'disabled'}/>`
         : `<input type="number" class="sr-modifier-value" data-idx="${i}" value="${Number(m.value) || 0}" style="width:56px" ${edit ? '' : 'disabled'}/>
            <label title="The value is per point of this item's level (Fire Resistance [3] at 1 per level is 3)"><input type="checkbox" class="sr-modifier-per" data-idx="${i}" ${m.perRating ? 'checked' : ''} ${edit ? '' : 'disabled'}/> per level</label>`;
+      const dep = `<label title="Counts only while the item is set up — a bipod's or tripod's RC (SR3 p.280)"><input type="checkbox" class="sr-modifier-dep" data-idx="${i}" ${m.whenDeployed ? 'checked' : ''} ${edit ? '' : 'disabled'}/> when deployed</label>`;
       return `<div class="sr-modifier-row">
         <select class="sr-modifier-target" data-idx="${i}" ${edit ? '' : 'disabled'}>${t ? '' : `<option value="" selected>? ${foundry.utils.escapeHTML(String(m.target ?? ''))}</option>`}${opts(m.target)}</select>
         ${val}
+        ${dep}
         ${edit ? `<a class="sr-modifier-remove" data-idx="${i}" title="Remove">✕</a>` : ''}
       </div>`;
     }).join('');
@@ -329,6 +332,10 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     if (!this.isEditable) return;
     html.querySelector('.sr-mod-repaired')?.addEventListener('click', () => SR3EItemMods.repaired(item));
     html.querySelectorAll('.sr-mod-out').forEach(a => a.addEventListener('click', () => SR3EItemMods.uninstall(item, idOf(a))));
+    html.querySelectorAll('.sr-mod-deployed').forEach(inp => inp.addEventListener('change', ev => {
+      ev.stopPropagation();
+      item.update({ 'system.installed': ItemMods.setDeployed(ItemMods.installed(item), idOf(inp), inp.checked) });
+    }));
     html.querySelectorAll('.sr-mod-remove').forEach(a => a.addEventListener('click', () => SR3EItemMods.remove(item, idOf(a))));
     const zone = html.querySelector('.sr-mods-drop');
     if (zone) {
@@ -344,7 +351,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     }
 
     // ⚠ Every field of a row, `perRating` included — a row rebuilt from target and value alone would lose it on any edit.
-    const list = () => (item.system.modifiers ?? []).map(m => ({ target: m.target, value: Number(m.value) || 0, perRating: m.perRating === true }));
+    const list = () => (item.system.modifiers ?? []).map(m => ({ target: m.target, value: Number(m.value) || 0, perRating: m.perRating === true, whenDeployed: m.whenDeployed === true }));
     const save = mods => item.update({ 'system.modifiers': mods });
     html.querySelector('.sr-modifier-add')?.addEventListener('click', () => save([...list(), { target: 'rc', value: 1 }]));
     html.querySelectorAll('.sr-modifier-remove').forEach(a => a.addEventListener('click', () => {
@@ -359,8 +366,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       const target = sel.value;
       const was = mods[Number(sel.dataset.idx)] ?? {};
       mods[Number(sel.dataset.idx)] = TARGETS[target]?.combine === 'any'
-        ? { target, value: 1, perRating: false }
-        : { target, value: was.value ?? 0, perRating: was.perRating === true };
+        ? { target, value: 1, perRating: false, whenDeployed: was.whenDeployed === true }
+        : { target, value: was.value ?? 0, perRating: was.perRating === true, whenDeployed: was.whenDeployed === true };
       save(mods);
     }));
     html.querySelectorAll('.sr-modifier-value').forEach(inp => inp.addEventListener('change', ev => {
@@ -369,6 +376,14 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
       const i = Number(inp.dataset.idx);
       if (!mods[i]) return;
       mods[i].value = inp.type === 'checkbox' ? (inp.checked ? 1 : 0) : (Number(inp.value) || 0);
+      save(mods);
+    }));
+    html.querySelectorAll('.sr-modifier-dep').forEach(inp => inp.addEventListener('change', ev => {
+      ev.stopPropagation();
+      const mods = list();
+      const i = Number(inp.dataset.idx);
+      if (!mods[i]) return;
+      mods[i].whenDeployed = inp.checked;
       save(mods);
     }));
     html.querySelectorAll('.sr-modifier-per').forEach(inp => inp.addEventListener('change', ev => {

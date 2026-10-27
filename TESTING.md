@@ -3409,3 +3409,14 @@ Conceal 6, 2 kg) on a character with Quickness 3; from the Cannon Companion gear
 - [ ] **Cybereyes:** Eyes, Vision Magnification, Electronic at Level 2 → shifted 2.
 - [ ] **No stacking:** scope 2 + helmet 3 → shifted **3**, not 5; the note names the helmet.
 - [ ] **Beyond Extreme:** no shift, the usual warning.
+
+### 77f. Bipod and tripod — RC only while deployed (TODO 276, SR3 p.280)
+
+**Full restart** (packs, and the modifier gained `whenDeployed`). An Ultimax (or any MG) with a Bipod and a Gas Vent installed.
+
+- [ ] The gun's Installed mods: Bipod reads "RC +2 (deployed)" with a **deployed** tick, unticked; the summary RC counts only the vent.
+- [ ] **Fire dialog:** a "Bipod (Weapon) deployed — RC +2" tick; ticking it raises the Weapon comp by 2 and the recoil previews drop.
+      Fire, reopen the fire dialog: it is still ticked (remembered on the gun). Untick → back.
+- [ ] **Tripod** the same with +6. Ticking both on one gun adds 8 (the GM decides if that makes sense).
+- [ ] Typing a different Weapon comp still saves only the gun's own figure (the vent and the deployed bipod are not baked in).
+- [ ] **Changes editor:** a Bipod's row has "when deployed" ticked; editing its value keeps the tick.

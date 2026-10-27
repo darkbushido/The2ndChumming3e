@@ -7,6 +7,8 @@
  */
 import { ItemMods, TARGETS, MAX_DEPTH } from '../scripts/data/item-mods.mjs';
 import { WeaponAccessories } from '../scripts/data/weapon-accessories.mjs';
+import { IntegralRC } from '../scripts/data/integral-rc.mjs';
+import { MOD_EFFECTS } from '../scripts/data/mod-effects.mjs';
 import { readFileSync } from 'node:fs';
 
 const read = rel => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
@@ -134,7 +136,7 @@ export async function run(t) {
     /ItemMods\.isHost\(host\)\s*&& \(ModFor\.of\(document\) \|\| ItemMods\.modifiersOf\(document\)\.length\)\) \{\s*return SR3EItemMods\.install\(host, document\);/.test(actorSheet));
   t.is('the 🔧 chip is on firearm, melee (×2), armour and cyberware rows', (actorSheet.match(/SR3EActorSheet\.modsChip\(/g) ?? []).length, 5);
   t.ok('the Changes editor keeps perRating when it rebuilds a row (a level-scaled mod must not lose it on any edit)',
-    /const list = \(\) => \(item\.system\.modifiers \?\? \[\]\)\.map\(m => \(\{ target: m\.target, value: Number\(m\.value\) \|\| 0, perRating: m\.perRating === true \}\)\)/.test(sheet));
+    /const list = \(\) => \(item\.system\.modifiers \?\? \[\]\)\.map\(m => \(\{ target: m\.target, value: Number\(m\.value\) \|\| 0, perRating: m\.perRating === true, whenDeployed: m\.whenDeployed === true \}\)\)/.test(sheet));
   t.ok('…and offers a per-level tick', /class="sr-modifier-per"/.test(sheet));
 
   /* ── The one refusal: a stock on a rifle (the maintainer, 2026-10-27) ───────── */
@@ -149,4 +151,24 @@ export async function run(t) {
   const actorSrc = read('scripts/sheets/SR3EActorSheet.js');
   t.ok('the 🔧 chip uses Foundry\'s data-tooltip — a plain title showed only a "?" (reported live)', /class="sr-mod-count" data-tooltip="/.test(actorSrc) && !/class="sr-mod-count" title=/.test(actorSrc));
   t.ok('…listing mount, name and changes, then the totals', /static modsTooltip\(item[\s\S]{0,500}r\.mount[\s\S]{0,200}r\.changes[\s\S]{0,300}ItemMods\.describe/.test(actorSrc));
+
+  /* ── Deployed: a bipod or tripod counts only while set up (SR3 p.280) ───────── */
+  const bipod = { _id: 'bp', name: 'Bipod (Weapon)', type: 'gear', system: { rating: 2, modifiers: MOD_EFFECTS['gear|Bipod'] } };
+  const tripod = { _id: 'tp', name: 'Tripod (Weapon)', type: 'gear', system: { rating: 6, modifiers: MOD_EFFECTS['gear|Tripod'] } };
+  const lmg = (...m) => ({ name: 'Ultimax', type: 'firearm', system: { recoilMod: 0, installed: m } });
+  t.is('a bipod folded away: no RC', ItemMods.value(lmg(bipod), 'rc'), 0);
+  t.is('…deployed: RC 2 (SR3 p.282)', ItemMods.value(lmg(ItemMods.setDeployed([bipod], 'bp', true)[0]), 'rc'), 2);
+  t.is('a tripod deployed: RC 6', ItemMods.value(lmg(ItemMods.setDeployed([tripod], 'tp', true)[0]), 'rc'), 6);
+  t.ok('deployable: the bipod yes, a gas vent no', ItemMods.deployable(bipod) && !ItemMods.deployable({ system: { rating: 2, modifiers: MOD_EFFECTS['gear|Gas Vent'] } }));
+  const on = ItemMods.setDeployed([bipod, tripod], 'bp', true);
+  t.eq('setDeployed changes only that mod and never mutates', [ItemMods.deployed(on[0]), ItemMods.deployed(on[1]), ItemMods.deployed(bipod)], [true, false, false]);
+  t.is('…folds it away again', ItemMods.deployed(ItemMods.setDeployed(on, 'bp', false)[0]), false);
+  t.is('the fire dialog\'s figure follows it: a gas vent 2 + a deployed bipod 2 = 4',
+    IntegralRC.totalComp({ recoilMod: 0, installed: [{ name: 'Gas Vent (Weapon)', system: { rating: 2, modifiers: MOD_EFFECTS['gear|Gas Vent'] } }, on[0]] }, false), 4);
+  const item = read('scripts/documents/SR3EItem.js');
+  t.ok('the fire dialog offers a tick per deployable mod and recomputes the weapon RC', /class="sr-deploy" data-mod-id=/.test(item)
+    && /installed = ItemMods\.setDeployed\(installed, box\.dataset\.modId, box\.checked\);[\s\S]{0,200}IntegralRC\.totalComp\(sysNow\(\)/.test(item));
+  t.ok('…and remembers it on the gun', /if \(JSON\.stringify\(installed\) !== installed0\) await weapon\.update\(\{ 'system\.installed': installed \}\);/.test(item));
+  t.ok('the gun\'s sheet has the same tick', /class="sr-mod-deployed"/.test(sheet) && /ItemMods\.setDeployed\(ItemMods\.installed\(item\), idOf\(inp\), inp\.checked\)/.test(sheet));
+  t.ok('the Changes editor keeps whenDeployed and offers it', /whenDeployed: m\.whenDeployed === true/.test(sheet) && /class="sr-modifier-dep"/.test(sheet));
 }

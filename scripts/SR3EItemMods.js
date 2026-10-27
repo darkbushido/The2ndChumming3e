@@ -264,8 +264,11 @@ export const SR3EItemMods = {
       mount: mounts[i].mount,
       changes: ItemMods.modifiersOf(m).map(x => {
         const t = ItemMods.TARGETS[x.target];
-        return t.combine === 'any' ? t.short : `${t.short} ${x.value >= 0 && t.combine === 'add' ? '+' : ''}${x.value}`;
+        const v = t.combine === 'any' ? t.short : `${t.short} ${x.value >= 0 && t.combine === 'add' ? '+' : ''}${x.value}`;
+        return x.whenDeployed ? `${v} (deployed)` : v;
       }).join(', '),
+      deployable: ItemMods.deployable(m),
+      deployed: ItemMods.deployed(m),
     }));
   },
 };

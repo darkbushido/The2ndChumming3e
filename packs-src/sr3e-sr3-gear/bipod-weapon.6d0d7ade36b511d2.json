@@ -25,7 +25,15 @@
       "bookPage": "sr3.282",
       "description": "<p><strong>Mount:</strong> Under</p>",
       "modFor": "weapon",
-      "legality": "Legal"
+      "legality": "Legal",
+      "modifiers": [
+        {
+          "target": "rc",
+          "value": 1,
+          "perRating": true,
+          "whenDeployed": true
+        }
+      ]
     }
   },
   "embedded": {}
