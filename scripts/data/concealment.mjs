@@ -39,6 +39,7 @@
  */
 
 import { ArmorMods } from './armor-mods.mjs';
+import { CyberCapacity } from './cyber-capacity.mjs';
 
 export const PAGES = {
   gear:        'SR3 p.45',
@@ -204,6 +205,17 @@ export const Concealment = {
           state: k.state, needsTest: k.state === 'disguised' || (k.state === 'judge' && k.conceal != null), note: k.note,
         });
       }
+    }
+    // Built into a cyberlimb (TODO 276): an induction datajack in a cyberhand shows like a loose one, named with its limb.
+    // A stored limb's built-ins read as stored (`flatten`), so `classifyImplant` skips them.
+    for (const b of CyberCapacity.flatten(items)) {
+      if (!b.builtIn) continue;
+      const k = Concealment.classifyImplant(b);
+      if (!k) continue;
+      out.push({
+        id: b.id, name: `${b.name} (in ${b.hostName})`, kind: 'implant', conceal: k.conceal, raw: k.conceal == null ? '' : String(k.conceal),
+        state: k.state, needsTest: k.state === 'disguised' || (k.state === 'judge' && k.conceal != null), note: `Built into ${b.hostName}. ${k.note}`,
+      });
     }
     return Concealment.sort(out);
   },

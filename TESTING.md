@@ -3450,3 +3450,25 @@ and eye options (loose).
 - [ ] **Vision:** a "Low-Light" module inside the eyes still shows as cyber low-light in the GM window's vision reminder.
 - [ ] **Built-in price:** install a pocket secretary (gear) into the arm → "Built in: … ×4" with Man & Machine off, the normal price
       with it on; add a Direct Neural Interface to the arm → "+50% DNI" on top.
+
+### 77h. Built-ins everywhere — weapons, Stress, slots, Concealment, VCR, healing (TODO 276, step a)
+
+A character with an Obvious Cyberarm (and a Cyberskull for the VCR line). Each bullet: what a loose implant did before still
+works, and the same implant **built in** now does it too.
+
+- [ ] **Spur built in:** install a Spur (Cyberlimb Mods) into the arm → the Weapons tab gains "Spur" (melee, CYB) with no ⚔ offer
+      row. ⏏ it out → the entry from inside the arm goes, the loose spur's own entry comes back. Delete the arm with the spur in it
+      → its spur entry goes. Store the arm → the entry stays (storage is not removal).
+- [ ] **Cybergun built in:** a CyGun Heavy (HPist) in the arm → a firearm entry, 10(m), fires through the ranged flow.
+- [ ] **An entry made before step a** (or one deleted by hand): the ⚔ offer row reads "built into Obvious Cyberarm"; clicking it arms it.
+- [ ] **Stress** (M&M p.126): the target list shows "Smartlink (Internal) (in Obvious Cyberarm)"; apply 2 → its card; the arm's
+      Installed list (open the smartlink's sheet) shows Stress 2. The arm itself is unchanged apart from that.
+- [ ] **Cybersystem slots:** the arm and its smartlink are separate entries; an eye's options do not appear on their own — the eye's
+      entry grows only by Essence over its .5.
+- [ ] **Concealment** (GM tool): a Datajack built into a cyberhand appears as "Datajack (in …)", note "Built into …"; storing the
+      hand removes it.
+- [ ] **VCR:** a Vehicle Control Rig [2] installed into a Cyberskull (no loose VCR) → the vehicle sheet's Driving Test shows VCR 2
+      and its Control Pool; the chase's driver row, too.
+- [ ] **Healing:** Dermal Plating 2 built into the arm (unusual, but a GM's call) counts in the permanent-damage test's dermal armour.
+- [ ] **Removing the limb:** delete the arm with built-ins → its weapon entries go; the Essence hole grows by the arm's own cost only
+      (open question in TODO 276 — note what the maintainer rules).

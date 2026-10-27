@@ -1476,9 +1476,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   // Implants that are weapons but have no weapon entry yet (TODO 151) — fitted before the fix, or with
   // no GM online to make it. Offered, not made: the owner presses Add.
   const unarmedImplants = CyberWeapons.missing([...actor.items]);
+  // A built-in (TODO 276) has no item of its own: its id is "<limb id>.<mod id>", so the row carries no data-item-id.
   const implantOffer = unarmedImplants.length ? unarmedImplants.map(c => `
-    <div class="item-row" data-item-id="${c.id}" style="color:var(--sr-amber)">
-      <span class="item-name">⚠ ${c.name} <span style="font-size:10px">(implant — no weapon entry yet)</span></span>
+    <div class="item-row"${c.builtIn ? '' : ` data-item-id="${c.id}"`} style="color:var(--sr-amber)">
+      <span class="item-name">⚠ ${c.name} <span style="font-size:10px">(${c.builtIn ? `built into ${foundry.utils.escapeHTML(c.hostName ?? '')}` : 'implant'} — no weapon entry yet)</span></span>
       <span class="item-cell col-xs">${CyberWeapons.damage(c.system.description) ?? '—'}</span>
       <div class="item-controls"><button type="button" class="btn-add" data-action="armImplant" data-item-id="${c.id}"
         title="Add this implant's weapon, so it can attack">+ Add weapon</button></div>
@@ -4107,7 +4108,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   /** Add an implant's weapon entry (TODO 151) — the same item the install hook makes. */
   static async _onArmImplant(_ev, target) {
-    const implant = this.actor.items.get(target.dataset.itemId);
+    // A built-in's id is "<limb id>.<mod id>" (TODO 276) — found among the actor's implants, not its items.
+    const implant = CyberWeapons.implants([...this.actor.items]).find(i => i.id === target.dataset.itemId);
     const data    = implant ? CyberWeapons.weaponData(implant) : null;
     if (!data) return;
     await this.actor.createEmbeddedDocuments('Item', [data]);

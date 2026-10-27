@@ -927,8 +927,18 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
   attribute / Reaction / Initiative / skill bonuses, implant armour, dermal armour, the Attribute Boost warning, vision names.
 - **Price** — a device (gear) built into a limb shows its built-in price on the limb: ×4 with Man & Machine off, +50% stacking with
   a direct neural interface in the limb (`builtInCost`). Shown, not charged.
-- **Not yet reading built-ins:** Stress / cybersystem slots, the Concealment view, the VCR finders, healing's implant checks, the
-  cyber-weapon list (a spur built into an arm is not offered as a weapon), and triggered augmentations (keyed by item id).
+- **Built-ins read everywhere else too (step a, 2026-10-27):** the cyber-weapon list (a spur or cybergun built into an arm is
+  offered and armed, its entry linked by the path id `"<limb>.<mod>"`; installing, removing or deleting re-arms through the
+  `updateItem` hook and drops orphaned entries, `CyberWeapons.missingFor` / `orphans`), Stress (a built-in is listed as
+  "X (in limb)" and its Stress written into the limb, `CyberCapacity.locate` / `patched`), the cybersystem slots (a limb's
+  built-ins at their own Essence; an eye's options only over .5, on the eye's entry), the Concealment view, the four VCR finders
+  (`CyberCapacity.findVcr`) and healing's dermal armour. A stored limb's built-ins read as stored.
+- **Triggered augmentations: not applicable.** Adrenal Pump, Pain Editor and the like are bioware organs — never cyberlimb mods —
+  so nothing built in can trigger. A GM who installs one into a limb anyway gets no trigger for it.
+- ⚠ Re-arming makes a fresh weapon entry: a GM's edits to a built-in's old entry are lost when the limb's mods change.
+- ❓ **For the maintainer:** removing a limb with built-ins adds only the limb's own graded Essence to the hole (seen live,
+  2026-10-27: an arm 1.0 holding a datajack .2 and plating .5 left a 1.0 hole). Whether its built-ins' Essence joins the hole
+  (M&M p.150) is the maintainer's call; until then the GM edits the hole.
 
 **Cyberlimb rulings (the maintainer, 2026-10-27)** — for the cyberlimb slice:
 - **Synthetic limbs:** SR3 p.303's +50% on "any modification" does NOT apply to built-in devices.
@@ -979,8 +989,8 @@ Not walked: the APDS half (unit-tested), the Delta eye, Player2 opening a GM-onl
 when moved into the eye; the GM lowers `lost` by hand. Options installed into the eye straight from the compendium are never charged.
 **Pack data:** the Cannon Companion's "Stock (Rigid (Weapon)" — upstream `rawdata/SRCG-SR3-Gear.json` has "Stock (Rigid"; a `NAME_FIXES`
 entry in `tools/build-default-gear.mjs` (and owned copies) when the packs are next rebuilt.
-**Not modelled yet (step a):** an implant weapon (spur, cyber-gun) moved into a limb gets a new id, so `_disarmImplant` drops its
-weapon entry and nothing re-arms it from inside the limb — the built-in cyber-weapons remainder.
+**Implant weapon moved into a limb (seen in step 1):** it got a new id and lost its weapon entry — fixed in step a (re-armed
+from inside the limb, linked by the path id).
 
 **🧪 Test in Foundry** — TESTING.md §77 (full restart: data models gained fields).
 

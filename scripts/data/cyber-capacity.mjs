@@ -155,24 +155,75 @@ export const CyberCapacity = {
 
   /**
    * Every cyberware / bioware the character has, built-in implants included: the items themselves, then each one's
-   * installed implants (recursively) as plain objects — `{ ...entry, id: 'host.entry', builtIn: true, hostName }` — so the
-   * readers that sum bonuses, armour, vision and names see them. ⚠ Not for Essence: `nestedEssence` applies the capacity.
+   * installed implants (recursively) as plain objects — `{ ...entry, id: 'limb.mod[.mod]', builtIn: true, hostName, hostKind }`
+   * — so the readers that sum bonuses, armour, vision and names see them. The id is the whole path from the actor's item
+   * (`locate` reads it back). A built-in in a STORED limb reads as stored too (its `stored` flag is set on the copy) — the limb
+   * is carried, not fitted. ⚠ Not for Essence: `nestedEssence` applies the capacity.
    */
   *flatten(items) {
-    const walk = function* (host, depth) {
+    const walk = function* (host, depth, prefix, stored) {
       if (depth > ItemMods.MAX_DEPTH) return;
       for (const m of ItemMods.installed(host)) {
         if (!CYBER.includes(m?.type)) continue;
-        const flags = m.flags ?? {};
-        yield { ...m, id: `${host.id ?? host._id ?? '?'}.${m._id}`, builtIn: true, hostName: host.name,
+        const own = m.flags ?? {};
+        const flags = stored ? { ...own, The2ndChumming3e: { ...(own.The2ndChumming3e ?? {}), stored: true } } : own;
+        const id = `${prefix}.${m._id}`;
+        yield { ...m, flags, id, builtIn: true, hostName: host.name, hostKind: CyberCapacity.kind(host),
           getFlag: (scope, key) => flags?.[scope]?.[key] };
-        yield* walk(m, depth + 1);
+        yield* walk(m, depth + 1, id, stored);
       }
     };
     for (const item of items ?? []) {
       yield item;
-      if (item?.type === 'cyberware' || item?.type === 'bioware') yield* walk(item, 1);
+      if (item?.type === 'cyberware' || item?.type === 'bioware') {
+        yield* walk(item, 1, item.id ?? item._id ?? '?', item?.flags?.The2ndChumming3e?.stored === true);
+      }
     }
+  },
+
+  /**
+   * The character's vehicle control rig — a loose one, or one built in (a VCR in a cyberskull, TODO 276). The first found,
+   * as the four finders did before; `null` without one. Read its level with `vcrLevel`.
+   */
+  findVcr(items) {
+    return [...CyberCapacity.flatten(items)].find(i => i?.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(String(i.name ?? ''))) ?? null;
+  },
+
+  /**
+   * A built-in's place, from its `flatten` id: `{ top, path }` — the actor's item and the mod ids down to it — or null.
+   * A plain item id (no dot) is not a built-in.
+   */
+  locate(items, id) {
+    const [topId, ...path] = String(id ?? '').split('.');
+    if (!path.length) return null;
+    const top = [...(items ?? [])].find(i => (i?.id ?? i?._id) === topId);
+    if (!top) return null;
+    let host = top;
+    for (const modId of path) {
+      host = ItemMods.installed(host).find(m => m?._id === modId);
+      if (!host) return null;
+    }
+    return { top, path, mod: host };
+  },
+
+  /**
+   * `top`'s `system.installed` with the built-in at `path` changed by `changes` (`{ 'system.stress': 3 }`) — what to write
+   * back with `top.update({ 'system.installed': … })`. Pure: `top` is not touched.
+   */
+  patched(top, path, changes) {
+    const patch = (list, [id, ...rest]) => (list ?? []).map(m => {
+      if (m?._id !== id) return m;
+      const out = { ...m, system: { ...(m.system ?? {}) } };
+      if (rest.length) { out.system.installed = patch(ItemMods.installed(m), rest); return out; }
+      for (const [k, v] of Object.entries(changes ?? {})) {
+        const keys = k.split('.');
+        let o = out;
+        for (const key of keys.slice(0, -1)) { o[key] = { ...(o[key] ?? {}) }; o = o[key]; }
+        o[keys.at(-1)] = v;
+      }
+      return out;
+    });
+    return patch(ItemMods.installed(top), path);
   },
 
   /** Warnings for installing `mod` into a capacity host — over capacity, unknown size, another grade. Never a refusal. */

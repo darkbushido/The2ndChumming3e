@@ -96,6 +96,13 @@ export async function run(t) {
   t.eq('implants sort with the rest: obvious first, then by number, the GM\'s call after the rated',
     impl.map(r => r.name), ['Obvious Cyberleg', 'Ares Predator', 'Synthetic Cyberarm', 'Eyes, Cyber Replacement']);
 
+  const limb = (flags) => ({ ...item('cyberware', 'Synthetic Cyberarm', { cyberwareCategory: 'Cyberlimbs',
+    installed: [{ _id: 'dj', type: 'cyberware', name: 'Datajack', system: { cyberwareCategory: 'Headware' } }] }, flags) });
+  const built = Concealment.rows([limb()]).find(r => r.id === 'synthetic-cyberarm.dj');
+  t.eq('a datajack built into a cyberarm is listed, named with its limb (TODO 276)', [built?.name, built?.state, /^Built into Synthetic Cyberarm\./.test(built?.note ?? '')],
+    ['Datajack (in Synthetic Cyberarm)', 'judge', true]);
+  t.is('…not when the limb is stored', Concealment.rows([limb({ The2ndChumming3e: { stored: true } })]).length, 0);
+
   /* ── The tool, from stubbed actors ──────────────────────────────────────────────── */
   const guard = makeActor({ id: 'g1', name: 'Rico', items: [gun, vest, knife] });
   guard.items = [gun, vest, knife].map(i => ({ ...i }));

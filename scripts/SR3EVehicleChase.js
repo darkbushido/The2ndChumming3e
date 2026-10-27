@@ -1,4 +1,5 @@
 import { vcrLevel as vcrLevelOf } from './data/item-rating.mjs';
+import { CyberCapacity } from './data/cyber-capacity.mjs';
 import { Rigging } from './data/rigging.mjs';
 import { StallSpeed } from './data/stall-speed.mjs';
 import { openTestFirstWave, openTestExplode, openTestPending, openTestHighest } from './data/open-test.mjs';
@@ -520,10 +521,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
   _detectVcr(actorId) {
     const actor = actorFrom(actorId);
     if (!actor) return 0;
-    const vcr = actor.items.find(i =>
-      i.type === 'cyberware' &&
-      (i.name.toLowerCase().includes('vcr') || i.name.toLowerCase().includes('vehicle control rig'))
-    );
+    const vcr = CyberCapacity.findVcr(actor.items);   // a built-in rig too (TODO 276)
     return vcrLevelOf(vcr);   // the shipped rigs store rating 0 with the level in the name
   }
 

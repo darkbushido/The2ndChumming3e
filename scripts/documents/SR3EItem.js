@@ -1,4 +1,5 @@
 import { vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
+import { CyberCapacity } from '../data/cyber-capacity.mjs';
 import { Rigging } from '../data/rigging.mjs';
 import { VehicleArmor } from '../data/vehicle-armor.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
@@ -1818,7 +1819,7 @@ export class SR3EItem extends Item {
         const activeVCRId = pilotActor.system.activeVCRItemId ?? '';
         const vcrItem = activeVCRId
           ? pilotActor.items.get(activeVCRId)
-          : pilotActor.items.find(i => i.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(i.name));
+          : CyberCapacity.findVcr(pilotActor.items);   // a built-in rig too (TODO 276)
         // ⚠ `vcrLevel()`, not `system.rating`: the shipped rigs store 0 with the level in the name.
         if (vcrItem) vcrLevel = vcrLevelOf(vcrItem);
       }

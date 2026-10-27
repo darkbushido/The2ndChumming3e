@@ -2729,19 +2729,31 @@ function _armImplant(item) {
   const actor = item?.actor;
   if (!actor || !game.users.activeGM?.isSelf) return;
   if (!CyberWeapons.installed(item)) return;
-  if (!CyberWeapons.missing([...actor.items]).some(i => i.id === item.id)) return;
-  actor.createEmbeddedDocuments('Item', [CyberWeapons.weaponData(item)])
+  // The implant itself, and any weapon built into it (a spur in a cyberarm — TODO 276, `CyberWeapons.implants`).
+  const data = CyberWeapons.missingFor(item.id, [...actor.items]).map(i => CyberWeapons.weaponData(i));
+  if (data.length) actor.createEmbeddedDocuments('Item', data)
     .catch(err => console.error('SR3E | implant weapon create failed:', err));
 }
 
-/** Removing the implant removes the weapon entry made for it — linked ones only, never by name. */
+/** Removing the implant removes the weapon entries made for it and its built-ins — linked ones only, never by name. */
 function _disarmImplant(item) {
   const actor = item?.actor;
   if (!actor || !game.users.activeGM?.isSelf) return;
-  if (!CyberWeapons.isCyberweapon(item)) return;
-  const ids = CyberWeapons.linkedTo(item.id, actor.items).map(w => w.id);
+  if (item.type !== 'cyberware' && item.type !== 'bioware') return;
+  const ids = CyberWeapons.orphans(item.id, actor.items).map(w => w.id);
   if (ids.length) actor.deleteEmbeddedDocuments('Item', ids)
     .catch(err => console.error('SR3E | implant weapon delete failed:', err));
+}
+
+/**
+ * A limb's built-ins changed (TODO 276): a weapon installed into it is armed, one taken out loses its entry. A spur MOVED
+ * from the inventory into an arm loses its old entry with the loose copy and gets a new one linked to the built-in.
+ */
+function _rearmHost(item, changes) {
+  if (foundry.utils.getProperty(changes, 'system.installed') === undefined) return;
+  if (item.type !== 'cyberware' && item.type !== 'bioware') return;
+  _disarmImplant(item);
+  _armImplant(item);
 }
 
 // ⚠ Not for an implant MOVED into or out of a cyberlimb / eye (TODO 276, `SR3EItemMods` marks it `sr3eModMove`): it never
@@ -2751,6 +2763,7 @@ Hooks.on('createItem', (item, options) => { if (!options?.sr3eModMove) _ratchetE
 Hooks.on('deleteItem', (item, options) => { if (!options?.sr3eModMove) _recordEssenceHoleOnRemoval(item); });
 Hooks.on('createItem', (item) => _armImplant(item));
 Hooks.on('deleteItem', (item) => _disarmImplant(item));
+Hooks.on('updateItem', (item, changes) => _rearmHost(item, changes));
 
 // Inject red warning below the matrixRuleset setting in Configure Settings.
 Hooks.on('renderSettingsConfig', (_app, html) => {

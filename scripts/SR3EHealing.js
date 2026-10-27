@@ -27,6 +27,7 @@
  */
 
 import { itemRating } from './data/item-rating.mjs';
+import { CyberCapacity } from './data/cyber-capacity.mjs';
 import { PatientOrder } from './data/patient-order.mjs';
 import { MagicLoss } from './data/magic-loss.mjs';
 import { SpellTarget } from './data/spell-target.mjs';
@@ -398,7 +399,7 @@ export class SR3EHealing {
     const SA = globalThis.game?.sr3e?.SR3EActor;
     let r = SA?.racialDermalArmor?.(actor?.system?.metatype) ?? 0;
     const pats = globalThis.game?.sr3e?.SR3E?.dermalArmorImplants ?? [/^\s*dermal\s+(plating|sheath)\b/i];
-    for (const i of (actor?.items ?? [])) {
+    for (const i of CyberCapacity.flatten(actor?.items ?? [])) {   // built into a limb too (TODO 276)
       if (i.type === 'cyberware' && pats.some(re => re.test(String(i.name ?? '')))) r += itemRating(i) || 1;
     }
     return r;

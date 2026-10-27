@@ -62,6 +62,26 @@ export async function run(t) {
   t.eq('flatten yields the limb, then its built-ins (marked)', flat.map(i => [i.name, i.builtIn === true, i.id]), [['Obvious Cyberarm', false, 'arm'], ['Strength Enhancement', true, 'arm.StrengthEnhancement']]);
   t.is('…a gear device built in is not cyberware — not yielded', [...CyberCapacity.flatten([{ id: 'a', ...cw('Obvious Cyberarm', { installed: [{ _id: 'g', type: 'gear', name: 'Pocket Secretary', system: {} }] }) }])].length, 1);
 
+  /* ── Built-ins addressed by path (TODO 276: Stress, Concealment, VCR, healing) ─ */
+  const deep = { id: 'arm', ...cw('Obvious Cyberarm', { installed: [{ ...mod('Cyber Hand'), _id: 'hand', system: { cyberwareCategory: 'Cyberlimbs', installed: [mod('Datajack', { stress: 1 })] } }] }) };
+  const deepFlat = [...CyberCapacity.flatten([deep])];
+  t.eq('a built-in within a built-in carries the whole path', deepFlat.map(i => i.id), ['arm', 'arm.hand', 'arm.hand.Datajack']);
+  t.eq('…and names its host and the host\'s kind', [deepFlat[2].hostName, deepFlat[1].hostKind], ['Cyber Hand', 'ecu']);
+  const storedArm = { ...deep, flags: { The2ndChumming3e: { stored: true } } };
+  t.ok('a stored limb\'s built-ins read as stored', [...CyberCapacity.flatten([storedArm])].slice(1).every(i => i.getFlag('The2ndChumming3e', 'stored') === true));
+  t.ok('…and a fitted limb\'s do not', deepFlat.slice(1).every(i => !i.getFlag('The2ndChumming3e', 'stored')));
+  const where = CyberCapacity.locate([deep], 'arm.hand.Datajack');
+  t.eq('locate reads the path back to the actor\'s item and the mod', [where.top.id, where.path, where.mod.name], ['arm', ['hand', 'Datajack'], 'Datajack']);
+  t.eq('…a plain id or a broken path is no built-in', [CyberCapacity.locate([deep], 'arm'), CyberCapacity.locate([deep], 'arm.nope'), CyberCapacity.locate([deep], 'leg.hand')], [null, null, null]);
+  const out = CyberCapacity.patched(deep, ['hand', 'Datajack'], { 'system.stress': 4 });
+  t.is('patched writes the change into the nested mod', out[0].system.installed[0].system.stress, 4);
+  t.ok('…keeping its other fields and leaving the limb untouched',
+    out[0].system.installed[0].system.cyberwareCategory === 'Cyberlimb Mods' && deep.system.installed[0].system.installed[0].system.stress === 1);
+  const skull = { id: 'skull', ...cw('Obvious Cyberskull', { installed: [mod('Vehicle Control Rig [2]')] }) };
+  t.is('findVcr: a rig built into a cyberskull', CyberCapacity.findVcr([skull])?.id, 'skull.VehicleControlRig2');
+  t.is('…a loose one first, as before', CyberCapacity.findVcr([{ id: 'v', ...cw('VCR [1]') }, skull])?.id, 'v');
+  t.is('…none: null', CyberCapacity.findVcr([deep]), null);
+
   /* ── Warnings ─────────────────────────────────────────────────────────────── */
   const full = cw('Obvious Cyber Hand', { installed: [mod('Foot Anchor')] });
   t.ok('over capacity warned (M&M p.37)', CyberCapacity.installWarnings(full, mod('Smartlink (Internal)'), graded).some(w => /holds 2 ECU/.test(w)));
@@ -81,6 +101,19 @@ export async function run(t) {
   t.ok('attribute bonuses read built-ins', /for \(const item of CyberCapacity\.flatten\(this\.items \?\? \[\]\)\) \{\s*if \(item\.type !== 'cyberware' && item\.type !== 'bioware'\) continue;/.test(actor));
   t.ok('implant and dermal armour read built-ins', /static implantArmor\(items\) \{[\s\S]{0,120}CyberCapacity\.flatten\(items/.test(actor) && /static dermalArmorSources\(actor\)[\s\S]{0,400}CyberCapacity\.flatten\(actor\?\.items/.test(actor));
   t.ok('vision names read built-ins', /const named\s+= \[\.\.\.CyberCapacity\.flatten\(items\)\];/.test(read('scripts/SR3ECombatModifiers.js')));
+  for (const [file, re] of [['scripts/documents/SR3EActor.js', /vcrLevelOf\(CyberCapacity\.findVcr\(rigger\.items\)\)/],
+    ['scripts/documents/SR3EItem.js', /: CyberCapacity\.findVcr\(pilotActor\.items\);/],
+    ['scripts/sheets/SR3EVehicleSheet.js', /droneRolls \? null : CyberCapacity\.findVcr\(driver\.items\)/],
+    ['scripts/SR3EVehicleChase.js', /const vcr = CyberCapacity\.findVcr\(actor\.items\)/]]) {
+    t.ok(`a built-in VCR is found: ${file}`, re.test(read(file)));
+  }
+  t.ok('no VCR finder searches the loose items only', !['scripts/documents/SR3EActor.js', 'scripts/documents/SR3EItem.js', 'scripts/sheets/SR3EVehicleSheet.js', 'scripts/SR3EVehicleChase.js']
+    .some(f => /items\.find\(i\s*=>\s*i\.type === 'cyberware' &&\s*(\/vcr|\(i\.name\.toLowerCase\(\)\.includes\('vcr'\))/.test(read(f))));
+  t.ok('dermal plating built into a limb counts for healing', /for \(const i of CyberCapacity\.flatten\(actor\?\.items \?\? \[\]\)\)/.test(read('scripts/SR3EHealing.js')));
+  const stress = read('scripts/SR3EStress.js');
+  t.ok('Stress lists built-ins, not stored ones', /implants\(actor\) \{\s*return \[\.\.\.CyberCapacity\.flatten\(actor\?\.items \?\? \[\]\)\]\.filter[\s\S]{0,140}'stored'\)\)/.test(stress));
+  t.ok('…and writes a built-in\'s Stress into its limb', /where\.top\.update\(\{ 'system\.installed': CyberCapacity\.patched\(where\.top, where\.path, \{ 'system\.stress': after \}\) \}\)/.test(stress));
+  t.ok('…the slots skip an eye\'s options (the eye entry carries their excess)', /!\(i\.builtIn && i\.hostKind === 'essence'\)/.test(stress) && /CyberCapacity\.nestedEssence\(i, graded\)/.test(stress));
   t.ok('install warns about capacity and grade', /CyberCapacity\.installWarnings\(host, source\.toObject\(\), graded\)/.test(read('scripts/SR3EItemMods.js')));
 
   /* ── The character's Essence (SR3EActor.installedEssenceCost) ──────────────── */

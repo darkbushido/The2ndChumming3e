@@ -1,4 +1,5 @@
 import { vcrLevel, displayName } from '../data/item-rating.mjs';
+import { CyberCapacity } from '../data/cyber-capacity.mjs';
 import { Rigging } from '../data/rigging.mjs';
 import { StallSpeed } from '../data/stall-speed.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
@@ -1128,10 +1129,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const basePool = skillDice + autonav;
 
     // Check for VCR cyberware
-    const vcrItem   = droneRolls ? null : driver.items.find(i =>
-      i.type === 'cyberware' &&
-      (i.name.toLowerCase().includes('vcr') || i.name.toLowerCase().includes('vehicle control rig'))
-    );
+    const vcrItem   = droneRolls ? null : CyberCapacity.findVcr(driver.items);   // a built-in rig too (TODO 276)
     // ⚠ `vcrLevel()`: the shipped rigs store rating 0 with the level in the name, so a VCR [2]
     // from the compendium used to take −0 off the Driving Test instead of −2.
     const vcrRating = vcrLevel(vcrItem);

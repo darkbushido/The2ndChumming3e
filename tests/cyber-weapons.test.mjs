@@ -77,6 +77,25 @@ export async function run(t) {
   t.eq('removal deletes only weapons LINKED to the implant, never a same-named one',
     CyberWeapons.linkedTo(spur.id, [linked, packCopy, otherLink]).map(i => i.id), ['w1']);
 
+  /* ── Built into a limb's installed mods — TODO 276 ─────────────────────────────── */
+  const limbSpur = { _id: 'm1', name: 'Spur', type: 'cyberware', system: { cyberwareCategory: 'Cyberlimb Mods', description: '(STR)M' } };
+  const arm = { id: 'arm1', name: 'Obvious Cyberarm', type: 'cyberware', system: { cyberwareCategory: 'Cyberlimbs', installed: [limbSpur] } };
+  t.eq('a spur built into an arm (system.installed) is missing a weapon — its id is "<limb>.<mod>"',
+    CyberWeapons.missing([arm]).map(i => i.id), ['arm1.m1']);
+  t.is('…its weapon entry links to that id', CyberWeapons.weaponData(CyberWeapons.missing([arm])[0] ?? {})?.flags?.The2ndChumming3e?.[FLAG], 'arm1.m1');
+  const builtLinked = { id: 'w9', name: 'Spur', type: 'melee', flags: { The2ndChumming3e: { [FLAG]: 'arm1.m1' } } };
+  t.eq('…and is armed once that entry exists', CyberWeapons.missing([arm, builtLinked]), []);
+  t.eq('missingFor names the host and its built-ins only', CyberWeapons.missingFor('arm1', [arm, spur]).map(i => i.id), ['arm1.m1']);
+  t.eq('a built-in in a STORED limb is not offered (the limb is carried, not fitted)',
+    CyberWeapons.missing([{ ...arm, flags: { The2ndChumming3e: { stored: true } } }]), []);
+  const emptied = { ...arm, system: { ...arm.system, installed: [] } };
+  t.eq('the spur taken out of the arm: its entry is an orphan', CyberWeapons.orphans('arm1', [emptied, builtLinked]).map(i => i.id), ['w9']);
+  t.eq('the arm deleted: the same', CyberWeapons.orphans('arm1', [builtLinked]).map(i => i.id), ['w9']);
+  t.eq('…while it is still in the arm: no orphan', CyberWeapons.orphans('arm1', [arm, builtLinked]), []);
+  t.eq('…nor while the arm is in Storage (it still exists)', CyberWeapons.orphans('arm1', [{ ...arm, flags: { The2ndChumming3e: { stored: true } } }, builtLinked]), []);
+  t.eq('orphans never touch an unlinked same-named weapon or another host\'s', CyberWeapons.orphans('arm1', [packCopy, otherLink, linked]), []);
+  t.eq('a loose implant deleted: its linked entry is an orphan (as before)', CyberWeapons.orphans(spur.id, [linked, packCopy]).map(i => i.id), ['w1']);
+
   /* ── Every shipped cyberweapon ──────────────────────────────────────────────────── */
   const dir = new URL('../packs-src/', import.meta.url);
   const shipped = [];
@@ -103,12 +122,18 @@ export async function run(t) {
   t.ok('installing an implant makes its weapon (GM-gated, like the Essence hook)',
     /Hooks\.on\('createItem', \(item\) => _armImplant\(item\)\)/.test(main)
     && /function _armImplant\(item\) \{[\s\S]{0,200}activeGM\?\.isSelf/.test(main));
-  t.ok('removing it removes the linked weapon',
+  t.ok('removing it removes the linked weapon — its built-ins\' too',
     /Hooks\.on\('deleteItem', \(item\) => _disarmImplant\(item\)\)/.test(main)
-    && /CyberWeapons\.linkedTo\(item\.id, actor\.items\)/.test(main));
+    && /CyberWeapons\.orphans\(item\.id, actor\.items\)/.test(main));
+  t.ok('a limb whose built-ins change is re-armed (TODO 276)',
+    /Hooks\.on\('updateItem', \(item, changes\) => _rearmHost\(item, changes\)\)/.test(main)
+    && /function _rearmHost\(item, changes\) \{\s*if \(foundry\.utils\.getProperty\(changes, 'system\.installed'\) === undefined\) return;[\s\S]{0,150}_disarmImplant\(item\);\s*_armImplant\(item\);/.test(main));
+  t.ok('arming covers the host\'s built-ins', /CyberWeapons\.missingFor\(item\.id, \[\.\.\.actor\.items\]\)/.test(main));
   t.ok('the attack picker lists body weapons without an Equip',
     /actor\.system\.equippedMelee === i\.id \|\| ReadyWeapon\.isBodyWeapon\(i\)/.test(main));
   const sheet = read('scripts/sheets/SR3EActorSheet.js');
   t.ok('the weapons tab offers an implant that has no weapon yet', /CyberWeapons\.missing\(\[\.\.\.actor\.items\]\)/.test(sheet)
     && /data-action="armImplant"/.test(sheet) && /armImplant:\s+SR3EActorSheet\._onArmImplant/.test(sheet));
+  t.ok('…and + Add weapon finds a built-in among the implants, not the items',
+    /const implant = CyberWeapons\.implants\(\[\.\.\.this\.actor\.items\]\)\.find\(i => i\.id === target\.dataset\.itemId\);/.test(sheet));
 }

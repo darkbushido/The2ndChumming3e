@@ -3378,8 +3378,7 @@ _prepareCharacter(sys, attr) {
     if (!rigger?.items) return 0;
     const activeVCRId = rigger.system?.activeVCRItemId ?? '';
     const level = activeVCRId ? vcrLevelOf(rigger.items.get(activeVCRId)) : 0;
-    return level || vcrLevelOf(rigger.items.find(i =>
-      i.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(i.name)));
+    return level || vcrLevelOf(CyberCapacity.findVcr(rigger.items));   // a built-in rig too (TODO 276)
   }
 
   // For a rigger jumped into a VCR drone, the Simsense degradation acts exactly like a wound
