@@ -399,7 +399,8 @@
         "availability": "4/48hrs",
         "streetIndex": "4",
         "bookPage": "sr3.304",
-        "notes": ""
+        "notes": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -835,7 +836,8 @@
         "availability": "6/48hrs",
         "streetIndex": "2",
         "bookPage": "sr3.290",
-        "description": "<p>with Low-light and Thermographic Vision</p>"
+        "description": "<p>with Low-light and Thermographic Vision</p>",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,

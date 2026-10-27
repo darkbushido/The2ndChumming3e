@@ -384,7 +384,8 @@
         "availability": "5/48hrs",
         "streetIndex": "2",
         "bookPage": "sr3.288",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -453,7 +454,8 @@
         "availability": "Always",
         "streetIndex": "1",
         "bookPage": "sr3.287",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -624,7 +626,8 @@
         "availability": "8/72hrs",
         "streetIndex": "3",
         "bookPage": "sr3.288",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -693,7 +696,8 @@
         "availability": "5/48hrs",
         "streetIndex": "2",
         "bookPage": "sr3.288",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -978,7 +982,8 @@
         "availability": "2/48 hrs",
         "streetIndex": "1",
         "bookPage": "sr3.302",
-        "description": "<p><strong>Legal:</strong> Legal</p>"
+        "description": "<p><strong>Legal:</strong> Legal</p>",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -1119,7 +1124,8 @@
         "availability": "Always",
         "streetIndex": ".75",
         "bookPage": "sr3.287",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -1154,7 +1160,8 @@
         "availability": "Always",
         "streetIndex": "1",
         "bookPage": "sr3.287",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -1225,7 +1232,8 @@
         "availability": "8/72hrs",
         "streetIndex": "3",
         "bookPage": "sr3.288",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,

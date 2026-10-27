@@ -23,7 +23,8 @@
       "availability": "Restricted",
       "streetIndex": "NA",
       "bookPage": "sr3.302",
-      "description": "<p><strong>Legal:</strong> Restricted</p>"
+      "description": "<p><strong>Legal:</strong> Restricted</p>",
+      "legality": "Legal"
     }
   },
   "embedded": {}

@@ -1068,7 +1068,8 @@
         "availability": "Always/24hrs",
         "streetIndex": "1.5",
         "bookPage": "mm.138",
-        "notes": ""
+        "notes": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -1282,7 +1283,8 @@
         "availability": "5/24hrs",
         "streetIndex": "1",
         "bookPage": "sr3.305",
-        "description": "<p><strong>KarmaCost:</strong> 0</p>"
+        "description": "<p><strong>KarmaCost:</strong> 0</p>",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,

@@ -843,7 +843,8 @@
         "availability": "8/72hrs",
         "streetIndex": "3",
         "bookPage": "sr3.288",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -1481,7 +1482,8 @@
         "availability": "Always",
         "streetIndex": "1",
         "bookPage": "sr3.287",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,
@@ -1585,7 +1587,8 @@
         "availability": "5/48hrs",
         "streetIndex": "2",
         "bookPage": "sr3.288",
-        "description": ""
+        "description": "",
+        "legality": "Legal"
       },
       "effects": [],
       "folder": null,

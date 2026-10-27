@@ -80,8 +80,8 @@ export async function run(t) {
   t.is('Armor Jacket Legal (SR3 p.284)', code('sr3e-sr3-armor', 'sr3e-armor-0015'), 'Legal');
   t.is('an APDS clip 3-M (SR3 p.281)', code('sr3e-sr3-ammunition', 'f388c161620d1c5f'), '3-M');
   t.is('…a Regular clip "As Weapon" (p.281)', code('sr3e-sr3-ammunition', '962e9d7f0b8167ff'), 'As Weapon');
-  t.ok('a table with no Legality column gives nothing — the Pocket Computer (p.287) is blank, the GM decides',
-    !code('sr3e-sr3-gear', '2c91795bb158adc3'));
+  // The maintainer's ruling (2026-10-27): a table with NO Legality column prints no restriction, so its items are Legal.
+  t.is('a table with no Legality column is Legal — the Pocket Computer (p.287)', code('sr3e-sr3-gear', '2c91795bb158adc3'), 'Legal');
 
   /* ── The models, the search and the migration ────────────────────────────────── */
   const models = read('scripts/data/ItemDataModels.js');
@@ -131,6 +131,18 @@ export async function run(t) {
     const { render } = await import('../tools/build-legality-names.mjs');
     t.ok('scripts/data/legality-names.mjs is current (node tools/build-legality-names.mjs)', render() === read('scripts/data/legality-names.mjs'));
   }
+  /* ── The audit against the books (2026-10-27): every code below was read from the printed table ───────────────── */
+  const by = (type, name) => Legality.fillDelta(bare(type, name))?.['system.legality'] ?? null;
+  t.is('Broadcast Encryption prints 8P-V, 8P-W from Rating 8 (SR3 p.290)', by('gear', 'Broadcast Encryption'), '8P-V (8P-W at Rating 8+)');
+  t.is('…and a banded code still classifies as restricted with a permit', Legality.classify(by('gear', 'Broadcast Encryption')).permit, true);
+  t.is('Binoculars sit in a table with no Legality column: Legal (SR3 p.289)', by('gear', 'Binoculars'), 'Legal');
+  t.is('Fugu-5, a toxin, is 3-X (M&M p.158)', by('drug', 'Fugu 5'), '3-X');
+  t.is('Arsenic is Legal (M&M p.158)', by('drug', 'Arsenic'), 'Legal');
+  t.is('Green Ring 3 is 2-K (M&M p.158)', by('drug', 'Green Ring 3'), '2-K');
+  t.is('the FAB Strain-I 500 m3 aerosol is 8P-U (MitS p.170)', by('gear', 'FAB Strain-I 500 m3 aerosol'), '8P-U');
+  t.is('left for the maintainer, not guessed: a Rigger 3 ring mount', by('vehiclemod', 'Ring Mount (Vehicle)'), null);
+  t.is('…an integrated armor option', by('armor', 'Thermo Vision (Armor)'), null);
+  t.is('…a Benelli (not in any book of the library)', by('firearm', 'Benelli M1014'), null);
   t.ok('the migration hands the fill the renamed item', /Legality\.fillDelta\(linked\)/.test(read('scripts/SR3EMigrations.js')) && /name: delta\.name \?\? item\.name/.test(read('scripts/SR3EMigrations.js')));
 
   /* ── The dialog and the card (source-level: they need Foundry) ───────────────── */
