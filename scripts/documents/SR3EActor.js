@@ -22,6 +22,7 @@ import { CombatPool } from '../data/combat-pool.mjs';
 import { Collisions } from '../data/collisions.mjs';
 import { Apds } from '../data/apds.mjs';
 import { VehicleArmor } from '../data/vehicle-armor.mjs';
+import { VehicleMods, vehicleStat } from '../data/vehicle-mods.mjs';
 import { ArmorMods } from '../data/armor-mods.mjs';
 import { CyberCapacity } from '../data/cyber-capacity.mjs';
 import { Misfire } from '../data/misfire.mjs';
@@ -1953,6 +1954,16 @@ _prepareVehicle(sys, attr) {
   const body = attr.body?.base ?? 4;
   sys.derived.damageMax      = body * 2;
   sys.derived.damageDisabled = body;
+  // What the mods change (TODO 265, `vehicle-mods.mjs`): the effective figures, never saved — the typed `base` stays the
+  // vehicle's own. `attributes.X.value` is bound by no input; ECM / ECCM go to `derived.ew` (their inputs bind `ew.X`).
+  const mods = VehicleMods.effective(this, this.items ?? []);
+  if (!sys.derived.ew) sys.derived.ew = {};
+  for (const [stat, r] of Object.entries(mods.stats)) {
+    if (stat === 'ecm' || stat === 'eccm') { sys.derived.ew[stat] = r.value; continue; }
+    if (!attr[stat]) attr[stat] = { base: r.own };
+    attr[stat].value = r.value;
+  }
+  sys.derived.vehicleMods = mods;
 }
 
 _prepareCharacter(sys, attr) {
@@ -8287,7 +8298,7 @@ _prepareCharacter(sys, attr) {
    */
   static armorRatings(actor) {
     if (actor?.type === 'vehicle') {
-      const v = actor.system?.attributes?.armor?.base ?? 0;
+      const v = vehicleStat(actor, 'armor');   // its mods included (TODO 265)
       return { ballistic: v, impact: v, worn: { name: null, ballistic: v, impact: v, pieces: [] },
                implants: { impact: 0, ballistic: 0, sources: [] } };
     }
@@ -11732,7 +11743,7 @@ _prepareCharacter(sys, attr) {
     if (this.type === 'vehicle') {
       const controlMode = this.system.controlMode ?? '';
       const driverActId = this.system.driverActorId?.trim() ?? '';
-      const pilotRating = this.system.attributes?.pilot?.base ?? 0;
+      const pilotRating = vehicleStat(this, 'pilot');
 
       if (driverActId) {
         const rigger = actorFrom(driverActId);

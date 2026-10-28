@@ -71,7 +71,8 @@ export const VehicleBudget = {
   of(mod, vehicle) {
     const sys = mod?.system ?? {};
     const attrs = vehicle?.attributes ?? vehicle?.system?.attributes ?? {};
-    const ctx = { body: num(attrs.body?.value ?? attrs.body?.base), armor: num(attrs.armor?.value ?? attrs.armor?.base) };
+    // ⚠ Body's stored `value` is stale (no input binds it) — read its base. Armor's `value` is prepared, its mods in (TODO 265).
+    const ctx = { body: num(attrs.body?.base), armor: num(attrs.armor?.value ?? attrs.armor?.base) };
     const per = PER_POINT[baseName(mod?.name)];
     const points = Math.max(1, num(sys.rating) || 1);
     let cf = VehicleBudget.cf(sys.cfCost, ctx);
@@ -97,8 +98,9 @@ export const VehicleBudget = {
     const rows = [...mods].map(m => VehicleBudget.of(m, sys));
     const cfUsed = round(rows.reduce((s, r) => s + (r.cf ?? 0), 0));
     const loadUsed = round(rows.reduce((s, r) => s + (r.load ?? 0), 0));
-    const cfOf = num(attrs.cargo?.value ?? attrs.cargo?.base);
-    const loadOf = num(attrs.load?.value ?? attrs.load?.base);
+    // The typed figures — the sheet edits `base`; a stored `value` is stale (TODO 265).
+    const cfOf = num(attrs.cargo?.base);
+    const loadOf = num(attrs.load?.base);
     const seats = VehicleBudget.passengerSeats(sys.seating);
     const scrape = Math.floor(1.5 * seats);
     const cf = { used: cfUsed, of: cfOf, over: round(Math.max(0, cfUsed - cfOf)), scrape, seats };

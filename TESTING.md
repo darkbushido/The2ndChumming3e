@@ -3542,3 +3542,20 @@ JS / CSS only (no restart needed beyond a reload). A vehicle from the packs, e.g
       fire → the gun's own RC and the vehicle's comp are not rewritten with it.
 - [ ] **Delete the turret** with weapons on it → their Mount dropdown reads "⚠ a mount no longer here" and the Mods tab warns.
 - [ ] **A personal gun** on a character fires exactly as before (no mount line, no Mount box).
+
+### 78b. What a vehicle's mods change (TODO 265 — R3R pp.127-147; the maintainer's rulings of 2026-10-27)
+
+JS only — F5. A vehicle with Body 4, Armor 2, Handling 4, Sensor 2, Pilot 1, ECM 0. *(Walked by the agent 2026-10-27: the figures
+below, the typed edit and the Mods tab text all as stated.)*
+
+- [ ] **Vehicle Armor [6]** (Mods tab, rating 6) → Stats tab: Armor's input still reads 2, "→ 8" beside it (tooltip "Vehicle Armor … +6
+      (R3R p.131)"); Handling "→ 5" (6 points added: +1); off-road Handling +1 too. The Mods tab's "What the mods change" lists both.
+- [ ] **Ablative Armor [1]** on top → no change (Armor 8 is already past Body 4) and a note says "raised only to the vehicle's Body 4".
+      Remove the Vehicle Armor → Ablative gives 2 → 4 (Body), not past.
+- [ ] **Sensors [5]** → Sensor "→ 5"; **Sensors [1]** instead → no arrow, a note "no higher than the vehicle's Sensor 2" (the higher of
+      the two). **Advanced Drone Pilot [3]** → Pilot 3; **ECM [2]** → the EW footprint line reads ECM 2.
+- [ ] **Rolls use it:** soak a hit on the vehicle → its armour is 8 (base 2 + 6); a vehicle sensor test rolls 5 dice; a drone's
+      initiative uses Pilot 3; a chase test's Handling TN is 5.
+- [ ] **Typing a stat** (Armor 2 → 3) saves 3 and the arrow reads 9 — the typed figure stays the vehicle's own; nothing derived is saved.
+- [ ] **Concealed Armor** together with Vehicle Armor → "⚠ Concealed Armor is not compatible with standard vehicle armor (R3R p.132)",
+      both still counted. A Body 0 drone with armour → warned.

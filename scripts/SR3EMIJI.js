@@ -18,6 +18,7 @@
 // import is safe — and the alternative was a third copy of SR3 p.57's chargen gap.
 import { CHARGEN_SPEC_GAP } from './data/skill-rules.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
+import { vehicleStat } from './data/vehicle-mods.mjs';
 
 export class SR3EMIJI {
 
@@ -222,7 +223,7 @@ export class SR3EMIJI {
     const intTN = Math.max(2, (defRigger?.system?.ew?.deckRating ?? 4) + woundTN(intRigger));
     // Defender TN = intruder's ECM (Jamming) or protocol-emulation module (others).
     const defTN = Math.max(2, (op.tnStat === 'ecm'
-      ? (intVehicle?.system?.ew?.ecm ?? 0)
+      ? vehicleStat(intVehicle, 'ecm')
       : (intRigger?.system?.ew?.protocolModule ?? 0)) + woundTN(defRigger));
 
     await this.postMIJICard({
@@ -758,7 +759,7 @@ export class SR3EMIJI {
     const cur = sm[channel] ?? 0;
     if (cur <= 0) { ui.notifications.info(`${channel} channel has no degradation to repair.`); return; }
 
-    const eccm     = targetVehicle.system?.ew?.eccm ?? 0;
+    const eccm     = vehicleStat(targetVehicle, 'eccm');
     if (eccm <= 0) { ui.notifications.warn('This vehicle has no ECCM rating.'); return; }
     const rigger   = this._riggerOf(targetVehicle);
     const skill    = this._ewSkill(rigger);
@@ -771,7 +772,7 @@ export class SR3EMIJI {
     const attackerStat = Math.max(
       intruder?.system?.ew?.protocolModule ?? 0,
       // intruder's vehicle ECM, if we can find it
-      (this._liveVehicles().find(v => this._riggerOf(v)?.id === intruder?.id)?.system?.ew?.ecm ?? 0),
+      vehicleStat(this._liveVehicles().find(v => this._riggerOf(v)?.id === intruder?.id), 'ecm'),
     );
     const roller = rigger ?? targetVehicle;
     const tn = Math.max(2, attackerStat + 3 + this._woundTN(rigger));
@@ -826,7 +827,7 @@ export class SR3EMIJI {
     // Each success lowers total Flux by 1 — applied to the vehicle's own Flux field — then recompute.
     const newFlux = Math.max(0, (ew.fluxRating ?? 0) - res.successes);
     const rew     = rigger?.system?.ew ?? {};
-    const newFp   = Math.round(((rew.fluxRating ?? 0) + newFlux + (ew.ecm ?? 0)) / 10);
+    const newFp   = Math.round(((rew.fluxRating ?? 0) + newFlux + vehicleStat(targetVehicle, 'ecm')) / 10);
     await targetVehicle.update({ 'system.ew.fluxRating': newFlux, 'system.ew.footprint': newFp });
 
     await ChatMessage.create({

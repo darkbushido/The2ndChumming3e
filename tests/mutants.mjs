@@ -54,6 +54,7 @@ const INTEGRAL = { module: '../scripts/data/integral-mods.mjs', klass: 'Integral
 const VBUDGET = { module: '../scripts/data/vehicle-budget.mjs', klass: 'VehicleBudget' };
 const PRC = { module: '../scripts/data/printed-rc.mjs', klass: 'PrintedRC' };
 const VMOUNT = { module: '../scripts/data/vehicle-mounts.mjs', klass: 'VehicleMounts' };
+const VMODS = { module: '../scripts/data/vehicle-mods.mjs', klass: 'VehicleMods' };
 // An item with its integral flags taken off — what every reader saw before the ruling (TODO 276, step b).
 const unIntegral = it => ({ ...it,
   flags: { ...(it?.flags ?? {}), The2ndChumming3e: { ...(it?.flags?.The2ndChumming3e ?? {}), integral: false } },
@@ -4177,6 +4178,34 @@ export const MUTANTS = [
       const raw  = roundsBefore + own;
       return Math.max(0, (halve ? Math.ceil(raw / 2) : raw) - totalComp) * mult;
     },
+  },
+  {
+    id:     'vehicle-rated-mod-adds',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'rated',
+    was:    'a rated system added to the vehicle’s own rating — the maintainer ruled the higher of the two (2026-10-27, TODO 265)',
+    impl:   (own, mod) => own + mod,
+  },
+  {
+    id:     'vehicle-ablative-past-body',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'ablativeGain',
+    was:    'ablative armour raised the Armor past Body — R3R p.131: "to a maximum equal to the vehicle’s Body" (TODO 265)',
+    impl:   want => want,
+  },
+  {
+    id:     'vehicle-armor-handling-rounds-up',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'handlingFor',
+    was:    'any armour added raised Handling — R3R p.131: +1 for every 6 points (TODO 265)',
+    impl:   added => Math.ceil(Math.max(0, added) / 6),
+  },
+  {
+    id:     'vehicle-stat-reads-stale-value',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'stat',
+    was:    'a vehicle stat read its stored `value`, which no input updates — the GM’s typed base is the figure (TODO 265)',
+    impl:   (vehicle, stat) => { const a = vehicle?.system?.attributes?.[stat]; return Number(a?.value ?? a?.base ?? vehicle?.system?.derived?.ew?.[stat] ?? vehicle?.system?.ew?.[stat] ?? 0) || 0; },
   },
   {
     id:     'mount-vehicle-weapon-on-firmpoint',

@@ -4,6 +4,7 @@ import { Rigging } from './data/rigging.mjs';
 import { StallSpeed } from './data/stall-speed.mjs';
 import { openTestFirstWave, openTestExplode, openTestPending, openTestHighest } from './data/open-test.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
+import { vehicleStat } from './data/vehicle-mods.mjs';
 
 const VEHICLE_TYPES = [
   { key: 'car',          label: 'Car',                        score:   0 },
@@ -842,8 +843,8 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const vehicle = actorFrom(p.vehicleActorId);
     const { pool: skillPool, label: skillLabel } = this._driverSkillPool(p);
     const vcrRating  = p.vcrActive ? (p.vcrRating ?? 0) : 0;
-    const handling   = vehicle?.system.attributes?.handling?.base ?? 4;
-    const autonav    = vehicle?.system.attributes?.autonav?.base  ?? 0;
+    const handling   = vehicle ? vehicleStat(vehicle, 'handling') : 4;
+    const autonav    = vehicleStat(vehicle, 'autonav');
     const speedAttr  = vehicle?.system.attributes?.speed?.base    ?? 0;
     const damageInfo = this._vehicleDamageInfo(p.vehicleActorId);
     const maxSpeedKmct = +(speedAttr * damageInfo.speedMod).toFixed(2); // km/ct
@@ -1806,7 +1807,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const sensorOf = (pid) => {
       const p = this._participants.find(x => x.id === pid);
       const v = actorFrom(p?.vehicleActorId);
-      return v?.system.attributes?.sensor?.base ?? 0;
+      return vehicleStat(v, 'sensor');
     };
 
     // Signature rating of an opponent participant's vehicle
@@ -1937,7 +1938,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           const pid    = el.querySelector('#act-participant')?.value;
           const info   = pid ? this._getParticipantInfo(pid) : null;
           if (!info) return;
-          const sensor = info.vehicle?.system.attributes?.sensor?.base ?? 0;
+          const sensor = vehicleStat(info.vehicle, 'sensor');
           this._warnDamage(info);
           el.querySelector('#act-iv')?.replaceChildren(document.createTextNode(info.vehicle?.name ?? '?'));
           el.querySelector('#act-id')?.replaceChildren(document.createTextNode(info.driver?.name  ?? '?'));

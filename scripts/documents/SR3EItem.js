@@ -18,6 +18,7 @@ import { WillingTarget } from '../data/willing-target.mjs';
 import { SpellTarget } from '../data/spell-target.mjs';
 import { RangeBands } from '../data/range-bands.mjs';
 import { VehicleMounts } from '../data/vehicle-mounts.mjs';
+import { vehicleStat } from '../data/vehicle-mods.mjs';
 import { Fling } from '../data/fling.mjs';
 import { ActorRef, actorFrom, actorRef, tokenRows } from '../data/actor-ref.mjs';
 
@@ -1827,7 +1828,7 @@ export class SR3EItem extends Item {
         if (vcrItem) vcrLevel = vcrLevelOf(vcrItem);
       }
     } else {
-      const pilotRating = actor.system.attributes?.pilot?.base ?? 0;
+      const pilotRating = vehicleStat(actor, 'pilot');
       pool      = pilotRating;
       poolLabel = pilotActor
         ? `RCD (${pilotActor.name}, captain's chair): Pilot ${pilotRating}`
@@ -1912,7 +1913,7 @@ export class SR3EItem extends Item {
    */
   static async _promptVehicleWeaponRollOptions(weapon, targetActor, pool, poolLabel, baseSig, rawDamage, _vcrLevel = 0, controlPoolMax = 0, combatPoolMax = 0) {
     const isVehicleTarget = targetActor.type === 'vehicle';
-    const sensorRating    = weapon.actor?.system.attributes?.sensor?.base ?? 0;
+    const sensorRating    = vehicleStat(weapon.actor, 'sensor');
     /* Sensor-enhanced gunnery · SR3 p.152: "rolls a number of dice equal to the character's Gunnery
      * Skill plus half the vehicle's Sensor Rating (round down) … The test target number is equal to
      * the target's Signature", modified by the p.154 table. Steeler's example (p.153): Sig 5, −3

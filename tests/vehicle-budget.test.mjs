@@ -46,7 +46,8 @@ export async function run(t) {
   const odd = VehicleBudget.summary(car(), [mod('Internal Missile Mount (Vehicle)', '5', 'weight of the missiles'), mod('External Hardpoint (Vehicle)', '2', '10kg+Weapon')]);
   t.eq('an unread figure is named, the rest still counted', [odd.unread, odd.cf.used, odd.load.used], [['Internal Missile Mount (Vehicle)'], 7, 10]);
   t.ok('…and a mount reminds the GM its weapon weighs extra (R3R p.136)', odd.warnings.some(w => /leaves out the weapon/.test(w)));
-  t.eq('the vehicle\'s CURRENT Cargo is the budget (the GM\'s figure)', VehicleBudget.summary(car({ cargo: { base: 10, value: 4 } }), [mod('X', '5', '')]).cf.over, 1);
+  // The sheet edits `base` (the GM's figure); a stored `value` is never updated, so it is stale (TODO 265, found 2026-10-27).
+  t.eq('the vehicle\'s TYPED Cargo is the budget, never a stale stored value', VehicleBudget.summary(car({ cargo: { base: 4, value: 10 } }), [mod('X', '5', '')]).cf.over, 1);
 
   /* ── Every shipped mod is read ────────────────────────────────────────────── */
   const unread = [];

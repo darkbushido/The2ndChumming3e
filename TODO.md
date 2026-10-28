@@ -784,6 +784,20 @@ packs carry them as `vehiclemod` `cfCost` / `load`. Weapon mounts p.135-136 ([#2
 
 **Built — weapon mounts (2026-10-27):** [#234](TODO-DONE.md#234).
 
+**Built — what the mods change (2026-10-27):** `scripts/data/vehicle-mods.mjs` (`tests/vehicle-mods.test.mjs`; mutants
+`vehicle-rated-mod-adds`, `vehicle-ablative-past-body`, `vehicle-armor-handling-rounds-up`, `vehicle-stat-reads-stale-value`).
+The maintainer's rulings, 2026-10-27: **the mods apply** (the rolls read the effective figure) and the typed figure stays the
+vehicle's own, editable; a **rated system gives the higher** of the vehicle's rating and the mod's. Vehicle Armor and Concealed
+Armor +1 a point, +1 Handling (on- and off-road) per full 6 added (R3R pp.131-132; the two together warned); Ablative +2 a level,
+the Armor raised no higher than Body (p.131); Advanced Drone Pilot, Autonav, Sensors, ECM, ECCM (pp.127, 143-147). Prepared into
+`attributes.X.value` / `derived.ew` by `_prepareVehicle`, never saved; every reader goes through `vehicleStat` (source-level test).
+The Stats tab shows "→ N" beside the typed figure; the Mods tab lists what changed and why. TESTING.md §78b.
+- **Fixed in passing:** the budget's Cargo / Load and the mounts' Body read the stored `attributes.X.value`, which no input updates —
+  a GM's edit of Cargo was ignored. They read `base` now.
+- **Not in the packs, so not modelled:** suspension, drive-by-wire, turbocharging, signature masking / RAM (pp.126-135) — no
+  documents carry them. Not a number: CMCs (ignore damage boxes), Nitrous (dice on Accelerating), APPS, crash cages, roll bars,
+  Smart Armor's activation roll, ECD / ED (no vehicle field), Power Amplifier (Flux), State of the Art's Enhanced Sensors (unread).
+
 **Built — the CF / Load budget (2026-10-27):** `scripts/data/vehicle-budget.mjs` (`tests/vehicle-budget.test.mjs`; mutants
 `vehicle-armor-load-once`, `vehicle-unread-as-zero`, `vehicle-seats-include-driver`). The vehicle's Mods tab shows **CF used /
 Cargo** and **Load used / Load** (amber when over) and warns, never refuses (R3R p.124: "no vehicle can exceed its Cargo or Load").

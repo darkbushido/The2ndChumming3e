@@ -2,9 +2,13 @@ import { vcrLevel, displayName } from '../data/item-rating.mjs';
 import { CyberCapacity } from '../data/cyber-capacity.mjs';
 import { VehicleBudget } from '../data/vehicle-budget.mjs';
 import { VehicleMounts } from '../data/vehicle-mounts.mjs';
+import { VehicleMods, vehicleStat } from '../data/vehicle-mods.mjs';
 import { Rigging } from '../data/rigging.mjs';
 import { StallSpeed } from '../data/stall-speed.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
+
+/** The stats `vehicle-mods.mjs` changes, as the Mods tab names them. */
+const LABELS = { armor: 'Armor', handling: 'Handling', handlingOffRoad: 'Off-road Handling', pilot: 'Pilot', autonav: 'Autonav', sensor: 'Sensor', ecm: 'ECM', eccm: 'ECCM' };
 
 export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
@@ -280,13 +284,19 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   _tabStats(sys) {
     const attr = sys.attributes ?? {};
 
+    // What the mods make of a stat (TODO 265): the typed figure stays the input; the effective one sits beside it.
+    const changed = sys.derived?.vehicleMods?.stats ?? {};
     const _stat = (key, label) => {
       const a = attr[key] ?? {};
+      const m = changed[key];
+      const eff = m?.from?.length && m.value !== m.own
+        ? `<span class="sr-veh-mod-eff" data-tooltip="${foundry.utils.escapeHTML(m.from.map(f => `${f.name}: ${f.change} (${f.page})`).join('; '))}">→ ${m.value}</span>`
+        : '';
       return `
         <div class="attr-block">
           <span class="attr-label">${label}</span>
           <div class="attr-row">
-            <input class="attr-input" type="number" name="system.attributes.${key}.base" value="${a.base ?? 0}"/>
+            <input class="attr-input" type="number" name="system.attributes.${key}.base" value="${a.base ?? 0}"/>${eff}
           </div>
         </div>`;
     };
@@ -477,7 +487,8 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${budget.unread.length ? `<span class="sr-budget-unread" data-tooltip="${esc(budget.unread.join(', '))}">${budget.unread.length} not counted</span>` : ''}
       </div>
       ${budget.warnings.map(w => `<p class="sr-budget-warn">⚠ ${esc(w)}</p>`).join('')}
-      ${this._mountsSummary(actor, esc)}`;
+      ${this._mountsSummary(actor, esc)}
+      ${this._modsChangeSummary(actor, esc)}`;
 
     return `<div class="tab ${this._activeTab === 'mods' ? 'active' : ''}" data-tab="mods" style="overflow-y:auto">
       ${head}
@@ -493,6 +504,20 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
    * The vehicle's weapon mounts (TODO 234): points against Body, each mount's weapons, the Signature the mounts cost — shown,
    * never applied (the maintainer, 2026-10-27) — and the warnings. Nothing when it has no mounts.
    */
+  /** What the mods change — the vehicle's own figure, the effective one, and why (TODO 265, `vehicle-mods.mjs`). */
+  _modsChangeSummary(actor, esc) {
+    const m = actor.system?.derived?.vehicleMods ?? VehicleMods.effective(actor, actor.items);
+    const rows = Object.entries(m.stats).filter(([, r]) => r.from.length)
+      .map(([stat, r]) => `<li><strong>${esc(LABELS[stat] ?? stat)} ${r.own} → ${r.value}</strong> — ${esc(r.from.map(f => `${f.name}: ${f.change} (${f.page})`).join('; '))}</li>`).join('');
+    if (!rows && !m.warnings.length && !m.notes.length) return '';
+    return `<div class="sr-vehicle-mounts sr-vehicle-modfx">
+        <span class="sr-budget" data-tooltip="The rolls use the figure after the arrow; the Stats tab's figure stays the vehicle's own.">What the mods change</span>
+        ${rows ? `<ul class="sr-mount-list">${rows}</ul>` : ''}
+        ${m.warnings.map(w => `<p class="sr-budget-warn">⚠ ${esc(w)}</p>`).join('')}
+        ${m.notes.map(n => `<p class="sr-mount-note">${esc(n)}</p>`).join('')}
+      </div>`;
+  }
+
   _mountsSummary(actor, esc) {
     const m = VehicleMounts.summary(actor, actor.items);
     if (!m.mounts.length) return '';
@@ -517,7 +542,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const rigger   = actorFrom(sys.driverActorId?.trim() ?? '');
     const deckFlux = rigger?.system?.ew?.fluxRating ?? 0;
     const vehFlux  = sys.ew?.fluxRating ?? 0;
-    const ecm      = sys.ew?.ecm ?? 0;
+    const ecm      = vehicleStat(this.actor, 'ecm');
     return Math.round((deckFlux + vehFlux + ecm) / 10);
   }
 
@@ -613,7 +638,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${_ewStat('footprint',  'Footprint')}
       </div>
       <div class="ew-note">
-        Derived Footprint <strong>${derivedFp}</strong> = ⌊(deck Flux ${rew.fluxRating ?? 0} + veh Flux ${ew.fluxRating ?? 0} + ECM ${ew.ecm ?? 0}) ÷ 10⌉.
+        Derived Footprint <strong>${derivedFp}</strong> = ⌊(deck Flux ${rew.fluxRating ?? 0} + veh Flux ${ew.fluxRating ?? 0} + ECM ${vehicleStat(this.actor, 'ecm')}) ÷ 10⌉.
         <button type="button" class="btn-sm" data-action="recalcFootprint" title="Write derived value into the Footprint field">↻ Recalc</button>
         <br>Targeting this vehicle's Sig: TN = ${sigBase} − ${footprint} (Footprint) = <strong>${Math.max(2, sigBase - footprint)}</strong>.
       </div>
@@ -826,7 +851,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async runDroneComprehension(vehicle) {
     if (!vehicle) return;
     const sys     = vehicle.system ?? {};
-    const pilot   = sys.attributes?.pilot?.base ?? 0;
+    const pilot   = vehicleStat(this.actor, 'pilot');
     const cmdDeg  = game.sr3e.SR3EActor._signalTierMod(sys.signalMonitor?.command ?? 0);
 
     const wireDialog = (_app, html) => {
@@ -1095,7 +1120,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     /* A drone the rigger isn't jumped into rolls its own Pilot Rating, with no pools: a secondary
      * drone or the captain's chair (RCD), or a drone on its own (SR3 p.154, Rigging.droneTestRoller).
      * A driver picked by hand (the GM tool) drives. */
-    const pilotRating = sys.attributes?.pilot?.base ?? 0;
+    const pilotRating = vehicleStat(this.actor, 'pilot');
     const droneRolls  = !driverOverride
       && Rigging.droneTestRoller(sys.controlMode ?? '', !!driver) === 'pilot'
       && (driver ? sys.controlMode === 'rcd' : pilotRating > 0);
@@ -1168,8 +1193,8 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     }
 
     // Vehicle stats
-    const autonav  = sys.attributes?.autonav?.base ?? 0;
-    const handling = (sys.attributes?.handling?.base ?? 4) + defTnMod;   // defaulting TN modifier baked in
+    const autonav  = vehicleStat(this.actor, 'autonav');
+    const handling = vehicleStat(this.actor, 'handling') + defTnMod;   // defaulting TN modifier baked in
 
     /* Vehicle damage raises the target number of every test involving the vehicle
      * (SR3 p.145) — the book's own Crash Test example opens with "Cruiser has taken Serious

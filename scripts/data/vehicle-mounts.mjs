@@ -132,7 +132,7 @@ export const VehicleMounts = {
    */
   summary(vehicle, items = []) {
     const sys = vehicle?.system ?? vehicle ?? {};
-    const body = num(sys.attributes?.body?.value ?? sys.attributes?.body?.base);
+    const body = num(sys.attributes?.body?.base);   // the sheet edits `base`; a stored `value` is stale
     const list = [...items];
     const weapons = list.filter(i => i.type === 'firearm' || i.type === 'vehicleweapon');
     const mounts = list.map(mod => ({ mod, kind: VehicleMounts.kindOf(mod) })).filter(r => r.kind).map(({ mod, kind }) => {
