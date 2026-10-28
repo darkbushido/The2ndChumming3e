@@ -54,6 +54,10 @@ export async function run(t) {
   const ok = ty => SR3EItem.weaponAcceptsAmmoType(room().system, ty);
   t.ok('it takes normal rounds and shotgun rounds', ok('regular') && ok('shot'));
   t.ok('…and nothing else (gel, APDS, explosive)', ['gel', 'apds', 'explosive', 'flechette'].every(x => !ok(x)));
+  // Reported 2026-10-28: Ploder's Ares Thunderer (ShtG, the box unticked) was sold and loaded an Explosive clip.
+  const thunderer = ty => SR3EItem.weaponAcceptsAmmoType({ category: 'ShtG', damage: '10S' }, ty);
+  t.ok('a category-Shotgun gun with the box unticked takes normal and shot rounds', thunderer('regular') && thunderer('shot'));
+  t.ok('…and nothing else — shotgun rules are implied by the category (p.277)', ['gel', 'apds', 'explosive'].every(x => !thunderer(x)));
   t.ok('a plain heavy pistol is unaffected', SR3EItem.weaponAcceptsAmmoType({ category: 'HPist', damage: '9M' }, 'gel'));
 
   /* ── the ammunition class: heavy pistol rounds AND shotgun ammunition ─────── */

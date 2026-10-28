@@ -1040,7 +1040,9 @@ export class SR3EItem extends Item {
    */
   static weaponAcceptsAmmoType(system, ammoType = 'regular') {
     // A shotgun-rules weapon takes normal rounds or shotgun rounds and nothing else (SR3 p.277) — the maintainer, 2026-10-18.
-    if (system?.shotgunRules === true) return ['regular', 'shot'].includes(ammoType || 'regular');
+    // ⚠ `Shotgun.usesRules`, not the checkbox alone: a category-ShtG gun with the box unticked (Ploder's Ares Thunderer,
+    // reported 2026-10-28) was sold and loaded Explosive clips.
+    if (Shotgun.usesRules(system)) return ['regular', 'shot'].includes(ammoType || 'regular');
     if (SR3EItem.flechetteAmmo(system, 'regular') === 'regular') return true;
     return (ammoType || 'regular') === 'regular';
   }
@@ -2273,7 +2275,7 @@ export class SR3EItem extends Item {
       && (!launcher || MiniGrenade.isMiniGrenade(i.system)));   // a launcher fires only mini-grenades (SR3 p.279, TODO 163)
     if (trackOn) stock = stock.filter(i => AmmoStock.stock(i.system).count > 0);
     if (stock.length === 0) {
-      ui.notifications.warn(this.system.shotgunRules === true
+      ui.notifications.warn(Shotgun.usesRules(this.system)
         ? `No compatible ammo in stock for ${this.name} — it takes normal rounds or shotgun rounds (SR3 p.277).`
         : SR3EItem.flechetteAmmo(this.system, 'regular') === 'regular'
         ? `No compatible ammo in stock for ${this.name}${gunClass ? ` (${gunClass} class — SR3 p.279)` : ''}.`

@@ -2381,6 +2381,14 @@ export const MUTANTS = [
     impl:   (_box, crit) => crit?.gunClass || null,
   },
   {
+    id:     'shotgun-ammo-needs-the-checkbox',
+    suite:  'roomsweeper',
+    ...ITEM, method: 'weaponAcceptsAmmoType',
+    was:    'shipped in 0.8.0 (reported 2026-10-28): only the Shotgun rules box was read, so a category-ShtG Ares Thunderer '
+          + 'with it unticked was offered, sold and loaded Explosive clips (shotgun rules take normal or shot, SR3 p.277)',
+    impl:   (system, ammoType = 'regular') => (system?.shotgunRules === true ? ['regular', 'shot'].includes(ammoType || 'regular') : true),
+  },
+  {
     id:     'ammo-shop-drop-misfit-silent',
     suite:  'ammo-shop',
     module: '../scripts/data/ammo-shop.mjs', klass: 'AmmoShop', method: 'dropWarning',
