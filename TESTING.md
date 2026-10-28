@@ -3565,6 +3565,7 @@ below, the typed edit and the Mods tab text all as stated.)*
 
 **Full Foundry restart** (`dbwSplit` is a new field) and `npm run packs:install` with Foundry CLOSED first (nine new R3R vehicle
 mods). A car with cost 40,000¥, Body 4, Handling 4 / 5 off-road, Speed 100, Accel 10, Sig 4.
+*(Walked by the agent 2026-10-27 after the restart: every figure, price, warning and note below as stated; Legality "Legal".)*
 
 - [ ] **Drop Drive-by-Wire System** on it → its Cost fills 10,000¥ (0.25 × 40,000 at level 1); its sheet says "On <car> at this
       level: 10,000¥" and has three +% boxes. Set level 2 → the price line reads 20,000¥ (Cost stays what was filled — edit it).
