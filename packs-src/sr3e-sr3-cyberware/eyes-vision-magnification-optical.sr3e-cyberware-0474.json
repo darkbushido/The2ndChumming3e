@@ -19,7 +19,14 @@
       "grade": "Standard",
       "rating": 1,
       "description": "Conceal 9, see pages SR3-110 and SR3-280 for effects",
-      "srcgName": "Eyes, Vis Mag Opt[1]"
+      "srcgName": "Eyes, Vis Mag Opt[1]",
+      "modifiers": [
+        {
+          "target": "magnification",
+          "value": 1,
+          "perRating": true
+        }
+      ]
     },
     "effects": []
   },

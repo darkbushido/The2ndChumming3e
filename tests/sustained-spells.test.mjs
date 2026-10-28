@@ -134,7 +134,7 @@ export async function run(t) {
   t.ok('Orthodox System Test and attack: the decker', /utilMod \+ SR3EActor\.woundTN\(this\) \+ SR3EActor\.standingTN\(this\)/.test(actor)
     && /intruding\[secCode\] \?\? 4\) \+ SR3EActor\.woundTN\(this\) \+ SR3EActor\.standingTN\(this\)/.test(actor));
   t.ok('Orthodox IC attack: the decker\'s defence', /defTN\s+= atkTNOverride \+ SR3EActor\.standingTN\(deckerActor\)/.test(actor));
-  t.ok('knockdown', /kdWound \+ SR3EActor\.standingTN\(target\)/.test(actor));
+  t.ok('knockdown', /kdWound \+ kdGel \+ SR3EActor\.standingTN\(target\)/.test(actor));
   t.ok('MIJI and every EW test — the rigger', /woundTN\(actor\) \+ game\.sr3e\.SR3EActor\.standingTN\(actor\)/.test(miji));
   t.ok('vehicle weapons: the gunner', /pilotSustain\s+= game\.sr3e\.SR3EActor\.standingTN\(pilotActor\)/.test(item)
     && /gunneryDefTnMod \+ pilotWoundMod \+ pilotSustain/.test(item));

@@ -73,8 +73,11 @@ export const GearSearch = {
       .map(x => x.e);
   },
 
-  /** One pack-index row → a search entry. `index` is what `pack.getIndex({ fields: INDEX_FIELDS })` holds. */
-  fromIndex(row, pack) {
+  /**
+   * One pack-index row → a search entry. `index` is what `pack.getIndex({ fields: INDEX_FIELDS })` holds. `bookAllowed`
+   * (`SR3ESourceBooks.optionalRuleAllowed`) drops a level printed only in a book that is off (`ModRatings.levelsFor`).
+   */
+  fromIndex(row, pack, { bookAllowed = null } = {}) {
     const sys = row?.system ?? {};
     return {
       // ⚠ NO "[N]": a rated item is ONE document and the level is picked when it is bought (TODO 261), so the
@@ -89,7 +92,7 @@ export const GearSearch = {
       streetIndex: sys.streetIndex ?? 1,
       bookPage: sys.bookPage ?? '',
       // The levels the books print for this item (the level table), or null — the dialog offers them.
-      levels: ModRatings.levelsOf(row),
+      levels: ModRatings.levelsFor(row, bookAllowed),
       levelUnit: ModRatings.unitOf(row),   // "Mp" for memory (2026-10-25) — the Level picker says "250 Mp"
       legality: Legality.of(row),
       // An ammunition row's fit to a gun (`AmmoShop.fits`) — its system subset; null for anything else.

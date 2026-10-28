@@ -48,6 +48,20 @@ const RATING = { module: '../scripts/data/item-rating.mjs',  klass: 'ItemRating'
 const AMMO   = { module: '../scripts/data/ammo-stock.mjs',   klass: 'AmmoStock' };
 const BOOKPAGE = { module: '../scripts/data/book-page.mjs',  klass: 'BookPage' };
 const BLASTBATCH = { module: '../scripts/data/blast-batch.mjs', klass: 'BlastBatch' };
+const CYBERCAP = { module: '../scripts/data/cyber-capacity.mjs', klass: 'CyberCapacity' };
+const ITEMMODS = { module: '../scripts/data/item-mods.mjs', klass: 'ItemMods' };
+const INTEGRAL = { module: '../scripts/data/integral-mods.mjs', klass: 'IntegralMods' };
+const VBUDGET = { module: '../scripts/data/vehicle-budget.mjs', klass: 'VehicleBudget' };
+const PRC = { module: '../scripts/data/printed-rc.mjs', klass: 'PrintedRC' };
+const VMOUNT = { module: '../scripts/data/vehicle-mounts.mjs', klass: 'VehicleMounts' };
+const VMODS = { module: '../scripts/data/vehicle-mods.mjs', klass: 'VehicleMods' };
+// An item with its integral flags taken off — what every reader saw before the ruling (TODO 276, step b).
+const unIntegral = it => ({ ...it,
+  flags: { ...(it?.flags ?? {}), The2ndChumming3e: { ...(it?.flags?.The2ndChumming3e ?? {}), integral: false } },
+  system: { ...(it?.system ?? {}), installed: (it?.system?.installed ?? []).map(unIntegral) } });
+const MAGNIFY = { module: '../scripts/data/magnification.mjs', klass: 'Magnification' };
+const MODREMOVAL = { module: '../scripts/data/mod-removal.mjs', klass: 'ModRemoval' };
+const ARMORMODS = { module: '../scripts/data/armor-mods.mjs', klass: 'ArmorMods' };
 const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: 'WeaponAccessories' };
 const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots' };
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
@@ -102,6 +116,34 @@ export const MUTANTS = [
     module: '../scripts/data/cyber-weapons.mjs', klass: 'CyberWeapons', method: 'isCyberweapon',
     was:    'a spur, blade or cybergun built into a cyberlimb (category Cyberlimb Mods) installed with no attack, because only the Cyberweapons category was read (TODO 255)',
     impl:   item => item?.type === 'cyberware' && item?.system?.cyberwareCategory === 'Cyberweapons',
+  },
+  {
+    id:     'built-in-weapon-never-armed',
+    suite:  'cyber-weapons',
+    module: '../scripts/data/cyber-weapons.mjs', klass: 'CyberWeapons', method: 'implants',
+    was:    'a spur built into a cyberarm (its system.installed) was never offered as a weapon — only the actor\'s own items were read (TODO 276)',
+    impl:   (items = []) => [...items].filter(i => i?.type === 'cyberware' && !i?.flags?.The2ndChumming3e?.stored),
+  },
+  {
+    id:     'built-in-vcr-never-found',
+    suite:  'cyber-capacity',
+    module: '../scripts/data/cyber-capacity.mjs', klass: 'CyberCapacity', method: 'findVcr',
+    was:    'a VCR built into a cyberskull gave no Control Pool or Driving bonus — the finders read the actor\'s own items only (TODO 276)',
+    impl:   (items = []) => [...items].find(i => i?.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(String(i.name ?? ''))) ?? null,
+  },
+  {
+    id:     'built-in-stress-overwrites-limb',
+    suite:  'cyber-capacity',
+    module: '../scripts/data/cyber-capacity.mjs', klass: 'CyberCapacity', method: 'patched',
+    was:    'Stress on a built-in replaced the mod\'s whole system with the change, wiping its category and rating (TODO 276)',
+    impl:   (top, path, changes) => (top?.system?.installed ?? []).map(m => (m?._id === path[0] ? { ...m, system: { installed: [{ ...m.system.installed[0], system: { stress: changes['system.stress'] } }] } } : m)),
+  },
+  {
+    id:     'built-in-weapon-entry-never-orphaned',
+    suite:  'cyber-weapons',
+    module: '../scripts/data/cyber-weapons.mjs', klass: 'CyberWeapons', method: 'orphans',
+    was:    'a spur taken out of a cyberarm (or the arm removed) kept its weapon entry, attacking with nothing behind it (TODO 276)',
+    impl:   () => [],
   },
   {
     id:     'cybergun-as-melee',
@@ -3896,5 +3938,304 @@ export const MUTANTS = [
     ...NPCAMMO, method: 'rollReloads',
     was:    'reloads rolled 3-5 instead of 3-6 (TODO 270)',
     impl:   (rng = Math.random) => 3 + Math.floor(rng() * 3),
+  },
+  {
+    id:     'gel-packs-add-five-times',
+    suite:  'armor-mods',
+    ...ARMORMODS, method: 'cost', needsOriginal: '_costOriginal',
+    was:    'gel packs read as an ADDITION of ×5 (900 + 4,500) — the maintainer ruled ×5 in all, 900 → 4,500 (CC p.53, TODO 276)',
+    impl:   function (item) { const base = Number(item?.system?.cost) || 0; return this._costOriginal(item) + (this.gelPacked(item) ? base : 0); },
+  },
+  {
+    id:     'rated-mod-availability-per-point',
+    suite:  'armor-mods',
+    ...ARMORMODS, method: 'availability', needsOriginal: '_availOriginal',
+    was:    'a rated armour mod\'s +1/+12hrs applied per rating point — the maintainer ruled once per mod (CC p.53, TODO 276)',
+    impl:   function (item) {
+      const scaled = { ...item, system: { ...item.system, installed: (item.system?.installed ?? []).flatMap(m => Array(Math.max(1, Number(m?.system?.rating) || 1)).fill(m)) } };
+      return this._availOriginal(scaled);
+    },
+  },
+  {
+    id:     'gel-packs-count-toward-caps',
+    suite:  'armor-mods',
+    ...ARMORMODS, method: 'points', needsOriginal: '_pointsOriginal',
+    was:    'gel packs counted as mod points against the CC p.52 caps — the maintainer ruled they do not (TODO 276)',
+    impl:   function (item) {
+      const r = this._pointsOriginal(item);
+      const gels = (item?.system?.installed ?? []).filter(m => this.isGelPack(m)).map(m => ({ name: m.name, points: 1 }));
+      return { perMod: [...r.perMod, ...gels], total: r.total + gels.length };
+    },
+  },
+  {
+    id:     'hardened-ignores-armor-piercing',
+    suite:  'armor-mods',
+    ...ARMORMODS, method: 'hardenedRating', needsOriginal: '_hardOriginal',
+    was:    'hardened armour kept its full rating against APDS / anti-vehicle rounds — CC p.51 halves it (TODO 276)',
+    impl:   function (worn, opts = {}) { return this._hardOriginal(worn, { ...opts, armorPiercing: false }); },
+  },
+  {
+    id:     'gas-vent-removal-needs-two-successes',
+    suite:  'mod-removal',
+    ...MODREMOVAL, method: 'outcome', needsOriginal: '_outcomeOriginal',
+    was:    'one success read as a failure — the maintainer ruled the vent comes off on a successful test (TODO 277)',
+    impl:   function (s, base) { return this._outcomeOriginal((Number(s) || 0) - 1, base); },
+  },
+  {
+    id:     'gas-vent-removal-time-not-divided',
+    suite:  'mod-removal',
+    ...MODREMOVAL, method: 'hours',
+    was:    'the base time stood whatever the successes — CC p.79 divides it by them (TODO 277)',
+    impl:   base => Number(base) || 0,
+  },
+  {
+    id:     'gas-vent-survives-a-failed-removal',
+    suite:  'mod-removal',
+    ...MODREMOVAL, method: 'outcome', needsOriginal: '_outcomeOriginal2',
+    was:    'a failed removal left the vent on the gun — the maintainer ruled it is destroyed with the barrel (TODO 277)',
+    impl:   function (s, base) { const o = this._outcomeOriginal2(s, base); return { ...o, removed: !o.barrelDestroyed }; },
+  },
+  {
+    id:     'barrel-repair-full-price',
+    suite:  'mod-removal',
+    ...MODREMOVAL, method: 'repairCost',
+    was:    'a destroyed barrel cost the whole gun to repair — the maintainer ruled 50% for now (TODO 278/279)',
+    impl:   gun => Math.round(Number(gun?.system?.cost) || 0),
+  },
+  {
+    id:     'magnification-stacks',
+    suite:  'magnification',
+    ...MAGNIFY, method: 'best', needsOriginal: '_bestOriginal',
+    was:    'every magnification device in use added up — the maintainer ruled the highest one counts (TODO 235)',
+    impl:   function (weapon, items) {
+      const one = this._bestOriginal(weapon, []).rating;
+      const rest = (items ?? []).reduce((s, i) => s + this._bestOriginal({}, [i]).rating, 0);
+      return { rating: one + rest, source: 'stacked' };
+    },
+  },
+  {
+    id:     'magnification-past-short',
+    suite:  'magnification',
+    ...MAGNIFY, method: 'shift',
+    was:    'the band could shift past Short — SR3 p.110 never goes below Short range',
+    impl:   (i, r) => Number(i) - (Number(r) || 0),
+  },
+  {
+    id:     'bipod-counts-without-the-gm',
+    suite:  'item-mods',
+    ...ITEMMODS, method: 'effective', needsOriginal: '_effectiveOriginal',
+    was:    'a bipod or tripod gave its RC whether set up or not — the maintainer: the GM decides per shot whether the shooter is stationary (TODO 276)',
+    impl:   function (item) {
+      const strip = it => ({ ...it, system: { ...(it?.system ?? {}),
+        modifiers: (it?.system?.modifiers ?? []).map(m => ({ ...m, whenDeployed: false })),
+        installed: (it?.system?.installed ?? []).map(strip) } });
+      return this._effectiveOriginal(strip(item));
+    },
+  },
+  {
+    id:     'worn-armour-read-from-system',
+    suite:  'item-mods',
+    ...ITEMMODS, method: 'passesToActor',
+    was:    'armour passed its mods up only for a system.worn nothing writes — a worn helmet\'s magnification and vision never reached the actor (seen live 2026-10-27, TODO 276)',
+    impl:   function (item) {
+      if (item?.flags?.The2ndChumming3e?.stored === true) return false;
+      if (item?.type === 'armor') return item?.system?.worn === true;
+      return ['cyberware', 'bioware', 'gear'].includes(item?.type);
+    },
+  },
+  {
+    id:     'eye-mods-never-free',
+    suite:  'cyber-capacity',
+    ...CYBERCAP, method: 'nestedEssence', needsOriginal: '_nestedOriginal',
+    was:    'an eye replacement\'s mods cost their full Essence — SR3 p.299: it holds .5 of them free (TODO 276)',
+    impl:   function (host, graded) { return this._nestedOriginal({ ...host, system: { ...(host?.system ?? {}), capacity: 0, cyberwareCategory: 'Cyberlimbs' } }, graded); },
+  },
+  {
+    id:     'cyber-capacity-ignores-grade',
+    suite:  'cyber-capacity',
+    ...CYBERCAP, method: 'gradeMult',
+    was:    'a graded limb kept a standard limb\'s capacity — the maintainer: reduced by the grade\'s Essence factor (TODO 276)',
+    impl:   () => 1,
+  },
+  {
+    id:     'dni-does-not-stack',
+    suite:  'cyber-capacity',
+    ...CYBERCAP, method: 'builtInCost',
+    was:    'a direct neural interface\'s +50% replaced the built-in ×4 — the maintainer: it stacks (SR3 p.303, TODO 276)',
+    impl:   (c, { mmOn = false, dni = false } = {}) => Math.round(Math.max(0, Number(c) || 0) * (dni ? 1.5 : (mmOn ? 1 : 4))),
+  },
+  {
+    id:     'integral-accessory-counted-twice',
+    suite:  'integral-mods',
+    ...ITEMMODS, method: 'effective', needsOriginal: '_effectiveOriginal',
+    was:    'a gun\'s printed gas vent, as an installed mod, added its RC on top of the printed RC that already includes it — the maintainer: shown, never counted (TODO 276)',
+    impl:   function (item) { return this._effectiveOriginal(unIntegral(item)); },
+  },
+  {
+    id:     'integral-tripod-offered-as-pod',
+    suite:  'integral-mods',
+    ...ITEMMODS, method: 'pods', needsOriginal: '_podsOriginal',
+    was:    'the RPK\'s printed fold-out tripod was offered in the GM\'s window too — its RC is already the printed bracketed RC (TODO 276)',
+    impl:   function (weapon) { return this._podsOriginal(unIntegral(weapon)); },
+  },
+  {
+    id:     'integral-mount-clash-warned',
+    suite:  'integral-mods',
+    ...ITEMMODS, method: 'assignMounts', needsOriginal: '_assignOriginal',
+    was:    'a gun printed with a gas vent and a silencer showed "⚠ Barrel" on its own printed accessories (TODO 276)',
+    impl:   function (installed) { return this._assignOriginal((installed ?? []).map(unIntegral)); },
+  },
+  {
+    id:     'integral-filled-twice',
+    suite:  'integral-mods',
+    ...INTEGRAL, method: 'fillDelta',
+    was:    'the migration added a gun\'s printed accessories again on every run, and back after the GM took them out — it must fill blanks only (TODO 276)',
+    impl:   function (item) {
+      if (item?.type !== 'firearm') return null;
+      const found = this.parse(item?.system?.accessories);
+      if (!found.length) return null;
+      return { 'system.installed': [...(item.system.installed ?? []), ...found.map((f, i) => this.entryFor(f, i + 1))], 'flags.The2ndChumming3e.integralDone': true };
+    },
+  },
+  {
+    id:     'integral-greedy-match',
+    suite:  'integral-mods',
+    ...INTEGRAL, method: 'match', needsOriginal: '_matchOriginal',
+    was:    'a token was read as an accessory wherever one was named in it — "Either: Folding Bipod(2RC) or Shoulder Strap" became a bipod; the ruling: clear matches only (TODO 276)',
+    impl:   function (token) {
+      const words = String(token ?? '').split(/[:\[\]]|\s+(?:or|and)\s+/i).map(s => s.trim()).filter(Boolean);
+      for (const w of words) { const m = this._matchOriginal(w); if (m) return m; }
+      return null;
+    },
+  },
+  {
+    id:     'vehicle-armor-load-once',
+    suite:  'vehicle-budget',
+    ...VBUDGET, method: 'of', needsOriginal: '_ofOriginal',
+    was:    'Vehicle Armor 3 weighed one point\'s Body² × 5 kg — R3R p.131 prints it per Armor point (TODO 265)',
+    impl:   function (mod, vehicle) { return this._ofOriginal({ ...mod, system: { ...(mod?.system ?? {}), rating: 1 } }, vehicle); },
+  },
+  {
+    id:     'vehicle-unread-as-zero',
+    suite:  'vehicle-budget',
+    ...VBUDGET, method: 'load', needsOriginal: '_loadOriginal',
+    was:    '"weight of the missiles" counted as 0 kg, so a missile mount never showed the GM a figure to supply (TODO 265)',
+    impl:   function (text, ctx) { return this._loadOriginal(text, ctx) ?? 0; },
+  },
+  {
+    id:     'vehicle-seats-include-driver',
+    suite:  'vehicle-budget',
+    ...VBUDGET, method: 'passengerSeats',
+    was:    'the driver\'s seat was scraped for cargo too — R3R p.124 gives 1.5 CF per PASSENGER seat (TODO 265)',
+    impl:   seating => Math.max(0, Math.trunc(Number(seating) || 0)),
+  },
+  {
+    id:     'printed-rc-overwrites-typed',
+    suite:  'printed-rc',
+    ...PRC, method: 'fillDelta',
+    was:    'the migration wrote the book’s RC over a figure the GM had typed — it must fill blanks only (TODO 280)',
+    impl:   function (item) {
+      const row = this.rowFor(item);
+      if (!row) return null;
+      const [, , rc, bracketed] = row;
+      const delta = {};
+      if (rc > 0) delta['system.recoilMod'] = rc;
+      if (bracketed != null) delta['system.recoilModIntegral'] = bracketed;
+      return Object.keys(delta).length ? delta : null;
+    },
+  },
+  {
+    id:     'printed-rc-panther-drops-gm-mods',
+    suite:  'printed-rc',
+    ...PRC, method: 'oldPanther',
+    was:    'renaming an old Panther to its bipod version threw away every installed mod, the GM’s too — only the integral ones are replaced (TODO 280)',
+    impl:   function (item) {
+      if (item?.type !== 'firearm' || item.name !== 'Panther Assault Cannon' || item.system?.bookPage !== 'cc.26') return null;
+      return { name: 'Panther Assault Cannon [Bipod]', 'system.recoilModIntegral': 2, 'system.accessories': 'Folding Bipod(2RC)',
+        'system.installed': [], 'flags.The2ndChumming3e.integralDone': true };
+    },
+  },
+  {
+    id:     'mount-halve-keeps-heavy-double',
+    suite:  'vehicle-mounts',
+    ...ITEM, method: 'recoilTN',
+    was:    'a fixed mount or turret halved the recoil but the heavy weapon still doubled it — the mount cancels the double (R3R p.136, TODO 234)',
+    impl:   ({ mode, roundsBefore = 0, roundsThisShot = 0, totalComp = 0, isHeavy = false, isShotgun = false, shortBurst = false, halve = false }) => {
+      const mult = (isHeavy || (isShotgun && mode === 'BF')) ? 2 : 1;
+      const own  = mode === 'BF' ? (shortBurst ? 2 : 3) : mode === 'FA' ? Math.max(0, Number(roundsThisShot) || 0) : 0;
+      const raw  = roundsBefore + own;
+      return Math.max(0, (halve ? Math.floor(raw / 2) : raw) - totalComp) * mult;
+    },
+  },
+  {
+    id:     'mount-halve-rounds-up',
+    suite:  'vehicle-mounts',
+    ...ITEM, method: 'recoilTN',
+    was:    'a mount’s halved recoil rounded up — the maintainer ruled down (2026-10-27, TODO 234)',
+    impl:   ({ mode, roundsBefore = 0, roundsThisShot = 0, totalComp = 0, isHeavy = false, isShotgun = false, shortBurst = false, halve = false }) => {
+      const mult = ((isHeavy && !halve) || (isShotgun && mode === 'BF')) ? 2 : 1;
+      const own  = mode === 'BF' ? (shortBurst ? 2 : 3) : mode === 'FA' ? Math.max(0, Number(roundsThisShot) || 0) : 0;
+      const raw  = roundsBefore + own;
+      return Math.max(0, (halve ? Math.ceil(raw / 2) : raw) - totalComp) * mult;
+    },
+  },
+  {
+    id:     'vehicle-mount-signature-shown-only',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'mountSignature',
+    was:    'the mounts’ Signature was shown, never applied — the maintainer reversed it: "External fixed mounts reduce the vehicle’s Signature by 1 (SR3 p.307)" (TODO 265)',
+    impl:   () => 0,
+  },
+  {
+    id:     'vehicle-dbw-split-rounds-down',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'splitGain',
+    was:    'drive-by-wire’s split rounded down — the maintainer ruled the nearest, .5 up (2026-10-27, TODO 265)',
+    impl:   (value, pct) => Math.floor(Number(value) * Number(pct) / 100),
+  },
+  {
+    id:     'vehicle-rated-mod-adds',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'rated',
+    was:    'a rated system added to the vehicle’s own rating — the maintainer ruled the higher of the two (2026-10-27, TODO 265)',
+    impl:   (own, mod) => own + mod,
+  },
+  {
+    id:     'vehicle-ablative-past-body',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'ablativeGain',
+    was:    'ablative armour raised the Armor past Body — R3R p.131: "to a maximum equal to the vehicle’s Body" (TODO 265)',
+    impl:   want => want,
+  },
+  {
+    id:     'vehicle-armor-handling-rounds-up',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'handlingFor',
+    was:    'any armour added raised Handling — R3R p.131: +1 for every 6 points (TODO 265)',
+    impl:   added => Math.ceil(Math.max(0, added) / 6),
+  },
+  {
+    id:     'vehicle-stat-reads-stale-value',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'stat',
+    was:    'a vehicle stat read its stored `value`, which no input updates — the GM’s typed base is the figure (TODO 265)',
+    impl:   (vehicle, stat) => { const a = vehicle?.system?.attributes?.[stat]; return Number(a?.value ?? a?.base ?? vehicle?.system?.derived?.ew?.[stat] ?? vehicle?.system?.ew?.[stat] ?? 0) || 0; },
+  },
+  {
+    id:     'mount-vehicle-weapon-on-firmpoint',
+    suite:  'vehicle-mounts',
+    ...VMOUNT, method: 'needsHardpoint',
+    was:    'only heavy firearms were held to hardpoints — vehicle weapons must go on hardpoints too (R3R p.135, TODO 234)',
+    impl:   weapon => ['MMG', 'HMG', 'MinG', 'ACan'].includes(String(weapon?.system?.category ?? '')),
+  },
+  {
+    id:     'printed-rc-any-page',
+    suite:  'printed-rc',
+    ...PRC, method: 'rowFor',
+    was:    'a row matched any gun of that name — a hand-made "Ares Crusader" got the Cannon Companion’s RC; a row is pinned to its book page (TODO 280)',
+    impl:   function (item) {
+      if (item?.type !== 'firearm') return null;
+      return this.PRINTED_RC.find(([name]) => name === item.name) ?? null;
+    },
   },
 ];

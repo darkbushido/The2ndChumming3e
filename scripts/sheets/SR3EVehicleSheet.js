@@ -1,7 +1,15 @@
 import { vcrLevel, displayName } from '../data/item-rating.mjs';
+import { CyberCapacity } from '../data/cyber-capacity.mjs';
+import { VehicleBudget } from '../data/vehicle-budget.mjs';
+import { VehicleMounts } from '../data/vehicle-mounts.mjs';
+import { VehicleMods, vehicleStat } from '../data/vehicle-mods.mjs';
 import { Rigging } from '../data/rigging.mjs';
 import { StallSpeed } from '../data/stall-speed.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
+
+/** The stats `vehicle-mods.mjs` changes, as the Mods tab names them. */
+const LABELS = { armor: 'Armor', handling: 'Handling', handlingOffRoad: 'Off-road Handling', speed: 'Speed', accel: 'Acceleration',
+  sig: 'Signature', load: 'Load', pilot: 'Pilot', autonav: 'Autonav', sensor: 'Sensor', ecm: 'ECM', eccm: 'ECCM' };
 
 export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
@@ -78,6 +86,22 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     this._selfUpdateHookId = Hooks.on('updateActor', (updated) => {
       if (updated.id === this.actor.id) this.render();
     });
+    // A weapon's mount (TODO 234): the picker has no form name, so it writes the weapon itself.
+    this.element.querySelectorAll('.sr-mount-pick').forEach(sel => sel.addEventListener('change', event => {
+      event.stopPropagation();
+      this.actor.items.get(sel.dataset.itemId)?.update({ 'system.mountId': sel.value });
+    }));
+  }
+
+  /** The Mount picker on a weapon row — the vehicle's mounts (R3R pp.135-141), or none. */
+  _mountPicker(actor, w) {
+    const mounts = actor.items.filter(i => VehicleMounts.kindOf(i));
+    if (!mounts.length && !w.system.mountId) return '';
+    const cur = String(w.system.mountId ?? '');
+    const opts = [`<option value="" ${cur ? '' : 'selected'}>— no mount —</option>`,
+      ...mounts.map(m => `<option value="${m.id}" ${m.id === cur ? 'selected' : ''}>${foundry.utils.escapeHTML(displayName(m))}</option>`)];
+    if (cur && !mounts.some(m => m.id === cur)) opts.push(`<option value="${cur}" selected>⚠ a mount no longer here</option>`);
+    return `<select class="sr-mount-pick" data-item-id="${w.id}" data-tooltip="The mount this weapon sits on (R3R pp.135-141)">${opts.join('')}</select>`;
   }
 
   _onClose(options) {
@@ -261,13 +285,19 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   _tabStats(sys) {
     const attr = sys.attributes ?? {};
 
+    // What the mods make of a stat (TODO 265): the typed figure stays the input; the effective one sits beside it.
+    const changed = sys.derived?.vehicleMods?.stats ?? {};
     const _stat = (key, label) => {
       const a = attr[key] ?? {};
+      const m = changed[key];
+      const eff = m?.from?.length && m.value !== m.own
+        ? `<span class="sr-veh-mod-eff" data-tooltip="${foundry.utils.escapeHTML(m.from.map(f => `${f.name}: ${f.change} (${f.page})`).join('; '))}">→ ${m.value}</span>`
+        : '';
       return `
         <div class="attr-block">
           <span class="attr-label">${label}</span>
           <div class="attr-row">
-            <input class="attr-input" type="number" name="system.attributes.${key}.base" value="${a.base ?? 0}"/>
+            <input class="attr-input" type="number" name="system.attributes.${key}.base" value="${a.base ?? 0}"/>${eff}
           </div>
         </div>`;
     };
@@ -361,7 +391,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const fRows = catFirearms.length
       ? catFirearms.map(w => `
           <div class="item-row" data-item-id="${w.id}">
-            <span class="item-name">${w.name}</span>
+            <span class="item-name">${w.name}${this._mountPicker(actor, w)}</span>
             <span class="item-cell">${w.system.damage || '—'}</span>
             <span class="item-cell">${w.system.mode || '—'}</span>
             <span class="item-cell">${w.system.concealability ?? '—'}</span>
@@ -373,7 +403,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const vwRows = vehWeapons.length
       ? vehWeapons.map(w => `
           <div class="item-row" data-item-id="${w.id}">
-            <span class="item-name">${w.name}</span>
+            <span class="item-name">${w.name}${this._mountPicker(actor, w)}</span>
             <span class="item-cell">${w.system.weaponType || '—'}</span>
             <span class="item-cell">${w.system.damage || '—'}</span>
             <span class="item-cell">${w.system.mode || '—'}</span>
@@ -391,7 +421,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         <div class="list-header"><span>Name</span><span>Damage</span><span>Mode</span><span>Conceal</span><span>Ammo</span><span></span></div>
         ${uncatFirearms.map(w => `
           <div class="item-row" data-item-id="${w.id}">
-            <span class="item-name">${w.name}</span>
+            <span class="item-name">${w.name}${this._mountPicker(actor, w)}</span>
             <span class="item-cell">${w.system.damage || '—'}</span>
             <span class="item-cell">${w.system.mode || '—'}</span>
             <span class="item-cell">${w.system.concealability ?? '—'}</span>
@@ -431,11 +461,17 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   _tabMods(actor) {
     const mods = actor.items.filter(i => i.type === 'vehiclemod')
       .sort((a, b) => a.name.localeCompare(b.name));
+    // CF and Load against Cargo and Load (TODO 265, R3R p.124) — shown and warned, never refused.
+    const budget = VehicleBudget.summary(actor, mods);
+    const esc = v => foundry.utils.escapeHTML(String(v ?? ''));
+    const fig = (v, unit, raw) => (v == null
+      ? `<span style="color:var(--sr-amber)" data-tooltip="Not counted: “${esc(raw)}” — the GM's figure">?</span>`
+      : `<span data-tooltip="As printed: ${esc(raw || '—')}">${v}${unit}</span>`);
 
-    const rows = mods.length ? mods.map(m => `
+    const rows = mods.length ? mods.map((m, i) => `
       <div class="item-row" data-item-id="${m.id}">
         <span class="item-name">${displayName(m)}</span>
-        <span class="item-cell">${m.system.cfCost || '—'}</span>
+        <span class="item-cell">${fig(budget.rows[i].cf, '', m.system.cfCost)} / ${fig(budget.rows[i].load, ' kg', m.system.load)}</span>
         <span class="item-cell">${m.system.installEquipment || '—'}</span>
         <span class="item-cell" style="color:var(--sr-muted);font-size:11px">${m.system.installTime || '—'}</span>
         <span class="item-cell">${m.system.cost ? m.system.cost.toLocaleString() + '¥' : '—'}</span>
@@ -445,13 +481,57 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         </span>
       </div>`).join('') : '<p class="empty-list">No mods installed.</p>';
 
+    const over = (b) => (b.over > 0 ? ' sr-budget-over' : '');
+    const head = `<div class="sr-vehicle-budget">
+        <span class="sr-budget${over(budget.cf)}" data-tooltip="Cargo the mods take, against the vehicle's Cargo (${VehicleBudget.PAGE}). Passenger room adds up to ${budget.cf.scrape} CF at +1 Power to crash damage.">CF ${budget.cf.used} / ${budget.cf.of}</span>
+        <span class="sr-budget${over(budget.load)}" data-tooltip="Weight the mods add, against the vehicle's Load (${VehicleBudget.PAGE}).">Load ${budget.load.used} / ${budget.load.of} kg</span>
+        ${budget.unread.length ? `<span class="sr-budget-unread" data-tooltip="${esc(budget.unread.join(', '))}">${budget.unread.length} not counted</span>` : ''}
+      </div>
+      ${budget.warnings.map(w => `<p class="sr-budget-warn">⚠ ${esc(w)}</p>`).join('')}
+      ${this._mountsSummary(actor, esc)}
+      ${this._modsChangeSummary(actor, esc)}`;
+
     return `<div class="tab ${this._activeTab === 'mods' ? 'active' : ''}" data-tab="mods" style="overflow-y:auto">
+      ${head}
       <div class="list-header">
-        <span>Mod</span><span>CF</span><span>Equipment</span><span>Install Time</span><span>Cost</span><span></span>
+        <span>Mod</span><span>CF / Load</span><span>Equipment</span><span>Install Time</span><span>Cost</span><span></span>
       </div>
       ${rows}
       <button type="button" class="btn-add" data-action="itemCreate" data-type="vehiclemod">+ Add Mod</button>
     </div>`;
+  }
+
+  /**
+   * The vehicle's weapon mounts (TODO 234): points against Body, each mount's weapons, the Signature the mounts cost — shown,
+   * never applied (the maintainer, 2026-10-27) — and the warnings. Nothing when it has no mounts.
+   */
+  /** What the mods change — the vehicle's own figure, the effective one, and why (TODO 265, `vehicle-mods.mjs`). */
+  _modsChangeSummary(actor, esc) {
+    const m = actor.system?.derived?.vehicleMods ?? VehicleMods.effective(actor, actor.items);
+    const rows = Object.entries(m.stats).filter(([, r]) => r.from.length)
+      .map(([stat, r]) => `<li><strong>${esc(LABELS[stat] ?? stat)} ${r.own} → ${r.value}</strong> — ${esc(r.from.map(f => `${f.name}: ${f.change} (${f.page})`).join('; '))}</li>`).join('');
+    if (!rows && !m.warnings.length && !m.notes.length) return '';
+    return `<div class="sr-vehicle-mounts sr-vehicle-modfx">
+        <span class="sr-budget" data-tooltip="The rolls use the figure after the arrow; the Stats tab's figure stays the vehicle's own.">What the mods change</span>
+        ${rows ? `<ul class="sr-mount-list">${rows}</ul>` : ''}
+        ${m.warnings.map(w => `<p class="sr-budget-warn">⚠ ${esc(w)}</p>`).join('')}
+        ${m.notes.map(n => `<p class="sr-mount-note">${esc(n)}</p>`).join('')}
+      </div>`;
+  }
+
+  _mountsSummary(actor, esc) {
+    const m = VehicleMounts.summary(actor, actor.items);
+    if (!m.mounts.length) return '';
+    const over = m.points.over > 0 ? ' sr-budget-over' : '';
+    const rows = m.mounts.map(x => `<li><strong>${esc(x.name)}</strong> — ${x.weapons.length ? esc(x.weapons.join(', ')) : '<em>empty</em>'}`
+      + `${x.kind === 'turret' ? ` · Weapon Value ${x.weaponValueUsed} / ${x.weaponValue}` : ''}</li>`).join('');
+    return `<div class="sr-vehicle-mounts">
+        <span class="sr-budget${over}" data-tooltip="A hardpoint is 2 points, a firmpoint 1; the total may not exceed Body (${VehicleMounts.PAGES.points}).">Mounts ${m.points.used} / ${m.points.of} (Body)</span>
+        ${m.signature.reduction || m.signature.notes.length ? `<span class="sr-mount-sig" data-tooltip="Applied to the vehicle's Signature (SR3 p.307) — the conditional parts are reminders only.">Signature −${m.signature.reduction}: ${esc(m.signature.notes.join('; '))}</span>` : ''}
+        <ul class="sr-mount-list">${rows}</ul>
+        ${m.warnings.map(w => `<p class="sr-budget-warn">⚠ ${esc(w)}</p>`).join('')}
+        ${m.notes.map(n => `<p class="sr-mount-note">${esc(n)}</p>`).join('')}
+      </div>`;
   }
 
   /* ------------------------------------------------------------------ */
@@ -463,7 +543,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const rigger   = actorFrom(sys.driverActorId?.trim() ?? '');
     const deckFlux = rigger?.system?.ew?.fluxRating ?? 0;
     const vehFlux  = sys.ew?.fluxRating ?? 0;
-    const ecm      = sys.ew?.ecm ?? 0;
+    const ecm      = vehicleStat(this.actor, 'ecm');
     return Math.round((deckFlux + vehFlux + ecm) / 10);
   }
 
@@ -532,7 +612,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const rigger = actorFrom(sys.driverActorId?.trim() ?? '');
     const rew    = rigger?.system?.ew ?? {};
     const derivedFp = this._ewFootprintDerived(sys);
-    const sigBase   = sys.attributes?.sig?.base ?? 0;
+    const sigBase   = vehicleStat(this.actor, 'sig');
     const footprint = ew.footprint ?? 0;
 
     const _ewStat = (key, label) => `
@@ -559,7 +639,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
         ${_ewStat('footprint',  'Footprint')}
       </div>
       <div class="ew-note">
-        Derived Footprint <strong>${derivedFp}</strong> = ⌊(deck Flux ${rew.fluxRating ?? 0} + veh Flux ${ew.fluxRating ?? 0} + ECM ${ew.ecm ?? 0}) ÷ 10⌉.
+        Derived Footprint <strong>${derivedFp}</strong> = ⌊(deck Flux ${rew.fluxRating ?? 0} + veh Flux ${ew.fluxRating ?? 0} + ECM ${vehicleStat(this.actor, 'ecm')}) ÷ 10⌉.
         <button type="button" class="btn-sm" data-action="recalcFootprint" title="Write derived value into the Footprint field">↻ Recalc</button>
         <br>Targeting this vehicle's Sig: TN = ${sigBase} − ${footprint} (Footprint) = <strong>${Math.max(2, sigBase - footprint)}</strong>.
       </div>
@@ -772,7 +852,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
   static async runDroneComprehension(vehicle) {
     if (!vehicle) return;
     const sys     = vehicle.system ?? {};
-    const pilot   = sys.attributes?.pilot?.base ?? 0;
+    const pilot   = vehicleStat(this.actor, 'pilot');
     const cmdDeg  = game.sr3e.SR3EActor._signalTierMod(sys.signalMonitor?.command ?? 0);
 
     const wireDialog = (_app, html) => {
@@ -1041,7 +1121,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     /* A drone the rigger isn't jumped into rolls its own Pilot Rating, with no pools: a secondary
      * drone or the captain's chair (RCD), or a drone on its own (SR3 p.154, Rigging.droneTestRoller).
      * A driver picked by hand (the GM tool) drives. */
-    const pilotRating = sys.attributes?.pilot?.base ?? 0;
+    const pilotRating = vehicleStat(this.actor, 'pilot');
     const droneRolls  = !driverOverride
       && Rigging.droneTestRoller(sys.controlMode ?? '', !!driver) === 'pilot'
       && (driver ? sys.controlMode === 'rcd' : pilotRating > 0);
@@ -1114,8 +1194,8 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     }
 
     // Vehicle stats
-    const autonav  = sys.attributes?.autonav?.base ?? 0;
-    const handling = (sys.attributes?.handling?.base ?? 4) + defTnMod;   // defaulting TN modifier baked in
+    const autonav  = vehicleStat(this.actor, 'autonav');
+    const handling = vehicleStat(this.actor, 'handling') + defTnMod;   // defaulting TN modifier baked in
 
     /* Vehicle damage raises the target number of every test involving the vehicle
      * (SR3 p.145) — the book's own Crash Test example opens with "Cruiser has taken Serious
@@ -1128,10 +1208,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const basePool = skillDice + autonav;
 
     // Check for VCR cyberware
-    const vcrItem   = droneRolls ? null : driver.items.find(i =>
-      i.type === 'cyberware' &&
-      (i.name.toLowerCase().includes('vcr') || i.name.toLowerCase().includes('vehicle control rig'))
-    );
+    const vcrItem   = droneRolls ? null : CyberCapacity.findVcr(driver.items);   // a built-in rig too (TODO 276)
     // ⚠ `vcrLevel()`: the shipped rigs store rating 0 with the level in the name, so a VCR [2]
     // from the compendium used to take −0 off the Driving Test instead of −2.
     const vcrRating = vcrLevel(vcrItem);
@@ -1201,7 +1278,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     let collisionPool = null;
     if (collision) {
       const ram     = collision.test === 'ram';
-      const speedRt = sys.attributes?.speed?.base ?? 0;
+      const speedRt = vehicleStat(this.actor, 'speed');
       const over    = speedRt > 0 && (collision.ctx?.speed ?? 0) > speedRt;
       const vcr2 = vcrRating * 2;   // the Ramming and Braking tables read 2 × VCR (p.141, p.143), not the Driving Test's 1 ×
       collisionRows = `

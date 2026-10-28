@@ -5,6 +5,20 @@ const {
   SchemaField, ArrayField, HTMLField, ObjectField,
 } = foundry.data.fields;
 
+/* Mods installed INSIDE an item, and what an item changes — TODO 276, read only through ItemMods
+ * (scripts/data/item-mods.mjs). `installed`: the mods' full item data, each keeping its `_id` (not documents — they
+ * travel with the host). `modifiers`: `[{ target, value }]` from ItemMods.TARGETS. ⚠ Not `mods`: cyberware's `mods`
+ * is the upstream bonus string. */
+const installedField = () => new ArrayField(new ObjectField());
+const modifiersField = () => new ArrayField(new SchemaField({
+  target: new StringField({ initial: '' }),
+  value:  new NumberField({ initial: 0 }),
+  // The value is per point of the item's rating (Fire Resistance: 1 per point, CC p.52).
+  perRating: new BooleanField({ initial: false }),
+  // It counts only while the item is set up (a bipod's or tripod's RC, SR3 p.280) — ItemMods.deployed.
+  whenDeployed: new BooleanField({ initial: false }),
+}));
+
 // ── Weapons ───────────────────────────────────────────────────────────────────
 
 export class MeleeData extends foundry.abstract.TypeDataModel {
@@ -41,6 +55,8 @@ export class MeleeData extends foundry.abstract.TypeDataModel {
       legality:       new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:    new StringField({ initial: '' }),
+      installed:       installedField(),
+      modifiers:       modifiersField(),
       bookPage:       new StringField({ initial: '' }),
       legal:          new BooleanField({ initial: true }),
       notes:          new HTMLField({ initial: '', required: false }),
@@ -164,6 +180,8 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       // The RC printed in PARENTHESES — the total with every integral accessory (stock, tripod) in use, SR3 p.276.
       // Null = the row prints none. Replaces recoilMod when ticked in the fire dialog (scripts/data/integral-rc.mjs).
       recoilModIntegral: new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
+      // On a vehicle: the id of the `vehiclemod` mount it sits on — '' when not mounted (TODO 234, R3R pp.135-141).
+      mountId:           new StringField({ initial: '', blank: true }),
       // The shooter's last answer to "integral accessories in use" for this gun.
       integralInUse:   new BooleanField({ initial: false }),
       rangeOverride:   new StringField({ initial: '' }),  // "S/M/L/E" metres, e.g. "5/15/30/50"
@@ -191,6 +209,8 @@ export class FirearmData extends foundry.abstract.TypeDataModel {
       // A shock weapon (SR3 p.124-125) — the Defiance Super Shock and the other tasers. A category Tasr always is
       // (ShockStun.isShock), so the tick is for a taser-like weapon filed elsewhere.
       shock:           new BooleanField({ initial: false }),
+      installed:       installedField(),
+      modifiers:       modifiersField(),
       bookPage:        new StringField({ initial: '' }),
       notes:           new HTMLField({ initial: '', required: false }),
       isAoE:           new BooleanField({ initial: false }),
@@ -264,11 +284,16 @@ export class ArmorData extends foundry.abstract.TypeDataModel {
       modFor:         new StringField({ initial: '', blank: true, choices: MOD_FOR_CHOICES }),
       ballistic:      new NumberField({ integer: true, initial: 0, min: 0 }),
       impact:         new NumberField({ integer: true, initial: 0, min: 0 }),
+      // Hardened armour (CC p.51 — the Cannon Companion's military armour): deflects an attack whose Power before any
+      // burst bonus does not exceed its rating. Gel packs make any armour hardened too (ArmorMods.hardened, TODO 276).
+      hardened:       new BooleanField({ initial: false }),
       weight:         new NumberField({ initial: 0, min: 0 }),
       availability:   new StringField({ initial: '' }),
       legality:       new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       cost:           new NumberField({ integer: true, initial: 0, min: 0 }),
       streetIndex:    new StringField({ initial: '' }),
+      installed:      installedField(),
+      modifiers:      modifiersField(),
       bookPage:       new StringField({ initial: '' }),
       notes:          new HTMLField({ initial: '', required: false }),
     };
@@ -305,6 +330,7 @@ export class GearData extends foundry.abstract.TypeDataModel {
       availability: new StringField({ initial: '' }),
       legality:     new StringField({ initial: '' }),   // as printed: "Legal", "6P-V", "As Weapon" · SR3 p.273 (2026-10-25)
       streetIndex:  new StringField({ initial: '' }),
+      modifiers:    modifiersField(),
       bookPage:     new StringField({ initial: '' }),   // TODO 117 — every shipped document needs one
       description:  new HTMLField({ initial: '', required: false }),
     };
@@ -387,9 +413,15 @@ export class CyberwareData extends foundry.abstract.TypeDataModel {
       streetIndex:       new NumberField({ initial: 0, min: 0 }),
       legalCode:         new StringField({ initial: '' }),
       mods:              new StringField({ initial: '' }),
+      // What it HOLDS: a cyberlimb's ECU (M&M p.37), an eye / ear replacement's free Essence of mods (.5, SR3 p.299). 0 = a
+      // limb's printed ECU (CyberCapacity.limbEcu). Read through CyberCapacity, never directly (TODO 276).
       capacity:          new NumberField({ initial: 0, min: 0 }),
+      // What it TAKES built into a cyberlimb: ECU (M&M p.36). Null = the table's figure (CyberCapacity.ecuOf).
+      ecu:               new NumberField({ nullable: true, initial: null, min: 0 }),
       cyberwareCategory: new StringField({ initial: '' }),
       isReplacement:     new BooleanField({ initial: false }),
+      installed:         installedField(),
+      modifiers:         modifiersField(),
       bookPage:          new StringField({ initial: '' }),
       description:       new HTMLField({ initial: '', required: false }),
       // ⚠ NO `min: 0` — these may legitimately be NEGATIVE. Three SR3 entries carry a
@@ -457,6 +489,7 @@ export class BiowareData extends foundry.abstract.TypeDataModel {
       streetIndex:      new NumberField({ initial: 0, min: 0 }),
       mods:             new StringField({ initial: '' }),
       biowareCategory:  new StringField({ initial: '' }),
+      modifiers:         modifiersField(),
       bookPage:         new StringField({ initial: '' }),
       description:      new HTMLField({ initial: '', required: false }),
       bonusBod:         new NumberField({ integer: true, initial: 0 }),
@@ -533,6 +566,8 @@ export class VehicleWeaponData extends foundry.abstract.TypeDataModel {
       // The item's level — "Lure Launcher AM-56" at 3, not "Lure Launcher AM-56 [3]" (TODO 261). null = no level.
       rating:       new NumberField({ integer: true, nullable: true, initial: null, min: 0 }),
       weaponType:   new StringField({ initial: '' }),
+      // The id of the `vehiclemod` mount it sits on — '' when not mounted (TODO 234, R3R pp.135-141).
+      mountId:      new StringField({ initial: '', blank: true }),
       mode:         new StringField({ initial: '' }),
       damage:       new StringField({ initial: '' }),
       ammunition:   new StringField({ initial: '' }),
@@ -562,6 +597,14 @@ export class VehicleModData extends foundry.abstract.TypeDataModel {
       installTime:      new StringField({ initial: '' }),
       cfCost:           new StringField({ initial: '0' }),
       load:             new StringField({ initial: '' }),
+      modifiers:        modifiersField(),
+      // Drive-by-wire's one-time +10%, split as the player chooses among Acceleration, Speed and Load — percentages
+      // (R3R p.129; the maintainer, 2026-10-27: "editable split on the mod"). Read by vehicle-mods.mjs; unused on other mods.
+      dbwSplit: new SchemaField({
+        accel: new NumberField({ integer: true, initial: 0, min: 0 }),
+        speed: new NumberField({ integer: true, initial: 0, min: 0 }),
+        load:  new NumberField({ integer: true, initial: 0, min: 0 }),
+      }),
       bookPage:         new StringField({ initial: '' }),
       description:      new HTMLField({ initial: '', required: false }),
     };

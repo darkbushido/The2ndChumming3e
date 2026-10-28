@@ -1,0 +1,25 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0303",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0303",
+    "name": "Off-Road Suspension (Vehicle)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 0,
+      "availability": "6/12 days",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "Level x 40 hrs/Vehicle B/R(4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.129",
+      "description": "Wheeled ground vehicles. Off-road Handling −1 and on-road Handling +1 a level (at most 2), Speed −15 however many levels, and lower Economy. Parts per level: cars × 0.35, bikes × 0.2, medium/heavy transports and tractors × 0.5 of the original cost. R3R pp.129-130.",
+      "rating": 1,
+      "modFor": "vehicle",
+      "legality": "Legal"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

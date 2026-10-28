@@ -1,0 +1,67 @@
+{
+  "_key": "!items!sr3e-firearm-1159",
+  "doc": {
+    "_id": "sr3e-firearm-1159",
+    "name": "Panther Assault Cannon [Bipod]",
+    "type": "firearm",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-assault-cannon.svg",
+    "system": {
+      "category": "ACan",
+      "skill": "Gunnery",
+      "attribute": "quickness",
+      "concealability": "-",
+      "ammunition": "22(c)/Belt",
+      "mode": "SS",
+      "damage": "18D",
+      "weight": "18",
+      "availability": "16/14days",
+      "cost": 7200,
+      "streetIndex": "2",
+      "accessories": "Folding Bipod(2RC)",
+      "bookPage": "cc.26",
+      "notes": "Cannon Companion p.26: the Panther comes with EITHER a detachable underbarrel folding bipod OR a shoulder strap and hip brace; the RC column (p.118) prints (2)/(1). One document per version (the maintainer, 2026-10-27, TODO 280).",
+      "hands": 2,
+      "smartgun": false,
+      "laserSight": false,
+      "legality": "2-H",
+      "installed": [
+        {
+          "_id": "integral00000001",
+          "type": "gear",
+          "name": "Bipod (Weapon)",
+          "system": {
+            "category": "Firearms Accessories",
+            "modFor": "weapon",
+            "quantity": 1,
+            "rating": 2,
+            "cost": 0,
+            "bookPage": "sr3.282",
+            "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Folding Bipod(2RC)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Under</p>",
+            "modifiers": [
+              {
+                "target": "rc",
+                "value": 1,
+                "perRating": true,
+                "whenDeployed": true
+              }
+            ]
+          },
+          "flags": {
+            "The2ndChumming3e": {
+              "integral": true,
+              "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.6d0d7ade36b511d2"
+            }
+          }
+        }
+      ],
+      "recoilModIntegral": 2
+    },
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "integralDone": true
+      }
+    }
+  },
+  "embedded": {}
+}

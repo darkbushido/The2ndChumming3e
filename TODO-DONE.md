@@ -7488,6 +7488,71 @@ exactly — the smallest modifier that reads the typed total; the sheet passes b
 `data-pool-gyro` flag. A total that cannot be hit (negative, fractional) is rounded to the nearest and warned,
 never refused. Live step: TESTING.md §50. This is a bug fix, so it goes on `main`.
 
+## 234. ✅ Vehicle weapon mounts: hardpoints, firmpoints, fixed mounts — **found in the 0.7.0 rules check, 2026-10-18** · built `442ec55e`
+
+**SR3 p.307:** hardpoints carry heavy and vehicle weapons (MMG and larger), firmpoints lighter ones; a vehicle's
+**Body** sets how many it can have (a hardpoint takes 2 points); fixed mounts fire in a fixed arc, with recoil
+halved and Signature −1 (rules check `rules/vehicles.md#10`, `#64-67`). The vehicle-mods data has no Legal or RC
+fields for the mount rows either. Wanted: mounts as vehicle slots with capacity from Body, and their effects on the
+vehicle-weapon roll.
+
+**Read (2026-10-27), R3R p.135-136:** a hardpoint counts 2, a firmpoint 1, the total no more than Body; heavy weapons (MMG and
+larger) and vehicle weapons on hardpoints only, LMGs and small arms on firmpoints; fixed mounts halve recoil before RC (cancelling
+the heavy doubling); an external mount — or an internal one while its weapon is out — is Signature −1; a personal firearm on a
+fixed mount or turret needs a conversion kit (pintle and ring mounts do not). **Decided:** a weapon links to its mount
+([#265](TODO.md#265)). Next slice after the budget.
+
+**Built (2026-10-27):** `scripts/data/vehicle-mounts.mjs` (`tests/vehicle-mounts.test.mjs`; mutants `mount-halve-keeps-heavy-double`,
+`mount-halve-rounds-up`, `mount-vehicle-weapon-on-firmpoint`). A firearm or vehicle weapon carries `system.mountId`, picked on
+the vehicle's Weapons tab. The Mods tab shows **Mounts used / Body** (a hardpoint 2, a firmpoint 1, a pintle 1, a ring 2, turrets
+by the Weapon Values Table, p.140), each mount's weapons, a turret's Weapon Value used / allowed, and warns: over Body, a heavy
+or vehicle weapon on a firmpoint, a vehicle weapon on a ring, a turret over its value, a weapon whose mount is gone. Notes: the
+conversion kit for a personal firearm on a fixed mount or turret (p.136), a fixed mount holding two weapons, a weapon the table
+does not value. **Signature is shown, never changed** (the maintainer, 2026-10-27): external mounts −1, each turret −1 (not a
+concealed pop-up), an internal mount −1 more while its weapon is out. **A firearm on a mount fires with it**: fixed mounts and
+turrets halve the uncompensated recoil, **rounded down** (the maintainer), and cancel the heavy double (the shotgun burst double
+stays); a pintle gives RC 2 (p.138), a ring RC 6 (p.139), in their own box in the fire dialog, never written back. TESTING.md §78a.
+Missile mounts and launch control systems (p.137) are not weapon mounts here. Vehicle weapons' recoil: [#283](TODO.md#283).
+- **Reversed 2026-10-27 ([#265](TODO.md#265)):** the Signature is APPLIED — the maintainer: "I was wrong, External fixed mounts
+  reduce the vehicle's Signature by 1 (SR3 p.307)". The standing −1s reach the rolls through `vehicle-mods.mjs`; the conditional
+  ones stay notes.
+
+## 235. ✅ Weapon accessories as mounted items with effects — **requested 2026-10-18, from the 0.7.0 rules check** · built in TODO 276 `f31802fc`
+
+Today a firearm's accessories are a text field plus a few flags (`smartgun`, `laserSight`, [#18](TODO.md#18)), and
+the bracketed integral-accessory RC is a fire-dialog tick the shooter remembers per gun (`recoilModIntegral`,
+`integralInUse`, `scripts/data/integral-rc.mjs`, commit `11c4a658`). **The maintainer, 2026-10-18:** the tick
+"works for now"; do this better. Wanted, from the book (rules check `rules/weapons.md`):
+- **Mounts** (SR3 p.280, p.276-277): top, barrel and underbarrel, one accessory each (`#210`); an accessory as
+  an item installed on a mount, from the gear packs.
+- **Their effects read from the installed item**, not the text: gas vents and stocks/tripods as RC (and
+  whether a folding stock or tripod is deployed, replacing the tick), scopes (magnifying scopes shift the range
+  column one per rating point, p.110 `#64`; imaging scopes can't be used with a smartlink, p.280 `#233`),
+  laser sights, smartguns.
+  - **Magnification is any image-magnification device, not only scopes** (the maintainer, 2026-10-24). SR3 p.110: these
+    systems *"change a weapon's range category by a number equal to the device's rating"* (a Rating 2 scope at long range
+    shifts two places left; never below short range); p.113 *"Image magnification equipment reduces the weapon's range to its
+    target and the associated base target number."* So the attack flow reads the rating from the shooter's mounted Imaging
+    Scope, a worn helmet's Electronic/Optical Magnification (Armor) (rating 3, [#266](TODO.md#266)) and cybereye vision
+    magnification ("Eyes, Vision Magnification, Electronic/Optical", rated). **They do not stack** (the maintainer,
+    2026-10-24: "short answer no") — the core book is silent (pp.110, 113, 280, and the cyberware entry "Vision
+    Magnification": it works "in the same manner as an imaging scope"), so the shift is ONE device's rating: the highest the
+    shooter has in use. Today the GM TN window's "Image magnification — Special" line (`scripts/SR3ECombatModifiers.js`)
+    applies nothing.
+- **Compatibility** (SR3 p.276-277, `#194`): revolvers take no silencer or sound suppressor, hold-outs …
+- **Costs** (SR3 p.282): an internal smartgun doubles the gun's price (`#229`); combo imaging scopes add their
+  components' costs (p.280).
+A feature, on a branch, with a migration that turns the current text into installed items where it can.
+
+**Closed 2026-10-27 — built by [#276](TODO.md#276)** (branch `claude/quirky-mayer-32wuvg`): accessories are mods installed inside the gun
+(`scripts/data/item-mods.mjs`), one per top / barrel / underbarrel mount, warned when taken (`58c1d896`); RC, smartgun and laser
+sight read from the installed mod (`WeaponAccessories.flag`, `IntegralRC.totalComp`); magnification from a scope, a helmet or
+cybereyes, the highest only (`e70bc8ca`, `be742ce0`); bipods and tripods in the GM's TN window (`69040d3e`); the printed text
+filled as `integral` mods in the packs and by the 0.9.0 migration, the text left as it is (`f31802fc`). **Not built — carried into
+[#276](TODO.md#276)'s open list:** compatibility by weapon class (revolvers no silencer, hold-outs …, SR3 pp.276-277), the internal
+smartgun's price (p.282) and combo imaging scopes' (p.280), imaging scope with a smartlink (p.280), and the printed bracketed RC
+(folding stock, integral tripod), which is still the fire dialog's tick.
+
 ## 241. ✅ A player can't end their own turn — **reported in play, 2026-10-23** — fixed in 7732baf9
 
 Observed: a player moved their character and clicked End Turn; Foundry said they did not have permission.
@@ -7737,3 +7802,134 @@ roll, and the setup dialog names it "Medkit [5]". Step 13 with the macro's new b
 refreshed it, still built "[N]" names with 0¥ implants). Not ours: Foundry 14.365 leaves `_stats.compendiumSource`
 null on any item created from a compendium (a plain firearm too), so step 7's link check only proves the migration's
 repoint of an existing dead link.
+
+## 263. ✅ Mods that attach to armour and change its numbers — **requested 2026-09-28** · built in TODO 276 `acd88d20`
+
+**Request (maintainer):** *"we need some way of attaching mods to an armor that changes the armors
+attributes."* The same request covers weapons ([#264](#264)) and vehicles/drones ([#265](TODO.md#265)). This item
+builds the shared mechanism, and armour is built first. It is a feature, so it goes on a branch.
+
+**Decided 2026-09-28:**
+- **A mod is its own item.** It gets a new `mod` item type, owned by the actor and pointing at its parent
+  item by id. It is dragged from the compendium onto the parent's row and listed under the parent on the sheet.
+- The parent's effective Ballistic, Impact, Concealability and so on are its base plus its mods. The base
+  stays editable by hand.
+- Moving the parent to another actor must carry its mods with it.
+- Build order: armour, then weapons, then vehicles.
+
+**What the books say:**
+- **Cannon Companion pp.52–53, Armor Modifications.** Chemical Seal, Fire Resistance, Insulation,
+  Nonconductive and Thermal Dampening are bought in rating points. Gel Packs are not rated.
+  - One mod's rating is capped at the item's higher armour rating (Ballistic or Impact). The total is capped
+    at Ballistic + Impact: *"an armor jacket (5/3) cannot have more than 8 (5 + 3) points"*.
+  - Unarmoured clothing takes mods at a maximum of 2 each and 2 in total.
+  - SecureTech armour clothing (SR3 p.284) takes no mods.
+  - Gel packs make the armour hardened (CC p.51) and halve its Concealability. They add +2 to the Knockdown
+    Body Test (SR3 p.124). They raise the ratings by 50% for the Combat Pool penalty (SR3 p.285).
+  - Gel packs are not allowed on form-fitting, diving or hardened armour, only one set goes on an item, and
+    gel-packed armour cannot be layered.
+  - The Concealability and Weight columns of CC p.53's table extract badly, so read them from a page image.
+- **SR3 p.284, security armour and helmet options:** vision enhancements, a transceiver, *"Tracking Signal
+  (100¥ x Rating), Signal Locator (1000¥ x Rating)"*, a HUD, Chemical Seal and a Respirator.
+
+**Wrong in the packs today:**
+- ⚠ **Brought over from `feature/item-mods` on 2026-10-24** (numbered 203-205 there; main's 203-205 are other
+  items). Since then [#261](#261) made every rated item ONE document with its level in `system.rating` and
+  a Level dropdown — build the mod's rating on that. It did **not** catch these armour options: their level is a
+  bare trailing number ("+Signal Locator 7"), not "[7]" or "Rating 7", so they are still one document per level.
+- `sr3e-sr3-armor` and `sr3e-cc-armor` ship each helmet option as a separate `armor` item with 0/0 armour:
+  10 × `+Signal Locator 1…10`, 10 × `+Transceiver Rtg.`, 20 × `+Tracking Signal`, plus `+Chemseal`,
+  `+Smart Goggles` and others.
+- `sr3e-sr3-gear` carries 21 more signal-locator documents.
+- Each should be one `mod` with a rating. See [#188](TODO.md#188) (one item per rating) and [#130](TODO.md#130) (ratings in names).
+- Owned copies need a migration as well as the pack fix.
+
+**Closed 2026-10-27 — built by [#276](TODO.md#276):** the mechanism is #276's (a mod lives INSIDE its host, `system.installed`, which
+superseded "its own item pointing at its parent"; `58c1d896`); the armour rules are its armour slice (`acd88d20`,
+`scripts/data/armor-mods.mjs`) — CC pp.52-53's six modifications, the caps, gel packs (hardened, Concealability, Knockdown +2,
+the Combat Pool's +50%), SecureTech and helmet-option warnings. The helmet options are one rated document each since
+[#266](TODO.md#266) (`b57a8efa`; the packs hold no "+Signal Locator N" any more). What the armour rules still leave out is #276's item 6.
+
+## 264. ✅ Mods that attach to weapons — **requested 2026-09-28** · built in TODO 276 `f31802fc`
+
+This uses the [#263](#263) mechanism for weapon accessories and customisation. Sources are SR3 pp.280–282
+(accessories) and Cannon Companion p.78 onward (Firearm Customization). It takes in [#18](TODO.md#18)'s
+`smartgun`/`laserSight` flags and the Gyro Mount, and replaces the free-text `accessories` field.
+It starts after #203.
+
+**Closed 2026-10-27 — built by [#276](TODO.md#276)** (what [#235](#235)'s closing note lists): a weapon's accessories are installed mods;
+the `smartgun` / `laserSight` flags are switched on by an installed mod; the free-text `accessories` stays (the maintainer's ruling,
+2026-10-27) and its clear matches are `integral` mods, shown and never counted. Cannon Companion's Firearm Customization (CC p.78
+onward) is [#279](TODO.md#279); the remainders are #276's open list.
+
+## 277. ✅ Gas vents can't simply be taken off — **requested 2026-10-27** · built `f955968c`
+
+The maintainer, while testing TODO 276: *"Gas vents shouldn't be removeable or if removed should have a cost associated with it.
+this should be a new todo."* Today ⏏ takes any installed mod out of its host, gas vents included.
+
+**The books:** SR3 p.281 — gas-vent systems are barrel-mounted and *cannot be removed* once installed; CC p.34 says the same of
+Gas Vent IV. CC pp.80-81 lists gas vents as a firearm customisation, and customisations can be removed to free their FCU (only
+design options cannot) — so the Cannon Companion's gunsmithing route reads as removable, with an install-style test and time.
+
+**To decide (the maintainer):** never removable (⏏ / 🗑 offered with a warning only, or not at all), or removable at a cost — what
+cost: the CC customisation route (a gunsmith's B/R test, base time, labour at 100/50/25¥ an hour by contact level, CC p.79), a flat
+fee, or the vent destroyed (it comes off but is not returned to the inventory)? Warn-never-refuse would make it a warning
+plus the cost; a hard block is the maintainer's call, as for the rifle stock.
+
+**Ruled 2026-10-27:** *"removable at a gunsmith's test, time and labour. players can be the gunsmith. gas vent is destroyed if the
+test is successful. barrel is destroyed on failure and gun needs to be repaired."*
+
+**Built:** `scripts/data/mod-removal.mjs` (`PERMANENT` — the gas vent: Weapon B/R (5), base 24 h, CC p.81; `CONTACT_RATES` 100/50/25¥
+an hour, CC p.79; `outcome`, `hours` = base ÷ successes, `labour`, `skillFor` the gun's B/R skill), `tests/mod-removal.test.mjs`,
+mutants `gas-vent-removal-needs-two-successes`, `gas-vent-removal-time-not-divided`. ⏏ on a gas vent opens the gunsmith dialog — any
+live character or NPC (scene first), its B/R dice, TN, base hours, labour (0 for a player character, else a contact's rate), all
+editable — and rolls through `rollPool` with the `modRemoval` follow-up (explosion-safe). **Success:** the vent comes off destroyed
+(not returned). **Failure:** the barrel is destroyed — `flags.The2ndChumming3e.needsRepair` on the gun, "⚠ needs repair" on its row,
+a warning (never a refusal) when it is fired, and ✔ Repaired on its sheet to clear it. The card states time and labour; nothing is
+deducted. 🗑 stays a record fix (it says so).
+
+**Amended 2026-10-27 (the maintainer):** *"the vent should be destroyed with the barrel"* — on a failure the vent is gone too
+(`ModRemoval.outcome`: `removed` always true; mutant `gas-vent-survives-a-failed-removal`). *"we haven't done anything with weapon
+damage. I'd rule that it would cost the same as a barrel extension"* — ✔ Repaired asks the repair cost (`REPAIR.barrel`, pre-filled
+once the figure is known) and posts it; nothing deducted. The barrel extension's figure is [#278](TODO.md#278).
+
+## 280. ✅ 21 shipped firearms carry RC 0 where the book prints their integral accessories' RC — **found 2026-10-27** · fixed `d00a2cb0`
+
+Seen walking TESTING.md §77i: of the 33 shipped guns with an integral RC accessory (TODO 276 step b), 21 have `recoilMod` 0 and
+no bracketed RC — the Ares Crusader, Colt Cobra TZ-110, HK MP-5 TX, Ares MP-LMG, FN MAG-5 MMG, Barret Model 121 and others.
+The book prints the figure: the Cannon Companion's machine-pistol table gives the Crusader **RC 2**, its integral Rating 2 gas
+vent. So these guns fire with no recoil compensation at all — before step b too (the text was never parsed), so not a regression.
+The maintainer's ruling for integral mods (shown, never counted) assumes the printed RC is filled; for these it is not.
+**Wanted:** each gun's RC (and bracketed RC) read from its PDF table, page cited, filled in `packs-src` (a `pack-corrections`
+entry) and in owned copies by migration — fill blanks only (0 / null). List the 21: walk `IntegralMods` over the firearm packs
+for guns whose `recoilMod` and `recoilModIntegral` are below their integral RC mods' total. A rules-data fix: the maintainer
+says whether it goes on main or the branch.
+
+**Done (2026-10-27, on the branch — it rests on step b's integral mods and ships with 0.9.0).** Worse than the 21: no Cannon
+Companion gun carried an RC at all. `scripts/data/printed-rc.mjs` is each gun's RC and bracketed RC read from the printed
+tables — **CC pp.116-118** (the summary tables, read from the page images; the OCR text misplaces the column), the Ares
+Thunderer **CC p.78** ("3 points of recoil compensation"), and the SR3 pp.278-279 rows the 0.7.0 corrections already
+carried, so the contacts' copies get them too. 44 rows, each pinned to its name and book page. `tools/fill-printed-rc.mjs`
+filled 35 guns in `packs-src` (30 CC, 5 in the contacts); the 0.9.0 migration fills owned copies — blanks only (`recoilMod`
+blank or 0, `recoilModIntegral` blank).
+- **The Panther Assault Cannon** prints "(2)/(1)": it comes with a bipod OR a shoulder strap and hip brace (CC p.26). The
+  maintainer (2026-10-27): *"if this is the only case it may be split into two versions"* — it is the only one, so the
+  pack ships **Panther Assault Cannon [Bipod]** (2, the old id) and **[Shoulder Strap Hip-Brace]** (1, `sr3e-firearm-1275`),
+  each with its own accessories text and integral mod. A world's old single Panther is left as it is (which version it is,
+  only the GM knows).
+- **Left:** the Ares Heavy Laser Plus's tripod (the table prints "—"), and the TSS guns whose stocks step b made integral
+  mods — the M-16B, VC Boxlock Hammerless, Win. 1300 Defender SS — whose book is not in the library: [#281](#281).
+  `tests/printed-rc.test.mjs` pins that list.
+
+## 281. ✅ TSS and France firearms: Recoil Compensation unread — **found 2026-10-27** · closed out of scope `7bfb0051`
+
+**Closed — out of scope (the maintainer, 2026-10-27: *"TSS is out of scope"*).** Nothing is changed for these guns; the
+three TSS stocks stay as step b made them. The maintainer is weighing a wider clean-up — dropping data that cannot be
+verified against a book in the library — which would be its own item.
+
+TODO 280 filled every gun's printed RC from the Cannon Companion and SR3 tables. The TSS guns (`sr3e-tss-firearms`, 32) and
+France's FAM 95 (`fra.141`) carry none, and their books are not in the maintainer's PDF library, so nothing could be read.
+Three TSS guns have a stock that step b (TODO 276) made an integral mod — the M-16B ("Fold Stock"), VC Boxlock Hammerless and
+Win. 1300 Defender SS ("Collapsible stock") — so the 🔧 list shows an RC the gun's own figure does not include. **Wanted:** the
+books' RC column, or the maintainer's word that these are blank (and whether a rifle or shotgun stock gives RC at all — SR3
+p.277 says the core rifle stocks do not). `tests/printed-rc.test.mjs` lists the three.

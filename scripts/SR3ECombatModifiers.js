@@ -25,6 +25,8 @@
 import { Hands } from './data/hands.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { WeaponAccessories } from './data/weapon-accessories.mjs';
+import { ItemMods } from './data/item-mods.mjs';
+import { CyberCapacity } from './data/cyber-capacity.mjs';
 import { Shotgun } from './data/shotgun.mjs';
 import { MeleeProne } from './data/melee-prone.mjs';
 
@@ -72,7 +74,8 @@ export const SR3E_RANGED_MODIFIERS = [
   // double-count every aimed shot.
   { key: 'aimedShot',      label: 'Aimed shot',                    mod: -1,   auto: true, per: true, group: 'attacker', note: 'declared by the attacker, per Simple Action' },
   { key: 'calledShot',     label: 'Called shot',                   mod: +4,   auto: true, group: 'attacker',   note: 'declared in the fire dialog' },
-  { key: 'imageMag',       label: 'Image magnification',           mod: null,             group: 'gear',       note: 'Special' },
+  // Applied as a RANGE shift, not a TN row: the roll dialog's Range is pre-set to the magnified band (SR3 p.110, TODO 276).
+  { key: 'imageMag',       label: 'Image magnification',           mod: null,             group: 'gear',       note: 'Special — shifts the Range band (SR3 p.110)' },
   // A signed number the GM types. NOT a rule from any table - the point is the cases no
   // table covers. `value: true` so sumModifiers takes the number as given, exactly as it
   // does for the visibility lookup; `situational: true` tells the renderer to draw a
@@ -204,10 +207,16 @@ export const SR3E_RACIAL_VISION = { elf: 'lowLight', ork: 'lowLight', dwarf: 'th
  * natural, not cybernetic"*) — bioware, so the better column, unlike cybereyes.
  *
  * ⚠ **Thermosense Organs are not vision** (M&M p.75, a heat sense) and are excluded, though
- * their name matches "thermo". Worn goggles are out of scope for now.
+ * their name matches "thermo".
  *
  * Name-matched on stems, because the packs abbreviate and the contacts pack uses its own
  * spellings (`Low Light`, `Thermographic Vision`, `Eyes, Low-Light`).
+ *
+ * **Then from installed mods** (TODO 276): a cybereye holding a Thermographic option, or a worn helmet holding one, passes
+ * `thermo` / `lowLight` to the actor (`ItemMods.actorTotals`) — the source reads "Cybereyes (Thermographic Vision)". An
+ * item already found by its own name is not listed twice. ⚠ **Goggles and helmets count as CYBERNETIC/ELECTRONIC** on the
+ * Visibility Table (SR3 p.111) — the maintainer, 2026-10-27: "goggles should count with the cybernetic/electronic vision
+ * side". So every vision an item passes up lands in `cyber`, never `natural`.
  *
  * @param {{metatype?: string, items?: Iterable<{type:string, name:string}>}} actor
  * @returns {{ metatype: string, racial: string|null, replacedBy: string|null,
@@ -219,6 +228,8 @@ export function detectVision(actor) {
   const metatype = String(actor?.system?.metatype ?? actor?.metatype ?? '').trim().toLowerCase();
   const racial   = SR3E_RACIAL_VISION[metatype] ?? null;
   const items    = [...(actor?.items ?? [])];
+  // Built-in implants are found by name too (TODO 276) — a cybereye's "Low-Light" module inside it.
+  const named    = [...CyberCapacity.flatten(items)];
 
   let replacedBy = null;
   const natural = [];
@@ -226,7 +237,7 @@ export function detectVision(actor) {
   const LOW     = /low[\s-]?light/i;
   const THERMO  = /thermograph/i;
 
-  for (const i of items) {
+  for (const i of named) {
     const name = String(i?.name ?? '');
     if (i?.type === 'cyberware') {
       if (/cyber\s*replacement|\bcybereyes?\b/i.test(name)) replacedBy ??= name;
@@ -235,6 +246,14 @@ export function detectVision(actor) {
     } else if (i?.type === 'bioware' && /cat'?s\s*eyes/i.test(name)) {
       replacedBy ??= name;
       natural.push({ column: 'lowLight', source: name });
+    }
+  }
+  const totals = ItemMods.actorTotals(items);
+  for (const column of ['lowLight', 'thermo']) {
+    for (const p of totals[column]?.parts ?? []) {
+      if (!(p.value > 0)) continue;
+      const source = p.via ? `${p.source} (${p.via})` : p.source;
+      if (!cyber.some(c => c.column === column && (c.source === source || c.source === p.source))) cyber.push({ column, source });
     }
   }
   if (racial && !replacedBy) natural.unshift({ column: racial, source: null });

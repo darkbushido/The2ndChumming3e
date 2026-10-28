@@ -58,5 +58,6 @@ export async function run(t) {
   t.ok('Smart Shades I cite SR3 p.281, where the sunglasses rule is', one('Smart Shades I (Cost 6000¥)')[0]?.system.bookPage === 'sr3.281');
   t.ok('…and say why the price is double', /double the nuyen/.test(one('Smart Shades I (Cost 6000¥)')[0]?.system.description ?? ''));
   t.ok('Ultrasound Shades say their price is derived, not printed', /Derived; not printed/.test(one('Ultrasound Shades')[0]?.system.description ?? ''));
-  t.ok('Gas Vent I says SR3 does not print it', /Not printed in SR3/.test(one('Gas Vent I')[0]?.system.description ?? ''));
+  // ONE Gas Vent, Level 1-4 (the maintainer, 2026-10-27): its level 1 row still says SR3 does not print it (audit, unresolved).
+  t.ok('Gas Vent level 1 says SR3 does not print it', /Not printed in SR3/.test(one('Gas Vent')[0]?.system.description ?? ''));
 }

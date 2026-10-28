@@ -24,9 +24,43 @@
       "hands": 2,
       "smartgun": false,
       "laserSight": false,
-      "legality": "1-K"
+      "legality": "1-K",
+      "installed": [
+        {
+          "_id": "integral00000001",
+          "type": "gear",
+          "name": "Imaging Scope (Weapon)",
+          "system": {
+            "category": "Firearms Accessories",
+            "modFor": "weapon",
+            "quantity": 1,
+            "rating": 2,
+            "cost": 0,
+            "bookPage": "sr3.282",
+            "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Optical Imaging Scope(2)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Top</p>",
+            "modifiers": [
+              {
+                "target": "magnification",
+                "value": 1,
+                "perRating": true
+              }
+            ]
+          },
+          "flags": {
+            "The2ndChumming3e": {
+              "integral": true,
+              "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.fb469e2e8f655dea"
+            }
+          }
+        }
+      ]
     },
-    "effects": []
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "integralDone": true
+      }
+    }
   },
   "embedded": {}
 }

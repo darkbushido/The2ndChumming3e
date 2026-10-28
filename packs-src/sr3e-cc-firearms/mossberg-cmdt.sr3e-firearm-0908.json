@@ -23,9 +23,43 @@
       "hands": 2,
       "smartgun": false,
       "laserSight": true,
-      "legality": "5-F"
+      "legality": "5-F",
+      "installed": [
+        {
+          "_id": "integral00000001",
+          "type": "gear",
+          "name": "Laser Sight (Weapon)",
+          "system": {
+            "category": "Firearms Accessories",
+            "modFor": "weapon",
+            "quantity": 1,
+            "rating": null,
+            "cost": 0,
+            "bookPage": "sr3.282",
+            "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Laser sight\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Top/Under</p>",
+            "modifiers": [
+              {
+                "target": "laserSight",
+                "value": 1,
+                "perRating": false
+              }
+            ]
+          },
+          "flags": {
+            "The2ndChumming3e": {
+              "integral": true,
+              "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.dc95a8d435cb7c70"
+            }
+          }
+        }
+      ]
     },
-    "effects": []
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "integralDone": true
+      }
+    }
   },
   "embedded": {}
 }

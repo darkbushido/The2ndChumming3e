@@ -1,0 +1,25 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0304",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0304",
+    "name": "Turbocharging/Superconductive Drive (Vehicle)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 0,
+      "availability": "6/12 days",
+      "streetIndex": "1.5",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "8 hrs per level/Vehicle B/R(levels+2; drones and hovercraft levels+3; electric aircraft levels+4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.126",
+      "description": "Methane, gasoline or diesel engines (superconductive drive: electric). Speed +15, Acceleration +1 and Signature −1 a level; Economy −5% a level. Aircraft cannot be turbocharged unless electric. The new maximum Speed is 1.5 × the vehicle's (one level always allowed). Parts: 10% of the vehicle's list cost a level. R3R p.126.",
+      "rating": 1,
+      "modFor": "vehicle",
+      "legality": "Legal"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

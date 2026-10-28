@@ -11,8 +11,14 @@
  * The weapon is an ordinary, editable item linked back by `flags.The2ndChumming3e.cyberwareId`.
  * Cyberguns take their firing stats from the table below; the implant's own record has only a damage code.
  *
+ * **Built in** (TODO 276): a weapon built into a cyberlimb lives in the limb's `system.installed`, not as an item of
+ * its own. `implants` reads them through `CyberCapacity.flatten`, so a spur in an arm is offered and armed like a loose
+ * one; its weapon entry is linked by the built-in's id `"<limb id>.<mod id>"`. Taking the limb off (or the spur out of
+ * it) leaves that entry an orphan, which `orphans` names.
+ *
  * Pure: no Foundry globals.
  */
+import { CyberCapacity } from './cyber-capacity.mjs';
 
 export const FLAG = 'cyberwareId';
 
@@ -138,8 +144,40 @@ export const CyberWeapons = {
   missing(items = []) {
     const list    = [...items];
     const weapons = list.filter(i => i.type === 'melee' || i.type === 'firearm');
-    return list.filter(i => CyberWeapons.installed(i) && CyberWeapons.weaponData(i)
+    return CyberWeapons.implants(list).filter(i => CyberWeapons.installed(i) && CyberWeapons.weaponData(i)
       && !weapons.some(w => CyberWeapons.isWeaponFor(w, i)));
+  },
+
+  /**
+   * Every implant on the actor, the ones built into a limb too (`CyberCapacity.flatten`; a built-in's id is
+   * `"<limb id>.<mod id>"`). A built-in in a stored limb reads as stored (`flatten` marks it) — carried, not fitted.
+   */
+  implants(items = []) {
+    return [...CyberCapacity.flatten(items)].filter(i => i?.type === 'cyberware');
+  },
+
+  /** Is this implant `host`, or built into it (at any depth)? */
+  ofHost(implant, hostId) {
+    const id = String(implant?.id ?? implant?._id ?? '');
+    return !!hostId && (id === hostId || id.startsWith(`${hostId}.`));
+  },
+
+  /** The implants on `host` (itself and its built-ins) that have no weapon entry yet — what to arm after it changes. */
+  missingFor(hostId, items = []) {
+    return CyberWeapons.missing(items).filter(i => CyberWeapons.ofHost(i, hostId));
+  },
+
+  /**
+   * Weapon entries made for `host` or something built into it whose implant is gone — the limb deleted, or the spur
+   * taken out of it. Linked by flag only, never by name (a GM's own weapon is never touched).
+   */
+  orphans(hostId, items = []) {
+    const list = [...items];
+    // Stored implants still exist — putting a limb in Storage does not make its spur's entry an orphan.
+    const live = new Set([...CyberCapacity.flatten(list)].map(i => String(i.id ?? i._id)));
+    return list.filter(i => (i.type === 'melee' || i.type === 'firearm')
+      && CyberWeapons.ofHost({ id: i.flags?.The2ndChumming3e?.[FLAG] }, hostId)
+      && !live.has(String(i.flags.The2ndChumming3e[FLAG])));
   },
 
   /** The weapon entries created for an implant (linked by flag only — never delete by name). */

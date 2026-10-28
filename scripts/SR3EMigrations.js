@@ -40,6 +40,9 @@ import { ModRatings } from './data/mod-ratings.mjs';
 import { ModFor } from './data/mod-for.mjs';
 import { ModBookFixes } from './data/mod-book-fixes.mjs';
 import { Legality } from './data/legality.mjs';
+import { ModEffects } from './data/mod-effects.mjs';
+import { IntegralMods } from './data/integral-mods.mjs';
+import { PrintedRC } from './data/printed-rc.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -614,6 +617,48 @@ const MIGRATIONS = [
      * included. Idempotent: a seeing prototype yields null.
      */
     fixActor: TokenSight.fixActor,
+  },
+  {
+    version: '0.9.0',
+    label: 'Mods say what they change, and military armour is hardened (TODO 276)',
+    /**
+     * Mods are installed inside the item they modify now (TODO 276), and what each one changes is `system.modifiers`. The
+     * packs ship it filled for the accessories and armour modifications the books number (`scripts/data/mod-effects.mjs`:
+     * gas vents' RC, smartguns, laser sights, Chemical Seal and the rest, gel packs, helmet vision), and the Cannon
+     * Companion's military armour as hardened (CC p.51). Owned copies get the same — FILL BLANKS ONLY: a copy whose
+     * modifiers hold anything, or already hardened, is left alone (`ModEffects.fillDelta`). Idempotent.
+     */
+    fixItem: item => ModEffects.fillDelta(item),
+  },
+  {
+    version: '0.9.0',
+    label: "A firearm's printed accessories are installed mods, marked integral (TODO 276)",
+    /**
+     * The maintainer's rulings of 2026-10-27 (`scripts/data/integral-mods.mjs`): each accessory the free text clearly names
+     * ("Laser Sight", "Gas Vent II(2RC)", "Fold Stock(1RC)") becomes an installed mod flagged `integral` — it takes its mount
+     * and shows in the 🔧 list, but its RC or flag is never added again (the printed figures include it). The packs ship it
+     * (`tools/fill-integral-mods.mjs`); owned copies get the same here. FILL BLANKS ONLY: a gun already holding an integral
+     * mod, or marked `integralDone` (filled once — a GM who took them out keeps it that way), is left alone; the text is
+     * never touched. Idempotent.
+     */
+    fixItem: item => IntegralMods.fillDelta(item),
+  },
+  {
+    version: '0.9.0',
+    label: "A firearm's printed Recoil Compensation (TODO 280)",
+    /**
+     * Found walking TESTING §77i (2026-10-27): the Cannon Companion's guns shipped with no RC, so an Ares Crusader (RC 2)
+     * fired with none. `scripts/data/printed-rc.mjs` holds each gun's RC and bracketed RC as its table prints it (CC
+     * pp.116-118, p.78; SR3 pp.278-279), page per row; the packs ship them (`tools/fill-printed-rc.mjs`) and owned copies
+     * get the same here. FILL BLANKS ONLY: `recoilMod` while blank or 0, `recoilModIntegral` while blank, and only on a
+     * gun of that name AND book page — a figure a GM typed is theirs. Idempotent.
+     *
+     * ⚠ **It also RENAMES one gun, and argues for it (`PrintedRC.oldPanther`):** the pack now ships the Panther Assault
+     * Cannon as two versions ("[Bipod]" (2), "[Shoulder Strap Hip-Brace]" (1)); a world's copy of the old single Panther
+     * becomes the bipod version — the maintainer, 2026-10-27: "assume its a bipod and update". Only the exact old name on
+     * CC p.26; its text and integral mods only while the text is still the shipped "Either: …"; GM-installed mods stay.
+     */
+    fixItem: item => PrintedRC.fillDelta(item),
   },
 
 ];

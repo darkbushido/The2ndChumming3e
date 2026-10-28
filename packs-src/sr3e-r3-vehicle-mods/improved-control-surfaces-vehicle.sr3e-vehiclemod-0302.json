@@ -1,0 +1,25 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0302",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0302",
+    "name": "Improved Control Surfaces (Vehicle)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 0,
+      "availability": "6/12 days",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "Level x 40 hrs/Vehicle B/R(4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.129",
+      "description": "Watercraft. Handling −1 an increment, at most −2. Not with drive-by-wire. Parts: the vehicle's original cost × 0.15 an increment. R3R p.129.",
+      "rating": 1,
+      "modFor": "vehicle",
+      "legality": "Legal"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

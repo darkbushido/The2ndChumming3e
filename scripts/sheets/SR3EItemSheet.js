@@ -17,6 +17,12 @@ import { LEGALITY_TYPES } from '../data/legality.mjs';
 import { BookPage } from '../data/book-page.mjs';
 import { AmmoStock, GUN_CLASSES } from '../data/ammo-stock.mjs';
 import { MiniGrenade } from '../data/mini-grenade.mjs';
+import { ItemMods, TARGETS } from '../data/item-mods.mjs';
+import { ArmorMods } from '../data/armor-mods.mjs';
+import { CyberCapacity } from '../data/cyber-capacity.mjs';
+import { SR3EItemMods } from '../SR3EItemMods.js';
+import { ModRemoval } from '../data/mod-removal.mjs';
+import { VehicleMods } from '../data/vehicle-mods.mjs';
 
 /** Where a spell's fetish or exclusive limit was taken · SR3 p.180 (TODO 223). Blank = the spell has no such limit. */
 const SPELL_LIMIT_SIDES = [
@@ -47,6 +53,24 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
 
   get title() { return `${this.item.name} [${this._typeLabel()}]`; }
 
+  /** Is this book on? (`SR3ESourceBooks.optionalRuleAllowed` — the levels a switched-off book prints are not offered.) */
+  static _bookAllowed(code) {
+    return game.sr3e?.SR3ESourceBooks?.optionalRuleAllowed?.(code) ?? true;
+  }
+
+  /* A mod opened from its host (TODO 276, `SR3EItemMods.open`) is a temporary item: editable by whoever owns the host, and
+   * its form goes straight to its overridden `update`, which writes into the host — never through core's submit, which
+   * would try to update a document the server has never seen. */
+  get isEditable() {
+    const host = this.document._sr3eHost;
+    return host ? host.isOwner : super.isEditable;
+  }
+
+  async _processSubmitData(event, form, submitData, options) {
+    if (this.document._sr3eHost) return this.document.update(submitData);
+    return super._processSubmitData(event, form, submitData, options);
+  }
+
   async _renderHTML(_context, _options) {
     const div = document.createElement('div');
     div.style.cssText = 'flex:1;min-height:0;display:flex;flex-direction:column;';
@@ -59,6 +83,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
   }
 
   _onRender(_context, _options) {
+    this._wireMods(this.element);
     if (!this.isEditable) return;
     const html = this.element;
     html.querySelector('.item-roll')
@@ -185,10 +210,234 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._buyAmmoButton()}
         </header>
         <div class="item-body">
+          ${this._installedIn()}
+          ${this._repairBanner()}
           ${this._withBookPage(this._details())}
+          ${this._modsSection()}
+          ${this._modifiersSection()}
           ${canRoll ? '<button type="button" class="btn-roll item-roll">Roll</button>' : ''}
         </div>
       </div>`;
+  }
+
+  /* ── Mods installed inside this item, and what this item changes · TODO 276 ─────────────────────────────── */
+
+  /** A capacity host's line under its mods: what is used of what it holds, and anything to warn about. */
+  _capacityLine(item) {
+    const graded = i => game.sr3e.SR3EActor.gradedEssenceCost(game.sr3e.SR3EActor.baseEssenceCost(i), i.system?.grade);
+    const kind = CyberCapacity.kind(item);
+    const cap = CyberCapacity.capacity(item);
+    const { used, unknown } = CyberCapacity.used(item, graded);
+    const unit = kind === 'ecu' ? 'ECU' : 'Essence free';
+    const over = used > cap;
+    const extra = kind === 'essence' && over ? ` — ${Math.round((used - cap) * 100) / 100} Essence over, charged to the character` : '';
+    const grade = CyberCapacity.gradeMult(item.system?.grade) !== 1 ? ` (${item.system.grade}: the grade's Essence factor)` : '';
+    // A device built in (not cyberware — a pocket secretary, a comm unit): its built-in price, SR3 p.303 — ×4 with Man & Machine
+    // off, +50% with a direct neural interface in the limb (stacks); a synthetic limb adds nothing (the maintainer, 2026-10-27).
+    const mmOn = game.sr3e?.SR3ESourceBooks?.optionalRuleAllowed?.('mm') ?? true;
+    const dni = ItemMods.installed(item).some(m => /direct\s*neural|\bdni\b/i.test(m?.name ?? ''));
+    const devices = ItemMods.installed(item).filter(m => kind === 'ecu' && !['cyberware', 'bioware'].includes(m?.type))
+      .map(m => `${foundry.utils.escapeHTML(m.name ?? '?')} ${CyberCapacity.builtInCost(m.system?.cost, { mmOn, dni }).toLocaleString()}¥`);
+    return `<div class="sr-mods-summary">Holds ${used} / ${cap} ${unit}${grade}${extra}</div>
+      ${devices.length ? `<div class="sr-mods-summary" data-tooltip="Built-in price, SR3 p.303: ×4 with Man & Machine off (normal with it on); +50% with a direct neural interface, stacking.">Built in: ${devices.join(' · ')}${mmOn ? '' : ' (×4)'}${dni ? ' (+50% DNI)' : ''}</div>` : ''}
+      ${over && kind === 'ecu' ? `<p class="sr-mod-warn">⚠ Over capacity (M&M p.37).</p>` : ''}
+      ${unknown.length ? `<p class="sr-mod-warn">⚠ ECU not known for ${foundry.utils.escapeHTML(unknown.join(', '))} — set it on the item.</p>` : ''}`;
+  }
+
+  /**
+   * A cyberlimb's ECU / an eye replacement's free Essence (what it HOLDS), and a built-in device's ECU (what it TAKES) — TODO
+   * 276. Blank shows the book's figure as the placeholder (M&M pp.36-37); a typed number wins.
+   */
+  _capacityFields(s) {
+    const item = this.document;
+    const kind = CyberCapacity.kind(item);
+    const limb = CyberCapacity.limbEcu(item);
+    const holds = kind || limb !== null
+      ? this._f(kind === 'essence' ? 'Holds (Essence)' : 'Holds (ECU)', 'capacity', Number(s.capacity) > 0 ? s.capacity : '', 'number',
+        `min="0" step="0.05" placeholder="${limb ?? ''}" data-tooltip="${kind === 'essence' ? 'Essence of eye / ear mods held free (SR3 p.299)' : 'Equipment Capacity Units (M&M p.37); blank = the book\'s'}"`)
+      : '';
+    const table = CyberCapacity.ecuOf({ ...item, system: { ...s, ecu: null } });
+    const takes = item.system?.cyberwareCategory === 'Cyberlimb Mods' || Number.isFinite(s.ecu) || table !== null
+      ? this._f('Takes (ECU)', 'ecu', Number.isFinite(s.ecu) ? s.ecu : '', 'number',
+        `min="0" step="0.25" placeholder="${table ?? '?'}" data-tooltip="Built into a cyberlimb, it takes this many ECU (M&M p.36); blank = the book's. Unknown: micro .5, small 1, medium 3, large 5 (M&M p.37)."`)
+      : '';
+    return holds + takes;
+  }
+
+  /** A gun whose barrel a failed gas-vent removal destroyed (TODO 277): the reason, and ✔ Repaired for its owner. */
+  _repairBanner() {
+    const r = ModRemoval.needsRepair(this.document);
+    if (!r) return '';
+    return `<p class="sr-mod-warn">⚠ ${foundry.utils.escapeHTML(r.reason ?? 'Damaged')} — needs repair.
+      ${this.isEditable ? '<a class="sr-mod-repaired" title="Clear it once the gun is repaired">✔ Repaired</a>' : ''}</p>`;
+  }
+
+  /** On a mod opened from its host (✎): which item it is installed in. Its edits save into that item. */
+  _installedIn() {
+    const host = this.document._sr3eHost;
+    if (!host) return '';
+    return `<p class="sr-mod-host">🔧 Installed in <strong>${foundry.utils.escapeHTML(host.name)}</strong> — changes here save into it.</p>`;
+  }
+
+  /**
+   * A host's installed mods (`system.installed`): mount, name, what each changes, ✎ open · ⏏ take out · 🗑 delete, and a
+   * drop zone. Below, what the mods add up to. Only on a type that holds mods (`ItemMods.HOST_TYPES`).
+   */
+  _modsSection() {
+    const item = this.document;
+    if (!ItemMods.isHost(item)) return '';
+    const esc = v => foundry.utils.escapeHTML(String(v ?? ''));
+    const rows = SR3EItemMods.rows(item);
+    const edit = this.isEditable;
+    const body = rows.length
+      ? rows.map(r => `<div class="sr-mod-row" data-mod-id="${esc(r.id)}">
+          ${r.wants
+            ? `<span class="sr-mod-mount sr-mod-mount-over" data-tooltip="${esc(`Wants the ${r.wants.toLowerCase()} mount, which already holds ${r.heldBy} (SR3 p.280: one accessory per mount) — the GM's call`)}">⚠ ${esc(r.wants)}</span>`
+            : `<span class="sr-mod-mount" data-tooltip="${r.mount ? `On the ${r.mount.toLowerCase()} mount (SR3 p.280)` : 'No weapon mount'}">${esc(r.mount || '—')}</span>`}
+          <img src="${esc(r.img)}" class="sr-mod-img" alt=""/>
+          <a class="sr-mod-name sr-mod-open" title="Open">${esc(r.name)}</a>
+          <span class="sr-mod-changes">${r.integral && r.changes ? `(${esc(r.changes)})` : esc(r.changes)}</span>
+          ${r.integral ? '<span class="sr-mod-integral" data-tooltip="Built into the gun as printed (its accessories). Its change is already in the gun’s own RC and flags, so it is shown, never added again. Taken out, the gun’s printed figures still include it — the GM edits them (TODO 276).">integral</span>' : ''}
+          ${r.deployable && !r.integral ? '<span class="sr-mod-deploy" data-tooltip="Its RC counts only when set up and the shooter is stationary — the GM ticks it in the GM\'s TN window for each shot (SR3 p.280).">GM: when set up</span>' : ''}
+          <a class="sr-mod-open" title="Open its sheet">✎</a>
+          ${edit ? `<a class="sr-mod-out" title="Take it out — into the inventory">⏏</a>
+          <a class="sr-mod-remove" title="Delete it">🗑</a>` : ''}
+        </div>`).join('')
+      : '<p class="sr-mod-empty">Nothing installed.</p>';
+    const eff = ItemMods.effective(item);
+    const summary = Object.keys(eff).map(t => `<span class="sr-mod-chip" data-tooltip="${esc(ItemMods.describe(t, eff[t]))}">${esc(TARGETS[t].combine === 'any' ? TARGETS[t].short : `${TARGETS[t].short} ${eff[t].value}`)}</span>`).join('');
+    return `<div class="sr-mods${edit ? ' sr-mods-drop' : ''}">
+      <h3 class="sr-mods-title">Installed mods</h3>
+      ${body}
+      ${summary ? `<div class="sr-mods-summary">From mods and built in: ${summary}</div>` : ''}
+      ${item.type === 'armor' ? this._armorWithMods(item) : ''}
+      ${CyberCapacity.kind(item) ? this._capacityLine(item) : ''}
+      ${edit ? '<p class="sr-mod-hint">Drop a mod here to install it. One accessory per weapon mount (SR3 p.280) — you are warned, never stopped.</p>' : ''}
+    </div>`;
+  }
+
+  /**
+   * Armour with its mods (TODO 276, `ArmorMods`): the numbers the mods change — Concealability, weight, cost, Availability,
+   * Street Index, hardened, mod points against the caps (CC p.52) — and anything wrong, in amber. The base fields above
+   * stay the armour's own, editable.
+   */
+  _armorWithMods(item) {
+    const esc = v => foundry.utils.escapeHTML(String(v ?? ''));
+    const problems = ArmorMods.problems(item);
+    if (!ItemMods.installed(item).length && !problems.length) return '';
+    const r = ArmorMods.ratings(item), caps = ArmorMods.caps(item), pts = ArmorMods.points(item);
+    const conceal = ArmorMods.concealability(item).value;
+    const bits = [
+      `${r.ballistic}B / ${r.impact}I${ArmorMods.hardened(item) ? ' <strong>hardened</strong>' : ''}`,
+      conceal === null ? '' : `Conceal ${conceal}`,
+      `${ArmorMods.weight(item)} kg`,
+      `${ArmorMods.cost(item).toLocaleString()}¥`,
+      ArmorMods.availability(item) ? `Avail ${esc(ArmorMods.availability(item))}` : '',
+      ArmorMods.streetIndex(item) === null ? '' : `SI ${ArmorMods.streetIndex(item)}`,
+      `mod points ${pts.total} / ${caps.total} (one mod ≤ ${caps.single})`,
+    ].filter(Boolean);
+    return `<div class="sr-mods-summary" title="With its mods (CC pp.52-54). Gel packs: ×5 price, TN ×2 / time ×4, outside the caps.">With mods: ${bits.join(' · ')}</div>
+      ${problems.map(w => `<p class="sr-mod-warn">⚠ ${esc(w)}</p>`).join('')}`;
+  }
+
+  /**
+   * What this item changes (`system.modifiers`): one row per target and value, from the fixed vocabulary
+   * (`ItemMods.TARGETS`). On every type whose model declares the field. The rows have no `name` — the form would save
+   * them as an object, not a list — so each change writes the whole list (`_onRender`).
+   */
+  _modifiersSection() {
+    const s = this.document.system;
+    if (!s || !Array.isArray(s.modifiers)) return '';
+    const edit = this.isEditable;
+    const opts = now => Object.entries(TARGETS).map(([k, t]) => `<option value="${k}"${k === now ? ' selected' : ''}>${t.label}</option>`).join('');
+    const rows = s.modifiers.map((m, i) => {
+      const t = TARGETS[m.target];
+      const val = t?.combine === 'any'
+        ? `<input type="checkbox" class="sr-modifier-value" data-idx="${i}" ${m.value > 0 ? 'checked' : ''} ${edit ? '' : 'disabled'}/>`
+        : `<input type="number" class="sr-modifier-value" data-idx="${i}" value="${Number(m.value) || 0}" style="width:56px" ${edit ? '' : 'disabled'}/>
+           <label title="The value is per point of this item's level (Fire Resistance [3] at 1 per level is 3)"><input type="checkbox" class="sr-modifier-per" data-idx="${i}" ${m.perRating ? 'checked' : ''} ${edit ? '' : 'disabled'}/> per level</label>`;
+      const dep = `<label title="Counts only while the item is set up — a bipod's or tripod's RC (SR3 p.280)"><input type="checkbox" class="sr-modifier-dep" data-idx="${i}" ${m.whenDeployed ? 'checked' : ''} ${edit ? '' : 'disabled'}/> when deployed</label>`;
+      return `<div class="sr-modifier-row">
+        <select class="sr-modifier-target" data-idx="${i}" ${edit ? '' : 'disabled'}>${t ? '' : `<option value="" selected>? ${foundry.utils.escapeHTML(String(m.target ?? ''))}</option>`}${opts(m.target)}</select>
+        ${val}
+        ${dep}
+        ${edit ? `<a class="sr-modifier-remove" data-idx="${i}" title="Remove">✕</a>` : ''}
+      </div>`;
+    }).join('');
+    if (!rows && !edit) return '';
+    return `<div class="sr-modifiers">
+      <h3 class="sr-mods-title" title="What this item adds — to the item it is installed in, or to itself. Cyberware, bioware, carried gear and worn armour pass vision and the like on to the character.">Changes</h3>
+      ${rows || '<p class="sr-mod-empty">Changes nothing.</p>'}
+      ${edit ? '<a class="sr-modifier-add">+ Add a change</a>' : ''}
+    </div>`;
+  }
+
+  /** Wire the two sections above. */
+  _wireMods(html) {
+    const item = this.document;
+    const idOf = el => el.closest('[data-mod-id]')?.dataset.modId;
+    html.querySelectorAll('.sr-mod-open').forEach(a => a.addEventListener('click', () => SR3EItemMods.open(item, idOf(a))));
+    if (!this.isEditable) return;
+    html.querySelector('.sr-mod-repaired')?.addEventListener('click', () => SR3EItemMods.repaired(item));
+    html.querySelectorAll('.sr-mod-out').forEach(a => a.addEventListener('click', () => SR3EItemMods.uninstall(item, idOf(a))));
+    html.querySelectorAll('.sr-mod-remove').forEach(a => a.addEventListener('click', () => SR3EItemMods.remove(item, idOf(a))));
+    const zone = html.querySelector('.sr-mods-drop');
+    if (zone) {
+      zone.addEventListener('dragover', ev => { ev.preventDefault(); zone.classList.add('sr-mods-over'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('sr-mods-over'));
+      zone.addEventListener('drop', async ev => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        zone.classList.remove('sr-mods-over');
+        const dropped = await SR3EItemMods.droppedItem(ev);
+        if (dropped) await SR3EItemMods.install(item, dropped);
+      });
+    }
+
+    // ⚠ Every field of a row, `perRating` included — a row rebuilt from target and value alone would lose it on any edit.
+    const list = () => (item.system.modifiers ?? []).map(m => ({ target: m.target, value: Number(m.value) || 0, perRating: m.perRating === true, whenDeployed: m.whenDeployed === true }));
+    const save = mods => item.update({ 'system.modifiers': mods });
+    html.querySelector('.sr-modifier-add')?.addEventListener('click', () => save([...list(), { target: 'rc', value: 1 }]));
+    html.querySelectorAll('.sr-modifier-remove').forEach(a => a.addEventListener('click', () => {
+      const mods = list();
+      mods.splice(Number(a.dataset.idx), 1);
+      save(mods);
+    }));
+    // ⚠ stopPropagation: the rows have no `name`, but their change would still submit the whole form first.
+    html.querySelectorAll('.sr-modifier-target').forEach(sel => sel.addEventListener('change', ev => {
+      ev.stopPropagation();
+      const mods = list();
+      const target = sel.value;
+      const was = mods[Number(sel.dataset.idx)] ?? {};
+      mods[Number(sel.dataset.idx)] = TARGETS[target]?.combine === 'any'
+        ? { target, value: 1, perRating: false, whenDeployed: was.whenDeployed === true }
+        : { target, value: was.value ?? 0, perRating: was.perRating === true, whenDeployed: was.whenDeployed === true };
+      save(mods);
+    }));
+    html.querySelectorAll('.sr-modifier-value').forEach(inp => inp.addEventListener('change', ev => {
+      ev.stopPropagation();
+      const mods = list();
+      const i = Number(inp.dataset.idx);
+      if (!mods[i]) return;
+      mods[i].value = inp.type === 'checkbox' ? (inp.checked ? 1 : 0) : (Number(inp.value) || 0);
+      save(mods);
+    }));
+    html.querySelectorAll('.sr-modifier-dep').forEach(inp => inp.addEventListener('change', ev => {
+      ev.stopPropagation();
+      const mods = list();
+      const i = Number(inp.dataset.idx);
+      if (!mods[i]) return;
+      mods[i].whenDeployed = inp.checked;
+      save(mods);
+    }));
+    html.querySelectorAll('.sr-modifier-per').forEach(inp => inp.addEventListener('change', ev => {
+      ev.stopPropagation();
+      const mods = list();
+      const i = Number(inp.dataset.idx);
+      if (!mods[i]) return;
+      mods[i].perRating = inp.checked;
+      save(mods);
+    }));
   }
 
   _typeLabel() {
@@ -246,7 +495,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
    * number without its level's fields.
    */
   _modRatingField(s) {
-    const opts = ModRatings.options(this.document);
+    // A level printed only in a book that is off (Gas Vent IV, CC p.35) is not offered — unless it is the one already set.
+    const opts = ModRatings.options(this.document, undefined, { bookAllowed: SR3EItemSheet._bookAllowed });
     if (!opts) return this._ratingField(s);
     const none = opts.some(o => o.selected) ? '' : '<option value="" selected>—</option>';
     return `<label class="form-field">
@@ -327,6 +577,23 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     const actor = this.item.actor;
     if (!actor) return;
     return game.sr3e.SR3EPurchase.open(actor, null, { forWeapon: this.item });
+  }
+
+  /**
+   * A vehicle mod's extras (TODO 265): what it costs on THIS vehicle (R3R pp.126-135, priced from the vehicle — the editable
+   * Cost was filled from it on install), and drive-by-wire's one-time +10% split among Acceleration, Speed and Load (p.129).
+   */
+  _vehicleModExtras(s) {
+    const vehicle = this.document.parent?.type === 'vehicle' ? this.document.parent : null;
+    const price = vehicle ? VehicleMods.price(this.document, vehicle, vehicle.items) : null;
+    const split = s.dbwSplit ?? {};
+    const priceLine = price != null ? `
+          <p class="sr-mod-price" title="Customization Parts Cost from the vehicle's cost, Body and type (R3R pp.126-135). Filled into Cost when it was installed; edit Cost freely.">On ${foundry.utils.escapeHTML(vehicle.name)} at this level: ${price.toLocaleString()}¥</p>` : '';
+    if (VehicleMods.effectOf(this.document)?.kind !== 'dbw') return priceLine;
+    return `${priceLine}
+          ${this._f('+% Acceleration', 'dbwSplit.accel', split.accel ?? 0, 'number', 'min="0" max="10" title="Drive-by-wire: a one-time +10% split among Acceleration, Speed and Load (R3R p.129)"')}
+          ${this._f('+% Speed', 'dbwSplit.speed', split.speed ?? 0, 'number', 'min="0" max="10"')}
+          ${this._f('+% Load', 'dbwSplit.load', split.load ?? 0, 'number', 'min="0" max="10"')}`;
   }
 
   _f(label, name, value, type = 'text', extra = '') {
@@ -603,6 +870,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Ballistic', 'ballistic', s.ballistic, 'number', 'min="0"')}
           ${this._f('Impact', 'impact', s.impact, 'number', 'min="0"')}
+          ${this._check('Hardened (CC p.51)', 'hardened', s.hardened)}
           ${this._f('Weight (kg)', 'weight', s.weight, 'number', 'min="0" step="0.1"')}
           ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
@@ -873,6 +1141,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${isBio ? '' : this._check(`Essence Slot (+${game.sr3e.EssenceHoles.THRESHOLD_MOD} Threshold)`, 'essenceSlot', s.essenceSlot)}
           ${this._modRatingField(s)}
           ${isBio ? '' : this._modForField(s)}
+          ${isBio ? '' : this._capacityFields(s)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
           ${this._f('Availability', 'availability', availEff, 'text', 'placeholder="8/36 hrs"')}
           ${this._f('Street Index', 'streetIndex', s.streetIndex, 'number', 'step="0.1" min="0"')}
@@ -1197,7 +1466,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         return `<div class="form-grid">
           ${this._modRatingField(s)}
           ${this._modForField(s)}
-          ${this._f('Cost (¥)', 'cost', s.cost, 'number', 'min="0"')}
+          ${this._f('Cost (¥)', 'cost', s.cost, 'number', 'min="0"')}${this._vehicleModExtras(s)}
           ${this._f('CF', 'cfCost', s.cfCost, 'text', 'title="Cargo Factor the mod takes"')}
           ${this._f('Load', 'load', s.load)}
           ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}

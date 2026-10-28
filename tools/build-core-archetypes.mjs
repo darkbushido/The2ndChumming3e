@@ -24,6 +24,7 @@ import { ModRatings } from '../scripts/data/mod-ratings.mjs';
 import { restockImage, TYPE_ART } from '../scripts/data/item-icons.mjs';
 import { parseSpecialisations } from '../scripts/data/skill-rules.mjs';
 import { CORE_ARCHETYPES } from './data/core-archetypes.mjs';
+import { IntegralMods } from '../scripts/data/integral-mods.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const PACK = 'sr3e-sr3-archetypes';
@@ -218,6 +219,15 @@ function weaponItems(a, it, base) {
     w.system.loadedAmmoType = 'regular';
     w.system.loadedRounds = Math.min(size, total);
     if (it.acc) w.system.accessories = [w.system.accessories && w.system.accessories !== 'None' ? w.system.accessories : '', it.acc].filter(Boolean).join(', ');
+    // The printed accessories as integral mods (TODO 276) — from the FINAL text, so the book's extra accessory is one too.
+    // The pack copy's own are dropped first; `fillDelta` then fills as it would anywhere (`tools/fill-integral-mods.mjs`).
+    w.system.installed = (w.system.installed ?? []).filter(m => !IntegralMods.isIntegral(m));
+    if (w.flags?.The2ndChumming3e) delete w.flags.The2ndChumming3e.integralDone;
+    const integral = IntegralMods.fillDelta(w);
+    if (integral) {
+      w.system.installed = integral['system.installed'];
+      w.flags = { ...(w.flags ?? {}), The2ndChumming3e: { ...(w.flags?.The2ndChumming3e ?? {}), integralDone: true } };
+    }
     // Spare rounds of the loaded type, then each extra type.
     const spare = [{ type: 'regular', rounds: Math.max(0, total - w.system.loadedRounds) }, ...(it.extra ?? []).map(e => ({ type: e.type ?? 'regular', rounds: e.rounds }))]
       .filter(s => s.rounds > 0);

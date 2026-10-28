@@ -511,6 +511,29 @@
         "smartgun": true,
         "laserSight": false,
         "legality": "6P-E",
+        "installed": [
+          {
+            "_id": "integral00000001",
+            "type": "gear",
+            "name": "Imaging Scope, Low-Light (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": null,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Low-light Scope\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Top</p>",
+              "modifiers": []
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.aa2218e2d2539062"
+              }
+            }
+          }
+        ],
         "ready": true,
         "loadedAmmoType": "regular",
         "loadedRounds": 4
@@ -1551,7 +1574,8 @@
         "legality": "10P-E",
         "ready": true,
         "loadedAmmoType": "regular",
-        "loadedRounds": 2
+        "loadedRounds": 2,
+        "installed": []
       },
       "effects": [],
       "folder": null,

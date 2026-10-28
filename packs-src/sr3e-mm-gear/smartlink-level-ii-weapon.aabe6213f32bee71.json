@@ -25,7 +25,14 @@
       "bookPage": "mm.32",
       "description": "<p><strong>Mount:</strong> Top/Under</p>",
       "modFor": "weapon",
-      "legality": "4P-N"
+      "legality": "4P-N",
+      "modifiers": [
+        {
+          "target": "smartgun",
+          "value": 1,
+          "perRating": false
+        }
+      ]
     }
   },
   "embedded": {}

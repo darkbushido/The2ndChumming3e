@@ -29,6 +29,7 @@
  * Pure — no Foundry.
  */
 import { MOD_RATING_TABLE, COLLAPSED_SOURCES } from './mod-rating-table.mjs';
+import { BookPage } from './book-page.mjs';
 
 /**
  * A level written into a name: `[3]`, `Rating [3]`, `Lvl [3]`, `Lv [3]`, glued (`Bod[3]`) or spaced, with the
@@ -90,6 +91,17 @@ const BARE_LEVELS = [
   /^(Delay Damage|Flexibility|Enhanced Balance)\s+(\d+)\s*$/,
 ];
 
+/**
+ * Families whose level is a ROMAN numeral (the maintainer, 2026-10-27 — TODO 261's sweep missed them). Only the stems
+ * named here: "Ares Predator II", "Smartlink II" (the Smartlink-2), "Smart Goggles I", "Plastic Compound IV", "Fairlight
+ * Excalibur II", "Neuro-stun IX", the Type I-IV maglocks … are MODELS, not levels.
+ *   - **Gas Vent I-IV** — SR3 p.282 prints the vents by RC (the level is the RC), CC p.35 adds IV (TODO 276).
+ */
+const ROMAN_LEVELS = [
+  /^(Gas Vent)\s+(I|II|III|IV)\s*(?<tag>\(Weapon\))?\s*$/,
+];
+const ROMAN = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8, IX: 9, X: 10 };
+
 /** A level measured in something — the dropdown and the 🛒 picker say "250 Mp", not "250". Keyed by table key. */
 export const LEVEL_UNITS = Object.fromEntries([
   'gear|Pocket Computer', 'gear|Wrist Computer', 'gear|Telecom', 'gear|Table Top PC', 'gear|Data Display Unit',
@@ -150,10 +162,11 @@ export const ModRatings = {
   /** `{ stem, rating }` for a name carrying a level, else null. Spaces in the stem are tidied. */
   splitName(name) {
     const text = String(name ?? '');
-    const m = LEVEL.exec(text) ?? BARE.exec(text) ?? BARE_LEVELS.map(re => re.exec(text)).find(Boolean);
+    const m = LEVEL.exec(text) ?? BARE.exec(text) ?? BARE_LEVELS.map(re => re.exec(text)).find(Boolean)
+      ?? ROMAN_LEVELS.map(re => re.exec(text)).find(Boolean);
     if (!m || !m[1].trim()) return null;
     const stem = [m[1], m.groups?.tag].filter(Boolean).join(' ');
-    return { stem: stem.replace(/\s+/g, ' ').trim(), rating: Number(m[2]) };
+    return { stem: stem.replace(/\s+/g, ' ').trim(), rating: ROMAN[m[2]] ?? Number(m[2]) };
   },
 
   /**
@@ -325,11 +338,27 @@ export const ModRatings = {
   },
 
   /**
-   * The dropdown's options: every printed level, plus the item's own rating when it is not one of them
-   * (a GM's houserule stays selectable). `{ value, label, selected }`, lowest first.
+   * The levels OFFERED: `levelsOf` without a level whose row names only books that are turned off — Gas Vent IV is the
+   * Cannon Companion's (CC p.35), so it is offered only while that book is on (the maintainer, 2026-10-27). A row with no
+   * `bookPage` of its own is the item's, always offered. `bookAllowed(code)` — `SR3ESourceBooks.optionalRuleAllowed`;
+   * omitted, every level is offered.
    */
-  options(item, table = MOD_RATING_TABLE) {
+  levelsFor(item, bookAllowed = null, table = MOD_RATING_TABLE) {
     const levels = ModRatings.levelsOf(item, table);
+    if (!levels || !bookAllowed) return levels;
+    const offered = Object.fromEntries(Object.entries(levels).filter(([, row]) => {
+      const codes = BookPage.codes(row?.bookPage);
+      return !codes.length || codes.some(c => bookAllowed(c));
+    }));
+    return Object.keys(offered).length ? offered : null;
+  },
+
+  /**
+   * The dropdown's options: every offered level (`levelsFor`), plus the item's own rating when it is not one of them
+   * (a GM's houserule — or a level from a book since turned off — stays selectable). `{ value, label, selected }`, lowest first.
+   */
+  options(item, table = MOD_RATING_TABLE, { bookAllowed = null } = {}) {
+    const levels = ModRatings.levelsFor(item, bookAllowed, table);
     if (!levels) return null;
     const current = Number(ModRatings.levelValue(item)) || null;
     const unit = ModRatings.unitOf(item);

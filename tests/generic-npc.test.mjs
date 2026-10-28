@@ -88,5 +88,5 @@ export async function run(t) {
   t.ok('portraits are read through Portraits, and no portrait module is named',
     /Portraits\.archetypeJob/.test(gen) && /Portraits\.sources/.test(gen) && !/sr3e-portraits/.test(gen));
   t.ok('the mark dialog is wired through DialogV2.wait\'s render option', /render: \(_event, dialog\) => wireMix\(dialog, dialog\.element\)/.test(gen));
-  t.ok('registered on game.sr3e', /SR3EGenericNpc \};/.test(main));
+  t.ok('registered on game.sr3e', /game\.sr3e = \{[^}]*\bSR3EGenericNpc\b/.test(main));
 }

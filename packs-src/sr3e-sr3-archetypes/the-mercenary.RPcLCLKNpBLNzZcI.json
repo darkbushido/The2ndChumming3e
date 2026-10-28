@@ -728,7 +728,14 @@
         "grade": "Standard",
         "rating": 3,
         "description": "Undetectable, see pages SR3-110 and SR3-280 for effects — Retinal Mod",
-        "srcgName": "Eyes, Vis Mag Ele[1]"
+        "srcgName": "Eyes, Vis Mag Ele[1]",
+        "modifiers": [
+          {
+            "target": "magnification",
+            "value": 1,
+            "perRating": true
+          }
+        ]
       },
       "effects": [],
       "folder": null,
@@ -952,6 +959,62 @@
         "laserSight": true,
         "recoilMod": 2,
         "legality": "2-G",
+        "installed": [
+          {
+            "_id": "integral00000001",
+            "type": "gear",
+            "name": "Laser Sight (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": null,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Laser Sight\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Top/Under</p>",
+              "modifiers": [
+                {
+                  "target": "laserSight",
+                  "value": 1,
+                  "perRating": false
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.dc95a8d435cb7c70"
+              }
+            }
+          },
+          {
+            "_id": "integral00000002",
+            "type": "gear",
+            "name": "Gas Vent (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": 2,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Gas Vent II(2RC)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Barrel</p>",
+              "modifiers": [
+                {
+                  "target": "rc",
+                  "value": 1,
+                  "perRating": true
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.a4b62ae9cd2730a3"
+              }
+            }
+          }
+        ],
         "ready": true,
         "loadedAmmoType": "regular",
         "loadedRounds": 35
@@ -1142,6 +1205,7 @@
         "ready": true,
         "loadedAmmoType": "regular",
         "loadedRounds": 6,
+        "installed": [],
         "equippedAmmoId": "sjuGQInZ0KXLaKOn"
       },
       "effects": [],
@@ -1452,6 +1516,83 @@
         "laserSight": false,
         "recoilMod": 3,
         "legality": "1-H",
+        "installed": [
+          {
+            "_id": "integral00000001",
+            "type": "gear",
+            "name": "Hip Pad Bracing System (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": 1,
+              "cost": 0,
+              "bookPage": "cc.35",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Hip Brace(1RC)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p>",
+              "modifiers": [
+                {
+                  "target": "rc",
+                  "value": 1,
+                  "perRating": true
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-cc-gear.Item.1aa45599d499b565"
+              }
+            }
+          },
+          {
+            "_id": "integral00000002",
+            "type": "gear",
+            "name": "Gas Vent (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": 2,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Gas Vent II(2RC)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Barrel</p>",
+              "modifiers": [
+                {
+                  "target": "rc",
+                  "value": 1,
+                  "perRating": true
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.a4b62ae9cd2730a3"
+              }
+            }
+          },
+          {
+            "_id": "integral00000003",
+            "type": "gear",
+            "name": "Gyro Mount (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": null,
+              "cost": 0,
+              "bookPage": "cc.35",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Gyro Mount (Deluxe)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Under</p>",
+              "modifiers": []
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-cc-gear.Item.5d46066a18f5c692"
+              }
+            }
+          }
+        ],
         "ready": true,
         "loadedAmmoType": "regular",
         "loadedRounds": 50
@@ -1576,7 +1717,8 @@
         "legality": "8P-E",
         "ready": true,
         "loadedAmmoType": "regular",
-        "loadedRounds": 12
+        "loadedRounds": 12,
+        "installed": []
       },
       "effects": [],
       "folder": null,

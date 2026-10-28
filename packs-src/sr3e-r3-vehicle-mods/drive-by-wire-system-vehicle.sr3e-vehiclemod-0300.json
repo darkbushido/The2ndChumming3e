@@ -1,0 +1,25 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0300",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0300",
+    "name": "Drive-by-Wire System (Vehicle)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 0,
+      "availability": "8/16 days",
+      "streetIndex": "2.5",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "Body x 160 hrs/Vehicle B/R(10-On-Road Handling), Computer(4), Electronics(4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.129",
+      "description": "Computer-controlled steering. Handling −1 a level (levels 1-3), and a one-time +10% the player splits among Acceleration, Speed and Load, taken after every other change (set it on this mod). Not with improved suspension or control surfaces. Parts: the vehicle's original cost × 0.25 a level (worked out when installed). R3R p.129.",
+      "rating": 1,
+      "modFor": "vehicle",
+      "legality": "Legal"
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

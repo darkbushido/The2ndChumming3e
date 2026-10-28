@@ -25,7 +25,8 @@ export async function run(t) {
   t.is('a tagged, levelled owned copy', base('Chemical Seal (Armor) [4]'), 'Chemical Seal');
   t.is('the 0.7.0 name', base('Chemical Seal Rating [4]'), 'Chemical Seal');
   t.is('the plain pack name', base('Chemical Seal'), 'Chemical Seal');
-  t.is('a tag alone', base('Gas Vent IV (Weapon)'), 'Gas Vent IV');
+  t.is('a tag alone', base('Laser Sight (Weapon)'), 'Laser Sight');
+  t.is('Gas Vent\'s roman numeral is its level (the maintainer, 2026-10-27)', base('Gas Vent IV (Weapon)'), 'Gas Vent');
   t.is('the old armour option: leading "+" and bare level', base('+Signal Locator 7'), 'Signal Locator');
   t.is('"Rtg." is dropped like "Rating"', base('+Transceiver Rtg. 4'), 'Transceiver');
   t.is('a name\'s own parenthesis stays', base('STS (Beacon) (Weapon) [3]'), 'STS (Beacon)');
@@ -64,7 +65,8 @@ export async function run(t) {
   t.is('…drops the "+" and the bare level', ModRatings.tagged('+Signal Locator 7', 'armor'), 'Signal Locator (Armor) [7]');
   t.is('syncName keeps the tag and swaps only the level', ModRatings.syncName('Chemical Seal (Armor) [4]', 5, 'gear'), 'Chemical Seal (Armor) [5]');
   t.is('…and adds the level after the tag', ModRatings.syncName('Chemical Seal (Armor)', 4, 'gear'), 'Chemical Seal (Armor) [4]');
-  t.is('…never doubles the tag', ModRatings.syncName(ModRatings.syncName('Gas Vent IV (Weapon)', 4, 'gear'), 4, 'gear'), 'Gas Vent IV (Weapon) [4]');
+  t.is('…never doubles the tag', ModRatings.syncName(ModRatings.syncName('Bipod (Weapon)', 2, 'gear'), 2, 'gear'), 'Bipod (Weapon) [2]');
+  t.is('…a roman-level name becomes the one item at that level', ModRatings.syncName('Gas Vent IV (Weapon)', 4, 'gear'), 'Gas Vent (Weapon) [4]');
   t.is('a tagged name finds the level table row', ModRatings.keyOf(armor('Signal Locator (Armor) [7]')), 'armor|Signal Locator');
   t.eq('…and its levels (1-10, 1,000¥ x Rating — SR3 p.284)', [Object.keys(MOD_RATING_TABLE['armor|Signal Locator']).length, MOD_RATING_TABLE['armor|Signal Locator'][7].cost], [10, 7000]);
   t.is('Tracking Signal is 100¥ x Rating (SR3 p.284)', MOD_RATING_TABLE['armor|Tracking Signal'][6].cost, 600);

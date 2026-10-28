@@ -15,7 +15,8 @@
       "streetIndex": "3",
       "bookPage": "cc.51",
       "notes": "Ballistic +2 (additive modifier) | Impact +3 (additive modifier)",
-      "legality": "2-L"
+      "legality": "2-L",
+      "hardened": true
     },
     "effects": []
   },

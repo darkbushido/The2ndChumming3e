@@ -11250,6 +11250,60 @@
         "sr3e-vehiclemod-0055"
       ]
     },
+    "weapon|Gas Vent": {
+      "pack": "sr3e-sr3-gear",
+      "by": "build-default-gear",
+      "keep": "a4b62ae9cd2730a3",
+      "levels": {
+        "1": {
+          "bookPage": "sr3.282",
+          "concealability": "(-1)",
+          "cost": 250,
+          "description": "<p><strong>Mount:</strong> Barrel<br><strong>Source:</strong> Not printed in SR3, which has Gas-vent II and III (p.281-282); source not found (SR2?).</p>",
+          "streetIndex": ".5",
+          "weight": 0.5
+        },
+        "2": {
+          "bookPage": "sr3.282",
+          "concealability": "(-1)",
+          "cost": 450,
+          "description": "<p><strong>Mount:</strong> Barrel</p>",
+          "streetIndex": ".8",
+          "weight": 0.5
+        },
+        "3": {
+          "bookPage": "sr3.282",
+          "concealability": "(-2)",
+          "cost": 700,
+          "description": "<p><strong>Mount:</strong> Barrel</p>",
+          "streetIndex": "1",
+          "weight": 0.75
+        },
+        "4": {
+          "bookPage": "cc.35",
+          "concealability": "(-2)",
+          "cost": 1000,
+          "description": "<p><strong>Mount:</strong> Barrel</p>",
+          "streetIndex": "1",
+          "weight": 0.75
+        }
+      },
+      "deleted": [
+        "1cf913cb9de7b39b",
+        "cac4e7808bef4494"
+      ]
+    },
+    "weapon|Gas Vent@sr3e-cc-gear": {
+      "pack": "sr3e-cc-gear",
+      "by": "build-default-gear",
+      "keep": "a4b62ae9cd2730a3",
+      "levels": {},
+      "deleted": [
+        "5e0ae827eb731545"
+      ],
+      "keepPack": "sr3e-sr3-gear",
+      "removed": true
+    },
     "weapon|Gun Cam Transmitter": {
       "pack": "sr3e-cc-gear",
       "by": "build-default-gear",

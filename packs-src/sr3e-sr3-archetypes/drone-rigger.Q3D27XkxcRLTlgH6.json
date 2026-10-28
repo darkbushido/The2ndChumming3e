@@ -1416,7 +1416,8 @@
         "legality": "6P-E",
         "ready": true,
         "loadedAmmoType": "regular",
-        "loadedRounds": 10
+        "loadedRounds": 10,
+        "installed": []
       },
       "effects": [],
       "folder": null,

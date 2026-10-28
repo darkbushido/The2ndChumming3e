@@ -1,8 +1,10 @@
 import { vcrLevel as vcrLevelOf } from './data/item-rating.mjs';
+import { CyberCapacity } from './data/cyber-capacity.mjs';
 import { Rigging } from './data/rigging.mjs';
 import { StallSpeed } from './data/stall-speed.mjs';
 import { openTestFirstWave, openTestExplode, openTestPending, openTestHighest } from './data/open-test.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
+import { vehicleStat } from './data/vehicle-mods.mjs';
 
 const VEHICLE_TYPES = [
   { key: 'car',          label: 'Car',                        score:   0 },
@@ -520,10 +522,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
   _detectVcr(actorId) {
     const actor = actorFrom(actorId);
     if (!actor) return 0;
-    const vcr = actor.items.find(i =>
-      i.type === 'cyberware' &&
-      (i.name.toLowerCase().includes('vcr') || i.name.toLowerCase().includes('vehicle control rig'))
-    );
+    const vcr = CyberCapacity.findVcr(actor.items);   // a built-in rig too (TODO 276)
     return vcrLevelOf(vcr);   // the shipped rigs store rating 0 with the level in the name
   }
 
@@ -844,9 +843,9 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const vehicle = actorFrom(p.vehicleActorId);
     const { pool: skillPool, label: skillLabel } = this._driverSkillPool(p);
     const vcrRating  = p.vcrActive ? (p.vcrRating ?? 0) : 0;
-    const handling   = vehicle?.system.attributes?.handling?.base ?? 4;
-    const autonav    = vehicle?.system.attributes?.autonav?.base  ?? 0;
-    const speedAttr  = vehicle?.system.attributes?.speed?.base    ?? 0;
+    const handling   = vehicle ? vehicleStat(vehicle, 'handling') : 4;
+    const autonav    = vehicleStat(vehicle, 'autonav');
+    const speedAttr  = vehicleStat(vehicle, 'speed');
     const damageInfo = this._vehicleDamageInfo(p.vehicleActorId);
     const maxSpeedKmct = +(speedAttr * damageInfo.speedMod).toFixed(2); // km/ct
     const exceedsSpeed = p.speed > maxSpeedKmct;
@@ -1808,14 +1807,14 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const sensorOf = (pid) => {
       const p = this._participants.find(x => x.id === pid);
       const v = actorFrom(p?.vehicleActorId);
-      return v?.system.attributes?.sensor?.base ?? 0;
+      return vehicleStat(v, 'sensor');
     };
 
     // Signature rating of an opponent participant's vehicle
     const sigOf = (pid) => {
       const p = this._participants.find(x => x.id === pid);
       const v = actorFrom(p?.vehicleActorId);
-      return v?.system.attributes?.sig?.base ?? 4;
+      return v ? vehicleStat(v, 'sig') : 4;
     };
 
     // Relocating terrain modifiers
@@ -1926,7 +1925,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           const oppPid = el.querySelector('#act-opponent')?.value;
           const oppP   = this._participants.find(x => x.id === oppPid);
           const oppV   = actorFrom(oppP?.vehicleActorId);
-          const sig    = oppV?.system.attributes?.sig?.base ?? 4;
+          const sig    = oppV ? vehicleStat(oppV, 'sig') : 4;
           el.querySelector('#act-ov')?.replaceChildren(document.createTextNode(oppV?.name ?? '—'));
           const sigInp = el.querySelector('#act-sig');
           const tnInp  = el.querySelector('#act-tn');
@@ -1939,7 +1938,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           const pid    = el.querySelector('#act-participant')?.value;
           const info   = pid ? this._getParticipantInfo(pid) : null;
           if (!info) return;
-          const sensor = info.vehicle?.system.attributes?.sensor?.base ?? 0;
+          const sensor = vehicleStat(info.vehicle, 'sensor');
           this._warnDamage(info);
           el.querySelector('#act-iv')?.replaceChildren(document.createTextNode(info.vehicle?.name ?? '?'));
           el.querySelector('#act-id')?.replaceChildren(document.createTextNode(info.driver?.name  ?? '?'));

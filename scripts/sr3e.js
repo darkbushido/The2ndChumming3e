@@ -42,6 +42,7 @@ import { SR3EWard } from './documents/SR3EWard.js';
 import { SR3EVehicleChase } from './SR3EVehicleChase.js';
 import { SR3ECollision } from './SR3ECollision.js';
 import { SR3EConcealment } from './SR3EConcealment.js';
+import { SR3EItemMods } from './SR3EItemMods.js';
 import { SR3ELegwork } from './SR3ELegwork.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
@@ -55,6 +56,7 @@ import { KarmaPool, GoodKarma } from './data/karma-uses.mjs';
 import { SR3EPurchase } from './SR3EPurchase.js';
 import { Purchasing } from './data/purchasing.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
+import { VehicleMods } from './data/vehicle-mods.mjs';
 import { Hands } from './data/hands.mjs';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3EStatusEffects } from './SR3EStatusEffects.js';
@@ -133,7 +135,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc, SR3EItemMods };
 
   // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
   // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
@@ -526,6 +528,15 @@ Hooks.on('preUpdateItem', (document, changes, options) => {
  * Weapon keep fighting, which also made every NEW weapon — a starting character's whole kit, every
  * grenade — read as drawn. A weapon created on a character or NPC starts put away; armour starts off.
  * ⚠ Only embedded creates fire this: copying a whole actor (`sr3e.actor.create`) keeps its state. */
+/* A vehicle mod priced from its vehicle (TODO 265, R3R pp.126-135; the maintainer, 2026-10-27: "worked out on install"):
+ * landing on a vehicle with no cost, it takes what it costs on THAT vehicle. Filled once; the item keeps it, editable. */
+Hooks.on('preCreateItem', (document) => {
+  const vehicle = document.parent?.documentName === 'Actor' && document.parent.type === 'vehicle' ? document.parent : null;
+  if (!vehicle || document.type !== 'vehiclemod' || Number(document.system?.cost) > 0) return;
+  const price = VehicleMods.price(document, vehicle, vehicle.items);
+  if (price != null) document.updateSource({ 'system.cost': price });
+});
+
 Hooks.on('preCreateItem', (document) => {
   const parentType = document.parent?.documentName === 'Actor' ? document.parent.type : null;
   if (ReadyWeapon.putAwayOnCreate(document, parentType)) document.updateSource({ 'system.ready': false });
@@ -2728,25 +2739,41 @@ function _armImplant(item) {
   const actor = item?.actor;
   if (!actor || !game.users.activeGM?.isSelf) return;
   if (!CyberWeapons.installed(item)) return;
-  if (!CyberWeapons.missing([...actor.items]).some(i => i.id === item.id)) return;
-  actor.createEmbeddedDocuments('Item', [CyberWeapons.weaponData(item)])
+  // The implant itself, and any weapon built into it (a spur in a cyberarm — TODO 276, `CyberWeapons.implants`).
+  const data = CyberWeapons.missingFor(item.id, [...actor.items]).map(i => CyberWeapons.weaponData(i));
+  if (data.length) actor.createEmbeddedDocuments('Item', data)
     .catch(err => console.error('SR3E | implant weapon create failed:', err));
 }
 
-/** Removing the implant removes the weapon entry made for it — linked ones only, never by name. */
+/** Removing the implant removes the weapon entries made for it and its built-ins — linked ones only, never by name. */
 function _disarmImplant(item) {
   const actor = item?.actor;
   if (!actor || !game.users.activeGM?.isSelf) return;
-  if (!CyberWeapons.isCyberweapon(item)) return;
-  const ids = CyberWeapons.linkedTo(item.id, actor.items).map(w => w.id);
+  if (item.type !== 'cyberware' && item.type !== 'bioware') return;
+  const ids = CyberWeapons.orphans(item.id, actor.items).map(w => w.id);
   if (ids.length) actor.deleteEmbeddedDocuments('Item', ids)
     .catch(err => console.error('SR3E | implant weapon delete failed:', err));
 }
 
-Hooks.on('createItem', (item) => _ratchetEssenceOnInstall(item));
-Hooks.on('deleteItem', (item) => _recordEssenceHoleOnRemoval(item));
+/**
+ * A limb's built-ins changed (TODO 276): a weapon installed into it is armed, one taken out loses its entry. A spur MOVED
+ * from the inventory into an arm loses its old entry with the loose copy and gets a new one linked to the built-in.
+ */
+function _rearmHost(item, changes) {
+  if (foundry.utils.getProperty(changes, 'system.installed') === undefined) return;
+  if (item.type !== 'cyberware' && item.type !== 'bioware') return;
+  _disarmImplant(item);
+  _armImplant(item);
+}
+
+// ⚠ Not for an implant MOVED into or out of a cyberlimb / eye (TODO 276, `SR3EItemMods` marks it `sr3eModMove`): it never
+// left the body, so it is neither a new install nor a removal. Seen live 2026-10-27 (§77g): a smartlink put into an arm
+// was recorded as an Essence hole.
+Hooks.on('createItem', (item, options) => { if (!options?.sr3eModMove) _ratchetEssenceOnInstall(item); });
+Hooks.on('deleteItem', (item, options) => { if (!options?.sr3eModMove) _recordEssenceHoleOnRemoval(item); });
 Hooks.on('createItem', (item) => _armImplant(item));
 Hooks.on('deleteItem', (item) => _disarmImplant(item));
+Hooks.on('updateItem', (item, changes) => _rearmHost(item, changes));
 
 // Inject red warning below the matrixRuleset setting in Configure Settings.
 Hooks.on('renderSettingsConfig', (_app, html) => {

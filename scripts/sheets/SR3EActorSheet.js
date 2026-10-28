@@ -11,6 +11,11 @@ import { Funds } from '../data/funds.mjs';
 import { CombatPool } from '../data/combat-pool.mjs';
 import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
+import { ItemMods } from '../data/item-mods.mjs';
+import { ArmorMods } from '../data/armor-mods.mjs';
+import { ModFor } from '../data/mod-for.mjs';
+import { SR3EItemMods } from '../SR3EItemMods.js';
+import { ModRemoval } from '../data/mod-removal.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -516,6 +521,33 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    *   · **a vehicle or drone** — an ACTOR, which core's `_onDropActor` ignores. The Vehicles
    *     tab's "Add a Vehicle" did the job; dragging it did nothing at all.
    */
+  /**
+   * "🔧 2" after a name — the mods installed in it (TODO 276). Its tooltip (Foundry's `data-tooltip`, which a sheet
+   * shows; a plain `title` showed only a "?" cursor — reported live, 2026-10-27) lists each mod with its mount and what
+   * it changes, then what they add up to. Open the item to change them. Nothing for an item with none.
+   */
+  static modsChip(item) {
+    const rows = SR3EItemMods.rows(item);
+    if (!rows.length) return '';
+    return ` <span class="sr-mod-count" data-tooltip="${foundry.utils.escapeHTML(SR3EActorSheet.modsTooltip(item, rows))}" data-tooltip-direction="UP">🔧${rows.length}</span>`;
+  }
+
+  /** "⚠ needs repair" after a gun whose barrel a failed gas-vent removal destroyed (TODO 277). */
+  static repairChip(item) {
+    const r = ModRemoval.needsRepair(item);
+    if (!r) return '';
+    return ` <span class="sr-mod-repair" data-tooltip="${foundry.utils.escapeHTML(`${r.reason ?? 'Damaged'} — needs repair. Clear it on the gun's sheet once it is repaired.`)}">⚠ needs repair</span>`;
+  }
+
+  /** The chip's tooltip, as HTML: one line per mod, the totals, and where to change them. */
+  static modsTooltip(item, rows = SR3EItemMods.rows(item)) {
+    const esc = v => foundry.utils.escapeHTML(String(v ?? ''));
+    const lines = rows.map(r => `${r.mount ? `<em>${esc(r.mount)}</em> · ` : ''}${esc(r.name)}${r.changes ? ` — ${esc(r.changes)}` : ''}`);
+    const eff = ItemMods.effective(item);
+    const total = Object.keys(eff).map(t => esc(ItemMods.describe(t, eff[t]))).join('<br>');
+    return `<strong>Installed mods</strong><br>${lines.join('<br>')}${total ? `<hr>${total}` : ''}<br><small>Open ${esc(item.name)} to change them.</small>`;
+  }
+
   async _onDrop(event) {
     try {
       return await super._onDrop(event);
@@ -530,6 +562,15 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (!document) {
       ui.notifications.warn(SR3EActorSheet.dropFailureMessage(null));
       return null;
+    }
+    // A mod dropped on a row of something that holds mods goes INTO it (TODO 276): a gas vent on the gun's row, an
+    // armour option on the helmet's. Only an item that is a mod — tagged (`ModFor.of`) or carrying changes — so dragging a
+    // gun over another gun still just sorts. Anything else dropped on a row lands in the inventory as before.
+    const hostId = event.target?.closest?.('.item-row[data-item-id]')?.dataset.itemId;
+    const host = hostId ? this.actor.items.get(hostId) : null;
+    if (document.documentName === 'Item' && host && host.id !== document.id && ItemMods.isHost(host)
+        && (ModFor.of(document) || ItemMods.modifiersOf(document).length)) {
+      return SR3EItemMods.install(host, document);
     }
     return super._onDropDocument(event, document);
   }
@@ -1359,7 +1400,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   const fRows = categorisedFirearms.length ? categorisedFirearms.map(w => `
     <div class="item-row" data-item-id="${w.id}">
-      <span class="item-name">${w.name}</span>
+      <span class="item-name">${w.name}${SR3EActorSheet.modsChip(w)}${SR3EActorSheet.repairChip(w)}</span>
       <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell col-sm">${w.system.mode || '—'}</span>
       <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
@@ -1376,7 +1417,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const focusTag    = isFocus ? ` <span style="color:var(--sr-accent);font-size:10px">[Focus${focusActive ? ' ✦' : ''}]</span>` : '';
     return `
     <div class="item-row ${isEquipped ? 'equipped' : ''}" data-item-id="${w.id}">
-      <span class="item-name">${w.name}${isEquipped ? ' <span class="equipped-badge">✦ Equipped</span>' : ''}${focusTag}</span>
+      <span class="item-name">${w.name}${SR3EActorSheet.modsChip(w)}${isEquipped ? ' <span class="equipped-badge">✦ Equipped</span>' : ''}${focusTag}</span>
       <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell">Reach ${w.system.reach ?? 0}</span>
       <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
@@ -1392,7 +1433,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const focusTag    = isFocus ? ` <span style="color:var(--sr-accent);font-size:10px">[Focus${focusActive ? ' ✦' : ''}]</span>` : '';
     return `
     <div class="item-row ${isEquipped ? 'equipped' : ''}" data-item-id="${w.id}">
-      <span class="item-name">${w.name}${isEquipped ? ' <span class="equipped-badge">✦ Equipped</span>' : ''}${focusTag}</span>
+      <span class="item-name">${w.name}${SR3EActorSheet.modsChip(w)}${isEquipped ? ' <span class="equipped-badge">✦ Equipped</span>' : ''}${focusTag}</span>
       <span class="item-cell col-xs">${w.system.damage || '—'}</span>
       <span class="item-cell">Reach ${w.system.reach ?? 0}</span>
       <span class="item-cell col-xs">${w.system.concealability ?? '—'}</span>
@@ -1435,9 +1476,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   // Implants that are weapons but have no weapon entry yet (TODO 151) — fitted before the fix, or with
   // no GM online to make it. Offered, not made: the owner presses Add.
   const unarmedImplants = CyberWeapons.missing([...actor.items]);
+  // A built-in (TODO 276) has no item of its own: its id is "<limb id>.<mod id>", so the row carries no data-item-id.
   const implantOffer = unarmedImplants.length ? unarmedImplants.map(c => `
-    <div class="item-row" data-item-id="${c.id}" style="color:var(--sr-amber)">
-      <span class="item-name">⚠ ${c.name} <span style="font-size:10px">(implant — no weapon entry yet)</span></span>
+    <div class="item-row"${c.builtIn ? '' : ` data-item-id="${c.id}"`} style="color:var(--sr-amber)">
+      <span class="item-name">⚠ ${c.name} <span style="font-size:10px">(${c.builtIn ? `built into ${foundry.utils.escapeHTML(c.hostName ?? '')}` : 'implant'} — no weapon entry yet)</span></span>
       <span class="item-cell col-xs">${CyberWeapons.damage(c.system.description) ?? '—'}</span>
       <div class="item-controls"><button type="button" class="btn-add" data-action="armImplant" data-item-id="${c.id}"
         title="Add this implant's weapon, so it can attack">+ Add weapon</button></div>
@@ -1617,11 +1659,17 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       (d.armorPoolPenalty ?? 0) > 0 ? `Combat Pool −${d.armorPoolPenalty}` : '',
       (d.armorQuicknessTN ?? 0) > 0 ? `Quickness tests +${d.armorQuicknessTN} TN (layered)` : '',
     ].filter(Boolean).join(' · ');
+    // Armour mods (TODO 276): what is wrong with what is worn together, and what the worn mods protect against.
+    const wornItems  = SA.wornArmorItems(actor);
+    const wornWarn   = ArmorMods.wornWarnings(wornItems, i => SA.isArmorAccessory(i));
+    const protection = ArmorMods.protections(wornItems)
+      .map(p => `${p.short} ${p.target === 'thermalMasking' ? '+' : '−'}${p.value}`).join(' · ');
+    const hardTag    = wornItems.some(i => ArmorMods.hardened(i)) ? ' <span style="color:var(--sr-gold);font-size:10px">(hardened — CC p.51)</span>' : '';
 
     const activeArmorDisplay = worn.pieces.length ? `
       <div class="active-armor-section">
         <div class="active-armor-header">
-          <i class="fas fa-shield-alt"></i> Currently Worn${worn.pieces.filter(p => p.role === 'layer').length >= 2 ? ' — layered (SR3 p.285)' : ''}
+          <i class="fas fa-shield-alt"></i> Currently Worn${worn.pieces.filter(p => p.role === 'layer').length >= 2 ? ' — layered (SR3 p.285)' : ''}${hardTag}
         </div>
         <div class="active-armor-card" title="${worn.pieces.length > 1 ? 'Best piece + half the next best, per type; helmets and shields add in full (not layering). Worn totals ' + d.armorSumBallistic + 'B / ' + d.armorSumImpact + 'I count against Quickness.' : ''}">
           <span class="active-armor-name">${worn.pieces.map(p => `${p.name} ${p.ballistic}/${p.impact}${roleTag(p)}`).join('<br>')}</span>
@@ -1631,6 +1679,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           </div>
         </div>
         ${burden ? `<div class="armor-burden-note" style="font-size:11px;color:var(--sr-amber);margin:2px 0 6px">⚠ ${burden}</div>` : ''}
+        ${protection ? `<div class="armor-burden-note" style="font-size:11px;color:var(--sr-muted);margin:2px 0 6px" title="Power reductions from armour mods, cumulative with the armour (CC pp.52-53) — the GM applies them to the right kind of attack">Protects: ${protection}</div>` : ''}
+        ${wornWarn.map(w => `<p class="sr-mod-warn">⚠ ${foundry.utils.escapeHTML(w)}</p>`).join('')}
       </div>
     ` : `
       <div class="active-armor-section" style="opacity: 0.7;">
@@ -1651,10 +1701,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const isEquipped = wornIds.has(a.id);
       return `
         <div class="item-row ${isEquipped ? 'equipped' : ''}" data-item-id="${a.id}">
-          <span class="item-name">${a.name}</span>
-          <span class="item-cell col-narrow">${a.system.ballistic ?? 0}B / ${a.system.impact ?? 0}I</span>
-          <span class="item-cell col-xs">${a.system.concealability ?? '—'}</span>
-          <span class="item-cell col-xs">${a.system.weight ?? 0}</span>
+          <span class="item-name">${a.name}${SR3EActorSheet.modsChip(a)}${ArmorMods.hardened(a) ? ' <span style="color:var(--sr-gold);font-size:10px" title="Hardened armour (CC p.51)">H</span>' : ''}</span>
+          <span class="item-cell col-narrow">${ArmorMods.ratings(a).ballistic}B / ${ArmorMods.ratings(a).impact}I</span>
+          <span class="item-cell col-xs">${ArmorMods.concealability(a).value ?? a.system.concealability ?? '—'}</span>
+          <span class="item-cell col-xs">${ArmorMods.weight(a)}</span>
           <div class="item-controls">
             <i class="fas fa-home" data-action="toggleStored" data-item-id="${a.id}"
                style="color:var(--sr-dim)" title="Put in storage"></i>
@@ -1832,7 +1882,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const rating = itemRating(c);   // the packs keep most ratings in the name: "Wired Reflexes [2]"
       return `
         <div class="item-row" data-item-id="${c.id}" data-cyber-item-id="${c.id}">
-          <span class="item-name">${c.name}</span>
+          <span class="item-name">${c.name}${SR3EActorSheet.modsChip(c)}</span>
           <span class="item-cell">${c.system.grade ?? '—'}</span>
           <span class="item-cell">${c.system.essenceCost ?? 0}</span>
           <span class="item-cell">${rating}</span>
@@ -4058,7 +4108,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
   /** Add an implant's weapon entry (TODO 151) — the same item the install hook makes. */
   static async _onArmImplant(_ev, target) {
-    const implant = this.actor.items.get(target.dataset.itemId);
+    // A built-in's id is "<limb id>.<mod id>" (TODO 276) — found among the actor's implants, not its items.
+    const implant = CyberWeapons.implants([...this.actor.items]).find(i => i.id === target.dataset.itemId);
     const data    = implant ? CyberWeapons.weaponData(implant) : null;
     if (!data) return;
     await this.actor.createEmbeddedDocuments('Item', [data]);

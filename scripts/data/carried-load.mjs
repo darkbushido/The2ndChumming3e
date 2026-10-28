@@ -22,6 +22,8 @@
  * ⚠ **Cyberware and bioware weigh nothing here.** They are installed, not carried; the book's weights are
  * for what a character hauls around.
  */
+import { ArmorMods } from './armor-mods.mjs';
+
 export const PAGE = 'SR3 p.274';
 
 /** Item types whose `weight` is for ONE of them and whose `quantity` says how many are carried. */
@@ -45,6 +47,8 @@ export const CarriedLoad = {
   itemWeight(item) {
     const type = item?.type ?? '';
     if (WEIGHTLESS.includes(type)) return 0;
+    // Armour weighs what its mods make it: Insulation +.5 kg a point, gel packs +25% (CC p.53, TODO 276).
+    if (type === 'armor') return r3(ArmorMods.weight(item));
     const w = Number(item?.system?.weight) || 0;
     if (!(w > 0)) return 0;
     if (type === 'ammunition') {

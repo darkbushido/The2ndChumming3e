@@ -22,6 +22,9 @@ import { CombatPool } from '../data/combat-pool.mjs';
 import { Collisions } from '../data/collisions.mjs';
 import { Apds } from '../data/apds.mjs';
 import { VehicleArmor } from '../data/vehicle-armor.mjs';
+import { VehicleMods, vehicleStat } from '../data/vehicle-mods.mjs';
+import { ArmorMods } from '../data/armor-mods.mjs';
+import { CyberCapacity } from '../data/cyber-capacity.mjs';
 import { Misfire } from '../data/misfire.mjs';
 import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { AdeptLevels } from '../data/adept-levels.mjs';
@@ -1951,6 +1954,16 @@ _prepareVehicle(sys, attr) {
   const body = attr.body?.base ?? 4;
   sys.derived.damageMax      = body * 2;
   sys.derived.damageDisabled = body;
+  // What the mods change (TODO 265, `vehicle-mods.mjs`): the effective figures, never saved — the typed `base` stays the
+  // vehicle's own. `attributes.X.value` is bound by no input; ECM / ECCM go to `derived.ew` (their inputs bind `ew.X`).
+  const mods = VehicleMods.effective(this, this.items ?? []);
+  if (!sys.derived.ew) sys.derived.ew = {};
+  for (const [stat, r] of Object.entries(mods.stats)) {
+    if (stat === 'ecm' || stat === 'eccm') { sys.derived.ew[stat] = r.value; continue; }
+    if (!attr[stat]) attr[stat] = { base: r.own };
+    attr[stat].value = r.value;
+  }
+  sys.derived.vehicleMods = mods;
 }
 
 _prepareCharacter(sys, attr) {
@@ -2042,7 +2055,8 @@ _prepareCharacter(sys, attr) {
   /** Items that forbid other Reaction/Initiative enhancement, and the ones that conflict. */
   const reactionExclusiveItems = [];
   const otherReactionEnhancers = [];
-  for (const item of (this.items ?? [])) {
+  // Built-in implants too — a Strength Enhancement inside a cyberarm still raises Strength (TODO 276, `CyberCapacity.flatten`).
+  for (const item of CyberCapacity.flatten(this.items ?? [])) {
     if (item.type !== 'cyberware' && item.type !== 'bioware') continue;
     const s = item.system;
     cyberBonus.bod      += s.bonusBod      ?? 0;
@@ -2405,9 +2419,11 @@ _prepareCharacter(sys, attr) {
    * ⚠ Quickness itself is NOT lowered. It used to be (−1 per 2 points over), which also cut
    * Reaction, the Combat Pool by half as much, and every Quickness roll — none of it the book's
    * rule, which takes Combat Pool dice. Implant armour is excluded, as before (M&M p.35). */
+  // Gel-packed armour counts 50% higher for the Combat Pool only (CC p.54, TODO 276): `pool*`.
   const armorBurden = SR3EActor.layeredArmor(
     SR3EActor.wornArmorItems(this).map(i => ({
-      name: i.name, ballistic: i.system?.ballistic ?? 0, impact: i.system?.impact ?? 0,
+      name: i.name, ...ArmorMods.ratings(i),
+      poolBallistic: ArmorMods.poolRatings(i).ballistic, poolImpact: ArmorMods.poolRatings(i).impact,
       accessory: SR3EActor.isArmorAccessory(i),
     })),
     attr.quickness?.value ?? 0);
@@ -3373,8 +3389,7 @@ _prepareCharacter(sys, attr) {
     if (!rigger?.items) return 0;
     const activeVCRId = rigger.system?.activeVCRItemId ?? '';
     const level = activeVCRId ? vcrLevelOf(rigger.items.get(activeVCRId)) : 0;
-    return level || vcrLevelOf(rigger.items.find(i =>
-      i.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(i.name)));
+    return level || vcrLevelOf(CyberCapacity.findVcr(rigger.items));   // a built-in rig too (TODO 276)
   }
 
   // For a rigger jumped into a VCR drone, the Simsense degradation acts exactly like a wound
@@ -3852,6 +3867,8 @@ _prepareCharacter(sys, attr) {
               stagedLevel:     staged.level,
               isStun:          staged.isStun,
               rawDamage:       state.rawDamage,
+              // Hardened armour (worn — CC p.51, TODO 276) compares the Power without burst / full-auto.
+              hardenedPower:   state.damageBase?.hardenedPower,
               // The soak compares these successes with the target's total (p.113) — TODO 165.
               net:             { attackHits: successes, basePower: state.damageBase.power, baseLevel: state.damageBase.level },
             }).replace(/'/g, '&#39;');
@@ -3874,7 +3891,7 @@ _prepareCharacter(sys, attr) {
               stagedLevel:     staged.level,
               isStun:          staged.isStun,
               rawDamage:       state.rawDamage,
-              // Hardened armour compares the Power without burst / full-auto (p.132) — vehicle targets only.
+              // Hardened armour compares the Power without burst / full-auto (SR3 p.132; worn hardened armour, CC p.51).
               hardenedPower:   state.damageBase?.hardenedPower,
               // A vehicle: "Standard staging rules apply" (p.149) — the net comparison. TODO 165.
               net:             { attackHits: successes, basePower: state.damageBase.power, baseLevel: state.damageBase.level },
@@ -5444,6 +5461,7 @@ _prepareCharacter(sys, attr) {
     collisionBraking:  ['SR3ECollision', 'brakingRolled'],      // TODO 189 — the Braking Test, p.142
     concealPerception: ['SR3EConcealment', 'perceptionRolled'],  // TODO 195 — Perception vs Concealability, p.231
     legwork:           ['SR3ELegwork', 'rolled'],                 // TODO 268 — Etiquette for legwork, p.253-254
+    modRemoval:        ['SR3EItemMods', 'removalRolled'],         // TODO 277 — a gunsmith takes a gas vent off, CC p.79-81
   };
 
   static _registryFn([cls, fn] = [], what) {
@@ -8246,7 +8264,7 @@ _prepareCharacter(sys, attr) {
    */
   static implantArmor(items) {
     const out = { impact: 0, ballistic: 0, sources: [] };
-    for (const i of (items ?? [])) {
+    for (const i of CyberCapacity.flatten(items ?? [])) {   // a cyberlimb's built-in armour too (TODO 276)
       if (i?.type !== 'cyberware' && i?.type !== 'bioware') continue;
       const s = i.system ?? {};
       let fromMods = null;
@@ -8280,12 +8298,13 @@ _prepareCharacter(sys, attr) {
    */
   static armorRatings(actor) {
     if (actor?.type === 'vehicle') {
-      const v = actor.system?.attributes?.armor?.base ?? 0;
+      const v = vehicleStat(actor, 'armor');   // its mods included (TODO 265)
       return { ballistic: v, impact: v, worn: { name: null, ballistic: v, impact: v, pieces: [] },
                implants: { impact: 0, ballistic: 0, sources: [] } };
     }
+    // Each piece's own ratings — gel packs on unarmoured clothing make it 1/1 (CC p.53, TODO 276).
     const pieces = SR3EActor.wornArmorItems(actor).map(i => ({
-      name: i.name, ballistic: i.system?.ballistic ?? 0, impact: i.system?.impact ?? 0,
+      name: i.name, ...ArmorMods.ratings(i),
       accessory: SR3EActor.isArmorAccessory(i),
     }));
     const lay  = SR3EActor.layeredArmor(pieces);
@@ -8453,7 +8472,10 @@ _prepareCharacter(sys, attr) {
    */
   static layeredArmor(pieces = [], quickness = null) {
     const n    = v => Math.max(0, Number(v) || 0);
-    const all  = (pieces ?? []).map(p => ({ ...p, ballistic: n(p.ballistic), impact: n(p.impact) }));
+    // `poolBallistic` / `poolImpact`, where a piece has them, are what the Combat Pool reads — gel packs count 50% higher
+    // there only (CC p.54, TODO 276). Everything else reads the real ratings.
+    const all  = (pieces ?? []).map(p => ({ ...p, ballistic: n(p.ballistic), impact: n(p.impact),
+      poolBallistic: n(p.poolBallistic ?? p.ballistic), poolImpact: n(p.poolImpact ?? p.impact) }));
     const body = all.filter(p => !p.accessory);
     const acc  = all.filter(p => p.accessory);
 
@@ -8467,7 +8489,9 @@ _prepareCharacter(sys, attr) {
 
     const q = Number(quickness);
     const hasQ = quickness !== null && quickness !== undefined && Number.isFinite(q);
-    const over = hasQ ? Math.max(0, Math.max(sumBallistic, sumImpact) - q) : 0;
+    const poolB = all.reduce((s, p) => s + p.poolBallistic, 0);
+    const poolI = all.reduce((s, p) => s + p.poolImpact, 0);
+    const over = hasQ ? Math.max(0, Math.max(poolB, poolI) - q) : 0;
 
     return {
       ballistic: layer('ballistic'),
@@ -8494,7 +8518,7 @@ _prepareCharacter(sys, attr) {
     if (SR3EActor.racialDermalArmor(actor?.system?.metatype) > 0) out.push('troll dermal armor');
     const pats = globalThis.game?.sr3e?.SR3E?.dermalArmorImplants
       ?? [/^\s*dermal\s+(plating|sheath)\b/i, /^\s*d\.\s*sheath\b/i, /^\s*dermal\s+armou?r\b/i];
-    for (const i of (actor?.items ?? [])) {
+    for (const i of CyberCapacity.flatten(actor?.items ?? [])) {
       if (i?.type !== 'cyberware') continue;
       if (pats.some(re => re.test(String(i.name ?? '')))) out.push(i.name);
     }
@@ -8810,7 +8834,7 @@ _prepareCharacter(sys, attr) {
            Re-rolling replaces it, and only the new one will charge Drain.
          </div>` : '';
 
-    const cyber = (actor.items ?? []).some(i =>
+    const cyber = [...CyberCapacity.flatten(actor.items ?? [])].some(i =>
       (i.type === 'cyberware' || i.type === 'bioware')
       && (i.system?.[{ body: 'bonusBod', quickness: 'bonusQui', strength: 'bonusStr' }[attribute]] ?? 0) > 0);
     const cyberWarn = cyber
@@ -9718,9 +9742,11 @@ _prepareCharacter(sys, attr) {
     // resisting or avoiding DAMAGE, and staying upright is neither). The maintainer's ruling,
     // 2026-09-14: applied, though the threshold also scales with the wound (p.124). Editable.
     const kdWound   = SR3EActor.woundTN(target);
+    // Gel-packed armour: +2 to the Knockdown Test's TN (CC p.54, TODO 276).
+    const kdGel     = ArmorMods.knockdownTN(SR3EActor.wornArmorItems(target));
     const tnDefault = SR3EActor.knockdownTN({
       power: ctx.power, strength: atkStr, isMelee: ctx.isMelee, ammoType: ctx.ammoType,
-    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound + SR3EActor.standingTN(target);
+    }) + Math.max(0, Math.trunc(Number(ctx.knockdownTNMod) || 0)) + kdWound + kdGel + SR3EActor.standingTN(target);
     const needed  = SR3EActor.knockdownOutcome({ level, tested: false }).needed ?? 2;
     /* Rooting and Enhanced Balance add dice to *"all tests to resist being knocked down,
      * thrown, levitated or otherwise moved against his will"* (MITS p.151, SOTA2 p.65).
@@ -9758,7 +9784,8 @@ _prepareCharacter(sys, attr) {
           ${target.name} took a <strong>${SR3EActor._woundName(level)}</strong> wound and must stay on their feet.
         </p>
         <p style="margin-bottom:8px;font-size:11px;color:var(--sr-muted)">${tnNote}${kdWound
-          ? ` <span style="color:var(--sr-amber)">Includes ${target.name}'s wounds +${kdWound} (p.125).</span>` : ''}</p>
+          ? ` <span style="color:var(--sr-amber)">Includes ${target.name}'s wounds +${kdWound} (p.125).</span>` : ''}${kdGel
+          ? ` <span style="color:var(--sr-amber)">Includes gel-packed armour +${kdGel} (CC p.54).</span>` : ''}</p>
         <label style="display:block;margin-bottom:6px">Body dice
           <input type="number" id="kd-body" value="${bodyDef}" min="1" max="50" style="width:60px;margin-left:6px"/>
           ${kdBonus.dice ? `<span style="font-size:11px;color:var(--sr-gold);margin-left:6px">includes +${kdBonus.dice} from ${kdBonus.labels.join(' + ')}</span>` : ''}
@@ -10107,6 +10134,25 @@ _prepareCharacter(sys, attr) {
       ammoNote = [ammoNote, `Power ${hardPower} (without any burst/full-auto bonus) does not exceed armour ${defaultArmor} — hardened armour deflects it: no damage to the vehicle (p.132, p.149)`]
         .filter(Boolean).join(' · ');
     }
+    /* Worn armour with mods (TODO 276). HARDENED (CC p.51 military armour, or gel packs): a Power before any burst bonus
+     * that does not exceed the hardened rating is deflected; against APDS / anti-vehicle rounds it counts at half. And the
+     * armour's protections — Power − vs fire, cold, electricity, contact chemicals (CC pp.52-53) — named for the GM, who
+     * knows what kind of attack this is. Announced, never applied. */
+    if (this.type !== 'vehicle' && !payload.noArmor) {
+      const worn = SR3EActor.wornArmorItems(this);
+      const hard = ArmorMods.hardenedRating(worn, {
+        useImpact: usesImpact,
+        armorPiercing: ammoRules.armorEffect === 'apds' || ammoRules.armorEffect === 'antiVehicle',
+        layer: ps => SR3EActor.layeredArmor(ps.map(i => ({ name: i.name, ...ArmorMods.ratings(i), accessory: SR3EActor.isArmorAccessory(i) }))),
+      });
+      if (hard !== null && VehicleArmor.deflects(hardPower, hard)) {
+        ammoNote = [ammoNote, `🛡 Deflected (hardened): Power ${hardPower} (without any burst/full-auto bonus) does not exceed the hardened armour's ${hard} — no damage (CC p.51)`]
+          .filter(Boolean).join(' · ');
+      }
+      for (const p of ArmorMods.protections(worn).filter(x => x.target !== 'thermalMasking')) {
+        adeptArmorNotes.push(`${p.sources.join(', ')}: ${p.label.replace('−', `−${p.value}`)} — if this attack is that kind (CC pp.52-53)`);
+      }
+    }
     return { resistAttr, resistName, body, bodyOf, availPool, ballistic, impact, usesImpact, defaultArmor,
       soakTN, stunnedNow, effStagedLevel, netBaseLevel, ammoNote, adeptArmorNotes, shockCode, impactWorn };
   }
@@ -10429,10 +10475,14 @@ _prepareCharacter(sys, attr) {
    */
   static installedEssenceCost(items) {
     let total = 0;
+    const graded = i => (i?.type === 'cyberware' ? SR3EActor.gradedEssenceCost(SR3EActor.baseEssenceCost(i), i.system?.grade) : 0);
     for (const item of (items ?? [])) {
       if (item?.type !== 'cyberware') continue;
-      const c = SR3EActor.gradedEssenceCost(SR3EActor.baseEssenceCost(item), item.system?.grade);
+      const c = graded(item);
       if (Number.isFinite(c)) total += c;
+      // Its built-in implants (TODO 276): a limb's at their own reduced Essence (M&M p.36), an eye / ear replacement's only
+      // over the .5 it holds free (SR3 p.299) — `CyberCapacity.nestedEssence`.
+      total += CyberCapacity.nestedEssence(item, graded);
     }
     return parseFloat(total.toFixed(2));
   }
@@ -11693,7 +11743,7 @@ _prepareCharacter(sys, attr) {
     if (this.type === 'vehicle') {
       const controlMode = this.system.controlMode ?? '';
       const driverActId = this.system.driverActorId?.trim() ?? '';
-      const pilotRating = this.system.attributes?.pilot?.base ?? 0;
+      const pilotRating = vehicleStat(this, 'pilot');
 
       if (driverActId) {
         const rigger = actorFrom(driverActId);

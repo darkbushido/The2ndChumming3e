@@ -54,6 +54,8 @@ paths:
    - **👁 Vision reminder** (TODO 99, `detectVision`/`visionReminder` in `SR3ECombatModifiers.js`).
      ⚠ Replaced eyes lose racial vision (p.299) — only an actual replacement item or **Cat's Eyes** counts.
      ⚠ **Cat's Eyes are NATURAL** (M&M p.64). ⚠ Thermosense Organs are not vision (M&M p.75).
+     ⚠ **Goggles and helmets are CYBERNETIC/ELECTRONIC** (the maintainer, 2026-10-27): vision a worn armour item or
+     carried gear passes up through its installed mods (`ItemMods.actorTotals`, TODO 276) lands in `cyber`.
 6. Attacker allocates Combat Pool — that dialog is the 🎲 Roll trigger. Attack rolls (interactive).
 7. On the final wave the **defender declares a defence knowing the attack's successes**; dodge TN 4.
 8. Dodge result via `SR3EActor.dodgeOutcome` (below). A failed dodge's successes join the target's total.
@@ -110,6 +112,14 @@ The declaration dialog shows the TN and breakdown.
   full ratings, **rounded up** (Twitch, 3 over, loses 2). Never lower Quickness itself.
   **Layering** (2+ body pieces) adds +(worn Ballistic − Quickness) TN to Quickness tests and linked skills
   (`derived.armorQuicknessTN`); coat + helmet is not layering. Movement reduction not modelled.
+- **Armour with mods** (TODO 276, `scripts/data/armor-mods.mjs`; the maintainer's rulings 2026-10-27). Every armour reader
+  goes through `ArmorMods`: `ratings` (gel packs on unarmoured clothing → 1/1), `poolRatings` (gel → 50% higher, round down,
+  **Combat Pool only** — `layeredArmor` reads `poolBallistic`/`poolImpact`), `concealability`/`weight`/`cost`/`availability`.
+  **Hardened** (`system.hardened`, CC p.51 military armour, or gel packs): the soak card ANNOUNCES "Deflected (hardened)" when
+  the Power before any burst bonus (`hardenedPower`, now carried for people too) ≤ the worn hardened rating, half vs APDS / AV —
+  the same `VehicleArmor.deflects`; nothing applied. Gel packs +2 Knockdown TN. The mods' Power reductions (fire, cold,
+  electricity, contact chemicals, CC pp.52-53) are a note for the GM on every soak card. Warnings, never refusals: caps (one ≤
+  max(B,I), all ≤ B+I; clothing 2/2; gel outside), hosts off CC p.52's list, gel restrictions, nothing layers with hardened.
 
 ### Firearms — fire modes, recoil  · *SR3 pp.111, 115-116*
 **Fire modes** (`SR3EItem._promptFireMode`, weapon `mode` e.g. "SA/BF/FA"):
@@ -122,8 +132,10 @@ The declaration dialog shows the TN and breakdown.
 - ⚠ **BF and FA count their OWN rounds; SS/SA don't** (p.115) — theirs penalise the next shot.
 - ⚠ **Comp comes off BEFORE the multiplier** — MMG, 10 rounds, 6 comp = (10−6)×2 = **+8**.
   All three worked examples in `tests/fire-modes.test.mjs`.
-- `totalComp = actor.system.recoilCompensation + weapon.system.recoilMod` (both editable in the fire dialog,
-  persisted; actor comp on the Cyber tab). Heavy weapons (LMG/MMG/HMG/MinG) double; shotguns double in
+- `totalComp = actor.system.recoilCompensation + weapon RC` (both editable in the fire dialog,
+  persisted; actor comp on the Cyber tab). Weapon RC = `IntegralRC.totalComp`: the gun's own figure (plain or
+  bracketed) **plus its installed mods' `rc`** (TODO 276). ⚠ A typed total is stored back through `IntegralRC.baseFor`
+  — without the mods' part — or a gas vent would be baked into the base and count twice. Heavy weapons (LMG/MMG/HMG/MinG) double; shotguns double in
   **BF only** (p.111). `roundsFiredThisPhase` resets each phase (`SR3EActor.resetRecoil`).
 
 **Short bursts** (`SR3EItem.resolveBurst`, p.115): 3+ rounds normal; **2 rounds = +2 Power, level

@@ -1,10 +1,14 @@
 import { vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
+import { CyberCapacity } from '../data/cyber-capacity.mjs';
 import { Rigging } from '../data/rigging.mjs';
 import { VehicleArmor } from '../data/vehicle-armor.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import { Shotgun, CHOKE_MIN, CHOKE_MAX } from '../data/shotgun.mjs';
 import { IntegralRC } from '../data/integral-rc.mjs';
 import { WeaponAccessories } from '../data/weapon-accessories.mjs';
+import { ItemMods } from '../data/item-mods.mjs';
+import { ModRemoval } from '../data/mod-removal.mjs';
+import { Magnification } from '../data/magnification.mjs';
 import { PhaseTargets } from '../data/phase-targets.mjs';
 import { Blast } from '../data/blast.mjs';
 import { AreaEffect } from '../data/area-effect.mjs';
@@ -13,6 +17,8 @@ import { SpellLimits } from '../data/spell-limits.mjs';
 import { WillingTarget } from '../data/willing-target.mjs';
 import { SpellTarget } from '../data/spell-target.mjs';
 import { RangeBands } from '../data/range-bands.mjs';
+import { VehicleMounts } from '../data/vehicle-mounts.mjs';
+import { vehicleStat } from '../data/vehicle-mods.mjs';
 import { Fling } from '../data/fling.mjs';
 import { ActorRef, actorFrom, actorRef, tokenRows } from '../data/actor-ref.mjs';
 
@@ -1095,6 +1101,9 @@ export class SR3EItem extends Item {
   if (this.type === 'vehicleweapon') return this.rollVehicleWeapon(options);
 
   const actor = this.actor;
+  // A barrel destroyed by a failed gas-vent removal (TODO 277): warned, never refused — the GM rules what it can still do.
+  const repair = ModRemoval.needsRepair(this);
+  if (repair) ui.notifications.warn(`${this.name}: ${repair.reason ?? 'damaged'} — it needs repair.`);
   game.sr3e.SR3EActionLedger?.begin(actor);   // snapshot for the GM's undo (TODO 48)
   if (!actor) {
     ui.notifications.warn('No actor for this weapon.');
@@ -1312,6 +1321,7 @@ export class SR3EItem extends Item {
   // --- Step 2: Fire mode selection (firearms only) ---
   let fireModeResult = null;
   let fireModeRounds = 0;
+  let recoilCtx = null;     // this shot's recoil inputs, for the GM window's pod rows (TODO 276)
   let modePowerBonus = 0;   // burst / full-auto Power added to the code (SR3 p.115) — hardened armour ignores it (p.132)
   if (this.type === 'firearm') {
     const availableModes = this._getAvailableModes();
@@ -1350,8 +1360,9 @@ export class SR3EItem extends Item {
             mode:           burst.mode,
             roundsBefore:   actor.system.roundsFiredThisPhase ?? 0,
             roundsThisShot: SR3EItem.roundsExpended({ ...fireModeResult, rounds: burst.rounds }),
-            totalComp:      (actor.system.recoilCompensation ?? 0) + (fireModeResult.weaponComp ?? this.system.recoilMod ?? 0),
-            isHeavy, isShotgun, shortBurst,
+            totalComp:      (actor.system.recoilCompensation ?? 0) + (fireModeResult.weaponComp ?? IntegralRC.totalComp(this.system, false))
+              + (fireModeResult.mountComp ?? 0),
+            isHeavy, isShotgun, shortBurst, halve: !!fireModeResult.halve,
           });
           ui.notifications.warn(burst.mode === 'SS'
             ? `${this.name} has 1 round left — resolving as a single shot, not a burst.`
@@ -1363,6 +1374,10 @@ export class SR3EItem extends Item {
       // the phase cap, recoil and the magazine. Only damage uses `rounds` alone. See
       // roundsExpended for why the three used to disagree.
       fireModeRounds = SR3EItem.roundsExpended(fireModeResult);
+      recoilCtx = { mode: fireModeResult.mode, roundsBefore: actor.system.roundsFiredThisPhase ?? 0, roundsThisShot: fireModeRounds,
+        totalComp: (actor.system.recoilCompensation ?? 0) + (fireModeResult.weaponComp ?? IntegralRC.totalComp(this.system, false))
+          + (fireModeResult.mountComp ?? 0),
+        isHeavy, isShotgun, shortBurst, halve: !!fireModeResult.halve, tn: fireModeResult.recoilTN ?? 0 };
 
       // ── Per-phase firing allowance ────────────────────────────────────────
       // Warns, never blocks: the caps are stated in Actions and this system does not model
@@ -1414,6 +1429,13 @@ export class SR3EItem extends Item {
       const band = SR3EItem._rangeBandForDistance(bands, metres);
       rangeInfo = { bandIdx: band.idx, distance: metres, beyond: band.beyond };
       if (band.beyond) ui.notifications.warn(`${targetActor.name} is beyond ${this.name}'s extreme range.`);
+      // Image magnification (SR3 p.110, TODO 276): the best device in use moves the band toward Short by its rating — the
+      // dropdown starts there and stays editable. They never stack (TODO 235).
+      const mag = Magnification.best(this, actor.items);
+      if (mag.rating > 0 && !band.beyond) {
+        const to = Magnification.shift(band.idx, mag.rating);
+        if (to !== band.idx) rangeInfo = { ...rangeInfo, bandIdx: to, magnified: { from: band.idx, rating: mag.rating, source: mag.source } };
+      }
     }
   }
 
@@ -1501,6 +1523,9 @@ export class SR3EItem extends Item {
     gyroLeft:     gyro.left,   // TODO 18 — offsets the Attacker movement rows (p.113)
     gyroRating:   game.sr3e.SR3EActor.gyroRating(actor),
     gyroUsed:     gyro.used,
+    // A bipod / tripod on the gun (TODO 276): the GM ticks it when the shooter is stationary with it set up.
+    pods:         ItemMods.pods(this),
+    recoil:       recoilCtx,
     // Smoke on the map (TODO 164): offered to the window as a preselected Visibility Table row, never forced.
     smoke:        await game.sr3e.SR3EActor.smokeOffer(actor, [targetActor]).catch(() => null),
   }, { timeout: 300_000 });
@@ -1547,6 +1572,9 @@ export class SR3EItem extends Item {
     damageBase = { ...vd.damage, hardenedPower };
     effectiveRawDamage = `${damageBase.power}${damageBase.level}${damageBase.isStun ? ' Stun' : ''}`;
     if (vd.noEffect) ui.notifications.warn(`${this.name}: ${vd.note}`);
+  } else if (damageBase) {
+    // Worn hardened armour compares the same unaugmented Power (CC p.51, TODO 276).
+    damageBase = { ...damageBase, hardenedPower: VehicleArmor.unaugmentedPower(damageBase.power, weaponOpts.damageCode === modeRawDamage ? modePowerBonus : 0) };
   }
 
   // The defender declares nothing yet — under RAW they decide after this roll
@@ -1795,12 +1823,12 @@ export class SR3EItem extends Item {
         const activeVCRId = pilotActor.system.activeVCRItemId ?? '';
         const vcrItem = activeVCRId
           ? pilotActor.items.get(activeVCRId)
-          : pilotActor.items.find(i => i.type === 'cyberware' && /vcr|vehicle\s*control\s*rig/i.test(i.name));
+          : CyberCapacity.findVcr(pilotActor.items);   // a built-in rig too (TODO 276)
         // ⚠ `vcrLevel()`, not `system.rating`: the shipped rigs store 0 with the level in the name.
         if (vcrItem) vcrLevel = vcrLevelOf(vcrItem);
       }
     } else {
-      const pilotRating = actor.system.attributes?.pilot?.base ?? 0;
+      const pilotRating = vehicleStat(actor, 'pilot');
       pool      = pilotRating;
       poolLabel = pilotActor
         ? `RCD (${pilotActor.name}, captain's chair): Pilot ${pilotRating}`
@@ -1823,7 +1851,7 @@ export class SR3EItem extends Item {
 
     // Step 3: Roll options dialog
     const baseSig  = targetActor.type === 'vehicle'
-      ? (targetActor.system.attributes?.sig?.base ?? 4)
+      ? vehicleStat(targetActor, 'sig')
       : 4;
     const weaponOpts = await SR3EItem._promptVehicleWeaponRollOptions(
       this, targetActor, pool, poolLabel, baseSig, rawDamage, vcrLevel, controlPoolMax, combatPoolMax
@@ -1885,7 +1913,7 @@ export class SR3EItem extends Item {
    */
   static async _promptVehicleWeaponRollOptions(weapon, targetActor, pool, poolLabel, baseSig, rawDamage, _vcrLevel = 0, controlPoolMax = 0, combatPoolMax = 0) {
     const isVehicleTarget = targetActor.type === 'vehicle';
-    const sensorRating    = weapon.actor?.system.attributes?.sensor?.base ?? 0;
+    const sensorRating    = vehicleStat(weapon.actor, 'sensor');
     /* Sensor-enhanced gunnery · SR3 p.152: "rolls a number of dice equal to the character's Gunnery
      * Skill plus half the vehicle's Sensor Rating (round down) … The test target number is equal to
      * the target's Signature", modified by the p.154 table. Steeler's example (p.153): Sig 5, −3
@@ -2683,6 +2711,7 @@ export class SR3EItem extends Item {
           </select>
         </label>
         <span style="font-size:11px;color:var(--sr-muted);margin-left:8px">measured ${Math.round(rangeInfo.distance)}m${rangeInfo.beyond ? ' — beyond Extreme' : ''}</span>
+        ${rangeInfo.magnified ? `<div style="font-size:11px;color:var(--sr-accent);margin-top:2px">🔭 ${foundry.utils.escapeHTML(String(rangeInfo.magnified.source ?? ''))} — magnification ${rangeInfo.magnified.rating}: ${rangeLabels[rangeInfo.magnified.from] ?? '?'} → ${rangeLabels[rangeInfo.bandIdx] ?? '?'} (SR3 p.110; the best device only)</div>` : ''}
       </div>` : '';
 
     // Called Shot (SR3 p.114) — declared before the roll. +4 TN for either staging the
@@ -3365,6 +3394,16 @@ export class SR3EItem extends Item {
           <input type="number" id="sr-gm-gyro" value="${ctx.gyroLeft ?? 0}" min="0" max="${ctx.gyroRating}" style="width:50px"/>
         </label>` : ''}
         <div id="sr-gm-gyro-note" style="font-size:11px;color:var(--sr-dim)"></div>
+        ${(ctx.pods ?? []).length ? `
+        <!-- A bipod / tripod (SR3 p.280): the GM's call per shot — set up, and the shooter stationary (the maintainer,
+             2026-10-27). Its RC comes off this shot's recoil; nothing without recoil to offset. -->
+        <div style="margin-top:6px;font-size:12px">${(ctx.pods ?? []).map((p, i) => `
+          <label style="display:flex;align-items:center;gap:6px">
+            <input type="checkbox" class="sr-gm-pod" data-rc="${Number(p.rc) || 0}" data-idx="${i}"/>
+            ${escapeHTML(String(p.name ?? ''))} set up — shooter stationary (RC ${Number(p.rc) || 0}; SR3 p.280${/tripod/i.test(p.name ?? '') ? ', prone or seated' : ''})
+          </label>`).join('')}
+          <div id="sr-gm-pod-note" style="font-size:11px;color:var(--sr-dim)"></div>
+        </div>` : ''}
       `,
       buttons: [
         // NOT "Roll" — the GM sets the target number, the ATTACKER rolls. Labelling
@@ -3426,7 +3465,12 @@ export class SR3EItem extends Item {
           // A worn gyro's remainder offsets the movement rows ticked (p.113, TODO 18).
           const gyroLeft = gyroEl ? Math.max(0, parseInt(gyroEl.value) || 0) : 0;
           const gyroOff = gyroOffset(state, gyroLeft);
-          const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state) - gyroOff);
+          // A pod the GM ticked takes its RC off this shot's recoil (TODO 276).
+          const podRC = [...el.querySelectorAll('.sr-gm-pod:checked')].reduce((s, b) => s + (Number(b.dataset.rc) || 0), 0);
+          const podOff = SR3EItem.podSaving(ctx.recoil, podRC);
+          const podNote = el.querySelector('#sr-gm-pod-note');
+          if (podNote) podNote.textContent = podRC ? `−${podOff} recoil (${ctx.recoil ? `+${ctx.recoil.tn} uncompensated before it` : 'no recoil this shot'}).` : '';
+          const { tn, floored, raw } = clampTN(baseTN + sumModifiers(state) - gyroOff - podOff);
           if (gyroNote) gyroNote.textContent = ctx.gyroRating
             ? `Offsetting ${gyroOff} of movement${ctx.gyroUsed ? ` (and ${ctx.gyroUsed} came off recoil)` : ''} — a gyro works on both, in full (house ruling; CC p.34).`
             : '';
@@ -3436,7 +3480,7 @@ export class SR3EItem extends Item {
             : '';
         };
 
-        el.querySelectorAll('.sr-gm-mod, .sr-gm-mod-per, .sr-gm-mod-sit, .sr-gm-vis-cond, .sr-gm-vis-type')
+        el.querySelectorAll('.sr-gm-mod, .sr-gm-mod-per, .sr-gm-mod-sit, .sr-gm-vis-cond, .sr-gm-vis-type, .sr-gm-pod')
           .forEach(i => i.addEventListener('change', recompute));
         // `change` alone does not fire until the number input loses focus, so the TN would
         // lag behind what the GM has typed. `input` keeps the two in step.
@@ -4123,11 +4167,14 @@ static multiTargetTN(ordinal) {
  * @param {number} o.totalComp       actor recoil comp + weapon recoil mod
  * @param {boolean} [o.isHeavy]      LMG/MMG/HMG/MinG
  * @param {boolean} [o.isShotgun]    ShtG
+ * @param {boolean} [o.halve]        on a vehicle's fixed mount or turret: "reduce recoil modifiers by half before applying
+ *                                    recoil compensation", which cancels the heavy-weapon double (R3R pp.136, 140; rounded
+ *                                    down — the maintainer, 2026-10-27; TODO 234). The shotgun burst double still applies.
  * @returns {number} TN penalty, never negative
  */
 static recoilTN({ mode, roundsBefore = 0, roundsThisShot = 0, totalComp = 0,
-                  isHeavy = false, isShotgun = false, shortBurst = false }) {
-  const mult = (isHeavy || (isShotgun && mode === 'BF')) ? 2 : 1;
+                  isHeavy = false, isShotgun = false, shortBurst = false, halve = false }) {
+  const mult = ((isHeavy && !halve) || (isShotgun && mode === 'BF')) ? 2 : 1;
   // A SHORT BURST is its own case, not a burst that happens to fire two: "If a burst ends
   // up being a round short because of insufficient ammunition in the clip… A +2 recoil
   // modifier also applies" (p.115). So it contributes 2, not 3 — and a ONE-round burst is
@@ -4135,7 +4182,8 @@ static recoilTN({ mode, roundsBefore = 0, roundsThisShot = 0, totalComp = 0,
   const own  = mode === 'BF' ? (shortBurst ? 2 : 3)
              : mode === 'FA' ? Math.max(0, Number(roundsThisShot) || 0)
              : 0;
-  return Math.max(0, (roundsBefore + own) - totalComp) * mult;
+  const uncompensated = roundsBefore + own;
+  return Math.max(0, (halve ? Math.floor(uncompensated / 2) : uncompensated) - totalComp) * mult;
 }
 
 /**
@@ -4176,20 +4224,40 @@ static fireModeDamage({ power, level = 'M', mode, rounds = 0, isTracer = false,
   return { power: pwr, level: STAGES[lvlIdx] };
 }
 
+/**
+ * What a bipod / tripod the GM ticked takes off this shot's recoil (TODO 276, SR3 p.280): the shot's recoil TN again with
+ * the pod's RC added to its compensation, against what it was. Comp comes off BEFORE the heavy-weapon doubling, so an MG's
+ * tripod saves up to twice its RC. 0 with no recoil to offset. Pure.
+ */
+static podSaving(recoil, extraRC) {
+  const rc = Math.max(0, Number(extraRC) || 0);
+  if (!recoil || !rc) return 0;
+  const after = SR3EItem.recoilTN({ ...recoil, totalComp: (Number(recoil.totalComp) || 0) + rc });
+  return Math.max(0, (Number(recoil.tn) || 0) - after);
+}
+
 static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isShotgun = false, prefill = {}) {
   const weaponName   = weapon.name;
   const actorComp    = actor.system.recoilCompensation ?? 0;
   // The bracketed RC (SR3 p.276) replaces the plain figure while the integral accessories are in use.
   const hasIntegral  = IntegralRC.has(weapon.system);
   const inUse0       = IntegralRC.defaultInUse(weapon.system);
-  const weaponComp   = IntegralRC.weaponComp(weapon.system, inUse0);
+  // The gun's own figure plus what its installed mods add (TODO 276). A bipod / tripod is not here: whether the shooter is
+  // stationary with it set up is the GM's call, in the GM's TN window (ItemMods.pods).
+  const weaponComp   = IntegralRC.totalComp(weapon.system, inUse0);
+  const modsRC       = ItemMods.effective(weapon).rc;
   const roundsBefore = actor.system.roundsFiredThisPhase ?? 0;
+  // A gun on a vehicle's mount (TODO 234, R3R pp.136-140): a fixed mount or turret halves the recoil before compensation and
+  // cancels the heavy double; a pintle adds RC 2, a ring RC 6 — its own box, never written back to the gun or the vehicle.
+  const mount        = actor.type === 'vehicle' ? VehicleMounts.recoilFor(actor.items, weapon) : null;
+  const mountComp0   = mount?.rc ?? 0;
+  const halve        = !!mount?.halve;
 
   // Delegates to the pure `SR3EItem.recoilTN` so the dialog's preview and the TN actually
   // applied cannot drift apart — they are now the same function, and it is unit-tested.
   const recoilForMode = (mode, rounds, totalComp, faRounds = 3) =>
     SR3EItem.recoilTN({ mode, roundsBefore: rounds, roundsThisShot: faRounds,
-                        totalComp, isHeavy, isShotgun });
+                        totalComp, isHeavy, isShotgun, halve });
 
   // Stage-up helper
   function stageUp(level, times) {
@@ -4205,7 +4273,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     FA: { label: 'FA — Full Auto',        rounds: 3, powerMod: 0, stageMod: 0, note: 'Power +rounds, level +1/3 rounds (3–10 rounds, Complex Action).' },
   };
 
-  const totalComp = actorComp + weaponComp;
+  const totalComp = actorComp + weaponComp + mountComp0;
   const modeRows = availableModes.map((m, i) => {
     const info    = modeInfo[m] ?? { label: m, rounds: 1, powerMod: 0, stageMod: 0, note: '' };
     const isFirst = i === 0;
@@ -4281,14 +4349,18 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       <span title="Cyberware, bioware, shock pads etc. (from the actor)">Cyber/Body
         <input type="number" id="sr-actor-comp" value="${actorComp}" min="0" max="20" style="width:42px"/></span>
       <span>+</span>
-      <span title="Gas vents, bipods etc. mounted on this weapon">Weapon
+      <span title="${modsRC ? `The weapon's own RC plus its installed mods — ${ItemMods.describe('rc', modsRC)}` : 'Gas vents, bipods etc. mounted on this weapon'}">Weapon
         <input type="number" id="sr-weapon-comp" value="${weaponComp}" min="0" max="20" style="width:42px"/></span>
       ${hasIntegral ? `<label style="flex-basis:100%;font-size:11px" title="SR3 p.276: numbers in parentheses are the full recoil compensation that only applies when all integral accessories are used (folding or detachable stocks, and so forth)">
         <input type="checkbox" id="sr-integral" ${inUse0 ? 'checked' : ''}/> Integral accessories in use (stock folded out / tripod set up) — RC ${weapon.system.recoilMod ?? 0} → <strong>${weapon.system.recoilModIntegral}</strong>
       </label>` : ''}
+      ${ItemMods.pods(weapon).length ? `<span style="flex-basis:100%;font-size:11px;color:var(--sr-muted)">${ItemMods.pods(weapon).map(p => foundry.utils.escapeHTML(p.name)).join(', ')} — the GM decides whether it is set up (shooter stationary), in the GM's window.</span>` : ''}
+      ${mount ? `${mount.rc ? `<span>+</span><span title="${foundry.utils.escapeHTML(mount.label)}">Mount
+        <input type="number" id="sr-mount-comp" value="${mountComp0}" min="0" max="20" style="width:42px"/></span>` : ''}
+      <span class="sr-mount-recoil" style="flex-basis:100%;font-size:11px;color:var(--sr-muted)">🔩 ${foundry.utils.escapeHTML(mount.label)}</span>` : ''}
       <span>= <strong id="sr-total-comp">${totalComp}</strong></span>
       <span>&nbsp;|&nbsp; Rounds fired this phase: <strong id="sr-rounds-fired">${roundsBefore}</strong></span>
-      ${isHeavy ? '<span style="color:var(--sr-amber)">&nbsp;|&nbsp; ⚠ Heavy weapon: 2× uncompensated recoil</span>' : ''}
+      ${isHeavy && !halve ? '<span style="color:var(--sr-amber)">&nbsp;|&nbsp; ⚠ Heavy weapon: 2× uncompensated recoil</span>' : ''}
       ${isShotgun ? '<span style="color:var(--sr-amber)">&nbsp;|&nbsp; ⚠ Shotgun: 2× uncompensated recoil in Burst Fire</span>' : ''}
       <button id="sr-reset-recoil" type="button" style="margin-left:auto;padding:1px 7px;font-size:10px;cursor:pointer;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-muted)">↺ Reset</button>
     </div>`;
@@ -4307,7 +4379,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const refreshPreviews = () => {
       const aComp = Math.max(0, parseInt(el.querySelector('#sr-actor-comp')?.value)  || 0);
       const wComp = Math.max(0, parseInt(el.querySelector('#sr-weapon-comp')?.value) || 0);
-      const total = aComp + wComp;
+      const mComp = Math.max(0, parseInt(el.querySelector('#sr-mount-comp')?.value)  || 0);
+      const total = aComp + wComp + mComp;
       const rounds = parseInt(el.querySelector('#sr-rounds-fired')?.textContent) || 0;
       const totalEl = el.querySelector('#sr-total-comp');
       if (totalEl) totalEl.textContent = String(total);
@@ -4327,7 +4400,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     // Ticking swaps the weapon's figure between the plain RC and the bracketed total (it replaces, never adds).
     el.querySelector('#sr-integral')?.addEventListener('change', event => {
       const wEl = el.querySelector('#sr-weapon-comp');
-      if (wEl) wEl.value = String(IntegralRC.weaponComp(weapon.system, event.target.checked));
+      if (wEl) wEl.value = String(IntegralRC.totalComp(weapon.system, event.target.checked));
       refreshPreviews();
     });
     el.querySelector('#fa-rounds')?.addEventListener('input', refreshPreviews);
@@ -4384,20 +4457,22 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           // A number typed over the weapon's figure is remembered against whichever figure was showing.
           const inUse = hasIntegral && !!el.querySelector('#sr-integral')?.checked;
           if (hasIntegral && inUse !== inUse0) await weapon.update({ 'system.integralInUse': inUse });
-          if (wComp !== IntegralRC.weaponComp(weapon.system, inUse)) {
-            await weapon.update({ [inUse ? 'system.recoilModIntegral' : 'system.recoilMod']: wComp });
+          if (wComp !== IntegralRC.totalComp(weapon.system, inUse)) {
+            await weapon.update({ [inUse ? 'system.recoilModIntegral' : 'system.recoilMod']: IntegralRC.baseFor(weapon.system, wComp) });
           }
 
           // Recoil per mode (see SR3EItem.recoilTN). BF and FA count their OWN rounds —
           // `rounds` is what this shot fires — while SS/SA count only what came before.
           // Passing `rounds` here is what makes Wedge's second burst +2 rather than +0.
-          const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp,
+          const mComp = Math.max(0, parseInt(el.querySelector('#sr-mount-comp')?.value) || 0);
+          const recoilTN = recoilForMode(mode, roundsBefore, aComp + wComp + mComp,
                                          SR3EItem.roundsExpended({ rounds, roundsWasted }));
           const shotgunSpread = Math.max(0, parseInt(el.querySelector('#sr-shot-spread')?.value) || 0);
           const chokeEl = el.querySelector('#sr-shot-choke');
           const choke   = chokeEl ? Shotgun.choke(chokeEl.value) : null;
           if (choke !== null && choke !== weapon.system.choke) await weapon.update({ 'system.choke': choke });
-          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty, shotgunSpread, choke, weaponComp: wComp, integralInUse: inUse };
+          result = { mode, rounds, roundsWasted, recoilTN, additionalTNPenalty, shotgunSpread, choke, weaponComp: wComp, integralInUse: inUse,
+            mountComp: mComp, halve };
         },
       },
       { label: 'Cancel', action: 'cancel' },

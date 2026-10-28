@@ -330,7 +330,7 @@ export async function run(t) {
   t.ok('cyberware, bioware, gear and vehicle mods offer the level dropdown', (sheet.match(/\$\{this\._modRatingField\(s\)\}/g) ?? []).length === 3);
   t.ok('medical, ammunition, vehicle weapons and the armour options offer it through _levelField', (sheet.match(/\$\{this\._levelField\(s/g) ?? []).length === 4);
   t.ok('a vehicle weapon has a sheet at last', /case 'vehicleweapon':/.test(sheet));
-  t.ok('an item with no table keeps the Rating box', /_modRatingField\(s\) \{\s*const opts = ModRatings\.options\(this\.document\);\s*if \(!opts\) return this\._ratingField\(s\);/.test(sheet));
+  t.ok('an item with no table keeps the Rating box', /_modRatingField\(s\) \{[^}]*?const opts = ModRatings\.options\(this\.document, undefined, \{ bookAllowed: SR3EItemSheet\._bookAllowed \}\);\s*if \(!opts\) return this\._ratingField\(s\);/.test(sheet));
   t.ok('the dropdown is wired', /\.mod-rating-select'\)\s*\?\.addEventListener\('change', ev => SR3EItemSheet\._onModRatingChange/.test(sheet));
   t.ok('…and has no name, so the form never saves a level without its numbers', /<select class="mod-rating-select"(?![^>]*name=)/.test(sheet));
   t.ok('graded cyberware AND bioware re-apply their grade to the new level', /_onModRatingChange[\s\S]{0,900}'cyberware' \|\| this\.item\.type === 'bioware'[\s\S]{0,700}_onGradeChange\.call/.test(sheet));

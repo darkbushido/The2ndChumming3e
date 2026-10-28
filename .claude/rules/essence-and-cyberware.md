@@ -59,7 +59,14 @@ Removing cyberware adds its graded cost — ⚠ **never touching `essence.lost`*
 `essenceSlot` ticked fills it down at install (M&M p.150's opt-in Essence Slot surgery option, +2
 Threshold; stated, not enforced). ⚠ A partly filled hole keeps its remainder. The GM edits it for
 bookkeeping only; nothing else regains Essence. Player writes are dropped (`stripPlayerEssenceWrites`).
+⚠ **An implant MOVED into or out of a cyberlimb / eye (TODO 276) is neither**: `SR3EItemMods` passes `sr3eModMove` on that
+delete / create, and both Essence hooks skip it. Options already charged as loose items and then moved into an eye are
+**not refunded** (the maintainer, 2026-10-27) — the GM lowers `lost` by hand.
 ⚠ **Not the Essence *slots* of M&M p.127** (installed cyberware; see *Cybersystem damage*).
+⚠ **Built-in implants have no document** (TODO 276): any reader of "the character's cyberware" goes through
+`CyberCapacity.flatten` (ids are paths, `"<limb>.<mod>[.<mod>]"`; a stored limb's built-ins carry `stored`). Write one back
+with `CyberCapacity.locate` + `patched` into the top item's `system.installed` — never `actor.items.get(path)`. Already
+routed: Essence, bonuses, armour, vision, cyber-weapons, Stress, cybersystem slots, Concealment, VCR (`findVcr`), healing.
 
 **Near the edge** (TODO 103, `SR3EActor.essenceState`): below 1 is legal (SR3 p.55) → **amber**; 0 or less
 is death → **red**. Shown, never enforced. ⚠ Below 1 needs no drugs — that's cybermancy (M&M p.50, p.54).

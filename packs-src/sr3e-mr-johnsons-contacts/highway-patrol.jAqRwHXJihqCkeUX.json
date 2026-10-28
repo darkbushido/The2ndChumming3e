@@ -434,7 +434,36 @@
         "streetIndex": "1",
         "accessories": "Laser Sight",
         "bookPage": "cc.19",
-        "notes": ""
+        "notes": "",
+        "installed": [
+          {
+            "_id": "integral00000001",
+            "type": "gear",
+            "name": "Laser Sight (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": null,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Laser Sight\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Top/Under</p>",
+              "modifiers": [
+                {
+                  "target": "laserSight",
+                  "value": 1,
+                  "perRating": false
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.dc95a8d435cb7c70"
+              }
+            }
+          }
+        ]
       },
       "_id": "1jSVh5QclCmxkQpi",
       "img": "systems/The2ndChumming3e/styles/icons/firearm-pistol-heavy.svg",
@@ -445,7 +474,11 @@
         "default": 0,
         "ge55aFMax5sNd2Ho": 3
       },
-      "flags": {},
+      "flags": {
+        "The2ndChumming3e": {
+          "integralDone": true
+        }
+      },
       "_stats": {
         "coreVersion": "14.364",
         "systemId": "The2ndChumming3e",
@@ -1315,7 +1348,14 @@
         "grade": "Standard",
         "rating": 3,
         "description": "Undetectable, see pages SR3-110 and SR3-280 for effects",
-        "srcgName": "Eyes, Vis Mag Ele[3]"
+        "srcgName": "Eyes, Vis Mag Ele[3]",
+        "modifiers": [
+          {
+            "target": "magnification",
+            "value": 1,
+            "perRating": true
+          }
+        ]
       },
       "effects": [],
       "folder": null,

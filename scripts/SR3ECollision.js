@@ -1,6 +1,7 @@
 import { Collisions } from './data/collisions.mjs';
 import { StallSpeed } from './data/stall-speed.mjs';
 import { actorFrom, actorRef } from './data/actor-ref.mjs';
+import { vehicleStat } from './data/vehicle-mods.mjs';
 
 /**
  * 💥 Collision — a vehicle hits a person, another vehicle or a barrier · TODO 189.
@@ -69,7 +70,7 @@ export class SR3ECollision {
       vehicleActorId: actorRef(v),
       vehicleName:    v.name,
       vehicleBody:    sys.attributes?.body?.base ?? 4,
-      accel:          sys.attributes?.accel?.base ?? 0,
+      accel:          vehicleStat(v, 'accel'),
       stallSpeed:     StallSpeed.of(sys),   // an aircraft's stall speed, m/turn (0 = none) — SR3 p.132
       soakPool:       c.soak ?? (sys.attributes?.body?.base ?? 4),
       driverActorId:  (c.aboard ?? []).find(a => a.role === 'Driver')?.id ?? '',

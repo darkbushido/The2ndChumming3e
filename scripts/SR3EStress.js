@@ -1,6 +1,7 @@
 import { Stress } from './data/stress.mjs';
 import { MoveByWire } from './data/move-by-wire.mjs';
 import { CyberSlots } from './data/cyber-slots.mjs';
+import { CyberCapacity } from './data/cyber-capacity.mjs';
 import { actorFrom, actorRef } from './data/actor-ref.mjs';
 
 /**
@@ -34,10 +35,18 @@ export const SR3EStress = {
     };
   },
 
-  /** Implants that can take Stress: cyberware and bioware the character is actually carrying. */
+  /**
+   * Implants that can take Stress: cyberware and bioware the character is actually carrying — the ones built into a
+   * cyberlimb too (TODO 276, `CyberCapacity.flatten`; their id is "<limb>.<mod>", and `apply` writes into the limb).
+   */
   implants(actor) {
-    return (actor?.items ?? []).filter(i => (i.type === 'cyberware' || i.type === 'bioware')
+    return [...CyberCapacity.flatten(actor?.items ?? [])].filter(i => (i.type === 'cyberware' || i.type === 'bioware')
       && !i.getFlag?.('The2ndChumming3e', 'stored'));
+  },
+
+  /** An implant's name for a list — a built-in names its limb. */
+  label(i) {
+    return i?.builtIn ? `${i.name} (in ${i.hostName})` : (i?.name ?? '');
   },
 
   /** The attributes M&M's Stress rules touch — the physical and mental eight, not the derived ones. */
@@ -67,7 +76,7 @@ export const SR3EStress = {
     const opts = [
       ...implants.map(i => {
         const now = Math.max(0, Number(i.system?.stress) || 0);
-        return `<option value="item:${i.id}">${esc(i.name)} — ${esc(i.type)} ${esc(i.system?.grade ?? '')} · Stress ${Stress.describe(now)}</option>`;
+        return `<option value="item:${i.id}">${esc(SR3EStress.label(i))} — ${esc(i.type)} ${esc(i.system?.grade ?? '')} · Stress ${Stress.describe(now)}</option>`;
       }),
       ...SR3EStress.ATTRIBUTES.map(k => {
         const now = SR3EStress.attributeStress(actor, k);
@@ -146,15 +155,18 @@ export const SR3EStress = {
   /** Add `added` Stress to an implant or attribute, write it, and post the card. */
   async apply(actor, target, added, { integrity = 0, boost = 0, dieNote = '' } = {}) {
     const [kind, id] = String(target).split(':');
-    const item   = kind === 'item' ? actor.items.get(id) : null;
+    // A built-in (TODO 276) has no document: found by its path, written back into its limb's `system.installed`.
+    const where  = kind === 'item' ? CyberCapacity.locate(actor.items, id) : null;
+    const item   = kind === 'item' ? (actor.items.get(id) ?? (where ? SR3EStress.implants(actor).find(i => i.id === id) : null)) : null;
     const isItem = !!item;
     if (kind === 'item' && !item) return;
 
     const before = isItem ? (Math.max(0, Number(item.system?.stress) || 0)) : SR3EStress.attributeStress(actor, id);
     const after  = Math.max(0, before + Math.max(0, Math.trunc(Number(added) || 0)));
-    const label  = isItem ? item.name : `${id[0].toUpperCase()}${id.slice(1)}`;
+    const label  = isItem ? SR3EStress.label(item) : `${id[0].toUpperCase()}${id.slice(1)}`;
 
-    if (isItem) await item.update({ 'system.stress': after });
+    if (isItem && where) await where.top.update({ 'system.installed': CyberCapacity.patched(where.top, where.path, { 'system.stress': after }) });
+    else if (isItem) await item.update({ 'system.stress': after });
     else        await actor.update({ [`system.attributeStress.${id}`]: after });
 
     // ⚠ The TN is the NEW total (p.126's worked example: 3 existing + 1 → TN 4), never what was added.
@@ -216,17 +228,20 @@ export const SR3EStress = {
    * base 3.0 — the slots are a picture of the Essence the character actually spent, and Leggy's
    * printed layout is built from graded figures.
    * ⚠ **Stored items are not installed** and take no slot.
+   * ⚠ **Built-ins (TODO 276)** take the Essence they add, as the character's Essence counts them: a limb's at their own
+   * graded figure, each its own entry; an eye's / ear's only over the .5 it holds free, added to the eye's own entry
+   * (which option in the eye it is, is the GM's — `CyberCapacity.nestedEssence`).
    */
   slotEntries(actor, kind = 'cyberware') {
-    return (actor?.items ?? [])
-      .filter(i => i.type === kind && !i.getFlag?.('The2ndChumming3e', 'stored'))
+    const SA = game.sr3e.SR3EActor;
+    const graded = i => SA.gradedEssenceCost(SA.baseEssenceCost(i), i.system?.grade);
+    const cost = i => (kind === 'bioware' ? Math.max(0, Number(i.system?.bioIndex) || 0) : graded(i));
+    return SR3EStress.implants(actor)
+      .filter(i => i.type === kind && !(i.builtIn && i.hostKind === 'essence'))
       .map(i => ({
         id:      i.id,
-        name:    i.name,
-        essence: kind === 'bioware'
-          ? Math.max(0, Number(i.system?.bioIndex) || 0)
-          : game.sr3e.SR3EActor.gradedEssenceCost(
-              game.sr3e.SR3EActor.baseEssenceCost(i), i.system?.grade),
+        name:    SR3EStress.label(i),
+        essence: cost(i) + (kind === 'cyberware' && !i.builtIn && CyberCapacity.kind(i) === 'essence' ? CyberCapacity.nestedEssence(i, graded) : 0),
       }))
       .filter(e => e.essence > 0);
   },

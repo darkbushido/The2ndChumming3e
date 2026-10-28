@@ -3308,3 +3308,274 @@ copy is fine. Note the world's current `matrixRuleset` and restore it afterwards
 - [ ] **One value everywhere (Orthodox):** an Orthodox cybercombat/IC roll dialog offers up to **4** Hacking Pool dice; spend 2 → the sheet reads 2 / 4.
 - [ ] **Actor-held deck:** under Orthodox, an actor with no deck item and `orthodoxDeck.mccp` 6, INT 5 → pool **3**. Under Defragged the same actor has no pool.
 - [ ] Restore the original ruleset setting and restart.
+
+## 77. Mods installed inside an item (TODO 276, branch `claude/quirky-mayer-32wuvg`)
+
+**Full Foundry restart** — firearm, melee, armour, cyberware, gear, bioware and vehicle-mod models gained `installed` /
+`modifiers`. A character with an Ares Predator (or any firearm) and Cybereyes; a Gas Vent II and a Smartgun, external from
+the gear compendium; a second user (Player2) owning the character.
+
+- [ ] **Install from the compendium:** open the Predator's sheet; **Installed mods** says "Nothing installed". Drag Gas Vent II
+      from the compendium onto that section → it is listed (mount **Barrel**), the inventory does NOT gain a Gas Vent.
+- [ ] **Changes:** ✎ the Gas Vent → its sheet says "🔧 Installed in Ares Predator". **+ Add a change** → Recoil Compensation 2.
+      Close it: the Predator's row shows **RC 2** in Changes, the summary chip "RC 2" (tooltip "RC 2: Gas Vent II +2").
+- [ ] **The fire dialog:** fire the Predator SA → Recoil comp → Weapon reads **2** (tooltip names the Gas Vent). Type 3 over it,
+      fire: reopen the gun's sheet — its own RC is **1**, not 3 (the vent's 2 is never baked in).
+- [ ] **Move, not copy:** drag a Smartgun, external from the compendium into the character's inventory, then drag it from the
+      inventory onto the **Predator's row** on the Combat tab → it is installed and gone from the inventory; the row shows 🔧2.
+      Give it a change "Smartgun system" (ticked) → the fire dialog's Smartgun box is pre-ticked.
+- [ ] **Mount warning, never a refusal:** install a second barrel accessory (a Silencer) → a warning "The barrel mount already
+      holds Gas Vent II…", and it is installed anyway. Its row's mount reads amber **⚠ Barrel** (tooltip: wants the barrel mount,
+      which already holds the Gas Vent) — not "—" / "No weapon mount" (fixed 2026-10-27).
+- [ ] **A Level picked on an installed mod sets its price:** ✎ the Gas Vent, Level 3 → 700¥, Conceal (-2), 0.75 kg on its sheet
+      AND in the gun's Installed mods (it kept level 1's 250¥ before the 2026-10-27 fix — the form's own submit put it back).
+- [ ] **Wrong kind warns:** drop an armour mod (Chemical Seal (Armor)) on the Predator → "is a mod for armour, not a weapon", installed.
+- [ ] **⏏ Take out:** ⏏ the Silencer → it is in the inventory again, gone from the gun. **🗑** the Chemical Seal → confirm → gone entirely.
+- [ ] **It travels:** drag the Predator to another actor → its mods are there. Drag it to the Items sidebar → the world item
+      shows the same mods. An unlinked token of an NPC with a modded gun: install in the token's copy; the sidebar NPC's gun is unchanged.
+- [ ] **Vision climbs:** on the Cybereyes' sheet, drop any gear item into Installed mods, ✎ it, add a change **Thermographic
+      vision**. Fire at a target in darkness: the GM window's vision reminder / pre-selected vision offers **thermo** from
+      "Cybereyes (…)". Move the Cybereyes to Storage → it is gone.
+- [ ] **Player2** (owning the character, not the GM): installs, ✎ edits, ⏏ and 🗑 all work. Player2 opening a GM-only item's mod sees it read-only.
+- [ ] **Dragging a gun over a gun** on the Combat tab still only sorts — nothing is installed.
+
+### 77b. Armour with mods (TODO 276, armour slice — the maintainer's rulings of 2026-10-27; CC pp.51-54)
+
+**Full restart** (ArmorData gained `hardened`, modifiers gained `perRating`). Use an Armor Jacket (5/3, 900¥, 3/36hrs, SI .75,
+Conceal 6, 2 kg) on a character with Quickness 3; from the Cannon Companion gear compendium Fire Resistance, Insulation, Gel Packs.
+
+- [ ] **Rated mod:** drop Fire Resistance on the jacket's sheet (Installed mods), ✎ it, Level 3 → its Changes row reads "Power − vs fire", 1, **per level** ticked
+      (untick and re-tick it: it stays a per-level change); the jacket reads "With mods: 5B / 3I · Conceal 6 · 2 kg · 1,200¥ · Avail 4/48hrs · SI 1 · mod points 3 / 8".
+- [ ] **Insulation [3]:** Conceal 5, weight 3.5 kg, Avail 5/60hrs (each mod once), mod points 6 / 8.
+- [ ] **Caps warn, never refuse:** set Fire Resistance to 6 → amber "one mod may be at most 5"; add more to pass 8 total → "at most 8".
+- [ ] **Gel packs:** install → "hardened", Conceal halved (5 → 2), weight +25%, cost 4,500¥ + the other mods, Avail TN ×2 / time ×4,
+      mod points unchanged. Install a second set → warned. Drop gel on a Form-fitting Shirt / Diving Armor → warned, installed.
+- [ ] **Wearing it:** Combat tab → Currently Worn says "(hardened — CC p.51)" and "Protects: Fire res. −3 · Insulation −3";
+      Combat Pool loss reads the gel figures (7/4 vs Quickness 3 → −2) — the jacket alone was −1. Wear a Lined Coat too → amber
+      "nothing layers with it". A helmet with it → no warning.
+- [ ] **Soak — deflected:** shoot the wearer with a 6M pistol SA → the soak card says "🛡 Deflected (hardened): Power 6 … does not
+      exceed the hardened armour's … — no damage" only when the Power ≤ 5; a burst (6M + 3) still compares 6, not 9. APDS: compared
+      to half (2). Nothing is applied — the GM still decides. The protections note lists Fire / Insulation for the GM.
+- [ ] **Knockdown** with gel armour: the dialog says "Includes gel-packed armour +2 (CC p.54)".
+- [ ] **Military armour:** the CC compendium's Heavy Military Armor has Hardened ticked; worn alone, a 9M ranged shot reads deflected.
+- [ ] **Host warnings:** Fire Resistance on a Secure Jacket → "SecureTech armour clothing takes no modifications", installed anyway;
+      on a Security Helmet → helmets warning. A Signal Locator (Armor) on the jacket → "SR3 p.284 prints it as an option for security
+      armour and helmets"; on the helmet → nothing.
+- [ ] **Migration:** in a 0.8.0 world, an owned Fire Resistance (Armor) / Gas Vent II with no Changes gains them on load; one a GM
+      edited keeps the GM's; an owned Heavy Military Armor becomes Hardened.
+- [ ] **Concealment view / encumbrance** read the gel jacket at Conceal 2 and its +25% weight.
+
+
+### 77c. One Gas Vent, the rifle stock, the 🔧 tooltip (TODO 276 — the maintainer's rulings of 2026-10-27)
+
+**Full restart** (packs changed). Cannon Companion ON to start.
+
+- [ ] **One item:** the SR3 gear compendium has ONE "Gas Vent (Weapon)" (no I/II/III); the Cannon Companion gear compendium has no
+      Gas Vent IV. Its sheet's Level dropdown offers **1-4**; picking 3 sets 700¥, Conceal (-2), 0.75 kg; picking 4 sets 1,000¥ and
+      Book cc.35. Its Changes row: Recoil Compensation 1, **per level** — installed in a gun, the gun's RC rises by the level.
+- [ ] **Cannon Companion OFF** (Configure Source Books): the Level dropdown and 🛒 Buy gear offer **1-3** only; a vent already at
+      level 4 still shows 4 selected.
+- [ ] **Migration:** in a 0.8.0 world, an owned "Gas Vent II (Weapon)" becomes "Gas Vent (Weapon) [2]", level 2, linked to the
+      new document (its sheet's compendium link opens it); an owned "Gas Vent IV (Weapon)" becomes "Gas Vent (Weapon) [4]".
+- [ ] **No stock on a rifle:** drop "Stock (Rigid (Weapon)" on an assault rifle's Installed mods (or its row) → a red
+      "cannot go on …: a rifle has its own stock (SR3 p.277)", nothing installed, the stock stays in the inventory. On an SMG it installs.
+      On a shotgun it still installs (not ruled).
+- [ ] **The 🔧 tooltip:** hover the 🔧1 after a modded gun's name on the Combat tab → a Foundry tooltip: "Installed mods",
+      "Barrel · Gas Vent (Weapon) [2] — RC +2", then "RC 2: …", "Open … to change them." No bare "?" cursor. The Installed mods
+      section's mount and summary chips show tooltips the same way.
+
+### 77d. Taking a gas vent off — the gunsmith (TODO 277, the maintainer's ruling of 2026-10-27)
+
+**F5 is enough** (no data-model change). An Ares Predator with "Gas Vent (Weapon)" installed (level 2); a character with Pistols B/R.
+
+- [ ] **⏏ on the vent** opens "Take Gas Vent (Weapon) off Ares Predator": gunsmith list (the scene's characters first, NPCs marked),
+      Pistols B/R dice pre-filled from the chosen gunsmith, TN 5, base 24 h, labour 0 for a player character; picking an NPC sets
+      100¥/h; contact Level 2 → 50, 3 → 25.
+- [ ] The dialog's text says a failure destroys **the barrel, and the vent with it** (it said "the vent stays" until 2026-10-27).
+- [ ] **Success** (≥1): the card says the vent is off and **destroyed** — it is gone from Installed mods and NOT in the inventory;
+      time = 24 ÷ successes; labour shown, nothing deducted.
+- [ ] **Failure** (0 successes — set the TN high): the card says the **barrel is destroyed, and the vent with it** — the vent is
+      gone from Installed mods (and not in the inventory); the Combat tab row shows "⚠ needs repair" (tooltip says why); firing it
+      warns but still fires; the gun's sheet shows the banner with **✔ Repaired** → a dialog with the repair cost pre-filled at
+      **50% of the gun's own cost** (a 450¥ Predator → 225¥; editable — the interim ruling, TODO 278/279) → a card "repaired for N¥ … Not deducted", and the mark is gone.
+- [ ] **An explosion** (TN 7+, a 6): the result card waits for the last 💥, then resolves as above.
+- [ ] **Player2 as the gunsmith on their own gun** works start to finish; an NPC gunsmith's 💥 is the GM's to click.
+- [ ] **🗑 on the vent** asks for confirmation and says it only corrects the record.
+
+### 77e. Image magnification (TODO 276, SR3 p.110 — the highest device counts, TODO 235)
+
+**Full restart** (packs). A rifle with an Imaging Scope installed (Level 2), a target measured at Long range.
+
+- [ ] **Scope:** attack → the roll dialog's Range is **Short** (TN 4), with "🔭 … magnification 2: Long → Short (SR3 p.110; the best
+      device only)"; pick Long by hand → TN 6 (still editable).
+- [ ] **Never below Short:** a Level 3 scope at Medium → Short.
+- [ ] **Helmet:** no scope; wear a Security Helmet with Electronic Magnification (Armor) installed → shifted 3. Take it off → no shift.
+- [ ] **Cybereyes:** Eyes, Vision Magnification, Electronic at Level 2 → shifted 2.
+- [ ] **No stacking:** scope 2 + helmet 3 → shifted **3**, not 5; the note names the helmet.
+- [ ] **The helmet is worn by its Wear toggle** (the `worn` flag) — before the 2026-10-27 fix a worn helmet's magnification and
+      vision never reached the character (`passesToActor` read a `system.worn` nothing writes).
+- [ ] **Beyond Extreme:** no shift, the usual warning.
+
+### 77f. Bipod and tripod — the GM's call per shot (TODO 276, SR3 p.280; the maintainer, 2026-10-27)
+
+**Full restart** (packs, and the modifier gained `whenDeployed`). An Ultimax (or any MG) with a Bipod and a Tripod installed; the
+GM approves target numbers (`gmApprovesTN` on).
+
+- [ ] The gun's Installed mods: Bipod "RC +2 (set up)" and "GM: when set up" (no tick); the summary RC leaves them out.
+- [ ] **Fire dialog:** no pod tick — a line says the GM decides; the Weapon comp leaves the pods out.
+- [ ] **GM's window:** "Bipod (Weapon) set up — shooter stationary (RC 2…)" and "Tripod … (RC 6…, prone or seated)", unticked.
+      Fire 10 rounds FA: the base note shows the recoil; tick the tripod → "−12 recoil" and the TN drops by 12 (heavy: 20 → 8).
+      Tick nothing → no change. An SS shot (no recoil) → ticking saves nothing.
+- [ ] Next shot: both unticked again (nothing remembered).
+- [ ] **Changes editor:** a Bipod's row has "when deployed" ticked; editing its value keeps the tick.
+
+### 77g. Cyberlimbs and cybereyes — what they hold (TODO 276, M&M pp.36-37, SR3 p.299, p.303)
+
+**Full restart** (cyberware gained `ecu`). A character with an Obvious Cyberarm, Eyes, Cyber Replacement and a few Cyberlimb Mods
+and eye options (loose).
+
+- [ ] **The arm's sheet:** "Holds (ECU)" blank with placeholder 10; Installed mods empty, "Holds 0 / 10 ECU". A Synthetic arm → 5;
+      a Pair of arms → 20.
+- [ ] **Install** a Smartlink (Internal) (Cyberlimb) from the inventory into the arm → "Holds .5 / 10 ECU"; its sheet's "Takes (ECU)"
+      placeholder .5. Essence on the Attributes tab rises by its .25 (it did before, as a loose item — unchanged), nothing double.
+      **No "adds … to the Essence hole" notice**, and ⏏ it back out → Essence and the hole unchanged (fixed 2026-10-27: the move
+      was recorded as a removal). As **Player2** with the GM on line, the same — the GM's hook reads the move's `sr3eModMove` option.
+- [ ] **Over capacity:** fill a Cyber Hand (2 ECU) with a Foot Anchor (4) → warned, installed; the line shows over.
+- [ ] **Unknown size:** install something not on the table → "ECU not known", set "Takes (ECU)" on it → counted.
+- [ ] **Grade:** make the arm Alpha → "Holds … / 8 ECU (Alpha …)"; install a Standard smartlink → "match their host" warning.
+- [ ] **Strength Enhancement** installed in the arm still raises Strength (Attributes tab source tooltip names it).
+- [ ] **Eyes:** install Low-Light and Thermographic (.2 each) into the replacement → "Holds .4 / .5 Essence free"; the character's
+      Essence counts only the eyes' .2 (it counted .6 with them loose). Add a third .2 option → ".1 Essence over, charged".
+      A Delta eye: holds .25, delta options at half — the same number fit.
+- [ ] **Vision:** a "Low-Light" module inside the eyes still shows as cyber low-light in the GM window's vision reminder.
+- [ ] **Built-in price:** install a pocket secretary (gear) into the arm → "Built in: … ×4" with Man & Machine off, the normal price
+      with it on; add a Direct Neural Interface to the arm → "+50% DNI" on top.
+
+### 77h. Built-ins everywhere — weapons, Stress, slots, Concealment, VCR, healing (TODO 276, step a)
+
+A character with an Obvious Cyberarm (and a Cyberskull for the VCR line). Each bullet: what a loose implant did before still
+works, and the same implant **built in** now does it too.
+
+- [ ] **Spur built in:** install a Spur (Cyberlimb Mods) into the arm → the Weapons tab gains "Spur" (melee, CYB) with no ⚔ offer
+      row. ⏏ it out → the entry from inside the arm goes, the loose spur's own entry comes back. Delete the arm with the spur in it
+      → its spur entry goes. Store the arm → the entry stays (storage is not removal).
+- [ ] **Cybergun built in:** a CyGun Heavy (HPist) in the arm → a firearm entry, 10(m), fires through the ranged flow.
+- [ ] **An entry made before step a** (or one deleted by hand): the ⚔ offer row reads "built into Obvious Cyberarm"; clicking it arms it.
+- [ ] **Stress** (M&M p.126): the target list shows "Smartlink (Internal) (in Obvious Cyberarm)"; apply 2 → its card; the arm's
+      Installed list (open the smartlink's sheet) shows Stress 2. The arm itself is unchanged apart from that.
+- [ ] **Cybersystem slots:** the arm and its smartlink are separate entries; an eye's options do not appear on their own — the eye's
+      entry grows only by Essence over its .5.
+- [ ] **Concealment** (GM tool): a Datajack built into a cyberhand appears as "Datajack (in …)", note "Built into …"; storing the
+      hand removes it.
+- [ ] **VCR:** a Vehicle Control Rig [2] installed into a Cyberskull (no loose VCR) → the vehicle sheet's Driving Test shows VCR 2
+      and its Control Pool; the chase's driver row, too.
+- [ ] **Healing:** Dermal Plating 2 built into the arm (unusual, but a GM's call) counts in the permanent-damage test's dermal armour.
+- [ ] **Removing the limb:** delete the arm with built-ins → its weapon entries go; the Essence hole grows by the arm's own cost only
+      (open question in TODO 276 — note what the maintainer rules).
+
+### 77i. Printed accessories as integral mods (TODO 276, step b — the maintainer's rulings of 2026-10-27)
+
+**Foundry CLOSED first: `npm run packs:install`**, then start it. The 0.9.0 migration runs on load (a branch world re-runs it).
+
+- [ ] **Compendium:** open the Ares Crusader (CC Firearms) → Installed mods: "Laser Sight (Weapon)" on Top, "Gas Vent (Weapon)"
+      on Barrel, each tagged **integral**, their change in brackets "(Laser sight)", "(RC +2)". The Accessories text unchanged.
+- [ ] **Not counted:** fire the Crusader from a character → the fire dialog's RC is the printed figure, not +2 on top. The 🔧
+      chip's totals show no RC from the vent.
+- [ ] **An owned copy** made before this build (a character's gun from an older import): after the load it holds the same
+      integral mods. Reload again → nothing doubles.
+- [ ] **Mounts:** the Ranger Arms SM-3 (gas vent + silencer, both Barrel) shows both on Barrel, no ⚠. Drop a Sound Suppresser on
+      it → warned, "the barrel mount already holds Gas Vent". A Laser Sight onto a gun with an integral top scope → goes Under.
+- [ ] **Pods:** the RPK HMG's integral tripod is NOT offered in the GM's TN window (its RC is the bracketed RC — the fire
+      dialog's integral tick). A tripod the GM installs IS.
+- [ ] **⏏ an integral laser sight** → an ordinary Laser Sight in the inventory (no "integral" tag), and a warning "…its
+      laser-sight flag still includes it". 🗑 the gas vent → "…its RC still includes it". Reload → they do not come back.
+- [ ] **Left as text:** the Colt M22A2's "Grenade Launcher 6(m)", the Ballista's "Laser Designator" — no mod for either.
+      (The Panther is two documents now, §77j — each holds its own bipod or hip brace.)
+
+### 77j. Each gun's printed RC (TODO 280 — CC pp.116-118, p.78; SR3 pp.278-279)
+
+**Foundry CLOSED first: `npm run packs:install`**, then start it. The 0.9.0 migration fills owned copies on load.
+
+- [ ] **Compendium:** CC Firearms → the Ares Crusader's RC reads **2**; the Colt Cobra TZ-110 **2**, its bracketed RC **3**; the
+      Sandler TMP RC 0, bracketed **1**; the Ares Thunderer **3**.
+- [ ] **Fire it:** the Crusader from a character, burst fire → the fire dialog counts RC 2 (its integral gas vent is shown in 🔧,
+      not added again — §77i). The TZ-110 with "Integral accessories in use" ticked → RC 3; unticked → 2.
+- [ ] **The Panther:** CC Firearms lists **Panther Assault Cannon [Bipod]** (bracketed RC 2, a Bipod mod) and **[Shoulder Strap
+      Hip-Brace]** (bracketed RC 1, a Hip Pad Bracing System mod); no plain "Panther Assault Cannon". Both read Legality 2-H.
+- [ ] **An owned copy** of the Crusader with RC 0 (from an older import) → RC 2 after the load. One with RC typed as 1 → still 1.
+      Reload → nothing changes.
+- [ ] **Contacts:** a Little Black Book contact's FN HAR / Ranger Arms SM-3 → RC 2; the Ultimax MMG → bracketed 6.
+- [ ] **An old Panther** (a world item or a character's, named "Panther Assault Cannon", from before the split) → after the
+      load it reads **Panther Assault Cannon [Bipod]**, bracketed RC 2, accessories "Folding Bipod(2RC)", a Bipod integral mod
+      in 🔧 (no Hip Pad Bracing System), Legality 2-H. A mod the GM had installed on it is still there. Reload → nothing changes.
+
+## 78. A vehicle's mods against its Cargo and Load (TODO 265, step c's first slice — R3R p.124)
+
+JS / CSS only (no restart needed beyond a reload). A vehicle from the packs, e.g. an Ares Roadmaster (Body 5, Cargo 80, Load 2000).
+
+- [ ] **Mods tab:** the header reads "CF 0 / 80" and "Load 0 / 2000 kg". Drag in ECM (Vehicle) and Crash Cages (Vehicle) →
+      "CF 3 / 80", "Load 30 / 2000 kg"; each row shows its "CF / Load", and the printed text in the tooltip.
+- [ ] **Per point:** Vehicle Armor at rating 3 → Load 375 kg (Body² × 5 a point, R3R p.131); Concealed Armor 2 → 6 CF, 250 kg.
+- [ ] **Over:** set the vehicle's Cargo to 2 → the CF chip turns amber and the warning reads "… 1 over (R3R p.124 …)" with the
+      passenger room it could scrape (Roadmaster seating 3 → 2 passenger seats → up to 3 CF, +1 Power to crash damage). Set
+      Load to 20 → the Load chip and warning. Nothing is blocked. Put the figures back.
+- [ ] **Unread:** an Internal Missile Mount → "1 not counted" (its tooltip names it); its Load cell shows an amber "?".
+- [ ] **Mount reminder:** an External Hardpoint → its 10 kg counted, and "A weapon mount's Load leaves out the weapon on it".
+- [ ] **A drone** (seating 0): over Cargo shows no passenger-room offer.
+
+### 78a. Weapon mounts (TODO 234 — R3R pp.135-141; the maintainer's rulings of 2026-10-27)
+
+**Full Foundry restart first** (`mountId` is a new field on firearms and vehicle weapons). A Body 4 vehicle from the packs.
+
+- [ ] **Mods tab:** add External Hardpoint, Internal Firmpoint and Small Turret → "Mounts 7 / 4 (Body)", amber, and "⚠ The mounts
+      take 7 points … 3 over (R3R p.135)". "Signature −2: external mounts −1 (R3R p.136); 1 turret −1 (R3R p.140); −1 more while an
+      internal mount's weapon is out" — and the Stats tab's Sig shows "→ N" two lower (applied since §78b: SR3 p.307; the maintainer reversed
+      "shown, never changed" on 2026-10-27).
+- [ ] **Weapons tab:** each weapon row has a Mount dropdown listing the three. Put an Ultimax MMG and a vehicle Autocannon on the
+      Small Turret → the Mods tab lists both under it, "Weapon Value 5 / 3", and warns. A note: "Ultimax MMG on Small Turret: … needs
+      a firearm conversion kit (R3R p.136)".
+- [ ] **Firmpoint:** move the Ultimax to the Internal Firmpoint → "⚠ Ultimax MMG is on Internal Firmpoint …, a firmpoint — heavy
+      weapons … need a hardpoint". Nothing is refused.
+- [ ] **Fire it from the turret** (the vehicle's Weapons tab, 🎲 on the Ultimax, FA 10 rounds): the fire dialog shows "🔩 Small
+      Turret: recoil halved before compensation, no heavy-weapon doubling (R3R p.140)", no "Heavy weapon: 2×" line; with comp 0 the
+      FA 10 preview is +5 (⌊10 ÷ 2⌋), not +20.
+- [ ] **Pintle / ring:** a Pintle Mount → the dialog has a "Mount" box at 2; a Ring Mount → 6; the total includes it. Change it and
+      fire → the gun's own RC and the vehicle's comp are not rewritten with it.
+- [ ] **Delete the turret** with weapons on it → their Mount dropdown reads "⚠ a mount no longer here" and the Mods tab warns.
+- [ ] **A personal gun** on a character fires exactly as before (no mount line, no Mount box).
+
+### 78b. What a vehicle's mods change (TODO 265 — R3R pp.127-147; the maintainer's rulings of 2026-10-27)
+
+JS only — F5. A vehicle with Body 4, Armor 2, Handling 4, Sensor 2, Pilot 1, ECM 0. *(Walked by the agent 2026-10-27: the figures
+below, the typed edit and the Mods tab text all as stated.)*
+
+- [ ] **Vehicle Armor [6]** (Mods tab, rating 6) → Stats tab: Armor's input still reads 2, "→ 8" beside it (tooltip "Vehicle Armor … +6
+      (R3R p.131)"); Handling "→ 5" (6 points added: +1); off-road Handling +1 too. The Mods tab's "What the mods change" lists both.
+- [ ] **Ablative Armor [1]** on top → no change (Armor 8 is already past Body 4) and a note says "raised only to the vehicle's Body 4".
+      Remove the Vehicle Armor → Ablative gives 2 → 4 (Body), not past.
+- [ ] **Sensors [5]** → Sensor "→ 5"; **Sensors [1]** instead → no arrow, a note "no higher than the vehicle's Sensor 2" (the higher of
+      the two). **Advanced Drone Pilot [3]** → Pilot 3; **ECM [2]** → the EW footprint line reads ECM 2.
+- [ ] **Rolls use it:** soak a hit on the vehicle → its armour is 8 (base 2 + 6); a vehicle sensor test rolls 5 dice; a drone's
+      initiative uses Pilot 3; a chase test's Handling TN is 5.
+- [ ] **Typing a stat** (Armor 2 → 3) saves 3 and the arrow reads 9 — the typed figure stays the vehicle's own; nothing derived is saved.
+- [ ] **Concealed Armor** together with Vehicle Armor → "⚠ Concealed Armor is not compatible with standard vehicle armor (R3R p.132)",
+      both still counted. A Body 0 drone with armour → warned.
+
+### 78c. Control, engine and signature mods (TODO 265 — R3R pp.126, 129-130, 134-135; SR3 p.307)
+
+**Full Foundry restart** (`dbwSplit` is a new field) and `npm run packs:install` with Foundry CLOSED first (nine new R3R vehicle
+mods). A car with cost 40,000¥, Body 4, Handling 4 / 5 off-road, Speed 100, Accel 10, Sig 4.
+*(Walked by the agent 2026-10-27 after the restart: every figure, price, warning and note below as stated; Legality "Legal".)*
+
+- [ ] **Drop Drive-by-Wire System** on it → its Cost fills 10,000¥ (0.25 × 40,000 at level 1); its sheet says "On <car> at this
+      level: 10,000¥" and has three +% boxes. Set level 2 → the price line reads 20,000¥ (Cost stays what was filled — edit it).
+      Handling "→ 2" / off-road "→ 3"; the Mods tab asks for the split. Type Accel 6 / Speed 4 → Speed "→ 104", Accel "→ 11" (0.6
+      rounds to 1). With Turbocharging [2] too, Speed 10% → 143 (10% of 130: the split comes after every other change).
+      The nine new mods read Legality "Legal".
+- [ ] **Add Improved Suspension** → "⚠ … may not be used with drive-by-wire". Remove both; Off-Road Suspension 2 → off-road "→ 3",
+      on-road "→ 6", Speed "→ 85".
+- [ ] **Turbocharging [2]** → Speed +30, Accel +2, Sig −2. **Radar-Absorbent Materials [3]** (Cost 675,000¥) and **Thermal Baffles
+      [2]** (Cost 40,000¥; the budget counts 6 CF and 400 kg) → Sig +5. **Active Thermal Masking [1]** → no Sig change, a note
+      ("while it runs (55 minutes)"); with no turbocharging, warned.
+- [ ] **Weapon mounts** — an External Hardpoint and a Small Turret → Sig two lower ("weapon mounts", SR3 p.307 in the tooltip).
+- [ ] **Rolls use it:** a chase test's Speed / Handling, a sensor test against this car (its Sig), a collision's Acceleration.

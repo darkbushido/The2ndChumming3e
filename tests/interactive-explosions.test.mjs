@@ -26,6 +26,7 @@ const { SR3EPurchase } = await import('../scripts/SR3EPurchase.js');
 const { SR3ECollision } = await import('../scripts/SR3ECollision.js');   // the Braking Test's follow-up (TODO 189)
 const { SR3EConcealment } = await import('../scripts/SR3EConcealment.js');   // the Perception Test's follow-up (TODO 195)
 const { SR3ELegwork } = await import('../scripts/SR3ELegwork.js');           // legwork's follow-up (TODO 268)
+const { SR3EItemMods } = await import('../scripts/SR3EItemMods.js');         // a gunsmith takes a gas vent off (TODO 277)
 const { SR3EItem } = await import('../scripts/documents/SR3EItem.js');   // Quick Draw's follow-up (TODO 47)
 const { openTestFirstWave, openTestExplode, openTestPending, openTestHighest } = await import('../scripts/data/open-test.mjs');
 
@@ -73,7 +74,7 @@ export async function run(t) {
   globalThis.CONST = { CHAT_MESSAGE_STYLES: { ROLL: 0, OTHER: 1 } };
   globalThis.game.messages = { get: id => messages.get(id) };
   globalThis.game.user = { id: 'gm', isGM: true };
-  globalThis.game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3EQuery, SR3EQueue, SR3EMIJI, SR3EWard, SR3EPurchase, SR3ECollision, SR3EConcealment, SR3ELegwork };
+  globalThis.game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3EQuery, SR3EQueue, SR3EMIJI, SR3EWard, SR3EPurchase, SR3ECollision, SR3EConcealment, SR3ELegwork, SR3EItemMods };
   globalThis.CONFIG.queries = {};
   SR3EQuery.register();
 

@@ -22,9 +22,42 @@
       "notes": "",
       "hands": 2,
       "smartgun": false,
-      "laserSight": false
+      "laserSight": false,
+      "installed": [
+        {
+          "_id": "integral00000001",
+          "type": "gear",
+          "name": "Collapsible Stock",
+          "system": {
+            "category": "Firearms Accessories",
+            "modFor": "weapon",
+            "quantity": 1,
+            "rating": 1,
+            "cost": 0,
+            "bookPage": "cc.35",
+            "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Collapsible stock\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p>",
+            "modifiers": [
+              {
+                "target": "rc",
+                "value": 1,
+                "perRating": true
+              }
+            ]
+          },
+          "flags": {
+            "The2ndChumming3e": {
+              "integral": true
+            }
+          }
+        }
+      ]
     },
-    "effects": []
+    "effects": [],
+    "flags": {
+      "The2ndChumming3e": {
+        "integralDone": true
+      }
+    }
   },
   "embedded": {}
 }
