@@ -58,6 +58,8 @@ export async function run(t) {
   const thunderer = ty => SR3EItem.weaponAcceptsAmmoType({ category: 'ShtG', damage: '10S' }, ty);
   t.ok('a category-Shotgun gun with the box unticked takes normal and shot rounds', thunderer('regular') && thunderer('shot'));
   t.ok('…and nothing else — shotgun rules are implied by the category (p.277)', ['gel', 'apds', 'explosive'].every(x => !thunderer(x)));
+  t.ok('a shotgun’s sheet shows no Shotgun rules box (it always follows them); any other firearm keeps it',
+    /s\.category === 'ShtG' \? ''[^\n]*\n\s*: this\._check\('Shotgun rules/.test(readFileSync(new URL('../scripts/sheets/SR3EItemSheet.js', import.meta.url), 'utf8')));
   t.ok('a plain heavy pistol is unaffected', SR3EItem.weaponAcceptsAmmoType({ category: 'HPist', damage: '9M' }, 'gel'));
 
   /* ── the ammunition class: heavy pistol rounds AND shotgun ammunition ─────── */
