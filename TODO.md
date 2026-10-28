@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**86 open.** 197 done — see [TODO-DONE.md](TODO-DONE.md).
+**83 open.** 200 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[283](#283) Vehicle weapons fire with no recoil<br>[284](#284) Buy or build a modded item — its whole price before it reaches the sheet |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[283](#283) Vehicle weapons fire with no recoil<br>[284](#284) Buy or build a modded item — its whole price before it reaches the sheet |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -650,33 +650,6 @@ actions (p.248, `#74`).
 rocket/missile path (rules check `rules/weapons.md#101-109`). Wanted: the items, and the attack using the blast
 rules the grenade flow already has, with missile Intelligence added.
 
-## 235. Weapon accessories as mounted items with effects — **requested 2026-10-18, from the 0.7.0 rules check**
-
-Today a firearm's accessories are a text field plus a few flags (`smartgun`, `laserSight`, [#18](#18)), and
-the bracketed integral-accessory RC is a fire-dialog tick the shooter remembers per gun (`recoilModIntegral`,
-`integralInUse`, `scripts/data/integral-rc.mjs`, commit `11c4a658`). **The maintainer, 2026-10-18:** the tick
-"works for now"; do this better. Wanted, from the book (rules check `rules/weapons.md`):
-- **Mounts** (SR3 p.280, p.276-277): top, barrel and underbarrel, one accessory each (`#210`); an accessory as
-  an item installed on a mount, from the gear packs.
-- **Their effects read from the installed item**, not the text: gas vents and stocks/tripods as RC (and
-  whether a folding stock or tripod is deployed, replacing the tick), scopes (magnifying scopes shift the range
-  column one per rating point, p.110 `#64`; imaging scopes can't be used with a smartlink, p.280 `#233`),
-  laser sights, smartguns.
-  - **Magnification is any image-magnification device, not only scopes** (the maintainer, 2026-10-24). SR3 p.110: these
-    systems *"change a weapon's range category by a number equal to the device's rating"* (a Rating 2 scope at long range
-    shifts two places left; never below short range); p.113 *"Image magnification equipment reduces the weapon's range to its
-    target and the associated base target number."* So the attack flow reads the rating from the shooter's mounted Imaging
-    Scope, a worn helmet's Electronic/Optical Magnification (Armor) (rating 3, [#266](#266)) and cybereye vision
-    magnification ("Eyes, Vision Magnification, Electronic/Optical", rated). **They do not stack** (the maintainer,
-    2026-10-24: "short answer no") — the core book is silent (pp.110, 113, 280, and the cyberware entry "Vision
-    Magnification": it works "in the same manner as an imaging scope"), so the shift is ONE device's rating: the highest the
-    shooter has in use. Today the GM TN window's "Image magnification — Special" line (`scripts/SR3ECombatModifiers.js`)
-    applies nothing.
-- **Compatibility** (SR3 p.276-277, `#194`): revolvers take no silencer or sound suppressor, hold-outs …
-- **Costs** (SR3 p.282): an internal smartgun doubles the gun's price (`#229`); combo imaging scopes add their
-  components' costs (p.280).
-A feature, on a branch, with a migration that turns the current text into installed items where it can.
-
 ## 236. Magic Loss checks for the other triggers — **found in the 0.7.0 rules check, 2026-10-19**
 
 The Magic Loss check itself is right (2D6 at or under Magic, a 2 always loses — SR3 p.160, `MagicLoss.lost`), but
@@ -716,57 +689,9 @@ migration that renames owned copies still carrying the short names.
 **Also found 2026-10-24 (TODO 257):** the **N-C Bergen (tractor)** and **(trailer)** (r3.192) are a road train typed
 **fixedwing**, and the **Vulkan Electronaut** is a minisub typed **ship**. Check both against the R3 rows.
 
-## 263. Mods that attach to armour and change its numbers — **requested 2026-09-28**
-
-**Request (maintainer):** *"we need some way of attaching mods to an armor that changes the armors
-attributes."* The same request covers weapons ([#264](#264)) and vehicles/drones ([#265](#265)). This item
-builds the shared mechanism, and armour is built first. It is a feature, so it goes on a branch.
-
-**Decided 2026-09-28:**
-- **A mod is its own item.** It gets a new `mod` item type, owned by the actor and pointing at its parent
-  item by id. It is dragged from the compendium onto the parent's row and listed under the parent on the sheet.
-- The parent's effective Ballistic, Impact, Concealability and so on are its base plus its mods. The base
-  stays editable by hand.
-- Moving the parent to another actor must carry its mods with it.
-- Build order: armour, then weapons, then vehicles.
-
-**What the books say:**
-- **Cannon Companion pp.52–53, Armor Modifications.** Chemical Seal, Fire Resistance, Insulation,
-  Nonconductive and Thermal Dampening are bought in rating points. Gel Packs are not rated.
-  - One mod's rating is capped at the item's higher armour rating (Ballistic or Impact). The total is capped
-    at Ballistic + Impact: *"an armor jacket (5/3) cannot have more than 8 (5 + 3) points"*.
-  - Unarmoured clothing takes mods at a maximum of 2 each and 2 in total.
-  - SecureTech armour clothing (SR3 p.284) takes no mods.
-  - Gel packs make the armour hardened (CC p.51) and halve its Concealability. They add +2 to the Knockdown
-    Body Test (SR3 p.124). They raise the ratings by 50% for the Combat Pool penalty (SR3 p.285).
-  - Gel packs are not allowed on form-fitting, diving or hardened armour, only one set goes on an item, and
-    gel-packed armour cannot be layered.
-  - The Concealability and Weight columns of CC p.53's table extract badly, so read them from a page image.
-- **SR3 p.284, security armour and helmet options:** vision enhancements, a transceiver, *"Tracking Signal
-  (100¥ x Rating), Signal Locator (1000¥ x Rating)"*, a HUD, Chemical Seal and a Respirator.
-
-**Wrong in the packs today:**
-- ⚠ **Brought over from `feature/item-mods` on 2026-10-24** (numbered 203-205 there; main's 203-205 are other
-  items). Since then [#261](TODO-DONE.md#261) made every rated item ONE document with its level in `system.rating` and
-  a Level dropdown — build the mod's rating on that. It did **not** catch these armour options: their level is a
-  bare trailing number ("+Signal Locator 7"), not "[7]" or "Rating 7", so they are still one document per level.
-- `sr3e-sr3-armor` and `sr3e-cc-armor` ship each helmet option as a separate `armor` item with 0/0 armour:
-  10 × `+Signal Locator 1…10`, 10 × `+Transceiver Rtg.`, 20 × `+Tracking Signal`, plus `+Chemseal`,
-  `+Smart Goggles` and others.
-- `sr3e-sr3-gear` carries 21 more signal-locator documents.
-- Each should be one `mod` with a rating. See [#188](#188) (one item per rating) and [#130](#130) (ratings in names).
-- Owned copies need a migration as well as the pack fix.
-
-## 264. Mods that attach to weapons — **requested 2026-09-28**
-
-This uses the [#263](#263) mechanism for weapon accessories and customisation. Sources are SR3 pp.280–282
-(accessories) and Cannon Companion p.78 onward (Firearm Customization). It takes in [#18](#18)'s
-`smartgun`/`laserSight` flags and the Gyro Mount, and replaces the free-text `accessories` field.
-It starts after #203.
-
 ## 265. Mods that attach to vehicles and drones — **requested 2026-09-28**
 
-This uses the [#263](#263) mechanism for vehicle and drone customisation from Rigger 3 Revised. The book's
+This uses the [#263](TODO-DONE.md#263) mechanism for vehicle and drone customisation from Rigger 3 Revised. The book's
 design and customisation rules are to be read and cited before any code. It is the largest of the
 three and is built last.
 
@@ -833,7 +758,7 @@ FRA's VAUBAN "Upgrade". TESTING.md §78.
 ## 266. Every mod says what it is a mod FOR; the armour options become one document each — **requested 2026-10-24**
 
 Built on `feature/mod-for` (not merged). The maintainer: the same level fix for the armour options #261 missed (their level is a
-BARE trailing number), and every mod names what it attaches to — the truth [#263](#263)'s attach logic will warn on.
+BARE trailing number), and every mod names what it attaches to — the truth [#263](TODO-DONE.md#263)'s attach logic will warn on.
 
 **Settled by the maintainer 2026-10-24 (fix commits on main):** ONE "Helmet/Wrist Transceiver (Armor)" (the Cannon Companion's, cc.51, still levelled); the SR3 Transceiver, "Low-light Vision" (CC only) and the two "Mag 38" typos deleted from sr3e-sr3-armor; magnification is a RATING ("Electronic/Optical Magnification (Armor)", rating 3) and the Cannon Companion's duplicates deleted; the truncated "Extended Clip (" is "Extended Clip (Weapon)". Owned copies by the 0.8.0 migration (`scripts/data/name-fixes.mjs`); generator drops: `DROPPED_ARMOR_ROWS`. ONE Thermographic: "Thermo Vision (Armor)" (sr3e-armor-0176, 700¥) — the generated "Therm Vision" is deleted ("there can be only one and it will be Thermo Vision").
 
@@ -874,7 +799,7 @@ weapons to cyberware, vehicles and drones." Then: "if we were adding a bag I wou
 bag, I'd want to open the bag to see what's in there", and "a cybereye with thermal vision [should] add the thermal vision
 attribute to the cybereye, which would then add it to the actor". Branch `claude/quirky-mayer-32wuvg`, off `feature/mods`.
 
-**⚠ Supersedes [#263](#263)'s "a mod is its own item, owned by the actor and pointing at its parent".** A mod lives INSIDE its
+**⚠ Supersedes [#263](TODO-DONE.md#263)'s "a mod is its own item, owned by the actor and pointing at its parent".** A mod lives INSIDE its
 host instead, so it travels with it — another actor, an unlinked token, a sidebar item, a compendium entry — and a deleted
 host takes its mods with it. #263-#265 keep their rules (armour caps, gel packs, vehicle CF); they build on this.
 
@@ -954,7 +879,7 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
    shot's compensation BEFORE the heavy doubling (`SR3EItem.podSaving`: an MMG's 10-round burst, tripod 6 → +20 becomes +8) and
    the saving comes off the TN. Nothing remembered between shots. Mutant `bipod-counts-without-the-gm`. ⚠ Only where the GM window
    opens (`gmApprovesTN`): an attack that skips it gets no pod. The gun's own printed bracketed RC (folding stock, integral tripod)
-   stays the fire dialog's integral tick ([#235](#235)).
+   stays the fire dialog's integral tick ([#235](TODO-DONE.md#235)).
 3. ~~The free-text `accessories`~~ — built 2026-10-27 (step b), the maintainer's rulings of that day: each accessory the text
    clearly names becomes an installed mod flagged `integral` (`scripts/data/integral-mods.mjs`, `tests/integral-mods.test.mjs`).
    **Shown, never counted** — it takes its mount and shows in the 🔧 list, tagged "integral", its change in brackets, but
@@ -968,7 +893,8 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
    `integral-accessory-counted-twice`, `integral-tripod-offered-as-pod`, `integral-mount-clash-warned`, `integral-filled-twice`,
    `integral-greedy-match`. TESTING.md §77i. ⚠ Packs rebuilt: `npm run packs:install` with Foundry CLOSED.
 4. **Weapon mounts by weapon class** (SR3 pp.276-279, CC p.75: hold-outs none, pistols barrel + top, …) — warnings; waits on the
-   open questions below.
+   open questions below. With it, [#235](TODO-DONE.md#235)'s compatibility list (SR3 pp.276-277, rules check `#194`): revolvers take no
+   silencer or sound suppressor.
 5. ~~Cyberlimbs~~ — built (above; its remainders listed there). **Vehicles and
    drones** ([#265](#265); their mods stay items on the vehicle actor, which is the container; weapon mounts [#234](TODO-DONE.md#234) are hosts).
 6. Not modelled from the armour rules: Thermal Dampening's Perception / Signature effect and its fade over time (shown only); the
@@ -976,6 +902,9 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
 7. ✔ **Decided by the maintainer, 2026-10-27:** goggles' and a helmet's vision count on the Visibility Table's
    CYBERNETIC/ELECTRONIC column (SR3 p.111), with cybereyes — "goggles should count with the cybernetic/electronic vision
    side". `detectVision` puts every `toActor` vision from an item in `cyber`; `tests/vision.test.mjs` pins a worn helmet there.
+8. **From [#235](TODO-DONE.md#235) (closed 2026-10-27):** a gun's printed bracketed RC (folding stock, integral tripod) is still the fire
+   dialog's tick, not an accessory the shooter deploys; combo imaging scopes add their components' costs (SR3 p.280, not built);
+   the internal smartgun's price is an open question below.
 
 **Built — the cyberlimb slice (2026-10-27):** `scripts/data/cyber-capacity.mjs` (`tests/cyber-capacity.test.mjs`, mutants
 `eye-mods-never-free`, `cyber-capacity-ignores-grade`, `dni-does-not-stack`):
@@ -3163,6 +3092,12 @@ markings, and a book-dependent price for built-in gear. A feature, on branch `fe
 - **Migration 0.8.0**: [#255](TODO-DONE.md#255)'s corrections onto owned copies (only while a field still holds the old
   value), the rename (only an untouched name), the flag and the description line. Three populations.
 
+**Status 2026-10-27:** branch `feature/cyberlimb-mods-marked` was never started. [#276](#276)'s cyberlimb slice built what the
+markings are for — a limb holds its built-ins (`system.installed`, ECU capacity, `scripts/data/cyber-capacity.mjs`) and shows
+their built-in price **on the limb**, ×4 with Man & Machine off (`CyberCapacity.builtInCost`, the ruling above). **Still to
+build:** all four markings (the rename, the folders, the description line, the 🦾 chip), the price in the purchase dialog, and
+the migration (now 0.9.0 or later — 0.8.0 has shipped).
+
 ## 259. Show where each weapon mod mounts — **requested 2026-10-23**
 
 The maintainer, after [#256](#256): "we should also do something similar for weapon mods". Decided 2026-10-23
@@ -3174,6 +3109,12 @@ mount, a description line, a mount chip on the sheet. Add **Smartgun, internal**
 and **Smartlink-2 Modification, Internal** (M&M p.32, ×150%) at 0¥ with the rule in the text.
 ⚠ The builder derives a generated item's id from its name and book, so a rename changes the id; the 0.8.0
 migration maps the old ids. Same branch as #256.
+
+**Status 2026-10-27:** [#276](#276) reads a mod's mount from the description's "Mount:" line (`ItemMods.mountsOf`), warns on a
+taken mount and shows mount · mod in the 🔧 chip's tooltip, so mounts work without the field. ⚠ `ItemMods.mountsOf` reads
+`system.mount` first, but no gear model declares it (TypeDataModels drop it) — the field is still to add. **Still to build:** the
+`mount` field and its fill, the variant names, the folders, the description line, a mount chip on the gear row, Smartgun,
+internal and Smartlink-2 Modification, Internal (whose price is #276's open question).
 
 ## 260. Unlinked NPC tokens share wounds and statuses through their sidebar actor — **reported in play, 2026-10-24**
 

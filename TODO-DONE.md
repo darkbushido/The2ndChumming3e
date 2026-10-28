@@ -7517,6 +7517,42 @@ Missile mounts and launch control systems (p.137) are not weapon mounts here. Ve
   reduce the vehicle's Signature by 1 (SR3 p.307)". The standing −1s reach the rolls through `vehicle-mods.mjs`; the conditional
   ones stay notes.
 
+## 235. ✅ Weapon accessories as mounted items with effects — **requested 2026-10-18, from the 0.7.0 rules check** · built in TODO 276 `f31802fc`
+
+Today a firearm's accessories are a text field plus a few flags (`smartgun`, `laserSight`, [#18](TODO.md#18)), and
+the bracketed integral-accessory RC is a fire-dialog tick the shooter remembers per gun (`recoilModIntegral`,
+`integralInUse`, `scripts/data/integral-rc.mjs`, commit `11c4a658`). **The maintainer, 2026-10-18:** the tick
+"works for now"; do this better. Wanted, from the book (rules check `rules/weapons.md`):
+- **Mounts** (SR3 p.280, p.276-277): top, barrel and underbarrel, one accessory each (`#210`); an accessory as
+  an item installed on a mount, from the gear packs.
+- **Their effects read from the installed item**, not the text: gas vents and stocks/tripods as RC (and
+  whether a folding stock or tripod is deployed, replacing the tick), scopes (magnifying scopes shift the range
+  column one per rating point, p.110 `#64`; imaging scopes can't be used with a smartlink, p.280 `#233`),
+  laser sights, smartguns.
+  - **Magnification is any image-magnification device, not only scopes** (the maintainer, 2026-10-24). SR3 p.110: these
+    systems *"change a weapon's range category by a number equal to the device's rating"* (a Rating 2 scope at long range
+    shifts two places left; never below short range); p.113 *"Image magnification equipment reduces the weapon's range to its
+    target and the associated base target number."* So the attack flow reads the rating from the shooter's mounted Imaging
+    Scope, a worn helmet's Electronic/Optical Magnification (Armor) (rating 3, [#266](TODO.md#266)) and cybereye vision
+    magnification ("Eyes, Vision Magnification, Electronic/Optical", rated). **They do not stack** (the maintainer,
+    2026-10-24: "short answer no") — the core book is silent (pp.110, 113, 280, and the cyberware entry "Vision
+    Magnification": it works "in the same manner as an imaging scope"), so the shift is ONE device's rating: the highest the
+    shooter has in use. Today the GM TN window's "Image magnification — Special" line (`scripts/SR3ECombatModifiers.js`)
+    applies nothing.
+- **Compatibility** (SR3 p.276-277, `#194`): revolvers take no silencer or sound suppressor, hold-outs …
+- **Costs** (SR3 p.282): an internal smartgun doubles the gun's price (`#229`); combo imaging scopes add their
+  components' costs (p.280).
+A feature, on a branch, with a migration that turns the current text into installed items where it can.
+
+**Closed 2026-10-27 — built by [#276](TODO.md#276)** (branch `claude/quirky-mayer-32wuvg`): accessories are mods installed inside the gun
+(`scripts/data/item-mods.mjs`), one per top / barrel / underbarrel mount, warned when taken (`58c1d896`); RC, smartgun and laser
+sight read from the installed mod (`WeaponAccessories.flag`, `IntegralRC.totalComp`); magnification from a scope, a helmet or
+cybereyes, the highest only (`e70bc8ca`, `be742ce0`); bipods and tripods in the GM's TN window (`69040d3e`); the printed text
+filled as `integral` mods in the packs and by the 0.9.0 migration, the text left as it is (`f31802fc`). **Not built — carried into
+[#276](TODO.md#276)'s open list:** compatibility by weapon class (revolvers no silencer, hold-outs …, SR3 pp.276-277), the internal
+smartgun's price (p.282) and combo imaging scopes' (p.280), imaging scope with a smartlink (p.280), and the printed bracketed RC
+(folding stock, integral tripod), which is still the fire dialog's tick.
+
 ## 241. ✅ A player can't end their own turn — **reported in play, 2026-10-23** — fixed in 7732baf9
 
 Observed: a player moved their character and clicked End Turn; Foundry said they did not have permission.
@@ -7766,6 +7802,65 @@ roll, and the setup dialog names it "Medkit [5]". Step 13 with the macro's new b
 refreshed it, still built "[N]" names with 0¥ implants). Not ours: Foundry 14.365 leaves `_stats.compendiumSource`
 null on any item created from a compendium (a plain firearm too), so step 7's link check only proves the migration's
 repoint of an existing dead link.
+
+## 263. ✅ Mods that attach to armour and change its numbers — **requested 2026-09-28** · built in TODO 276 `acd88d20`
+
+**Request (maintainer):** *"we need some way of attaching mods to an armor that changes the armors
+attributes."* The same request covers weapons ([#264](#264)) and vehicles/drones ([#265](TODO.md#265)). This item
+builds the shared mechanism, and armour is built first. It is a feature, so it goes on a branch.
+
+**Decided 2026-09-28:**
+- **A mod is its own item.** It gets a new `mod` item type, owned by the actor and pointing at its parent
+  item by id. It is dragged from the compendium onto the parent's row and listed under the parent on the sheet.
+- The parent's effective Ballistic, Impact, Concealability and so on are its base plus its mods. The base
+  stays editable by hand.
+- Moving the parent to another actor must carry its mods with it.
+- Build order: armour, then weapons, then vehicles.
+
+**What the books say:**
+- **Cannon Companion pp.52–53, Armor Modifications.** Chemical Seal, Fire Resistance, Insulation,
+  Nonconductive and Thermal Dampening are bought in rating points. Gel Packs are not rated.
+  - One mod's rating is capped at the item's higher armour rating (Ballistic or Impact). The total is capped
+    at Ballistic + Impact: *"an armor jacket (5/3) cannot have more than 8 (5 + 3) points"*.
+  - Unarmoured clothing takes mods at a maximum of 2 each and 2 in total.
+  - SecureTech armour clothing (SR3 p.284) takes no mods.
+  - Gel packs make the armour hardened (CC p.51) and halve its Concealability. They add +2 to the Knockdown
+    Body Test (SR3 p.124). They raise the ratings by 50% for the Combat Pool penalty (SR3 p.285).
+  - Gel packs are not allowed on form-fitting, diving or hardened armour, only one set goes on an item, and
+    gel-packed armour cannot be layered.
+  - The Concealability and Weight columns of CC p.53's table extract badly, so read them from a page image.
+- **SR3 p.284, security armour and helmet options:** vision enhancements, a transceiver, *"Tracking Signal
+  (100¥ x Rating), Signal Locator (1000¥ x Rating)"*, a HUD, Chemical Seal and a Respirator.
+
+**Wrong in the packs today:**
+- ⚠ **Brought over from `feature/item-mods` on 2026-10-24** (numbered 203-205 there; main's 203-205 are other
+  items). Since then [#261](#261) made every rated item ONE document with its level in `system.rating` and
+  a Level dropdown — build the mod's rating on that. It did **not** catch these armour options: their level is a
+  bare trailing number ("+Signal Locator 7"), not "[7]" or "Rating 7", so they are still one document per level.
+- `sr3e-sr3-armor` and `sr3e-cc-armor` ship each helmet option as a separate `armor` item with 0/0 armour:
+  10 × `+Signal Locator 1…10`, 10 × `+Transceiver Rtg.`, 20 × `+Tracking Signal`, plus `+Chemseal`,
+  `+Smart Goggles` and others.
+- `sr3e-sr3-gear` carries 21 more signal-locator documents.
+- Each should be one `mod` with a rating. See [#188](TODO.md#188) (one item per rating) and [#130](TODO.md#130) (ratings in names).
+- Owned copies need a migration as well as the pack fix.
+
+**Closed 2026-10-27 — built by [#276](TODO.md#276):** the mechanism is #276's (a mod lives INSIDE its host, `system.installed`, which
+superseded "its own item pointing at its parent"; `58c1d896`); the armour rules are its armour slice (`acd88d20`,
+`scripts/data/armor-mods.mjs`) — CC pp.52-53's six modifications, the caps, gel packs (hardened, Concealability, Knockdown +2,
+the Combat Pool's +50%), SecureTech and helmet-option warnings. The helmet options are one rated document each since
+[#266](TODO.md#266) (`b57a8efa`; the packs hold no "+Signal Locator N" any more). What the armour rules still leave out is #276's item 6.
+
+## 264. ✅ Mods that attach to weapons — **requested 2026-09-28** · built in TODO 276 `f31802fc`
+
+This uses the [#263](#263) mechanism for weapon accessories and customisation. Sources are SR3 pp.280–282
+(accessories) and Cannon Companion p.78 onward (Firearm Customization). It takes in [#18](TODO.md#18)'s
+`smartgun`/`laserSight` flags and the Gyro Mount, and replaces the free-text `accessories` field.
+It starts after #203.
+
+**Closed 2026-10-27 — built by [#276](TODO.md#276)** (what [#235](#235)'s closing note lists): a weapon's accessories are installed mods;
+the `smartgun` / `laserSight` flags are switched on by an installed mod; the free-text `accessories` stays (the maintainer's ruling,
+2026-10-27) and its clear matches are `integral` mods, shown and never counted. Cannon Companion's Firearm Customization (CC p.78
+onward) is [#279](TODO.md#279); the remainders are #276's open list.
 
 ## 277. ✅ Gas vents can't simply be taken off — **requested 2026-10-27** · built `f955968c`
 
