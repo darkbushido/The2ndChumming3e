@@ -122,7 +122,8 @@ export async function run(t) {
   t.ok('…no reload site matches on the mechanism alone any more', !/loadMechanism \?\? 'c'\) === (gunMech|mech)/.test(itemSrc));
 
   /* ── Reading it back ──────────────────────────────────────────────────────────── */
-  t.is('describe: reloads with a size', AmmoStock.describe(reloads(6, 7)), '6 reloads of 7');
+  t.is('describe: reloads with a size', AmmoStock.describe(reloads(6, 7)), '6 reloads × 7 rounds');
+  t.is('describe: one clip of 10 never reads as a cap of 10', AmmoStock.describe(reloads(1, 10)), '1 reload × 10 rounds');
   t.is('describe: one reload', AmmoStock.describe(reloads(1)), '1 reload');
   t.is('describe: rounds', AmmoStock.describe(rounds(42)), '42 rounds');
 

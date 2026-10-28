@@ -275,10 +275,13 @@ export const AmmoStock = {
     return { reloads: rounds / r.roundsPerReload, roundsPerReload: r.roundsPerReload };
   },
 
-  /** "6 reloads of 7" / "42 rounds" — for the sheet and the reload dialog. */
+  /**
+   * "6 reloads × 7 rounds" / "42 rounds" — for the sheet and the reload dialog. Not "6 reloads of 7": "1 reload of 10"
+   * read as a cap of ten reloads (reported 2026-10-28).
+   */
   describe(sys) {
     const st = AmmoStock.stock(sys);
-    if (st.unit === 'reloads') return `${plural(st.count, 'reload')}${st.perReload > 0 ? ` of ${st.perReload}` : ''}`;
+    if (st.unit === 'reloads') return `${plural(st.count, 'reload')}${st.perReload > 0 ? ` × ${plural(st.perReload, 'round')}` : ''}`;
     return plural(st.count, 'round');
   },
 
