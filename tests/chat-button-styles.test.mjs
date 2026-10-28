@@ -133,4 +133,8 @@ export async function run(t) {
   // `sr3e-clear-blast-btn`, outside this test's `sr-*-btn` net, so nothing noticed it had no colour.
   t.ok('the 🧹 Clear blast marker button is one of the checked chat buttons', used.has('sr-clear-blast-btn'));
   t.ok('…and no card uses the old, unchecked class', !sources().some(f => /sr3e-clear-blast-btn/.test(fs.readFileSync(f, 'utf8'))));
+
+  // Reported 2026-10-28: 💴 Pay stayed bright gold after paying — disabled, but nothing drew it as spent.
+  const spent = CSS.match(/\.sr-roll-card button:disabled\s*\{([^}]*)\}/);
+  t.ok('a disabled button on a card is drawn as spent', !!spent && /opacity:\s*0?\.\d/.test(spent[1]));
 }

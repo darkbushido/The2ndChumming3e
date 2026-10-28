@@ -314,6 +314,10 @@ background-color: var(--sr-surface) !important;
   color: var(--sr-gold);
 }
 
+/* A used or someone-else's card button looks spent. The guards disable it, but the colour groups above never said
+ * what disabled looks like, so 💴 Pay stayed bright gold after paying (reported 2026-10-28). */
+.sr-roll-card button:disabled { opacity: 0.5; cursor: not-allowed; }
+
 /* 🧹 Clear blast marker — a housekeeping button, so neutral rather than a colour group's call to act.
  * TODO 214: it had only core's button style and read black on black in the dark chat log. */
 .sr-clear-blast-btn {
