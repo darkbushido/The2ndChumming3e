@@ -7512,7 +7512,7 @@ does not value. **Signature is shown, never changed** (the maintainer, 2026-10-2
 concealed pop-up), an internal mount −1 more while its weapon is out. **A firearm on a mount fires with it**: fixed mounts and
 turrets halve the uncompensated recoil, **rounded down** (the maintainer), and cancel the heavy double (the shotgun burst double
 stays); a pintle gives RC 2 (p.138), a ring RC 6 (p.139), in their own box in the fire dialog, never written back. TESTING.md §78a.
-Missile mounts and launch control systems (p.137) are not weapon mounts here. Vehicle weapons' recoil: [#283](TODO.md#283).
+Missile mounts and launch control systems (p.137) are not weapon mounts here. Vehicle weapons' recoil: [#282](TODO.md#282).
 - **Reversed 2026-10-27 ([#265](TODO.md#265)):** the Signature is APPLIED — the maintainer: "I was wrong, External fixed mounts
   reduce the vehicle's Signature by 1 (SR3 p.307)". The standing −1s reach the rolls through `vehicle-mods.mjs`; the conditional
   ones stay notes.

@@ -19,7 +19,7 @@
  * `vehiclemod` on the same vehicle); **halved recoil rounds down**; the standing Signature reduction (external fixed mounts −1,
  * SR3 p.307; each turret −1) is APPLIED by `vehicle-mods.mjs` — the maintainer reversed "shown, never changed" the same day:
  * "I was wrong, External fixed mounts reduce the vehicle's Signature by 1 (SR3 p.307)". The conditional parts stay notes;
- * a mount changes a FIREARM's fire dialog now — vehicle-weapon recoil is TODO 283. Warn, never refuse.
+ * a mount changes a FIREARM's fire dialog now — vehicle-weapon recoil is TODO 282. Warn, never refuse.
  */
 
 const baseName = name => String(name ?? '').replace(/\s*\[\d+\]\s*$/, '').replace(/\s*\(Vehicle\)\s*$/i, '').trim();
