@@ -3568,7 +3568,9 @@ mods). A car with cost 40,000¥, Body 4, Handling 4 / 5 off-road, Speed 100, Acc
 
 - [ ] **Drop Drive-by-Wire System** on it → its Cost fills 10,000¥ (0.25 × 40,000 at level 1); its sheet says "On <car> at this
       level: 10,000¥" and has three +% boxes. Set level 2 → the price line reads 20,000¥ (Cost stays what was filled — edit it).
-      Handling "→ 2" / off-road "→ 3"; the Mods tab asks for the split. Type Accel 6 / Speed 4 → Speed "→ 104".
+      Handling "→ 2" / off-road "→ 3"; the Mods tab asks for the split. Type Accel 6 / Speed 4 → Speed "→ 104", Accel "→ 11" (0.6
+      rounds to 1). With Turbocharging [2] too, Speed 10% → 143 (10% of 130: the split comes after every other change).
+      The nine new mods read Legality "Legal".
 - [ ] **Add Improved Suspension** → "⚠ … may not be used with drive-by-wire". Remove both; Off-Road Suspension 2 → off-road "→ 3",
       on-road "→ 6", Speed "→ 85".
 - [ ] **Turbocharging [2]** → Speed +30, Accel +2, Sig −2. **Radar-Absorbent Materials [3]** (Cost 675,000¥) and **Thermal Baffles

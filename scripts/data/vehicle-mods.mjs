@@ -11,7 +11,8 @@
  *   - **Advanced Drone Pilot** (p.127), **Autonavigation System** (p.127), **Sensors** (p.147), **ECM** (p.143), **ECCM**
  *     (p.145): rated systems — the mod's rating IS the vehicle's rating.
  *   - **Control** (p.129-130): Drive-by-Wire −1 Handling a level (to −3), and a one-time +10% the player splits among
- *     Acceleration, Speed and Load (`system.dbwSplit`, percentages); Improved Suspension −1 on-road Handling a level (to −2; a
+ *     Acceleration, Speed and Load (`system.dbwSplit`, percentages, taken after every other change and rounded to the nearest,
+ *     .5 up — the maintainer, 2026-10-27; its Handling −1 is on- and off-road, ruled the same day); Improved Suspension −1 on-road Handling a level (to −2; a
  *     motorcycle's off-road too); Improved Control Surfaces (watercraft) −1 a level (to −2); neither of those two with
  *     drive-by-wire. Off-Road Suspension −1 off-road and +1 on-road Handling a level (±2), and Speed −15 once.
  *   - **Engine** (p.126): Turbocharging +15 Speed, +1 Acceleration, −1 Signature a level; aircraft (unless electric) cannot.
@@ -196,6 +197,7 @@ export const VehicleMods = {
       if (MAX_LEVEL[kind] && r > MAX_LEVEL[kind]) warnings.push(`${mod.name}: ${r} levels — the most is ${MAX_LEVEL[kind]} (${PAGES[kind]}).`);
     };
     let turboLevel = 0;
+    const splits = [];
     for (const { mod, fx } of list) {
       const r = ratingOf(mod);
       const page = PAGES[fx.kind];
@@ -203,13 +205,13 @@ export const VehicleMods = {
       if (fx.kind === 'dbw') {
         add('handling', -r, mod.name, page);
         add('handlingOffRoad', -r, mod.name, page);
-        // The one-time +10%, split as the player chose — not a level's worth (p.129). Read as rounded down (not ruled).
+        // The one-time +10%, split as the player chose — not a level's worth (p.129). Taken LAST, below.
         const split = mod.system?.dbwSplit ?? {};
         const pct = { accel: num(split.accel), speed: num(split.speed), load: num(split.load) };
         const total = pct.accel + pct.speed + pct.load;
         if (total > 10) warnings.push(`${mod.name}: the split adds up to ${total}% — drive-by-wire gives 10% in all (${page}).`);
         if (total === 0) notes.push(`${mod.name}: a one-time +10% split among Acceleration, Speed and Load — set it on the mod (${page}).`);
-        for (const s of ['accel', 'speed', 'load']) add(s, VehicleMods.splitGain(stats[s].own, pct[s]), `${mod.name} (+${pct[s]}%)`, page);
+        splits.push({ mod, pct, page });
       } else if (fx.kind === 'suspension') {
         add('handling', -r, mod.name, page);
         if (type === 'motorcycle') add('handlingOffRoad', -r, mod.name, page);
@@ -246,6 +248,12 @@ export const VehicleMods = {
     // ── Weapon mounts' standing Signature (SR3 p.307; R3R pp.136, 140) — the maintainer, 2026-10-27. ──
     const fromMounts = VehicleMods.mountSignature(vehicle, items);
     if (fromMounts) add('sig', -fromMounts, 'weapon mounts', PAGES.mounts);
+
+    // ── Drive-by-wire's split, after every other change (p.129: it "takes place after applying all design options"; the
+    // maintainer, 2026-10-27, for customization too) — a share of the figure the other mods left. ──
+    for (const { mod, pct, page } of splits) {
+      for (const s of ['accel', 'speed', 'load']) add(s, VehicleMods.splitGain(stats[s].value, pct[s]), `${mod.name} (+${pct[s]}%)`, page);
+    }
     return { stats, warnings, notes };
   },
 
@@ -254,9 +262,9 @@ export const VehicleMods = {
     return VehicleMounts.summary(vehicle, items).signature.reduction;
   },
 
-  /** Drive-by-wire's split: `pct` percent of the stat, rounded down (read as — the book does not say). */
-  splitGain(own, pct) {
-    return Math.floor(num(own) * num(pct) / 100);
+  /** Drive-by-wire's split: `pct` percent of the stat, to the nearest whole number, .5 up (the maintainer, 2026-10-27). */
+  splitGain(value, pct) {
+    return Math.round(num(value) * num(pct) / 100);
   },
 
   /**

@@ -14,10 +14,10 @@
       "cfCost": "0",
       "load": "",
       "bookPage": "r3.129",
-      "description": "Computer-controlled steering. Handling −1 a level (levels 1-3), and a one-time +10% the player splits among Acceleration, Speed and Load (set it on this mod). Not with improved suspension or control surfaces. Parts: the vehicle's original cost × 0.25 a level (worked out when installed). R3R p.129.",
+      "description": "Computer-controlled steering. Handling −1 a level (levels 1-3), and a one-time +10% the player splits among Acceleration, Speed and Load, taken after every other change (set it on this mod). Not with improved suspension or control surfaces. Parts: the vehicle's original cost × 0.25 a level (worked out when installed). R3R p.129.",
       "rating": 1,
       "modFor": "vehicle",
-      "legality": ""
+      "legality": "Legal"
     },
     "effects": []
   },

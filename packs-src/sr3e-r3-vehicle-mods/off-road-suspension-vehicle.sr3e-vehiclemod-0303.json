@@ -17,7 +17,7 @@
       "description": "Wheeled ground vehicles. Off-road Handling −1 and on-road Handling +1 a level (at most 2), Speed −15 however many levels, and lower Economy. Parts per level: cars × 0.35, bikes × 0.2, medium/heavy transports and tractors × 0.5 of the original cost. R3R pp.129-130.",
       "rating": 1,
       "modFor": "vehicle",
-      "legality": ""
+      "legality": "Legal"
     },
     "effects": []
   },

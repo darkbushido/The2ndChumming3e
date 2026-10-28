@@ -17,7 +17,7 @@
       "description": "Ships, subs and boats. A released noisemaker adds +3 to every target number to detect or target the boat for that Combat Turn and the next two. 16 CF and 150 kg, plus 8 CF and 25 kg a noisemaker. R3R p.134.",
       "rating": null,
       "modFor": "vehicle",
-      "legality": ""
+      "legality": "Legal"
     },
     "effects": []
   },

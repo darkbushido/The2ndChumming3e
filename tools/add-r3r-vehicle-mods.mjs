@@ -7,7 +7,7 @@
  *
  * Every figure is the book's customization specification (printed page per row). What each changes is
  * `scripts/data/vehicle-mods.mjs`; a mod priced from the vehicle ships at cost 0 and is priced when it lands on one
- * (`VehicleMods.price`). R3R prints no Legality for these — left blank, for the maintainer.
+ * (`VehicleMods.price`). R3R prints no Legality for these; the maintainer, 2026-10-27: all nine Legal (`legality-table.mjs`).
  *
  *   node tools/add-r3r-vehicle-mods.mjs           write
  *   node tools/add-r3r-vehicle-mods.mjs --check   exit 1 if a file differs
@@ -21,7 +21,7 @@ const IMG = 'systems/The2ndChumming3e/styles/textures/vehicles-default.webp';
 const MODS = [
   ['0300', 'Drive-by-Wire System', 'r3.129', 1, 0, '8/16 days', '2.5', 'Vehicle Facility',
     'Body x 160 hrs/Vehicle B/R(10-On-Road Handling), Computer(4), Electronics(4)', '0', '',
-    'Computer-controlled steering. Handling −1 a level (levels 1-3), and a one-time +10% the player splits among Acceleration, Speed and Load (set it on this mod). Not with improved suspension or control surfaces. Parts: the vehicle\'s original cost × 0.25 a level (worked out when installed). R3R p.129.'],
+    'Computer-controlled steering. Handling −1 a level (levels 1-3), and a one-time +10% the player splits among Acceleration, Speed and Load, taken after every other change (set it on this mod). Not with improved suspension or control surfaces. Parts: the vehicle\'s original cost × 0.25 a level (worked out when installed). R3R p.129.'],
   ['0301', 'Improved Suspension', 'r3.129', 1, 0, '6/12 days', '2', 'Vehicle Facility', 'Level x 40 hrs/Vehicle B/R(4)', '0', '',
     'Wheeled ground vehicles. On-road Handling −1 a level (a motorcycle\'s off-road too), at most −2. Not with drive-by-wire. Parts: the vehicle\'s original cost × 0.1 a level. R3R p.129.'],
   ['0302', 'Improved Control Surfaces', 'r3.129', 1, 0, '6/12 days', '2', 'Vehicle Facility', 'Level x 40 hrs/Vehicle B/R(4)', '0', '',
@@ -53,7 +53,7 @@ for (const [n, name, bookPage, rating, cost, availability, streetIndex, installE
     doc: {
       _id: id, name: `${name} (Vehicle)`, type: 'vehiclemod', img: IMG,
       system: { cost, availability, streetIndex, installEquipment, installTime, cfCost, load, bookPage, description, rating,
-        modFor: 'vehicle', legality: '' },
+        modFor: 'vehicle', legality: 'Legal' },
       effects: [],
     },
     embedded: {},

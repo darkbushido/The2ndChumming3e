@@ -4187,11 +4187,11 @@ export const MUTANTS = [
     impl:   () => 0,
   },
   {
-    id:     'vehicle-dbw-split-rounds-up',
+    id:     'vehicle-dbw-split-rounds-down',
     suite:  'vehicle-mods',
     ...VMODS, method: 'splitGain',
-    was:    'drive-by-wire’s split rounded to the nearest — read as rounded down (R3R p.129 does not say; TODO 265)',
-    impl:   (own, pct) => Math.round(Number(own) * Number(pct) / 100),
+    was:    'drive-by-wire’s split rounded down — the maintainer ruled the nearest, .5 up (2026-10-27, TODO 265)',
+    impl:   (value, pct) => Math.floor(Number(value) * Number(pct) / 100),
   },
   {
     id:     'vehicle-rated-mod-adds',

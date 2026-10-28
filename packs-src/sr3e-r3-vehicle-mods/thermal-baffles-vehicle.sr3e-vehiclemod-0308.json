@@ -17,7 +17,7 @@
       "description": "Combustion engines. Signature +1 a level, at most +2 (or what the Load allows); the same as a + to thermographic Perception Tests against the vehicle. 3 CF and Body × 50 kg a level. Parts a level: Body × 5,000¥ ground vehicles, 6,000¥ motorcycles, 7,500¥ trucks and fixed-wing, 10,000¥ tractors and helicopters, 3,750¥ hovercraft, 2,500¥ watercraft and zeppelins. R3R p.135.",
       "rating": 1,
       "modFor": "vehicle",
-      "legality": ""
+      "legality": "Legal"
     },
     "effects": []
   },

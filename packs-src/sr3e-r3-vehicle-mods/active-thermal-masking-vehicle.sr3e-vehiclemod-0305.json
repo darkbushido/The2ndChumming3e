@@ -17,7 +17,7 @@
       "description": "A coolant system for customized combustion engines (not motorcycles): one level per level of engine customization, at most +2. While it runs, Signature +1 and Speed −15 m/turn a level, for 60 − 5 × level minutes; then Signature 2 for 10 minutes. Parts: the engine customization's cost × 2, +0.25 for each further level. R3R p.134.",
       "rating": 1,
       "modFor": "vehicle",
-      "legality": ""
+      "legality": "Legal"
     },
     "effects": []
   },

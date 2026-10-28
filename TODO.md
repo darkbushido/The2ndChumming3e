@@ -800,17 +800,18 @@ The Stats tab shows "→ N" beside the typed figure; the Mods tab lists what cha
   Drive (p.126), Active Thermal Masking, Noisemaker Dispenser, Radar-Absorbent Materials (p.134), Thermal Baffles (p.135).
   What they change is in `vehicle-mods.mjs` (Handling, Speed, Acceleration, Signature, Load — every reader through
   `vehicleStat`); levels past the book's maximum, drive-by-wire with suspension / control surfaces, turbocharged aircraft and
-  masking past the engine customization are warned. Mutants `vehicle-mount-signature-shown-only`, `vehicle-dbw-split-rounds-up`.
+  masking past the engine customization are warned. Mutants `vehicle-mount-signature-shown-only`, `vehicle-dbw-split-rounds-down`.
   The maintainer's rulings, 2026-10-27:
   - **Signature applies** — mods and the weapon mounts' standing −1s alike ("I was wrong, External fixed mounts reduce the
     vehicle's Signature by 1 (SR3 p.307)"). Active masking (while it runs) and the noisemaker (once released) are notes.
   - **Prices are worked out on install** (`VehicleMods.price`; `preCreateItem` fills a blank cost when one lands on a vehicle,
     and the item sheet shows the price at its level). Not priced, the GM's: a vehicle with no cost, off-road suspension on a
     transport / tractor (the type field cannot tell them from cars), thermal baffles on a type the table does not name (drones).
-  - **Drive-by-wire's +10% is an editable split on the mod** (`system.dbwSplit`, new field — full restart).
-  - ⚠ **Read as, not ruled:** the split is rounded down; drive-by-wire's Handling −1 is on- AND off-road (the book says
-    "Handling"); a turbocharged Speed is warned past 1.5 × the vehicle's own.
-  - ⚠ **Legality left blank** on the nine — R3R prints none (the other R3R mods read "Legal"). For the maintainer.
+  - **Drive-by-wire's +10% is an editable split on the mod** (`system.dbwSplit`, new field — full restart), taken **after every
+    other change** ("takes place after applying all design options", p.129) and **rounded to the nearest, .5 up**; its Handling
+    −1 is **on- and off-road** ("yes it effects both").
+  - **All nine are Legal** (R3R prints none; `legality-table.mjs`, the maintainer's ruling).
+  - ⚠ **Read as, not ruled:** a turbocharged Speed is warned past 1.5 × the vehicle's own.
   - Thermal baffles count 3 CF and Body × 50 kg a level in the budget (`PER_POINT`); the noisemaker's 16 CF / 150 kg count, each
     noisemaker's share is warned for the GM.
 - **Not a number:** CMCs (ignore damage boxes), Nitrous (dice on Accelerating), APPS, crash cages, roll bars,

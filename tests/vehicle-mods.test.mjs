@@ -61,8 +61,10 @@ export async function run(t) {
   /* ── Control (R3R pp.129-130) ─────────────────────────────────────────────── */
   const dbw = (r, split = {}) => ({ ...mod('Drive-by-Wire System (Vehicle)', r), system: { rating: r, dbwSplit: split } });
   const w2 = VehicleMods.effective(car(), [dbw(2, { accel: 6, speed: 4 })]);
-  t.eq('Drive-by-Wire 2: Handling −2 (on- and off-road); the split +6% Accel, +4% Speed, once', [w2.stats.handling.value, w2.stats.handlingOffRoad.value, w2.stats.accel.value, w2.stats.speed.value, w2.stats.load.value], [2, 3, 10, 104, 500]);
-  t.is('…the split is rounded down (6% of 10 Acceleration is 0.6 → 0)', VehicleMods.splitGain(10, 6), 0);
+  t.eq('Drive-by-Wire 2: Handling −2 on- and off-road (ruled 2026-10-27); the split +6% Accel, +4% Speed, once', [w2.stats.handling.value, w2.stats.handlingOffRoad.value, w2.stats.accel.value, w2.stats.speed.value, w2.stats.load.value], [2, 3, 11, 104, 500]);
+  t.eq('…the split rounds to the nearest, .5 up (the maintainer, 2026-10-27): 0.6 → 1, 0.3 → 0, 0.5 → 1', [VehicleMods.splitGain(10, 6), VehicleMods.splitGain(10, 3), VehicleMods.splitGain(10, 5)], [1, 0, 1]);
+  t.is('…taken after every other change: turbocharging 2 then +10% Speed is 10% of 130 (p.129)', fx(car(), [mod('Turbocharging/Superconductive Drive (Vehicle)', 2), dbw(1, { speed: 10 })]).speed.value, 143);
+  t.is('…whichever order the mods are in', fx(car(), [dbw(1, { speed: 10 }), mod('Turbocharging/Superconductive Drive (Vehicle)', 2)]).speed.value, 143);
   t.is('…and is the same at level 3 (not per level)', fx(car(), [dbw(3, { speed: 10 })]).speed.value, 110);
   t.ok('…no split set: a note asks for it', VehicleMods.effective(car(), [dbw(1)]).notes.some(n => /split among Acceleration, Speed and Load/.test(n)));
   t.ok('…over 10%: warned', VehicleMods.effective(car(), [dbw(1, { speed: 8, load: 4 })]).warnings.some(w => /12%/.test(w)));
