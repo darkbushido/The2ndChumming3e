@@ -2381,6 +2381,14 @@ export const MUTANTS = [
     impl:   (_box, crit) => crit?.gunClass || null,
   },
   {
+    id:     'ammo-shop-drop-misfit-silent',
+    suite:  'ammo-shop',
+    module: '../scripts/data/ammo-shop.mjs', klass: 'AmmoShop', method: 'dropWarning',
+    was:    'shipped in 0.8.0 (reported 2026-10-28): an Explosive clip dropped on an Ares Thunderer’s 🛒 Buy ammo was '
+          + 'bought and stamped Shotgun with no word, and the gun’s reload then refused it (shotgun rules, SR3 p.277)',
+    impl:   () => null,
+  },
+  {
     id:     'buy-haggle-leaves-pay-live',
     suite:  'purchasing',
     ...BUY, method: 'cardButtons',

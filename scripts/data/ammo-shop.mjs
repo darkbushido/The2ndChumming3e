@@ -79,6 +79,18 @@ export const AmmoShop = {
     return true;
   },
 
+  /**
+   * A box DROPPED on a gun's 🛒 Buy ammo that the gun cannot load — the list never offers it, but a drop skips the list
+   * (reported 2026-10-28: an Explosive clip bought for an Ares Thunderer, stamped Shotgun, that its reload then refused —
+   * a shotgun-rules weapon takes normal or shot rounds only, SR3 p.277). Warn, never refuse; the caller does not stamp it.
+   * @returns {string|null} the warning, or null when it fits (or is not ammunition, or no gun)
+   */
+  dropWarning(sys, crit, name = 'That ammunition', gunName = 'this gun') {
+    if (!crit || !sys) return null;
+    if (AmmoShop.fits(sys, crit, name)) return null;
+    return `${name} does not load into ${gunName} — filled in anyway, but it is not stamped for it and its reload will refuse it.`;
+  },
+
   /** The class to stamp on a box bought for this gun — only while the box states none (fill blanks). */
   stamp(boxSystem = {}, crit) {
     if (!crit?.gunClass || String(boxSystem?.gunClass ?? '').trim()) return null;

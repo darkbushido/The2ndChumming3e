@@ -101,8 +101,10 @@ export const SR3EPurchase = {
     for (const w of GearSearch.dropWarnings({ name: dropped.name, type: dropped.type, packAllowed }, SR3EPurchase.BUYABLE)) ui.notifications.warn(w);
     // ⚠ The plain name — no "[N]" (TODO 261). The dialog offers the item's levels when the table has them.
     const entry = { ...GearSearch.fields(dropped), name: dropped.name, type: dropped.type, uuid: dropped.uuid,
-      levels: ModRatings.levelsFor(dropped, SR3EPurchase.bookAllowed), levelUnit: ModRatings.unitOf(dropped), rating: Number(dropped.system?.rating) || null };
-    return GearSearch.atLevel(entry, GearSearch.startLevel(entry));
+      levels: ModRatings.levelsFor(dropped, SR3EPurchase.bookAllowed), levelUnit: ModRatings.unitOf(dropped), rating: Number(dropped.system?.rating) || null,
+      // What a gun's 🛒 Buy ammo checks the drop against (`AmmoShop.dropWarning`) — the search's index carries the same.
+      ammo: dropped.type === 'ammunition' ? { ...dropped.system } : null };
+    return { ...GearSearch.atLevel(entry, GearSearch.startLevel(entry)), ammo: entry.ammo };
   },
 
   /**
@@ -150,6 +152,7 @@ export const SR3EPurchase = {
     const cost  = Number(item?.system?.cost) || 0;
     let   type  = item?.type ?? 'gear';   // a search hit or a drop changes it
     let   picked = null;                  // the item the search or a drop chose, over the row's
+    let   misfit = false;                 // a drop on a gun's 🛒 Buy ammo that the gun cannot load — not stamped
     // A rated item is one document with its levels in a table (TODO 261): bought at a level, default the lowest.
     const rowEntry = item ? { ...GearSearch.fields(item), levels: ModRatings.levelsFor(item, SR3EPurchase.bookAllowed), levelUnit: ModRatings.unitOf(item), rating: Number(item.system?.rating) || null } : null;
     let   levelEntry = rowEntry?.levels ? rowEntry : null;
@@ -273,7 +276,8 @@ export const SR3EPurchase = {
               level: el.querySelector('#sr-buy-level-row')?.style.display === 'none' ? null : (Number(el.querySelector('#sr-buy-level')?.value) || null),
               how: storeMode ? 'store' : 'contact',
               legality: el.querySelector('#sr-buy-legality')?.value?.trim() ?? '',
-              gunClass: crit?.gunClass ?? '',   // stamped on the box (`AmmoShop.stamp`) — bought from the gun
+              // stamped on the box (`AmmoShop.stamp`) — bought from the gun, unless a drop it cannot load
+              gunClass: crit && !misfit ? crit.gunClass : '',
             };
             if (result.level && !/\]\s*$/.test(result.name)) result.name = `${result.name} [${result.level}]`;
           } },
@@ -333,7 +337,7 @@ export const SR3EPurchase = {
           if (levelSel) levelSel.innerHTML = levelEntry ? levelOptions(levelEntry) : '';
         };
         const take = f => {
-          picked = f; type = f.type;
+          picked = f; type = f.type; misfit = false;   // a drop re-checks after this
           showLevels(f);
           if (legalIn) legalIn.value = f.legality ?? '';
           if (!howTouched) { storeMode = Legality.storeByDefault(f.legality) || !!f.always; showHow(); }
@@ -381,7 +385,11 @@ export const SR3EPurchase = {
           ev.preventDefault();
           ev.stopPropagation();
           const f = await SR3EPurchase.resolveDrop(foundry.applications.ux.TextEditor.implementation.getDragEventData(ev));
-          if (f) take(f);
+          if (!f) return;
+          take(f);
+          const warn = crit && f.type === 'ammunition' ? AmmoShop.dropWarning(f.ammo, crit, f.name, gun.name) : null;
+          misfit = !!warn;
+          if (warn) ui.notifications.warn(warn);
         });
 
         con?.addEventListener('change', sync);

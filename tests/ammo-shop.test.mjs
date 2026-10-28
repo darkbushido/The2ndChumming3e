@@ -50,6 +50,17 @@ export async function run(t) {
   t.is('a box with no class is stamped with the gun\'s', AmmoShop.stamp({ gunClass: '' }, predator), 'HPist');
   t.is('…a box that states its class keeps it', AmmoShop.stamp({ gunClass: 'GrLn' }, predator), null);
   t.is('…and a bow (no firearm class) stamps nothing', AmmoShop.stamp({}, AmmoShop.criteria({ name: 'Bow', mech: 'arrow', magSize: 1, firearm: false })), null);
+  /* ── A drop skips the list (reported 2026-10-28: an Explosive clip for an Ares Thunderer) ── */
+  const thunderer = AmmoShop.criteria({ name: 'Ares Thunderer', system: { category: 'ShtG' }, mech: 'c', magSize: 10,
+    accepts: ty => ['regular', 'shot'].includes(ty) });   // shotgun rules: normal or shot rounds (SR3 p.277)
+  const clip = ty => ({ ammoType: ty, loadMechanism: 'c', countedIn: 'reloads', reloads: 1, roundsPerReload: 10 });
+  t.ok('a dropped Explosive clip the Thunderer cannot load is warned about',
+    /does not load into Ares Thunderer/.test(AmmoShop.dropWarning(clip('explosive'), thunderer, '10-Rnd Clip (Explosive)', 'Ares Thunderer') ?? ''));
+  t.is('…a Regular clip it can load is not', AmmoShop.dropWarning(clip('regular'), thunderer, '10-Rnd Clip (Regular)', 'Ares Thunderer'), null);
+  t.is('…and a drop with no gun (plain Buy gear) never is', AmmoShop.dropWarning(clip('explosive'), null, 'x', 'y'), null);
+  t.ok('the dialog checks a drop and does not stamp a misfit', /AmmoShop\.dropWarning\(f\.ammo, crit/.test(read('scripts/SR3EPurchase.js'))
+    && /gunClass: crit && !misfit \? crit\.gunClass : ''/.test(read('scripts/SR3EPurchase.js')));
+
   t.ok('the dialog line says what the gun takes', /15-round \(c\), HPist class/.test(AmmoShop.describe('Ares Predator', predator)));
 
   /* ── The search, the dialog, the sheet, the payment (source-level: they need Foundry) ── */
@@ -64,7 +75,7 @@ export async function run(t) {
     && /weaponAcceptsAmmoType\(gun\?\.system/.test(flow) && /MiniGrenade\.isLauncher\(gun\.system\)/.test(flow));
   t.ok('…lists only what fits', /all\.filter\(e => e\.type === 'ammunition' && AmmoShop\.fits\(e\.ammo \?\? \{\}, crit, e\.name\)\)/.test(flow));
   t.ok('…straight away, with no search typed', /if \(crit\) drawHits\(\);/.test(flow));
-  t.ok('the class rides to 💴 on both paths (store and contact)', /gunClass: crit\?\.gunClass/.test(flow) && /store: true, gunClass: result\.gunClass/.test(flow));
+  t.ok('the class rides to 💴 on both paths (store and contact)', /gunClass: crit && !misfit \? crit\.gunClass/.test(flow) && /store: true, gunClass: result\.gunClass/.test(flow));
   t.ok('💴 stamps the box while it states no class', /AmmoShop\.stamp\(data\.system, \{ gunClass: payload\.gunClass \}\)/.test(flow));
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
   t.ok('the weapon sheet has 🛒 Buy ammo', /buyAmmo:\s+SR3EItemSheet\._onBuyAmmo/.test(sheet) && /data-action="buyAmmo"/.test(sheet));
