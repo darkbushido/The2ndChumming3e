@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**85 open.** 197 done — see [TODO-DONE.md](TODO-DONE.md).
+**86 open.** 197 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[283](#283) Vehicle weapons fire with no recoil |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[235](#235) Weapon accessories as mounted items with effects<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[263](#263) Mods that attach to armour and change its numbers<br>[264](#264) Mods that attach to weapons<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[283](#283) Vehicle weapons fire with no recoil<br>[284](#284) Buy or build a modded item — its whole price before it reaches the sheet |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -794,8 +794,26 @@ the Armor raised no higher than Body (p.131); Advanced Drone Pilot, Autonav, Sen
 The Stats tab shows "→ N" beside the typed figure; the Mods tab lists what changed and why. TESTING.md §78b.
 - **Fixed in passing:** the budget's Cargo / Load and the mounts' Body read the stored `attributes.X.value`, which no input updates —
   a GM's edit of Cargo was ignored. They read `base` now.
-- **Not in the packs, so not modelled:** suspension, drive-by-wire, turbocharging, signature masking / RAM (pp.126-135) — no
-  documents carry them. Not a number: CMCs (ignore damage boxes), Nitrous (dice on Accelerating), APPS, crash cages, roll bars,
+- **Added to the packs (2026-10-27, the maintainer: "Drive by wire is on page r3.129 … Turbocharging … r3.126 … Signature …
+  134"):** `tools/add-r3r-vehicle-mods.mjs` writes nine R3R documents the upstream data lacked (sr3e-vehiclemod-0300…0308):
+  Drive-by-Wire, Improved Suspension, Improved Control Surfaces, Off-Road Suspension (p.129-130), Turbocharging/Superconductive
+  Drive (p.126), Active Thermal Masking, Noisemaker Dispenser, Radar-Absorbent Materials (p.134), Thermal Baffles (p.135).
+  What they change is in `vehicle-mods.mjs` (Handling, Speed, Acceleration, Signature, Load — every reader through
+  `vehicleStat`); levels past the book's maximum, drive-by-wire with suspension / control surfaces, turbocharged aircraft and
+  masking past the engine customization are warned. Mutants `vehicle-mount-signature-shown-only`, `vehicle-dbw-split-rounds-up`.
+  The maintainer's rulings, 2026-10-27:
+  - **Signature applies** — mods and the weapon mounts' standing −1s alike ("I was wrong, External fixed mounts reduce the
+    vehicle's Signature by 1 (SR3 p.307)"). Active masking (while it runs) and the noisemaker (once released) are notes.
+  - **Prices are worked out on install** (`VehicleMods.price`; `preCreateItem` fills a blank cost when one lands on a vehicle,
+    and the item sheet shows the price at its level). Not priced, the GM's: a vehicle with no cost, off-road suspension on a
+    transport / tractor (the type field cannot tell them from cars), thermal baffles on a type the table does not name (drones).
+  - **Drive-by-wire's +10% is an editable split on the mod** (`system.dbwSplit`, new field — full restart).
+  - ⚠ **Read as, not ruled:** the split is rounded down; drive-by-wire's Handling −1 is on- AND off-road (the book says
+    "Handling"); a turbocharged Speed is warned past 1.5 × the vehicle's own.
+  - ⚠ **Legality left blank** on the nine — R3R prints none (the other R3R mods read "Legal"). For the maintainer.
+  - Thermal baffles count 3 CF and Body × 50 kg a level in the budget (`PER_POINT`); the noisemaker's 16 CF / 150 kg count, each
+    noisemaker's share is warned for the GM.
+- **Not a number:** CMCs (ignore damage boxes), Nitrous (dice on Accelerating), APPS, crash cages, roll bars,
   Smart Armor's activation roll, ECD / ED (no vehicle field), Power Amplifier (Flux), State of the Art's Enhanced Sensors (unread).
 
 **Built — the CF / Load budget (2026-10-27):** `scripts/data/vehicle-budget.mjs` (`tests/vehicle-budget.test.mjs`; mutants
@@ -1085,6 +1103,17 @@ Building weapon mounts (TODO 234): a firearm on a vehicle fires through the pers
 fires through `SR3EItem.rollVehicleWeapon`, which has no fire-mode step and no recoil at all, so a burst from a turret autocannon
 costs nothing. **Wanted:** read R3R's vehicle-weapon firing rules (modes, recoil, gunnery-recoil adjusters p.137) and give that
 roll the same recoil, mount and all. The maintainer chose to keep it out of the mounts slice (2026-10-27).
+
+## 284. Buy or build a modded item — its whole price before it reaches the sheet — **requested 2026-10-27**
+
+The maintainer, building TODO 265's priced vehicle mods: *"We may need to build a way to 'buy / build a modded item' something
+that can calculate the cost before you add it to your character sheet."* Today a host and its mods are bought one at a time
+(🛒 `SR3EPurchase.js`, TODO 82), and a mod priced from its host (R3R drive-by-wire, turbocharging, thermal baffles…;
+`VehicleMods.price`) is priced only once it is ON the vehicle (`preCreateItem`). **Wanted:** pick a host (gun, armour, cyberlimb,
+vehicle) and its mods, see each price — fixed, per level, or worked out from the host — and the total (and the Availability /
+time the slowest part needs) before anything is created; then buy it as one purchase, or add it without paying. Reads
+`ItemMods` (TODO 276), `CyberCapacity.builtInCost`, `VehicleMods.price`, the mount and budget checks as warnings. **Not designed
+yet** — the maintainer's call on scope (one dialog for every host type, or vehicles first) before any code.
 
 ### 🪄 Spells & drugs
 

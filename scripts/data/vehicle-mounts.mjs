@@ -16,7 +16,9 @@
  *     it may not exceed that value. Pop-up turrets are 1 Weapon Value lower (p.141; a pop-up micro-turret stays at 1).
  *
  * The maintainer, 2026-10-27: **a weapon LINKS to its mount** (`system.mountId` on the firearm or vehicle weapon — the id of a
- * `vehiclemod` on the same vehicle); **Signature is shown, never changed** (the GM edits Sig); **halved recoil rounds down**;
+ * `vehiclemod` on the same vehicle); **halved recoil rounds down**; the standing Signature reduction (external fixed mounts −1,
+ * SR3 p.307; each turret −1) is APPLIED by `vehicle-mods.mjs` — the maintainer reversed "shown, never changed" the same day:
+ * "I was wrong, External fixed mounts reduce the vehicle's Signature by 1 (SR3 p.307)". The conditional parts stay notes;
  * a mount changes a FIREARM's fire dialog now — vehicle-weapon recoil is TODO 283. Warn, never refuse.
  */
 
@@ -174,7 +176,7 @@ export const VehicleMounts = {
     const orphans = weapons.filter(w => String(w.system?.mountId ?? '').trim() && !mounts.some(m => m.id === w.system.mountId));
     for (const w of orphans) warnings.push(`${w.name} names a mount that is not on this vehicle — pick its mount again.`);
 
-    // Signature (shown, never changed — the maintainer, 2026-10-27).
+    // Signature: `reduction` is applied by vehicle-mods.mjs (SR3 p.307; the maintainer, 2026-10-27); the conditional parts are notes.
     let reduction = 0;
     const sigNotes = [];
     if (mounts.some(m => m.kind === 'fixed' && m.external)) { reduction += 1; sigNotes.push(`external mounts −1 (${PAGES.fixed})`); }

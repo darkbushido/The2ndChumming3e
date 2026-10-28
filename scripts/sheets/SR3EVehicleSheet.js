@@ -8,7 +8,8 @@ import { StallSpeed } from '../data/stall-speed.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 
 /** The stats `vehicle-mods.mjs` changes, as the Mods tab names them. */
-const LABELS = { armor: 'Armor', handling: 'Handling', handlingOffRoad: 'Off-road Handling', pilot: 'Pilot', autonav: 'Autonav', sensor: 'Sensor', ecm: 'ECM', eccm: 'ECCM' };
+const LABELS = { armor: 'Armor', handling: 'Handling', handlingOffRoad: 'Off-road Handling', speed: 'Speed', accel: 'Acceleration',
+  sig: 'Signature', load: 'Load', pilot: 'Pilot', autonav: 'Autonav', sensor: 'Sensor', ecm: 'ECM', eccm: 'ECCM' };
 
 export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
 
@@ -526,7 +527,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       + `${x.kind === 'turret' ? ` · Weapon Value ${x.weaponValueUsed} / ${x.weaponValue}` : ''}</li>`).join('');
     return `<div class="sr-vehicle-mounts">
         <span class="sr-budget${over}" data-tooltip="A hardpoint is 2 points, a firmpoint 1; the total may not exceed Body (${VehicleMounts.PAGES.points}).">Mounts ${m.points.used} / ${m.points.of} (Body)</span>
-        ${m.signature.reduction || m.signature.notes.length ? `<span class="sr-mount-sig" data-tooltip="Shown, not applied — edit Sig if you want it there.">Signature −${m.signature.reduction}: ${esc(m.signature.notes.join('; '))}</span>` : ''}
+        ${m.signature.reduction || m.signature.notes.length ? `<span class="sr-mount-sig" data-tooltip="Applied to the vehicle's Signature (SR3 p.307) — the conditional parts are reminders only.">Signature −${m.signature.reduction}: ${esc(m.signature.notes.join('; '))}</span>` : ''}
         <ul class="sr-mount-list">${rows}</ul>
         ${m.warnings.map(w => `<p class="sr-budget-warn">⚠ ${esc(w)}</p>`).join('')}
         ${m.notes.map(n => `<p class="sr-mount-note">${esc(n)}</p>`).join('')}
@@ -611,7 +612,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     const rigger = actorFrom(sys.driverActorId?.trim() ?? '');
     const rew    = rigger?.system?.ew ?? {};
     const derivedFp = this._ewFootprintDerived(sys);
-    const sigBase   = sys.attributes?.sig?.base ?? 0;
+    const sigBase   = vehicleStat(this.actor, 'sig');
     const footprint = ew.footprint ?? 0;
 
     const _ewStat = (key, label) => `
@@ -1277,7 +1278,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     let collisionPool = null;
     if (collision) {
       const ram     = collision.test === 'ram';
-      const speedRt = sys.attributes?.speed?.base ?? 0;
+      const speedRt = vehicleStat(this.actor, 'speed');
       const over    = speedRt > 0 && (collision.ctx?.speed ?? 0) > speedRt;
       const vcr2 = vcrRating * 2;   // the Ramming and Braking tables read 2 × VCR (p.141, p.143), not the Driving Test's 1 ×
       collisionRows = `

@@ -1,0 +1,25 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0301",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0301",
+    "name": "Improved Suspension (Vehicle)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 0,
+      "availability": "6/12 days",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "Level x 40 hrs/Vehicle B/R(4)",
+      "cfCost": "0",
+      "load": "",
+      "bookPage": "r3.129",
+      "description": "Wheeled ground vehicles. On-road Handling −1 a level (a motorcycle's off-road too), at most −2. Not with drive-by-wire. Parts: the vehicle's original cost × 0.1 a level. R3R p.129.",
+      "rating": 1,
+      "modFor": "vehicle",
+      "legality": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

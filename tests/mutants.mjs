@@ -4180,6 +4180,20 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'vehicle-mount-signature-shown-only',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'mountSignature',
+    was:    'the mounts’ Signature was shown, never applied — the maintainer reversed it: "External fixed mounts reduce the vehicle’s Signature by 1 (SR3 p.307)" (TODO 265)',
+    impl:   () => 0,
+  },
+  {
+    id:     'vehicle-dbw-split-rounds-up',
+    suite:  'vehicle-mods',
+    ...VMODS, method: 'splitGain',
+    was:    'drive-by-wire’s split rounded to the nearest — read as rounded down (R3R p.129 does not say; TODO 265)',
+    impl:   (own, pct) => Math.round(Number(own) * Number(pct) / 100),
+  },
+  {
     id:     'vehicle-rated-mod-adds',
     suite:  'vehicle-mods',
     ...VMODS, method: 'rated',

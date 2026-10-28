@@ -56,6 +56,7 @@ import { KarmaPool, GoodKarma } from './data/karma-uses.mjs';
 import { SR3EPurchase } from './SR3EPurchase.js';
 import { Purchasing } from './data/purchasing.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
+import { VehicleMods } from './data/vehicle-mods.mjs';
 import { Hands } from './data/hands.mjs';
 import { SR3ESourceBooks } from './SR3ESourceBooks.js';
 import { SR3EStatusEffects } from './SR3EStatusEffects.js';
@@ -527,6 +528,15 @@ Hooks.on('preUpdateItem', (document, changes, options) => {
  * Weapon keep fighting, which also made every NEW weapon — a starting character's whole kit, every
  * grenade — read as drawn. A weapon created on a character or NPC starts put away; armour starts off.
  * ⚠ Only embedded creates fire this: copying a whole actor (`sr3e.actor.create`) keeps its state. */
+/* A vehicle mod priced from its vehicle (TODO 265, R3R pp.126-135; the maintainer, 2026-10-27: "worked out on install"):
+ * landing on a vehicle with no cost, it takes what it costs on THAT vehicle. Filled once; the item keeps it, editable. */
+Hooks.on('preCreateItem', (document) => {
+  const vehicle = document.parent?.documentName === 'Actor' && document.parent.type === 'vehicle' ? document.parent : null;
+  if (!vehicle || document.type !== 'vehiclemod' || Number(document.system?.cost) > 0) return;
+  const price = VehicleMods.price(document, vehicle, vehicle.items);
+  if (price != null) document.updateSource({ 'system.cost': price });
+});
+
 Hooks.on('preCreateItem', (document) => {
   const parentType = document.parent?.documentName === 'Actor' ? document.parent.type : null;
   if (ReadyWeapon.putAwayOnCreate(document, parentType)) document.updateSource({ 'system.ready': false });

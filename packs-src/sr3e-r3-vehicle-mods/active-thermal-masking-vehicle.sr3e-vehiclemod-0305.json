@@ -1,0 +1,25 @@
+{
+  "_key": "!items!sr3e-vehiclemod-0305",
+  "doc": {
+    "_id": "sr3e-vehiclemod-0305",
+    "name": "Active Thermal Masking (Vehicle)",
+    "type": "vehiclemod",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles-default.webp",
+    "system": {
+      "cost": 0,
+      "availability": "8/21 days",
+      "streetIndex": "2",
+      "installEquipment": "Vehicle Facility",
+      "installTime": "Level x 8 hrs/Vehicle B/R(4)",
+      "cfCost": "3",
+      "load": "100kg",
+      "bookPage": "r3.134",
+      "description": "A coolant system for customized combustion engines (not motorcycles): one level per level of engine customization, at most +2. While it runs, Signature +1 and Speed −15 m/turn a level, for 60 − 5 × level minutes; then Signature 2 for 10 minutes. Parts: the engine customization's cost × 2, +0.25 for each further level. R3R p.134.",
+      "rating": 1,
+      "modFor": "vehicle",
+      "legality": ""
+    },
+    "effects": []
+  },
+  "embedded": {}
+}

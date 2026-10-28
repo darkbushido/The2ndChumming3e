@@ -3947,3 +3947,4 @@ label.act-field input[type=number] {
 .sr-mount-pick { display: block; margin-top: 2px; font-size: 11px; max-width: 100%; }
 /* What a vehicle's mods make of a stat (TODO 265) — the effective figure beside the typed one. */
 .sr-veh-mod-eff { color: var(--sr-accent); font-weight: 600; margin-left: 4px; white-space: nowrap; }
+.sr-mod-price { grid-column: 1 / -1; color: var(--sr-muted); font-size: 11px; margin: 0; }

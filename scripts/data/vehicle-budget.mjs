@@ -11,7 +11,7 @@
  *
  * ⚠ **Per point.** A few mods are bought in points and their figures are per point — the pack fields do not say so:
  * Vehicle Armor's Load (Body² × 5 kg per Armor point, R3R p.131) and Concealed Armor's CF and Load (3 CF and Body² × 5 kg per
- * point, p.132). `PER_POINT` multiplies those by the mod's rating. Ablative Armor's Body × 100 kg is for the mod (p.131); Smart
+ * point, p.132), Thermal Baffles' CF and Load (3 CF and Body × 50 kg per level, p.135). `PER_POINT` multiplies those by the mod's rating. Ablative Armor's Body × 100 kg is for the mod (p.131); Smart
  * Armor's "3*Armor" is 3 CF per point of the VEHICLE's Armor (p.133).
  */
 
@@ -19,6 +19,7 @@
 export const PER_POINT = {
   'Vehicle Armor':   { cf: false, load: true },
   'Concealed Armor': { cf: true,  load: true },
+  'Thermal Baffles': { cf: true,  load: true },   // 3 CF and Body × 50 kg per +1 (R3R p.135)
 };
 
 export const PAGE = 'R3R p.124';
@@ -38,6 +39,9 @@ export const VehicleBudget = {
     const t = String(text ?? '').trim();
     if (t === '') return 0;
     if (/^\d+(?:\.\d+)?$/.test(t)) return Number(t);
+    // "16+8/noisemaker": the 16; each noisemaker's 8 is the GM's (`unitExtra`, R3R p.134).
+    const each = /^(\d+(?:\.\d+)?)\+\d+(?:\.\d+)?\/[a-z]+$/i.exec(t);
+    if (each) return Number(each[1]);
     const m = /^(\d+(?:\.\d+)?)\s*[*x×]\s*armou?r$/i.exec(t);
     if (m) return Number(m[1]) * num(armor);
     return null;
@@ -59,7 +63,14 @@ export const VehicleBudget = {
     if (m) return num(body) * Number(m[1]);
     m = /^(\d+(?:\.\d+)?)kg\+weapon$/i.exec(t);
     if (m) return Number(m[1]);
+    m = /^(\d+(?:\.\d+)?)kg\+\d+(?:\.\d+)?kg\/[a-z]+$/i.exec(t);   // "150kg+25kg/noisemaker"
+    if (m) return Number(m[1]);
     return null;
+  },
+
+  /** What a figure leaves out per unit — "16+8/noisemaker" → "noisemaker" — or null. */
+  unitExtra(text) {
+    return /\+\d+(?:\.\d+)?(?:kg)?\/([a-z]+)$/i.exec(String(text ?? '').replace(/\s+/g, ''))?.[1] ?? null;
   },
 
   /** Does the mod's Load leave out a weapon the GM must add ("10kg+Weapon")? */
@@ -80,7 +91,7 @@ export const VehicleBudget = {
     if (per?.cf && cf != null) cf *= points;
     if (per?.load && load != null) load *= points;
     return { name: mod?.name ?? '?', cf: cf == null ? null : round(cf), load: load == null ? null : round(load), perPoint: !!per,
-      weapon: VehicleBudget.weaponExtra(sys.load) };
+      weapon: VehicleBudget.weaponExtra(sys.load), unit: VehicleBudget.unitExtra(sys.cfCost) ?? VehicleBudget.unitExtra(sys.load) };
   },
 
   /** Passenger seats a rigger may scrape: seating less the driver's seat. */
@@ -98,9 +109,9 @@ export const VehicleBudget = {
     const rows = [...mods].map(m => VehicleBudget.of(m, sys));
     const cfUsed = round(rows.reduce((s, r) => s + (r.cf ?? 0), 0));
     const loadUsed = round(rows.reduce((s, r) => s + (r.load ?? 0), 0));
-    // The typed figures — the sheet edits `base`; a stored `value` is stale (TODO 265).
+    // Cargo is the typed figure — the sheet edits `base`; a stored `value` is stale (TODO 265).
     const cfOf = num(attrs.cargo?.base);
-    const loadOf = num(attrs.load?.base);
+    const loadOf = num(attrs.load?.value ?? attrs.load?.base);   // prepared: drive-by-wire's Load share in (vehicle-mods.mjs)
     const seats = VehicleBudget.passengerSeats(sys.seating);
     const scrape = Math.floor(1.5 * seats);
     const cf = { used: cfUsed, of: cfOf, over: round(Math.max(0, cfUsed - cfOf)), scrape, seats };
@@ -113,6 +124,7 @@ export const VehicleBudget = {
     }
     if (load.over > 0) warnings.push(`The mods weigh ${loadUsed} kg; the vehicle's Load is ${loadOf} kg — ${load.over} kg over (${PAGE}).`);
     if (rows.some(r => r.weapon)) warnings.push('A weapon mount\'s Load leaves out the weapon on it — add the weapon\'s weight (R3R p.136).');
+    for (const r of rows.filter(x => x.unit)) warnings.push(`${r.name}: its CF / Load count the dispenser only — add each ${r.unit}'s (R3R p.134).`);
     return { cf, load, rows, unread, warnings };
   },
 };

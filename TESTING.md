@@ -3529,7 +3529,8 @@ JS / CSS only (no restart needed beyond a reload). A vehicle from the packs, e.g
 
 - [ ] **Mods tab:** add External Hardpoint, Internal Firmpoint and Small Turret → "Mounts 7 / 4 (Body)", amber, and "⚠ The mounts
       take 7 points … 3 over (R3R p.135)". "Signature −2: external mounts −1 (R3R p.136); 1 turret −1 (R3R p.140); −1 more while an
-      internal mount's weapon is out" — the vehicle's Sig on the Stats tab is unchanged.
+      internal mount's weapon is out" — and the Stats tab's Sig shows "→ N" two lower (applied since §78b: SR3 p.307; the maintainer reversed
+      "shown, never changed" on 2026-10-27).
 - [ ] **Weapons tab:** each weapon row has a Mount dropdown listing the three. Put an Ultimax MMG and a vehicle Autocannon on the
       Small Turret → the Mods tab lists both under it, "Weapon Value 5 / 3", and warns. A note: "Ultimax MMG on Small Turret: … needs
       a firearm conversion kit (R3R p.136)".
@@ -3559,3 +3560,19 @@ below, the typed edit and the Mods tab text all as stated.)*
 - [ ] **Typing a stat** (Armor 2 → 3) saves 3 and the arrow reads 9 — the typed figure stays the vehicle's own; nothing derived is saved.
 - [ ] **Concealed Armor** together with Vehicle Armor → "⚠ Concealed Armor is not compatible with standard vehicle armor (R3R p.132)",
       both still counted. A Body 0 drone with armour → warned.
+
+### 78c. Control, engine and signature mods (TODO 265 — R3R pp.126, 129-130, 134-135; SR3 p.307)
+
+**Full Foundry restart** (`dbwSplit` is a new field) and `npm run packs:install` with Foundry CLOSED first (nine new R3R vehicle
+mods). A car with cost 40,000¥, Body 4, Handling 4 / 5 off-road, Speed 100, Accel 10, Sig 4.
+
+- [ ] **Drop Drive-by-Wire System** on it → its Cost fills 10,000¥ (0.25 × 40,000 at level 1); its sheet says "On <car> at this
+      level: 10,000¥" and has three +% boxes. Set level 2 → the price line reads 20,000¥ (Cost stays what was filled — edit it).
+      Handling "→ 2" / off-road "→ 3"; the Mods tab asks for the split. Type Accel 6 / Speed 4 → Speed "→ 104".
+- [ ] **Add Improved Suspension** → "⚠ … may not be used with drive-by-wire". Remove both; Off-Road Suspension 2 → off-road "→ 3",
+      on-road "→ 6", Speed "→ 85".
+- [ ] **Turbocharging [2]** → Speed +30, Accel +2, Sig −2. **Radar-Absorbent Materials [3]** (Cost 675,000¥) and **Thermal Baffles
+      [2]** (Cost 40,000¥; the budget counts 6 CF and 400 kg) → Sig +5. **Active Thermal Masking [1]** → no Sig change, a note
+      ("while it runs (55 minutes)"); with no turbocharging, warned.
+- [ ] **Weapon mounts** — an External Hardpoint and a Small Turret → Sig two lower ("weapon mounts", SR3 p.307 in the tooltip).
+- [ ] **Rolls use it:** a chase test's Speed / Handling, a sensor test against this car (its Sig), a collision's Acceleration.

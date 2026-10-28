@@ -22,6 +22,7 @@ import { ArmorMods } from '../data/armor-mods.mjs';
 import { CyberCapacity } from '../data/cyber-capacity.mjs';
 import { SR3EItemMods } from '../SR3EItemMods.js';
 import { ModRemoval } from '../data/mod-removal.mjs';
+import { VehicleMods } from '../data/vehicle-mods.mjs';
 
 /** Where a spell's fetish or exclusive limit was taken · SR3 p.180 (TODO 223). Blank = the spell has no such limit. */
 const SPELL_LIMIT_SIDES = [
@@ -576,6 +577,23 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     const actor = this.item.actor;
     if (!actor) return;
     return game.sr3e.SR3EPurchase.open(actor, null, { forWeapon: this.item });
+  }
+
+  /**
+   * A vehicle mod's extras (TODO 265): what it costs on THIS vehicle (R3R pp.126-135, priced from the vehicle — the editable
+   * Cost was filled from it on install), and drive-by-wire's one-time +10% split among Acceleration, Speed and Load (p.129).
+   */
+  _vehicleModExtras(s) {
+    const vehicle = this.document.parent?.type === 'vehicle' ? this.document.parent : null;
+    const price = vehicle ? VehicleMods.price(this.document, vehicle, vehicle.items) : null;
+    const split = s.dbwSplit ?? {};
+    const priceLine = price != null ? `
+          <p class="sr-mod-price" title="Customization Parts Cost from the vehicle's cost, Body and type (R3R pp.126-135). Filled into Cost when it was installed; edit Cost freely.">On ${foundry.utils.escapeHTML(vehicle.name)} at this level: ${price.toLocaleString()}¥</p>` : '';
+    if (VehicleMods.effectOf(this.document)?.kind !== 'dbw') return priceLine;
+    return `${priceLine}
+          ${this._f('+% Acceleration', 'dbwSplit.accel', split.accel ?? 0, 'number', 'min="0" max="10" title="Drive-by-wire: a one-time +10% split among Acceleration, Speed and Load (R3R p.129)"')}
+          ${this._f('+% Speed', 'dbwSplit.speed', split.speed ?? 0, 'number', 'min="0" max="10"')}
+          ${this._f('+% Load', 'dbwSplit.load', split.load ?? 0, 'number', 'min="0" max="10"')}`;
   }
 
   _f(label, name, value, type = 'text', extra = '') {
@@ -1448,7 +1466,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
         return `<div class="form-grid">
           ${this._modRatingField(s)}
           ${this._modForField(s)}
-          ${this._f('Cost (¥)', 'cost', s.cost, 'number', 'min="0"')}
+          ${this._f('Cost (¥)', 'cost', s.cost, 'number', 'min="0"')}${this._vehicleModExtras(s)}
           ${this._f('CF', 'cfCost', s.cfCost, 'text', 'title="Cargo Factor the mod takes"')}
           ${this._f('Load', 'load', s.load)}
           ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}

@@ -30,7 +30,10 @@ export async function run(t) {
   t.eq('Concealed Armor 2: 3 CF and 125 kg a point', (({ cf, load }) => [cf, load])(VehicleBudget.of(mod('Concealed Armor (Vehicle)', '3', 'Body^2*5kg', 2), v.system)), [6, 250]);
   t.is('Ablative Armor\'s Body × 100 kg is for the mod, not per level (p.131)', VehicleBudget.of(mod('Ablative Armor (Vehicle)', '0', 'Body*100kg', 3), v.system).load, 500);
   t.is('a rated mod outside the table is not multiplied (ECM 4: its 5 kg)', VehicleBudget.of(mod('ECM (Vehicle)', '1', '5kg', 4), v.system).load, 5);
-  t.eq('the per-point table is the book\'s two', Object.keys(PER_POINT), ['Vehicle Armor', 'Concealed Armor']);
+  t.eq('the per-point table is the book\'s three', Object.keys(PER_POINT), ['Vehicle Armor', 'Concealed Armor', 'Thermal Baffles']);
+  t.eq('Thermal Baffles 2 on a Body 5: 3 CF and Body × 50 kg a level (R3R p.135)', (({ cf, load }) => [cf, load])(VehicleBudget.of(mod('Thermal Baffles (Vehicle)', '3', 'Body*50kg', 2), v.system)), [6, 500]);
+  const nm = VehicleBudget.summary(car(), [mod('Noisemaker Dispenser (Vehicle)', '16+8/noisemaker', '150kg+25kg/noisemaker')]);
+  t.eq('the Noisemaker: 16 CF and 150 kg counted, each noisemaker the GM\'s (R3R p.134)', [nm.cf.used, nm.load.used, nm.warnings.some(w => /add each noisemaker/.test(w))], [16, 150, true]);
 
   /* ── The budget ───────────────────────────────────────────────────────────── */
   const fits = VehicleBudget.summary(car(), [mod('ECM (Vehicle)', '1', '5kg', 2), mod('Crash Cages (Vehicle)', '2', '25kg')]);

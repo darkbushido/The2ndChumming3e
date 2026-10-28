@@ -598,6 +598,13 @@ export class VehicleModData extends foundry.abstract.TypeDataModel {
       cfCost:           new StringField({ initial: '0' }),
       load:             new StringField({ initial: '' }),
       modifiers:        modifiersField(),
+      // Drive-by-wire's one-time +10%, split as the player chooses among Acceleration, Speed and Load — percentages
+      // (R3R p.129; the maintainer, 2026-10-27: "editable split on the mod"). Read by vehicle-mods.mjs; unused on other mods.
+      dbwSplit: new SchemaField({
+        accel: new NumberField({ integer: true, initial: 0, min: 0 }),
+        speed: new NumberField({ integer: true, initial: 0, min: 0 }),
+        load:  new NumberField({ integer: true, initial: 0, min: 0 }),
+      }),
       bookPage:         new StringField({ initial: '' }),
       description:      new HTMLField({ initial: '', required: false }),
     };

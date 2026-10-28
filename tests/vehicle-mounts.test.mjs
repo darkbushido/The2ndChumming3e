@@ -77,7 +77,7 @@ export async function run(t) {
   t.ok('…', s.warnings.some(w => /Small Turret \(Vehicle\) carries Weapon Value 5; it takes 3/.test(w)));
   t.ok('a personal firearm on a fixed mount or turret is reminded of the conversion kit (p.136)',
     s.notes.some(n => /Ultimax MMG on Small Turret.*conversion kit/.test(n)) && s.notes.some(n => /Ingram Valiant on Internal Firmpoint.*conversion kit/.test(n)));
-  t.eq('Signature: external mounts −1 once, the turret −1 — shown, never applied', s.signature.reduction, 2);
+  t.eq('Signature: external mounts −1 once, the turret −1 (applied by vehicle-mods.mjs — SR3 p.307)', s.signature.reduction, 2);
   t.ok('…and the internal mount\'s −1 while its weapon is out, as a note', s.signature.notes.some(n => /internal mount's weapon is out/.test(n)));
   const heavyOnFirm = VehicleMounts.summary(car(6), [mod('fp', 'External Firmpoint (Vehicle)'), gun('g', 'Ultimax MMG', 'MMG', 'fp')]);
   t.ok('a heavy weapon on a firmpoint is warned (p.135)', heavyOnFirm.warnings.some(w => /Ultimax MMG is on External Firmpoint.*need a hardpoint/.test(w)));
@@ -115,7 +115,7 @@ export async function run(t) {
   const sheet = read('scripts/sheets/SR3EVehicleSheet.js');
   t.ok('the Weapons tab picks each weapon\'s mount, writing system.mountId', /_mountPicker\(actor, w\)/.test(sheet) && /update\(\{ 'system\.mountId': sel\.value \}\)/.test(sheet));
   t.ok('the Mods tab shows the mounts through VehicleMounts.summary', /VehicleMounts\.summary\(actor, actor\.items\)/.test(sheet));
-  t.ok('…the Signature shown, never written', /Shown, not applied/.test(sheet) && !/'system\.attributes\.sig/.test(sheet.slice(sheet.indexOf('_mountsSummary'))));
+  t.ok('…the Signature applied to the rolls, never written into the typed Sig', /Applied to the vehicle's Signature/.test(sheet) && !/'system\.attributes\.sig/.test(sheet.slice(sheet.indexOf('_mountsSummary'))));
   const models = read('scripts/data/ItemDataModels.js');
   t.is('mountId on firearms and vehicle weapons', (models.match(/mountId: +new StringField\(\{ initial: '', blank: true \}\)/g) ?? []).length, 2);
 }

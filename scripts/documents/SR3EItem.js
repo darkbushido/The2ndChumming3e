@@ -1851,7 +1851,7 @@ export class SR3EItem extends Item {
 
     // Step 3: Roll options dialog
     const baseSig  = targetActor.type === 'vehicle'
-      ? (targetActor.system.attributes?.sig?.base ?? 4)
+      ? vehicleStat(targetActor, 'sig')
       : 4;
     const weaponOpts = await SR3EItem._promptVehicleWeaponRollOptions(
       this, targetActor, pool, poolLabel, baseSig, rawDamage, vcrLevel, controlPoolMax, combatPoolMax

@@ -845,7 +845,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const vcrRating  = p.vcrActive ? (p.vcrRating ?? 0) : 0;
     const handling   = vehicle ? vehicleStat(vehicle, 'handling') : 4;
     const autonav    = vehicleStat(vehicle, 'autonav');
-    const speedAttr  = vehicle?.system.attributes?.speed?.base    ?? 0;
+    const speedAttr  = vehicleStat(vehicle, 'speed');
     const damageInfo = this._vehicleDamageInfo(p.vehicleActorId);
     const maxSpeedKmct = +(speedAttr * damageInfo.speedMod).toFixed(2); // km/ct
     const exceedsSpeed = p.speed > maxSpeedKmct;
@@ -1814,7 +1814,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
     const sigOf = (pid) => {
       const p = this._participants.find(x => x.id === pid);
       const v = actorFrom(p?.vehicleActorId);
-      return v?.system.attributes?.sig?.base ?? 4;
+      return v ? vehicleStat(v, 'sig') : 4;
     };
 
     // Relocating terrain modifiers
@@ -1925,7 +1925,7 @@ export class SR3EVehicleChase extends foundry.applications.api.ApplicationV2 {
           const oppPid = el.querySelector('#act-opponent')?.value;
           const oppP   = this._participants.find(x => x.id === oppPid);
           const oppV   = actorFrom(oppP?.vehicleActorId);
-          const sig    = oppV?.system.attributes?.sig?.base ?? 4;
+          const sig    = oppV ? vehicleStat(oppV, 'sig') : 4;
           el.querySelector('#act-ov')?.replaceChildren(document.createTextNode(oppV?.name ?? '—'));
           const sigInp = el.querySelector('#act-sig');
           const tnInp  = el.querySelector('#act-tn');
