@@ -17,7 +17,10 @@
       "description": "",
       "rating": null,
       "modFor": "vehicle",
-      "legality": "3P-V"
+      "legality": "3P-V",
+      "designCost": "125",
+      "designCf": "6",
+      "designLoad": "25kg"
     },
     "effects": []
   },

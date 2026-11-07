@@ -49,6 +49,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
       toggleTemplate:  SR3EVehicleSheet._onToggleTemplate,
       deployTemplate:  SR3EVehicleSheet._onDeployTemplate,
       markAsLive:      SR3EVehicleSheet._onMarkAsLive,
+      openDesign:      SR3EVehicleSheet._onOpenDesign,   // TODO 287 — the 🛠 Vehicle Designer, this vehicle's design
       // Electronic Warfare
       signalBox:           SR3EVehicleSheet._onSignalBox,
       signalInfil:         SR3EVehicleSheet._onSignalInfil,
@@ -184,6 +185,7 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
                 ? `<button type="button" class="sr3e-template-btn sr3e-live-btn" data-action="markAsLive" title="Mark as live vehicle — will appear in linking dialogs">Mark as Live</button>`
                 : `<button type="button" class="sr3e-template-btn sr3e-template-mark" data-action="toggleTemplate" title="Mark as template — hides from pilot linking dialogs">Mark as Template</button>`
             }
+            <button type="button" class="sr3e-template-btn sr3e-design-btn" data-action="openDesign" title="Open this vehicle's design (R3R Vehicle Design) — re-saving offers the changed stats">🛠 Design</button>
             <label class="inline-field" style="margin-left:10px;">Type
               <select name="system.vehicleType" style="background:var(--sr-surface);color:var(--sr-text);border:1px solid var(--sr-border);border-radius:var(--r);padding:2px 6px;">
                 ${typeOpts}
@@ -1538,6 +1540,11 @@ export class SR3EVehicleSheet extends foundry.applications.sheets.ActorSheetV2 {
     }
     const created = result?.uuid ? await fromUuid(result.uuid) : null;
     if (created?.isOwner) created.sheet.render(true);
+  }
+
+  /** 🛠 Design — this vehicle's stored design in the Vehicle Designer (TODO 287); re-saving offers the changes. */
+  static _onOpenDesign(_ev, _target) {
+    game.sr3e.SR3EVehicleDesigner.open(this.actor);
   }
 
   static async _onSetAutoMode(_ev, _target) {

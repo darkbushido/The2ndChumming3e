@@ -17,7 +17,8 @@
       "description": "+1 Hand, CF 8",
       "rating": null,
       "modFor": "vehicle",
-      "legality": "Legal"
+      "legality": "Legal",
+      "designCost": "20"
     },
     "effects": []
   },

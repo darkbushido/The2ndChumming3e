@@ -1175,8 +1175,32 @@ read them from rendered pages (`pdftoppm`), never from `pdftotext`.
   `design-handling-floor-rounds-down`, `design-availability-rounds-down`, `design-smart-max-truncates`,
   `design-cell-strips-formula-bracket`, `design-load-ignores-body0`.
 - No UI in this slice, so there is nothing to check in Foundry yet.
-- ⚠ **Read as, not ruled:** the "minimum Availability and base time … 2/24" (p.113) is read as Availability 2, 2 days
-  (the example's stat block prints "2/2 days"). Smart materials' raised maxima round to the nearest (the example: 270 → 311).
+
+**Ruled (the maintainer, 2026-11-07, via the questions session):**
+- **Availability:** "a day is 24hrs, the base is 2/24hours so a 2/2 days should be 2/48hrs. you cannot mod it lower then
+  2/24hrs." — the minimum is 2/24 hrs; the time is ⌈cost ÷ 20,000⌉ days, never under 24 hours.
+- **Class modifiers** are applied as p.113 states (the examples' omission is a book error).
+- **Mods' design cost:** "Add designCost field now" — a data-model field, the packs filled, a migration for owned copies.
+- **Design options:** typed rows (name, points, CF, Load) now; the catalogue as data is **slice 3**.
+- **The design lives on the vehicle** (`flags.The2ndChumming3e.design`); re-saving **offers** the changed stats (old → new,
+  each ticked) rather than writing over hand edits.
+- **Entry points:** the Actors directory header, a macro, and the vehicle sheet's Design button.
+- **Smart materials' raised maxima round to the nearest, .5 up** (the example: 270 → 311) — Q4, as built.
+- **The tables keep the printed figures**; the discrepancies stay listed in `NOTES` — Q5, as built.
+
+**Built — slice 2, design costs and the designer window (2026-11-07):**
+- `vehiclemod` gains `designCost` / `designCf` / `designLoad` (strings as printed: "55 per level", "Chassis x 0.25",
+  "Rating 1: 100, 2: 200…"). `scripts/data/design-costs.mjs` holds 113 rows transcribed from R3R pp.126-155 (by name and
+  book page); `tools/fill-design-costs.mjs` filled the packs (114 documents); the 0.9.0 migration fills owned copies'
+  blanks. `DesignCosts.points` reads a figure; anything it cannot read (Noisemaker's "16+8/noisemaker", Active Thermal
+  Masking) is left for the GM. Non-R3R mods (fra, sota2, twl) have no design figures — typed in the window.
+- `scripts/data/vehicle-design-actor.mjs` — design result → vehicle fields, the re-save offer (`changes` / `accepted`), a
+  mod priced by its design figures. `scripts/SR3EVehicleDesigner.js` — the window. Entry points: 🛠 Design a vehicle
+  (Actors directory header), the "SR3E Vehicle Designer" world macro, 🛠 Design on the vehicle sheet.
+- Tests: `tests/design-costs.test.mjs`, `tests/vehicle-design-actor.test.mjs`; mutant `design-cost-per-level-ignored`.
+  Live check: TESTING.md §80.
+- Not yet: picked mods are not embedded as items on the created vehicle (the design lists them; drop them on the sheet) —
+  part of slice 3 with the catalogue.
 
 **For the maintainer — book findings (R3R, printed pages; the code follows the itemised rule):**
 - **Brickyard Beauty** (pp.111-114): its steps add to **1,377** points (897 + 480 for the mods); the book prints 1,401, then

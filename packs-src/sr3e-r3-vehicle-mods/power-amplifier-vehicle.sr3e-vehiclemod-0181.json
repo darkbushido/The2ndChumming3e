@@ -17,7 +17,10 @@
       "description": "",
       "rating": 1,
       "modFor": "vehicle",
-      "legality": "Legal"
+      "legality": "Legal",
+      "designCost": "5 per level",
+      "designCf": "0.25 per level",
+      "designLoad": "1kg per level"
     },
     "effects": []
   },

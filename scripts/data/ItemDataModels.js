@@ -601,6 +601,12 @@ export class VehicleModData extends foundry.abstract.TypeDataModel {
       installTime:      new StringField({ initial: '' }),
       cfCost:           new StringField({ initial: '0' }),
       load:             new StringField({ initial: '' }),
+      // The DESIGN figures — fitted by the manufacturer at design time (R3R p.112, pp.126-155 "Design Specifications"):
+      // Design Points as printed ("55 per level", "Chassis x 0.25"), and design CF / Load where they differ. TODO 287;
+      // read by the vehicle designer through DesignCosts.points (scripts/data/design-costs.mjs). Blank = the GM types it.
+      designCost:       new StringField({ initial: '', blank: true }),
+      designCf:         new StringField({ initial: '', blank: true }),
+      designLoad:       new StringField({ initial: '', blank: true }),
       modifiers:        modifiersField(),
       // Drive-by-wire's one-time +10%, split as the player chooses among Acceleration, Speed and Load — percentages
       // (R3R p.129; the maintainer, 2026-10-27: "editable split on the mod"). Read by vehicle-mods.mjs; unused on other mods.

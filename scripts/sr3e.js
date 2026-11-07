@@ -46,6 +46,7 @@ import { SR3EItemMods } from './SR3EItemMods.js';
 import { SR3ELegwork } from './SR3ELegwork.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
+import { SR3EVehicleDesigner } from './SR3EVehicleDesigner.js';
 import { SR3EMeetContact } from './SR3EMeetContact.js';
 import { SR3EGenericNpc } from './SR3EGenericNpc.js';
 import { SR3EHealing } from './SR3EHealing.js';
@@ -135,7 +136,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc, SR3EItemMods };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc, SR3EItemMods, SR3EVehicleDesigner };
 
   // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
   // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
@@ -427,6 +428,11 @@ Hooks.once('ready', async () => {
       name: 'SR3E Chrome Threat Generator',
       path: 'scripts/macros/generate-chrome-threat.js',
       img:  'icons/svg/skull.svg',
+    },
+    {
+      name: 'SR3E Vehicle Designer',               // TODO 287
+      path: 'scripts/macros/vehicle-designer.js',
+      img:  'icons/svg/wing.svg',
     },
     // ⚠ The populate-agents / populate-hosts macros used to be created here too. They wrote to
     // `sr3e-agents` / `sr3e-hosts`, packs gone since the book split, so every GM got two macros
@@ -2076,6 +2082,21 @@ Hooks.on('updateCombat', async (combat, changed) => {
     whisper: game.users.filter(u => u.isGM).map(u => u.id),
   });
 });
+
+// 🛠 Design a vehicle — the Actors directory header, for everyone (TODO 287; the maintainer, 2026-11-07).
+Hooks.on('renderActorDirectory', (_app, html) => {
+  const el = html instanceof HTMLElement ? html : html?.[0];
+  if (!el || el.querySelector('.sr3e-design-vehicle-btn')) return;
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'sr3e-design-vehicle-btn';
+  b.textContent = '🛠 Design a vehicle';
+  b.addEventListener('click', () => SR3EVehicleDesigner.open());
+  const header = el.querySelector('.directory-header .header-actions') ?? el.querySelector('.directory-header');
+  if (header) header.appendChild(b);
+  else el.prepend(b);
+});
+
 
 // SR3E GM tools — injected into the Rollable Tables sidebar tab.
 // Chase Scene is available to all players; the rest are GM-only.

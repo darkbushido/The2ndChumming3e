@@ -4369,6 +4369,13 @@ export const MUTANTS = [
     impl:   figure => Math.floor(Number(figure) / 2),
   },
   {
+    id:     'design-cost-per-level-ignored',
+    suite:  'design-costs',
+    module: '../scripts/data/design-costs.mjs', klass: 'DesignCosts', method: 'points', needsOriginal: '_pointsOriginal',
+    was:    'a "per level" design cost was charged once — Nitrous Oxide 6 is 330 points, not 55 (R3R p.126, p.113, TODO 287)',
+    impl:   function (text, ctx = {}) { return this._pointsOriginal(text, { ...ctx, level: 1 }); },
+  },
+  {
     id:     'design-availability-rounds-down',
     suite:  'vehicle-design',
     ...VDESIGN, method: 'availability', needsOriginal: '_availabilityOriginal',

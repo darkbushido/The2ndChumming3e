@@ -17,7 +17,10 @@
       "description": "",
       "rating": null,
       "modFor": "vehicle",
-      "legality": "Legal"
+      "legality": "Legal",
+      "designCost": "0",
+      "designCf": "2+3/missile",
+      "designLoad": "0"
     },
     "effects": []
   },

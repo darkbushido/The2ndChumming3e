@@ -17,7 +17,8 @@
       "description": "Watercraft. Handling −1 an increment, at most −2. Not with drive-by-wire. Parts: the vehicle's original cost × 0.15 an increment. R3R p.129.",
       "rating": 1,
       "modFor": "vehicle",
-      "legality": "Legal"
+      "legality": "Legal",
+      "designCost": "Chassis x 0.4 per level"
     },
     "effects": []
   },

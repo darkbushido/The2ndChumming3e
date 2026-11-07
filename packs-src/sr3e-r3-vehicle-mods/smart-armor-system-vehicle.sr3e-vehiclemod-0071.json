@@ -17,7 +17,10 @@
       "description": "Replacement: Body*500Y",
       "rating": null,
       "modFor": "vehicle",
-      "legality": "Legal"
+      "legality": "Legal",
+      "designCost": "250",
+      "designCf": "2",
+      "designLoad": "Body x 50kg"
     },
     "effects": []
   },
