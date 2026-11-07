@@ -43,6 +43,13 @@ export async function run(t) {
   t.eq('no rules-file citation is missing its book', rulesFiles().flatMap(f =>
     citations(read(join(RULES_DIR, f))).filter(c => c.code === '?').map(c => `${f} p.${c.page}`)), []);
 
+  // A book code written twice — "SR3 SR3 p.N", even split across a line break or a "> " — is a sweep
+  // gone wrong (b2c85c8a fixed two the TODO 290 sweep left at line ends).
+  const DOUBLED = /\b(SR3|M&M|MM|R3|MDF|Matrix|MitS|MITS|CC|SOTA2)[\s>*·]+\1\s+pp?\./g;
+  t.eq('no rules file names a book twice before a page', rulesFiles().flatMap(f =>
+    [...read(join(RULES_DIR, f)).matchAll(DOUBLED)].map(m => `${f}: ${m[0].replace(/\s+/g, ' ')}`)), []);
+  t.ok('the doubled-book check sees one split across lines', [...'… worn by SR3\n  SR3 p.43 · SR3 p.44, SR3 p.45'.matchAll(DOUBLED)].length === 1);
+
   t.ok('lookup finds a section by heading', lookup(['damage', 'staging']).some(h => h.inHead && h.rel.endsWith('combat-resolution.md')));
 
   // The point is tokens: the digest must stay a small fraction of what it replaces.
