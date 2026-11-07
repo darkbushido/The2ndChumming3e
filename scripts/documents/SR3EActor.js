@@ -1548,11 +1548,25 @@ export class SR3EActor extends Actor {
       ? `<div style="font-size:11px;color:var(--sr-muted);font-style:italic;margin:3px 0">${step.description}</div>`
       : '';
 
+    // MDF p.23-24 — the −10 per elapsed phase, and the Memory / grading limits: reported, never enforced (TODO 128).
+    const { SheafRules } = await import('./../data/sheaf-rules.mjs');
+    const _pass = game.combat?.flags?.The2ndChumming3e?.queue?.[game.combat?.flags?.The2ndChumming3e?.queueIndex ?? 0]?.pass;
+    const _pen = SheafRules.initiativePenalty(_pass);
+    const _icActors = (step.ic ?? []).map(r => actorFrom(r.actorId)).filter(Boolean);
+    const _rep = SheafRules.stockingReport({
+      memoryTotal: hostActor.system.memoryTotal, mainframeSupport: hostActor.system.mainframeSupport,
+      ic: _icActors.map(i => ({ name: i.name, grading: i.system.grading, memoryRequired: i.system.memoryRequired })) });
+    const _notes = [];
+    if (_pen) _notes.push(`Triggered IC enter ${-_pen} below their rolled Initiative (${_pass - 1} phase${_pass - 1 === 1 ? '' : 's'} already past, MDF p.23).`);
+    if (_rep.over) _notes.push(`Stocked IC need ${_rep.used} Mp; the host has ${_rep.total} Mp (MDF p.24).`);
+    if (_rep.graded.length) _notes.push(`${_rep.graded.join(', ')}: Gray/Black IC need the Mainframe Support module (MDF p.24).`);
+    const noteHtml = _notes.map(n => `<div style="font-size:11px;color:var(--sr-amber);margin:3px 0">⚠ ${n}</div>`).join('');
     const gmUsers = game.users.filter(u => u.isGM).map(u => u.id);
     await ChatMessage.create({
       content: `
         <div class="sr-roll-card">
           <div class="sr-roll-header" style="color:var(--sr-red)">⚠ Security Sheaf — Level ${owCount}</div>
+          ${noteHtml}
           ${desc}
           <div style="font-size:11px;color:var(--sr-text);margin:3px 0">IC: <strong>${icList}</strong></div>
           <div style="display:flex;gap:6px;margin-top:8px">
