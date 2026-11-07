@@ -36,6 +36,7 @@ export const ACTIONS = {
   fireVehicleWeapon: { cost: 'complex', label: 'Fire Mounted or Vehicle Weapon', page: 'SR3 p.108' },
   summonSpirit:      { cost: 'complex', label: 'Summon Nature Spirit',         page: 'SR3 p.108' },
   useSkill:          { cost: 'complex', label: 'Use Skill',                    page: 'SR3 p.108' },
+  matrixAction:      { cost: 'complex', label: 'Matrix Action',                page: 'MDF p.8' },     // "All Matrix actions are Complex actions"
   observeInDetail:   { cost: 'simple',  label: 'Observe in Detail',            page: 'SR3 p.106' },
   changeGunMode:     { cost: 'simple',  label: 'Change Gun Mode',              page: 'SR3 p.106' },
   dropObject:        { cost: 'free',    label: 'Drop Object',                  page: 'SR3 p.105' },

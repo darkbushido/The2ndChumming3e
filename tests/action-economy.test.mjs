@@ -35,7 +35,7 @@ export async function run(t) {
   t.eq('the Simple ones of p.106-107',
     ['throwWeapon', 'insertClip', 'removeClip', 'readyWeapon', 'quickDraw', 'takeAim', 'observeInDetail'].map(k => ACTIONS[k].cost),
     Array(7).fill('simple'));
-  t.ok('every action cites its page', Object.values(ACTIONS).every(a => /^SR3 p\.10[5-8]$/.test(a.page)));
+  t.ok('every action cites its page', Object.values(ACTIONS).every(a => /^(SR3 p\.10[5-8]|MDF p\.8)$/.test(a.page)));
   t.ok('nothing reactive is in the table — dodge, soak, resistance cost the defender nothing',
     !Object.keys(ACTIONS).some(k => /dodge|soak|resist|defen|initiative/i.test(k)));
 

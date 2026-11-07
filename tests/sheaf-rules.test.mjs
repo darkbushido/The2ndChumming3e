@@ -6,6 +6,9 @@ export const name = 'sheaf-rules';
 const read = rel => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
 
 export async function run(t) {
+  const { ACTIONS } = await import('../scripts/data/action-economy.mjs');
+  t.eq('a Matrix action is Complex, MDF p.8', [ACTIONS.matrixAction.cost, ACTIONS.matrixAction.page], ['complex', 'MDF p.8']);
+  t.eq('the five decker flows charge it', (read('scripts/documents/SR3EActor.js').match(/charge\(this, 'matrixAction'/g) ?? []).length, 5);
   t.eq('pass 1: nothing has transpired', SheafRules.initiativePenalty(1), 0);
   t.eq('pass 3: two phases transpired → −20', SheafRules.initiativePenalty(3), -20);
   t.eq('a missing pass is 0, not positive', SheafRules.initiativePenalty(undefined), 0);

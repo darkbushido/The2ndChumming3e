@@ -97,6 +97,11 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
 - **Riggers** (TODO 198/199, `scripts/data/rigger-shock.mjs`): dump shock (RC deck + 4)S or 5S Stun + disorientation
   (p.156); rigger damage 6M/6S Physical, no pools, when a VCR vehicle reaches Serious/Destroyed (p.145).
 
+### Matrix actions are Complex · MDF p.8
+The decker flows (`rollNodePrompt`, `rollHackingAction`, `rollCybercombat` and the Orthodox System Test / Cybercombat) call
+`SR3EActionLedger.begin` then `charge(…, 'matrixAction')` — one Complex per phase, over-spend flagged ⚠, never refused.
+The character sheet's Matrix tab already lists the current node's prompts with a **Use** button (the maintainer's "actions panel").
+
 ### Hacking procedure
 1. Declare a node prompt (e.g. Duplicate/Download on DS).
 2. Hacking vs System Rating; need ≥ Security Threshold successes, else fail + Overwatch +1.

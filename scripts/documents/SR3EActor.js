@@ -195,6 +195,7 @@ export class SR3EActor extends Actor {
   }
 
   async rollCybercombat() {
+    game.sr3e.SR3EActionLedger?.begin(this);
     const targets = SR3EActor._getMatrixCombatTargets(this.id);
     if (!targets.length) {
       const hostId = this.system.activeHostId ?? '';
@@ -250,6 +251,7 @@ export class SR3EActor extends Actor {
       ],
     });
     if (!confirmed || !targetId) return;
+    game.sr3e.SR3EActionLedger?.charge(this, 'matrixAction', 'Cybercombat');   // All Matrix actions are Complex — MDF p.8 (warn only)
 
     const defActor = actorFrom(targetId);
     if (!defActor) return;
@@ -858,6 +860,7 @@ export class SR3EActor extends Actor {
   /* ------------------------------------------------------------------ */
 
   async rollHackingAction() {
+    game.sr3e.SR3EActionLedger?.begin(this);
     const sys = this.system;
     const d   = sys.derived ?? {};
 
@@ -983,6 +986,7 @@ export class SR3EActor extends Actor {
     });
 
     if (!confirmed || !hostActorId) return;
+    game.sr3e.SR3EActionLedger?.charge(this, 'matrixAction', 'Hacking action');   // All Matrix actions are Complex — MDF p.8 (warn only)
 
     const hackSpent = hackPoolDice > 0 ? await this.spendHackingPool(hackPoolDice) : 0;
     if (hackSpent !== hackPoolDice) {
@@ -1008,6 +1012,7 @@ export class SR3EActor extends Actor {
   /* ------------------------------------------------------------------ */
 
   async rollNodePrompt(promptData, nodeId) {
+    game.sr3e.SR3EActionLedger?.begin(this);
     const sys = this.system;
     const d   = sys.derived ?? {};
 
@@ -1100,6 +1105,7 @@ export class SR3EActor extends Actor {
       ],
     });
     if (!confirmed) return;
+    game.sr3e.SR3EActionLedger?.charge(this, 'matrixAction', promptData?.name ?? 'Prompt');   // All Matrix actions are Complex — MDF p.8 (warn only)
 
     const npSpent = hackPoolDice > 0 ? await this.spendHackingPool(hackPoolDice) : 0;
     if (npSpent !== hackPoolDice) {
@@ -13584,6 +13590,7 @@ _prepareCharacter(sys, attr) {
   // ── Orthodox System Test ────────────────────────────────────────────────────
 
   async rollOrthodoxSystemTest() {
+    game.sr3e.SR3EActionLedger?.begin(this);
     const sys  = this.system;
     const run  = sys.orthodoxRunState ?? {};
     const deck = sys.orthodoxDeck    ?? {};
@@ -13676,6 +13683,7 @@ _prepareCharacter(sys, attr) {
       ],
     });
     if (!confirmed) return;
+    game.sr3e.SR3EActionLedger?.charge(this, 'matrixAction', 'System Test');   // All Matrix actions are Complex — MDF p.8 (warn only)
 
     if (hpAlloc > 0) await this.update({ 'system.hackingPoolSpent': (sys.hackingPoolSpent ?? 0) + hpAlloc });
 
@@ -13796,6 +13804,7 @@ _prepareCharacter(sys, attr) {
   // ── Orthodox Cybercombat ────────────────────────────────────────────────────
 
   async rollOrthodoxCybercombat() {
+    game.sr3e.SR3EActionLedger?.begin(this);
     const sys  = this.system;
     const run  = sys.orthodoxRunState ?? {};
     const deck = sys.orthodoxDeck    ?? {};
@@ -13890,6 +13899,7 @@ _prepareCharacter(sys, attr) {
       ],
     });
     if (!confirmed || !targetId) return;
+    game.sr3e.SR3EActionLedger?.charge(this, 'matrixAction', 'Cybercombat');   // All Matrix actions are Complex — MDF p.8 (warn only)
 
     if (hpAlloc > 0) await this.update({ 'system.hackingPoolSpent': (sys.hackingPoolSpent ?? 0) + hpAlloc });
     const totalAtkDice = atkDice + hpAlloc;
