@@ -60,3 +60,14 @@ Queue: remaining mods questions moved to the back, after every other session (ma
 | 4 | 128 citations with no book named | Leave "?", follow-up TODO to name each book (checked against its PDF) | 2026-11-07 | repo measurement |
 | 5 | Slim CLAUDE.md | Yes, its own TODO and branch; maintainer approves cuts | 2026-11-07 | repo measurement |
 | 6 | Drift guard | Test only, no pre-commit hook | 2026-11-07 | — |
+
+### shop — order delivery and the time toggle (grill round 1; numbered 288 by the shop session, clashes with rules-digest's 288)
+
+| # | Question | Answer | Date | Source |
+|---|---|---|---|---|
+| Q1 | Time toggle scope | One world toggle, GM-only | 2026-11-07 | design |
+| Q2 | Which purchases wait in session | Contact purchases wait; store purchases instant | 2026-11-07 | SR3 p.272-273 |
+| Q3 | When money is paid | At delivery, by the book | 2026-11-07 | SR3 p.273 ("payment in full is expected at delivery") |
+| Q4 | How time passing is decided | GM judges now; Foundry world time as a later option | 2026-11-07 | design |
+| Q5 | Where open orders show | GM Orders window + read-only "On order" on the Gear tab | 2026-11-07 | design |
+| Q6 | Toggle and healing | In session: pending recovery in the same window, GM clicks Recovered; first aid/spells instant | 2026-11-07 | SR3 p.127, p.129 |
