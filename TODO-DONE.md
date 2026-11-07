@@ -7980,3 +7980,17 @@ Two guesses were corrected by the PDFs: matrix.md's rigger dump shock p.156 is *
 SR3 p.176 (was p.175), Open Test SR3 p.39 (was p.40), triggered-ware routing M&M p.63-65 (was p.63),
 electrical damage M&M p.127 (was p.129, the PDF page), Firing Through SR3 p.124-125 (was p.125), touch range
 SR3 p.183 (was p.182).
+
+## 291. ✅ Slim `CLAUDE.md` — it loads in every session — **ruled 2026-11-07** · 3ecb0b3a
+
+Follow-up to [#289](TODO.md#289). `CLAUDE.md` is 42 KB (about 10.5k tokens) and loads in every session, so it
+is now the biggest fixed cost. Move the subsystem detail into `.claude/rules/` files, where the digest indexes
+it and it loads only by path. This goes on its own branch, and **the maintainer approves every cut** (rounds
+go through the questions session).
+
+**Done on `feature/slim-claude-md` (2026-11-07):** the maintainer approved all four moves. `CLAUDE.md` went from
+42 KB to 23 KB (about 10.5k → 5.8k tokens), with a ⚠ summary and a pointer kept for each block. The new path-scoped
+rules files are `release-and-process.md` (preflight, releases, manifest URLs, the TODO 121 gate),
+`packs-and-migrations.md`, `chat-cards.md` (open steps, two-corner cards) and `data-model.md` (fields, item types,
+weapon codes, key methods). The digest indexes all four. `tests/claude-md-slim.test.mjs` fails if a moved heading
+goes missing, comes back to `CLAUDE.md`, or a summary is dropped.

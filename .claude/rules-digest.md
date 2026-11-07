@@ -7,7 +7,9 @@ PDFs: `C:\Users\lance\Documents\Github\Shadowrun 3rd Edition PDFs`. SR3 core: PD
 Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 
 - `adept-powers.md` bcdbb99bf97b
+- `chat-cards.md` 780db0c02726
 - `combat-resolution.md` 0d4ae6a07ad9
+- `data-model.md` de93bff7c4f2
 - `dice-and-defaulting.md` a75e4d4a2759
 - `drugs-and-healing.md` 442627285d0e
 - `electronic-warfare.md` c0eb3d490caa
@@ -17,8 +19,10 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - `magic.md` 1d2f47e8cfb7
 - `matrix.md` 57ca240da040
 - `melee-combat.md` 73eba60f8bfb
+- `packs-and-migrations.md` 470e0fd91b3a
 - `portraits.md` 9fca86734575
 - `ranged-combat.md` 4c7dc8c908f1
+- `release-and-process.md` 0d9e9521c16a
 - `source-books.md` 703c5114fe09
 
 ## adept-powers
@@ -30,11 +34,25 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **Direct-effect powers** — SR3 p.169, SR3 p.170, SR3 p.176, SOTA2 p.67
 - **The item sheet offers fields by POWER KIND** — *(no citation: not audited)*
 
+## chat-cards
+- **Open combat steps — the ⏳ Waiting-on panel · TODO 147** — *(no citation: not audited)* — scripts/data/open-steps.mjs, scripts/SR3EOpenSteps.js
+- **Two-corner cards — each side edits only its own half** — *(no citation: not audited)* — sr3e.js, scripts/data/npc-corner.mjs, tests/e2e/contested.spec.mjs
+
 ## combat-resolution
 - **Damage staging** — SR3 p.113-114, SR3 p.113, SR3 p.122, SR3 p.174 — tests/damage-codes.test.mjs
 - **Called shots** — SR3 p.114
 - **Knockdown** — SR3 p.124, SR3 p.116
 - **Combat Pool** — SR3 p.43, SR3 p.104, SR3 p.169, SR3 p.285, SR3 p.282 — scripts/data/combat-pool.mjs, sr3e.js, tests/initiative.test.mjs
+
+## data-model
+- **Actor data model** — *(no citation: not audited)*
+- **Key system fields (character/npc)** — *(no citation: not audited)*
+- **Item types and key fields** — SR3 p.178, SR3 p.191 — scripts/data/item-mods.mjs, scripts/SR3EItemMods.js, scripts/data/integral-mods.mjs
+- **Weapon category codes → skills** — *(no citation: not audited)*
+- **Key methods reference** — *(no citation: not audited)*
+- **SR3EActor** — *(no citation: not audited)*
+- **SR3EItem** — *(no citation: not audited)*
+- **SR3ECombat** — *(no citation: not audited)*
 
 ## dice-and-defaulting
 - **Dice rolling — Rule of Six & Rule of One** — SR3 p.38-39, SR3 p.38, SR3 p.39 — tests/opposed-explosions.test.mjs, tests/interactive-explosions.test.mjs, scripts/data/open-test.mjs
@@ -110,6 +128,11 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **A weapon's extra Damage Code — the Shock Glove** — SR3 p.275-276, SR3 p.124 — scripts/data/extra-damage.mjs
 - **Shock weapons stun the target · scripts/data/shock-stun.mjs** — SR3 p.124-125, SR3 p.124, MM p.42 — scripts/data/shock-stun.mjs
 
+## packs-and-migrations
+- **Compendium packs — how they are ACTUALLY changed** — *(no citation: not audited)* — tools/lib/pack-source.mjs, tools/build-default-gear.mjs, tools/build-odm-packs.mjs, tests/pack-sources.test.mjs, tests/macros.test.mjs, populate-*.js, tools/check-packs.mjs, tools/patch-johnson-stats.mjs, tools/import-johnson-gear.mjs, tools/lib/pack-copy.mjs, tests/pack-churn.test.mjs, system.json, patch-johnson-stats.mjs, check-packs.mjs
+- **Pack integrity — npm run packs:check** — *(no citation: not audited)* — scripts/data/book-page.mjs, tools/data/book-pages.json, tools/fill-book-pages.mjs, tests/book-page.test.mjs
+- **World migrations — scripts/SR3EMigrations.js** — *(no citation: not audited)* — scripts/SR3EMigrations.js, tests/migrations.test.mjs, system.json, scripts/SR3EPackRepair.js, data/pack-repair.mjs, tests/pack-repair.test.mjs
+
 ## portraits
 - **⚠ The system never depends on a portrait module** — *(no citation: not audited)* — tests/portraits.test.mjs
 - **The index contract (schema 1)** — *(no citation: not audited)*
@@ -129,6 +152,12 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **Attacking from the canvas** — *(no citation: not audited)*
 - **AoE / grenade flow — scatter first** — SR3 p.119, SR3 p.124 — scripts/data/blast.mjs, scripts/data/blast-batch.mjs
 - **Clouds — smoke, gas, flash — TODO 164** — SR3 p.283, SR3 p.250, SR3 p.112 — scripts/data/area-effect.mjs, scripts/data/area-shape.mjs
+
+## release-and-process
+- **Verifying a build — npm run preflight** — *(no citation: not audited)* — tests/preflight.test.mjs, bump-version.mjs, system.json, release-notes.mjs
+- **⚠ The one gate that must never be faked — TODO 121** — *(no citation: not audited)* — tools/preflight.mjs, tests/preflight.test.mjs
+- **Releases — a tag builds the zip and the guides  · TODO 127** — *(no citation: not audited)* — tools/release.mjs, tools/lib/manifest-urls.mjs, …/releases/download/v0.6.0/system.json, tools/guides-versions.mjs, system.json, tests/release.test.mjs
+- **Branch manifest URLs — npm run manifest:branch** — *(no citation: not audited)* — system.json, tools/manifest-branch.mjs
 
 ## source-books
 - **The GM-only journal — sr3e-gm-sixth-world (2026-10-11)** — *(no citation: not audited)* — tools/build-gm-sixth-world.mjs, tests/gm-sixth-world.test.mjs
