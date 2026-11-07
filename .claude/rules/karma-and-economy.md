@@ -225,6 +225,19 @@ card: delivery N, meet at N/2, price → 🤝 Negotiate (`rollOpposedPair` → `
   item). ⚠ **💴 stacks** (`Cart.deliver`): a reloads box → one item with N × reloads, loose rounds → N × rounds, a `quantity`
   item → one stack, else N copies. Mutants `cart-*`. A host + its mods as one purchase (TODO 283) would ride the same lines
   (each mod a line, priced from the host before the card); not built.
+- **⏱ Downtime / In session, 📦 orders, ⏳ recoveries (TODO 288, `scripts/data/orders.mjs`, `scripts/SR3EOrders.js`)**:
+  one WORLD toggle (`timeMode`, GM tools ⏱, GM-only; everyone sees the mode on Buy gear and the healing cards). In
+  session a **contact** card's money button is **📝 Place order** — nothing paid (SR3 p.273: the nuyen changes hands at
+  delivery); the **store stays instant** (`Orders.payMode`). The choice is baked into the card's payload (`order`) when it
+  is posted. Orders and recoveries live in `pendingWaits`, written only by the GM (`sr3e.orders.place` /
+  `sr3e.orders.recover`; place checks the requester owns the buyer). The GM's **📦 Orders** window delivers (charges
+  through `SR3EPurchase.receive` — the one writer 💴 Pay also uses; ⚠ short of cash is **warned, never refused**, nuyen
+  stops at 0), cancels (**GM only**, ruled 2026-11-07; says the contact's Availability *may* rise, p.273, never applies
+  it) and finishes recoveries. In session the Healing Table stage's *Lower the wound* and Stun rest's *Erase 1 Stun box*
+  become **⏳ Start recovery**; ✅ Recovered applies `SR3EHealing._applyOp` against LIVE wounds, with an amber warning when
+  that track moved since (`Orders.changed`). First aid and magic stay instant (SR3 pp.129, 194); the 💴 medical Charge is
+  unchanged. Flipping to Downtime offers every wait, ticked; Esc keeps them. No world clock — the GM judges the time.
+  Buyer sees a read-only *On order* list on the Gear tab. Mutants `orders-*`.
 - Not modelled: permits themselves (SR3 p.273 — the Etiquette Test at Availability +2), the Etiquette specialisation.
   `tests/purchasing.test.mjs` pins Cheshire: 38 days, 19 days, ¥12,600, ¥10,080.
 

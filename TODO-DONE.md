@@ -7951,6 +7951,17 @@ The maintainer: *"we may need a shoping cart system"*. Ruled 2026-10-28: after T
 store it is one list price; through a contact each item has its own Availability (SR3 p.272), so the open question is one
 Etiquette Test per item or one for the slowest. Overlaps TODO 283 (a host and its mods bought as one purchase).
 
+## 288. ✅ 📦 Orders not yet delivered — and a GM toggle for time passing (purchases and healing) — **requested 2026-11-07**, done in 26ab824a
+
+The maintainer, while TODO 284/285 were built: *"We will need a way to track whats been order but hasn't been delivered.
+maybe a GM way of delivering it, ideally a togle. when they want something at the end of a mission i'm not to worried
+about them getting it but if they want it in session it needs to take time. that toggle should also effect healing if
+possible"*. Today 💴 Pay (`SR3EPurchase.pay`) delivers at once, though a contact's card states a delivery time (base time
+÷ successes, SR3 p.272) and the meet comes halfway; healing cards state the Healing Table time (p.127) and *Heal these
+boxes* applies whenever it is clicked. **Wanted:** a GM toggle — between missions (instant, as today) or in session (time
+must pass) — an open-orders list with a GM 📦 Deliver, and the same toggle governing healing. Builds on `data/cart.mjs`
+(`Cart.deliver`). **Built** (26ab824a) to the design the maintainer confirmed 2026-11-07 — see `.claude/rules/karma-and-economy.md`; live check TESTING.md §81.
+
 ## 290. ✅ Name the book on every bare-page citation in `.claude/rules/` — **ruled 2026-11-07** · 43af313e
 
 Follow-up to [#289](TODO.md#289). About 105 citations in the rules files give a page with no book code

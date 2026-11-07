@@ -47,6 +47,7 @@ import { SR3ELegwork } from './SR3ELegwork.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
 import { SR3EVehicleDesigner } from './SR3EVehicleDesigner.js';
+import { SR3EOrders } from './SR3EOrders.js';
 import { SR3EMeetContact } from './SR3EMeetContact.js';
 import { SR3EGenericNpc } from './SR3EGenericNpc.js';
 import { SR3EHealing } from './SR3EHealing.js';
@@ -82,6 +83,8 @@ Hooks.once('init', () => {
   SR3EActionLedger.register();   // sr3e.action.charge — TODO 48
   SR3ECombat.registerQuickStrike();   // sr3e.combat.quickStrike — TODO 78
   SR3ECombat.registerNextTurn();      // sr3e.combat.nextTurn — a player's End Turn, TODO 241
+  SR3EOrders.registerSettings();      // ⏱ Downtime / In session and what is waiting — TODO 288
+  SR3EOrders.registerQueries();       // sr3e.orders.place / sr3e.orders.recover — TODO 288
 
   async function buildSkillsCompendium() {
     const PACK_ID = 'The2ndChumming3e.sr3e-skills';
@@ -136,7 +139,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc, SR3EItemMods, SR3EVehicleDesigner };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc, SR3EItemMods, SR3EVehicleDesigner, SR3EOrders };
 
   // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
   // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
@@ -2123,6 +2126,9 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
   mk('sr3e-driving-btn', '🏎 Driving Test',    () => SR3EVehicleSheet.promptVehicleDrivingTest(), false);
   mk('sr3e-clocks-btn',  '🕐 Threat Clocks',   () => game.sr3e.SR3EClocks.open(), false);
   mk('sr3e-heal-btn',    '🩹 Healing',         () => SR3EHealing.openPicker(),    false);
+  // ⏱ The time toggle and 📦 what is waiting on it (TODO 288) — GM only; the label shows the mode.
+  mk('sr3e-timemode-btn', SR3EOrders.waits() ? '⏱ In session (time passes)' : '⏱ Downtime (instant)', () => SR3EOrders.toggle(), true);
+  mk('sr3e-orders-btn', `📦 Orders (${SR3EOrders.state().orders.length + SR3EOrders.state().recoveries.length})`, () => SR3EOrders.open(), true);
   mk('sr3e-reward-btn',  '🎖 Session Rewards', _openSessionRewardDialog,     true);
   mk('sr3e-karma-refresh-btn', '🍀 Refresh Karma Pools', _openKarmaRefreshDialog, true);
   mk('sr3e-salsa-btn',   '💥 Chunky Salsa',    _openChunkySalsaCalculator,   true);
@@ -3817,7 +3823,10 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       event.preventDefault();
       event.stopPropagation();
       if (!_claimBtn(btn, mid, 'buypay', i)) return;
-      const done = await SR3EPurchase.pay(pl, { claim: buyClaim(Purchasing.CARD_ROLES.pay, 'paid') });
+      // Posted in session through a contact: 📝 Place order — nothing paid until the GM's 📦 Deliver (TODO 288).
+      const done = pl.order
+        ? await SR3EOrders.placeOrder(pl, { claim: buyClaim(Purchasing.CARD_ROLES.pay, 'ordered') })
+        : await SR3EPurchase.pay(pl, { claim: buyClaim(Purchasing.CARD_ROLES.pay, 'paid') });
       if (done === false && !Purchasing.cardButtons(_actedOn(game.messages.get(mid))).pay) {
         _usedButtons.delete(`${mid}|buypay|${i}`);   // the confirm was cancelled — still payable
         btn.disabled = false;

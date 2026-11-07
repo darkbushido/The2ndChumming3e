@@ -3673,3 +3673,23 @@ Full restart first (a new `vehiclemod` field), and the packs installed (`npm run
       a list of old → new, ticked. Untick Speed, apply → Acceleration changes, Speed stays 999. Reopen → the design is remembered.
 - [ ] **Owned copies get the figures:** an actor that owned a Nitrous Oxide Injectors before the update shows its Design Cost
       "55 per level" after the 0.9.0 migration (a figure a GM typed is kept).
+## 81. ⏱ Downtime / In session, 📦 Orders and ⏳ recoveries (TODO 288)
+
+GM seat plus one player. Full Foundry restart first (two new world settings).
+
+- [ ] GM tools (Rollable Tables tab) show **⏱ Downtime (instant)** and **📦 Orders (0)** to the GM only. Click ⏱: it reads
+      **⏱ In session (time passes)**; the player's 🛒 Buy gear dialog shows the In session note.
+- [ ] In session, player buys **through a contact**: the Source found card's money button reads **📝 Place order — ¥X due at
+      delivery**. Click: nuyen unchanged, nothing on the sheet; a 📝 chat line; the Gear tab shows **📦 On order** with the
+      delivery time; GM's 📦 Orders lists it. 🤝 Negotiate first: the negotiated card also offers 📝.
+- [ ] In session, **🏪 at the store**: 💴 Pay as before — instant.
+- [ ] GM 📦 Deliver: confirm, nuyen drops, the items land (stacked as in §79), 📒 reads "Delivered …", the On order list empties.
+      With the buyer short: an amber warning, Deliver still works, nuyen stops at 0.
+- [ ] GM ✕ Cancel: the chat line says the contact's Availability *may* rise (p.273); nothing changes on the buyer.
+- [ ] Healing in session: 🩹 Healing → heal one stage → the card's button is **⏳ Start recovery — Lower the wound … (time)**;
+      click → nothing healed, it appears in 📦 Orders. Wound the character more → the row shows the amber **Wounds changed**
+      line; ✅ Recovered asks and then applies against the live track. Stun rest's *Erase 1 Stun box* likewise. First aid
+      and a Heal spell stay instant.
+- [ ] With an order and a recovery waiting, flip to ⏱ Downtime: a ticked dialog. Untick the recovery, Confirm: the order is
+      delivered, the recovery stays. Flip again and press Esc: nothing happens.
+

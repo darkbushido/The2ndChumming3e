@@ -13,7 +13,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - `electronic-warfare.md` c0eb3d490caa
 - `essence-and-cyberware.md` cac57ed6e24b
 - `initiative-and-vehicles.md` 1babb7afb959
-- `karma-and-economy.md` d811c6aafa17
+- `karma-and-economy.md` cf28a25407d7
 - `magic.md` 1d2f47e8cfb7
 - `matrix.md` 57ca240da040
 - `melee-combat.md` 73eba60f8bfb
@@ -73,7 +73,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **The Karma Pool in play — TODO 216 and the audit of 2026-10-11** — SR3 p.246-248, SR3 p.248, SR3 p.246, SR3 p.168, SR3 p.180-181, SR3 p.190, SR3 p.84, SR3 p.245, SR3 p.244, SR3 p.57 — scripts/data/karma-uses.mjs, data/hand-of-god.mjs, tests/karma-uses.test.mjs, tests/karma.test.mjs, tests/e2e/karma.spec.mjs, sr3e.js, data/skill-rules.mjs
 - **The ledger  · TODO 79** — *(no citation: not audited)* — scripts/data/ledger.mjs, tests/ledger.test.mjs
 - **± Funds and giving money  · TODO 192** — *(no citation: not audited)* — scripts/data/funds.mjs
-- **Buying gear — TODO 82** — SR3 p.272-273, SR3 p.272, SR3 p.273, SR3 p.281 — scripts/data/purchasing.mjs, scripts/SR3EPurchase.js, scripts/data/gear-search.mjs, data/legality.mjs, data/legality-table.mjs, tools/fill-legality.mjs, tools/build-default-gear.mjs, scripts/data/cart.mjs, tests/purchasing.test.mjs
+- **Buying gear — TODO 82** — SR3 p.272-273, SR3 p.272, SR3 p.273, SR3 p.281, SR3 p.129 — scripts/data/purchasing.mjs, scripts/SR3EPurchase.js, scripts/data/gear-search.mjs, data/legality.mjs, data/legality-table.mjs, tools/fill-legality.mjs, tools/build-default-gear.mjs, scripts/data/cart.mjs, scripts/data/orders.mjs, scripts/SR3EOrders.js, tests/purchasing.test.mjs
 - **Carried load and Encumbrance — TODO 126** — SR3 p.274 — scripts/data/carried-load.mjs
 - **👁 Concealment — what a character carries that shows — TODO 195** — SR3 p.45, SR3 p.231-232, SR3 p.236-237, SR3 p.270, SR3 p.231, SR3 p.303, SR3 p.301, MM p.21, SR3 p.237, SR3 p.236, SR3 p.232 — scripts/SR3EConcealment.js, scripts/data/concealment.mjs
 

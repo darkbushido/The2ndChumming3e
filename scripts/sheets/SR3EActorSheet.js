@@ -2753,6 +2753,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     return `<div class="tab ${this._activeTab === 'gear' ? 'active' : ''}" data-tab="gear" style="overflow-y:auto">
       ${loadLine}
+      ${game.sr3e.SR3EOrders?.onOrderHtml?.(actor) ?? ''}
       <h3 class="section-hdr">Gear</h3>
       <div class="list-header"><span>Name</span><span>Qty</span><span>Cost</span><span class="col-xs" title="Weight (kg)">KG</span><span></span></div>
       ${gRows}

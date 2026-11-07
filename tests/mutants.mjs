@@ -68,6 +68,7 @@ const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots'
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
 const CART   = { module: '../scripts/data/cart.mjs',       klass: 'Cart' };
+const ORDERS = { module: '../scripts/data/orders.mjs',     klass: 'Orders' };
 const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 const PORDER = { module: '../scripts/data/patient-order.mjs', klass: 'PatientOrder' };
 const MACROREF = { module: '../scripts/data/macro-refresh.mjs', klass: 'MacroRefresh' };
@@ -2500,6 +2501,34 @@ export const MUTANTS = [
     ...CART, method: 'deliver',
     was:    'TODO 284 - four clips landed as four items of one reload each, not one box of 4 reloads (system.reloads)',
     impl:   (data, quantity) => Array.from({ length: Math.max(1, Math.floor(Number(quantity) || 1)) }, () => data),
+  },
+  {
+    id:     'orders-store-purchases-wait',
+    suite:  'orders',
+    ...ORDERS, method: 'payMode',
+    was:    'TODO 288 - in session a store purchase was ordered too; p.272 times only the contact route (ruled Q2)',
+    impl:   (mode) => mode === 'session' ? 'order' : 'pay',
+  },
+  {
+    id:     'orders-short-buyer-goes-negative',
+    suite:  'orders',
+    ...ORDERS, method: 'settle',
+    was:    'TODO 288 - a buyer short of cash at delivery was charged into the negative instead of stopping at 0',
+    impl:   (price, have) => ({ price: Number(price) || 0, short: price > have, after: (Number(have) || 0) - (Number(price) || 0) }),
+  },
+  {
+    id:     'orders-stun-warns-a-physical-recovery',
+    suite:  'orders',
+    ...ORDERS, method: 'changed',
+    was:    'TODO 288 - any wound change (even Stun) flagged a Physical recovery as changed',
+    impl:   (rec, now) => ['physical', 'overflow', 'stun'].some(k => (Number(rec?.from?.[k]) || 0) !== (Number(now?.[k]) || 0)),
+  },
+  {
+    id:     'orders-placed-twice',
+    suite:  'orders',
+    ...ORDERS, method: 'place',
+    was:    'TODO 288 - a re-delivered query stored the same order twice (not idempotent by id)',
+    impl:   (state, order) => ({ orders: [...(state?.orders ?? []), order], recoveries: state?.recoveries ?? [] }),
   },
   {
     id:     'attribute-hover-says-nothing',
