@@ -17,7 +17,8 @@
       "description": "",
       "rating": 2,
       "modFor": "vehicle",
-      "legality": "Legal"
+      "legality": "Legal",
+      "designCost": "Rating 1: 0, 2: 50, 3: 250, 4: 1250, 5: 5000"
     },
     "effects": []
   },

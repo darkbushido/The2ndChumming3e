@@ -1470,6 +1470,9 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Cost (¥)', 'cost', s.cost, 'number', 'min="0"')}${this._vehicleModExtras(s)}
           ${this._f('CF', 'cfCost', s.cfCost, 'text', 'title="Cargo Factor the mod takes"')}
           ${this._f('Load', 'load', s.load)}
+          ${this._f('Design Cost', 'designCost', s.designCost ?? '', 'text', 'title="Design Points when fitted at design time (R3R p.112) — read by the 🛠 Vehicle Designer, TODO 287"')}
+          ${this._f('Design CF', 'designCf', s.designCf ?? '', 'text', 'title="CF when fitted at design time, if it differs"')}
+          ${this._f('Design Load', 'designLoad', s.designLoad ?? '', 'text', 'title="Load when fitted at design time, if it differs"')}
           ${this._f('Availability', 'availability', s.availability)}${this._legalityField(s)}
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._f('Install Equipment', 'installEquipment', s.installEquipment)}

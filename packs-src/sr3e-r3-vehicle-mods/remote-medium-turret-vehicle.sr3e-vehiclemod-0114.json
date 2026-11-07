@@ -17,7 +17,10 @@
       "description": "",
       "rating": null,
       "modFor": "vehicle",
-      "legality": "Legal"
+      "legality": "Legal",
+      "designCost": "600",
+      "designCf": "4",
+      "designLoad": "1000kg"
     },
     "effects": []
   },

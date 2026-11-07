@@ -43,6 +43,7 @@ import { Legality } from './data/legality.mjs';
 import { ModEffects } from './data/mod-effects.mjs';
 import { IntegralMods } from './data/integral-mods.mjs';
 import { PrintedRC } from './data/printed-rc.mjs';
+import { DesignCosts } from './data/design-costs.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -659,6 +660,17 @@ const MIGRATIONS = [
      * CC p.26; its text and integral mods only while the text is still the shipped "Either: …"; GM-installed mods stay.
      */
     fixItem: item => PrintedRC.fillDelta(item),
+  },
+  {
+    version: '0.9.0',
+    label: "A vehicle mod's design figures — Design Points, design CF and Load (TODO 287)",
+    /**
+     * The vehicle designer prices a mod fitted at design time by its Design Point cost (R3R p.112), which the packs did not
+     * carry; the maintainer, 2026-11-07: "Add designCost field now". `scripts/data/design-costs.mjs` holds each entry's
+     * figures (R3R pp.126-155, page per row); the packs ship them (`tools/fill-design-costs.mjs`). FILL BLANKS ONLY, and
+     * only on a mod of that name AND book page — a figure a GM typed is theirs. Idempotent.
+     */
+    fixItem: item => DesignCosts.fillDelta(item),
   },
 
 ];

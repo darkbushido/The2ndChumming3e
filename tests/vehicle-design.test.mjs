@@ -63,8 +63,9 @@ export async function run(t) {
   /* ── Final cost (R3R p.113) ───────────────────────────────────────────────── */
   t.is('Design Points × Mark-Up × 100: 169 × 0.40 → 6,760¥ (the example)', V.cost(169, 0.40), 6760);
   t.is('…with the GM\'s +0.5 for a one-off: 1,402 × 1.5 → 210,300¥ (the example)', V.cost(1402, 1.0, 0.5), 210300);
-  t.eq('Availability = cost ÷ 20,000 rounded UP, the same in days; minimum 2', [V.availability(6760).text, V.availability(210300).text, V.availability(40001).tn], ['2/2 days', '11/11 days', 3]);
-  t.eq('…+4 luxury, +6 security, +10 military', ['luxury', 'security', 'military'].map(c => V.availability(6760, c).tn), [6, 8, 12]);
+  t.eq('Availability = cost ÷ 20,000 rounded UP, the same in days; the floor is 2/24 hrs (the maintainer, 2026-11-07)', [V.availability(6760).text, V.availability(30000).text, V.availability(210300).text, V.availability(40001).tn], ['2/24 hrs', '2/2 days', '11/11 days', 3]);
+  t.eq('…in hours: 2/2 days is 2/48 hrs, never under 24', [V.availability(30000).hours, V.availability(0).hours], [48, 24]);
+  t.eq('…+4 luxury, +6 security, +10 military, to both the number and the days (the maintainer, 2026-11-07)', ['luxury', 'security', 'military'].map(c => V.availability(6760, c).text), ['6/5 days', '8/7 days', '12/11 days']);
   t.eq('…over 30 is out of reach', [V.availability(620000).outOfReach, V.availability(580000).outOfReach], [true, false]);
   t.eq('Street Index by class (standard 1, luxury 2, security 2, military 3)', Object.values(CLASSES).map(c => c.streetIndex), [1, 2, 2, 3]);
 
@@ -75,7 +76,7 @@ export async function run(t) {
   t.is('LSV: Cargo 4 + 2 − the ring mount\'s 1 = 5 (the example)', a.stats.cargo, 5);
   t.eq('LSV: 6,760¥, Street Index 2 (security), 13,520¥ (the example)', [a.cost, a.streetIndex, a.price], [6760, 2, 13520]);
   t.eq('LSV: no warnings', a.warnings, []);
-  t.is('LSV as standard: Availability 2/2 days (the example\'s stat block)', lsv({ vehicleClass: 'standard' }).availability.text, '2/2 days');
+  t.is('LSV as standard: Availability 2/24 hrs — the floor (the book prints 2/2 days)', lsv({ vehicleClass: 'standard' }).availability.text, '2/24 hrs');
 
   /* ── The Brickyard Beauty (pp.111-114) ────────────────────────────────────── */
   const b = brickyard();

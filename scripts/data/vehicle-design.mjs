@@ -40,7 +40,7 @@ export const CLASSES = {
 };
 
 export const SMART = { dp: 100, factor: 1.15, handling: -1, streetIndex: 1 };
-export const AVAIL = { per: 20000, min: 2, outOfReach: 30 };
+export const AVAIL = { per: 20000, min: 2, minHours: 24, outOfReach: 30 };
 
 const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
 
@@ -138,9 +138,14 @@ export const VehicleDesign = {
 
   /** Availability and base time in days (p.113): cost ÷ 20,000 rounded up, minimum 2, plus the class modifier. */
   availability(cost, vehicleClass = 'standard') {
-    const base = Math.max(AVAIL.min, Math.ceil(num(cost) / AVAIL.per));
-    const tn = base + (CLASSES[vehicleClass]?.avail ?? 0);
-    return { tn, days: tn, text: `${tn}/${tn} days`, outOfReach: tn > AVAIL.outOfReach };
+    // The maintainer, 2026-11-07: "the base is 2/24hours so a 2/2 days should be 2/48hrs. you cannot mod it lower then
+    // 2/24hrs." So cost ÷ 20,000 (rounded up) is both the target number and the days; the floor is 2 and 24 hours.
+    const n = Math.ceil(num(cost) / AVAIL.per);
+    const mod = CLASSES[vehicleClass]?.avail ?? 0;
+    const tn = Math.max(AVAIL.min, n) + mod;
+    const hours = Math.max(AVAIL.minHours, n * 24) + mod * 24;
+    const text = hours % 24 === 0 && hours > 24 ? `${tn}/${hours / 24} days` : `${tn}/${hours} hrs`;
+    return { tn, hours, days: hours / 24, text, outOfReach: tn > AVAIL.outOfReach };
   },
 
   /**

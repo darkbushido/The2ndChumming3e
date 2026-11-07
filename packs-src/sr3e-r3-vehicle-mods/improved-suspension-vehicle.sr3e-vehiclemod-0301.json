@@ -17,7 +17,8 @@
       "description": "Wheeled ground vehicles. On-road Handling −1 a level (a motorcycle's off-road too), at most −2. Not with drive-by-wire. Parts: the vehicle's original cost × 0.1 a level. R3R p.129.",
       "rating": 1,
       "modFor": "vehicle",
-      "legality": "Legal"
+      "legality": "Legal",
+      "designCost": "Chassis x 0.25 per level"
     },
     "effects": []
   },

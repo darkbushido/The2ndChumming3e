@@ -3579,3 +3579,22 @@ mods). A car with cost 40,000¥, Body 4, Handling 4 / 5 off-road, Speed 100, Acc
       ("while it runs (55 minutes)"); with no turbocharging, warned.
 - [ ] **Weapon mounts** — an External Hardpoint and a Small Turret → Sig two lower ("weapon mounts", SR3 p.307 in the tooltip).
 - [ ] **Rolls use it:** a chase test's Speed / Handling, a sensor test against this car (its Sig), a collision's Acceleration.
+
+## 79. 🛠 The Vehicle Designer (TODO 287, slice 2 — R3R pp.109-121; the maintainer's rulings of 2026-11-07)
+
+Full restart first (a new `vehiclemod` field), and the packs installed (`npm run packs:install`, Foundry closed).
+
+- [ ] **Three ways in:** the Actors directory header shows **🛠 Design a vehicle** (as a player too); the world macro
+      **SR3E Vehicle Designer** opens the same window; a vehicle sheet's **🛠 Design** button opens it titled with the vehicle.
+- [ ] **Steffi's Light Strike Vehicle** (pp.109-113): chassis Sand Buggy, plant Gasoline; Off-road Handling − 1, Acceleration + 2,
+      Cargo + 2, Load + 30; class security. Add mods **Roll Bars**, **Electronics Port**, **Ring Mount**, **Pintle Mount** from the
+      picker → their points pre-fill 0 / 10 / 10 / 1. Result: 169 Design Points; Availability shows with the security +6.
+- [ ] **A level-priced mod:** add **Nitrous Oxide Injectors**, set Level 6 → Points 330, CF 1.5, Load 15. A mod with no design
+      figure (a Cannon Companion or SOTA mod) shows ⚠ and 0 points — type them; the total follows.
+- [ ] **Warnings, never refusals:** push Speed past the plant's maximum → an amber warning; **Create vehicle** still works.
+- [ ] **Create (as Player2):** the vehicle appears, Player2 owns it, its sheet opens with the computed Handling, Speed, Accel,
+      Body, Armor, Sig, Cargo, Load, Cost, Street Index and Availability — every one still editable.
+- [ ] **Re-save offers:** on that vehicle type Speed 999 by hand, open 🛠 Design, change Acceleration, click **Offer changes** →
+      a list of old → new, ticked. Untick Speed, apply → Acceleration changes, Speed stays 999. Reopen → the design is remembered.
+- [ ] **Owned copies get the figures:** an actor that owned a Nitrous Oxide Injectors before the update shows its Design Cost
+      "55 per level" after the 0.9.0 migration (a figure a GM typed is kept).

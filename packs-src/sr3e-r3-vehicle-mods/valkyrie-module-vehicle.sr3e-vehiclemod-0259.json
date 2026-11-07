@@ -17,7 +17,10 @@
       "description": "See MM-139",
       "rating": null,
       "modFor": "vehicle",
-      "legality": "Legal"
+      "legality": "Legal",
+      "designCost": "3000",
+      "designCf": "10",
+      "designLoad": "400kg"
     },
     "effects": []
   },

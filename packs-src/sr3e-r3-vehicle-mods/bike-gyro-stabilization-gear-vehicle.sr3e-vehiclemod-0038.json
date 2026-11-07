@@ -17,7 +17,9 @@
       "description": "",
       "rating": null,
       "modFor": "vehicle",
-      "legality": "Legal"
+      "legality": "Legal",
+      "designCost": "Chassis x 0.25",
+      "designLoad": "5kg"
     },
     "effects": []
   },
