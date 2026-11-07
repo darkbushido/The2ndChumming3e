@@ -7933,3 +7933,17 @@ Three TSS guns have a stock that step b (TODO 276) made an integral mod — the 
 Win. 1300 Defender SS ("Collapsible stock") — so the 🔧 list shows an RC the gun's own figure does not include. **Wanted:** the
 books' RC column, or the maintainer's word that these are blank (and whether a rifle or shotgun stock gives RC at all — SR3
 p.277 says the core rifle stocks do not). `tests/printed-rc.test.mjs` lists the three.
+
+## 291. ✅ Slim `CLAUDE.md` — it loads in every session — **ruled 2026-11-07** · 3ecb0b3a
+
+Follow-up to [#289](TODO.md#289). `CLAUDE.md` is 42 KB (about 10.5k tokens) and loads in every session, so it
+is now the biggest fixed cost. Move the subsystem detail into `.claude/rules/` files, where the digest indexes
+it and it loads only by path. This goes on its own branch, and **the maintainer approves every cut** (rounds
+go through the questions session).
+
+**Done on `feature/slim-claude-md` (2026-11-07):** the maintainer approved all four moves. `CLAUDE.md` went from
+42 KB to 23 KB (about 10.5k → 5.8k tokens), with a ⚠ summary and a pointer kept for each block. The new path-scoped
+rules files are `release-and-process.md` (preflight, releases, manifest URLs, the TODO 121 gate),
+`packs-and-migrations.md`, `chat-cards.md` (open steps, two-corner cards) and `data-model.md` (fields, item types,
+weapon codes, key methods). The digest indexes all four. `tests/claude-md-slim.test.mjs` fails if a moved heading
+goes missing, comes back to `CLAUDE.md`, or a summary is dropped.
