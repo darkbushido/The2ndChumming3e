@@ -3440,7 +3440,7 @@ we build a new feature"*. Built on `feature/rules-digest`:
 - **`npm run rules -- <topic>`** prints only the matching sections (rules files and `CLAUDE.md`, heading
   matches first, 6 max) with 📖 the PDF and page — SR3 core as PDF page = printed + 2; other books by printed
   page, offset marked unverified (never guessed).
-- **`/rules` skill** (`.claude/skills/rules/SKILL.md`); one pointer paragraph in `CLAUDE.md`.
+- **`/rules` skill** (`.claude/skills/rules/SKILL.md`); one pointer line in `CLAUDE.md`.
 - **No drift:** `tests/rules-digest.test.mjs` fails unless the committed digest equals a fresh build, so any
   edited rules file, heading or cited page fails until regenerated; it also caps the digest at 15% of the rules.
 - Copies no rulebook text; reads only this repo's rules files; never `SR-OCR/`.
@@ -3451,8 +3451,8 @@ subsystem) meant `CLAUDE.md` 42 KB (~10.5k, always loaded) plus the rules files 
 section touched (~0.3–1.5k each), i.e. ~4–6k instead of ~11–40k on top of `CLAUDE.md`: **roughly 3–8× fewer
 rules tokens**. `CLAUDE.md` itself is unchanged (it is auto-loaded); slimming it is a separate decision.
 
-Open: design questions sent to the maintainer 2026-11-07 (digest form, CLAUDE.md pointer, `/rules` skill) —
-built on the recommended answers; the 128 `?` citations (pages with no book code in the rules files) could be
+Design settled by the maintainer 2026-11-07: generated digest + lookup, a one-line CLAUDE.md pointer, a `/rules` skill.
+Open: the 128 `?` citations (pages with no book code in the rules files) could be
 given their book in the rules files themselves.
 
 ### 📌 Notes & parked

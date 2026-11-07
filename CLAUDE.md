@@ -431,9 +431,7 @@ without Foundry, so nothing on them can be unit-tested or mutated.
 > dodge resolution · Spell Pool · astral Initiative · all 117 adept powers (`audit/adept-powers-audit.md`) · every
 > lookup table (`tests/tables.test.mjs`) · Matrix Defragged v2 (`audit/matrix-defragged-audit.md`).
 
-> **Building a feature? Load the rules cheaply** (TODO 288): read `.claude/rules-digest.md` (generated, ~3k tokens —
-> every section's heading, pages, owning module/test), then `npm run rules -- <topic>` for just the sections you
-> touch, then the PDF page. `/rules` skill. Changing a rules file → `npm run rules:digest` (a test fails otherwise).
+**Building a feature?** Read `.claude/rules-digest.md` (~3k tokens), then `npm run rules -- <topic>` (`/rules`) — TODO 288.
 
 | Rules file (`.claude/rules/`) | Covers |
 |---|---|
