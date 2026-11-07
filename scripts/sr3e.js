@@ -3934,7 +3934,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       }
 
       if (toCreate.length && game.combat) {
-        await game.combat.createEmbeddedDocuments('Combatant', toCreate);
+        const created = await game.combat.createEmbeddedDocuments('Combatant', toCreate);
+        await SR3EActor.rollTriggeredICInitiative(game.combat, created);
       }
       if (newAlert !== null) {
         await host.update({ 'system.alertCount': newAlert });

@@ -1876,6 +1876,41 @@ export class SR3EActor extends Actor {
     await SR3EActor._incrementOverwatch(pick.hostId, pick.deckerId || null, 'An icon crashed without Suppression (MDF p.22).');
   }
 
+  /**
+   * Triggered sheaf IC roll into initiative with the book's penalty — MDF p.23: "-10 from an ICs Initiative for
+   * each phase that has already transpired" (maintainer ruling 2026-11-07: added on the GM's click, the
+   * per-phase figure editable). The GM confirms or edits the figure; nothing happens on Cancel but the IC
+   * still joins the tracker unrolled.
+   */
+  static async rollTriggeredICInitiative(combat, combatants) {
+    if (!combat || !combatants?.length) return;
+    const { SheafRules } = await import('./../data/sheaf-rules.mjs');
+    const flags = combat.flags?.The2ndChumming3e ?? {};
+    const pass = flags.queue?.[flags.queueIndex ?? 0]?.pass ?? 1;
+    const elapsed = Math.max(0, pass - 1);
+    let perPhase = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Triggered IC — initiative' },
+      content: `<p>${elapsed} phase${elapsed === 1 ? '' : 's'} already past (MDF p.23). Initiative penalty per phase:</p>
+        <input type="number" id="ic-pen" value="${SheafRules.initiativePenalty(2)}" step="1" style="width:80px"/>`,
+      buttons: [
+        { label: 'Roll', action: 'roll', default: true,
+          callback: (_e, _b, d) => { perPhase = parseInt(d.element.querySelector('#ic-pen')?.value); } },
+        { label: 'Skip', action: 'skip' },
+      ],
+    });
+    if (perPhase == null || Number.isNaN(perPhase)) return;
+    const offset = perPhase * elapsed;
+    for (const c of combatants) {
+      if (!c.actor) continue;
+      const rolled = await c.actor.rollInitiative();
+      const score = Math.max(1, rolled + offset);
+      await c.update({ initiative: score, flags: { The2ndChumming3e: { baseInitiative: score, currentInitiative: score,
+        passesRemaining: Math.ceil(score / 10) } } });
+    }
+    await combat.rebuildQueue();
+  }
+
   static async handleMatrixICResistClick(btn) {
     const payload = JSON.parse(btn.dataset.payload);
     const actor   = actorFrom(payload.icActorId);
