@@ -76,10 +76,25 @@ export class SR3EOrders extends foundry.applications.api.ApplicationV2 {
   /** Re-render whatever shows the mode or the waits: this window, the GM tools, open actor sheets. */
   static refresh() {
     if (SR3EOrders.instance?.rendered) SR3EOrders.instance.render();
-    ui.tables?.render?.();
+    // ⚠ The GM tools hook returns early once its buttons exist, so re-rendering the tab never relabels them
+    // (found in the live check, 2026-11-07) — relabel them here.
+    SR3EOrders.relabelTools();
     for (const app of foundry.applications.instances?.values?.() ?? []) {
       if (app.document?.documentName === 'Actor' && app.rendered) app.render();
     }
+  }
+
+  /** The GM tools labels — one source for the hook that creates them and `relabelTools`. */
+  static toolLabels() {
+    const s = SR3EOrders.state();
+    return { mode: SR3EOrders.waits() ? '⏱ In session (time passes)' : '⏱ Downtime (instant)',
+             orders: `📦 Orders (${s.orders.length + s.recoveries.length})` };
+  }
+
+  static relabelTools() {
+    const l = SR3EOrders.toolLabels();
+    for (const b of document.querySelectorAll('.sr3e-timemode-btn')) b.textContent = l.mode;
+    for (const b of document.querySelectorAll('.sr3e-orders-btn')) b.textContent = l.orders;
   }
 
   /* ── the toggle ─────────────────────────────────────────────────────────────────────── */
