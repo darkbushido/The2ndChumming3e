@@ -75,8 +75,8 @@ export async function run(t) {
     && /weaponAcceptsAmmoType\(gun\?\.system/.test(flow) && /MiniGrenade\.isLauncher\(gun\.system\)/.test(flow));
   t.ok('…lists only what fits', /all\.filter\(e => e\.type === 'ammunition' && AmmoShop\.fits\(e\.ammo \?\? \{\}, crit, e\.name\)\)/.test(flow));
   t.ok('…straight away, with no search typed', /if \(crit\) drawHits\(\);/.test(flow));
-  t.ok('the class rides to 💴 on both paths (store and contact)', /gunClass: crit && !misfit \? crit\.gunClass/.test(flow) && /store: true, gunClass: result\.gunClass/.test(flow));
-  t.ok('💴 stamps the box while it states no class', /AmmoShop\.stamp\(data\.system, \{ gunClass: payload\.gunClass \}\)/.test(flow));
+  t.ok('the class rides to 💴 on both paths (store and contact)', /gunClass: crit && !misfit \? crit\.gunClass/.test(flow) && /payload = JSON\.stringify\(\{ buyerId: actor\.id, name, price: list\.total, lines, store: true \}\)/.test(flow));
+  t.ok('💴 stamps the box while it states no class', /AmmoShop\.stamp\(data\.system, \{ gunClass: line\.gunClass \}\)/.test(flow));
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
   t.ok('the weapon sheet has 🛒 Buy ammo', /buyAmmo:\s+SR3EItemSheet\._onBuyAmmo/.test(sheet) && /data-action="buyAmmo"/.test(sheet));
   t.ok('…on a firearm or a nocking bow, owned, on an actor', /it\.type === 'firearm' \|\| \(it\.type === 'projectile' && it\._usesNockedAmmo\?\.\(\)\)/.test(sheet)
