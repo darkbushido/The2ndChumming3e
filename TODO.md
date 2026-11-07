@@ -955,7 +955,7 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
   field, an over-capacity install warns (`installWarnings`), and `kind()` gives no other host capacity. ⚠ M&M p.35 (PDF 37) adds:
   equipment that interfaces "with other, non-cyber parts of the body … does cost additional Essence" (the asterisked rows of the
   Equipment Capacity Cost Table) — so the 11 `Cyberlimb Mods` entries with a printed Essence above 0 still cost it inside a limb that
-  has room, as the book prints. Raised with the maintainer rather than zeroed.
+  has room, as the book prints. ✔ Ruled 2026-11-07: *"Keep the book's Essence"* — nothing to zero.
 
 **Open questions — for the maintainer, before the weapon / vehicle / cyberlimb slices merge** (each is a warning or an editable
 value today; none settled by picking a side):
