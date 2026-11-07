@@ -1510,7 +1510,7 @@ export class SR3EActor extends Actor {
   /*  Overwatch / Convergence helpers                                     */
   /* ------------------------------------------------------------------ */
 
-  static async _incrementOverwatch(hostActorId, attackerActorId) {
+  static async _incrementOverwatch(hostActorId, attackerActorId, reason = 'Hack attempt failed Security Threshold check.') {
     const hostActor = actorFrom(hostActorId);
     if (!hostActor) return;
     const current = hostActor.system.overwatchCurrent ?? 0;
@@ -1521,7 +1521,7 @@ export class SR3EActor extends Actor {
       content: `
         <div class="sr-roll-card">
           <div class="sr-roll-header" style="color:var(--sr-amber)">⚠ Overwatch: ${newOW}/10 — ${hostActor.name}</div>
-          <div style="font-size:12px;color:var(--sr-text);margin-top:4px">Hack attempt failed Security Threshold check.</div>
+          <div style="font-size:12px;color:var(--sr-text);margin-top:4px">${reason}</div>
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
@@ -1815,6 +1815,51 @@ export class SR3EActor extends Actor {
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
+  }
+
+  /**
+   * The GM says an icon crashed — MDF p.22: crashing it "without Suppressing it" is the second Overwatch
+   * trigger; p.26: a decker running Suppression "may degrade 1 point of the utility's rating" to avoid it.
+   * Offered, never automatic (TODO 128): the GM names the host and decker and picks; nothing is applied
+   * until the dialog is confirmed.
+   */
+  static async handleIconCrashClick(btn) {
+    const { OverwatchCrash } = await import('./../data/overwatch-crash.mjs');
+    const live = a => game.sr3e.isLiveActor(a);
+    const hosts   = game.sr3e.sceneFirst(game.actors.filter(a => a.type === 'host' && live(a)));
+    const deckers = game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && live(a)));
+    if (!hosts.length) { ui.notifications.warn('No host to carry the Overwatch.'); return; }
+    const opts = list => list.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+    let pick = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Icon crashed' },
+      content: `<div class="form-group"><label>Host</label><select id="crash-host">${opts(hosts)}</select></div>
+        <div class="form-group"><label>Decker who crashed it</label><select id="crash-decker"><option value="">—</option>${opts(deckers)}</select></div>
+        <label><input type="checkbox" id="crash-suppress"> Suppress it (degrade Suppression by 1)</label>`,
+      buttons: [
+        { label: 'Confirm', action: 'confirm', default: true,
+          callback: (_e, _b, d) => { const el = d.element; pick = {
+            hostId: el.querySelector('#crash-host')?.value, deckerId: el.querySelector('#crash-decker')?.value,
+            suppress: !!el.querySelector('#crash-suppress')?.checked }; } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!pick?.hostId) return;
+    const decker = pick.deckerId ? actorFrom(pick.deckerId) : null;
+    const prog = decker ? OverwatchCrash.findSuppression(decker.items) : null;
+    const res = OverwatchCrash.resolve({
+      suppressionRating: prog ? OverwatchCrash.effectiveRating(prog.system) : 0, suppress: pick.suppress });
+    if (pick.suppress && !res.suppressed) ui.notifications.warn('No usable Suppression program — the crash counts toward Overwatch.');
+    if (res.suppressed) {
+      await prog.update({ 'system.currentRating': res.newRating });
+      await ChatMessage.create({
+        content: `<div class="sr-roll-card"><div class="sr-roll-header" style="color:var(--sr-green)">💻 Crash suppressed — ${decker.name}</div>
+          <div class="sr-roll-result">${prog.name} degraded to ${res.newRating}; no Overwatch (MDF p.26).</div></div>`,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      });
+      return;
+    }
+    await SR3EActor._incrementOverwatch(pick.hostId, pick.deckerId || null, 'An icon crashed without Suppression (MDF p.22).');
   }
 
   static async handleMatrixICResistClick(btn) {
@@ -4352,6 +4397,9 @@ _prepareCharacter(sys, attr) {
             <div class="sr-soak-action">
               <button class="sr-assign-damage-btn" data-payload='${icAssignPayload}'>
                 💉 Assign ${SR3EActor._woundName(finalLevel)} Matrix Wound to ${icName}
+              </button>
+              <button class="sr-icon-crash-btn" data-payload='${JSON.stringify({ icActorId: msc.icActorId }).replace(/'/g, '&#39;')}'>
+                💥 ${icName} crashed (MDF p.22)
               </button>
             </div>`;
         }

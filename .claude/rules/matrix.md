@@ -105,7 +105,9 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
 ### Overwatch / Convergence  · *MDF p.22-23*
 - 10 boxes, on the host's **Security Sheaf**.
 - Triggers: *"Failing a test using the Hacking skill"* and *"Crashing an icon without Suppressing it"*.
-  ⚠ **Only the first is implemented** — the crash trigger, Suppression and the sheaf's ten Trigger Steps are TODO 128.
+  The crash trigger is a GM-only **💥 crashed** button on the IC wound card (`handleIconCrashClick`, pure rules in
+  `data/overwatch-crash.mjs`): +1 Overwatch, or degrade Suppression by 1 instead (MDF p.26). ⚠ The sheaf's ten
+  Trigger Steps are still TODO 128.
 - Box 10 = **Convergence**: Dumpshock (Power = System Rating) + GOD/corporate response + possible physical security.
 
 ### Cybercombat  · *MDF p.26*

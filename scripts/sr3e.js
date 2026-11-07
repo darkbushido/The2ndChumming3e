@@ -3823,6 +3823,18 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
+  // Matrix combat — the GM marks an icon crashed → Overwatch / Suppression (TODO 128)
+  html.querySelectorAll('.sr-icon-crash-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'iconcrash', i)) return;
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM says an icon crashed.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'iconcrash', i)) return;
+      await SR3EActor.handleIconCrashClick(btn);
+    });
+  });
+
   // Matrix combat — IC rolls to resist (on IC resist card)
   html.querySelectorAll('.sr-matrix-ic-resist-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'maticresistroll', i)) return;
