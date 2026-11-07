@@ -1,5 +1,5 @@
 /**
- * The rules digest (`.claude/rules-digest.md`, TODO 288) must never drift from `.claude/rules/*.md`.
+ * The rules digest (`.claude/rules-digest.md`, TODO 289) must never drift from `.claude/rules/*.md`.
  *
  *   · the committed digest is byte-for-byte what `node tools/rules-digest.mjs --write` produces —
  *     so any edit to a rules file, a heading or a cited page fails here until it is regenerated;

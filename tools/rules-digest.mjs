@@ -1,5 +1,5 @@
 /**
- * Rules digest and lookup · TODO 288.
+ * Rules digest and lookup · TODO 289.
  *
  * A new feature used to mean reading CLAUDE.md and several `.claude/rules/*.md` files whole
  * (~50k tokens for all of them). The digest is ONE generated file listing every rules section

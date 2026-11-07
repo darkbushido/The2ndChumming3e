@@ -3,7 +3,7 @@ name: rules
 description: Load only the SR3 rules a feature needs — read the generated rules digest, then print the matching sections of .claude/rules/ with their PDF and page. Use when starting a new feature or fix that touches a rule, when asked "/rules <topic>", or before reading whole rules files.
 ---
 
-# /rules — the cheap way to load the rules (TODO 288)
+# /rules — the cheap way to load the rules (TODO 289)
 
 1. Read `.claude/rules-digest.md` (~3k tokens): one line per rules section — heading, cited pages, the
    modules and tests that own it. Don't read the whole `.claude/rules/*.md` files.
