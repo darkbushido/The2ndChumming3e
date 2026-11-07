@@ -2462,6 +2462,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
       <h3 class="section-hdr">Current Run</h3>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+        <label style="font-size:11px" title="Only VR-Hot uses Matrix Initiative; the other modes use the decker's own meat-world Initiative (MDF p.10).">
+          User mode:
+          <select name="system.matrixUserMode">
+            ${[['', '— none —'], ['TRM', 'Tortoise'], ['AR', 'AR'], ['VR-Cold', 'VR-Cold'], ['VR-Hot', 'VR-Hot']]
+              .map(([v, l]) => `<option value="${v}" ${(sys.matrixUserMode ?? '') === v ? 'selected' : ''}>${l}</option>`).join('')}
+          </select>
+        </label>
         ${hostBadge}
         <button type="button" class="btn-xs" data-action="setOrthoHost" title="${currentHost ? 'Change linked host' : 'Link to a host actor'}">
           ${currentHost ? '⇄ Change' : '📡 Set Host'}

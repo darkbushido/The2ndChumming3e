@@ -2053,6 +2053,30 @@ Hooks.on('updateCombat', (_combat, changed) => {
 });
 
 
+/* An IC's turn comes up → a GM prompt card, never an automatic attack (maintainer ruling 2026-11-07, MDF p.23:
+ * triggered IC "activate (rolling into initiative)"). The GM clicks to open the IC's own attack dialog. The key
+ * keeps a turn that fires updateCombat twice (turn + queue flag) to ONE card. */
+let _lastICPrompt = '';
+Hooks.on('updateCombat', async (combat, changed) => {
+  if (!game.users?.activeGM?.isSelf) return;
+  const f = changed.flags?.The2ndChumming3e;
+  if (!('turn' in changed) && !('round' in changed) && !(f && 'queueIndex' in f)) return;
+  const actor = combat.combatant?.actor;
+  if (!actor || (actor.type !== 'ic' && actor.type !== 'agent')) return;
+  const key = `${combat.id}|${combat.round}|${combat.flags?.The2ndChumming3e?.queueIndex ?? combat.turn}|${combat.combatant.id}`;
+  if (key === _lastICPrompt) return;
+  _lastICPrompt = key;
+  const payload = JSON.stringify({ icActorId: actorRef(actor) }).replace(/'/g, '&#39;');
+  await ChatMessage.create({
+    content: `<div class="sr-roll-card">
+      <div class="sr-roll-header" style="color:var(--sr-red)">💻 ${actor.name} acts</div>
+      <div class="sr-roll-result">Initiative Pass ${combat.flags?.The2ndChumming3e?.queue?.[combat.flags?.The2ndChumming3e?.queueIndex ?? 0]?.pass ?? 1} — choose its target and attack, or let it pass.</div>
+      <button class="sr-ic-turn-btn" data-payload='${payload}'>⚔ ${actor.name}: Attack…</button></div>`,
+    style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    whisper: game.users.filter(u => u.isGM).map(u => u.id),
+  });
+});
+
 // SR3E GM tools — injected into the Rollable Tables sidebar tab.
 // Chase Scene is available to all players; the rest are GM-only.
 Hooks.on('renderRollTableDirectory', (_app, html) => {
@@ -3957,6 +3981,33 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
     });
   });
 
+  // An IC's turn prompt → its own attack dialog, per ruleset (GM only; the card is whispered to the GM)
+  html.querySelectorAll('.sr-ic-turn-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'icturn', i)) return;
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM acts for IC.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'icturn', i)) return;
+      const ic = actorFrom(JSON.parse(btn.dataset.payload).icActorId);
+      if (!ic) return;
+      if (game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox') await ic.rollOrthodoxICAttack();
+      else await ic.rollICAttack();
+    });
+  });
+
+  // Matrix combat — the GM marks an icon crashed → Overwatch / Suppression (TODO 128)
+  html.querySelectorAll('.sr-icon-crash-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'iconcrash', i)) return;
+    if (!game.user.isGM) return _denyBtn(btn, 'Only the GM says an icon crashed.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'iconcrash', i)) return;
+      await SR3EActor.handleIconCrashClick(btn);
+    });
+  });
+
   // Matrix combat — IC rolls to resist (on IC resist card)
   html.querySelectorAll('.sr-matrix-ic-resist-roll-btn').forEach((btn, i) => {
     if (!_checkBtn(btn, mid, 'maticresistroll', i)) return;
@@ -4056,7 +4107,8 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       }
 
       if (toCreate.length && game.combat) {
-        await game.combat.createEmbeddedDocuments('Combatant', toCreate);
+        const created = await game.combat.createEmbeddedDocuments('Combatant', toCreate);
+        await SR3EActor.rollTriggeredICInitiative(game.combat, created);
       }
       if (newAlert !== null) {
         await host.update({ 'system.alertCount': newAlert });

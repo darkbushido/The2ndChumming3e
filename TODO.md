@@ -1352,6 +1352,14 @@ the Convergence box, and nothing to stock.
 less than the host's available Memory (generally System Rating x500Mp)"*, and Gray/Black IC need the
 Mainframe Support module. Any implementation should report that, not enforce it.
 
+> **Progress (2026-11-07, branch `claude/hacking-module-assessment-628159`):** parts 1 and 2 are built — the IC
+> wound card offers a GM-only **💥 crashed** button; its dialog names the host and decker and applies +1 Overwatch,
+> or degrades Suppression by 1 instead (`scripts/data/overwatch-crash.mjs`). Part 3: the sheaf's stocking, activation and combatants already existed (host sheet, `sheaf-activate-btn`); the
+> prompt now also reports the −10-per-elapsed-phase Initiative offset and the Memory / Gray-Black limits
+> (`scripts/data/sheaf-rules.mjs`, MDF p.23-24). Still open: applying the offset to the combatant's initiative
+> (waits on the maintainer's ruling), a tenth step row for Convergence, stocking summary on the host sheet.
+> Decided with [the hacking-module assessment](audit/hacking-module-assessment.md): the Matrix turn flow is built natively.
+
 **Shape:** the crash trigger and Suppression are small and self-contained — do them first. The sheaf
 is a host-sheet feature (a list of steps, each with IC and a rating) and is worth its own pass.
 

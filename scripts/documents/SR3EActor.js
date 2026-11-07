@@ -200,6 +200,7 @@ export class SR3EActor extends Actor {
   }
 
   async rollCybercombat() {
+    game.sr3e.SR3EActionLedger?.begin(this);
     const targets = SR3EActor._getMatrixCombatTargets(this.id);
     if (!targets.length) {
       const hostId = this.system.activeHostId ?? '';
@@ -255,6 +256,7 @@ export class SR3EActor extends Actor {
       ],
     });
     if (!confirmed || !targetId) return;
+    game.sr3e.SR3EActionLedger?.charge(this, 'matrixAction', 'Cybercombat');   // All Matrix actions are Complex — MDF p.8 (warn only)
 
     const defActor = actorFrom(targetId);
     if (!defActor) return;
@@ -863,6 +865,7 @@ export class SR3EActor extends Actor {
   /* ------------------------------------------------------------------ */
 
   async rollHackingAction() {
+    game.sr3e.SR3EActionLedger?.begin(this);
     const sys = this.system;
     const d   = sys.derived ?? {};
 
@@ -988,6 +991,7 @@ export class SR3EActor extends Actor {
     });
 
     if (!confirmed || !hostActorId) return;
+    game.sr3e.SR3EActionLedger?.charge(this, 'matrixAction', 'Hacking action');   // All Matrix actions are Complex — MDF p.8 (warn only)
 
     const hackSpent = hackPoolDice > 0 ? await this.spendHackingPool(hackPoolDice) : 0;
     if (hackSpent !== hackPoolDice) {
@@ -1013,6 +1017,7 @@ export class SR3EActor extends Actor {
   /* ------------------------------------------------------------------ */
 
   async rollNodePrompt(promptData, nodeId) {
+    game.sr3e.SR3EActionLedger?.begin(this);
     const sys = this.system;
     const d   = sys.derived ?? {};
 
@@ -1105,6 +1110,7 @@ export class SR3EActor extends Actor {
       ],
     });
     if (!confirmed) return;
+    game.sr3e.SR3EActionLedger?.charge(this, 'matrixAction', promptData?.name ?? 'Prompt');   // All Matrix actions are Complex — MDF p.8 (warn only)
 
     const npSpent = hackPoolDice > 0 ? await this.spendHackingPool(hackPoolDice) : 0;
     if (npSpent !== hackPoolDice) {
@@ -1515,7 +1521,7 @@ export class SR3EActor extends Actor {
   /*  Overwatch / Convergence helpers                                     */
   /* ------------------------------------------------------------------ */
 
-  static async _incrementOverwatch(hostActorId, attackerActorId) {
+  static async _incrementOverwatch(hostActorId, attackerActorId, reason = 'Hack attempt failed Security Threshold check.') {
     const hostActor = actorFrom(hostActorId);
     if (!hostActor) return;
     const current = hostActor.system.overwatchCurrent ?? 0;
@@ -1526,7 +1532,7 @@ export class SR3EActor extends Actor {
       content: `
         <div class="sr-roll-card">
           <div class="sr-roll-header" style="color:var(--sr-amber)">⚠ Overwatch: ${newOW}/10 — ${hostActor.name}</div>
-          <div style="font-size:12px;color:var(--sr-text);margin-top:4px">Hack attempt failed Security Threshold check.</div>
+          <div style="font-size:12px;color:var(--sr-text);margin-top:4px">${reason}</div>
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
@@ -1553,11 +1559,25 @@ export class SR3EActor extends Actor {
       ? `<div style="font-size:11px;color:var(--sr-muted);font-style:italic;margin:3px 0">${step.description}</div>`
       : '';
 
+    // MDF p.23-24 — the −10 per elapsed phase, and the Memory / grading limits: reported, never enforced (TODO 128).
+    const { SheafRules } = await import('./../data/sheaf-rules.mjs');
+    const _pass = game.combat?.flags?.The2ndChumming3e?.queue?.[game.combat?.flags?.The2ndChumming3e?.queueIndex ?? 0]?.pass;
+    const _pen = SheafRules.initiativePenalty(_pass);
+    const _icActors = (step.ic ?? []).map(r => actorFrom(r.actorId)).filter(Boolean);
+    const _rep = SheafRules.stockingReport({
+      memoryTotal: hostActor.system.memoryTotal, mainframeSupport: hostActor.system.mainframeSupport,
+      ic: _icActors.map(i => ({ name: i.name, grading: i.system.grading, memoryRequired: i.system.memoryRequired })) });
+    const _notes = [];
+    if (_pen) _notes.push(`Triggered IC enter ${-_pen} below their rolled Initiative (${_pass - 1} phase${_pass - 1 === 1 ? '' : 's'} already past, MDF p.23).`);
+    if (_rep.over) _notes.push(`Stocked IC need ${_rep.used} Mp; the host has ${_rep.total} Mp (MDF p.24).`);
+    if (_rep.graded.length) _notes.push(`${_rep.graded.join(', ')}: Gray/Black IC need the Mainframe Support module (MDF p.24).`);
+    const noteHtml = _notes.map(n => `<div style="font-size:11px;color:var(--sr-amber);margin:3px 0">⚠ ${n}</div>`).join('');
     const gmUsers = game.users.filter(u => u.isGM).map(u => u.id);
     await ChatMessage.create({
       content: `
         <div class="sr-roll-card">
           <div class="sr-roll-header" style="color:var(--sr-red)">⚠ Security Sheaf — Level ${owCount}</div>
+          ${noteHtml}
           ${desc}
           <div style="font-size:11px;color:var(--sr-text);margin:3px 0">IC: <strong>${icList}</strong></div>
           <div style="display:flex;gap:6px;margin-top:8px">
@@ -1820,6 +1840,86 @@ export class SR3EActor extends Actor {
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
+  }
+
+  /**
+   * The GM says an icon crashed — MDF p.22: crashing it "without Suppressing it" is the second Overwatch
+   * trigger; p.26: a decker running Suppression "may degrade 1 point of the utility's rating" to avoid it.
+   * Offered, never automatic (TODO 128): the GM names the host and decker and picks; nothing is applied
+   * until the dialog is confirmed.
+   */
+  static async handleIconCrashClick(btn) {
+    const { OverwatchCrash } = await import('./../data/overwatch-crash.mjs');
+    const live = a => game.sr3e.isLiveActor(a);
+    const hosts   = game.sr3e.sceneFirst(game.actors.filter(a => a.type === 'host' && live(a)));
+    const deckers = game.sr3e.sceneFirst(game.actors.filter(a => (a.type === 'character' || a.type === 'npc') && live(a)));
+    if (!hosts.length) { ui.notifications.warn('No host to carry the Overwatch.'); return; }
+    const opts = list => list.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+    let pick = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Icon crashed' },
+      content: `<div class="form-group"><label>Host</label><select id="crash-host">${opts(hosts)}</select></div>
+        <div class="form-group"><label>Decker who crashed it</label><select id="crash-decker"><option value="">—</option>${opts(deckers)}</select></div>
+        <label><input type="checkbox" id="crash-suppress"> Suppress it (degrade Suppression by 1)</label>`,
+      buttons: [
+        { label: 'Confirm', action: 'confirm', default: true,
+          callback: (_e, _b, d) => { const el = d.element; pick = {
+            hostId: el.querySelector('#crash-host')?.value, deckerId: el.querySelector('#crash-decker')?.value,
+            suppress: !!el.querySelector('#crash-suppress')?.checked }; } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (!pick?.hostId) return;
+    const decker = pick.deckerId ? actorFrom(pick.deckerId) : null;
+    const prog = decker ? OverwatchCrash.findSuppression(decker.items) : null;
+    const res = OverwatchCrash.resolve({
+      suppressionRating: prog ? OverwatchCrash.effectiveRating(prog.system) : 0, suppress: pick.suppress });
+    if (pick.suppress && !res.suppressed) ui.notifications.warn('No usable Suppression program — the crash counts toward Overwatch.');
+    if (res.suppressed) {
+      await prog.update({ 'system.currentRating': res.newRating });
+      await ChatMessage.create({
+        content: `<div class="sr-roll-card"><div class="sr-roll-header" style="color:var(--sr-green)">💻 Crash suppressed — ${decker.name}</div>
+          <div class="sr-roll-result">${prog.name} degraded to ${res.newRating}; no Overwatch (MDF p.26).</div></div>`,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      });
+      return;
+    }
+    await SR3EActor._incrementOverwatch(pick.hostId, pick.deckerId || null, 'An icon crashed without Suppression (MDF p.22).');
+  }
+
+  /**
+   * Triggered sheaf IC roll into initiative with the book's penalty — MDF p.23: "-10 from an ICs Initiative for
+   * each phase that has already transpired" (maintainer ruling 2026-11-07: added on the GM's click, the
+   * per-phase figure editable). The GM confirms or edits the figure; nothing happens on Cancel but the IC
+   * still joins the tracker unrolled.
+   */
+  static async rollTriggeredICInitiative(combat, combatants) {
+    if (!combat || !combatants?.length) return;
+    const { SheafRules } = await import('./../data/sheaf-rules.mjs');
+    const flags = combat.flags?.The2ndChumming3e ?? {};
+    const pass = flags.queue?.[flags.queueIndex ?? 0]?.pass ?? 1;
+    const elapsed = Math.max(0, pass - 1);
+    let perPhase = null;
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: 'Triggered IC — initiative' },
+      content: `<p>${elapsed} phase${elapsed === 1 ? '' : 's'} already past (MDF p.23). Initiative penalty per phase:</p>
+        <input type="number" id="ic-pen" value="${SheafRules.initiativePenalty(2)}" step="1" style="width:80px"/>`,
+      buttons: [
+        { label: 'Roll', action: 'roll', default: true,
+          callback: (_e, _b, d) => { perPhase = parseInt(d.element.querySelector('#ic-pen')?.value); } },
+        { label: 'Skip', action: 'skip' },
+      ],
+    });
+    if (perPhase == null || Number.isNaN(perPhase)) return;
+    const offset = perPhase * elapsed;
+    for (const c of combatants) {
+      if (!c.actor) continue;
+      const rolled = await c.actor.rollInitiative();
+      const score = Math.max(1, rolled + offset);
+      await c.update({ initiative: score, flags: { The2ndChumming3e: { baseInitiative: score, currentInitiative: score,
+        passesRemaining: Math.ceil(score / 10) } } });
+    }
+    await combat.rebuildQueue();
   }
 
   static async handleMatrixICResistClick(btn) {
@@ -4367,6 +4467,9 @@ _prepareCharacter(sys, attr) {
             <div class="sr-soak-action">
               <button class="sr-assign-damage-btn" data-payload='${icAssignPayload}'>
                 💉 Assign ${SR3EActor._woundName(finalLevel)} Matrix Wound to ${icName}
+              </button>
+              <button class="sr-icon-crash-btn" data-payload='${JSON.stringify({ icActorId: msc.icActorId }).replace(/'/g, '&#39;')}'>
+                💥 ${icName} crashed (MDF p.22)
               </button>
             </div>`;
         }
@@ -11888,8 +11991,9 @@ _prepareCharacter(sys, attr) {
       dice = 1;
       modeNote = `<div class="sr-roll-meta" style="color:#c070f5">✦ Astral Init — INT ${intel}${grade ? ` + grade ${grade} (Astral Reaction)` : ''} + 20</div>`;
     } else if ((() => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox'; } catch { return false; } })()
-              && (this.system.orthodoxRunState?.currentHostId ?? '') !== '') {
-      // Orthodox SR3: decker jacked in uses reaction BASE + ResponseIncrease×2 + (1+Response)d6
+              && useMatrixHot) {
+      // Orthodox SR3 — VR-Hot ONLY, like Defragged (maintainer ruling 2026-11-07; TRM/AR/VR-Cold keep their meat-world
+      // Initiative, MDF p.10). Until then any logged-in decker got this. Uses reaction BASE + ResponseIncrease×2 + (1+Response)d6
       // Wired reflexes excluded while jacked in.
       const wm           = this.system.woundMod ?? 0;
       const reactionBase = this.system.attributes?.reaction?.base ?? 0;
@@ -13549,6 +13653,7 @@ _prepareCharacter(sys, attr) {
   // ── Orthodox System Test ────────────────────────────────────────────────────
 
   async rollOrthodoxSystemTest() {
+    game.sr3e.SR3EActionLedger?.begin(this);
     const sys  = this.system;
     const run  = sys.orthodoxRunState ?? {};
     const deck = sys.orthodoxDeck    ?? {};
@@ -13637,6 +13742,7 @@ _prepareCharacter(sys, attr) {
       ],
     });
     if (!confirmed) return;
+    game.sr3e.SR3EActionLedger?.charge(this, 'matrixAction', 'System Test');   // All Matrix actions are Complex — MDF p.8 (warn only)
 
     if (hpAlloc > 0) await this.update({ 'system.hackingPoolSpent': (sys.hackingPoolSpent ?? 0) + hpAlloc });
 
@@ -13757,6 +13863,7 @@ _prepareCharacter(sys, attr) {
   // ── Orthodox Cybercombat ────────────────────────────────────────────────────
 
   async rollOrthodoxCybercombat() {
+    game.sr3e.SR3EActionLedger?.begin(this);
     const sys  = this.system;
     const run  = sys.orthodoxRunState ?? {};
     const deck = sys.orthodoxDeck    ?? {};
@@ -13847,6 +13954,7 @@ _prepareCharacter(sys, attr) {
       ],
     });
     if (!confirmed || !targetId) return;
+    game.sr3e.SR3EActionLedger?.charge(this, 'matrixAction', 'Cybercombat');   // All Matrix actions are Complex — MDF p.8 (warn only)
 
     if (hpAlloc > 0) await this.update({ 'system.hackingPoolSpent': (sys.hackingPoolSpent ?? 0) + hpAlloc });
     const totalAtkDice = atkDice + hpAlloc;
