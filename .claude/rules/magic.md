@@ -130,7 +130,7 @@ one. Secondary effects stated, never applied.
   Rows are `spellModifierGroups()` — no Gear; an **elemental area** cast also drops Target (SR3 p.182: behind a
   wall still gets cooked), so its visibility is the caster's view of the centre. Any other area spell keeps
   Target: it affects only targets the caster can see. ⚠ Range is never a row (*"regardless of range"*);
-  ⚠ **touch and personal ranges never ask** (SR3 p.182, `SR3EItem.spellTakesGMWindow(range)`). The GM's difference moves
+  ⚠ **touch and personal ranges never ask** (SR3 p.183, `SR3EItem.spellTakesGMWindow(range)`). The GM's difference moves
   `tn` and every `targetTNs` entry alike; wounds and sustaining stay `rollPool`'s.
 
 **Spell Defense is declared per mage, on that mage's client.** `rollInitiative()` ends with

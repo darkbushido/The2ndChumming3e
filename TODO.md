@@ -3561,10 +3561,10 @@ The digest also takes the book from a list (`SR3 p.124, p.116`) and from "Cannon
 printed→PDF offsets: SR3 +2, M&M +2, R3 +2 (the Trixie example is on printed p.37), MitS +1, Matrix +1, MDF 0.
 `tests/rules-digest.test.mjs` now fails on any `?` citation.
 Two guesses were corrected by the PDFs: matrix.md's rigger dump shock p.156 is **core**, not R3.
-**Still open:** six cited pages where the PDF doesn't show the rule on that page. They were sent to the
-maintainer and are unchanged: SR3 p.175 (astral soak; the page is art), SR3 p.40 (Open Test, on p.39),
-M&M p.63 (bonus routing, on pp.64-65), M&M p.129 (electrical damage, on p.127), SR3 p.125 (Firing Through,
-on p.124), SR3 p.182 (touch range, on pp.180/183).
+**The six doubtful pages, ruled by the maintainer (2026-11-07, each checked in the PDF):** astral soak
+SR3 p.176 (was p.175), Open Test SR3 p.39 (was p.40), triggered-ware routing M&M p.63-65 (was p.63),
+electrical damage M&M p.127 (was p.129, the PDF page), Firing Through SR3 p.124-125 (was p.125), touch range
+SR3 p.183 (was p.182).
 
 ## 291. Slim `CLAUDE.md` — it loads in every session — **ruled 2026-11-07**
 

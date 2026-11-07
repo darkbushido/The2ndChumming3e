@@ -6,15 +6,15 @@ sections; open the cited PDF page for the rule itself (the PDFs are the authorit
 PDFs: `C:\Users\lance\Documents\Github\Shadowrun 3rd Edition PDFs`. SR3 core: PDF page = printed + 2.
 Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 
-- `adept-powers.md` 8cf89362b971
+- `adept-powers.md` bcdbb99bf97b
 - `combat-resolution.md` 0d4ae6a07ad9
-- `dice-and-defaulting.md` 6cf26aee5db7
+- `dice-and-defaulting.md` a75e4d4a2759
 - `drugs-and-healing.md` 442627285d0e
 - `electronic-warfare.md` c0eb3d490caa
-- `essence-and-cyberware.md` 18a6912219db
-- `initiative-and-vehicles.md` ba3a5b4864c2
+- `essence-and-cyberware.md` cac57ed6e24b
+- `initiative-and-vehicles.md` 1babb7afb959
 - `karma-and-economy.md` f0fb502938eb
-- `magic.md` 1b45890f93a4
+- `magic.md` 1d2f47e8cfb7
 - `matrix.md` 5b12bd9a3205
 - `melee-combat.md` 73eba60f8bfb
 - `portraits.md` 9fca86734575
@@ -27,7 +27,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **Improved Reflexes does not stack with technology — TODO 64** — SR3 p.169
 - **Missile Parry** — SR3 p.170
 - **Quick Strike — TODO 78** — MITS p.151 — scripts/data/quick-strike.mjs
-- **Direct-effect powers** — SR3 p.169, SR3 p.170, SR3 p.175, SOTA2 p.67
+- **Direct-effect powers** — SR3 p.169, SR3 p.170, SR3 p.176, SOTA2 p.67
 - **The item sheet offers fields by POWER KIND** — *(no citation: not audited)*
 
 ## combat-resolution
@@ -37,7 +37,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **Combat Pool** — SR3 p.43, SR3 p.104, SR3 p.169, SR3 p.285, SR3 p.282 — scripts/data/combat-pool.mjs, sr3e.js, tests/initiative.test.mjs
 
 ## dice-and-defaulting
-- **Dice rolling — Rule of Six & Rule of One** — SR3 p.38-39, SR3 p.38, SR3 p.40 — tests/opposed-explosions.test.mjs, tests/interactive-explosions.test.mjs, scripts/data/open-test.mjs
+- **Dice rolling — Rule of Six & Rule of One** — SR3 p.38-39, SR3 p.38, SR3 p.39 — tests/opposed-explosions.test.mjs, tests/interactive-explosions.test.mjs, scripts/data/open-test.mjs
 - **Defaulting (SR3 Default Table) — interactive** — SR3 p.84-85, SR3 p.85, SR3 p.84 — tests/defaulting.test.mjs
 
 ## drugs-and-healing
@@ -51,9 +51,9 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **Cyberzombies — TODO 111** — MM p.50-59, MM p.59 — scripts/data/cyberzombie.mjs
 - **Cyberware/bioware bonuses — the Mods field** — *(no citation: not audited)* — scripts/SR3EMods.js, tools/build-mods-bonuses.mjs, scripts/data/srcg-bonuses.js
 - **Skill bonus dice — two channels, NOT interchangeable** — MM p.66, CC p.87
-- **Triggered cyber/bioware — TODO 30** — MM p.63, MM p.71, MM p.78, SR3 p.56 — tests/soak-payload.test.mjs, tests/adept-powers.test.mjs
+- **Triggered cyber/bioware — TODO 30** — MM p.63, MM p.71, MM p.63-65, MM p.78, SR3 p.56 — tests/soak-payload.test.mjs, tests/adept-powers.test.mjs
 - **Stress on implants and Attributes — TODO 109** — MM p.124-131, MM p.126, MM p.130-131, MM p.148 — scripts/data/stress.mjs, scripts/SR3EStress.js
-- **Cybersystem damage — Essence slots and the Wound Effect Table — TODO 129** — MM p.126-129, MM p.127, MM p.128, MM p.129 — scripts/data/cyber-slots.mjs, tests/cyber-slots.test.mjs, SR3EActor.js
+- **Cybersystem damage — Essence slots and the Wound Effect Table — TODO 129** — MM p.126-129, MM p.127, MM p.128 — scripts/data/cyber-slots.mjs, tests/cyber-slots.test.mjs, SR3EActor.js
 - **Item ratings — one reader  · TODO 118, 122** — SR3 p.304 — scripts/data/item-rating.mjs, tests/item-rating.test.mjs, tools/patch-name-ratings.mjs, gear-ratings.mjs, tools/build-gear-ratings.mjs, data/mod-ratings.mjs
 - **Cyberware grades — TODO 86** — MM p.45, MM p.11, SR3 p.124
 - **Move-by-wire** — MM p.60 — scripts/data/move-by-wire.mjs
@@ -63,7 +63,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 ## initiative-and-vehicles
 - **Initiative** — SR3 p.103-104, MDF p.10, MITS p.58, SR3 p.301, SR3 p.140, SR3 p.154 — scripts/data/round-queue.mjs
 - **Action economy — the action ledger — TODO 48** — SR3 p.105-108, SR3 p.107, SR3 p.112, SR3 p.113, SR3 p.282, CC p.34 — scripts/data/action-economy.mjs, scripts/SR3EActionLedger.js, ready-weapon.mjs, tools/fill-weapon-hands.mjs, tools/fill-weapon-accessories.mjs
-- **GM tools — Rollable Tables sidebar** — SR3 p.119, SR3 p.124-125, SR3 p.125 — scripts/data/barrier.mjs
+- **GM tools — Rollable Tables sidebar** — SR3 p.119, SR3 p.124-125 — scripts/data/barrier.mjs
 - **Driving Test — runDrivingTest** — SR3 p.134, SR3 p.135, SR3 p.141-146, SR3 p.44, SR3 p.147, SR3 p.141, SR3 p.148 — scripts/data/rigging.mjs
 - **Chase quarry & auto-distance  (SR3EVehicleChase.js)** — *(no citation: not audited)* — SR3EVehicleChase.js
 - **💥 Collision — a person, a vehicle or a barrier — TODO 189** — SR3 p.142-148, SR3 p.148, SR3 p.124, SR3 p.143, SR3 p.147, SR3 p.142 — scripts/SR3ECollision.js, scripts/data/collisions.mjs

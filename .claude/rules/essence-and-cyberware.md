@@ -131,7 +131,7 @@ Upstream (`criticalfault/Shadowrun-Character-Generator`) encodes effects as `+2R
   hook beside `tickAttributeBoosts`. On expiry: Body Test vs **(turns it ran)D Stun**, Power from
   `rolledTurns` recorded at activation. ⚠ Goes through the soak card with **`noArmor`**, using
   `stagedPower`/`stagedLevel` (`tests/soak-payload.test.mjs`).
-- ⚠ **WHERE the bonuses apply is the rule** (M&M p.63: Quickness not to Reaction, Reaction not to Control Pool,
+- ⚠ **WHERE the bonuses apply is the rule** (M&M p.63-65: Quickness not to Reaction, Reaction not to Control Pool,
   Quickness and Willpower to Combat Pool): applied **after** Reaction derivation, **before** the pools (Control
   Pool reads `reaction.base`, which no bonus reaches).
   Moving the block breaks a clause. `tests/adept-powers.test.mjs` uses QUI 4 / INT 5 because the orderings differ there.
@@ -180,7 +180,7 @@ what each effect hit → ⚙ **Apply Stress — <implant>** (TODO 109's dialog, 
 - ⚠ **Ignore, never re-roll** an effect on an empty slot or a type the character lacks.
 - ⚠ **Never pick within a slot** — `systemHit` returns candidates with shares (sum 1, for the optional 1D10); the GM chooses.
 - ⚠ **Slots hold GRADED Essence** (alphaware VCR = 2.4).
-- ⚠ **Electrical damage skips the Wound Effect Table** (M&M p.129): straight to system affected, plus 1D6 each where 1-2 hits another implant.
+- ⚠ **Electrical damage skips the Wound Effect Table** (M&M p.127): straight to system affected, plus 1D6 each where 1-2 hits another implant.
 - ⚠ **Cyberzombies wrap** to slot 1 and can damage two systems at once (`system.cybermancy.is`).
 - ⚠ `assignSlots` is pinned to Leggy's printed slots (M&M p.127); the reaction enhancers' "Essence Cost .6"
   is the pair's combined cost.

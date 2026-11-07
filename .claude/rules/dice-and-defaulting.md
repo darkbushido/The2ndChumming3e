@@ -34,7 +34,7 @@ paths:
     run by `_postWaveCard` on the final wave, on the rolling client.
   Both registries name `[class on game.sr3e, method]`, so `ctx` must be plain JSON (ids, not actors).
   `tests/interactive-explosions.test.mjs`: the only `_rollWave(…, false, …)` in `scripts/` is the 💥 handler.
-  Chase Driver Points (an Open Test, SR3 p.40 — every 6 rolls again, no TN) use `scripts/data/open-test.mjs`;
+  Chase Driver Points (an Open Test, SR3 p.39 — every 6 rolls again, no TN) use `scripts/data/open-test.mjs`;
   its 💥 is gated to the roller, since chase state lives in that user's window.
 
 ### Defaulting (SR3 Default Table) — interactive  · *SR3 p.84-85*
