@@ -66,6 +66,10 @@ test.describe('Orthodox SR3 Matrix cards', () => {
   let created = [], hostId = null, deckerId = null;
 
   test.beforeEach(async ({ janitor }) => {
+    // Since TODO 275 the derived Hacking Pool follows the world's Matrix ruleset, so these cards' pool is the
+    // Orthodox one only in an Orthodox world. Switching the setting reloads Foundry for everyone — skip, said why.
+    const ruleset = await janitor.page.evaluate(() => game.settings.get('The2ndChumming3e', 'matrixRuleset'));
+    test.skip(ruleset !== 'orthodox', `the world's Matrix ruleset is "${ruleset}" — these Orthodox cards need an Orthodox world (TODO 275)`);
     await clearChatAll(janitor.page);
     await sweepTestActors(janitor.page);
 
