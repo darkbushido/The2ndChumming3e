@@ -89,7 +89,7 @@ Pure: `SR3EActor.missileParryTN`, `missileParryOutcome`, `canMissileParry`.
 |---|---|---|
 | Combat Sense | +N **Combat Pool** dice · SR3 p.169 | `combatPool` derivation |
 | Pain Resistance | level off the damage used for the **injury-modifier lookup** · SR3 p.170 | `woundMod`, recomputed in `_prepareCharacter` |
-| Mystic Armor | +N **Impact** armour, cumulative · SR3 p.170 | soak card; **astral soak** as −N Power (`astralSoakTN`, SR3 p.175) |
+| Mystic Armor | +N **Impact** armour, cumulative · SR3 p.170 | soak card; **astral soak** as −N Power (`astralSoakTN`, SR3 p.176) |
 | Penetrating Strike | −N the **target's** Impact armour · SOTA2 p.67 | soak card, from the payload |
 | Killing Hands | replaces unarmed (STR)M Stun with (STR)*level* **Physical** · SR3 p.170 | declared in the called-shot dialog |
 
@@ -97,7 +97,7 @@ Pure: `SR3EActor.missileParryTN`, `missileParryOutcome`, `canMissileParry`.
 - ⚠ **Killing Hands REPLACES the level** (never stages it) and is **declared per attack**.
 - ⚠ **Mystic Armor goes on BEFORE the ammo rules** (survives Flechette doubling). Counts only for
   `magicType: 'Adept'`.
-- ⚠ **Astral soak** (`_postAstralSoakCard`, SR3 p.175): worn armour has no effect; `astralSoakTN` takes Mystic
+- ⚠ **Astral soak** (`_postAstralSoakCard`, SR3 p.176): worn armour has no effect; `astralSoakTN` takes Mystic
   Armor off the Power and nothing else.
 
 ### The item sheet offers fields by POWER KIND

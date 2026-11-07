@@ -7950,3 +7950,22 @@ The maintainer: *"we may need a shoping cart system"*. Ruled 2026-10-28: after T
 (each with its quantity) gathered in Buy gear, then one card and one 💴 Pay for the lot. **Not designed yet** — at the
 store it is one list price; through a contact each item has its own Availability (SR3 p.272), so the open question is one
 Etiquette Test per item or one for the slowest. Overlaps TODO 283 (a host and its mods bought as one purchase).
+
+## 290. ✅ Name the book on every bare-page citation in `.claude/rules/` — **ruled 2026-11-07** · 43af313e
+
+Follow-up to [#289](TODO.md#289). About 105 citations in the rules files give a page with no book code
+(`· *p.168*`), so the rules digest shows them as `? p.168` and can't point at a PDF. The maintainer's ruling:
+name the book on each one, **checking every page against its PDF**. Never pick the book from context alone.
+Done when `node tools/rules-digest.mjs` reports no `?` citations, or each one left is marked as a page the
+library can't verify. After that, ratchet the count in `tests/rules-digest.test.mjs`.
+
+**Done on `feature/rules-citations` (2026-11-07):** 189 bare pages now name their book (SR3, M&M, R3, MDF,
+Matrix). Each one was checked against its PDF: `pdftotext` on the cited page, with a keyword from the rule.
+The digest also takes the book from a list (`SR3 p.124, p.116`) and from "Cannon Companion". Verified
+printed→PDF offsets: SR3 +2, M&M +2, R3 +2 (the Trixie example is on printed p.37), MitS +1, Matrix +1, MDF 0.
+`tests/rules-digest.test.mjs` now fails on any `?` citation.
+Two guesses were corrected by the PDFs: matrix.md's rigger dump shock p.156 is **core**, not R3.
+**The six doubtful pages, ruled by the maintainer (2026-11-07, each checked in the PDF):** astral soak
+SR3 p.176 (was p.175), Open Test SR3 p.39 (was p.40), triggered-ware routing M&M p.63-65 (was p.63),
+electrical damage M&M p.127 (was p.129, the PDF page), Firing Through SR3 p.124-125 (was p.125), touch range
+SR3 p.183 (was p.182).
