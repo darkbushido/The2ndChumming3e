@@ -1136,7 +1136,6 @@ read them from rendered pages (`pdftoppm`), never from `pdftotext`.
   `design-handling-floor-rounds-down`, `design-availability-rounds-down`, `design-smart-max-truncates`,
   `design-cell-strips-formula-bracket`, `design-load-ignores-body0`.
 - No UI in this slice, so there is nothing to check in Foundry yet.
-- Smart materials' raised maxima round to the nearest (the example: 270 → 311) — read as, not yet ruled (Q4 open).
 
 **Ruled (the maintainer, 2026-11-07, via the questions session):**
 - **Availability:** "a day is 24hrs, the base is 2/24hours so a 2/2 days should be 2/48hrs. you cannot mod it lower then
@@ -1147,7 +1146,8 @@ read them from rendered pages (`pdftoppm`), never from `pdftotext`.
 - **The design lives on the vehicle** (`flags.The2ndChumming3e.design`); re-saving **offers** the changed stats (old → new,
   each ticked) rather than writing over hand edits.
 - **Entry points:** the Actors directory header, a macro, and the vehicle sheet's Design button.
-- Still open: Q4 (smart-materials rounding) and Q5 (keep the printed table figures) — `vehicle-design-287-questions.md`.
+- **Smart materials' raised maxima round to the nearest, .5 up** (the example: 270 → 311) — Q4, as built.
+- **The tables keep the printed figures**; the discrepancies stay listed in `NOTES` — Q5, as built.
 
 **Built — slice 2, design costs and the designer window (2026-11-07):**
 - `vehiclemod` gains `designCost` / `designCf` / `designLoad` (strings as printed: "55 per level", "Chassis x 0.25",
