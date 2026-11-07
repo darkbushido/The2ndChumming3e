@@ -3579,3 +3579,20 @@ mods). A car with cost 40,000¥, Body 4, Handling 4 / 5 off-road, Speed 100, Acc
       ("while it runs (55 minutes)"); with no turbocharging, warned.
 - [ ] **Weapon mounts** — an External Hardpoint and a Small Turret → Sig two lower ("weapon mounts", SR3 p.307 in the tooltip).
 - [ ] **Rolls use it:** a chase test's Speed / Handling, a sensor test against this car (its Sig), a collision's Acceleration.
+
+## 79. 🛒 Quantity and the cart (TODO 284, 285, branch `claude/shop-quantity-cart-57b85a`)
+
+**Prerequisites:** a troll character owned by Player2 with an Ares Thunderer (or any clip-fed gun), a fixer contact, ¥5,000.
+JS only — no restart.
+
+- [ ] Gun sheet → 🛒 Buy ammo → pick its 10-Rnd Clip (¥31 list) → **Quantity 4**, 🏪 at the store. Preview and card read
+      **¥155** (4 × ¥31 = ¥124, +25% troll on the total, SR3 p.272). 💴 Pay: nuyen −155, ONE clip item on the sheet with
+      **4 reloads** ("4 reloads × 10 rounds"), stamped with the gun's class; the 📒 reason reads "Bought 4 × 10-Rnd Clip".
+- [ ] Buy gear → a box of loose rounds × 3: one item with 3× the rounds. A stackable item (grenade, medkit) × 2: one item,
+      quantity 2. A gun × 2: two copies.
+- [ ] **Cart.** Buy gear → pick the clip, Qty 2, **➕ Add to cart**; pick an armour jacket, Qty 1, ➕; pick a Predator (form
+      left filled). Through a contact: the preview's TN and base time are the **slowest** item's (the highest TN, the longest
+      time). Find a source: ONE Etiquette roll; the Source found card lists each line with its own Street Index and one asking
+      price. 🤝 Negotiate moves the whole total. 💴 Pay once: all three land on the sheet.
+- [ ] ✕ on a cart row removes it; an emptied form is not bought as "gear".
+

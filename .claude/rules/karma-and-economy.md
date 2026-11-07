@@ -217,6 +217,14 @@ card: delivery N, meet at N/2, price → 🤝 Negotiate (`rollOpposedPair` → `
   there, then `tools/fill-legality.mjs` (hand-kept packs) and `tools/build-default-gear.mjs` (generated) fill blanks.
   A table with no Legality column (most electronics, biotech, magical supplies, programs) leaves the field blank —
   the GM decides. Ammo is mostly "As Weapon" (SR3 p.281). Migration 0.9.0 fills owned copies from their compendium link.
+- **Quantity and the cart (TODO 284, 285, `scripts/data/cart.mjs`)**: a purchase is a list of LINES (`cost` = ONE, `quantity`);
+  the old single item is a cart of one (`Cart.linesOf` reads pre-284 payloads). ⚠ **The racial surcharge is on the TOTAL,
+  rounded once** (SR3 p.272 is silent on rounding; 4 × ¥31 troll = ¥155, not 4 × ¥39). Street Index per line (+0.1 per point
+  bought down on each). ⚠ **Through a contact: ONE Etiquette Test against the SLOWEST line** — highest TN, longest base time
+  in its own unit — and **one haggle on the total** (both ruled by the maintainer 2026-11-07; the book is written for one
+  item). ⚠ **💴 stacks** (`Cart.deliver`): a reloads box → one item with N × reloads, loose rounds → N × rounds, a `quantity`
+  item → one stack, else N copies. Mutants `cart-*`. A host + its mods as one purchase (TODO 283) would ride the same lines
+  (each mod a line, priced from the host before the card); not built.
 - Not modelled: permits themselves (SR3 p.273 — the Etiquette Test at Availability +2), the Etiquette specialisation.
   `tests/purchasing.test.mjs` pins Cheshire: 38 days, 19 days, ¥12,600, ¥10,080.
 

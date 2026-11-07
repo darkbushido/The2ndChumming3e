@@ -321,7 +321,7 @@ export async function run(t) {
   t.is('…and the level asked for is the level reported', GearSearch.atLevel(row, 4).level, 4);
   t.is('an unrated row has no level picker', GearSearch.fromIndex({ _id: 'y', name: 'Ares Predator', type: 'firearm', system: {} }, { collection: 'p' }).levels, null);
   const buy = read('scripts/SR3EPurchase.js');
-  t.ok('🛒 Buy gear asks for the level and the bought copy gets it', /id="sr-buy-level"/.test(buy) && /ModRatings\.withLevel\(data, payload\.level\)/.test(buy) && /level: el\.querySelector\('#sr-buy-level-row'\)/.test(buy));
+  t.ok('🛒 Buy gear asks for the level and the bought copy gets it', /id="sr-buy-level"/.test(buy) && /ModRatings\.withLevel\(data, line\.level\)/.test(buy) && /level: el\.querySelector\('#sr-buy-level-row'\)/.test(buy));
   t.ok('…a dropped item is the plain name too', !/displayName/.test(buy) && /name: dropped\.name/.test(buy));
 
   /* ── The item sheet ──────────────────────────────────────────────────────────── */

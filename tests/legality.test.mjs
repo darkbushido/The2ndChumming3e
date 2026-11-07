@@ -180,9 +180,9 @@ export async function run(t) {
     flow.indexOf("if (result.how === 'store') return SR3EPurchase.atStore(actor, result);") > 0
     && flow.indexOf("if (result.how === 'store')") < flow.indexOf("rollThen(actor, result.dice"));
   const store = flow.slice(flow.indexOf('async atStore('), flow.indexOf('/** The Etiquette Test has resolved'));
-  t.ok('the store card prices at the list price (storePrice), not cost × Street Index', /Purchasing\.storePrice\(result\.cost/.test(store) && !/askingPrice/.test(store));
+  t.ok('the store card prices at the list price (storePrice), not cost × Street Index', /Cart\.storePrice\(lines/.test(store) && !/askingPrice/.test(store));
   t.ok('…and pays through the same 💴 button (one record of the click, nothing written until it)', /class="sr-buy-pay-btn"/.test(store) && !/actor\.update/.test(store));
-  t.ok('…saying a restricted item is the GM\'s call, never refusing it', /Legality\.note\(result\.legality\)/.test(store));
+  t.ok('…saying a restricted item is the GM\'s call, never refusing it', /Legality\.note\(legality\)/.test(store));
   t.ok('the item sheets show the Legality field', /_legalityField\(s\) \{/.test(read('scripts/sheets/SR3EItemSheet.js')));
 
   const tools = readdirSync(join(ROOT, 'tools'));

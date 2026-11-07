@@ -5,6 +5,7 @@ import { ModRatings } from './data/mod-ratings.mjs';
 import { Legality } from './data/legality.mjs';
 import { AmmoShop } from './data/ammo-shop.mjs';
 import { MiniGrenade } from './data/mini-grenade.mjs';
+import { Cart } from './data/cart.mjs';
 
 /**
  * Buying gear — the flow · *SR3 pp.272-273* (TODO 82).
@@ -185,6 +186,19 @@ export const SR3EPurchase = {
     const availNote = (always, unknown) => (always ? '<strong>This item is "Always" available — no test needed.</strong>'
       : unknown ? '<strong style="color:var(--sr-amber)">This item has no Availability code — the GM sets one.</strong>' : '');
 
+    // The cart (TODO 285): lines added with ➕, each { name, cost (of ONE), quantity, index, tn, time, unit, … }.
+    const cart = [];
+    const readLine = el => {
+      const n = id => Number(el.querySelector(id)?.value) || 0;
+      const lvl = el.querySelector('#sr-buy-level-row')?.style.display === 'none' ? null : (Number(el.querySelector('#sr-buy-level')?.value) || null);
+      let name = el.querySelector('#sr-buy-name')?.value?.trim() || 'gear';
+      if (lvl && !/\]\s*$/.test(name)) name = `${name} [${lvl}]`;
+      return { name, cost: n('#sr-buy-cost'), quantity: Cart.qty(n('#sr-buy-qty')), index: n('#sr-buy-index') || 1,
+        tn: n('#sr-buy-tn'), time: n('#sr-buy-time'), unit: el.querySelector('#sr-buy-unit')?.value || 'day',
+        itemUuid: picked?.uuid || item?.uuid || '', level: lvl, gunClass: crit && !misfit ? crit.gunClass : '',
+        legality: el.querySelector('#sr-buy-legality')?.value?.trim() ?? '' };
+    };
+
     let result = null;
     await foundry.applications.api.DialogV2.wait({
       window: { title: `${actor.name}: buy ${gun ? `ammunition for ${gun.name}` : item ? item.name : 'gear'} (${Purchasing.PAGE})` },
@@ -239,9 +253,17 @@ export const SR3EPurchase = {
           <label style="flex:1">Base cost (¥)
             <input type="number" id="sr-buy-cost" value="${cost}" min="0" style="width:100%"/>
           </label>
+          <label style="flex:0 0 70px">Quantity
+            <input type="number" id="sr-buy-qty" value="1" min="1" max="${Cart.MAX_QUANTITY}" style="width:100%"/>
+          </label>
           <label class="sr-buy-contact-only" style="flex:1">Street Index
             <input type="number" id="sr-buy-index" value="${index}" min="0" step="0.1" style="width:100%"/>
           </label>
+        </div>
+        <div style="margin-bottom:6px">
+          <button type="button" id="sr-buy-add" class="btn-sm">➕ Add to cart</button>
+          <span style="font-size:11px;color:var(--sr-muted)"> — gather several items for one card and one 💴 Pay (TODO 285)</span>
+          <div id="sr-buy-cart" style="font-size:12px"></div>
         </div>
         <div class="sr-buy-contact-only">
         <label style="display:block;margin-bottom:6px">Contact
@@ -265,7 +287,11 @@ export const SR3EPurchase = {
           callback: (_e, _b, dlg) => {
             const el = dlg.element;
             const n = id => Number(el.querySelector(id)?.value) || 0;
+            const here = readLine(el);
+            // The form's own item joins the cart when it is named (or when it is the only thing being bought).
+            const lines = [...cart, ...(here.name !== 'gear' || !cart.length ? [here] : [])];
             result = {
+              lines,
               name: el.querySelector('#sr-buy-name')?.value || 'gear',
               tn: n('#sr-buy-tn'), time: n('#sr-buy-time'),
               unit: el.querySelector('#sr-buy-unit')?.value || 'day',
@@ -291,6 +317,7 @@ export const SR3EPurchase = {
         const legalIn = el.querySelector('#sr-buy-legality');
         const legalNote = el.querySelector('#sr-buy-legal-note');
         const okBtn = el.querySelector('button[data-action="ok"]');
+        const cartEl = el.querySelector('#sr-buy-cart');
         const showHow = () => {
           for (const x of el.querySelectorAll('.sr-buy-contact-only')) x.style.display = storeMode ? 'none' : '';
           for (const r of el.querySelectorAll('input[name="sr-buy-how"]')) r.checked = r.value === (storeMode ? 'store' : 'contact');
@@ -314,15 +341,23 @@ export const SR3EPurchase = {
           const n = id => Number(el.querySelector(id)?.value) || 0;
           const cut = Purchasing.reduceAvailability({ tn: n('#sr-buy-tn'), time: n('#sr-buy-time') },
             n('#sr-buy-index') || 1, n('#sr-buy-reduce'));
-          const ask = Purchasing.askingPrice(n('#sr-buy-cost'), cut.streetIndex, { metatype: actor.system?.metatype });
+          const lot = [...cart, readLine(el)];
+          const slow = Cart.slowest(lot);
+          const lotCut = Purchasing.reduceAvailability(slow, 1, n('#sr-buy-reduce'));
+          const ask = Cart.askingPrice(lot, { reduce: n('#sr-buy-reduce'), metatype: actor.system?.metatype });
+          if (cartEl) {
+            cartEl.innerHTML = cart.map((l, i) => `<div>🛒 ${esc(Cart.label(l.name, l.quantity))} · ¥${(l.cost * l.quantity).toLocaleString('en-US')}
+              <a class="sr-buy-cart-x" data-i="${i}" title="Remove">✕</a></div>`).join('')
+              + (cart.length ? '<div style="color:var(--sr-muted);font-size:11px">…plus the item in the form, if named. Through a contact: one Etiquette Test against the slowest item.</div>' : '');
+          }
           if (pre && storeMode) {
-            const list = Purchasing.storePrice(n('#sr-buy-cost'), { metatype: actor.system?.metatype });
+            const list = Cart.storePrice(lot, { metatype: actor.system?.metatype });
             pre.textContent = `List price ¥${list.total.toLocaleString('en-US')}`
               + (list.surcharge ? ` (includes +${Math.round(list.surchargeRate * 100)}% ${actor.system?.metatype})` : '')
               + ' · paid in full at delivery (p.273)';
           } else if (pre) {
-            pre.textContent = `TN ${cut.tn} · base time ${Purchasing.formatTime(cut.baseTime, el.querySelector('#sr-buy-unit')?.value)}`
-              + ` · Street Index ${cut.streetIndex} · asking ¥${ask.total.toLocaleString('en-US')}`
+            pre.textContent = `TN ${lotCut.tn} · base time ${Purchasing.formatTime(lotCut.baseTime, slow.unit)}`
+              + (cart.length ? '' : ` · Street Index ${cut.streetIndex}`) + ` · asking ¥${ask.total.toLocaleString('en-US')}`
               + (ask.surcharge ? ` (includes +${Math.round(ask.surchargeRate * 100)}% ${actor.system?.metatype})` : '');
           }
         };
@@ -393,6 +428,22 @@ export const SR3EPurchase = {
         });
 
         con?.addEventListener('change', sync);
+        el.querySelector('#sr-buy-add')?.addEventListener('click', ev => {
+          ev.preventDefault();
+          const l = readLine(el);
+          if (l.name === 'gear' && !l.cost) { ui.notifications.warn('Pick or name an item first.'); return; }
+          cart.push(l);
+          picked = null; showLevels(null);
+          set('#sr-buy-name', ''); set('#sr-buy-qty', 1); set('#sr-buy-cost', 0);
+          sync();
+        });
+        cartEl?.addEventListener('click', ev => {
+          const x = ev.target.closest?.('.sr-buy-cart-x');
+          if (!x) return;
+          ev.preventDefault();
+          cart.splice(Number(x.dataset.i), 1);
+          sync();
+        });
         // Picking a level brings that level's price, availability and Street Index (TODO 261).
         levelSel?.addEventListener('change', () => {
           if (!levelEntry) return;
@@ -420,7 +471,7 @@ export const SR3EPurchase = {
         for (const r of el.querySelectorAll('input[name="sr-buy-how"]')) {
           r.addEventListener('change', () => { storeMode = r.value === 'store' && r.checked; howTouched = true; showHow(); sync(); });
         }
-        for (const id of ['#sr-buy-tn', '#sr-buy-time', '#sr-buy-cost', '#sr-buy-index', '#sr-buy-reduce', '#sr-buy-unit', '#sr-buy-legality']) {
+        for (const id of ['#sr-buy-qty', '#sr-buy-name', '#sr-buy-tn', '#sr-buy-time', '#sr-buy-cost', '#sr-buy-index', '#sr-buy-reduce', '#sr-buy-unit', '#sr-buy-legality']) {
           el.querySelector(id)?.addEventListener('input', sync);
           el.querySelector(id)?.addEventListener('change', sync);
         }
@@ -434,13 +485,16 @@ export const SR3EPurchase = {
     // 🏪 At the store (SR3 p.273): no roll — straight to a card with the list price and 💴 Pay.
     if (result.how === 'store') return SR3EPurchase.atStore(actor, result);
 
-    const cut = Purchasing.reduceAvailability({ tn: result.tn, time: result.time }, result.index, result.reduce);
-    const ctx = { ...result, ...cut, buyerId: actor.id };
+    // One Etiquette Test against the slowest item in the lot (ruled 2026-11-07, TODO 285).
+    const slow = Cart.slowest(result.lines);
+    const cut = Purchasing.reduceAvailability(slow, 1, result.reduce);
+    const name = Cart.summary(result.lines);
+    const ctx = { ...result, ...cut, unit: slow.unit, name, buyerId: actor.id };
 
     // ⚠ Through `rollThen`, so the 6s are a 💥 click and the result waits for them — Availability
     //   target numbers routinely exceed 6, which is exactly when explosions matter.
     await game.sr3e.SR3EActor.rollThen(actor, result.dice, Math.max(2, cut.tn),
-      { label: `🛒 Etiquette — sourcing ${result.name}`, skipWoundMod: false,
+      { label: `🛒 Etiquette — sourcing ${name}`, skipWoundMod: false,
         followUp: { kind: 'purchaseSourced', ctx } });
   },
 
@@ -451,18 +505,21 @@ export const SR3EPurchase = {
    */
   async atStore(actor, result) {
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    const list = Purchasing.storePrice(result.cost, { metatype: actor.system?.metatype });
-    const k = Legality.classify(result.legality);
-    const payload = JSON.stringify({ buyerId: actor.id, name: result.name, price: list.total, itemUuid: result.itemUuid,
-      level: result.level, store: true, gunClass: result.gunClass ?? '' }).replace(/'/g, '&#39;');
+    const lines = Cart.linesOf(result);
+    const list = Cart.storePrice(lines, { metatype: actor.system?.metatype });
+    const name = Cart.summary(lines);
+    // The first restricted code in the lot is the one the card warns about (warn, never refuse).
+    const legality = lines.map(l => l.legality).find(c => c && Legality.classify(c).status !== 'legal') ?? lines[0]?.legality ?? '';
+    const k = Legality.classify(legality);
+    const payload = JSON.stringify({ buyerId: actor.id, name, price: list.total, lines, store: true }).replace(/'/g, '&#39;');
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
       content: `<div class="sr-roll-card">
-        <div class="sr-roll-header">🏪 At the store — ${esc(result.name)}</div>
+        <div class="sr-roll-header">🏪 At the store — ${esc(name)}</div>
         <div class="sr-roll-meta">List price <strong>¥${list.total.toLocaleString('en-US')}</strong>${
           list.surcharge ? ` (¥${list.base.toLocaleString('en-US')}, +${Math.round(list.surchargeRate * 100)}% ${esc(actor.system?.metatype)})` : ''}
           — no contact, no Etiquette Test, paid in full at delivery (${Legality.PAGE}).</div>
-        <div class="sr-roll-meta"${k.status === 'legal' ? '' : ' style="color:var(--sr-amber)"'}>${esc(Legality.note(result.legality))}</div>
+        <div class="sr-roll-meta"${k.status === 'legal' ? '' : ' style="color:var(--sr-amber)"'}>${esc(Legality.note(legality))}</div>
         <div class="sr-roll-meta" style="color:var(--sr-muted);font-size:11px">A legal purchase leaves a record — a credit
           trail, inventory, perhaps video — under the buyer's SIN (${Legality.PAGE}).</div>
         <div class="sr-soak-action">
@@ -478,8 +535,11 @@ export const SR3EPurchase = {
     const actor = actorFrom(ctx.buyerId);
     if (!actor) return;
     const got = Purchasing.acquisitionTime(ctx.baseTime, res?.successes ?? 0);
-    const ask = Purchasing.askingPrice(ctx.cost, ctx.streetIndex, { metatype: actor.system?.metatype });
+    const lines = Cart.linesOf(ctx);
+    const ask = Cart.askingPrice(lines, { reduce: ctx.reducedBy, metatype: actor.system?.metatype });
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const siOf = l => Math.round(((Number(l.index) || 1) + (ctx.reducedBy || 0) * Purchasing.REDUCTION.streetIndexPerPoint) * 10) / 10;
+    const priced = lines.map(l => `${esc(Cart.label(l.name, l.quantity))} ¥${(Number(l.cost) * Cart.qty(l.quantity)).toLocaleString('en-US')} × Street Index ${siOf(l)}`).join('; ');
 
     if (!got.found) {
       // "the contact cannot (or will not) locate the item on the streets. This doesn't mean the
@@ -511,7 +571,7 @@ export const SR3EPurchase = {
         <div class="sr-roll-meta">The meet is halfway, at ${Purchasing.formatTime(got.halfway, ctx.unit)} —
           that is when the price is settled (SR3 p.272).</div>
         <div class="sr-roll-meta">Asking <strong>¥${ask.total.toLocaleString('en-US')}</strong>
-          (¥${Number(ctx.cost).toLocaleString('en-US')} × Street Index ${ctx.streetIndex}${
+          (${priced}${
             ask.surcharge ? `, +${Math.round(ask.surchargeRate * 100)}% ${esc(actor.system?.metatype)}` : ''})</div>
         <div class="sr-soak-action">
           <button class="sr-buy-negotiate-btn" data-payload='${payload}'>🤝 Negotiate the price</button>
@@ -628,7 +688,7 @@ export const SR3EPurchase = {
       content: `<p>Deduct <strong>¥${price.toLocaleString('en-US')}</strong> from
         ${actor.name}'s ¥${have.toLocaleString('en-US')}?</p>
         ${price > have ? '<p style="color:var(--sr-red)">They cannot cover it — the deal is off unless the GM says otherwise (p.273).</p>' : ''}
-        ${payload.itemUuid ? '<p style="font-size:11px;color:var(--sr-muted)">A copy of the item will be added to the sheet.</p>' : ''}`,
+        ${Cart.linesOf(payload).some(l => l.itemUuid) ? '<p style="font-size:11px;color:var(--sr-muted)">A copy of the item will be added to the sheet.</p>' : ''}`,
     });
     if (!ok) return false;
     if (!(await claim())) { ui.notifications.warn(`${payload.name} has already been paid for.`); return false; }
@@ -637,25 +697,31 @@ export const SR3EPurchase = {
       { ledgerReason: `Bought ${payload.name}` });
 
     let added = '';
-    // Medkit Supplies refill the first empty medkit rather than landing on the sheet (TODO 139, SR3 p.304).
     const H = game.sr3e.SR3EHealing;
-    const refill = H.isMedkitSupplies(payload.name) ? H.emptyMedkits(actor.items)[0] : null;
-    if (refill) {
-      await refill.unsetFlag('The2ndChumming3e', 'suppliesOut');
-      added = ` — ${refill.name} is restocked`;
-    } else if (payload.itemUuid) {
-      const src = await fromUuid(payload.itemUuid).catch(() => null);
-      if (src) {
-        let data = src.toObject();
-        delete data._id;
-        // The picked level's rating and printed numbers; the price paid is the deal's, not the table's.
-        if (payload.level) data = ModRatings.withLevel(data, payload.level);
-        // Bought from a gun's sheet: the box is stamped with that gun's class, while it states none (SR3 p.279).
-        const cls = data.type === 'ammunition' ? AmmoShop.stamp(data.system, { gunClass: payload.gunClass }) : null;
-        if (cls) data.system = { ...data.system, gunClass: cls };
-        await actor.createEmbeddedDocuments('Item', [data]);
-        added = ' and added to the sheet';
+    const toCreate = [];
+    for (const line of Cart.linesOf(payload)) {
+      // Medkit Supplies refill empty medkits rather than landing on the sheet (TODO 139, SR3 p.304) — one per unit.
+      if (H.isMedkitSupplies(line.name)) {
+        const empties = H.emptyMedkits(actor.items).slice(0, Cart.qty(line.quantity));
+        for (const kit of empties) await kit.unsetFlag('The2ndChumming3e', 'suppliesOut');
+        if (empties.length) { added += ` — ${empties.map(k => k.name).join(', ')} restocked`; continue; }
       }
+      if (!line.itemUuid) continue;
+      const src = await fromUuid(line.itemUuid).catch(() => null);
+      if (!src) continue;
+      let data = src.toObject();
+      delete data._id;
+      // The picked level's rating and printed numbers; the price paid is the deal's, not the table's.
+      if (line.level) data = ModRatings.withLevel(data, line.level);
+      // Bought from a gun's sheet: the box is stamped with that gun's class, while it states none (SR3 p.279).
+      const cls = data.type === 'ammunition' ? AmmoShop.stamp(data.system, { gunClass: line.gunClass }) : null;
+      if (cls) data.system = { ...data.system, gunClass: cls };
+      // N of one thing stacks: one box of N reloads, one stack, or N copies (TODO 284).
+      toCreate.push(...Cart.deliver(data, line.quantity));
+    }
+    if (toCreate.length) {
+      await actor.createEmbeddedDocuments('Item', toCreate);
+      added += ' and added to the sheet';
     }
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     await ChatMessage.create({

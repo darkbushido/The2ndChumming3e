@@ -151,7 +151,7 @@ export async function run(t) {
     const heal = readFileSync(new URL('../scripts/SR3EHealing.js', import.meta.url), 'utf8');
     const buy  = readFileSync(new URL('../scripts/SR3EPurchase.js', import.meta.url), 'utf8');
     t.ok('the healing card offers no restock button', !/act:\s*'restock'/.test(heal) && !/case 'restock'/.test(heal));
-    t.ok('paying for Medkit Supplies refills an empty medkit', /isMedkitSupplies\(payload\.name\)/.test(buy) && /unsetFlag\('The2ndChumming3e', 'suppliesOut'\)/.test(buy));
+    t.ok('paying for Medkit Supplies refills an empty medkit', /isMedkitSupplies\(line\.name\)/.test(buy) && /unsetFlag\('The2ndChumming3e', 'suppliesOut'\)/.test(buy));
     t.ok('Buy gear offers the supplies when a medkit is empty', /emptyMedkits\(actor\.items\)/.test(buy) && /#sr-buy-supplies/.test(buy));
   }
   t.is('"Medkit Rating 6", the generator\'s spelling, reads 6', H.findEquipment([who('a', [kit('k', 'Medkit Rating 6')])], 'medkit')?.rating, 6);

@@ -7933,3 +7933,20 @@ Three TSS guns have a stock that step b (TODO 276) made an integral mod — the 
 Win. 1300 Defender SS ("Collapsible stock") — so the 🔧 list shows an RC the gun's own figure does not include. **Wanted:** the
 books' RC column, or the maintainer's word that these are blank (and whether a rifle or shotgun stock gives RC at all — SR3
 p.277 says the core rifle stocks do not). `tests/printed-rc.test.mjs` lists the three.
+
+## 284. ✅ 🛒 Buy more than one — a Quantity in Buy gear — **requested 2026-10-28** — done in 8c38b266
+
+The maintainer, buying ammo from an Ares Thunderer: *"we need an option to buy more then one"*. Today every 🛒 purchase
+(`SR3EPurchase.js`, TODO 82) is one item: one 10-Rnd Clip for ¥25 (+25% troll, SR3 p.272). **Wanted** (ruled 2026-10-28,
+"quantity now, cart later"): a Quantity in the Buy gear dialog; the card's price is the unit price × quantity (surcharge,
+Street Index and the haggle apply to the total); 💴 Pay delivers that many — a box counted in reloads lands as **one** item
+with that many reloads (`system.reloads`), loose rounds as one item with that many rounds, anything that stacks
+(`quantity`) as one stack, anything else as that many copies. Works from 🛒 Buy ammo on a gun too. Nothing written before
+💴 (the ledger reason names the quantity).
+
+## 285. ✅ 🛒 A shopping cart — several items, one card, one payment — **requested 2026-10-28** — done in 8c38b266
+
+The maintainer: *"we may need a shoping cart system"*. Ruled 2026-10-28: after TODO 284's Quantity. Several different items
+(each with its quantity) gathered in Buy gear, then one card and one 💴 Pay for the lot. **Not designed yet** — at the
+store it is one list price; through a contact each item has its own Availability (SR3 p.272), so the open question is one
+Etiquette Test per item or one for the slowest. Overlaps TODO 283 (a host and its mods bought as one purchase).

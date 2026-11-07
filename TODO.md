@@ -1045,22 +1045,16 @@ time the slowest part needs) before anything is created; then buy it as one purc
 `ItemMods` (TODO 276), `CyberCapacity.builtInCost`, `VehicleMods.price`, the mount and budget checks as warnings. **Not designed
 yet** — the maintainer's call on scope (one dialog for every host type, or vehicles first) before any code.
 
-## 284. 🛒 Buy more than one — a Quantity in Buy gear — **requested 2026-10-28**
+## 288. 📦 Orders not yet delivered — and a GM toggle for time passing (purchases and healing) — **requested 2026-11-07**
 
-The maintainer, buying ammo from an Ares Thunderer: *"we need an option to buy more then one"*. Today every 🛒 purchase
-(`SR3EPurchase.js`, TODO 82) is one item: one 10-Rnd Clip for ¥25 (+25% troll, SR3 p.272). **Wanted** (ruled 2026-10-28,
-"quantity now, cart later"): a Quantity in the Buy gear dialog; the card's price is the unit price × quantity (surcharge,
-Street Index and the haggle apply to the total); 💴 Pay delivers that many — a box counted in reloads lands as **one** item
-with that many reloads (`system.reloads`), loose rounds as one item with that many rounds, anything that stacks
-(`quantity`) as one stack, anything else as that many copies. Works from 🛒 Buy ammo on a gun too. Nothing written before
-💴 (the ledger reason names the quantity).
-
-## 285. 🛒 A shopping cart — several items, one card, one payment — **requested 2026-10-28**
-
-The maintainer: *"we may need a shoping cart system"*. Ruled 2026-10-28: after TODO 284's Quantity. Several different items
-(each with its quantity) gathered in Buy gear, then one card and one 💴 Pay for the lot. **Not designed yet** — at the
-store it is one list price; through a contact each item has its own Availability (SR3 p.272), so the open question is one
-Etiquette Test per item or one for the slowest. Overlaps TODO 283 (a host and its mods bought as one purchase).
+The maintainer, while TODO 284/285 were built: *"We will need a way to track whats been order but hasn't been delivered.
+maybe a GM way of delivering it, ideally a togle. when they want something at the end of a mission i'm not to worried
+about them getting it but if they want it in session it needs to take time. that toggle should also effect healing if
+possible"*. Today 💴 Pay (`SR3EPurchase.pay`) delivers at once, though a contact's card states a delivery time (base time
+÷ successes, SR3 p.272) and the meet comes halfway; healing cards state the Healing Table time (p.127) and *Heal these
+boxes* applies whenever it is clicked. **Wanted:** a GM toggle — between missions (instant, as today) or in session (time
+must pass) — an open-orders list with a GM 📦 Deliver, and the same toggle governing healing. Builds on `data/cart.mjs`
+(`Cart.deliver`). **Not designed** — grilling rounds via the questions session before any code.
 
 ## 287. Vehicle and drone design — a chassis and Design Points (R3R) — **requested 2026-11-07**
 
