@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches<br>[286](#286) Pack data no book in the library can verify |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -3516,6 +3516,36 @@ and SR3 core's ⌊(INT+MPCP)÷3⌋ (**SR3 p.207**) only through the `orthodoxDec
 **Built on branch `claude/jolly-allen-bb4fcd`** (a feature; not yet merged): `scripts/data/hacking-pool.mjs`
 (`HackingPool.core / forRuleset / mpcpFor / figure`); the actor derives one pool; `orthodoxHackingPool` is gone and every
 consumer reads `availableHackingPool`; tests `hacking-pool`, 3 mutants; TESTING §76 and §75 corrected.
+
+## 289. A rules digest and lookup — load the rules in fewer tokens — **requested 2026-11-07**
+
+The maintainer: *"we may want to add a better read on the rules, something that takes fewer tokens for when
+we build a new feature"*. Built on `feature/rules-digest`:
+
+- **`.claude/rules-digest.md`** — generated by `tools/rules-digest.mjs --write` (`npm run rules:digest`): one
+  line per section of every `.claude/rules/*.md` — heading, cited pages (book code, or `?` where the rules file
+  names no book), the modules/tests it names; a 12-char hash per source file. Sections with no citation are
+  marked *not audited*.
+- **`npm run rules -- <topic>`** prints only the matching sections (rules files and `CLAUDE.md`, heading
+  matches first, 6 max) with 📖 the PDF and page — SR3 core as PDF page = printed + 2; other books by printed
+  page, offset marked unverified (never guessed).
+- **`/rules` skill** (`.claude/skills/rules/SKILL.md`); one pointer line in `CLAUDE.md`.
+- **No drift:** `tests/rules-digest.test.mjs` fails unless the committed digest equals a fresh build, so any
+  edited rules file, heading or cited page fails until regenerated; it also caps the digest at 15% of the rules.
+- Copies no rulebook text; reads only this repo's rules files; never `SR-OCR/`.
+
+**Token estimate (≈4 chars/token).** Before: a feature touching `SR3EActor.js`/`sr3e.js` (which touch every
+subsystem) meant `CLAUDE.md` 42 KB (~10.5k, always loaded) plus the rules files it reads — typically 3–5 files,
+~45–75 KB (~11–19k), up to all 14 at 159 KB (~40k). After: the digest is ~12 KB (~3k) plus one lookup per
+section touched (~0.3–1.5k each), i.e. ~4–6k instead of ~11–40k on top of `CLAUDE.md`: **roughly 3–8× fewer
+rules tokens**. `CLAUDE.md` itself is unchanged (it is auto-loaded); slimming it is a separate decision.
+
+Design settled by the maintainer 2026-11-07: generated digest + lookup, a one-line CLAUDE.md pointer, a `/rules` skill.
+Round 2 (2026-11-07): drift is guarded by the test only (no hook); the `?` citations stay until a follow-up
+names each book, checking every page against its PDF; slimming `CLAUDE.md` is its own TODO and branch, with the
+maintainer approving the cuts. Both follow-ups take numbers from the coordinator.
+Open: the 128 `?` citations (pages with no book code in the rules files) could be
+given their book in the rules files themselves.
 
 ### 📌 Notes & parked
 
