@@ -3521,6 +3521,19 @@ JS only — F5 is enough.
 - [ ] **No underbarrel** (SR3 pp.278-279, ruled the same day): drop a Bipod onto a Remington 750 → warned "…has no underbarrel mount
       (SR3 pp.278-279)", and it installs. The same on a Defiance T-250. A Laser Sight (Top/Under) on the 750 → no warning (top).
 
+### 77l. What each weapon class takes (TODO 276 — SR3 pp.276-280, CC pp.34, 82-83; the maintainer's rulings of 2026-11-07)
+
+JS only — F5 is enough. Every one of these installs; only the shotgun stock is refused.
+
+- [ ] **Hold-out:** drop a Laser Sight onto a Streetline Special → warned "Hold-out pistols cannot mount any accessories (SR3 p.276)".
+- [ ] **Pistol:** a Bipod onto an Ares Predator → warned "…no underbarrel". A Laser Sight onto it → no warning (goes on top).
+- [ ] **Revolver:** a Silencer onto a Ruger Super Warhawk → warned "Revolvers cannot use silencers or sound suppressers".
+- [ ] **SMG / shotgun:** a Silencer onto an Uzi III → warned; a Sound Suppresser onto it → nothing. Either onto an Enfield AS7 → warned.
+- [ ] **Fore grip** onto a Ranger Arms SM-3 → warned (CC p.34); onto an AK-97 → nothing.
+- [ ] **Stock on a shotgun:** a Stock onto an Enfield AS7 → refused, red, "Rifles and shotguns may not have this modification (CC p.83)".
+- [ ] **Scope:** an Imaging Scope onto an Ingram Smartgun Mod 20T → warned (SR3 p.280). With a scope already on top, a second Imaging Scope
+      goes Under (CC p.82, Top or Under).
+
 ## 78. A vehicle's mods against its Cargo and Load (TODO 265, step c's first slice — R3R p.124)
 
 JS / CSS only (no restart needed beyond a reload). A vehicle from the packs, e.g. an Ares Roadmaster (Body 5, Cargo 80, Load 2000).

@@ -37,7 +37,7 @@ export const SR3EItemMods = {
     if (!host || !source || source.documentName !== 'Item') return false;
     if (source.uuid === host.uuid) return false;
     if (!host.isOwner) { ui.notifications.warn(`You don't own ${host.name}.`); return false; }
-    // The one refusal (the maintainer, 2026-10-27): a stock on a rifle. Everything else warns and installs.
+    // The one refusal (the maintainer, 2026-10-27 / 2026-11-07): a stock on a rifle or a shotgun. Everything else warns and installs.
     const blocked = ItemMods.blocked(host, source);
     if (blocked) { ui.notifications.error(blocked); return false; }
     const graded = i => game.sr3e.SR3EActor.gradedEssenceCost(game.sr3e.SR3EActor.baseEssenceCost(i), i.system?.grade);

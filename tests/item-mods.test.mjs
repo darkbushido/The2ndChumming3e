@@ -88,19 +88,22 @@ export async function run(t) {
   t.eq('replace swaps the data and keeps the id', [edited[1]._id, edited[1].name, edited[0].name], ['new1', 'Gas Vent III', 'Gas Vent II (Weapon)']);
 
   /* ── Warnings — never a refusal ─────────────────────────────────────────────── */
-  const scope = mod('Imaging Scope', [], { description: '<p><strong>Mount:</strong> Top</p>', modFor: 'weapon' });
+  const scope = mod('Ultrasound Top Sight', [], { description: '<p><strong>Mount:</strong> Top</p>', modFor: 'weapon' });
   const laser = mod('Laser Sight', [], { description: '<p><strong>Mount:</strong> Top/Under</p>', modFor: 'weapon' });
   const sil   = mod('Silencer', [], { description: '<p><strong>Mount:</strong> Barrel</p>', modFor: 'weapon' });
   t.eq('mountsOf reads the description', [ItemMods.mountsOf(scope), ItemMods.mountsOf(laser), ItemMods.mountsOf(mod('Bipod', [], { description: 'Mount:</strong> Tripod' }))], [['Top'], ['Top', 'Under'], []]);
+  // A top-only fixture: an imaging scope is top OR under since 2026-11-07 (mods ruling Q3, CC p.82).
+  t.eq('imaging scopes and the rangefinder: Top or Under, whatever the text says (CC p.82; ruled 2026-11-07)', [ItemMods.mountsOf(mod('Imaging Scope', [], { description: 'Mount:</strong> Top' })), ItemMods.mountsOf(mod('Rangefinder (Weapon)', [], { description: 'Mount:</strong> Top' }))], [['Top', 'Under'], ['Top', 'Under']]);
+  t.eq('…a mount field still wins', ItemMods.mountsOf(mod('Imaging Scope', [], { mount: 'Top' })), ['Top']);
   t.eq('…a mount field wins over the text', ItemMods.mountsOf(mod('X', [], { mount: 'Barrel', description: 'Mount:</strong> Top' })), ['Barrel']);
-  t.eq('an either-or laser goes under when the scope is on top', ItemMods.mountsInUse([laser, scope]), { Top: 'Imaging Scope', Under: 'Laser Sight' });
+  t.eq('an either-or laser goes under when the scope is on top', ItemMods.mountsInUse([laser, scope]), { Top: 'Ultrasound Top Sight', Under: 'Laser Sight' });
   t.eq('assignMounts goes by id — two of the same scope: the second holds no mount',
-    ItemMods.assignMounts([scope, { ...scope, _id: 'x2' }]).map(m => [m.id, m.mount]), [['id-Imaging Scope', 'Top'], ['x2', '']]);
+    ItemMods.assignMounts([scope, { ...scope, _id: 'x2' }]).map(m => [m.id, m.mount]), [['id-Ultrasound Top Sight', 'Top'], ['x2', '']]);
   t.eq('…and says which mount it wants and what holds it (not "no mount")',
-    ItemMods.assignMounts([scope, { ...scope, _id: 'x2' }, mod('Bipod', [], {})]).map(m => [m.wants, m.heldBy]), [['', ''], ['Top', 'Imaging Scope'], ['', '']]);
+    ItemMods.assignMounts([scope, { ...scope, _id: 'x2' }, mod('Bipod', [], {})]).map(m => [m.wants, m.heldBy]), [['', ''], ['Top', 'Ultrasound Top Sight'], ['', '']]);
   t.eq('a free mount: no warning', ItemMods.warnings(gun([scope]), sil), []);
   t.eq('the top mount taken', ItemMods.warnings(gun([scope]), mod('Scope 2', [], { description: 'Mount:</strong> Top' })),
-    ['The top mount already holds Imaging Scope (SR3 p.280: one accessory per mount).']);
+    ['The top mount already holds Ultrasound Top Sight (SR3 p.280: one accessory per mount).']);
   t.eq('a Top/Under laser fits under a scope — no warning', ItemMods.warnings(gun([scope]), laser), []);
   t.is('…but not when both are taken', ItemMods.warnings(gun([scope, laser]), laser).length, 1);
   const chemseal = mod('Chemical Seal (Armor)', [], { modFor: 'armor' });
@@ -153,13 +156,13 @@ export async function run(t) {
     /const list = \(\) => \(item\.system\.modifiers \?\? \[\]\)\.map\(m => \(\{ target: m\.target, value: Number\(m\.value\) \|\| 0, perRating: m\.perRating === true, whenDeployed: m\.whenDeployed === true \}\)\)/.test(sheet));
   t.ok('…and offers a per-level tick', /class="sr-modifier-per"/.test(sheet));
 
-  /* ── The one refusal: a stock on a rifle (the maintainer, 2026-10-27) ───────── */
+  /* ── The one refusal: a stock on a rifle (2026-10-27) or a shotgun (2026-11-07) ─ */
   const stock = { name: 'Stock (Rigid (Weapon)', type: 'gear', system: { rating: 1 } };
   const rifle = cat => ({ name: `a ${cat}`, type: 'firearm', system: { category: cat } });
   for (const cat of ['AsRf', 'SptR', 'Snip', 'Carb', 'LCarb']) t.ok(`a stock on a ${cat} is refused`, /has its own stock/.test(ItemMods.blocked(rifle(cat), stock) ?? ''));
   t.is('…a stock on an SMG is fine', ItemMods.blocked(rifle('SMG'), stock), null);
   t.is('…on a heavy pistol too', ItemMods.blocked(rifle('HPist'), stock), null);
-  t.is('…a shotgun is not ruled — not refused', ItemMods.blocked(rifle('ShtG'), stock), null);
+  t.ok('…a shotgun is refused too (ruled 2026-11-07; CC p.83 "Rifles and shotguns may not have this modification")', /Rifles and shotguns may not have this modification/.test(ItemMods.blocked(rifle('ShtG'), stock) ?? ''));
   t.is('…a gas vent on a rifle is fine', ItemMods.blocked(rifle('AsRf'), { name: 'Gas Vent (Weapon) [2]', type: 'gear', system: {} }), null);
   t.ok('install checks it before anything is written', /const blocked = ItemMods\.blocked\(host, source\);\s*if \(blocked\) \{ ui\.notifications\.error\(blocked\); return false; \}[\s\S]*?await host\.update/.test(glue));
   const actorSrc = read('scripts/sheets/SR3EActorSheet.js');

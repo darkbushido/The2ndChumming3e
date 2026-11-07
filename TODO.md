@@ -868,7 +868,8 @@ mutants `magnification-stacks`, `magnification-past-short`): the attack pre-sets
 by the best device in use — the gun's Imaging Scope (its level), a worn helmet's Electronic / Optical Magnification 3, cybereyes'
 Vision Magnification — never below Short, never stacked (TODO 235's ruling); the dialog names the device, the GM can change the band.
 Pack data for all five (the 0.9.0 migration fills owned copies). ⚠ No shift for a target beyond Extreme (it is off the table, not a
-band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but lets run with it. for now"* — PROVISIONAL, revisit. Imaging scope + smartlink (SR3 p.280) is still an open question below.
+band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but lets run with it. for now"*; **kept as is** (mods ruling Q12,
+2026-11-07). Imaging scope + smartlink (SR3 p.280) is still an open question below.
 
 **Still open in this item:**
 1. ~~Magnification~~ — built (above).
@@ -892,8 +893,7 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
    grip, hip brace, gyro mount; launchers, designators, the heavy barrel and every "either / or" stay text. Mutants
    `integral-accessory-counted-twice`, `integral-tripod-offered-as-pod`, `integral-mount-clash-warned`, `integral-filled-twice`,
    `integral-greedy-match`. TESTING.md §77i. ⚠ Packs rebuilt: `npm run packs:install` with Foundry CLOSED.
-4. **Weapon mounts by weapon class** (SR3 pp.276-279, CC p.75: hold-outs none, pistols barrel + top, …) — warnings; waits on the
-   open questions below. With it, [#235](TODO-DONE.md#235)'s compatibility list (SR3 pp.276-277, rules check `#194`): revolvers take no
+4. ~~**Weapon mounts by weapon class**~~ — built 2026-11-07 (the open questions below, Q4-Q7). With it, [#235](TODO-DONE.md#235)'s compatibility list (SR3 pp.276-277, rules check `#194`): revolvers take no
    silencer or sound suppressor.
 5. ~~Cyberlimbs~~ — built (above; its remainders listed there). **Vehicles and
    drones** ([#265](#265); their mods stay items on the vehicle actor, which is the container; weapon mounts [#234](TODO-DONE.md#234) are hosts).
@@ -944,15 +944,20 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
 
 **Open questions — for the maintainer, before the weapon / vehicle / cyberlimb slices merge** (each is a warning or an editable
 value today; none settled by picking a side):
-- **Pistol mounts** — SR3 p.276 and CC p.75 give pistols barrel + top only, yet SR3 p.282 lists underbarrel and top/under items
-  without saying pistols can't take them. Warn on an underbarrel mod on a pistol?
+- ✔ **Mounts by weapon class** (Q4, Q5) → ruled 2026-11-07: warn on all five, a top-or-under item on a pistol goes on top. SR3 p.276:
+  pistols "can mount one barrel- and one top-mounting" accessory; "Revolvers cannot use silencers or sound suppressers"; "Hold-out
+  pistols cannot mount any accessories"; p.277: "SMGs cannot use silencers, but can use sound suppressers"; "Shotguns cannot mount
+  silencers or sound suppressers". `WeaponAccessories.classWarnings` (a revolver is "(cy)" in its Ammunition, p.276; pistols are
+  LPist/MPist/HPist/VHP — machine pistols are SMG-class). `tests/weapon-class-mods.test.mjs`, mutant `weapon-class-rules-unwarned`,
+  TESTING.md §77l.
 - ✔ **Sport rifles and shotguns** → ruled 2026-11-07: *"SR3 is right Remington 750 and 950 should not take them. so warn."* SR3
   p.278: "Neither weapon can take underbarrel-mounted accessories"; p.279, the Defiance T-250: "It has no underbarrel mount." So a mod
   that would go underbarrel on any of the three warns, never refuses (`WeaponAccessories.noUnderbarrel` / `installWarnings`); a
   top-or-under one goes on top. The ruling also says, in general: *"if SR3 and CC are at odds, CC will usually win"* — here SR3's
   per-gun line wins over CC p.75's frames. `tests/laser-smartlink.test.mjs`, mutant `remington-underbarrel-unwarned`, TESTING.md §77k.
-- **Imaging scopes and the rangefinder: Top, or Top or Under?** SR3 pp.280, 282 and CC p.33 say Top; CC p.82 says Top or Under.
-  Today the mount comes from the pack's description (Top).
+- ✔ **Imaging scopes and the rangefinder** (Q3) → ruled 2026-11-07: **Top or Under** (CC p.82, "Mount: Top or under", over SR3
+  p.280's "may only be top-mounted"). `ItemMods.mountsOf` gives every imaging scope and rangefinder Top/Under whatever its text
+  says (a typed `system.mount` still wins); Top is tried first. Mutant `imaging-scope-top-only`.
 - ✔ **Gas vents removable?** → ruled 2026-10-27: not removable, or removal costs something — its own item, [#277](TODO-DONE.md#277).
 - ✔ **Gas Vent level 1 (250¥)** — ruled 2026-10-27: *"cost for gas vent 1, leave it at 250"*. (The weapon-mods audit found only
   II and III printed in SR3; level 1 keeps that note in its description.)
@@ -963,14 +968,17 @@ value today; none settled by picking a side):
   (`WeaponAccessories.installWarnings`); the GM's TN window unticks the other row (`exclusiveGear`); the guess offers only the
   smart row; `sumModifiers` counts only the better. `tests/laser-smartlink.test.mjs`, mutant `laser-with-smartlink-unwarned`,
   TESTING.md §77k.
-- **Imaging scope with a smartlink** — barred by SR3 p.280 and CC p.83; M&M p.34 lets goggles / an image link be the smartlink's
-  display. Does a scope still block it then?
+- ✔ **Imaging scope with a smartlink** (Q2) → ruled 2026-11-07: **warn on install**, either way round (SR3 p.280: imaging scopes "may
+  not be used with smartlink systems"). `WeaponAccessories.installWarnings`; `tests/weapon-class-mods.test.mjs`.
 - ✔ **Stocks on rifles** → ruled 2026-10-27: *"you should not be able to install a stock on a rifle since it has one by default"* —
-  REFUSED (`ItemMods.blocked`, the one refusal; rifles = the Rifles-skill categories). **Shotguns** (CC p.84 names them with
-  rifles) are not ruled — still allowed.
-- **Fore grip** — CC p.34 limits it to SMGs, assault rifles and shotguns; CC p.82 lists no limit. Warn outside those?
-- **Combo imaging scopes / two integral top accessories** — one mount each (SR3 p.280); a stock gun printing two top accessories was
-  not checked.
+  REFUSED (`ItemMods.blocked`, the one refusal; rifles = the Rifles-skill categories). **Shotguns** (Q8) → ruled 2026-11-07: *"the
+  book is clear 'Rifles and shotguns may not have this modification'"* (CC p.83, Stocks) — refused too. Mutant `shotgun-stock-allowed`.
+- ✔ **Fore grip** (Q7) → ruled 2026-11-07: **warn** outside SMGs, assault rifles and shotguns (CC p.34: it "can only be used on
+  submachine guns, assault rifles and shotguns"). `WeaponAccessories.classWarnings`.
+- ✔ **Two integral accessories on one mount** (Q9) → ruled 2026-11-07: **keep it, no warning** — the gun as printed (SR3 p.280:
+  "Integral accessories take up mount locations").
+- ✔ **Combo imaging scopes** (Q11) → ruled 2026-11-07: **one item, its price the sum of its modes**, taking the one top mount (CC p.82:
+  the types "may be combined into one scope"). Not built yet — there is no combo scope document to price.
 
 **Walked live, 2026-10-27** (§77, §77b-§77g, as mcp-api with a canvas, and Player2 for the owner's moves). Fixed on the way:
 - A Level picked on an INSTALLED mod kept the old price — the ✎ sheet's form submit followed with the stale cost and the temporary

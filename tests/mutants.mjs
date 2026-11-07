@@ -395,6 +395,29 @@ export const MUTANTS = [
     impl:   () => [],
   },
   {
+    id:     'weapon-class-rules-unwarned',
+    suite:  'weapon-class-mods',
+    ...ACCESSORIES, method: 'classWarnings',
+    was:    'a silencer on a revolver, SMG or shotgun, anything on a hold-out, an underbarrel item on a pistol and a fore grip on a rifle said nothing (SR3 pp.276-277, CC p.34; ruled 2026-11-07: warn)',
+    impl:   () => [],
+  },
+  {
+    id:     'shotgun-stock-allowed',
+    suite:  'item-mods',
+    ...ITEMMODS, method: 'blocked',
+    was:    'a stock on a shotgun went on; CC p.83 says "Rifles and shotguns may not have this modification" (ruled 2026-11-07: refuse)',
+    impl:   (host, mod) => (host?.type === 'firearm' && ['Carb', 'AsRf', 'SptR', 'Snip', 'LCarb'].includes(host?.system?.category)
+      && /^stock\b/i.test(String(mod?.name ?? '')) ? 'a rifle has its own stock' : null),
+  },
+  {
+    id:     'imaging-scope-top-only',
+    suite:  'item-mods',
+    ...ITEMMODS, method: 'mountsOf',
+    was:    'an imaging scope or rangefinder went on top only, as its text says; ruled 2026-11-07: top or under (CC p.82)',
+    impl:   mod => String(mod?.system?.mount || /Mount:\s*(?:<\/strong>)?\s*([^<\n]+)/i.exec(String(mod?.system?.description ?? ''))?.[1] || '')
+      .split('/').map(s => s.trim()).map(s => ['Top', 'Under', 'Barrel'].find(m => m.toLowerCase() === s.toLowerCase())).filter(Boolean),
+  },
+  {
     id:     'remington-underbarrel-unwarned',
     suite:  'laser-smartlink',
     ...ACCESSORIES, method: 'noUnderbarrel',
