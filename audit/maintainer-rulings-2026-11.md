@@ -71,3 +71,17 @@ Queue: remaining mods questions moved to the back, after every other session (ma
 | Q4 | How time passing is decided | GM judges now; Foundry world time as a later option | 2026-11-07 | design |
 | Q5 | Where open orders show | GM Orders window + read-only "On order" on the Gear tab | 2026-11-07 | design |
 | Q6 | Toggle and healing | In session: pending recovery in the same window, GM clicks Recovered; first aid/spells instant | 2026-11-07 | SR3 p.127, p.129 |
+
+### mods, continued
+
+| # | Question | Answer | Date | Source |
+|---|---|---|---|---|
+| Q15 | Grade capacity cut | Book figures: −10% alpha, −20% beta, −25% delta, nearest .25 | 2026-11-07 | M&M p.36 |
+| Q16 | Blank M&M prices | Fill: Cyberskates 1,000¥ (retractable 2,500¥), DNI 4,500¥, DNI Adaptation ×150%; p.36 table has no cost column | 2026-11-07 | M&M p.39 (PDF 41) |
+| Q17 | Re-armed built-in weapon loses GM edits | Accept for now | 2026-11-07 | design |
+| Q18 | Armour rules shown, not applied | Reminders; GM applies | 2026-11-07 | CC pp.51-53; SR3 p.284 |
+| Q19 | Turbocharging Speed cap | Keep the warning | 2026-11-07 | R3R p.126 |
+| Q20 | Does seating include the driver | Yes; passengers = seating − 1 | 2026-11-07 | SR3 p.133; R3R p.124 |
+| Q21 | TODO 283 scope | One dialog for all hosts | 2026-11-07 | design |
+| Q22 | TODOs 256/259 markings | Cheap parts only: chips, description line, `mount` field, the two smartgun items | 2026-11-07 | design |
+| Q14 | Limb removal: built-ins' Essence joins the hole | OPEN — cited M&M p.150 is wrong (surgery options); mods session finding the right page | — | — |
