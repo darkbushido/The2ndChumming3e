@@ -21,18 +21,18 @@ over, stretch a fix, monthly test, kick it, no fix, a day passes, clear).
 
 | Rule | Where |
 |---|---|
-| First dose: a test per addiction type vs the **base** rating — Willpower (M), Body (P), **unaugmented**, a dwarf +2 Body dice on P | `takeDose` · p.108 |
-| Every Edge doses (**total** doses; pre-Edge until addicted, post after): Addiction and Tolerance +1, retest the modified rating | `takeDose` · p.108 |
-| Failed: addicted, rating → base + 1 | `addictionResult` · p.108 |
-| Tolerance: Body vs Tolerance **after it wears off**; no successes = tolerant | `toleranceResult` · p.109 |
-| Kick: Willpower vs current +1 (M) / +3 (P) / +4 (both — the higher rating, editable) | `kickTN` · pp.109-110 |
-| Withdrawal −1 every 2 days, forced −1 a day, to the base; then rest (Addiction Rating) days | `passDay` · p.110 |
-| Standing TN: withdrawal +2, forced +3, recovery +1 (concentration ×2); forced = a Moderate Stun wound's modifier | `withdrawalPenalty` · p.110 |
-| A dose in withdrawal, recovery or after kicking re-addicts, +1 | `takeDose` · p.110 |
+| First dose: a test per addiction type vs the **base** rating — Willpower (M), Body (P), **unaugmented**, a dwarf +2 Body dice on P | `takeDose` · M&M p.108 |
+| Every Edge doses (**total** doses; pre-Edge until addicted, post after): Addiction and Tolerance +1, retest the modified rating | `takeDose` · M&M p.108 |
+| Failed: addicted, rating → base + 1 | `addictionResult` · M&M p.108 |
+| Tolerance: Body vs Tolerance **after it wears off**; no successes = tolerant | `toleranceResult` · M&M p.109 |
+| Kick: Willpower vs current +1 (M) / +3 (P) / +4 (both — the higher rating, editable) | `kickTN` · M&M pp.109-110 |
+| Withdrawal −1 every 2 days, forced −1 a day, to the base; then rest (Addiction Rating) days | `passDay` · M&M p.110 |
+| Standing TN: withdrawal +2, forced +3, recovery +1 (concentration ×2); forced = a Moderate Stun wound's modifier | `withdrawalPenalty` · M&M p.110 |
+| A dose in withdrawal, recovery or after kicking re-addicts, +1 | `takeDose` · M&M p.110 |
 
 - **Effects registry `DRUG_EFFECTS`** (by name, a page each: Jazz, Kamikaze, Cram, Novacoke, Bliss, Nitro, Zen,
   Psyche, Deepweed; notes for ACTH, Burn, Long Haul). Applied in `_prepareCharacter` **beside the Attribute
-  Boost, before Reaction and the pools** (p.119). Drug Reaction adds to whichever p.169 package won; drug pain
+  Boost, before Reaction and the pools** (M&M p.119). Drug Reaction adds to whichever SR3 p.169 package won; drug pain
   resistance takes the **larger** with the adept power.
 - ⚠ **Durations are minutes/hours**, not Combat Turns — stated; ⏳ Wears off is a button. Crash and drug
   damage use the soak card with **`noArmor`**.
@@ -41,8 +41,8 @@ over, stretch a fix, monthly test, kick it, no fix, a day passes, clear).
   `tests/drug-wiring.test.mjs` ratchets it.
 - ⚠ **`edge` is its own field**; legacy `effect` (upstream's name for Edge) is still read by
   `DrugRules.drugEdge` — no migration. `tools/fix-mm-drugs.mjs` builds the M&M pack from
-  `rawdata/MM-Drugs.json` (pp.122, 157-158). `build-default-gear` writes `edge`/`damage`.
-- Not modelled: overdose (p.107), exposure/weapon delivery (p.106), the concentration half of the withdrawal
+  `rawdata/MM-Drugs.json` (M&M pp.122, 157-158). `build-default-gear` writes `edge`/`damage`.
+- Not modelled: overdose (M&M p.107), exposure/weapon delivery (M&M p.106), the concentration half of the withdrawal
   TN (stated), tolerance decay.
 
 ### Guided healing  · *SR3 pp.125-129, 178, 193-194, 304-305; M&M pp.95, 136, 138* — TODO 115
@@ -63,16 +63,16 @@ until clicked.**
   `sr3e.actor.set` refuses). Money, Attribute and Magic loss stay the patient's.
 - **Patient list order** (TODO 208, `scripts/data/patient-order.mjs`): player characters, then other NPCs, then
   hostile-disposition NPCs; owned first, then by name. Order only — nobody is dropped, and the roster stays world-wide.
-- **⏱ Time boxes** (`_timeBox`, `_roadHtml`, `recoveryRoad`, `formatTurns`; a Combat Turn is 3 s, p.39) lead
+- **⏱ Time boxes** (`_timeBox`, `_roadHtml`, `recoveryRoad`, `formatTurns`; a Combat Turn is 3 s, SR3 p.39) lead
   every card; the menu shows the Healing Table road.
 - **`act()` returning `false` = cancelled**: `sr3e.js` hands the one-shot button back.
 - ⚠ **Per-injury record = actor flag `healing`** `{stabilized, magicHealed, timeMultiplier, baseMultiplier}`,
   **cleared whenever Physical reaches 0** (by *Lower* or *Heal these boxes*). `magicHealed` blocks further
-  Heal/Treat **and** first aid for these injuries (p.129, p.194).
+  Heal/Treat **and** first aid for these injuries (SR3 p.129, p.194).
 - Rapid Healing (SR3 p.170): the `healing` situation adds to the patient's Body tests (`healingSituationDice`).
 - ⚠ **Equipment ratings via `itemRating()`**; `findEquipment` takes the **best** usable item, skips storage.
 - ⚠ **Medkit** (M&M p.136/138): no Biotech → its rating **is** the skill; with Biotech → **complementary dice**
-  (not p.97's 2:1). `suppliesOut` (a 1 on 1D6, p.304) hides it until restocked. ⚠ Restocking is shopping, not a card button (TODO 139): 🛒 Buy gear offers
+  (not SR3 p.97's 2:1). `suppliesOut` (a 1 on 1D6, SR3 p.304) hides it until restocked. ⚠ Restocking is shopping, not a card button (TODO 139): 🛒 Buy gear offers
   *Medkit Supplies* (50¥, 2/24hrs, SI 1.5, `SR3EHealing.MEDKIT_SUPPLIES`) and paying for them clears the first empty kit's flag
   (`SR3EPurchase.pay`, `emptyMedkits`). "Medkit Supplies" isn't a medkit.
 - ⚠ **Spell Pool on a Heal card is spent on ROLL**, on the caster's client.

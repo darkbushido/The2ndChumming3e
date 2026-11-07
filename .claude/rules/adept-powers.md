@@ -42,7 +42,7 @@ is reference-only by design.
   (counterattacks only), Sixth Sense (one Reaction Test type) can't ride it. Never widen `skillBonusDice`.
 - ⚠ **Situational bonuses SUM** across powers (Rooting + Enhanced Balance) — unlike `reflexBonus`. Both asserted.
 
-### Attribute Boost is ACTIVATED — never passive  · *p.168-169*
+### Attribute Boost is ACTIVATED — never passive  · *SR3 p.168-169*
 `SR3EActor.openAttributeBoost` → `tickAttributeBoosts` → `_postAttributeBoostDrain`:
 1. **Magic Test**, TN = ½ the **base** rating (round up). No successes → no boost.
 2. Attribute + level, ceiling **2× Racial Modified Limit**.
@@ -51,9 +51,9 @@ is reference-only by design.
 - ⚠ The two TNs read different numbers (base vs boosted) — asserted in `tests/adept-powers.test.mjs`.
 - ⚠ **Never fill `bonusStr` for it**; `_prepareCharacter` has an explicit `continue` for `attributeBoost` powers.
 - ⚠ **No successes = NO Drain** — the opposite of Conjuring (adjacent branches in `_postWaveCard`).
-- ⚠ `SR3E.racialLimits` (p.245) exist **only** to grade this Drain; they cap nothing.
+- ⚠ `SR3E.racialLimits` (SR3 p.245) exist **only** to grade this Drain; they cap nothing.
 
-### Improved Ability is capped  · *p.169* — TODO 60, 61
+### Improved Ability is capped  · *SR3 p.169* — TODO 60, 61
 > "You cannot have more additional dice than your base skill rating or your Magic Attribute, whichever is less."
 - `SR3EActor.improvedAbilityDice({level, skillRating, magic})` = `min`. Applied **after** Magic is derived
   (needs effective Magic): the adept loop collects `pendingImprovedAbility`, a second pass caps. The
@@ -61,12 +61,12 @@ is reference-only by design.
 - **Defaulting carries half**: `defaultTiers`' Skill tier adds `floor(bonus / 2)`, after the cap, and halves
   cyber/bio dice on that skill too (the map is source-agnostic by design).
 
-### Improved Reflexes does not stack with technology  · *p.169* — TODO 64
+### Improved Reflexes does not stack with technology  · *SR3 p.169* — TODO 64
 `SR3EActor.reflexBonus` returns **one** package (never a sum) and reports what it dropped. Initiative dice
 decide, then Reaction; ties to the adept. ⚠ **Resolved ONCE**, read by both the Reaction derivation and
 `initiativeDice` — never derive twice.
 
-### Missile Parry  · *p.170*
+### Missile Parry  · *SR3 p.170*
 A third option in the defence declaration, when the defender has it and the weapon is catchable.
 Pure: `SR3EActor.missileParryTN`, `missileParryOutcome`, `canMissileParry`.
 - ⚠ **TN = `10 − the attack's base range TN`** (floor 2, editable). The book's "10 − 8 at long range"
@@ -87,17 +87,17 @@ Pure: `SR3EActor.missileParryTN`, `missileParryOutcome`, `canMissileParry`.
 ### Direct-effect powers
 | Power | Effect | Where |
 |---|---|---|
-| Combat Sense | +N **Combat Pool** dice · p.169 | `combatPool` derivation |
-| Pain Resistance | level off the damage used for the **injury-modifier lookup** · p.170 | `woundMod`, recomputed in `_prepareCharacter` |
-| Mystic Armor | +N **Impact** armour, cumulative · p.170 | soak card; **astral soak** as −N Power (`astralSoakTN`, p.175) |
+| Combat Sense | +N **Combat Pool** dice · SR3 p.169 | `combatPool` derivation |
+| Pain Resistance | level off the damage used for the **injury-modifier lookup** · SR3 p.170 | `woundMod`, recomputed in `_prepareCharacter` |
+| Mystic Armor | +N **Impact** armour, cumulative · SR3 p.170 | soak card; **astral soak** as −N Power (`astralSoakTN`, SR3 p.175) |
 | Penetrating Strike | −N the **target's** Impact armour · SOTA2 p.67 | soak card, from the payload |
-| Killing Hands | replaces unarmed (STR)M Stun with (STR)*level* **Physical** · p.170 | declared in the called-shot dialog |
+| Killing Hands | replaces unarmed (STR)M Stun with (STR)*level* **Physical** · SR3 p.170 | declared in the called-shot dialog |
 
 - ⚠ **Pain Resistance changes the LOOKUP, never the track.**
 - ⚠ **Killing Hands REPLACES the level** (never stages it) and is **declared per attack**.
 - ⚠ **Mystic Armor goes on BEFORE the ammo rules** (survives Flechette doubling). Counts only for
   `magicType: 'Adept'`.
-- ⚠ **Astral soak** (`_postAstralSoakCard`, p.175): worn armour has no effect; `astralSoakTN` takes Mystic
+- ⚠ **Astral soak** (`_postAstralSoakCard`, SR3 p.175): worn armour has no effect; `astralSoakTN` takes Mystic
   Armor off the Power and nothing else.
 
 ### The item sheet offers fields by POWER KIND

@@ -31,11 +31,17 @@ export async function run(t) {
 
   t.eq('citations: coded, ranged and bare', citations('· *SR3 p.38-39* … MitS p.151 … · *p.168*').map(c => `${c.code} p.${c.page}`),
     ['SR3 p.38-39', 'MITS p.151', '? p.168']);
+  t.eq('a page in a list inherits the book before it', citations('SR3 p.124, p.116 · M&M p.63/p.71 · Cannon Companion p.86')
+    .map(c => `${c.code} p.${c.page}`), ['SR3 p.124', 'SR3 p.116', 'MM p.63', 'MM p.71', 'CC p.86']);
   t.eq('a word ending in p is not a page', citations('see app.12 and step.3'), []);
   t.eq('SR3 maps to PDF page = printed + 2', pdfFor({ code: 'SR3', first: 113 }), 'Shadowrun 3e - Core Rules {FAN25000}.pdf PDF p.115');
-  t.ok('other books never guess an offset', pdfFor({ code: 'MDF', first: 10 }).includes('offset unverified'));
+  t.ok('a book with no verified offset never guesses one', pdfFor({ code: 'CC', first: 10 }).includes('offset unverified'));
   t.eq('owners: backticked repo files', owners('in `scripts/data/combat-pool.mjs` and `tests/x.test.mjs:12`, not `foo`'),
     ['scripts/data/combat-pool.mjs', 'tests/x.test.mjs']);
+
+  // TODO 290: every citation in the rules files names its book (each was checked against its PDF).
+  t.eq('no rules-file citation is missing its book', rulesFiles().flatMap(f =>
+    citations(read(join(RULES_DIR, f))).filter(c => c.code === '?').map(c => `${f} p.${c.page}`)), []);
 
   t.ok('lookup finds a section by heading', lookup(['damage', 'staging']).some(h => h.inHead && h.rel.endsWith('combat-resolution.md')));
 

@@ -15,7 +15,7 @@ paths:
   wave's exploding dice, adding to each die's running total, wave by wave until none are left. A die
   stops exploding once its total ≥ TN.
 - **Rule of One** (`SR3EActor.isRuleOfOne`, feeds all five roll paths): fires **only when every die is
-  a 1** (p.38). Consequence is **GM adjudication**, no mechanical penalty, no second "critical" tier.
+  a 1** (SR3 p.38). Consequence is **GM adjudication**, no mechanical penalty, no second "critical" tier.
   ⚠ "More than half the dice are 1s" is **SR4's glitch** — do not introduce it.
 - A single 1 is just that die failing.
 - Initiative never explodes interactively — summed silently.
@@ -34,13 +34,13 @@ paths:
     run by `_postWaveCard` on the final wave, on the rolling client.
   Both registries name `[class on game.sr3e, method]`, so `ctx` must be plain JSON (ids, not actors).
   `tests/interactive-explosions.test.mjs`: the only `_rollWave(…, false, …)` in `scripts/` is the 💥 handler.
-  Chase Driver Points (an Open Test, p.40 — every 6 rolls again, no TN) use `scripts/data/open-test.mjs`;
+  Chase Driver Points (an Open Test, SR3 p.40 — every 6 rolls again, no TN) use `scripts/data/open-test.mjs`;
   its 💥 is gated to the roller, since chase state lives in that user's window.
 
 ### Defaulting (SR3 Default Table) — interactive  · *SR3 p.84-85*
 
 `SR3EItem.promptDefaultChoice(actor, opts)` → `{ mode, pool, tnMod, allowPool, poolCap, label }`, or
-`null` if cancelled (callers abort the whole action). Table, p.85:
+`null` if cancelled (callers abort the whole action). Table, SR3 p.85:
 
 | Default To | TN Modifier | Dice Pool |
 |---|---|---|
@@ -48,7 +48,7 @@ paths:
 | Skill | +2 | = to ½ base skill being used |
 | Attribute | +4 | No pool dice allowed |
 
-⚠ **The "Dice Pool" column caps POOL dice; you roll the FULL rating** (p.84). Worked examples, asserted
+⚠ **The "Dice Pool" column caps POOL dice; you roll the FULL rating** (SR3 p.84). Worked examples, asserted
 in `tests/defaulting.test.mjs`: **Shotgun 5** → assault rifle rolls 5 dice + up to 2 Combat Pool;
 **Edged Weapons 4 (Sword)** → rolls the specialization's rating, pool capped at ½ the base skill (2).
 

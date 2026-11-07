@@ -41,7 +41,7 @@ paths:
 | a number (incl. `0`) | authoritative | `base − lost` |
 
 > "Cyberware that is removed **does not restore the character's lost Essence**." — *M&M p.147*
-> (SR3 core p.60 only covers install.)
+> (SR3 core M&M p.60 only covers install.)
 
 - ⚠ **A recorded number wins outright — never `max`ed against installed hardware**, so a GM can correct
   a mistaken install. Permanence means removal doesn't refund *by itself*, not that the GM is overruled.
@@ -76,13 +76,13 @@ is death → **red**. Shown, never enforced. ⚠ Below 1 needs no drugs — that
 `system.cybermancy = { is, cds, treatments, cancer }`; rules in `scripts/data/cyberzombie.mjs`.
 - ⚠ **The ONE case where Essence may be ≤ 0**: `essenceValue` keeps the negative only with the flag, the
   sheet's floor opens, and `essenceState` returns `cyberzombie` not `dead` — CDS is graded below zero.
-- **CDS** (p.59): the GM's periodic Willpower Test (⚰ CDS check, Cyber tab). 6 months/TN 3 at 0 to −0.50
+- **CDS** (M&M p.59): the GM's periodic Willpower Test (⚰ CDS check, Cyber tab). 6 months/TN 3 at 0 to −0.50
   … every 2 months/TN 8 from −3.51, *"+1 … for every additional -0.5"* — ⚠ match that open-ended row
   separately. Failure: can't initiate action, +4 Perception / +3 all else, dies in 3 + Willpower weeks.
   Stated, not applied.
 - ⚠ **Treatment is inverted, not a typo**: Spell Resistance (8), *"if the test succeeds … the character
   dies"*; −1 per repeat, min 2. Recovery: a week, −1 day per success on Willpower (6).
-- **Cancer** (p.59), once at the operation: 2D6 under 2 × |Essence| → cancer in 10D6 months, fatal in
+- **Cancer** (M&M p.59), once at the operation: 2D6 under 2 × |Essence| → cancer in 10D6 months, fatal in
   4 + 1D6 weeks. Body/symbiote modifiers are *"at the gamemaster's discretion"*.
 - Scheduling (every N months) is not modelled.
 
@@ -131,7 +131,7 @@ Upstream (`criticalfault/Shadowrun-Character-Generator`) encodes effects as `+2R
   hook beside `tickAttributeBoosts`. On expiry: Body Test vs **(turns it ran)D Stun**, Power from
   `rolledTurns` recorded at activation. ⚠ Goes through the soak card with **`noArmor`**, using
   `stagedPower`/`stagedLevel` (`tests/soak-payload.test.mjs`).
-- ⚠ **WHERE the bonuses apply is the rule** (p.63: Quickness not to Reaction, Reaction not to Control Pool,
+- ⚠ **WHERE the bonuses apply is the rule** (M&M p.63: Quickness not to Reaction, Reaction not to Control Pool,
   Quickness and Willpower to Combat Pool): applied **after** Reaction derivation, **before** the pools (Control
   Pool reads `reaction.base`, which no bonus reaches).
   Moving the block breaks a clause. `tests/adept-powers.test.mjs` uses QUI 4 / INT 5 because the orderings differ there.
@@ -141,7 +141,7 @@ Upstream (`criticalfault/Shadowrun-Character-Generator`) encodes effects as `+2R
   Resistance (M&M p.78, *"incompatible"*). `painEditorHidesWounds` also hides compensated characters.
   Their Stress effects aren't modelled.
 - **Nephritic Screen** rides `situationalBonuses` key `toxin`, like Body Control; a dwarf's racial +2 (SR3
-  p.56, `SR3E.racialSituational`) joins them. Offered on the attribute-roll dialog as one unticked
+  SR3 p.56, `SR3E.racialSituational`) joins them. Offered on the attribute-roll dialog as one unticked
   checkbox while Body is selected (`SR3EActor.toxinResistanceOffer`, TODO 98) — never added to `body.value`.
 
 ### Stress on implants and Attributes  · *M&M pp.124-131* — TODO 109
@@ -156,11 +156,11 @@ Rules `scripts/data/stress.mjs` (pure); dialog/card `scripts/SR3EStress.js`. Fie
 | Target number | **the current total** − a cyberlimb's Integrity Rating + a bioware Attribute boost |
 | A wound effect | **1D6 ÷ 2** Stress, then the test |
 
-- ⚠ **TN is the NEW total** (p.126's example). ⚠ **One success avoids failure** — a check, not graded.
+- ⚠ **TN is the NEW total** (M&M p.126's example). ⚠ **One success avoids failure** — a check, not graded.
 - ⚠ **The 1D6 ÷ 2 must NOT go through `rollPool`** — no Rule of Six. It rounds **down** (M&M is silent;
   the maintainer's to settle).
 - ⚠ **Nothing automatic**: ⚙ Apply Stress is GM-only; the soak card never reaches in.
-- Not built: Stress Maintenance/repair (p.130-131), bioware malfunction thresholds, Fragile/Rugged (p.148).
+- Not built: Stress Maintenance/repair (M&M p.130-131), bioware malfunction thresholds, Fragile/Rugged (M&M p.148).
 
 ### Cybersystem damage — Essence slots and the Wound Effect Table  · *M&M pp.126-129* — TODO 129
 
@@ -169,23 +169,23 @@ what each effect hit → ⚙ **Apply Stress — <implant>** (TODO 109's dialog, 
 
 | Step | Rule |
 |---|---|
-| How many effects | Damage Resistance Test read as a Success Test: **boxes − the highest die** · p.127 |
-| What kind | 1D6: **1-2 cybersystem · 3-4 bioware · 5-6 organic** · p.127 |
-| Which system | 1D6 against the **six Essence slots**, one per point of Essence · p.127 |
-| Bioware | same procedure with **Bio Index slots** · p.128 |
-| The Stress | 1D6 ÷ 2 and a Stress Test (TODO 109) · p.127 |
+| How many effects | Damage Resistance Test read as a Success Test: **boxes − the highest die** · M&M p.127 |
+| What kind | 1D6: **1-2 cybersystem · 3-4 bioware · 5-6 organic** · M&M p.127 |
+| Which system | 1D6 against the **six Essence slots**, one per point of Essence · M&M p.127 |
+| Bioware | same procedure with **Bio Index slots** · M&M p.128 |
+| The Stress | 1D6 ÷ 2 and a Stress Test (TODO 109) · M&M p.127 |
 
 - ⚠ **Count = MARGIN OF FAILURE, not successes** (1,1,2,2,3 vs 6 boxes = 3). Mutant `wound-effects-count-successes`.
-- ⚠ **A partly filled slot is a CHANCE** (p.128); `hitChance` = filled fraction. Mutant `half-slot-is-a-certain-hit`.
+- ⚠ **A partly filled slot is a CHANCE** (M&M p.128); `hitChance` = filled fraction. Mutant `half-slot-is-a-certain-hit`.
 - ⚠ **Ignore, never re-roll** an effect on an empty slot or a type the character lacks.
 - ⚠ **Never pick within a slot** — `systemHit` returns candidates with shares (sum 1, for the optional 1D10); the GM chooses.
 - ⚠ **Slots hold GRADED Essence** (alphaware VCR = 2.4).
-- ⚠ **Electrical damage skips the Wound Effect Table** (p.129): straight to system affected, plus 1D6 each where 1-2 hits another implant.
+- ⚠ **Electrical damage skips the Wound Effect Table** (M&M p.129): straight to system affected, plus 1D6 each where 1-2 hits another implant.
 - ⚠ **Cyberzombies wrap** to slot 1 and can damage two systems at once (`system.cybermancy.is`).
-- ⚠ `assignSlots` is pinned to Leggy's printed slots (p.127); the reaction enhancers' "Essence Cost .6"
+- ⚠ `assignSlots` is pinned to Leggy's printed slots (M&M p.127); the reaction enhancers' "Essence Cost .6"
   is the pair's combined cost.
 - ⚠ **Offered, never automatic** — `tests/cyber-slots.test.mjs` asserts `SR3EActor.js` never calls it.
-- Not built: Cyberware Failure Table (p.128), bioware Stress side effects.
+- Not built: Cyberware Failure Table (M&M p.128), bioware Stress side effects.
 
 ### Item ratings — one reader  · TODO 118, 122
 
@@ -234,7 +234,7 @@ bioware or medical items** (`tests/item-rating.test.mjs` checks).
 - Cost and availability multipliers are applied by the item sheet's grade dropdown (`SR3EItemSheet`, `GRADES`),
   which rewrites `cost`/`availability` from their bases.
 - ⚠ **Used DELTA installs as BETA** (M&M p.11) — `gradedEssenceCost` reads ×.6. **Used cyberware carries 1D3
-  permanent Stress** (M&M p.45 over p.124's 1D6 ÷ 2 — the maintainer's choice) — `Stress.usedStartingPoints`.
+  permanent Stress** (M&M p.45 over SR3 p.124's 1D6 ÷ 2 — the maintainer's choice) — `Stress.usedStartingPoints`.
 - ⚠ **Round UP, per item, to 2dp** — never the total. ⚠ **Strip float noise first** (0.2 × 0.8 → 0.16, not 0.17).
 - ⚠ **Grade the BASE once — `SR3EActor.baseEssenceCost(item)`** (TODO 101): the contacts pack stores the
   base in `essenceCost`; the item sheet and importer (`importedCyberwareCosts`) store the graded figure

@@ -26,10 +26,10 @@ export const PDF_DIR = 'C:\\Users\\lance\\Documents\\Github\\Shadowrun 3rd Editi
 /** Book code → PDF file and printed→PDF page offset (null = not verified; open by printed page). */
 export const BOOKS = {
   SR3:  { pdf: 'Shadowrun 3e - Core Rules {FAN25000}.pdf', offset: 2 },
-  MDF:  { pdf: 'Shadowrun 3e - The Matrix Defragged v2.pdf', offset: null },
+  MDF:  { pdf: 'Shadowrun 3e - The Matrix Defragged v2.pdf', offset: 0 },
   CC:   { pdf: 'Shadowrun 3e - Cannon Companion.pdf', offset: null },
   MITS: { pdf: 'Shadowrun 3e - Magic in the Shadows.pdf', offset: 1 },
-  R3:   { pdf: 'Shadowrun 3e - Rigger 3 Revised {FanPro10662}.pdf', offset: null },
+  R3:   { pdf: 'Shadowrun 3e - Rigger 3 Revised {FanPro10662}.pdf', offset: 2 },
   MM:   { pdf: 'Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf', offset: 2 },
   MAT:  { pdf: 'Shadowrun 3e - Matrix.pdf', offset: 1 },
 };

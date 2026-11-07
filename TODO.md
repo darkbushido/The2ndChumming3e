@@ -3555,6 +3555,17 @@ name the book on each one, **checking every page against its PDF**. Never pick t
 Done when `node tools/rules-digest.mjs` reports no `?` citations, or each one left is marked as a page the
 library can't verify. After that, ratchet the count in `tests/rules-digest.test.mjs`.
 
+**Done on `feature/rules-citations` (2026-11-07):** 189 bare pages now name their book (SR3, M&M, R3, MDF,
+Matrix). Each one was checked against its PDF: `pdftotext` on the cited page, with a keyword from the rule.
+The digest also takes the book from a list (`SR3 p.124, p.116`) and from "Cannon Companion". Verified
+printed→PDF offsets: SR3 +2, M&M +2, R3 +2 (the Trixie example is on printed p.37), MitS +1, Matrix +1, MDF 0.
+`tests/rules-digest.test.mjs` now fails on any `?` citation.
+Two guesses were corrected by the PDFs: matrix.md's rigger dump shock p.156 is **core**, not R3.
+**Still open:** six cited pages where the PDF doesn't show the rule on that page. They were sent to the
+maintainer and are unchanged: SR3 p.175 (astral soak; the page is art), SR3 p.40 (Open Test, on p.39),
+M&M p.63 (bonus routing, on pp.64-65), M&M p.129 (electrical damage, on p.127), SR3 p.125 (Firing Through,
+on p.124), SR3 p.182 (touch range, on pp.180/183).
+
 ## 291. Slim `CLAUDE.md` — it loads in every session — **ruled 2026-11-07**
 
 Follow-up to [#289](#289). `CLAUDE.md` is 42 KB (about 10.5k tokens) and loads in every session, so it

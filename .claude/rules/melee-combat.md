@@ -14,7 +14,7 @@ paths:
 1. Attacker clicks a melee weapon; target dialog. Not adjacent (`SR3EItem._tokensAdjacent`) → **warn and
    proceed**. Reach affects the TN only.
 2. Defender auto-uses their equipped melee weapon → an unarmed/cyber item → bare hands (STR M).
-   **Reach never gates participation** (p.122 step 2).
+   **Reach never gates participation** (SR3 p.122 step 2).
 3. Either side lacking the skill defaults — **on their own client**.
 4. Called shot (attacker only).
 5. **The GM sets BOTH TNs** — `sr3e.melee.negotiate` → `SR3EItem._promptGMMeleeWindow`.
@@ -26,24 +26,24 @@ paths:
    successes; the loser gets Resist Damage → the soak flow.
 
 #### The GM's melee TN window
-- **Multiple targets** (p.122, +2 per additional target struck this phase): prefilled from the attacker's
+- **Multiple targets** (SR3 p.122, +2 per additional target struck this phase): prefilled from the attacker's
   `system.targetsThisPhase` (shared with the fire dialog); each attack records its target. With no window
   (NPC vs NPC) the flow adds the +2s itself.
-- Melee resolves **two** TNs and most p.123 rows move both oppositely, so `sumMeleeModifiers` returns an
+- Melee resolves **two** TNs and most SR3 p.123 rows move both oppositely, so `sumMeleeModifiers` returns an
   `{atk, def}` **pair of deltas** — never absolutes (the bases already carry reach, defaulting, called shot).
 - Opens per `gmApprovesTN` via `SR3EQuery.gmWindowOpens`. Default `player`: opens **whenever a player's
   character is on either side**; skips only NPC vs NPC (TODO 94). ⚠ "A player's character" =
   `SR3EQuery.isPlayerCharacter` (assigned or **explicit** Owner), never `hasPlayerOwner` (default ownership
   would make every goon a PC). `adjudicated` is the only reliable signal a GM looked (TODO 50).
-- **Prone** (p.123 *"Opponent prone –2"* — the bonus goes to the one STANDING; TODO 245): `rollMeleeAttack` reads
+- **Prone** (SR3 p.123 *"Opponent prone –2"* — the bonus goes to the one STANDING; TODO 245): `rollMeleeAttack` reads
   each fighter's core `prone` status (`MeleeProne.isProne`, `scripts/data/melee-prone.mjs` — actor **or token**:
   an unlinked token keeps its own) and carries `atkProne`/`defProne`; the window **preselects** "who is DOWN"
   (`MeleeProne.side`, with **both** — each has a prone opponent, −2/−2) and shows a 🔻 hint. Never locked. With no
   window the flow applies `MeleeProne.deltas` itself, like the +2s above, and the boxing card says so
   (`ctx.autoProne` → `MeleeProne.cardNote`; null when the window opened — the maintainer, 2026-10-23).
-- ⚠ **Visibility halves in melee** (p.123: half, round down, except Full Darkness) — `meleeVisibilityModifier`.
+- ⚠ **Visibility halves in melee** (SR3 p.123: half, round down, except Full Darkness) — `meleeVisibilityModifier`.
 
-#### ⚠ Reach is a DIFFERENTIAL, and applying it is the fighter's CHOICE  · *p.121*
+#### ⚠ Reach is a DIFFERENTIAL, and applying it is the fighter's CHOICE  · *SR3 p.121*
 - **The difference** between reaches; equal reach cancels (two staves both roll vs 4).
 - The longer-reach fighter chooses: −N on their own TN, or +N on the opponent's. The election lives in the
   **holder's own corner** (`sr-melee-atk-reach` / `sr-melee-def-reach`), never the GM window.
@@ -57,14 +57,14 @@ paths:
 ⚠ The staging gate is unconditional, **not** `net > 0` — that would post no soak button and delete the attack.
 
 ### Full Defense  · *SR3 p.123-124*
-A melee posture (p.108 Interception forces it). `SR3EActor.fullDefenseOutcome` (pure) →
+A melee posture (SR3 p.108 Interception forces it). `SR3EActor.fullDefenseOutcome` (pure) →
 `{blocked, net, cleanMiss, remaining, dealsDamage}`.
 1. **Skill test, pool-free**: `handleMeleeRoll` **zeroes** (not rejects) the defender's Combat Pool — it's reserved.
 2. Defender with **more** successes → blocked (a tie is not).
 3. Else `.sr-fd-dodge-btn` → `handleFullDefenseDodge`: Combat Pool dice only, at the defender's melee TN.
 4. **The defender deals no damage**, ever.
-- ⚠ **This dodge SUBTRACTS from the attacker's net before staging** (p.124); the ordinary dodge *adds* to the
-  soak (p.113). Keep `dodgeOutcome` and `fullDefenseOutcome` separate (`tests/full-defense.test.mjs`).
+- ⚠ **This dodge SUBTRACTS from the attacker's net before staging** (SR3 p.124); the ordinary dodge *adds* to the
+  soak (SR3 p.113). Keep `dodgeOutcome` and `fullDefenseOutcome` separate (`tests/full-defense.test.mjs`).
 - ⚠ Ranged Full Defense is a deliberate system **extension**, not RAW.
 
 ### Charging Attack  · *Cannon Companion p.86* — the source-book rule gate
@@ -84,7 +84,7 @@ never a second settings list.
 ### A weapon's extra Damage Code — the Shock Glove  · *SR3 p.275-276, p.124*
 `system.extraDamage` ("7S Stun") is a second code delivered with the first (`scripts/data/extra-damage.mjs`); the
 fist stays `(STR-1)M Stun` in `damage`. The melee Result posts a **second Resist button** for it (`shock: true`):
-staged by the **same net successes**, resisted separately, **Impact armour at half, rounded down** (p.124).
+staged by the **same net successes**, resisted separately, **Impact armour at half, rounded down** (SR3 p.124).
 Not modelled: the 8 discharges and 1-hour recharge. ⚠ Two codes with
 different Power and Level cannot share one Damage Resistance Test.
 
@@ -104,6 +104,6 @@ otherwise) and the Shock Glove (whose shock is its **extra** code — the fist i
 - The condition: status `sr3e-stunned` + flag `stunTurns`; `SR3EActor.stunnedTN` is part of `standingTN` and a
   `stunned:` term of `dodgeTN`. `SR3ECombat._countDownStun` (from `_newRound` only) counts down; `endCombat` clears;
   removing the icon clears the count (`deleteActiveEffect`); ticking it on by hand stuns with no count.
-- ⚠ **A character ALREADY stunned soaks at +2** (p.124 "all tests"; the maintainer, 2026-10-18): `ShockStun.soakTN`
+- ⚠ **A character ALREADY stunned soaks at +2** (SR3 p.124 "all tests"; the maintainer, 2026-10-18): `ShockStun.soakTN`
   in `_postSoakCard` reads `isStunned` when the card is built, so the hit that causes the stun is soaked without it.
-  Sustaining and drug penalties still stay off the Damage Resistance Test. The M&M Shock Hand (p.42) is a shock weapon.
+  Sustaining and drug penalties still stay off the Damage Resistance Test. The M&M Shock Hand (M&M p.42) is a shock weapon.

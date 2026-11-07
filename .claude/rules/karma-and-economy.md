@@ -20,15 +20,15 @@ paths:
 ---
 # Karma, the ledger, buying gear, encumbrance
 
-### Karma & advancement  · *SR3 p.242-246* (the section opens on p.242; p.243 is art)
+### Karma & advancement  · *SR3 p.242-246* (the section opens on SR3 p.242; SR3 p.243 is art)
 
 | Field | Is | Changes when |
 |---|---|---|
 | `system.totalKarma` | career odometer | only grows |
 | `system.karma` | **Good Karma** — the advancement currency | awards add, purchases subtract |
-| `system.karmaPool` | the Karma Pool's **size** · p.246 | awards raise it; **burning** lowers it, for ever |
+| `system.karmaPool` | the Karma Pool's **size** · SR3 p.246 | awards raise it; **burning** lowers it, for ever |
 | `system.karmaPoolSpent` | Karma Pool **spent** since the GM's refresh | spending raises it; the GM's 🍀 Refresh zeroes it |
-| `system.powerPointsBought` | adept Power Points bought with Good Karma, on top of Magic · p.168 | the Spend calculator |
+| `system.powerPointsBought` | adept Power Points bought with Good Karma, on top of Magic · SR3 p.168 | the Spend calculator |
 
 Karma Pool is typed on the **Attributes** tab (left / size, like Combat Pool); **Bio → Resources** has Good/Total Karma
 and a read-only "Karma Pool left / size" with a → Attributes link (TODO 267).
@@ -55,7 +55,7 @@ re-roll function was never called, and a spend lowered the pool's size so the po
   The GM refreshes: 🍀 on the sheet, or **🍀 Refresh Karma Pools** (GM tools; PCs, unticked, "All").
 - **Before the roll** — the 🍀 row in all four roll dialogs (attribute, skill, weapon, AoE throw) → `rollPool`:
   extra dice cost 1, 3, 6… capped at the skill/attribute dice **without other pools** (the weapon flows pass
-  `karmaDiceCap`, the pool before Combat Pool); Hooper-Nelson (p.248, GM's option) burns 1 per TN point,
+  `karmaDiceCap`, the pool before Combat Pool); Hooper-Nelson (SR3 p.248, GM's option) burns 1 per TN point,
   never below 8, warned under TN 12.
 - **After the roll** — "Hold the roll for Karma" ticked: the final wave stops on a 🍀 card **before the
   result block** (that block posts dodge/soak cards and draws blast markers — re-running it would post them
@@ -69,8 +69,8 @@ re-roll function was never called, and a spend lowered the pool's size so the po
     `sr-karma-done-btn` is a ⏳ step.
 - Not modelled: Karma on opposed rolls (melee, astral, contested — they roll through `_rollWave`), on
   rolls with no dialog (soak, Drain), on physical dice; Open Test re-rolls (`openTestRerollCost` is ready);
-  Extended actions (p.248). A pool of **0** offers no 🍀 row at all (an NPC's default, or after Hand of God).
-- **✋ Hand of God** (p.248, optional; `data/hand-of-god.mjs`, Bio → Resources, TODO 267): burns ALL Good Karma and the
+  Extended actions (SR3 p.248). A pool of **0** offers no 🍀 row at all (an NPC's default, or after Hand of God).
+- **✋ Hand of God** (SR3 p.248, optional; `data/hand-of-god.mjs`, Bio → Resources, TODO 267): burns ALL Good Karma and the
   whole Pool (size, not just what's left) → 0, `handOfGodUsed` true; Total Karma untouched. Player character, 1+ Pool,
   once ever are **warned, not refused**. No wound is changed — the card leaves the how to the GM. Undo: the purchase ↺
   on its Good Karma line (`HandOfGod.revert`); with no Good Karma there is no line, so the GM retypes the Pool.
@@ -82,19 +82,19 @@ Tables: karma, nuyen, a gear note to ticked PCs) both go through `SR3EActor.karm
   (plain keys); `Ledger.diff` puts it on the **Total Karma** line (an award can be all Pool, leaving no Good Karma line).
   `Ledger.awardPlan` takes the amounts off the CURRENT values (spent-since Good Karma may go negative, said; Pool/nuyen
   floor at 0). The ↺ carries `data-kind`; `Ledger.find(…, kind)` because the award's lines share time and reason.
-- ⚠ **Humans: every TENTH karma; others every twentieth** (p.246) — `karmaPoolDivisor`, case-insensitive on
+- ⚠ **Humans: every TENTH karma; others every twentieth** (SR3 p.246) — `karmaPoolDivisor`, case-insensitive on
   free-text `system.metatype`; missing metatype → 20.
 - ⚠ When auditing a feature, check that something actually **calls** the function and that sibling tools use it.
 - Everyone starts with **1 Karma Pool**. Migration `0.4.5.7` (via `fixActor`) is deliberately **not**
   metatype-aware — pinned to `⌊total / 20⌋ + 1`, matching only Pools exactly equal to the old formula's.
 
 **Spending** (`_onSpendKarmaCalculator`) lists every affordable purchase: attributes, skill increases, new
-skills, new specialisations, specialisation increases, and under **Magic**: an adept's Power Point (20, p.168),
+skills, new specialisations, specialisation increases, and under **Magic**: an adept's Power Point (20, SR3 p.168),
 learning a spell at a Force (Karma = Force, less the limits taken off the **cost** — each of fetish/exclusive is
-taken off the cost OR off Drain, recorded on the spell, p.180-181, TODO 223 — asked in a sub-dialog), and
-bonding a focus (Focus Bonding Table, p.190 — `GoodKarma.focusType`/`focusForce`/`bondingCost`; foci are gear
+taken off the cost OR off Drain, recorded on the spell, SR3 p.180-181, TODO 223 — asked in a sub-dialog), and
+bonding a focus (Focus Bonding Table, SR3 p.190 — `GoodKarma.focusType`/`focusForce`/`bondingCost`; foci are gear
 named for their type, bonded = flag `bonded`; weapon foci are melee `isFocus`, bonded = `focusActive`).
-⚠ A specialisation over **twice the base** (3 on a base of 1, p.84) is **warned**, not refused.
+⚠ A specialisation over **twice the base** (3 on a base of 1, SR3 p.84) is **warned**, not refused.
 - **↺ Undo (TODO 212, GM).** Every purchase passes `ledgerRevert` (`{ actor, items, deleteItems }`) with its
   karma write; `recordLedger` puts it on the Good Karma line. The ↺ lists the refund and each change as
   untickable rows, refunds as a NEW line ("↺ Undid: …") and marks the original `reverted`.
@@ -115,7 +115,7 @@ The rest are on `GoodKarma` / `KarmaPool` in `scripts/data/karma-uses.mjs`; e2e 
 `karmaPool − karmaPoolBurned`, and brings `purchasedPowerPoints` across. Without Total Karma the next award
 re-crossed the pool threshold from 0 and granted points twice.
 
-**Skill Improvement Cost Table** (p.245) — × the **new** rating, **round fractions DOWN**:
+**Skill Improvement Cost Table** (SR3 p.245) — × the **new** rating, **round fractions DOWN**:
 
 | New rating is… | Base: Active | Base: Knowledge/Language | Specialisation (both) |
 |---|---:|---:|---:|
@@ -124,15 +124,15 @@ re-crossed the pool threshold from 0 and granted points twice.
 | > 2× the linked Attribute | 2.5 | 2 | 1.5 |
 
 - **New skill: flat 1 karma**, any type (`karmaNewSkillCost()` takes no arguments on purpose).
-- **Attributes**: 2 × new rating; **3×** above the Racial Modified Limit (p.244).
+- **Attributes**: 2 × new rating; **3×** above the Racial Modified Limit (SR3 p.244).
 - **Max specialisations = the linked ATTRIBUTE rating** (not the skill's).
 - ⚠ Specialisations cost the same for active and knowledge skills — `_specCost` ignoring `isActive` is correct.
-- ⚠ **A new specialisation is bought at base +1, an existing one raised from there** (Brick, p.245).
+- ⚠ **A new specialisation is bought at base +1, an existing one raised from there** (Brick, SR3 p.245).
   `specialisations[].level` is the **bonus**.
 - ⚠ **Chargen gap is 2** (SR3 p.57: spec = base+1, base −1), which is why `SkillData.migrateData` uses 2
   for legacy strings. It's a **start, not a ceiling** — `level: 4` is legitimate; never clamp. The item
   sheet's dropdown offers Lv0 upward, past the current value.
-- ⚠ **A specialisation keeps its OWN rating when the base rises** (p.245, rules-check 0.7.0): `preUpdateItem` in
+- ⚠ **A specialisation keeps its OWN rating when the base rises** (SR3 p.245, rules-check 0.7.0): `preUpdateItem` in
   `sr3e.js` calls `SkillRules.specsAfterRatingChange` (`data/skill-rules.mjs`), lowering every `level` by the rise (a fall
   raises it). Floors at **0** when the base catches up (book silent; spec kept, rolls as the base). Rating 0 (unlearned) is
   skipped, and an update that carries `system.specialisations` itself (Undo, item sheet) is left as written. The schema has
@@ -198,7 +198,7 @@ card: delivery N, meet at N/2, price → 🤝 Negotiate (`rollOpposedPair` → `
   player had haggled or paid (reported 2026-10-25). **A haggle retires the Source found card's 💴** (its price is
   superseded). Each claim is made after the dialog/confirm and before the roll/write, so a cancel hands the button
   back. Mutant `buy-haggle-leaves-pay-live`.
-- ⚠ Every number editable (p.272: a guideline). Dwarf-sized gear **+10%**, troll **+25%** (from `system.metatype`).
+- ⚠ Every number editable (SR3 p.272: a guideline). Dwarf-sized gear **+10%**, troll **+25%** (from `system.metatype`).
 - **Finding the item (TODO 154, `scripts/data/gear-search.mjs`)**: a 🔎 search over the gear packs' **indexes**
   (`pack.getIndex({ fields })`, never `getDocuments`) and a drop onto the dialog fill the same fields through one
   `take()`. ⚠ **Both go through `SR3ESourceBooks.packAllowed`** (`gearPacks()` / `resolveDrop`); a book switched
@@ -216,8 +216,8 @@ card: delivery N, meet at N/2, price → 🤝 Negotiate (`rollOpposedPair` → `
   (SR3, CC, M&M, MitS, R3, SOTA) into `data/legality-table.mjs` (pack → id → [code, page]) — the source; edit it
   there, then `tools/fill-legality.mjs` (hand-kept packs) and `tools/build-default-gear.mjs` (generated) fill blanks.
   A table with no Legality column (most electronics, biotech, magical supplies, programs) leaves the field blank —
-  the GM decides. Ammo is mostly "As Weapon" (p.281). Migration 0.9.0 fills owned copies from their compendium link.
-- Not modelled: permits themselves (p.273 — the Etiquette Test at Availability +2), the Etiquette specialisation.
+  the GM decides. Ammo is mostly "As Weapon" (SR3 p.281). Migration 0.9.0 fills owned copies from their compendium link.
+- Not modelled: permits themselves (SR3 p.273 — the Etiquette Test at Availability +2), the Etiquette specialisation.
   `tests/purchasing.test.mjs` pins Cheshire: 38 days, 19 days, ¥12,600, ¥10,080.
 
 ### Carried load and Encumbrance  · *SR3 p.274* — TODO 126
@@ -238,17 +238,17 @@ installed cyber/bioware weigh nothing; stacks × `quantity`; ammo × rounds/relo
 ### 👁 Concealment — what a character carries that shows  · *SR3 p.45, p.231-232, p.236-237, p.270* — TODO 195
 `SR3EConcealment.open(actor)` (`scripts/SR3EConcealment.js`; GM-only — the Rollable Tables sidebar and a button on a
 character's Attributes tab). Rules and the heuristic: `scripts/data/concealment.mjs` (pure).
-- **Concealability is the TARGET NUMBER of the Perception Test to notice the item** (p.45, p.231, p.270), so a **lower**
+- **Concealability is the TARGET NUMBER of the Perception Test to notice the item** (SR3 p.45, p.231, p.270), so a **lower**
   number is easier to spot: the list sorts **least concealed first** — in-hand weapons and obvious chrome (no test), then
   ascending, the GM's-call rows, the unrated last.
 - **Shown:** weapons (`firearm`/`melee`/`projectile`/`thrown`, not fists, not stored): in hand (`ready`) = plain sight, no
   test; stowed = its Concealability; an implanted weapon (`CYB`/`hands: 0`) is listed as the weapon. **Worn** armour only
   (`SR3EActor.wornArmorItems`). **Implants** only when category and name mark an outward part (`classifyImplant`): obvious
-  cyberlimbs/cyberskull/torso/Kid Stealth and cyberears (no test); **synthetic** limbs (**8**, p.303; +3 under clothing,
-  p.301) and an Induction Datajack (**10**, M&M p.21) are disguised; cybereyes and a plain datajack are the GM's call.
-- **A search's target number is the FULL Concealability plus the Physical Search Modifiers Table** · p.237 *"make a standard
-  Perception Test against the Concealability … Apply the modifiers in the Physical Search Modifiers Table"* (table p.236).
-  **Ruled 2026-10-17 by the maintainer:** p.270's "half the regular Concealability Rating (rounding down)" for searches is
+  cyberlimbs/cyberskull/torso/Kid Stealth and cyberears (no test); **synthetic** limbs (**8**, SR3 p.303; +3 under clothing,
+  SR3 p.301) and an Induction Datajack (**10**, M&M p.21) are disguised; cybereyes and a plain datajack are the GM's call.
+- **A search's target number is the FULL Concealability plus the Physical Search Modifiers Table** · SR3 p.237 *"make a standard
+  Perception Test against the Concealability … Apply the modifiers in the Physical Search Modifiers Table"* (table SR3 p.236).
+  **Ruled 2026-10-17 by the maintainer:** SR3 p.270's "half the regular Concealability Rating (rounding down)" for searches is
   NOT used. Two modes (`NOTICE`, `SEARCH_FULL`). A 6-10 minute strip search finds the weapon, no roll.
-- The roll is `rollPool` + `FOLLOW_UPS.concealPerception`, which reads the Perception Success Table (p.232). Nothing is
+- The roll is `rollPool` + `FOLLOW_UPS.concealPerception`, which reads the Perception Success Table (SR3 p.232). Nothing is
   written back to an item; typed Concealability numbers affect that card only.
