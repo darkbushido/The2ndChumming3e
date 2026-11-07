@@ -66,6 +66,7 @@ const ACCESSORIES = { module: '../scripts/data/weapon-accessories.mjs', klass: '
 const SLOTS  = { module: '../scripts/data/cyber-slots.mjs',  klass: 'CyberSlots' };
 const LEDGER = { module: '../scripts/data/ledger.mjs',       klass: 'Ledger' };
 const BUY    = { module: '../scripts/data/purchasing.mjs', klass: 'Purchasing' };
+const CART   = { module: '../scripts/data/cart.mjs',       klass: 'Cart' };
 const RIG    = { module: '../scripts/data/rigging.mjs',    klass: 'Rigging' };
 const PORDER = { module: '../scripts/data/patient-order.mjs', klass: 'PatientOrder' };
 const MACROREF = { module: '../scripts/data/macro-refresh.mjs', klass: 'MacroRefresh' };
@@ -2405,6 +2406,40 @@ export const MUTANTS = [
           + 'the GM saw the card as untouched and could pay it a second time',
     impl:   (acted = {}) => (acted?.['buy:pay'] ? { negotiate: 'Already paid for.', pay: 'Paid.' }
       : acted?.['buy:negotiate'] ? { negotiate: 'Already haggled.', pay: null } : { negotiate: null, pay: null }),
+  },
+  {
+    id:     'cart-surcharge-rounded-per-unit',
+    suite:  'cart',
+    ...CART, method: 'storePrice',
+    was:    'TODO 284 - the troll surcharge (SR3 p.272, +25%) rounded on each unit and multiplied: four ¥31 clips '
+          + 'came to 4 × ¥39 = ¥156 instead of ¥155 on the total',
+    impl:   (lines = [], { metatype = '' } = {}) => {
+      const sur = { dwarf: 0.10, troll: 0.25 }[String(metatype).toLowerCase()] ?? 0;
+      const total = lines.reduce((s, l) => s + Math.round(Number(l.cost) * (1 + sur)) * Math.max(1, Math.floor(Number(l.quantity) || 1)), 0);
+      return { base: total, surcharge: 0, total, surchargeRate: sur };
+    },
+  },
+  {
+    id:     'cart-quantity-ignored-in-price',
+    suite:  'cart',
+    ...CART, method: 'listCost',
+    was:    'TODO 284 - a Quantity that delivered N but charged for one (the card priced the unit)',
+    impl:   (lines = []) => lines.reduce((s, l) => s + (Number(l.cost) || 0), 0),
+  },
+  {
+    id:     'cart-tests-the-first-line',
+    suite:  'cart',
+    ...CART, method: 'slowest',
+    was:    'TODO 285 (ruled 2026-11-07) - one Etiquette Test against the SLOWEST line; testing the first line '
+          + 'lets a cheap clip carry restricted armour through at TN 2',
+    impl:   (lines = []) => ({ tn: Number(lines[0]?.tn) || 0, time: Number(lines[0]?.time) || 0, unit: lines[0]?.unit || 'day' }),
+  },
+  {
+    id:     'cart-delivers-clips-as-copies',
+    suite:  'cart',
+    ...CART, method: 'deliver',
+    was:    'TODO 284 - four clips landed as four items of one reload each, not one box of 4 reloads (system.reloads)',
+    impl:   (data, quantity) => Array.from({ length: Math.max(1, Math.floor(Number(quantity) || 1)) }, () => data),
   },
   {
     id:     'attribute-hover-says-nothing',
