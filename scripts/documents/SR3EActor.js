@@ -11929,8 +11929,9 @@ _prepareCharacter(sys, attr) {
       dice = 1;
       modeNote = `<div class="sr-roll-meta" style="color:#c070f5">✦ Astral Init — INT ${intel}${grade ? ` + grade ${grade} (Astral Reaction)` : ''} + 20</div>`;
     } else if ((() => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset') === 'orthodox'; } catch { return false; } })()
-              && (this.system.orthodoxRunState?.currentHostId ?? '') !== '') {
-      // Orthodox SR3: decker jacked in uses reaction BASE + ResponseIncrease×2 + (1+Response)d6
+              && useMatrixHot) {
+      // Orthodox SR3 — VR-Hot ONLY, like Defragged (maintainer ruling 2026-11-07; TRM/AR/VR-Cold keep their meat-world
+      // Initiative, MDF p.10). Until then any logged-in decker got this. Uses reaction BASE + ResponseIncrease×2 + (1+Response)d6
       // Wired reflexes excluded while jacked in.
       const wm           = this.system.woundMod ?? 0;
       const reactionBase = this.system.attributes?.reaction?.base ?? 0;

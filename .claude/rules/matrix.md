@@ -91,6 +91,9 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
 - **Every dump shock is resisted with Willpower and no armour** — the maintainer's rulings, 2026-09-27/28
   (TODO 201): SR3 p.227 and MDF p.27 name no attribute; SR3 p.156 says Willpower for riggers. Payloads
   carry `resistAttr: 'willpower'`, `noArmor: true`.
+- ⚠ **Orthodox user modes follow the same VR-Hot-only rule** (maintainer, 2026-11-07): the Orthodox Matrix tab has a user-mode
+  selector (`system.matrixUserMode`), and Orthodox Matrix Initiative (Response ×2) applies only in VR-Hot. Before this any logged-in
+  decker got it; existing Orthodox deckers must be set to VR-Hot by hand (no migration can know their mode).
 - ⚠ **Orthodox is different** (TODO 202, `SR3EActor.orthoDumpShock`): SR3 p.227 — always **Stun**, Power =
   Security Value, level by Security Code from the **Dump Shock Damage Levels** table (p.226: Blue L, Green M,
   Orange S, Red D). **Not the IC table** beside it (`_orthoICDmgLevel`: Blue/Green M, Orange/Red S).
