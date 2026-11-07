@@ -142,3 +142,5 @@ All collected questions answered and routed (2026-11-07).
 | rules-digest | 290-4 | Electrical damage citation | M&M p.127 | M&M PDF 129 |
 | rules-digest | 290-5 | Firing Through citation | SR3 p.124-125 | Core PDF 126-127 |
 | rules-digest | 290-6 | Touch range citation | SR3 p.183 | Core PDF 185 |
+| rules-digest | 291-1..4 | Slim CLAUDE.md: move release, packs/migrations, chat cards, data model into path-scoped rules files | All four approved | repo measurement |
+| mods | Q24 | Interface items inside capacity (asterisked ECU rows) | Keep the book's printed Essence | M&M p.35-36 |
