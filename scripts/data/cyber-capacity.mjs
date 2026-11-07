@@ -13,21 +13,29 @@
  *   - **an eye or ear replacement** holds `.5` Essence of modifications free (SR3 p.299, p.62's worked example): what its
  *     mods cost over that is Essence.
  *
- * **Grade — the maintainer, 2026-10-27:** *"it lowers the capacity but you have to match the grade for addons"* — for now the
- * capacity is reduced by the SAME factor as the grade's Essence (alpha ×.8, beta ×.6, delta ×.5), and a mod's own size by its
- * grade, so a grade-matched host holds as many mods as a standard one (*"a deltaware eye can fit the same number of mods as a
- * normal grade eye"*). ⚠ To audit against the books (M&M p.36 prints a 10 / 20 / 25% ECU cut). A mod of another grade than its
- * host is warned.
+ * **Grade.** A limb's ECU is cut by M&M p.36's 10 / 20 / 25% for alpha / beta / delta, to the nearest .25, and a device keeps its
+ * own ECU (mods ruling Q15, 2026-11-07 — the book's figures, replacing 2026-10-27's "match the Essence factor"). An eye's .5
+ * Essence still follows the grade's Essence factor, as its mods' Essence does. A mod of another grade than its host is warned
+ * (the maintainer, 2026-10-27: *"you have to match the grade for addons"*).
  *
  * **Price** (`builtInCost`): a device built into a limb costs ×4 its normal price while Man & Machine is off (SR3 p.303; the
  * maintainer's TODO 256 decision — its normal price with M&M on); a direct neural interface adds +50% and STACKS on that (SR3
  * p.303; the maintainer, 2026-10-27); a synthetic limb's +50% does NOT apply to built-in devices (the maintainer, 2026-10-27).
- * ⚠ M&M pp.36-39's cost column was not readable in the brief — those prices stay editable on the items.
+ * Prices checked against M&M p.39 (mods ruling Q16, 2026-11-07): Cyberskates 1,000¥ (retractable 2,500¥), Direct Neural Interface
+ * 4,500¥ / .1 Essence / .25 ECU, DNI adaptation ×150% of the device; p.36's ECU table prints no cost, so it has none here.
  */
 import { ItemMods } from './item-mods.mjs';
 
 /** Grade → its Essence multiplier (SR3 p.298; the config's `cyberwareGradeEssence`). "Used" does not change it. */
 export const GRADE = { standard: 1, basic: 1, alpha: 0.8, alphaware: 0.8, beta: 0.6, betaware: 0.6, delta: 0.5, deltaware: 0.5 };
+
+/**
+ * A limb's equipment capacity by grade — M&M p.36: "Reduce the number of equipment capacity units available in a limb by 10
+ * percent for alphaware, 20 percent for betaware and 25 percent for deltaware. Round fractions to the nearest .25." The
+ * maintainer, 2026-11-07 (mods ruling Q15): the book's figures, replacing the 2026-10-27 "match the Essence factor" ruling. A
+ * device keeps its own ECU whatever its grade (the book cuts only the limb's room).
+ */
+export const ECU_GRADE = { standard: 1, basic: 1, alpha: 0.9, alphaware: 0.9, beta: 0.8, betaware: 0.8, delta: 0.75, deltaware: 0.75 };
 
 /** A limb's ECU · M&M p.37 — `[match, obvious, synthetic]`, most specific first. */
 export const LIMB_ECU = [
@@ -73,12 +81,16 @@ const quarter = n => Math.round(n * 4) / 4;
 const CYBER = ['cyberware', 'bioware'];
 
 export const CyberCapacity = {
-  GRADE, LIMB_ECU, ECU_TABLE,
+  GRADE, ECU_GRADE, LIMB_ECU, ECU_TABLE,
 
   /** A grade's multiplier: 1 for Standard or anything unknown. */
+  /** A grade's key in `GRADE` / `ECU_GRADE`: lower case, "Used" dropped. */
+  gradeKey(grade) {
+    return String(grade ?? '').toLowerCase().replace(/\bused\b/g, '').trim();
+  },
+
   gradeMult(grade) {
-    const key = String(grade ?? '').toLowerCase().replace(/\bused\b/g, '').trim();
-    return GRADE[key] ?? 1;
+    return GRADE[CyberCapacity.gradeKey(grade)] ?? 1;
   },
 
   /** A limb's printed ECU (M&M p.37), or null for anything that is not a limb. A "Pair" is two limbs. */
@@ -101,17 +113,17 @@ export const CyberCapacity = {
     return null;
   },
 
-  /** Its capacity, after its grade (the ruling: the grade's Essence factor). ECU to a quarter, Essence to a hundredth. */
+  /** Its capacity, after its grade: a limb's ECU by M&M p.36's cut (`ECU_GRADE`) to the nearest .25; an eye's Essence by the grade's Essence factor. */
   capacity(item) {
     const kind = CyberCapacity.kind(item);
     if (!kind) return 0;
     const cap = num(item?.system?.capacity);
     const base = kind === 'ecu' ? (cap > 0 ? cap : (CyberCapacity.limbEcu(item) ?? 0)) : cap;
-    const v = base * CyberCapacity.gradeMult(item?.system?.grade);
-    return kind === 'ecu' ? quarter(v) : r2(v);
+    if (kind === 'ecu') return quarter(base * (ECU_GRADE[CyberCapacity.gradeKey(item?.system?.grade)] ?? 1));
+    return r2(base * CyberCapacity.gradeMult(item?.system?.grade));
   },
 
-  /** A device's ECU, after its grade: its own `ecu`, else the table (M&M p.36); null when unknown. */
+  /** A device's ECU: its own `ecu`, else the table (M&M p.36); null when unknown. Its grade does not change it (ruling Q15). */
   ecuOf(mod) {
     const own = mod?.system?.ecu;
     let base = Number.isFinite(own) && own !== null ? Number(own) : null;
@@ -119,7 +131,7 @@ export const CyberCapacity = {
       const row = ECU_TABLE.find(([re]) => re.test(String(mod?.name ?? '')));
       if (row) base = typeof row[1] === 'function' ? row[1](mod) : row[1];
     }
-    return base === null ? null : quarter(base * CyberCapacity.gradeMult(mod?.system?.grade));
+    return base === null ? null : quarter(base);
   },
 
   /** A cyberware / bioware item's graded Essence (the caller's grading — SR3EActor.gradedEssenceCost). */

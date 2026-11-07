@@ -1,0 +1,35 @@
+{
+  "_key": "!items!72c49c8be562f28b",
+  "doc": {
+    "_id": "72c49c8be562f28b",
+    "name": "Smartgun, internal (Weapon)",
+    "type": "gear",
+    "img": "systems/The2ndChumming3e/styles/icons/gear-scope.svg",
+    "effects": [],
+    "folder": null,
+    "flags": {},
+    "system": {
+      "quantity": 1,
+      "category": "Firearms Accessories",
+      "concealability": "",
+      "rating": null,
+      "cost": 0,
+      "weight": 0,
+      "availability": "",
+      "streetIndex": "",
+      "bookPage": "sr3.282",
+      "mount": "Internal",
+      "description": "<p><strong>Mount:</strong> Internal</p><p>Price: +100% of the weapon's cost when added after manufacture (SR3 p.281–282). Installed into a gun with its Cost blank, the price is filled from the gun's (TODO 276, mods ruling Q10). A gun that lists it as an included accessory already has it in its price.</p>",
+      "modFor": "weapon",
+      "legality": "",
+      "modifiers": [
+        {
+          "target": "smartgun",
+          "value": 1,
+          "perRating": false
+        }
+      ]
+    }
+  },
+  "embedded": {}
+}

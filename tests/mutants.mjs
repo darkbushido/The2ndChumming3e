@@ -433,6 +433,13 @@ export const MUTANTS = [
       ? Math.round(Number(weapon?.system?.cost) || 0) : null),
   },
   {
+    id:     'cyberlimb-mod-unmarked',
+    suite:  'mod-markings',
+    module: '../scripts/data/mod-markings.mjs', klass: 'ModMarkings', method: 'isLimbMod',
+    was:    'a cyberlimb mod looked like the ordinary implant of the same name (TODO 256); ruled 2026-11-07 (Q22): a 🦾 chip and a first line',
+    impl:   () => false,
+  },
+  {
     id:     'remington-underbarrel-unwarned',
     suite:  'laser-smartlink',
     ...ACCESSORIES, method: 'noUnderbarrel',
@@ -4122,8 +4129,20 @@ export const MUTANTS = [
     id:     'cyber-capacity-ignores-grade',
     suite:  'cyber-capacity',
     ...CYBERCAP, method: 'gradeMult',
-    was:    'a graded limb kept a standard limb\'s capacity — the maintainer: reduced by the grade\'s Essence factor (TODO 276)',
+    was:    'a graded eye kept a standard eye\'s .5 free — reduced by the grade\'s Essence factor (TODO 276)',
     impl:   () => 1,
+  },
+  {
+    id:     'limb-capacity-by-essence-factor',
+    suite:  'cyber-capacity',
+    ...CYBERCAP, method: 'capacity',
+    was:    'a graded limb\'s room cut by the grade\'s Essence factor (delta ×.5); M&M p.36 cuts it 10 / 20 / 25% (mods ruling Q15, 2026-11-07)',
+    impl:   item => {
+      const G = { alpha: 0.8, beta: 0.6, delta: 0.5 };
+      const k = String(item?.system?.grade ?? '').toLowerCase().replace(/ware$/, '');
+      const base = Number(item?.system?.capacity) > 0 ? Number(item.system.capacity) : 10;
+      return Math.round(base * (G[k] ?? 1) * 4) / 4;
+    },
   },
   {
     id:     'dni-does-not-stack',

@@ -930,19 +930,32 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
 - **Triggered augmentations: not applicable.** Adrenal Pump, Pain Editor and the like are bioware organs — never cyberlimb mods —
   so nothing built in can trigger. A GM who installs one into a limb anyway gets no trigger for it.
 - ⚠ Re-arming makes a fresh weapon entry: a GM's edits to a built-in's old entry are lost when the limb's mods change.
-- ❓ **For the maintainer:** removing a limb with built-ins adds only the limb's own graded Essence to the hole (seen live,
-  2026-10-27: an arm 1.0 holding a datajack .2 and plating .5 left a 1.0 hole). Whether its built-ins' Essence joins the hole
-  (M&M p.150) is the maintainer's call; until then the GM edits the hole.
+  ✔ **Accepted for now** (Q17, 2026-11-07) — carrying the edits over is more code than it is worth today.
+- ✔ **Removing a limb with built-ins** (Q14) → answered by the free-Essence ruling below: built-ins that fit the limb's capacity cost
+  no Essence, so they add nothing to the hole — only the limb's own graded Essence does (seen live 2026-10-27: an arm 1.0 holding a
+  datajack .2 and plating .5 left a 1.0 hole — correct). M&M p.147 (PDF 149): "Cyberware that is removed does not restore the
+  character's lost Essence." (The earlier "M&M p.150" was a wrong page.)
 
 **Cyberlimb rulings (the maintainer, 2026-10-27)** — for the cyberlimb slice:
 - **Synthetic limbs:** SR3 p.303's +50% on "any modification" does NOT apply to built-in devices.
 - **Direct neural interface:** its +50% (SR3 p.303) DOES stack on a built-in device's ×4 price.
-- **Grade:** *"it lowers the capacity but you have to match the grade for addons. an Alpha grade limb has 10% less capacity but
-  alpha grade mods are 20% smaller."* For now: **match the capacity reduction to the Essence reduction**, so a grade-matched limb
-  holds as many mods as a standard one (*"a cyber eye has 0.5 essence in module capacity. a deltaware eye can fix the same number of
-  mods as a normal grade eye"*). ⚠ **To audit against the books** (M&M p.36's 10/20/25% ECU cut vs the grade's Essence multiplier).
-- **Unread prices** (M&M pp.36-39 cost column: DNI adaptation, Cyberskates, the ECU table's costs) — the maintainer will re-read
-  them; the brief re-uploaded 2026-10-27 still has them cut off.
+- ✔ **Grade** (Q15) → ruled 2026-11-07: **the book's figures for limbs.** A limb's capacity is cut 10% alpha, 20% beta, 25% delta,
+  to the nearest .25 ECU (M&M p.36: reduce "equipment capacity units available in a limb by 10 percent for alphaware…"), so a
+  10-ECU arm holds 9 / 8 / 7.5. `CyberCapacity.ECU_GRADE` / `capacity`; `ecuOf` (a mod's size) stays ungraded. Eyes and ears keep the
+  2026-10-27 ruling (*"a deltaware eye can fix the same number of mods as a normal grade eye"*): their .5 takes the grade's Essence
+  multiplier. Mutant `limb-capacity-by-essence-factor`, TESTING.md §77n.
+- ✔ **Prices in M&M pp.36-39** (Q16) → read 2026-11-07: the packs already hold the book's figures (Cyberskates 1,000¥ / 2,500¥; DNI
+  adaptation 4,500¥, .1 Essence, .25 ECU); `tests/cyber-capacity.test.mjs` now pins them and DNI's +50% on a built-in.
+- ✔ **Free Essence for mods** → ruled 2026-11-07: *"for cyberware, they all should have some "free essence" for mods. if the
+  installed mods fit in that then they are cleanly included. if they have put more mods then fit thats additional essence loss."*
+  Already how it works: a limb's ECU capacity (M&M p.35, "Most additional equipment can be installed in cyberlimbs without Essence
+  cost") and an eye's or ear's .5 (SR3 p.299). ✔ **Follow-up ruled 2026-11-07** (*"Printed Essence; others none"*): a mod past the
+  capacity costs **its own printed Essence**, GM-editable; only limbs, skulls, torsos (`LIMB_ECU`), eyes and ears get free capacity,
+  any other host only through a typed `system.capacity`. Matches the code: `nestedEssence` counts each built-in at its own Essence
+  field, an over-capacity install warns (`installWarnings`), and `kind()` gives no other host capacity. ⚠ M&M p.35 (PDF 37) adds:
+  equipment that interfaces "with other, non-cyber parts of the body … does cost additional Essence" (the asterisked rows of the
+  Equipment Capacity Cost Table) — so the 11 `Cyberlimb Mods` entries with a printed Essence above 0 still cost it inside a limb that
+  has room, as the book prints. Raised with the maintainer rather than zeroed.
 
 **Open questions — for the maintainer, before the weapon / vehicle / cyberlimb slices merge** (each is a warning or an editable
 value today; none settled by picking a side):
@@ -968,8 +981,8 @@ value today; none settled by picking a side):
   100% if they are adding a smartlink-2 the price goes up by 150%"*. Built: `WeaponAccessories.internalSmartgunCost` — an internal
   smartgun installed into a gun with its own Cost blank is priced at 100% (smartlink-1, SR3 p.281 "doubles the weapon's cost if
   installed after manufacturing") or 150% (smartlink-2, M&M p.32 "x150%") of the gun's cost; an `integral` one never. CC p.81's
-  Design Points are for gunsmithing ([#279](#279)). ⚠ **No internal smartgun document exists yet** — adding "Smartgun, internal" and
-  "Smartlink-2 Modification, Internal" is [#259](#259)'s. Mutant `smartlink-2-internal-at-100`.
+  Design Points are for gunsmithing ([#279](#279)). The two items ship since Q22 (below): "Smartgun, internal (Weapon)" in the SR3
+  gear pack and "Smartlink-2 Modification, Internal (Weapon)" in the M&M one, 0¥ and Mount Internal. Mutant `smartlink-2-internal-at-100`.
 - ✔ **Laser sight with a smartlink** → ruled 2026-11-07: *"ok, go with the warn option but you shouldn't be able to apply both"*
   (SR3 p.281: "Laser sights may not be used with a smartlink system"). Installing one beside the other warns
   (`WeaponAccessories.installWarnings`); the GM's TN window unticks the other row (`exclusiveGear`); the guess offers only the
@@ -986,6 +999,27 @@ value today; none settled by picking a side):
   "Integral accessories take up mount locations").
 - ✔ **Combo imaging scopes** (Q11) → ruled 2026-11-07: **one item, its price the sum of its modes**, taking the one top mount (CC p.82:
   the types "may be combined into one scope"). Not built yet — there is no combo scope document to price.
+- ✔ **Armour rules shown, not applied** (Q18) → ruled 2026-11-07: **keep them as reminders on the card**; the GM applies them (Thermal
+  Dampening's Perception / Signature and its fade, CC pp.51-53; SR3 p.284's Respirator and Chemical Seal; injection darts against
+  hardened armour).
+- ✔ **Turbocharging's Speed cap** (Q19) → ruled 2026-11-07: **keep the warning** (R3R p.126: "Multiply the vehicle's Speed by 1.5";
+  one level is always allowed).
+- ✔ **Passenger seats** (Q20) → ruled 2026-11-07: **`seating` includes the driver**, so passengers = seating − 1 (R3R p.124) — how
+  the Cargo warning already reads it (mutant `vehicle-seats-include-driver`).
+- ✔ **Scope of [#283](#283)** (Q21) → ruled 2026-11-07: **one dialog for every host type** (gun, armour, cyberware, vehicle) on the
+  shared `ItemMods` price. Recorded on #283; not built.
+- ✔ **The markings of [#256](#256) / [#259](#259)** (Q22) → ruled 2026-11-07: **only the cheap, high-value parts** — no renames, no
+  pack folders (a rename changes generated ids and needs a migration). Built (`scripts/data/mod-markings.mjs`, read from the item's
+  own data, so owned copies show them without a migration):
+  - a **🦾 chip** on a cyberware row built into a cyberlimb (`ModFor.of` → cyberlimb), and a **mount chip** ("Top/Under", "Barrel",
+    "Internal") on a weapon-mod gear row — `SR3EActorSheet.markChip`;
+  - **a first line** on the item sheet (`_markingLine`) — "Built into a cyberlimb … (SR3 p.303; M&M pp.35–36)" or the mount
+    with SR3 p.280's "Only one accessory can be attached to a particular mount". Shown, not written into the description;
+  - a real **`mount` field** on `GearData` (`ItemMods.mountsOf` read it, but the model dropped it), editable on a weapon mod's sheet,
+    blank reading the description's "Mount:" line;
+  - **"Smartgun, internal (Weapon)"** (SR3 p.282, `sr3e-sr3-gear`) and **"Smartlink-2 Modification, Internal (Weapon)"** (M&M p.32,
+    `sr3e-mm-gear`) — hand-added (the gear builder keeps them), 0¥, priced from the gun at install (Q10).
+  `tests/mod-markings.test.mjs`, mutant `cyberlimb-mod-unmarked`, TESTING.md §77o. ⚠ **Full restart** (`GearData` gained a field).
 
 **Walked live, 2026-10-27** (§77, §77b-§77g, as mcp-api with a canvas, and Player2 for the owner's moves). Fixed on the way:
 - A Level picked on an INSTALLED mod kept the old price — the ✎ sheet's form submit followed with the stale cost and the temporary
@@ -1063,8 +1097,9 @@ that can calculate the cost before you add it to your character sheet."* Today a
 `VehicleMods.price`) is priced only once it is ON the vehicle (`preCreateItem`). **Wanted:** pick a host (gun, armour, cyberlimb,
 vehicle) and its mods, see each price — fixed, per level, or worked out from the host — and the total (and the Availability /
 time the slowest part needs) before anything is created; then buy it as one purchase, or add it without paying. Reads
-`ItemMods` (TODO 276), `CyberCapacity.builtInCost`, `VehicleMods.price`, the mount and budget checks as warnings. **Not designed
-yet** — the maintainer's call on scope (one dialog for every host type, or vehicles first) before any code.
+`ItemMods` (TODO 276), `CyberCapacity.builtInCost`, `VehicleMods.price`, the mount and budget checks as warnings.
+✔ **Scope ruled 2026-11-07** (mods ruling Q21): **one dialog for every host type** — gun, armour, cyberware, vehicle — on the shared
+`ItemMods` price, not vehicles or weapons first. Not designed further yet.
 
 ## 284. 🛒 Buy more than one — a Quantity in Buy gear — **requested 2026-10-28**
 
@@ -3218,6 +3253,10 @@ their built-in price **on the limb**, ×4 with Man & Machine off (`CyberCapacity
 build:** all four markings (the rename, the folders, the description line, the 🦾 chip), the price in the purchase dialog, and
 the migration (now 0.9.0 or later — 0.8.0 has shipped).
 
+**Status 2026-11-07** (mods ruling Q22, [#276](#276)): the maintainer chose only the cheap parts — the 🦾 chip and the description
+line are built (shown from the category, so no migration). **Dropped:** the rename and the folders. **Still open:** the built-in
+price in the purchase dialog (now [#283](#283)'s one dialog) and [#255](TODO-DONE.md#255)'s corrections onto owned copies.
+
 ## 259. Show where each weapon mod mounts — **requested 2026-10-23**
 
 The maintainer, after [#256](#256): "we should also do something similar for weapon mods". Decided 2026-10-23
@@ -3235,6 +3274,10 @@ taken mount and shows mount · mod in the 🔧 chip's tooltip, so mounts work wi
 `system.mount` first, but no gear model declares it (TypeDataModels drop it) — the field is still to add. **Still to build:** the
 `mount` field and its fill, the variant names, the folders, the description line, a mount chip on the gear row, Smartgun,
 internal and Smartlink-2 Modification, Internal (whose price is #276's open question).
+
+**Status 2026-11-07** (mods ruling Q22, [#276](#276)): built — the `mount` field on `GearData`, the mount chip, the description line,
+and the two internal smartgun items (priced per Q10). **Dropped:** the variant renames and the folders by mount. **Still open:**
+filling `mount` into the packs from the book's column (today the description's "Mount:" line carries it, which `mountsOf` reads).
 
 ## 260. Unlinked NPC tokens share wounds and statuses through their sidebar actor — **reported in play, 2026-10-24**
 

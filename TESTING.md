@@ -3547,6 +3547,26 @@ JS only — F5 is enough.
       the TN drops by what one more point of RC saves; the note under it says the recoil saved.
 - [ ] **RPK HMG (6):** its row offers RC +6 (with a tripod mod installed as well, both rows show).
 
+### 77n. A higher-grade limb holds less (TODO 276 — M&M p.36; the maintainer's ruling Q15 of 2026-11-07)
+
+JS only — F5 is enough. A character with an obvious full cyberarm (10 ECU at standard grade).
+
+- [ ] **Grade:** set the arm's Grade to Alpha → its capacity reads 9; Beta → 8; Delta → 7.5. Back to Standard → 10.
+- [ ] **A mod's size is not graded:** with the arm at Delta, install a smartgun link → it still takes its printed ECU.
+- [ ] **Eyes keep the old ruling:** a Delta cybereye → its options still fit as many as a Standard eye's.
+
+### 77o. Cyberlimb mods and weapon mods are marked (TODOs 256/259 — mods ruling Q22 of 2026-11-07)
+
+⚠ **Full Foundry restart** — `GearData` gained `mount`, and two gear items were added (`npm run packs:install`, Foundry CLOSED).
+
+- [ ] **🦾:** give a character "Smartlink II" from Cyberlimb Mods and "Smartlink II" from Headware → only the first shows 🦾 on the
+      Cyberware row; its tooltip says "Built into a cyberlimb…". Open it → the same line shows above Attribute Bonuses.
+- [ ] **Mount chip:** a Laser Sight on the Gear tab shows "Top/Under"; a Silencer "Barrel". Open the Laser Sight → a Mount field,
+      blank, its placeholder "Top/Under"; type "Under" → the chip reads "Under". Plain gear (a Medkit) has no chip and no field.
+- [ ] **Internal smartgun:** "Smartgun, internal (Weapon)" (SR3 gear) and "Smartlink-2 Modification, Internal (Weapon)" (M&M gear) are
+      in the compendium, 0¥, chip "Internal". Drop the first on an Ares Predator (450¥) → its price is filled at 450¥; the second
+      → 675¥.
+
 ## 78. A vehicle's mods against its Cargo and Load (TODO 265, step c's first slice — R3R p.124)
 
 JS / CSS only (no restart needed beyond a reload). A vehicle from the packs, e.g. an Ares Roadmaster (Body 5, Cargo 80, Load 2000).

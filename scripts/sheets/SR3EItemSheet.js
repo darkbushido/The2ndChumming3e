@@ -13,6 +13,7 @@ import { SPIRIT_TYPES } from '../documents/SR3ESpiritSummoning.js';
 import { knownRating } from '../data/item-rating.mjs';
 import { ModRatings } from '../data/mod-ratings.mjs';
 import { ModFor } from '../data/mod-for.mjs';
+import { ModMarkings } from '../data/mod-markings.mjs';
 import { LEGALITY_TYPES } from '../data/legality.mjs';
 import { BookPage } from '../data/book-page.mjs';
 import { AmmoStock, GUN_CLASSES } from '../data/ammo-stock.mjs';
@@ -523,6 +524,26 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
    * (the GM can always correct it); the name's tag ("Chemical Seal (Armor)") says the same in a list. Shown only on an
    * item that is a mod (set, or by its type / category — `ModFor.of`); a plain item has no such line.
    */
+  /**
+   * "Mount" on a weapon mod (`system.mount`, TODO 259, mods ruling Q22) — blank reads the description's "Mount:" line, which
+   * the placeholder shows. Free text: Top, Under, Barrel, Internal, or two joined with "/".
+   */
+  _mountField(s) {
+    if (ModFor.of(this.document) !== 'weapon') return '';
+    const read = s.mount ? '' : ModMarkings.mountOf(this.document);
+    return `<label class="form-field">
+      <span class="field-label">Mount</span>
+      <input type="text" name="system.mount" value="${foundry.utils.escapeHTML(s.mount ?? '')}" placeholder="${foundry.utils.escapeHTML(read || 'Top, Under, Barrel, Internal, Top/Under')}"
+             title="Where it goes on the gun. Blank reads the description's Mount: line."/>
+    </label>`;
+  }
+
+  /** The fixed first line for a mod — built into a cyberlimb, or which mount it takes (TODOs 256/259, mods ruling Q22). */
+  _markingLine() {
+    const line = ModMarkings.line(this.document);
+    return line ? `<p class="sr-mod-marking">${foundry.utils.escapeHTML(line)}</p>` : '';
+  }
+
   _modForField(s) {
     const now = s.modFor || ModFor.of(this.document);
     if (!now) return '';
@@ -1149,6 +1170,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${isBio ? this._legalityField(s) : this._f('Legal Code', 'legalCode', s.legalCode, 'text', 'placeholder="R / Legal"')}
           ${this._bookPageField(s)}
         </div>
+        ${isBio ? '' : this._markingLine()}
         <div class="form-section-hdr" style="margin:8px 0 4px;font-size:11px;font-weight:600;color:var(--sr-muted);letter-spacing:.05em;text-transform:uppercase">Attribute Bonuses</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px 8px;margin-bottom:8px">
           ${[['BOD','bonusBod'],['QUI','bonusQui'],['STR','bonusStr'],['CHA','bonusCha'],
@@ -1223,6 +1245,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Category', 'category', s.category, 'text', 'placeholder="Surveillance and Security"')}
           ${this._modRatingField(s)}
           ${this._modForField(s)}
+          ${this._mountField(s)}
           ${this._f('Quantity', 'quantity', s.quantity, 'number', 'min="0"')}
           ${this._f('Concealability', 'concealability', s.concealability)}
           ${this._f('Cost (¥)', 'cost', s.cost, 'number')}
@@ -1231,6 +1254,7 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
           ${this._f('Street Index', 'streetIndex', s.streetIndex)}
           ${this._bookPageField(s)}
         </div>
+        ${this._markingLine()}
         <div class="notes-field">
           <label class="bio-label">Description</label>
           <textarea name="system.description" class="bio-text">${s.description ?? ''}</textarea>
