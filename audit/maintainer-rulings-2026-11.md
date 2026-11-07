@@ -32,3 +32,9 @@ General: maintainer asked that every page be read in the PDF before a question i
 | — | Cyberware mods and Essence (bears on Q14/Q15) | "for cyberware, they all should have some "free essence" for mods. if the installed mods fit in that then they are cleanly included. if they have put more mods then fit thats additional essence loss." | 2026-11-07 | M&M p.36 (capacity table) |
 
 Queue: remaining mods questions moved to the back, after every other session (maintainer, 2026-11-07).
+
+## shop (TODO 284/285, session shop-cart)
+
+| # | Question | Answer | Date | Source |
+|---|---|---|---|---|
+| cart | Availability for a cart bought through a contact | One Etiquette Test against the slowest item, one haggle on the total (answered directly to shop-cart, recorded here) | 2026-11-07 | SR3 p.272 (PDF 274) |
