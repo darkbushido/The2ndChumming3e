@@ -52,3 +52,11 @@ Queue: remaining mods questions moved to the back, after every other session (ma
 | G4 | IC turn: prompt card, GM clicks | Yes | 2026-11-07 | MDF p.26 |
 | Q3 | Crash trigger: GM click only, no auto-suggest at 10 boxes | Keep GM click only | 2026-11-07 | MDF p.26, p.23 |
 | Q4 | HoloSuite minigames | Cosmetic only, or park | 2026-11-07 | design choice |
+
+## rules-digest round 2
+
+| # | Question | Answer | Date | Source |
+|---|---|---|---|---|
+| 4 | 128 citations with no book named | Leave "?", follow-up TODO to name each book (checked against its PDF) | 2026-11-07 | repo measurement |
+| 5 | Slim CLAUDE.md | Yes, its own TODO and branch; maintainer approves cuts | 2026-11-07 | repo measurement |
+| 6 | Drift guard | Test only, no pre-commit hook | 2026-11-07 | — |
