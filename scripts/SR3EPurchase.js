@@ -6,6 +6,7 @@ import { Legality } from './data/legality.mjs';
 import { AmmoShop } from './data/ammo-shop.mjs';
 import { MiniGrenade } from './data/mini-grenade.mjs';
 import { Cart } from './data/cart.mjs';
+import { Orders } from './data/orders.mjs';
 
 /**
  * Buying gear — the flow · *SR3 pp.272-273* (TODO 82).
@@ -265,6 +266,8 @@ export const SR3EPurchase = {
           <span style="font-size:11px;color:var(--sr-muted)"> — gather several items for one card and one 💴 Pay (TODO 285)</span>
           <div id="sr-buy-cart" style="font-size:12px"></div>
         </div>
+        <div class="sr-buy-mode" style="font-size:11px;color:var(--sr-muted);margin-bottom:6px">${Orders.modeLabel(game.sr3e.SR3EOrders.mode())}
+          — a store sale is instant either way (TODO 288).</div>
         <div class="sr-buy-contact-only">
         <label style="display:block;margin-bottom:6px">Contact
           <select id="sr-buy-contact" style="width:100%">${conOpts}</select>
@@ -559,7 +562,8 @@ export const SR3EPurchase = {
       return;
     }
 
-    const payload = JSON.stringify({ ...ctx, price: ask.total, successes: res?.successes ?? 0 })
+    const order = Orders.payMode(game.sr3e.SR3EOrders.mode(), { store: false }) === 'order';
+    const payload = JSON.stringify({ ...ctx, price: ask.total, successes: res?.successes ?? 0, order })
       .replace(/'/g, '&#39;');
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
@@ -575,8 +579,9 @@ export const SR3EPurchase = {
             ask.surcharge ? `, +${Math.round(ask.surchargeRate * 100)}% ${esc(actor.system?.metatype)}` : ''})</div>
         <div class="sr-soak-action">
           <button class="sr-buy-negotiate-btn" data-payload='${payload}'>🤝 Negotiate the price</button>
-          <button class="sr-buy-pay-btn" data-payload='${payload}'>💴 Pay ¥${ask.total.toLocaleString('en-US')} &amp; receive</button>
+          ${SR3EPurchase.moneyButton(payload, ask.total, order)}
         </div>
+        <div class="sr-roll-meta" style="color:var(--sr-muted);font-size:11px">${Orders.modeLabel(game.sr3e.SR3EOrders.mode())}</div>
       </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
@@ -647,7 +652,8 @@ export const SR3EPurchase = {
     const mine = Purchasing.hits(atk), theirs = Purchasing.hits(def);
     const deal = Purchasing.negotiate(ctx.price, mine, theirs);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    const payload = JSON.stringify({ ...ctx, price: deal.price }).replace(/'/g, '&#39;');
+    const order = Orders.payMode(game.sr3e.SR3EOrders.mode(), { store: !!ctx.store }) === 'order';
+    const payload = JSON.stringify({ ...ctx, price: deal.price, order }).replace(/'/g, '&#39;');
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
@@ -661,7 +667,7 @@ export const SR3EPurchase = {
         ${!deal.toBuyer && deal.net !== 0 ? `<div class="sr-roll-meta" style="color:var(--sr-muted);font-size:11px">
           The GM may instead demand the extra up front as a down payment (p.273).</div>` : ''}
         <div class="sr-soak-action">
-          <button class="sr-buy-pay-btn" data-payload='${payload}'>💴 Pay ¥${deal.price.toLocaleString('en-US')} &amp; receive</button>
+          ${SR3EPurchase.moneyButton(payload, deal.price, order)}
         </div>
         <div class="sr-roll-meta" style="color:var(--sr-muted);font-size:11px">
           If the buyer will not pay, the deal is simply off — press nothing (p.273).</div>
@@ -693,8 +699,29 @@ export const SR3EPurchase = {
     if (!ok) return false;
     if (!(await claim())) { ui.notifications.warn(`${payload.name} has already been paid for.`); return false; }
 
+    await SR3EPurchase.receive(actor, payload, price);
+    return true;
+  },
+
+  /**
+   * 💴 / 📦 — the money button: 💴 Pay as before, or 📝 Place order when the card was posted in session
+   * (TODO 288, SR3 p.273 — the nuyen changes hands at delivery). Same class, so the same guards and claim.
+   */
+  moneyButton(payload, price, order) {
+    const p = Number(price).toLocaleString('en-US');
+    return order
+      ? `<button class="sr-buy-pay-btn" data-payload='${payload}'>📝 Place order — ¥${p} due at delivery</button>`
+      : `<button class="sr-buy-pay-btn" data-payload='${payload}'>💴 Pay ¥${p} &amp; receive</button>`;
+  },
+
+  /**
+   * Charge and create — the ONE writer, shared by 💴 Pay and the GM's 📦 Deliver (TODO 288).
+   * ⚠ Through `actor.update` with a `ledgerReason`, so TODO 79 records the purchase.
+   */
+  async receive(actor, payload, price, prefix = '') {
+    const have = Number(actor.system?.nuyen) || 0;
     await actor.update({ 'system.nuyen': Math.max(0, have - price) },
-      { ledgerReason: `Bought ${payload.name}` });
+      { ledgerReason: `${prefix ? 'Delivered' : 'Bought'} ${payload.name}` });
 
     let added = '';
     const H = game.sr3e.SR3EHealing;
@@ -726,7 +753,7 @@ export const SR3EPurchase = {
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<div class="sr-roll-card"><div class="sr-roll-result">💴 ${esc(actor.name)} paid
+      content: `<div class="sr-roll-card"><div class="sr-roll-result">${esc(prefix)}💴 ${esc(actor.name)} paid
         ¥${price.toLocaleString('en-US')} for ${esc(payload.name)}${added}.
         Nuyen ¥${have.toLocaleString('en-US')} → ¥${Math.max(0, have - price).toLocaleString('en-US')}.</div></div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,

@@ -32,6 +32,7 @@ import { PatientOrder } from './data/patient-order.mjs';
 import { MagicLoss } from './data/magic-loss.mjs';
 import { SpellTarget } from './data/spell-target.mjs';
 import { actorRef } from './data/actor-ref.mjs';
+import { Orders } from './data/orders.mjs';
 
 const LEVEL_NAME = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
 const NEXT_DOWN  = { D: 'S', S: 'M', M: 'L', L: '' };
@@ -986,6 +987,14 @@ export class SR3EHealing {
     const charge = (amount, what, payerId = SR3EHealing.ref(patient)) => amount > 0
       ? { act: 'charge', ownerId: payerId, amount, what, label: `💴 Charge ${yen(amount)} — ${what}` } : null;
     const good = 'var(--sr-green)', bad = 'var(--sr-red)';
+    // ⏱ In session (TODO 288), natural healing waits: the apply button becomes ⏳ Start recovery and the GM
+    // marks it ✅ Recovered from 📦 Orders. First aid and magic stay instant (pp.129, 194) — they never call this.
+    const inSession = game.sr3e.SR3EOrders?.waits?.() ?? false;
+    const timed = (btn, kind, time) => inSession && btn
+      ? { act: 'recover-start', ownerId: btn.ownerId, byId: btn.byId, kind, time,
+          what: btn.label.replace(/^✔\s*/, ''), label: `⏳ Start recovery — ${btn.label.replace(/^✔\s*/, '')} (${time})` }
+      : btn;
+    const modeLine = `<span style="font-size:11px;color:var(--sr-muted)">${game.sr3e.SR3EOrders ? esc(Orders.modeLabel(game.sr3e.SR3EOrders.mode())) : ''}</span>`;
 
     switch (ctx.step) {
       case 'stun': {
@@ -996,7 +1005,7 @@ export class SR3EHealing {
                : H._timeBox('No recovery this rest', 'no successes — rest and roll again'),
            min ? `${n} success${n === 1 ? '' : 'es'}: <strong>1 box</strong> of Stun returns after ${H.formatHours(min / 60)}.` : '',
            'If the rest is interrupted, roll again: the new result can never be better than the first (p.126).'],
-          [min ? { act: 'erase-stun', ownerId: SR3EHealing.ref(patient), label: '✔ Erase 1 Stun box' } : null,
+          [min ? timed({ act: 'erase-stun', ownerId: SR3EHealing.ref(patient), label: '✔ Erase 1 Stun box' }, 'eraseStun', H.formatHours(min / 60)) : null,
            s.stun > (min ? 1 : 0) ? next('stun', min ? '😴 Roll for the next box' : '😴 Rest and roll again') : null], { color: min ? good : bad });
       }
 
@@ -1078,8 +1087,8 @@ export class SR3EHealing {
           rest?.stages.length ? H._roadHtml(after, { baseMultiplier: ctx.baseMultiplier, timeMultiplier: ctx.timeMultiplier }) : '',
           `Minimum lifestyle while healing: <strong>${cost.minLifestyle}</strong>${ctx.care === 'hospital' || ctx.care === 'icu' ? ' — met by the hospital' : ` — ${yen(cost.lifePerDay)}/day (monthly ÷ 30)`}.`,
           `Bill for ${days} day${days === 1 ? '' : 's'}: care ${yen(cost.care)}${cost.lifestyle ? `, lifestyle ${yen(cost.lifestyle)}` : ''} (p.128).`,
-          'Below the minimum lifestyle the GM may add modifiers (p.127).'],
-          [lower, charge(cost.care, `${ctx.care === 'icu' ? 'intensive care' : ctx.care === 'hospital' ? 'hospital' : 'doctor'}, ${days} days`),
+          'Below the minimum lifestyle the GM may add modifiers (p.127).', modeLine],
+          [timed(lower, 'lower', H.formatHours(hours)), charge(cost.care, `${ctx.care === 'icu' ? 'intensive care' : ctx.care === 'hospital' ? 'hospital' : 'doctor'}, ${days} days`),
            charge(cost.lifestyle, `${cost.minLifestyle} lifestyle, ${days} days`),
            NEXT_DOWN[ctx.level] ? next('stage', '🛏 Heal the next stage') : null], { color: good });
       }
@@ -1200,6 +1209,9 @@ export class SR3EHealing {
         const r = await apply({ kind: 'boxes', n: Number.isFinite(nInput) ? nInput : 0 });
         return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">✔ ${esc(patient.name)}: Physical ${r.before}${r.beforeOver ? `+${r.beforeOver}` : ''} → <strong>${r.after}${r.afterOver ? `+${r.afterOver}` : ''}</strong>. ${r.done ? 'Fully healed.' : 'Magically healed — no further healing spells or first aid for these injuries.'}</div></div>` });
       }
+      case 'recover-start':   // ⏱ In session — natural healing waits for the GM's ✅ Recovered (TODO 288)
+        await game.sr3e.SR3EOrders.startRecovery(patient, { kind: p.kind, label: p.what, time: p.time });
+        return true;
       case 'erase-stun': {
         const r = await apply({ kind: 'eraseStun' });
         return ChatMessage.create({ content: `<div class="sr-roll-card"><div class="sr-roll-result">✔ ${esc(patient.name)}: Stun → <strong>${r.after}</strong>.</div></div>` });
