@@ -880,7 +880,7 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
    shot's compensation BEFORE the heavy doubling (`SR3EItem.podSaving`: an MMG's 10-round burst, tripod 6 → +20 becomes +8) and
    the saving comes off the TN. Nothing remembered between shots. Mutant `bipod-counts-without-the-gm`. ⚠ Only where the GM window
    opens (`gmApprovesTN`): an attack that skips it gets no pod. The gun's own printed bracketed RC (folding stock, integral tripod)
-   stays the fire dialog's integral tick ([#235](TODO-DONE.md#235)).
+   is the GM window's "integral accessories" row since 2026-11-07 (item 8 below).
 3. ~~The free-text `accessories`~~ — built 2026-10-27 (step b), the maintainer's rulings of that day: each accessory the text
    clearly names becomes an installed mod flagged `integral` (`scripts/data/integral-mods.mjs`, `tests/integral-mods.test.mjs`).
    **Shown, never counted** — it takes its mount and shows in the 🔧 list, tagged "integral", its change in brackets, but
@@ -902,9 +902,11 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
 7. ✔ **Decided by the maintainer, 2026-10-27:** goggles' and a helmet's vision count on the Visibility Table's
    CYBERNETIC/ELECTRONIC column (SR3 p.111), with cybereyes — "goggles should count with the cybernetic/electronic vision
    side". `detectVision` puts every `toActor` vision from an item in `cyber`; `tests/vision.test.mjs` pins a worn helmet there.
-8. **From [#235](TODO-DONE.md#235) (closed 2026-10-27):** a gun's printed bracketed RC (folding stock, integral tripod) is still the fire
-   dialog's tick, not an accessory the shooter deploys; combo imaging scopes add their components' costs (SR3 p.280, not built);
-   the internal smartgun's price is an open question below.
+8. **From [#235](TODO-DONE.md#235) (closed 2026-10-27):** ✔ a gun's printed bracketed RC (folding stock, integral tripod) — ruled
+   2026-11-07 (Q13): *"Move bracketed RC to GM's TN window"*. Built: the fire dialog counts the plain figure and only names the
+   bracket; the GM's TN window offers "Integral accessories … in use" beside the pods, worth the bracket less the plain RC
+   (`IntegralRC.extra` / `podEntry` — "2(3)" adds 1, "(6)" adds 6), applied like a pod before the heavy doubling. The old
+   `integralInUse` field is left on the gun, unread. Mutant `integral-rc-whole-bracket`, TESTING.md §77m. Combo scopes: Q11 below.
 
 **Built — the cyberlimb slice (2026-10-27):** `scripts/data/cyber-capacity.mjs` (`tests/cyber-capacity.test.mjs`, mutants
 `eye-mods-never-free`, `cyber-capacity-ignores-grade`, `dni-does-not-stack`):
@@ -961,8 +963,13 @@ value today; none settled by picking a side):
 - ✔ **Gas vents removable?** → ruled 2026-10-27: not removable, or removal costs something — its own item, [#277](TODO-DONE.md#277).
 - ✔ **Gas Vent level 1 (250¥)** — ruled 2026-10-27: *"cost for gas vent 1, leave it at 250"*. (The weapon-mods audit found only
   II and III printed in SR3; level 1 keeps that note in its description.)
-- **Internal smartgun price** — SR3 p.282 +100% of the weapon; CC p.81 the frame's base DPV × 8 (Smartlink-2 ×1.5); M&M p.32 ×150%
-  for the Smartlink-2 internal. Not built yet.
+- ✔ **Internal smartgun price** (Q10) → ruled 2026-11-07: *"if its listed as an included accessory its assumed to be included in the
+  price. the other places you listed are clearly for after market or new design. if they are adding a smartlink-1 the price goes up by
+  100% if they are adding a smartlink-2 the price goes up by 150%"*. Built: `WeaponAccessories.internalSmartgunCost` — an internal
+  smartgun installed into a gun with its own Cost blank is priced at 100% (smartlink-1, SR3 p.281 "doubles the weapon's cost if
+  installed after manufacturing") or 150% (smartlink-2, M&M p.32 "x150%") of the gun's cost; an `integral` one never. CC p.81's
+  Design Points are for gunsmithing ([#279](#279)). ⚠ **No internal smartgun document exists yet** — adding "Smartgun, internal" and
+  "Smartlink-2 Modification, Internal" is [#259](#259)'s. Mutant `smartlink-2-internal-at-100`.
 - ✔ **Laser sight with a smartlink** → ruled 2026-11-07: *"ok, go with the warn option but you shouldn't be able to apply both"*
   (SR3 p.281: "Laser sights may not be used with a smartlink system"). Installing one beside the other warns
   (`WeaponAccessories.installWarnings`); the GM's TN window unticks the other row (`exclusiveGear`); the guess offers only the

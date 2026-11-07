@@ -95,6 +95,20 @@ export const WeaponAccessories = {
   },
 
   /** A stock gun the core book prints with no underbarrel mount (`NO_UNDERBARREL`) — warned, never refused. */
+  /**
+   * An internal smartgun system added to a gun after it was made — its price from the gun's (the maintainer, 2026-11-07, mods
+   * ruling Q10: *"if they are adding a smartlink-1 the price goes up by 100% if they are adding a smartlink-2 the price goes up
+   * by 150%"*; SR3 p.281, it "doubles the weapon's cost if installed after manufacturing"; M&M p.32, Internal "x150%"). One
+   * printed as the gun's accessory is in the gun's price already (an `integral` mod is never priced). Null for anything else.
+   */
+  internalSmartgunCost(weapon, mod) {
+    const name = String(mod?.name ?? '');
+    if (!/\binternal\b/i.test(name) || !/smart/i.test(name)) return null;
+    if (mod?.flags?.The2ndChumming3e?.integral === true) return null;
+    const share = /smart\s*link\s*[-\s]*(?:2|ii)\b|level\s+ii\b/i.test(name) ? 1.5 : 1;
+    return Math.round((Number(weapon?.system?.cost) || 0) * share);
+  },
+
   noUnderbarrel(weapon) {
     return NO_UNDERBARREL.test(String(weapon?.name ?? ''));
   },

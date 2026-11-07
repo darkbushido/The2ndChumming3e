@@ -50,6 +50,17 @@ export async function run(t) {
   t.ok('…a smartgun system into a gun with a scope: warned', has(gun('AsRf', { smartgun: false }, [scope]), smart, /imaging scope and a smartgun/));
   t.ok('…a scope on a plain gun: nothing', w(gun('AsRf', { smartgun: false }), scope).length === 0);
 
+  /* ── Q10: an internal smartgun added after manufacture (SR3 p.281, M&M p.32) ── */
+  const predator = { type: 'firearm', name: 'Ares Predator', system: { category: 'HPist', cost: 450 } };
+  const price = n => WeaponAccessories.internalSmartgunCost(predator, { name: n, system: {} });
+  t.is('a smartlink-1 internal: +100% of the gun', price('Smartgun, internal (Weapon)'), 450);
+  t.eq('a smartlink-2 internal: +150%', [price('Smartlink-2 Modification, Internal (Weapon)'), price('Smartlink level II, internal (Weapon)')], [675, 675]);
+  t.is('an external smartgun is not priced from the gun', price('Smartlink level I (Weapon)'), null);
+  t.is('one printed as the gun\'s accessory is in its price already', WeaponAccessories.internalSmartgunCost(predator,
+    { name: 'Smartgun, internal (Weapon)', system: {}, flags: { The2ndChumming3e: { integral: true } } }), null);
+  const glue = (await import('node:fs')).readFileSync(new URL('../scripts/SR3EItemMods.js', import.meta.url), 'utf8');
+  t.ok('install fills only a blank cost', /internalSmartgunCost\(host, data\)[\s\S]{0,120}!\(Number\(data\.system\?\.cost\) > 0\)/.test(glue));
+
   /* ── Warn, never refuse ────────────────────────────────────────────────────── */
   t.ok('none of these is a refusal', [silencer, suppressor, laser, bipod, grip, scope].every(m => ItemMods.blocked(gun('HOPist', { ammunition: '6(cy)' }), m) === null));
 }

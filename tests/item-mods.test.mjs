@@ -139,7 +139,7 @@ export async function run(t) {
     /Hooks\.on\('createItem', \(item, options\) => \{ if \(!options\?\.sr3eModMove\) _ratchetEssenceOnInstall\(item\); \}\);/.test(read('scripts/sr3e.js'))
     && /Hooks\.on\('deleteItem', \(item, options\) => \{ if \(!options\?\.sr3eModMove\) _recordEssenceHoleOnRemoval\(item\); \}\);/.test(read('scripts/sr3e.js')));
   t.ok('install warns, never refuses: warnings go to notifications and the install goes ahead',
-    /for \(const w of \[\.\.\.ItemMods\.warnings\(host, source\), \.\.\.ArmorMods\.installWarnings\(host, source\.toObject\(\)\),\s*\.\.\.CyberCapacity\.installWarnings\(host, source\.toObject\(\), graded\),\s*\.\.\.\(host\.type === 'firearm' \? WeaponAccessories\.installWarnings\(host, source\.toObject\(\)\) : \[\]\)\]\) ui\.notifications\.warn\(w\);\s*const installed = ItemMods\.install/.test(glue));
+    /for \(const w of \[\.\.\.ItemMods\.warnings\(host, source\), \.\.\.ArmorMods\.installWarnings\(host, source\.toObject\(\)\),\s*\.\.\.CyberCapacity\.installWarnings\(host, source\.toObject\(\), graded\),\s*\.\.\.\(host\.type === 'firearm' \? WeaponAccessories\.installWarnings\(host, source\.toObject\(\)\) : \[\]\)\]\) ui\.notifications\.warn\(w\);\s*const data = source\.toObject\(\);[\s\S]{0,700}?const installed = ItemMods\.install\(ItemMods\.installed\(host\), data, newId\)/.test(glue));
 
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
   t.ok('the item sheet sends a temporary mod\'s form to its own update, not core\'s submit',
@@ -180,7 +180,7 @@ export async function run(t) {
     IntegralRC.totalComp({ recoilMod: 0, installed: [{ name: 'Gas Vent (Weapon)', system: { rating: 2, modifiers: MOD_EFFECTS['gear|Gas Vent'] } }, bipod] }, false), 2);
   const item = read('scripts/documents/SR3EItem.js');
   t.ok('the fire dialog no longer offers a deploy tick', !/class="sr-deploy"/.test(item));
-  t.ok('the attack hands the pods and the shot\'s recoil to the GM window', /pods:\s+ItemMods\.pods\(this\),\s*recoil:\s+recoilCtx,/.test(item));
+  t.ok('the attack hands the pods and the shot\'s recoil to the GM window', /pods:\s+\[\.\.\.ItemMods\.pods\(this\), \.\.\.IntegralRC\.podEntry\(this\.system\)\],\s*recoil:\s+recoilCtx,/.test(item));
   t.ok('the GM window offers each pod as "set up — shooter stationary" and takes its saving off the TN',
     /class="sr-gm-pod" data-rc=/.test(item) && /set up — shooter stationary/.test(item) && /clampTN\(baseTN \+ sumModifiers\(state\) - gyroOff - podOff\)/.test(item));
   t.ok('the gun\'s sheet says it is the GM\'s call (no tick)', !/class="sr-mod-deployed"/.test(sheet) && /GM: when set up/.test(sheet));

@@ -3531,8 +3531,21 @@ JS only — F5 is enough. Every one of these installs; only the shotgun stock is
 - [ ] **SMG / shotgun:** a Silencer onto an Uzi III → warned; a Sound Suppresser onto it → nothing. Either onto an Enfield AS7 → warned.
 - [ ] **Fore grip** onto a Ranger Arms SM-3 → warned (CC p.34); onto an AK-97 → nothing.
 - [ ] **Stock on a shotgun:** a Stock onto an Enfield AS7 → refused, red, "Rifles and shotguns may not have this modification (CC p.83)".
+- [ ] **Internal smartgun:** make a gear item "Smartgun, internal (Weapon)", Cost 0, and drop it on an Ares Predator (450¥) → "450¥ —
+      100% of Ares Predator's price"; its Cost is 450. Named "Smartlink-2 Modification, Internal (Weapon)" → 675¥. With a Cost typed
+      first → left alone.
 - [ ] **Scope:** an Imaging Scope onto an Ingram Smartgun Mod 20T → warned (SR3 p.280). With a scope already on top, a second Imaging Scope
       goes Under (CC p.82, Top or Under).
+
+### 77m. The bracketed RC is the GM's call (TODO 276 — SR3 p.276; the maintainer's ruling of 2026-11-07)
+
+JS only — F5 is enough.
+
+- [ ] **Fire dialog:** fire an HK227 (RC 2(3)) in burst → no "Integral accessories in use" tick; the Weapon box reads 2 and a line
+      says "RC 2 → 3 — the GM decides whether they are in use, in the GM's window".
+- [ ] **GM's TN window:** the same shot → a row "Integral accessories (stock folded out / tripod set up) in use (RC +1 …)". Tick it →
+      the TN drops by what one more point of RC saves; the note under it says the recoil saved.
+- [ ] **RPK HMG (6):** its row offers RC +6 (with a tripod mod installed as well, both rows show).
 
 ## 78. A vehicle's mods against its Cargo and Load (TODO 265, step c's first slice — R3R p.124)
 

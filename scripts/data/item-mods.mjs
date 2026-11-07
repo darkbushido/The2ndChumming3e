@@ -107,7 +107,7 @@ export const ItemMods = {
    * shouldn't get the benefit of a pod").
    */
   pods(weapon) {
-    // An integral pod (the RPK's fold-out tripod) is the gun's printed bracketed RC — the fire dialog's integral tick.
+    // An integral pod (the RPK's fold-out tripod) is the gun's printed bracketed RC — the GM window's integral row (IntegralRC.podEntry, mods ruling Q13).
     return ItemMods.installed(weapon).filter(m => ItemMods.deployable(m) && !integral(m)).map(m => ({
       id: m._id ?? null, name: m.name ?? '?',
       rc: ItemMods.modifiersOf(m).filter(x => x.whenDeployed && x.target === 'rc').reduce((s, x) => s + x.value, 0),

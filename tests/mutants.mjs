@@ -418,6 +418,21 @@ export const MUTANTS = [
       .split('/').map(s => s.trim()).map(s => ['Top', 'Under', 'Barrel'].find(m => m.toLowerCase() === s.toLowerCase())).filter(Boolean),
   },
   {
+    id:     'integral-rc-whole-bracket',
+    suite:  'integral-rc',
+    ...INTEGRALRC, method: 'extra',
+    was:    'the GM window\'s integral row added the whole bracketed RC on top of the plain figure — "2(3)" gave 5, not 3 (SR3 p.276: the bracket is the total)',
+    impl:   system => (Number.isFinite(Number(system?.recoilModIntegral)) && system?.recoilModIntegral !== null ? Number(system.recoilModIntegral) : 0),
+  },
+  {
+    id:     'smartlink-2-internal-at-100',
+    suite:  'weapon-class-mods',
+    ...ACCESSORIES, method: 'internalSmartgunCost',
+    was:    'an internal Smartlink-2 priced at 100% of the gun like a Smartlink-1; ruled 2026-11-07: 150% (M&M p.32)',
+    impl:   (weapon, mod) => (/internal/i.test(String(mod?.name ?? '')) && /smart/i.test(String(mod?.name ?? '')) && mod?.flags?.The2ndChumming3e?.integral !== true
+      ? Math.round(Number(weapon?.system?.cost) || 0) : null),
+  },
+  {
     id:     'remington-underbarrel-unwarned',
     suite:  'laser-smartlink',
     ...ACCESSORIES, method: 'noUnderbarrel',

@@ -1526,7 +1526,8 @@ export class SR3EItem extends Item {
     gyroRating:   game.sr3e.SR3EActor.gyroRating(actor),
     gyroUsed:     gyro.used,
     // A bipod / tripod on the gun (TODO 276): the GM ticks it when the shooter is stationary with it set up.
-    pods:         ItemMods.pods(this),
+    // …and its printed bracketed RC (SR3 p.276), the GM's call per shot too (mods ruling Q13, 2026-11-07).
+    pods:         [...ItemMods.pods(this), ...IntegralRC.podEntry(this.system)],
     recoil:       recoilCtx,
     // Smoke on the map (TODO 164): offered to the window as a preselected Visibility Table row, never forced.
     smoke:        await game.sr3e.SR3EActor.smokeOffer(actor, [targetActor]).catch(() => null),
@@ -3402,7 +3403,8 @@ export class SR3EItem extends Item {
         <div style="margin-top:6px;font-size:12px">${(ctx.pods ?? []).map((p, i) => `
           <label style="display:flex;align-items:center;gap:6px">
             <input type="checkbox" class="sr-gm-pod" data-rc="${Number(p.rc) || 0}" data-idx="${i}"/>
-            ${escapeHTML(String(p.name ?? ''))} set up — shooter stationary (RC ${Number(p.rc) || 0}; SR3 p.280${/tripod/i.test(p.name ?? '') ? ', prone or seated' : ''})
+            ${p.integral ? `${escapeHTML(String(p.name ?? ''))} in use (RC +${Number(p.rc) || 0}, the bracketed figure; SR3 p.276)`
+              : `${escapeHTML(String(p.name ?? ''))} set up — shooter stationary (RC ${Number(p.rc) || 0}; SR3 p.280${/tripod/i.test(p.name ?? '') ? ', prone or seated' : ''})`}
           </label>`).join('')}
           <div id="sr-gm-pod-note" style="font-size:11px;color:var(--sr-dim)"></div>
         </div>` : ''}
@@ -4250,8 +4252,10 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   const weaponName   = weapon.name;
   const actorComp    = actor.system.recoilCompensation ?? 0;
   // The bracketed RC (SR3 p.276) replaces the plain figure while the integral accessories are in use.
+  // Whether they are in use is the GM's call per shot, in the GM's TN window, like a bipod (the maintainer, 2026-11-07, mods
+  // ruling Q13) — so the fire dialog always counts the plain figure, and the GM's window offers the difference (`IntegralRC.extra`).
   const hasIntegral  = IntegralRC.has(weapon.system);
-  const inUse0       = IntegralRC.defaultInUse(weapon.system);
+  const inUse0       = false;
   // The gun's own figure plus what its installed mods add (TODO 276). A bipod / tripod is not here: whether the shooter is
   // stationary with it set up is the GM's call, in the GM's TN window (ItemMods.pods).
   const weaponComp   = IntegralRC.totalComp(weapon.system, inUse0);
@@ -4361,9 +4365,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       <span>+</span>
       <span title="${modsRC ? `The weapon's own RC plus its installed mods — ${ItemMods.describe('rc', modsRC)}` : 'Gas vents, bipods etc. mounted on this weapon'}">Weapon
         <input type="number" id="sr-weapon-comp" value="${weaponComp}" min="0" max="20" style="width:42px"/></span>
-      ${hasIntegral ? `<label style="flex-basis:100%;font-size:11px" title="SR3 p.276: numbers in parentheses are the full recoil compensation that only applies when all integral accessories are used (folding or detachable stocks, and so forth)">
-        <input type="checkbox" id="sr-integral" ${inUse0 ? 'checked' : ''}/> Integral accessories in use (stock folded out / tripod set up) — RC ${weapon.system.recoilMod ?? 0} → <strong>${weapon.system.recoilModIntegral}</strong>
-      </label>` : ''}
+      ${hasIntegral ? `<span class="sr-integral-note" style="flex-basis:100%;font-size:11px;color:var(--sr-muted)" title="SR3 p.276: numbers in parentheses are the full recoil compensation that only applies when all integral accessories are used (folding or detachable stocks, and so forth)">Integral accessories (stock folded out / tripod set up): RC ${weapon.system.recoilMod ?? 0} → ${weapon.system.recoilModIntegral} — the GM decides whether they are in use, in the GM's window.</span>` : ''}
       ${ItemMods.pods(weapon).length ? `<span style="flex-basis:100%;font-size:11px;color:var(--sr-muted)">${ItemMods.pods(weapon).map(p => foundry.utils.escapeHTML(p.name)).join(', ')} — the GM decides whether it is set up (shooter stationary), in the GM's window.</span>` : ''}
       ${mount ? `${mount.rc ? `<span>+</span><span title="${foundry.utils.escapeHTML(mount.label)}">Mount
         <input type="number" id="sr-mount-comp" value="${mountComp0}" min="0" max="20" style="width:42px"/></span>` : ''}
@@ -4407,12 +4409,6 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     };
     el.querySelector('#sr-actor-comp')?.addEventListener('input', refreshPreviews);
     el.querySelector('#sr-weapon-comp')?.addEventListener('input', refreshPreviews);
-    // Ticking swaps the weapon's figure between the plain RC and the bracketed total (it replaces, never adds).
-    el.querySelector('#sr-integral')?.addEventListener('change', event => {
-      const wEl = el.querySelector('#sr-weapon-comp');
-      if (wEl) wEl.value = String(IntegralRC.totalComp(weapon.system, event.target.checked));
-      refreshPreviews();
-    });
     el.querySelector('#fa-rounds')?.addEventListener('input', refreshPreviews);
     el.querySelector('#fa-metres')?.addEventListener('input', refreshPreviews);
     el.querySelector('#fa-smartgun')?.addEventListener('change', refreshPreviews);
@@ -4465,10 +4461,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
           const wComp = Math.max(0, parseInt(el.querySelector('#sr-weapon-comp')?.value) || 0);
           if (aComp !== actorComp)  await actor.update({ 'system.recoilCompensation': aComp });
           // A number typed over the weapon's figure is remembered against whichever figure was showing.
-          const inUse = hasIntegral && !!el.querySelector('#sr-integral')?.checked;
-          if (hasIntegral && inUse !== inUse0) await weapon.update({ 'system.integralInUse': inUse });
+          const inUse = inUse0;
           if (wComp !== IntegralRC.totalComp(weapon.system, inUse)) {
-            await weapon.update({ [inUse ? 'system.recoilModIntegral' : 'system.recoilMod']: IntegralRC.baseFor(weapon.system, wComp) });
+            await weapon.update({ 'system.recoilMod': IntegralRC.baseFor(weapon.system, wComp) });
           }
 
           // Recoil per mode (see SR3EItem.recoilTN). BF and FA count their OWN rounds —

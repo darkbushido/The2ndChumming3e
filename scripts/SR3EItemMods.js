@@ -44,7 +44,14 @@ export const SR3EItemMods = {
     for (const w of [...ItemMods.warnings(host, source), ...ArmorMods.installWarnings(host, source.toObject()),
       ...CyberCapacity.installWarnings(host, source.toObject(), graded),
       ...(host.type === 'firearm' ? WeaponAccessories.installWarnings(host, source.toObject()) : [])]) ui.notifications.warn(w);
-    const installed = ItemMods.install(ItemMods.installed(host), source.toObject(), newId);
+    const data = source.toObject();
+    // An internal smartgun added after manufacture is priced from the gun (mods ruling Q10) — only while its own cost is blank.
+    const smartCost = host.type === 'firearm' ? WeaponAccessories.internalSmartgunCost(host, data) : null;
+    if (smartCost != null && !(Number(data.system?.cost) > 0)) {
+      data.system.cost = smartCost;
+      ui.notifications.info(`${data.name}: ${smartCost.toLocaleString()}¥ — ${/(?:2|ii)\b/i.test(data.name) ? '150' : '100'}% of ${host.name}'s price (SR3 p.281, M&M p.32).`);
+    }
+    const installed = ItemMods.install(ItemMods.installed(host), data, newId);
     await host.update({ 'system.installed': installed });
     // Moved, not copied, when it came from the host's own actor — the scope is in the gun now, not in the bag too.
     // `sr3eModMove`: an implant moved into a limb never left the body — no Essence hole (sr3e.js's deleteItem hook).
