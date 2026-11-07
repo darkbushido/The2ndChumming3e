@@ -3452,6 +3452,9 @@ section touched (~0.3–1.5k each), i.e. ~4–6k instead of ~11–40k on top of 
 rules tokens**. `CLAUDE.md` itself is unchanged (it is auto-loaded); slimming it is a separate decision.
 
 Design settled by the maintainer 2026-11-07: generated digest + lookup, a one-line CLAUDE.md pointer, a `/rules` skill.
+Round 2 (2026-11-07): drift is guarded by the test only (no hook); the `?` citations stay until a follow-up
+names each book, checking every page against its PDF; slimming `CLAUDE.md` is its own TODO and branch, with the
+maintainer approving the cuts. Both follow-ups take numbers from the coordinator.
 Open: the 128 `?` citations (pages with no book code in the rules files) could be
 given their book in the rules files themselves.
 
