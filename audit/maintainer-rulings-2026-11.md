@@ -85,3 +85,27 @@ Queue: remaining mods questions moved to the back, after every other session (ma
 | Q21 | TODO 283 scope | One dialog for all hosts | 2026-11-07 | design |
 | Q22 | TODOs 256/259 markings | Cheap parts only: chips, description line, `mount` field, the two smartgun items | 2026-11-07 | design |
 | Q14 | Limb removal: built-ins' Essence joins the hole | OPEN — cited M&M p.150 is wrong (surgery options); mods session finding the right page | — | — |
+
+### Corrections and later notes
+
+- TODO numbers on main (coordinator): 287 vehicle design · 288 order delivery · 289 rules digest · 290 book names on citations · 291 slim CLAUDE.md.
+- Mods Q6 superseded: the maintainer told the mods session directly, "SR3 is right Remington 750 and 950 should not take them. so warn." (SR3 pp.278-279). That later answer is the ruling; "CC usually wins" stays as a general rule.
+- Mods Q14 resolved by the free-Essence ruling: the real page is M&M p.147 (Remove Cyberware); M&M p.35 says most limb equipment costs no Essence. Only Essence actually paid joins the hole.
+
+## vehicle design (TODO 287)
+
+| # | Question | Answer | Date | Source |
+|---|---|---|---|---|
+| G1 | Mod Design Point cost | Add `designCost` field now (not the recommendation) | 2026-11-07 | R3R p.112, p.116 |
+| G2 | Options catalogue in slice 2 | Typed rows now, catalogue as slice 3 | 2026-11-07 | R3R pp.114-121 |
+| G3 | Where a design lives | On the vehicle; re-save offers changes | 2026-11-07 | design |
+| G4 | Where the window opens | Directory button, macro, and vehicle sheet | 2026-11-07 | design |
+| Q2 | Availability class modifiers | Apply as p.113 states | 2026-11-07 | R3R p.113 |
+| Q3 | Minimum "2/24" | "a day is 24hrs, the base is 2/24hours so a 2/2 days should be 2/48hrs. you cannot mod it lower then 2/24hrs." | 2026-11-07 | R3R p.113 |
+
+## Still open (usage limit reached 2026-11-07)
+
+- Vehicle Q4 (smart-materials rounding, R3R p.118/p.111) and Q5 (keep printed table figures).
+- Matrix: how the −10 Initiative offset reaches a triggered IC (card only / set roll / "enters in pass N"); 9 sheaf rows + Convergence as 10th box OK?
+- Shop round 2, Q7–Q11 (`todo-288-grill-round-2.md`).
+- Mods: free Essence for non-limb hosts (datajack, headware, skull/torso).
