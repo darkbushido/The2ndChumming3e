@@ -48,58 +48,12 @@ npm run test:e2e        # Playwright, two real clients (Foundry running)
   not the guide and not the code. Every difference is verified against the PDF (quoted, printed page) and/or
   taken to the maintainer — never settled by picking a side. A verified code divergence is fixed before release.
 
-## Verifying a build — `npm run preflight`
+## Verifying a build and releasing — `.claude/rules/release-and-process.md` · TODO 291
 
-One command, one verdict (also the `verify-build` skill, `.claude/skills/verify-build/SKILL.md`). The whole release
-train — take stock, version, preflight, rules check, notes, bump, hand-back — is **`/release`**
-(`.claude/skills/release/SKILL.md`), resumable across sessions.
-
-```bash
-npm run preflight                          # eslint, suites, mutants, TODO, packs, manifest, guides
-npm run preflight -- --fast                # skip mutants, guides, e2e
-npm run preflight -- --e2e                 # …and Playwright — Foundry must be RUNNING
-npm run preflight -- --version v0.6.0 --e2e   # …and version, release:check, notes, rules record, clean tree
-```
-
-⚠ **It changes NOTHING** (`tests/preflight.test.mjs` asserts it only reads files and runs `git status
---porcelain`). The writers are separate:
-
-```bash
-npm run version:bump -- 0.6.0     # or: patch / minor (no `major` keyword, deliberately)
-npm run release:notes -- 0.6.0 --write
-```
-
-- ⚠ `bump-version.mjs` rewrites **one line** — never round-trip `system.json` through `JSON.parse`/`stringify`
-  (it reformats ~1900 lines of pack declarations).
-- ⚠ `release-notes.mjs` produces a **draft** from commit subjects. Notes are for a GM: any change to how a rule
-  resolves is stated plainly **with its book and printed page**.
-- ⚠ `npm run lint` must stay green. Fix lint at the source (scoped disables with a reason), never repo-wide.
-
-### ⚠ The one gate that must never be faked — TODO 121
-`--version` checks that **`audit/rules-check-<version>.md` exists** — meaning a person compared the rules against
-`guides/` with the PDFs as authority and took every difference to the maintainer. **If it's missing, say so and
-stop — never write the file to make the gate green.** Both `tools/preflight.mjs` and the skill say this, and
-`tests/preflight.test.mjs` asserts they still do.
-
-## Releases — a tag builds the zip and the guides  · TODO 127
-
-```bash
-npm run release:check -- v0.6.0   # tag matches system.json, every loaded path ships — changes nothing
-npm run release:stage -- v0.6.0   # stage into dist/ (ignored) to inspect
-git tag v0.6.0 && git push origin v0.6.0   # the maintainer's — the release itself
-```
-
-A pushed `v*.*.*` tag runs `.github/workflows/release.yml`:
-- **The system** — `tools/release.mjs` stages `RELEASE_FILES` (`system.json scripts styles lang packs LICENSE
-  README.md`) and stamps the copy's URLs (`tools/lib/manifest-urls.mjs`): `download` pinned to the tag,
-  `manifest` at `releases/latest`. A specific version installs from `…/releases/download/v0.6.0/system.json`.
-- **The guides** (`guides/`, Jekyll) build to **gh-pages** as `v0.6.0/` (frozen) and `latest/`;
-  `tools/guides-versions.mjs` rewrites the index and root redirect.
-- ⚠ It **refuses a tag that doesn't match `system.json`** — bump first.
-- ⚠ A new top-level folder the system loads must be added to `RELEASE_FILES` (`tests/release.test.mjs`).
-- ⚠ The committed `system.json` names a **branch** (below); never commit release URLs.
-- Guide pages: edit in `guides/` (its own CLAUDE.md has the rules); preview `bundle exec jekyll serve` there,
-  then `node tools/linkcheck.mjs`.
+- ⚠ **Only the release task bumps the version; never `git push`** (Versions and branches, above).
+- `npm run preflight` (`-- --fast`) is the one verdict and changes nothing; `/release` runs the train.
+- ⚠ **The TODO 121 record (`audit/rules-check-<version>.md`) is never faked** — if it's missing, say so and stop.
+- A pushed playtest branch stamps its own URLs: `npm run manifest:branch`. Releases, tags and hooks: the rules file.
 
 ## TODOs — `TODO.md` is open work, `TODO-DONE.md` the record
 
@@ -109,25 +63,6 @@ A pushed `v*.*.*` tag runs `.github/workflows/release.yml`:
   links, regenerates the Contents table — **never edit that table by hand**). `npm run todo:check` is read-only.
 - Done means ✅ in the heading. A remainder ("still open") must become a new numbered item.
 - `tests/todo-archive.test.mjs` enforces all of this.
-
-## Branch manifest URLs — `npm run manifest:branch`
-
-`system.json`'s `url` / `manifest` / `download` name a **branch**, so a playtest branch must point at itself.
-
-```bash
-npm run manifest:branch          # stamp to the current branch (once per branch you push out; commit it)
-npm run manifest:check           # exit 1 if stale — changes nothing
-```
-
-`tools/manifest-branch.mjs` rewrites three lines (never the parsed document) and reads the repo slug from the
-existing `url`.
-
-- ⚠ **Merging into main must not drag a branch's URLs along** — `.githooks/post-merge` re-stamps to the current
-  branch after any merge and leaves the file dirty with a notice (it never commits: a fast-forward has no commit to
-  amend). A `.gitattributes` merge driver **doesn't work** here: git only runs it when both sides changed the file.
-- `.githooks/post-checkout` only warns.
-- **Hooks need one-time setup**: `npm run setup:hooks` (`core.hooksPath` is local config). `.gitattributes`
-  pins `.githooks/**` to `eol=lf` — CRLF breaks the shebang silently.
 
 ## Design ethos — read this first
 
@@ -170,88 +105,11 @@ await foundry.applications.api.DialogV2.wait({
 - In filter inputs, `preventDefault()` on Enter so it doesn't trigger the default button.
 - Never inline `oninput=`/`onclick=` with `document.querySelector` — wire through the element.
 
-### Compendium packs — how they are ACTUALLY changed
+### Compendium packs, pack integrity, world migrations — `.claude/rules/packs-and-migrations.md` · TODO 291
 
-| | |
-|---|---|
-| **`packs-src/<pack>/`** | **The source of truth.** One JSON file per document, `{ _key, doc, embedded }` (exact LevelDB key and value; an actor's items in its file). `tools/lib/pack-source.mjs`. |
-| **`packs/<pack>/`** (LevelDB) | **Build output**, committed because Foundry installs from the branch zip. `npm run packs:build` compiles changed packs. |
-| The install | `npm run packs:install` — one-way copy from `packs-src` (Foundry CLOSED). Never link the install to the checkout. |
-| Upstream data | Vendored `rawdata/SRCG-*` (`rawdata/SRCG-README.md`); `tools/build-default-gear.mjs` and `tools/build-odm-packs.mjs` generate from it. |
-
-- ⚠ **Pack merge conflict**: merge the JSON in `packs-src/`, then `npm run packs:build` — never hand-pick LevelDB files.
-- ⚠ Tools that write LevelDB refresh `packs-src` themselves (`extractPack`); any other writer must be followed by
-  `npm run packs:extract`. `tests/pack-sources.test.mjs` fails on drift and proves the build reproduces every
-  pack. `npm run packs:src:check` is the read-only comparison.
-- `tests/macros.test.mjs` fails if anything names a deleted `populate-*.js` macro.
-
-**Editing a pack with a tool** — read `tools/check-packs.mjs`, `tools/patch-johnson-stats.mjs`,
-`tools/import-johnson-gear.mjs` first.
-
-```js
-import { ClassicLevel } from 'classic-level';
-const db = new ClassicLevel(packPath, { valueEncoding: 'json' });
-await db.open();                       // throws if Foundry holds the lock
-for await (const [key, doc] of db.iterator()) { /* … */ }
-await db.put(key, doc);
-await db.close();
-```
-
-- ⚠ **Foundry must be CLOSED even to READ** (one process per LevelDB). Report a lock as "close Foundry".
-- ⚠ **Reading the checkout's packs must go through a copy** (`tools/lib/pack-copy.mjs`) — opening a LevelDB
-  rewrites its log/MANIFEST even for a read. `tests/pack-churn.test.mjs` enforces it.
-- ⚠ **Two copies of every pack; Foundry reads the install's.** `scripts/`, `styles/`, `lang/` are junctions into
-  the checkout; `packs/` and `system.json` are NOT (`npm run sync:install` never copies packs). **Run every pack
-  tool twice** — plain and `--install`.
-- ⚠ **Index against the REPO's packs, never the install's** (it carries 22 undeclared pre-split packs; UUIDs into
-  them are dead for everyone else). **Diff the two copies afterwards.**
-- ⚠ **Keys are structural**: `!items!<id>` · `!actors!<id>` · `!actors.items!<actorId>.<itemId>` · `!folders!<id>`.
-  An embedded item needs its own key **and** its id in the actor's `items` array. Sweeps must cover Actor packs too.
-- ⚠ **Derive ids, never randomise** (`idFor()` in `patch-johnson-stats.mjs`) — re-runs must reuse keys.
-- ⚠ Verify with `npm run packs:check:repo`.
-
-**In-Foundry creation (reference only — not how packs are maintained):** `Item.createDocuments(items, { pack })`
-imports 0 items; the working call is a temporary world document + `pack.importDocument(tmp)` + `tmp.delete()`
-inside `pack.configure({ locked: false/true })` (`Actor.create` for actor packs). Such documents carry full
-scaffolding (`_stats`, `ownership`, `sort`, `folder`) — the signature `check-packs.mjs` uses to spot install drift.
-
-### Pack integrity — `npm run packs:check`
-
-```bash
-npm run packs:check                     # the local install
-npm run packs:check:repo                # this checkout's packs/
-node tools/check-packs.mjs <path>       # any other install
-npm run packs:fix                       # remove SAFE duplicates only
-```
-
-Read-only by default; exits 1 on a fault. Checks null/missing `_id`s, key/`_id` disagreement, duplicate `_id`s,
-manifest packs missing on disk. Undeclared packs on disk are information. Also reports (information) blank/`???`
-`system.bookPage` and pages naming another book — one reader, `scripts/data/book-page.mjs` (`BookPage.*`,
-`CODE_ALIASES` maps upstream `sta2` → `sota2`); pages filled from `tools/data/book-pages.json` by
-`tools/fill-book-pages.mjs`; `tests/book-page.test.mjs` ratchets the missing count.
-- Malformed `!items!null` records are **install drift** (from running macros against a live install), not repo faults.
-- ⚠ **`--fix` deletes only what it can PROVE redundant**: a malformed record with a byte-identical properly-keyed
-  twin in the same pack, comparing without `prototypeToken`/scaffolding, against **any** identical twin (names repeat).
-
-### World migrations — `scripts/SR3EMigrations.js`
-
-⚠ **Foundry EMBEDS items, it doesn't link them** — a pack fix changes nothing for owned copies. So a pack
-correction needs **both** the pack change and a migration.
-- **Adding one:** append to `MIGRATIONS` numbered by the release it ships in — a migration above the stamped
-  version re-runs every load (`tests/migrations.test.mjs` fails until the release bumps `system.json`).
-- **Fill blanks, never overwrite** (`_fillBlank`; `0` and `''` count as unset, so target specific items).
-  Overwriting hooks (`fixItem`, `fixActor`) must argue their case at the call site.
-- **Idempotent.** A failed run leaves the stamp so the next load retries.
-- ⚠ **Three populations**: world actors, world items, and **unlinked token actors on every scene**.
-- Compendium packs are **not** migrated (fix the pack file) — with one exception: **`SR3EPackRepair`**
-  (TODO 162, `scripts/SR3EPackRepair.js`, `data/pack-repair.mjs`). At `ready` the active GM's client removes an
-  older build's `!items!null` entry over the socket (`modifyDocument` delete, id `'null'`), **only when an
-  identical properly keyed twin exists** (the `--fix` rule), re-locking the pack in a `finally`. Runs every load,
-  never blocks the world (`tests/pack-repair.test.mjs`).
-- Changed **setting defaults** go in `SR3EMigrations.DEFAULT_CHANGES` (Foundry stores only set values).
-- Gated to `game.users.activeGM`. `game.sr3e.SR3EMigrations.force()` re-runs everything (safe by rule 1 — and an overwriting
-  `fixActor` that recognises an old default must skip a value the 📒 Ledger shows was written, `Ledger.touched`:
-  a burned Karma Pool can land back on the old default).
+- ⚠ **`packs-src/` is the source of truth**; `packs/` is build output (`npm run packs:build`).
+- ⚠ **Foundry must be CLOSED, even to read a pack.**
+- ⚠ **A pack fix needs a world migration too** — Foundry embeds items, it doesn't link them.
 
 ### Filtering actors for dialog dropdowns
 
@@ -448,103 +306,17 @@ without Foundry, so nothing on them can be unit-tested or mutated.
 | `matrix.md` | The two Matrix rulesets, Orthodox fields/packs, Matrix Defragged rules, IC, host sheet |
 | `electronic-warfare.md` | Flux/Footprint/ECM/ECCM, Signal Monitor, MIJI, infiltration, Drone Comprehension, IVIS |
 | `source-books.md` | Book codes, pack filtering, default-book gear, the archive, the `mat` decision |
+| `release-and-process.md` | Preflight, releases and tags, branch manifest URLs, the TODO 121 gate (moved from here, TODO 291) |
+| `packs-and-migrations.md` | Changing packs, pack integrity, world migrations, `SR3EPackRepair` (moved from here) |
+| `chat-cards.md` | The ⏳ Open combat steps panel, two-corner opposed cards (moved from here) |
+| `data-model.md` | Actor fields, item types and fields, weapon codes → skills, key methods (moved from here) |
 
 ---
 
-## Actor data model
+## Data model and key methods — `.claude/rules/data-model.md` · TODO 291
 
-### Key system fields (character/npc)
-```
-system.attributes.<attr>.base / .value     ← body quickness strength intelligence willpower charisma magic
-system.attributes.reaction.value / .reactionBonus / .diceBonus / .override
-system.attributes.essence.value     ← DERIVED (see essence-and-cyberware.md)
-system.attributes.essence.base      ← persisted starting Essence (6)
-system.attributes.essence.lost      ← persisted PERMANENT loss, nullable; accumulates on install
-system.wounds.stun / .physical      ← { value, max }
-system.woundMod                     ← derived (negative)
-system.derived.combatPool / .availableCombatPool
-system.derived.spellPool / .availableSpellPool   ← null if not Awakened
-system.derived.initiative / .initiativeDice
-system.combatPoolSpent / .spellPoolSpent          ← persisted pool usage
-system.equippedArmor / .equippedMelee             ← item ID strings (armour now uses the item `worn` flag)
-system.karma / .totalKarma / .karmaPool / .ledger
-system.astralMode                  ← '' | 'physical' | 'dual' | 'astral'
-system.matrixUserMode              ← '' | 'TRM' | 'AR' | 'VR-Cold' | 'VR-Hot'
-system.recoilCompensation / .roundsFiredThisPhase / .targetsThisPhase
-```
-
-### Item types and key fields
-- `firearm`: `damage` ("9M"), `category` (weapon code), `mode` ("SA/BF/FA"), `ammunition` (capacity "15(c)"),
-  `recoilMod`, `smartgun`/`laserSight` (nullable), `rangeOverride` ("5/15/30/50"), `loadedAmmoType`/`loadedRounds`,
-  `ready`, `hands`, `choke`
-- `melee`: `damage`, `reach`, `category`
-- `projectile` / `thrown`: `damage`, `category`, `quantity` (thrown consume it; bows/crossbows nock via `loadedAmmoType`/`loadedRounds`)
-- `ammunition`: `ammoType` (key into `SR3E.ammoTypes`), `loadMechanism`, `rounds`/`reloads`/`roundsPerReload`/`countedIn` — rules live in config
-- `armor`: `ballistic`, `impact`, `worn`
-- `skill`: `rating`, `linkedAttribute`, `specialisations` (`level` = bonus over base)
-- `spell`: `force` (learned Force, nullable — caps the cast; SR3 p.178), `type` (Mana/Physical — **what it can
-  affect**, never the damage track), `damageTrack` (`''`/`Physical`/`Stun` — ⚠ **combat spells do PHYSICAL
-  damage unless they are stun spells**, SR3 p.191; blank reads the name, `SR3EItem.spellDealsStun`), `target` (**resist attribute AND cast TN**, via `SR3EItem._parseSpellTarget`), `category` (Combat or
-  Elemental = damaging; Elemental resolves as a ranged attack), `drain` ("(DL+1)"), `range` (`(A)` = area),
-  `duration`. **No damage code** — Power = Force, level chosen at cast.
-- `drug`: `addiction` ("4M+3P"), `tolerance`, `edge` ("5/50"; legacy `effect`), `fixFactor`, `damage`, `speed`,
-  `vector`, `legality`, `availability`, `cost`, `streetIndex`, `bookPage`
-- gear/cyberware/bioware/medical: `rating` — read only through `itemRating()` (see essence-and-cyberware.md)
-- **Mods inside items** (TODO 276): a host (firearm, melee, armour, cyberware) keeps its mods as item DATA in
-  `system.installed` — not documents, so they travel with it; ⚠ never `system.mods` (cyberware's upstream bonus string).
-  What any item changes is `system.modifiers` `[{ target, value }]` from `ItemMods.TARGETS`. Effects climb mod → host →
-  actor: read a host with `ItemMods.effective` / `value`, the actor with `ItemMods.actorTotals` (worn armour, carried gear,
-  installed cyber — never a weapon), all in `scripts/data/item-mods.mjs`; install/⏏/✎ in `scripts/SR3EItemMods.js`.
-  ⚠ A gun's printed `accessories` are installed mods flagged `integral` (`scripts/data/integral-mods.mjs`): shown and holding
-  their mount, **never counted** — the printed RC and flags already include them; `effective` / `pods` skip them.
-
-### Weapon category codes → skills
-```
-HOPist/LPist/MPist/HPist/VHP → Pistols
-MaPist/SMG → SMG
-Carb/AsRf/SptR/Snip/LCarb → Rifles
-LMG/MMG/HMG/MinG → LMG
-ShtG → Shotguns
-GrLn → Grenade Launchers
-EDG → Edged Weapons
-CLB → Clubs
-POL → Pole Arms/Staff
-WHP → Whips/Flails
-CYB/UNA → Unarmed Combat
-```
-
----
-
-## Key methods reference
-
-### SR3EActor
-- `rollPool(pool, tn, label, options)` — entry point for skill/attribute rolls (adds wound, sustaining/drugs, signal mods unless skipped)
-- `_rollWave(count, tn, isFirstWave, prevDice, explodeIdx)` — one wave; **only the 💥 handler may call it with `false`**
-- `_postWaveCard(state)` — posts a wave card; final-wave branches for every flow
-- `handleExplosionClick(payloadJson)` — static, 💥 buttons
-- `rollOpposedPair(kind, ctx, atk, def)` / `rollThen(actor, pool, tn, {label, followUp})` — static, explosion-safe sequencing
-- `spendCombatPool(amount)` etc. — route through `sr3e.pool.spend`; **return what was actually deducted**
-- `_postSoakCard(payload)` / `postSoakCard(actorId, payload)` / `handleSoakRollClick(btn)`
-- `postMeleeCard(ctx)` / `handleMeleeRoll(btn)` — melee boxing card
-- `_rollDodge(targetActor, dodgeDice, dodgeContext)` — static
-- `rollInitiative(options)` — `options.physicalDice` prompts for manual entry
-
-### SR3EItem
-- `rollWeapon(tn, options)` — ranged attack flow
-- `rollMelee()` → `rollMeleeAttack(actor, atkWeapon)` — static, shared for real items and the synthetic `_unarmedWeapon()`
-- `_buildMeleePoolInfo(actor, weapon)` — unarmed uses the **highest** of Unarmed Combat and every `MA:` skill
-- `promptDefaultChoice(actor, opts)` / `defaultTiers(actor, opts)` — the Default Table
-- `reload()`, `_promptFireMode`, `_parseLoadMechanism`, `_parseMagazineSize`, `_promptReloadChoice`
-- `_getRangeBands`, `_rangeBandForDistance`, `_measureDistance`, `_acquireCanvasTarget`, `_tokensAdjacent`
-- `parseDamageCode(code)` → `{ power, level, isStun }`; `stageDamage(base, net, { meleeRules })`
-- `_getEquippedMelee(actor)`, `_promptTarget(attacker)`
-
-### SR3ECombat
-- `_nextTurnSR3()` / `_nextTurnSR2()` — pass-based / flat-queue advancement
-- `_endOfTurnReset()` — pool/recoil/Full Defense refresh each Combat Turn
-- `endCombat()` — silently refreshes pools, clears Spell Defense / `tempMagicLoss`
-
----
+Actor system fields, item types and their fields, weapon category codes → skills, and the key
+`SR3EActor` / `SR3EItem` / `SR3ECombat` methods.
 
 ## CSS custom properties
 ```css
@@ -580,55 +352,10 @@ silently fails on the one client that executes it. `game.sr3e.loadedAt` records 
 read-only query `sr3e.debug.loadedAt` exposes it, and the e2e preflight fails with "reload <user>'s tab"
 (including when the GM can't answer at all).
 
-## Open combat steps — the ⏳ Waiting-on panel · TODO 147
+## Chat-card machinery — `.claude/rules/chat-cards.md` · TODO 291
 
-Reported in the trial session (2026-09-23): in a busy fight a card still owed an answer scrolls away.
-Rules: `scripts/data/open-steps.mjs` (pure). Foundry side: `scripts/SR3EOpenSteps.js`.
-
-- **A step is a button someone owes a click on** — `STEP_BUTTONS` names them (dodge declaration, soak and
-  its roll, spell/astral/Matrix resistance, Drain and its roll, Knockdown, Assign the wound, ram and crash
-  resistance). Optional actions (Mark prone, Sustain, healing, drugs, buying) are deliberately not steps.
-  A new card that waits on someone must add its button class there, or the panel will not see it.
-- **The record is the message's `acted` flag** under `step:<class>:<index>`, written through
-  `sr3e.card.mark` by a click listener `decorate` adds — registered as the **last**
-  `renderChatMessageHTML` hook, so it runs after the button's own handler. `doneBy` honours the older
-  keys (`defender`, `soaker`). ⚠ `card.mark` is now **queued per message** (`SR3EQueue`), because it
-  reads, clones and writes the whole ledger and two marks at once could drop one.
-- **Owed by** = `SR3EQuery.deciderFor(actor)`; no actor → the GM.
-- **Three views:** the ⏳ panel in the combat tracker (steps since the current combat was created, else the
-  last 50 messages; a row click shows the card; the GM's ✕ marks a step nobody will take); a gold edge,
-  a "Waiting on you" line and a chat-tab count for the user a card waits on; and a card whose steps are
-  all done folds to its header (client setting `collapseFinishedCards`, on by default). ⚠ A card with
-  **no** steps never folds — a roll result is something to read. ⚠ **It folds only once play has moved
-  past it** (`OpenSteps.shouldFold`, `FOLD_AFTER` = 2 newer messages; `_refreshFolds` re-checks on every
-  new message). A dodge declaration clicks itself, so folding on finish hid a ranged attack card before
-  anyone read "6 hits incoming" — the e2e ranged spec caught it.
-- A step already done is greyed on every client and after a reload, which the in-memory `_usedButtons`
-  could not do.
-
-## Two-corner cards — each side edits only its own half
-
-Eight opposed cards (melee · astral · contested · cybercombat · MIJI · three Orthodox Matrix) share **one**
-handler in `sr3e.js`, found by `[data-twocorner="<kind>"]` and dispatched via the `_RESOLVERS` table. Each
-corner declares `data-corner-role` / `-owner` / `-label`; `SR3EActor.cornerActions()` renders the per-corner
-`.sr-corner-submit-btn` and one `.sr-corner-resolve-btn`.
-
-- **Both corners visible everywhere; only your own editable.** The lock sets `readOnly` on inputs **and**
-  `disabled` on `<select>`s — keep both branches (`readOnly` does nothing to a dropdown).
-- **The submission that completes the set resolves.** `sr3e.card.mark` is append-only and GM-serialised, so
-  exactly one client sees the ledger fill.
-- **`.sr-corner-resolve-btn` (GM-only) is the AFK escape**: unanswered corners fall to the card's defaults.
-- **The NPC's Submit button is violet** (`sr-corner-npc`, `--sr-npc`, tooltip "NPC — name") · TODO 246: the GM
-  owns every actor, so both buttons are live for them. `cornerActions` asks `NpcCorner.decorate`
-  (`scripts/data/npc-corner.mjs`): not `SR3EQuery.isPlayerCharacter` (never `hasPlayerOwner`), or no actor → NPC.
-  Applied by actor, not viewer — players see the NPC corner violet too. Baked in when the card is posted.
-- ⚠ **`_cornerDrafts` keeps unsubmitted edits** (keyed `messageId|role`, restored into your own unacted corner):
-  the other side's submission re-renders the card from its payload. Don't remove it as redundant.
-- **A setup dialog configures ONE side.** The initiator names the opponent only; the opponent's pool source,
-  dice and TN live in **their** corner (`SR3EActor.contestedSourceOptions`). `tests/e2e/contested.spec.mjs`
-  asserts `#opp-source`/`#opp-pool`/`#opp-tn`/`#opp-damage` are absent from the dialog.
-- ⚠ **Charge BOTH corners, not just roll them** — use the pool helpers (they route via `sr3e.pool.spend`, work on
-  a non-owning client, and return what was deducted — roll that, not what was typed).
+The ⏳ Open combat steps panel (TODO 147) and the two-corner opposed cards. Read it before changing a card
+that waits on someone, or any two-corner handler in `sr3e.js`.
 
 ## What is NOT yet implemented
 

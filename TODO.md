@@ -3573,6 +3573,13 @@ is now the biggest fixed cost. Move the subsystem detail into `.claude/rules/` f
 it and it loads only by path. This goes on its own branch, and **the maintainer approves every cut** (rounds
 go through the questions session).
 
+**Done on `feature/slim-claude-md` (2026-11-07):** the maintainer approved all four moves. `CLAUDE.md` went from
+42 KB to 23 KB (about 10.5k → 5.8k tokens), with a ⚠ summary and a pointer kept for each block. The new path-scoped
+rules files are `release-and-process.md` (preflight, releases, manifest URLs, the TODO 121 gate),
+`packs-and-migrations.md`, `chat-cards.md` (open steps, two-corner cards) and `data-model.md` (fields, item types,
+weapon codes, key methods). The digest indexes all four. `tests/claude-md-slim.test.mjs` fails if a moved heading
+goes missing, comes back to `CLAUDE.md`, or a summary is dropped.
+
 ### 📌 Notes & parked
 
 ## Open questions carried from the combat audit
