@@ -44,3 +44,11 @@ Queue: remaining mods questions moved to the back, after every other session (ma
 | # | Question | Answer | Date | Source |
 |---|---|---|---|---|
 | Q1 | Next slice: Security Sheaf Trigger Steps or the host-run turn loop | "Sheaf first" | 2026-11-07 | MDF p.23 |
+| Q2 | Rulesets: both from the start or Defragged first | "Both from the start" | 2026-11-07 | MDF p.23 (Sheaf) vs Orthodox Security Tally |
+| G5 | Triggered IC enters the tracker on GM click, −10/phase editable | Yes | 2026-11-07 | MDF p.23, pp.39, 42 |
+| G1 | Count Matrix actions per pass, warn only | Yes | 2026-11-07 | MDF p.8 ("All Matrix actions are complex actions") |
+| G2 | Only VR-Hot gets Matrix-initiative turns | Yes | 2026-11-07 | MDF p.10 |
+| G3 | Matrix actions panel on the character sheet | Yes | 2026-11-07 | MDF p.8 (prompts) |
+| G4 | IC turn: prompt card, GM clicks | Yes | 2026-11-07 | MDF p.26 |
+| Q3 | Crash trigger: GM click only, no auto-suggest at 10 boxes | Keep GM click only | 2026-11-07 | MDF p.26, p.23 |
+| Q4 | HoloSuite minigames | Cosmetic only, or park | 2026-11-07 | design choice |
