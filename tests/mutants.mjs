@@ -388,6 +388,20 @@ export const MUTANTS = [
     impl:   text => ({ smartgun: /smart/i.test(String(text ?? '')), laserSight: /laser/i.test(String(text ?? '')) }),
   },
   {
+    id:     'laser-with-smartlink-unwarned',
+    suite:  'laser-smartlink',
+    ...ACCESSORIES, method: 'installWarnings',
+    was:    'a laser sight installed beside a smartgun said nothing — SR3 p.281 says they cannot be used together (the maintainer, 2026-11-07)',
+    impl:   () => [],
+  },
+  {
+    id:     'remington-underbarrel-unwarned',
+    suite:  'laser-smartlink',
+    ...ACCESSORIES, method: 'noUnderbarrel',
+    was:    'a bipod on a Remington 750 / 950 or a Defiance T-250 said nothing; SR3 pp.278-279 print no underbarrel mount (the maintainer, 2026-11-07: warn)',
+    impl:   () => false,
+  },
+  {
     id:     'loose-rounds-shown-as-clips',
     suite:  'ammo-stock',
     ...AMMO, method: 'loadLabel',

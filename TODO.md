@@ -946,8 +946,11 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
 value today; none settled by picking a side):
 - **Pistol mounts** — SR3 p.276 and CC p.75 give pistols barrel + top only, yet SR3 p.282 lists underbarrel and top/under items
   without saying pistols can't take them. Warn on an underbarrel mod on a pistol?
-- **Sport rifles and shotguns** — the Remington 750/950 and the Defiance T-250 print no underbarrel (SR3 pp.278-279); CC p.75's
-  frames list Barrel + Top + Under. Which wins for stock weapons?
+- ✔ **Sport rifles and shotguns** → ruled 2026-11-07: *"SR3 is right Remington 750 and 950 should not take them. so warn."* SR3
+  p.278: "Neither weapon can take underbarrel-mounted accessories"; p.279, the Defiance T-250: "It has no underbarrel mount." So a mod
+  that would go underbarrel on any of the three warns, never refuses (`WeaponAccessories.noUnderbarrel` / `installWarnings`); a
+  top-or-under one goes on top. The ruling also says, in general: *"if SR3 and CC are at odds, CC will usually win"* — here SR3's
+  per-gun line wins over CC p.75's frames. `tests/laser-smartlink.test.mjs`, mutant `remington-underbarrel-unwarned`, TESTING.md §77k.
 - **Imaging scopes and the rangefinder: Top, or Top or Under?** SR3 pp.280, 282 and CC p.33 say Top; CC p.82 says Top or Under.
   Today the mount comes from the pack's description (Top).
 - ✔ **Gas vents removable?** → ruled 2026-10-27: not removable, or removal costs something — its own item, [#277](TODO-DONE.md#277).
@@ -955,8 +958,11 @@ value today; none settled by picking a side):
   II and III printed in SR3; level 1 keeps that note in its description.)
 - **Internal smartgun price** — SR3 p.282 +100% of the weapon; CC p.81 the frame's base DPV × 8 (Smartlink-2 ×1.5); M&M p.32 ×150%
   for the Smartlink-2 internal. Not built yet.
-- **Laser sight with a smartlink** — SR3 p.281 says not together, the p.112 table lists both. Today both flags can be on and the GM
-  window shows both rows; pick the better (−2) only?
+- ✔ **Laser sight with a smartlink** → ruled 2026-11-07: *"ok, go with the warn option but you shouldn't be able to apply both"*
+  (SR3 p.281: "Laser sights may not be used with a smartlink system"). Installing one beside the other warns
+  (`WeaponAccessories.installWarnings`); the GM's TN window unticks the other row (`exclusiveGear`); the guess offers only the
+  smart row; `sumModifiers` counts only the better. `tests/laser-smartlink.test.mjs`, mutant `laser-with-smartlink-unwarned`,
+  TESTING.md §77k.
 - **Imaging scope with a smartlink** — barred by SR3 p.280 and CC p.83; M&M p.34 lets goggles / an image link be the smartlink's
   display. Does a scope still block it then?
 - ✔ **Stocks on rifles** → ruled 2026-10-27: *"you should not be able to install a stock on a rifle since it has one by default"* —

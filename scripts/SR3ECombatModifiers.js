@@ -441,13 +441,32 @@ export function guessGearModifiers(actor, weapon) {
     smartlinkShot: linked && shot,
     // Never both — smartlink (−2) supersedes goggles (−1) on the same shot.
     smartGoggles:  !dual && !shotgun && gunIsSmart && hasGoggles && !(gunIsSmart && hasSmartlink),
-    laserSight:    !dual && !shotgun && WeaponAccessories.flag(weapon, 'laserSight'),
+    // Never with a smartlink system (SR3 p.281; the maintainer, 2026-11-07): the smart row is guessed instead.
+    laserSight:    !dual && !shotgun && WeaponAccessories.flag(weapon, 'laserSight') && !(gunIsSmart && (hasSmartlink || hasGoggles)),
     secondFirearm: dual,
   };
 }
 
+/** The smartlink-system rows a laser sight can't be used with — SR3 p.281, "Laser sights may not be used with a smartlink system". */
+export const SMART_ROWS = ['smartlink', 'smartlinkShot', 'smartGoggles'];
+
+/**
+ * The rows to untick when the GM ticks `key` in the TN window: a laser sight and the smartlink system never both
+ * (the maintainer, 2026-11-07: "you shouldn't be able to apply both"). Empty for any other row.
+ * @param {string} key
+ * @returns {string[]}
+ */
+export function exclusiveGear(key) {
+  if (key === 'laserSight') return [...SMART_ROWS];
+  if (SMART_ROWS.includes(key)) return ['laserSight'];
+  return [];
+}
+
 /**
  * Sum the ticked modifiers.
+ *
+ * A laser sight ticked with a smartlink-system row counts nothing — only the better one counts (SR3 p.281; the window
+ * unticks one, `exclusiveGear`, and this holds for any other caller too).
  * @param {object} state  key → true, or an integer count for `per:true` rows
  * @returns {number}
  */
@@ -462,6 +481,7 @@ export function sumModifiers(state = {}) {
     // situational row. Both are read here rather than through `mod`.
     if (m.value) { total += Number(v) || 0; continue; }
     if (!v || m.mod == null) continue;
+    if (m.key === 'laserSight' && SMART_ROWS.some(k => state[k])) continue;
     total += m.per ? m.mod * (Number(v) || 0) : m.mod;
   }
   return total;

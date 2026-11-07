@@ -3258,7 +3258,7 @@ export class SR3EItem extends Item {
   }
 
   static async _promptGMAttackWindow(ctx, opts = {}) {
-    const { mvpModifierGroups, sumModifiers, clampTN, guessGearModifiers, gyroOffset,
+    const { mvpModifierGroups, sumModifiers, clampTN, guessGearModifiers, gyroOffset, exclusiveGear,
             SR3E_VISIBILITY_TABLE, SR3E_VISION_TYPES, visibilityModifier,
             detectVision, visionReminder, bestVisionKey, escapeHTML } =
       await import('../SR3ECombatModifiers.js');
@@ -3482,6 +3482,14 @@ export class SR3EItem extends Item {
             : '';
         };
 
+        // A laser sight and the smartlink system never both (SR3 p.281; the maintainer, 2026-11-07): ticking one unticks the other.
+        el.querySelectorAll('.sr-gm-mod').forEach(c => c.addEventListener('change', () => {
+          if (!c.checked) return;
+          for (const k of exclusiveGear(c.dataset.key)) {
+            const other = el.querySelector(`.sr-gm-mod[data-key="${k}"]`);
+            if (other) other.checked = false;
+          }
+        }));
         el.querySelectorAll('.sr-gm-mod, .sr-gm-mod-per, .sr-gm-mod-sit, .sr-gm-vis-cond, .sr-gm-vis-type, .sr-gm-pod')
           .forEach(i => i.addEventListener('change', recompute));
         // `change` alone does not fire until the number input loses focus, so the TN would

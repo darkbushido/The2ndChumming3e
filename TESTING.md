@@ -3509,6 +3509,18 @@ works, and the same implant **built in** now does it too.
       load it reads **Panther Assault Cannon [Bipod]**, bracketed RC 2, accessories "Folding Bipod(2RC)", a Bipod integral mod
       in 🔧 (no Hip Pad Bracing System), Legality 2-H. A mod the GM had installed on it is still there. Reload → nothing changes.
 
+### 77k. A laser sight and a smartlink never both (TODO 276 — SR3 p.281; the maintainer's ruling of 2026-11-07)
+
+JS only — F5 is enough.
+
+- [ ] **Install:** drop a Laser Sight onto a smartgun (an Ares Predator II) → a warning "…can't be used together (SR3 p.281) — only
+      the smartlink's −2 counts"; it installs anyway. Drop a Smartgun, external onto a gun with a laser sight → the same warning.
+- [ ] **The GM's TN window:** a smartlinked shooter fires that Predator → Gear has **Smartlink** ticked, **Laser sight** not. Tick
+      Laser sight → Smartlink unticks and the TN goes up by 1; tick Smartlink → Laser sight unticks. Never both ticked.
+- [ ] **No receptor:** a shooter with no smartlink or goggles fires it → Laser sight is pre-ticked (the smartgun is dead weight).
+- [ ] **No underbarrel** (SR3 pp.278-279, ruled the same day): drop a Bipod onto a Remington 750 → warned "…has no underbarrel mount
+      (SR3 pp.278-279)", and it installs. The same on a Defiance T-250. A Laser Sight (Top/Under) on the 750 → no warning (top).
+
 ## 78. A vehicle's mods against its Cargo and Load (TODO 265, step c's first slice — R3R p.124)
 
 JS / CSS only (no restart needed beyond a reload). A vehicle from the packs, e.g. an Ares Roadmaster (Body 5, Cargo 80, Load 2000).

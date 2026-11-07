@@ -136,7 +136,7 @@ export async function run(t) {
     /Hooks\.on\('createItem', \(item, options\) => \{ if \(!options\?\.sr3eModMove\) _ratchetEssenceOnInstall\(item\); \}\);/.test(read('scripts/sr3e.js'))
     && /Hooks\.on\('deleteItem', \(item, options\) => \{ if \(!options\?\.sr3eModMove\) _recordEssenceHoleOnRemoval\(item\); \}\);/.test(read('scripts/sr3e.js')));
   t.ok('install warns, never refuses: warnings go to notifications and the install goes ahead',
-    /for \(const w of \[\.\.\.ItemMods\.warnings\(host, source\), \.\.\.ArmorMods\.installWarnings\(host, source\.toObject\(\)\),\s*\.\.\.CyberCapacity\.installWarnings\(host, source\.toObject\(\), graded\)\]\) ui\.notifications\.warn\(w\);\s*const installed = ItemMods\.install/.test(glue));
+    /for \(const w of \[\.\.\.ItemMods\.warnings\(host, source\), \.\.\.ArmorMods\.installWarnings\(host, source\.toObject\(\)\),\s*\.\.\.CyberCapacity\.installWarnings\(host, source\.toObject\(\), graded\),\s*\.\.\.\(host\.type === 'firearm' \? WeaponAccessories\.installWarnings\(host, source\.toObject\(\)\) : \[\]\)\]\) ui\.notifications\.warn\(w\);\s*const installed = ItemMods\.install/.test(glue));
 
   const sheet = read('scripts/sheets/SR3EItemSheet.js');
   t.ok('the item sheet sends a temporary mod\'s form to its own update, not core\'s submit',

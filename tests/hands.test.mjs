@@ -42,7 +42,8 @@ export async function run(t) {
   const smartPistol = w('firearm', 'HPist', { accessories: 'Smartgun, Laser' });
   const actor = items => ({ items });
   const one = guessGearModifiers(actor([smartPistol, { id: 's', name: 'Smartlink', type: 'cyberware', system: {} }]), smartPistol);
-  t.ok('one gun: smartlink and laser guessed, no second firearm', one.smartlink && one.laserSight && !one.secondFirearm);
+  // Not the laser too: a laser sight is never used with a smartlink system (SR3 p.281; the maintainer, 2026-11-07).
+  t.ok('one gun: smartlink guessed (not its laser, p.281), no second firearm', one.smartlink && !one.laserSight && !one.secondFirearm);
   const two = guessGearModifiers(actor([smartPistol, w('firearm', 'LPist'), { id: 's', name: 'Smartlink', type: 'cyberware', system: {} }]), smartPistol);
   t.ok('a gun in each hand: +2 guessed, and smartlink, goggles and laser withdrawn ("negates", p.112)',
     two.secondFirearm && !two.smartlink && !two.smartGoggles && !two.laserSight);

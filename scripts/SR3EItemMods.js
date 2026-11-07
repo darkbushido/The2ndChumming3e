@@ -18,6 +18,7 @@ import { ItemMods } from './data/item-mods.mjs';
 import { ArmorMods } from './data/armor-mods.mjs';
 import { CyberCapacity } from './data/cyber-capacity.mjs';
 import { IntegralMods } from './data/integral-mods.mjs';
+import { WeaponAccessories } from './data/weapon-accessories.mjs';
 import { ModRemoval, CONTACT_RATES, REPAIR } from './data/mod-removal.mjs';
 import { actorFrom, actorRef } from './data/actor-ref.mjs';
 
@@ -41,7 +42,8 @@ export const SR3EItemMods = {
     if (blocked) { ui.notifications.error(blocked); return false; }
     const graded = i => game.sr3e.SR3EActor.gradedEssenceCost(game.sr3e.SR3EActor.baseEssenceCost(i), i.system?.grade);
     for (const w of [...ItemMods.warnings(host, source), ...ArmorMods.installWarnings(host, source.toObject()),
-      ...CyberCapacity.installWarnings(host, source.toObject(), graded)]) ui.notifications.warn(w);
+      ...CyberCapacity.installWarnings(host, source.toObject(), graded),
+      ...(host.type === 'firearm' ? WeaponAccessories.installWarnings(host, source.toObject()) : [])]) ui.notifications.warn(w);
     const installed = ItemMods.install(ItemMods.installed(host), source.toObject(), newId);
     await host.update({ 'system.installed': installed });
     // Moved, not copied, when it came from the host's own actor — the scope is in the gun now, not in the bag too.
