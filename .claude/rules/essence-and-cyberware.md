@@ -140,8 +140,8 @@ Upstream (`criticalfault/Shadowrun-Character-Generator`) encodes effects as `+2R
   (highest, via `itemRating`) comes off both tracks before the injury lookup; takes the **larger** with Pain
   Resistance (M&M p.78, *"incompatible"*). `painEditorHidesWounds` also hides compensated characters.
   Their Stress effects aren't modelled.
-- **Nephritic Screen** rides `situationalBonuses` key `toxin`, like Body Control; a dwarf's racial +2 (SR3
-  SR3 p.56, `SR3E.racialSituational`) joins them. Offered on the attribute-roll dialog as one unticked
+- **Nephritic Screen** rides `situationalBonuses` key `toxin`, like Body Control; a dwarf's racial +2
+  (SR3 p.56, `SR3E.racialSituational`) joins them. Offered on the attribute-roll dialog as one unticked
   checkbox while Body is selected (`SR3EActor.toxinResistanceOffer`, TODO 98) — never added to `body.value`.
 
 ### Stress on implants and Attributes  · *M&M pp.124-131* — TODO 109

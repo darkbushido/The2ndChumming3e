@@ -11,11 +11,11 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - `dice-and-defaulting.md` 6cf26aee5db7
 - `drugs-and-healing.md` 442627285d0e
 - `electronic-warfare.md` c0eb3d490caa
-- `essence-and-cyberware.md` 3277de07cbfb
+- `essence-and-cyberware.md` 18a6912219db
 - `initiative-and-vehicles.md` ba3a5b4864c2
 - `karma-and-economy.md` f0fb502938eb
 - `magic.md` 1b45890f93a4
-- `matrix.md` da10a5ada29a
+- `matrix.md` 5b12bd9a3205
 - `melee-combat.md` 73eba60f8bfb
 - `portraits.md` 9fca86734575
 - `ranged-combat.md` 4c7dc8c908f1

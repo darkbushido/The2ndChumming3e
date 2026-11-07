@@ -133,7 +133,7 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
 - 10 boxes, click-to-toggle; *"When an icon achieves 10 boxes of Overload Damage, it crashes"* (MDF p.26).
 - **Penalties: +1 TN from box 1, +2 from box 3, +3 from box 6, +4 at box 10** — MDF p.12's table, read from
   the page image in the 0.6.3 rules check (`MdfRules.matrixCMPenalty`). Until 0.6.3 the code used 3/6/8.
-- **Hacking Pool is Intelligence + ⌊MPCP ÷ 3⌋** under Defragged (MDF p.11, `MdfRules.hackingPool`) — ⚠ Orthodox uses SR3
+- **Hacking Pool is Intelligence + ⌊MPCP ÷ 3⌋** under Defragged (MDF p.11, `MdfRules.hackingPool`) — ⚠ Orthodox uses
   SR3 p.207's ⌊(INT + MPCP) ÷ 3⌋; `HackingPool.forRuleset` picks (TODO 275).
 - Not yet a separate track on the host sheet.
 
