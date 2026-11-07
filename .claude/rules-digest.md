@@ -13,9 +13,9 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - `electronic-warfare.md` c0eb3d490caa
 - `essence-and-cyberware.md` 18a6912219db
 - `initiative-and-vehicles.md` ba3a5b4864c2
-- `karma-and-economy.md` f0fb502938eb
+- `karma-and-economy.md` d811c6aafa17
 - `magic.md` 1b45890f93a4
-- `matrix.md` 5b12bd9a3205
+- `matrix.md` 57ca240da040
 - `melee-combat.md` 73eba60f8bfb
 - `portraits.md` 9fca86734575
 - `ranged-combat.md` 4c7dc8c908f1
@@ -73,7 +73,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **The Karma Pool in play — TODO 216 and the audit of 2026-10-11** — SR3 p.246-248, SR3 p.248, SR3 p.246, SR3 p.168, SR3 p.180-181, SR3 p.190, SR3 p.84, SR3 p.245, SR3 p.244, SR3 p.57 — scripts/data/karma-uses.mjs, data/hand-of-god.mjs, tests/karma-uses.test.mjs, tests/karma.test.mjs, tests/e2e/karma.spec.mjs, sr3e.js, data/skill-rules.mjs
 - **The ledger  · TODO 79** — *(no citation: not audited)* — scripts/data/ledger.mjs, tests/ledger.test.mjs
 - **± Funds and giving money  · TODO 192** — *(no citation: not audited)* — scripts/data/funds.mjs
-- **Buying gear — TODO 82** — SR3 p.272-273, SR3 p.272, SR3 p.273, SR3 p.281 — scripts/data/purchasing.mjs, scripts/SR3EPurchase.js, scripts/data/gear-search.mjs, data/legality.mjs, data/legality-table.mjs, tools/fill-legality.mjs, tools/build-default-gear.mjs, tests/purchasing.test.mjs
+- **Buying gear — TODO 82** — SR3 p.272-273, SR3 p.272, SR3 p.273, SR3 p.281 — scripts/data/purchasing.mjs, scripts/SR3EPurchase.js, scripts/data/gear-search.mjs, data/legality.mjs, data/legality-table.mjs, tools/fill-legality.mjs, tools/build-default-gear.mjs, scripts/data/cart.mjs, tests/purchasing.test.mjs
 - **Carried load and Encumbrance — TODO 126** — SR3 p.274 — scripts/data/carried-load.mjs
 - **👁 Concealment — what a character carries that shows — TODO 195** — SR3 p.45, SR3 p.231-232, SR3 p.236-237, SR3 p.270, SR3 p.231, SR3 p.303, SR3 p.301, MM p.21, SR3 p.237, SR3 p.236, SR3 p.232 — scripts/SR3EConcealment.js, scripts/data/concealment.mjs
 
@@ -91,8 +91,9 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **Security Tiers** — *(no citation: not audited)*
 - **Hacking Pool** — MDF p.11, SR3 p.207
 - **User modes** — MDF p.10, MDF p.27, SR3 p.227, SR3 p.156, SR3 p.226, SR3 p.145 — scripts/data/rigger-shock.mjs
+- **Matrix actions are Complex · MDF p.8** — MDF p.8
 - **Hacking procedure** — *(no citation: not audited)*
-- **Overwatch / Convergence** — MDF p.22-23
+- **Overwatch / Convergence** — MDF p.22-23, MDF p.26 — data/overwatch-crash.mjs
 - **Cybercombat** — MDF p.26
 - **IC / Agents** — *(no citation: not audited)*
 - **Matrix Condition Monitor** — MDF p.26, MDF p.12, MDF p.11, SR3 p.207
