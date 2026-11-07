@@ -29,3 +29,6 @@ Log of questions put to the maintainer through the questions session. Format: qu
 | Q13 | Printed bracketed RC | Move to the GM's TN window | 2026-11-07 | SR3 p.280 |
 
 General: maintainer asked that every page be read in the PDF before a question is put to them (2026-11-07).
+| — | Cyberware mods and Essence (bears on Q14/Q15) | "for cyberware, they all should have some "free essence" for mods. if the installed mods fit in that then they are cleanly included. if they have put more mods then fit thats additional essence loss." | 2026-11-07 | M&M p.36 (capacity table) |
+
+Queue: remaining mods questions moved to the back, after every other session (maintainer, 2026-11-07).
