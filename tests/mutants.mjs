@@ -55,6 +55,7 @@ const VBUDGET = { module: '../scripts/data/vehicle-budget.mjs', klass: 'VehicleB
 const PRC = { module: '../scripts/data/printed-rc.mjs', klass: 'PrintedRC' };
 const VMOUNT = { module: '../scripts/data/vehicle-mounts.mjs', klass: 'VehicleMounts' };
 const VMODS = { module: '../scripts/data/vehicle-mods.mjs', klass: 'VehicleMods' };
+const VDESIGN = { module: '../scripts/data/vehicle-design.mjs', klass: 'VehicleDesign' };
 // An item with its integral flags taken off — what every reader saw before the ruling (TODO 276, step b).
 const unIntegral = it => ({ ...it,
   flags: { ...(it?.flags ?? {}), The2ndChumming3e: { ...(it?.flags?.The2ndChumming3e ?? {}), integral: false } },
@@ -4253,5 +4254,40 @@ export const MUTANTS = [
       if (item?.type !== 'firearm') return null;
       return this.PRINTED_RC.find(([name]) => name === item.name) ?? null;
     },
+  },
+  {
+    id:     'design-handling-floor-rounds-down',
+    suite:  'vehicle-design',
+    ...VDESIGN, method: 'handlingFloor',
+    was:    'Handling improved to half the chassis figure rounded DOWN — R3R p.115 rounds up (TODO 287)',
+    impl:   figure => Math.floor(Number(figure) / 2),
+  },
+  {
+    id:     'design-availability-rounds-down',
+    suite:  'vehicle-design',
+    ...VDESIGN, method: 'availability', needsOriginal: '_availabilityOriginal',
+    was:    'Availability rounded cost ÷ 20,000 down — R3R p.113: "round up result" (TODO 287)',
+    impl:   function (cost, vehicleClass) { return this._availabilityOriginal(Math.floor(Number(cost) / 20000) * 20000, vehicleClass); },
+  },
+  {
+    id:     'design-smart-max-truncates',
+    suite:  'vehicle-design',
+    ...VDESIGN, method: 'smartMax',
+    was:    'smart materials truncated the raised maximum — the book’s 270 → 311 rounds to the nearest (R3R p.111, p.118, TODO 287)',
+    impl:   max => (max == null ? null : Math.floor(Number(max) * 1.15)),
+  },
+  {
+    id:     'design-cell-strips-formula-bracket',
+    suite:  'vehicle-design',
+    ...VDESIGN, method: 'cell', needsOriginal: '_cellOriginal',
+    was:    'reading a ship’s "25 (15)" also cut the bracket off "5+(20xB)", pricing a crawler’s engine at 0 (TODO 287)',
+    impl:   function (text, body, opts) { return this._cellOriginal(typeof text === 'string' ? text.replace(/\s*\(.*\)\s*$/, '') || null : text, body, opts); },
+  },
+  {
+    id:     'design-load-ignores-body0',
+    suite:  'vehicle-design',
+    ...VDESIGN, method: 'loadCost',
+    was:    'a Body 0 vehicle bought Load at 1 point per 10 kg — R3R p.116: 1 point per kg (TODO 287)',
+    impl:   kg => (Number(kg) > 0 ? Math.ceil(Number(kg) / 10) : 0),
   },
 ];

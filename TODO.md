@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**86 open.** 200 done — see [TODO-DONE.md](TODO-DONE.md).
+**87 open.** 200 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[282](#282) Vehicle weapons fire with no recoil<br>[283](#283) Buy or build a modded item — its whole price before it reaches the sheet<br>[284](#284) 🛒 Buy more than one — a Quantity in Buy gear<br>[285](#285) 🛒 A shopping cart — several items, one card, one payment |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[282](#282) Vehicle weapons fire with no recoil<br>[283](#283) Buy or build a modded item — its whole price before it reaches the sheet<br>[284](#284) 🛒 Buy more than one — a Quantity in Buy gear<br>[285](#285) 🛒 A shopping cart — several items, one card, one payment<br>[287](#287) Vehicle and drone design — a chassis and Design Points (R3R) |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -1061,6 +1061,95 @@ The maintainer: *"we may need a shoping cart system"*. Ruled 2026-10-28: after T
 (each with its quantity) gathered in Buy gear, then one card and one 💴 Pay for the lot. **Not designed yet** — at the
 store it is one list price; through a contact each item has its own Availability (SR3 p.272), so the open question is one
 Etiquette Test per item or one for the slowest. Overlaps TODO 283 (a host and its mods bought as one purchase).
+
+## 287. Vehicle and drone design — a chassis and Design Points (R3R) — **requested 2026-11-07**
+
+[#265](#265) built **customization** (mods on an existing vehicle) and left R3R's *Vehicle Design* out on purpose. This is
+that: build a vehicle or drone from scratch. Branch `claude/vehicle-design-1c2fa2`.
+
+**Read (2026-11-07):** R3R *Vehicle Design*, printed pp.102-121 (PDF page = printed + 2, checked against the page footers);
+tables at the back — Power Plant Table pp.194-201, Chassis Table pp.202-205 (drones p.204, submarines p.205). The tables are images with a broken text layer:
+read them from rendered pages (`pdftoppm`), never from `pdftotext`.
+- **Five steps** (p.104): select a chassis → a power plant → design options → vehicle modifications → final cost.
+- **Chassis** (p.104-109, table p.202): Body (fixed, "cannot be improved nor reduced"), start/max CF, Handling, Armor,
+  Autonav/Pilot, Sensor, Seating, Entry Points, **Design Points**, **Mark-Up Factor**, standard features. Ten categories
+  (bike, boat, car, fixed-wing, hovercraft, rotor, ship, sub, vectored thrust, special); drone chassis (crawler, UAV,
+  skimmer…) come with remote-control interface and rigger adaptation as standard (p.104). Lowering a rating or removing
+  doors/seats never lowers the cost — except a removed seat frees its CF and Load (p.104).
+- **Power plant** (p.109-111, table p.194): per chassis × plant, starting and maximum Speed, Accel, Load, Economy, plus
+  Signature, fuel, and its own Design Points. A chassis not listed under a plant cannot use it. Speed and Load start at
+  the minimum (p.110).
+- **Design options** (p.111, 114-121) — manufacturer only, "not available to shadow mechanics": functional improvements
+  (Accel +1 = 25 pts — the OCR reads "2.5", the page and the examples say 25; Speed +1 = 2 pts, Handling −1 = 25 pts down to half the chassis figure rounded up, Economy 5 pts per
+  5%, Cargo 1 pt per +0.2 CF, Load 1 pt per 10 kg (per 1 kg at Body 0), Signature (levels)⁴ × 200, entry points, fuel
+  tank, depth — p.115-116), enhancements (smart materials 100 pts, raising the maxima 15% and Street Index +1, p.118;
+  hybrid, auxiliary engine, STOL/VSTOL, removed manual controls, setup/breakdown, structural agility…, p.116-119),
+  facilities and robot options (p.119-121). Each may consume CF and Load; "No vehicle can carry more design options than
+  its CF or Load rating allows" (p.111).
+- **Vehicle modifications during design** (p.112) use each mod's *Vehicle Design Point Cost*, not its nuyen price — the
+  #265 `vehiclemod` items; their CF / Load come off the vehicle as in `vehicle-budget.mjs`.
+- **Final cost** (p.113): Design Point Value × Mark-Up Factor (GM may add 1-3 for prototypes / one-offs) × 100 = nuyen.
+  Street Index from a class table (standard 1, luxury 2, security 2, military 3+, +0.5 / +1 speciality). **Availability =
+  cost ÷ 20,000, rounded up; the same figure is the base time in days**, minimum 2/24; +4 luxury, +6 security, +10
+  military; over 30 is out of the players' reach. There is **no design skill test** in the chapter — the "time" is the
+  build/acquire time from the Availability. GM approval of a design: p.121.
+- Worked examples (Light Strike Vehicle, Brickyard Beauty, p.109-114) are the test fixtures: 169 pts × 0.40 × 100 =
+  6,760¥, SI 2 → 13,520¥; 1,402 pts × 1.5 → 210,300¥.
+
+**Decided (the maintainer, 2026-11-07):**
+- **First slice: the tables + the calculator** (steps 1-2 below, functional improvements included), tested on the book's
+  worked examples. No UI yet.
+- **All chassis together** — drones are chassis rows, one table, one calculator.
+- **Compute, GM edits** — every number computed and warned on; every total, the vehicle class, Street Index and the
+  Mark-Up extra are editable.
+- **Its own window, anyone may open it** — Create goes through `sr3e.actor.create` so the player owns the vehicle; the GM
+  approves at the table (p.121).
+
+**Plan:**
+1. **Tables, pure** — `scripts/data/vehicle-design-tables.mjs`: the Chassis Table and Power Plant Table as data (numbers
+   only, with page), keyed by chassis id; `tests/vehicle-design.test.mjs` spot-checks rows against the printed page.
+2. **Rules, pure** — `scripts/data/vehicle-design.mjs`: `VehicleDesign.evaluate(design)` → stats, Design Point Value, CF /
+   Load used against the maxima, cost, Street Index, Availability / days, and a list of **warnings** (over a maximum, a plant
+   the chassis cannot use, over CF or Load) — warn, never refuse. A design is plain data:
+   `{ chassis, plant, options: [{ id, level }], mods: [itemRef], markUpExtra, vehicleClass }`. Unit tests on the two worked
+   examples; mutants for the cost formula, the Handling floor and the Availability rounding.
+3. **Design options catalogue** — functional improvements first (they are all numbers), then enhancements, facilities and
+   robot options as data rows with their CF / Load / cost formulas; anything not a number is a note for the GM.
+4. **The designer UI** — its own ApplicationV2 window that anyone may open (ruled above): pick chassis and plant, add
+   options and mods (their Design Point cost from the `vehiclemod` items), the running totals and warnings beside it, every
+   total editable.
+5. **Make the vehicle** — the finished design becomes a `vehicle` actor through `sr3e.actor.create` (a blank vehicle with the
+   computed stats, the mods embedded as `vehiclemod` items, the design kept under `flags.sr3e.design` so it can be reopened),
+   so a player gets OWNER. All figures stay editable on the sheet afterwards.
+
+**Built — slice 1, the tables and the calculator (2026-11-07):**
+- `scripts/data/vehicle-design-tables.mjs`: all 116 chassis (vehicles and drones, with Body, CF, Handling, Armor,
+  Autonav/Pilot, Sensor, Seating, Entry Points, Design Points, Mark-Up, a short feature tag, submarine Depth) and all 331
+  Power Plant rows across the ten plants, each with its printed page. Cells keep the printed formulas ('5xB',
+  '50-(5xB)', aircraft 'stall/Speed', submarine 'surface/submerged'). Only the unpowered chassis (trailers, barge, rail cars)
+  have no plant.
+- `scripts/data/vehicle-design.mjs`: `VehicleDesign.evaluate(design)` covers chassis, plant, the functional improvements,
+  smart materials, removed seats (`freed`), options and mods (each with its Design Points, CF and Load, as GM-entered rows
+  for now), the final cost, Street Index, price and Availability. Warns and never refuses. Formulas are read by a small
+  parser, not `eval`.
+- `tests/vehicle-design.test.mjs` has 52 assertions, both worked examples among them. Mutants:
+  `design-handling-floor-rounds-down`, `design-availability-rounds-down`, `design-smart-max-truncates`,
+  `design-cell-strips-formula-bracket`, `design-load-ignores-body0`.
+- No UI in this slice, so there is nothing to check in Foundry yet.
+- ⚠ **Read as, not ruled:** the "minimum Availability and base time … 2/24" (p.113) is read as Availability 2, 2 days
+  (the example's stat block prints "2/2 days"). Smart materials' raised maxima round to the nearest (the example: 270 → 311).
+
+**For the maintainer — book findings (R3R, printed pages; the code follows the itemised rule):**
+- **Brickyard Beauty** (pp.111-114): its steps add to **1,377** points (897 + 480 for the mods); the book prints 1,401, then
+  multiplies 1,402. With the 900¥ tires, 210,300¥ + 900¥ is 211,200¥; the book prints 214,950¥.
+- **Light Strike Vehicle** (pp.112-113): the mods are totalled as "11 Design Points" but the running total adds 21
+  (148 → 169, which is right: 0 + 10 + 10 + 1). Its Load ends at 45 in the stat block, but 40 + 30 − 15 is 55.
+- **Availability class modifiers are not applied in either example.** The LSV is ruled security-grade (+6) but prints
+  "2/2 days"; the Brickyard is ruled luxury (+4) but prints "11/11 days". The code applies the p.113 modifiers as written.
+- **Tables:** Sports Car gasoline fuel is 40 liters in the example (p.111) but 60 in the table (p.198). The battery
+  Attack Submarine's People Space is +236,350 (p.196) where every other row prints +236,250. The fuel-cell Medium
+  Hovercraft has no starting Acceleration (p.197). The ATV chassis is 595 Design Points (p.202), against 50-338 for the
+  other bikes. The tables keep the printed figures; `NOTES` in the module lists them.
 
 ### 🪄 Spells & drugs
 
