@@ -28,12 +28,13 @@ export const BOOKS = {
   SR3:  { pdf: 'Shadowrun 3e - Core Rules {FAN25000}.pdf', offset: 2 },
   MDF:  { pdf: 'Shadowrun 3e - The Matrix Defragged v2.pdf', offset: null },
   CC:   { pdf: 'Shadowrun 3e - Cannon Companion.pdf', offset: null },
-  MITS: { pdf: 'Shadowrun 3e - Magic in the Shadows.pdf', offset: null },
+  MITS: { pdf: 'Shadowrun 3e - Magic in the Shadows.pdf', offset: 1 },
   R3:   { pdf: 'Shadowrun 3e - Rigger 3 Revised {FanPro10662}.pdf', offset: null },
-  MM:   { pdf: 'Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf', offset: null },
+  MM:   { pdf: 'Shadowrun 3e - Man and Machine Cyberware {FASA7126}.pdf', offset: 2 },
+  MAT:  { pdf: 'Shadowrun 3e - Matrix.pdf', offset: 1 },
 };
-const CODE_RE = /\b(SR3|MDF|CC|MitS|MITS|R3|SOTA2|M&M|MM)\s+p{1,2}\.\s?(\d+)(?:\s?[-–]\s?(\d+))?/g;
-const norm = code => ({ MitS: 'MITS', 'M&M': 'MM' }[code] ?? code);
+const PAGE_RE = /(?:\b(SR3|MDF|CC|MitS|MITS|R3|SOTA2|M&M|MM|Matrix|Cannon Companion)\s+|(?<![A-Za-z0-9&]))pp?\.\s?(\d+)(?:\s?[-–]\s?(\d+))?/g;
+const norm = code => ({ MitS: 'MITS', 'M&M': 'MM', Matrix: 'MAT', 'Cannon Companion': 'CC' }[code] ?? code);
 
 const read = p => readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
 export const rulesFiles = () => readdirSync(RULES_DIR).filter(f => f.endsWith('.md')).sort();
@@ -52,17 +53,21 @@ export function sections(text) {
   return out;
 }
 
-/** Every book citation in a piece of text, deduplicated in order. */
+/**
+ * Every book citation in a piece of text, deduplicated in order. A page names its book in front
+ * (`SR3 p.43`), or follows one in a list (`SR3 p.124, p.116` or `M&M p.63/p.71`) and inherits it.
+ * Otherwise the source names no book and the citation is `?` (TODO 290).
+ */
 export function citations(text) {
   const seen = new Map();
-  for (const m of text.matchAll(CODE_RE)) {
-    const code = norm(m[1]), page = m[3] ? `${m[2]}-${m[3]}` : m[2];
+  let last = null, end = -1;
+  for (const m of text.matchAll(PAGE_RE)) {
+    const page = m[3] ? `${m[2]}-${m[3]}` : m[2];
+    const listed = last && /^\s*(?:,|\/|and|&)\s*$/.test(text.slice(end, m.index));
+    const code = m[1] ? norm(m[1]) : listed ? last : '?';
+    last = code === '?' ? null : code; end = m.index + m[0].length;
+    if (code === '?' && [...seen.values()].some(c => c.page === page)) continue;
     seen.set(`${code} p.${page}`, { code, page, first: Number(m[2]) });
-  }
-  // A page with no book code in front of it ("· *p.168-169*") — the book is unnamed in the source.
-  for (const m of text.matchAll(/(?<![A-Za-z0-9&]\s?)(?<![A-Za-z0-9])pp?\.\s?(\d+)(?:\s?[-–]\s?(\d+))?/g)) {
-    const page = m[2] ? `${m[1]}-${m[2]}` : m[1];
-    if (![...seen.values()].some(c => c.page === page)) seen.set(`? p.${page}`, { code: '?', page, first: Number(m[1]) });
   }
   return [...seen.values()];
 }
