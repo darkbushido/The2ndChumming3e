@@ -43,7 +43,7 @@ paths:
   never replaced; a stock one (mystery man) may be *preselected*, never saved without Confirm.
 - **The book's metatype is an example, not a rule** (the maintainer, 2026-10-24). The GM may change it; the stats are
   then restated for the new race by **Metatype Shift** (`scripts/data/metatype-shift.mjs`, TODO 272, 2026-10-25):
-  book race's modifiers off, new race's on (SR3 p.56), capped at the racial maximum (p.245), floor 1; Essence, skills
+  book race's modifiers off, new race's on (SR3 p.56), capped at the racial maximum (SR3 p.245), floor 1; Essence, skills
   and metavariants untouched. The dialog says what was adjusted. Troll dermal armour, Reach and racial vision follow
   `system.metatype` on their own.
 - **Minors only when asked for** — `candidates` never returns a minor for an adult contact.

@@ -52,7 +52,7 @@ Both end the round and prompt the GM to re-roll.
 **Vehicle initiative** (`system.vcrMode`, `system.controlledBy`):
 - VCR (jumped in): rigger's `reaction.base + 2 × vcrLevel + woundMod` + `(1 + vcrLevel)`d6 —
   `Rigging.vcrReaction` / `vcrInitiativeDice`, SR3 p.301 (*"Each level adds +2 to the user's Reaction and +1D6
-  Initiative dice"*); wired reflexes and magic don't apply (p.140). ⚠ **+2, not +1**, on every path incl. the
+  Initiative dice"*); wired reflexes and magic don't apply (SR3 p.140). ⚠ **+2, not +1**, on every path incl. the
   chase (TODO 167). ⚠ There is no verified flat "−2 TN per VCR level on skill tests" (TODO 106).
 - RCD (remote, the **captain's chair**): a rigger **with a VCR** keeps the VCR Initiative above, minus no
   drone's Simsense jam; without one (a datajack and a deck), `Reaction + woundMod` + `initiativeDice`d6 —
@@ -85,7 +85,7 @@ the GM via **`sr3e.action.charge`**.
   keyed to the phase) — Ready + Fire, Remove + Insert Clip charge twice, and ↺ defaults to the last entry.
   So anything that charges must `begin` first (the sheet's ✋ does). ↺ lists every changed value and every card posted since, each untickable, then restores,
   deletes and frees the slot.
-- **Ready Weapon** (TODO 47, p.107): `system.ready` on firearm/melee/projectile/thrown (initial true),
+- **Ready Weapon** (TODO 47, SR3 p.107): `system.ready` on firearm/melee/projectile/thrown (initial true),
   rules in `ready-weapon.mjs`. ✋ toggles it (readying charges a Simple). `SR3EItem._ensureReady` at the top
   of `rollWeapon`/`rollMeleeAttack`: Ready / Quick Draw (Concealability 4+ firearms, Reaction (4) +2
   unholstered via `rollThen` → `_quickDrawRolled` → 🎯 Fire card → `rollWeapon({ quickDrawn: true })`,
@@ -93,17 +93,17 @@ the GM via **`sr3e.action.charge`**.
   ⚠ **New weapons arrive put away** (TODO 135/136): the field's initial stays true for old sheets, but a
   `preCreateItem` hook sets `ready: false` on any weapon created on a character/NPC (`putAwayOnCreate`;
   not body weapons, `hands: 0` cyberguns or vehicles) and takes new armour off (`worn: false`).
-- **Hands** (TODO 49, p.112): `system.hands` (0-2, blank = `Hands.defaultHands(type, category)`; packs
+- **Hands** (TODO 49, SR3 p.112): `system.hands` (0-2, blank = `Hands.defaultHands(type, category)`; packs
   store it via `tools/fill-weapon-hands.mjs`), `system.extraHands` on actors. In hand = ready.
-  ⚠ **p.112 is a class whitelist** — only pistol/SMG classes dual-wield (`DUAL_WIELD_CATEGORIES`).
+  ⚠ **SR3 p.112 is a class whitelist** — only pistol/SMG classes dual-wield (`DUAL_WIELD_CATEGORIES`).
   `guessGearModifiers` guesses `secondFirearm` (+2) and withdraws smartlink/goggles/laser (*"negates"*).
-- **Accessories and the gyro** (TODO 18, p.113, p.282):
+- **Accessories and the gyro** (TODO 18, SR3 p.113, p.282):
   - `smartgun`/`laserSight` on firearms (nullable; blank reads `accessories`), via `WeaponAccessories.flag`;
     packs store them (`tools/fill-weapon-accessories.mjs`). ⚠ Read per item — a designator or laser weapon is not a laser sight.
   - Worn *Gyro Mount* gear: `SR3EActor.gyroMount` / `gyroRating`.
   - ⚠ **Full rating on EACH of recoil and movement** (the maintainer's ruling, CC p.34). `gyroOnRecoil`
     in `rollWeapon`; the rating goes to the GM window as `gyroLeft`, where `gyroOffset` takes it off the
-    ticked movement rows. Mutant `gyro-shared-allowance` guards against p.113's shared allowance.
+    ticked movement rows. Mutant `gyro-shared-allowance` guards against SR3 p.113's shared allowance.
   - Costs: +1/+1 armour in `armorRatings`, +4 melee TN (`gyroMeleeTN`), half Combat Pool
     (`derived.combatPoolBeforeGyro` keeps the full figure).
 - Not yet: Take Aim across phases; one Simple for two guns, recoil crossover.
@@ -113,7 +113,7 @@ Chase Scene, Driving Test, Session Rewards, 🍀 Refresh Karma Pools, Chunky Sal
 Escape Artist live on the Rollable Tables tab (`renderRollTableDirectory`). Chase and Driving Test are for all; the
 rest GM-only. **Barrier Damage** (SR3 p.119, p.124-125) — rules in `scripts/data/barrier.mjs` (`Barrier`): six attack
 kinds with their multiplier (blast, firearm/ranged, melee, combat spell ×2; Demolitions, elemental ×1). ⚠ Melee is ×2
-for every weapon — p.125's blunt-normal / edged-double split is *Firing Through*, not breaking a barrier (the
+for every weapon — SR3 p.125's blunt-normal / edged-double split is *Firing Through*, not breaking a barrier (the
 maintainer, 2026-10-25). A door kind (regular / security ×2 material) puts **opens / holds** on the card: regular at
 half its undamaged rating, security at 0. Power past the adjusted rating but short of one increment loses 1 BR, not 0.
 Only a blast carries Power on past a fallen barrier. Driving Test from there (`SR3EVehicleSheet.promptVehicleDrivingTest` → `runDrivingTest`)
@@ -127,25 +127,25 @@ mode and `rollPool`, never `Roll.create`.
 
 ### Driving Test  · *SR3 p.134* — `runDrivingTest`
 Base TN = vehicle **Handling**; TN dropdowns: unfamiliar +1, stress, size +2/+3, weather +2/+4, terrain
-−1/0/+1/+3, combat +2, datajack −1, **VCR −VCR Rating**. ⚠ **Not ×2** (p.134, worked p.135); the ×2
-belongs to the vehicle-combat tables (pp.141-146).
+−1/0/+1/+3, combat +2, datajack −1, **VCR −VCR Rating**. ⚠ **Not ×2** (SR3 p.134, worked SR3 p.135); the ×2
+belongs to the vehicle-combat tables (SR3 pp.141-146).
 Pool (auto, editable): Vehicle Skill **+ Autonav (out of combat only)**; a jacked-in rigger ("Using VCR")
 adds Control Pool dice **instead of** Autonav — `min(Control Pool, Vehicle Skill)`. Recomputed live. No skill → Default dialog.
 
 **Control Pool — SR3 p.44** (TODO 167, `scripts/data/rigging.mjs`, `derived.controlPool`): **Reaction (unaugmented)
 + 2 × VCR**, **0 without a VCR**; one test takes at most its skill dice. ⚠ **The pool is not the skill** — the
-skill is the per-test cap (p.44, p.134, p.147); unrigged drivers get none (p.141). "Adapted for rigger control"
-(p.134) is not modelled.
+skill is the per-test cap (SR3 p.44, p.134, p.147); unrigged drivers get none (SR3 p.141). "Adapted for rigger control"
+(SR3 p.134) is not modelled.
 1 success = manoeuvre succeeds; 0 → GM calls a Crash Test.
 
 **💥 Crash** (TODO 74) — `SR3EVehicleSheet.runCrash(vehicle)`, from the Stats tab, the Vehicle Tools HUD
 menu, and a 💥 on a failed Driving Test (`crashOnFailVehicleId`). Speed asked in km/h, converted by
 `SR3EActor.crashDamageFromKmh` (÷ 1.2 → m/turn). The Crash Test **is** `runDrivingTest` in crash mode
-(p.147), using the **Crash Test Modifiers Table** (p.148): vehicle damage, terrain −1/0/+2/+4, speed vs
+(SR3 p.147), using the **Crash Test Modifiers Table** (SR3 p.148): vehicle damage, terrain −1/0/+2/+4, speed vs
 driver Reaction (`SR3EActor.crashSpeedModifier`), no VCR row; a rigger adds Control Pool dice (up to the
 skill). ⚠ One damage builder, `_buildCrashDamageHtml` (GM's Power/Level as ctx overrides).
 Occupants come from **`VehicleData.passengerActorIds`** (the Chase Scene seeds from it). **Occupants**
-(p.147, crash and ramming) resist the Power the vehicle faced at the level it *actually took* — nobody
+(SR3 p.147, crash and ramming) resist the Power the vehicle faced at the level it *actually took* — nobody
 rolls if it took none — after asking for **impact armour** (−Power; prefilled from `armorRatings`) and a
 **seat belt** (−1 level): `SR3EActor.collisionPassengerDamage`, pinned to the book's cops, 15S → **12M at TN 12**.
 
@@ -160,20 +160,20 @@ closing/opening. No quarry → the card says distances weren't updated. State is
 Scene (💥 Collision; its Ramming dialog also takes a **pedestrian** target) and the 💥 Crash tool (🧍 Hit a
 pedestrian…). Rules: `scripts/data/collisions.mjs` (pure) — **`SR3EActor.crashDamage` stays the one Impact Damage
 Levels Table** and is handed in as `table`; `ramCollision` delegates to it.
-- **Pedestrian (p.148):** Power = speed ÷ 10 (rounded up); the pedestrian takes the table's level **one stage higher**
+- **Pedestrian (SR3 p.148):** Power = speed ÷ 10 (rounded up); the pedestrian takes the table's level **one stage higher**
   (past Destroyed: Power **+ half, rounded down**); the vehicle one stage **lower** (1-20 m/turn → none). Worked: 60 m/turn → 6S.
   The pedestrian resists with the ordinary `.sr-soak-btn` card (`useImpact`, Combat Pool allowed). **Knockdown is offered** after the resistance (`Collisions.pedestrianSoakFlags`): the core rule, *SR3 p.124* ("Characters struck in ranged or melee combat may be knocked back or possibly down by the blow… Against ranged attacks, the target is equal to one-half the Power of the attack, rounding down"), applied to the collision's Power — the book gives none specific to collisions (ruled 2026-10-17, TODO 189). It is the shared `.sr-knockdown-btn`, so it is a ⏳ step.
-- **Vehicle (p.143, p.147):** speed difference ÷ 10 up; level from the table. A **ram** reduces only the rammer's Power
+- **Vehicle (SR3 p.143, p.147):** speed difference ÷ 10 up; level from the table. A **ram** reduces only the rammer's Power
   (Body × successes, floor 2); an **accident** reduces nobody's (maintainer, 2026-10-17); the card is the existing
   Ramming card (`_buildRamDamageHtml`, `ctx.accident`). A pedestrian ram gives the vehicle **no** reduction either.
-- **Barrier (p.148):** speed ≤ BR × 20 → it stops (the existing crash card); above → it collapses, the car loses
+- **Barrier (SR3 p.148):** speed ≤ BR × 20 → it stops (the existing crash card); above → it collapses, the car loses
   BR × 20, Power = BR, level read off the **loss**. Occupants (`collisionPassengerDamage({ breakthrough })`): belted
   → nothing, unbelted → one level lower. The Barrier Damage tool is offered (`.sr-collision-barrier-btn`), never run.
-- **Accident = Braking Test first (p.142):** `Collisions.braking` (speed − Acceleration × successes; more than
+- **Accident = Braking Test first (SR3 p.142):** `Collisions.braking` (speed − Acceleration × successes; more than
   Acceleration × 4 → Crash Test). It is a `rollPool` `followUp` (`FOLLOW_UPS.collisionBraking`) that posts a card with
   an editable speed; the **GM's** `.sr-collision-resolve-btn` (a ⏳ step the GM owes) posts the collision. No
   stopping-distance rule is invented.
 - ⚠ **The pedestrian dodge is a HOUSE RULE** (the book has none) and the card says so: an optional Dodge Test against
   the Ramming Test's successes, or against an assumed 1 hit for an accident (`Collisions.dodgeToBeat`, GM-editable);
   the GM unticks the box to skip it. It rides the ordinary `.sr-dodge-declare-btn` flow, so a tie goes to the vehicle.
-- A vehicle that takes damage is offered a **Crash Test** (`offerCrash`, p.143/p.147) on its soak result.
+- A vehicle that takes damage is offered a **Crash Test** (`offerCrash`, SR3 p.143/p.147) on its soak result.

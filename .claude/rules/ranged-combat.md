@@ -36,7 +36,7 @@ paths:
 3. (Firearms) fire-mode dialog: SS/SA/BF/FA, recoil preview, editable compensation.
 4. Roll options: damage code, editable **range** dropdown (auto-measured), TN breakdown (recoil, wound,
    multi-target, tracer note). **TN is read-only whenever a GM window will open** (`gmApprovesTN`).
-5. **GM's TN window** (`_promptGMAttackWindow`): p.112 checkboxes summed live into an editable TN (shown
+5. **GM's TN window** (`_promptGMAttackWindow`): SR3 p.112 checkboxes summed live into an editable TN (shown
    clamped at 2). Rows grouped Target / Attacker / Conditions / Gear via each `SR3E_RANGED_MODIFIERS`
    entry's `group`, consumed by `mvpModifierGroups()`. Gear rows are the system's **guesses**
    (`guessGearModifiers`), captioned as such. Empty groups dropped; ⚠ unknown/missing `group` falls into a
@@ -44,15 +44,15 @@ paths:
    - **GM situational modifier** (Conditions): a signed number. ⚠ `value: true`, so `sumModifiers` reads it
      **before** its falsy guard (it may be negative or 0). Number only; cards carry static wording.
      ⚠ Melee's version carries a **side** (`atk`/`def`/`both`); unknown side → attacker.
-   - **Visibility** (p.112): **two dropdowns** — condition × vision in use — via
+   - **Visibility** (SR3 p.112): **two dropdowns** — condition × vision in use — via
      `visibilityModifier(condition, visionKey)`. Two axes, five valid states. ⚠ The slash reads
-     **cybernetic first, natural second** (p.111): cyber vision is the worse. Low-Light ≠ Thermographic.
+     **cybernetic first, natural second** (SR3 p.111): cyber vision is the worse. Low-Light ≠ Thermographic.
      ⚠ The `visibility` row is `mod: null, value: true` — **0 is a real answer** (thermo in Mist).
    - **Vision pre-selected** (TODO 36): `bestVisionKey(detectVision(attacker), condition)`; follows the
      condition until the GM touches the dropdown (programmatic `.value =` fires no `change`). Melee has one
      vision dropdown **per fighter** (`visibilityVisionAtk`/`Def`, fallback `visibilityVision`).
    - **👁 Vision reminder** (TODO 99, `detectVision`/`visionReminder` in `SR3ECombatModifiers.js`).
-     ⚠ Replaced eyes lose racial vision (p.299) — only an actual replacement item or **Cat's Eyes** counts.
+     ⚠ Replaced eyes lose racial vision (SR3 p.299) — only an actual replacement item or **Cat's Eyes** counts.
      ⚠ **Cat's Eyes are NATURAL** (M&M p.64). ⚠ Thermosense Organs are not vision (M&M p.75).
      ⚠ **Goggles and helmets are CYBERNETIC/ELECTRONIC** (the maintainer, 2026-10-27): vision a worn armour item or
      carried gear passes up through its installed mods (`ItemMods.actorTotals`, TODO 276) lands in `cyber`.
@@ -62,9 +62,9 @@ paths:
 9. Soak card: editable Body pool, TN (Power − armour), armour type dropdown (ballistic; impact for melee).
    APDS/Flechette applied from the carried `ammoType` (editable, gold note).
 10. Soak roll: the attacker's successes against the target's total (soak + carried dodge), 2 per level either way
-    from the **base** code (`netStagedDamage`, p.113); below L = fully soaked. **The GM applies damage manually.**
+    from the **base** code (`netStagedDamage`, SR3 p.113); below L = fully soaked. **The GM applies damage manually.**
 
-#### ⚠ The defender declares AFTER the attack roll — RAW (p.113 steps 3-5)
+#### ⚠ The defender declares AFTER the attack roll — RAW (SR3 p.113 steps 3-5)
 The book's order: attacker's Success Test → *then* the target decides to dodge (Liam/Snot example). The
 choice is dodge-vs-soak: pool spent dodging is gone from the soak. **Never prompt the defender before the roll.**
 - `sr3e.attack.negotiate` handles **only** the GM's TN window and writes nothing. No negotiate/commit
@@ -80,10 +80,10 @@ choice is dodge-vs-soak: pool spent dodging is gone from the soak. **Never promp
 1. **A tie is a HIT** (strict *more than* / *exceeds*).
 2. **A failed dodge's successes carry** into the soak (`carriedSuccesses` on the payload; the soak card shows
    the parts, `5 hits (3 soak + 2 dodge)`).
-3. **The damage stages by the NET of the two totals** (p.113, TODO 165): *"one Damage Level for every two
+3. **The damage stages by the NET of the two totals** (SR3 p.113, TODO 165): *"one Damage Level for every two
    successes the attacker rolls over the target's total"*, and down for the target's surplus; equal = base.
    `SR3EActor.netStagedDamage(base, attack, target)`; the soak payload carries `net: { attackHits, basePower,
-   baseLevel }` (ranged, grenade, vehicle, elemental spell — **not melee**, which nets on p.122 then soaks).
+   baseLevel }` (ranged, grenade, vehicle, elemental spell — **not melee**, which nets on SR3 p.122 then soaks).
    ⚠ Never stage up and down separately (floor(A/2) − floor(D/2) is wrong). The attack card's staged code is only
    an "if unresisted" preview. Worked: 3 hits on 9M, dodge 2 (hits, carried), Body 3 → 5 vs 3 → **9L**.
 Both in `SR3EActor.dodgeOutcome(dodgeHits, attackHits)` → `{cleanMiss, carried}`
@@ -103,7 +103,7 @@ The declaration dialog shows the TN and breakdown.
   (SR3 p.300), Ceramic/Kevlar lacing (M&M p.27), Dermal Sheath (M&M p.28), Orthoskin (M&M p.68).
   ⚠ Read from the item's **`mods`** (`+1IMP`, `+1BAL`); nullable `bonusImpact`/`bonusBallistic` override
   (`null` = from mods, a number incl. 0 wins). ⚠ `IMP`/`BAL` are deliberately not in `SRCG_BONUSES`.
-  ⚠ Plastic Bone Lacing gives **no** armour (p.303 table). ⚠ Encumbrance reads worn armour only.
+  ⚠ Plastic Bone Lacing gives **no** armour (SR3 p.303 table). ⚠ Encumbrance reads worn armour only.
 - **Layering — SR3 p.285** (TODO 112). Worn = item `worn` flag (`SR3EActor.wornArmorItems`; legacy
   `system.equippedArmor` still counts; stored items never). `SR3EActor.layeredArmor`: **best piece + half the
   next** per type, a third body piece adds nothing; **helmets and shields add in full**
@@ -129,28 +129,28 @@ The declaration dialog shows the TN and breakdown.
 - FA: 3–10 rounds; Power +rounds, level +⌊rounds/3⌋.
 
 **Recoil** (`SR3EItem.recoilTN`, pure) = `max(0, (roundsBefore + ownRounds) − totalComp) × mult`.
-- ⚠ **BF and FA count their OWN rounds; SS/SA don't** (p.115) — theirs penalise the next shot.
+- ⚠ **BF and FA count their OWN rounds; SS/SA don't** (SR3 p.115) — theirs penalise the next shot.
 - ⚠ **Comp comes off BEFORE the multiplier** — MMG, 10 rounds, 6 comp = (10−6)×2 = **+8**.
   All three worked examples in `tests/fire-modes.test.mjs`.
 - `totalComp = actor.system.recoilCompensation + weapon RC` (both editable in the fire dialog,
   persisted; actor comp on the Cyber tab). Weapon RC = `IntegralRC.totalComp`: the gun's own figure (plain or
   bracketed) **plus its installed mods' `rc`** (TODO 276). ⚠ A typed total is stored back through `IntegralRC.baseFor`
   — without the mods' part — or a gas vent would be baked into the base and count twice. Heavy weapons (LMG/MMG/HMG/MinG) double; shotguns double in
-  **BF only** (p.111). `roundsFiredThisPhase` resets each phase (`SR3EActor.resetRecoil`).
+  **BF only** (SR3 p.111). `roundsFiredThisPhase` resets each phase (`SR3EActor.resetRecoil`).
 
-**Short bursts** (`SR3EItem.resolveBurst`, p.115): 3+ rounds normal; **2 rounds = +2 Power, level
+**Short bursts** (`SR3EItem.resolveBurst`, SR3 p.115): 3+ rounds normal; **2 rounds = +2 Power, level
 unchanged, +2 recoil**; **1 round = single-shot mode**. Only with `trackAmmo`; `rollWeapon` recomputes recoil
 after checking the clip.
 
 **Per-phase caps** (`SR3EItem.phaseFireWarning`): SS 1 · SA 2 · BF 2 bursts · FA 10 rounds. A proxy from
 `roundsFiredThisPhase`; warns, never blocks.
 
-**Walking fire** (`SR3EItem.roundsExpended`, p.116), FA only: 1 round wasted per metre between targets,
+**Walking fire** (`SR3EItem.roundsExpended`, SR3 p.116), FA only: 1 round wasted per metre between targets,
 smartguns none (`SR3EItem.walkingWaste`; the dialog's Smartgun tick is pre-set from `smartgun`).
 `roundsExpended = rounds + roundsWasted` feeds the phase cap, recoil and magazine. ⚠ **Not damage** —
 `fireModeDamage` uses `rounds`. ⚠ Each burst ≥ 3, so three targets a metre apart = 11 rounds (illegal without a smartgun).
 
-**Multiple targets** (`SR3EItem.multiTargetTN`, p.111): **+2 per additional target that Combat Phase, in
+**Multiple targets** (`SR3EItem.multiTargetTN`, SR3 p.111): **+2 per additional target that Combat Phase, in
 EVERY fire mode** — ⚠ not a full-auto rule (only the example is FA). Counts targets, not shots. The dialog
 prefills the ordinal and walking metres from `system.targetsThisPhase` (TODO 56.2, `phase-targets.mjs`,
 keyed `round|turn`; `resetRecoil` writes the full empty record, never `{}` — ObjectField updates merge;
@@ -178,7 +178,7 @@ SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it w
    attacker TN      —         −1         −2      ← easier to hit…
    target Dodge TN  —         +1         +2      ← …and harder to dodge, but less damage
 ```
-- ⚠ The Dodge modifier counts **spreads, not width** — p.113's "per meter of spread" is the maintainer's to confirm.
+- ⚠ The Dodge modifier counts **spreads, not width** — SR3 p.113's "per meter of spread" is the maintainer's to confirm.
 - Smartlink is worth **−1** with shot (`smartlinkShot`); nothing from goggles or laser sights.
 - Not modelled (stated on the card): the cone as a template (everyone inside is a target), +1 Damage
   Resistance die per other target in front.
@@ -225,23 +225,23 @@ SR3 p.117 — SHOTGUN SPREAD EXAMPLE, choke 3  (each # row is 1 m of width; it w
   already carrying ammunition is never touched; launchers are skipped (they load a grenade item).
 - **Type rules**: Explosive +1 / EX +2 Power; Gel −2 Power + Stun; Shot (above). APDS halves ballistic.
   Flechette: unarmoured → level +1; armoured → **`max(Impact × 2, Ballistic)`** (`SR3EActor.flechetteArmor`).
-  ⚠ **Double IMPACT only** (p.116). ⚠ *"Dermal armor negates the Damage Level increase"* —
+  ⚠ **Double IMPACT only** (SR3 p.116). ⚠ *"Dermal armor negates the Damage Level increase"* —
   `SR3EActor.flechetteRaisesLevel` via `dermalArmorSources`: troll hide, Dermal Plating, Dermal Sheath
   (`SR3E.dermalArmorImplants`). ⚠ Orthoskin is not dermal armour.
   **A weapon or grenade can carry the flechette rules itself** (TODO 156): the `flechette` checkbox on
-  firearm/projectile/thrown, or `(f)` after its Damage Code (p.116). `SR3EItem.flechetteAmmo`: `(f)` →
-  `flechette-coded` (level already in the code, armour rule only); a ticked plain code (core AP grenades, p.119) →
+  firearm/projectile/thrown, or `(f)` after its Damage Code (SR3 p.116). `SR3EItem.flechetteAmmo`: `(f)` →
+  `flechette-coded` (level already in the code, armour rule only); a ticked plain code (core AP grenades, SR3 p.119) →
   `flechette`. ⚠ **A flechette weapon takes NO other ammunition** (`SR3EItem.weaponAcceptsAmmoType`, TODO 161).
   ⚠ **Dermal armour drops an `(f)` code one level** (`SR3EActor.flechetteCodedDrop`, TODO 161 — the maintainer,
   2026-09-28): the code carries the increase, dermal armour negates it. **Dermal only** — worn armour alone
   leaves an `(f)` code as it is.
   Anti-Vehicle sets `weaponOpts.avMunition` (bypasses vehicle Power/2; the vehicle's soak card halves its armour
-  instead, p.149). Tracer: FA only, raises Level not Power, TN bonus is a manual note.
-- **Shooting a vehicle** — `SR3EItem.vehicleTargetDamage` (p.149, TODO 168): Power ÷ 2 **round down**, level −1,
+  instead, SR3 p.149). Tracer: FA only, raises Level not Power, TN bonus is a manual note.
+- **Shooting a vehicle** — `SR3EItem.vehicleTargetDamage` (SR3 p.149, TODO 168): Power ÷ 2 **round down**, level −1,
   **Light has no effect**. **Sensor-enhanced gunnery** adds ⌊Sensor ÷ 2⌋ **dice** against the target's Signature
-  (p.152) — never a TN reduction.
+  (SR3 p.152) — never a TN reduction.
 - **Mechanisms** `SR3E.ammoLoadMechanisms`, parsed by `SR3EItem._parseLoadMechanism`. ⚠ **`b` = BREAK
-  ACTION, `m` = INTERNAL magazine** (p.280); belt feed is `belt`.
+  ACTION, `m` = INTERNAL magazine** (SR3 p.280); belt feed is `belt`.
 - ⚠ **Weight is PER ROUND** (per reload for a clip) — TODO 126.
 - **`trackAmmo`** (world setting) gates all counting — **on** for new worlds. ⚠ Pre-0.6 worlds that never set
   it stay **off** via `SR3EMigrations.DEFAULT_CHANGES` (Foundry stores only set values). Any other changed
@@ -263,7 +263,7 @@ Every band and multiplier is pinned in `tests/tables.test.mjs`. Single-target `r
   → `SR3E.weaponRangeMultipliers[category]` × effective STR.
 - **Classify**: `SR3EItem._rangeBandForDistance` → `{idx,label,tnMod,beyond}`; `SR3E.rangeTN` = `[0,1,2,5]`
   (4/5/6/9). Beyond Extreme warns, still allows.
-  ⚠ **GRENADES use `SR3E.grenadeRangeTN` = `[0,1,4,5]`** (p.119 heads 4/5/8/9; Long is 8).
+  ⚠ **GRENADES use `SR3E.grenadeRangeTN` = `[0,1,4,5]`** (SR3 p.119 heads 4/5/8/9; Long is 8).
 - Range is **not** pre-baked into `extraTNMod`; it's passed as `rangeInfo` to `_promptWeaponRollOptions`
   as an editable dropdown recomputing the TN live. The TN field is authoritative on confirm.
 
@@ -289,18 +289,18 @@ Requires a scene.
    along the throw axis (dir 1 over, 4 short); re-detects every token in range **including the thrower**;
    marker = **Region** (`visibility: ALWAYS`), fallback a local PIXI circle (`game.sr3e._blastMarkers`); 🧹
    Clear removes either. Per-target Power = base − distance × the grenade's own falloff (`system.blast`,
-   `scripts/data/blast.mjs`: Offensive −1/m, Defensive −1/.5 m, p.119, TODO 150; blank = −1/m), or the Chunky Salsa GUI
+   `scripts/data/blast.mjs`: Offensive −1/m, Defensive −1/.5 m, SR3 p.119, TODO 150; blank = −1/m), or the Chunky Salsa GUI
    (`game.sr3e.openChunkySalsa({...returnOnly})`) when confined. A soak button per caught PC or vehicle; NPCs batch (below).
-- ⚠ **The throw's successes STAGE THE LEVEL** (p.119): each soak nets the two (`netStagedDamage`); the grenade
+- ⚠ **The throw's successes STAGE THE LEVEL** (SR3 p.119): each soak nets the two (`netStagedDamage`); the grenade
   card's staged level is a preview. ⚠ **POWER is never staged** (it's also the soak TN).
 - ⚠ **Walls** (TODO 149, `SR3EActor._wallBetween` — movement-wall `testCollision`, so an open door isn't a wall):
   a grenade aimed behind a wall drops **just short of it**; one scattering into a wall stops there (`Blast.stopShort`,
   ¼ m on the thrower's side). A token with a wall between it and the blast is **not caught**; the card lists it with
   the Power reaching the wall and gives the GM **🧱 the wall fell** (`sr-blast-wall-btn`), which asks the Barrier
-  Rating and posts resist cards at **Power − Barrier Rating** (p.119). Whether it falls (Power vs **twice** the
-  rating, p.124) is the GM's; tooltip and dialog show both p.124 tables (`SR3EActor.barrierTablesHtml`, from
+  Rating and posts resist cards at **Power − Barrier Rating** (SR3 p.119). Whether it falls (Power vs **twice** the
+  rating, SR3 p.124) is the GM's; tooltip and dialog show both SR3 p.124 tables (`SR3EActor.barrierTablesHtml`, from
   `SR3E.barrierRatings`/`barrierEffects`, shared with Barrier Damage). ⚠ The marker still draws its full circle.
-  p.119's optional half-Power roll is not implemented.
+  SR3 p.119's optional half-Power roll is not implemented.
 - **NPCs in one go** (TODO 249, `scripts/data/blast-batch.mjs`): `BlastBatch.split` — player characters
   (`SR3EQuery.isPlayerCharacter`, never `hasPlayerOwner`), ordinary vehicles and **player-side drones** keep their own
   `sr-soak-btn`; every other character/npc and every **GM-side drone** (`BlastBatch.isDrone`: `system.vehicleType ===
@@ -342,7 +342,7 @@ however the Region ends.
   `_promptGMAttackWindow`): Heavy Smoke/Fog/Rain; infra-red → Thermal Smoke; the viewer's worst row. Ordinary smoke = Heavy Smoke/Fog/Rain is confirmed
   (maintainer, 2026-10-17); the offer stays editable.
 - **Gas**: one `postGasExposureCard` per token in the cloud, `.sr-gas-resist-btn` → Body soak card, `noArmor`. The grenade is
-  **Neuro-Stun VIII** (p.250, p.283 text; the p.283 table row prints VII — maintainer ruled VIII, 2026-10-17). A copy still
+  **Neuro-Stun VIII** (SR3 p.250, p.283 text; the SR3 p.283 table row prints VII — maintainer ruled VIII, 2026-10-17). A copy still
   named VII (older world) is noted on the card; no migration.
 - **Flash-Pak**: GM-only `.sr-flash-btn` tick list → `postFlashCard` (+4, +2 with flare compensation, +2 strobe). Both new
   owed buttons are in `STEP_BUTTONS`.

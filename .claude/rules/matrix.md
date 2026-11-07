@@ -46,7 +46,7 @@ IC's dice/TN. The decker's dice and `sr-icia-def-hp` live in **their** corner; t
 
 **Orthodox packs — `sr3e-sr3-odm-cyberdecks` · `sr3e-sr3-odm-programs`**, built by
 `node tools/build-odm-packs.mjs` (`--install` with Foundry closed, then `npm run sync:install -- --force`)
-from ODM-\* rawdata, **core book only**: 8 stock decks (p.207, p.304) and 22 core utilities (pp.220-222).
+from ODM-\* rawdata, **core book only**: 8 stock decks (SR3 p.207, p.304) and 22 core utilities (SR3 pp.220-222).
 Other rawdata rows (`cp`, `cd.130`, `mat`, Erosion variants) stay in rawdata. The tool **refuses to write** if
 a row disagrees with the book; `tests/odm-packs.test.mjs` diffs the packs.
 - ⚠ Tagged `flags.The2ndChumming3e.matrixRuleset: 'orthodox'` (read by `SR3ESourceBooks.rulesetAllows` in
@@ -89,15 +89,15 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
 - ⚠ **Only VR-Hot uses Matrix Initiative.** TRM/AR/VR-Cold use their own meat-world dice (wired reflexes
   included), no Response.
 - Tortoise: +2 TN to all Matrix actions. VR-Cold: overflow past the stun track → physical.
-- **Dumpshock is SERIOUS**, Power = the System Rating of the grid/host that dumped the user (p.27).
+- **Dumpshock is SERIOUS**, Power = the System Rating of the grid/host that dumped the user (MDF p.27).
 - **Every dump shock is resisted with Willpower and no armour** — the maintainer's rulings, 2026-09-27/28
   (TODO 201): SR3 p.227 and MDF p.27 name no attribute; SR3 p.156 says Willpower for riggers. Payloads
   carry `resistAttr: 'willpower'`, `noArmor: true`.
 - ⚠ **Orthodox is different** (TODO 202, `SR3EActor.orthoDumpShock`): SR3 p.227 — always **Stun**, Power =
-  Security Value, level by Security Code from the **Dump Shock Damage Levels** table (p.226: Blue L, Green M,
+  Security Value, level by Security Code from the **Dump Shock Damage Levels** table (SR3 p.226: Blue L, Green M,
   Orange S, Red D). **Not the IC table** beside it (`_orthoICDmgLevel`: Blue/Green M, Orange/Red S).
 - **Riggers** (TODO 198/199, `scripts/data/rigger-shock.mjs`): dump shock (RC deck + 4)S or 5S Stun + disorientation
-  (p.156); rigger damage 6M/6S Physical, no pools, when a VCR vehicle reaches Serious/Destroyed (p.145).
+  (SR3 p.156); rigger damage 6M/6S Physical, no pools, when a VCR vehicle reaches Serious/Destroyed (SR3 p.145).
 
 ### Hacking procedure
 1. Declare a node prompt (e.g. Duplicate/Download on DS).
@@ -130,11 +130,11 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
 - IC act on their own initiative (`ic` actors in the tracker).
 
 ### Matrix Condition Monitor
-- 10 boxes, click-to-toggle; *"When an icon achieves 10 boxes of Overload Damage, it crashes"* (p.26).
+- 10 boxes, click-to-toggle; *"When an icon achieves 10 boxes of Overload Damage, it crashes"* (MDF p.26).
 - **Penalties: +1 TN from box 1, +2 from box 3, +3 from box 6, +4 at box 10** — MDF p.12's table, read from
   the page image in the 0.6.3 rules check (`MdfRules.matrixCMPenalty`). Until 0.6.3 the code used 3/6/8.
 - **Hacking Pool is Intelligence + ⌊MPCP ÷ 3⌋** under Defragged (MDF p.11, `MdfRules.hackingPool`) — ⚠ Orthodox uses SR3
-  p.207's ⌊(INT + MPCP) ÷ 3⌋; `HackingPool.forRuleset` picks (TODO 275).
+  SR3 p.207's ⌊(INT + MPCP) ÷ 3⌋; `HackingPool.forRuleset` picks (TODO 275).
 - Not yet a separate track on the host sheet.
 
 ### Sys/Sec modifiers  · *MDF p.14*

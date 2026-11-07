@@ -54,8 +54,8 @@ Packs per book: `sr3` 16 · `sr2` 11 · `mm` 9 · `tss` 9 · `cc` 7 · `sota2` 7
 `fof` 4 · `fra` 4 · `r3` 4 · `ssc` 4 · `mits` 3 · `sota` 3 · `st` 3 · `ct` 2 · `ger` 1 · `pna` 1 · `ssg` 1 · `tal` 1
 
 ### The core book's sample characters — `sr3e-sr3-archetypes` (TODO 274)
-**16** Actor documents — the book prints sixteen (SR3 p.64), not fifteen; the Weapons Specialist is p.80 — from the
-character pages (pp.65-80) and record sheets (pp.326-329). **Generated** by `tools/build-core-archetypes.mjs` from
+**16** Actor documents — the book prints sixteen (SR3 p.64), not fifteen; the Weapons Specialist is SR3 p.80 — from the
+character pages (SR3 pp.65-80) and record sheets (SR3 pp.326-329). **Generated** by `tools/build-core-archetypes.mjs` from
 `tools/data/core-archetypes.mjs` (never hand-edit the pack source; `tests/core-archetypes.test.mjs` rebuilds the plan).
 - ⚠ **Attributes are the book's NATURAL number**; the parenthesised figure is what the cyberware, adept-power and troll-hide
   bonuses add up to. Entering the augmented figure as the base would count the chrome twice. **Race is the book's, never
@@ -63,7 +63,7 @@ character pages (pp.65-80) and record sheets (pp.326-329). **Generated** by `too
 - Items are the shipped ones, rated through `ModRatings.withLevel`; a name the packs lack becomes a typed generic item
   (reported by `--check`). Firearms are loaded and spare ammunition follows; vehicles and drones are gear items, not actors.
 - ⚠ **Essence is entered as printed** (`essence.lost`). `node tools/build-core-archetypes.mjs --check` audits it against the
-  graded cyberware (p.62's rule: a replacement holds .5 of mods free): 14 of 16 reproduce exactly; the Street Samurai
+  graded cyberware (M&M p.62's rule: a replacement holds .5 of mods free): 14 of 16 reproduce exactly; the Street Samurai
   (−.08) and Drone Rigger (−.04) do not, and the suite names them.
 - ⚠ Book inconsistency, kept: Street Samurai Strength prints 5 (7) but Strength Enhancement 3 is +3.
 - Book-gated (`book: sr3`), in the sidebar under Reference → Sample Characters. Read/Write is a separate language skill.
@@ -110,10 +110,10 @@ file per *original* pack, each `[{ _key, bucket, doc }]` — restore by writing 
   an off-by-default registry entry in the same commit; the test keeps them in step.
 
 ### The Matrix sourcebook (`mat`) — a default book since 2026-10-27
-`Shadowrun 3e - Matrix.pdf` adds skills (pp.22-27; much already in `SR3ESkills`, unattributed and unhideable),
-no spells, and gear (pp.52-103). The maintainer's ruling (2026-10-27): **it is a default book**, because Matrix Defragged
+`Shadowrun 3e - Matrix.pdf` adds skills (Matrix pp.22-27; much already in `SR3ESkills`, unattributed and unhideable),
+no spells, and gear (Matrix pp.52-103). The maintainer's ruling (2026-10-27): **it is a default book**, because Matrix Defragged
 sends GMs to its Cyberdeck System Add-ons and Miscellaneous Components (Matrix pp.167-169). Its one pack, `sr3e-mat-gear`,
-is generated: the Miscellaneous Component Table (p.169, **with** a Legality column) is filed upstream under core
+is generated: the Miscellaneous Component Table (Matrix p.169, **with** a Legality column) is filed upstream under core
 `sr3.302` (the bodyware page), so `tools/build-default-gear.mjs` re-tags those rows to `mat.169`
 (`retagMatrixComponents`; the cyberware rows sharing the page — hand blade, razors, spur — stay out).
 Keep the three Matrix sources distinct: **`sr3`** = core Ch. 8 (ODM-\* rawdata), **`mat`** = this sourcebook,

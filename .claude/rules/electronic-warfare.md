@@ -16,7 +16,7 @@ paths:
 
 **Complementary dice** = the **full rating, uncapped**, as extra pool dice (`_complementaryDice`) — R3's
 reading (the maintainer's call), ⚠ **not** SR3 p.97's 2:1 Complementary Skills test. ⚠ Granted to the **MIJI
-Test and ECCM regeneration only**; Infiltration rolls EW alone (p.37, Trixie: 6 dice on Flux 8).
+Test and ECCM regeneration only**; Infiltration rolls EW alone (R3 p.37, Trixie: 6 dice on Flux 8).
 
 **Footprint** = `round((riggerDeckFlux + vehFlux + ECM) / 10)`; ↻ Recalc writes it. Targeting the vehicle's Sig: TN = Sig − Footprint.
 
@@ -25,7 +25,7 @@ Test and ECCM regeneration only**; Infiltration rolls EW alone (p.37, Trixie: 6 
 (`.signal-faded`, guards in `_onSignalBox`/`_onSignalDamage`). MIJI `applyDegradation` sets the breach flag.
 Tiers (`SR3E.electronicWarfare.degradationTiers`): 1-3 +1, 4-6 +2, 7-9 +3, 10 = channel lost.
 
-**Degradation effects** (p.145):
+**Degradation effects** (R3 p.145):
 - **Simsense on a VCR-jacked rigger = wound-equivalent, automatic.** `SR3EActor._jackedSignalMod` (the drone
   with `controlMode==='vcr'`) adds the tier to **every** `rollPool` (opt-out `skipSignalMod`) and subtracts it
   from VCR initiative in both `rollInitiative` sites. Helpers `_signalTierMod`/`_vehicleSimsenseMod`. Simsense
@@ -48,7 +48,7 @@ One-shot guards on both.
   `tests/e2e/miji.spec.mjs`.
 
 **Infiltration** (`openInfiltration`): EW vs TN 6 − (intruder Protocol − target Deck). Successes split three
-ways (p.37): channels (1 each), time (`Math.ceil(10/time)`), Intrusion Factor; over-allocation trimmed
+ways (R3 p.37): channels (1 each), time (`Math.ceil(10/time)`), Intrusion Factor; over-allocation trimmed
 Factor-then-Time; unspent allowed. Writes `system.infiltration`. `detectInfiltration`: defender EW vs
 Intrusion Factor. `updateCombat` (GM) decrements `turnsRemaining`; manual −1 on the tab.
 
