@@ -34,12 +34,12 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**90 open.** 200 done — see [TODO-DONE.md](TODO-DONE.md).
+**89 open.** 202 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
-| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[282](#282) Vehicle weapons fire with no recoil<br>[283](#283) Buy or build a modded item — its whole price before it reaches the sheet<br>[284](#284) 🛒 Buy more than one — a Quantity in Buy gear<br>[285](#285) 🛒 A shopping cart — several items, one card, one payment<br>[287](#287) Vehicle and drone design — a chassis and Design Points (R3R) |
+| 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[282](#282) Vehicle weapons fire with no recoil<br>[283](#283) Buy or build a modded item — its whole price before it reaches the sheet<br>[287](#287) Vehicle and drone design — a chassis and Design Points (R3R)<br>[288](#288) 📦 Orders not yet delivered — and a GM toggle for time passing (purchases and healing) |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
@@ -1045,17 +1045,6 @@ time the slowest part needs) before anything is created; then buy it as one purc
 `ItemMods` (TODO 276), `CyberCapacity.builtInCost`, `VehicleMods.price`, the mount and budget checks as warnings. **Not designed
 yet** — the maintainer's call on scope (one dialog for every host type, or vehicles first) before any code.
 
-## 288. 📦 Orders not yet delivered — and a GM toggle for time passing (purchases and healing) — **requested 2026-11-07**
-
-The maintainer, while TODO 284/285 were built: *"We will need a way to track whats been order but hasn't been delivered.
-maybe a GM way of delivering it, ideally a togle. when they want something at the end of a mission i'm not to worried
-about them getting it but if they want it in session it needs to take time. that toggle should also effect healing if
-possible"*. Today 💴 Pay (`SR3EPurchase.pay`) delivers at once, though a contact's card states a delivery time (base time
-÷ successes, SR3 p.272) and the meet comes halfway; healing cards state the Healing Table time (p.127) and *Heal these
-boxes* applies whenever it is clicked. **Wanted:** a GM toggle — between missions (instant, as today) or in session (time
-must pass) — an open-orders list with a GM 📦 Deliver, and the same toggle governing healing. Builds on `data/cart.mjs`
-(`Cart.deliver`). **Not designed** — grilling rounds via the questions session before any code.
-
 ## 287. Vehicle and drone design — a chassis and Design Points (R3R) — **requested 2026-11-07**
 
 [#265](#265) built **customization** (mods on an existing vehicle) and left R3R's *Vehicle Design* out on purpose. This is
@@ -1144,6 +1133,17 @@ read them from rendered pages (`pdftoppm`), never from `pdftotext`.
   Attack Submarine's People Space is +236,350 (p.196) where every other row prints +236,250. The fuel-cell Medium
   Hovercraft has no starting Acceleration (p.197). The ATV chassis is 595 Design Points (p.202), against 50-338 for the
   other bikes. The tables keep the printed figures; `NOTES` in the module lists them.
+
+## 288. 📦 Orders not yet delivered — and a GM toggle for time passing (purchases and healing) — **requested 2026-11-07**
+
+The maintainer, while TODO 284/285 were built: *"We will need a way to track whats been order but hasn't been delivered.
+maybe a GM way of delivering it, ideally a togle. when they want something at the end of a mission i'm not to worried
+about them getting it but if they want it in session it needs to take time. that toggle should also effect healing if
+possible"*. Today 💴 Pay (`SR3EPurchase.pay`) delivers at once, though a contact's card states a delivery time (base time
+÷ successes, SR3 p.272) and the meet comes halfway; healing cards state the Healing Table time (p.127) and *Heal these
+boxes* applies whenever it is clicked. **Wanted:** a GM toggle — between missions (instant, as today) or in session (time
+must pass) — an open-orders list with a GM 📦 Deliver, and the same toggle governing healing. Builds on `data/cart.mjs`
+(`Cart.deliver`). **Not designed** — grilling rounds via the questions session before any code.
 
 ### 🪄 Spells & drugs
 
