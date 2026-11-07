@@ -30,13 +30,13 @@ export async function run(t) {
   t.is('a limb holds ECU', CyberCapacity.kind(cw('Obvious Cyberarm')), 'ecu');
   t.is('…a typed capacity wins', CyberCapacity.capacity(cw('Obvious Cyberarm', { capacity: 12 })), 12);
 
-  /* ── Grade — the capacity follows the grade's Essence factor (the ruling) ── */
-  t.eq('alpha ×.8, beta ×.6, delta ×.5 of 10', ['Alpha', 'Beta', 'Delta'].map(g => CyberCapacity.capacity(cw('Obvious Cyberarm', { grade: g }))), [8, 6, 5]);
-  t.is('…a delta smartlink takes .25 of a delta arm\'s 5 — the same share as standard', CyberCapacity.ecuOf(mod('Smartlink (Internal)', { grade: 'Delta' })), 0.25);
-  t.ok('…so a grade-matched limb holds as many mods', (() => {
-    const fill = g => CyberCapacity.used(cw('Obvious Cyberarm', { grade: g, installed: Array.from({ length: 20 }, (_, i) => mod(`Smartlink ${i}`, { grade: g })) })).used / CyberCapacity.capacity(cw('Obvious Cyberarm', { grade: g }));
-    return fill('Standard') === fill('Delta');
-  })());
+  /* ── Grade — M&M p.36's cut (mods ruling Q15, 2026-11-07) ─────────────────── */
+  // "Reduce the number of equipment capacity units available in a limb by 10 percent for alphaware, 20 percent for betaware
+  // and 25 percent for deltaware. Round fractions to the nearest .25."
+  t.eq('alpha −10%, beta −20%, delta −25% of 10', ['Alpha', 'Beta', 'Delta'].map(g => CyberCapacity.capacity(cw('Obvious Cyberarm', { grade: g }))), [9, 8, 7.5]);
+  t.eq('…to the nearest .25: a synthetic hand\'s 1 → 1, .75, .75', ['Alpha', 'Beta', 'Delta'].map(g => CyberCapacity.capacity(cw('Synthetic Cyber Hand', { grade: g }))), [1, 0.75, 0.75]);
+  t.is('…a device keeps its own ECU whatever its grade (the book cuts only the limb)', CyberCapacity.ecuOf(mod('Smartlink (Internal)', { grade: 'Delta' })), 0.5);
+  t.is('…an eye\'s .5 Essence still follows the grade\'s Essence factor', CyberCapacity.capacity({ type: 'cyberware', name: 'Cybereyes', system: { cyberwareCategory: 'Eyeware', capacity: 0.5, grade: 'Delta' } }), 0.25);
 
   /* ── ECU (M&M p.36) ───────────────────────────────────────────────────────── */
   t.eq('the table: smartlink .5, datajack .5, hold-out cybergun 1, heavy pistol 2.5, foot anchor 4',
@@ -125,4 +125,13 @@ export async function run(t) {
   t.is('the same mods LOOSE (as before): .2 + .2 + .2', SR3EActor.installedEssenceCost([{ ...eyes, system: { ...eyes.system, installed: [] } },
     { type: 'cyberware', name: 'Low-Light', system: { essenceCost: 0.2 } }, { type: 'cyberware', name: 'Thermo', system: { essenceCost: 0.2 } }]), 0.6);
   t.eq('implant armour from a limb\'s built-in plating counts', SR3EActor.implantArmor([{ id: 'a', ...cw('Obvious Cyberarm', { installed: [mod('Armor: Ballistic', { bonusBallistic: 2 })] }) }]).ballistic, 2);
+
+  /* ── M&M p.39's prices (mods ruling Q16, 2026-11-07 — read from the page) ─── */
+  const pack = rel => JSON.parse(read(`packs-src/${rel}`)).doc.system;
+  t.eq('Cyberskates 1,000¥, retractable 2,500¥', [pack('sr3e-mm-cyberware/cyberskates-cyberlimb.sr3e-cyberware-0741.json').cost,
+    pack('sr3e-mm-cyberware/cyberskates-retractable-cyberlimb.sr3e-cyberware-0742.json').cost], [1000, 2500]);
+  const dni = pack('sr3e-sr3-cyberware/direct-neural-interface-cyberlimb.sr3e-cyberware-0743.json');
+  t.eq('Direct Neural Interface 4,500¥, .1 Essence', [dni.cost, dni.essenceCost], [4500, 0.1]);
+  t.is('….25 ECU', CyberCapacity.ecuOf(mod('Direct Neural Interface (Cyberlimb)')), 0.25);
+  t.is('DNI adaptation: ×150% of the device', CyberCapacity.builtInCost(1000, { mmOn: true, dni: true }), 1500);
 }

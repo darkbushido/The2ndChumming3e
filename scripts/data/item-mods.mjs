@@ -60,7 +60,9 @@ const WEAPON_TYPES = ['firearm', 'melee', 'projectile', 'thrown'];
 export const RIFLES = ['Carb', 'AsRf', 'SptR', 'Snip', 'LCarb'];
 /** A name without its mod tag or level ("Stock (Rigid (Weapon)" → "Stock (Rigid"). Pure, no imports. */
 const baseNameOf = item => String(item?.name ?? '').replace(/\s*\[\d+\]\s*$/, '').replace(/\s*\((?:Weapon|Armor|Cyberlimb|Vehicle)\)\s*$/, '').trim();
-const SCAFFOLDING = ['_stats', 'folder', 'sort', 'ownership'];
+/** Mods that mount top or under whatever their text says — `mountsOf` (ruled 2026-11-07, CC p.82). */
+const TOP_OR_UNDER = /^(?:imaging scope|rangefinder)\b/i;
+const SCAFFOLDING =['_stats', 'folder', 'sort', 'ownership'];
 
 const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
 // Part of the gun as printed (TODO 276, `integral-mods.mjs`): its change is already in the gun's own figures. Read here, not
@@ -105,7 +107,7 @@ export const ItemMods = {
    * shouldn't get the benefit of a pod").
    */
   pods(weapon) {
-    // An integral pod (the RPK's fold-out tripod) is the gun's printed bracketed RC — the fire dialog's integral tick.
+    // An integral pod (the RPK's fold-out tripod) is the gun's printed bracketed RC — the GM window's integral row (IntegralRC.podEntry, mods ruling Q13).
     return ItemMods.installed(weapon).filter(m => ItemMods.deployable(m) && !integral(m)).map(m => ({
       id: m._id ?? null, name: m.name ?? '?',
       rc: ItemMods.modifiersOf(m).filter(x => x.whenDeployed && x.target === 'rc').reduce((s, x) => s + x.value, 0),
@@ -227,6 +229,9 @@ export const ItemMods = {
    * accessories carry it there, TODO 259). Only `MOUNTS` count; anything else (Hand, Tripod, NA) is [].
    */
   mountsOf(mod) {
+    // Imaging scopes and the rangefinder go top OR under (the maintainer, 2026-11-07, mods ruling Q3: CC p.82's "Mount: Top or
+    // under" over SR3 p.280's "may only be top-mounted" and the packs' "Top"). Top is still tried first.
+    if (!mod?.system?.mount && TOP_OR_UNDER.test(baseNameOf(mod))) return ['Top', 'Under'];
     const raw = mod?.system?.mount || /Mount:\s*(?:<\/strong>)?\s*([^<\n]+)/i.exec(String(mod?.system?.description ?? ''))?.[1] || '';
     return raw.split('/').map(s => s.trim()).map(s => MOUNTS.find(m => m.toLowerCase() === s.toLowerCase())).filter(Boolean);
   },
@@ -267,11 +272,16 @@ export const ItemMods = {
    * Why `mod` may NOT go into `host`, or null. ⚠ **The one refusal** in a system that otherwise warns — the maintainer,
    * 2026-10-27: *"you should not be able to install a stock on a rifle since it has one by default"* (SR3 p.277: rifle
    * stocks are part of the gun; CC p.34 / p.84: the Stock accessory is for SMG-sized and smaller weapons). Rifles are
-   * the Rifles-skill categories; shotguns are not included (CC p.84 names them too — not ruled).
+   * the Rifles-skill categories. Shotguns too since 2026-11-07 (mods ruling Q8, CC p.83: "Rifles and shotguns may not have
+   * this modification").
    */
   blocked(host, mod) {
     if (host?.type === 'firearm' && RIFLES.includes(host?.system?.category) && /^stock\b/i.test(baseNameOf(mod))) {
       return `${mod?.name ?? 'A stock'} cannot go on ${host?.name ?? 'a rifle'}: a rifle has its own stock (SR3 p.277).`;
+    }
+    // Shotguns too (the maintainer, 2026-11-07: "the book is clear"): CC p.83, Stocks — "Rifles and shotguns may not have this modification."
+    if (host?.type === 'firearm' && host?.system?.category === 'ShtG' && /^stock\b/i.test(baseNameOf(mod))) {
+      return `${mod?.name ?? 'A stock'} cannot go on ${host?.name ?? 'a shotgun'}: "Rifles and shotguns may not have this modification" (CC p.83).`;
     }
     return null;
   },

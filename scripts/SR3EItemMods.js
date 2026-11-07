@@ -18,6 +18,7 @@ import { ItemMods } from './data/item-mods.mjs';
 import { ArmorMods } from './data/armor-mods.mjs';
 import { CyberCapacity } from './data/cyber-capacity.mjs';
 import { IntegralMods } from './data/integral-mods.mjs';
+import { WeaponAccessories } from './data/weapon-accessories.mjs';
 import { ModRemoval, CONTACT_RATES, REPAIR } from './data/mod-removal.mjs';
 import { actorFrom, actorRef } from './data/actor-ref.mjs';
 
@@ -36,13 +37,21 @@ export const SR3EItemMods = {
     if (!host || !source || source.documentName !== 'Item') return false;
     if (source.uuid === host.uuid) return false;
     if (!host.isOwner) { ui.notifications.warn(`You don't own ${host.name}.`); return false; }
-    // The one refusal (the maintainer, 2026-10-27): a stock on a rifle. Everything else warns and installs.
+    // The one refusal (the maintainer, 2026-10-27 / 2026-11-07): a stock on a rifle or a shotgun. Everything else warns and installs.
     const blocked = ItemMods.blocked(host, source);
     if (blocked) { ui.notifications.error(blocked); return false; }
     const graded = i => game.sr3e.SR3EActor.gradedEssenceCost(game.sr3e.SR3EActor.baseEssenceCost(i), i.system?.grade);
     for (const w of [...ItemMods.warnings(host, source), ...ArmorMods.installWarnings(host, source.toObject()),
-      ...CyberCapacity.installWarnings(host, source.toObject(), graded)]) ui.notifications.warn(w);
-    const installed = ItemMods.install(ItemMods.installed(host), source.toObject(), newId);
+      ...CyberCapacity.installWarnings(host, source.toObject(), graded),
+      ...(host.type === 'firearm' ? WeaponAccessories.installWarnings(host, source.toObject()) : [])]) ui.notifications.warn(w);
+    const data = source.toObject();
+    // An internal smartgun added after manufacture is priced from the gun (mods ruling Q10) — only while its own cost is blank.
+    const smartCost = host.type === 'firearm' ? WeaponAccessories.internalSmartgunCost(host, data) : null;
+    if (smartCost != null && !(Number(data.system?.cost) > 0)) {
+      data.system.cost = smartCost;
+      ui.notifications.info(`${data.name}: ${smartCost.toLocaleString()}¥ — ${/(?:2|ii)\b/i.test(data.name) ? '150' : '100'}% of ${host.name}'s price (SR3 p.281, M&M p.32).`);
+    }
+    const installed = ItemMods.install(ItemMods.installed(host), data, newId);
     await host.update({ 'system.installed': installed });
     // Moved, not copied, when it came from the host's own actor — the scope is in the gun now, not in the bag too.
     // `sr3eModMove`: an implant moved into a limb never left the body — no Essence hole (sr3e.js's deleteItem hook).

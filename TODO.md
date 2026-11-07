@@ -868,7 +868,8 @@ mutants `magnification-stacks`, `magnification-past-short`): the attack pre-sets
 by the best device in use — the gun's Imaging Scope (its level), a worn helmet's Electronic / Optical Magnification 3, cybereyes'
 Vision Magnification — never below Short, never stacked (TODO 235's ruling); the dialog names the device, the GM can change the band.
 Pack data for all five (the 0.9.0 migration fills owned copies). ⚠ No shift for a target beyond Extreme (it is off the table, not a
-band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but lets run with it. for now"* — PROVISIONAL, revisit. Imaging scope + smartlink (SR3 p.280) is still an open question below.
+band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but lets run with it. for now"*; **kept as is** (mods ruling Q12,
+2026-11-07). Imaging scope + smartlink (SR3 p.280) is still an open question below.
 
 **Still open in this item:**
 1. ~~Magnification~~ — built (above).
@@ -879,7 +880,7 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
    shot's compensation BEFORE the heavy doubling (`SR3EItem.podSaving`: an MMG's 10-round burst, tripod 6 → +20 becomes +8) and
    the saving comes off the TN. Nothing remembered between shots. Mutant `bipod-counts-without-the-gm`. ⚠ Only where the GM window
    opens (`gmApprovesTN`): an attack that skips it gets no pod. The gun's own printed bracketed RC (folding stock, integral tripod)
-   stays the fire dialog's integral tick ([#235](TODO-DONE.md#235)).
+   is the GM window's "integral accessories" row since 2026-11-07 (item 8 below).
 3. ~~The free-text `accessories`~~ — built 2026-10-27 (step b), the maintainer's rulings of that day: each accessory the text
    clearly names becomes an installed mod flagged `integral` (`scripts/data/integral-mods.mjs`, `tests/integral-mods.test.mjs`).
    **Shown, never counted** — it takes its mount and shows in the 🔧 list, tagged "integral", its change in brackets, but
@@ -892,8 +893,7 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
    grip, hip brace, gyro mount; launchers, designators, the heavy barrel and every "either / or" stay text. Mutants
    `integral-accessory-counted-twice`, `integral-tripod-offered-as-pod`, `integral-mount-clash-warned`, `integral-filled-twice`,
    `integral-greedy-match`. TESTING.md §77i. ⚠ Packs rebuilt: `npm run packs:install` with Foundry CLOSED.
-4. **Weapon mounts by weapon class** (SR3 pp.276-279, CC p.75: hold-outs none, pistols barrel + top, …) — warnings; waits on the
-   open questions below. With it, [#235](TODO-DONE.md#235)'s compatibility list (SR3 pp.276-277, rules check `#194`): revolvers take no
+4. ~~**Weapon mounts by weapon class**~~ — built 2026-11-07 (the open questions below, Q4-Q7). With it, [#235](TODO-DONE.md#235)'s compatibility list (SR3 pp.276-277, rules check `#194`): revolvers take no
    silencer or sound suppressor.
 5. ~~Cyberlimbs~~ — built (above; its remainders listed there). **Vehicles and
    drones** ([#265](#265); their mods stay items on the vehicle actor, which is the container; weapon mounts [#234](TODO-DONE.md#234) are hosts).
@@ -902,9 +902,11 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
 7. ✔ **Decided by the maintainer, 2026-10-27:** goggles' and a helmet's vision count on the Visibility Table's
    CYBERNETIC/ELECTRONIC column (SR3 p.111), with cybereyes — "goggles should count with the cybernetic/electronic vision
    side". `detectVision` puts every `toActor` vision from an item in `cyber`; `tests/vision.test.mjs` pins a worn helmet there.
-8. **From [#235](TODO-DONE.md#235) (closed 2026-10-27):** a gun's printed bracketed RC (folding stock, integral tripod) is still the fire
-   dialog's tick, not an accessory the shooter deploys; combo imaging scopes add their components' costs (SR3 p.280, not built);
-   the internal smartgun's price is an open question below.
+8. **From [#235](TODO-DONE.md#235) (closed 2026-10-27):** ✔ a gun's printed bracketed RC (folding stock, integral tripod) — ruled
+   2026-11-07 (Q13): *"Move bracketed RC to GM's TN window"*. Built: the fire dialog counts the plain figure and only names the
+   bracket; the GM's TN window offers "Integral accessories … in use" beside the pods, worth the bracket less the plain RC
+   (`IntegralRC.extra` / `podEntry` — "2(3)" adds 1, "(6)" adds 6), applied like a pod before the heavy doubling. The old
+   `integralInUse` field is left on the gun, unread. Mutant `integral-rc-whole-bracket`, TESTING.md §77m. Combo scopes: Q11 below.
 
 **Built — the cyberlimb slice (2026-10-27):** `scripts/data/cyber-capacity.mjs` (`tests/cyber-capacity.test.mjs`, mutants
 `eye-mods-never-free`, `cyber-capacity-ignores-grade`, `dni-does-not-stack`):
@@ -928,43 +930,96 @@ band) — the maintainer, 2026-10-27: *"I dont like your rule on extreme but let
 - **Triggered augmentations: not applicable.** Adrenal Pump, Pain Editor and the like are bioware organs — never cyberlimb mods —
   so nothing built in can trigger. A GM who installs one into a limb anyway gets no trigger for it.
 - ⚠ Re-arming makes a fresh weapon entry: a GM's edits to a built-in's old entry are lost when the limb's mods change.
-- ❓ **For the maintainer:** removing a limb with built-ins adds only the limb's own graded Essence to the hole (seen live,
-  2026-10-27: an arm 1.0 holding a datajack .2 and plating .5 left a 1.0 hole). Whether its built-ins' Essence joins the hole
-  (M&M p.150) is the maintainer's call; until then the GM edits the hole.
+  ✔ **Accepted for now** (Q17, 2026-11-07) — carrying the edits over is more code than it is worth today.
+- ✔ **Removing a limb with built-ins** (Q14) → answered by the free-Essence ruling below: built-ins that fit the limb's capacity cost
+  no Essence, so they add nothing to the hole — only the limb's own graded Essence does (seen live 2026-10-27: an arm 1.0 holding a
+  datajack .2 and plating .5 left a 1.0 hole — correct). M&M p.147 (PDF 149): "Cyberware that is removed does not restore the
+  character's lost Essence." (The earlier "M&M p.150" was a wrong page.)
 
 **Cyberlimb rulings (the maintainer, 2026-10-27)** — for the cyberlimb slice:
 - **Synthetic limbs:** SR3 p.303's +50% on "any modification" does NOT apply to built-in devices.
 - **Direct neural interface:** its +50% (SR3 p.303) DOES stack on a built-in device's ×4 price.
-- **Grade:** *"it lowers the capacity but you have to match the grade for addons. an Alpha grade limb has 10% less capacity but
-  alpha grade mods are 20% smaller."* For now: **match the capacity reduction to the Essence reduction**, so a grade-matched limb
-  holds as many mods as a standard one (*"a cyber eye has 0.5 essence in module capacity. a deltaware eye can fix the same number of
-  mods as a normal grade eye"*). ⚠ **To audit against the books** (M&M p.36's 10/20/25% ECU cut vs the grade's Essence multiplier).
-- **Unread prices** (M&M pp.36-39 cost column: DNI adaptation, Cyberskates, the ECU table's costs) — the maintainer will re-read
-  them; the brief re-uploaded 2026-10-27 still has them cut off.
+- ✔ **Grade** (Q15) → ruled 2026-11-07: **the book's figures for limbs.** A limb's capacity is cut 10% alpha, 20% beta, 25% delta,
+  to the nearest .25 ECU (M&M p.36: reduce "equipment capacity units available in a limb by 10 percent for alphaware…"), so a
+  10-ECU arm holds 9 / 8 / 7.5. `CyberCapacity.ECU_GRADE` / `capacity`; `ecuOf` (a mod's size) stays ungraded. Eyes and ears keep the
+  2026-10-27 ruling (*"a deltaware eye can fix the same number of mods as a normal grade eye"*): their .5 takes the grade's Essence
+  multiplier. Mutant `limb-capacity-by-essence-factor`, TESTING.md §77n.
+- ✔ **Prices in M&M pp.36-39** (Q16) → read 2026-11-07: the packs already hold the book's figures (Cyberskates 1,000¥ / 2,500¥; DNI
+  adaptation 4,500¥, .1 Essence, .25 ECU); `tests/cyber-capacity.test.mjs` now pins them and DNI's +50% on a built-in.
+- ✔ **Free Essence for mods** → ruled 2026-11-07: *"for cyberware, they all should have some "free essence" for mods. if the
+  installed mods fit in that then they are cleanly included. if they have put more mods then fit thats additional essence loss."*
+  Already how it works: a limb's ECU capacity (M&M p.35, "Most additional equipment can be installed in cyberlimbs without Essence
+  cost") and an eye's or ear's .5 (SR3 p.299). ✔ **Follow-up ruled 2026-11-07** (*"Printed Essence; others none"*): a mod past the
+  capacity costs **its own printed Essence**, GM-editable; only limbs, skulls, torsos (`LIMB_ECU`), eyes and ears get free capacity,
+  any other host only through a typed `system.capacity`. Matches the code: `nestedEssence` counts each built-in at its own Essence
+  field, an over-capacity install warns (`installWarnings`), and `kind()` gives no other host capacity. ⚠ M&M p.35 (PDF 37) adds:
+  equipment that interfaces "with other, non-cyber parts of the body … does cost additional Essence" (the asterisked rows of the
+  Equipment Capacity Cost Table) — so the 11 `Cyberlimb Mods` entries with a printed Essence above 0 still cost it inside a limb that
+  has room, as the book prints. Raised with the maintainer rather than zeroed.
 
 **Open questions — for the maintainer, before the weapon / vehicle / cyberlimb slices merge** (each is a warning or an editable
 value today; none settled by picking a side):
-- **Pistol mounts** — SR3 p.276 and CC p.75 give pistols barrel + top only, yet SR3 p.282 lists underbarrel and top/under items
-  without saying pistols can't take them. Warn on an underbarrel mod on a pistol?
-- **Sport rifles and shotguns** — the Remington 750/950 and the Defiance T-250 print no underbarrel (SR3 pp.278-279); CC p.75's
-  frames list Barrel + Top + Under. Which wins for stock weapons?
-- **Imaging scopes and the rangefinder: Top, or Top or Under?** SR3 pp.280, 282 and CC p.33 say Top; CC p.82 says Top or Under.
-  Today the mount comes from the pack's description (Top).
+- ✔ **Mounts by weapon class** (Q4, Q5) → ruled 2026-11-07: warn on all five, a top-or-under item on a pistol goes on top. SR3 p.276:
+  pistols "can mount one barrel- and one top-mounting" accessory; "Revolvers cannot use silencers or sound suppressers"; "Hold-out
+  pistols cannot mount any accessories"; p.277: "SMGs cannot use silencers, but can use sound suppressers"; "Shotguns cannot mount
+  silencers or sound suppressers". `WeaponAccessories.classWarnings` (a revolver is "(cy)" in its Ammunition, p.276; pistols are
+  LPist/MPist/HPist/VHP — machine pistols are SMG-class). `tests/weapon-class-mods.test.mjs`, mutant `weapon-class-rules-unwarned`,
+  TESTING.md §77l.
+- ✔ **Sport rifles and shotguns** → ruled 2026-11-07: *"SR3 is right Remington 750 and 950 should not take them. so warn."* SR3
+  p.278: "Neither weapon can take underbarrel-mounted accessories"; p.279, the Defiance T-250: "It has no underbarrel mount." So a mod
+  that would go underbarrel on any of the three warns, never refuses (`WeaponAccessories.noUnderbarrel` / `installWarnings`); a
+  top-or-under one goes on top. The ruling also says, in general: *"if SR3 and CC are at odds, CC will usually win"* — here SR3's
+  per-gun line wins over CC p.75's frames. `tests/laser-smartlink.test.mjs`, mutant `remington-underbarrel-unwarned`, TESTING.md §77k.
+- ✔ **Imaging scopes and the rangefinder** (Q3) → ruled 2026-11-07: **Top or Under** (CC p.82, "Mount: Top or under", over SR3
+  p.280's "may only be top-mounted"). `ItemMods.mountsOf` gives every imaging scope and rangefinder Top/Under whatever its text
+  says (a typed `system.mount` still wins); Top is tried first. Mutant `imaging-scope-top-only`.
 - ✔ **Gas vents removable?** → ruled 2026-10-27: not removable, or removal costs something — its own item, [#277](TODO-DONE.md#277).
 - ✔ **Gas Vent level 1 (250¥)** — ruled 2026-10-27: *"cost for gas vent 1, leave it at 250"*. (The weapon-mods audit found only
   II and III printed in SR3; level 1 keeps that note in its description.)
-- **Internal smartgun price** — SR3 p.282 +100% of the weapon; CC p.81 the frame's base DPV × 8 (Smartlink-2 ×1.5); M&M p.32 ×150%
-  for the Smartlink-2 internal. Not built yet.
-- **Laser sight with a smartlink** — SR3 p.281 says not together, the p.112 table lists both. Today both flags can be on and the GM
-  window shows both rows; pick the better (−2) only?
-- **Imaging scope with a smartlink** — barred by SR3 p.280 and CC p.83; M&M p.34 lets goggles / an image link be the smartlink's
-  display. Does a scope still block it then?
+- ✔ **Internal smartgun price** (Q10) → ruled 2026-11-07: *"if its listed as an included accessory its assumed to be included in the
+  price. the other places you listed are clearly for after market or new design. if they are adding a smartlink-1 the price goes up by
+  100% if they are adding a smartlink-2 the price goes up by 150%"*. Built: `WeaponAccessories.internalSmartgunCost` — an internal
+  smartgun installed into a gun with its own Cost blank is priced at 100% (smartlink-1, SR3 p.281 "doubles the weapon's cost if
+  installed after manufacturing") or 150% (smartlink-2, M&M p.32 "x150%") of the gun's cost; an `integral` one never. CC p.81's
+  Design Points are for gunsmithing ([#279](#279)). The two items ship since Q22 (below): "Smartgun, internal (Weapon)" in the SR3
+  gear pack and "Smartlink-2 Modification, Internal (Weapon)" in the M&M one, 0¥ and Mount Internal. Mutant `smartlink-2-internal-at-100`.
+- ✔ **Laser sight with a smartlink** → ruled 2026-11-07: *"ok, go with the warn option but you shouldn't be able to apply both"*
+  (SR3 p.281: "Laser sights may not be used with a smartlink system"). Installing one beside the other warns
+  (`WeaponAccessories.installWarnings`); the GM's TN window unticks the other row (`exclusiveGear`); the guess offers only the
+  smart row; `sumModifiers` counts only the better. `tests/laser-smartlink.test.mjs`, mutant `laser-with-smartlink-unwarned`,
+  TESTING.md §77k.
+- ✔ **Imaging scope with a smartlink** (Q2) → ruled 2026-11-07: **warn on install**, either way round (SR3 p.280: imaging scopes "may
+  not be used with smartlink systems"). `WeaponAccessories.installWarnings`; `tests/weapon-class-mods.test.mjs`.
 - ✔ **Stocks on rifles** → ruled 2026-10-27: *"you should not be able to install a stock on a rifle since it has one by default"* —
-  REFUSED (`ItemMods.blocked`, the one refusal; rifles = the Rifles-skill categories). **Shotguns** (CC p.84 names them with
-  rifles) are not ruled — still allowed.
-- **Fore grip** — CC p.34 limits it to SMGs, assault rifles and shotguns; CC p.82 lists no limit. Warn outside those?
-- **Combo imaging scopes / two integral top accessories** — one mount each (SR3 p.280); a stock gun printing two top accessories was
-  not checked.
+  REFUSED (`ItemMods.blocked`, the one refusal; rifles = the Rifles-skill categories). **Shotguns** (Q8) → ruled 2026-11-07: *"the
+  book is clear 'Rifles and shotguns may not have this modification'"* (CC p.83, Stocks) — refused too. Mutant `shotgun-stock-allowed`.
+- ✔ **Fore grip** (Q7) → ruled 2026-11-07: **warn** outside SMGs, assault rifles and shotguns (CC p.34: it "can only be used on
+  submachine guns, assault rifles and shotguns"). `WeaponAccessories.classWarnings`.
+- ✔ **Two integral accessories on one mount** (Q9) → ruled 2026-11-07: **keep it, no warning** — the gun as printed (SR3 p.280:
+  "Integral accessories take up mount locations").
+- ✔ **Combo imaging scopes** (Q11) → ruled 2026-11-07: **one item, its price the sum of its modes**, taking the one top mount (CC p.82:
+  the types "may be combined into one scope"). Not built yet — there is no combo scope document to price.
+- ✔ **Armour rules shown, not applied** (Q18) → ruled 2026-11-07: **keep them as reminders on the card**; the GM applies them (Thermal
+  Dampening's Perception / Signature and its fade, CC pp.51-53; SR3 p.284's Respirator and Chemical Seal; injection darts against
+  hardened armour).
+- ✔ **Turbocharging's Speed cap** (Q19) → ruled 2026-11-07: **keep the warning** (R3R p.126: "Multiply the vehicle's Speed by 1.5";
+  one level is always allowed).
+- ✔ **Passenger seats** (Q20) → ruled 2026-11-07: **`seating` includes the driver**, so passengers = seating − 1 (R3R p.124) — how
+  the Cargo warning already reads it (mutant `vehicle-seats-include-driver`).
+- ✔ **Scope of [#283](#283)** (Q21) → ruled 2026-11-07: **one dialog for every host type** (gun, armour, cyberware, vehicle) on the
+  shared `ItemMods` price. Recorded on #283; not built.
+- ✔ **The markings of [#256](#256) / [#259](#259)** (Q22) → ruled 2026-11-07: **only the cheap, high-value parts** — no renames, no
+  pack folders (a rename changes generated ids and needs a migration). Built (`scripts/data/mod-markings.mjs`, read from the item's
+  own data, so owned copies show them without a migration):
+  - a **🦾 chip** on a cyberware row built into a cyberlimb (`ModFor.of` → cyberlimb), and a **mount chip** ("Top/Under", "Barrel",
+    "Internal") on a weapon-mod gear row — `SR3EActorSheet.markChip`;
+  - **a first line** on the item sheet (`_markingLine`) — "Built into a cyberlimb … (SR3 p.303; M&M pp.35–36)" or the mount
+    with SR3 p.280's "Only one accessory can be attached to a particular mount". Shown, not written into the description;
+  - a real **`mount` field** on `GearData` (`ItemMods.mountsOf` read it, but the model dropped it), editable on a weapon mod's sheet,
+    blank reading the description's "Mount:" line;
+  - **"Smartgun, internal (Weapon)"** (SR3 p.282, `sr3e-sr3-gear`) and **"Smartlink-2 Modification, Internal (Weapon)"** (M&M p.32,
+    `sr3e-mm-gear`) — hand-added (the gear builder keeps them), 0¥, priced from the gun at install (Q10).
+  `tests/mod-markings.test.mjs`, mutant `cyberlimb-mod-unmarked`, TESTING.md §77o. ⚠ **Full restart** (`GearData` gained a field).
 
 **Walked live, 2026-10-27** (§77, §77b-§77g, as mcp-api with a canvas, and Player2 for the owner's moves). Fixed on the way:
 - A Level picked on an INSTALLED mod kept the old price — the ✎ sheet's form submit followed with the stale cost and the temporary
@@ -1042,8 +1097,9 @@ that can calculate the cost before you add it to your character sheet."* Today a
 `VehicleMods.price`) is priced only once it is ON the vehicle (`preCreateItem`). **Wanted:** pick a host (gun, armour, cyberlimb,
 vehicle) and its mods, see each price — fixed, per level, or worked out from the host — and the total (and the Availability /
 time the slowest part needs) before anything is created; then buy it as one purchase, or add it without paying. Reads
-`ItemMods` (TODO 276), `CyberCapacity.builtInCost`, `VehicleMods.price`, the mount and budget checks as warnings. **Not designed
-yet** — the maintainer's call on scope (one dialog for every host type, or vehicles first) before any code.
+`ItemMods` (TODO 276), `CyberCapacity.builtInCost`, `VehicleMods.price`, the mount and budget checks as warnings.
+✔ **Scope ruled 2026-11-07** (mods ruling Q21): **one dialog for every host type** — gun, armour, cyberware, vehicle — on the shared
+`ItemMods` price, not vehicles or weapons first. Not designed further yet.
 
 ## 287. Vehicle and drone design — a chassis and Design Points (R3R) — **requested 2026-11-07**
 
@@ -3280,6 +3336,10 @@ their built-in price **on the limb**, ×4 with Man & Machine off (`CyberCapacity
 build:** all four markings (the rename, the folders, the description line, the 🦾 chip), the price in the purchase dialog, and
 the migration (now 0.9.0 or later — 0.8.0 has shipped).
 
+**Status 2026-11-07** (mods ruling Q22, [#276](#276)): the maintainer chose only the cheap parts — the 🦾 chip and the description
+line are built (shown from the category, so no migration). **Dropped:** the rename and the folders. **Still open:** the built-in
+price in the purchase dialog (now [#283](#283)'s one dialog) and [#255](TODO-DONE.md#255)'s corrections onto owned copies.
+
 ## 259. Show where each weapon mod mounts — **requested 2026-10-23**
 
 The maintainer, after [#256](#256): "we should also do something similar for weapon mods". Decided 2026-10-23
@@ -3297,6 +3357,10 @@ taken mount and shows mount · mod in the 🔧 chip's tooltip, so mounts work wi
 `system.mount` first, but no gear model declares it (TypeDataModels drop it) — the field is still to add. **Still to build:** the
 `mount` field and its fill, the variant names, the folders, the description line, a mount chip on the gear row, Smartgun,
 internal and Smartlink-2 Modification, Internal (whose price is #276's open question).
+
+**Status 2026-11-07** (mods ruling Q22, [#276](#276)): built — the `mount` field on `GearData`, the mount chip, the description line,
+and the two internal smartgun items (priced per Q10). **Dropped:** the variant renames and the folders by mount. **Still open:**
+filling `mount` into the packs from the book's column (today the description's "Mount:" line carries it, which `mountsOf` reads).
 
 ## 260. Unlinked NPC tokens share wounds and statuses through their sidebar actor — **reported in play, 2026-10-24**
 

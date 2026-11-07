@@ -55,8 +55,29 @@ export const IntegralRC = {
     return Math.max(0, Math.trunc(Number(typed) || 0) - IntegralRC.modsComp(system));
   },
 
-  /** Is the tick pre-set? Only a weapon with a bracketed figure can be ticked; the gun remembers its last answer. */
+  /**
+   * Is the tick pre-set? Only a weapon with a bracketed figure can be ticked; the gun remembers its last answer.
+   * ⚠ No longer read by the fire dialog — the GM's TN window decides per shot (`podEntry`, mods ruling Q13, 2026-11-07).
+   */
   defaultInUse(system) {
     return IntegralRC.has(system) && system?.integralInUse === true;
+  },
+
+  /**
+   * What the integral accessories add over the plain figure — the bracketed total less the plain RC (the bracket REPLACES the
+   * plain figure, so this is the difference, never the whole bracket). 0 for a gun with no bracket. "2(3)" → 1; "(6)" → 6.
+   */
+  extra(system) {
+    if (!IntegralRC.has(system)) return 0;
+    return Math.max(0, IntegralRC.weaponComp(system, true) - IntegralRC.weaponComp(system, false));
+  },
+
+  /**
+   * The bracketed RC as a row of the GM's TN window, beside the bipods and tripods (the maintainer, 2026-11-07, mods ruling Q13:
+   * "Move bracketed RC to GM's TN window"): `[{ name, rc, integral: true }]`, empty when it adds nothing.
+   */
+  podEntry(system) {
+    const rc = IntegralRC.extra(system);
+    return rc > 0 ? [{ id: null, name: 'Integral accessories (stock folded out / tripod set up)', rc, integral: true }] : [];
   },
 };

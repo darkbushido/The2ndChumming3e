@@ -325,6 +325,10 @@ export class GearData extends foundry.abstract.TypeDataModel {
       // What this mod is a mod FOR — '' (not a mod) | 'armor' | 'weapon' | 'cyberlimb' | 'vehicle' (TODO 266). The truth the
       // name tag mirrors ("Chemical Seal (Armor)"); TODO 263's attach logic warns on it. Read it with ?? ''.
       modFor:       new StringField({ initial: '', blank: true, choices: MOD_FOR_CHOICES }),
+      // Where a weapon mod goes — 'Top' | 'Under' | 'Barrel' | 'Internal', or two joined with '/' ("Top/Under"); '' reads the
+      // description's "Mount:" line instead (`ItemMods.mountsOf`, which read this key before any model declared it — TODO 259,
+      // mods ruling Q22). Free text on purpose: a houserule mount is the GM's call.
+      mount:        new StringField({ initial: '', blank: true }),
       cost:         new NumberField({ integer: true, initial: 0, min: 0 }),
       weight:       new NumberField({ initial: 0, min: 0 }),
       availability: new StringField({ initial: '' }),

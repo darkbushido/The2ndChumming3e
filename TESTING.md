@@ -3509,6 +3509,64 @@ works, and the same implant **built in** now does it too.
       load it reads **Panther Assault Cannon [Bipod]**, bracketed RC 2, accessories "Folding Bipod(2RC)", a Bipod integral mod
       in 🔧 (no Hip Pad Bracing System), Legality 2-H. A mod the GM had installed on it is still there. Reload → nothing changes.
 
+### 77k. A laser sight and a smartlink never both (TODO 276 — SR3 p.281; the maintainer's ruling of 2026-11-07)
+
+JS only — F5 is enough.
+
+- [ ] **Install:** drop a Laser Sight onto a smartgun (an Ares Predator II) → a warning "…can't be used together (SR3 p.281) — only
+      the smartlink's −2 counts"; it installs anyway. Drop a Smartgun, external onto a gun with a laser sight → the same warning.
+- [ ] **The GM's TN window:** a smartlinked shooter fires that Predator → Gear has **Smartlink** ticked, **Laser sight** not. Tick
+      Laser sight → Smartlink unticks and the TN goes up by 1; tick Smartlink → Laser sight unticks. Never both ticked.
+- [ ] **No receptor:** a shooter with no smartlink or goggles fires it → Laser sight is pre-ticked (the smartgun is dead weight).
+- [ ] **No underbarrel** (SR3 pp.278-279, ruled the same day): drop a Bipod onto a Remington 750 → warned "…has no underbarrel mount
+      (SR3 pp.278-279)", and it installs. The same on a Defiance T-250. A Laser Sight (Top/Under) on the 750 → no warning (top).
+
+### 77l. What each weapon class takes (TODO 276 — SR3 pp.276-280, CC pp.34, 82-83; the maintainer's rulings of 2026-11-07)
+
+JS only — F5 is enough. Every one of these installs; only the shotgun stock is refused.
+
+- [ ] **Hold-out:** drop a Laser Sight onto a Streetline Special → warned "Hold-out pistols cannot mount any accessories (SR3 p.276)".
+- [ ] **Pistol:** a Bipod onto an Ares Predator → warned "…no underbarrel". A Laser Sight onto it → no warning (goes on top).
+- [ ] **Revolver:** a Silencer onto a Ruger Super Warhawk → warned "Revolvers cannot use silencers or sound suppressers".
+- [ ] **SMG / shotgun:** a Silencer onto an Uzi III → warned; a Sound Suppresser onto it → nothing. Either onto an Enfield AS7 → warned.
+- [ ] **Fore grip** onto a Ranger Arms SM-3 → warned (CC p.34); onto an AK-97 → nothing.
+- [ ] **Stock on a shotgun:** a Stock onto an Enfield AS7 → refused, red, "Rifles and shotguns may not have this modification (CC p.83)".
+- [ ] **Internal smartgun:** make a gear item "Smartgun, internal (Weapon)", Cost 0, and drop it on an Ares Predator (450¥) → "450¥ —
+      100% of Ares Predator's price"; its Cost is 450. Named "Smartlink-2 Modification, Internal (Weapon)" → 675¥. With a Cost typed
+      first → left alone.
+- [ ] **Scope:** an Imaging Scope onto an Ingram Smartgun Mod 20T → warned (SR3 p.280). With a scope already on top, a second Imaging Scope
+      goes Under (CC p.82, Top or Under).
+
+### 77m. The bracketed RC is the GM's call (TODO 276 — SR3 p.276; the maintainer's ruling of 2026-11-07)
+
+JS only — F5 is enough.
+
+- [ ] **Fire dialog:** fire an HK227 (RC 2(3)) in burst → no "Integral accessories in use" tick; the Weapon box reads 2 and a line
+      says "RC 2 → 3 — the GM decides whether they are in use, in the GM's window".
+- [ ] **GM's TN window:** the same shot → a row "Integral accessories (stock folded out / tripod set up) in use (RC +1 …)". Tick it →
+      the TN drops by what one more point of RC saves; the note under it says the recoil saved.
+- [ ] **RPK HMG (6):** its row offers RC +6 (with a tripod mod installed as well, both rows show).
+
+### 77n. A higher-grade limb holds less (TODO 276 — M&M p.36; the maintainer's ruling Q15 of 2026-11-07)
+
+JS only — F5 is enough. A character with an obvious full cyberarm (10 ECU at standard grade).
+
+- [ ] **Grade:** set the arm's Grade to Alpha → its capacity reads 9; Beta → 8; Delta → 7.5. Back to Standard → 10.
+- [ ] **A mod's size is not graded:** with the arm at Delta, install a smartgun link → it still takes its printed ECU.
+- [ ] **Eyes keep the old ruling:** a Delta cybereye → its options still fit as many as a Standard eye's.
+
+### 77o. Cyberlimb mods and weapon mods are marked (TODOs 256/259 — mods ruling Q22 of 2026-11-07)
+
+⚠ **Full Foundry restart** — `GearData` gained `mount`, and two gear items were added (`npm run packs:install`, Foundry CLOSED).
+
+- [ ] **🦾:** give a character "Smartlink II" from Cyberlimb Mods and "Smartlink II" from Headware → only the first shows 🦾 on the
+      Cyberware row; its tooltip says "Built into a cyberlimb…". Open it → the same line shows above Attribute Bonuses.
+- [ ] **Mount chip:** a Laser Sight on the Gear tab shows "Top/Under"; a Silencer "Barrel". Open the Laser Sight → a Mount field,
+      blank, its placeholder "Top/Under"; type "Under" → the chip reads "Under". Plain gear (a Medkit) has no chip and no field.
+- [ ] **Internal smartgun:** "Smartgun, internal (Weapon)" (SR3 gear) and "Smartlink-2 Modification, Internal (Weapon)" (M&M gear) are
+      in the compendium, 0¥, chip "Internal". Drop the first on an Ares Predator (450¥) → its price is filled at 450¥; the second
+      → 675¥.
+
 ## 78. A vehicle's mods against its Cargo and Load (TODO 265, step c's first slice — R3R p.124)
 
 JS / CSS only (no restart needed beyond a reload). A vehicle from the packs, e.g. an Ares Roadmaster (Body 5, Cargo 80, Load 2000).

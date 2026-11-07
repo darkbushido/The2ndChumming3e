@@ -390,6 +390,65 @@ export const MUTANTS = [
     impl:   text => ({ smartgun: /smart/i.test(String(text ?? '')), laserSight: /laser/i.test(String(text ?? '')) }),
   },
   {
+    id:     'laser-with-smartlink-unwarned',
+    suite:  'laser-smartlink',
+    ...ACCESSORIES, method: 'installWarnings',
+    was:    'a laser sight installed beside a smartgun said nothing — SR3 p.281 says they cannot be used together (the maintainer, 2026-11-07)',
+    impl:   () => [],
+  },
+  {
+    id:     'weapon-class-rules-unwarned',
+    suite:  'weapon-class-mods',
+    ...ACCESSORIES, method: 'classWarnings',
+    was:    'a silencer on a revolver, SMG or shotgun, anything on a hold-out, an underbarrel item on a pistol and a fore grip on a rifle said nothing (SR3 pp.276-277, CC p.34; ruled 2026-11-07: warn)',
+    impl:   () => [],
+  },
+  {
+    id:     'shotgun-stock-allowed',
+    suite:  'item-mods',
+    ...ITEMMODS, method: 'blocked',
+    was:    'a stock on a shotgun went on; CC p.83 says "Rifles and shotguns may not have this modification" (ruled 2026-11-07: refuse)',
+    impl:   (host, mod) => (host?.type === 'firearm' && ['Carb', 'AsRf', 'SptR', 'Snip', 'LCarb'].includes(host?.system?.category)
+      && /^stock\b/i.test(String(mod?.name ?? '')) ? 'a rifle has its own stock' : null),
+  },
+  {
+    id:     'imaging-scope-top-only',
+    suite:  'item-mods',
+    ...ITEMMODS, method: 'mountsOf',
+    was:    'an imaging scope or rangefinder went on top only, as its text says; ruled 2026-11-07: top or under (CC p.82)',
+    impl:   mod => String(mod?.system?.mount || /Mount:\s*(?:<\/strong>)?\s*([^<\n]+)/i.exec(String(mod?.system?.description ?? ''))?.[1] || '')
+      .split('/').map(s => s.trim()).map(s => ['Top', 'Under', 'Barrel'].find(m => m.toLowerCase() === s.toLowerCase())).filter(Boolean),
+  },
+  {
+    id:     'integral-rc-whole-bracket',
+    suite:  'integral-rc',
+    ...INTEGRALRC, method: 'extra',
+    was:    'the GM window\'s integral row added the whole bracketed RC on top of the plain figure — "2(3)" gave 5, not 3 (SR3 p.276: the bracket is the total)',
+    impl:   system => (Number.isFinite(Number(system?.recoilModIntegral)) && system?.recoilModIntegral !== null ? Number(system.recoilModIntegral) : 0),
+  },
+  {
+    id:     'smartlink-2-internal-at-100',
+    suite:  'weapon-class-mods',
+    ...ACCESSORIES, method: 'internalSmartgunCost',
+    was:    'an internal Smartlink-2 priced at 100% of the gun like a Smartlink-1; ruled 2026-11-07: 150% (M&M p.32)',
+    impl:   (weapon, mod) => (/internal/i.test(String(mod?.name ?? '')) && /smart/i.test(String(mod?.name ?? '')) && mod?.flags?.The2ndChumming3e?.integral !== true
+      ? Math.round(Number(weapon?.system?.cost) || 0) : null),
+  },
+  {
+    id:     'cyberlimb-mod-unmarked',
+    suite:  'mod-markings',
+    module: '../scripts/data/mod-markings.mjs', klass: 'ModMarkings', method: 'isLimbMod',
+    was:    'a cyberlimb mod looked like the ordinary implant of the same name (TODO 256); ruled 2026-11-07 (Q22): a 🦾 chip and a first line',
+    impl:   () => false,
+  },
+  {
+    id:     'remington-underbarrel-unwarned',
+    suite:  'laser-smartlink',
+    ...ACCESSORIES, method: 'noUnderbarrel',
+    was:    'a bipod on a Remington 750 / 950 or a Defiance T-250 said nothing; SR3 pp.278-279 print no underbarrel mount (the maintainer, 2026-11-07: warn)',
+    impl:   () => false,
+  },
+  {
     id:     'loose-rounds-shown-as-clips',
     suite:  'ammo-stock',
     ...AMMO, method: 'loadLabel',
@@ -4106,8 +4165,20 @@ export const MUTANTS = [
     id:     'cyber-capacity-ignores-grade',
     suite:  'cyber-capacity',
     ...CYBERCAP, method: 'gradeMult',
-    was:    'a graded limb kept a standard limb\'s capacity — the maintainer: reduced by the grade\'s Essence factor (TODO 276)',
+    was:    'a graded eye kept a standard eye\'s .5 free — reduced by the grade\'s Essence factor (TODO 276)',
     impl:   () => 1,
+  },
+  {
+    id:     'limb-capacity-by-essence-factor',
+    suite:  'cyber-capacity',
+    ...CYBERCAP, method: 'capacity',
+    was:    'a graded limb\'s room cut by the grade\'s Essence factor (delta ×.5); M&M p.36 cuts it 10 / 20 / 25% (mods ruling Q15, 2026-11-07)',
+    impl:   item => {
+      const G = { alpha: 0.8, beta: 0.6, delta: 0.5 };
+      const k = String(item?.system?.grade ?? '').toLowerCase().replace(/ware$/, '');
+      const base = Number(item?.system?.capacity) > 0 ? Number(item.system.capacity) : 10;
+      return Math.round(base * (G[k] ?? 1) * 4) / 4;
+    },
   },
   {
     id:     'dni-does-not-stack',

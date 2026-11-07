@@ -72,11 +72,18 @@ export async function run(t) {
   t.is('…no fire-mode data (a bow): nothing', SR3EItem.podSaving(null, 6), 0);
 
   const item = read('scripts/documents/SR3EItem.js');
-  t.ok('the fire dialog starts from the bracketed-aware figure', /const weaponComp\s+= IntegralRC\.totalComp\(weapon\.system, inUse0\)/.test(item));
-  t.ok('…offers the tick only when the weapon has a bracketed RC', /hasIntegral \? `<label[^`]*id="sr-integral"/.test(item));
-  t.ok('…ticking swaps the weapon figure', /#sr-integral'\)\?\.addEventListener\('change'[\s\S]{0,200}IntegralRC\.totalComp\(weapon\.system, event\.target\.checked\)/.test(item));
-  t.ok('…a typed figure is saved against the figure that was showing', /\[inUse \? 'system\.recoilModIntegral' : 'system\.recoilMod'\]: IntegralRC\.baseFor\(weapon\.system, wComp\)/.test(item));
-  t.ok('…the tick is remembered on the gun', /'system\.integralInUse': inUse/.test(item));
+  t.ok('the fire dialog starts from the plain figure plus mods', /const weaponComp\s+= IntegralRC\.totalComp\(weapon\.system, inUse0\)/.test(item));
+  // Mods ruling Q13 (the maintainer, 2026-11-07): "Move bracketed RC to GM's TN window" — no tick in the fire dialog any more.
+  t.ok('the fire dialog no longer asks: it counts the plain figure', /const inUse0\s+= false;/.test(item) && !/id="sr-integral"/.test(item));
+  t.ok('…a typed figure is saved against the plain RC', /'system\.recoilMod': IntegralRC\.baseFor\(weapon\.system, wComp\)/.test(item));
+  t.ok('…the GM window gets the bracket as a row beside the pods', /pods:\s+\[\.\.\.ItemMods\.pods\(this\), \.\.\.IntegralRC\.podEntry\(this\.system\)\]/.test(item));
+  t.ok('…labelled as integral accessories in use, citing p.276', /p\.integral \?[\s\S]{0,120}in use \(RC \+/.test(item));
+  t.is('the row adds the difference, never the whole bracket: "2(3)" → 1', IntegralRC.extra(hk227), 1);
+  t.is('…"(6)" on a "--" gun → 6', IntegralRC.extra({ recoilMod: null, recoilModIntegral: 6 }), 6);
+  t.eq('…no bracket, no row', IntegralRC.podEntry({ recoilMod: 2 }), []);
+  t.eq('…the row', IntegralRC.podEntry(hk227).map(p => [p.rc, p.integral]), [[1, true]]);
+  const fa = { mode: 'FA', roundsBefore: 0, roundsThisShot: 6, totalComp: 2, isHeavy: false };
+  t.is('…ticked, it saves what its RC saves on this shot (HK227, 6 rounds, RC 2 → 3)', SR3EItem.podSaving({ ...fa, tn: SR3EItem.recoilTN(fa) }, IntegralRC.extra(hk227)), 1);
   t.ok('…the result carries the weapon figure, so a short burst recomputes with it', /weaponComp: wComp/.test(item) && /fireModeResult\.weaponComp \?\? IntegralRC\.totalComp\(this\.system, false\)/.test(item));
   t.ok('FirearmData declares both fields', /recoilModIntegral: new NumberField\(\{ integer: true, nullable: true, initial: null, min: 0 \}\)/.test(read('scripts/data/ItemDataModels.js')) && /integralInUse:\s+new BooleanField\(\{ initial: false \}\)/.test(read('scripts/data/ItemDataModels.js')));
   t.ok('the item sheet has the field', /'recoilModIntegral'/.test(read('scripts/sheets/SR3EItemSheet.js')));

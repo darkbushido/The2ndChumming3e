@@ -130,7 +130,7 @@ export async function run(t) {
   const entry = read('scripts/sr3e.js');
   t.ok('a preCreateItem hook fills a new gear item\'s rating', /Hooks\.on\('preCreateItem'[\s\S]{0,200}ratingOnCreate\(document\.type, data\?\.system\?\.rating, document\.name\)/.test(entry));
   const asheet = read('scripts/sheets/SR3EActorSheet.js');
-  t.ok('the gear tab shows gear with its rating', /<span class="item-name">\$\{displayName\(g\)\}<\/span>/.test(asheet));
+  t.ok('the gear tab shows gear with its rating', /<span class="item-name">\$\{displayName\(g\)\}(?:\$\{SR3EActorSheet\.markChip\(g\)\})?<\/span>/.test(asheet));
 
   /* ── The packs carry the rating too (tools/patch-name-ratings.mjs) ──────────────── */
   const { ratingPatch } = await import('../tools/patch-name-ratings.mjs');

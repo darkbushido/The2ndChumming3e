@@ -16,6 +16,7 @@ import { ArmorMods } from '../data/armor-mods.mjs';
 import { ModFor } from '../data/mod-for.mjs';
 import { SR3EItemMods } from '../SR3EItemMods.js';
 import { ModRemoval } from '../data/mod-removal.mjs';
+import { ModMarkings } from '../data/mod-markings.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -530,6 +531,13 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const rows = SR3EItemMods.rows(item);
     if (!rows.length) return '';
     return ` <span class="sr-mod-count" data-tooltip="${foundry.utils.escapeHTML(SR3EActorSheet.modsTooltip(item, rows))}" data-tooltip-direction="UP">🔧${rows.length}</span>`;
+  }
+
+  /** "🦾" after cyberware built into a cyberlimb, "Top/Under" after a weapon mod (TODOs 256/259, mods ruling Q22). */
+  static markChip(item) {
+    const c = ModMarkings.chip(item);
+    if (!c) return '';
+    return ` <span class="sr-mod-mark" data-tooltip="${foundry.utils.escapeHTML(c.tip)}">${foundry.utils.escapeHTML(c.text)}</span>`;
   }
 
   /** "⚠ needs repair" after a gun whose barrel a failed gas-vent removal destroyed (TODO 277). */
@@ -1882,7 +1890,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       const rating = itemRating(c);   // the packs keep most ratings in the name: "Wired Reflexes [2]"
       return `
         <div class="item-row" data-item-id="${c.id}" data-cyber-item-id="${c.id}">
-          <span class="item-name">${c.name}${SR3EActorSheet.modsChip(c)}</span>
+          <span class="item-name">${c.name}${SR3EActorSheet.markChip(c)}${SR3EActorSheet.modsChip(c)}</span>
           <span class="item-cell">${c.system.grade ?? '—'}</span>
           <span class="item-cell">${c.system.essenceCost ?? 0}</span>
           <span class="item-cell">${rating}</span>
@@ -2690,7 +2698,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const gRows = gear.length ? gear.map(g => `
       <div class="item-row" data-item-id="${g.id}">
-        <span class="item-name">${displayName(g)}</span>
+        <span class="item-name">${displayName(g)}${SR3EActorSheet.markChip(g)}</span>
         <span class="item-cell">×${g.system.quantity ?? 1}</span>
         <span class="item-cell">${g.system.cost ?? 0}¥</span>
         <span class="item-cell col-xs">${g.system.weight ?? 0}</span>
