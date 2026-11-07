@@ -84,7 +84,7 @@ Queue: remaining mods questions moved to the back, after every other session (ma
 | Q20 | Does seating include the driver | Yes; passengers = seating − 1 | 2026-11-07 | SR3 p.133; R3R p.124 |
 | Q21 | TODO 283 scope | One dialog for all hosts | 2026-11-07 | design |
 | Q22 | TODOs 256/259 markings | Cheap parts only: chips, description line, `mount` field, the two smartgun items | 2026-11-07 | design |
-| Q14 | Limb removal: built-ins' Essence joins the hole | OPEN — cited M&M p.150 is wrong (surgery options); mods session finding the right page | — | — |
+| Q14 | Limb removal: built-ins' Essence joins the hole | Closed by the free-Essence ruling: only Essence actually paid joins the hole | 2026-11-07 | M&M p.147, p.35 |
 
 ### Corrections and later notes
 
@@ -103,9 +103,30 @@ Queue: remaining mods questions moved to the back, after every other session (ma
 | Q2 | Availability class modifiers | Apply as p.113 states | 2026-11-07 | R3R p.113 |
 | Q3 | Minimum "2/24" | "a day is 24hrs, the base is 2/24hours so a 2/2 days should be 2/48hrs. you cannot mod it lower then 2/24hrs." | 2026-11-07 | R3R p.113 |
 
-## Still open (usage limit reached 2026-11-07)
+| Q4 | Smart-materials rounding | Nearest, .5 up | 2026-11-07 | R3R p.118, p.111 |
+| Q5 | Table discrepancies | Keep printed figures | 2026-11-07 | R3R pp.196-202 |
 
-- Vehicle Q4 (smart-materials rounding, R3R p.118/p.111) and Q5 (keep printed table figures).
-- Matrix: how the −10 Initiative offset reaches a triggered IC (card only / set roll / "enters in pass N"); 9 sheaf rows + Convergence as 10th box OK?
-- Shop round 2, Q7–Q11 (`todo-288-grill-round-2.md`).
-- Mods: free Essence for non-limb hosts (datajack, headware, skull/torso).
+## matrix, continued
+
+| # | Question | Answer | Date | Source |
+|---|---|---|---|---|
+| Q5b | How the −10 Initiative reaches a triggered IC | Offer on the card; GM edits | 2026-11-07 | MDF p.23 |
+| Q6 | 9 sheaf rows + Convergence as 10th box | Keep as is | 2026-11-07 | MDF p.23 |
+
+## shop, order delivery round 2 (TODO 288)
+
+| # | Question | Answer | Date | Source |
+|---|---|---|---|---|
+| Q7 | Who cancels an open order | GM only (not the recommendation) | 2026-11-07 | SR3 p.273 |
+| Q8 | Flip to Downtime with orders open | Ticked offer dialog | 2026-11-07 | design |
+| Q9 | Medical bill during recovery | Separate, unchanged | 2026-11-07 | SR3 p.128 |
+| Q10 | New damage during a recovery | Amber warning, GM decides | 2026-11-07 | SR3 p.127 |
+| Q11 | Who sees the toggle | Everyone; only the GM flips it | 2026-11-07 | design |
+
+## mods, last item
+
+| # | Question | Answer | Date | Source |
+|---|---|---|---|---|
+| Q23 | Overflow Essence; free capacity for other hosts | Overflow costs the mod's printed Essence; only limbs, skulls, torsos, eyes, ears get free capacity | 2026-11-07 | M&M p.35, p.147; SR3 p.299 |
+
+All collected questions answered and routed (2026-11-07).
