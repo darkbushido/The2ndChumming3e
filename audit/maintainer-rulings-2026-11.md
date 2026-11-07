@@ -15,3 +15,17 @@ Log of questions put to the maintainer through the questions session. Format: qu
 | # | Question | Answer (verbatim notes) | Date | Source |
 |---|---|---|---|---|
 | Q1 | Laser sight with a smartlink | Warn option; "you shouldn't be able to apply both" (only the better, −2, counts) | 2026-11-07 | SR3 p.281, p.112 |
+| Q2 | Imaging scope with a smartlink | Warn on install | 2026-11-07 | SR3 p.280; CC p.83; M&M p.34 |
+| Q3 | Imaging scope / rangefinder mount | Top or Under | 2026-11-07 | SR3 p.280, p.282; CC p.33, p.82 |
+| Q4 | Mount rules by weapon class | Warn on all five (hold-out any; pistol underbarrel; revolver/SMG/shotgun silencers) | 2026-11-07 | SR3 pp.276-277 |
+| Q5 | Underbarrel mod on a pistol | Warn; a top-or-under item goes on top | 2026-11-07 | SR3 p.276, p.282 |
+| Q6 | Sport rifles with no printed underbarrel | "if SR3 and CC are at odds, CC will usually win. if they are riffles they get the riffle mounts." | 2026-11-07 | SR3 p.277; CC p.75 |
+| Q7 | Fore grip limited to SMG / assault rifle / shotgun | Warn outside those three | 2026-11-07 | CC p.34 |
+| Q8 | Stock on a shotgun | Refused, like rifles: "the book is clear 'Rifles and shotguns may not have this modification'" | 2026-11-07 | CC p.34 |
+| Q9 | Two integral accessories on one mount | Keep, no warning | 2026-11-07 | SR3 p.280 |
+| Q10 | Internal smartgun price | "if its listed as an included accessory its assumed to be included in the price. the other places you listed are clearly for after market or new design. if they are adding a smartlink-1 the price goes up by 100% if they are adding a smartlink-2 the price goes up by 150%" | 2026-11-07 | SR3 p.281-282; M&M p.32 |
+| Q11 | Combo imaging scopes | One item, summed price, one mount | 2026-11-07 | CC p.82 |
+| Q12 | Magnification beyond Extreme | Keep as is (no shift beyond Extreme) | 2026-11-07 | SR3 p.110 |
+| Q13 | Printed bracketed RC | Move to the GM's TN window | 2026-11-07 | SR3 p.280 |
+
+General: maintainer asked that every page be read in the PDF before a question is put to them (2026-11-07).
