@@ -38,3 +38,9 @@ Queue: remaining mods questions moved to the back, after every other session (ma
 | # | Question | Answer | Date | Source |
 |---|---|---|---|---|
 | cart | Availability for a cart bought through a contact | One Etiquette Test against the slowest item, one haggle on the total (answered directly to shop-cart, recorded here) | 2026-11-07 | SR3 p.272 (PDF 274) |
+
+## matrix (native Matrix Defragged turn flow, session hacking-module)
+
+| # | Question | Answer | Date | Source |
+|---|---|---|---|---|
+| Q1 | Next slice: Security Sheaf Trigger Steps or the host-run turn loop | "Sheaf first" | 2026-11-07 | MDF p.23 |
