@@ -2082,8 +2082,8 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
   mk('sr3e-clocks-btn',  '🕐 Threat Clocks',   () => game.sr3e.SR3EClocks.open(), false);
   mk('sr3e-heal-btn',    '🩹 Healing',         () => SR3EHealing.openPicker(),    false);
   // ⏱ The time toggle and 📦 what is waiting on it (TODO 288) — GM only; the label shows the mode.
-  mk('sr3e-timemode-btn', SR3EOrders.waits() ? '⏱ In session (time passes)' : '⏱ Downtime (instant)', () => SR3EOrders.toggle(), true);
-  mk('sr3e-orders-btn', `📦 Orders (${SR3EOrders.state().orders.length + SR3EOrders.state().recoveries.length})`, () => SR3EOrders.open(), true);
+  mk('sr3e-timemode-btn', SR3EOrders.toolLabels().mode,   () => SR3EOrders.toggle(), true);
+  mk('sr3e-orders-btn',   SR3EOrders.toolLabels().orders, () => SR3EOrders.open(),   true);
   mk('sr3e-reward-btn',  '🎖 Session Rewards', _openSessionRewardDialog,     true);
   mk('sr3e-karma-refresh-btn', '🍀 Refresh Karma Pools', _openKarmaRefreshDialog, true);
   mk('sr3e-salsa-btn',   '💥 Chunky Salsa',    _openChunkySalsaCalculator,   true);

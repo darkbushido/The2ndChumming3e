@@ -65,6 +65,11 @@ export async function run(t) {
   t.ok('contact cards ask payMode with store false; the store card has no order path', /payMode\(game\.sr3e\.SR3EOrders\.mode\(\), \{ store: false \}\)/.test(pur));
   t.ok('the pay button places the order when the card says so', /pl\.order\s*\?\s*await SR3EOrders\.placeOrder/.test(main));
   t.ok('GM tools carry the toggle and the Orders window', /sr3e-timemode-btn/.test(main) && /sr3e-orders-btn/.test(main));
+  t.ok('refresh relabels the GM tools buttons (the hook returns early once they exist — live check 2026-11-07)',
+    /static refresh\(\) \{[\s\S]*?SR3EOrders\.relabelTools\(\)/.test(ord) && /querySelectorAll\('\.sr3e-timemode-btn'\)/.test(ord)
+    && /querySelectorAll\('\.sr3e-orders-btn'\)/.test(ord));
+  t.ok('…and the hook takes its labels from the same place', /mk\('sr3e-timemode-btn', SR3EOrders\.toolLabels\(\)\.mode/.test(main)
+    && /mk\('sr3e-orders-btn',\s*SR3EOrders\.toolLabels\(\)\.orders/.test(main));
   t.ok('the Buy gear dialog shows the mode', /class="sr-buy-mode"/.test(pur));
   t.ok('natural healing (stage, Stun rest) is timed in session', /timed\(lower, 'lower'/.test(heal) && /'eraseStun', H\.formatHours/.test(heal));
   t.ok('first aid and magic are not timed', !/timed\(\{ act: 'heal-boxes'/.test(heal) && /actions\.push\(lower\)/.test(heal));
