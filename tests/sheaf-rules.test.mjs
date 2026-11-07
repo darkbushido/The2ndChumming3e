@@ -20,5 +20,6 @@ export async function run(t) {
   t.eq('Mainframe Support lifts both limits',
     SheafRules.stockingReport({ memoryTotal: 1000, mainframeSupport: true, ic }), { used: 1100, total: 1000, over: 0, graded: [] });
   t.ok('activation rolls triggered IC with the editable penalty', /rollTriggeredICInitiative/.test(read('scripts/sr3e.js')) && /static async rollTriggeredICInitiative/.test(read('scripts/documents/SR3EActor.js')));
+  t.ok('an IC turn posts a GM prompt card and a ruleset-aware attack button', ['sr-ic-turn-btn', 'ic.rollOrthodoxICAttack()', 'whisper: game.users.filter(u => u.isGM)'].every(s => read('scripts/sr3e.js').includes(s)));
   t.ok('the sheaf prompt reports it', /SheafRules\.stockingReport/.test(read('scripts/documents/SR3EActor.js')));
 }
