@@ -4440,6 +4440,20 @@ export const MUTANTS = [
     impl:   function (row, ctx) { return this._priceOriginal({ ...row, dp: '', cf: '', load: '' }, ctx); },
   },
   {
+    id:     'design-hull-factor-is-hull',
+    suite:  'design-options',
+    module: '../scripts/data/design-options.mjs', klass: 'DesignOptions', method: 'price', needsOriginal: '_priceOriginal',
+    was:    'Hull Factor priced as the Hull rating — R3R p.114: 100 × Hull² (the maintainer, 2026-11-08; TODO 287)',
+    impl:   function (row, ctx) { return this._priceOriginal(row, { ...ctx, hullFactor: ctx.hull }); },
+  },
+  {
+    id:     'design-fin-rounds-down',
+    suite:  'design-options',
+    ...VDESIGN, method: 'finScale',
+    was:    'Fin Drive +25% rounded down — the maintainer ruled nearest (R3R p.117, TODO 287)',
+    impl:   v => Math.floor(v * 1.25),
+  },
+  {
     id:     'design-option-effects-dropped',
     suite:  'design-options',
     ...VDESIGN, method: 'priceOptions', needsOriginal: '_priceOptionsOriginal',

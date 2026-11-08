@@ -44,7 +44,7 @@ export const SMART = { dp: 100, factor: 1.15, handling: -1, streetIndex: 1 };
 export const AVAIL = { per: 20000, min: 2, minHours: 24, outOfReach: 30 };
 /** Permanent effects of catalogue options (R3R pp.117-118): Hybrid Acceleration −2, Fin Drive ×1.25 (+4 Availability),
  * Removed Manual Controls +2 CF / +10 kg. */
-export const OPTION_EFFECTS = { hybridAccel: 2, fin: 1.25, finAvail: 4, noManual: { cf: 2, load: 10 } };
+export const OPTION_EFFECTS = { hybridAccel: 2, fin: 1.25, finAvail: 4, noManual: { cf: 2, load: 10 }, hullFactor: 100 };
 
 const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
 
@@ -103,6 +103,9 @@ export const VehicleDesign = {
     return Number.isFinite(v) ? Math.round(v * 1000) / 1000 : null;
   },
 
+  /** Fin Drive's +25% (R3R p.117), rounded to the nearest — the maintainer, 2026-11-08. */
+  finScale(v) { return Math.round(v * OPTION_EFFECTS.fin); },
+
   /** A chassis' Body — a ship's or submarine's Hull rating ('5H') read as its figure (R3R, *Ships — Hull*: it "functions exactly
    * like the Body rating"). */
   bodyOf(ch) { return this.cell(ch?.body, 0) ?? (parseFloat(ch?.body) || 0); },
@@ -148,7 +151,7 @@ export const VehicleDesign = {
     const pilotRow = rows.find(o => o.id === 'robot-pilot');
     const pilot = pilotRow ? num(pilotRow.level) : 0;
     const ctx = {
-      body, hull: body, hasHull, category: ch.category, drone: !!ch.drone, chassisId: ch.id, chassisDp: ch.dp,
+      body, hull: body, hullFactor: hasHull ? OPTION_EFFECTS.hullFactor * body * body : body, hasHull, category: ch.category, drone: !!ch.drone, chassisId: ch.id, chassisDp: ch.dp,
       plantDp: row ? this.cell(row.dp, body) : null, plantCode: row?.plant ?? null,
       startLoad: row ? this.cell(row.load, body) : null, maxLoad: row ? this.cell(row.loadMax, body) : null,
       pilot, adaptation: pilot, smart: !!design.smartMaterials,
@@ -235,7 +238,7 @@ export const VehicleDesign = {
     const adjust = (v, label) => {
       if (v == null) return v;
       if (effects.has('hybrid') && label === 'Acceleration') v -= OPTION_EFFECTS.hybridAccel;
-      if (effects.has('fin')) v = Math.floor(v * OPTION_EFFECTS.fin);
+      if (effects.has('fin')) v = this.finScale(v);
       return v;
     };
     const rated = (start, max, add, label, per, page) => {
