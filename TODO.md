@@ -2943,7 +2943,27 @@ For each book:
 - Re-read from the page image every page the code cites that has a high mismatch rate.
 - Fix any divergence with a test and a mutant.
 
-The per-book mismatch rates go here when the OCR run finishes.
+**Mismatch rates, 2026-11-08** (1,579 pages). The figures are numbers lost from the text layer / numbers OCR found
+that it lacks / words lost, plus bad pages (pages with 10 or more numbers, over 20% of them lost). OCR is noisy itself, so
+compare books with each other; these are not error counts. Clean books lose about 5–11% of their numbers.
+
+| Book | Numbers lost % | Numbers extra % | Words lost % | Bad pages |
+|---|---|---|---|---|
+| R3R (known garbled) | 32.2 | 42.2 | 21.9 | 143 |
+| Cannon Companion | 21.3 | 5.5 | 5.4 | 32 |
+| QSR | 19.0 | 5.8 | 2.1 | 10 |
+| Matrix | 17.4 | 18.9 | 3.5 | 32 |
+| MITS | 12.4 | 18.1 | 3.3 | 20 |
+| GM Screen | 11.9 | 1.1 | 7.7 | 1 of 4 |
+| SR3 Core | 10.7 | 3.2 | 2.4 | 26 |
+| New Seattle | 10.5 | 6.5 | 3.1 | 6 |
+| Man & Machine | 9.1 | 1.5 | 2.9 | 6 |
+| Critters | 7.3 | 0.5 | 2.3 | 3 |
+| MDF | 4.8 | 4.7 | 0.9 | 1 |
+| Little Black Book | — not run yet (the apostrophe in its filename) | | | |
+
+Only R3R is badly garbled. Cannon Companion and Matrix are next to check. A high "numbers extra" rate (Matrix, MITS)
+more likely means tables read in a different order than real misreads.
 
 ### 🧹 Housekeeping
 
