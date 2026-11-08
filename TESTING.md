@@ -3693,3 +3693,23 @@ GM seat plus one player. Full Foundry restart first (two new world settings).
 - [ ] With an order and a recovery waiting, flip to ⏱ Downtime: a ticked dialog. Untick the recovery, Confirm: the order is
       delivered, the recovery stays. Flip again and press Esc: nothing happens.
 
+
+## 82. 🛠 Vehicle Designer — design options and mods on the vehicle (TODO 287, slice 3 — R3R pp.115-121; rulings of 2026-11-08)
+
+Hot reload is enough (no new fields). §80's two steps not yet walked live (Create as Player2, the re-save offer) fold in here.
+
+- [ ] **The catalogue:** the Design options picker lists Functional / Enhancement / Facility / Robot options, each with its page.
+      Pick **Ballast Tanks** on a Sand Buggy (Body 2) → 40 points, 8 CF, 100 kg, its ⓘ note (EnviroSeal) on hover.
+- [ ] **Inputs and overrides:** add **Special Machinery** → CF 4 and Load 100 shown greyed (computed); type Points 40 → the total
+      follows; clear it → back to the computed figure. **Special Storage Area**, CF designated 2 → 3 points, 1 CF.
+- [ ] **Permanent effects:** Sand Buggy on Gasoline, add **Hybrid Engine** → Acceleration −2 and Signature +1 in the Result. A
+      Speedboat with **Fin Drive** → Speed and Accel up a quarter, Street Index +1, Availability +4. **Removed Manual Controls**
+      → Cargo +2 and Load +10.
+- [ ] **Restrictions warn, never refuse:** **Airlock** on a car → amber warning, Create still works. **Structural Agility** without
+      a Drive-by-Wire mod → a warning; add the mod → it clears.
+- [ ] **Create as Player2** with Ring Mount ×2 and Nitrous Oxide Injectors at level 6 picked → the vehicle's Mods tab carries all
+      three, the Nitrous at rating 6; its CF/Load budget counts them.
+- [ ] **Re-save offers, never removes:** on that vehicle type Speed 999 by hand and delete one Ring Mount and drop a Roll Bars on the sheet;
+      then open 🛠 Design, add **Pintle Mount**, click **Offer changes** → the stat rows,
+      then "Mods … tick to add" listing **Ring Mount** and **Pintle Mount** (ticked). Untick Speed, apply → Speed stays 999,
+      both mods arrive, and the hand-added mod is untouched.

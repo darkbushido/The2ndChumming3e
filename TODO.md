@@ -1202,6 +1202,23 @@ read them from rendered pages (`pdftoppm`), never from `pdftotext`.
 - Not yet: picked mods are not embedded as items on the created vehicle (the design lists them; drop them on the sheet) —
   part of slice 3 with the catalogue.
 
+**Ruled (the maintainer, 2026-11-08) — slice 3:**
+- **Option effects:** "Apply the permanent ones" — Hybrid Engine, Fin Drive, Removed Manual Controls and Setup/Breakdown change
+  the design's figures; Hydrofoil (engaged), Structural Agility and the robot options are notes.
+- **Mods on the vehicle:** "Offer new ones, never remove" — Create embeds every picked mod; a re-save offers the missing ones, ticked.
+- **Inputs:** an input per row; the book's suggestion fills a "GM's discretion" figure and stays editable.
+
+**Built — slice 3, the design options catalogue and mods on the vehicle (2026-11-08):**
+- `scripts/data/design-options.mjs`: 28 options from R3R pp.115-121 (functional improvements that need an input, the design
+  enhancements, facilities, robot options), each with its Design Points, CF and Load formulas, restriction warnings and a note.
+  `VehicleDesign.priceOptions` prices them in `evaluate`; a figure typed on the row overrides the computed one; typed rows still work.
+  Effects: Hybrid (Accel −2, Signature +1, Economy ×2), Fin Drive (Speed / Accel ×1.25 rounded down, SI +1, Availability +4),
+  Removed Manual Controls (+2 CF, +10 kg), Setup/Breakdown (CF maximum halved).
+- `VehicleDesign.bodyOf`: a ship's or submarine's Hull rating ('5H') now reads as its Body — slice 1 read it as 0.
+- `VehicleDesignActor.missingMods` / `modItemData`; the window's `_embedMods` copies the compendium mod at the design's level.
+- Tests: `tests/design-options.test.mjs`, more in `tests/vehicle-design-actor.test.mjs`; mutants `design-option-override-ignored`,
+  `design-option-effects-dropped`, `design-mods-counted-once`. Live check: TESTING.md §82.
+
 **For the maintainer — book findings (R3R, printed pages; the code follows the itemised rule):**
 - **Brickyard Beauty** (pp.111-114): its steps add to **1,377** points (897 + 480 for the mods); the book prints 1,401, then
   multiplies 1,402. With the 900¥ tires, 210,300¥ + 900¥ is 211,200¥; the book prints 214,950¥.
@@ -1209,6 +1226,9 @@ read them from rendered pages (`pdftoppm`), never from `pdftotext`.
   (148 → 169, which is right: 0 + 10 + 10 + 1). Its Load ends at 45 in the stat block, but 40 + 30 − 15 is 55.
 - **Availability class modifiers are not applied in either example.** The LSV is ruled security-grade (+6) but prints
   "2/2 days"; the Brickyard is ruled luxury (+4) but prints "11/11 days". The code applies the p.113 modifiers as written.
+- **"Hull Factor"** (Ducted Waterjet, EMD drive, Flight Deck, Depth, Auxiliary Engine; pp.115-119) is never defined in R3R. The
+  code reads it as the Hull rating, or Body when there is none.
+- **Fin Drive's +25%** (p.117) gives no rounding; the code rounds down, as Hydrofoil's +25% does (p.117).
 - **Tables:** Sports Car gasoline fuel is 40 liters in the example (p.111) but 60 in the table (p.198). The battery
   Attack Submarine's People Space is +236,350 (p.196) where every other row prints +236,250. The fuel-cell Medium
   Hovercraft has no starting Acceleration (p.197). The ATV chassis is 595 Design Points (p.202), against 50-338 for the

@@ -4432,4 +4432,28 @@ export const MUTANTS = [
     was:    'a Body 0 vehicle bought Load at 1 point per 10 kg — R3R p.116: 1 point per kg (TODO 287)',
     impl:   kg => (Number(kg) > 0 ? Math.ceil(Number(kg) / 10) : 0),
   },
+  {
+    id:     'design-option-override-ignored',
+    suite:  'design-options',
+    module: '../scripts/data/design-options.mjs', klass: 'DesignOptions', method: 'price', needsOriginal: '_priceOriginal',
+    was:    'a figure the GM typed on a catalogue row was overwritten by the computed one — "compute, GM edits" (TODO 287)',
+    impl:   function (row, ctx) { return this._priceOriginal({ ...row, dp: '', cf: '', load: '' }, ctx); },
+  },
+  {
+    id:     'design-option-effects-dropped',
+    suite:  'design-options',
+    ...VDESIGN, method: 'priceOptions', needsOriginal: '_priceOptionsOriginal',
+    was:    'Hybrid Engine, Fin Drive and Removed Manual Controls charged their points but changed no stat — the maintainer ruled the permanent effects apply (R3R pp.117-118, TODO 287)',
+    impl:   function (...a) { return this._priceOptionsOriginal(...a).map(o => ({ ...o, effect: null })); },
+  },
+  {
+    id:     'design-mods-counted-once',
+    suite:  'vehicle-design-actor',
+    module: '../scripts/data/vehicle-design-actor.mjs', klass: 'VehicleDesignActor', method: 'missingMods',
+    was:    'a re-save treated one carried Ring Mount as covering two in the design, so the second was never offered (TODO 287)',
+    impl:   function (designMods = [], items = []) {
+      const names = new Set(items.filter(i => i?.type === 'vehiclemod').map(i => i.name));
+      return designMods.filter(m => m?.uuid && !names.has(m.name));
+    },
+  },
 ];

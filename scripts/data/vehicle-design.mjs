@@ -22,6 +22,7 @@
  * is the GM's to overwrite (the maintainer, 2026-11-07: "compute, GM edits").
  */
 import { CHASSIS, POWER_PLANTS, PLANTS } from './vehicle-design-tables.mjs';
+import { DesignOptions } from './design-options.mjs';
 
 export const PAGES = {
   steps: 'R3R p.104', chassis: 'R3R p.202', plant: 'R3R p.194', improvements: 'R3R p.115-116', smart: 'R3R p.118',
@@ -41,6 +42,9 @@ export const CLASSES = {
 
 export const SMART = { dp: 100, factor: 1.15, handling: -1, streetIndex: 1 };
 export const AVAIL = { per: 20000, min: 2, minHours: 24, outOfReach: 30 };
+/** Permanent effects of catalogue options (R3R pp.117-118): Hybrid Acceleration −2, Fin Drive ×1.25 (+4 Availability),
+ * Removed Manual Controls +2 CF / +10 kg. */
+export const OPTION_EFFECTS = { hybridAccel: 2, fin: 1.25, finAvail: 4, noManual: { cf: 2, load: 10 } };
 
 const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
 
@@ -99,6 +103,10 @@ export const VehicleDesign = {
     return Number.isFinite(v) ? Math.round(v * 1000) / 1000 : null;
   },
 
+  /** A chassis' Body — a ship's or submarine's Hull rating ('5H') read as its figure (R3R, *Ships — Hull*: it "functions exactly
+   * like the Body rating"). */
+  bodyOf(ch) { return this.cell(ch?.body, 0) ?? (parseFloat(ch?.body) || 0); },
+
   /** The stall speed of an aircraft row ('20/60' → 20), else null. */
   stall(text, body = 0) {
     const m = /^(.+?)\/(.+)$/.exec(String(text ?? ''));
@@ -130,6 +138,30 @@ export const VehicleDesign = {
   smartMax(max) { return max == null ? null : Math.round(num(max) * SMART.factor); },
 
   /**
+   * The design's option rows, priced: a catalogue row (`id`) through `DesignOptions.price` against this chassis and plant;
+   * a typed row as typed. Each comes back `{ ...row, dp, cf, load, warnings, note, effect }`.
+   */
+  priceOptions(design, ch, row) {
+    const body = this.bodyOf(ch);
+    const hasHull = /H/.test(String(ch.body));
+    const rows = design.options ?? [];
+    const pilotRow = rows.find(o => o.id === 'robot-pilot');
+    const pilot = pilotRow ? num(pilotRow.level) : 0;
+    const ctx = {
+      body, hull: body, hasHull, category: ch.category, drone: !!ch.drone, chassisId: ch.id, chassisDp: ch.dp,
+      plantDp: row ? this.cell(row.dp, body) : null, plantCode: row?.plant ?? null,
+      startLoad: row ? this.cell(row.load, body) : null, maxLoad: row ? this.cell(row.loadMax, body) : null,
+      pilot, adaptation: pilot, smart: !!design.smartMaterials,
+      modNames: (design.mods ?? []).map(m => String(m.name ?? '')), optionIds: rows.map(o => o.id).filter(Boolean),
+    };
+    return rows.map(o => {
+      if (!o.id) return { ...o, dp: num(o.dp), cf: num(o.cf), load: num(o.load), warnings: [] };
+      const p = DesignOptions.price(o, ctx);
+      return p ? { ...o, ...p } : { ...o, dp: num(o.dp), cf: num(o.cf), load: num(o.load), warnings: [`Unknown design option "${o.id}"`] };
+    });
+  },
+
+  /**
    * Final cost (p.113): Design Point Value × (Mark-Up + extra) × 100, plus any nuyen-priced extras (the example's tires).
    */
   cost(dp, markUp, markUpExtra = 0, extraNuyen = 0) {
@@ -137,11 +169,11 @@ export const VehicleDesign = {
   },
 
   /** Availability and base time in days (p.113): cost ÷ 20,000 rounded up, minimum 2, plus the class modifier. */
-  availability(cost, vehicleClass = 'standard') {
+  availability(cost, vehicleClass = 'standard', extra = 0) {
     // The maintainer, 2026-11-07: "the base is 2/24hours so a 2/2 days should be 2/48hrs. you cannot mod it lower then
     // 2/24hrs." So cost ÷ 20,000 (rounded up) is both the target number and the days; the floor is 2 and 24 hours.
     const n = Math.ceil(num(cost) / AVAIL.per);
-    const mod = CLASSES[vehicleClass]?.avail ?? 0;
+    const mod = (CLASSES[vehicleClass]?.avail ?? 0) + num(extra);
     const tn = Math.max(AVAIL.min, n) + mod;
     const hours = Math.max(AVAIL.minHours, n * 24) + mod * 24;
     const text = hours % 24 === 0 && hours > 24 ? `${tn}/${hours / 24} days` : `${tn}/${hours} hrs`;
@@ -161,7 +193,7 @@ export const VehicleDesign = {
     const warnings = [];
     const ch = this.chassis(design.chassis);
     if (!ch) return { chassis: null, warnings: ['Pick a chassis (R3R p.202)'] };
-    const body = this.cell(ch.body, 0) ?? 0;
+    const body = this.bodyOf(ch);
 
     let row = this.plantRow(design.plant);
     if (!row && design.plant) row = this.plantsFor(ch.id, design.plant)[0] ?? null;
@@ -170,6 +202,11 @@ export const VehicleDesign = {
 
     const imp = design.improve ?? {};
     const smart = !!design.smartMaterials;
+
+    /* Catalogue options (design-options.mjs, R3R pp.115-121) priced against this design; typed rows pass through. */
+    const options = this.priceOptions(design, ch, row);
+    const effects = new Set(options.map(o => o.effect).filter(Boolean));
+    for (const o of options) for (const w of o.warnings ?? []) warnings.push(`${o.name}: ${w}`);
     const lines = [];
     const line = (label, points, page) => { if (points) lines.push({ label, points, page }); };
     line(`Chassis: ${ch.name}`, ch.dp, ch.page);
@@ -194,9 +231,16 @@ export const VehicleDesign = {
     /* Speed, Acceleration, Load, Economy from the plant, against its maxima (× 1.15 with smart materials). */
     // 'stall/Speed' for aircraft and the rocket chassis; a submarine's 'surface/submerged' keeps its first figure.
     const aircraft = !!row && /\//.test(String(row.speed)) && ch.category !== 'sub';
+    // Hybrid Engine (Acceleration −2, before any other option) and Fin Drive (Speed and Acceleration +25%), p.117.
+    const adjust = (v, label) => {
+      if (v == null) return v;
+      if (effects.has('hybrid') && label === 'Acceleration') v -= OPTION_EFFECTS.hybridAccel;
+      if (effects.has('fin')) v = Math.floor(v * OPTION_EFFECTS.fin);
+      return v;
+    };
     const rated = (start, max, add, label, per, page) => {
-      const s = this.cell(start, body, { speedPair: aircraft });
-      let m = this.cell(max, body, { speedPair: aircraft });
+      const s = adjust(this.cell(start, body, { speedPair: aircraft }), label);
+      let m = adjust(this.cell(max, body, { speedPair: aircraft }), label);
       if (smart && m != null) m = this.smartMax(m);
       const v = s == null ? null : s + num(add);
       if (v != null && m != null && v > m) warnings.push(`${label} ${v} is over the maximum ${m} (R3R p.115-116)`);
@@ -210,9 +254,11 @@ export const VehicleDesign = {
       stats.accel = ac.value; stats.accelMax = ac.max;
       stats.stall = aircraft ? this.stall(row.speed, body) : null;
       const sig = this.cell(row.sig, body);
-      stats.sig = sig == null ? null : sig + num(imp.signature);
+      stats.sig = sig == null ? null : sig + num(imp.signature) + (effects.has('hybrid') ? 1 : 0);
       line(`Signature +${num(imp.signature)}`, this.signatureCost(imp.signature), PAGES.improvements);
-      const e0 = this.cell(row.econ, body), eMax = this.cell(row.econMax, body);
+      const eX = effects.has('hybrid') ? 2 : 1;
+      const e0 = this.cell(row.econ, body) == null ? null : this.cell(row.econ, body) * eX;
+      const eMax = this.cell(row.econMax, body) == null ? null : this.cell(row.econMax, body) * eX;
       const steps = Math.max(0, num(imp.economySteps));
       stats.economy = e0 == null ? null : Math.round(e0 * (1 + 0.05 * steps) * 1000) / 1000;
       if (stats.economy != null && eMax != null && stats.economy > eMax) warnings.push(`Economy ${stats.economy} is over the maximum ${eMax} (R3R p.115)`);
@@ -223,13 +269,15 @@ export const VehicleDesign = {
     }
 
     /* Cargo (CF) and Load: the starting figure plus what was bought, less every option's and mod's share (p.111-112). */
-    const extras = [...(design.options ?? []), ...(design.mods ?? [])];
+    const extras = [...options, ...(design.mods ?? [])];
     for (const x of extras) line(x.name ?? 'Option', num(x.dp), x.page ?? PAGES.mods);
     const cfAdd = Math.max(0, num(imp.cargo));
-    const cfMax = this.cell(ch.maxCf, body);
+    let cfMax = this.cell(ch.maxCf, body);
+    if (effects.has('setup') && cfMax != null) cfMax = Math.floor(cfMax / 2);   // Setup/Breakdown halves it (p.118)
+    const noManual = effects.has('no-manual') ? OPTION_EFFECTS.noManual : { cf: 0, load: 0 };   // p.118
     // Removed seats free their CF and Load at no cost (p.104) — the GM enters what was freed.
     const freed = design.freed ?? {};
-    const cfTotal = (this.cell(ch.cf, body) ?? 0) + cfAdd + Math.max(0, num(freed.cf));
+    const cfTotal = (this.cell(ch.cf, body) ?? 0) + cfAdd + Math.max(0, num(freed.cf)) + noManual.cf;
     if (cfMax != null && cfTotal > cfMax) warnings.push(`Cargo ${cfTotal} CF is over the chassis maximum ${cfMax} (R3R p.115)`);
     line(`Cargo +${cfAdd} CF`, this.cargoCost(cfAdd), PAGES.improvements);
     const cfUsed = extras.reduce((s, x) => s + num(x.cf), 0);
@@ -237,7 +285,7 @@ export const VehicleDesign = {
     const loadAdd = Math.max(0, num(imp.load));
     let loadTotal = null, loadMax = null;
     if (row) {
-      loadTotal = (this.cell(row.load, body) ?? 0) + loadAdd + Math.max(0, num(freed.load));
+      loadTotal = (this.cell(row.load, body) ?? 0) + loadAdd + Math.max(0, num(freed.load)) + noManual.load;
       loadMax = this.cell(row.loadMax, body);
       if (smart && loadMax != null) loadMax = this.smartMax(loadMax);
       if (loadMax != null && loadTotal > loadMax) warnings.push(`Load ${loadTotal} kg is over the maximum ${loadMax} (R3R p.116)`);
@@ -252,14 +300,16 @@ export const VehicleDesign = {
     const total = lines.reduce((s, l) => s + l.points, 0);
     const cost = this.cost(total, ch.markUp, design.markUpExtra, design.extraNuyen);
     const vclass = CLASSES[design.vehicleClass] ? design.vehicleClass : 'standard';
-    const streetIndex = CLASSES[vclass].streetIndex + (smart ? SMART.streetIndex : 0) + num(design.streetIndexExtra);
-    const availability = this.availability(cost, vclass);
+    // Fin drive takes smart materials' Street Index +1 and Availability +4 (p.117).
+    const fin = effects.has('fin');
+    const streetIndex = CLASSES[vclass].streetIndex + (smart || fin ? SMART.streetIndex : 0) + num(design.streetIndexExtra);
+    const availability = this.availability(cost, vclass, fin ? OPTION_EFFECTS.finAvail : 0);
     if (availability.outOfReach) warnings.push(`Availability ${availability.tn} — over 30 is out of the players' reach (R3R p.113)`);
     const extra = num(design.markUpExtra);
     if (extra < 0 || extra > 3) warnings.push(`A Mark-Up modifier of ${extra} — the book suggests 1 to 3 for prototypes and one-offs (R3R p.113)`);
 
     return {
-      chassis: ch, plant: row, stats, warnings,
+      chassis: ch, plant: row, stats, warnings, options,
       dp: { total, lines },
       cf: { total: cfTotal, used: cfUsed, max: cfMax },
       load: { total: loadTotal, used: loadUsed, max: loadMax },

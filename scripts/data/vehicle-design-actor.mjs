@@ -35,7 +35,7 @@ export const VehicleDesignActor = {
     if (!result?.chassis) return {};
     const s = result.stats ?? {};
     const ch = result.chassis;
-    const body = VehicleDesign.cell(ch.body, 0);
+    const body = VehicleDesign.bodyOf(ch);
     const out = {
       vehicleType: ch.drone ? 'drone' : (TYPE_FOR[ch.category] ?? 'other'),
       handling: s.handling, handlingOffRoad: s.handlingOffRoad, speed: s.speed, accel: s.accel,
@@ -75,6 +75,39 @@ export const VehicleDesignActor = {
   /** The update for the ticked rows only — what the GM accepted. */
   accepted(rows, ticked) {
     return VehicleDesignActor.update(Object.fromEntries(rows.filter(r => ticked.has(r.field)).map(r => [r.field, r.to])));
+  },
+
+  /**
+   * The design's picked mods the vehicle does not carry yet — what Create embeds and a re-save OFFERS (the maintainer,
+   * 2026-11-08: "Offer new ones, never remove"). A mod counts as carried when an item has its compendium source (or, for
+   * an item without one, its name) as many times as the design lists it. Typed mods (no uuid) are left out: there is no
+   * document to copy. Never lists anything to remove.
+   */
+  missingMods(designMods = [], items = []) {
+    const have = new Map();
+    for (const i of items) {
+      if (i?.type !== 'vehiclemod') continue;
+      const key = i._stats?.compendiumSource || i.flags?.core?.sourceId || `name:${i.name}`;
+      have.set(key, (have.get(key) ?? 0) + 1);
+      if (key !== `name:${i.name}`) have.set(`name:${i.name}`, (have.get(`name:${i.name}`) ?? 0) + 1);
+    }
+    const out = [];
+    for (const m of designMods) {
+      if (!m?.uuid) continue;
+      const key = have.get(m.uuid) ? m.uuid : `name:${m.name}`;
+      if (have.get(key)) have.set(key, have.get(key) - 1);
+      else out.push(m);
+    }
+    return out;
+  },
+
+  /** A compendium mod's data as the vehicle's item at the design's level (rated mods carry it as `system.rating`). */
+  modItemData(source, m) {
+    const data = { ...source };
+    delete data._id;
+    data.system = { ...(source.system ?? {}) };
+    if (m?.level != null && source.system?.rating != null) data.system.rating = Number(m.level) || data.system.rating;
+    return data;
   },
 
   /**

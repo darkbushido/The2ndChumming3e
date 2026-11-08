@@ -45,4 +45,18 @@ export async function run(t) {
   t.ok('Actors directory header button', main.includes("Hooks.on('renderActorDirectory'") && main.includes('SR3EVehicleDesigner.open()'));
   t.ok('the macro is a managed world macro', main.includes("'scripts/macros/vehicle-designer.js'") && src('scripts/macros/vehicle-designer.js').includes('SR3EVehicleDesigner.open()'));
   t.ok('the vehicle sheet has a Design button', src('scripts/sheets/SR3EVehicleSheet.js').includes('data-action="openDesign"'));
+
+  // Mods on the vehicle (slice 3; the maintainer, 2026-11-08: "Offer new ones, never remove").
+  const U1 = 'Compendium.x.Item.nitro', U2 = 'Compendium.x.Item.ring';
+  const picked = [{ name: 'Nitrous', uuid: U1, level: 6 }, { name: 'Ring Mount', uuid: U2 }, { name: 'Ring Mount', uuid: U2 }, { name: 'Typed', dp: 5 }];
+  t.eq('Create embeds every picked mod with a document (typed rows have none)', A.missingMods(picked, []).map(m => m.name), ['Nitrous', 'Ring Mount', 'Ring Mount']);
+  const carried = [{ type: 'vehiclemod', name: 'Nitrous', _stats: { compendiumSource: U1 } }, { type: 'vehiclemod', name: 'Ring Mount' }, { type: 'firearm', name: 'Ring Mount' }];
+  t.eq('re-save offers only what the vehicle lacks — counted, by source or name', A.missingMods(picked, carried).map(m => m.name), ['Ring Mount']);
+  t.eq('a mod the vehicle carries but the design dropped is never offered for removal', A.missingMods([], carried), []);
+  t.eq('the embedded copy takes the design\'s level and drops its id',
+    A.modItemData({ _id: 'abc', name: 'Nitrous', system: { rating: 1, cfCost: '1' } }, { level: 6 }), { name: 'Nitrous', system: { rating: 6, cfCost: '1' } });
+  t.eq('an unrated mod keeps no rating', A.modItemData({ name: 'Ring', system: { rating: null } }, { level: 3 }).system.rating, null);
+  t.ok('Create and re-save embed through _embedMods', (w.match(/_embedMods\(/g) ?? []).length >= 3 && w.includes("createEmbeddedDocuments('Item'"));
+  t.ok('the re-save dialog offers new mods ticked, never a removal', w.includes('missingMods(design.mods, this.actor.items') && !/deleteEmbeddedDocuments/.test(w));
+  t.ok('the window lists the design options catalogue', w.includes('DesignOptions.OPTIONS') && w.includes('DesignOptions.newRow'));
 }
