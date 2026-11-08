@@ -130,3 +130,17 @@ Queue: remaining mods questions moved to the back, after every other session (ma
 | Q23 | Overflow Essence; free capacity for other hosts | Overflow costs the mod's printed Essence; only limbs, skulls, torsos, eyes, ears get free capacity | 2026-11-07 | M&M p.35, p.147; SR3 p.299 |
 
 All collected questions answered and routed (2026-11-07).
+
+## Later questions (2026-11-07)
+
+| Session | # | Question | Answer | Source |
+|---|---|---|---|---|
+| shop | 288 | Confirm nine-point design summary | Yes, build it | todo-288-design-summary.md |
+| rules-digest | 290-1 | Astral soak citation | SR3 p.176 (p.175 is art) | Core PDF 178 |
+| rules-digest | 290-2 | Open Test citation | SR3 p.39 | Core PDF 41 |
+| rules-digest | 290-3 | Triggered-ware citation | M&M p.63-65 | M&M PDF 65-67 |
+| rules-digest | 290-4 | Electrical damage citation | M&M p.127 | M&M PDF 129 |
+| rules-digest | 290-5 | Firing Through citation | SR3 p.124-125 | Core PDF 126-127 |
+| rules-digest | 290-6 | Touch range citation | SR3 p.183 | Core PDF 185 |
+| rules-digest | 291-1..4 | Slim CLAUDE.md: move release, packs/migrations, chat cards, data model into path-scoped rules files | All four approved | repo measurement |
+| mods | Q24 | Interface items inside capacity (asterisked ECU rows) | Keep the book's printed Essence | M&M p.35-36 |
