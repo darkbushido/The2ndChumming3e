@@ -31,9 +31,12 @@ export async function run(t) {
   t.eq('Tailhook: 10% of chassis points, 1 CF per 2 Body (up), Body × 125 kg (p.119)',
     [tail.dp, tail.cf, tail.load], [Math.round(V.chassis('jet-fighter').dp * 0.1), 4, 875]);
 
-  // Hull Factor read as the Hull rating.
+  // Hull Factor = 100 × Hull² (p.114; Hull 5 → 2,500).
   const jet = ev('attack-submarine', 'N', [opt('waterjet')]).options[0];
-  t.eq('Ducted waterjet: 5,000 × Hull, 4 × Hull CF, 3 × Hull kg (p.116; Hull 5)', [jet.dp, jet.cf, jet.load], [25000, 20, 15]);
+  t.eq('Ducted waterjet: 5,000 × Hull Factor, 4 × CF, 3 × kg (p.116; Hull 5 → Hull Factor 2,500)', [jet.dp, jet.cf, jet.load], [12500000, 10000, 7500]);
+  t.eq('Auxiliary engine on a hull: (Hull + Hull Factor) × 2 CF (p.116)', ev('attack-submarine', 'N', [opt('aux-engine')]).options[0].cf, 5010);
+  t.eq('Flight deck on a hull: length × Hull Factor (p.119)', ev('attack-submarine', 'N', [opt('flight-deck', { metres: 10 })]).options[0].dp, 25000);
+  t.eq('…and Body for a vehicle without a Hull rating', ev('sand-buggy', 'G', [opt('flight-deck', { metres: 10 })]).options[0].dp, 20);
   t.ok('EMD drive on a non-nuclear plant warns', ev('attack-submarine', 'D', [opt('emd')]).warnings.some(w => /nuclear/.test(w)));
 
   // Inputs per row; GM's figure wins.
@@ -63,9 +66,9 @@ export async function run(t) {
   t.eq('Hybrid: 25% of the plant\'s points, 6 CF, half the starting Load (p.117)', [hyb.options[0].dp, hyb.options[0].cf, hyb.options[0].load], [5, 6, 20]);
   const boat = ev('speedboat', 'G', []);
   const fin = ev('speedboat', 'G', [opt('fin')]);
-  t.eq('Fin drive: Speed and Acceleration, start and max, +25% rounded down (p.117)',
+  t.eq('Fin drive: Speed and Acceleration, start and max, +25% rounded to the nearest (p.117; the maintainer)',
     [fin.stats.speed, fin.stats.speedMax, fin.stats.accel, fin.stats.accelMax],
-    [boat.stats.speed, boat.stats.speedMax, boat.stats.accel, boat.stats.accelMax].map(v => Math.floor(v * 1.25)));
+    [boat.stats.speed, boat.stats.speedMax, boat.stats.accel, boat.stats.accelMax].map(v => Math.round(v * 1.25)));
   t.eq('Fin drive: Street Index +1, Availability +4 (p.117)', [fin.streetIndex, fin.availability.tn], [boat.streetIndex + 1, V.availability(fin.cost).tn + 4]);
   t.ok('Fin drive with smart materials warns', ev('speedboat', 'G', [opt('fin')], { smartMaterials: true }).warnings.some(w => /smart materials/.test(w)));
   const nm = ev('sand-buggy', 'G', [opt('no-manual')]);

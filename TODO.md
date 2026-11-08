@@ -1226,9 +1226,10 @@ read them from rendered pages (`pdftoppm`), never from `pdftotext`.
   (148 → 169, which is right: 0 + 10 + 10 + 1). Its Load ends at 45 in the stat block, but 40 + 30 − 15 is 55.
 - **Availability class modifiers are not applied in either example.** The LSV is ruled security-grade (+6) but prints
   "2/2 days"; the Brickyard is ruled luxury (+4) but prints "11/11 days". The code applies the p.113 modifiers as written.
-- **"Hull Factor"** (Ducted Waterjet, EMD drive, Flight Deck, Depth, Auxiliary Engine; pp.115-119) is never defined in R3R. The
-  code reads it as the Hull rating, or Body when there is none.
-- **Fin Drive's +25%** (p.117) gives no rounding; the code rounds down, as Hydrofoil's +25% does (p.117).
+- **Hull Factor** (Ducted Waterjet, EMD drive, Flight Deck, Depth, Auxiliary Engine; pp.115-119) is defined on p.114 as
+  100 × Hull² — the PDF's text layer garbles it; the maintainer supplied the reading, 2026-11-08. "Body or Hull Factor"
+  formulas use Body for a vehicle without a Hull rating.
+- **Fin Drive's +25%** (p.117) gives no rounding; the maintainer ruled **round to the nearest** (2026-11-08).
 - **Tables:** Sports Car gasoline fuel is 40 liters in the example (p.111) but 60 in the table (p.198). The battery
   Attack Submarine's People Space is +236,350 (p.196) where every other row prints +236,250. The fuel-cell Medium
   Hovercraft has no starting Acceleration (p.197). The ATV chassis is 595 Design Points (p.202), against 50-338 for the
