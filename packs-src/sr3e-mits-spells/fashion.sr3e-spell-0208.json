@@ -6,11 +6,11 @@
     "type": "spell",
     "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
     "system": {
-      "category": "Manipulation",
+      "category": "Transformation",
       "type": "Physical",
       "duration": "Permanent",
       "range": "T",
-      "drain": "+1(L)",
+      "drain": "+1(M)",
       "target": "6",
       "bookPage": "mits.147",
       "damage": "",

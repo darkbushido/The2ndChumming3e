@@ -34,16 +34,16 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**86 open.** 206 done — see [TODO-DONE.md](TODO-DONE.md).
+**88 open.** 207 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[282](#282) Vehicle weapons fire with no recoil<br>[283](#283) Buy or build a modded item — its whole price before it reaches the sheet<br>[287](#287) Vehicle and drone design — a chassis and Design Points (R3R) |
-| 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
+| 🪄 Spells & drugs | [124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone<br>[292](#292) The Killer, Sparky and Ripper IC: damage and notes follow the old gradings |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
-| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
+| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[293](#293) Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image<br>[294](#294) Little Black Book contacts' alphaware ships as Standard grade — *LBB pp.40-67*<br>[295](#295) `patch-johnson-stats.mjs --check` churns the checkout's LevelDB |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches<br>[286](#286) Pack data no book in the library can verify |
 | 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -1226,56 +1226,16 @@ read them from rendered pages (`pdftoppm`), never from `pdftotext`.
   (148 → 169, which is right: 0 + 10 + 10 + 1). Its Load ends at 45 in the stat block, but 40 + 30 − 15 is 55.
 - **Availability class modifiers are not applied in either example.** The LSV is ruled security-grade (+6) but prints
   "2/2 days"; the Brickyard is ruled luxury (+4) but prints "11/11 days". The code applies the p.113 modifiers as written.
-- **"Hull Factor"** (Ducted Waterjet, EMD drive, Flight Deck, Depth, Auxiliary Engine; pp.115-119) is never defined in R3R. The
-  code reads it as the Hull rating, or Body when there is none.
-- **Fin Drive's +25%** (p.117) gives no rounding; the code rounds down, as Hydrofoil's +25% does (p.117).
+- **Hull Factor** (Ducted Waterjet, EMD drive, Flight Deck, Depth, Auxiliary Engine; pp.115-119) is defined on p.114 as
+  100 × Hull² — the PDF's text layer garbles it; the maintainer supplied the reading, 2026-11-08. "Body or Hull Factor"
+  formulas use Body for a vehicle without a Hull rating.
+- **Fin Drive's +25%** (p.117) gives no rounding; the maintainer ruled **round to the nearest** (2026-11-08).
 - **Tables:** Sports Car gasoline fuel is 40 liters in the example (p.111) but 60 in the table (p.198). The battery
   Attack Submarine's People Space is +236,350 (p.196) where every other row prints +236,250. The fuel-cell Medium
   Hovercraft has no starting Acceleration (p.197). The ATV chassis is 595 Design Points (p.202), against 50-338 for the
   other bikes. The tables keep the printed figures; `NOTES` in the module lists them.
 
 ### 🪄 Spells & drugs
-
-## 123. Audit every shipped spell and the casting rules — **requested 2026-09-14**
-
-**Request (maintainer):** *"add a todo for a spell audit."* Raised while fixing F5 (Drain read the
-wrong Magic in three flows) and alongside the maintainer's *"we probably need a spell casting
-helper just like the healing helper"* — the audit comes first, so the helper is built on verified
-rules.
-
-**Scope — two halves, the same method as `audit/adept-powers-audit.md`:**
-
-1. **The data — 244 spells in five packs:** `sr3e-sr3-spells` 96 · `sr3e-mits-spells` 99 ·
-   `sr3e-tss-spells` 40 · `sr3e-twl-spells` 7 · `sr3e-sota2-spells` 2. For each: type (Mana/Physical),
-   target, range and the `(A)` area marker, duration, **drain code**, category, and book/page, against
-   the printed spell entry. `parseDrainFormula` must parse every shipped drain code — list any it
-   cannot, and any spell whose drain parses to something other than the book.
-2. **The rules the code applies** — each checked against the PDF, quoted with its printed page:
-   Force and the Physical/Stun Drain line (p.183, now `SR3EActor.magicAttribute`), the Drain
-   Resistance Test (p.183: *"the caster's Willpower dice, plus any Spell Pool dice"*, TN ⌊Force ÷ 2⌋
-   + the Drain Modifier), the Spell Pool cap (*"No more Spell Pool dice can be used than the number
-   of Sorcery dice allocated"*, p.180), target numbers and resistance (p.182-183), area spells,
-   counterspelling/Spell Defense, dispelling, and astral casting (*"All spells cast while astrally
-   projecting cause physical damage, regardless of Force"*, p.183).
-
-**Leads found while writing this — verify, don't assume:**
-- ✅ **Sustained spells — BUILT on `feature/sustained-spells`** (2026-09-14; CLAUDE.md → *Sustained
-  spells*). p.178's +2 per spell on all tests (Drain included, Damage Resistance not; p.180 and p.183
-  are the same modifier restated), the Sorcery limit (shown), the damage test to keep one. **The Spell
-  Resistance Test takes it — the maintainer's ruling, 2026-09-14**, reading p.178's "all tests" over
-  p.183's *"No target modifiers apply to this test except where specifically noted"*.
-- ✅ **The astral clause — FIXED 2026-09-14** (`SR3EActor.drainIsPhysical`): casting while projecting
-  is Physical Drain at any Force (p.183), and the Force dialog says so.
-- ✅ **Drain resistance read base Willpower — FIXED 2026-09-14** (`SR3EActor.drainResistRating`):
-  the effective Willpower (Charisma for conjuring), so a Pain Editor's or Adrenal Pump's +1 counts.
-- **Increase Attribute spells** (SR3 p.194 — Physical *or* Mental, +1 per 2 successes up to Force, not
-  on cybered Attributes) have no effect path; a GM edits the attribute by hand.
-
-**Deliverable:** `audit/spells-audit.md` (per-spell table + rules checklist), pack fixes through a
-committed tool, a TODO per verified code divergence (bug fixes on `main`), and a proposed step list
-for the spellcasting helper for the maintainer to review before anything is built.
-
-<a id="131"></a>
 
 ## 124. Drug rules — addiction, tolerance and effects — **built 2026-09-15 on `feature/drug-rules`**
 
@@ -1398,6 +1358,15 @@ Mainframe Support module. Any implementation should report that, not enforce it.
 > are corrected, `tests/ic-memory.test.mjs` pins them, and migration 0.9.0 (`ic-book-fixes.mjs`) fixes IC and hosts already
 > in worlds — table in [the audit](audit/matrix-defragged-audit.md). The Killer / Sparky / Ripper damage and notes are
 > [#292](#292).
+>
+> **Matrix generator (2026-11-08, built, not yet run live):** the Actors-directory buttons and dialog are in. **Live check**
+> (mcp-api, Defragged then Orthodox world): (1) click 🎲 Generate Host — the dialog shows rolled numbers; changing the rating
+> moves the tier and IC count; Re-roll changes them; Cancel creates nothing. (2) Create — a host appears with the default
+> map, the right tier colour, Memory = rating × 500, and stocked IC whose Mp sum is `memoryUsed`. (3) 🎲 Test Scenario — a
+> host, IC in Trigger Steps 1…n, and a decker in VR-Hot listed in the host's Active Users with a Hacking Pool. (4) Orthodox
+> world: the dialog shows code/difficulty/SV/subsystems; Create writes them; the scenario adds a Probe and a logged-in
+> decker. (5) Delete the generated actors (flag `generated`). The active GM's tab must be reloaded first. **Open:** Orthodox
+> IC proposals, and the 10-row sheaf with Convergence.
 
 **Shape:** the crash trigger and Suppression are small and self-contained — do them first. The sheaf
 is a host-sheet feature (a list of steps, each with IC and a rating) and is worth its own pass.
@@ -2931,6 +2900,37 @@ how the system handles the rules; build a release zip; let people install a spec
 4. Future guide edits happen in `guides/` here — the old repo takes no more commits.
 
 <a id="123"></a>
+
+## 293. Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image — **requested 2026-11-08**
+
+The maintainer found the R3R text layer badly garbled. On p.114 (PDF 116), Hull Factor = 100 × Hull² comes out as
+"Hull rActOr … ( 100 x Hull!)". Watch for "!" in place of a superscript, letter swaps, and "Z" for 2.
+
+Done so far (branch `claude/ocr-text-layers-6b2b32`):
+- **Survey:** of the books with a text layer, only R3R scores BAD (the table is in local `SR-OCR/text-layer-survey.md`).
+- **OCR:** R3R printed pp.100-210 at 300 dpi with Tesseract (local `SR-OCR/R3R/`).
+- **Audit:** `audit/text-layer-check.md` lists every R3R design figure re-verified from the image. Hull Factor and Fin Drive
+  rounding are fixed on `claude/vehicle-design-3` (TODO 287); everything else on pp.115-121 and the pp.194-205 tables matches.
+
+Still open: R3R pages the code cites outside pp.100-210, and checking `vehicle-mods.mjs` / the `sr3e-r3-vehicle-mods` pack
+against the images. The other books stay on `pdftotext` unless a check finds misreads there.
+
+<a id="294"></a>
+
+## 294. Little Black Book contacts' alphaware ships as Standard grade — *LBB pp.40-67* — **found 2026-11-08 (TODO 84)**
+
+The Mercenary's book cyberware is all alphaware ("Cyberware (all Alphaware):"); the Corp Bodyguard's and SWAT Team
+Member's books say alphaware too. The contacts pack ships them as Standard grade, so Essence and cost read wrong.
+TODO 84 did not audit grade. Check each against the page, fix `packs-src` and the generator, and migrate copies in
+worlds (exact old grade only).
+
+<a id="295"></a>
+
+## 295. `patch-johnson-stats.mjs --check` churns the checkout's LevelDB — **found 2026-11-08 (TODO 84)**
+
+Even with `--check`, `tools/patch-johnson-stats.mjs` opens `packs/sr3e-mr-johnsons-contacts` directly, which rewrites its
+log and MANIFEST. Read through `tools/lib/pack-copy.mjs` instead (the packs-and-migrations rule) and add it to
+`tests/pack-churn.test.mjs`.
 
 ### 🧹 Housekeeping
 

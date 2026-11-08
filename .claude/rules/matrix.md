@@ -149,6 +149,16 @@ The character sheet's Matrix tab already lists the current node's prompts with a
   `memoryUsed`, only while they still equal the exact old shipped value — an edited one is kept.
 - IC act on their own initiative (`ic` actors in the tracker).
 
+### Matrix generator · TODO 128
+Two GM buttons in the Actors directory — **🎲 Generate Host** and **🎲 Test Scenario** (`scripts/SR3EMatrixGenerator.js`,
+rules in `scripts/data/matrix-generator.mjs`, `tests/matrix-generator*.test.mjs`). A dialog shows rolled, editable numbers with
+a 🎲 Re-roll; nothing is created until Create. **Orthodox:** Security Value and the five subsystems from the Host Rating
+Table (SR3 p.205; Blue Easy, Green/Orange Average, Red Hard is a suggestion only — the book gives no pairing). **Defragged:**
+rating, tier and Memory (rating × 500, MDF p.24), and a proposed IC set from `AGENT_IC` that fits the Memory; Gray/Black IC
+raise a Mainframe Support warning and the generator never ticks it. Play hosts leave IC unassigned to Trigger Steps; the
+scenario spreads them over TS 1… and adds a VR-Hot decker logged in (Defragged: deck + Hacking; Orthodox: deck stats +
+`orthodoxRunState`). Everything generated carries `flags.The2ndChumming3e.generated`. Orthodox play hosts get no IC yet.
+
 ### Matrix Condition Monitor
 - 10 boxes, click-to-toggle; *"When an icon achieves 10 boxes of Overload Damage, it crashes"* (MDF p.26).
 - **Penalties: +1 TN from box 1, +2 from box 3, +3 from box 6, +4 at box 10** — MDF p.12's table, read from

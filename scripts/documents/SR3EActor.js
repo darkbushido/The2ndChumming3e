@@ -4059,6 +4059,13 @@ _prepareCharacter(sys, attr) {
                 ${sc.flingNote ?? ''}
               </div>`;
           }
+          if (sc.isClout) {
+            stagingHtml += `
+              <div class="sr-roll-meta" style="font-size:11px">
+                👊 Clout is a ranged attack (p.197): each target may <strong>dodge</strong> (p.113), then resists the
+                <strong>Stun</strong> damage with <strong>Body + Combat Pool</strong> against Impact armour — no Spell Resistance Test.
+              </div>`;
+          }
           if (sc.isElemental) {
             const objMod = SR3EItem.elementalSecondaryResistance(sc.damageBase?.level);
             stagingHtml += `
@@ -11342,7 +11349,7 @@ _prepareCharacter(sys, attr) {
     if (currentSuccesses > 0) {
       html += `<div class="sr-roll-meta">
         🔮 ${sc.spellName} — <strong>${currentSuccesses} casting hit${currentSuccesses !== 1 ? 's' : ''}</strong> after defense;
-        base <strong>${sc.rawDamage}</strong>. ${(sc.isElemental || sc.isFling)
+        base <strong>${sc.rawDamage}</strong>. ${(sc.isElemental || sc.isFling || sc.isClout)
           ? 'Each target may dodge, then resists the damage (p.183, p.197).'
           : `Each target resists vs Force ${force}.`}
       </div>`;
@@ -11486,7 +11493,7 @@ _prepareCharacter(sys, attr) {
      * > according to the spell's description, to determine the spell's effect."
      * No Resist button: a line states the effect. Both sites that hand out spell buttons come through
      * here, so counterspelling (which lowers `attackSuccesses` first) still applies. */
-    if (!sc.isElemental && !sc.isFling && WillingTarget.isNonLiving(tActor.type)) {
+    if (!sc.isElemental && !sc.isFling && !sc.isClout && WillingTarget.isNonLiving(tActor.type)) {
       return `<div class="sr-roll-meta" style="font-size:11px">🧱 ${WillingTarget.effectLine({
         targetName: tActor.name, spellName: sc.spellName ?? 'The spell', successes: attackSuccesses, nonLiving: true })}</div>`;
     }
@@ -11512,7 +11519,8 @@ _prepareCharacter(sys, attr) {
      * ⚠ `elemental: true` rides to the soak card, which halves Impact (p.196). `handleDodgeDeclare`
      *   and `_rollDodge` pass the context whole; `_soakButtonHtml` lists its fields, and carries it.
      */
-    if (sc.isElemental || sc.isFling) {
+    // Clout (SR3 p.197) is "targeted as a normal Ranged Attack" with "Impact armor" — Fling's path (TODO 123).
+    if (sc.isElemental || sc.isFling || sc.isClout) {
       const staged       = SR3EItem.stageDamage(sc.damageBase, attackSuccesses);
       const attackerName = actorFrom(sc.attackerActorId)?.name ?? 'The caster';
       const ctx = {
@@ -11528,7 +11536,8 @@ _prepareCharacter(sys, attr) {
         // Fling (p.197) is dodged and soaked like a gunshot, but it is not an elemental spell: no halving of Impact.
         elemental:       sc.isElemental ? true : undefined,
         // A flung object is a blow, not a bullet: it is resisted on IMPACT armour (the maintainer, 2026-10-18).
-        useImpact:       sc.isFling ? true : undefined,
+        // Clout: "Impact armor protects against the damage" (SR3 p.197) — in full, not halved.
+        useImpact:       (sc.isFling || sc.isClout) ? true : undefined,
         // "treated like normal ranged attacks" (p.183) — the net comparison. TODO 165.
         net:             { attackHits: attackSuccesses, basePower: sc.damageBase.power, baseLevel: sc.damageBase.level },
       };

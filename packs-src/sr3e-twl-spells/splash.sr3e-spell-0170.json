@@ -9,12 +9,13 @@
       "category": "Elemental",
       "type": "Physical",
       "duration": "Instant",
-      "range": "LOS",
+      "range": "LOS(A)",
       "drain": "(DL)",
       "target": "4(RC)",
       "bookPage": "twl.124",
       "damage": "",
-      "description": ""
+      "description": "",
+      "damageTrack": "Stun"
     },
     "effects": []
   },

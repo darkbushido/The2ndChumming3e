@@ -628,7 +628,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Manipulation",
+        "category": "Transformation",
         "type": "Physical",
         "duration": "Permanent",
         "range": "T",
@@ -808,7 +808,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Manipulation",
+        "category": "Transformation",
         "type": "Physical",
         "duration": "Sustained",
         "range": "LOS(A)",
@@ -1128,7 +1128,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Manipulation",
+        "category": "Transformation",
         "type": "Physical",
         "duration": "Sustained",
         "range": "LOS(A)",
@@ -1164,7 +1164,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Manipulation",
+        "category": "Transformation",
         "type": "Physical",
         "duration": "Sustained",
         "range": "LOS(A)",
@@ -1300,7 +1300,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Transformation",
+        "category": "Telekinetic",
         "type": "Physical",
         "duration": "Sustained",
         "range": "LOS",

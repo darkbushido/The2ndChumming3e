@@ -14,7 +14,8 @@
       "target": "4(RC)",
       "bookPage": "twl.124",
       "damage": "",
-      "description": ""
+      "description": "",
+      "damageTrack": "Stun"
     },
     "effects": []
   },

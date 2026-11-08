@@ -1,18 +1,18 @@
 {
-  "_key": "!items!sr3e-spell-0128",
+  "_key": "!items!sr3e-spell-0200",
   "doc": {
-    "_id": "sr3e-spell-0128",
-    "name": "Hot Potatoe",
+    "_id": "sr3e-spell-0200",
+    "name": "Astral Barrier",
     "type": "spell",
     "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
     "system": {
-      "category": "Illusion",
+      "category": "Transformation",
       "type": "Mana",
       "duration": "Sustained",
       "range": "LOS(A)",
-      "drain": "(M)",
-      "target": "4(R)",
-      "bookPage": "mits.143",
+      "drain": "+1(S)",
+      "target": "6",
+      "bookPage": "sr3.198",
       "damage": "",
       "description": ""
     },

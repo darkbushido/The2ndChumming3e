@@ -1196,7 +1196,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Transformation",
+        "category": "Telekinetic",
         "type": "Physical",
         "duration": "Instant",
         "range": "LOS",
@@ -1205,7 +1205,8 @@
         "bookPage": "sr3.197",
         "damage": "",
         "description": "",
-        "force": 4
+        "force": 4,
+        "damageTrack": "Stun"
       },
       "effects": [],
       "folder": null,

@@ -20,6 +20,8 @@ import { RangeBands } from '../data/range-bands.mjs';
 import { VehicleMounts } from '../data/vehicle-mounts.mjs';
 import { vehicleStat } from '../data/vehicle-mods.mjs';
 import { Fling } from '../data/fling.mjs';
+import { Clout } from '../data/clout.mjs';
+import { SpellPoolCap } from '../data/spell-pool-cap.mjs';
 import { ActorRef, actorFrom, actorRef, tokenRows } from '../data/actor-ref.mjs';
 
 export class SR3EItem extends Item {
@@ -4528,7 +4530,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     const track = String(spell?.system?.damageTrack ?? '').trim();
     if (/^stun$/i.test(track))     return true;
     if (/^physical$/i.test(track)) return false;
-    return /stun/i.test(String(spell?.name ?? ''));
+    // Clout "does stun damage" (SR3 p.197) and has no "stun" in its name — TODO 123.
+    return /stun/i.test(String(spell?.name ?? '')) || Clout.is(spell?.name);
   }
 
   /** Sensor-enhanced gunnery dice: half the Sensor Rating, round down · SR3 p.152. Pure. */
@@ -4878,7 +4881,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
   /**
    * Prompt the caster to allocate Spell Pool dice.
    */
-  static async _promptMagicPool(actor, maxDice) {
+  static async _promptMagicPool(actor, maxDice, note = '') {
     if (maxDice <= 0) return 0;
     let result = 0;
     await foundry.applications.api.DialogV2.wait({
@@ -4886,6 +4889,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       content: `
         <p><strong>${actor.name}</strong>, how many Spell Pool dice to add?</p>
         <p style="font-size:11px;color:var(--sr-muted)">Available: <strong>${maxDice}</strong> (0 = none)</p>
+        ${note ? `<p style="font-size:11px;color:var(--sr-amber)">${note}</p>` : ''}
         <input type="number" id="magic-dice" min="0" max="${maxDice}" value="0" style="width:80px"/>
       `,
       buttons: [
@@ -4941,7 +4945,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
     // Combat AND elemental spells let the caster pick the Damage Level at cast time — it sets both
     // the target's damage and the caster's Drain level (p.191, p.196). Other spells skip it.
     // (Spells have no fixed damage code; the category says whether one is damaging.)
-    const isCombat     = SR3EItem.spellChoosesDamageLevel(this.system.category);
+    // Clout (SR3 p.197) drains "(Damage Level)": its level is chosen at cast like a combat spell's — TODO 123.
+    const isClout      = Clout.is(this.name);
+    const isCombat     = SR3EItem.spellChoosesDamageLevel(this.system.category) || isClout;
     const isElemental  = SR3EItem.isElementalSpell(this.system.category);
     const defaultLevel = SR3EItem._parseSpellDamageLevel(this.system.damage);
     const LEVEL_NAMES  = { L: 'Light', M: 'Moderate', S: 'Serious', D: 'Deadly' };
@@ -5097,7 +5103,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
      * per target — defaulted from self / an owned or friendly actor, always the caster's to change. */
     let willingTargetIds = [];
     const isFling = SpellTarget.kind(this.system.target, this.name) === 'fling';   // a ranged attack (p.197)
-    if (WillingTarget.canBeWilling(this.system.category) && !isFling && targetActors.length) {
+    if (WillingTarget.canBeWilling(this.system.category) && !isFling && !isClout && targetActors.length) {
       const picked = await SR3EItem._promptWillingTargets(actor, targetActors, this.name, this.system.category);
       if (picked === null) return null;   // cancelled
       willingTargetIds = WillingTarget.carriedIds(this.system.category, targetActors.map(t => actorRef(t)), picked);
@@ -5147,7 +5153,7 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
      * asks before the attacker's screen — nobody spends dice against a number they cannot see. Range
      * stays out; touch and personal spells never ask (p.182). One window per cast: its difference moves
      * every target's TN and the roll's alike. */
-    if (SR3EItem.spellTakesGMWindow(this.system.range) || isFling) {   // Fling: a ranged attack, cover and visibility count
+    if (SR3EItem.spellTakesGMWindow(this.system.range) || isFling || isClout) {   // Fling: a ranged attack, cover and visibility count
       const negotiation = await game.sr3e.SR3EQuery.asGM('sr3e.spell.negotiate', {
         attackerUuid: actor.uuid,
         targetUuids:  targetActors.map(t => t.uuid),
@@ -5197,7 +5203,9 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
 
     let magicDice = 0;
     if (availMagic > 0) {
-      magicDice = await SR3EItem._promptMagicPool(actor, availMagic);
+      // "No more Spell Pool dice can be added to the test than the Sorcery dice allocated" (SR3 p.182) — TODO 123.
+      magicDice = await SR3EItem._promptMagicPool(actor, SpellPoolCap.sorceryTest(availMagic, sorceryDice),
+        SpellPoolCap.note(availMagic, sorceryDice));
       if (magicDice > 0) {
         // Roll the grant, not the request — see tests/pool-spend.test.mjs.
         const spent = await actor.spendSpellPool(magicDice);
@@ -5247,6 +5255,8 @@ static async _promptFireMode(availableModes, actor, weapon, isHeavy = false, isS
       isElemental,
       // Fling (p.197): a ranged attack — dodge, then Damage Resistance against the object; no Spell Resistance.
       isFling,
+      // Clout (p.197): a ranged attack doing Stun, dodged, resisted on full Impact armour — TODO 123.
+      isClout,
       flingNote:         flingDamage ? `Object damage: ${flingDamage.source}${flingDamage.gmCall ? ' ⚠' : ''}` : '',
       isAoE,
       aoeRegionId,

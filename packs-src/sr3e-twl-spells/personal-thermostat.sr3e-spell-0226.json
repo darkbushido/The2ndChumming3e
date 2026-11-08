@@ -6,10 +6,10 @@
     "type": "spell",
     "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
     "system": {
-      "category": "Manipulation",
+      "category": "Transformation",
       "type": "Physical",
       "duration": "Sustained",
-      "range": "LOS",
+      "range": "P",
       "drain": "+2(L)",
       "target": "4",
       "bookPage": "twl.119",

@@ -52,14 +52,14 @@ export async function run(t) {
   const actor = read('scripts/documents/SR3EActor.js');
   const btn = actor.slice(actor.indexOf('static _spellResistButton('), actor.indexOf('async _postSpellSoakCard('));
   t.ok('a Fling target is sent down the ranged dodge path, as an elemental spell is',
-    /if \(sc\.isElemental \|\| sc\.isFling\) \{[\s\S]{0,1500}sr-dodge-declare-btn/.test(btn));
+    /if \(sc\.isElemental \|\| sc\.isFling( \|\| sc\.isClout)?\) \{[\s\S]{0,1800}sr-dodge-declare-btn/.test(btn));
   t.ok('…and that path comes BEFORE the Resist Spell button', btn.indexOf('sc.isFling') < btn.indexOf('sr-spell-soak-btn'));
   t.ok('Fling is not elemental: Impact armour is not halved', /elemental:\s+sc\.isElemental \? true : undefined/.test(btn));
   t.ok('a flung object is resisted on Impact armour, not Ballistic (the maintainer, 2026-10-18)',
-    /useImpact:\s+sc\.isFling \? true : undefined/.test(btn));
+    /useImpact:\s+\(?sc\.isFling( \|\| sc\.isClout\))? \? true : undefined/.test(btn));
   t.ok('…and the soak card reads that flag', /payload\.useImpact === true/.test(actor));
   t.ok('a vehicle is not shielded by the non-living line (it goes to its resistance)',
-    /!sc\.isElemental && !sc\.isFling && WillingTarget\.isNonLiving/.test(btn));
+    /!sc\.isElemental && !sc\.isFling( && !sc\.isClout)? && WillingTarget\.isNonLiving/.test(btn));
 
   const item = read('scripts/documents/SR3EItem.js');
   const cast = item.slice(item.indexOf('async rollSpell('), item.indexOf('static spellAreaRadius('));

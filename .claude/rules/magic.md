@@ -80,7 +80,9 @@ Sheet shows available / total.
    live non-vehicle actor **including the caster** (*"friend and foe alike (including the caster)"*, SR3 p.181; no
    scatter/falloff); purple Region marker (`_drawBlastArea`) with
    🧹. Off-canvas → `_promptTargetsMulti`. Empty area still casts (Drain applies).
-3. Spell Pool dialog.
+3. Spell Pool dialog — ⚠ **capped at the Sorcery dice rolled** (after the Spellcasting spec and withheld area dice):
+   *"No more Spell Pool dice can be added to the test than the Sorcery dice allocated"* (SR3 p.182). `SpellPoolCap`
+   (`scripts/data/spell-pool-cap.mjs`, TODO 123); mutant `spell-pool-uncapped-on-sorcery`.
 4. **Cast**: Sorcery + Spell Pool vs **the spell's Target attribute** on the target —
    `SR3EItem._parseSpellTarget` (the single parser for cast TN and resist; the rule is `SpellTarget.resolve`,
    `scripts/data/spell-target.mjs`): `W` `B` `I` `Q`; `F` = Force as TN; number = fixed TN; blank → Mana=Willpower,
@@ -124,6 +126,12 @@ Sheet shows available / total.
 (`SR3EActor.elementalImpact`, round down) — ⚠ Mystic Armor is halved with it. ⚠ **Every target in an area
 elemental spell dodges** (the maintainer; MITS p.56). ⚠ `_soakButtonHtml` lists its fields — `elemental` is
 one. Secondary effects stated, never applied.
+**Clout** · *SR3 p.197* (the maintainer, 2026-11-08, TODO 123): *"does stun damage. It is targeted as a normal Ranged
+Attack … Impact armor protects"* — Fling's path (`sc.isClout`, `scripts/data/clout.mjs`): Damage Level chosen at cast
+(its Drain is "(Damage Level)"), Power = Force, dodge, then Body + Combat Pool vs **full Impact**; `spellDealsStun` reads
+it as Stun. Spell data audited against the books: `audit/spells-audit.md`; categories are the book's Manipulation
+subtypes (`Control` / `Elemental` / `Telekinetic` / `Transformation`).
+
 **Fling** · *SR3 p.197* (maintainer, 0.7.0): *"Treat the Sorcery Test as a normal Ranged Combat Test"* — a ranged attack like the Elemental spells: `_spellResistButton` sends it down the same `.sr-dodge-declare-btn` path (`sc.isFling`), but **Impact is not halved** (not elemental) and there is no Spell Resistance Test. ⚠ **A flung object is resisted on IMPACT armour**, not Ballistic (`useImpact`; the maintainer, 2026-10-18: "it's not like shooting a gun"). Damage = a thrown weapon's own code at Strength = Force, else the caster's entry (the GM's call); range bands = the weapon's multipliers × Force. `scripts/data/fling.mjs`, `tests/fling.test.mjs`.
 - **Cover and visibility** (SR3 p.182–183, TODO 131; every spell since 0.6.2): the cast opens the ranged GM
   window through `sr3e.spell.negotiate` (same `gmApprovesTN` rule) after targets, **before the Spell Pool**.

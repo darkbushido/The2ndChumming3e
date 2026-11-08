@@ -5048,7 +5048,7 @@ audited; the tool compares the stat-block row and the Karma Pool line only.
 Stats and skills re-run clean (62/62 skills). Gear/cyberware/spells: 12 contacts corrected (spell Forces,
 Powerball not Powerbolt, the skill "Desert Wars" entered as gear, missing gear, an extra Biomonitor) in
 `packs-src`, the generator and a 0.9.0 migration (`JohnsonGearFixes`; the maintainer: "Full migration").
-Report `audit/johnson-gear-audit.txt`; TESTING §84. Remainders go to the coordinator for numbers.
+Report `audit/johnson-gear-audit.txt`; TESTING §85. Remainders: [#294](TODO.md#294) (alphaware grade), [#295](TODO.md#295) (`--check` churn).
 
 <a id="85"></a>
 
@@ -6593,6 +6593,56 @@ null; `displayName(item)` showing `Name [N]` without doubling a bracket (answeri
   Reflexes*;
 - `displayName` on every sheet row and chat card that prints these names;
 - the rename itself in the packs (derived ids, repo + install) and a migration for world copies.
+
+## 123. ✅ Audit every shipped spell and the casting rules — **DONE 2026-11-08** (`cdf56c3b`)
+
+> **Done** on `claude/spells-audit-123` — record `audit/spells-audit.md`. 244 spells checked (tss and the two SotA
+> 2063 entries unverifiable: no source / entry not found); 16 data fixes and the Manipulation subtypes relabelled
+> (packs + 0.9.0 migration, exact old value only); the Spell Pool cap (SR3 p.182) and Clout as a Stun ranged attack
+> (p.197) fixed with mutants. **Remainder** (a new numbered TODO, from the coordinator): Health spells whose Drain
+> follows a wound/toxin/disease level (Heal, Treat, Resist Pain, Antidote, Detox, Cure Disease, Alleviate/Cause
+> Allergy, Awaken) always drain at Serious — the cast never asks the level (SR3 p.193); the archetype's
+> "Increase Reaction (F3)" has every field blank; TWL p.119's Create Water is not shipped. The spellcasting-helper
+> step list is still to be proposed.
+
+**Request (maintainer):** *"add a todo for a spell audit."* Raised while fixing F5 (Drain read the
+wrong Magic in three flows) and alongside the maintainer's *"we probably need a spell casting
+helper just like the healing helper"* — the audit comes first, so the helper is built on verified
+rules.
+
+**Scope — two halves, the same method as `audit/adept-powers-audit.md`:**
+
+1. **The data — 244 spells in five packs:** `sr3e-sr3-spells` 96 · `sr3e-mits-spells` 99 ·
+   `sr3e-tss-spells` 40 · `sr3e-twl-spells` 7 · `sr3e-sota2-spells` 2. For each: type (Mana/Physical),
+   target, range and the `(A)` area marker, duration, **drain code**, category, and book/page, against
+   the printed spell entry. `parseDrainFormula` must parse every shipped drain code — list any it
+   cannot, and any spell whose drain parses to something other than the book.
+2. **The rules the code applies** — each checked against the PDF, quoted with its printed page:
+   Force and the Physical/Stun Drain line (p.183, now `SR3EActor.magicAttribute`), the Drain
+   Resistance Test (p.183: *"the caster's Willpower dice, plus any Spell Pool dice"*, TN ⌊Force ÷ 2⌋
+   + the Drain Modifier), the Spell Pool cap (*"No more Spell Pool dice can be used than the number
+   of Sorcery dice allocated"*, p.180), target numbers and resistance (p.182-183), area spells,
+   counterspelling/Spell Defense, dispelling, and astral casting (*"All spells cast while astrally
+   projecting cause physical damage, regardless of Force"*, p.183).
+
+**Leads found while writing this — verify, don't assume:**
+- ✅ **Sustained spells — BUILT on `feature/sustained-spells`** (2026-09-14; CLAUDE.md → *Sustained
+  spells*). p.178's +2 per spell on all tests (Drain included, Damage Resistance not; p.180 and p.183
+  are the same modifier restated), the Sorcery limit (shown), the damage test to keep one. **The Spell
+  Resistance Test takes it — the maintainer's ruling, 2026-09-14**, reading p.178's "all tests" over
+  p.183's *"No target modifiers apply to this test except where specifically noted"*.
+- ✅ **The astral clause — FIXED 2026-09-14** (`SR3EActor.drainIsPhysical`): casting while projecting
+  is Physical Drain at any Force (p.183), and the Force dialog says so.
+- ✅ **Drain resistance read base Willpower — FIXED 2026-09-14** (`SR3EActor.drainResistRating`):
+  the effective Willpower (Charisma for conjuring), so a Pain Editor's or Adrenal Pump's +1 counts.
+- **Increase Attribute spells** (SR3 p.194 — Physical *or* Mental, +1 per 2 successes up to Force, not
+  on cybered Attributes) have no effect path; a GM edits the attribute by hand.
+
+**Deliverable:** `audit/spells-audit.md` (per-spell table + rules checklist), pack fixes through a
+committed tool, a TODO per verified code divergence (bug fixes on `main`), and a proposed step list
+for the spellcasting helper for the maintainer to review before anything is built.
+
+<a id="131"></a>
 
 ## 126. Ammunition has no weight, and nothing adds up a carried load ✅ 2026-09-16, `feature/0-6-rules`
 

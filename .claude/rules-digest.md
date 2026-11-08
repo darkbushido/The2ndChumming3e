@@ -16,8 +16,8 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - `essence-and-cyberware.md` cac57ed6e24b
 - `initiative-and-vehicles.md` 1babb7afb959
 - `karma-and-economy.md` cf28a25407d7
-- `magic.md` 1d2f47e8cfb7
-- `matrix.md` f2c0131848d9
+- `magic.md` fc73e7b7bd02
+- `matrix.md` a23085020f25
 - `melee-combat.md` 73eba60f8bfb
 - `packs-and-migrations.md` 470e0fd91b3a
 - `portraits.md` 9fca86734575
@@ -99,7 +99,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **Astral state** — SR3 p.41, SR3 p.62, MITS p.58, SR3 p.174-175, SR3 p.174, SR3 p.176 — scripts/data/initiate-astral.mjs, tests/initiate-astral.test.mjs
 - **Sustained spells** — SR3 p.178, SR3 p.180, SR3 p.183, SR3 p.125 — scripts/data/sustaining.mjs
 - **Spell Pool** — SR3 p.43
-- **Spellcasting flow** — SR3 p.178, SR3 p.181, SR3 p.192, SR3 p.182, SR3 p.191, SR3 p.183, SR3 p.180-181, SR3 p.160, SR3 p.196, MITS p.56, SR3 p.197, SR3 p.182-183 — scripts/data/spell-target.mjs, scripts/data/spell-limits.mjs, scripts/data/fling.mjs, tests/fling.test.mjs, tests/spell-defense.test.mjs
+- **Spellcasting flow** — SR3 p.178, SR3 p.181, SR3 p.182, SR3 p.192, SR3 p.191, SR3 p.183, SR3 p.180-181, SR3 p.160, SR3 p.196, MITS p.56, SR3 p.197, SR3 p.182-183 — scripts/data/spell-pool-cap.mjs, scripts/data/spell-target.mjs, scripts/data/spell-limits.mjs, scripts/data/clout.mjs, scripts/data/fling.mjs, tests/fling.test.mjs, tests/spell-defense.test.mjs
 - **Conjuring  (SR3ESpiritSummoning.js)** — SR3 p.183, SR3 p.178 — SR3ESpiritSummoning.js, scripts/data/willing-target.mjs
 
 ## matrix
@@ -114,6 +114,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **Overwatch / Convergence** — MDF p.22-23, MDF p.26 — data/overwatch-crash.mjs
 - **Cybercombat** — MDF p.26
 - **IC / Agents** — MDF p.40-44, MDF p.33, MDF p.40, MDF p.25 — scripts/data/ic-memory.mjs, tests/ic-memory.test.mjs, scripts/data/ic-book-fixes.mjs
+- **Matrix generator · TODO 128** — SR3 p.205, MDF p.24 — scripts/SR3EMatrixGenerator.js, scripts/data/matrix-generator.mjs, tests/matrix-generator*.test.mjs
 - **Matrix Condition Monitor** — MDF p.26, MDF p.12, MDF p.11, SR3 p.207
 - **Sys/Sec modifiers** — MDF p.14
 - **Host sheet (SR3EHostSheet.js)** — *(no citation: not audited)* — SR3EHostSheet.js

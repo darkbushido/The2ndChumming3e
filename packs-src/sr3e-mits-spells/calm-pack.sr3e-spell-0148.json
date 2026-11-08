@@ -6,7 +6,7 @@
     "type": "spell",
     "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
     "system": {
-      "category": "Manipulation",
+      "category": "Control",
       "type": "Mana",
       "duration": "Sustained",
       "range": "LOS(A)",

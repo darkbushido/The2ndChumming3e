@@ -84,7 +84,7 @@ const DEFAULT_NODE_PROMPTS = {
 };
 
 /* Default topology seeded when a new host is initialised */
-function _defaultTopology(systemRating) {
+export function defaultTopology(systemRating) {
   const sanId = foundry.utils.randomID();
   const spuId = foundry.utils.randomID();
   const dsId  = foundry.utils.randomID();
@@ -1046,7 +1046,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
   /* ── Topology ──────────────────────────────────────────────────── */
 
   static async _onInitTopology(_e, _t) {
-    const { nodes, pathways, triggerSteps } = _defaultTopology(this.actor.system.systemRating);
+    const { nodes, pathways, triggerSteps } = defaultTopology(this.actor.system.systemRating);
     await this.actor.update({
       'system.nodes':        nodes,
       'system.pathways':     pathways,
