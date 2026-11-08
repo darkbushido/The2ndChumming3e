@@ -10,7 +10,7 @@
       "grading": "White",
       "rating": 6,
       "systemRating": 6,
-      "memoryRequired": 10,
+      "memoryRequired": 216,
       "damage": "6L Stun",
       "hostSecurityTier": "Green",
       "notes": "<p>Repairs damage to other IC and patches security holes between passes. Ability: Guardian.</p>",

@@ -10,7 +10,7 @@
       "grading": "White",
       "rating": 6,
       "systemRating": 6,
-      "memoryRequired": 15,
+      "memoryRequired": 180,
       "damage": "6M Stun",
       "hostSecurityTier": "Green",
       "notes": "<p>Scrambles and corrupts the decker's active programs, reducing their effectiveness. Ability: Erosion.</p>",

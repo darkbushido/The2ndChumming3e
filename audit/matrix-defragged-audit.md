@@ -119,3 +119,42 @@ PDF, one look at the table. CLAUDE.md now carries a 🔴 marker saying exactly t
   `system.bookPage`. TODO 117 says all 116 lack one; that is stale, and the remaining 28 belong to it.
 - **`tests/tables.test.mjs`'s caveat can be narrowed**: the tier table is now verified against the book.
   Its warning stays only for what this audit could not read — the Condition Monitor thresholds.
+
+## IC pack matched against the stat blocks (2026-11) — five gradings, every Mp figure, one page
+
+Done while building the Matrix host generator. Every `sr3e-mdf-ic` entry was compared with its stat block on MDF pp.40-44
+(rendered page images — the text layer interleaves the two columns) and the passive IC on p.25. The Mp rule is **Rating² ×
+Final Multiplier** (PROGRAM SIZE TABLE, p.33; p.40: "can be used to determine the agent's Mp Size").
+
+| IC | Pack had | Book (page) | Mp at Rating 6 |
+|----|----------|-------------|----------------|
+| ARis | White, 12 | White ×3 (40) | 108 |
+| Authenticator | White, 12 | White ×7 (40) | 252 |
+| Blaster | Gray, 18 | Gray ×7 (41) | 252 |
+| Crippler | **Gray**, 18 | **White** ×4 (41) | 144 |
+| Dataworm | Gray, 20, **p.34** | Gray ×10 (**p.41**) | 360 |
+| Gemini | **Gray**, 20 | **White** ×6 (42) | 216 |
+| Hydra | Gray, 20 | Gray ×12 (42) | 432 |
+| Killer | **Black**, 25 | **Gray** ×8 (42) | 288 |
+| Looper | White, 12 | White ×10 (43) | 360 |
+| Mr. Medkit | White, 10 | White ×6 (43) | 216 |
+| Ripper | Black, 30 | Black ×6 (43) | 216 |
+| Scrambler | White, 15 | White ×5 (44) | 180 |
+| Sparky | **Gray**, 18 | **Black** ×26 (44) | 936 |
+| Tar Baby | Gray, 15 | Gray ×9 (44) | 324 |
+| Tracker | **Gray**, 15 | **White** ×11 (44) | 396 |
+
+Passive IC (p.25) were already right: Alert 100, System Sweep 100, Barrier 108, Encryption 108, Databomb 144.
+
+**Fixed:** grading, `memoryRequired` and Dataworm's page in `packs-src/sr3e-mdf-ic/`; the table lives in
+`scripts/data/ic-memory.mjs` and `tests/ic-memory.test.mjs` pins the pack to it. `matrix.md`'s grading list
+was wrong the same five ways and is corrected.
+
+**Left for the maintainer** (read, not changed):
+- **Damage and notes text.** The pack's `damage` and notes were authored from the old gradings — e.g. Killer is described as
+  Black "lethal biofeedback", but its stat block is Gray with `Attack [(Rating)S Overload]` and no Biofeedback, while Sparky
+  (Black) carries `Attack:Killjoy-[(Rating)S Biofeedback]` and Ripper `Attack:Nosebleed-[(Rating)L Biofeedback]`. Ripper's
+  `6D` does not follow from L Overload + L Biofeedback. Not touched — the damage model is the maintainer's to settle.
+- **World copies.** An IC already dragged into a world kept its old Mp and grading, and a host that stocked it a snapshot
+  of the old Mp; a pack fix does not reach embedded copies. The **0.9.0 migration** (`ic-book-fixes.mjs`) corrects an IC and
+  its stocked rows only while they still equal the exact old shipped value. Numbered 0.9.0.

@@ -10,7 +10,7 @@
       "grading": "White",
       "rating": 6,
       "systemRating": 6,
-      "memoryRequired": 12,
+      "memoryRequired": 360,
       "damage": "6M Stun",
       "hostSecurityTier": "Green",
       "notes": "<p>Traps decker icons in recursive data loops, disorienting navigation. Ability: Infiltration.</p>",
