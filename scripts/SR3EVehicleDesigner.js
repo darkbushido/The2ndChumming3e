@@ -15,7 +15,7 @@
  */
 import { CHASSIS, CATEGORIES, PLANTS } from './data/vehicle-design-tables.mjs';
 import { VehicleDesign, CLASSES } from './data/vehicle-design.mjs';
-import { VehicleDesignActor, FLAG } from './data/vehicle-design-actor.mjs';
+import { VehicleDesignActor, FLAG, SOURCE_FLAG } from './data/vehicle-design-actor.mjs';
 import { DesignOptions } from './data/design-options.mjs';
 
 const SCOPE = 'The2ndChumming3e';
@@ -260,11 +260,16 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
       const src = m.uuid ? await fromUuid(m.uuid).catch(() => null) : null;
       if (!src) { ui.notifications.warn(`${m.name}: its compendium entry is gone — add it on the sheet.`); continue; }
       const data = VehicleDesignActor.modItemData(src.toObject(), m);
-      foundry.utils.setProperty(data, '_stats.compendiumSource', m.uuid);
+      // The source goes in our own flag: a player's embedded create carrying the core compendium-source stat is silently
+      // dropped (seen live, §82, 2026-11-08), so never write that stat here.
+      foundry.utils.setProperty(data, `flags.${SCOPE}.${SOURCE_FLAG}`, m.uuid);
       docs.push(data);
     }
-    if (docs.length) await actor.createEmbeddedDocuments('Item', docs);
-    return docs.length;
+    const made = docs.length ? await actor.createEmbeddedDocuments('Item', docs) : [];
+    if ((made?.length ?? 0) < docs.length) {
+      ui.notifications.warn(`${actor.name}: only ${made?.length ?? 0} of ${docs.length} mod(s) were added — drop the rest on the sheet.`);
+    }
+    return made?.length ?? 0;
   }
 
   async _create(values, design, result) {

@@ -10,6 +10,8 @@ import { VehicleDesign } from './vehicle-design.mjs';
 import { DesignCosts } from './design-costs.mjs';
 
 export const FLAG = 'design';
+/** Where an embedded mod records the compendium entry it came from — a flag, because a player may not write `_stats`. */
+export const SOURCE_FLAG = 'designSource';
 
 /** Chassis category → the vehicle sheet's type list (a drone chassis is a drone). */
 export const TYPE_FOR = {
@@ -79,7 +81,8 @@ export const VehicleDesignActor = {
 
   /**
    * The design's picked mods the vehicle does not carry yet — what Create embeds and a re-save OFFERS (the maintainer,
-   * 2026-11-08: "Offer new ones, never remove"). A mod counts as carried when an item has its compendium source (or, for
+   * 2026-11-08: "Offer new ones, never remove"). A mod counts as carried when an item has its compendium source — our
+   * `designSource` flag, else `_stats.compendiumSource` / `core.sourceId` (or, for
    * an item without one, its name) as many times as the design lists it. Typed mods (no uuid) are left out: there is no
    * document to copy. Never lists anything to remove.
    */
@@ -87,7 +90,7 @@ export const VehicleDesignActor = {
     const have = new Map();
     for (const i of items) {
       if (i?.type !== 'vehiclemod') continue;
-      const key = i._stats?.compendiumSource || i.flags?.core?.sourceId || `name:${i.name}`;
+      const key = i.flags?.The2ndChumming3e?.[SOURCE_FLAG] || i._stats?.compendiumSource || i.flags?.core?.sourceId || `name:${i.name}`;
       have.set(key, (have.get(key) ?? 0) + 1);
       if (key !== `name:${i.name}`) have.set(`name:${i.name}`, (have.get(`name:${i.name}`) ?? 0) + 1);
     }
