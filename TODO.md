@@ -2943,7 +2943,7 @@ For each book:
 - Re-read from the page image every page the code cites that has a high mismatch rate.
 - Fix any divergence with a test and a mutant.
 
-**Mismatch rates, 2026-11-08** (1,579 pages). The figures are numbers lost from the text layer / numbers OCR found
+**Mismatch rates, 2026-11-08** (all 12 books, 1,705 pages). The figures are numbers lost from the text layer / numbers OCR found
 that it lacks / words lost, plus bad pages (pages with 10 or more numbers, over 20% of them lost). OCR is noisy itself, so
 compare books with each other; these are not error counts. Clean books lose about 5–11% of their numbers.
 
@@ -2960,7 +2960,7 @@ compare books with each other; these are not error counts. Clean books lose abou
 | Man & Machine | 9.1 | 1.5 | 2.9 | 6 |
 | Critters | 7.3 | 0.5 | 2.3 | 3 |
 | MDF | 4.8 | 4.7 | 0.9 | 1 |
-| Little Black Book | — not run yet (the apostrophe in its filename) | | | |
+| Little Black Book | 5.6 | 2.3 | 1.9 | 1 of 126 |
 
 Only R3R is badly garbled. Cannon Companion and Matrix are next to check. A high "numbers extra" rate (Matrix, MITS)
 more likely means tables read in a different order than real misreads.
