@@ -25,6 +25,7 @@
  *    guarantee — a half-finished run leaves the stamp unchanged and the next load repeats it.
  */
 
+import { JohnsonGearFixes } from './data/johnson-gear-fixes.mjs';
 import { SRCG_BONUSES } from './data/srcg-bonuses.js';
 import { expandCyberwareName } from './data/cyberware-names.js';
 import { parseJohnsonNotes, isJohnsonNote } from './data/johnson-notes.mjs';
@@ -688,6 +689,20 @@ const MIGRATIONS = [
      */
     fixActor: actor => IcBookFixes.fixActor(actor, ref => actorFrom(ref)?.system?.rating),
   },
+  {
+    version: '0.9.0',
+    label: "Little Black Book contacts carry the book's gear, cyberware and spells (TODO 84, LBB pp.40-67)",
+    /**
+     * The contacts pack was corrected against the book (`audit/johnson-gear-audit.txt`); a contact already in a
+     * world kept the old items. Rule in `JohnsonGearFixes` (`scripts/data/johnson-gear-fixes.mjs`, pure, tested).
+     *
+     * ⚠ **This OVERWRITES, adds and removes, and argues for it** (the maintainer, 2026-11-08: "Full migration"):
+     * only on a contact whose compendiumSource names the pack entry (else an NPC of its exact name); a spell is
+     * re-Forced only from its exact old name, an item removed only by its exact shipped name, never a skill, and
+     * an item added only when the contact has nothing of that name — copied from the corrected pack contact.
+     */
+    fixActorItems: actor => JohnsonGearFixes.migrate(actor),
+  },
 
 ];
 
@@ -809,6 +824,16 @@ export const SR3EMigrations = {
       count += updates.length;
       console.log(`SR3E | ${m.version}: ${label} — ${updates.length} item(s)`);
     }
+    // `fixActorItems` (TODO 84) renames, deletes AND adds embedded items — returns `{updates, deletes, creates}`
+    // or null, possibly async (a create copies an item out of a compendium). Must argue its case at the call site.
+    if (m.fixActorItems) {
+      const p = await m.fixActorItems(actor);
+      if (p?.updates?.length) await actor.updateEmbeddedDocuments('Item', p.updates);
+      if (p?.deletes?.length) await actor.deleteEmbeddedDocuments('Item', p.deletes);
+      if (p?.creates?.length) await actor.createEmbeddedDocuments('Item', p.creates);
+      const n = (p?.updates?.length ?? 0) + (p?.deletes?.length ?? 0) + (p?.creates?.length ?? 0);
+      if (n) { count += n; console.log(`SR3E | ${m.version}: ${label} — ${n} item change(s)`); }
+    }
     if (m.fixActor) {
       const delta = m.fixActor(actor);
       if (delta) {
@@ -823,7 +848,7 @@ export const SR3EMigrations = {
 
   async _apply(m) {
     let count = 0;
-    if (!m.items && !m.fixItem && !m.fixActor) return count;
+    if (!m.items && !m.fixItem && !m.fixActor && !m.fixActorItems) return count;
 
     // ── World actors ────────────────────────────────────────────────────────
     for (const actor of game.actors) {

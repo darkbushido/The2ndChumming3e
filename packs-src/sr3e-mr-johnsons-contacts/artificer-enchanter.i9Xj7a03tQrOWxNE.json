@@ -446,7 +446,7 @@
     },
     "!actors.items!i9Xj7a03tQrOWxNE.2oR3LNRSEcUimJmR": {
       "_id": "2oR3LNRSEcUimJmR",
-      "name": "Analyze Device (F3)",
+      "name": "Analyze Device (F4)",
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
@@ -459,7 +459,7 @@
         "bookPage": "sr3.192",
         "damage": "",
         "description": "",
-        "force": 3
+        "force": 4
       },
       "effects": [],
       "folder": null,
@@ -1124,7 +1124,7 @@
     },
     "!actors.items!i9Xj7a03tQrOWxNE.jAdro6qZO2pH3q5g": {
       "_id": "jAdro6qZO2pH3q5g",
-      "name": "Physical Barrier (F5)",
+      "name": "Physical Barrier (F4)",
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
@@ -1137,7 +1137,7 @@
         "bookPage": "sr3.198",
         "damage": "",
         "description": "",
-        "force": 5
+        "force": 4
       },
       "effects": [],
       "folder": null,

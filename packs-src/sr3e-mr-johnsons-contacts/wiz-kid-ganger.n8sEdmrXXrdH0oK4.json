@@ -254,7 +254,6 @@
       "pIcCHo6pPmWX7QrH",
       "rJIP7td9S8VHfKv3",
       "j1ypuxhR4HdHRyXt",
-      "TMjz0dTJDSEZ1BKx",
       "PoaOM0WKLmhNtM9H",
       "QKMZvVIBG0YbqSf7",
       "S56ZD84jSOKkQa3H",
@@ -275,7 +274,8 @@
       "7f61743cdc4b5186",
       "9e6338f9916df675",
       "9df4d428dc3f3858",
-      "8a7836e7ccfb755f"
+      "8a7836e7ccfb755f",
+      "7c0d41a5f6df492b"
     ],
     "effects": [],
     "folder": "1d8a3ad0f30e8fb9",
@@ -406,6 +406,43 @@
         "modifiedTime": 1788319812005,
         "lastModifiedBy": null
       }
+    },
+    "!actors.items!n8sEdmrXXrdH0oK4.7c0d41a5f6df492b": {
+      "name": "Powerball (F4)",
+      "type": "spell",
+      "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+      "system": {
+        "category": "Combat",
+        "type": "Physical",
+        "duration": "Instant",
+        "range": "LOS(A)",
+        "drain": "+1(DL+1)",
+        "target": "B(R)",
+        "bookPage": "sr3.191",
+        "damage": "",
+        "description": "",
+        "force": 4
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-spells.Item.sr3e-spell-0007",
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "7c0d41a5f6df492b",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
     },
     "!actors.items!n8sEdmrXXrdH0oK4.7f61743cdc4b5186": {
       "_id": "7f61743cdc4b5186",
@@ -839,42 +876,6 @@
         "exportSource": null
       }
     },
-    "!actors.items!n8sEdmrXXrdH0oK4.TMjz0dTJDSEZ1BKx": {
-      "_id": "TMjz0dTJDSEZ1BKx",
-      "name": "Powerbolt (F4)",
-      "type": "spell",
-      "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
-      "system": {
-        "category": "Combat",
-        "type": "Physical",
-        "duration": "Instant",
-        "range": "LOS",
-        "drain": "+1(DL)",
-        "target": "B(R)",
-        "bookPage": "sr3.191",
-        "damage": "",
-        "description": "",
-        "force": 4
-      },
-      "effects": [],
-      "folder": null,
-      "sort": 0,
-      "ownership": {
-        "default": 0,
-        "ge55aFMax5sNd2Ho": 3
-      },
-      "flags": {},
-      "_stats": {
-        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-spells.Item.sr3e-spell-0008",
-        "duplicateSource": null,
-        "coreVersion": "14",
-        "systemId": "The2ndChumming3e",
-        "systemVersion": null,
-        "createdTime": 1788537621575,
-        "modifiedTime": 1788537621575,
-        "lastModifiedBy": null
-      }
-    },
     "!actors.items!n8sEdmrXXrdH0oK4.ae6c909633d0d4dc": {
       "_id": "ae6c909633d0d4dc",
       "name": "Bike",
@@ -1191,7 +1192,7 @@
     },
     "!actors.items!n8sEdmrXXrdH0oK4.pIcCHo6pPmWX7QrH": {
       "_id": "pIcCHo6pPmWX7QrH",
-      "name": "Clout (F5)",
+      "name": "Clout (F4)",
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
@@ -1204,7 +1205,7 @@
         "bookPage": "sr3.197",
         "damage": "",
         "description": "",
-        "force": 5
+        "force": 4
       },
       "effects": [],
       "folder": null,

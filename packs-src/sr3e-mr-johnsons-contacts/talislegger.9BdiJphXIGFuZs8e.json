@@ -989,7 +989,7 @@
     },
     "!actors.items!9BdiJphXIGFuZs8e.WyqJwR0OJYEj30AY": {
       "_id": "WyqJwR0OJYEj30AY",
-      "name": "Shape Earth (F5)",
+      "name": "Shape Earth (F4)",
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
@@ -1002,7 +1002,7 @@
         "bookPage": "mits.146",
         "damage": "",
         "description": "",
-        "force": 5
+        "force": 4
       },
       "effects": [],
       "folder": null,

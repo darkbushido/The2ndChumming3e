@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**87 open.** 205 done — see [TODO-DONE.md](TODO-DONE.md).
+**86 open.** 206 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -42,7 +42,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[282](#282) Vehicle weapons fire with no recoil<br>[283](#283) Buy or build a modded item — its whole price before it reaches the sheet<br>[287](#287) Vehicle and drone design — a chassis and Design Points (R3R) |
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone<br>[292](#292) The Killer, Sparky and Ripper IC: damage and notes follow the old gradings |
-| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
+| 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches<br>[286](#286) Pack data no book in the library can verify |
 | 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens |
@@ -1802,163 +1802,6 @@ correcting records in place.
 
 <a id="84"></a>
 
-## 84. Audit all 62 Little Black Book contacts against the book — *p.36-67*
-
-**Raised 2026-09-01, while fixing [#83](#83).** Two of the 62 carried real data-entry errors,
-and **they were exactly the two whose notes were incomplete**. That is not a coincidence — both
-were entered hastily — and it is the reason to suspect the other 60.
-
-| Record | Shipped | The book (p.63 / p.67) |
-|---|---|---|
-| Metroplex Guardsman | `elf`, every attribute **3**, Essence 6, no PR, no Karma Pool | **Dwarf**, `B Q S I W C E R PR = 4 4 5 3 4 2 4.3 3 3`, Karma Pool 2 |
-| Dock Worker | W2 C3 | **W3 C2** — transposed |
-
-Both are corrected in the generator and in both copies of the pack. **The other 60 are
-unverified.**
-
-### Why it is worth doing, and cheap
-
-The book's stat block is rigidly formatted and machine-readable — `pdftotext -raw` gives:
-
-```
-Metatype: Ork
-B Q S I W C E R PR
-5 4 6 3 3 3 6 3 2
-INIT: 3 + 1D6
-Dice Pools: Combat 5, Karma 3
-```
-
-⚠ **The column order is `B Q S I W C`** — Intelligence and Willpower before Charisma. That is
-what the Dock Worker slip was, and it is the error a hand-transcriber makes repeatedly.
-
-⚠ **Body may carry a parenthetical** (`10 (11)`), which shifts every following token. Any
-parser must handle it or it will mis-assign the whole row.
-
-So: extract all 62 rows, compare against `baseActor(...)` in the generator, report mismatches.
-A one-off tool, the same shape as `tools/patch-johnson-contacts.mjs`.
-
-⚠ **Report, do not auto-apply.** The generator makes deliberate judgement calls — effective
-values over parentheticals, consolidated cyberware sized to hit the printed Essence — so a
-mismatch is not automatically an error. A human decides.
-
-⚠ **Dock Worker's Body `10 (11)` is a live example**: the file's convention says use the
-effective value, but its Essence is 6, so nothing pays for the +1 and the source is unclear.
-Left at 10 rather than guessed.
-
----
-
-### Audited 2026-09-01 — `tools/audit-johnson-contacts.mjs`
-
-Report checked in at **`audit/johnson-contacts-audit.txt`**. Regenerate with
-`node tools/audit-johnson-contacts.mjs`; exits 1 while differences remain.
-
-## 🔴 THE GENERATOR DID NOT MAKE FIFTY TYPOS. IT READ ONE COLUMN HEADING WRONG.
-
-**The book prints `B Q S I W C`. SR3's own character sheet orders attributes `B Q S C I W`** —
-physical three, then **Charisma first** among the mental three. Whoever entered this data used
-the sheet's order against the book's row, so every value landed one slot out:
-
-| The book's… | went into the generator's… |
-|---|---|
-| Intelligence | `charisma` |
-| Willpower | `intelligence` |
-| Charisma | `willpower` |
-
-| Reading | Records |
-|---|---:|
-| match **only under the rotation** | **38** |
-| match exactly (book order) | 5 |
-| all three equal, undecidable | 6 |
-| match neither — need a human | 11 |
-
-⚠ **The physical attributes are the control.** Across all 61 blocks the differences are
-charisma 38, willpower 37, intelligence 24 — against body 5, quickness 5, strength 6. `B Q S`
-is unambiguous in both orderings and duly agrees; the three that reorder are the three that
-break. That asymmetry is the finding.
-
-⚠ **Independently corroborated by the book's own printed Reaction.** SR3 derives
-`Reaction = ⌊(Quickness + Intelligence) / 2⌋`, and the book prints Reaction, so Intelligence can
-be checked without trusting either transcription. Reflexes only ever RAISE Reaction, so a
-derived value *above* the printed one is impossible. Under the header's literal `B Q S I W C`
-the check holds for **58 of 61** rows; under the sheet order, 53. Where a specific record's
-Intelligence is disputed the tool prints the verdict per record — the book wins 4 to 1.
-
-### What to do about it
-
-### ✅ Applied 2026-09-01 — the generator now matches the book
-
-The maintainer read the printed pages against the tool's extraction and confirmed they agree;
-**that review is what authorised the write.** `--fix` then corrected **52 records**:
-
-- **50** for the mental-attribute rotation, plus Karma Pool, PR, metatype and Essence where
-  those differed.
-- **2 physical-attribute errors the rotation does not explain** — *Freedom Fighter* strength 3
-  (the function's default; the book gives 5) and *Yakuza Elder* strength 3 where the book gives
-  2. Neither matched either reading of the parentheticals, which is what marked them out.
-
-Audit now: **51 matching, 9 differing — and every one of the 9 is the parenthetical convention**,
-deliberately left for [#86](#86).
-
-⚠ **`--fix` never touches Body/Quickness/Strength where the generator holds the book's NATURAL
-value.** That is the convention question, not an error: setting the augmented figure now and
-modelling implants later ([#86](#86)) would double-count. Where a physical value matches
-*neither* reading it IS corrected — to the natural figure, so the file stays internally
-consistent rather than making one record the odd one out.
-
-⚠ **Three parser faults were found by records that looked like data errors and were not.** Each
-would have sent a reviewer hunting a discrepancy that did not exist:
-- the **Dice Pools line WRAPS**, and the continuation is often where Karma sits;
-- the book writes it **both** as `Karma 3` inline and `Karma Pool 4` on a continuation;
-- `Combat` matched inside **`Astral Combat`** — equal on the record that exposed it, which is
-  exactly how that survives.
-
-⚠ **Talislegger (p.60) has no Dice Pools line at all**, running straight from INIT to Active
-Skills. Its Karma Pool is somebody's judgement, not a transcription, and the audit no longer
-reports the book's silence as a difference.
-
-### The packs — `tools/patch-johnson-stats.mjs`
-
-The generator is the source of truth, but the shipped packs are built by **running the macro
-inside Foundry**, and `npm run sync:install` never copies packs. So a generator fix reaches
-nobody on its own.
-
-`patch-johnson-stats.mjs` applies the generator's attributes, metatype, Essence, Magic, PR and
-Karma Pool to the pack in place — narrower than a rebuild, reversible, and it disturbs nothing
-else in the documents. **50 records changed in each of the two copies; a re-run reports 0.**
-
-⚠ **It parses the generator with the SHARED parser**, `tools/lib/johnson-generator.mjs`. That
-module exists because the same parser was written three times during this audit and **two were
-wrong** — both silently read every record as `baseActor`'s defaults (I3 W3 C3, karma null) and
-produced confident, wrong tables. The audit was switched onto it too, and the report verified
-byte-identical afterwards.
-
-⚠ **`karmaPool` and `professionalRating` are written only where the generator states one.** A
-`null` must never blank a value recovered from the notes by [#83](#83)'s patcher.
-
-⚠ **Both `base` and `value` are written on each attribute.** `value` is recomputed on load, but
-`baseActor`'s own `attr()` helper sets them equal and a pack document disagreeing with itself is
-confusing to read raw. **Essence is the exception** — its persisted `base` stays 6 and only
-`value` moves, per the Essence rules in CLAUDE.md.
-
-⚠ **Run it TWICE** — once plain for `packs/`, once with `--install` for the copy Foundry reads.
-
-⚠ **NOT auto-applied without review, and the tool still defaults to reporting.** 38 records want a mechanical rotation,
-5 are already right, 6 are unknowable from the numbers alone, and **11 fit neither reading** —
-so a blanket transform would corrupt 22 of 60. The 11 are listed in the report and want eyes.
-
-⚠ **Both files must move together**, exactly as in [#83](#83): the generator
-(`scripts/macros/populate-mr-johnsons-contacts.js`) so a re-populate is correct, and **both
-copies of the pack** — `packs/` and the install — because re-running the macro rebuilds all 62
-inside Foundry. `npm run sync:install` does **not** carry packs.
-
-⚠ **Nine contacts are Awakened** and carry an extra `M` column (`B Q S I W C E M R PR`).
-Anything that touches these rows must read the header, not assume nine columns.
-
-⚠ **Attributes are only what has been checked.** Skills, gear, cyberware and spells are not
-audited; the tool compares the stat-block row and the Karma Pool line only.
-
-<a id="85"></a>
-
 ## 85. Review `devdrawdiy/sr3e` for functionality we lack
 
 **Raised 2026-09-01.** <https://github.com/devdrawdiy/sr3e> — an independent Shadowrun 3rd
@@ -2028,7 +1871,7 @@ generation, and anything covering the run structure in Mr Johnson's Little Black
 
 ## 86. The Little Black Book contacts' cyberware does nothing
 
-**Found 2026-09-01, going through [#84](#84) record by record.** Every implant a contact owns is
+**Found 2026-09-01, going through [#84](TODO-DONE.md#84) record by record.** Every implant a contact owns is
 consolidated into **one item that is a name and an Essence cost**, with every bonus field at
 zero. Corp Bodyguard's reads, in full:
 
@@ -2154,7 +1997,7 @@ Choice` → `Club` and `Flash-pak` → `Flash` reasons above.
 - **`cyberware`/`bioware`** — Essence is permanent and the book prints it. Seven stub names match
   cyberware with an Essence cost (`Radio` 0.75, `Biomonitor` 0.3, `Datajack` 0.2), but the Taxi
   Driver's radio is on the book's **Gear** line, not its **Cyberware** line. Converting would
-  charge Essence the printed figure excludes, contradicting [#84](#84).
+  charge Essence the printed figure excludes, contradicting [#84](TODO-DONE.md#84).
 - **`spell`/`adeptpower`** — nothing on a gear line is either.
 
 ⚠ **Two faults were made on the first run and caught by diffing the two pack copies.** Both are
@@ -2243,7 +2086,7 @@ to a shared object; they are correctly inline and correctly formed (checked: 0 m
    produced one false "these do not exist" finding.
 3. Create the real items, delete the stub, and let the grade multiplier ([#86](#86) gap 3, now
    implemented) put Essence back where the book has it.
-4. **Report, do not auto-apply** — same discipline as [#84](#84). A name that matches nothing
+4. **Report, do not auto-apply** — same discipline as [#84](TODO-DONE.md#84). A name that matches nothing
    must be listed, not guessed at.
 
 ⚠ **Verify against the printed Essence.** Corp Bodyguard's parts sum to **5.3** standard, and

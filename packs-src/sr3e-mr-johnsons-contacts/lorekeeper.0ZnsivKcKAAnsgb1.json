@@ -271,7 +271,8 @@
       "8cfea97837c46e64",
       "ccef7a1dacabce87",
       "fbf22bef8169ff6b",
-      "396570892c928b79"
+      "396570892c928b79",
+      "2cf4ea70fb222c8c"
     ],
     "effects": [],
     "folder": "1d8a3ad0f30e8fb9",
@@ -375,7 +376,7 @@
     },
     "!actors.items!0ZnsivKcKAAnsgb1.1udD5GOj0HR9ebTe": {
       "_id": "1udD5GOj0HR9ebTe",
-      "name": "Silence (F4)",
+      "name": "Silence (F3)",
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
@@ -388,7 +389,7 @@
         "bookPage": "sr3.196",
         "damage": "",
         "description": "",
-        "force": 4
+        "force": 3
       },
       "effects": [],
       "folder": null,
@@ -408,6 +409,43 @@
         "modifiedTime": 1788537621562,
         "lastModifiedBy": null
       }
+    },
+    "!actors.items!0ZnsivKcKAAnsgb1.2cf4ea70fb222c8c": {
+      "name": "Lock (F3)",
+      "type": "spell",
+      "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+      "system": {
+        "category": "Transformation",
+        "type": "Physical",
+        "duration": "Sustained",
+        "range": "LOS",
+        "drain": "+2(M)",
+        "target": "4",
+        "bookPage": "mits.146",
+        "damage": "",
+        "description": "",
+        "force": 3
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-mits-spells.Item.sr3e-spell-0185",
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "2cf4ea70fb222c8c",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
     },
     "!actors.items!0ZnsivKcKAAnsgb1.396570892c928b79": {
       "_id": "396570892c928b79",

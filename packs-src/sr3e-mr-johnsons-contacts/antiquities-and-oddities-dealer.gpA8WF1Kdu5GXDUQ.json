@@ -279,7 +279,10 @@
       "4ae1c004ae9fe3be",
       "783f99aecf9962f2",
       "626b0d6ae502dad2",
-      "ba4916ebfce363df"
+      "ba4916ebfce363df",
+      "97876232afe4f384",
+      "e869fab5540d98c7",
+      "9b9c94af625f2e3f"
     ],
     "effects": [],
     "folder": "1d8a3ad0f30e8fb9",
@@ -622,6 +625,80 @@
         "lastModifiedBy": null
       }
     },
+    "!actors.items!gpA8WF1Kdu5GXDUQ.97876232afe4f384": {
+      "name": "Analyze Magic (F5)",
+      "type": "spell",
+      "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+      "system": {
+        "category": "Detection",
+        "type": "Mana",
+        "duration": "Sustained",
+        "range": "T/D",
+        "drain": "(L)",
+        "target": "F(R)",
+        "bookPage": "mits.140",
+        "damage": "",
+        "description": "",
+        "force": 5
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-mits-spells.Item.sr3e-spell-0020",
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "97876232afe4f384",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
+    },
+    "!actors.items!gpA8WF1Kdu5GXDUQ.9b9c94af625f2e3f": {
+      "name": "Influence (F4)",
+      "type": "spell",
+      "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+      "system": {
+        "category": "Manipulation",
+        "type": "Mana",
+        "duration": "Permanent",
+        "range": "LOS",
+        "drain": "(S)",
+        "target": "W(T)",
+        "bookPage": "sr3.196",
+        "damage": "",
+        "description": "",
+        "force": 4
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-spells.Item.sr3e-spell-0156",
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "9b9c94af625f2e3f",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
+    },
     "!actors.items!gpA8WF1Kdu5GXDUQ.9f9fe04aafc300ba": {
       "_id": "9f9fe04aafc300ba",
       "name": "Pistols",
@@ -800,7 +877,7 @@
     },
     "!actors.items!gpA8WF1Kdu5GXDUQ.RYaxi8TCGvV4KUn8": {
       "_id": "RYaxi8TCGvV4KUn8",
-      "name": "Stunball (F4)",
+      "name": "Stunball (F5)",
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
@@ -813,7 +890,7 @@
         "bookPage": "sr3.191",
         "damage": "",
         "description": "",
-        "force": 4
+        "force": 5
       },
       "effects": [],
       "folder": null,
@@ -976,7 +1053,7 @@
     },
     "!actors.items!gpA8WF1Kdu5GXDUQ.V859hZXW9aKgLl9C": {
       "_id": "V859hZXW9aKgLl9C",
-      "name": "Analyze Truth (F5)",
+      "name": "Analyze Truth (F4)",
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
@@ -989,7 +1066,7 @@
         "bookPage": "sr3.192",
         "damage": "",
         "description": "",
-        "force": 5
+        "force": 4
       },
       "effects": [],
       "folder": null,
@@ -1190,6 +1267,43 @@
         "lastModifiedBy": null
       }
     },
+    "!actors.items!gpA8WF1Kdu5GXDUQ.e869fab5540d98c7": {
+      "name": "Astral Window (F4)",
+      "type": "spell",
+      "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
+      "system": {
+        "category": "Detection",
+        "type": "Mana",
+        "duration": "Sustained",
+        "range": "T/D",
+        "drain": "(L)",
+        "target": "F(R)",
+        "bookPage": "mits.140",
+        "damage": "",
+        "description": "",
+        "force": 4
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-mits-spells.Item.sr3e-spell-0023",
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "e869fab5540d98c7",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
+    },
     "!actors.items!gpA8WF1Kdu5GXDUQ.eb5bdd1779436739": {
       "_id": "eb5bdd1779436739",
       "name": "Appraisal",
@@ -1343,7 +1457,7 @@
     },
     "!actors.items!gpA8WF1Kdu5GXDUQ.gZSmPsq56vlqyAOM": {
       "_id": "gZSmPsq56vlqyAOM",
-      "name": "Calm Pack (F6)",
+      "name": "Calm Pack (F4)",
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
@@ -1356,7 +1470,7 @@
         "bookPage": "mits.144",
         "damage": "",
         "description": "",
-        "force": 6
+        "force": 4
       },
       "effects": [],
       "folder": null,

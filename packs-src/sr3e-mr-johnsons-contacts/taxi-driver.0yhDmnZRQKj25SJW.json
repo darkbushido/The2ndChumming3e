@@ -251,7 +251,6 @@
     "items": [
       "EzuNVSauOsf6vfMN",
       "DIjpBmUX5Qioa0qV",
-      "l2szFac0uNgjZaBT",
       "iXenAA64qr3WbBRN",
       "9WPmaI3owob2ou8o",
       "0009792b6166e355",
@@ -757,38 +756,6 @@
         "rating": null
       },
       "_id": "iXenAA64qr3WbBRN",
-      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
-      "effects": [],
-      "folder": null,
-      "sort": 0,
-      "ownership": {
-        "default": 0,
-        "ge55aFMax5sNd2Ho": 3
-      },
-      "flags": {},
-      "_stats": {
-        "coreVersion": "14.364",
-        "systemId": "The2ndChumming3e",
-        "systemVersion": "0.4.5",
-        "createdTime": 1784690543757,
-        "modifiedTime": 1784690543757,
-        "lastModifiedBy": "ge55aFMax5sNd2Ho",
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-      }
-    },
-    "!actors.items!0yhDmnZRQKj25SJW.l2szFac0uNgjZaBT": {
-      "name": "Biomonitor",
-      "type": "gear",
-      "system": {
-        "quantity": 1,
-        "cost": 0,
-        "weight": 0,
-        "description": "",
-        "rating": null
-      },
-      "_id": "l2szFac0uNgjZaBT",
       "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
       "effects": [],
       "folder": null,

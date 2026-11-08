@@ -4888,6 +4888,170 @@ lands first this should write to it rather than editing `system.nuyen` in place.
 
 <a id="83"></a>
 
+## 84. ✅ Audit all 62 Little Black Book contacts against the book — *p.36-67*
+
+**Raised 2026-09-01, while fixing [#83](TODO.md#83).** Two of the 62 carried real data-entry errors,
+and **they were exactly the two whose notes were incomplete**. That is not a coincidence — both
+were entered hastily — and it is the reason to suspect the other 60.
+
+| Record | Shipped | The book (p.63 / p.67) |
+|---|---|---|
+| Metroplex Guardsman | `elf`, every attribute **3**, Essence 6, no PR, no Karma Pool | **Dwarf**, `B Q S I W C E R PR = 4 4 5 3 4 2 4.3 3 3`, Karma Pool 2 |
+| Dock Worker | W2 C3 | **W3 C2** — transposed |
+
+Both are corrected in the generator and in both copies of the pack. **The other 60 are
+unverified.**
+
+### Why it is worth doing, and cheap
+
+The book's stat block is rigidly formatted and machine-readable — `pdftotext -raw` gives:
+
+```
+Metatype: Ork
+B Q S I W C E R PR
+5 4 6 3 3 3 6 3 2
+INIT: 3 + 1D6
+Dice Pools: Combat 5, Karma 3
+```
+
+⚠ **The column order is `B Q S I W C`** — Intelligence and Willpower before Charisma. That is
+what the Dock Worker slip was, and it is the error a hand-transcriber makes repeatedly.
+
+⚠ **Body may carry a parenthetical** (`10 (11)`), which shifts every following token. Any
+parser must handle it or it will mis-assign the whole row.
+
+So: extract all 62 rows, compare against `baseActor(...)` in the generator, report mismatches.
+A one-off tool, the same shape as `tools/patch-johnson-contacts.mjs`.
+
+⚠ **Report, do not auto-apply.** The generator makes deliberate judgement calls — effective
+values over parentheticals, consolidated cyberware sized to hit the printed Essence — so a
+mismatch is not automatically an error. A human decides.
+
+⚠ **Dock Worker's Body `10 (11)` is a live example**: the file's convention says use the
+effective value, but its Essence is 6, so nothing pays for the +1 and the source is unclear.
+Left at 10 rather than guessed.
+
+---
+
+### Audited 2026-09-01 — `tools/audit-johnson-contacts.mjs`
+
+Report checked in at **`audit/johnson-contacts-audit.txt`**. Regenerate with
+`node tools/audit-johnson-contacts.mjs`; exits 1 while differences remain.
+
+## 🔴 THE GENERATOR DID NOT MAKE FIFTY TYPOS. IT READ ONE COLUMN HEADING WRONG.
+
+**The book prints `B Q S I W C`. SR3's own character sheet orders attributes `B Q S C I W`** —
+physical three, then **Charisma first** among the mental three. Whoever entered this data used
+the sheet's order against the book's row, so every value landed one slot out:
+
+| The book's… | went into the generator's… |
+|---|---|
+| Intelligence | `charisma` |
+| Willpower | `intelligence` |
+| Charisma | `willpower` |
+
+| Reading | Records |
+|---|---:|
+| match **only under the rotation** | **38** |
+| match exactly (book order) | 5 |
+| all three equal, undecidable | 6 |
+| match neither — need a human | 11 |
+
+⚠ **The physical attributes are the control.** Across all 61 blocks the differences are
+charisma 38, willpower 37, intelligence 24 — against body 5, quickness 5, strength 6. `B Q S`
+is unambiguous in both orderings and duly agrees; the three that reorder are the three that
+break. That asymmetry is the finding.
+
+⚠ **Independently corroborated by the book's own printed Reaction.** SR3 derives
+`Reaction = ⌊(Quickness + Intelligence) / 2⌋`, and the book prints Reaction, so Intelligence can
+be checked without trusting either transcription. Reflexes only ever RAISE Reaction, so a
+derived value *above* the printed one is impossible. Under the header's literal `B Q S I W C`
+the check holds for **58 of 61** rows; under the sheet order, 53. Where a specific record's
+Intelligence is disputed the tool prints the verdict per record — the book wins 4 to 1.
+
+### What to do about it
+
+### ✅ Applied 2026-09-01 — the generator now matches the book
+
+The maintainer read the printed pages against the tool's extraction and confirmed they agree;
+**that review is what authorised the write.** `--fix` then corrected **52 records**:
+
+- **50** for the mental-attribute rotation, plus Karma Pool, PR, metatype and Essence where
+  those differed.
+- **2 physical-attribute errors the rotation does not explain** — *Freedom Fighter* strength 3
+  (the function's default; the book gives 5) and *Yakuza Elder* strength 3 where the book gives
+  2. Neither matched either reading of the parentheticals, which is what marked them out.
+
+Audit now: **51 matching, 9 differing — and every one of the 9 is the parenthetical convention**,
+deliberately left for [#86](TODO.md#86).
+
+⚠ **`--fix` never touches Body/Quickness/Strength where the generator holds the book's NATURAL
+value.** That is the convention question, not an error: setting the augmented figure now and
+modelling implants later ([#86](TODO.md#86)) would double-count. Where a physical value matches
+*neither* reading it IS corrected — to the natural figure, so the file stays internally
+consistent rather than making one record the odd one out.
+
+⚠ **Three parser faults were found by records that looked like data errors and were not.** Each
+would have sent a reviewer hunting a discrepancy that did not exist:
+- the **Dice Pools line WRAPS**, and the continuation is often where Karma sits;
+- the book writes it **both** as `Karma 3` inline and `Karma Pool 4` on a continuation;
+- `Combat` matched inside **`Astral Combat`** — equal on the record that exposed it, which is
+  exactly how that survives.
+
+⚠ **Talislegger (p.60) has no Dice Pools line at all**, running straight from INIT to Active
+Skills. Its Karma Pool is somebody's judgement, not a transcription, and the audit no longer
+reports the book's silence as a difference.
+
+### The packs — `tools/patch-johnson-stats.mjs`
+
+The generator is the source of truth, but the shipped packs are built by **running the macro
+inside Foundry**, and `npm run sync:install` never copies packs. So a generator fix reaches
+nobody on its own.
+
+`patch-johnson-stats.mjs` applies the generator's attributes, metatype, Essence, Magic, PR and
+Karma Pool to the pack in place — narrower than a rebuild, reversible, and it disturbs nothing
+else in the documents. **50 records changed in each of the two copies; a re-run reports 0.**
+
+⚠ **It parses the generator with the SHARED parser**, `tools/lib/johnson-generator.mjs`. That
+module exists because the same parser was written three times during this audit and **two were
+wrong** — both silently read every record as `baseActor`'s defaults (I3 W3 C3, karma null) and
+produced confident, wrong tables. The audit was switched onto it too, and the report verified
+byte-identical afterwards.
+
+⚠ **`karmaPool` and `professionalRating` are written only where the generator states one.** A
+`null` must never blank a value recovered from the notes by [#83](TODO.md#83)'s patcher.
+
+⚠ **Both `base` and `value` are written on each attribute.** `value` is recomputed on load, but
+`baseActor`'s own `attr()` helper sets them equal and a pack document disagreeing with itself is
+confusing to read raw. **Essence is the exception** — its persisted `base` stays 6 and only
+`value` moves, per the Essence rules in CLAUDE.md.
+
+⚠ **Run it TWICE** — once plain for `packs/`, once with `--install` for the copy Foundry reads.
+
+⚠ **NOT auto-applied without review, and the tool still defaults to reporting.** 38 records want a mechanical rotation,
+5 are already right, 6 are unknowable from the numbers alone, and **11 fit neither reading** —
+so a blanket transform would corrupt 22 of 60. The 11 are listed in the report and want eyes.
+
+⚠ **Both files must move together**, exactly as in [#83](TODO.md#83): the generator
+(`scripts/macros/populate-mr-johnsons-contacts.js`) so a re-populate is correct, and **both
+copies of the pack** — `packs/` and the install — because re-running the macro rebuilds all 62
+inside Foundry. `npm run sync:install` does **not** carry packs.
+
+⚠ **Nine contacts are Awakened** and carry an extra `M` column (`B Q S I W C E M R PR`).
+Anything that touches these rows must read the header, not assume nine columns.
+
+⚠ **Attributes are only what has been checked.** Skills, gear, cyberware and spells are not
+audited; the tool compares the stat-block row and the Karma Pool line only.
+
+### ✅ Gear, cyberware and spells audited 2026-11-08 — `tools/audit-johnson-gear.mjs`
+
+Stats and skills re-run clean (62/62 skills). Gear/cyberware/spells: 12 contacts corrected (spell Forces,
+Powerball not Powerbolt, the skill "Desert Wars" entered as gear, missing gear, an extra Biomonitor) in
+`packs-src`, the generator and a 0.9.0 migration (`JohnsonGearFixes`; the maintainer: "Full migration").
+Report `audit/johnson-gear-audit.txt`; TESTING §84. Remainders go to the coordinator for numbers.
+
+<a id="85"></a>
+
 ## 87. ✅ Cyberware names are abbreviated — **DONE 2026-09-03** (5 left, see below)
 
 **Raised 2026-09-01.** `Muscle Replac. [1]`, `Reaction Enhance [2]`, `Eyes, Vis Mag Ele[1]`,
@@ -5088,7 +5252,7 @@ Any specialised roll by a contact: the skill dialog offers the specialisation, a
 number of dice**, and all 131 display a name with a number stuck on the end.
 
 ⚠ **The 55 that are right are right by ACCIDENT** — the book's specialisation happens to be
-base + 2. Nothing protects them; a base rating corrected by [#84](TODO.md#84) silently moves them.
+base + 2. Nothing protects them; a base rating corrected by [#84](#84) silently moves them.
 
 ### Fix
 
@@ -5209,17 +5373,17 @@ Athletics 3, Car 2 (Forklift 4), Intimidation 3, Unarmed Combat 3
 contact three entries later on the same page — differing only in Athletics.
 
 ⚠ **So a whole skill block was duplicated onto the wrong contact.** That is a different class of
-error from anything [#84](TODO.md#84) or [#88](#88) found: those were wrong VALUES on the right record.
+error from anything [#84](#84) or [#88](#88) found: those were wrong VALUES on the right record.
 This is the wrong record.
 
 ⚠ **Dock Worker was already one of the two hastily-entered records** — it shipped with no Karma
-Pool in its note and with Willpower and Charisma transposed ([#83](TODO.md#83), [#84](TODO.md#84)). Three
+Pool in its note and with Willpower and Charisma transposed ([#83](TODO.md#83), [#84](#84)). Three
 independent defects on one contact is a strong hint that its whole entry was rushed, and its
 gear, cyberware and knowledge skills have **not** been checked.
 
 ### What this implies for the other 61
 
-⚠ **[#84](TODO.md#84) audited ATTRIBUTES only** — the stat-block row and the Dice Pools line. Skills,
+⚠ **[#84](#84) audited ATTRIBUTES only** — the stat-block row and the Dice Pools line. Skills,
 gear and cyberware were never compared to the book at all. This is the first evidence that the
 skill lists need their own pass, and there is no reason to assume Dock Worker is the only one.
 
@@ -5269,7 +5433,7 @@ Street; `Stealth (Alertness 4, Sneaking 4)` kept only Sneaking.
 
 ### What this means
 
-⚠ **[#84](TODO.md#84)'s green result covered attributes ONLY**, and this is the cost of reading it more
+⚠ **[#84](#84)'s green result covered attributes ONLY**, and this is the cost of reading it more
 broadly. The stat rows are now right; the skill lists were never checked until now.
 
 ⚠ **Gear, cyberware, spells and knowledge-skill lists are STILL unaudited.** Given a 79% failure
@@ -5314,7 +5478,7 @@ pool a skill rolls. Nothing fell through on the final run.
 4. **Page footers land mid-list** and parse as a skill called "39 Mr".
 
 ⚠ **Do not fix Dock Worker in isolation** — or any single record found by accident. That
-produces exactly the false confidence [#84](TODO.md#84) exists to avoid.
+produces exactly the false confidence [#84](#84) exists to avoid.
 
 <a id="90"></a>
 
@@ -5325,7 +5489,7 @@ produces exactly the false confidence [#84](TODO.md#84) exists to avoid.
 
 `SR3ESkills` ships **345 specialisations across 99 skills** and lives in a SYSTEM pack, so it
 reaches every table and no source-book toggle can hide it. It came from the upstream character
-generator and had never been compared to a printed page. Given [#84](TODO.md#84) and [#89](#89) found
+generator and had never been compared to a printed page. Given [#84](#84) and [#89](#89) found
 85% and 79% defect rates in similarly-sourced data, the expectation going in was poor.
 
 **It is fine.** Five books give skills a `Specializations:` line — Core (45), Cannon Companion

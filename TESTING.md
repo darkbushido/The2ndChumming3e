@@ -3713,3 +3713,14 @@ Hot reload is enough (no new fields). §80's two steps not yet walked live (Crea
       then open 🛠 Design, add **Pintle Mount**, click **Offer changes** → the stat rows,
       then "Mods … tick to add" listing **Ring Mount** and **Pintle Mount** (ticked). Untick Speed, apply → Speed stays 999,
       both mods arrive, and the hand-added mod is untouched.
+
+## 84. 📒 Little Black Book contacts — gear, cyberware and spells (TODO 84, LBB pp.40-67)
+
+Needs `npm run packs:install` (Foundry closed) first.
+
+1. Import **Wiz Kid Ganger** fresh from the contacts compendium: Clout (F4), Powerball (F4), no Powerbolt.
+2. **Migration:** with a Wiz Kid Ganger and a Mercenary imported BEFORE this build, run `game.sr3e.SR3EMigrations.force()`:
+   the Wiz Kid's Clout reads F4, Powerbolt is gone, Powerball (F4) added; the Mercenary has an Ingram Valiant, no gear
+   "Desert Wars", and still has the knowledge SKILL Desert Wars.
+3. An unlinked Wiz Kid token on a scene is corrected the same way; a Clout you re-Forced by hand to F6 is left at F6.
+4. Re-run `force()`: nothing changes (console logs no item changes).

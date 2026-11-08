@@ -251,7 +251,6 @@
     },
     "items": [
       "f0pIImrXDqZRi0YL",
-      "HoH9tCzQXwFw9YLK",
       "WukeFLdofuEgGcSK",
       "VCH8eKYUR5AcY8XA",
       "AfT6XRPZYVaqsvBs",
@@ -279,7 +278,8 @@
       "549b718f387972c9",
       "559c32eee0729da0",
       "b8c61e5821253bb4",
-      "a64af8c6af331098"
+      "a64af8c6af331098",
+      "90b2d24e2080bbf4"
     ],
     "effects": [],
     "folder": "20e4db2a3174fd08",
@@ -752,6 +752,108 @@
         "lastModifiedBy": null
       }
     },
+    "!actors.items!b6lYBmECTs8jtKHL.90b2d24e2080bbf4": {
+      "name": "Ingram Valiant",
+      "type": "firearm",
+      "img": "systems/The2ndChumming3e/styles/icons/firearm-lmg.svg",
+      "system": {
+        "category": "LMG",
+        "skill": "Gunnery",
+        "attribute": "quickness",
+        "concealability": "-",
+        "ammunition": "belt/50(c)",
+        "mode": "FA",
+        "damage": "7S",
+        "weight": "9",
+        "availability": "6/5days",
+        "cost": 1500,
+        "streetIndex": "2",
+        "accessories": "Hip Brace(1RC), Gas Vent II(2RC)",
+        "bookPage": "sr3.279",
+        "notes": "",
+        "hands": 2,
+        "smartgun": false,
+        "laserSight": false,
+        "recoilMod": 3,
+        "legality": "1-H",
+        "installed": [
+          {
+            "_id": "integral00000001",
+            "type": "gear",
+            "name": "Hip Pad Bracing System (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": 1,
+              "cost": 0,
+              "bookPage": "cc.35",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Hip Brace(1RC)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p>",
+              "modifiers": [
+                {
+                  "target": "rc",
+                  "value": 1,
+                  "perRating": true
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-cc-gear.Item.1aa45599d499b565"
+              }
+            }
+          },
+          {
+            "_id": "integral00000002",
+            "type": "gear",
+            "name": "Gas Vent (Weapon)",
+            "system": {
+              "category": "Firearms Accessories",
+              "modFor": "weapon",
+              "quantity": 1,
+              "rating": 2,
+              "cost": 0,
+              "bookPage": "sr3.282",
+              "description": "<p><strong>Integral</strong> — built into the gun as printed (\"Gas Vent II(2RC)\"). The gun's own RC and flags already include it, so its change is shown, never added again (TODO 276).</p><p><strong>Mount:</strong> Barrel</p>",
+              "modifiers": [
+                {
+                  "target": "rc",
+                  "value": 1,
+                  "perRating": true
+                }
+              ]
+            },
+            "flags": {
+              "The2ndChumming3e": {
+                "integral": true,
+                "integralSource": "Compendium.The2ndChumming3e.sr3e-sr3-gear.Item.a4b62ae9cd2730a3"
+              }
+            }
+          }
+        ]
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-firearms.Item.sr3e-firearm-1134",
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "90b2d24e2080bbf4",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
+    },
     "!actors.items!b6lYBmECTs8jtKHL.9V8C9AIF4TVIcSHD": {
       "name": "Low-light Goggles",
       "type": "gear",
@@ -821,38 +923,6 @@
         "modifiedTime": 1788492295842,
         "lastModifiedBy": "ge55aFMax5sNd2Ho",
         "compendiumSource": "Compendium.The2ndChumming3e.sr3e-cc-firearms.Item.sr3e-firearm-0766",
-        "duplicateSource": null,
-        "exportSource": null
-      }
-    },
-    "!actors.items!b6lYBmECTs8jtKHL.HoH9tCzQXwFw9YLK": {
-      "name": "Desert Wars",
-      "type": "gear",
-      "system": {
-        "quantity": 1,
-        "cost": 0,
-        "weight": 0,
-        "description": "",
-        "rating": null
-      },
-      "_id": "HoH9tCzQXwFw9YLK",
-      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
-      "effects": [],
-      "folder": null,
-      "sort": 0,
-      "ownership": {
-        "default": 0,
-        "ge55aFMax5sNd2Ho": 3
-      },
-      "flags": {},
-      "_stats": {
-        "coreVersion": "14.364",
-        "systemId": "The2ndChumming3e",
-        "systemVersion": "0.4.5",
-        "createdTime": 1784690543013,
-        "modifiedTime": 1784690543013,
-        "lastModifiedBy": "ge55aFMax5sNd2Ho",
-        "compendiumSource": null,
         "duplicateSource": null,
         "exportSource": null
       }

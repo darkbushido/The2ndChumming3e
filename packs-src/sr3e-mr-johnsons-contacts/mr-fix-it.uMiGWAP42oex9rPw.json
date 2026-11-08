@@ -278,7 +278,8 @@
       "e4922fc2d5ac0368",
       "9e065dc6257757fa",
       "a595be460f26e03c",
-      "8d58f0ac64e08bbe"
+      "8d58f0ac64e08bbe",
+      "20ffd0b0a878d314"
     ],
     "effects": [],
     "folder": "bdb57608de38aa01",
@@ -449,6 +450,49 @@
         "modifiedTime": 1788319812130,
         "lastModifiedBy": null
       }
+    },
+    "!actors.items!uMiGWAP42oex9rPw.20ffd0b0a878d314": {
+      "name": "Muscle Replacement [2]",
+      "type": "cyberware",
+      "img": "systems/The2ndChumming3e/styles/textures/cyberware-default.webp",
+      "system": {
+        "cyberwareCategory": "Bodyware",
+        "essenceCost": 2,
+        "cost": 40000,
+        "availability": "4/4 days",
+        "streetIndex": 1,
+        "legalCode": "5P-Q",
+        "mods": "+2QCK,+2STR,",
+        "capacity": 0,
+        "isReplacement": false,
+        "bookPage": "sr3.302",
+        "grade": "Standard",
+        "rating": 2,
+        "description": "+2QCK, +2STR",
+        "bonusQui": 2,
+        "bonusStr": 2,
+        "srcgName": "Muscle Replac. [2]"
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-cyberware.Item.sr3e-cyberware-0141",
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "20ffd0b0a878d314",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
     },
     "!actors.items!uMiGWAP42oex9rPw.22e0aca8cfa10d0e": {
       "_id": "22e0aca8cfa10d0e",

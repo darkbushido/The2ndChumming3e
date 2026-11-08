@@ -273,7 +273,8 @@
       "934ce3ddcab59677",
       "700bb4b1752e9255",
       "39ce35dc3652a512",
-      "8934c2275a59f0ef"
+      "8934c2275a59f0ef",
+      "ef5fa91ac90c3856"
     ],
     "effects": [],
     "folder": "ee55b81f347b8d50",
@@ -939,6 +940,38 @@
         "modifiedTime": 1788319811762,
         "lastModifiedBy": null
       }
+    },
+    "!actors.items!U7hLBhYLaMu45UkI.ef5fa91ac90c3856": {
+      "name": "Body Bags",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "ef5fa91ac90c3856",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
     },
     "!actors.items!U7hLBhYLaMu45UkI.f924bc73d9d6cacd": {
       "_id": "f924bc73d9d6cacd",

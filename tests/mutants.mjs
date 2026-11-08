@@ -4477,4 +4477,24 @@ export const MUTANTS = [
       return designMods.filter(m => m?.uuid && !names.has(m.name));
     },
   },
+  {
+    id:     'johnson-gear-removes-skill',
+    suite:  'johnson-gear',
+    module: '../scripts/data/johnson-gear-fixes.mjs', klass: 'JohnsonGearFixes', method: 'plan',
+    was:    'the first fix run removed by name alone, so the Mercenary’s knowledge skill "Desert Wars" was in reach of the gear removal (TODO 84)',
+    impl:   function (actor, items = actor?.items ?? []) {
+      const e = this.entryFor(actor);
+      if (!e) return null;
+      const list = [...items];
+      const idOf = i => i.id ?? i._id;
+      const updates = [], deletes = [], adds = [];
+      for (const r of e.rename) {
+        const it = list.find(i => i.name === r.from);
+        if (it && !list.some(i => i.name === r.to)) updates.push({ _id: idOf(it), name: r.to, ...(r.force ? { 'system.force': r.force } : {}) });
+      }
+      for (const n of e.remove) { const it = list.find(i => i.name === n); if (it) deletes.push(idOf(it)); }
+      for (const a of e.add) if (!list.some(i => i.name === a.name)) adds.push(a);
+      return updates.length || deletes.length || adds.length ? { updates, deletes, adds } : null;
+    },
+  },
 ];

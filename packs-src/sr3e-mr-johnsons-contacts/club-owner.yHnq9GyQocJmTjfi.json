@@ -262,7 +262,8 @@
       "d5ce6edc23dd581a",
       "1f2121772a057e71",
       "00067889b36b5427",
-      "be9742ca927a0f04"
+      "be9742ca927a0f04",
+      "009ad3c1819cb01d"
     ],
     "effects": [],
     "folder": "f9e325c54986605b",
@@ -323,6 +324,38 @@
         "modifiedTime": 1788319812194,
         "lastModifiedBy": null
       }
+    },
+    "!actors.items!yHnq9GyQocJmTjfi.009ad3c1819cb01d": {
+      "name": "Simsense Player",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "009ad3c1819cb01d",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
     },
     "!actors.items!yHnq9GyQocJmTjfi.1f2121772a057e71": {
       "_id": "1f2121772a057e71",

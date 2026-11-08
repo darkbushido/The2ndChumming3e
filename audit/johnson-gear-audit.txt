@@ -1,0 +1,50 @@
+Little Black Book contacts — gear, cyberware and spells against the book (TODO 84), 2026-11-08
+Tool: node tools/audit-johnson-gear.mjs (SR3E_PDF_DIR set). Source: Mr. Johnson's Little Black Book pp.36-67.
+
+CORRECTED (packs-src, generator, 0.9.0 migration — table in scripts/data/johnson-gear-fixes.mjs):
+  Antiquities and Oddities Dealer p.59  Analyze Truth F5→4, Calm Pack F6→4, Stunball F4→5; + Analyze Magic F5, Astral Window F4, Influence F4
+  Artificer/Enchanter p.60              Analyze Device F3→4, Physical Barrier F5→4
+  Club Owner p.42                       + Simsense Player
+  Lorekeeper p.59                       Silence F4→3; + Lock F3
+  Mercenary p.40                        - 'Desert Wars' (a knowledge skill entered as gear); + Ingram Valiant
+  Mr. Fix-It p.47                       + Muscle Replacement [2]
+  Security Rigger p.40                  + second Gear line: Lined Coat, Ares Predator 2, Electronics Kit, Palmtop Computer, Renraku Kraftwerk-8
+  Sleazy Tabloid Reporter p.41          + Sony HB500 Portacam
+  Talislegger p.60                      Shape Earth F5→4
+  Tamanous Member p.50                  + Body Bags
+  Taxi Driver p.67                      - Biomonitor (not printed; the maintainer: remove)
+  Wiz Kid Ganger p.61                   Clout F5→4; Powerbolt → Powerball F4
+
+EXPECTED REMAINING DIFFERENCES (not errors):
+  Metamagic and adept-power items come from book lines the tool does not read; 'Whatever he's got in the warehouse' is not an item.
+
+NOT FIXED — remainders:
+  Mercenary, Corp Bodyguard, SWAT Team Member: the book says alphaware; shipped as Standard grade (grade not audited).
+  tools/patch-johnson-stats.mjs --check opens the checkout's LevelDB directly and churns it (should read via pack-copy).
+
+CURRENT TOOL OUTPUT:
+Contacts compared: 59
+  clean:            53
+  with differences: 6
+  no gear/cyberware/spell lines found in the book for: City Services Worker, Corporate Security Guard, Ghoul (Human Ghoul)
+
+Antiquities and Oddities Dealer
+  gear      extra    Metamagic [Initiate Grade 3]: Divining, Masking, Shielding
+
+Artificer/Enchanter
+  gear      extra    Metamagic [Initiate Grade 1]: Anchoring
+
+Lorekeeper
+  gear      extra    Metamagic [Initiate Grade 2]: Centering (Ancient Languages), Masking
+
+Supply Sergeant
+  gear      missing  Whatever he’s got in the warehouse
+
+Talislegger
+  gear      extra    Metamagic [Initiate Grade 1]: Invoking
+
+Triad Member
+  gear      extra    Improved Reflexes
+  gear      extra    Killing Hands
+  gear      extra    Improved Physical Attribute (Quickness)
+  gear      extra    Great Leap

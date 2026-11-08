@@ -273,7 +273,12 @@
       "41867eac367dbdae",
       "f3f2fe82e2de38ee",
       "1ad4435405ebfa22",
-      "fa2f01b9bb9a8e9d"
+      "fa2f01b9bb9a8e9d",
+      "6d35421d3bae1bbf",
+      "b3f3672020dfbd20",
+      "5e2b090b049ffa8d",
+      "f821f0dc083b9e6e",
+      "86d66770de103adc"
     ],
     "effects": [],
     "folder": "20e4db2a3174fd08",
@@ -531,6 +536,38 @@
         "lastModifiedBy": null
       }
     },
+    "!actors.items!IknZhjbhtsmRfTHE.5e2b090b049ffa8d": {
+      "name": "Electronics Kit",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "5e2b090b049ffa8d",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
+    },
     "!actors.items!IknZhjbhtsmRfTHE.5ln0yz0I8P1ZPrPh": {
       "name": "Pocket Secretary / Database of Runners",
       "type": "gear",
@@ -597,6 +634,43 @@
         "modifiedTime": 1788319811676,
         "lastModifiedBy": null
       }
+    },
+    "!actors.items!IknZhjbhtsmRfTHE.6d35421d3bae1bbf": {
+      "name": "Lined Coat",
+      "type": "armor",
+      "img": "systems/The2ndChumming3e/styles/icons/armor-coat.svg",
+      "system": {
+        "concealability": "8",
+        "ballistic": 4,
+        "impact": 2,
+        "weight": 1,
+        "availability": "2/24hrs",
+        "cost": 700,
+        "streetIndex": ".75",
+        "bookPage": "sr3.284",
+        "notes": "",
+        "legality": "Legal"
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-armor.Item.sr3e-armor-0026",
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "6d35421d3bae1bbf",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
     },
     "!actors.items!IknZhjbhtsmRfTHE.80d69feb75963437": {
       "_id": "80d69feb75963437",
@@ -711,6 +785,61 @@
         "modifiedTime": 1788319811672,
         "lastModifiedBy": null
       }
+    },
+    "!actors.items!IknZhjbhtsmRfTHE.86d66770de103adc": {
+      "name": "Renraku Kraftwerk-8",
+      "type": "cyberdeck",
+      "img": "systems/The2ndChumming3e/styles/icons/matrix/friendly/cyberdeck.svg",
+      "system": {
+        "cost": 400000,
+        "availability": "10/7days",
+        "streetIndex": 1,
+        "bookPage": "sr3.207,sr3.304",
+        "notes": "<p>Stock cyberdeck — SR3 p.207 (stats), p.304 (availability, cost). MPCP 8, Hardening 4, Active Memory 1000 Mp, Storage 2000 Mp, I/O 360 Mp/turn, Response Increase 2.</p><p>Orthodox Matrix: load it from the Matrix tab's cyberdeck picker.</p>",
+        "modules": [
+          {
+            "_odmType": "orthodox",
+            "hardening": 4,
+            "storageMemory": 2000,
+            "responseIncrease": 2
+          }
+        ],
+        "attributes": {
+          "mpcp": {
+            "base": 8,
+            "value": 8
+          },
+          "memory": {
+            "total": 1000,
+            "used": 0,
+            "unit": "Mp"
+          },
+          "dataTransferRate": {
+            "value": 360,
+            "unit": "Mp per Combat Turn"
+          }
+        }
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": "Compendium.The2ndChumming3e.sr3e-sr3-odm-cyberdecks.Item.cf3087ffcace6669",
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "86d66770de103adc",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
     },
     "!actors.items!IknZhjbhtsmRfTHE.8VZK4vwLI5x0YNmj": {
       "name": "Ford Americar",
@@ -853,6 +982,38 @@
         "modifiedTime": 1788537621571,
         "lastModifiedBy": null
       }
+    },
+    "!actors.items!IknZhjbhtsmRfTHE.b3f3672020dfbd20": {
+      "name": "Ares Predator 2",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "b3f3672020dfbd20",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
     },
     "!actors.items!IknZhjbhtsmRfTHE.bf3fc24d615d7c45": {
       "_id": "bf3fc24d615d7c45",
@@ -1002,6 +1163,38 @@
         "modifiedTime": 1788537621571,
         "lastModifiedBy": null
       }
+    },
+    "!actors.items!IknZhjbhtsmRfTHE.f821f0dc083b9e6e": {
+      "name": "Palmtop Computer",
+      "type": "gear",
+      "img": "systems/The2ndChumming3e/styles/icons/gear-case.svg",
+      "system": {
+        "quantity": 1,
+        "cost": 0,
+        "weight": 0,
+        "description": "",
+        "rating": null
+      },
+      "_stats": {
+        "coreVersion": "14",
+        "systemId": "The2ndChumming3e",
+        "systemVersion": null,
+        "createdTime": 0,
+        "modifiedTime": 0,
+        "lastModifiedBy": null,
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
+      },
+      "_id": "f821f0dc083b9e6e",
+      "effects": [],
+      "folder": null,
+      "sort": 0,
+      "ownership": {
+        "default": 0,
+        "ge55aFMax5sNd2Ho": 3
+      },
+      "flags": {}
     },
     "!actors.items!IknZhjbhtsmRfTHE.fa2f01b9bb9a8e9d": {
       "_id": "fa2f01b9bb9a8e9d",
