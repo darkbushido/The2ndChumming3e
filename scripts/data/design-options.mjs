@@ -13,13 +13,19 @@
  *  - **An input per row; the book's suggestion fills a "GM's discretion" figure** (Special Machinery: Body × 2 CF, 25 kg a
  *    CF) and stays editable. Restrictions (an airlock is for submarines, …) are warnings — warn, never refuse.
  *
- * ⚠ "Hull Factor" (Ducted Waterjet, EMD drive, Flight Deck, Depth, Auxiliary Engine) is not defined anywhere in R3R. It is
- * read here as the vehicle's Hull rating, and as its Body when it has none — TODO 287 lists it for the maintainer.
+ * Hull Factor = 100 × Hull² (R3R p.114 — the text layer prints "Hull!", the page image shows the superscript ²; the
+ * maintainer, 2026-11-08: follow the book). Used by Ducted Waterjet, EMD drive, Flight Deck, Depth and Auxiliary Engine;
+ * a vehicle without a Hull uses its Body where the book gives "Body or Hull Factor". `audit/text-layer-check.md`.
  * Nothing here is rulebook prose: names, figures, short tags and the printed page.
  */
 
 const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
 const sq = n => n * n;
+
+/** Hull Factor, 100 × Hull² (R3R p.114). */
+export const hullFactor = c => 100 * sq(num(c.hull));
+/** "Body or Hull Factor": the Hull Factor when the vehicle has a Hull, else its Body. */
+const hf = c => (c.hasHull ? hullFactor(c) : num(c.body));
 
 /** Fuel Tank Capacity Table (p.115): per increment, by plant. Body 0 battery / fuel-cell vehicles have their own row. */
 export const FUEL_TANK = {
@@ -62,7 +68,7 @@ export const OPTIONS = [
   {
     id: 'depth', name: 'Depth Enhancement', group: 'Functional', page: 'R3R p.115', inputs: [['metres', 'Metres', 10]],
     dp: c => Math.ceil(num(c.metres) / 10) * 2, cf: () => 0,
-    load: c => Math.ceil(num(c.metres) / 10) * c.hull * c.hull * 2,
+    load: c => Math.ceil(num(c.metres) / 10) * (c.hasHull ? hullFactor(c) * c.hull : c.body * c.body) * 2,
     note: 'Non-sub start: (Body × 10) + 100 m (× 3 unmanned); max = start × 2',
   },
   {
@@ -88,7 +94,7 @@ export const OPTIONS = [
   {
     id: 'aux-engine', name: 'Auxiliary Engine', group: 'Enhancement', page: 'R3R p.116', inputs: [['points', 'Its plant\'s points', null]],
     dp: c => (c.points == null || c.points === '' ? c.plantDp ?? 0 : num(c.points)),
-    cf: c => (c.hasHull ? (c.hull + c.hull) * 2 : (c.body + 1) * 2), load: c => Math.round((c.maxLoad ?? 0) * 0.1),
+    cf: c => (c.hasHull ? (c.hull + hullFactor(c)) * 2 : (c.body + 1) * 2), load: c => Math.round((c.maxLoad ?? 0) * 0.1),
     warn: c => (c.body === 0 ? ['A Body 0 vehicle cannot carry an auxiliary engine (R3R p.116)'] : []),
     note: 'Its Speed and Acceleration are half its plant\'s; one engine runs at a time',
   },
@@ -100,13 +106,13 @@ export const OPTIONS = [
   },
   {
     id: 'waterjet', name: 'Ducted Waterjet Drive', group: 'Enhancement', page: 'R3R p.116', inputs: [],
-    dp: c => 5000 * c.hull, cf: c => 4 * c.hull, load: c => 3 * c.hull,
+    dp: c => 5000 * hf(c), cf: c => 4 * hf(c), load: c => 3 * hf(c),
     warn: c => (c.category === 'sub' ? [] : ['A ducted waterjet is for submarines only (R3R p.116)']),
     note: 'Engaged: Sonar Signature +2, Speed 20',
   },
   {
     id: 'emd', name: 'EMD Ducted Waterjet Drive', group: 'Enhancement', page: 'R3R p.116-117', inputs: [],
-    dp: c => 50000 * c.hull, cf: c => 6 * c.hull, load: c => 4 * c.hull,
+    dp: c => 50000 * hf(c), cf: c => 6 * hf(c), load: c => 4 * hf(c),
     warn: c => [
       ...(c.category === 'sub' ? [] : ['An EMD drive is for submarines only (R3R p.117)']),
       ...(c.plantCode && c.plantCode !== 'N' ? ['An EMD drive needs a nuclear power plant (R3R p.117)'] : []),
@@ -192,9 +198,9 @@ export const OPTIONS = [
   {
     id: 'flight-deck', name: 'Flight Deck', group: 'Facility', page: 'R3R p.119',
     inputs: [['metres', 'Length m', 100], ['catapult', 'Catapult (0/1)', 0], ['angled', 'Angled (0/1)', 0]],
-    dp: c => { const deck = num(c.metres) * c.hull; return deck + (num(c.catapult) ? c.hull * 2 : 0) + (num(c.angled) ? Math.round(deck * 0.1) : 0); },
-    cf: c => (num(c.catapult) ? c.hull * 2 : 0),
-    load: c => (num(c.catapult) ? c.hull * 10 : 0) + (num(c.angled) ? num(c.metres) * 20 : 0),
+    dp: c => { const deck = num(c.metres) * hf(c); return deck + (num(c.catapult) ? hf(c) * 2 : 0) + (num(c.angled) ? Math.round(deck * 0.1) : 0); },
+    cf: c => (num(c.catapult) ? hf(c) * 2 : 0),
+    load: c => (num(c.catapult) ? hf(c) * 10 : 0) + (num(c.angled) ? (c.hasHull ? 20 * (num(c.metres) + hullFactor(c)) : num(c.metres) * 20) : 0),
     note: 'Launches or lands aircraft of less than half its Body (ships: Hull × 10)',
   },
   {
@@ -275,7 +281,7 @@ function robotWarn(c, max, label) {
 const blank = v => v == null || v === '';
 
 export const DesignOptions = {
-  OPTIONS,
+  OPTIONS, hullFactor,
 
   get(id) { return OPTIONS.find(o => o.id === id) ?? null; },
 
