@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**87 open.** 205 done — see [TODO-DONE.md](TODO-DONE.md).
+**88 open.** 205 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -43,7 +43,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 🪄 Spells & drugs | [123](#123) Audit every shipped spell and the casting rules<br>[124](#124) Drug rules — addiction, tolerance and effects |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone<br>[292](#292) The Killer, Sparky and Ripper IC: damage and notes follow the old gradings |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
-| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
+| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[293](#293) Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches<br>[286](#286) Pack data no book in the library can verify |
 | 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -3098,6 +3098,20 @@ how the system handles the rules; build a release zip; let people install a spec
 4. Future guide edits happen in `guides/` here — the old repo takes no more commits.
 
 <a id="123"></a>
+
+## 293. Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image — **requested 2026-11-08**
+
+The maintainer found the R3R text layer badly garbled. On p.114 (PDF 116), Hull Factor = 100 × Hull² comes out as
+"Hull rActOr … ( 100 x Hull!)". Watch for "!" in place of a superscript, letter swaps, and "Z" for 2.
+
+Done so far (branch `claude/ocr-text-layers-6b2b32`):
+- **Survey:** of the books with a text layer, only R3R scores BAD (the table is in local `SR-OCR/text-layer-survey.md`).
+- **OCR:** R3R printed pp.100-210 at 300 dpi with Tesseract (local `SR-OCR/R3R/`).
+- **Audit:** `audit/text-layer-check.md` lists every R3R design figure re-verified from the image. Hull Factor and Fin Drive
+  rounding are fixed on `claude/vehicle-design-3` (TODO 287); everything else on pp.115-121 and the pp.194-205 tables matches.
+
+Still open: R3R pages the code cites outside pp.100-210, and checking `vehicle-mods.mjs` / the `sr3e-r3-vehicle-mods` pack
+against the images. The other books stay on `pdftotext` unless a check finds misreads there.
 
 ### 🧹 Housekeeping
 
