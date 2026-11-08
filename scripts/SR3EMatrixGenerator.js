@@ -14,6 +14,7 @@
  */
 import * as G from './data/matrix-generator.mjs';
 import { defaultTopology } from './sheets/SR3EHostSheet.js';
+import { actorRef } from './data/actor-ref.mjs';
 
 const SYSTEM  = 'The2ndChumming3e';
 const IC_PACK = `${SYSTEM}.sr3e-mdf-ic`;
@@ -140,7 +141,7 @@ export class SR3EMatrixGenerator {
     const stocked = [];
     for (const p of plan.ic) {
       const ic = await SR3EMatrixGenerator._icFromPack(p, host, v);
-      if (ic) stocked.push({ actorId: ic.id, name: ic.name, memoryRequired: p.memoryRequired, hidden: false });
+      if (ic) stocked.push({ actorId: actorRef(ic), name: ic.name, memoryRequired: p.memoryRequired, hidden: false });
     }
     const update = { 'system.stockedIC': stocked, 'system.memoryUsed': plan.used };
     if (scenario) {            // test scaffolding: one IC per step from TS 1, so the sheaf can be activated at once
@@ -185,7 +186,7 @@ export class SR3EMatrixGenerator {
         name: 'Generated Probe', type: 'ic', flags: generatedFlag('ic'),
         system: { orthodoxIcType: 'Probe', rating: v.icRating, activeHostId: host.id, deployed: true },
       });
-      if (ic) await host.update({ 'system.orthodoxActiveIC': [{ actorId: ic.id, name: ic.name, icType: 'Probe', rating: v.icRating, alertRequired: 'any' }] });
+      if (ic) await host.update({ 'system.orthodoxActiveIC': [{ actorId: actorRef(ic), name: ic.name, icType: 'Probe', rating: v.icRating, alertRequired: 'any' }] });
     }
     return host;
   }
@@ -217,7 +218,7 @@ export class SR3EMatrixGenerator {
     await decker.update({ 'system.equippedCyberdeck': deck.id });
     await host.update({
       'system.activeUsers': [...(host.system.activeUsers ?? []), {
-        actorId: decker.id, name: decker.name, iconType: 'icon', currentNodeId: null,
+        actorId: actorRef(decker), name: decker.name, iconType: 'icon', currentNodeId: null,
         hidden: false, linkLocked: false, marks: [], marksFalsified: false,
       }],
     });
