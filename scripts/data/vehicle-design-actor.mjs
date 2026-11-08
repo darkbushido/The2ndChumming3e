@@ -87,18 +87,18 @@ export const VehicleDesignActor = {
    * document to copy. Never lists anything to remove.
    */
   missingMods(designMods = [], items = []) {
-    const have = new Map();
-    for (const i of items) {
-      if (i?.type !== 'vehiclemod') continue;
-      const key = i.flags?.The2ndChumming3e?.[SOURCE_FLAG] || i._stats?.compendiumSource || i.flags?.core?.sourceId || `name:${i.name}`;
-      have.set(key, (have.get(key) ?? 0) + 1);
-      if (key !== `name:${i.name}`) have.set(`name:${i.name}`, (have.get(`name:${i.name}`) ?? 0) + 1);
-    }
+    // A pool of carried mods; each design mod consumes ONE item — by source first, else by name — so one item never
+    // covers two design copies (§82 live check, 2026-11-08).
+    const pool = items.filter(i => i?.type === 'vehiclemod').map(i => ({
+      source: i.flags?.The2ndChumming3e?.[SOURCE_FLAG] || i._stats?.compendiumSource || i.flags?.core?.sourceId || null,
+      name: i.name,
+    }));
     const out = [];
     for (const m of designMods) {
       if (!m?.uuid) continue;
-      const key = have.get(m.uuid) ? m.uuid : `name:${m.name}`;
-      if (have.get(key)) have.set(key, have.get(key) - 1);
+      let at = pool.findIndex(p => p.source === m.uuid);
+      if (at < 0) at = pool.findIndex(p => p.name === m.name);
+      if (at >= 0) pool.splice(at, 1);
       else out.push(m);
     }
     return out;

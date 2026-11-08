@@ -4447,6 +4447,27 @@ export const MUTANTS = [
     impl:   function (...a) { return this._priceOptionsOriginal(...a).map(o => ({ ...o, effect: null })); },
   },
   {
+    id:     'design-mods-item-counted-twice',
+    suite:  'vehicle-design-actor',
+    module: '../scripts/data/vehicle-design-actor.mjs', klass: 'VehicleDesignActor', method: 'missingMods',
+    was:    'one carried Ring Mount counted under its source AND its name, covering both design copies — a re-save never offered the deleted one (§82 live check, TODO 287)',
+    impl:   function (designMods = [], items = []) {
+      const have = new Map();
+      for (const i of items) {
+        if (i?.type !== 'vehiclemod') continue;
+        const key = i.flags?.The2ndChumming3e?.designSource || i._stats?.compendiumSource || `name:${i.name}`;
+        have.set(key, (have.get(key) ?? 0) + 1);
+        if (key !== `name:${i.name}`) have.set(`name:${i.name}`, (have.get(`name:${i.name}`) ?? 0) + 1);
+      }
+      return designMods.filter(m => {
+        if (!m?.uuid) return false;
+        const key = have.get(m.uuid) ? m.uuid : `name:${m.name}`;
+        if (have.get(key)) { have.set(key, have.get(key) - 1); return false; }
+        return true;
+      });
+    },
+  },
+  {
     id:     'design-mods-counted-once',
     suite:  'vehicle-design-actor',
     module: '../scripts/data/vehicle-design-actor.mjs', klass: 'VehicleDesignActor', method: 'missingMods',
