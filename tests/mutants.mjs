@@ -25,6 +25,7 @@
  */
 
 const { LEGALITY: LEGALITY_TABLE } = await import('../scripts/data/legality-table.mjs');
+const { SPELL_CORRECTIONS: SPELL_FIXES_FOR_MUTANT } = await import('../scripts/data/spell-book-fixes.mjs');
 const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
@@ -4475,6 +4476,38 @@ export const MUTANTS = [
     impl:   function (designMods = [], items = []) {
       const names = new Set(items.filter(i => i?.type === 'vehiclemod').map(i => i.name));
       return designMods.filter(m => m?.uuid && !names.has(m.name));
+    },
+  },
+  {
+    id:     'spell-pool-uncapped-on-sorcery',
+    suite:  'spell-audit',
+    module: '../scripts/data/spell-pool-cap.mjs', klass: 'SpellPoolCap', method: 'sorceryTest',
+    was:    'the cast offered the whole Spell Pool, so Sorcery 3 + Spell Pool 6 rolled 9 dice — "No more Spell Pool dice can be '
+          + 'added to the test than the Sorcery dice allocated" (SR3 p.182; TODO 123)',
+    impl:   function (available) { return Math.max(0, Number(available) || 0); },
+  },
+  {
+    id:     'clout-is-not-a-stun-attack',
+    suite:  'spell-audit',
+    module: '../scripts/data/clout.mjs', klass: 'Clout', method: 'is',
+    was:    'Clout was filed as a non-damaging spell: no Damage Level, no attack, and a blank track read as Physical — it "does '
+          + 'stun damage … targeted as a normal Ranged Attack" (SR3 p.197; TODO 123)',
+    impl:   function () { return false; },
+  },
+  {
+    id:     'spell-fixes-overwrite-edits',
+    suite:  'spell-audit',
+    module: '../scripts/data/spell-book-fixes.mjs', klass: 'SpellBookFixes', method: 'fixItem',
+    was:    'a pack-correction migration that wrote the book value whatever the field held would overwrite a GM’s edited drain '
+          + 'or damage track (the 0.8.0 mod-value lesson, TODO 261) — the spell fixes must match the shipped value',
+    impl:   function (item) {
+      if (item?.type !== 'spell') return null;
+      const delta = {};
+      for (const c of SPELL_FIXES_FOR_MUTANT) {
+        if (c.name !== item.name) continue;
+        for (const f of c.fixes) delta[`system.${f.field}`] = f.to;
+      }
+      return Object.keys(delta).length ? delta : null;
     },
   },
 ];

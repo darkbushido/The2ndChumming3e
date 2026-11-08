@@ -3713,3 +3713,16 @@ Hot reload is enough (no new fields). §80's two steps not yet walked live (Crea
       then open 🛠 Design, add **Pintle Mount**, click **Offer changes** → the stat rows,
       then "Mods … tick to add" listing **Ring Mount** and **Pintle Mount** (ticked). Untick Speed, apply → Speed stays 999,
       both mods arrive, and the hand-added mod is untouched.
+
+## 83. 🔮 The spell audit (TODO 123, branch `claude/spells-audit-123`)
+
+1. **Spell Pool cap (SR3 p.182).** A caster with Sorcery 3 and Spell Pool 6 casts Manabolt: the Spell Pool dialog
+   offers at most **3** and says why. Withhold 2 dice on a Manaball: the cap drops with the Sorcery dice.
+2. **Clout (SR3 p.197).** Cast Clout from the compendium at a target: the Force dialog offers a Damage Level; the
+   card says it is a ranged attack; the target gets **Dodge or take it?**, then a soak on **Impact** armour, and the
+   damage is **Stun**.
+3. **Stun elementals.** Cast Steam (MitS) or Waterbolt (TWL): the hit is resisted and assigned as **Stun**.
+4. **Sheet keeps its values.** Open Fireball's sheet (range `LOS(A)`, category `Elemental`), change only the Learned
+   Force: range and category are unchanged afterwards.
+5. **Migration.** In a world with a pre-0.9.0 copy of Mass Blindness / Fashion / Astral Barrior on an actor, reload
+   as GM: they read Physical / +1(M) / Astral Barrier; an edited drain on a copy is left alone.

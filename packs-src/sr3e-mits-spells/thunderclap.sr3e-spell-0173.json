@@ -14,7 +14,8 @@
       "target": "4(RC)",
       "bookPage": "mits.145",
       "damage": "",
-      "description": ""
+      "description": "",
+      "damageTrack": "Stun"
     },
     "effects": []
   },

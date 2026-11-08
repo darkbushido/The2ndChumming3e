@@ -6,7 +6,7 @@
     "type": "spell",
     "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
     "system": {
-      "category": "Transformation",
+      "category": "Telekinetic",
       "type": "Physical",
       "duration": "Sustained",
       "range": "LOS",

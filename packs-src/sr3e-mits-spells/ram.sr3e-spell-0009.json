@@ -9,7 +9,7 @@
       "category": "Combat",
       "type": "Physical",
       "duration": "Instant",
-      "range": "LOS",
+      "range": "T",
       "drain": "+1(DL-2)",
       "target": "OR",
       "bookPage": "mits.140",

@@ -488,8 +488,9 @@ export async function run(t) {
   }
 
   t.eq('the four fire modes', SR3E.fireModes, ['SS', 'SA', 'BF', 'FA']);
-  t.eq('the five spell categories', SR3E.spellCategories,
-    ['Combat', 'Detection', 'Health', 'Illusion', 'Manipulation']);
+  // The book's Manipulation subtypes (SR3 pp.196-198) plus 'Manipulation' for spells with none recorded (TODO 123).
+  t.eq('the spell categories', SR3E.spellCategories,
+    ['Combat', 'Detection', 'Health', 'Illusion', 'Control', 'Elemental', 'Telekinetic', 'Transformation', 'Manipulation']);
   t.eq('spells are Physical or Mana', SR3E.spellTypes, ['Physical', 'Mana']);
   t.eq('the three spell durations', SR3E.spellDurations, ['Instant', 'Sustained', 'Permanent']);
   // ⚠ "(A)" is the ONLY area-effect marker — there is no separate flag, so a range list

@@ -34,6 +34,7 @@ import { knownRating } from './data/item-rating.mjs';
 import { AmmoStock } from './data/ammo-stock.mjs';
 import { restockImage, restockActorImage } from './data/item-icons.mjs';
 import { PackFixes070 } from './data/pack-corrections-0-7-0.mjs';
+import { SpellBookFixes } from './data/spell-book-fixes.mjs';
 import { ReadyWeapon } from './data/ready-weapon.mjs';
 import { VehicleArt } from './data/vehicle-art.mjs';
 import { ModRatings } from './data/mod-ratings.mjs';
@@ -687,6 +688,23 @@ const MIGRATIONS = [
      * still equals the sum of the old rows. World actors and unlinked tokens; idempotent.
      */
     fixActor: actor => IcBookFixes.fixActor(actor, ref => actorFrom(ref)?.system?.rating),
+  },
+  {
+    version: '0.9.0',
+    label: 'Spells corrected against the books: Stun elemental spells and Clout, ranges, a type, a drain, a duration, the Manipulation subtypes and four misspelt names (TODO 123)',
+    /**
+     * The spell audit (`audit/spells-audit.md`) corrected the packs against the printed entries; a copy already in a
+     * world kept the old values. Rule in `SpellBookFixes` (`scripts/data/spell-book-fixes.mjs`, pure, tested), one
+     * entry per fix with its book and page — the same table `tools/fix-spell-book-values.mjs` ran over the packs.
+     *
+     * ⚠ **This OVERWRITES, and argues for it:** each field changes only while it still holds EXACTLY the value the old
+     * pack shipped — a value wrong against the book (Mass Blindness was a Mana spell, Steam did Physical damage, Fashion
+     * drained Light). A value a GM has since edited no longer matches and is kept, and every entry is gated on the
+     * spell's book page so a same-named spell from another book is never touched. `damageTrack` only fills the shipped
+     * blank. A rename (the maintainer, 2026-11-08: "Packs + owned copies") keeps an owned copy's "(F5)" suffix.
+     * World items, actors' spells and unlinked tokens; idempotent.
+     */
+    fixItem: item => SpellBookFixes.fixItem(item),
   },
 
 ];

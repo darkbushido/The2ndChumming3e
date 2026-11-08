@@ -453,7 +453,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Manipulation",
+        "category": "Control",
         "type": "Mana",
         "duration": "Sustained",
         "range": "LOS",
@@ -1148,7 +1148,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Manipulation",
+        "category": "Transformation",
         "type": "Physical",
         "duration": "Instant",
         "range": "LOS(A)",
@@ -1254,7 +1254,7 @@
       "system": {
         "category": "Detection",
         "type": "Mana",
-        "duration": "Sustained",
+        "duration": "Instant",
         "range": "T/D",
         "drain": "-1(L)",
         "target": "W(R)",
