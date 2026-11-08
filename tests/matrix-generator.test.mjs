@@ -55,6 +55,18 @@ export async function run(t) {
   t.eq('a Blue rating-2 host still fields 1', G.suggestICCount('Blue', 2), 1);
   t.ok('Black hosts may field Black IC, Green may not', G.IC_BY_TIER.Black.includes('Black') && !G.IC_BY_TIER.Green.includes('Black'));
 
+  // Proposed IC — from the book's agents, fitted inside the host's Memory.
+  const p = G.proposeIC({ tier: 'Orange', systemRating: 6, rng: seeded(3) });
+  t.eq('Orange rating 6: 3 IC, each costing Rating² × multiplier', [p.ic.length, p.ic.every(i => i.memoryRequired === G.icMemory(i.name, 6))], [3, true]);
+  t.ok('the set fits the host Memory (3000 Mp)', p.used <= p.total && p.total === 3000);
+  t.ok('only White and Gray IC on an Orange host', p.ic.every(i => ['White', 'Gray'].includes(i.grading)));
+  t.eq('Gray IC say the Mainframe Support module is needed', G.proposeIC({ tier: 'Orange', systemRating: 6, rng: () => 0.99 }).needsMainframe || p.needsMainframe, true);
+  t.eq('a Blue host fields only White IC, so needs no Mainframe', G.proposeIC({ tier: 'Blue', systemRating: 3, rng: seeded(4) }).needsMainframe, false);
+  t.eq('an Ivory host fields none', G.proposeIC({ tier: 'Ivory', systemRating: 1 }).ic, []);
+  const tiny = G.proposeIC({ tier: 'Black', systemRating: 11, memoryTotal: 100, rng: seeded(5) });
+  t.eq('a host with no room stocks nothing rather than overflow', [tiny.ic, tiny.used], [[], 0]);
+  t.ok('no IC repeats in one proposal', new Set(p.ic.map(i => i.name)).size === p.ic.length);
+
   // The tier table must not drift from the host sheet's own.
   const sheet = read('scripts/sheets/SR3EHostSheet.js');
   const same = Object.entries(G.TIER_DATA).every(([name, v]) =>

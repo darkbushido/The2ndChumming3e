@@ -17,6 +17,9 @@
  * host sheet's own table (MDF p.7-8), and the rating → tier suggestion is the sheet's (`SR3EHostSheet` rating input).
  */
 
+import { AGENT_IC, PASSIVE_IC, icMemory } from './ic-memory.mjs';
+export { AGENT_IC, PASSIVE_IC, icMemory };
+
 export const DIFFICULTIES = ['Easy', 'Average', 'Hard'];
 export const ORTHODOX_CODES = ['Blue', 'Green', 'Orange', 'Red'];
 export const SUBSYSTEMS = ['access', 'control', 'index', 'files', 'slave'];
@@ -96,4 +99,32 @@ export const IC_BY_TIER = {
 export function suggestICCount(tier, rating) {
   if (!(IC_BY_TIER[tier]?.length)) return 0;
   return Math.max(1, Math.floor((rating ?? 4) / 2));
+}
+
+/**
+ * A proposed IC set for a host — a SUGGESTION the dialog shows editable (offer, never apply).
+ *
+ * Each IC is picked from the book's agents (`AGENT_IC`, MDF pp.40-44) whose grading the tier plausibly fields
+ * (`IC_BY_TIER`), at the host's System Rating (the `ic` actor's own convention: `systemRating`/`rating`), costing
+ * `icMemory` Mp (Rating² × Final Multiplier, MDF p.33). Stocking is bounded by the host's Memory, System Rating × 500
+ * (MDF p.24): the proposal stops adding IC before it would exceed `memoryTotal`. Gray and Black IC need the Mainframe
+ * Support module (MDF p.24), so `needsMainframe` says so — the generator never switches it on.
+ */
+export function proposeIC({ tier, systemRating, memoryTotal, count, rng = Math.random } = {}) {
+  const rating = Math.max(1, Math.round(Number(systemRating) || 1));
+  const gradings = IC_BY_TIER[tier] ?? [];
+  const pool = Object.keys(AGENT_IC).filter(n => gradings.includes(AGENT_IC[n].grading));
+  const want = count ?? suggestICCount(tier, rating);
+  const budget = memoryTotal ?? rating * 500;
+  const picks = [];
+  let used = 0;
+  const left = [...pool];
+  while (picks.length < want && left.length) {
+    const name = left.splice(Math.floor(rng() * left.length), 1)[0];
+    const memoryRequired = icMemory(name, rating);
+    if (used + memoryRequired > budget) continue;          // too big for what is left — try another
+    picks.push({ name, grading: AGENT_IC[name].grading, rating, memoryRequired });
+    used += memoryRequired;
+  }
+  return { ic: picks, used, total: budget, needsMainframe: picks.some(p => p.grading !== 'White') };
 }
