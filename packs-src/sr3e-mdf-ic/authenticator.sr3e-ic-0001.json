@@ -10,7 +10,7 @@
       "grading": "White",
       "rating": 6,
       "systemRating": 6,
-      "memoryRequired": 12,
+      "memoryRequired": 252,
       "damage": "6L Stun",
       "hostSecurityTier": "Green",
       "notes": "<p>Validates access credentials at every node. Invalid users are flagged and locked out. Ability: Authenticate.</p>",

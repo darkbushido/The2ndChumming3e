@@ -7,10 +7,10 @@
     "type": "ic",
     "system": {
       "icType": "Crippler",
-      "grading": "Gray",
+      "grading": "White",
       "rating": 6,
       "systemRating": 6,
-      "memoryRequired": 18,
+      "memoryRequired": 144,
       "damage": "6M Stun",
       "hostSecurityTier": "Orange",
       "notes": "<p>Systematically disables the decker's programs one by one. Abilities: Erosion, Corruption.</p>",

@@ -10,7 +10,7 @@
       "grading": "Gray",
       "rating": 6,
       "systemRating": 6,
-      "memoryRequired": 15,
+      "memoryRequired": 324,
       "damage": "6M Stun",
       "hostSecurityTier": "Orange",
       "notes": "<p>Entraps decker icons, causing all their actions to cost extra Hacking Pool dice. Ability: Guardian.</p>",

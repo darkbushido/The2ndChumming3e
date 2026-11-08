@@ -7,10 +7,10 @@
     "type": "ic",
     "system": {
       "icType": "Killer",
-      "grading": "Black",
+      "grading": "Gray",
       "rating": 6,
       "systemRating": 6,
-      "memoryRequired": 25,
+      "memoryRequired": 288,
       "damage": "6S",
       "hostSecurityTier": "Red",
       "notes": "<p>Elite lethal IC that delivers lethal biofeedback through the decker's neural interface. Deals physical damage in hot-sim VR.</p>",

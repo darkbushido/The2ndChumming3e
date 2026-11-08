@@ -135,8 +135,18 @@ The character sheet's Matrix tab already lists the current node's prompts with a
 - **Firewall** = the host's Security Threshold (no separate IC stat).
 - IC initiative by tier (`_prepareIC`): Ivory Rating + 0d6 · Blue +1d6 · Green +2d6 · Orange +3d6 ·
   Red/Black/Ultraviolet +4d6.
-- Grading: **White** (ARis, Authenticator, Looper, Mr. Medkit, Scrambler), **Gray** (Blaster, Crippler,
-  Dataworm, Gemini, Hydra, Sparky, Tar Baby, Tracker), **Black** (Killer, Ripper — physical damage).
+- Grading, **from the stat blocks (MDF pp.40-44, read from the page images)**: **White** (ARis ×3, Authenticator ×7,
+  Crippler ×4, Gemini ×6, Looper ×10, Mr. Medkit ×6, Scrambler ×5, Tracker ×11), **Gray** (Blaster ×7, Dataworm ×10,
+  Hydra ×12, Killer ×8, Tar Baby ×9), **Black** (Ripper ×6, Sparky ×26). ⚠ This list used to put Crippler, Gemini and
+  Tracker in Gray, Killer in Black and Sparky in Gray — wrong against the book; fixed in the pack 2026-11.
+- ⚠ **IC Memory = Rating² × Final Multiplier** (PROGRAM SIZE TABLE, MDF p.33; "the Final Multiplier … can be used to
+  determine the agent's Mp Size", MDF p.40). Rating 6 Blaster = 36 × 7 = 252 Mp. Passive IC (MDF p.25): Alert and System Sweep a
+  flat 100 Mp (max 2 each), Barrier/Encryption ×3, Databomb ×4. One table in `scripts/data/ic-memory.mjs`
+  (`AGENT_IC`, `PASSIVE_IC`, `icMemory`); `tests/ic-memory.test.mjs` pins the `sr3e-mdf-ic` pack to it. The pack
+  once carried 10–30 Mp per agent (hand-authored), which made a Rating 6 host (3000 Mp) look like it held ~100 IC.
+  ⚠ Existing world IC copies kept the old numbers (a pack fix does not reach embedded copies): the **0.9.0 migration**
+  (`scripts/data/ic-book-fixes.mjs`, `IcBookFixes`) corrects an IC's Mp and grading, and a host's stocked rows and
+  `memoryUsed`, only while they still equal the exact old shipped value — an edited one is kept.
 - IC act on their own initiative (`ic` actors in the tracker).
 
 ### Matrix Condition Monitor

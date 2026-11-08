@@ -10,7 +10,7 @@
       "grading": "White",
       "rating": 6,
       "systemRating": 6,
-      "memoryRequired": 12,
+      "memoryRequired": 108,
       "damage": "6L Stun",
       "hostSecurityTier": "Green",
       "notes": "<p>Marks and tracks unauthorized decker icons. Each detected intruder raises Overwatch. Ability: Authenticate.</p>",

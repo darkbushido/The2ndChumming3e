@@ -7,10 +7,10 @@
     "type": "ic",
     "system": {
       "icType": "Tracker",
-      "grading": "Gray",
+      "grading": "White",
       "rating": 6,
       "systemRating": 6,
-      "memoryRequired": 15,
+      "memoryRequired": 396,
       "damage": "6L Stun",
       "hostSecurityTier": "Orange",
       "notes": "<p>Traces decker icons to their physical location and marks them for Security response. Abilities: Authenticate, Infiltration.</p>",

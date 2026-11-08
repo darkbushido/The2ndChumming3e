@@ -44,6 +44,8 @@ import { ModEffects } from './data/mod-effects.mjs';
 import { IntegralMods } from './data/integral-mods.mjs';
 import { PrintedRC } from './data/printed-rc.mjs';
 import { DesignCosts } from './data/design-costs.mjs';
+import { IcBookFixes } from './data/ic-book-fixes.mjs';
+import { actorFrom } from './data/actor-ref.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -671,6 +673,20 @@ const MIGRATIONS = [
      * only on a mod of that name AND book page — a figure a GM typed is theirs. Idempotent.
      */
     fixItem: item => DesignCosts.fillDelta(item),
+  },
+  {
+    version: '0.9.0',
+    label: 'IC Memory is Rating² × Final Multiplier and five IC gradings follow the stat blocks, on IC already in worlds and the hosts that stocked them (TODO 128, MDF pp.40-44)',
+    /**
+     * The `sr3e-mdf-ic` pack was corrected against the book (`audit/matrix-defragged-audit.md`); a copy already in a
+     * world kept the old numbers. Rule in `IcBookFixes` (`scripts/data/ic-book-fixes.mjs`, pure, tested).
+     *
+     * ⚠ **This OVERWRITES, and argues for it:** a grading or Mp is rewritten ONLY while it still equals the exact wrong
+     * value the pack shipped, on an IC of that type — an edited value is some other number and is kept. On a host the
+     * stocked rows' Mp are corrected the same way (at the stocked IC's real Rating), and `memoryUsed` only while it
+     * still equals the sum of the old rows. World actors and unlinked tokens; idempotent.
+     */
+    fixActor: actor => IcBookFixes.fixActor(actor, ref => actorFrom(ref)?.system?.rating),
   },
 
 ];

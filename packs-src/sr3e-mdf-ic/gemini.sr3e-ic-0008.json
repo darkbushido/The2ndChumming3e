@@ -7,10 +7,10 @@
     "type": "ic",
     "system": {
       "icType": "Gemini",
-      "grading": "Gray",
+      "grading": "White",
       "rating": 6,
       "systemRating": 6,
-      "memoryRequired": 20,
+      "memoryRequired": 216,
       "damage": "6M Stun",
       "hostSecurityTier": "Orange",
       "notes": "<p>Splits into multiple instances to overwhelm deckers with simultaneous attacks. Ability: Instance.</p>",

@@ -7,10 +7,10 @@
     "type": "ic",
     "system": {
       "icType": "Sparky",
-      "grading": "Gray",
+      "grading": "Black",
       "rating": 6,
       "systemRating": 6,
-      "memoryRequired": 18,
+      "memoryRequired": 936,
       "damage": "6S Stun",
       "hostSecurityTier": "Orange",
       "notes": "<p>Delivers intense electrical feedback through the Matrix connection. Particularly lethal in hot-sim VR. Ability: Instance.</p>",
