@@ -89,8 +89,8 @@ export async function run(t) {
 
   t.is('Increase Reflexes (+2) → the pack\'s spelling',
     resolveSpell('Increase Reflexes (+2)'), 'Incr. Reflexes +2INI DIE');
-  t.is('Hot Potato → the pack\'s TYPO, deliberately',
-    resolveSpell('Hot Potato'), 'Hot Potatoe');
+  // The pack's "Hot Potatoe" was corrected to the book's spelling (TODO 123), so it resolves by name.
+  t.is('Hot Potato needs no alias now', resolveSpell('Hot Potato'), null);
   t.is('a spell needing no alias returns null', resolveSpell('Manabolt'), null);
 
   /* ── Every alias must name something that actually ships ─────────────────────────────── */

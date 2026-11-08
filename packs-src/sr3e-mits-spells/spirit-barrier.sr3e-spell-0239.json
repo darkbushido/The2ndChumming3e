@@ -1,18 +1,18 @@
 {
-  "_key": "!items!sr3e-spell-0200",
+  "_key": "!items!sr3e-spell-0239",
   "doc": {
-    "_id": "sr3e-spell-0200",
-    "name": "Astral Barrior",
+    "_id": "sr3e-spell-0239",
+    "name": "Spirit Barrier",
     "type": "spell",
     "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
     "system": {
-      "category": "Manipulation",
+      "category": "Transformation",
       "type": "Mana",
       "duration": "Sustained",
       "range": "LOS(A)",
-      "drain": "+1(S)",
+      "drain": "(S)",
       "target": "6",
-      "bookPage": "sr3.198",
+      "bookPage": "mits.148",
       "damage": "",
       "description": ""
     },

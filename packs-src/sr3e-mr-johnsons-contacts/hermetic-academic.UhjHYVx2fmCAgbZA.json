@@ -482,7 +482,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Transformation",
+        "category": "Telekinetic",
         "type": "Physical",
         "duration": "Sustained",
         "range": "LOS",
@@ -597,7 +597,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Manipulation",
+        "category": "Control",
         "type": "Mana",
         "duration": "Sustained",
         "range": "LOS",
@@ -705,7 +705,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Manipulation",
+        "category": "Control",
         "type": "Mana",
         "duration": "Permanent",
         "range": "LOS",
@@ -741,7 +741,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Transformation",
+        "category": "Telekinetic",
         "type": "Physical",
         "duration": "Sustained",
         "range": "LOS",
@@ -953,7 +953,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Manipulation",
+        "category": "Transformation",
         "type": "Physical",
         "duration": "Sustained",
         "range": "LOS(A)",
@@ -989,7 +989,7 @@
       "type": "spell",
       "img": "systems/The2ndChumming3e/styles/textures/spells-default.webp",
       "system": {
-        "category": "Manipulation",
+        "category": "Transformation",
         "type": "Physical",
         "duration": "Permanent",
         "range": "LOS",
@@ -1034,7 +1034,8 @@
         "bookPage": "mits.145",
         "damage": "",
         "description": "",
-        "force": 4
+        "force": 4,
+        "damageTrack": "Stun"
       },
       "effects": [],
       "folder": null,

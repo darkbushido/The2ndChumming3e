@@ -8,7 +8,7 @@
     "system": {
       "category": "Detection",
       "type": "Mana",
-      "duration": "Sustained",
+      "duration": "Instant",
       "range": "T/D",
       "drain": "-1(L)",
       "target": "W(R)",

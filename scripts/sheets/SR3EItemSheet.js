@@ -24,6 +24,7 @@ import { CyberCapacity } from '../data/cyber-capacity.mjs';
 import { SR3EItemMods } from '../SR3EItemMods.js';
 import { ModRemoval } from '../data/mod-removal.mjs';
 import { VehicleMods } from '../data/vehicle-mods.mjs';
+import { keepValueOption } from '../data/select-keep.mjs';
 
 /** Where a spell's fetish or exclusive limit was taken · SR3 p.180 (TODO 223). Blank = the spell has no such limit. */
 const SPELL_LIMIT_SIDES = [
@@ -632,7 +633,11 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
   }
 
   _sel(label, name, value, opts, extraClass = '') {
-    const options = opts.map(o => {
+    /* ⚠ A value the list does not hold is KEPT as its own option (TODO 123). The spell packs ship ranges
+     * like "LOS(A)", "T/D" and "P" and categories outside the list; with no matching option the browser
+     * selects the first one, and submitOnChange wrote it back on the next edit of ANY field — a Fireball
+     * became a Touch spell and lost its area. `keepValueOption` is the rule (tests/item-sheet-select.test.mjs). */
+    const options = keepValueOption(value, opts) + opts.map(o => {
       const v = typeof o === 'string' ? o : o.value;
       const l = typeof o === 'string' ? o : o.label;
       return `<option value="${v}" ${value === v ? 'selected' : ''}>${l}</option>`;

@@ -1552,7 +1552,9 @@ export const SR3E = {
     // weapon", and it spreads by the choke (scripts/data/shotgun.mjs). Shotguns only.
     shot:        { label: 'Shot',         armorEffect: 'flechette', shotgunOnly: true },
   },
-  spellCategories: ['Combat', 'Detection', 'Health', 'Illusion', 'Manipulation'],
+  // The book's four Manipulation subtypes (SR3 pp.196-198) — the packs file each spell under its own (TODO 123);
+  // 'Manipulation' stays for spells whose subtype is not recorded (the fan-made tss pack, hand-made spells).
+  spellCategories: ['Combat', 'Detection', 'Health', 'Illusion', 'Control', 'Elemental', 'Telekinetic', 'Transformation', 'Manipulation'],
   spellTypes:      ['Physical', 'Mana'],
   spellRanges:     ['Touch', 'LOS', 'LOS (A)', 'Touch (A)'],  // "(A)" suffix = area effect
   spellDurations:  ['Instant', 'Sustained', 'Permanent'],

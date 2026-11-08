@@ -146,16 +146,14 @@ export const BONE_LACE = {
 /**
  * Spell names. 60 of the contacts' 67 spells already match; these are the rest.
  *
- * ⚠ **`Hot Potatoe` is a TYPO IN THE PACK**, not in the book. Aliased rather than corrected here
- * because renaming a pack entry is [#87]'s kind of job and would need the same care; recorded in
- * `audit/upstream-defects.md`.
+ * The pack's `Hot Potatoe` typo was corrected to the book's "Hot Potato" by the spell audit (TODO 123,
+ * `audit/spells-audit.md`), so it needs no alias now.
  */
 export const SPELL_ALIASES = {
   'antidote':                  'Antidote    (TOX LEV)',
   'increase reflexes (+1)':    'Incr. Reflexes +1INI DIE',
   'increase reflexes (+2)':    'Incr. Reflexes +2INI DIE',
   'increase reflexes (+3)':    'Incr. Reflexes +3INI DIE',
-  'hot potato':                'Hot Potatoe',
   'limited armor (heat)':      'Limited Armor',
 };
 
