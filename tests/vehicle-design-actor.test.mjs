@@ -58,6 +58,8 @@ export async function run(t) {
   t.eq('an unrated mod keeps no rating', A.modItemData({ name: 'Ring', system: { rating: null } }, { level: 3 }).system.rating, null);
   t.ok('Create and re-save embed through _embedMods', (w.match(/_embedMods\(/g) ?? []).length >= 3 && w.includes("createEmbeddedDocuments('Item'"));
   t.ok('the re-save dialog offers new mods ticked, never a removal', w.includes('missingMods(design.mods, this.actor.items') && !/deleteEmbeddedDocuments/.test(w));
+  t.eq('one carried item covers ONE design copy — two Ring Mounts, one left → one offered (§82 live, 2026-11-08)',
+    A.missingMods([{ name: 'Ring', uuid: U2 }, { name: 'Ring', uuid: U2 }], [{ type: 'vehiclemod', name: 'Ring', flags: { The2ndChumming3e: { designSource: U2 } } }]).length, 1);
   t.eq('the designSource flag counts as the source', A.missingMods([{ name: 'Nitrous', uuid: U1 }],
     [{ type: 'vehiclemod', name: 'Nitrous', flags: { The2ndChumming3e: { designSource: U1 } } }]), []);
   t.ok("_embedMods never writes _stats (a player's create carrying it is dropped, §82 2026-11-08)", !/_stats/.test(w.slice(w.indexOf('async _embedMods'))) && w.includes('SOURCE_FLAG}`, m.uuid'));
