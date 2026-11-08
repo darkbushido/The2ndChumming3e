@@ -23,6 +23,7 @@ import { MacroRefresh } from './data/macro-refresh.mjs';
 import { sceneFirst } from './data/actor-scope.mjs';
 import { ActorRef, actorFrom, actorRef } from './data/actor-ref.mjs';
 import { SR3ENpcReset } from './SR3ENpcReset.js';
+import { SR3EMatrixGenerator } from './SR3EMatrixGenerator.js';
 import { TokenLink } from './data/token-link.mjs';
 import { HandOfGod } from './data/hand-of-god.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
@@ -2142,6 +2143,29 @@ Hooks.on('renderRollTableDirectory', (_app, html) => {
   if (!tools.childElementCount) return; // non-GM with nothing to show
 
   // Pin below the directory header so the tools stay visible above the (scrolling) table list.
+  const header = el.querySelector('.directory-header');
+  if (header) header.insertAdjacentElement('afterend', tools);
+  else el.prepend(tools);
+});
+
+
+// 🎲 Matrix generator — GM-only buttons in the Actors directory (TODO 128, `SR3EMatrixGenerator.js`).
+Hooks.on('renderActorDirectory', (_app, html) => {
+  if (!game.user.isGM) return;
+  const el = html instanceof HTMLElement ? html : html?.[0];
+  if (!el || el.querySelector('.sr3e-matrix-gen')) return;
+  const tools = document.createElement('div');
+  tools.className = 'sr3e-matrix-gen';
+  tools.style.cssText = 'display:flex;gap:4px;padding:6px 8px;';
+  const mk = (cls, label, handler) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = cls; b.textContent = label;
+    b.style.cssText = 'flex:1;box-sizing:border-box;margin:0;';
+    b.addEventListener('click', handler);
+    tools.appendChild(b);
+  };
+  mk('sr3e-gen-host-btn',     '🎲 Generate Host',  () => SR3EMatrixGenerator.openHost());
+  mk('sr3e-gen-scenario-btn', '🎲 Test Scenario',  () => SR3EMatrixGenerator.openScenario());
   const header = el.querySelector('.directory-header');
   if (header) header.insertAdjacentElement('afterend', tools);
   else el.prepend(tools);

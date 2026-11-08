@@ -17,7 +17,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - `initiative-and-vehicles.md` 1babb7afb959
 - `karma-and-economy.md` cf28a25407d7
 - `magic.md` 1d2f47e8cfb7
-- `matrix.md` f2c0131848d9
+- `matrix.md` a23085020f25
 - `melee-combat.md` 73eba60f8bfb
 - `packs-and-migrations.md` 470e0fd91b3a
 - `portraits.md` 9fca86734575
@@ -114,6 +114,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **Overwatch / Convergence** — MDF p.22-23, MDF p.26 — data/overwatch-crash.mjs
 - **Cybercombat** — MDF p.26
 - **IC / Agents** — MDF p.40-44, MDF p.33, MDF p.40, MDF p.25 — scripts/data/ic-memory.mjs, tests/ic-memory.test.mjs, scripts/data/ic-book-fixes.mjs
+- **Matrix generator · TODO 128** — SR3 p.205, MDF p.24 — scripts/SR3EMatrixGenerator.js, scripts/data/matrix-generator.mjs, tests/matrix-generator*.test.mjs
 - **Matrix Condition Monitor** — MDF p.26, MDF p.12, MDF p.11, SR3 p.207
 - **Sys/Sec modifiers** — MDF p.14
 - **Host sheet (SR3EHostSheet.js)** — *(no citation: not audited)* — SR3EHostSheet.js

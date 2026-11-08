@@ -1398,6 +1398,15 @@ Mainframe Support module. Any implementation should report that, not enforce it.
 > are corrected, `tests/ic-memory.test.mjs` pins them, and migration 0.9.0 (`ic-book-fixes.mjs`) fixes IC and hosts already
 > in worlds — table in [the audit](audit/matrix-defragged-audit.md). The Killer / Sparky / Ripper damage and notes are
 > [#292](#292).
+>
+> **Matrix generator (2026-11-08, built, not yet run live):** the Actors-directory buttons and dialog are in. **Live check**
+> (mcp-api, Defragged then Orthodox world): (1) click 🎲 Generate Host — the dialog shows rolled numbers; changing the rating
+> moves the tier and IC count; Re-roll changes them; Cancel creates nothing. (2) Create — a host appears with the default
+> map, the right tier colour, Memory = rating × 500, and stocked IC whose Mp sum is `memoryUsed`. (3) 🎲 Test Scenario — a
+> host, IC in Trigger Steps 1…n, and a decker in VR-Hot listed in the host's Active Users with a Hacking Pool. (4) Orthodox
+> world: the dialog shows code/difficulty/SV/subsystems; Create writes them; the scenario adds a Probe and a logged-in
+> decker. (5) Delete the generated actors (flag `generated`). The active GM's tab must be reloaded first. **Open:** Orthodox
+> IC proposals, and the 10-row sheaf with Convergence.
 
 **Shape:** the crash trigger and Suppression are small and self-contained — do them first. The sheaf
 is a host-sheet feature (a list of steps, each with IC and a rating) and is worth its own pass.
