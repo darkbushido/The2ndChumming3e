@@ -31,22 +31,9 @@ export async function run(t) {
   t.eq('Tailhook: 10% of chassis points, 1 CF per 2 Body (up), Body × 125 kg (p.119)',
     [tail.dp, tail.cf, tail.load], [Math.round(V.chassis('jet-fighter').dp * 0.1), 4, 875]);
 
-  // Hull Factor = 100 × Hull² (R3R p.114, read from the page image — the text layer prints "Hull!").
+  // Hull Factor read as the Hull rating.
   const jet = ev('attack-submarine', 'N', [opt('waterjet')]).options[0];
-  t.eq('Ducted waterjet: 5,000 / 4 / 3 × Hull Factor (p.116; Hull 5 → 2,500)', [jet.dp, jet.cf, jet.load], [12500000, 10000, 7500]);
-  t.ok('…and warns that it costs more than its chassis', jet.warnings.some(w => /more than the Attack Submarine chassis/.test(w)));
-  const emd = ev('attack-submarine', 'N', [opt('emd')]).options[0];
-  t.eq('EMD drive: 50,000 / 6 / 4 × Hull Factor (p.117)', [emd.dp, emd.cf, emd.load], [125000000, 15000, 10000]);
-  const aux = ev('attack-submarine', 'N', [opt('aux-engine')]).options[0];
-  t.is('Auxiliary engine CF: (Hull + Hull Factor) × 2 (p.116)', aux.cf, (5 + 2500) * 2);
-  t.is('…(Body + 1) × 2 without a Hull', ev('sand-buggy', 'G', [opt('aux-engine')]).options[0].cf, (2 + 1) * 2);
-  const depthH = ev('attack-submarine', 'N', [opt('depth', { metres: 20 })]).options[0];
-  t.is('Depth: Hull Factor × Hull × 2 kg per 10 m (p.115)', depthH.load, 2 * 2500 * 5 * 2);
-  const deck = ev('aircraft-carrier-light', 'N', [opt('flight-deck', { metres: 100, catapult: 1, angled: 1 })]).options[0];
-  const HF6 = 100 * 36;
-  t.eq('Flight deck on Hull 6: metres × HF, catapult HF × 2 / HF × 2 CF / HF × 10 kg, angled 20 × (metres + HF) kg (p.119)',
-    [deck.dp, deck.cf, deck.load], [100 * HF6 + HF6 * 2 + Math.round(100 * HF6 * 0.1), HF6 * 2, HF6 * 10 + 20 * (100 + HF6)]);
-  t.is('Hull Factor of Hull 3', O.hullFactor({ hull: 3 }), 900);
+  t.eq('Ducted waterjet: 5,000 × Hull, 4 × Hull CF, 3 × Hull kg (p.116; Hull 5)', [jet.dp, jet.cf, jet.load], [25000, 20, 15]);
   t.ok('EMD drive on a non-nuclear plant warns', ev('attack-submarine', 'D', [opt('emd')]).warnings.some(w => /nuclear/.test(w)));
 
   // Inputs per row; GM's figure wins.

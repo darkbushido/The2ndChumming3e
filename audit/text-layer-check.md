@@ -14,18 +14,18 @@ and each flagged row was read from the image.
 
 | Page | Figure (code) | Old figure | Image figure | Verdict |
 |---|---|---|---|---|
-| p.114 | Hull Factor | plain Hull rating ("not defined in R3R") | "(100 x Hull²)" | **Fixed** — `hullFactor()` |
-| p.116 | Ducted Waterjet DP / CF / Load | 5,000 / 4 / 3 × Hull | × Hull Factor | **Fixed** |
-| p.117 | EMD drive DP / CF / Load | 50,000 / 6 / 4 × Hull | × Hull Factor | **Fixed** |
-| p.116 | Auxiliary Engine CF | (Hull + Hull) × 2 | "(Hull + Hull Factor) x 2"; (Body + 1) × 2 | **Fixed** |
-| p.115 | Depth Enhancement Load | Hull × Hull × 2 per 10 m | "Hull Factor x (Body or Hull rating) x 2 kg" | **Fixed** (hulled); Body² × 2 kept for no Hull |
-| p.119 | Flight Deck DP, catapult DP/CF/Load | × Hull | × "Body or Hull Factor" | **Fixed** |
-| p.119 | Angled deck Load | metres × 20 | 20 × (Deck Length + Hull Factor) for ships | **Fixed** |
+| p.114 | Hull Factor | plain Hull rating ("not defined in R3R") | "(100 x Hull²)" | Divergent — **fixed on `claude/vehicle-design-3`** (277bf30a, TODO 287) |
+| p.116 | Ducted Waterjet DP / CF / Load | 5,000 / 4 / 3 × Hull | × Hull Factor | Fixed there |
+| p.117 | EMD drive DP / CF / Load | 50,000 / 6 / 4 × Hull | × Hull Factor | Fixed there |
+| p.116 | Auxiliary Engine CF | (Hull + Hull) × 2 | "(Hull + Hull Factor) x 2"; (Body + 1) × 2 | Fixed there |
+| p.115 | Depth Enhancement Load | Hull × Hull × 2 per 10 m | "Hull Factor x (Body or Hull rating) x 2 kg" | Fixed there |
+| p.119 | Flight Deck DP, catapult DP/CF/Load | × Hull | × "Body or Hull Factor" | Fixed there |
+| p.119 | Angled deck Load | metres × 20 | 20 × (Deck Length + Hull Factor) for ships | Fixed there |
 | p.115 | Extra entry points max | ⌈Body ÷ 2⌉, Hull × 2 | same | OK |
 | p.115-116 | Accel 25, Speed 2, Handling 25, Economy 5/5%, Cargo 1/0.2 CF | same | same | OK |
 | p.116 | Signature | levels⁴ × 200 | "(Levels of improvement)⁴ x 200" | OK |
 | p.116 | Ballast DP / CF / Load | Body² × 10 / 2 / 25 | same (²) | OK |
-| p.117 | Fin Drive DP, CF | Body² × 100, Body − 1 | same | OK |
+| p.117 | Fin Drive +25% rounding: rounding fixed on `claude/vehicle-design-3` · DP, CF | Body² × 100, Body − 1 | same | OK |
 | p.117 | Hybrid: 25% plant, 6 CF, half Load | same | same | OK |
 | p.118 | Hydrofoil 50/8; STOL 250, VSTOL 400; Manual 50; Smart 100 | same | same | OK |
 | p.118 | Setup/Breakdown | Body × 5, + Body × 5 a minute | same | OK |
@@ -40,8 +40,8 @@ and each flagged row was read from the image.
 | p.112-114 | Brickyard example totals (1,402; 210,300¥; 214,950¥) | as in TODO 287's notes | same | OK — the book's own arithmetic, already noted |
 
 **Consequence (the maintainer, 2026-11-08: "Book: 100 × Hull²"):** Hull Factor is large. A Hull 5 attack submarine's
-waterjet costs 12.5 million Design Points, so any option priced above its chassis now carries a warning. The GM still
-overwrites every row.
+waterjet costs 12.5 million Design Points. The fix itself is on `claude/vehicle-design-3`; this branch
+changes no designer code.
 
 **Migration:** none needed. Design options are priced live from the design; no owned item stores a Hull-Factor figure.
 

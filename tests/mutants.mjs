@@ -4447,17 +4447,6 @@ export const MUTANTS = [
     impl:   function (...a) { return this._priceOptionsOriginal(...a).map(o => ({ ...o, effect: null })); },
   },
   {
-    id:     'hull-factor-read-as-hull',
-    suite:  'design-options',
-    ...VDESIGN, method: 'priceOptions', needsOriginal: '_priceOptionsOriginal',
-    was:    'Hull Factor was read as the plain Hull rating — R3R p.114 defines it as 100 × Hull² (the text layer printed "Hull!", audit/text-layer-check.md)',
-    impl:   function (design, ch, row) {
-      const h = this.bodyOf(ch);
-      return this._priceOptionsOriginal(design, ch, row).map(o => (o.id === 'waterjet' && /H/.test(String(ch.body))
-        ? { ...o, dp: 5000 * h, cf: 4 * h, load: 3 * h } : o));
-    },
-  },
-  {
     id:     'design-mods-item-counted-twice',
     suite:  'vehicle-design-actor',
     module: '../scripts/data/vehicle-design-actor.mjs', klass: 'VehicleDesignActor', method: 'missingMods',

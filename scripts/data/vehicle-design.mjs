@@ -157,9 +157,7 @@ export const VehicleDesign = {
     return rows.map(o => {
       if (!o.id) return { ...o, dp: num(o.dp), cf: num(o.cf), load: num(o.load), warnings: [] };
       const p = DesignOptions.price(o, ctx);
-      // Hull Factor (100 × Hull², R3R p.114) can price an option far past its chassis — say so, never refuse.
-      if (p && ch.dp && p.dp > ch.dp) p.warnings = [...(p.warnings ?? []), `costs ${p.dp} Design Points, more than the ${ch.name} chassis (${ch.dp}) — check with the GM (Hull Factor, R3R p.114)`];
-      return p ? { ...o, ...p } :{ ...o, dp: num(o.dp), cf: num(o.cf), load: num(o.load), warnings: [`Unknown design option "${o.id}"`] };
+      return p ? { ...o, ...p } : { ...o, dp: num(o.dp), cf: num(o.cf), load: num(o.load), warnings: [`Unknown design option "${o.id}"`] };
     });
   },
 
