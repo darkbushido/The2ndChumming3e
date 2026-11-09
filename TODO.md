@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**90 open.** 207 done — see [TODO-DONE.md](TODO-DONE.md).
+**89 open.** 208 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -43,7 +43,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 🪄 Spells & drugs | [124](#124) Drug rules — addiction, tolerance and effects<br>[297](#297) The Vehicle Designer as a shop — a wizard with cards, art and a mod shelf |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone<br>[292](#292) The Killer, Sparky and Ripper IC: damage and notes follow the old gradings |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
-| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[293](#293) Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image<br>[294](#294) Little Black Book contacts' alphaware ships as Standard grade — *LBB pp.40-67*<br>[295](#295) `patch-johnson-stats.mjs --check` churns the checkout's LevelDB<br>[296](#296) Audit every 3e book's text layer against OCR, base books first |
+| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[293](#293) Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image<br>[294](#294) Little Black Book contacts' alphaware ships as Standard grade — *LBB pp.40-67*<br>[295](#295) `patch-johnson-stats.mjs --check` churns the checkout's LevelDB |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches<br>[286](#286) Pack data no book in the library can verify |
 | 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -2957,44 +2957,6 @@ worlds (exact old grade only).
 Even with `--check`, `tools/patch-johnson-stats.mjs` opens `packs/sr3e-mr-johnsons-contacts` directly, which rewrites its
 log and MANIFEST. Read through `tools/lib/pack-copy.mjs` instead (the packs-and-migrations rule) and add it to
 `tests/pack-churn.test.mjs`.
-
-## 296. Audit every 3e book's text layer against OCR, base books first — **requested 2026-11-08**
-
-The maintainer asked for this after [#293](#293) found R3R's text layer garbled. Order: Core Rules (SR3), then Magic in the
-Shadows, Man & Machine, Matrix, Rigger 3 Revised, then the rest (Cannon Companion, Critters, Little Black Book,
-New Seattle, Matrix Defragged, GM Screen, QSR).
-
-For each book:
-- Diff the text layer against a fresh OCR. The OCR output is local only: `SR-OCR/all/`, never committed.
-- Re-read from the page image every page the code cites that has a high mismatch rate.
-- Fix any divergence with a test and a mutant.
-
-**Mismatch rates, 2026-11-08** (all 12 books, 1,705 pages). The figures are numbers lost from the text layer / numbers OCR found
-that it lacks / words lost, plus bad pages (pages with 10 or more numbers, over 20% of them lost). OCR is noisy itself, so
-compare books with each other; these are not error counts. Clean books lose about 5–11% of their numbers.
-
-| Book | Numbers lost % | Numbers extra % | Words lost % | Bad pages |
-|---|---|---|---|---|
-| R3R (known garbled) | 32.2 | 42.2 | 21.9 | 143 |
-| Cannon Companion | 21.3 | 5.5 | 5.4 | 32 |
-| QSR | 19.0 | 5.8 | 2.1 | 10 |
-| Matrix | 17.4 | 18.9 | 3.5 | 32 |
-| MITS | 12.4 | 18.1 | 3.3 | 20 |
-| GM Screen | 11.9 | 1.1 | 7.7 | 1 of 4 |
-| SR3 Core | 10.7 | 3.2 | 2.4 | 26 |
-| New Seattle | 10.5 | 6.5 | 3.1 | 6 |
-| Man & Machine | 9.1 | 1.5 | 2.9 | 6 |
-| Critters | 7.3 | 0.5 | 2.3 | 3 |
-| MDF | 4.8 | 4.7 | 0.9 | 1 |
-| Little Black Book | 5.6 | 2.3 | 1.9 | 1 of 126 |
-
-Only R3R is badly garbled. Cannon Companion and Matrix are next to check. A high "numbers extra" rate (Matrix, MITS)
-more likely means tables read in a different order than real misreads.
-
-**Progress 2026-11-08 — pack cross-check done:** every pack entry located on its cited page (709 of 1,267) was compared
-against the OCR. 46 were flagged, and all were OCR failures; none is a text-layer misread. See `audit/text-layer-check.md`.
-**Code citations done too:** all 1,717 in `scripts/` checked; none is a text-layer misread.
-**Still open:** the 558 pack entries not located by name on their cited page.
 
 ### 🧹 Housekeeping
 
