@@ -115,6 +115,7 @@ export async function run(t) {
   t.is('an open-ended band has no max', M.maxLevel(mod('Anti-Theft System (Vehicle)', 3, 'Per level 3-6: 4, 7-9: 10, 10+: 50')), null);
   t.is('an unrated mod has no level', M.maxLevel(mod('Datajack Port (Vehicle)', null, '25')), null);
   t.ok('only a rated mod is rated', M.rated(mod('x', 1)) && !M.rated(mod('x', null)));
+  t.ok('Ablative Armor is aftermarket — not a design option (R3R p.131)', M.aftermarket('Ablative Armor (Vehicle)'));
   t.ok('the morphing plate is aftermarket, a turret is not', M.aftermarket('Morphing License Plate (Vehicle)') && !M.aftermarket('Small Turret (Vehicle)'));
 
   // The window (source-level).
