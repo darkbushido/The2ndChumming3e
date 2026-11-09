@@ -3761,3 +3761,25 @@ Hot reload is enough (no new fields). Open **🛠 Design a vehicle** in the Acto
       Lv and the points follow.
 - [ ] **Step 5:** class and mark-up, the points line by line, the warnings; **Create** makes the vehicle with its mods.
 - [ ] **Reopen:** 🛠 Design on that vehicle opens on step 5; **Offer changes** works as in §82.
+
+Second pass (the maintainer's feedback, 2026-11-08):
+
+- [ ] **Step tabs** are big filled buttons; the active one is solid blue, a finished one has a green number, and what you
+      picked sits on its own line under the label (never on an underline).
+- [ ] **Chassis drawings:** each bike looks different (racing, chopper, dirt bike, scooter, ATV); Special Vehicle shows a
+      locomotive chip; the **Barge** card is a hull on a dashed tow line behind a tug. Caterpillars Miniature → Heavy share a
+      drawing, drawn bigger for the bigger Body. Every card has a one-line description; hovering shows it too.
+- [ ] **Towed:** pick **Barge** (or a trailer / rail car) → step 2 says **Towed — no power plant** with the chassis' Load
+      ("Load 1,000,000 kg (max 10,000,000 kg)"); the step tab reads "Towed"; Next goes on to options.
+- [ ] **Tuning:** on a Racing Cycle with a plant, the table reads Start · Added · Result · Limit for every line. Type a Speed
+      far past the limit → that row turns amber with ⚠. Hover each row, **Smart materials** and **Freed CF/Load** → a tooltip
+      says what it changes, its cost and its range here.
+- [ ] **Options:** on a bike, **Depth Enhancement** and **Ballast Tanks** are hidden; add **Amphibious Package** (step 4),
+      come back → they're listed. **Extra Entry Points** says "Up to N for this chassis". On a boat, Ballast Tanks is hidden
+      ("Not for submarine, boat or ship chassis", R3R p.116).
+- [ ] **Once per vehicle:** add **Turbocharging** → its card says **✓ In cart** (no second copy); a turret or hardpoint says
+      **+ Another (1)**.
+- [ ] **Levels:** a rated mod's card says "levels 1-N" where the book sets one (Autonav 1-4, Nitrous 1-6, CMC 1-9); its cart
+      line has **Lv** capped at N ("/N"). Set Autonav Lv 10 → the line turns amber with "Level 10 is over the book's maximum of 4".
+      **Datajack Port** has no Lv box.
+- [ ] **Aftermarket:** **Morphing License Plate** shows 0 points and "Aftermarket — no design cost" — no ⚠.

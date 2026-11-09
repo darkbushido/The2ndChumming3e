@@ -15,21 +15,21 @@
  * chassis cards by type (silhouettes, `data/designer-art.mjs`), power plant cards, the design options that fit
  * (`DesignOptions.misfit`), a mod shop by shelf with our own one-liners (`data/mod-catalog.mjs`) and a cart, then price.
  * What doesn't fit is hidden behind a "show all" switch, never refused. A stored design reopens on step 5.
+ * Second pass (the maintainer's feedback, 2026-11-08): a drawing and a one-liner per kind of chassis
+ * (`data/chassis-catalog.mjs`); towed chassis take no plant; tuning laid out start + added = result (max), every control
+ * with a tooltip; once-per-vehicle mods can't be added twice; rated mods show their maximum level; the cart says why it warns.
  * Warn, never refuse: an over-maximum or an unpriced mod is a warning, and Create still works.
  */
 import { CHASSIS, CATEGORIES, PLANTS } from './data/vehicle-design-tables.mjs';
-import { VehicleDesign, CLASSES } from './data/vehicle-design.mjs';
+import { VehicleDesign, CLASSES, RATES, SMART } from './data/vehicle-design.mjs';
 import { VehicleDesignActor, FLAG, SOURCE_FLAG } from './data/vehicle-design-actor.mjs';
 import { DesignOptions } from './data/design-options.mjs';
 import { DesignerArt } from './data/designer-art.mjs';
 import { ModCatalog, SHELVES } from './data/mod-catalog.mjs';
+import { ChassisCatalog } from './data/chassis-catalog.mjs';
 
 const SCOPE = 'The2ndChumming3e';
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const IMPROVE = [
-  ['handling', 'Handling −'], ['handlingOffRoad', 'Off-road Handling −'], ['speed', 'Speed +'], ['accel', 'Acceleration +'],
-  ['economySteps', 'Economy (+5% steps)'], ['cargo', 'Cargo + CF'], ['load', 'Load + kg'], ['signature', 'Signature +'],
-];
 
 const blankDesign = () => ({
   name: '', chassis: '', plant: '', improve: {}, freed: { cf: 0, load: 0 }, smartMaterials: false,
@@ -93,11 +93,12 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     const div = document.createElement('div');
     div.className = 'sr3e-inner vd-wizard';
 
-    const STEPS = [[1, 'Chassis', ch?.name], [2, 'Power plant', d.plant ? (PLANTS[VehicleDesign.plantRow(d.plant)?.plant ?? d.plant]?.name) : null],
+    const towed = ch && ChassisCatalog.card(ch.id).towed;
+    const STEPS = [[1, 'Chassis', ch?.name], [2, 'Power plant', towed ? 'Towed' : d.plant ? (PLANTS[VehicleDesign.plantRow(d.plant)?.plant ?? d.plant]?.name) : null],
       [3, 'Design options', d.options.length ? `${d.options.length} picked` : null], [4, 'Mods', d.mods.length ? `${d.mods.length} in cart` : null],
       [5, this.actor ? 'Price & save' : 'Price & create', null]];
-    const tabs = STEPS.map(([n, label, sub]) => `<button type="button" class="vd-step ${n === step ? 'active' : ''}" data-step="${n}" ${n > 1 && !ch ? 'disabled' : ''}>
-      <span class="vd-step-n">${n}</span> ${esc(label)}${sub ? `<small>${esc(sub)}</small>` : ''}</button>`).join('');
+    const tabs = STEPS.map(([n, label, sub]) => `<button type="button" class="vd-step ${n === step ? 'active' : ''} ${n < step ? 'done' : ''}" data-step="${n}" ${n > 1 && !ch ? 'disabled' : ''}>
+      <span class="vd-step-n">${n}</span><span class="vd-step-text"><span class="vd-step-label">${esc(label)}</span>${sub ? `<small>${esc(sub)}</small>` : ''}</span></button>`).join('');
 
     let body = '';
     if (step === 1) body = this._stepChassis(d);
@@ -127,7 +128,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     const over = (used, total) => (used != null && total != null && used > total ? 'vd-over' : '');
     const warn = (r.warnings ?? []).length;
     return `<header class="vd-result">
-      <div class="vd-result-art">${ch ? DesignerArt.chassis(ch.category, ch.drone) : DesignerArt.chassis('car')}</div>
+      <div class="vd-result-art">${ch ? DesignerArt.vehicle(ChassisCatalog.card(ch.id).art, ch.category, ch.drone) : DesignerArt.chassis('car')}</div>
       <div class="vd-result-main">
         <input type="text" class="vd-name" data-path="name" value="${esc(this.design.name)}" placeholder="${esc(ch?.name ?? 'Name your vehicle')}"/>
         <div class="vd-chips">
@@ -151,15 +152,19 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     const chips = cats.map(([k, label]) => `<button type="button" class="vd-type ${k === cat ? 'active' : ''}" data-cat="${k}">
       ${DesignerArt.chassis(k, drones)}<span>${esc(label)}</span></button>`).join('');
     const list = CHASSIS.filter(c => c.category === cat && c.drone === drones);
-    const cards = list.map(c => `<button type="button" class="vd-card ${c.id === d.chassis ? 'picked' : ''}" data-chassis="${c.id}">
-      <div class="vd-card-art">${DesignerArt.chassis(c.category, c.drone)}</div>
-      <div class="vd-card-name">${esc(c.name)}</div>
+    const cards = list.map(c => {
+      const card = ChassisCatalog.card(c.id);
+      return `<button type="button" class="vd-card ${c.id === d.chassis ? 'picked' : ''}" data-chassis="${c.id}" title="${esc(card.blurb)}">
+      <div class="vd-card-art">${DesignerArt.vehicle(card.art, c.category, c.drone, ChassisCatalog.scale(c.id, CHASSIS))}</div>
+      <div class="vd-card-name">${esc(c.name)}${card.towed ? ' <span class="vd-badge">Towed</span>' : ''}</div>
+      <div class="vd-blurb">${esc(card.blurb)}</div>
       <div class="vd-card-stats">
         <span>Body <b>${esc(c.body)}</b></span><span>Armor <b>${esc(c.armor ?? '—')}</b></span>
         <span>Handling <b>${esc(c.handling)}</b></span><span>CF <b>${esc(c.cf)}</b></span>
         <span>Seats <b>${esc(c.seating ?? '—')}</b></span><span>Pts <b>${esc(c.dp)}</b></span>
       </div>
-      <div class="vd-card-page">${esc(c.page)}</div></button>`).join('');
+      <div class="vd-card-page">${esc(c.page)}</div></button>`;
+    }).join('');
     return `<div class="vd-row">
         <div class="vd-toggle"><button type="button" data-drones="0" class="${drones ? '' : 'active'}">Vehicles</button><button type="button" data-drones="1" class="${drones ? 'active' : ''}">Drones</button></div>
       </div>
@@ -169,6 +174,15 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
 
   /** Step 2 — the plants this chassis offers, as cards; then tuning (improvements, smart materials). */
   _stepPlant(d, ch, r) {
+    const info = ChassisCatalog.card(ch.id);
+    if (info.towed) {
+      // R3R p.109: trailers take no power plant; a barge is towed by a boat, a rail car pulled by a locomotive.
+      const load = /Load [\d,.]+ ?kg( \([^)]*\))?/.exec(String(ch.features ?? ''))?.[0] ?? null;
+      return `<div class="vd-towed"><div class="vd-towed-art">${DesignerArt.vehicle(info.art, ch.category, ch.drone)}</div><div>
+        <h3>Towed — no power plant</h3><p>${esc(info.blurb)}</p>
+        ${load ? `<p><b>${esc(load)}</b> <span class="vd-dim">(${esc(ch.page)})</span></p>` : ''}
+        <p class="vd-dim">It moves at whatever pulls it — its Speed and Acceleration are the tow's. Go on to the options.</p></div></div>`;
+    }
     const rows = Object.keys(PLANTS).flatMap(code => VehicleDesign.plantsFor(ch.id, code));
     const body = VehicleDesign.bodyOf(ch);
     const v = x => VehicleDesign.cell(x, body);
@@ -182,23 +196,66 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
         <span>Sig <b>${esc(p.sig)}</b></span><span>Pts <b>${esc(v(p.dp) ?? p.dp)}</b></span>
       </div>
       <div class="vd-card-page">${esc(p.page)}</div></button>`).join('');
-    const num = (path, val, w = 56) => `<input type="number" data-path="${path}" value="${esc(val ?? 0)}" style="width:${w}px"/>`;
     return `<div class="vd-grid">${cards || '<p class="vd-empty">The tables list no power plant for this chassis.</p>'}</div>
-      ${d.plant ? `<details class="vd-tune" ${Object.values(d.improve ?? {}).some(Boolean) || d.smartMaterials ? 'open' : ''}>
-        <summary>Tune it — improvements past the plant's starting figures (R3R pp.115-116)</summary>
-        <div class="vd-tune-row">${IMPROVE.map(([k, l]) => `<label>${l} ${num(`improve.${k}`, d.improve?.[k])}</label>`).join('')}
-          <label><input type="checkbox" data-path="smartMaterials" ${d.smartMaterials ? 'checked' : ''}/> Smart materials (p.118)</label>
-          <label>Freed CF ${num('freed.cf', d.freed?.cf)}</label><label>Freed Load ${num('freed.load', d.freed?.load)}</label></div>
-        ${r.stats ? `<div class="vd-hint">Speed ${r.stats.speed} of ${r.stats.speedMax} · Accel ${r.stats.accel} of ${r.stats.accelMax} · Load ${r.stats.load}</div>` : ''}
-      </details>` : ''}`;
+      ${d.plant ? this._tuning(d, ch, r) : ''}`;
+  }
+
+  /**
+   * Tuning, laid out in full (the maintainer, 2026-11-08: "shouldn't be compacted… describe the maxima"): each line is
+   * start + added = result, against its maximum for this chassis and plant, amber past it; every control carries a tooltip
+   * saying what it changes, what it costs, and its range here (R3R pp.115-118).
+   */
+  _tuning(d, ch, r) {
+    const s = r.stats ?? {};
+    const imp = d.improve ?? {};
+    const n = x => Number(x) || 0;
+    const [onRoad, offRoad] = String(ch.handling ?? '').split('/').map(x => parseInt(x, 10));
+    const smartH = d.smartMaterials ? SMART.handling : 0;
+    const input = (path, val, tip) => `<input type="number" data-path="${path}" value="${esc(val ?? 0)}" min="0" style="width:60px" title="${esc(tip)}"/>`;
+    const lines = [
+      ['handling', 'Handling (on-road)', onRoad + smartH, s.handling, Number.isFinite(onRoad) ? VehicleDesign.handlingFloor(onRoad) : null, '−', 'low',
+        `Lowers on-road Handling — lower is better. ${RATES.handling} points a point; no better than half the chassis' ${onRoad} (R3R p.115).`],
+      ['handlingOffRoad', 'Handling (off-road)', offRoad + smartH, s.handlingOffRoad, Number.isFinite(offRoad) ? VehicleDesign.handlingFloor(offRoad) : null, '−', 'low',
+        `Lowers off-road Handling — lower is better. ${RATES.handling} points a point; no better than half the chassis' ${offRoad} (R3R p.115).`],
+      ['speed', 'Speed', s.speed == null ? null : s.speed - n(imp.speed), s.speed, s.speedMax, '+', 'high',
+        `Raises Speed. ${RATES.speed} points a point; up to the plant's maximum ${s.speedMax ?? '—'} here (R3R p.115).`],
+      ['accel', 'Acceleration', s.accel == null ? null : s.accel - n(imp.accel), s.accel, s.accelMax, '+', 'high',
+        `Raises Acceleration. ${RATES.accel} points a point; up to the plant's maximum ${s.accelMax ?? '—'} here (R3R p.115).`],
+      ['load', 'Load (kg)', r.load?.total == null ? null : r.load.total - n(imp.load) - n(d.freed?.load), r.load?.total, r.load?.max, '+', 'high',
+        `Raises Load. ${RATES.loadPerPoint} kg a point (1 on a Body 0 vehicle); up to ${r.load?.max ?? '—'} kg here (R3R p.116).`],
+      ['cargo', 'Cargo (CF)', r.cf?.total == null ? null : r.cf.total - n(imp.cargo) - n(d.freed?.cf), r.cf?.total, r.cf?.max, '+', 'high',
+        `Raises Cargo Factor. ${RATES.cargoPerPoint * 25} points per 5 CF; up to the chassis' ${r.cf?.max ?? '—'} CF (R3R p.115).`],
+      ['economySteps', 'Economy (+5% steps)', null, s.economy, null, '+', 'high',
+        `Each step adds 5% to the plant's Economy (km per unit of fuel), ${RATES.economyStep} points a step; up to the plant's maximum (R3R p.115).`],
+      ['signature', 'Signature', s.sig == null ? null : s.sig - n(imp.signature), s.sig, null, '+', 'high',
+        `Raises Signature — harder to detect. Costs (levels)⁴ × ${RATES.signature} points (R3R p.116).`],
+    ];
+    const rows = lines.map(([k, label, start, result, max, sign, better, tip]) => {
+      const over = result != null && max != null && (better === 'low' ? result < max : result > max);
+      return `<tr class="${over ? 'vd-over-row' : ''}" title="${esc(tip)}">
+        <th>${esc(label)}</th><td>${esc(start ?? '—')}</td><td>${sign} ${input(`improve.${k}`, imp[k], tip)}</td>
+        <td>= <b>${esc(result ?? '—')}</b></td><td class="vd-dim">${max != null ? `${better === 'low' ? 'best' : 'max'} ${esc(max)}` : ''}${over ? ' ⚠' : ''}</td></tr>`;
+    }).join('');
+    const smartTip = `Smart materials (R3R p.118): ${SMART.dp} points. Handling ${SMART.handling}; maximum Speed, Acceleration and Load × ${SMART.factor}; Street Index +${SMART.streetIndex}.`;
+    const freedTip = what => `${what} freed by taking seats out — free (R3R p.104). Type what the removed seats gave.`;
+    return `<fieldset class="vd-tune"><legend>Tune it — improvements past the plant's starting figures (R3R pp.115-118)</legend>
+      <table class="vd-tune-table"><tr><th></th><th>Start</th><th>Added</th><th>Result</th><th>Limit</th></tr>${rows}</table>
+      <div class="vd-row">
+        <label title="${esc(smartTip)}"><input type="checkbox" data-path="smartMaterials" ${d.smartMaterials ? 'checked' : ''}/> Smart materials (p.118)</label>
+        <label title="${esc(freedTip('CF'))}">Freed CF ${input('freed.cf', d.freed?.cf, freedTip('CF'))}</label>
+        <label title="${esc(freedTip('Load'))}">Freed Load ${input('freed.load', d.freed?.load, freedTip('Load'))}</label></div>
+    </fieldset>`;
   }
 
   /** The fit context for a chassis and the current plant — what `misfit` reads. */
   _fitCtx(ch) {
     const plant = VehicleDesign.plantRow(this.design.plant)?.plant ?? (this.design.plant || null);
     const body = VehicleDesign.bodyOf(ch);
-    return { category: ch.category, chassisId: ch.id, body, hasHull: /H/.test(String(ch.body)), maxCf: VehicleDesign.cell(ch.maxCf, body),
-      plantCode: plant, plant, drone: !!ch.drone };
+    // Sealed to go under: an Amphibious Package in the cart, or an EnviroSeal row (R3R pp.116, 132, 149).
+    const watertight = (this.design.mods ?? []).some(m => /Amphibious|EnviroSeal/i.test(m.name ?? ''))
+      || (this.design.options ?? []).some(o => /EnviroSeal/i.test(o.name ?? ''));
+    return { category: ch.category, chassisId: ch.id, body, hull: body, hasHull: /H/.test(String(ch.body)), maxCf: VehicleDesign.cell(ch.maxCf, body),
+      plantCode: plant, plant, drone: !!ch.drone, watertight };
   }
 
   /** Step 3 — the options that fit, as cards; the picked ones as editable rows. */
@@ -230,6 +287,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
         return `<div class="vd-card vd-opt ${why ? 'vd-misfit' : ''}">
           <div class="vd-card-name">${esc(o.name)}</div>
           ${o.note ? `<div class="vd-blurb">${esc(o.note)}</div>` : ''}
+          ${DesignOptions.limit(o.id, c) ? `<div class="vd-dim">${esc(DesignOptions.limit(o.id, c))}</div>` : ''}
           ${why ? `<div class="vd-amber">⚠ ${esc(why)}</div>` : ''}
           <div class="vd-card-foot"><span class="vd-card-page">${esc(o.page)}</span><button type="button" data-add-option="${o.id}">+ Add</button></div></div>`;
       }).join('');
@@ -253,28 +311,43 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     const tabs = Object.entries(SHELVES).map(([id, label]) => `<button type="button" class="vd-shelf ${id === shelf && !q ? 'active' : ''}" data-shelf="${id}" title="${esc(label)}">
       ${DesignerArt.shelf(id)}<span>${esc(label)}</span><small>${count(id)}</small></button>`).join('');
     const shown = visible.filter(x => (q ? `${x.m.name} ${x.card.blurb}`.toLowerCase().includes(q) : x.card.shelf === shelf));
-    const inCart = uuid => d.mods.filter(x => x.uuid === uuid).length;
+    // In the cart by name, so the same mod from another book's pack counts too.
+    const inCart = m => d.mods.filter(x => x.uuid === m.uuid || ModCatalog.keyOf(x.name) === ModCatalog.keyOf(m.name)).length;
     const ctx = this._ctx();
     const cards = shown.map(({ m, card, why }) => {
       const row = VehicleDesignActor.modRow(m, { ...ctx, level: m.system?.rating ?? 1 });
-      const n = inCart(m.uuid);
+      const n = inCart(m);
+      const stacks = ModCatalog.stacks(m.name);
+      const max = ModCatalog.maxLevel(m);
+      const after = ModCatalog.aftermarket(m.name);
+      const add = !n ? '<button type="button" data-add-mod="' + esc(m.uuid) + '">+ Add</button>'
+        : stacks ? `<button type="button" data-add-mod="${esc(m.uuid)}" title="This vehicle can carry more than one">+ Another (${n})</button>`
+          : `<span class="vd-in-cart" title="One per vehicle — raise its level in the cart instead">✓ In cart</span>`;
       return `<div class="vd-card vd-mod ${why ? 'vd-misfit' : ''} ${n ? 'picked' : ''}">
         <div class="vd-mod-head"><span class="vd-mod-icon">${DesignerArt.shelf(card.shelf)}</span>
           <div class="vd-card-name">${esc(String(m.name).replace(/\s*\(Vehicle\)$/, ''))}</div></div>
         <div class="vd-blurb">${esc(card.blurb || 'See the book page.')}</div>
         ${why ? `<div class="vd-amber">⚠ ${esc(why)}</div>` : ''}
-        <div class="vd-card-stats"><span>Pts <b>${row.unpriced ? '?' : esc(row.dp)}</b></span><span>CF <b>${esc(row.cf)}</b></span><span>Load <b>${esc(row.load)}</b></span>
-          ${m.system?.rating != null ? '<span class="vd-dim">rated</span>' : ''}</div>
-        <div class="vd-card-foot"><span class="vd-card-page">${esc(m.system?.bookPage ?? '')}</span>
-          <button type="button" data-add-mod="${esc(m.uuid)}">${n ? `+ Another (${n})` : '+ Add'}</button></div></div>`;
+        <div class="vd-card-stats"><span>Pts <b>${after ? 0 : row.unpriced ? '?' : esc(row.dp)}</b></span><span>CF <b>${esc(row.cf)}</b></span><span>Load <b>${esc(row.load)}</b></span>
+          ${ModCatalog.rated(m) ? `<span class="vd-dim">${max ? `levels 1-${max}` : 'levels'}</span>` : ''}</div>
+        ${after ? '<div class="vd-dim">Aftermarket — fitted after the build, no design cost.</div>' : ''}
+        <div class="vd-card-foot"><span class="vd-card-page">${esc(m.system?.bookPage ?? '')}</span>${add}</div></div>`;
     }).join('');
     const hidden = rows.length - visible.length;
-    const cart = d.mods.map((x, i) => `<div class="vd-cart-item">
-      <span class="vd-cart-name">${esc(String(x.name).replace(/\s*\(Vehicle\)$/, ''))}${x.unpriced ? ' <span class="vd-amber" title="No design cost printed — type the points (R3R p.112)">⚠</span>' : ''}</span>
-      <label>Lv <input type="number" data-path="mods.${i}.level" value="${esc(x.level ?? 1)}" min="1" style="width:44px"/></label>
-      <label>Pts <input type="number" data-path="mods.${i}.dp" value="${esc(x.dp)}" step="any" style="width:60px"/></label>
+    const cart = d.mods.map((x, i) => {
+      const src = this._modAll?.find(m => m.uuid === x.uuid) ?? null;
+      const rated = src ? ModCatalog.rated(src) : x.level != null && x.level !== 1;
+      const max = src ? ModCatalog.maxLevel(src) : null;
+      const why = this._cartWarning(x, max);
+      return `<div class="vd-cart-item ${why ? 'vd-cart-warn' : ''}">
+      <span class="vd-cart-name">${esc(String(x.name).replace(/\s*\(Vehicle\)$/, ''))}</span>
+      ${rated ? `<label title="${esc(max ? `Levels 1 to ${max} (the book's maximum)` : 'The book sets no maximum level')}">Lv <input type="number" data-path="mods.${i}.level" value="${esc(x.level ?? 1)}" min="1" ${max ? `max="${max}"` : ''} style="width:44px"/>${max ? `<span class="vd-dim">/${max}</span>` : ''}</label>` : ''}
+      <label title="Design Points — type to override">Pts <input type="number" data-path="mods.${i}.dp" value="${esc(x.dp)}" step="any" style="width:60px"/></label>
       <span class="vd-dim">CF ${esc(x.cf)} · ${esc(x.load)} kg</span>
-      <button type="button" data-remove="mods.${i}" title="Remove">✕</button></div>`).join('');
+      <button type="button" data-remove="mods.${i}" title="Remove">✕</button>
+      ${why ? `<div class="vd-amber vd-cart-why">⚠ ${esc(why)}</div>` : ''}
+      ${ModCatalog.aftermarket(x.name) ? '<div class="vd-dim vd-cart-why">Aftermarket — no design cost; buy it separately.</div>' : ''}</div>`;
+    }).join('');
     return `<div class="vd-shop">
       <div class="vd-shop-main">
         <div class="vd-row"><input type="search" class="vd-search" placeholder="Search every mod…" value="${esc(this.ui.q ?? '')}"/>
@@ -347,8 +420,11 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     on('[data-add-mod]', b => {
       const m = this._modIndex?.find(x => x.uuid === b.dataset.addMod);
       if (!m) return;
+      if (!ModCatalog.stacks(m.name) && this.design.mods.some(x => ModCatalog.keyOf(x.name) === ModCatalog.keyOf(m.name))) return;
       const row = VehicleDesignActor.modRow(m, this._ctx());
-      this.design.mods.push({ ...row, uuid: m.uuid, level: m.system?.rating ?? 1 });
+      // An aftermarket mod has no design figures: 0 points and a note, not a warning (the maintainer, 2026-11-08).
+      if (ModCatalog.aftermarket(m.name)) Object.assign(row, { dp: 0, unpriced: false });
+      this.design.mods.push({ ...row, uuid: m.uuid, level: ModCatalog.rated(m) ? (m.system?.rating ?? 1) : null });
       this.render();
     });
     el.querySelector('.vd-all-options')?.addEventListener('change', e => { this.ui.allOptions = e.target.checked; this.render(); });
@@ -365,7 +441,15 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     const src = m?.uuid ? this._modAll?.find(x => x.uuid === m.uuid) : null;
     if (!src) return;
     const row = VehicleDesignActor.modRow(src, { ...this._ctx(), level: m.level ?? 1 });
+    if (ModCatalog.aftermarket(src.name)) Object.assign(row, { dp: 0, unpriced: false });
     Object.assign(m, { dp: row.dp, cf: row.cf, load: row.load, unpriced: row.unpriced });
+  }
+
+  /** Why a cart line warns, in words (the maintainer, 2026-11-08: the ⚠ "without the reason"), or null. */
+  _cartWarning(x, max) {
+    if (x.unpriced) return 'No design cost printed for this mod — type its points (R3R p.112)';
+    if (max && Number(x.level) > max) return `Level ${x.level} is over the book's maximum of ${max}`;
+    return null;
   }
 
   async _save() {
