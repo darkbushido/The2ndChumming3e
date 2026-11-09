@@ -48,8 +48,10 @@ export async function run(t) {
   t.is('a mod with no restriction always fits', M.misfit('Roll Bars (Vehicle)', bike), null);
 
   const opt = (id, c) => O.misfit(id, c);
-  t.ok('Flight Deck on a motorcycle does not fit (the maintainer\'s example)', !!opt('flight-deck', { category: 'bike', body: 2 }));
-  t.is('…on a Hull-rated ship it does', opt('flight-deck', { category: 'ship', body: 8, hasHull: true }), null);
+  // Flight Deck: the book's limit (R3R p.119) — "really stupid but possible" on a bike (the maintainer, 2026-11-08).
+  t.is('Flight Deck on a Body 2 bike fits — a Body 0 micro UAV can land on it', opt('flight-deck', { category: 'bike', body: 2 }), null);
+  t.ok('…a Body 0 vehicle\'s deck takes nothing', !!opt('flight-deck', { category: 'car', body: 0 }));
+  t.is('…on a Hull-rated ship it fits', opt('flight-deck', { category: 'ship', body: 8, hasHull: true }), null);
   t.ok('robot options are for drones', !!opt('robot-pilot', { category: 'car' }) && !opt('robot-pilot', { category: 'car', drone: true }));
   t.ok('STOL is for fixed-wing aircraft', !!opt('stol', { category: 'rotor' }) && !opt('stol', { category: 'fixedwing' }));
   t.ok('an EMD drive needs a nuclear sub', !!opt('emd', { category: 'sub', plantCode: 'D' }) && !opt('emd', { category: 'sub', plantCode: 'N' }));

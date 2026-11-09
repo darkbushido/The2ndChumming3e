@@ -3753,7 +3753,7 @@ Hot reload is enough (no new fields). Open **🛠 Design a vehicle** in the Acto
       Click a **Bike** card → step 2 opens; the step tab shows the chassis name.
 - [ ] **Step 2, Power plant:** cards with plant icons and Speed/Accel/Load/Economy; a chassis with one plant has it picked
       already. **Tune it** opens the improvements.
-- [ ] **Step 3, Design options** on that bike: **Flight Deck**, Airlock and the robot options are NOT listed; tick **Show
+- [ ] **Step 3, Design options** on that bike: Airlock and the robot options are NOT listed; **Flight Deck** IS (a Body 0 micro UAV fits under half a Body 2); tick **Show
       options that don't fit** → they appear dashed with an amber reason, and **+ Add** still works (warn, never refuse).
 - [ ] **Step 4, Mods:** shelf tabs with icons and counts; every card has a one-line description, points, CF, Load and its page.
       On the bike, **Bike Gyro-Stabilization Gear** and the sidecars are listed; switch to a **car** chassis → they're hidden

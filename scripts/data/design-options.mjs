@@ -207,7 +207,9 @@ export const OPTIONS = [
     cf: c => (num(c.catapult) ? c.hullFactor * 2 : 0),
     load: c => (num(c.catapult) ? c.hullFactor * 10 : 0) + (num(c.angled) ? num(c.metres) * 20 : 0),
     note: 'Launches or lands aircraft of less than half its Body (ships: Hull Factor × 10)',
-    fit: c => (c.hasHull || ['ship', 'sub'].includes(c.category) ? null : 'For ships and other Hull-rated vessels'),
+    // The book's own limit, not a chassis list (the maintainer, 2026-11-08: on a bike it is "really stupid but possible"):
+    // it takes aircraft of Body under half the vehicle's Body (ships: Hull × 10); it fits while any aircraft chassis does.
+    fit: c => (flightDeckLimit(c) > SMALLEST_AIRCRAFT_BODY ? null : `Takes only aircraft under Body ${flightDeckLimit(c)} — none is that small`),
   },
   {
     id: 'amenities', name: 'Living Amenities', group: 'Facility', page: 'R3R p.119-120',
@@ -274,6 +276,11 @@ export const OPTIONS = [
     fit: c => (c.drone ? null : 'For drones'),
   },
 ];
+
+/** What a flight deck can launch or land: aircraft of Body under this (R3R p.119). */
+export const flightDeckLimit = c => (c.hasHull ? c.body * 10 : (c.body ?? 0) / 2);
+/** The smallest aircraft chassis' Body (the micro rotary UAV, R3R p.204). */
+const SMALLEST_AIRCRAFT_BODY = 0;
 
 /** Special Machinery's CF: the GM's, else the book's recommendation, Body × 2 (p.118). */
 const machineryCf = c => (c.space == null || c.space === '' ? c.body * 2 : num(c.space));

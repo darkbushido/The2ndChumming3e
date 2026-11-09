@@ -1302,8 +1302,10 @@ kept at the top. Branch `claude/vehicle-designer-shop` (follows #287).
 - **Chassis:** type chips (Vehicles / Drones), then cards with Body, Armor, Handling, CF, seats and Design Points.
 
 **Calls made while building — for the maintainer to confirm:**
-- Flight Deck fits only Hull-rated vessels (ships, subs); Living Amenities, Work Shop and Facility don't fit a motorcycle.
-  The book prints no such restriction — these follow the maintainer's "a flight deck on a motorcycle doesn't make sense".
+- **Flight Deck — ruled (the maintainer, 2026-11-08):** "Technically you can have a flight deck on a bike … its just really
+  stupid but possible." It follows the book's limit (R3R p.119): aircraft of Body under half the vehicle's Body (ships: Hull
+  × 10). It is hidden only when no aircraft chassis is that small (a Body 0 vehicle).
+- Living Amenities, Work Shop and Facility don't fit a motorcycle — the book prints no such restriction (call, to confirm).
 - Mod fit rules come from each entry's printed restriction (R3R pp.126-155): sidecars and bike gyros on bikes, suspension on
   wheeled ground vehicles, control surfaces on watercraft, nitrous on gasoline/diesel, Smart Armor at Body 4+, and so on.
 
