@@ -80,11 +80,14 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     for (const pack of game.packs.filter(p => p.documentName === 'Item')) {
       const idx = await pack.getIndex({ fields: ['type', 'system.rating', 'system.designCost', 'system.designCf',
         'system.designLoad', 'system.cfCost', 'system.load', 'system.bookPage'] });
-      for (const e of idx) if (e.type === 'vehiclemod') out.push({ ...e, uuid: e.uuid ?? `Compendium.${pack.collection}.Item.${e._id}` });
+      // Only books the GM has turned on are offered (the maintainer, 2026-11-09: "they shouldnt be there if i cant view the
+      // book"); every copy is still kept so a saved design finds its mods.
+      const allowed = game.sr3e?.SR3ESourceBooks?.packAllowed(pack) ?? true;
+      for (const e of idx) if (e.type === 'vehiclemod') out.push({ ...e, uuid: e.uuid ?? `Compendium.${pack.collection}.Item.${e._id}`, allowed });
     }
     // One entry per name — the same mod in two books' packs is offered once (VehicleDesignActor.pickList).
     this._modAll = out;   // every copy, so a design saved before the de-duplication still finds its uuid
-    return (this._modIndex = VehicleDesignActor.pickList(out));
+    return (this._modIndex = VehicleDesignActor.pickList(out.filter(e => e.allowed)));
   }
 
   _ctx() {
@@ -308,7 +311,9 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     const watertight = (this.design.mods ?? []).some(m => /Amphibious|EnviroSeal/i.test(m.name ?? ''))
       || (this.design.options ?? []).some(o => /EnviroSeal/i.test(o.name ?? ''));
     return { category: ch.category, chassisId: ch.id, body, hull: body, hasHull: /H/.test(String(ch.body)), maxCf: VehicleDesign.cell(ch.maxCf, body),
-      plantCode: plant, plant, drone: !!ch.drone, watertight };
+      plantCode: plant, plant, drone: !!ch.drone, watertight,
+      // A Hybrid Engine or an electric Auxiliary Engine counts as an electric drive (SunCell, R3R p.126).
+      electric: ModCatalog.electricExtra(this.design.options ?? [], id => VehicleDesign.plantRow(id)?.plant ?? null) };
   }
 
   /** Step 3 — the options that fit, as cards; the picked ones as editable rows. */
@@ -433,6 +438,8 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
         <label>Street Index + ${num('streetIndexExtra', d.streetIndexExtra, 60, 'any')}</label>
         <label>Extra ¥ ${num('extraNuyen', d.extraNuyen, 90)}</label>
         <div class="vd-hint">Street Index ${esc(r.streetIndex ?? '—')} · Availability ${esc(r.availability?.text ?? '—')}</div>
+        ${r.availability?.why ? `<div class="vd-hint vd-avail-why">Availability: ${esc(r.availability.why)}${
+          (r.dp?.lines ?? []).length ? ` — biggest costs: ${[...r.dp.lines].sort((a, b) => b.points - a.points).slice(0, 3).map(l => `${esc(l.label)} (${l.points.toLocaleString()} pts)`).join(', ')}` : ''}</div>` : ''}
       </fieldset>
       <fieldset><legend>Design Points, line by line</legend>
         ${(r.dp?.lines ?? []).map(l => `<div class="vd-line"><span>${esc(l.label)}</span><b>${l.points}</b><span class="vd-dim">${esc(l.page ?? '')}</span></div>`).join('')}

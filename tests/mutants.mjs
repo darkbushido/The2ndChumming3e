@@ -4546,6 +4546,20 @@ export const MUTANTS = [
     impl:   () => null,
   },
   {
+    id:     'design-availability-unexplained',
+    suite:  'vehicle-design',
+    module: '../scripts/data/vehicle-design.mjs', klass: 'VehicleDesign', method: 'availability', needsOriginal: '_availabilityOriginal',
+    was:    'the designer showed Availability 30 with nothing saying it comes from the whole price (the maintainer, 2026-11-09; TODO 297)',
+    impl:   function (...a) { return { ...this._availabilityOriginal(...a), why: '' }; },
+  },
+  {
+    id:     'designer-suncell-main-plant-only',
+    suite:  'vehicle-designer-shop',
+    module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'electricExtra',
+    was:    'SunCell refused a gasoline car with a Hybrid Engine or an electric auxiliary engine (the maintainer, 2026-11-09; TODO 297)',
+    impl:   () => false,
+  },
+  {
     id:     'designer-mod-misfit-ignored',
     suite:  'vehicle-designer-shop',
     module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'misfit',

@@ -111,6 +111,10 @@ export async function run(t) {
 
   // A towed chassis takes no plant (R3R p.109); its Load and maximum are on its own row (R3R p.204: 53-foot trailer
   // Load 10,000 kg, max 25,000 kg). The maintainer, 2026-11-09: "you can't modify the capacity of the trailer".
+  // Availability says where it comes from (the maintainer, 2026-11-09: "doesn't show what it is").
+  t.is('Availability explains the price sum', V.availability(590000).why, "590,000¥ ÷ 20,000 = 30 → 30 (the whole vehicle's price, R3R p.113)");
+  t.ok('…with the class bonus', /= 21 \+ 6 Security → 27/.test(V.availability(420000, 'security').why));
+  t.ok('…and the out-of-reach warning carries it', V.evaluate({ chassis: 'sand-buggy', plant: 'G', extraNuyen: 700000 }).warnings.some(w => /out of the players' reach .*÷ 20,000/.test(w)));
   t.eq('a trailer reads its own Load and maximum', V.towedLoad(V.chassis('trailer-53ft')), { start: 10000, max: 25000 });
   t.is('…a chassis with a plant has none', V.towedLoad(V.chassis('sand-buggy')), null);
   const trailer = V.evaluate({ chassis: 'trailer-53ft' });

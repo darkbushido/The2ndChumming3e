@@ -3782,6 +3782,15 @@ Second pass (the maintainer's feedback, 2026-11-08):
 - [ ] **Levels:** a rated mod's card says "levels 1-N" where the book sets one (Autonav 1-4, Nitrous 1-6, CMC 1-9); its cart
       line has **Lv** capped at N ("/N"). Set Autonav Lv 10 → the line turns amber with "Level 10 is over the book's maximum of 4".
       **Datajack Port** has no Lv box.
+- [ ] **Book filter:** with the France Sourcebook off (the default), search the mod shop for **VAUBAN** → nothing. Turn it on
+      (System settings → Source books), reopen the designer → the VAUBAN mods appear.
+- [ ] **SunCell on a hybrid:** a gasoline car → SunCell Power is hidden ("Needs an electric drive…"). Add a **Hybrid Engine**
+      option, or an **Auxiliary Engine** with an electric plant picked → SunCell shows and can be added. Never on a bike.
+- [ ] **Misfits look different:** tick **show the ones that don't fit** in the mod shop and the options step → those cards are
+      greyed with an amber dashed edge and a **Doesn't fit** badge, sharp again on hover; the fitting cards are unchanged.
+- [ ] **Availability explained:** on the price step, under Street Index · Availability, a line reads e.g.
+      "Availability: 590,000¥ ÷ 20,000 = 30 → 30 (the whole vehicle's price, R3R p.113) — biggest costs: …" with the three
+      largest Design Point lines. Push it past 30 → the warning carries the same sum.
 - [ ] **Turret sizes:** every turret card in the shop says what it holds — a Small Turret "Weapon Value 3 — up to an
       assault cannon or autocannon…", a Mini-Turret(Pop-Up) "Weapon Value 1 — up to an SMG…" (R3R pp.140-141). On a
       vehicle sheet an Ares Vanquisher on a Mini Turret warns Weapon Value 2.5 of 2.

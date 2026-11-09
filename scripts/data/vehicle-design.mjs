@@ -195,7 +195,13 @@ export const VehicleDesign = {
     const tn = Math.max(AVAIL.min, n) + mod;
     const hours = Math.max(AVAIL.minHours, n * 24) + mod * 24;
     const text = hours % 24 === 0 && hours > 24 ? `${tn}/${hours / 24} days` : `${tn}/${hours} hrs`;
-    return { tn, hours, days: hours / 24, text, outOfReach: tn > AVAIL.outOfReach };
+    // Where the number comes from — it is the whole vehicle's price, not one part (the maintainer, 2026-11-09: "an
+    // availability of 30 but doesn't show what it is").
+    const cls = CLASSES[vehicleClass] ?? CLASSES.standard;
+    const why = `${Math.round(num(cost)).toLocaleString()}¥ ÷ ${AVAIL.per.toLocaleString()} = ${Math.max(AVAIL.min, n)}`
+      + (CLASSES[vehicleClass]?.avail ? ` + ${cls.avail} ${cls.label}` : '') + (num(extra) ? ` + ${num(extra)} fin drive` : '')
+      + ` → ${tn} (the whole vehicle's price, R3R p.113)`;
+    return { tn, hours, days: hours / 24, text, why, outOfReach: tn > AVAIL.outOfReach };
   },
 
   /**
@@ -325,7 +331,7 @@ export const VehicleDesign = {
     const fin = effects.has('fin');
     const streetIndex = CLASSES[vclass].streetIndex + (smart || fin ? SMART.streetIndex : 0) + num(design.streetIndexExtra);
     const availability = this.availability(cost, vclass, fin ? OPTION_EFFECTS.finAvail : 0);
-    if (availability.outOfReach) warnings.push(`Availability ${availability.tn} — over 30 is out of the players' reach (R3R p.113)`);
+    if (availability.outOfReach) warnings.push(`Availability ${availability.tn} — over 30 is out of the players' reach (R3R p.113): ${availability.why}`);
     const extra = num(design.markUpExtra);
     if (extra < 0 || extra > 3) warnings.push(`A Mark-Up modifier of ${extra} — the book suggests 1 to 3 for prototypes and one-offs (R3R p.113)`);
 
