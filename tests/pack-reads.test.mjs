@@ -24,6 +24,7 @@ const ALLOW = [
   [/game\.packs\.get\(PACK_ID\)/,           'GM build macros writing one named pack (skills, Mr Johnson\'s contacts)'],
   [/game\.packs\.get\(collection\)/,        'sr3e.actor.create: resolves the entry the picker already offered'],
   [/game\.packs\.get\(dropped\.pack\)/,     'SR3EPurchase drop: resolves a dropped item, then WARNS if its book is off'],
+  [/game\.packs\.get\(IC_PACK\)/,         'Host generator: copies the IC the Defragged ruleset already chose — no picker, the ruleset setting gates it'],
 ];
 
 function* files(dir) {
