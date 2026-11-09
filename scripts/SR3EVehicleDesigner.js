@@ -80,11 +80,14 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     for (const pack of game.packs.filter(p => p.documentName === 'Item')) {
       const idx = await pack.getIndex({ fields: ['type', 'system.rating', 'system.designCost', 'system.designCf',
         'system.designLoad', 'system.cfCost', 'system.load', 'system.bookPage'] });
-      for (const e of idx) if (e.type === 'vehiclemod') out.push({ ...e, uuid: e.uuid ?? `Compendium.${pack.collection}.Item.${e._id}` });
+      // Only books the GM has turned on are offered (the maintainer, 2026-11-09: "they shouldnt be there if i cant view the
+      // book"); every copy is still kept so a saved design finds its mods.
+      const allowed = game.sr3e?.SR3ESourceBooks?.packAllowed(pack) ?? true;
+      for (const e of idx) if (e.type === 'vehiclemod') out.push({ ...e, uuid: e.uuid ?? `Compendium.${pack.collection}.Item.${e._id}`, allowed });
     }
     // One entry per name — the same mod in two books' packs is offered once (VehicleDesignActor.pickList).
     this._modAll = out;   // every copy, so a design saved before the de-duplication still finds its uuid
-    return (this._modIndex = VehicleDesignActor.pickList(out));
+    return (this._modIndex = VehicleDesignActor.pickList(out.filter(e => e.allowed)));
   }
 
   _ctx() {

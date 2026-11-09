@@ -159,6 +159,7 @@ export async function run(t) {
     const css = readFileSync(new URL('../styles/sr3e.css', import.meta.url), 'utf8');
     t.ok('a card that does not fit looks different — greyed, amber edge, a badge', /\.vd-card\.vd-misfit \{[^}]*grayscale[^}]*--sr-amber/.test(css) && css.includes(`.vd-card.vd-misfit::before { content: "Doesn't fit"`));
   }
+  t.ok('the mod shop offers only the books the GM turned on', w.includes('game.sr3e?.SR3ESourceBooks?.packAllowed(pack)') && w.includes('pickList(out.filter(e => e.allowed))'));
   t.ok('chassis cards show the catalogue picture', /DesignerArt\.picture\(card\.art/.test(w));
 
   // Pictures (the maintainer, 2026-11-08: anime style, transparent background), generated on the maintainer's ComfyUI.
