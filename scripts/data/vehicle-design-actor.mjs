@@ -32,7 +32,25 @@ const ATTRS = new Set(['handling', 'handlingOffRoad', 'speed', 'accel', 'body', 
 const int = v => { const n = parseInt(String(v ?? '').replace(/,/g, ''), 10); return Number.isFinite(n) ? n : null; };
 const get = (obj, path) => path.split('.').reduce((o, k) => o?.[k], obj);
 
+/**
+ * A trailer and the vehicle designed to tow it (the maintainer, 2026-11-09: a truck and its trailer designed together, as a
+ * linked pair). Two actors, as the book has it — a trailer takes no power plant (R3R p.109) — each pointing at the other.
+ */
+export const TOW_FLAG = 'towLink';
+
 export const VehicleDesignActor = {
+  /**
+   * The flag updates that link a trailer and its tow vehicle: `{ trailer, tow }`, each `{ 'flags.<scope>.towLink': {…} }`
+   * naming the other by uuid and name. Nothing else changes — the GM still hitches them in play.
+   */
+  towLink(scope, trailer, tow) {
+    const ref = a => ({ uuid: a?.uuid ?? null, name: a?.name ?? '' });
+    return {
+      trailer: { [`flags.${scope}.${TOW_FLAG}`]: { role: 'trailer', other: ref(tow) } },
+      tow: { [`flags.${scope}.${TOW_FLAG}`]: { role: 'tow', other: ref(trailer) } },
+    };
+  },
+
   /** The vehicle's values for a design result: `{ field: value }` — a figure the result lacks is left out. */
   values(result) {
     if (!result?.chassis) return {};

@@ -22,7 +22,7 @@
  */
 import { CHASSIS, CATEGORIES, PLANTS } from './data/vehicle-design-tables.mjs';
 import { VehicleDesign, CLASSES, RATES, SMART } from './data/vehicle-design.mjs';
-import { VehicleDesignActor, FLAG, SOURCE_FLAG } from './data/vehicle-design-actor.mjs';
+import { VehicleDesignActor, FLAG, SOURCE_FLAG, TOW_FLAG } from './data/vehicle-design-actor.mjs';
 import { DesignOptions, SHOPS } from './data/design-options.mjs';
 import { DesignerArt, tokenImage } from './data/designer-art.mjs';
 import { ModCatalog, SHELVES } from './data/mod-catalog.mjs';
@@ -45,8 +45,8 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
   };
 
   /** Open a fresh design, or — with a vehicle — that vehicle's stored design (re-saving offers the changes). */
-  static open(actor = null) {
-    const app = new SR3EVehicleDesigner(actor);
+  static open(actor = null, options = {}) {
+    const app = new SR3EVehicleDesigner(actor, options);
     app.render(true);
     return app;
   }
@@ -54,6 +54,8 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
   constructor(actor = null, options = {}) {
     super(options);
     this.actor = actor?.type === 'vehicle' ? actor : null;
+    // Designing the vehicle that tows this trailer: it is linked to the trailer when created.
+    this.towing = options.towing ?? null;
     const stored = this.actor?.getFlag(SCOPE, FLAG);
     this.design = foundry.utils.mergeObject(blankDesign(), stored ? foundry.utils.deepClone(stored) : {});
     if (!this.design.name) this.design.name = this.actor?.name ?? '';
@@ -62,7 +64,10 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     this.ui = {};
   }
 
-  get title() { return this.actor ? `🛠 Design — ${this.actor.name}` : '🛠 Vehicle Designer'; }
+  get title() {
+    if (this.actor) return `🛠 Design — ${this.actor.name}`;
+    return this.towing ? `🛠 Vehicle Designer — tow vehicle for ${this.towing.name}` : '🛠 Vehicle Designer';
+  }
 
   /** Every vehicle mod in the packs, with its design figures — loaded once per window. */
   async _mods() {
@@ -115,9 +120,20 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
         <button type="button" class="vd-nav" data-step="${step - 1}" ${step === 1 ? 'disabled' : ''}>◀ Back</button>
         ${step < 5
           ? `<button type="button" class="vd-nav vd-next" data-step="${step + 1}" ${ch ? '' : 'disabled'}>Next ▶</button>`
-          : `<button type="button" class="vd-save vd-next" ${ch ? '' : 'disabled'}>${this.actor ? '💾 Offer changes to the vehicle' : '🚗 Create vehicle'}</button>`}
+          : `${this._towButton(ch)}<button type="button" class="vd-save vd-next" ${ch ? '' : 'disabled'}>${this.actor ? '💾 Offer changes to the vehicle' : '🚗 Create vehicle'}</button>`}
       </footer>`;
     return div;
+  }
+
+  /**
+   * A created trailer offers to design its tow vehicle (the maintainer, 2026-11-09: truck and trailer as a linked pair);
+   * once linked, the trailer and its tow name each other.
+   */
+  _towButton(ch) {
+    const link = this.actor?.getFlag(SCOPE, TOW_FLAG);
+    if (link?.other?.name) return `<span class="vd-dim vd-tow-link">${link.role === 'trailer' ? 'Towed by' : 'Tows'} <b>${esc(link.other.name)}</b></span>`;
+    if (!this.actor || !ch || !ChassisCatalog.card(ch.id).towed) return '';
+    return `<button type="button" class="vd-tow" title="Open a new design for the vehicle that pulls this one; the two are linked when it is created.">🚚 Design its tow vehicle</button>`;
   }
 
   /** The pinned result bar — the design's stats and price, always at the top (the maintainer, 2026-11-08). */
@@ -181,7 +197,8 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
       return `<div class="vd-towed"><div class="vd-towed-art">${DesignerArt.picture(info.art, ch.category, ch.drone)}</div><div>
         <h3>Towed — no power plant</h3><p>${esc(info.blurb)}</p>
         ${load ? `<p><b>${esc(load)}</b> <span class="vd-dim">(${esc(ch.page)})</span></p>` : ''}
-        <p class="vd-dim">It moves at whatever pulls it — its Speed and Acceleration are the tow's. Go on to the options.</p></div></div>`;
+        <p class="vd-dim">It moves at whatever pulls it — its Speed and Acceleration are the tow's. Its Load and Cargo can still be raised below.</p></div></div>
+        ${this._tuning(d, ch, r)}`;
     }
     const rows = Object.keys(PLANTS).flatMap(code => VehicleDesign.plantsFor(ch.id, code));
     const body = VehicleDesign.bodyOf(ch);
@@ -230,7 +247,9 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
       ['signature', 'Signature', s.sig == null ? null : s.sig - n(imp.signature), s.sig, null, '+', 'high',
         `Raises Signature — harder to detect. Costs (levels)⁴ × ${RATES.signature} points (R3R p.116).`],
     ];
-    const rows = lines.map(([k, label, start, result, max, sign, better, tip]) => {
+    // A towed chassis has no plant: only its Load and Cargo can be raised, from its own printed figures (R3R p.204).
+    const towed = ChassisCatalog.card(ch.id).towed;
+    const rows = (towed ? lines.filter(([k]) => k === 'load' || k === 'cargo') : lines).map(([k, label, start, result, max, sign, better, tip]) => {
       const over = result != null && max != null && (better === 'low' ? result < max : result > max);
       return `<tr class="${over ? 'vd-over-row' : ''}" title="${esc(tip)}">
         <th>${esc(label)}</th><td>${esc(start ?? '—')}</td><td>${sign} ${input(`improve.${k}`, imp[k], tip)}</td>
@@ -238,7 +257,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     }).join('');
     const smartTip = `Smart materials (R3R p.118): ${SMART.dp} points. Handling ${SMART.handling}; maximum Speed, Acceleration and Load × ${SMART.factor}; Street Index +${SMART.streetIndex}.`;
     const freedTip = what => `${what} freed by taking seats out — free (R3R p.104). Type what the removed seats gave.`;
-    return `<fieldset class="vd-tune"><legend>Tune it — improvements past the plant's starting figures (R3R pp.115-118)</legend>
+    return `<fieldset class="vd-tune"><legend>Tune it — improvements past the ${towed ? 'chassis\'' : 'plant\'s'} starting figures (R3R pp.115-118)</legend>
       <table class="vd-tune-table"><tr><th></th><th>Start</th><th>Added</th><th>Result</th><th>Limit</th></tr>${rows}</table>
       <div class="vd-row">
         <label title="${esc(smartTip)}"><input type="checkbox" data-path="smartMaterials" ${d.smartMaterials ? 'checked' : ''}/> Smart materials (p.118)</label>
@@ -442,6 +461,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     search?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); this.ui.q = search.value; this.render(); } });
     search?.addEventListener('change', () => { this.ui.q = search.value; this.render(); });
     el.querySelector('.vd-save')?.addEventListener('click', () => this._save());
+    el.querySelector('.vd-tow')?.addEventListener('click', () => SR3EVehicleDesigner.open(null, { towing: this.actor }));
   }
 
   /** Re-price a picked mod from its design figures after its level, the chassis or the plant changed. */
@@ -532,6 +552,13 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     const pic = icon ? { img: icon, 'prototypeToken.texture.src': icon } : {};
     await created.update({ ...VehicleDesignActor.update(values), ...pic, [`flags.${SCOPE}.${FLAG}`]: design });
     await this._embedMods(created, VehicleDesignActor.missingMods(design.mods, []));
+    if (this.towing) {
+      // Link the new tow vehicle and its trailer, each naming the other.
+      const link = VehicleDesignActor.towLink(SCOPE, this.towing, created);
+      await created.update(link.tow);
+      if (this.towing.isOwner) await this.towing.update(link.trailer);
+      else ui.notifications.warn(`${created.name} was created, but you cannot edit ${this.towing.name} to record the link.`);
+    }
     this.actor = created;
     if (created.isOwner) created.sheet.render(true);
     this.render();

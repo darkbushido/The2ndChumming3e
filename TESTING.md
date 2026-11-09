@@ -3785,6 +3785,12 @@ Second pass (the maintainer's feedback, 2026-11-08):
 - [ ] **Aftermarket:** **Morphing License Plate** shows 0 points and "Aftermarket — no design cost" — no ⚠.
 - [ ] **Pictures:** every chassis card, the towed step and the result bar show a coloured anime picture on a transparent
       background — no green or magenta fringe, no grey ground shadow, tail lights still red.
+- [ ] **Trailer tuning:** pick **Trailer, 53-foot** → step 2 says Towed and shows a **Tune it** table with only **Load**
+      (start 10,000, max 25,000) and **Cargo** (start 1,200, max 1,600). Add 5,000 kg → Load 15,000 and the points go up;
+      add 20,000 → ⚠ over the maximum. No "Pick a power plant" warning.
+- [ ] **Truck and trailer:** create the trailer → the footer offers **🚚 Design its tow vehicle**. It opens a new designer titled
+      "tow vehicle for <trailer>"; create a truck → its footer says **Tows <trailer>**, and reopening the trailer's design says
+      **Towed by <truck>**. Both actors keep their own stats.
 - [ ] **Setup/Breakdown Time:** pick a 55' trailer (or any Body 3+ vehicle) → the option is hidden; **Show all** shows it
       dimmed with "Body 2 or less only (drones Body 3) — this one is Body N". A Body 2 car or Body 3 drone lists it.
 - [ ] **Auxiliary engine:** add **Auxiliary Engine** → its row shows a **Power plant** dropdown of the chassis' plants with

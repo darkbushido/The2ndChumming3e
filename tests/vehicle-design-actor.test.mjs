@@ -4,7 +4,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { VehicleDesign as V } from '../scripts/data/vehicle-design.mjs';
-import { VehicleDesignActor as A, FLAG } from '../scripts/data/vehicle-design-actor.mjs';
+import { VehicleDesignActor as A, FLAG, TOW_FLAG } from '../scripts/data/vehicle-design-actor.mjs';
 
 export const name = 'vehicle-design-actor';
 const src = p => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
@@ -79,4 +79,13 @@ export async function run(t) {
   t.eq('amphibious at level 3: rating 3, 15,000¥, CF 4', [lv3.system.rating, lv3.system.cost, lv3.system.cfCost], [3, 15000, '4']);
   t.is('…the source is untouched', amph.system.cost, 2500);
 
+  // A trailer and its tow vehicle, linked (the maintainer, 2026-11-09: "Linked pair").
+  const link = A.towLink('The2ndChumming3e', { uuid: 'Actor.trl', name: 'Mobile Shop' }, { uuid: 'Actor.trk', name: 'Hauler' });
+  t.eq('the trailer names its tow vehicle', link.trailer[`flags.The2ndChumming3e.${TOW_FLAG}`], { role: 'trailer', other: { uuid: 'Actor.trk', name: 'Hauler' } });
+  t.eq('…and the tow vehicle names its trailer', link.tow[`flags.The2ndChumming3e.${TOW_FLAG}`], { role: 'tow', other: { uuid: 'Actor.trl', name: 'Mobile Shop' } });
+  const win = src('scripts/SR3EVehicleDesigner.js');
+  t.ok('a created trailer offers to design its tow vehicle', /ChassisCatalog\.card\(ch\.id\)\.towed\) return '';[\s\S]{0,200}vd-tow/.test(win));
+  t.ok('…the button opens a new design that tows it', win.includes("SR3EVehicleDesigner.open(null, { towing: this.actor })"));
+  t.ok('…creating it writes the link on both', /VehicleDesignActor\.towLink\(SCOPE, this\.towing, created\)[\s\S]{0,120}created\.update\(link\.tow\)[\s\S]{0,80}this\.towing\.update\(link\.trailer\)/.test(win));
+  t.ok('a towed chassis tunes only Load and Cargo', /towed \? lines\.filter\(\(\[k\]\) => k === 'load' \|\| k === 'cargo'\)/.test(win));
 }

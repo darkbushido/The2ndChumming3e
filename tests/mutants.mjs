@@ -4497,6 +4497,13 @@ export const MUTANTS = [
     impl:   function (id, c) { return id === 'setup' ? null : this._misfitOriginal(id, c); },
   },
   {
+    id:     'designer-towed-load-ignored',
+    suite:  'vehicle-design',
+    module: '../scripts/data/vehicle-design.mjs', klass: 'VehicleDesign', method: 'towedLoad',
+    was:    'a trailer had no Load to raise — the tuning read it from a power plant a trailer does not take (R3R pp.109, 204; TODO 297)',
+    impl:   () => null,
+  },
+  {
     id:     'designer-mod-misfit-ignored',
     suite:  'vehicle-designer-shop',
     module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'misfit',
