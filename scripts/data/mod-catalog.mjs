@@ -192,7 +192,8 @@ export const MAX_LEVEL = {
  * Aftermarket mods with no design figures at all — bought and fitted afterwards, not designed in (the maintainer,
  * 2026-11-08: "0 points, neutral note"). They price at 0 points with a note, not a ⚠.
  */
-export const AFTERMARKET = new Set(['Morphing License Plate', 'Library Transponder Chip']);
+// Ablative Armor: R3R p.131 says it is not available as a design option — it goes on after the build.
+export const AFTERMARKET = new Set(['Morphing License Plate', 'Library Transponder Chip', 'Ablative Armor']);
 
 export const ModCatalog = {
   SHELVES,
