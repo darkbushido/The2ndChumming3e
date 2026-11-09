@@ -476,6 +476,18 @@ packs and `system.json`), then `npm run packs:check`. New packs and a data-model
 
 ---
 
+## Pickers honour the source books (`tests/pack-reads.test.mjs`) — needs a live pass
+
+Reported 2026-11-09: the Vehicle Designer offered VAUBAN mods from the France Sourcebook, which is off.
+Configure Source Books → untick one book that ships gear, one with vehicles and one with an archetype, then:
+- [ ] its packs vanish from the Compendium sidebar.
+- [ ] 🛒 Buy gear: search finds none of its items; dragging one in still fills in, with the "switched off" warning.
+- [ ] An item sheet's *Pick from compendium* lists none of its entries.
+- [ ] Character sheet → add a vehicle: its vehicles are not in the compendium groups.
+- [ ] Character sheet → link an archetype: its archetypes are not listed.
+- [ ] Vehicle Designer mod shop (once `claude/vehicle-designer-shop` lands): none of its mods.
+- [ ] Re-tick the book → everything comes back, no reload.
+
 ## Dialog wiring — TODO 20 (0.5.2) — needs a live pass
 
 Eighteen dialogs moved from the global `renderDialogV2` hook to their own `render` option. For
