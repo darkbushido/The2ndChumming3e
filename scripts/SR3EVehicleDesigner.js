@@ -22,7 +22,7 @@
  */
 import { CHASSIS, CATEGORIES, PLANTS } from './data/vehicle-design-tables.mjs';
 import { VehicleDesign, CLASSES, RATES, SMART } from './data/vehicle-design.mjs';
-import { VehicleDesignActor, FLAG, SOURCE_FLAG, TOW_FLAG } from './data/vehicle-design-actor.mjs';
+import { VehicleDesignActor, FLAG, SOURCE_FLAG, TOW_FLAG, MAX_TRAILERS } from './data/vehicle-design-actor.mjs';
 import { DesignOptions, SHOPS } from './data/design-options.mjs';
 import { DesignerArt, tokenImage } from './data/designer-art.mjs';
 import { ModCatalog, SHELVES } from './data/mod-catalog.mjs';
@@ -54,8 +54,10 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
   constructor(actor = null, options = {}) {
     super(options);
     this.actor = actor?.type === 'vehicle' ? actor : null;
-    // Designing the vehicle that tows this trailer: it is linked to the trailer when created.
+    // Designing the vehicle that tows this trailer (`towing`), or a trailer for this tractor (`towedBy`): the new vehicle
+    // is linked when it is created (the maintainer, 2026-11-09: a tractor and up to five trailers, R3R p.193).
     this.towing = options.towing ?? null;
+    this.towedBy = options.towedBy ?? null;
     const stored = this.actor?.getFlag(SCOPE, FLAG);
     this.design = foundry.utils.mergeObject(blankDesign(), stored ? foundry.utils.deepClone(stored) : {});
     if (!this.design.name) this.design.name = this.actor?.name ?? '';
@@ -66,7 +68,8 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
 
   get title() {
     if (this.actor) return `🛠 Design — ${this.actor.name}`;
-    return this.towing ? `🛠 Vehicle Designer — tow vehicle for ${this.towing.name}` : '🛠 Vehicle Designer';
+    if (this.towing) return `🛠 Vehicle Designer — tow vehicle for ${this.towing.name}`;
+    return this.towedBy ? `🛠 Vehicle Designer — a trailer for ${this.towedBy.name}` : '🛠 Vehicle Designer';
   }
 
   /** Every vehicle mod in the packs, with its design figures — loaded once per window. */
@@ -130,10 +133,39 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
    * once linked, the trailer and its tow name each other.
    */
   _towButton(ch) {
-    const link = this.actor?.getFlag(SCOPE, TOW_FLAG);
-    if (link?.other?.name) return `<span class="vd-dim vd-tow-link">${link.role === 'trailer' ? 'Towed by' : 'Tows'} <b>${esc(link.other.name)}</b></span>`;
-    if (!this.actor || !ch || !ChassisCatalog.card(ch.id).towed) return '';
-    return `<button type="button" class="vd-tow" title="Open a new design for the vehicle that pulls this one; the two are linked when it is created.">🚚 Design its tow vehicle</button>`;
+    if (!this.actor || !ch) return '';
+    const link = this.actor.getFlag(SCOPE, TOW_FLAG);
+    if (ChassisCatalog.card(ch.id).towed) {
+      if (link?.role === 'trailer' && link.other?.name) return `<span class="vd-dim vd-tow-link">Towed by <b>${esc(link.other.name)}</b></span>`;
+      return `<button type="button" class="vd-tow" title="Open a new design for the vehicle that pulls this one; the two are linked when it is created.">🚚 Design its tow vehicle</button>`;
+    }
+    // A tractor: add trailers, up to five (R3R p.193).
+    const n = VehicleDesignActor.trailersOf(link).length;
+    return `<button type="button" class="vd-add-trailer" ${n >= MAX_TRAILERS ? 'disabled' : ''} title="Open a new design for a trailer this vehicle pulls; it is linked when created. Up to ${MAX_TRAILERS} (R3R p.193).">🚛 Add a trailer (${n}/${MAX_TRAILERS})</button>`;
+  }
+
+  /**
+   * A tractor's trailers on the price step: each with a Hitched tick, and whether its Load covers what is hitched (house
+   * rule, the maintainer 2026-11-09: build one tractor and five trailers, hitch all of them cross-country or one or two
+   * for the city). A trailer's Load is read from its own stored design.
+   */
+  _trailersPanel(r) {
+    const list = VehicleDesignActor.trailersOf(this.actor?.getFlag(SCOPE, TOW_FLAG));
+    if (!list.length) return '';
+    const rows = list.map(t => {
+      const a = globalThis.fromUuidSync?.(t.uuid);
+      const des = a?.getFlag?.(SCOPE, FLAG);
+      const load = des ? VehicleDesign.evaluate(des).load?.total ?? 0 : 0;
+      return { ...t, load, gone: !a };
+    });
+    const p = VehicleDesignActor.pull(r.load?.total ?? null, rows);
+    const line = t => `<label class="vd-trailer"><input type="checkbox" class="vd-hitch" data-uuid="${esc(t.uuid)}" ${t.hitched ? 'checked' : ''} ${t.gone ? 'disabled' : ''}/>
+      <b>${esc(t.name)}</b> <span class="vd-dim">${t.gone ? '(deleted)' : `Load ${t.load.toLocaleString()} kg`}</span></label>`;
+    return `<fieldset class="vd-trailers"><legend>Trailers — tick the ones hitched (up to ${MAX_TRAILERS}, R3R p.193)</legend>
+      ${rows.map(line).join('')}
+      <div class="vd-hint">${p.count} hitched, carrying up to ${p.pulled.toLocaleString()} kg · this vehicle's Load ${esc((r.load?.total ?? 0).toLocaleString())} kg</div>
+      ${p.warning ? `<div class="vd-amber">⚠ ${esc(p.warning)}</div>` : ''}
+    </fieldset>`;
   }
 
   /** The pinned result bar — the design's stats and price, always at the top (the maintainer, 2026-11-08). */
@@ -402,6 +434,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
         ${(r.dp?.lines ?? []).map(l => `<div class="vd-line"><span>${esc(l.label)}</span><b>${l.points}</b><span class="vd-dim">${esc(l.page ?? '')}</span></div>`).join('')}
         <div class="vd-line vd-total"><span>Total</span><b>${esc(r.dp?.total ?? 0)}</b></div>
       </fieldset>
+      ${this._trailersPanel(r)}
       ${(r.warnings ?? []).length ? `<fieldset><legend>Warnings — Create still works</legend>${r.warnings.map(w => `<div class="vd-amber">⚠ ${esc(w)}</div>`).join('')}</fieldset>` : ''}
     </div>`;
   }
@@ -462,6 +495,11 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     search?.addEventListener('change', () => { this.ui.q = search.value; this.render(); });
     el.querySelector('.vd-save')?.addEventListener('click', () => this._save());
     el.querySelector('.vd-tow')?.addEventListener('click', () => SR3EVehicleDesigner.open(null, { towing: this.actor }));
+    el.querySelector('.vd-add-trailer')?.addEventListener('click', () => SR3EVehicleDesigner.open(null, { towedBy: this.actor }));
+    el.querySelectorAll('.vd-hitch').forEach(box => box.addEventListener('change', async () => {
+      await this.actor.update(VehicleDesignActor.hitch(SCOPE, this.actor.getFlag(SCOPE, TOW_FLAG), box.dataset.uuid, box.checked));
+      this.render();
+    }));
   }
 
   /** Re-price a picked mod from its design figures after its level, the chassis or the plant changed. */
@@ -553,11 +591,21 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     await created.update({ ...VehicleDesignActor.update(values), ...pic, [`flags.${SCOPE}.${FLAG}`]: design });
     await this._embedMods(created, VehicleDesignActor.missingMods(design.mods, []));
     if (this.towing) {
-      // Link the new tow vehicle and its trailer, each naming the other.
-      const link = VehicleDesignActor.towLink(SCOPE, this.towing, created);
+      // The new tow vehicle and its trailer, each naming the other.
+      const link = VehicleDesignActor.towLink(SCOPE, this.towing, created, null);
       await created.update(link.tow);
       if (this.towing.isOwner) await this.towing.update(link.trailer);
       else ui.notifications.warn(`${created.name} was created, but you cannot edit ${this.towing.name} to record the link.`);
+    }
+    if (this.towedBy) {
+      // A new trailer for this tractor: added to its list, up to five (R3R p.193).
+      const link = VehicleDesignActor.towLink(SCOPE, created, this.towedBy, this.towedBy.getFlag(SCOPE, TOW_FLAG));
+      if (link.full) ui.notifications.warn(`${this.towedBy.name} already pulls ${MAX_TRAILERS} trailers — ${created.name} was created unlinked.`);
+      else {
+        await created.update(link.trailer);
+        if (this.towedBy.isOwner) await this.towedBy.update(link.tow);
+        else ui.notifications.warn(`${created.name} was created, but you cannot edit ${this.towedBy.name} to record the link.`);
+      }
     }
     this.actor = created;
     if (created.isOwner) created.sheet.render(true);

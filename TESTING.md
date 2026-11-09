@@ -3788,9 +3788,13 @@ Second pass (the maintainer's feedback, 2026-11-08):
 - [ ] **Trailer tuning:** pick **Trailer, 53-foot** → step 2 says Towed and shows a **Tune it** table with only **Load**
       (start 10,000, max 25,000) and **Cargo** (start 1,200, max 1,600). Add 5,000 kg → Load 15,000 and the points go up;
       add 20,000 → ⚠ over the maximum. No "Pick a power plant" warning.
-- [ ] **Truck and trailer:** create the trailer → the footer offers **🚚 Design its tow vehicle**. It opens a new designer titled
-      "tow vehicle for <trailer>"; create a truck → its footer says **Tows <trailer>**, and reopening the trailer's design says
-      **Towed by <truck>**. Both actors keep their own stats.
+- [ ] **Truck and trailer:** create a trailer → its footer offers **🚚 Design its tow vehicle**; that opens a designer titled
+      "tow vehicle for <trailer>". Create a truck → the trailer's design says **Towed by <truck>**. Both are optional —
+      skip the button and the trailer stands alone.
+- [ ] **Road train (R3R p.193):** on a created truck the footer offers **🚛 Add a trailer (n/5)**; each opens "a trailer for
+      <truck>". Make five → the button greys out at 5/5. The truck's price step lists its **Trailers** with **Hitched**
+      ticks; untick three (the city run) → the hint counts 2 hitched and their Load. Hitch more Load than the truck's →
+      ⚠ the house-rule warning; tune the truck's Load up → it clears.
 - [ ] **Setup/Breakdown Time:** pick a 55' trailer (or any Body 3+ vehicle) → the option is hidden; **Show all** shows it
       dimmed with "Body 2 or less only (drones Body 3) — this one is Body N". A Body 2 car or Body 3 drone lists it.
 - [ ] **Auxiliary engine:** add **Auxiliary Engine** → its row shows a **Power plant** dropdown of the chassis' plants with

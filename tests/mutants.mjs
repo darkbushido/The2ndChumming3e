@@ -4504,6 +4504,20 @@ export const MUTANTS = [
     impl:   () => null,
   },
   {
+    id:     'designer-pull-counts-unhitched',
+    suite:  'vehicle-design-actor',
+    module: '../scripts/data/vehicle-design-actor.mjs', klass: 'VehicleDesignActor', method: 'pull', needsOriginal: '_pullOriginal',
+    was:    'a tractor was warned for trailers left behind — only the hitched ones are pulled (TODO 297)',
+    impl:   function (load, trailers = []) { return this._pullOriginal(load, trailers.map(x => ({ ...x, hitched: true }))); },
+  },
+  {
+    id:     'designer-trailer-cap-ignored',
+    suite:  'vehicle-design-actor',
+    module: '../scripts/data/vehicle-design-actor.mjs', klass: 'VehicleDesignActor', method: 'towLink', needsOriginal: '_towLinkOriginal',
+    was:    'a tractor took a sixth trailer — the Bergen pulls up to five (R3R p.193; TODO 297)',
+    impl:   function (scope, trailer, tow) { return this._towLinkOriginal(scope, trailer, tow, null); },
+  },
+  {
     id:     'designer-mod-misfit-ignored',
     suite:  'vehicle-designer-shop',
     module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'misfit',
