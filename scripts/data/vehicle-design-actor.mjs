@@ -37,17 +37,56 @@ const get = (obj, path) => path.split('.').reduce((o, k) => o?.[k], obj);
  * linked pair). Two actors, as the book has it — a trailer takes no power plant (R3R p.109) — each pointing at the other.
  */
 export const TOW_FLAG = 'towLink';
+/**
+ * A tractor pulls up to five trailers — the Nordkapp-Conestoga Bergen's tractor module "can be connected with up to five
+ * additional trailer modules" into a road train (R3R p.193). The maintainer, 2026-11-09: "maxing out at 5 seems fine".
+ */
+export const MAX_TRAILERS = 5;
 
 export const VehicleDesignActor = {
   /**
-   * The flag updates that link a trailer and its tow vehicle: `{ trailer, tow }`, each `{ 'flags.<scope>.towLink': {…} }`
-   * naming the other by uuid and name. Nothing else changes — the GM still hitches them in play.
+   * A tractor's trailers from its link flag: `[{ uuid, name, hitched }]`. A link written before the road train (one
+   * trailer as `other`) reads as that trailer, hitched.
    */
-  towLink(scope, trailer, tow) {
+  trailersOf(flag) {
+    if (Array.isArray(flag?.trailers)) return flag.trailers;
+    return flag?.role === 'tow' && flag.other?.uuid ? [{ ...flag.other, hitched: true }] : [];
+  },
+
+  /**
+   * The flag updates that link a trailer to its tractor: `{ trailer, tow, full }`. The trailer names its tractor; the
+   * tractor's list gains the trailer, hitched (a trailer already on it is not added twice). With MAX_TRAILERS already on
+   * the list, `full` is true and nothing is written. The GM still hitches them in play.
+   */
+  towLink(scope, trailer, tow, towFlag = null) {
     const ref = a => ({ uuid: a?.uuid ?? null, name: a?.name ?? '' });
+    const list = this.trailersOf(towFlag).filter(t => t.uuid !== trailer?.uuid);
+    if (list.length >= MAX_TRAILERS) return { trailer: null, tow: null, full: true };
     return {
       trailer: { [`flags.${scope}.${TOW_FLAG}`]: { role: 'trailer', other: ref(tow) } },
-      tow: { [`flags.${scope}.${TOW_FLAG}`]: { role: 'tow', other: ref(trailer) } },
+      tow: { [`flags.${scope}.${TOW_FLAG}`]: { role: 'tow', trailers: [...list, { ...ref(trailer), hitched: true }] } },
+      full: false,
+    };
+  },
+
+  /** The tractor's flag update that hitches (or unhitches) one of its trailers. */
+  hitch(scope, towFlag, uuid, on) {
+    const trailers = this.trailersOf(towFlag).map(t => (t.uuid === uuid ? { ...t, hitched: !!on } : t));
+    return { [`flags.${scope}.${TOW_FLAG}`]: { role: 'tow', trailers } };
+  },
+
+  /**
+   * Can the tractor pull what is hitched? House rule (the maintainer, 2026-11-09 — R3R prints no towing rule): its Load
+   * must cover the hitched trailers' Load. `trailers` are `[{ hitched, load }]`. Warns, never blocks.
+   * Out: { count, pulled, ok, warning }.
+   */
+  pull(towLoad, trailers = []) {
+    const on = trailers.filter(t => t.hitched);
+    const pulled = on.reduce((s, t) => s + (Number(t.load) || 0), 0);
+    const ok = towLoad == null || pulled <= Number(towLoad);
+    return {
+      count: on.length, pulled, ok,
+      warning: ok ? null : `The hitched trailers carry up to ${pulled.toLocaleString()} kg — more than this vehicle's Load of ${Number(towLoad).toLocaleString()} kg (house rule: a tractor's Load covers its trailers')`,
     };
   },
 
