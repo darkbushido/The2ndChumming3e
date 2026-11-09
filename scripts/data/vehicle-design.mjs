@@ -23,6 +23,7 @@
  */
 import { CHASSIS, POWER_PLANTS, PLANTS } from './vehicle-design-tables.mjs';
 import { DesignOptions } from './design-options.mjs';
+import { TOWED } from './chassis-catalog.mjs';
 
 export const PAGES = {
   steps: 'R3R p.104', chassis: 'R3R p.202', plant: 'R3R p.194', improvements: 'R3R p.115-116', smart: 'R3R p.118',
@@ -85,6 +86,18 @@ export const VehicleDesign = {
   },
 
   plantRow(id) { return POWER_PLANTS.find(p => p.id === id) ?? null; },
+
+  /**
+   * A towed chassis' own Load and maximum, from its Chassis Table row ("Load 10,000 kg (max 25,000 kg)", R3R p.204) —
+   * a trailer takes no power plant (R3R p.109), so its Load is printed on the chassis. null for a chassis with a plant.
+   */
+  towedLoad(ch) {
+    if (!ch || !TOWED.has(ch.id)) return null;
+    const m = /Load ([\d,.]+) ?kg(?: \(max ([\d,.]+) ?kg\))?/.exec(String(ch.features ?? ''));
+    if (!m) return null;
+    const n = t => (t == null ? null : Number(t.replace(/,/g, '')));
+    return { start: n(m[1]), max: n(m[2]) };
+  },
 
   /**
    * A printed cell as a number, with Body `B`. '5xB', '50-(5xB)', '10+(20xB)', '1.2÷B'. A pair keeps its first figure
@@ -154,7 +167,8 @@ export const VehicleDesign = {
       body, hull: body, hullFactor: hasHull ? OPTION_EFFECTS.hullFactor * body * body : body, hasHull, category: ch.category, drone: !!ch.drone, chassisId: ch.id, chassisDp: ch.dp,
       plantDp: row ? this.cell(row.dp, body) : null, plantCode: row?.plant ?? null,
       plantDpOf: id => { const r = this.plantRow(id); return r ? this.cell(r.dp, body) : null; },
-      startLoad: row ? this.cell(row.load, body) : null, maxLoad: row ? this.cell(row.loadMax, body) : null,
+      startLoad: row ? this.cell(row.load, body) : this.towedLoad(ch)?.start ?? null,
+      maxLoad: row ? this.cell(row.loadMax, body) : this.towedLoad(ch)?.max ?? null,
       pilot, adaptation: pilot, smart: !!design.smartMaterials,
       modNames: (design.mods ?? []).map(m => String(m.name ?? '')), optionIds: rows.map(o => o.id).filter(Boolean),
     };
@@ -202,7 +216,8 @@ export const VehicleDesign = {
     let row = this.plantRow(design.plant);
     if (!row && design.plant) row = this.plantsFor(ch.id, design.plant)[0] ?? null;
     if (row && !row.chassis.includes(ch.id)) warnings.push(`${PLANTS[row.plant]?.name ?? row.plant} is not listed for ${ch.name} — the book does not allow it (R3R p.110)`);
-    if (!row) warnings.push(design.plant ? `No ${PLANTS[design.plant]?.name ?? design.plant} row for ${ch.name} in the Power Plant Table (R3R p.194-201)` : 'Pick a power plant (R3R p.194)');
+    const towed = this.towedLoad(ch) ?? (TOWED.has(ch.id) ? {} : null);
+    if (!row && !towed) warnings.push(design.plant ? `No ${PLANTS[design.plant]?.name ?? design.plant} row for ${ch.name} in the Power Plant Table (R3R p.194-201)` : 'Pick a power plant (R3R p.194)');
 
     const imp = design.improve ?? {};
     const smart = !!design.smartMaterials;
@@ -288,9 +303,11 @@ export const VehicleDesign = {
 
     const loadAdd = Math.max(0, num(imp.load));
     let loadTotal = null, loadMax = null;
-    if (row) {
-      loadTotal = (this.cell(row.load, body) ?? 0) + loadAdd + Math.max(0, num(freed.load)) + noManual.load;
-      loadMax = this.cell(row.loadMax, body);
+    // A towed chassis has no plant: its Load and maximum are printed on its own row (R3R p.204).
+    const loadStart = row ? this.cell(row.load, body) : towed?.start ?? null;
+    if (row || loadStart != null) {
+      loadTotal = (loadStart ?? 0) + loadAdd + Math.max(0, num(freed.load)) + noManual.load;
+      loadMax = row ? this.cell(row.loadMax, body) : towed?.max ?? null;
       if (smart && loadMax != null) loadMax = this.smartMax(loadMax);
       if (loadMax != null && loadTotal > loadMax) warnings.push(`Load ${loadTotal} kg is over the maximum ${loadMax} (R3R p.116)`);
     }

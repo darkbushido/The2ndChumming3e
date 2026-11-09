@@ -108,4 +108,16 @@ export async function run(t) {
   t.eq('a small fixed-wing UAV on gasoline: stall 20, Speed 50 + 10, max 150', [uav.stats.stall, uav.stats.speed, uav.stats.speedMax], [20, 60, 150]);
   const sub = V.evaluate({ chassis: 'minisub-light', plant: 'D' });
   t.eq('a submarine keeps no stall speed', sub.stats.stall, null);
+
+  // A towed chassis takes no plant (R3R p.109); its Load and maximum are on its own row (R3R p.204: 53-foot trailer
+  // Load 10,000 kg, max 25,000 kg). The maintainer, 2026-11-09: "you can't modify the capacity of the trailer".
+  t.eq('a trailer reads its own Load and maximum', V.towedLoad(V.chassis('trailer-53ft')), { start: 10000, max: 25000 });
+  t.is('…a chassis with a plant has none', V.towedLoad(V.chassis('sand-buggy')), null);
+  const trailer = V.evaluate({ chassis: 'trailer-53ft' });
+  t.eq('a trailer is not asked for a power plant', trailer.warnings, []);
+  t.eq('…its Load is 10,000 of 25,000 kg', [trailer.load.total, trailer.load.max], [10000, 25000]);
+  const raised = V.evaluate({ chassis: 'trailer-53ft', improve: { load: 5000, cargo: 100 } });
+  t.eq('…raising Load and Cargo is priced and counted', [raised.load.total, raised.cf.total, raised.dp.total],
+    [15000, 1300, 160 + V.loadCost(5000, 7) + V.cargoCost(100)]);
+  t.ok('…past its maximum it warns', V.evaluate({ chassis: 'trailer-53ft', improve: { load: 20000 } }).warnings.some(w => /Load 30000 kg is over the maximum 25000/.test(w)));
 }
