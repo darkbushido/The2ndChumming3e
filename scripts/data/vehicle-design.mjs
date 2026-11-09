@@ -153,6 +153,7 @@ export const VehicleDesign = {
     const ctx = {
       body, hull: body, hullFactor: hasHull ? OPTION_EFFECTS.hullFactor * body * body : body, hasHull, category: ch.category, drone: !!ch.drone, chassisId: ch.id, chassisDp: ch.dp,
       plantDp: row ? this.cell(row.dp, body) : null, plantCode: row?.plant ?? null,
+      plantDpOf: id => { const r = this.plantRow(id); return r ? this.cell(r.dp, body) : null; },
       startLoad: row ? this.cell(row.load, body) : null, maxLoad: row ? this.cell(row.loadMax, body) : null,
       pilot, adaptation: pilot, smart: !!design.smartMaterials,
       modNames: (design.mods ?? []).map(m => String(m.name ?? '')), optionIds: rows.map(o => o.id).filter(Boolean),

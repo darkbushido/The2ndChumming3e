@@ -34,6 +34,11 @@ export async function run(t) {
   // Hull Factor = 100 × Hull² (p.114; Hull 5 → 2,500).
   const jet = ev('attack-submarine', 'N', [opt('waterjet')]).options[0];
   t.eq('Ducted waterjet: 5,000 × Hull Factor, 4 × CF, 3 × kg (p.116; Hull 5 → Hull Factor 2,500)', [jet.dp, jet.cf, jet.load], [12500000, 10000, 7500]);
+  // Auxiliary engine: its plant is a pick from the chassis' rows (the maintainer, 2026-11-09).
+  const dRow = V.plantsFor('attack-submarine', 'D')[0];
+  t.is('Auxiliary engine costs the picked plant\'s points', ev('attack-submarine', 'N', [opt('aux-engine', { auxPlant: dRow.id })]).options[0].dp, 120000);
+  t.is('…none picked = the main plant\'s', ev('attack-submarine', 'N', [opt('aux-engine')]).options[0].dp, 250000);
+  t.is('…a design saved with typed points keeps them', ev('attack-submarine', 'N', [opt('aux-engine', { points: 7 })]).options[0].dp, 7);
   t.eq('Auxiliary engine on a hull: (Hull + Hull Factor) × 2 CF (p.116)', ev('attack-submarine', 'N', [opt('aux-engine')]).options[0].cf, 5010);
   t.eq('Flight deck on a hull: length × Hull Factor (p.119)', ev('attack-submarine', 'N', [opt('flight-deck', { metres: 10 })]).options[0].dp, 25000);
   t.eq('…and Body for a vehicle without a Hull rating', ev('sand-buggy', 'G', [opt('flight-deck', { metres: 10 })]).options[0].dp, 20);

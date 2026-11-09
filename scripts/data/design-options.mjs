@@ -93,8 +93,10 @@ export const OPTIONS = [
     fit: c => (c.category === 'sub' ? null : 'For submarines (or a vehicle with EnviroSeal)'),
   },
   {
-    id: 'aux-engine', name: 'Auxiliary Engine', group: 'Enhancement', page: 'R3R p.116', inputs: [['points', 'Its plant\'s points', null]],
-    dp: c => (c.points == null || c.points === '' ? c.plantDp ?? 0 : num(c.points)),
+    id: 'aux-engine', name: 'Auxiliary Engine', group: 'Enhancement', page: 'R3R p.116', inputs: [['auxPlant', 'Its power plant', ''], ['points', '', null]],
+    // Its plant is picked from the chassis' Power Plant Table rows (the maintainer, 2026-11-09: "a dropdown of the different
+    // powerplant types"); none picked = the main plant's. A design saved with typed `points` keeps them.
+    dp: c => (c.points != null && c.points !== '' ? num(c.points) : (c.auxPlant ? c.plantDpOf?.(c.auxPlant) : null) ?? c.plantDp ?? 0),
     cf: c => (c.hasHull ? (c.hull + c.hullFactor) * 2 : (c.body + 1) * 2), load: c => Math.round((c.maxLoad ?? 0) * 0.1),
     warn: c => (c.body === 0 ? ['A Body 0 vehicle cannot carry an auxiliary engine (R3R p.116)'] : []),
     note: 'Its Speed and Acceleration are half its plant\'s; one engine runs at a time',
