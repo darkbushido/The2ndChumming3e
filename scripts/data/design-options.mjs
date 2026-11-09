@@ -84,6 +84,7 @@ export const OPTIONS = [
     id: 'airlock', name: 'Airlock', group: 'Enhancement', page: 'R3R p.116', inputs: [['persons', 'Persons at once', 1]],
     dp: () => 500, cf: c => 40 + 40 * num(c.persons), load: () => 1000,
     warn: c => (c.category === 'sub' ? [] : ['An airlock is for submarines, or a vehicle with EnviroSeal (R3R p.116)']),
+    fit: c => (c.category === 'sub' ? null : 'For submarines (or a vehicle with EnviroSeal)'),
   },
   {
     id: 'aux-engine', name: 'Auxiliary Engine', group: 'Enhancement', page: 'R3R p.116', inputs: [['points', 'Its plant\'s points', null]],
@@ -91,18 +92,21 @@ export const OPTIONS = [
     cf: c => (c.hasHull ? (c.hull + c.hullFactor) * 2 : (c.body + 1) * 2), load: c => Math.round((c.maxLoad ?? 0) * 0.1),
     warn: c => (c.body === 0 ? ['A Body 0 vehicle cannot carry an auxiliary engine (R3R p.116)'] : []),
     note: 'Its Speed and Acceleration are half its plant\'s; one engine runs at a time',
+    fit: c => (c.body === 0 ? 'Not on a Body 0 vehicle' : null),
   },
   {
     id: 'ballast', name: 'Ballast Tanks', group: 'Enhancement', page: 'R3R p.116', inputs: [],
     dp: c => sq(c.body) * 10, cf: c => sq(c.body) * 2, load: c => sq(c.body) * 25,
     warn: c => (['sub', 'ship'].includes(c.category) ? ['Ballast tanks are not for submarine or ship chassis (R3R p.116)'] : []),
     note: 'Needs the EnviroSeal engine modification (p.132)',
+    fit: c => (['sub', 'ship'].includes(c.category) ? 'Not for submarine or ship chassis' : null),
   },
   {
     id: 'waterjet', name: 'Ducted Waterjet Drive', group: 'Enhancement', page: 'R3R p.116', inputs: [],
     dp: c => 5000 * c.hullFactor, cf: c => 4 * c.hullFactor, load: c => 3 * c.hullFactor,
     warn: c => (c.category === 'sub' ? [] : ['A ducted waterjet is for submarines only (R3R p.116)']),
     note: 'Engaged: Sonar Signature +2, Speed 20',
+    fit: c => (c.category === 'sub' ? null : 'For submarines only'),
   },
   {
     id: 'emd', name: 'EMD Ducted Waterjet Drive', group: 'Enhancement', page: 'R3R p.116-117', inputs: [],
@@ -112,6 +116,7 @@ export const OPTIONS = [
       ...(c.plantCode && c.plantCode !== 'N' ? ['An EMD drive needs a nuclear power plant (R3R p.117)'] : []),
     ],
     note: 'Engaged: Sonar Signature +2; Signature −3 against magnetic-anomaly detectors',
+    fit: c => (c.category !== 'sub' ? 'For submarines only' : c.plantCode && c.plantCode !== 'N' ? 'Needs a nuclear plant' : null),
   },
   {
     id: 'fin', name: 'Fin Drive', group: 'Enhancement', page: 'R3R p.117', inputs: [],
@@ -121,6 +126,7 @@ export const OPTIONS = [
       ...(c.smart ? ['A fin drive already uses smart materials — the vehicle cannot take both (R3R p.117)'] : []),
     ],
     effect: 'fin', note: 'Speed and Acceleration, starting and maximum, +25%; Street Index +1, Availability +4',
+    fit: c => (['boat', 'sub'].includes(c.category) && c.body <= 4 ? null : 'For boats and submarines of Body 4 or less'),
   },
   {
     id: 'hybrid', name: 'Hybrid Engine', group: 'Enhancement', page: 'R3R p.117', inputs: [],
@@ -130,22 +136,26 @@ export const OPTIONS = [
       ...(['M', 'G', 'D'].includes(c.plantCode) ? [] : ['A hybrid engine starts from a methane, gasoline or diesel plant (R3R p.117)']),
     ],
     effect: 'hybrid', note: 'Signature +1, Economy ×2, Acceleration −2 — before any other option',
+    fit: c => (!['bike', 'boat', 'car', 'special'].includes(c.category) ? 'For bikes, boats, cars and special vehicles' : c.plantCode && !['M', 'G', 'D'].includes(c.plantCode) ? 'Needs a methane, gasoline or diesel plant' : null),
   },
   {
     id: 'hydrofoil', name: 'Hydrofoil Capability', group: 'Enhancement', page: 'R3R p.117-118', inputs: [],
     dp: () => 50, cf: () => 8, load: () => 0,
     warn: c => (c.category === 'boat' && c.chassisId !== 'skiff' ? [] : ['Hydrofoils are for boats, except skiffs (R3R p.117)']),
     note: 'Engaged: Speed and Acceleration +25% (rounded down), Handling +2, Signature +1',
+    fit: c => (c.category === 'boat' && c.chassisId !== 'skiff' ? null : 'For boats (not skiffs)'),
   },
   {
     id: 'stol', name: 'Improved Takeoff/Landing (STOL)', group: 'Enhancement', page: 'R3R p.118', inputs: [],
     dp: () => 250, cf: () => 0, load: () => 0,
     warn: c => (c.category === 'fixedwing' ? [] : ['STOL / VSTOL is for fixed-wing aircraft (R3R p.118)']),
+    fit: c => (c.category === 'fixedwing' ? null : 'For fixed-wing aircraft'),
   },
   {
     id: 'vstol', name: 'Improved Takeoff/Landing (VSTOL)', group: 'Enhancement', page: 'R3R p.118', inputs: [],
     dp: () => 400, cf: () => 0, load: () => 0,
     warn: c => (c.category === 'fixedwing' ? [] : ['STOL / VSTOL is for fixed-wing aircraft (R3R p.118)']),
+    fit: c => (c.category === 'fixedwing' ? null : 'For fixed-wing aircraft'),
   },
   {
     id: 'no-manual', name: 'Removed Manual Controls', group: 'Enhancement', page: 'R3R p.118', inputs: [],
@@ -186,6 +196,7 @@ export const OPTIONS = [
     id: 'tailhook', name: 'Tailhook System', group: 'Enhancement', page: 'R3R p.119', inputs: [],
     dp: c => Math.round((c.chassisDp ?? 0) * 0.1), cf: c => Math.ceil(c.body / 2), load: c => c.body * 125,
     warn: c => (['fixedwing', 'vectored'].includes(c.category) ? [] : ['A tailhook is for aircraft (R3R p.119)']),
+    fit: c => (['fixedwing', 'vectored'].includes(c.category) ? null : 'For aircraft'),
   },
 
   /* Facilities (p.119-120). */
@@ -196,6 +207,7 @@ export const OPTIONS = [
     cf: c => (num(c.catapult) ? c.hullFactor * 2 : 0),
     load: c => (num(c.catapult) ? c.hullFactor * 10 : 0) + (num(c.angled) ? num(c.metres) * 20 : 0),
     note: 'Launches or lands aircraft of less than half its Body (ships: Hull Factor × 10)',
+    fit: c => (c.hasHull || ['ship', 'sub'].includes(c.category) ? null : 'For ships and other Hull-rated vessels'),
   },
   {
     id: 'amenities', name: 'Living Amenities', group: 'Facility', page: 'R3R p.119-120',
@@ -205,17 +217,20 @@ export const OPTIONS = [
     load: c => { const p = Math.max(0, num(c.persons)); return p * 100 + p * 150; },
     warn: c => (AMENITIES[c.kind] ? [] : [`Amenities "${c.kind}" — basic, improved or high (R3R p.120)`]),
     note: 'CF and Load include the People Space (150 CF + 6 CF and 150 kg a person); trolls +50% People Space',
+    fit: c => (c.category === 'bike' ? 'No room on a motorcycle' : null),
   },
   {
     id: 'workshop', name: 'Work Shop', group: 'Facility', page: 'R3R p.120', inputs: [['points', 'Shop\'s nuyen cost', 0]],
     dp: c => num(c.points), cf: () => 52, load: () => 250,
     note: 'Plus the People Space for the work (p.120 table)',
+    fit: c => (c.category === 'bike' ? 'No room on a motorcycle' : null),
   },
   {
     id: 'facility', name: 'Facility', group: 'Facility', page: 'R3R p.120',
     inputs: [['kind', 'vehicle/electronics/other', 'other'], ['points', 'Facility\'s nuyen cost', 0]],
     dp: c => 250 + num(c.points), cf: c => (c.kind === 'vehicle' ? 500 : c.kind === 'electronics' ? 200 : 300), load: () => 1000,
     note: 'Plus the People Space for the work (p.120 table)',
+    fit: c => (c.category === 'bike' ? 'No room on a motorcycle' : null),
   },
 
   /* Robot options (p.120-121) — robots must buy the robotic pilot. */
@@ -227,16 +242,19 @@ export const OPTIONS = [
       ...(c.drone ? [] : ['Robot options are for drones (R3R p.120)']),
     ],
     note: 'Adaptation Pool = its rating; not with drone-pilot programming',
+    fit: c => (c.drone ? null : 'For drones'),
   },
   {
     id: 'fuzzy', name: 'Fuzzy Logic Augmentation', group: 'Robot', page: 'R3R p.120', inputs: [['level', 'Level', 1]],
     dp: c => c.adaptation * 100 * Math.max(0, num(c.level)), cf: () => 0, load: () => 0,
     warn: c => robotWarn(c, c.pilot, 'Pilot'), note: '+2 dice per level to Pilot on Comprehension Tests',
+    fit: c => (c.drone ? null : 'For drones'),
   },
   {
     id: 'neural', name: 'Improved Neural Network Algorithms', group: 'Robot', page: 'R3R p.120', inputs: [['level', 'Level', 1]],
     dp: c => sq(c.pilot) * 25 * Math.max(0, num(c.level)), cf: () => 0, load: () => 0,
     warn: c => robotWarn(c, c.pilot, 'Pilot'), note: '+1 Adaptation Pool die per level',
+    fit: c => (c.drone ? null : 'For drones'),
   },
   {
     id: 'multi-object', name: 'Multi-Object Manipulation', group: 'Robot', page: 'R3R p.120-121', inputs: [['level', 'Level', 1]],
@@ -246,12 +264,14 @@ export const OPTIONS = [
       ...(c.modNames.some(n => /ivis/i.test(n)) ? [] : ['Multi-object manipulation needs the BattleTac IVIS Receiver Module (R3R p.121)']),
     ],
     note: '+1 IVIS Pool die per level',
+    fit: c => (c.drone ? null : 'For drones'),
   },
   {
     id: 'reflexes', name: 'Robotic Reflexes', group: 'Robot', page: 'R3R p.121', inputs: [['level', 'Level', 1]],
     dp: c => 100 * Math.max(0, num(c.level)), cf: () => 0, load: () => 0,
     warn: c => [...(num(c.level) > 3 ? ['Robotic reflexes no higher than 3 (R3R p.121)'] : []), ...robotWarn(c, null)],
     note: '+1 Initiative die per level under its own control',
+    fit: c => (c.drone ? null : 'For drones'),
   },
 ];
 
@@ -278,6 +298,16 @@ export const DesignOptions = {
   OPTIONS,
 
   get(id) { return OPTIONS.find(o => o.id === id) ?? null; },
+
+  /**
+   * Why an option does not fit this chassis and plant (a short reason), or null — the options step hides a misfit behind
+   * its "show all" switch (TODO 297; the maintainer, 2026-11-08: "adding a flight deck to a motorcycle doesn't make
+   * sense"). Only the chassis, the plant and drone-ness decide it; a level over a maximum stays a warning on the row.
+   * `c`: { category, chassisId, body, hasHull, plantCode, drone }.
+   */
+  misfit(id, c = {}) {
+    return this.get(id)?.fit?.(c) ?? null;
+  },
 
   /** A new design row for a catalogue option: its id, name, page and default inputs. */
   newRow(id) {

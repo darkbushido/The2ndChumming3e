@@ -11,12 +11,18 @@
  *    computed figures, a typed figure overrides; typed rows (name, points, CF, Load) still work for anything else;
  *  - picked mods are embedded on Create; a re-save OFFERS the ones the vehicle lacks, and never removes one;
  *  - opened from the Actors directory header, the "SR3E Vehicle Designer" macro, and the vehicle sheet.
+ * TODO 297 (the maintainer, 2026-11-08: "more of a shopping workflow"): a five-step wizard under a pinned result bar —
+ * chassis cards by type (silhouettes, `data/designer-art.mjs`), power plant cards, the design options that fit
+ * (`DesignOptions.misfit`), a mod shop by shelf with our own one-liners (`data/mod-catalog.mjs`) and a cart, then price.
+ * What doesn't fit is hidden behind a "show all" switch, never refused. A stored design reopens on step 5.
  * Warn, never refuse: an over-maximum or an unpriced mod is a warning, and Create still works.
  */
 import { CHASSIS, CATEGORIES, PLANTS } from './data/vehicle-design-tables.mjs';
 import { VehicleDesign, CLASSES } from './data/vehicle-design.mjs';
 import { VehicleDesignActor, FLAG, SOURCE_FLAG } from './data/vehicle-design-actor.mjs';
 import { DesignOptions } from './data/design-options.mjs';
+import { DesignerArt } from './data/designer-art.mjs';
+import { ModCatalog, SHELVES } from './data/mod-catalog.mjs';
 
 const SCOPE = 'The2ndChumming3e';
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -35,7 +41,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     classes:  ['sr3e', 'sr3e-vehicle-designer'],
     tag:      'div',
     window:   { title: '🛠 Vehicle Designer', resizable: true },
-    position: { width: 760, height: 720 },
+    position: { width: 940, height: 760 },
   };
 
   /** Open a fresh design, or — with a vehicle — that vehicle's stored design (re-saving offers the changes). */
@@ -52,6 +58,8 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     this.design = foundry.utils.mergeObject(blankDesign(), stored ? foundry.utils.deepClone(stored) : {});
     if (!this.design.name) this.design.name = this.actor?.name ?? '';
     this._modIndex = null;
+    this.step = stored ? 5 : 1;   // a stored design reopens on its summary (the maintainer, 2026-11-08)
+    this.ui = {};
   }
 
   get title() { return this.actor ? `🛠 Design — ${this.actor.name}` : '🛠 Vehicle Designer'; }
@@ -80,87 +88,220 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
   async _renderHTML() {
     const d = this.design;
     const r = VehicleDesign.evaluate(d);
-    const mods = await this._mods();
+    const ch = r.chassis ?? null;
+    const step = ch ? this.step : 1;
     const div = document.createElement('div');
-    div.className = 'sr3e-inner';
-    div.style.cssText = 'display:flex;flex-direction:column;gap:6px;overflow:auto;height:100%;padding:6px;';
+    div.className = 'sr3e-inner vd-wizard';
 
-    const chOpts = Object.entries(CATEGORIES).map(([cat, label]) => `<optgroup label="${esc(label)}">${CHASSIS
-      .filter(c => c.category === cat)
-      .map(c => `<option value="${c.id}" ${c.id === d.chassis ? 'selected' : ''}>${esc(c.name)}${c.drone ? ' (drone)' : ''} — ${c.dp} pts</option>`)
-      .join('')}</optgroup>`).join('');
-    const plants = d.chassis ? Object.keys(PLANTS).flatMap(code => VehicleDesign.plantsFor(d.chassis, code)) : [];
-    const plOpts = plants.map(p => `<option value="${esc(p.id)}" ${p.id === d.plant || p.plant === d.plant ? 'selected' : ''}>${esc(PLANTS[p.plant]?.name ?? p.plant)} ${esc(p.label)}</option>`).join('');
-    const num = (path, v, w = 60, step = 1) => `<input type="number" data-path="${path}" value="${esc(v ?? 0)}" step="${step}" style="width:${w}px"/>`;
+    const STEPS = [[1, 'Chassis', ch?.name], [2, 'Power plant', d.plant ? (PLANTS[VehicleDesign.plantRow(d.plant)?.plant ?? d.plant]?.name) : null],
+      [3, 'Design options', d.options.length ? `${d.options.length} picked` : null], [4, 'Mods', d.mods.length ? `${d.mods.length} in cart` : null],
+      [5, this.actor ? 'Price & save' : 'Price & create', null]];
+    const tabs = STEPS.map(([n, label, sub]) => `<button type="button" class="vd-step ${n === step ? 'active' : ''}" data-step="${n}" ${n > 1 && !ch ? 'disabled' : ''}>
+      <span class="vd-step-n">${n}</span> ${esc(label)}${sub ? `<small>${esc(sub)}</small>` : ''}</button>`).join('');
 
+    let body = '';
+    if (step === 1) body = this._stepChassis(d);
+    else if (step === 2) body = this._stepPlant(d, ch, r);
+    else if (step === 3) body = this._stepOptions(d, ch, r);
+    else if (step === 4) body = this._stepMods(d, ch, await this._mods());
+    else body = this._stepPrice(d, r);
+
+    div.innerHTML = `
+      ${this._resultBar(r)}
+      <nav class="vd-steps">${tabs}</nav>
+      <section class="vd-body">${body}</section>
+      <footer class="vd-foot">
+        <button type="button" class="vd-nav" data-step="${step - 1}" ${step === 1 ? 'disabled' : ''}>◀ Back</button>
+        ${step < 5
+          ? `<button type="button" class="vd-nav vd-next" data-step="${step + 1}" ${ch ? '' : 'disabled'}>Next ▶</button>`
+          : `<button type="button" class="vd-save vd-next" ${ch ? '' : 'disabled'}>${this.actor ? '💾 Offer changes to the vehicle' : '🚗 Create vehicle'}</button>`}
+      </footer>`;
+    return div;
+  }
+
+  /** The pinned result bar — the design's stats and price, always at the top (the maintainer, 2026-11-08). */
+  _resultBar(r) {
+    const s = r.stats ?? {};
+    const ch = r.chassis;
+    const chip = (label, v, cls = '') => `<div class="vd-chip ${cls}"><span>${label}</span><b>${esc(v ?? '—')}</b></div>`;
+    const over = (used, total) => (used != null && total != null && used > total ? 'vd-over' : '');
+    const warn = (r.warnings ?? []).length;
+    return `<header class="vd-result">
+      <div class="vd-result-art">${ch ? DesignerArt.chassis(ch.category, ch.drone) : DesignerArt.chassis('car')}</div>
+      <div class="vd-result-main">
+        <input type="text" class="vd-name" data-path="name" value="${esc(this.design.name)}" placeholder="${esc(ch?.name ?? 'Name your vehicle')}"/>
+        <div class="vd-chips">
+          ${chip('Handling', s.handling != null ? `${s.handling}/${s.handlingOffRoad}` : null)}${chip('Speed', s.speed)}${chip('Accel', s.accel)}
+          ${chip('Body', ch?.body)}${chip('Armor', ch?.armor)}${chip('Sig', s.sig)}
+          ${chip('CF', r.cf?.total != null ? `${r.cf.used}/${r.cf.total}` : null, over(r.cf?.used, r.cf?.total))}
+          ${chip('Load', r.load?.total != null ? `${r.load.used}/${r.load.total}` : null, over(r.load?.used, r.load?.total))}
+          ${chip('Design Pts', r.dp?.total)}${chip('Cost', r.cost != null ? `${r.cost.toLocaleString()}¥` : null, 'vd-cost')}
+          ${warn ? `<div class="vd-chip vd-warn" title="${esc(r.warnings.join('\n'))}"><span>⚠</span><b>${warn}</b></div>` : ''}
+        </div>
+      </div>
+    </header>`;
+  }
+
+  /** Step 1 — type chips with silhouettes, then the chassis of that type as cards. */
+  _stepChassis(d) {
+    const cur = VehicleDesign.chassis(d.chassis);
+    const cat = this.ui.cat ?? cur?.category ?? 'car';
+    const drones = this.ui.drones ?? (cur ? cur.drone : false);
+    const cats = Object.entries(CATEGORIES).filter(([k]) => CHASSIS.some(c => c.category === k && c.drone === drones));
+    const chips = cats.map(([k, label]) => `<button type="button" class="vd-type ${k === cat ? 'active' : ''}" data-cat="${k}">
+      ${DesignerArt.chassis(k, drones)}<span>${esc(label)}</span></button>`).join('');
+    const list = CHASSIS.filter(c => c.category === cat && c.drone === drones);
+    const cards = list.map(c => `<button type="button" class="vd-card ${c.id === d.chassis ? 'picked' : ''}" data-chassis="${c.id}">
+      <div class="vd-card-art">${DesignerArt.chassis(c.category, c.drone)}</div>
+      <div class="vd-card-name">${esc(c.name)}</div>
+      <div class="vd-card-stats">
+        <span>Body <b>${esc(c.body)}</b></span><span>Armor <b>${esc(c.armor ?? '—')}</b></span>
+        <span>Handling <b>${esc(c.handling)}</b></span><span>CF <b>${esc(c.cf)}</b></span>
+        <span>Seats <b>${esc(c.seating ?? '—')}</b></span><span>Pts <b>${esc(c.dp)}</b></span>
+      </div>
+      <div class="vd-card-page">${esc(c.page)}</div></button>`).join('');
+    return `<div class="vd-row">
+        <div class="vd-toggle"><button type="button" data-drones="0" class="${drones ? '' : 'active'}">Vehicles</button><button type="button" data-drones="1" class="${drones ? 'active' : ''}">Drones</button></div>
+      </div>
+      <div class="vd-types">${chips}</div>
+      <div class="vd-grid">${cards || '<p class="vd-empty">No chassis of this type.</p>'}</div>`;
+  }
+
+  /** Step 2 — the plants this chassis offers, as cards; then tuning (improvements, smart materials). */
+  _stepPlant(d, ch, r) {
+    const rows = Object.keys(PLANTS).flatMap(code => VehicleDesign.plantsFor(ch.id, code));
+    const body = VehicleDesign.bodyOf(ch);
+    const v = x => VehicleDesign.cell(x, body);
+    const curId = VehicleDesign.plantRow(d.plant)?.id ?? rows.find(p => p.plant === d.plant)?.id;
+    const cards = rows.map(p => `<button type="button" class="vd-card ${p.id === curId ? 'picked' : ''}" data-plant="${esc(p.id)}">
+      <div class="vd-card-art vd-plant-art">${DesignerArt.plant(p.plant)}</div>
+      <div class="vd-card-name">${esc(PLANTS[p.plant]?.name ?? p.plant)}</div>
+      <div class="vd-card-stats">
+        <span>Speed <b>${esc(v(p.speed) ?? p.speed)}</b></span><span>Accel <b>${esc(v(p.accel) ?? p.accel)}</b></span>
+        <span>Load <b>${esc(v(p.load) ?? p.load)}</b></span><span>Economy <b>${esc(v(p.econ) ?? p.econ ?? '—')}</b></span>
+        <span>Sig <b>${esc(p.sig)}</b></span><span>Pts <b>${esc(v(p.dp) ?? p.dp)}</b></span>
+      </div>
+      <div class="vd-card-page">${esc(p.page)}</div></button>`).join('');
+    const num = (path, val, w = 56) => `<input type="number" data-path="${path}" value="${esc(val ?? 0)}" style="width:${w}px"/>`;
+    return `<div class="vd-grid">${cards || '<p class="vd-empty">The tables list no power plant for this chassis.</p>'}</div>
+      ${d.plant ? `<details class="vd-tune" ${Object.values(d.improve ?? {}).some(Boolean) || d.smartMaterials ? 'open' : ''}>
+        <summary>Tune it — improvements past the plant's starting figures (R3R pp.115-116)</summary>
+        <div class="vd-tune-row">${IMPROVE.map(([k, l]) => `<label>${l} ${num(`improve.${k}`, d.improve?.[k])}</label>`).join('')}
+          <label><input type="checkbox" data-path="smartMaterials" ${d.smartMaterials ? 'checked' : ''}/> Smart materials (p.118)</label>
+          <label>Freed CF ${num('freed.cf', d.freed?.cf)}</label><label>Freed Load ${num('freed.load', d.freed?.load)}</label></div>
+        ${r.stats ? `<div class="vd-hint">Speed ${r.stats.speed} of ${r.stats.speedMax} · Accel ${r.stats.accel} of ${r.stats.accelMax} · Load ${r.stats.load}</div>` : ''}
+      </details>` : ''}`;
+  }
+
+  /** The fit context for a chassis and the current plant — what `misfit` reads. */
+  _fitCtx(ch) {
+    const plant = VehicleDesign.plantRow(this.design.plant)?.plant ?? (this.design.plant || null);
+    return { category: ch.category, chassisId: ch.id, body: VehicleDesign.bodyOf(ch), hasHull: /H/.test(String(ch.body)),
+      plantCode: plant, plant, drone: !!ch.drone };
+  }
+
+  /** Step 3 — the options that fit, as cards; the picked ones as editable rows. */
+  _stepOptions(d, ch, r) {
+    const c = this._fitCtx(ch);
+    const all = this.ui.allOptions;
     const priced = r.options ?? [];
-    const optHtml = (x, i) => {
-      const p = priced[i] ?? {};
+    const picked = (d.options ?? []).map((x, i) => {
       const o = DesignOptions.get(x.id);
-      if (!o) return rowHtml('options', x, i);
+      const p = priced[i] ?? {};
+      if (!o) return `<tr><td><input type="text" data-path="options.${i}.name" value="${esc(x.name)}"/></td>
+        <td><input type="number" data-path="options.${i}.dp" value="${esc(x.dp)}" step="any" style="width:70px"/></td>
+        <td><input type="number" data-path="options.${i}.cf" value="${esc(x.cf)}" step="any" style="width:50px"/></td>
+        <td><input type="number" data-path="options.${i}.load" value="${esc(x.load)}" step="any" style="width:60px"/></td>
+        <td><button type="button" data-remove="options.${i}" title="Remove">✕</button></td></tr>`;
       const fig = (k, w) => `<input type="number" data-path="options.${i}.${k}" data-blank="1" value="${esc(x[k])}" placeholder="${esc(p.computed?.[k] ?? '')}" step="any" style="width:${w}px" title="Blank = the computed figure"/>`;
-      const inputs = o.inputs.map(([k, label]) => `<label style="white-space:nowrap">${esc(label)} <input type="${k === 'kind' ? 'text' : 'number'}" data-path="options.${i}.${k}" ${k === 'kind' ? '' : 'data-blank="1"'} value="${esc(x[k])}" style="width:${k === 'kind' ? 90 : 56}px"/></label>`).join(' ');
-      return `<tr><td title="${esc(o.page)}">${esc(o.name)}${p.note ? ` <span title="${esc(p.note)}">ⓘ</span>` : ''}<div>${inputs}</div></td>
+      const inputs = o.inputs.map(([k, label]) => `<label>${esc(label)} <input type="${k === 'kind' ? 'text' : 'number'}" data-path="options.${i}.${k}" ${k === 'kind' ? '' : 'data-blank="1"'} value="${esc(x[k])}" style="width:${k === 'kind' ? 90 : 56}px"/></label>`).join(' ');
+      return `<tr><td><b>${esc(o.name)}</b> <span class="vd-dim">${esc(o.page)}</span>${p.note ? `<div class="vd-dim">${esc(p.note)}</div>` : ''}<div>${inputs}</div>
+        ${(p.warnings ?? []).map(w => `<div class="vd-amber">⚠ ${esc(w)}</div>`).join('')}</td>
         <td>${fig('dp', 70)}</td><td>${fig('cf', 50)}</td><td>${fig('load', 60)}</td>
         <td><button type="button" data-remove="options.${i}" title="Remove">✕</button></td></tr>`;
-    };
+    }).join('');
     const groups = [...new Set(DesignOptions.OPTIONS.map(o => o.group))];
-    const catOpts = groups.map(g => `<optgroup label="${esc(g)}">${DesignOptions.OPTIONS.filter(o => o.group === g)
-      .map(o => `<option value="${o.id}">${esc(o.name)} (${esc(o.page)})</option>`).join('')}</optgroup>`).join('');
+    let hidden = 0;
+    const cards = groups.map(g => {
+      const items = DesignOptions.OPTIONS.filter(o => o.group === g).map(o => {
+        const why = DesignOptions.misfit(o.id, c);
+        if (why && !all) { hidden++; return ''; }
+        return `<div class="vd-card vd-opt ${why ? 'vd-misfit' : ''}">
+          <div class="vd-card-name">${esc(o.name)}</div>
+          ${o.note ? `<div class="vd-blurb">${esc(o.note)}</div>` : ''}
+          ${why ? `<div class="vd-amber">⚠ ${esc(why)}</div>` : ''}
+          <div class="vd-card-foot"><span class="vd-card-page">${esc(o.page)}</span><button type="button" data-add-option="${o.id}">+ Add</button></div></div>`;
+      }).join('');
+      return items ? `<h4 class="vd-group">${esc(g)}</h4><div class="vd-grid vd-grid-sm">${items}</div>` : '';
+    }).join('');
+    return `${picked ? `<table class="vd-picked"><tr><th>Picked</th><th>Points</th><th>CF</th><th>Load</th><th></th></tr>${picked}</table>` : '<p class="vd-empty">No design options yet — they are optional.</p>'}
+      <div class="vd-row"><label class="vd-switch"><input type="checkbox" class="vd-all-options" ${all ? 'checked' : ''}/> Show options that don't fit${hidden ? ` (${hidden} hidden)` : ''}</label>
+        <button type="button" data-add="options" title="A row you price yourself">+ Typed row</button></div>
+      ${cards}`;
+  }
 
-    const rowHtml = (kind, x, i) => `<tr>
-      <td><input type="text" data-path="${kind}.${i}.name" value="${esc(x.name)}"/></td>
-      ${kind === 'mods' ? `<td>${num(`${kind}.${i}.level`, x.level ?? 1, 44)}</td>` : ''}
-      <td>${num(`${kind}.${i}.dp`, x.dp, 70, 'any')}${x.unpriced ? ' <span title="No design cost printed — type it (R3R p.112)">⚠</span>' : ''}</td>
-      <td>${num(`${kind}.${i}.cf`, x.cf, 50, 'any')}</td><td>${num(`${kind}.${i}.load`, x.load, 60, 'any')}</td>
-      <td><button type="button" data-remove="${kind}.${i}" title="Remove">✕</button></td></tr>`;
-
-    const s = r.stats ?? {};
-    const stat = (label, v) => `<div><span style="color:var(--sr-muted)">${label}</span> <b>${esc(v ?? '—')}</b></div>`;
-    div.innerHTML = `
-      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-        <label>Name <input type="text" data-path="name" value="${esc(d.name)}" style="width:180px"/></label>
-        <label>Chassis <select data-path="chassis"><option value="">— pick —</option>${chOpts}</select></label>
-        <label>Power plant <select data-path="plant"><option value="">— pick —</option>${plOpts}</select></label>
+  /** Step 4 — the mod shop: shelf tabs with icons, search, cards with what each does, and the cart. */
+  _stepMods(d, ch, mods) {
+    const c = this._fitCtx(ch);
+    const all = this.ui.allMods;
+    const q = (this.ui.q ?? '').toLowerCase();
+    const shelf = this.ui.shelf ?? 'engine';
+    const rows = mods.map(m => ({ m, card: ModCatalog.card(m.name), why: ModCatalog.misfit(m.name, c) }));
+    const visible = rows.filter(x => all || !x.why);
+    const count = id => visible.filter(x => x.card.shelf === id).length;
+    const tabs = Object.entries(SHELVES).map(([id, label]) => `<button type="button" class="vd-shelf ${id === shelf && !q ? 'active' : ''}" data-shelf="${id}" title="${esc(label)}">
+      ${DesignerArt.shelf(id)}<span>${esc(label)}</span><small>${count(id)}</small></button>`).join('');
+    const shown = visible.filter(x => (q ? `${x.m.name} ${x.card.blurb}`.toLowerCase().includes(q) : x.card.shelf === shelf));
+    const inCart = uuid => d.mods.filter(x => x.uuid === uuid).length;
+    const ctx = this._ctx();
+    const cards = shown.map(({ m, card, why }) => {
+      const row = VehicleDesignActor.modRow(m, { ...ctx, level: m.system?.rating ?? 1 });
+      const n = inCart(m.uuid);
+      return `<div class="vd-card vd-mod ${why ? 'vd-misfit' : ''} ${n ? 'picked' : ''}">
+        <div class="vd-mod-head"><span class="vd-mod-icon">${DesignerArt.shelf(card.shelf)}</span>
+          <div class="vd-card-name">${esc(String(m.name).replace(/\s*\(Vehicle\)$/, ''))}</div></div>
+        <div class="vd-blurb">${esc(card.blurb || 'See the book page.')}</div>
+        ${why ? `<div class="vd-amber">⚠ ${esc(why)}</div>` : ''}
+        <div class="vd-card-stats"><span>Pts <b>${row.unpriced ? '?' : esc(row.dp)}</b></span><span>CF <b>${esc(row.cf)}</b></span><span>Load <b>${esc(row.load)}</b></span>
+          ${m.system?.rating != null ? '<span class="vd-dim">rated</span>' : ''}</div>
+        <div class="vd-card-foot"><span class="vd-card-page">${esc(m.system?.bookPage ?? '')}</span>
+          <button type="button" data-add-mod="${esc(m.uuid)}">${n ? `+ Another (${n})` : '+ Add'}</button></div></div>`;
+    }).join('');
+    const hidden = rows.length - visible.length;
+    const cart = d.mods.map((x, i) => `<div class="vd-cart-item">
+      <span class="vd-cart-name">${esc(String(x.name).replace(/\s*\(Vehicle\)$/, ''))}${x.unpriced ? ' <span class="vd-amber" title="No design cost printed — type the points (R3R p.112)">⚠</span>' : ''}</span>
+      <label>Lv <input type="number" data-path="mods.${i}.level" value="${esc(x.level ?? 1)}" min="1" style="width:44px"/></label>
+      <label>Pts <input type="number" data-path="mods.${i}.dp" value="${esc(x.dp)}" step="any" style="width:60px"/></label>
+      <span class="vd-dim">CF ${esc(x.cf)} · ${esc(x.load)} kg</span>
+      <button type="button" data-remove="mods.${i}" title="Remove">✕</button></div>`).join('');
+    return `<div class="vd-shop">
+      <div class="vd-shop-main">
+        <div class="vd-row"><input type="search" class="vd-search" placeholder="Search every mod…" value="${esc(this.ui.q ?? '')}"/>
+          <label class="vd-switch"><input type="checkbox" class="vd-all-mods" ${all ? 'checked' : ''}/> Show mods that don't fit${hidden ? ` (${hidden} hidden)` : ''}</label></div>
+        <nav class="vd-shelves">${tabs}</nav>
+        <div class="vd-grid vd-grid-sm">${cards || '<p class="vd-empty">Nothing here for this vehicle.</p>'}</div>
       </div>
-      <fieldset><legend>Improvements (R3R pp.115-116)</legend>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">${IMPROVE.map(([k, l]) => `<label>${l} ${num(`improve.${k}`, d.improve?.[k])}</label>`).join('')}
-        <label><input type="checkbox" data-path="smartMaterials" ${d.smartMaterials ? 'checked' : ''}/> Smart materials (p.118)</label>
-        <label>Freed CF ${num('freed.cf', d.freed?.cf)}</label><label>Freed Load ${num('freed.load', d.freed?.load)}</label></div>
-      </fieldset>
-      <fieldset><legend>Design options (R3R pp.115-121)</legend>
-        <table><tr><th>Option</th><th>Points</th><th>CF</th><th>Load</th><th></th></tr>${(d.options ?? []).map((x, i) => optHtml(x, i)).join('')}</table>
-        <select class="vd-opt-pick"><option value="">— add a design option —</option>${catOpts}</select>
-        <button type="button" data-add="options" title="A row you price yourself">+ Typed row</button>
-      </fieldset>
-      <fieldset><legend>Vehicle mods at their Design Point cost (R3R p.112)</legend>
-        <table><tr><th>Name</th><th>Level</th><th>Points</th><th>CF</th><th>Load</th><th></th></tr>${(d.mods ?? []).map((x, i) => rowHtml('mods', x, i)).join('')}</table>
-        <input type="text" class="vd-mod-filter" placeholder="Filter mods…" style="width:160px"/>
-        <select class="vd-mod-pick" style="max-width:340px"><option value="">— add a mod —</option>${mods.map(m =>
-          `<option value="${esc(m.uuid)}" title="${esc(m.system?.bookPage ?? '')}">${esc(m.name)}${m.system?.bookPage ? ` [${esc(m.system.bookPage)}]` : ''}${m.system?.designCost ? ` — ${esc(m.system.designCost)}` : ' — (type points)'}</option>`).join('')}</select>
-      </fieldset>
+      <aside class="vd-cart"><h4>🛒 Cart <small>${d.mods.length}</small></h4>${cart || '<p class="vd-empty">Add mods from the shelves.</p>'}</aside>
+    </div>`;
+  }
+
+  /** Step 5 — class and price adjustments, the points line by line, every warning, and Create / Offer. */
+  _stepPrice(d, r) {
+    const num = (path, v, w = 70, step = 1) => `<input type="number" data-path="${path}" value="${esc(v ?? 0)}" step="${step}" style="width:${w}px"/>`;
+    return `<div class="vd-price">
       <fieldset><legend>Price (R3R p.113)</legend>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
         <label>Class <select data-path="vehicleClass">${Object.keys(CLASSES).map(k => `<option value="${k}" ${k === d.vehicleClass ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
         <label>Mark-Up + ${num('markUpExtra', d.markUpExtra, 60, 'any')}</label>
         <label>Street Index + ${num('streetIndexExtra', d.streetIndexExtra, 60, 'any')}</label>
-        <label>Extra ¥ ${num('extraNuyen', d.extraNuyen, 90)}</label></div>
+        <label>Extra ¥ ${num('extraNuyen', d.extraNuyen, 90)}</label>
+        <div class="vd-hint">Street Index ${esc(r.streetIndex ?? '—')} · Availability ${esc(r.availability?.text ?? '—')}</div>
       </fieldset>
-      <fieldset><legend>Result</legend>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px 10px">
-          ${stat('Handling', s.handling != null ? `${s.handling}/${s.handlingOffRoad}` : null)}${stat('Speed', s.speed)}${stat('Accel', s.accel)}
-          ${stat('Body', r.chassis?.body)}${stat('Armor', r.chassis?.armor)}${stat('Signature', s.sig)}
-          ${stat('Cargo', r.cf ? `${s.cargo} (of ${r.cf.total})` : null)}${stat('Load', r.load?.total != null ? `${s.load} (of ${r.load.total})` : null)}
-          ${stat('Design Points', r.dp?.total)}${stat('Cost', r.cost != null ? `${r.cost.toLocaleString()}¥` : null)}
-          ${stat('Street Index', r.streetIndex)}${stat('Availability', r.availability?.text)}
-        </div>
-        <details><summary>Points, line by line</summary>${(r.dp?.lines ?? []).map(l => `<div>${esc(l.label)} — ${l.points} <span style="color:var(--sr-dim)">${esc(l.page ?? '')}</span></div>`).join('')}</details>
-        ${(r.warnings ?? []).map(w => `<div style="color:var(--sr-amber)">⚠ ${esc(w)}</div>`).join('')}
+      <fieldset><legend>Design Points, line by line</legend>
+        ${(r.dp?.lines ?? []).map(l => `<div class="vd-line"><span>${esc(l.label)}</span><b>${l.points}</b><span class="vd-dim">${esc(l.page ?? '')}</span></div>`).join('')}
+        <div class="vd-line vd-total"><span>Total</span><b>${esc(r.dp?.total ?? 0)}</b></div>
       </fieldset>
-      <div style="display:flex;gap:6px;justify-content:flex-end">
-        <button type="button" class="vd-save" ${r.chassis ? '' : 'disabled'}>${this.actor ? '💾 Offer changes to the vehicle' : '🚗 Create vehicle'}</button>
-      </div>`;
-    return div;
+      ${(r.warnings ?? []).length ? `<fieldset><legend>Warnings — Create still works</legend>${r.warnings.map(w => `<div class="vd-amber">⚠ ${esc(w)}</div>`).join('')}</fieldset>` : ''}
+    </div>`;
   }
 
   _replaceHTML(result, content) { content.replaceChildren(result); }
@@ -187,26 +328,33 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
       this.design[kind].splice(Number(i), 1);
       this.render();
     }));
-    const filter = el.querySelector('.vd-mod-filter');
-    const pick = el.querySelector('.vd-mod-pick');
-    filter?.addEventListener('input', () => {
-      const q = filter.value.toLowerCase();
-      for (const o of pick.options) if (o.value) o.hidden = !o.textContent.toLowerCase().includes(q);
+    const on = (sel, fn) => el.querySelectorAll(sel).forEach(b => b.addEventListener('click', () => fn(b)));
+    on('[data-step]', b => { this.step = Number(b.dataset.step); this.render(); });
+    on('[data-cat]', b => { this.ui.cat = b.dataset.cat; this.render(); });
+    on('[data-drones]', b => { this.ui.drones = b.dataset.drones === '1'; this.ui.cat = null; this.render(); });
+    on('[data-chassis]', b => {
+      if (this.design.chassis !== b.dataset.chassis) { this.design.chassis = b.dataset.chassis; this.design.plant = ''; }
+      const plants = Object.keys(PLANTS).flatMap(code => VehicleDesign.plantsFor(b.dataset.chassis, code));
+      if (plants.length === 1) this.design.plant = plants[0].id;   // one choice: take it
+      this.design.mods.forEach((_m, i) => this._repriceMod(i));
+      this.step = 2;
+      this.render();
     });
-    filter?.addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
-    pick?.addEventListener('change', () => {
-      const m = this._modIndex?.find(x => x.uuid === pick.value);
+    on('[data-plant]', b => { this.design.plant = b.dataset.plant; this.design.mods.forEach((_m, i) => this._repriceMod(i)); this.render(); });
+    on('[data-add-option]', b => { const row = DesignOptions.newRow(b.dataset.addOption); if (row) this.design.options.push(row); this.render(); });
+    on('[data-shelf]', b => { this.ui.shelf = b.dataset.shelf; this.ui.q = ''; this.render(); });
+    on('[data-add-mod]', b => {
+      const m = this._modIndex?.find(x => x.uuid === b.dataset.addMod);
       if (!m) return;
       const row = VehicleDesignActor.modRow(m, this._ctx());
       this.design.mods.push({ ...row, uuid: m.uuid, level: m.system?.rating ?? 1 });
       this.render();
     });
-    el.querySelector('.vd-opt-pick')?.addEventListener('change', e => {
-      const row = DesignOptions.newRow(e.target.value);
-      if (!row) return;
-      this.design.options.push(row);
-      this.render();
-    });
+    el.querySelector('.vd-all-options')?.addEventListener('change', e => { this.ui.allOptions = e.target.checked; this.render(); });
+    el.querySelector('.vd-all-mods')?.addEventListener('change', e => { this.ui.allMods = e.target.checked; this.render(); });
+    const search = el.querySelector('.vd-search');
+    search?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); this.ui.q = search.value; this.render(); } });
+    search?.addEventListener('change', () => { this.ui.q = search.value; this.render(); });
     el.querySelector('.vd-save')?.addEventListener('click', () => this._save());
   }
 
