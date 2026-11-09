@@ -4490,6 +4490,13 @@ export const MUTANTS = [
     impl:   () => null,
   },
   {
+    id:     'designer-setup-body-limit',
+    suite:  'vehicle-designer-shop',
+    module: '../scripts/data/design-options.mjs', klass: 'DesignOptions', method: 'misfit', needsOriginal: '_misfitOriginal',
+    was:    'Setup/Breakdown Time was offered on a 55\' trailer — R3R p.118 limits it to drones of Body 3, others Body 2 (TODO 297)',
+    impl:   function (id, c) { return id === 'setup' ? null : this._misfitOriginal(id, c); },
+  },
+  {
     id:     'designer-mod-misfit-ignored',
     suite:  'vehicle-designer-shop',
     module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'misfit',
