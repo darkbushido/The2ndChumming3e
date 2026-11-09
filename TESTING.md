@@ -3782,6 +3782,8 @@ Second pass (the maintainer's feedback, 2026-11-08):
 - [ ] **Levels:** a rated mod's card says "levels 1-N" where the book sets one (Autonav 1-4, Nitrous 1-6, CMC 1-9); its cart
       line has **Lv** capped at N ("/N"). Set Autonav Lv 10 → the line turns amber with "Level 10 is over the book's maximum of 4".
       **Datajack Port** has no Lv box.
+- [ ] **Misfits look different:** tick **show the ones that don't fit** in the mod shop and the options step → those cards are
+      greyed with an amber dashed edge and a **Doesn't fit** badge, sharp again on hover; the fitting cards are unchanged.
 - [ ] **Availability explained:** on the price step, under Street Index · Availability, a line reads e.g.
       "Availability: 590,000¥ ÷ 20,000 = 30 → 30 (the whole vehicle's price, R3R p.113) — biggest costs: …" with the three
       largest Design Point lines. Push it past 30 → the warning carries the same sum.

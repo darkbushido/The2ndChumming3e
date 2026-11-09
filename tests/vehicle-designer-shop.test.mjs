@@ -142,6 +142,10 @@ export async function run(t) {
     ['jet-fighter', 'attack-submarine', 'walker-large', 'zeppelin', 'trailer-53ft'].filter(id => !chOf(id) || CC.canTow(chOf(id))), []);
   t.ok('…the Add a trailer button asks it', /if \(!ChassisCatalog\.canTow\(ch\)\) return '';[\s\S]{0,120}vd-add-trailer|if \(!ChassisCatalog\.canTow\(ch\)\) return '';/.test(w));
   t.ok('the price step explains Availability and names the biggest costs', w.includes('Availability: ${esc(r.availability.why)}') && w.includes('biggest costs:'));
+  {
+    const css = readFileSync(new URL('../styles/sr3e.css', import.meta.url), 'utf8');
+    t.ok('a card that does not fit looks different — greyed, amber edge, a badge', /\.vd-card\.vd-misfit \{[^}]*grayscale[^}]*--sr-amber/.test(css) && css.includes(`.vd-card.vd-misfit::before { content: "Doesn't fit"`));
+  }
   t.ok('chassis cards show the catalogue picture', /DesignerArt\.picture\(card\.art/.test(w));
 
   // Pictures (the maintainer, 2026-11-08: anime style, transparent background), generated on the maintainer's ComfyUI.

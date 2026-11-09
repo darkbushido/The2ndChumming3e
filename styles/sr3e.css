@@ -4055,7 +4055,11 @@ label.act-field input[type=number] {
 button.vd-card { cursor: pointer; }
 button.vd-card:hover, .vd-card.vd-mod:hover { border-color: var(--sr-border-hi); }
 .vd-card.picked { border-color: var(--sr-accent); box-shadow: 0 0 0 1px var(--sr-accent) inset; }
-.vd-card.vd-misfit { opacity: 0.75; border-style: dashed; }
+/* Shown only with "show the ones that don't fit" — greyed, amber dashed edge, a badge (the maintainer, 2026-11-09). */
+.vd-card.vd-misfit { opacity: 0.55; filter: grayscale(0.85); border: 1px dashed var(--sr-amber); background: var(--sr-amber-bg); }
+.vd-card.vd-misfit:hover { opacity: 0.9; filter: none; }
+.vd-card.vd-misfit::before { content: "Doesn't fit"; display: inline-block; align-self: flex-start; font-size: 10px; font-weight: bold;
+  color: var(--sr-amber); border: 1px solid var(--sr-amber); border-radius: var(--r); padding: 0 4px; margin-bottom: 2px; }
 .vd-card-art { height: 84px; color: var(--sr-accent); }
 /* Chassis pictures (TODO 297): transparent webp, bottom-centred, scaled within the box by Body. */
 .vd-pic { position: relative; width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: center; }
