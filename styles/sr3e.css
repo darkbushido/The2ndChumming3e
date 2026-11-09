@@ -3992,3 +3992,85 @@ label.act-field input[type=number] {
 /* What a vehicle's mods make of a stat (TODO 265) — the effective figure beside the typed one. */
 .sr-veh-mod-eff { color: var(--sr-accent); font-weight: 600; margin-left: 4px; white-space: nowrap; }
 .sr-mod-price { grid-column: 1 / -1; color: var(--sr-muted); font-size: 11px; margin: 0; }
+
+/* 🛠 Vehicle Designer as a shop (TODO 297): pinned result bar, step tabs, card grids, mod shelves and a cart. */
+.sr3e-vehicle-designer .window-content { padding: 0; }
+.vd-wizard { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.vd-art { width: 100%; height: 100%; display: block; }
+.vd-result { position: sticky; top: 0; z-index: 2; display: flex; gap: 10px; align-items: center; padding: 8px 10px;
+  background: var(--sr-card); border-bottom: 1px solid var(--sr-border-hi); }
+.vd-result-art { width: 84px; height: 42px; flex: none; color: var(--sr-accent); }
+.vd-result-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.vd-name { font-size: 15px; font-weight: 600; max-width: 320px; }
+.vd-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.vd-chip { display: flex; flex-direction: column; align-items: center; min-width: 52px; padding: 2px 6px; border-radius: var(--r);
+  background: var(--sr-surface); border: 1px solid var(--sr-border); line-height: 1.1; }
+.vd-chip span { font-size: 10px; color: var(--sr-muted); }
+.vd-chip b { font-size: 13px; }
+.vd-chip.vd-cost b { color: var(--sr-gold); }
+.vd-chip.vd-over { border-color: var(--sr-red); background: var(--sr-red-bg); }
+.vd-chip.vd-warn { border-color: var(--sr-amber); background: var(--sr-amber-bg); cursor: help; }
+.vd-steps { display: flex; gap: 2px; padding: 6px 10px 0; border-bottom: 1px solid var(--sr-border); }
+.vd-step { flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 0; padding: 4px 8px; border: none;
+  border-bottom: 3px solid transparent; background: none; color: var(--sr-muted); text-align: left; border-radius: 0; }
+.vd-step.active { color: var(--sr-text); border-bottom-color: var(--sr-accent); }
+.vd-step small { font-size: 10px; color: var(--sr-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.vd-step-n { display: inline-block; width: 18px; height: 18px; line-height: 18px; text-align: center; border-radius: 50%;
+  background: var(--sr-surface); font-size: 11px; }
+.vd-step.active .vd-step-n { background: var(--sr-accent); color: #fff; }
+.vd-body { flex: 1; min-height: 0; overflow: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.vd-foot { display: flex; justify-content: space-between; padding: 6px 10px; border-top: 1px solid var(--sr-border); background: var(--sr-card); }
+.vd-foot button { flex: 0 0 auto; width: auto; padding: 4px 14px; }
+.vd-next { background: var(--sr-accent); color: #fff; }
+.vd-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.vd-toggle { display: inline-flex; border: 1px solid var(--sr-border); border-radius: var(--r); overflow: hidden; }
+.vd-toggle button { border: none; border-radius: 0; padding: 3px 12px; background: none; width: auto; }
+.vd-toggle button.active, .vd-type.active, .vd-shelf.active { background: var(--sr-accent); color: #fff; }
+.vd-types, .vd-shelves { display: flex; flex-wrap: wrap; gap: 4px; }
+.vd-type, .vd-shelf { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 92px; padding: 4px; border: 1px solid var(--sr-border);
+  border-radius: var(--r); background: var(--sr-surface); font-size: 11px; line-height: 1.1; }
+.vd-type .vd-art { height: 34px; }
+.vd-shelf { width: 104px; }
+.vd-shelf .vd-art { height: 24px; width: 24px; }
+.vd-shelf small { color: inherit; opacity: 0.7; }
+.vd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 6px; }
+.vd-grid-sm { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.vd-card { display: flex; flex-direction: column; gap: 3px; padding: 6px; border: 1px solid var(--sr-border); border-radius: var(--r-lg);
+  background: var(--sr-surface); text-align: left; height: auto; line-height: 1.25; }
+button.vd-card { cursor: pointer; }
+button.vd-card:hover, .vd-card.vd-mod:hover { border-color: var(--sr-border-hi); }
+.vd-card.picked { border-color: var(--sr-accent); box-shadow: 0 0 0 1px var(--sr-accent) inset; }
+.vd-card.vd-misfit { opacity: 0.75; border-style: dashed; }
+.vd-card-art { height: 56px; color: var(--sr-accent); }
+.vd-plant-art { height: 44px; }
+.vd-card-name { font-weight: 600; }
+.vd-card-stats { display: flex; flex-wrap: wrap; gap: 2px 8px; font-size: 11px; color: var(--sr-muted); }
+.vd-card-stats b { color: var(--sr-text); }
+.vd-card-page, .vd-dim { font-size: 10px; color: var(--sr-dim); }
+.vd-card-foot { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+.vd-card-foot button { width: auto; padding: 1px 8px; }
+.vd-blurb { font-size: 12px; color: var(--sr-text); }
+.vd-amber { color: var(--sr-amber); font-size: 11px; }
+.vd-hint { color: var(--sr-muted); font-size: 11px; }
+.vd-empty { color: var(--sr-dim); font-style: italic; }
+.vd-group { margin: 6px 0 2px; border-bottom: 1px solid var(--sr-border); }
+.vd-tune-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0; }
+.vd-picked { width: 100%; }
+.vd-picked td { vertical-align: top; }
+.vd-switch { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; }
+.vd-search { width: 220px; }
+.vd-shop { display: flex; gap: 8px; min-height: 0; }
+.vd-shop-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.vd-mod-head { display: flex; gap: 6px; align-items: center; }
+.vd-mod-icon { width: 22px; height: 22px; flex: none; color: var(--sr-accent); }
+.vd-cart { width: 240px; flex: none; align-self: flex-start; position: sticky; top: 0; padding: 6px; border: 1px solid var(--sr-border);
+  border-radius: var(--r-lg); background: var(--sr-card); display: flex; flex-direction: column; gap: 4px; }
+.vd-cart h4 { margin: 0; }
+.vd-cart-item { display: flex; flex-wrap: wrap; gap: 2px 6px; align-items: center; padding: 3px 0; border-bottom: 1px solid var(--sr-border); font-size: 12px; }
+.vd-cart-name { flex: 1 1 100%; font-weight: 600; }
+.vd-cart-item button { width: auto; padding: 0 6px; margin-left: auto; }
+.vd-price { display: flex; flex-direction: column; gap: 8px; }
+.vd-price fieldset label { margin-right: 10px; }
+.vd-line { display: grid; grid-template-columns: 1fr 70px 90px; gap: 6px; font-size: 12px; }
+.vd-line b { text-align: right; }
+.vd-total { border-top: 1px solid var(--sr-border); font-weight: 600; }

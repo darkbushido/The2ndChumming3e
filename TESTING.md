@@ -3743,3 +3743,21 @@ Needs `npm run packs:install` (Foundry closed) first.
    "Desert Wars", and still has the knowledge SKILL Desert Wars.
 3. An unlinked Wiz Kid token on a scene is corrected the same way; a Clout you re-Forced by hand to F6 is left at F6.
 4. Re-run `force()`: nothing changes (console logs no item changes).
+
+## 86. 🛒 Vehicle Designer as a shop (TODO 297, branch `claude/vehicle-designer-shop`)
+
+Hot reload is enough (no new fields). Open **🛠 Design a vehicle** in the Actors sidebar.
+
+- [ ] **Result bar on top:** the stats chips (Handling … Cost) and the name stay pinned while every step scrolls under them.
+- [ ] **Step 1, Chassis:** type chips with silhouettes; **Drones** switches the chips to drone types (the art gets an antenna).
+      Click a **Bike** card → step 2 opens; the step tab shows the chassis name.
+- [ ] **Step 2, Power plant:** cards with plant icons and Speed/Accel/Load/Economy; a chassis with one plant has it picked
+      already. **Tune it** opens the improvements.
+- [ ] **Step 3, Design options** on that bike: Airlock and the robot options are NOT listed; **Flight Deck** IS (a Body 0 micro UAV fits under half a Body 2); tick **Show
+      options that don't fit** → they appear dashed with an amber reason, and **+ Add** still works (warn, never refuse).
+- [ ] **Step 4, Mods:** shelf tabs with icons and counts; every card has a one-line description, points, CF, Load and its page.
+      On the bike, **Bike Gyro-Stabilization Gear** and the sidecars are listed; switch to a **car** chassis → they're hidden
+      until **Show mods that don't fit**. Search "armor" finds across shelves. **+ Add** puts the mod in the 🛒 cart; set its
+      Lv and the points follow.
+- [ ] **Step 5:** class and mark-up, the points line by line, the warnings; **Create** makes the vehicle with its mods.
+- [ ] **Reopen:** 🛠 Design on that vehicle opens on step 5; **Offer changes** works as in §82.

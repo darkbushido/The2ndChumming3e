@@ -4483,6 +4483,27 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'designer-option-misfit-ignored',
+    suite:  'vehicle-designer-shop',
+    module: '../scripts/data/design-options.mjs', klass: 'DesignOptions', method: 'misfit',
+    was:    'the options step offered a flight deck on a motorcycle — the maintainer, 2026-11-08 (TODO 297)',
+    impl:   () => null,
+  },
+  {
+    id:     'designer-mod-misfit-ignored',
+    suite:  'vehicle-designer-shop',
+    module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'misfit',
+    was:    'the mod shop offered sidecars and bike gyros to a car (TODO 297)',
+    impl:   () => null,
+  },
+  {
+    id:     'designer-mod-blurb-missing',
+    suite:  'vehicle-designer-shop',
+    module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'card',
+    was:    'a mod card with no description of what the mod does — the maintainer asked for one on every card (TODO 297)',
+    impl:   () => ({ shelf: 'special', blurb: '', variant: null }),
+  },
+  {
     id:     'design-mod-list-duplicates',
     suite:  'vehicle-design-actor',
     module: '../scripts/data/vehicle-design-actor.mjs', klass: 'VehicleDesignActor', method: 'pickList',

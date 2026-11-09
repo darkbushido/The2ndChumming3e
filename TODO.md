@@ -34,13 +34,13 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**89 open.** 207 done — see [TODO-DONE.md](TODO-DONE.md).
+**90 open.** 207 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
 | 🔵 In progress | [93](#93) 🧪 Test in Foundry — everything on branch `fix/racial-mods` |
 | 📕 Rules not implemented | [47](#47) Ready Weapon is unmodelled — you can attack with a weapon you never drew<br>[48](#48) The GM hand-charges every action — most of them are knowable<br>[49](#49) Nothing models hands — what is held, and how many can be held<br>[176](#176) Rules check 0.6.1 — Rules the guides state that the code does not implement<br>[203](#203) Spare clips belong to one weapon<br>[226](#226) Pain Resistance against pain itself<br>[227](#227) Off-road Handling and Speed<br>[228](#228) Initiation, metamagic, geasa and magical groups<br>[229](#229) Learning spells, and starting Spell Points<br>[230](#230) Detection spells: range and results<br>[231](#231) Drones from a deck: actions, subscriber lists, range, sensors<br>[232](#232) The Karma award table<br>[233](#233) Rockets and missiles<br>[236](#236) Magic Loss checks for the other triggers<br>[237](#237) One primary drone, and firing only from it<br>[238](#238) Spells on vehicles: Body and half Armor on the Object Resistance<br>[239](#239) Shock Glove charges<br>[240](#240) Pack clean-up: truncated vehicle names, aircraft typed as cars<br>[265](#265) Mods that attach to vehicles and drones<br>[266](#266) Every mod says what it is a mod FOR; the armour options become one document each<br>[276](#276) Mods installed inside the item they modify — weapons first<br>[278](#278) Weapon damage — a destroyed barrel's repair, and the barrel extension's price<br>[279](#279) Cannon Companion gunsmithing — firearm design and customisation<br>[282](#282) Vehicle weapons fire with no recoil<br>[283](#283) Buy or build a modded item — its whole price before it reaches the sheet<br>[287](#287) Vehicle and drone design — a chassis and Design Points (R3R) |
-| 🪄 Spells & drugs | [124](#124) Drug rules — addiction, tolerance and effects |
+| 🪄 Spells & drugs | [124](#124) Drug rules — addiction, tolerance and effects<br>[297](#297) The Vehicle Designer as a shop — a wizard with cards, art and a mod shelf |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone<br>[292](#292) The Killer, Sparky and Ripper IC: damage and notes follow the old gradings |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[293](#293) Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image<br>[294](#294) Little Black Book contacts' alphaware ships as Standard grade — *LBB pp.40-67*<br>[295](#295) `patch-johnson-stats.mjs --check` churns the checkout's LevelDB<br>[296](#296) Audit every 3e book's text layer against OCR, base books first |
@@ -1283,6 +1283,32 @@ that applies its effects as a timed boost (the Adrenal Pump's `augmentations` pa
 duration, counted down on the round hook, a crash card on expiry), a resistance/addiction roll card
 in the healing helper's style, and the effects as data on the item rather than parsed from prose.
 Effects offered and applied only on a click — nothing automatic, per the design ethos.
+
+## 297. The Vehicle Designer as a shop — a wizard with cards, art and a mod shelf — **requested 2026-11-08**
+
+The maintainer, on the slice-3 designer: *"its flexible and does everything i asked for but it isn't hitting the mark. Can we
+make this more of a shopping workflow?"* — chassis picked from cards with simple art, then the power plant the same way,
+only the design options that apply, the mods as "a visual shopping situation" with icons and what each does, the results
+kept at the top. Branch `claude/vehicle-designer-shop` (follows #287).
+
+**Ruled (the maintainer, 2026-11-08):**
+- **Wizard, one step a screen** — Chassis → Power plant → Design options → Mods → Price, under a pinned result bar; any
+  step's tab jumps back. A stored design (🛠 Design on a vehicle) reopens on step 5.
+- **Simple drawn silhouettes** — original inline SVG per chassis type and plant (`scripts/data/designer-art.mjs`).
+- **Hide what doesn't fit, with a "show all" switch** — for design options AND mods; the reason shows in amber when shown.
+- **Our own one-liners** for every vehicle mod (`scripts/data/mod-catalog.mjs`), never book text; the card cites the page.
+- **Mod shop:** icon shelf tabs (Engine, Control, Armour, Signature, Weapon mounts, Electronics, Crew & cabin, Special),
+  cards, a search across shelves, and a cart with level and points per mod.
+- **Chassis:** type chips (Vehicles / Drones), then cards with Body, Armor, Handling, CF, seats and Design Points.
+
+**Calls made while building — for the maintainer to confirm:**
+- **Flight Deck — ruled (the maintainer, 2026-11-08):** "Technically you can have a flight deck on a bike … its just really
+  stupid but possible." It follows the book's limit (R3R p.119): aircraft of Body under half the vehicle's Body (ships: Hull
+  × 10). It is hidden only when no aircraft chassis is that small (a Body 0 vehicle).
+- **Living Amenities, Work Shop, Facility — ruled (the maintainer, 2026-11-08):** hidden by their CF, not by type: their
+  smallest CF (168, 52, 200) is over the chassis' maximum + 2 (no bike holds more than ~17), and the card says so.
+- Mod fit rules come from each entry's printed restriction (R3R pp.126-155): sidecars and bike gyros on bikes, suspension on
+  wheeled ground vehicles, control surfaces on watercraft, nitrous on gasoline/diesel, Smart Armor at Body 4+, and so on.
 
 ### 🖥 Matrix
 
