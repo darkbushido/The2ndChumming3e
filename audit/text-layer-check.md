@@ -46,3 +46,24 @@ changes no designer code.
 **Migration:** none needed. Design options are priced live from the design; no owned item stores a Hull-Factor figure.
 
 **Not yet done:** other books' cited pages. Only R3R scored BAD, so the rest keep their text layers.
+
+## Pack cross-check, all books (TODO 296, 2026-11-08)
+
+All 12 books were OCR'd: 1,705 pages, Tesseract 5 at 300 dpi, output in `SR-OCR/all/` (never committed). Each pack entry
+whose `bookPage` names a book we hold was located on its cited page, and its stat numbers (cost, ammo, availability,
+damage, ratings and so on) were checked against the OCR. **Results:**
+- 1,267 entries carry numbers; 709 of them were located on the page by name.
+- 46 entries had a number that is on the text-layer page but nowhere on the OCR page.
+- Each of the 46 was read with `pdftotext -layout`, and the ambiguous ones from the page itself:
+
+| Entry | Flagged | Finding |
+|---|---|---|
+| CC Cavalier Deputy 300¥, Ares Alpha 42(c)/2,000¥, Light Fire 70 475¥ | OCR missed the row | Layer row matches pack — OK |
+| CC parachutes 500/750¥, Compensator and Belt 475¥, Radar Designator | OCR missed the row | Layer row matches pack — OK |
+| CC Bo Staff, Katar, Safe Target, Ranger-X Bow, Slingshot | OCR split the table or misread ("SIR Min") | OK |
+| MITS Alleviate Allergy "10 − Essence" | OCR read "70" | Layer right — OK |
+| MITS adept powers cost 1, CC/MAT skills | the number "1" OCR'd as "|" or "{" | OK |
+
+**Verdict:** no pack value is a text-layer misread in SR3, CC, M&M, MITS, Matrix, MDF, R3R or LBB.
+Caveat: 558 entries were not located by name on their page, so they were not checked. The code's own page citations
+(`scripts/`, about 280) have not yet been re-read this way.

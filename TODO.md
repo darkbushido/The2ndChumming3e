@@ -2965,6 +2965,10 @@ compare books with each other; these are not error counts. Clean books lose abou
 Only R3R is badly garbled. Cannon Companion and Matrix are next to check. A high "numbers extra" rate (Matrix, MITS)
 more likely means tables read in a different order than real misreads.
 
+**Progress 2026-11-08 — pack cross-check done:** every pack entry located on its cited page (709 of 1,267) was compared
+against the OCR. 46 were flagged, and all were OCR failures; none is a text-layer misread. See `audit/text-layer-check.md`.
+**Still open:** the 558 entries not located by name, and the code’s ~280 `p.NN` citations in `scripts/`.
+
 ### 🧹 Housekeeping
 
 ## 6. Open upstream bugs and PRs for the pushed non-Shadowfork branches
