@@ -55,6 +55,11 @@ export async function run(t) {
   t.ok('robot options are for drones', !!opt('robot-pilot', { category: 'car' }) && !opt('robot-pilot', { category: 'car', drone: true }));
   t.ok('STOL is for fixed-wing aircraft', !!opt('stol', { category: 'rotor' }) && !opt('stol', { category: 'fixedwing' }));
   t.ok('an EMD drive needs a nuclear sub', !!opt('emd', { category: 'sub', plantCode: 'D' }) && !opt('emd', { category: 'sub', plantCode: 'N' }));
+  // Living Amenities, Work Shop, Facility: hidden by their CF, with the shortfall as the reason (the maintainer, 2026-11-08).
+  t.eq('no bike holds a work shop — the reason says why', opt('workshop', { category: 'bike', maxCf: 15 }), 'Needs at least 52 CF — this chassis holds at most 17');
+  t.ok('…nor amenities or a facility', !!opt('amenities', { maxCf: 15 }) && !!opt('facility', { maxCf: 15 }));
+  t.is('…a big enough chassis takes them, whatever its type', opt('workshop', { category: 'car', maxCf: 60 }), null);
+  t.ok('the designer passes the chassis maximum CF', /maxCf: VehicleDesign\.cell\(ch\.maxCf, body\)/.test(src('scripts/SR3EVehicleDesigner.js')));
   t.is('an unrestricted option always fits', opt('storage', { category: 'bike' }), null);
 
   // Art: every chassis type, plant and shelf has its own drawing.

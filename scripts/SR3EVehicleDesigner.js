@@ -196,7 +196,8 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
   /** The fit context for a chassis and the current plant — what `misfit` reads. */
   _fitCtx(ch) {
     const plant = VehicleDesign.plantRow(this.design.plant)?.plant ?? (this.design.plant || null);
-    return { category: ch.category, chassisId: ch.id, body: VehicleDesign.bodyOf(ch), hasHull: /H/.test(String(ch.body)),
+    const body = VehicleDesign.bodyOf(ch);
+    return { category: ch.category, chassisId: ch.id, body, hasHull: /H/.test(String(ch.body)), maxCf: VehicleDesign.cell(ch.maxCf, body),
       plantCode: plant, plant, drone: !!ch.drone };
   }
 

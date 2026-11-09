@@ -1305,7 +1305,8 @@ kept at the top. Branch `claude/vehicle-designer-shop` (follows #287).
 - **Flight Deck — ruled (the maintainer, 2026-11-08):** "Technically you can have a flight deck on a bike … its just really
   stupid but possible." It follows the book's limit (R3R p.119): aircraft of Body under half the vehicle's Body (ships: Hull
   × 10). It is hidden only when no aircraft chassis is that small (a Body 0 vehicle).
-- Living Amenities, Work Shop and Facility don't fit a motorcycle — the book prints no such restriction (call, to confirm).
+- **Living Amenities, Work Shop, Facility — ruled (the maintainer, 2026-11-08):** hidden by their CF, not by type: their
+  smallest CF (168, 52, 200) is over the chassis' maximum + 2 (no bike holds more than ~17), and the card says so.
 - Mod fit rules come from each entry's printed restriction (R3R pp.126-155): sidecars and bike gyros on bikes, suspension on
   wheeled ground vehicles, control surfaces on watercraft, nitrous on gasoline/diesel, Smart Armor at Body 4+, and so on.
 

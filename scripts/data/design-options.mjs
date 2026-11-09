@@ -219,20 +219,20 @@ export const OPTIONS = [
     load: c => { const p = Math.max(0, num(c.persons)); return p * 100 + p * 150; },
     warn: c => (AMENITIES[c.kind] ? [] : [`Amenities "${c.kind}" — basic, improved or high (R3R p.120)`]),
     note: 'CF and Load include the People Space (150 CF + 6 CF and 150 kg a person); trolls +50% People Space',
-    fit: c => (c.category === 'bike' ? 'No room on a motorcycle' : null),
+    fit: room(168),
   },
   {
     id: 'workshop', name: 'Work Shop', group: 'Facility', page: 'R3R p.120', inputs: [['points', 'Shop\'s nuyen cost', 0]],
     dp: c => num(c.points), cf: () => 52, load: () => 250,
     note: 'Plus the People Space for the work (p.120 table)',
-    fit: c => (c.category === 'bike' ? 'No room on a motorcycle' : null),
+    fit: room(52),
   },
   {
     id: 'facility', name: 'Facility', group: 'Facility', page: 'R3R p.120',
     inputs: [['kind', 'vehicle/electronics/other', 'other'], ['points', 'Facility\'s nuyen cost', 0]],
     dp: c => 250 + num(c.points), cf: c => (c.kind === 'vehicle' ? 500 : c.kind === 'electronics' ? 200 : 300), load: () => 1000,
     note: 'Plus the People Space for the work (p.120 table)',
-    fit: c => (c.category === 'bike' ? 'No room on a motorcycle' : null),
+    fit: room(200),
   },
 
   /* Robot options (p.120-121) — robots must buy the robotic pilot. */
@@ -276,6 +276,15 @@ export const OPTIONS = [
     fit: c => (c.drone ? null : 'For drones'),
   },
 ];
+
+/**
+ * A facility too big for the chassis: its smallest CF (amenities for one person, a work shop, an electronics facility) over
+ * the most CF the chassis can hold, + 2 for removed manual controls (the maintainer, 2026-11-08: "change it to the reason").
+ * A design that frees more CF by hand still takes it — the switch shows it.
+ */
+function room(need) {
+  return c => (c.maxCf != null && need > c.maxCf + 2 ? `Needs at least ${need} CF — this chassis holds at most ${c.maxCf + 2}` : null);
+}
 
 /** What a flight deck can launch or land: aircraft of Body under this (R3R p.119). */
 export const flightDeckLimit = c => (c.hasHull ? c.body * 10 : (c.body ?? 0) / 2);
