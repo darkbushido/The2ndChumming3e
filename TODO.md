@@ -2967,7 +2967,8 @@ more likely means tables read in a different order than real misreads.
 
 **Progress 2026-11-08 — pack cross-check done:** every pack entry located on its cited page (709 of 1,267) was compared
 against the OCR. 46 were flagged, and all were OCR failures; none is a text-layer misread. See `audit/text-layer-check.md`.
-**Still open:** the 558 entries not located by name, and the code’s ~280 `p.NN` citations in `scripts/`.
+**Code citations done too:** all 1,717 in `scripts/` checked; none is a text-layer misread.
+**Still open:** the 558 pack entries not located by name on their cited page.
 
 ### 🧹 Housekeeping
 
