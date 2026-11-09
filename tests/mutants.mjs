@@ -4544,4 +4544,11 @@ export const MUTANTS = [
       return updates.length || deletes.length || adds.length ? { updates, deletes, adds } : null;
     },
   },
+  {
+    id:     'mount-vehicle-minigun-by-type',
+    suite:  'vehicle-mounts',
+    module: '../scripts/data/vehicle-mounts.mjs', klass: 'VehicleMounts', method: 'weaponValue', needsOriginal: '_weaponValueOriginal',
+    was:    "the Ares Vanquisher and Vengeance (vehicle weapons typed HMG/MMG) counted 2 against a turret, not the table's 2.5 (R3R p.140)",
+    impl:   function (w) { return w?.type === 'vehicleweapon' && /vanquisher|vengeance/i.test(w.name) ? 2 : this._weaponValueOriginal(w); },
+  },
 ];

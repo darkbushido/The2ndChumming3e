@@ -63,6 +63,8 @@ export async function run(t) {
     [1, 1.5, 2, 3, 2.5, null]);
   t.eq('…vehicle weapons by type, railguns by name', [vw('', 'X', 'Autocannon'), vw('', 'Light Railgun', 'Railgun'), vw('', 'Heavy Railgun', 'Railgun'), vw('', 'X', 'Lure Launcher')].map(w => VehicleMounts.weaponValue(w)),
     [3, 5, 10, null]);
+  t.eq('the Vanquisher and Vengeance as the packs carry them — vehicle weapons typed HMG and MMG — are 2.5 (p.140)',
+    [vw('', 'Ares Vanquisher Minigun', 'HMG'), vw('', 'Ares Vengeance Minigun', 'MMG'), vw('', 'X', 'HMG')].map(w => VehicleMounts.weaponValue(w)), [2.5, 2.5, 2]);
   t.eq('hardpoints for MMG and larger and every vehicle weapon; LMGs and small arms may use firmpoints (p.135)',
     [gun('', 'X', 'MMG'), gun('', 'X', 'ACan'), vw('', 'X', 'Autocannon'), gun('', 'X', 'LMG'), gun('', 'X', 'AsRf')].map(w => VehicleMounts.needsHardpoint(w)),
     [true, true, true, false, false]);
