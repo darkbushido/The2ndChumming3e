@@ -32,8 +32,10 @@ export async function run(t) {
   t.eq('never overwrites', D.fillDelta({ ...nitrous, system: { ...nitrous.system, designCost: '60', designCf: '2', designLoad: '9' } }), null);
   t.eq('wrong page → nothing', D.fillDelta({ ...nitrous, system: { bookPage: 'r3.999' } }), null);
   t.eq('not a vehicle mod → nothing', D.fillDelta({ ...nitrous, type: 'gear' }), null);
-  const amph = cf => D.rowFor({ type: 'vehiclemod', name: 'Amphibious Package (Vehicle)', system: { bookPage: 'r3.149', cfCost: cf } })?.[3];
-  t.eq('amphibious levels told apart by CF', [amph('0'), amph('2'), amph('4')], ['25', '80', '200']);
+  // Amphibious Package is ONE rated mod (R3R p.149; the maintainer, 2026-11-08: "One rated pack entry").
+  const amph = D.rowFor({ type: 'vehiclemod', name: 'Amphibious Package (Vehicle)', system: { bookPage: 'r3.149', cfCost: '4' } });
+  t.eq('amphibious: one row, priced by level 25 / 80 / 200', [1, 2, 3].map(level => D.points(amph[3], { level })), [25, 80, 200]);
+  t.eq('amphibious: design CF 0 / 0 / 2 by level', [1, 2, 3].map(level => D.points(amph[4], { level })), [0, 0, 2]);
 
   t.eq('rows are unique by name+page+discriminator',
     DESIGN_COSTS.map(r => JSON.stringify(r.slice(0, 3))).filter((x, i, a) => a.indexOf(x) !== i), []);

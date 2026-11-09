@@ -4483,6 +4483,27 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'design-mod-list-duplicates',
+    suite:  'vehicle-design-actor',
+    module: '../scripts/data/vehicle-design-actor.mjs', klass: 'VehicleDesignActor', method: 'pickList',
+    was:    'the designer listed Datajack Port twice, one per book pack, with nothing to tell them apart (the user, 2026-11-08; TODO 287)',
+    impl:   (index = []) => [...index].sort((a, b) => a.name.localeCompare(b.name)),
+  },
+  {
+    id:     'design-mod-level-numbers-dropped',
+    suite:  'vehicle-design-actor',
+    module: '../scripts/data/vehicle-design-actor.mjs', klass: 'VehicleDesignActor', method: 'modItemData',
+    was:    'an Amphibious Package designed at Level 3 reached the vehicle with Level 1 price and CF (TODO 287, R3R p.149)',
+    impl:   (source, m) => { const d = { ...source, system: { ...source.system } }; delete d._id; if (m?.level != null) d.system.rating = Number(m.level); return d; },
+  },
+  {
+    id:     'amphibious-level-not-filled',
+    suite:  'mod-ratings',
+    module: '../scripts/data/mod-ratings.mjs', klass: 'ModRatings', method: 'levelFillDelta',
+    was:    'an old Amphibious Package kept a dead link and no level after the pack collapsed it to one rated entry (TODO 287)',
+    impl:   () => null,
+  },
+  {
     id:     'design-mods-counted-once',
     suite:  'vehicle-design-actor',
     module: '../scripts/data/vehicle-design-actor.mjs', klass: 'VehicleDesignActor', method: 'missingMods',

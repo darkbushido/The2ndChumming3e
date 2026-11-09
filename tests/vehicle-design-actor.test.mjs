@@ -65,4 +65,18 @@ export async function run(t) {
   t.ok("_embedMods never writes _stats (a player's create carrying it is dropped, §82 2026-11-08)", !/_stats/.test(w.slice(w.indexOf('async _embedMods'))) && w.includes('SOURCE_FLAG}`, m.uuid'));
   t.ok('_embedMods warns when fewer items were made than sent', /made\?\.length \?\? 0\) < docs\.length/.test(w));
   t.ok('the window lists the design options catalogue', w.includes('DesignOptions.OPTIONS') && w.includes('DesignOptions.newRow'));
+
+  // The mod list offers each name once (the user, 2026-11-08: "datajack port shows up twice").
+  const e = (uuid, name, bookPage, designCost = '') => ({ uuid, name, system: { bookPage, designCost } });
+  const list = A.pickList([e('a', 'Datajack Port (Vehicle)', 'sr3.306,r3.128'), e('b', 'Datajack Port (Vehicle)', 'r3.128', '25'),
+    e('c', 'Pintle Mount (Vehicle)', 'sr3.312', '1'), e('d', 'Pintle Mount (Vehicle)', 'sr3.312,r3.138', '1'), e('f', 'Ablative Armor (Vehicle)', 'r3.131')]);
+  t.eq('one entry per name, sorted', list.map(x => x.name), ['Ablative Armor (Vehicle)', 'Datajack Port (Vehicle)', 'Pintle Mount (Vehicle)']);
+  t.eq('…the copy with design figures, else the R3R one', list.map(x => x.uuid), ['f', 'b', 'd']);
+
+  // A mod with printed levels is embedded at the design's level, with that level's numbers (Amphibious Package, R3R p.149).
+  const amph = { name: 'Amphibious Package (Vehicle)', type: 'vehiclemod', _id: 'x', system: { rating: 1, cost: 2500, cfCost: '0' } };
+  const lv3 = A.modItemData(amph, { level: 3 });
+  t.eq('amphibious at level 3: rating 3, 15,000¥, CF 4', [lv3.system.rating, lv3.system.cost, lv3.system.cfCost], [3, 15000, '4']);
+  t.is('…the source is untouched', amph.system.cost, 2500);
+
 }

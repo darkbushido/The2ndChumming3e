@@ -3713,6 +3713,12 @@ Hot reload is enough (no new fields). §80's two steps not yet walked live (Crea
       then open 🛠 Design, add **Pintle Mount**, click **Offer changes** → the stat rows,
       then "Mods … tick to add" listing **Ring Mount** and **Pintle Mount** (ticked). Untick Speed, apply → Speed stays 999,
       both mods arrive, and the hand-added mod is untouched.
+- [ ] **One entry per mod** (after `packs:install`, Foundry closed — the pack changed): the "add a mod" list shows **Datajack Port**,
+      **Rigger Adaptation**, **Pintle Mount**, **Bike Gyro-Stabilization Gear** and **Amphibious Package** once each, every entry
+      with its book page in [brackets]. Pick Amphibious Package, set its Level to 2 → 80 points; 3 → 200 points, CF 2. Create →
+      the vehicle's Amphibious Package is Level 3 at 15,000¥, CF 4. The item sheet's Level dropdown offers 1-3.
+- [ ] **Migration:** in a world that carried an old Amphibious Package (any of the three), after the reload its copy has a Level
+      (the one its price matches) and its 📖 link opens the single pack entry.
 
 ## 83. 🔮 The spell audit (TODO 123, branch `claude/spells-audit-123`)
 

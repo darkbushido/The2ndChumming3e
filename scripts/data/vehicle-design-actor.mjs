@@ -8,6 +8,7 @@
  */
 import { VehicleDesign } from './vehicle-design.mjs';
 import { DesignCosts } from './design-costs.mjs';
+import { ModRatings } from './mod-ratings.mjs';
 
 export const FLAG = 'design';
 /** Where an embedded mod records the compendium entry it came from — a flag, because a player may not write `_stats`. */
@@ -104,13 +105,35 @@ export const VehicleDesignActor = {
     return out;
   },
 
-  /** A compendium mod's data as the vehicle's item at the design's level (rated mods carry it as `system.rating`). */
+  /**
+   * A compendium mod's data as the vehicle's item at the design's level (rated mods carry it as `system.rating`). A mod
+   * with printed levels (Amphibious Package 1-3) takes that level's cost, CF and the rest too (`ModRatings.withLevel`).
+   */
   modItemData(source, m) {
-    const data = { ...source };
+    let data = { ...source };
     delete data._id;
     data.system = { ...(source.system ?? {}) };
-    if (m?.level != null && source.system?.rating != null) data.system.rating = Number(m.level) || data.system.rating;
+    if (m?.level != null && source.system?.rating != null) {
+      const level = Number(m.level) || data.system.rating;
+      data = ModRatings.levelsOf(data) ? ModRatings.withLevel(data, level) : data;
+      data.system.rating = level;
+    }
     return data;
+  },
+
+  /**
+   * The designer's mod list: one entry per name (the user, 2026-11-08: "datajack port shows up twice"). The same mod in
+   * two books' packs (Datajack Port in SR3 and R3R) or twice in one pack (Pintle Mount) is offered once — the copy that
+   * carries design figures, else an R3R one, else the first. Each keeps its `bookPage` for the label. Sorted by name.
+   */
+  pickList(index = []) {
+    const score = e => (e.system?.designCost ? 2 : 0) + (/(^|,)r3\./.test(String(e.system?.bookPage ?? '')) ? 1 : 0);
+    const best = new Map();
+    for (const e of index) {
+      const cur = best.get(e.name);
+      if (!cur || score(e) > score(cur)) best.set(e.name, e);
+    }
+    return [...best.values()].sort((a, b) => a.name.localeCompare(b.name));
   },
 
   /**
