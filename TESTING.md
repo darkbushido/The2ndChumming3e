@@ -3782,6 +3782,8 @@ Second pass (the maintainer's feedback, 2026-11-08):
 - [ ] **Levels:** a rated mod's card says "levels 1-N" where the book sets one (Autonav 1-4, Nitrous 1-6, CMC 1-9); its cart
       line has **Lv** capped at N ("/N"). Set Autonav Lv 10 → the line turns amber with "Level 10 is over the book's maximum of 4".
       **Datajack Port** has no Lv box.
+- [ ] **Turret variants:** add **Mini-Turret(Pop-Up)** → only that card is highlighted; Mini-Turret(Anti-Air) and the
+      other mini-turrets still say **+ Add**.
 - [ ] **Aftermarket:** **Morphing License Plate** shows 0 points and "Aftermarket — no design cost" — no ⚠.
 - [ ] **Pictures:** every chassis card, the towed step and the result bar show a coloured anime picture on a transparent
       background — no green or magenta fringe, no grey ground shadow, tail lights still red.
