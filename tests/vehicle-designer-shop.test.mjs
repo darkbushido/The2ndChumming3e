@@ -120,7 +120,7 @@ export async function run(t) {
   // The window (source-level).
   const css = readFileSync(new URL('../styles/sr3e.css', import.meta.url), 'utf8');
   t.ok('the designer brightens its muted and dim text', /\.sr3e-vehicle-designer \{ --sr-muted: #cfc8ba; --sr-dim: #a8a194; \}/.test(css));
-  t.ok('the auxiliary engine picks its plant from a dropdown', /picked = \{ auxPlant: auxPick,/.test(w) && w.includes('<select data-path="options.${i}.${k}">'));
+  t.ok('the auxiliary engine picks its plant from a dropdown', /pickers = \{ auxPlant: auxPick,/.test(w) && w.includes('<select data-path="options.${i}.${k}">'));
   t.ok('the work shop and facility pick their kind from a dropdown', /shop: k => shopPick\(k, 'shop'\), facility: k => shopPick\(k, 'facility'\)/.test(w));
   t.ok('chassis cards show the catalogue picture', /DesignerArt\.picture\(card\.art/.test(w));
 
