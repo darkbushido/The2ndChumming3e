@@ -60,6 +60,19 @@ export const setupBase = body => num(body) * 2 + 1;
 /** Extra entry points a chassis can take (R3R p.115): Hull × 2 for a hulled vessel, else half the Body, rounded up. */
 export const entryMax = c => (c.hasHull ? (c.hull ?? c.body) * 2 : Math.ceil((c.body ?? 0) / 2));
 
+/**
+ * The kinds of shop and facility a Work Shop or Facility option holds, with the price of each — the SR3 gear pack's Shop and
+ * Facility entries (sr3e-sr3-gear). `kind` is the Facility CF row it falls in (R3R p.120).
+ */
+export const SHOPS = {
+  general:    { name: 'General',    shop: 5000,  facility: 100000, kind: 'other' },
+  computer:   { name: 'Computer',   shop: 15000, facility: 300000, kind: 'electronics' },
+  cyberware:  { name: 'Cyberware',  shop: 15000, facility: 300000, kind: 'other' },
+  electronic: { name: 'Electronic', shop: 15000, facility: 300000, kind: 'electronics' },
+  gunsmith:   { name: 'Gunsmith',   shop: 10000, facility: 200000, kind: 'other' },
+  vehicle:    { name: 'Vehicle',    shop: 10000, facility: 200000, kind: 'vehicle' },
+};
+
 export const OPTIONS = [
   /* Functional improvements that need an input beyond a number (p.115-116). */
   {
@@ -93,8 +106,10 @@ export const OPTIONS = [
     fit: c => (c.category === 'sub' ? null : 'For submarines (or a vehicle with EnviroSeal)'),
   },
   {
-    id: 'aux-engine', name: 'Auxiliary Engine', group: 'Enhancement', page: 'R3R p.116', inputs: [['points', 'Its plant\'s points', null]],
-    dp: c => (c.points == null || c.points === '' ? c.plantDp ?? 0 : num(c.points)),
+    id: 'aux-engine', name: 'Auxiliary Engine', group: 'Enhancement', page: 'R3R p.116', inputs: [['auxPlant', 'Its power plant', ''], ['points', '', null]],
+    // Its plant is picked from the chassis' Power Plant Table rows (the maintainer, 2026-11-09: "a dropdown of the different
+    // powerplant types"); none picked = the main plant's. A design saved with typed `points` keeps them.
+    dp: c => (c.points != null && c.points !== '' ? num(c.points) : (c.auxPlant ? c.plantDpOf?.(c.auxPlant) : null) ?? c.plantDp ?? 0),
     cf: c => (c.hasHull ? (c.hull + c.hullFactor) * 2 : (c.body + 1) * 2), load: c => Math.round((c.maxLoad ?? 0) * 0.1),
     warn: c => (c.body === 0 ? ['A Body 0 vehicle cannot carry an auxiliary engine (R3R p.116)'] : []),
     note: 'Its Speed and Acceleration are half its plant\'s; one engine runs at a time',
@@ -230,15 +245,18 @@ export const OPTIONS = [
     fit: room(168),
   },
   {
-    id: 'workshop', name: 'Work Shop', group: 'Facility', page: 'R3R p.120', inputs: [['points', 'Shop\'s nuyen cost', 0]],
-    dp: c => num(c.points), cf: () => 52, load: () => 250,
+    id: 'workshop', name: 'Work Shop', group: 'Facility', page: 'R3R p.120', inputs: [['shop', 'Kind of shop', ''], ['points', '', null]],
+    // The kind of shop is a pick (the maintainer, 2026-11-09); its points are that shop's price. Typed `points` still win.
+    dp: c => (c.points != null && c.points !== '' ? num(c.points) : SHOPS[c.shop]?.shop ?? 0), cf: () => 52, load: () => 250,
     note: 'Plus the People Space for the work (p.120 table)',
     fit: room(52),
   },
   {
     id: 'facility', name: 'Facility', group: 'Facility', page: 'R3R p.120',
-    inputs: [['kind', 'vehicle/electronics/other', 'other'], ['points', 'Facility\'s nuyen cost', 0]],
-    dp: c => 250 + num(c.points), cf: c => (c.kind === 'vehicle' ? 500 : c.kind === 'electronics' ? 200 : 300), load: () => 1000,
+    inputs: [['facility', 'Kind of facility', ''], ['kind', '', 'other'], ['points', '', null]],
+    // The kind of facility is a pick: it sets the price and the CF (vehicle 500, electronics 200, other 300).
+    dp: c => 250 + (c.points != null && c.points !== '' ? num(c.points) : SHOPS[c.facility]?.facility ?? 0),
+    cf: c => { const k = SHOPS[c.facility]?.kind ?? c.kind; return k === 'vehicle' ? 500 : k === 'electronics' ? 200 : 300; }, load: () => 1000,
     note: 'Plus the People Space for the work (p.120 table)',
     fit: room(200),
   },
