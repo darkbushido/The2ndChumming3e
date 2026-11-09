@@ -67,3 +67,19 @@ damage, ratings and so on) were checked against the OCR. **Results:**
 **Verdict:** no pack value is a text-layer misread in SR3, CC, M&M, MITS, Matrix, MDF, R3R or LBB.
 Caveat: 558 entries were not located by name on their page, so they were not checked. The code's own page citations
 (`scripts/`, about 280) have not yet been re-read this way.
+
+## Code citations, all books (TODO 296, 2026-11-08)
+
+`scripts/` carries 1,717 book-page citations (SR3, M&M, R3R, CC, MITS, MDF, NS, LBB, MAT). For each one, the numbers in the
+code within 3 lines of the citation were checked against the cited page. A number was flagged when it is in the text layer
+but missing from the OCR, since that is where a text-layer misread would hide. PDF offsets were measured from the pack hits:
+SR3/M&M/R3R/NS +2, CC/MITS/MAT/LBB +1, MDF 0.
+
+There were 93 flags:
+- ~78 were noise: the page's own folio, a running-header "6", or a citation's page number.
+- The other ~15 were read with `pdftotext -layout`. Examples: SR3 p.303 Built-In Smartgun Link SI 1.5 (OCR "LS"), CC p.34,
+  CC pp.53-54, CC p.78, CC pp.116-117, M&M p.108, R3R pp.116-122, R3R p.135, R3R pp.201-205.
+
+Each was either an OCR misread, or the number belonged to an unrelated line ("5R3" for "SR3", "Body x 10.OOO¥").
+**No code figure was copied from a text-layer misread.** The R3R formulas were already re-read from the page images in
+TODO 293, above.
