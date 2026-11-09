@@ -3785,5 +3785,7 @@ Second pass (the maintainer's feedback, 2026-11-08):
 - [ ] **Aftermarket:** **Morphing License Plate** shows 0 points and "Aftermarket — no design cost" — no ⚠.
 - [ ] **Pictures:** every chassis card, the towed step and the result bar show a coloured anime picture on a transparent
       background — no green or magenta fringe, no grey ground shadow, tail lights still red.
+- [ ] **Readable text:** the designer's hints, card stats, page numbers and step captions read clearly — light grey, not
+      grey on grey.
 - [ ] **Token icon:** create a design → the new vehicle's portrait and its dragged token are the chassis' top-down icon
       (`styles/vehicles/top/<art>.webp`), no shadow. Re-saving an existing vehicle leaves its picture alone.
