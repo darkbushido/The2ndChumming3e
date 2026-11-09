@@ -129,6 +129,14 @@ export async function run(t) {
   t.ok('the designer brightens its muted and dim text', /\.sr3e-vehicle-designer \{ --sr-muted: #cfc8ba; --sr-dim: #a8a194; \}/.test(css));
   t.ok('the auxiliary engine picks its plant from a dropdown', /pickers = \{ auxPlant: auxPick,/.test(w) && w.includes('<select data-path="options.${i}.${k}">'));
   t.ok('the work shop and facility pick their kind from a dropdown', /shop: k => shopPick\(k, 'shop'\), facility: k => shopPick\(k, 'facility'\)/.test(w));
+  // Who pulls trailers: ground vehicles and boats (the maintainer, 2026-11-09).
+  const CC = C;
+  const chOf = id => CHASSIS.find(c => c.id === id);
+  t.eq('cars, bikes, hovercraft, boats, ships and locomotives pull trailers',
+    ['sedan', 'atv', 'hovercraft-light', 'speedboat', 'freighter', 'locomotive-bulk'].filter(id => !chOf(id) || !CC.canTow(chOf(id))), []);
+  t.eq('…aircraft, subs, walkers and trailers do not',
+    ['jet-fighter', 'attack-submarine', 'walker-large', 'zeppelin', 'trailer-53ft'].filter(id => !chOf(id) || CC.canTow(chOf(id))), []);
+  t.ok('…the Add a trailer button asks it', /if \(!ChassisCatalog\.canTow\(ch\)\) return '';[\s\S]{0,120}vd-add-trailer|if \(!ChassisCatalog\.canTow\(ch\)\) return '';/.test(w));
   t.ok('chassis cards show the catalogue picture', /DesignerArt\.picture\(card\.art/.test(w));
 
   // Pictures (the maintainer, 2026-11-08: anime style, transparent background), generated on the maintainer's ComfyUI.

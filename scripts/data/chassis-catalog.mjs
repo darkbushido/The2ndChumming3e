@@ -148,6 +148,16 @@ export const TOWED = new Set(['barge', 'rail-car-freight', 'rail-car-long-passen
   'trailer-heavy-axle', 'trailer-light-axle', 'trailer-20ft', 'trailer-40ft', 'trailer-53ft']);
 
 export const ChassisCatalog = {
+  /**
+   * Can this chassis pull trailers? Ground vehicles and boats (the maintainer, 2026-11-09): bikes, cars and trucks,
+   * hovercraft, boats and ships, and locomotives (which pull rail cars). Not aircraft, subs, drones' walkers, or a towed
+   * chassis itself.
+   */
+  canTow(ch) {
+    if (!ch || TOWED.has(ch.id)) return false;
+    return ['bike', 'car', 'hover', 'boat', 'ship'].includes(ch.category) || /^locomotive-/.test(ch.id);
+  },
+
   /** The card for a chassis: { art, blurb, towed }. */
   card(id) {
     const [art, blurb] = CHASSIS_INFO[id] ?? [null, ''];

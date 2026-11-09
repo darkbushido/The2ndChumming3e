@@ -139,7 +139,8 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
       if (link?.role === 'trailer' && link.other?.name) return `<span class="vd-dim vd-tow-link">Towed by <b>${esc(link.other.name)}</b></span>`;
       return `<button type="button" class="vd-tow" title="Open a new design for the vehicle that pulls this one; the two are linked when it is created.">🚚 Design its tow vehicle</button>`;
     }
-    // A tractor: add trailers, up to five (R3R p.193).
+    // A tractor: add trailers, up to five (R3R p.193) — ground vehicles and boats only (the maintainer, 2026-11-09).
+    if (!ChassisCatalog.canTow(ch)) return '';
     const n = VehicleDesignActor.trailersOf(link).length;
     return `<button type="button" class="vd-add-trailer" ${n >= MAX_TRAILERS ? 'disabled' : ''} title="Open a new design for a trailer this vehicle pulls; it is linked when created. Up to ${MAX_TRAILERS} (R3R p.193).">🚛 Add a trailer (${n}/${MAX_TRAILERS})</button>`;
   }
