@@ -8208,3 +8208,41 @@ rules files are `release-and-process.md` (preflight, releases, manifest URLs, th
 `packs-and-migrations.md`, `chat-cards.md` (open steps, two-corner cards) and `data-model.md` (fields, item types,
 weapon codes, key methods). The digest indexes all four. `tests/claude-md-slim.test.mjs` fails if a moved heading
 goes missing, comes back to `CLAUDE.md`, or a summary is dropped.
+
+## 296. ✅ Audit every 3e book's text layer against OCR, base books first — **requested 2026-11-08** · done 2c1a370e
+
+The maintainer asked for this after [#293](TODO.md#293) found R3R's text layer garbled. Order: Core Rules (SR3), then Magic in the
+Shadows, Man & Machine, Matrix, Rigger 3 Revised, then the rest (Cannon Companion, Critters, Little Black Book,
+New Seattle, Matrix Defragged, GM Screen, QSR).
+
+For each book:
+- Diff the text layer against a fresh OCR. The OCR output is local only: `SR-OCR/all/`, never committed.
+- Re-read from the page image every page the code cites that has a high mismatch rate.
+- Fix any divergence with a test and a mutant.
+
+**Mismatch rates, 2026-11-08** (all 12 books, 1,705 pages). The figures are numbers lost from the text layer / numbers OCR found
+that it lacks / words lost, plus bad pages (pages with 10 or more numbers, over 20% of them lost). OCR is noisy itself, so
+compare books with each other; these are not error counts. Clean books lose about 5–11% of their numbers.
+
+| Book | Numbers lost % | Numbers extra % | Words lost % | Bad pages |
+|---|---|---|---|---|
+| R3R (known garbled) | 32.2 | 42.2 | 21.9 | 143 |
+| Cannon Companion | 21.3 | 5.5 | 5.4 | 32 |
+| QSR | 19.0 | 5.8 | 2.1 | 10 |
+| Matrix | 17.4 | 18.9 | 3.5 | 32 |
+| MITS | 12.4 | 18.1 | 3.3 | 20 |
+| GM Screen | 11.9 | 1.1 | 7.7 | 1 of 4 |
+| SR3 Core | 10.7 | 3.2 | 2.4 | 26 |
+| New Seattle | 10.5 | 6.5 | 3.1 | 6 |
+| Man & Machine | 9.1 | 1.5 | 2.9 | 6 |
+| Critters | 7.3 | 0.5 | 2.3 | 3 |
+| MDF | 4.8 | 4.7 | 0.9 | 1 |
+| Little Black Book | 5.6 | 2.3 | 1.9 | 1 of 126 |
+
+Only R3R is badly garbled. Cannon Companion and Matrix are next to check. A high "numbers extra" rate (Matrix, MITS)
+more likely means tables read in a different order than real misreads.
+
+**Progress 2026-11-08 — pack cross-check done:** every pack entry located on its cited page (709 of 1,267) was compared
+against the OCR. 46 were flagged, and all were OCR failures; none is a text-layer misread. See `audit/text-layer-check.md`.
+**Code citations done too:** all 1,717 in `scripts/` checked; none is a text-layer misread.
+**Done:** the remaining entries were checked too; see `audit/text-layer-check.md`. No text-layer misread found outside R3R.
