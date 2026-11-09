@@ -200,6 +200,16 @@ export const ModCatalog = {
   MODS,
   keyOf,
 
+  /**
+   * Is the cart's mod the same pack mod as this card's? By its exact name (the "(Vehicle)" suffix, spacing and case
+   * aside) — NOT `keyOf`, which folds the Pop-Up and Anti-Air variants into their base for the blurb. The maintainer,
+   * 2026-11-09: adding a Mini-Turret(Pop-Up) highlighted the other mini-turrets as added.
+   */
+  sameMod(a, b) {
+    const n = x => String(x ?? '').replace(/\s*\(Vehicle\)\s*$/, '').replace(/\s+/g, ' ').trim().toLowerCase();
+    return n(a) === n(b);
+  },
+
   /** The shop card for a pack mod: { shelf, blurb, variant } — an unknown mod goes on Special with no blurb. */
   card(name) {
     const key = keyOf(name);

@@ -4525,6 +4525,13 @@ export const MUTANTS = [
     impl:   () => true,
   },
   {
+    id:     'designer-variants-same-mod',
+    suite:  'vehicle-designer-shop',
+    module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'sameMod',
+    was:    'adding a Mini-Turret(Pop-Up) marked the other mini-turrets as in the cart (the maintainer, 2026-11-09; TODO 297)',
+    impl:   function (a, b) { return this.keyOf(a) === this.keyOf(b); },
+  },
+  {
     id:     'designer-mod-misfit-ignored',
     suite:  'vehicle-designer-shop',
     module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'misfit',

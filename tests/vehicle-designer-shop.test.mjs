@@ -122,6 +122,10 @@ export async function run(t) {
   t.is('an unrated mod has no level', M.maxLevel(mod('Datajack Port (Vehicle)', null, '25')), null);
   t.ok('only a rated mod is rated', M.rated(mod('x', 1)) && !M.rated(mod('x', null)));
   t.ok('Ablative Armor is aftermarket — not a design option (R3R p.131)', M.aftermarket('Ablative Armor (Vehicle)'));
+  t.ok('a Pop-Up turret is not the Anti-Air one', !M.sameMod('Mini-Turret(Pop-Up) (Vehicle)', 'Mini-Turret(Anti-Air) (Vehicle)'));
+  t.ok('…the same mod from another pack matches', M.sameMod('Mini-Turret(Pop-Up) (Vehicle)', 'Mini-Turret(Pop-Up)'));
+  t.ok('the shop counts the cart by exact name', w.includes('ModCatalog.sameMod(x.name, m.name)') && !/inCart = [^\n]*keyOf/.test(w)
+    && !/mods\.some\(x => ModCatalog\.keyOf/.test(w));
   t.ok('the morphing plate is aftermarket, a turret is not', M.aftermarket('Morphing License Plate (Vehicle)') && !M.aftermarket('Small Turret (Vehicle)'));
 
   // The window (source-level).

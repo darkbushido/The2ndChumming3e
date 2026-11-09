@@ -373,7 +373,8 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
       ${DesignerArt.shelf(id)}<span>${esc(label)}</span><small>${count(id)}</small></button>`).join('');
     const shown = visible.filter(x => (q ? `${x.m.name} ${x.card.blurb}`.toLowerCase().includes(q) : x.card.shelf === shelf));
     // In the cart by name, so the same mod from another book's pack counts too.
-    const inCart = m => d.mods.filter(x => x.uuid === m.uuid || ModCatalog.keyOf(x.name) === ModCatalog.keyOf(m.name)).length;
+    // Exact name, so a Pop-Up or Anti-Air variant is its own mod (the maintainer, 2026-11-09).
+    const inCart = m => d.mods.filter(x => x.uuid === m.uuid || ModCatalog.sameMod(x.name, m.name)).length;
     const ctx = this._ctx();
     const cards = shown.map(({ m, card, why }) => {
       const row = VehicleDesignActor.modRow(m, { ...ctx, level: m.system?.rating ?? 1 });
@@ -482,7 +483,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     on('[data-add-mod]', b => {
       const m = this._modIndex?.find(x => x.uuid === b.dataset.addMod);
       if (!m) return;
-      if (!ModCatalog.stacks(m.name) && this.design.mods.some(x => ModCatalog.keyOf(x.name) === ModCatalog.keyOf(m.name))) return;
+      if (!ModCatalog.stacks(m.name) && this.design.mods.some(x => ModCatalog.sameMod(x.name, m.name))) return;
       const row = VehicleDesignActor.modRow(m, this._ctx());
       // An aftermarket mod has no design figures: 0 points and a note, not a warning (the maintainer, 2026-11-08).
       if (ModCatalog.aftermarket(m.name)) Object.assign(row, { dp: 0, unpriced: false });
