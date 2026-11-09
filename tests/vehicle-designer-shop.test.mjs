@@ -118,6 +118,8 @@ export async function run(t) {
   t.ok('the morphing plate is aftermarket, a turret is not', M.aftermarket('Morphing License Plate (Vehicle)') && !M.aftermarket('Small Turret (Vehicle)'));
 
   // The window (source-level).
+  const css = readFileSync(new URL('../styles/sr3e.css', import.meta.url), 'utf8');
+  t.ok('the designer brightens its muted and dim text', /\.sr3e-vehicle-designer \{ --sr-muted: #cfc8ba; --sr-dim: #a8a194; \}/.test(css));
   t.ok('chassis cards show the catalogue picture', /DesignerArt\.picture\(card\.art/.test(w));
 
   // Pictures (the maintainer, 2026-11-08: anime style, transparent background), generated on the maintainer's ComfyUI.
