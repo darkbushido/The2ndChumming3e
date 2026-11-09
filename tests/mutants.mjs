@@ -4532,6 +4532,20 @@ export const MUTANTS = [
     impl:   function (a, b) { return this.keyOf(a) === this.keyOf(b); },
   },
   {
+    id:     'mount-vehicle-minigun-by-type',
+    suite:  'vehicle-mounts',
+    module: '../scripts/data/vehicle-mounts.mjs', klass: 'VehicleMounts', method: 'weaponValue', needsOriginal: '_weaponValueOriginal',
+    was:    'the Ares Vanquisher and Vengeance (vehicle weapons typed HMG/MMG) counted 2 against a turret, not the table\'s 2.5 (R3R p.140)',
+    impl:   function (w) { return w?.type === 'vehicleweapon' && /vanquisher|vengeance/i.test(w.name) ? 2 : this._weaponValueOriginal(w); },
+  },
+  {
+    id:     'mount-turret-holds-silent',
+    suite:  'vehicle-mounts',
+    module: '../scripts/data/vehicle-mounts.mjs', klass: 'VehicleMounts', method: 'turretHolds',
+    was:    'nothing in the designer said what size gun goes into what size turret (the maintainer, 2026-11-09; TODO 297)',
+    impl:   () => null,
+  },
+  {
     id:     'designer-mod-misfit-ignored',
     suite:  'vehicle-designer-shop',
     module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'misfit',

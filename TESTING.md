@@ -3782,6 +3782,9 @@ Second pass (the maintainer's feedback, 2026-11-08):
 - [ ] **Levels:** a rated mod's card says "levels 1-N" where the book sets one (Autonav 1-4, Nitrous 1-6, CMC 1-9); its cart
       line has **Lv** capped at N ("/N"). Set Autonav Lv 10 → the line turns amber with "Level 10 is over the book's maximum of 4".
       **Datajack Port** has no Lv box.
+- [ ] **Turret sizes:** every turret card in the shop says what it holds — a Small Turret "Weapon Value 3 — up to an
+      assault cannon or autocannon…", a Mini-Turret(Pop-Up) "Weapon Value 1 — up to an SMG…" (R3R pp.140-141). On a
+      vehicle sheet an Ares Vanquisher on a Mini Turret warns Weapon Value 2.5 of 2.
 - [ ] **Turret variants:** add **Mini-Turret(Pop-Up)** → only that card is highlighted; Mini-Turret(Anti-Air) and the
       other mini-turrets still say **+ Add**.
 - [ ] **Aftermarket:** **Morphing License Plate** shows 0 points and "Aftermarket — no design cost" — no ⚠.

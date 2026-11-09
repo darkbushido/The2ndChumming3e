@@ -49,11 +49,31 @@ export const VEHICLE_WEAPON_VALUES = {
 /** Firearm categories that must go on a hardpoint: "heavy weapons (MMGs and larger)" — R3R p.135. */
 export const HARDPOINT_ONLY = new Set(['MMG', 'HMG', 'MinG', 'ACan']);
 
+/** The Weapon Values Table's weapons in plain words, smallest first (R3R p.140) — for a turret's shop card. */
+export const VALUE_EXAMPLES = [
+  [1, 'an SMG, rifle or grenade launcher'], [1.5, 'an LMG'], [2, 'an MMG, HMG, missile launcher or Vindicator minigun'],
+  [2.5, 'a Vanquisher or Vengeance minigun'], [3, 'an assault cannon or autocannon'], [4, 'a mortar'], [5, 'a light railgun'],
+  [8, 'a light naval gun or medium railgun'], [10, 'a medium naval gun or heavy railgun'],
+];
+
 export const PAGES = { points: 'R3R p.135', fixed: 'R3R p.136', pintle: 'R3R p.138', ring: 'R3R p.139', turret: 'R3R p.140' };
 
 const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
 
 export const VehicleMounts = {
+  /**
+   * What a turret holds, in words, for the designer's shop card (the maintainer, 2026-11-09: "there is nothing that shows
+   * what size gun goes into what size turret"): `Weapon Value 3 — up to an assault cannon or autocannon, or several
+   * weapons adding up to 3 (R3R p.140)`. Null for a mod that is not a turret.
+   */
+  turretHolds(mod) {
+    const k = this.kindOf({ type: 'vehiclemod', name: mod?.name ?? mod });
+    if (k?.kind !== 'turret' || k.weaponValue == null) return null;
+    const v = k.weaponValue;
+    const top = [...VALUE_EXAMPLES].reverse().find(([x]) => x <= v);
+    return `Weapon Value ${v}${top ? ` — up to ${top[1]}, or several weapons adding up to ${v}` : ''} (R3R p.140)`;
+  },
+
   TURRETS, FIREARM_VALUES, VEHICLE_WEAPON_VALUES, HARDPOINT_ONLY, PAGES,
 
   /**
@@ -85,6 +105,9 @@ export const VehicleMounts = {
   /** A weapon's Weapon Value (R3R p.140), or null when the table does not list it. */
   weaponValue(weapon) {
     const sys = weapon?.system ?? {};
+    // The table names the Vanquisher/Vengeance miniguns 2.5 (R3R p.140). The packs carry them as VEHICLE weapons typed HMG
+    // and MMG, so they are matched by name before the type (the maintainer, 2026-11-09: they counted as 2).
+    if (/vanquisher|vengeance/i.test(weapon?.name ?? '') && (sys.category === 'MinG' || /minigun/i.test(weapon?.name ?? ''))) return 2.5;
     if (weapon?.type === 'vehicleweapon') {
       const t = String(sys.weaponType ?? '').trim().toLowerCase();
       if (t === 'railgun') {
@@ -94,7 +117,6 @@ export const VehicleMounts = {
       return VEHICLE_WEAPON_VALUES[t] ?? null;
     }
     const cat = String(sys.category ?? '');
-    if (cat === 'MinG' && /vanquisher|vengeance/i.test(weapon?.name ?? '')) return 2.5;
     return FIREARM_VALUES[cat] ?? null;
   },
 
