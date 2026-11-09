@@ -65,8 +65,9 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
         'system.designLoad', 'system.cfCost', 'system.load', 'system.bookPage'] });
       for (const e of idx) if (e.type === 'vehiclemod') out.push({ ...e, uuid: e.uuid ?? `Compendium.${pack.collection}.Item.${e._id}` });
     }
-    out.sort((a, b) => a.name.localeCompare(b.name));
-    return (this._modIndex = out);
+    // One entry per name — the same mod in two books' packs is offered once (VehicleDesignActor.pickList).
+    this._modAll = out;   // every copy, so a design saved before the de-duplication still finds its uuid
+    return (this._modIndex = VehicleDesignActor.pickList(out));
   }
 
   _ctx() {
@@ -136,7 +137,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
         <table><tr><th>Name</th><th>Level</th><th>Points</th><th>CF</th><th>Load</th><th></th></tr>${(d.mods ?? []).map((x, i) => rowHtml('mods', x, i)).join('')}</table>
         <input type="text" class="vd-mod-filter" placeholder="Filter mods…" style="width:160px"/>
         <select class="vd-mod-pick" style="max-width:340px"><option value="">— add a mod —</option>${mods.map(m =>
-          `<option value="${esc(m.uuid)}">${esc(m.name)}${m.system?.designCost ? ` — ${esc(m.system.designCost)}` : ' — (type points)'}</option>`).join('')}</select>
+          `<option value="${esc(m.uuid)}" title="${esc(m.system?.bookPage ?? '')}">${esc(m.name)}${m.system?.bookPage ? ` [${esc(m.system.bookPage)}]` : ''}${m.system?.designCost ? ` — ${esc(m.system.designCost)}` : ' — (type points)'}</option>`).join('')}</select>
       </fieldset>
       <fieldset><legend>Price (R3R p.113)</legend>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -212,7 +213,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
   /** Re-price a picked mod from its design figures after its level, the chassis or the plant changed. */
   _repriceMod(i) {
     const m = this.design.mods[i];
-    const src = m?.uuid ? this._modIndex?.find(x => x.uuid === m.uuid) : null;
+    const src = m?.uuid ? this._modAll?.find(x => x.uuid === m.uuid) : null;
     if (!src) return;
     const row = VehicleDesignActor.modRow(src, { ...this._ctx(), level: m.level ?? 1 });
     Object.assign(m, { dp: row.dp, cf: row.cf, load: row.load, unpriced: row.unpriced });

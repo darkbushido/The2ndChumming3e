@@ -678,6 +678,18 @@ const MIGRATIONS = [
   },
   {
     version: '0.9.0',
+    label: 'Amphibious Package is one mod with Levels 1-3 (TODO 287, R3R p.149)',
+    /**
+     * The pack shipped three unlabelled "Amphibious Package" documents, one per level; it now ships one, its levels in the
+     * Level dropdown (the maintainer, 2026-11-08: "One rated pack entry"). An owned copy of a deleted level document is
+     * repointed to the kept one and, while its rating is BLANK, gets the level whose price it carries
+     * (`ModRatings.levelFillDelta`). ⚠ The repoint OVERWRITES `_stats.compendiumSource`, and argues for it as 0.8.0's
+     * does: only a link to a document that no longer exists. Idempotent.
+     */
+    fixItem: item => ModRatings.levelFillDelta(item),
+  },
+  {
+    version: '0.9.0',
     label: 'IC Memory is Rating² × Final Multiplier and five IC gradings follow the stat blocks, on IC already in worlds and the hosts that stocked them (TODO 128, MDF pp.40-44)',
     /**
      * The `sr3e-mdf-ic` pack was corrected against the book (`audit/matrix-defragged-audit.md`); a copy already in a

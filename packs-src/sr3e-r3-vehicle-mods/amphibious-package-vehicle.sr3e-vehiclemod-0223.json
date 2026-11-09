@@ -15,11 +15,11 @@
       "load": "0",
       "bookPage": "r3.149",
       "description": "",
-      "rating": null,
+      "rating": 1,
       "modFor": "vehicle",
       "legality": "Legal",
-      "designCost": "25",
-      "designCf": "0"
+      "designCost": "Rating 1: 25, 2: 80, 3: 200",
+      "designCf": "Rating 1: 0, 2: 0, 3: 2"
     },
     "effects": []
   },
