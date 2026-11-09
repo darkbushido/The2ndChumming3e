@@ -83,3 +83,23 @@ There were 93 flags:
 Each was either an OCR misread, or the number belonged to an unrelated line ("5R3" for "SR3", "Body x 10.OOO¥").
 **No code figure was copied from a text-layer misread.** The R3R formulas were already re-read from the page images in
 TODO 293, above.
+
+## The pack entries not located earlier (TODO 296, 2026-11-08)
+
+The locator was rerun with page offsets, matching on both the text layer and the OCR, plus name variants ("Rnds" → "Rounds",
+without a parenthesis, the first word). That located 896 of 1,149 entries; the earlier run located 709 of 1,267, and the
+total differs because "1" is now excluded as noise. The new flags were read with `pdftotext -layout`:
+
+| Flag | Finding |
+|---|---|
+| CC Beretta 200ST 750¥, SuperMach 40(c), Grenade Link 750¥, Grapple Gun 500¥, Shock Lock 70¥ | OCR dropped or misread the cell ("A0 (c)"); layer row matches pack — OK |
+| CC jumpsuits, Exec. Protector, Mercury, M&M Hook Hand 30¥ | OCR lost the table cells; layer matches — OK |
+| MAT touchpads 60¥ | 50¥ + 10¥ adapter, printed as such — OK |
+
+The 253 entries still not located are mostly derived or abbreviated:
+- 159 "N-Rnd Clip (type)" entries, whose numbers are computed from the per-round rows checked above.
+- CybDeck/CyGun/Eye abbreviations, Zoé/V-Island clothing lines, mortar rounds and the like.
+
+For these, a check against the cited page and its neighbours, with no name match, flagged only generic numbers: clip sizes,
+"1.5", "7". **Verdict, TODO 296: no pack value and no code figure in any of the 12 books comes from a text-layer
+misread.** R3R's Hull Factor (TODO 293) remains the only one found.
