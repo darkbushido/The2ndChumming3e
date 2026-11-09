@@ -433,6 +433,8 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
         <label>Street Index + ${num('streetIndexExtra', d.streetIndexExtra, 60, 'any')}</label>
         <label>Extra ¥ ${num('extraNuyen', d.extraNuyen, 90)}</label>
         <div class="vd-hint">Street Index ${esc(r.streetIndex ?? '—')} · Availability ${esc(r.availability?.text ?? '—')}</div>
+        ${r.availability?.why ? `<div class="vd-hint vd-avail-why">Availability: ${esc(r.availability.why)}${
+          (r.dp?.lines ?? []).length ? ` — biggest costs: ${[...r.dp.lines].sort((a, b) => b.points - a.points).slice(0, 3).map(l => `${esc(l.label)} (${l.points.toLocaleString()} pts)`).join(', ')}` : ''}</div>` : ''}
       </fieldset>
       <fieldset><legend>Design Points, line by line</legend>
         ${(r.dp?.lines ?? []).map(l => `<div class="vd-line"><span>${esc(l.label)}</span><b>${l.points}</b><span class="vd-dim">${esc(l.page ?? '')}</span></div>`).join('')}

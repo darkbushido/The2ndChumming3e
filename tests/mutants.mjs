@@ -4546,6 +4546,13 @@ export const MUTANTS = [
     impl:   () => null,
   },
   {
+    id:     'design-availability-unexplained',
+    suite:  'vehicle-design',
+    module: '../scripts/data/vehicle-design.mjs', klass: 'VehicleDesign', method: 'availability', needsOriginal: '_availabilityOriginal',
+    was:    'the designer showed Availability 30 with nothing saying it comes from the whole price (the maintainer, 2026-11-09; TODO 297)',
+    impl:   function (...a) { return { ...this._availabilityOriginal(...a), why: '' }; },
+  },
+  {
     id:     'designer-mod-misfit-ignored',
     suite:  'vehicle-designer-shop',
     module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'misfit',

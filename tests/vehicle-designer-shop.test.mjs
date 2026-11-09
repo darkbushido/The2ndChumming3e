@@ -141,6 +141,7 @@ export async function run(t) {
   t.eq('…aircraft, subs, walkers and trailers do not',
     ['jet-fighter', 'attack-submarine', 'walker-large', 'zeppelin', 'trailer-53ft'].filter(id => !chOf(id) || CC.canTow(chOf(id))), []);
   t.ok('…the Add a trailer button asks it', /if \(!ChassisCatalog\.canTow\(ch\)\) return '';[\s\S]{0,120}vd-add-trailer|if \(!ChassisCatalog\.canTow\(ch\)\) return '';/.test(w));
+  t.ok('the price step explains Availability and names the biggest costs', w.includes('Availability: ${esc(r.availability.why)}') && w.includes('biggest costs:'));
   t.ok('chassis cards show the catalogue picture', /DesignerArt\.picture\(card\.art/.test(w));
 
   // Pictures (the maintainer, 2026-11-08: anime style, transparent background), generated on the maintainer's ComfyUI.
