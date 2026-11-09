@@ -85,6 +85,9 @@ export const VehicleMounts = {
   /** A weapon's Weapon Value (R3R p.140), or null when the table does not list it. */
   weaponValue(weapon) {
     const sys = weapon?.system ?? {};
+    // The table names the Vanquisher/Vengeance miniguns 2.5 (R3R p.140). The packs carry them as VEHICLE weapons typed HMG
+    // and MMG, so they are matched by name before the type (the maintainer, 2026-11-09: they counted as 2).
+    if (/vanquisher|vengeance/i.test(weapon?.name ?? '') && (sys.category === 'MinG' || /minigun/i.test(weapon?.name ?? ''))) return 2.5;
     if (weapon?.type === 'vehicleweapon') {
       const t = String(sys.weaponType ?? '').trim().toLowerCase();
       if (t === 'railgun') {
@@ -94,7 +97,6 @@ export const VehicleMounts = {
       return VEHICLE_WEAPON_VALUES[t] ?? null;
     }
     const cat = String(sys.category ?? '');
-    if (cat === 'MinG' && /vanquisher|vengeance/i.test(weapon?.name ?? '')) return 2.5;
     return FIREARM_VALUES[cat] ?? null;
   },
 
