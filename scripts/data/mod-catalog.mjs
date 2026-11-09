@@ -34,12 +34,19 @@ const only = (cats, what) => c => (cats.includes(c.category) ? null : `For ${wha
 const notBike = what => c => (c.category === 'bike' ? `Not for motorcycles${what ? ` (${what})` : ''}` : null);
 const plants = (codes, what) => c => (!c.plant || codes.includes(c.plant) ? null : `Needs ${what}`);
 const both = (...fs) => c => fs.map(f => f(c)).find(Boolean) ?? null;
+/**
+ * An electric drive anywhere on the design: an electric main plant, a Hybrid Engine (a battery engine with the combustion
+ * one, R3R p.117) or an Auxiliary Engine on an electric plant. SunCell is "compatible with electric-engine driven vehicles"
+ * (R3R p.126); the maintainer, 2026-11-09: "Hybrid or electric aux" count. `c.electric` is set by the designer.
+ */
+const electricDrive = c => (!c.plant || ['E', 'EC'].includes(c.plant) || c.electric ? null
+  : 'Needs an electric drive — an electric plant, a Hybrid Engine or an electric Auxiliary Engine');
 
 /** name (without " (Vehicle)") → { shelf, blurb, fit? }. */
 export const MODS = {
   // Engine & power — R3R p.126
   'GridLink(TM) Power':        { shelf: 'engine', blurb: 'Draws power from GridLink road coils while driving on equipped streets.', fit: only(GROUND, 'ground vehicles') },
-  'SunCell Power':             { shelf: 'engine', blurb: 'Roof solar cells that recharge an electric vehicle in daylight.', fit: both(notBike(), plants(['E', 'EC'], 'an electric plant')) },
+  'SunCell Power':             { shelf: 'engine', blurb: 'Roof solar cells that recharge an electric vehicle in daylight.', fit: both(notBike(), electricDrive) },
   'Nitrous Oxide Injectors':   { shelf: 'engine', blurb: 'Short boosts: extra dice to accelerate, or a burst to 2½× Speed. 20 charges.', fit: plants(['G', 'D'], 'a gasoline or diesel plant') },
   'Turbocharging/Superconductive Drive': { shelf: 'engine', blurb: 'Each level: Speed +15, Acceleration +1, Signature −1, Economy −5%.',
     fit: c => (AIR.includes(c.category) && c.plant !== 'E' && c.plant !== 'EC' ? 'Aircraft engines are already turbocharged (electric excepted)' : null) },
@@ -196,6 +203,11 @@ export const MAX_LEVEL = {
 export const AFTERMARKET = new Set(['Morphing License Plate', 'Library Transponder Chip', 'Ablative Armor']);
 
 export const ModCatalog = {
+  /** Does the design carry an electric drive besides its main plant? `options` are its option rows; `plantOf(id)` → plant code. */
+  electricExtra(options = [], plantOf = () => null) {
+    return options.some(o => o?.id === 'hybrid' || (o?.id === 'aux-engine' && ['E', 'EC'].includes(plantOf(o.auxPlant))));
+  },
+
   SHELVES,
   MODS,
   keyOf,

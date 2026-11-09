@@ -308,7 +308,9 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     const watertight = (this.design.mods ?? []).some(m => /Amphibious|EnviroSeal/i.test(m.name ?? ''))
       || (this.design.options ?? []).some(o => /EnviroSeal/i.test(o.name ?? ''));
     return { category: ch.category, chassisId: ch.id, body, hull: body, hasHull: /H/.test(String(ch.body)), maxCf: VehicleDesign.cell(ch.maxCf, body),
-      plantCode: plant, plant, drone: !!ch.drone, watertight };
+      plantCode: plant, plant, drone: !!ch.drone, watertight,
+      // A Hybrid Engine or an electric Auxiliary Engine counts as an electric drive (SunCell, R3R p.126).
+      electric: ModCatalog.electricExtra(this.design.options ?? [], id => VehicleDesign.plantRow(id)?.plant ?? null) };
   }
 
   /** Step 3 — the options that fit, as cards; the picked ones as editable rows. */

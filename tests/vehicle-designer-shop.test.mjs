@@ -126,6 +126,19 @@ export async function run(t) {
   t.ok('…the same mod from another pack matches', M.sameMod('Mini-Turret(Pop-Up) (Vehicle)', 'Mini-Turret(Pop-Up)'));
   t.ok('the shop counts the cart by exact name', w.includes('ModCatalog.sameMod(x.name, m.name)') && !/inCart = [^\n]*keyOf/.test(w)
     && !/mods\.some\(x => ModCatalog\.keyOf/.test(w));
+  {
+    // SunCell (R3R p.126): an electric plant, a Hybrid Engine or an electric Auxiliary Engine (the maintainer, 2026-11-09).
+    const sun = c => M.misfit('SunCell Power (Vehicle)', { category: 'car', ...c });
+    t.is('SunCell fits an electric car', sun({ plant: 'E' }), null);
+    t.ok('…not a gasoline one alone', !!sun({ plant: 'G' }));
+    t.is('…a gasoline car with an electric drive besides takes it', sun({ plant: 'G', electric: true }), null);
+    t.ok('…never a bike', !!sun({ category: 'bike', plant: 'E' }));
+    const plantOf = id => ({ e1: 'E', g1: 'G' })[id] ?? null;
+    t.ok('a Hybrid Engine is an electric drive', M.electricExtra([{ id: 'hybrid' }], plantOf));
+    t.ok('…so is an Auxiliary Engine on an electric plant', M.electricExtra([{ id: 'aux-engine', auxPlant: 'e1' }], plantOf));
+    t.ok('…not one on a gasoline plant', !M.electricExtra([{ id: 'aux-engine', auxPlant: 'g1' }], plantOf));
+    t.ok('the designer passes it to the fit check', w.includes('electric: ModCatalog.electricExtra(this.design.options ?? []'));
+  }
   t.ok('the morphing plate is aftermarket, a turret is not', M.aftermarket('Morphing License Plate (Vehicle)') && !M.aftermarket('Small Turret (Vehicle)'));
 
   // The window (source-level).
