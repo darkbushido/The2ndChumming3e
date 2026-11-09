@@ -3795,6 +3795,7 @@ Second pass (the maintainer's feedback, 2026-11-08):
       <truck>". Make five → the button greys out at 5/5. The truck's price step lists its **Trailers** with **Hitched**
       ticks; untick three (the city run) → the hint counts 2 hitched and their Load. Hitch more Load than the truck's →
       ⚠ the house-rule warning; tune the truck's Load up → it clears.
+      A jet, helicopter, sub or walker shows no **Add a trailer** button; a bike, car, hovercraft, boat or locomotive does.
 - [ ] **Setup/Breakdown Time:** pick a 55' trailer (or any Body 3+ vehicle) → the option is hidden; **Show all** shows it
       dimmed with "Body 2 or less only (drones Body 3) — this one is Body N". A Body 2 car or Body 3 drone lists it.
 - [ ] **Auxiliary engine:** add **Auxiliary Engine** → its row shows a **Power plant** dropdown of the chassis' plants with

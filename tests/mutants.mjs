@@ -4518,6 +4518,13 @@ export const MUTANTS = [
     impl:   function (scope, trailer, tow) { return this._towLinkOriginal(scope, trailer, tow, null); },
   },
   {
+    id:     'designer-anything-tows',
+    suite:  'vehicle-designer-shop',
+    module: '../scripts/data/chassis-catalog.mjs', klass: 'ChassisCatalog', method: 'canTow',
+    was:    'a jet fighter offered to add a trailer — only ground vehicles and boats tow (the maintainer, 2026-11-09; TODO 297)',
+    impl:   () => true,
+  },
+  {
     id:     'designer-mod-misfit-ignored',
     suite:  'vehicle-designer-shop',
     module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'misfit',
