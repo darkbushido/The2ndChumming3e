@@ -3783,3 +3783,7 @@ Second pass (the maintainer's feedback, 2026-11-08):
       line has **Lv** capped at N ("/N"). Set Autonav Lv 10 → the line turns amber with "Level 10 is over the book's maximum of 4".
       **Datajack Port** has no Lv box.
 - [ ] **Aftermarket:** **Morphing License Plate** shows 0 points and "Aftermarket — no design cost" — no ⚠.
+- [ ] **Pictures:** every chassis card, the towed step and the result bar show a coloured anime picture on a transparent
+      background — no green or magenta fringe, no grey ground shadow, tail lights still red.
+- [ ] **Token icon:** create a design → the new vehicle's portrait and its dragged token are the chassis' top-down icon
+      (`styles/vehicles/top/<art>.webp`), no shadow. Re-saving an existing vehicle leaves its picture alone.

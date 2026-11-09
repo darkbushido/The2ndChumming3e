@@ -24,7 +24,7 @@ import { CHASSIS, CATEGORIES, PLANTS } from './data/vehicle-design-tables.mjs';
 import { VehicleDesign, CLASSES, RATES, SMART } from './data/vehicle-design.mjs';
 import { VehicleDesignActor, FLAG, SOURCE_FLAG } from './data/vehicle-design-actor.mjs';
 import { DesignOptions } from './data/design-options.mjs';
-import { DesignerArt } from './data/designer-art.mjs';
+import { DesignerArt, tokenImage } from './data/designer-art.mjs';
 import { ModCatalog, SHELVES } from './data/mod-catalog.mjs';
 import { ChassisCatalog } from './data/chassis-catalog.mjs';
 
@@ -128,7 +128,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     const over = (used, total) => (used != null && total != null && used > total ? 'vd-over' : '');
     const warn = (r.warnings ?? []).length;
     return `<header class="vd-result">
-      <div class="vd-result-art">${ch ? DesignerArt.vehicle(ChassisCatalog.card(ch.id).art, ch.category, ch.drone) : DesignerArt.chassis('car')}</div>
+      <div class="vd-result-art">${ch ? DesignerArt.picture(ChassisCatalog.card(ch.id).art, ch.category, ch.drone) : DesignerArt.chassis('car')}</div>
       <div class="vd-result-main">
         <input type="text" class="vd-name" data-path="name" value="${esc(this.design.name)}" placeholder="${esc(ch?.name ?? 'Name your vehicle')}"/>
         <div class="vd-chips">
@@ -155,7 +155,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     const cards = list.map(c => {
       const card = ChassisCatalog.card(c.id);
       return `<button type="button" class="vd-card ${c.id === d.chassis ? 'picked' : ''}" data-chassis="${c.id}" title="${esc(card.blurb)}">
-      <div class="vd-card-art">${DesignerArt.vehicle(card.art, c.category, c.drone, ChassisCatalog.scale(c.id, CHASSIS))}</div>
+      <div class="vd-card-art">${DesignerArt.picture(card.art, c.category, c.drone, ChassisCatalog.scale(c.id, CHASSIS))}</div>
       <div class="vd-card-name">${esc(c.name)}${card.towed ? ' <span class="vd-badge">Towed</span>' : ''}</div>
       <div class="vd-blurb">${esc(card.blurb)}</div>
       <div class="vd-card-stats">
@@ -178,7 +178,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     if (info.towed) {
       // R3R p.109: trailers take no power plant; a barge is towed by a boat, a rail car pulled by a locomotive.
       const load = /Load [\d,.]+ ?kg( \([^)]*\))?/.exec(String(ch.features ?? ''))?.[0] ?? null;
-      return `<div class="vd-towed"><div class="vd-towed-art">${DesignerArt.vehicle(info.art, ch.category, ch.drone)}</div><div>
+      return `<div class="vd-towed"><div class="vd-towed-art">${DesignerArt.picture(info.art, ch.category, ch.drone)}</div><div>
         <h3>Towed — no power plant</h3><p>${esc(info.blurb)}</p>
         ${load ? `<p><b>${esc(load)}</b> <span class="vd-dim">(${esc(ch.page)})</span></p>` : ''}
         <p class="vd-dim">It moves at whatever pulls it — its Speed and Acceleration are the tow's. Go on to the options.</p></div></div>`;
@@ -518,7 +518,10 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
       return;
     }
     if (!created) return;
-    await created.update({ ...VehicleDesignActor.update(values), [`flags.${SCOPE}.${FLAG}`]: design });
+    // A brand-new actor: its picture and token are the chassis' top-down icon (never set on an existing vehicle).
+    const icon = tokenImage(ChassisCatalog.card(result.chassis.id)?.art);
+    const pic = icon ? { img: icon, 'prototypeToken.texture.src': icon } : {};
+    await created.update({ ...VehicleDesignActor.update(values), ...pic, [`flags.${SCOPE}.${FLAG}`]: design });
     await this._embedMods(created, VehicleDesignActor.missingMods(design.mods, []));
     this.actor = created;
     if (created.isOwner) created.sheet.render(true);

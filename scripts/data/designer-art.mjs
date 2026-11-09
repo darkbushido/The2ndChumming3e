@@ -146,6 +146,14 @@ const SHELF = {
   special: `<path d="M14 46 L36 24 M32 14 Q40 6 48 14 Q52 22 44 26 L40 22 L34 28 L30 24 L36 18 Z M10 50 L18 42"/>`,
 };
 
+/** Where the chassis pictures ship, and which art ids have one (`tests/vehicle-designer-shop.test.mjs` checks the files). */
+export const PICTURE_DIR = 'systems/The2ndChumming3e/styles/vehicles';
+export const PICTURES = new Set(Object.keys(ART));
+/** The top-down token icon of each chassis (TODO 297, the maintainer 2026-11-08: "render it top down so we can use it as an icon"). */
+export const TOKEN_DIR = `${PICTURE_DIR}/top`;
+/** A new design's actor image and token texture: the chassis' top-down icon, or null when it has none. */
+export const tokenImage = art => (PICTURES.has(art) ? `${TOKEN_DIR}/${art}.webp` : null);
+
 export const DesignerArt = {
   /** A chassis card's silhouette (a drone gets the antenna badge). */
   chassis(category, drone = false) {
@@ -155,6 +163,17 @@ export const DesignerArt = {
    * A chassis card's own drawing (its `chassis-catalog.mjs` art id), drawn at `scale` (0.6-1) so the bigger chassis of a
    * family look bigger, anchored bottom-centre; falls back to the category silhouette.
    */
+  /**
+   * A chassis' picture (TODO 297, the maintainer 2026-11-08: "more anime style then line drawing", generated on the
+   * maintainer's own ComfyUI, transparent background): `styles/vehicles/<art>.webp`, drawn at `scale` of the card
+   * (bottom-centred) so the bigger chassis of a family look bigger. A drone gets its antenna badge over it. An art id with
+   * no picture falls back to the line drawing (`vehicle`).
+   */
+  picture(art, category, drone = false, scale = 1) {
+    if (!PICTURES.has(art)) return this.vehicle(art, category, drone, scale);
+    const s = Math.round(Math.min(1, Math.max(0.4, scale)) * 100);
+    return `<div class="vd-pic">${drone ? `<span class="vd-pic-drone">${svg(DRONE)}</span>` : ''}<img src="${PICTURE_DIR}/${art}.webp" alt="" loading="lazy" style="max-width:${s}%;max-height:${s}%"/></div>`;
+  },
   vehicle(art, category, drone = false, scale = 1) {
     const body = ART[art] ?? CHASSIS[category] ?? CHASSIS.special;
     const s = Math.min(1, Math.max(0.4, scale));

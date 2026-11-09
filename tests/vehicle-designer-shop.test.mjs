@@ -4,9 +4,9 @@
  * The maintainer, 2026-11-08: a five-step wizard under a pinned result bar; silhouettes; options and mods that don't fit
  * hidden behind a "show all" switch; mod cards by shelf with our own one-liners; a stored design reopens on step 5.
  */
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { ModCatalog as M, MODS, SHELVES } from '../scripts/data/mod-catalog.mjs';
-import { DesignerArt as A } from '../scripts/data/designer-art.mjs';
+import { DesignerArt as A, tokenImage } from '../scripts/data/designer-art.mjs';
 import { DesignOptions as O } from '../scripts/data/design-options.mjs';
 import { CATEGORIES, PLANTS, CHASSIS } from '../scripts/data/vehicle-design-tables.mjs';
 import { ChassisCatalog as C, CHASSIS_INFO, TOWED } from '../scripts/data/chassis-catalog.mjs';
@@ -118,7 +118,26 @@ export async function run(t) {
   t.ok('the morphing plate is aftermarket, a turret is not', M.aftermarket('Morphing License Plate (Vehicle)') && !M.aftermarket('Small Turret (Vehicle)'));
 
   // The window (source-level).
-  t.ok('chassis cards draw the catalogue art', /DesignerArt\.vehicle\(card\.art/.test(w));
+  t.ok('chassis cards show the catalogue picture', /DesignerArt\.picture\(card\.art/.test(w));
+
+  // Pictures (the maintainer, 2026-11-08: anime style, transparent background), generated on the maintainer's ComfyUI.
+  const pics = new URL('../styles/vehicles/', import.meta.url);
+  const files = readdirSync(pics).filter(f => f !== 'top');
+  t.eq('every drawing has its picture', A.keys.art.filter(a => !files.includes(`${a}.webp`)), []);
+  t.eq('no stray picture', files.filter(f => !A.keys.art.includes(f.replace(/\.webp$/, ''))), []);
+  t.eq('pictures stay small (under 80 KB)', files.filter(f => statSync(new URL(f, pics)).size > 80 * 1024), []);
+  // Top-down token icons (the maintainer, 2026-11-08: "render it top down so we can use it as an icon", no shadows).
+  const tops = new URL('../styles/vehicles/top/', import.meta.url);
+  const topFiles = readdirSync(tops);
+  t.eq('every drawing has its top-down icon', A.keys.art.filter(a => !topFiles.includes(`${a}.webp`)), []);
+  t.eq('no stray icon', topFiles.filter(f => !A.keys.art.includes(f.replace(/\.webp$/, ''))), []);
+  t.eq('icons stay small (under 40 KB)', topFiles.filter(f => statSync(new URL(f, tops)).size > 40 * 1024), []);
+  t.is('a new design takes its chassis icon', tokenImage('sedan'), 'systems/The2ndChumming3e/styles/vehicles/top/sedan.webp');
+  t.is('…an unknown art id has none', tokenImage('nope'), null);
+  t.ok('the icon is the new actor img and token', /img: icon, 'prototypeToken\.texture\.src': icon/.test(w));
+  t.ok('a picture is an img from the system folder', /<img src="systems\/The2ndChumming3e\/styles\/vehicles\/barge\.webp"/.test(A.picture('barge', 'special')));
+  t.ok('…a smaller family member is drawn smaller', /max-width:60%/.test(A.picture('caterpillar', 'car', false, 0.6)));
+  t.ok('…an unknown art id falls back to the line drawing', A.picture('nope', 'car').startsWith('<svg'));
   t.ok('a towed chassis skips the plant cards', /info\.towed[\s\S]{0,400}Towed — no power plant/.test(w));
   t.ok('tuning lays out start, added, result and limit', /<th>Start<\/th><th>Added<\/th><th>Result<\/th><th>Limit<\/th>/.test(w));
   t.ok('every tuning row has a tooltip', w.includes('<tr class="${over ? \'vd-over-row\' : \'\'}" title="${esc(tip)}">'));
