@@ -57,6 +57,9 @@ export const setupBase = body => num(body) * 2 + 1;
  * plantCode, startLoad, maxLoad, pilot (robotic pilot), adaptation, modNames, optionIds, ...the row's inputs }. An input is
  * never named `dp`, `cf` or `load` — those are the row's GM overrides.
  */
+/** Extra entry points a chassis can take (R3R p.115): Hull × 2 for a hulled vessel, else half the Body, rounded up. */
+export const entryMax = c => (c.hasHull ? (c.hull ?? c.body) * 2 : Math.ceil((c.body ?? 0) / 2));
+
 export const OPTIONS = [
   /* Functional improvements that need an input beyond a number (p.115-116). */
   {
@@ -64,11 +67,14 @@ export const OPTIONS = [
     dp: c => Math.ceil(num(c.metres) / 10) * 2, cf: () => 0,
     load: c => Math.ceil(num(c.metres) / 10) * c.hullFactor * c.hull * 2,
     note: 'Non-sub start: (Body × 10) + 100 m (× 3 unmanned); max = start × 2',
+    // A sub, or a vehicle sealed to go under (Amphibious Package, EnviroSeal) — the maintainer, 2026-11-08.
+    fit: c => (c.category === 'sub' || c.watertight ? null : 'For submarines, or a vehicle sealed to go under (Amphibious Package or EnviroSeal)'),
   },
   {
     id: 'entry', name: 'Extra Entry Points', group: 'Functional', page: 'R3R p.115', inputs: [['level', 'Points', 1]],
     dp: () => 0, cf: () => 0, load: () => 0,
-    warn: c => { const max = c.hasHull ? c.hull * 2 : Math.ceil(c.body / 2); return num(c.level) > max ? [`Extra entry points ${c.level} — no more than ${max} (R3R p.115)`] : []; },
+    warn: c => { const max = entryMax(c); return num(c.level) > max ? [`Extra entry points ${c.level} — no more than ${max} (R3R p.115)`] : []; },
+    limit: c => `Up to ${entryMax(c)} for this chassis`,
   },
   {
     id: 'fuel', name: 'Fuel Tank Enlargement', group: 'Functional', page: 'R3R p.115', inputs: [['level', 'Increments', 1]],
@@ -97,9 +103,11 @@ export const OPTIONS = [
   {
     id: 'ballast', name: 'Ballast Tanks', group: 'Enhancement', page: 'R3R p.116', inputs: [],
     dp: c => sq(c.body) * 10, cf: c => sq(c.body) * 2, load: c => sq(c.body) * 25,
-    warn: c => (['sub', 'ship'].includes(c.category) ? ['Ballast tanks are not for submarine or ship chassis (R3R p.116)'] : []),
+    // R3R p.116: for a chassis other than a submarine, not for boats or ships, and it needs EnviroSeal to work underwater.
+    warn: c => (['sub', 'boat', 'ship'].includes(c.category) ? ['Ballast tanks are not for submarine, boat or ship chassis (R3R p.116)'] : []),
     note: 'Needs the EnviroSeal engine modification (p.132)',
-    fit: c => (['sub', 'ship'].includes(c.category) ? 'Not for submarine or ship chassis' : null),
+    fit: c => (['sub', 'boat', 'ship'].includes(c.category) ? 'Not for submarine, boat or ship chassis'
+      : c.watertight ? null : 'Needs a sealed vehicle (Amphibious Package or EnviroSeal) to go under'),
   },
   {
     id: 'waterjet', name: 'Ducted Waterjet Drive', group: 'Enhancement', page: 'R3R p.116', inputs: [],
@@ -323,6 +331,11 @@ export const DesignOptions = {
    */
   misfit(id, c = {}) {
     return this.get(id)?.fit?.(c) ?? null;
+  },
+
+  /** The option's limit for this chassis, for its card ("Up to 2 for this chassis"), or null. */
+  limit(id, c = {}) {
+    return this.get(id)?.limit?.(c) ?? null;
   },
 
   /** A new design row for a catalogue option: its id, name, page and default inputs. */

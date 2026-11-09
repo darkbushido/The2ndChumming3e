@@ -170,6 +170,30 @@ export function keyOf(name) {
   return MODS[stem] ? stem : base;
 }
 
+/**
+ * What a vehicle can carry more than one of (the maintainer, 2026-11-08: "Mounts, turrets, seats, kits stack") — weapon
+ * mounts and turrets, seats, weapon customization kits, electronics ports, spotlights, sidecars' cousins the launch
+ * controls and dispensers. Everything else is once per vehicle: a second turbocharger is a higher level, not a second mod.
+ */
+const STACKS = /(Turret|Firmpoint|Hardpoint|Missile Mount|Pintle Mount|Ring Mount|Seat|Cust(omization|\.) ?Kit|Electronics Port|White-Light|Infared|Infrared|Launch Control|Dispenser|APPS)/i;
+
+/**
+ * The books' maximum level for a rated mod with no level list to read it from (R3R "Max Rating/Improvement"): Nitrous 6
+ * (p.126), CMCs 9 (p.128), Drive-by-Wire −3 Handling and the suspensions and control surfaces −2 (p.129), RAM +3 Signature
+ * (p.134), Thermal Baffles and Active Thermal Masking +2 Signature (pp.134-135).
+ */
+export const MAX_LEVEL = {
+  'Nitrous Oxide Injectors': 6, 'Cont. Manu. Contr.': 9, 'Drive-by-Wire System': 3, 'Improved Suspension': 2,
+  'Off-Road Suspension': 2, 'Improved Control Surfaces': 2, 'Radar-Absorbent Materials': 3, 'Thermal Baffles': 2,
+  'Active Thermal Masking': 2,
+};
+
+/**
+ * Aftermarket mods with no design figures at all — bought and fitted afterwards, not designed in (the maintainer,
+ * 2026-11-08: "0 points, neutral note"). They price at 0 points with a note, not a ⚠.
+ */
+export const AFTERMARKET = new Set(['Morphing License Plate', 'Library Transponder Chip']);
+
 export const ModCatalog = {
   SHELVES,
   MODS,
@@ -183,6 +207,32 @@ export const ModCatalog = {
     const extra = variant === 'Anti-Air' ? ' Anti-air: elevates to engage aircraft.' : variant === 'Pop-Up' ? ' Pop-up: stows out of sight when not firing.' : '';
     return { shelf: m?.shelf ?? 'special', blurb: m ? m.blurb + extra : '', variant };
   },
+
+  /** Whether a vehicle can carry more than one of this mod (else a second copy is a level, not a mod). */
+  stacks(name) { return STACKS.test(String(name ?? '')); },
+
+  /** Whether the mod has levels (its pack entry carries a rating) — only those get a Level box. */
+  rated(mod) { return mod?.system?.rating != null; },
+
+  /**
+   * The highest level a rated mod can take, or null when the book sets none: the books' printed maximum (`MAX_LEVEL`), else
+   * the highest level its design figures list ("Rating 1: …, 4: …"), else the end of its last closed band ("Per level 1-3:
+   * …, 7-9: …"). "10+" is open-ended.
+   */
+  maxLevel(mod) {
+    if (!this.rated(mod)) return null;
+    const book = MAX_LEVEL[keyOf(mod.name)];
+    if (book) return book;
+    const text = `${mod.system?.designCost ?? ''} ${mod.system?.designCf ?? ''}`;
+    if (/\d+\+/.test(text)) return null;
+    const listed = [...text.matchAll(/(\d+)\s*:/g)].map(m => Number(m[1]));
+    const bands = [...text.matchAll(/\d+\s*-\s*(\d+)\s*:/g)].map(m => Number(m[1]));
+    const all = [...listed, ...bands];
+    return all.length ? Math.max(...all) : null;
+  },
+
+  /** An aftermarket mod with no design figures (0 points, a note — not a warning). */
+  aftermarket(name) { return AFTERMARKET.has(keyOf(name)); },
 
   /** Why this mod does not fit the design (a string), or null — warn, never refuse. */
   misfit(name, ctx = {}) {

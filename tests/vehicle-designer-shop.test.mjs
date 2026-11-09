@@ -4,11 +4,13 @@
  * The maintainer, 2026-11-08: a five-step wizard under a pinned result bar; silhouettes; options and mods that don't fit
  * hidden behind a "show all" switch; mod cards by shelf with our own one-liners; a stored design reopens on step 5.
  */
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { ModCatalog as M, MODS, SHELVES } from '../scripts/data/mod-catalog.mjs';
-import { DesignerArt as A } from '../scripts/data/designer-art.mjs';
+import { DesignerArt as A, tokenImage } from '../scripts/data/designer-art.mjs';
 import { DesignOptions as O } from '../scripts/data/design-options.mjs';
-import { CATEGORIES, PLANTS } from '../scripts/data/vehicle-design-tables.mjs';
+import { CATEGORIES, PLANTS, CHASSIS } from '../scripts/data/vehicle-design-tables.mjs';
+import { ChassisCatalog as C, CHASSIS_INFO, TOWED } from '../scripts/data/chassis-catalog.mjs';
+import { VehicleDesign } from '../scripts/data/vehicle-design.mjs';
 
 export const name = 'vehicle-designer-shop';
 const src = p => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
@@ -81,4 +83,66 @@ export async function run(t) {
   t.ok('picking a chassis moves on to the power plant', /data-chassis[\s\S]{0,600}this\.step = 2/.test(w));
   t.ok('no jQuery in the designer', !/\$\(|\.on\('|\.val\(/.test(w));
   t.ok('the styles live in sr3e.css', src('styles/sr3e.css').includes('.vd-result {'));
+  // Second pass (the maintainer, 2026-11-08) — chassis drawings and one-liners.
+  t.eq('every chassis has a drawing and a one-liner', CHASSIS.filter(c => !C.card(c.id).art || !C.card(c.id).blurb).map(c => c.id), []);
+  t.eq('no catalogue row for a chassis that is gone', Object.keys(CHASSIS_INFO).filter(id => !CHASSIS.some(c => c.id === id)), []);
+  t.eq('every drawing named exists', [...new Set(Object.values(CHASSIS_INFO).map(v => v[0]))].filter(a => !A.keys.art.includes(a)), []);
+  t.ok('one-liners are short', Object.values(CHASSIS_INFO).every(([, b]) => b.length <= 90));
+  const artOf = id => C.card(id).art;
+  t.ok('each bike has its own drawing', new Set(['racing-cycle', 'chopper', 'offroad-bike', 'scooter', 'atv'].map(artOf)).size === 5);
+  t.ok('a barge is not drawn as a truck', artOf('barge') === 'barge' && /stroke-dasharray/.test(A.vehicle('barge', 'special')));
+  t.ok('family members share a drawing, the bigger one drawn bigger',
+    artOf('caterpillar-heavy') === artOf('caterpillar-miniature') && C.scale('caterpillar-miniature', CHASSIS) < C.scale('caterpillar-heavy', CHASSIS));
+  t.is('a one-of-a-kind drawing is full size', C.scale('barge', CHASSIS), 1);
+  t.ok('a scaled drawing is wrapped in a transform', /scale\(0\.6\)/.test(A.vehicle('caterpillar', 'car', false, 0.6)));
+  // Towed chassis (R3R p.109): every one has no power plant in the tables, and every plant-less chassis is towed.
+  const plantless = CHASSIS.filter(c => !Object.keys(PLANTS).some(code => VehicleDesign.plantsFor(c.id, code).length)).map(c => c.id).sort();
+  t.eq('the towed chassis are exactly those with no plant', [...TOWED].sort(), plantless);
+
+  // Option fit: sealed to go under (the maintainer, 2026-11-08); Ballast Tanks not on boats (R3R p.116).
+  t.ok('Depth Enhancement: subs, or a sealed vehicle', !!opt('depth', { category: 'bike' }) && !opt('depth', { category: 'sub' }) && !opt('depth', { category: 'bike', watertight: true }));
+  t.ok('Ballast Tanks need a sealed vehicle', !!opt('ballast', { category: 'car' }) && !opt('ballast', { category: 'car', watertight: true }));
+  t.ok('Ballast Tanks are not for boats, ships or subs', ['boat', 'ship', 'sub'].every(k => !!opt('ballast', { category: k, watertight: true })));
+  t.is('Extra Entry Points says its limit', O.limit('entry', { body: 3 }), 'Up to 2 for this chassis');
+  t.is('a hulled vessel: Hull x 2 entry points', O.limit('entry', { body: 4, hull: 4, hasHull: true }), 'Up to 8 for this chassis');
+
+  // Mods: stacking, levels, aftermarket.
+  t.ok('mounts, turrets, seats and kits stack', ['Small Turret (Vehicle)', 'External Hardpoint (Vehicle)', 'Bucket Seat (Vehicle)', 'LMG Customization Kit (Vehicle)'].every(n => M.stacks(n)));
+  t.ok('a turbocharger, nitrous or datajack is once per vehicle', ['Turbocharging/Superconductive Drive (Vehicle)', 'Nitrous Oxide Injectors (Vehicle)', 'Datajack Port (Vehicle)'].every(n => !M.stacks(n)));
+  const mod = (name, rating, designCost = '') => ({ name, system: { rating, designCost } });
+  t.is('the book max: Nitrous 6 (R3R p.126)', M.maxLevel(mod('Nitrous Oxide Injectors (Vehicle)', 1, '55 per level')), 6);
+  t.is('max read from the level list: Autonav 4', M.maxLevel(mod('Autonavigation System (Vehicle)', 1, 'Rating 1: 5, 2: 10, 3: 50, 4: 150')), 4);
+  t.is('an open-ended band has no max', M.maxLevel(mod('Anti-Theft System (Vehicle)', 3, 'Per level 3-6: 4, 7-9: 10, 10+: 50')), null);
+  t.is('an unrated mod has no level', M.maxLevel(mod('Datajack Port (Vehicle)', null, '25')), null);
+  t.ok('only a rated mod is rated', M.rated(mod('x', 1)) && !M.rated(mod('x', null)));
+  t.ok('the morphing plate is aftermarket, a turret is not', M.aftermarket('Morphing License Plate (Vehicle)') && !M.aftermarket('Small Turret (Vehicle)'));
+
+  // The window (source-level).
+  t.ok('chassis cards show the catalogue picture', /DesignerArt\.picture\(card\.art/.test(w));
+
+  // Pictures (the maintainer, 2026-11-08: anime style, transparent background), generated on the maintainer's ComfyUI.
+  const pics = new URL('../styles/vehicles/', import.meta.url);
+  const files = readdirSync(pics).filter(f => f !== 'top');
+  t.eq('every drawing has its picture', A.keys.art.filter(a => !files.includes(`${a}.webp`)), []);
+  t.eq('no stray picture', files.filter(f => !A.keys.art.includes(f.replace(/\.webp$/, ''))), []);
+  t.eq('pictures stay small (under 80 KB)', files.filter(f => statSync(new URL(f, pics)).size > 80 * 1024), []);
+  // Top-down token icons (the maintainer, 2026-11-08: "render it top down so we can use it as an icon", no shadows).
+  const tops = new URL('../styles/vehicles/top/', import.meta.url);
+  const topFiles = readdirSync(tops);
+  t.eq('every drawing has its top-down icon', A.keys.art.filter(a => !topFiles.includes(`${a}.webp`)), []);
+  t.eq('no stray icon', topFiles.filter(f => !A.keys.art.includes(f.replace(/\.webp$/, ''))), []);
+  t.eq('icons stay small (under 40 KB)', topFiles.filter(f => statSync(new URL(f, tops)).size > 40 * 1024), []);
+  t.is('a new design takes its chassis icon', tokenImage('sedan'), 'systems/The2ndChumming3e/styles/vehicles/top/sedan.webp');
+  t.is('…an unknown art id has none', tokenImage('nope'), null);
+  t.ok('the icon is the new actor img and token', /img: icon, 'prototypeToken\.texture\.src': icon/.test(w));
+  t.ok('a picture is an img from the system folder', /<img src="systems\/The2ndChumming3e\/styles\/vehicles\/barge\.webp"/.test(A.picture('barge', 'special')));
+  t.ok('…a smaller family member is drawn smaller', /max-width:60%/.test(A.picture('caterpillar', 'car', false, 0.6)));
+  t.ok('…an unknown art id falls back to the line drawing', A.picture('nope', 'car').startsWith('<svg'));
+  t.ok('a towed chassis skips the plant cards', /info\.towed[\s\S]{0,400}Towed — no power plant/.test(w));
+  t.ok('tuning lays out start, added, result and limit', /<th>Start<\/th><th>Added<\/th><th>Result<\/th><th>Limit<\/th>/.test(w));
+  t.ok('every tuning row has a tooltip', w.includes('<tr class="${over ? \'vd-over-row\' : \'\'}" title="${esc(tip)}">'));
+  t.ok('a once-per-vehicle mod is not added twice', /!ModCatalog\.stacks\(m\.name\) && this\.design\.mods\.some/.test(w));
+  t.ok('the Level box is only for rated mods, capped at the max', /\$\{rated \? `<label[\s\S]{0,200}max="\$\{max\}"/.test(w));
+  t.ok('the cart says why it warns', w.includes('vd-cart-why">⚠ ${esc(why)}'));
+  t.ok('an aftermarket mod prices at 0 points', w.includes('aftermarket(m.name)) Object.assign(row, { dp: 0, unpriced: false })'));
 }

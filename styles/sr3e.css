@@ -4010,14 +4010,21 @@ label.act-field input[type=number] {
 .vd-chip.vd-cost b { color: var(--sr-gold); }
 .vd-chip.vd-over { border-color: var(--sr-red); background: var(--sr-red-bg); }
 .vd-chip.vd-warn { border-color: var(--sr-amber); background: var(--sr-amber-bg); cursor: help; }
-.vd-steps { display: flex; gap: 2px; padding: 6px 10px 0; border-bottom: 1px solid var(--sr-border); }
-.vd-step { flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 0; padding: 4px 8px; border: none;
-  border-bottom: 3px solid transparent; background: none; color: var(--sr-muted); text-align: left; border-radius: 0; }
-.vd-step.active { color: var(--sr-text); border-bottom-color: var(--sr-accent); }
-.vd-step small { font-size: 10px; color: var(--sr-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-.vd-step-n { display: inline-block; width: 18px; height: 18px; line-height: 18px; text-align: center; border-radius: 50%;
-  background: var(--sr-surface); font-size: 11px; }
-.vd-step.active .vd-step-n { background: var(--sr-accent); color: #fff; }
+/* Step tabs (TODO 297 second pass): bigger, a filled active tab, the picked choice on its own line under the label. */
+.vd-steps { display: flex; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--sr-border); background: var(--sr-card); }
+.vd-step { flex: 1; display: flex; flex-direction: row; align-items: center; gap: 8px; padding: 6px 10px; min-width: 0;
+  border: 1px solid var(--sr-border); border-radius: var(--r-lg); background: var(--sr-surface); color: var(--sr-text); text-align: left; }
+.vd-step:hover:not(:disabled) { border-color: var(--sr-border-hi); }
+.vd-step:disabled { opacity: 0.45; }
+.vd-step.active { background: var(--sr-accent); border-color: var(--sr-accent); color: #fff; }
+.vd-step-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+.vd-step-label { font-size: 13px; font-weight: 600; white-space: nowrap; }
+.vd-step small { font-size: 11px; color: var(--sr-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.vd-step.active small { color: #e6eefc; }
+.vd-step-n { flex: none; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%;
+  background: var(--sr-bg); border: 1px solid var(--sr-border-hi); font-size: 12px; font-weight: 700; }
+.vd-step.done .vd-step-n { background: var(--sr-green-bg); border-color: var(--sr-green); }
+.vd-step.active .vd-step-n { background: #fff; color: var(--sr-accent); border-color: #fff; }
 .vd-body { flex: 1; min-height: 0; overflow: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
 .vd-foot { display: flex; justify-content: space-between; padding: 6px 10px; border-top: 1px solid var(--sr-border); background: var(--sr-card); }
 .vd-foot button { flex: 0 0 auto; width: auto; padding: 4px 14px; }
@@ -4041,7 +4048,12 @@ button.vd-card { cursor: pointer; }
 button.vd-card:hover, .vd-card.vd-mod:hover { border-color: var(--sr-border-hi); }
 .vd-card.picked { border-color: var(--sr-accent); box-shadow: 0 0 0 1px var(--sr-accent) inset; }
 .vd-card.vd-misfit { opacity: 0.75; border-style: dashed; }
-.vd-card-art { height: 56px; color: var(--sr-accent); }
+.vd-card-art { height: 84px; color: var(--sr-accent); }
+/* Chassis pictures (TODO 297): transparent webp, bottom-centred, scaled within the box by Body. */
+.vd-pic { position: relative; width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.vd-pic img { object-fit: contain; width: auto; height: auto; border: none; }
+.vd-pic-drone { position: absolute; top: 0; right: 0; width: 40px; height: 20px; color: var(--sr-accent); }
+.vd-towed-art { height: 150px; }
 .vd-plant-art { height: 44px; }
 .vd-card-name { font-weight: 600; }
 .vd-card-stats { display: flex; flex-wrap: wrap; gap: 2px 8px; font-size: 11px; color: var(--sr-muted); }
@@ -4054,7 +4066,17 @@ button.vd-card:hover, .vd-card.vd-mod:hover { border-color: var(--sr-border-hi);
 .vd-hint { color: var(--sr-muted); font-size: 11px; }
 .vd-empty { color: var(--sr-dim); font-style: italic; }
 .vd-group { margin: 6px 0 2px; border-bottom: 1px solid var(--sr-border); }
-.vd-tune-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0; }
+.vd-tune { border: 1px solid var(--sr-border); border-radius: var(--r); padding: 6px 10px; }
+.vd-tune-table { width: auto; border-collapse: collapse; }
+.vd-tune-table th, .vd-tune-table td { padding: 2px 10px 2px 0; text-align: left; white-space: nowrap; }
+.vd-tune-table tr[title] { cursor: help; }
+.vd-tune-table tr.vd-over-row td, .vd-tune-table tr.vd-over-row th { color: var(--sr-amber); }
+.vd-badge { font-size: 10px; padding: 0 5px; border-radius: var(--r); background: var(--sr-amber-bg); color: var(--sr-amber); vertical-align: middle; }
+.vd-towed { display: flex; gap: 16px; align-items: center; padding: 12px; border: 1px solid var(--sr-border); border-radius: var(--r-lg); background: var(--sr-card); }
+.vd-towed-art { width: 220px; flex: none; }
+.vd-in-cart { font-size: 11px; color: var(--sr-green); }
+.vd-cart-item.vd-cart-warn { border-left: 3px solid var(--sr-amber); }
+.vd-cart-why { flex-basis: 100%; }
 .vd-picked { width: 100%; }
 .vd-picked td { vertical-align: top; }
 .vd-switch { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; }
