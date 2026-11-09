@@ -101,6 +101,13 @@ const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment
 
 export const MUTANTS = [
   {
+    id:     'disabled-book-still-offered',
+    suite:  'source-books',
+    module: '../scripts/SR3ESourceBooks.js', klass: 'SR3ESourceBooks', method: 'packAllowed',
+    was:    'the Vehicle Designer offered VAUBAN mods from the France Sourcebook, a book switched off by default — a pack read that skipped the book filter (2026-11-09)',
+    impl:   function (pack) { return this.rulesetAllows(pack); },
+  },
+  {
     id:     'wound-assigned-twice',
     suite:  'open-steps',
     module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'runOnce',

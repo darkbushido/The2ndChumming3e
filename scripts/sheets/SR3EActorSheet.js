@@ -5109,7 +5109,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     // Compendium entries, grouped by pack.
     const packGroups = [];
-    for (const pack of game.packs.filter(p => p.metadata.type === 'Actor')) {
+    // Only books the GM has switched on (SR3ESourceBooks.packAllowed) — a disabled book's entries
+    // must not be offered here (tests/pack-reads.test.mjs).
+    for (const pack of game.packs.filter(p => p.metadata.type === 'Actor'
+        && (game.sr3e?.SR3ESourceBooks?.packAllowed(p) ?? true))) {
       const entries = (await pack.getIndex()).filter(e => e.type === 'vehicle');
       if (!entries.length) continue;
       const opts = entries
@@ -5216,7 +5219,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (!item) return;
 
     const entries = [];
-    for (const pack of game.packs.filter(p => p.metadata.type === 'Actor')) {
+    // Only books the GM has switched on (SR3ESourceBooks.packAllowed) — a disabled book's entries
+    // must not be offered here (tests/pack-reads.test.mjs).
+    for (const pack of game.packs.filter(p => p.metadata.type === 'Actor'
+        && (game.sr3e?.SR3ESourceBooks?.packAllowed(p) ?? true))) {
       for (const e of await pack.getIndex()) {
         if (e.type !== 'character' && e.type !== 'npc') continue;
         entries.push({ uuid: `Compendium.${pack.collection}.${e._id}`,
