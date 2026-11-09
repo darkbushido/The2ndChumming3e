@@ -4539,6 +4539,13 @@ export const MUTANTS = [
     impl:   function (w) { return w?.type === 'vehicleweapon' && /vanquisher|vengeance/i.test(w.name) ? 2 : this._weaponValueOriginal(w); },
   },
   {
+    id:     'mount-turret-holds-silent',
+    suite:  'vehicle-mounts',
+    module: '../scripts/data/vehicle-mounts.mjs', klass: 'VehicleMounts', method: 'turretHolds',
+    was:    'nothing in the designer said what size gun goes into what size turret (the maintainer, 2026-11-09; TODO 297)',
+    impl:   () => null,
+  },
+  {
     id:     'designer-mod-misfit-ignored',
     suite:  'vehicle-designer-shop',
     module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'misfit',

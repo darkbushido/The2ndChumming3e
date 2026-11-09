@@ -27,6 +27,7 @@ import { DesignOptions, SHOPS } from './data/design-options.mjs';
 import { DesignerArt, tokenImage } from './data/designer-art.mjs';
 import { ModCatalog, SHELVES } from './data/mod-catalog.mjs';
 import { ChassisCatalog } from './data/chassis-catalog.mjs';
+import { VehicleMounts } from './data/vehicle-mounts.mjs';
 
 const SCOPE = 'The2ndChumming3e';
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -393,6 +394,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
         <div class="vd-card-stats"><span>Pts <b>${after ? 0 : row.unpriced ? '?' : esc(row.dp)}</b></span><span>CF <b>${esc(row.cf)}</b></span><span>Load <b>${esc(row.load)}</b></span>
           ${ModCatalog.rated(m) ? `<span class="vd-dim">${max ? `levels 1-${max}` : 'levels'}</span>` : ''}</div>
         ${after ? '<div class="vd-dim">Aftermarket — fitted after the build, no design cost.</div>' : ''}
+        ${VehicleMounts.turretHolds(m) ? `<div class="vd-turret-holds">🎯 ${esc(VehicleMounts.turretHolds(m))}</div>` : ''}
         <div class="vd-card-foot"><span class="vd-card-page">${esc(m.system?.bookPage ?? '')}</span>${add}</div></div>`;
     }).join('');
     const hidden = rows.length - visible.length;

@@ -10,7 +10,7 @@
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { installGlobals, installGame } from './helpers/foundry.mjs';
-import { VehicleMounts, TURRETS } from '../scripts/data/vehicle-mounts.mjs';
+import { VehicleMounts, TURRETS, VALUE_EXAMPLES } from '../scripts/data/vehicle-mounts.mjs';
 installGlobals();
 const { SR3E } = await import('../scripts/config.js');
 installGame({ sr3e: { SR3E } });
@@ -65,6 +65,12 @@ export async function run(t) {
     [3, 5, 10, null]);
   t.eq('the Vanquisher and Vengeance as the packs carry them — vehicle weapons typed HMG and MMG — are 2.5 (p.140)',
     [vw('', 'Ares Vanquisher Minigun', 'HMG'), vw('', 'Ares Vengeance Minigun', 'MMG'), vw('', 'X', 'HMG')].map(w => VehicleMounts.weaponValue(w)), [2.5, 2.5, 2]);
+  // A turret's shop card says what it holds (the maintainer, 2026-11-09).
+  t.ok('a small turret holds up to an assault cannon', /^Weapon Value 3 — up to an assault cannon/.test(VehicleMounts.turretHolds({ name: 'Small Turret (Vehicle)' })));
+  t.ok('…a pop-up mini turret only 1 (p.141)', /^Weapon Value 1 — up to an SMG/.test(VehicleMounts.turretHolds({ name: 'Mini-Turret(Pop-Up) (Vehicle)' })));
+  t.is('…a pintle mount is not a turret', VehicleMounts.turretHolds({ name: 'Pintle Mount (Vehicle)' }), null);
+  t.ok('…every example fits the value it is listed at', VALUE_EXAMPLES.every(([v], i, a) => i === 0 || a[i - 1][0] < v));
+  t.ok('the designer shop shows it on turret cards', readFileSync(new URL('../scripts/SR3EVehicleDesigner.js', import.meta.url), 'utf8').includes('VehicleMounts.turretHolds(m)'));
   t.eq('hardpoints for MMG and larger and every vehicle weapon; LMGs and small arms may use firmpoints (p.135)',
     [gun('', 'X', 'MMG'), gun('', 'X', 'ACan'), vw('', 'X', 'Autocannon'), gun('', 'X', 'LMG'), gun('', 'X', 'AsRf')].map(w => VehicleMounts.needsHardpoint(w)),
     [true, true, true, false, false]);
