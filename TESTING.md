@@ -3787,6 +3787,8 @@ Second pass (the maintainer's feedback, 2026-11-08):
       background — no green or magenta fringe, no grey ground shadow, tail lights still red.
 - [ ] **Auxiliary engine:** add **Auxiliary Engine** → its row shows a **Power plant** dropdown of the chassis' plants with
       their points ("Same as the main plant" first); picking one sets the row's Points to that plant's.
+- [ ] **Work Shop / Facility:** each row has a **Kind of** dropdown with the prices (General, Computer, Cyberware,
+      Electronic, Gunsmith, Vehicle); picking sets the Points, and a Vehicle facility's CF becomes 500.
 - [ ] **Readable text:** the designer's hints, card stats, page numbers and step captions read clearly — light grey, not
       grey on grey.
 - [ ] **Token icon:** create a design → the new vehicle's portrait and its dragged token are the chassis' top-down icon

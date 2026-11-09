@@ -23,7 +23,7 @@
 import { CHASSIS, CATEGORIES, PLANTS } from './data/vehicle-design-tables.mjs';
 import { VehicleDesign, CLASSES, RATES, SMART } from './data/vehicle-design.mjs';
 import { VehicleDesignActor, FLAG, SOURCE_FLAG } from './data/vehicle-design-actor.mjs';
-import { DesignOptions } from './data/design-options.mjs';
+import { DesignOptions, SHOPS } from './data/design-options.mjs';
 import { DesignerArt, tokenImage } from './data/designer-art.mjs';
 import { ModCatalog, SHELVES } from './data/mod-catalog.mjs';
 import { ChassisCatalog } from './data/chassis-catalog.mjs';
@@ -276,7 +276,12 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
       const auxPick = k => `<label>Power plant <select data-path="options.${i}.${k}"><option value="">Same as the main plant</option>${
         Object.keys(PLANTS).flatMap(code => VehicleDesign.plantsFor(ch.id, code)).map(pl => `<option value="${esc(pl.id)}" ${x[k] === pl.id ? 'selected' : ''}>${
           esc(PLANTS[pl.plant]?.name ?? pl.plant)} — ${esc(VehicleDesign.cell(pl.dp, VehicleDesign.bodyOf(ch)) ?? pl.dp)} pts</option>`).join('')}</select></label>`;
-      const inputs = o.inputs.filter(([k]) => !(o.id === 'aux-engine' && k === 'points')).map(([k, label]) => k === 'auxPlant' ? auxPick(k) : `<label>${esc(label)} <input type="${k === 'kind' ? 'text' : 'number'}" data-path="options.${i}.${k}" ${k === 'kind' ? '' : 'data-blank="1"'} value="${esc(x[k])}" style="width:${k === 'kind' ? 90 : 56}px"/></label>`).join(' ');
+      // A Work Shop's or Facility's kind: a dropdown with each kind's price (the maintainer, 2026-11-09).
+      const shopPick = (k, which) => `<label>${which === 'shop' ? 'Kind of shop' : 'Kind of facility'} <select data-path="options.${i}.${k}"><option value="">—</option>${
+        Object.entries(SHOPS).map(([id, s]) => `<option value="${id}" ${x[k] === id ? 'selected' : ''}>${esc(s.name)} — ${s[which].toLocaleString()}¥</option>`).join('')}</select></label>`;
+      const pickers = { auxPlant: auxPick, shop: k => shopPick(k, 'shop'), facility: k => shopPick(k, 'facility') };
+      const hiddenInput = k => (k === 'points' && ['aux-engine', 'workshop', 'facility'].includes(o.id)) || (k === 'kind' && o.id === 'facility');
+      const inputs = o.inputs.filter(([k]) => !hiddenInput(k)).map(([k, label]) => pickers[k] ? pickers[k](k) : `<label>${esc(label)} <input type="${k === 'kind' ? 'text' : 'number'}" data-path="options.${i}.${k}" ${k === 'kind' ? '' : 'data-blank="1"'} value="${esc(x[k])}" style="width:${k === 'kind' ? 90 : 56}px"/></label>`).join(' ');
       return `<tr><td><b>${esc(o.name)}</b> <span class="vd-dim">${esc(o.page)}</span>${p.note ? `<div class="vd-dim">${esc(p.note)}</div>` : ''}<div>${inputs}</div>
         ${(p.warnings ?? []).map(w => `<div class="vd-amber">⚠ ${esc(w)}</div>`).join('')}</td>
         <td>${fig('dp', 70)}</td><td>${fig('cf', 50)}</td><td>${fig('load', 60)}</td>
