@@ -3785,6 +3785,8 @@ Second pass (the maintainer's feedback, 2026-11-08):
 - [ ] **Aftermarket:** **Morphing License Plate** shows 0 points and "Aftermarket — no design cost" — no ⚠.
 - [ ] **Pictures:** every chassis card, the towed step and the result bar show a coloured anime picture on a transparent
       background — no green or magenta fringe, no grey ground shadow, tail lights still red.
+- [ ] **Setup/Breakdown Time:** pick a 55' trailer (or any Body 3+ vehicle) → the option is hidden; **Show all** shows it
+      dimmed with "Body 2 or less only (drones Body 3) — this one is Body N". A Body 2 car or Body 3 drone lists it.
 - [ ] **Auxiliary engine:** add **Auxiliary Engine** → its row shows a **Power plant** dropdown of the chassis' plants with
       their points ("Same as the main plant" first); picking one sets the row's Points to that plant's.
 - [ ] **Work Shop / Facility:** each row has a **Kind of** dropdown with the prices (General, Computer, Cyberware,

@@ -59,6 +59,12 @@ export async function run(t) {
   t.ok('an EMD drive needs a nuclear sub', !!opt('emd', { category: 'sub', plantCode: 'D' }) && !opt('emd', { category: 'sub', plantCode: 'N' }));
   // Living Amenities, Work Shop, Facility: hidden by their CF, with the shortfall as the reason (the maintainer, 2026-11-08).
   t.eq('no bike holds a work shop — the reason says why', opt('workshop', { category: 'bike', maxCf: 15 }), 'Needs at least 52 CF — this chassis holds at most 17');
+  // Setup/Breakdown Time: drones of Body 3 or less, other vehicles Body 2 or less (R3R p.118).
+  t.ok('no Setup/Breakdown on a Body 4 trailer — the reason says why', /Body 2 or less.*Body 4.*R3R p\.118/.test(opt('setup', { category: 'special', body: 4 }) ?? ''));
+  t.is('…a Body 2 vehicle takes it', opt('setup', { category: 'car', body: 2 }), null);
+  t.is('…a Body 3 drone takes it', opt('setup', { category: 'car', body: 3, drone: true }), null);
+  t.ok('…a Body 3 car does not', !!opt('setup', { category: 'car', body: 3 }));
+  t.ok('…nor a Body 4 drone', !!opt('setup', { category: 'car', body: 4, drone: true }));
   t.ok('…nor amenities or a facility', !!opt('amenities', { maxCf: 15 }) && !!opt('facility', { maxCf: 15 }));
   t.is('…a big enough chassis takes them, whatever its type', opt('workshop', { category: 'car', maxCf: 60 }), null);
   t.ok('the designer passes the chassis maximum CF', /maxCf: VehicleDesign\.cell\(ch\.maxCf, body\)/.test(src('scripts/SR3EVehicleDesigner.js')));

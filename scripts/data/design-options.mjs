@@ -196,6 +196,9 @@ export const OPTIONS = [
       return out;
     },
     effect: 'setup', note: 'Base time (Body × 2) + 1 minutes; the chassis\' maximum CF is halved',
+    // Hidden past the Body limit, with the reason (the maintainer, 2026-11-09: "why am i seeing it on a 55' trailer").
+    fit: c => (c.drone ? (c.body > 3 ? `Drones of Body 3 or less only — this one is Body ${c.body} (R3R p.118)` : null)
+      : c.body > 2 ? `Body 2 or less only (drones Body 3) — this one is Body ${c.body} (R3R p.118)` : null),
   },
   {
     id: 'machinery', name: 'Special Machinery', group: 'Enhancement', page: 'R3R p.118', inputs: [['space', 'CF', null], ['kg', 'Load kg', null]],
