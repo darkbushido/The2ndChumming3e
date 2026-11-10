@@ -202,7 +202,24 @@ export const MAX_LEVEL = {
 // Ablative Armor: R3R p.131 says it is not available as a design option — it goes on after the build.
 export const AFTERMARKET = new Set(['Morphing License Plate', 'Library Transponder Chip', 'Ablative Armor']);
 
+/** The packs' shortened mod names written out (the maintainer, 2026-11-09: "any time you're shortening a name, mousing over
+ * should expose the full name"). Keys are the name without "(Vehicle)". */
+export const FULL_NAMES = {
+  'Rem-Contr. Intr. Bod':     'Remote-Control Interface Body',
+  'Cont. Manu. Contr.':       'Contingency Manual Controls',
+  'Assault Cannon Cust. Kit': 'Assault Cannon Customization Kit',
+  'Submachinegun Cust. Kit':  'Submachinegun Customization Kit',
+  'VAUBAN Missile A.T.':      'VAUBAN Missile Anti-Theft',
+  'VAUBAN Vehicle A.T.':      'VAUBAN Vehicle Anti-Theft',
+};
+
 export const ModCatalog = {
+  /** A mod's name without "(Vehicle)", and its full form for a mouse-over: `{ short, full }`. */
+  names(name) {
+    const short = String(name ?? '').replace(/\s*\(Vehicle\)$/, '');
+    return { short, full: FULL_NAMES[short] ?? short };
+  },
+
   /** Does the design carry an electric drive besides its main plant? `options` are its option rows; `plantOf(id)` → plant code. */
   electricExtra(options = [], plantOf = () => null) {
     return options.some(o => o?.id === 'hybrid' || (o?.id === 'aux-engine' && ['E', 'EC'].includes(plantOf(o.auxPlant))));

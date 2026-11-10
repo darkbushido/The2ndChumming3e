@@ -139,6 +139,10 @@ export async function run(t) {
     t.ok('…not one on a gasoline plant', !M.electricExtra([{ id: 'aux-engine', auxPlant: 'g1' }], plantOf));
     t.ok('the designer passes it to the fit check', w.includes('electric: ModCatalog.electricExtra(this.design.options ?? []'));
   }
+  t.ok('the result bar carries the book’s second stat line', ['Seating', 'Entry', 'Fuel', 'Econ', 'Range', 'S/B', 'L/T', 'Chassis', 'SI', 'Avail'].every(l => w.includes(`chip('${l}'`)));
+  t.is('a shortened name has its full form for the mouse-over', M.names('Rem-Contr. Intr. Bod (Vehicle)').full, 'Remote-Control Interface Body');
+  t.is('…a plain name is its own full form', M.names('Turbocharging (Vehicle)').full, 'Turbocharging');
+  t.ok('…shop cards and cart rows carry it as a title', (w.match(/title="\$\{esc\(ModCatalog\.names\(/g) ?? []).length >= 2);
   t.ok('the morphing plate is aftermarket, a turret is not', M.aftermarket('Morphing License Plate (Vehicle)') && !M.aftermarket('Small Turret (Vehicle)'));
 
   // The window (source-level).

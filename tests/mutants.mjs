@@ -4399,6 +4399,13 @@ export const MUTANTS = [
     },
   },
   {
+    id:     'design-range-fuel-only',
+    suite:  'vehicle-design',
+    ...VDESIGN, method: 'range',
+    was:    'range ignored Economy — the Trailblazer’s 750 l at 3 km/l is 2,250 km, not 750 (R3R p.169, TODO 297)',
+    impl:   fuel => (fuel == null ? null : Number(fuel)),
+  },
+  {
     id:     'design-handling-floor-rounds-down',
     suite:  'vehicle-design',
     ...VDESIGN, method: 'handlingFloor',

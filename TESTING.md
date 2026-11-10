@@ -3798,6 +3798,10 @@ Second pass (the maintainer's feedback, 2026-11-08):
       (System settings → Source books), reopen the designer → the VAUBAN mods appear.
 - [ ] **SunCell on a hybrid:** a gasoline car → SunCell Power is hidden ("Needs an electric drive…"). Add a **Hybrid Engine**
       option, or an **Auxiliary Engine** with an electric plant picked → SunCell shows and can be added. Never on a bike.
+- [ ] **Book stat line on top:** under the stats chips a second row reads Seating · Entry · Fuel · Econ · Range · S/B · L/T ·
+      Chassis · SI · Avail. A diesel **Tractor**: Fuel 750 liters, Econ 3 km/l, Range 2,250 km. Economy +100% (20 steps) →
+      6 km/l, 4,500 km. Fuel Tank Enlargement 250 → Fuel 1,000 liters. A helicopter shows L/T VTOL.
+- [ ] **Full names on hover:** in the mod shop, hover **Rem-Contr. Intr. Bod** → "Remote-Control Interface Body"; same in the cart.
 - [ ] **Misfits look different:** tick **show the ones that don't fit** in the mod shop and the options step → those cards are
       greyed with an amber dashed edge and a **Doesn't fit** badge, sharp again on hover; the fitting cards are unchanged.
 - [ ] **Availability explained:** on the price step, under Street Index · Availability, a line reads e.g.

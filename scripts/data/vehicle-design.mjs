@@ -22,7 +22,7 @@
  * is the GM's to overwrite (the maintainer, 2026-11-07: "compute, GM edits").
  */
 import { CHASSIS, POWER_PLANTS, PLANTS } from './vehicle-design-tables.mjs';
-import { DesignOptions } from './design-options.mjs';
+import { DesignOptions, fuelRow, setupBase } from './design-options.mjs';
 import { TOWED } from './chassis-catalog.mjs';
 
 export const PAGES = {
@@ -213,6 +213,11 @@ export const VehicleDesign = {
    * `improve` figures are the CHANGE: accel +2, handling −1 (as 1 — a reduction), cargo +2 CF, load +30 kg, signature +1.
    * Out: { chassis, plant, stats, dp: { total, lines }, cf, load, cost, streetIndex, price, availability, warnings }.
    */
+  /** Range in km (the maintainer, 2026-11-09): Fuel × Economy — the Trailblazer's 750 l at 3 km/l is 2,250 km (R3R p.169). */
+  range(fuel, economy) {
+    return fuel == null || economy == null ? null : Math.round(num(fuel) * num(economy));
+  },
+
   evaluate(design = {}) {
     const warnings = [];
     const ch = this.chassis(design.chassis);
@@ -288,8 +293,14 @@ export const VehicleDesign = {
       stats.economy = e0 == null ? null : Math.round(e0 * (1 + 0.05 * steps) * 1000) / 1000;
       if (stats.economy != null && eMax != null && stats.economy > eMax) warnings.push(`Economy ${stats.economy} is over the maximum ${eMax} (R3R p.115)`);
       line(`Economy +${steps * 5}%`, steps * RATES.economyStep, PAGES.improvements);
-      stats.fuel = this.cell(row.fuel, body);
+      // Fuel Tank Enlargement adds its increments to the tank (R3R p.115) — 1 liter each for diesel, 5 PF for a battery…
+      const tank = options.find(o => o.id === 'fuel');
+      const step = tank ? fuelRow({ plantCode: row.plant, body })?.amount ?? 0 : 0;
+      const fuel0 = this.cell(row.fuel, body);
+      stats.fuel = fuel0 == null ? null : fuel0 + step * Math.max(0, num(tank?.level));
       stats.fuelUnit = PLANTS[row.plant]?.fuel ?? null;
+      // Range: Economy is distance per unit of fuel (km/l, km/PF, km/bar — R3R p.169's Econ column), so Fuel × Economy.
+      stats.range = this.range(stats.fuel, stats.economy);
       stats.peopleSpace = row.people ?? null;
     }
 
@@ -322,6 +333,13 @@ export const VehicleDesign = {
     if (cfUsed > cfTotal) warnings.push(`Options and mods take ${cfUsed} CF of ${cfTotal} — "No vehicle can carry more design options than its CF or Load rating allows" (R3R p.111)`);
     if (loadTotal != null && loadUsed > loadTotal) warnings.push(`Options and mods take ${loadUsed} kg of ${loadTotal} kg Load (R3R p.111)`);
     stats.cargo = Math.round((cfTotal - cfUsed) * 100) / 100;
+    // The book's second stat line (R3R p.169): Entry with any extra points, S/B and L/T.
+    const extraEntry = options.find(o => o.id === 'entry');
+    if (extraEntry && stats.entry != null) stats.entry = `${stats.entry}+${Math.max(0, num(extraEntry.level))}`;
+    const setup = options.find(o => o.id === 'setup');
+    stats.sb = setup ? `${setupBase(body) - Math.max(0, num(setup.level))} min` : null;
+    const lt = /(\w+) L\/T Profile/.exec(String(ch.features ?? ''))?.[1] ?? null;
+    stats.lt = options.some(o => o.id === 'vstol') ? 'VSTOL' : options.some(o => o.id === 'stol') ? 'STOL' : lt;
     stats.load = loadTotal == null ? null : loadTotal - loadUsed;
 
     const total = lines.reduce((s, l) => s + l.points, 0);

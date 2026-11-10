@@ -120,6 +120,17 @@ export async function run(t) {
   const trailer = V.evaluate({ chassis: 'trailer-53ft' });
   t.eq('a trailer is not asked for a power plant', trailer.warnings, []);
   t.eq('…its Load is 10,000 of 25,000 kg', [trailer.load.total, trailer.load.max], [10000, 25000]);
+  {
+    // The book's second stat line (R3R p.169) and Range (the maintainer, 2026-11-09).
+    const tr = o => V.evaluate({ chassis: 'tractor', plant: 'D', ...o }).stats;
+    t.eq('a diesel Tractor: 750 l at 3 km/l → 2,250 km, like the Trailblazer', [tr().fuel, tr().economy, tr().range], [750, 3, 2250]);
+    t.eq('…20 Economy steps double it to 6 km/l (its maximum) → 4,500 km', [tr({ improve: { economySteps: 20 } }).economy, tr({ improve: { economySteps: 20 } }).range], [6, 4500]);
+    t.is('…Fuel Tank Enlargement 250 adds 250 liters', tr({ options: [{ id: 'fuel', level: 250 }] }).fuel, 1000);
+    t.is('…Extra Entry Points show as +n', tr({ options: [{ id: 'entry', level: 1 }] }).entry, '2d+1');
+    t.is('…Setup/Breakdown shows its minutes', V.evaluate({ chassis: 'tractor', plant: 'D', options: [{ id: 'setup', level: 0 }] }).stats.sb, '11 min');
+    t.is('a helicopter shows its L/T profile', V.evaluate({ chassis: 'cargo-helicopter', plant: 'JET' }).stats.lt, 'VTOL');
+    t.is('range is Fuel × Economy', V.range(500, 1.5), 750);
+  }
   const raised = V.evaluate({ chassis: 'trailer-53ft', improve: { load: 5000, cargo: 100 } });
   t.eq('…raising Load and Cargo is priced and counted', [raised.load.total, raised.cf.total, raised.dp.total],
     [15000, 1300, 160 + V.loadCost(5000, 7) + V.cargoCost(100)]);
