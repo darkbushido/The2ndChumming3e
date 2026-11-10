@@ -23,13 +23,13 @@ const sq = n => n * n;
 
 /** Fuel Tank Capacity Table (p.115): per increment, by plant. Body 0 battery / fuel-cell vehicles have their own row. */
 export const FUEL_TANK = {
-  E:    { step: '5 PF',     dp: 2,  cf: () => 0,              load: n => n * 1 },
-  EC:   { step: '5 PF',     dp: 2,  cf: () => 0,              load: n => n * 1 },
-  E0:   { step: '1 PF',     dp: 20, cf: () => 0,              load: n => Math.round(n * 0.2 * 100) / 100 },
-  M:    { step: '5 bars',   dp: 2,  cf: n => n * 0.5,         load: () => 0 },
-  G:    { step: '1 liter',  dp: 2,  cf: n => Math.ceil(n / 50), load: () => 0 },
-  D:    { step: '1 liter',  dp: 2,  cf: n => Math.ceil(n / 50), load: () => 0 },
-  JET:  { step: '10 liters', dp: 1, cf: n => Math.ceil(n * 10 / 50), load: () => 0 },
+  E:    { amount: 5, step: '5 PF',     dp: 2,  cf: () => 0,              load: n => n * 1 },
+  EC:   { amount: 5, step: '5 PF',     dp: 2,  cf: () => 0,              load: n => n * 1 },
+  E0:   { amount: 1, step: '1 PF',     dp: 20, cf: () => 0,              load: n => Math.round(n * 0.2 * 100) / 100 },
+  M:    { amount: 5, step: '5 bars',   dp: 2,  cf: n => n * 0.5,         load: () => 0 },
+  G:    { amount: 1, step: '1 liter',  dp: 2,  cf: n => Math.ceil(n / 50), load: () => 0 },
+  D:    { amount: 1, step: '1 liter',  dp: 2,  cf: n => Math.ceil(n / 50), load: () => 0 },
+  JET:  { amount: 10, step: '10 liters', dp: 1, cf: n => Math.ceil(n * 10 / 50), load: () => 0 },
 };
 
 /** Special Storage Area (p.118): Design Points by the CF designated. */
@@ -323,7 +323,7 @@ const SMALLEST_AIRCRAFT_BODY = 0;
 /** Special Machinery's CF: the GM's, else the book's recommendation, Body × 2 (p.118). */
 const machineryCf = c => (c.space == null || c.space === '' ? c.body * 2 : num(c.space));
 
-function fuelRow(c) {
+export function fuelRow(c) {
   const code = c.plantCode;
   if ((code === 'E' || code === 'EC') && c.body === 0) return FUEL_TANK.E0;
   if (code === 'J') return FUEL_TANK.JET;

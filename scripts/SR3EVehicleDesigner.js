@@ -190,6 +190,14 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
           ${chip('CF', r.cf?.total != null ? `${r.cf.used}/${r.cf.total}` : null, over(r.cf?.used, r.cf?.total))}
           ${chip('Load', r.load?.total != null ? `${r.load.used}/${r.load.total}` : null, over(r.load?.used, r.load?.total))}
           ${chip('Design Pts', r.dp?.total)}${chip('Cost', r.cost != null ? `${r.cost.toLocaleString()}¥` : null, 'vd-cost')}
+        </div>
+        <div class="vd-chips vd-chips-book" title="The second stat line, as the books print it (R3R p.169)">
+          ${chip('Seating', s.seating)}${chip('Entry', s.entry)}
+          ${chip('Fuel', s.fuel != null ? `${s.fuel.toLocaleString()} ${s.fuelUnit ?? ''}`.trim() : null)}
+          ${chip('Econ', s.economy != null ? `${s.economy} km/${({ liters: 'l', PF: 'PF', bars: 'bar' })[s.fuelUnit] ?? s.fuelUnit}` : null)}
+          ${chip('Range', s.range != null ? `${s.range.toLocaleString()} km` : null)}
+          ${chip('S/B', s.sb)}${chip('L/T', s.lt)}${chip('Chassis', ch?.name)}
+          ${chip('SI', r.streetIndex)}${chip('Avail', r.availability?.text)}
           ${warn ? `<div class="vd-chip vd-warn" title="${esc(r.warnings.join('\n'))}"><span>⚠</span><b>${warn}</b></div>` : ''}
         </div>
       </div>
@@ -393,7 +401,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
           : `<span class="vd-in-cart" title="One per vehicle — raise its level in the cart instead">✓ In cart</span>`;
       return `<div class="vd-card vd-mod ${why ? 'vd-misfit' : ''} ${n ? 'picked' : ''}">
         <div class="vd-mod-head"><span class="vd-mod-icon">${DesignerArt.shelf(card.shelf)}</span>
-          <div class="vd-card-name">${esc(String(m.name).replace(/\s*\(Vehicle\)$/, ''))}</div></div>
+          <div class="vd-card-name" title="${esc(ModCatalog.names(m.name).full)}">${esc(ModCatalog.names(m.name).short)}</div></div>
         <div class="vd-blurb">${esc(card.blurb || 'See the book page.')}</div>
         ${why ? `<div class="vd-amber">⚠ ${esc(why)}</div>` : ''}
         <div class="vd-card-stats"><span>Pts <b>${after ? 0 : row.unpriced ? '?' : esc(row.dp)}</b></span><span>CF <b>${esc(row.cf)}</b></span><span>Load <b>${esc(row.load)}</b></span>
@@ -409,7 +417,7 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
       const max = src ? ModCatalog.maxLevel(src) : null;
       const why = this._cartWarning(x, max);
       return `<div class="vd-cart-item ${why ? 'vd-cart-warn' : ''}">
-      <span class="vd-cart-name">${esc(String(x.name).replace(/\s*\(Vehicle\)$/, ''))}</span>
+      <span class="vd-cart-name" title="${esc(ModCatalog.names(x.name).full)}">${esc(ModCatalog.names(x.name).short)}</span>
       ${rated ? `<label title="${esc(max ? `Levels 1 to ${max} (the book's maximum)` : 'The book sets no maximum level')}">Lv <input type="number" data-path="mods.${i}.level" value="${esc(x.level ?? 1)}" min="1" ${max ? `max="${max}"` : ''} style="width:44px"/>${max ? `<span class="vd-dim">/${max}</span>` : ''}</label>` : ''}
       <label title="Design Points — type to override">Pts <input type="number" data-path="mods.${i}.dp" value="${esc(x.dp)}" step="any" style="width:60px"/></label>
       <span class="vd-dim">CF ${esc(x.cf)} · ${esc(x.load)} kg</span>
