@@ -93,6 +93,24 @@ export class SR3ESenses {
           background: { shader: S.AmplificationBackgroundVisionShader },
         },
       }),
+      // M&M p.20, sonar/lidar: shapes and distance out to the ultrasound range, light or dark, NEVER colour — pure grey, fading with distance.
+      [VISION.ultrasound]: new VM({
+        id: VISION.ultrasound,
+        label: 'SR3E.Senses.Ultrasound',
+        canvas: {
+          shader: S.ColorAdjustmentsSamplerShader,
+          uniforms: { contrast: 0.3, saturation: -1.0, brightness: 0 },
+        },
+        lighting: {
+          background: { visibility: V.DISABLED },
+          illumination: { visibility: V.DISABLED },
+          coloration: { visibility: V.DISABLED },
+        },
+        vision: {
+          darkness: { adaptive: false },
+          defaults: { attenuation: 0.8, contrast: 0.3, saturation: -1, brightness: 1 },
+        },
+      }),
       // SR3 p.173: the astral is lit by auras, so light does not matter; mundane things are grey.
       [VISION.astral]: new VM({
         id: VISION.astral,
@@ -184,7 +202,7 @@ export class SR3ESenses {
       dm[id] = new Guarded({ id, label: old.label, type: old.type, walls: old.walls, angle: old.angle, tokenConfig: old.tokenConfig });
     }
 
-    // ── The sight polygon: glass for thermographic eyes, wards only for an astral form ──────────────
+    // ── The sight polygon: glass for thermographic eyes, SOUND walls for sonar, wards only for an astral form ──────────────
     const Sweep = CONFIG.Canvas.polygonBackends.sight;
     class SR3ESightPolygon extends Sweep {
       _testEdgeInclusion(edge, edgeTypes) {
@@ -227,6 +245,8 @@ export class SR3ESenses {
     const defaults = CONFIG.Canvas.visionModes[visionMode]?.vision?.defaults ?? {};
     const update = { 'sight.visionMode': visionMode };
     for (const [k, v] of Object.entries(defaults)) if (v !== undefined && v !== null) update[`sight.${k}`] = v;
+    // Sonar reaches as far as the ultrasound range and no further.
+    if (visionMode === VISION.ultrasound) update['sight.range'] = range;
     for (const [id, m] of Object.entries(detection)) update[`detectionModes.${id}`] = m;
     return { senses, astral, visionMode, update };
   }
@@ -320,7 +340,7 @@ export class SR3ESenses {
   static async openDialog(actor) {
     const tok = actor.getActiveTokens(false, true)[0];
     const { senses, astral, visionMode } = SR3ESenses.plan(actor, tok);
-    const label = k => game.i18n.localize({ normal: 'SR3E.Senses.Normal', lowLight: 'SR3E.Senses.LowLight', thermo: 'SR3E.Senses.Thermographic' }[k]);
+    const label = k => game.i18n.localize({ normal: 'SR3E.Senses.Normal', lowLight: 'SR3E.Senses.LowLight', thermo: 'SR3E.Senses.Thermographic', ultrasound: 'SR3E.Senses.Ultrasound' }[k]);
     const current = actor.getFlag(SYS, 'vision') ?? '';
     const opts = [`<option value="">${game.i18n.localize('SR3E.Senses.Best')}</option>`,
       ...senses.modes.map(k => `<option value="${k}" ${current === k ? 'selected' : ''}>${label(k)}</option>`)].join('');

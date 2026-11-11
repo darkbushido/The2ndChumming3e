@@ -50,6 +50,11 @@ export async function run(t) {
   t.ok('worn ultrasound goggles give ultrasound',
     senses(actor('human', [item('gear', 'Ultrasound Goggles', { worn: true })])).ultrasound);
   t.ok('an elf has no ultrasound', !senses(actor('elf')).ultrasound);
+  t.eq('ultrasound is a vision mode too — sonar shows the room', senses(actor('human', [item('cyberware', 'Eyes, Ultrasound')])).modes, ['ultrasound', 'normal']);
+  t.eq('thermo and low-light rank above ultrasound', senses(actor('elf', [item('cyberware', 'Eyes, Ultrasound')])).modes, ['lowLight', 'ultrasound', 'normal']);
+  t.is('an ultrasound-only token defaults to sonar', TS.visionModeFor(['ultrasound', 'normal'], ''), TS.VISION.ultrasound);
+  t.is('sonar walls follow SOUND', TS.polygonSense(TS.VISION.ultrasound, ''), 'ultrasound');
+  t.ok('sonar sees the walls around it: a solid wall still bounds it', TS.wallBlocks('ultrasound', { sight: 20, sound: 20, flags: {} }));
 
   /* ── Astral state and the chosen mode ──────────────────────────────────────────────────── */
   t.is('astralMode astral = projecting', TS.astralState('astral'), 'project');
@@ -119,6 +124,9 @@ export async function run(t) {
   const init = main.slice(main.indexOf("Hooks.once('init'"), main.indexOf("Hooks.once('ready'"));
   t.ok('registered inside the init hook', /SR3ESenses\.register\(\)/.test(init));
   for (const id of Object.values(TS.VISION).filter(v => v !== 'basic')) t.ok(`vision mode ${id} registered`, src.includes(`[VISION.${Object.keys(TS.VISION).find(k => TS.VISION[k] === id)}]`));
+  t.ok('sonar vision limits sight to the ultrasound range', /visionMode === VISION\.ultrasound\) update\['sight\.range'\] = range/.test(src));
+  t.ok('sonar vision ignores lighting', /\[VISION\.ultrasound\]: new VM\([\s\S]{0,400}background: \{ visibility: V\.DISABLED \}/.test(src));
+  t.ok('sonar never shows colour and fades with distance (lidar)', /\[VISION\.ultrasound\]: new VM\([\s\S]{0,700}saturation: -1, brightness: 1[\s\S]{0,5}/.test(src) && /attenuation: 0\.8, contrast: 0\.3, saturation: -1/.test(src) && !/\[VISION\.ultrasound\][\s\S]{0,500}tint/.test(src));
   t.ok('detection modes registered on CONFIG.Canvas.detectionModes', /Object\.assign\(CONFIG\.Canvas\.detectionModes/.test(src));
   t.ok('ultrasound tests the SOUND polygon (type is only a label)', /_testCollision\(visionSource, test, \{ type: 'sound'/.test(src));
   t.ok('low-light remaps DIM to BRIGHT and requires light', /levels: \{ \[L\.DIM\]: L\.BRIGHT \}[\s\S]{0,80}V\.REQUIRED/.test(src));

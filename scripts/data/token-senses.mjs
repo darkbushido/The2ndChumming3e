@@ -11,7 +11,8 @@
  * - **Ultrasound** (M&M p.20) builds its picture from sound: it ignores light, walls block it by their SOUND
  *   setting, and an invisibility spell does not hide a target from it (the target shows as an outline,
  *   +4 to act against it — the GM's to apply). **No book gives it a range**; 50 m is a house default,
- *   editable per token.
+ *   editable per token. Like sonar it also SHOWS the room — walls and surfaces out to that range, in the dark —
+ *   as its own vision mode (the maintainer, live on the Vision test scene, 2026-11-11).
  * - **Astral** (SR3 pp.172-173): the astral plane is lit by auras, so light does not matter. A PERCEIVING
  *   character is still in their body and keeps ordinary walls. A PROJECTING astral form moves through solid
  *   objects, so only walls flagged as an astral barrier (a ward, with its Force) stop its sight. Astral-only
@@ -26,6 +27,7 @@ export const VISION = Object.freeze({
   normal: 'basic',
   lowLight: 'sr3eLowLight',
   thermo: 'sr3eThermographic',
+  ultrasound: 'sr3eUltrasoundVision',
   astral: 'sr3eAstral',
 });
 
@@ -43,7 +45,7 @@ export const ULTRASOUND_RANGE = 50;
 export const FLAG_SCOPE = 'The2ndChumming3e';
 
 /** Order of preference among the mundane vision modes: best first. */
-const PREFERENCE = ['thermo', 'lowLight', 'normal'];
+const PREFERENCE = ['thermo', 'lowLight', 'ultrasound', 'normal'];
 
 const LOW = /low[\s-]?light/i;
 const THERMO = /thermograph|thermo\s*vision/i;
@@ -157,11 +159,13 @@ export function detectionUpdate(existing = {}, ours = []) {
 
 /**
  * Which wall rule shapes a token's SIGHT polygon (what it sees of the map, and the line of sight every sight-based
- * detection then uses): 'project' (astral form — ward walls only), 'thermo' (sight walls + glass), or 'sight'.
+ * detection then uses): 'project' (astral form — ward walls only), 'thermo' (sight walls + glass),
+ * 'ultrasound' (sonar — SOUND walls), or 'sight'.
  */
 export function polygonSense(visionModeId, astralMode) {
   if (visionModeId === VISION.astral && astralMode === 'astral') return 'project';
   if (visionModeId === VISION.thermo) return 'thermo';
+  if (visionModeId === VISION.ultrasound) return 'ultrasound';
   return 'sight';
 }
 
