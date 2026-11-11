@@ -592,6 +592,13 @@ Hooks.on('preCreateToken', (token) => {
     if (ride) token.updateSource({ flags: { Rideable: ride } });
   } catch (err) { console.error('SR3E | vehicle token scale:', err); }
 });
+// …and a vehicle remembers its footprint from birth, so a renamed copy still scales (the maintainer, 2026-11-11).
+Hooks.on('preCreateActor', (document) => {
+  try {
+    const fp = TokenScale.stamp(document);
+    if (fp) document.updateSource({ 'flags.The2ndChumming3e.sizeM': fp });
+  } catch (err) { console.error('SR3E | vehicle footprint:', err); }
+});
 Hooks.once('ready', () => { SR3EGenericNpc.warm(); });
 // …and the GM's way in: Actor Directory → right-click → Make Generic NPC…
 Hooks.on('getActorContextOptions', (app, options) => {

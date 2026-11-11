@@ -4574,6 +4574,13 @@ export const MUTANTS = [
     impl:   () => 1,
   },
   {
+    id:     'token-scale-rename-loses-size',
+    suite:  'token-scale',
+    module: '../scripts/data/token-scale.mjs', klass: 'TokenScale', method: 'stamp',
+    was:    'a renamed pack vehicle lost its to-scale size (the maintainer, 2026-11-11; TODO 297)',
+    impl:   () => null,
+  },
+  {
     id:     'rideable-seats-ignored',
     suite:  'token-scale',
     module: '../scripts/data/token-scale.mjs', klass: 'TokenScale', method: 'rideable',

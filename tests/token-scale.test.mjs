@@ -37,6 +37,13 @@ export async function run(t) {
   t.eq('a pack vehicle uses its art metres', T.footprint({ type: 'vehicle', name: 'GMC 4201', flags: {} }), [2.5, 9]);
 
   const sr3e = readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8');
+  /* ── A copy keeps its footprint after a rename ─────────────────────────── */
+  t.eq('a pack vehicle is stamped with its metres as it is created', T.stamp({ type: 'vehicle', name: 'GMC 4201', flags: {} }), [2.5, 9]);
+  t.is('…not one that already carries a footprint', T.stamp({ type: 'vehicle', name: 'GMC 4201', flags: { The2ndChumming3e: { sizeM: [1, 1] } } }), null);
+  t.is('…not an unknown name', T.stamp({ type: 'vehicle', name: 'Bob', flags: {} }), null);
+  t.eq('…so after a rename it still scales', T.footprint({ type: 'vehicle', name: "Bob's 4201", flags: { The2ndChumming3e: { sizeM: [2.5, 9] } } }), [2.5, 9]);
+  t.ok('the preCreateActor hook stamps it', /TokenScale\.stamp\(document\)/.test(sr3e));
+
   /* ── Rideable seats ────────────────────────────────────────────────────── */
   const ride = T.rideable({ flags: {} }, veh({ system: { seating: 5 } }));
   t.is('Rideable: as many riders as the vehicle has seats', ride?.MaxRiderFlag, 5);
