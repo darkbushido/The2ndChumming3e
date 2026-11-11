@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0008",
     "name": "Yamaha Rapier",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sportbike-orange.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/yamaha-rapier.webp",
     "system": {
       "vehicleType": "motorcycle",
       "cost": 14200,
@@ -73,7 +73,7 @@
       "width": 1,
       "height": 2,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sportbike-orange.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/yamaha-rapier-top.webp"
       }
     }
   },

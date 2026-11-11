@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0016",
     "name": "Aztech Tiburon",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/speedboat-orange.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/aztech-tiburon.webp",
     "system": {
       "vehicleType": "boat",
       "cost": 650000,
@@ -73,7 +73,7 @@
       "width": 2.5,
       "height": 9,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/speedboat-orange.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/aztech-tiburon-top.webp"
       }
     }
   },

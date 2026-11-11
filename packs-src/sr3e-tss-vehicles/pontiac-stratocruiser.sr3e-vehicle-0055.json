@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0055",
     "name": "Pontiac Stratocruiser",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sedan-orange.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/pontiac-stratocruiser.webp",
     "system": {
       "vehicleType": "car",
       "cost": 30000,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sedan-orange.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/pontiac-stratocruiser-top.webp"
       }
     }
   },

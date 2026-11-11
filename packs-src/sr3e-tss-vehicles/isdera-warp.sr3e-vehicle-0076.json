@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0076",
     "name": "Isdera Warp",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sports-red.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/isdera-warp.webp",
     "system": {
       "vehicleType": "car",
       "cost": 400000,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 4.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sports-red.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/isdera-warp-top.webp"
       }
     }
   },

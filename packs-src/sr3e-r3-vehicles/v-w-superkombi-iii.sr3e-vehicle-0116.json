@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0116",
     "name": "V-W Superkombi III",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/van-cream.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/v-w-superkombi-iii.webp",
     "system": {
       "vehicleType": "car",
       "cost": 46300,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/van-cream.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/v-w-superkombi-iii-top.webp"
       }
     }
   },

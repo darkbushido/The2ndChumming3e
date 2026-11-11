@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0156",
     "name": "Northrup Wasp PRC-42B",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/heli-light-blue.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/northrup-wasp-prc-42b.webp",
     "system": {
       "vehicleType": "helicopter",
       "cost": 54000,
@@ -73,7 +73,7 @@
       "width": 8,
       "height": 9,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/heli-light-blue.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/northrup-wasp-prc-42b-top.webp"
       }
     }
   },

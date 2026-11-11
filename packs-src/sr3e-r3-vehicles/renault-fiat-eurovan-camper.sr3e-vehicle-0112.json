@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0112",
     "name": "Renault-Fiat Eurovan(Camper)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/van-teal.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/renault-fiat-eurovan-camper.webp",
     "system": {
       "vehicleType": "car",
       "cost": 53000,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/van-teal.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/renault-fiat-eurovan-camper-top.webp"
       }
     }
   },

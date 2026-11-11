@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0019",
     "name": "GMC Riverine",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/patrol-boat-battleship.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/gmc-riverine.webp",
     "system": {
       "vehicleType": "boat",
       "cost": 100000,
@@ -73,7 +73,7 @@
       "width": 4,
       "height": 14,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/patrol-boat-battleship.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/gmc-riverine-top.webp"
       }
     }
   },

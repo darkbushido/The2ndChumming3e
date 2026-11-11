@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0087",
     "name": "Mitsubishi Citycab",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/compact-maroon.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/mitsubishi-citycab.webp",
     "system": {
       "vehicleType": "car",
       "cost": 75000,
@@ -73,7 +73,7 @@
       "width": 1.5,
       "height": 3.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/compact-maroon.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/mitsubishi-citycab-top.webp"
       }
     }
   },

@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0115",
     "name": "Rover Journeyman",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/van-maroon.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/rover-journeyman.webp",
     "system": {
       "vehicleType": "car",
       "cost": 50000,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/van-maroon.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/rover-journeyman-top.webp"
       }
     }
   },

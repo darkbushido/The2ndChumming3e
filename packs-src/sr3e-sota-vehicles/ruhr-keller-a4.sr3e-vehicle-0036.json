@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0036",
     "name": "Ruhr. Keller A4",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/tracked-apc-olive.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/ruhr-keller-a4.webp",
     "system": {
       "vehicleType": "military",
       "cost": 4600000,
@@ -73,7 +73,7 @@
       "width": 3.5,
       "height": 7,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/tracked-apc-olive.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/ruhr-keller-a4-top.webp"
       }
     }
   },

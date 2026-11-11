@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0102",
     "name": "Ford E-255M Media Van",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/boxvan-teal.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/ford-e-255m-media-van.webp",
     "system": {
       "vehicleType": "car",
       "cost": 37900,
@@ -73,7 +73,7 @@
       "width": 2.5,
       "height": 6.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/boxvan-teal.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/ford-e-255m-media-van-top.webp"
       }
     }
   },

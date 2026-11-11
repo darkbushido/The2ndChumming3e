@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0030",
     "name": "BAE Agincourt APC",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/apc-forest.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/bae-agincourt-apc.webp",
     "system": {
       "vehicleType": "military",
       "cost": 256700,
@@ -73,7 +73,7 @@
       "width": 3,
       "height": 7.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/apc-forest.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/bae-agincourt-apc-top.webp"
       }
     }
   },

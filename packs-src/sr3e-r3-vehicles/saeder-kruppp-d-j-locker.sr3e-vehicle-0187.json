@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0187",
     "name": "Saeder-Kruppp D.J. Locker",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/minisub-safety.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/saeder-kruppp-d-j-locker.webp",
     "system": {
       "vehicleType": "submarine",
       "cost": 193000,
@@ -73,7 +73,7 @@
       "width": 3,
       "height": 8,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/minisub-safety.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/saeder-kruppp-d-j-locker-top.webp"
       }
     }
   },

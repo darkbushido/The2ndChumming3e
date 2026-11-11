@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0005",
     "name": "Hyundai Offroader",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sportbike-green.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/hyundai-offroader.webp",
     "system": {
       "vehicleType": "motorcycle",
       "cost": 13000,
@@ -73,7 +73,7 @@
       "width": 1,
       "height": 2,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sportbike-green.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/hyundai-offroader-top.webp"
       }
     }
   },

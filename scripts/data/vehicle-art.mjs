@@ -24,7 +24,10 @@ export const STOCK_IMAGES = ['vehicles-default.webp', 'drone-default.webp']
 const MYSTERY_MAN = 'icons/svg/mystery-man.svg';
 
 /** A picture nobody chose: blank, a type texture, Foundry's default token, or one of the drawn files. */
-export const isStock = img => !img || img === MYSTERY_MAN || STOCK_IMAGES.includes(img) || img.startsWith(`${IMG_DIR}/`);
+/** A model's own picture (`vehicles/models/`, drawn per compendium entry) is a chosen picture, not the stock chassis art. */
+export const MODEL_DIR = `${IMG_DIR}/models/`;
+export const isStock = img => !img || img === MYSTERY_MAN || STOCK_IMAGES.includes(img)
+  || (img.startsWith(`${IMG_DIR}/`) && !img.startsWith(MODEL_DIR));
 
 export class VehicleArt {
   /** The drawn art for a vehicle name: `{ img, width, height }`, or null. */

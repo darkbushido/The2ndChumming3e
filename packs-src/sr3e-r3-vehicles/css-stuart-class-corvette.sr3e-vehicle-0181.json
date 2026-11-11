@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0181",
     "name": "CSS Stuart Class Corvette",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/warship-battleship.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/css-stuart-class-corvette.webp",
     "system": {
       "vehicleType": "ship",
       "cost": 60000000,
@@ -73,7 +73,7 @@
       "width": 14,
       "height": 120,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/warship-battleship.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/css-stuart-class-corvette-top.webp"
       }
     }
   },

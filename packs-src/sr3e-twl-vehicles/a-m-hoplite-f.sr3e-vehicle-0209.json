@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0209",
     "name": "A-M Hoplite (F)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sportbike-white.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/a-m-hoplite.webp",
     "system": {
       "vehicleType": "motorcycle",
       "cost": 23600,
@@ -73,7 +73,7 @@
       "width": 1,
       "height": 2,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sportbike-white.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/a-m-hoplite-top.webp"
       }
     }
   },

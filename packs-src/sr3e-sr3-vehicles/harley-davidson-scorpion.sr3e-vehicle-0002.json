@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0002",
     "name": "Harley-Davidson Scorpion",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/cruiser-white.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/harley-davidson-scorpion.webp",
     "system": {
       "vehicleType": "motorcycle",
       "cost": 13500,
@@ -73,7 +73,7 @@
       "width": 1,
       "height": 2.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/cruiser-white.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/harley-davidson-scorpion-top.webp"
       }
     }
   },
