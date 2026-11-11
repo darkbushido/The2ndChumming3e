@@ -84,6 +84,16 @@ export class TokenScale {
   }
 
   /**
+   * The footprint to stamp on a vehicle as it is created (`flags.<scope>.sizeM`), so a copy keeps its size after a rename —
+   * the maintainer, 2026-11-11: a renamed pack vehicle should still scale. Null when it already has one or none is known.
+   */
+  static stamp(data, scope = 'The2ndChumming3e') {
+    if (data?.type !== 'vehicle' || data.flags?.[scope]?.sizeM) return null;
+    const art = VehicleArt.artFor(data.name);
+    return art ? [art.width, art.height] : null;
+  }
+
+  /**
    * Flags for the Rideable module (v5) on a new vehicle token: rideable, a rectangle, riders move freely inside, and as many
    * riders as the vehicle has seats (Seating includes the driver) — the maintainer, 2026-11-11: "set the number of seats in
    * rideable to the vehicle stats". Null when it isn't a vehicle or the token already carries its own Rideable settings.
