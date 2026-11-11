@@ -72,6 +72,11 @@ jobs:
       - name: Zip the guides
         run: cd "dist/guides/$TAG" && zip -qr ../../guides.zip .
 
+      - name: Build the gear designer (TODO 298)
+        run: |
+          node tools/build-designer.mjs "dist/designer/$TAG"
+          cp -r "dist/designer/$TAG" dist/designer/latest
+
       - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -94,7 +99,11 @@ jobs:
           rm -rf "pages/$TAG" pages/latest
           cp -r "dist/guides/$TAG" "pages/$TAG"
           cp -r dist/guides/latest pages/latest
+          mkdir -p pages/designer
+          rm -rf "pages/designer/$TAG" pages/designer/latest
+          cp -r "dist/designer/$TAG" "pages/designer/$TAG"
+          cp -r dist/designer/latest pages/designer/latest
           node tools/guides-versions.mjs pages
           git -C pages add -A
-          git -C pages commit -m "Guides for $TAG"
+          git -C pages commit -m "Guides and gear designer for $TAG"
           git -C pages push origin gh-pages
