@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0128",
     "name": "Bac-Dessault-MBB EFA Variants",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/fighter-forest.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/bac-dessault-mbb-efa-variants.webp",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 2137500,
@@ -74,7 +74,7 @@
       "width": 10,
       "height": 16,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/fighter-forest.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/bac-dessault-mbb-efa-variants-top.webp"
       }
     }
   },

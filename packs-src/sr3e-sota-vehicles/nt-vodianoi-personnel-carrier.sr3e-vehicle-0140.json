@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0140",
     "name": "NT Vodianoi Personnel Carrier",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/patrol-boat-battleship.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/nt-vodianoi-personnel-carrier.webp",
     "system": {
       "vehicleType": "boat",
       "cost": 468600,
@@ -73,7 +73,7 @@
       "width": 4,
       "height": 14,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/patrol-boat-battleship.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/nt-vodianoi-personnel-carrier-top.webp"
       }
     }
   },

@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0010",
     "name": "Entertainment Systems Papoose",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/scooter-white.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/entertainment-systems-papoose.webp",
     "system": {
       "vehicleType": "motorcycle",
       "cost": 6600,
@@ -73,7 +73,7 @@
       "width": 1,
       "height": 1.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/scooter-white.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/entertainment-systems-papoose-top.webp"
       }
     }
   },

@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0044",
     "name": "Rolls-Royce Prairie Cat",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/suv-teal.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/rolls-royce-prairie-cat.webp",
     "system": {
       "vehicleType": "car",
       "cost": 113400,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/suv-teal.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/rolls-royce-prairie-cat-top.webp"
       }
     }
   },

@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0165",
     "name": "Doc Wagon CRT Air Unit",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/tiltrotor-docwagon.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/doc-wagon-crt-air-unit.webp",
     "system": {
       "vehicleType": "helicopter",
       "cost": 1266750,
@@ -73,7 +73,7 @@
       "width": 16,
       "height": 15,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/tiltrotor-docwagon.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/doc-wagon-crt-air-unit-top.webp"
       }
     }
   },

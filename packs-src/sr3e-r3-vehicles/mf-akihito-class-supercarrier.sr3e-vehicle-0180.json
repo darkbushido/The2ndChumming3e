@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0180",
     "name": "MF Akihito-Class Supercarrier",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/carrier-haze.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/mf-akihito-class-supercarrier.webp",
     "system": {
       "vehicleType": "ship",
       "cost": 999999999,
@@ -73,7 +73,7 @@
       "width": 75,
       "height": 330,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/carrier-haze.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/mf-akihito-class-supercarrier-top.webp"
       }
     }
   },

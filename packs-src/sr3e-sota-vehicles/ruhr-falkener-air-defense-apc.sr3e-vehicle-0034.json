@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0034",
     "name": "Ruhr. Falkener Air Defense APC",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/tracked-apc-fieldgrey.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/ruhr-falkener-air-defense-apc.webp",
     "system": {
       "vehicleType": "military",
       "cost": 619600,
@@ -73,7 +73,7 @@
       "width": 3.5,
       "height": 7,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/tracked-apc-fieldgrey.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/ruhr-falkener-air-defense-apc-top.webp"
       }
     }
   },

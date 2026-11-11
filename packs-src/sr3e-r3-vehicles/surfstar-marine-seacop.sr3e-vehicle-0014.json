@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0014",
     "name": "Surfstar Marine Seacop",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/speedboat-white.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/surfstar-marine-seacop.webp",
     "system": {
       "vehicleType": "boat",
       "cost": 170000,
@@ -73,7 +73,7 @@
       "width": 2.5,
       "height": 9,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/speedboat-white.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/surfstar-marine-seacop-top.webp"
       }
     }
   },

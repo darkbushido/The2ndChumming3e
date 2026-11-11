@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0143",
     "name": "Chrysler-Nissan G12A(cargo)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/van-grey.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/chrysler-nissan-g12a.webp",
     "system": {
       "vehicleType": "car",
       "cost": 62000,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/van-grey.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/chrysler-nissan-g12a-top.webp"
       }
     }
   },

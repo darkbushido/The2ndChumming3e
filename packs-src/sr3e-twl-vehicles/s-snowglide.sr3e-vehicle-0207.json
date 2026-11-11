@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0207",
     "name": "S Snowglide",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/snowmobile-yellow.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/s-snowglide.webp",
     "system": {
       "vehicleType": "motorcycle",
       "cost": 28600,
@@ -73,7 +73,7 @@
       "width": 1,
       "height": 3,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/snowmobile-yellow.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/s-snowglide-top.webp"
       }
     }
   },

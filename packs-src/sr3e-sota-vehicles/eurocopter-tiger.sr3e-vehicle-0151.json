@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0151",
     "name": "Eurocopter Tiger",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/gunship-fieldgrey.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/eurocopter-tiger.webp",
     "system": {
       "vehicleType": "helicopter",
       "cost": 982500,
@@ -73,7 +73,7 @@
       "width": 12,
       "height": 16,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/gunship-fieldgrey.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/eurocopter-tiger-top.webp"
       }
     }
   },

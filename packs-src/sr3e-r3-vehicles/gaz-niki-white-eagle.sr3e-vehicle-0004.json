@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0004",
     "name": "Gaz-Niki White Eagle",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/cruiser-teal.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/gaz-niki-white-eagle.webp",
     "system": {
       "vehicleType": "motorcycle",
       "cost": 13000,
@@ -73,7 +73,7 @@
       "width": 1,
       "height": 2.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/cruiser-teal.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/gaz-niki-white-eagle-top.webp"
       }
     }
   },

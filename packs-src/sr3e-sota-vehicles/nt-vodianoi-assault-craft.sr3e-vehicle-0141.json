@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0141",
     "name": "NT Vodianoi Assault Craft",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/patrol-boat-battleship.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/nt-vodianoi-assault-craft.webp",
     "system": {
       "vehicleType": "boat",
       "cost": 489600,
@@ -73,7 +73,7 @@
       "width": 4,
       "height": 14,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/patrol-boat-battleship.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/nt-vodianoi-assault-craft-top.webp"
       }
     }
   },

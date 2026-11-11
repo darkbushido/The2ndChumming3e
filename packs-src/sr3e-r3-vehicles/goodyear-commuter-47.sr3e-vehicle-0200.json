@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0200",
     "name": "Goodyear Commuter-47",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/airship-green.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/goodyear-commuter-47.webp",
     "system": {
       "vehicleType": "airship",
       "cost": 360000,
@@ -73,7 +73,7 @@
       "width": 16,
       "height": 60,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/airship-green.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/goodyear-commuter-47-top.webp"
       }
     }
   },

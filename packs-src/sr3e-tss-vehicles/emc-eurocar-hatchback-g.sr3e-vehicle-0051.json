@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0051",
     "name": "EMC Eurocar Hatchback (G)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sedan-teal.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/emc-eurocar-hatchback.webp",
     "system": {
       "vehicleType": "car",
       "cost": 30000,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sedan-teal.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/emc-eurocar-hatchback-top.webp"
       }
     }
   },

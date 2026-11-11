@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0126",
     "name": "Airbus A1570 HSCT",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/airliner-silver.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/airbus-a1570-hsct.webp",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 8040000,
@@ -74,7 +74,7 @@
       "width": 30,
       "height": 60,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/airliner-silver.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/airbus-a1570-hsct-top.webp"
       }
     }
   },

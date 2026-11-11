@@ -10,7 +10,7 @@ import {
   inScopeEntries, applyArt, hashName, pxPerMetre, outlineFor,
   renderArtMap, ART_MAP_FILE,
 } from '../tools/build-vehicle-art.mjs';
-import { VehicleArt, isStock } from '../scripts/data/vehicle-art.mjs';
+import { VehicleArt, isStock, MODEL_DIR } from '../scripts/data/vehicle-art.mjs';
 
 export const name = 'vehicle-art';
 
@@ -69,6 +69,10 @@ export async function run(t) {
   for (const { pack, doc } of entries) {
     const art = artFor(doc.name, map[doc.name]);
     const tok = doc.prototypeToken ?? {};
+    if (doc.img.startsWith(MODEL_DIR)) {   // a model's own picture: the token keeps the archetype's footprint
+      if (!tok.texture?.src?.startsWith(MODEL_DIR) || tok.width !== art.width || tok.height !== art.height) wrong.push(`${pack}: ${doc.name} (model picture)`);
+      continue;
+    }
     if (doc.img !== art.img || tok.texture?.src !== art.img || tok.width !== art.width || tok.height !== art.height) wrong.push(`${pack}: ${doc.name}`);
     if (!existsSync(join(ROOT, doc.img.replace('systems/The2ndChumming3e/', '')))) wrong.push(`${doc.name}: ${doc.img} missing`);
   }
@@ -78,7 +82,12 @@ export async function run(t) {
   const files = renderAll(map);
   const onDisk = existsSync(OUT) ? readdirSync(OUT) : [];
   t.eq('no SVG has drifted from the generator', [...files].filter(([f, text]) => !existsSync(join(OUT, f)) || readFileSync(join(OUT, f), 'utf8') !== text).map(([f]) => f), []);
-  t.eq('no orphaned SVG in styles/textures/vehicles/', onDisk.filter(f => !files.has(f)), []);
+  t.eq('no orphaned SVG in styles/textures/vehicles/', onDisk.filter(f => !files.has(f) && f !== 'models'), []);
+  const modelFiles = existsSync(join(OUT, 'models')) ? readdirSync(join(OUT, 'models')) : [];
+  const used = new Set(entries.flatMap(e => [e.doc.img, e.doc.prototypeToken?.texture?.src]).filter(u => u?.startsWith(MODEL_DIR)).map(u => u.slice(MODEL_DIR.length)));
+  t.eq('every model picture on disk is used by an entry', modelFiles.filter(f => !used.has(f)), []);
+  t.ok(`…and every vehicle (drones keep the chassis art) has its own model picture (${used.size / 2} files)`, entries.filter(e => e.doc.system?.vehicleType !== 'drone').every(e => e.doc.img.startsWith(MODEL_DIR)));
+  t.ok('a model picture is not stock art, so the build and the world migration leave it alone', !isStock(`${MODEL_DIR}x.webp`) && isStock(`${IMG_DIR}/sedan-red.svg`));
   const bad = [...files].filter(([, s]) => /<image|href=|<script|@import|url\(|<text/i.test(s)).map(([f]) => f);
   t.eq('the art is self-contained: no images, links, scripts or text', bad, []);
   const sedan = renderSvg('sedan', 'red');

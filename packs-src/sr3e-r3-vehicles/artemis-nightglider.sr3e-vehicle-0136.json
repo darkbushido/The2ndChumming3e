@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0136",
     "name": "Artemis Nightglider",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/ultralight-orange.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/artemis-nightglider.webp",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 46500,
@@ -74,7 +74,7 @@
       "width": 10,
       "height": 6,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/ultralight-orange.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/artemis-nightglider-top.webp"
       }
     }
   },

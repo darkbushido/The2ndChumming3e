@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0210",
     "name": "F-B China Clipper Suborbital",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/airliner-cream.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/f-b-china-clipper-suborbital.webp",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 32000000,
@@ -74,7 +74,7 @@
       "width": 30,
       "height": 60,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/airliner-cream.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/f-b-china-clipper-suborbital-top.webp"
       }
     }
   },

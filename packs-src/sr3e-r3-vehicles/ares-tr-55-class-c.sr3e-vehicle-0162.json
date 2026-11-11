@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0162",
     "name": "Ares TR-55 Class C",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/tiltrotor-blue.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/ares-tr-55-class-c.webp",
     "system": {
       "vehicleType": "helicopter",
       "cost": 338000,
@@ -73,7 +73,7 @@
       "width": 16,
       "height": 15,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/tiltrotor-blue.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/ares-tr-55-class-c-top.webp"
       }
     }
   },

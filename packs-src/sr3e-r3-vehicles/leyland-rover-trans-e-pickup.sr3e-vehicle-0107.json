@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0107",
     "name": "Leyland-Rover Trans(E Pickup)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/pickup-red.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/leyland-rover-trans-pickup.webp",
     "system": {
       "vehicleType": "car",
       "cost": 49000,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/pickup-red.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/leyland-rover-trans-pickup-top.webp"
       }
     }
   },

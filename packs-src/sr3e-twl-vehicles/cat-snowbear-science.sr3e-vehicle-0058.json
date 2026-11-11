@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0058",
     "name": "CAT Snowbear Science",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/snowcat-black.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/cat-snowbear-science.webp",
     "system": {
       "vehicleType": "car",
       "cost": 407445,
@@ -73,7 +73,7 @@
       "width": 3,
       "height": 6.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/snowcat-black.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/cat-snowbear-science-top.webp"
       }
     }
   },
