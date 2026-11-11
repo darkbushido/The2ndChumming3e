@@ -2939,7 +2939,12 @@ Agreed design (2026-11-11): [docs/web-designer-proposal.md](docs/web-designer-pr
 Public data is stats + book/page only (never SR-OCR). A design travels as a compressed link or JSON of pack ids +
 choices; Foundry imports it through a paste dialog or a macro, recomputes, warns on any mismatch, and imports anyway.
 v1 = weapons (mods, mounts, integral items, ammo); vehicles, then cyberware/decks, follow as their own items.
-Nothing built yet — waits on the maintainer's go-ahead.
+
+**Built (weapons v1):**  /  (http://localhost:5178); 📥 Import design in the Items
+directory and the "SR3E Import Gear Design" macro. Unit-tested (, mutant ).
+🧪 **Still to check in a live Foundry:** paste a designer link → preview shows the weapon, its mods and warnings → Import
+onto a character puts the gun (mods inside, ✎ opens them) and one ammo stockpile on the sheet; a GM's world-item import;
+a player with no character sees the warning.
 
 ### 🧹 Housekeeping
 

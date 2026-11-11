@@ -1,7 +1,6 @@
 # Web gear designer — proposal
 
-Status: **agreed design, nothing built.** Settled with the maintainer on 2026-11-11 (grilling session).
-TODO: _number pending from the coordinator._
+Status: **weapons v1 built on `claude/web-gear-designer-37eb2b`** (design settled with the maintainer 2026-11-11). TODO 298.
 
 ## What it is
 
