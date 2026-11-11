@@ -2940,8 +2940,8 @@ Public data is stats + book/page only (never SR-OCR). A design travels as a comp
 choices; Foundry imports it through a paste dialog or a macro, recomputes, warns on any mismatch, and imports anyway.
 v1 = weapons (mods, mounts, integral items, ammo); vehicles, then cyberware/decks, follow as their own items.
 
-**Built (weapons v1):**  /  (http://localhost:5178); 📥 Import design in the Items
-directory and the "SR3E Import Gear Design" macro. Unit-tested (, mutant ).
+**Built (weapons v1):** `npm run designer:build` / `npm run designer:serve` (http://localhost:5178); 📥 Import design in the
+Items directory and the "SR3E Import Gear Design" macro. Unit-tested (`tests/designer.test.mjs`, mutant `design-claims-trusted`).
 🧪 **Still to check in a live Foundry:** paste a designer link → preview shows the weapon, its mods and warnings → Import
 onto a character puts the gun (mods inside, ✎ opens them) and one ammo stockpile on the sheet; a GM's world-item import;
 a player with no character sees the warning.
