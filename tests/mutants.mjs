@@ -4567,6 +4567,20 @@ export const MUTANTS = [
     impl:   () => false,
   },
   {
+    id:     'token-scale-ignores-grid',
+    suite:  'token-scale',
+    module: '../scripts/data/token-scale.mjs', klass: 'TokenScale', method: 'gridMetres',
+    was:    'vehicle tokens sized as if every scene had 1 m squares (the maintainer, 2026-11-10: "always to scale"; TODO 297)',
+    impl:   () => 1,
+  },
+  {
+    id:     'rideable-seats-ignored',
+    suite:  'token-scale',
+    module: '../scripts/data/token-scale.mjs', klass: 'TokenScale', method: 'rideable',
+    was:    'Rideable kept its own rider default instead of the vehicle’s Seating (the maintainer, 2026-11-11; TODO 297)',
+    impl:   () => null,
+  },
+  {
     id:     'designer-mod-misfit-ignored',
     suite:  'vehicle-designer-shop',
     module: '../scripts/data/mod-catalog.mjs', klass: 'ModCatalog', method: 'misfit',
