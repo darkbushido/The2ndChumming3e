@@ -37,6 +37,10 @@ Foundry lists these when you install the system; none is required.
   cameras show their feeds through it. Its cameras live in a world setting, so a scene import
   brings the camera Regions but not the cameras: view the scene as GM and run the map's
   camera-registration macro to link them.
+- **Crime Scene Investigation Toolkit** (`csi-toolkit`, needs `holosuite-core`) — a case board for
+  investigation-heavy runs: evidence, suspects, locations, a timeline and the connections between
+  them. It is system-agnostic and has nothing to do with the rules; it is here because legwork is
+  a large part of a run.
 
 ## What to expect
 - This is not a fully automated Foundry system, it will prompt, poke and nudge you, it will track wounds and modifiers, it will deal with initiative, it will reduce your - book-keeping and it will make it much easier to do the horrible bits like car chases and tracking a character's carry load. It is designed to show you what it is doing at - each stage so if you are looking to learn or brush up, this may help but you will need to know the basics. 

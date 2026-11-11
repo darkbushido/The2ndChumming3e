@@ -38,6 +38,11 @@
         "id": "security-cameras",
         "type": "module",
         "reason": "Camera feeds for the security cameras on the battlemaps — each map's cameras are registered with it by a GM macro after import."
+      },
+      {
+        "id": "csi-toolkit",
+        "type": "module",
+        "reason": "A case board for investigation-heavy runs — evidence, suspects, locations, a timeline and the connections between them. System-agnostic; needs HoloSuite Core."
       }
     ]
   },
