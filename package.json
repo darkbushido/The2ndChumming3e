@@ -23,6 +23,8 @@
     "packs:extract": "node tools/packs.mjs extract",
     "packs:src:check": "node tools/packs.mjs check",
     "todo:archive": "node tools/todo-archive.mjs",
+    "designer:build": "node tools/build-designer.mjs",
+    "designer:serve": "node tools/serve-designer.mjs",
     "todo:check": "node tools/todo-archive.mjs --check",
     "rules": "node tools/rules-digest.mjs",
     "rules:digest": "node tools/rules-digest.mjs --write",

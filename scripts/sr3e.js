@@ -44,6 +44,7 @@ import { SR3EVehicleChase } from './SR3EVehicleChase.js';
 import { SR3ECollision } from './SR3ECollision.js';
 import { SR3EConcealment } from './SR3EConcealment.js';
 import { SR3EItemMods } from './SR3EItemMods.js';
+import { SR3EDesignImport } from './SR3EDesignImport.js';
 import { SR3ELegwork } from './SR3ELegwork.js';
 import { SR3EMIJI } from './SR3EMIJI.js';
 import { SR3EClocks } from './SR3EClocks.js';
@@ -141,7 +142,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc, SR3EItemMods, SR3EVehicleDesigner, SR3EOrders };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc, SR3EItemMods, SR3EDesignImport, SR3EVehicleDesigner, SR3EOrders };
 
   // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
   // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
@@ -438,6 +439,11 @@ Hooks.once('ready', async () => {
       name: 'SR3E Vehicle Designer',               // TODO 287
       path: 'scripts/macros/vehicle-designer.js',
       img:  'icons/svg/wing.svg',
+    },
+    {
+      name: 'SR3E Import Gear Design',            // TODO 298
+      path: 'scripts/macros/import-gear-design.js',
+      img:  'icons/svg/down.svg',
     },
     // ⚠ The populate-agents / populate-hosts macros used to be created here too. They wrote to
     // `sr3e-agents` / `sr3e-hosts`, packs gone since the book split, so every GM got two macros
@@ -2115,6 +2121,20 @@ Hooks.on('renderActorDirectory', (_app, html) => {
   b.className = 'sr3e-design-vehicle-btn';
   b.textContent = '🛠 Design a vehicle';
   b.addEventListener('click', () => SR3EVehicleDesigner.open());
+  const header = el.querySelector('.directory-header .header-actions') ?? el.querySelector('.directory-header');
+  if (header) header.appendChild(b);
+  else el.prepend(b);
+});
+
+// 📥 Import a design from the web gear designer — the Items directory header, for everyone (TODO 298).
+Hooks.on('renderItemDirectory', (_app, html) => {
+  const el = html instanceof HTMLElement ? html : html?.[0];
+  if (!el || el.querySelector('.sr3e-import-design-btn')) return;
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'sr3e-import-design-btn';
+  b.textContent = '📥 Import design';
+  b.addEventListener('click', () => SR3EDesignImport.open());
   const header = el.querySelector('.directory-header .header-actions') ?? el.querySelector('.directory-header');
   if (header) header.appendChild(b);
   else el.prepend(b);

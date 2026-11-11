@@ -1,0 +1,129 @@
+/**
+ * Build the web gear designer · TODO 298 (docs/web-designer-proposal.md).
+ *
+ *   npm run designer:build            → dist/designer/   (ignored; release.yml publishes it to Pages)
+ *   npm run designer:build -- <dir>   → another folder
+ *
+ * No bundler. It writes three things:
+ *  - the page itself, copied from `designer/`;
+ *  - `lib/` — `scripts/data/gear-design.mjs` and every module it imports, copied AS-IS, so the page runs the system's own
+ *    rules (one shared core — never a fork);
+ *  - `catalogue.json` — the firearms, weapon accessories and ammunition from `packs-src/`, **stats only**.
+ *
+ * ⚠ **The catalogue is an allow-list.** A field reaches the public page only if `FIELDS` names it: names, numbers and the
+ * book/page cite — never `description`, `notes` or any rulebook text (the maintainer, 2026-11-11). An installed (integral)
+ * accessory is cut down the same way. `tests/designer.test.mjs` asserts nothing else leaks. ⚠ Nothing from `SR-OCR/` is
+ * ever read here.
+ */
+import { readFileSync, readdirSync, writeFileSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
+import { join, dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { ItemMods } from '../scripts/data/item-mods.mjs';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+/** Which pack documents are in the catalogue, by kind. */
+export const KIND_OF = doc => {
+  if (doc?.type === 'firearm') return 'firearm';
+  if (doc?.type === 'ammunition') return 'ammo';
+  if (doc?.type === 'gear' && doc?.system?.modFor === 'weapon') return 'mod';
+  return null;
+};
+
+/** The allow-list: the only fields that reach the page. */
+export const FIELDS = {
+  top: ['_id', 'name', 'type'],
+  firearm: ['category', 'concealability', 'ammunition', 'mode', 'damage', 'weight', 'availability', 'cost', 'streetIndex',
+    'accessories', 'bookPage', 'hands', 'smartgun', 'laserSight', 'legality', 'recoilMod', 'recoilModIntegral', 'installed'],
+  mod: ['category', 'concealability', 'rating', 'cost', 'weight', 'availability', 'streetIndex', 'bookPage', 'modFor',
+    'legality', 'modifiers', 'mount'],
+  ammo: ['concealability', 'damage', 'ammoType', 'rounds', 'weight', 'cost', 'availability', 'streetIndex', 'bookPage',
+    'legality', 'gunClass'],
+  /** The one flag the rules read on an installed accessory. */
+  flags: ['integral'],
+};
+
+const pick = (obj, keys) => Object.fromEntries(keys.filter(k => obj?.[k] !== undefined).map(k => [k, obj[k]]));
+
+/** One document cut down to the allow-list. */
+export function publicDoc(doc, kind = KIND_OF(doc)) {
+  const out = pick(doc, FIELDS.top);
+  out.system = pick(doc.system, FIELDS[kind]);
+  // A mod's mount is often only in its description ("Mount: Top") — which never ships. Publish what the rules read from it.
+  if (kind === 'mod' && !out.system.mount) {
+    const mounts = ItemMods.mountsOf(doc);
+    if (mounts.length) out.system.mount = mounts.join('/');
+  }
+  if (Array.isArray(out.system.installed)) out.system.installed = out.system.installed.map(m => publicDoc(m, 'mod'));
+  const flags = pick(doc.flags?.The2ndChumming3e, FIELDS.flags);
+  if (Object.keys(flags).length) out.flags = { The2ndChumming3e: flags };
+  return out;
+}
+
+/** `{ "<pack>/<id>": doc }` for every catalogue document, and the pack labels. */
+export function catalogue(root = ROOT) {
+  const manifest = JSON.parse(readFileSync(join(root, 'system.json'), 'utf8'));
+  const label = Object.fromEntries((manifest.packs ?? []).map(p => [p.name, p.label]));
+  const items = {};
+  for (const pack of readdirSync(join(root, 'packs-src')).sort()) {
+    if (!label[pack]) continue;   // undeclared → not shipped → not published
+    for (const f of readdirSync(join(root, 'packs-src', pack)).filter(x => x.endsWith('.json')).sort()) {
+      const { doc } = JSON.parse(readFileSync(join(root, 'packs-src', pack, f), 'utf8'));
+      const kind = KIND_OF(doc);
+      if (kind && doc._id) items[`${pack}/${doc._id}`] = { kind, ...publicDoc(doc, kind) };
+    }
+  }
+  const packs = Object.fromEntries([...new Set(Object.keys(items).map(r => r.split('/')[0]))].map(p => [p, label[p]]));
+  return { system: manifest.version, packs, items };
+}
+
+/** Every `scripts/data` module `entry` imports, transitively (relative imports only), entry first. */
+export function moduleClosure(entry = 'gear-design.mjs', dir = join(ROOT, 'scripts', 'data')) {
+  const seen = [];
+  const visit = name => {
+    if (seen.includes(name)) return;
+    seen.push(name);
+    const src = readFileSync(join(dir, name), 'utf8');
+    for (const m of src.matchAll(/^\s*import\s[^'"]*from\s+['"]\.\/([\w.-]+\.mjs)['"]/gm)) visit(m[1]);
+  };
+  visit(entry);
+  return seen;
+}
+
+/**
+ * `mod-rating-table.mjs` for the page: only the weapon and ammunition rows, and in them only `RATING_FIELDS` — the
+ * full table also holds cyberware, adept powers and per-level `description` text, none of which the page may publish.
+ */
+export const RATING_KINDS = ['weapon', 'ammunition'];
+export const RATING_FIELDS = ['availability', 'cost', 'weight', 'bookPage', 'concealability', 'streetIndex'];
+export async function ratingTable() {
+  const { MOD_RATING_TABLE } = await import('../scripts/data/mod-rating-table.mjs');
+  return Object.fromEntries(Object.entries(MOD_RATING_TABLE).filter(([k]) => RATING_KINDS.includes(k.split('|')[0]))
+    .map(([k, levels]) => [k, Object.fromEntries(Object.entries(levels).map(([lv, row]) => [lv, pick(row, RATING_FIELDS)]))]));
+}
+let _table = null;
+function ratingTableSource() {
+  return '// Generated by tools/build-designer.mjs — weapon and ammunition rows of scripts/data/mod-rating-table.mjs, stats only.\n'
+    + `export const MOD_RATING_TABLE = ${JSON.stringify(_table)};\nexport const COLLAPSED_SOURCES = {};\n`;
+}
+
+export async function build(out) {
+  _table = await ratingTable();
+  rmSync(out, { recursive: true, force: true });
+  mkdirSync(join(out, 'lib'), { recursive: true });
+  for (const f of readdirSync(join(ROOT, 'designer'))) copyFileSync(join(ROOT, 'designer', f), join(out, f));
+  const mods = moduleClosure();
+  for (const f of mods) {
+    if (f === 'mod-rating-table.mjs') writeFileSync(join(out, 'lib', f), ratingTableSource());
+    else copyFileSync(join(ROOT, 'scripts', 'data', f), join(out, 'lib', f));
+  }
+  const cat = catalogue();
+  writeFileSync(join(out, 'catalogue.json'), JSON.stringify(cat));
+  return { modules: mods.length, items: Object.keys(cat.items).length, system: cat.system };
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const out = resolve(process.argv[2] ?? join(ROOT, 'dist', 'designer'));
+  const r = await build(out);
+  console.log(`designer ${r.system}: ${r.items} catalogue items, ${r.modules} rule modules → ${out}`);
+}

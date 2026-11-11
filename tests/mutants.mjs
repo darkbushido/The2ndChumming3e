@@ -108,6 +108,13 @@ export const MUTANTS = [
     impl:   function (pack) { return this.rulesetAllows(pack); },
   },
   {
+    id:     'design-claims-trusted',
+    suite:  'designer',
+    module: '../scripts/data/gear-design.mjs', klass: 'GearDesign', method: 'mismatches',
+    was:    'not shipped — guards TODO 298: an imported design whose link claims a lower price than the rules give must be warned, never taken on trust',
+    impl:   () => [],
+  },
+  {
     id:     'wound-assigned-twice',
     suite:  'open-steps',
     module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'runOnce',
