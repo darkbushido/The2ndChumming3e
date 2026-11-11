@@ -3635,4 +3635,26 @@ export const MUTANTS = [
     was:    'the refresh took any script macro, so a GM-authored macro with another name was overwritten (TODO 261)',
     impl:   (_def, macros) => [...(macros ?? [])].find(m => m?.type === 'script') ?? null,
   },
+  {
+    id:     'projection-stopped-by-walls',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'wallBlocks',
+    was:    'never shipped — the likely slip: a projecting astral form treated like a perceiving one, stopped by every sight wall (SR3 p.173: only wards; TODO 299)',
+    impl:   (sense, wall = {}) => (sense === 'thermo' ? (!!wall.sight || !!wall.flags?.The2ndChumming3e?.glass)
+      : sense === 'ultrasound' ? !!wall.sound : !!wall.sight),
+  },
+  {
+    id:     'perceiving-sees-through-walls',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'polygonSense',
+    was:    'never shipped — the likely slip: astral perception given the projecting polygon, so a mage in a chair saw through walls (SR3 p.172; TODO 299)',
+    impl:   (mode, _astralMode) => (mode === 'sr3eAstral' ? 'project' : mode === 'sr3eThermographic' ? 'thermo' : 'sight'),
+  },
+  {
+    id:     'stowed-goggles-see',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'isWornGear',
+    was:    'never shipped — goggles in the backpack granting thermographic sight (the maintainer, 2026-11-11: only when worn; TODO 299)',
+    impl:   () => true,
+  },
 ];

@@ -3890,3 +3890,4 @@ label.act-field input[type=number] {
 .sr3e-card-done .sr-roll-header::after { content: ' ▸ done'; font-size: 10px; font-weight: normal; color: var(--sr-green, #6a6); }
 .sr3e-step-flash { animation: sr3e-step-flash 1.5s ease-out; }
 @keyframes sr3e-step-flash { from { box-shadow: 0 0 0 3px var(--sr-gold, #c8a040); } to { box-shadow: 0 0 0 0 transparent; } }
+.sr3e-aura-hint{pointer-events:none;transform:translateX(-50%);padding:2px 8px;border-radius:var(--r,4px);background:rgba(20,16,30,.85);color:var(--sr-gold,#c8a040);font-size:12px;z-index:100;white-space:nowrap}
