@@ -25,6 +25,7 @@ import { VehicleDesign, CLASSES, RATES, SMART } from './data/vehicle-design.mjs'
 import { VehicleDesignActor, FLAG, SOURCE_FLAG, TOW_FLAG, MAX_TRAILERS } from './data/vehicle-design-actor.mjs';
 import { DesignOptions, SHOPS } from './data/design-options.mjs';
 import { DesignerArt, tokenImage } from './data/designer-art.mjs';
+import { TokenScale } from './data/token-scale.mjs';
 import { ModCatalog, SHELVES } from './data/mod-catalog.mjs';
 import { ChassisCatalog } from './data/chassis-catalog.mjs';
 import { VehicleMounts } from './data/vehicle-mounts.mjs';
@@ -605,8 +606,12 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     }
     if (!created) return;
     // A brand-new actor: its picture and token are the chassis' top-down icon (never set on an existing vehicle).
-    const icon = tokenImage(ChassisCatalog.card(result.chassis.id)?.art);
+    const art = ChassisCatalog.card(result.chassis.id)?.art;
+    const icon = tokenImage(art);
     const pic = icon ? { img: icon, 'prototypeToken.texture.src': icon } : {};
+    // Its real footprint in metres: each token placed is scaled to that scene's grid (TokenScale, the maintainer 2026-11-10).
+    const fp = TokenScale.forArt(art);
+    if (fp) Object.assign(pic, { [`flags.${SCOPE}.sizeM`]: fp, 'prototypeToken.width': fp[0], 'prototypeToken.height': fp[1] });
     await created.update({ ...VehicleDesignActor.update(values), ...pic, [`flags.${SCOPE}.${FLAG}`]: design });
     await this._embedMods(created, VehicleDesignActor.missingMods(design.mods, []));
     if (this.towing) {

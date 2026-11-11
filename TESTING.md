@@ -3802,6 +3802,11 @@ Second pass (the maintainer's feedback, 2026-11-08):
       Chassis · SI · Avail. A diesel **Tractor**: Fuel 750 liters, Econ 3 km/l, Range 2,250 km. Economy +100% (20 steps) →
       6 km/l, 4,500 km. Fuel Tank Enlargement 250 → Fuel 1,000 liters. A helicopter shows L/T VTOL.
 - [ ] **Full names on hover:** in the mod shop, hover **Rem-Contr. Intr. Bod** → "Remote-Control Interface Body"; same in the cart.
+- [ ] **Tokens to scale:** drag a GMC 4201 onto a scene with 1 m squares → a 2.5 × 9 token; onto one with 3 m squares
+      → about 0.75 × 3. Design a van and place it → about 2 × 5.5 squares on a 1 m grid. A token you resized by hand, or a
+      prototype you sized yourself, keeps its size.
+- [ ] **Rideable seats** (with the Rideable module on): place a vehicle → its token is rideable, and it takes as many
+      riders as its Seating (a 4-seat car takes 4; the 5th is refused). A token whose Rideable settings you changed keeps them.
 - [ ] **Misfits look different:** tick **show the ones that don't fit** in the mod shop and the options step → those cards are
       greyed with an amber dashed edge and a **Doesn't fit** badge, sharp again on hover; the fitting cards are unchanged.
 - [ ] **Availability explained:** on the price step, under Street Index · Availability, a line reads e.g.
