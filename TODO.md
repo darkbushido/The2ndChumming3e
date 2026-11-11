@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**90 open.** 208 done — see [TODO-DONE.md](TODO-DONE.md).
+**91 open.** 208 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[293](#293) Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image<br>[294](#294) Little Black Book contacts' alphaware ships as Standard grade — *LBB pp.40-67*<br>[295](#295) `patch-johnson-stats.mjs --check` churns the checkout's LevelDB<br>[298](#298) Web gear designer on GitHub Pages — weapons first, imports into Foundry |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches<br>[286](#286) Pack data no book in the library can verify |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens<br>[299](#299) Token senses — low-light, thermographic, ultrasound, astral sight |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -3551,7 +3551,33 @@ maintainer approving the cuts. Both follow-ups take numbers from the coordinator
 Open: the 128 `?` citations (pages with no book code in the rules files) could be
 given their book in the rules files themselves.
 
-### 📌 Notes & parked
+## 299. Token senses — low-light, thermographic, ultrasound, astral sight — **requested 2026-11-11**
+
+Branch `claude/vision-modes-astral-29eb54`. Foundry v14 vision modes (how the map looks) and detection modes (which
+tokens are seen) for the SR3 senses. Design settled with the maintainer in two grilling rounds (2026-11-11):
+rules in `scripts/data/token-senses.mjs`, Foundry side `scripts/SR3ESenses.js`, tests `tests/token-senses.test.mjs`.
+
+- **Sources**: metatype (SR3 p.56), cyberware/bioware (`detectVision`, replaced eyes lose racial vision, p.299), adept
+  Improved Sense, and **worn** vision gear (👓 on the Gear tab — carried goggles give nothing). Default thermo > low-light
+  > normal; the 👁 Token HUD dialog picks among what the character has.
+- **Low-light**: dim → bright, colour kept, true darkness stays dark (p.112 Full Darkness +8/+8).
+- **Thermographic**: ignores light; walls block, and so do walls flagged **Glass** in the wall config (house rule — the book is silent).
+- **Ultrasound** (M&M p.20): ignores light and invisibility, walls block by their SOUND setting; **50 m house range** (no book gives one), editable.
+- **Astral** (SR3 pp.172-173): grey, light-blind; auras glow; hover shows Awakened/mundane only. Perceiving keeps ordinary
+  walls; projecting sees and moves through walls except **Ward** walls (wall config, Force = visual penalty, a reminder).
+  Astral-only tokens (projecting, spirits marked `sr3e-astral`) are hidden from mundane sight. Dual-natured critters
+  (GM tick in the 👁 dialog) always perceive. `astralMode` switches vision automatically and back.
+
+### 🧪 Test in Foundry — needs a live client
+- [ ] Elf token in a dim-lit room sees colour as if bright; in a room with no light at all sees nothing.
+- [ ] Troll token sees a mundane NPC in darkness with an orange outline; a wall flagged Glass hides the NPC, an unflagged glass wall does not.
+- [ ] Human with Eyes, Ultrasound sees an NPC marked Invisible within 50 m, through a curtain (sound off), not through a wall with sound set.
+- [ ] Goggles on the Gear tab: 👓 on → the token gains the mode; off → it goes back.
+- [ ] Mage set to Dual: map turns grey and light-blind, the mage still stops at walls, living tokens glow gold, a drone does not; hovering shows "Aura: Awakened/mundane".
+- [ ] Mage set to Astral: sees past ordinary walls, stops at a wall with Ward Force > 0 (purple line), can drag the token through walls; Player2's mundane token cannot see the projecting mage, the GM can.
+- [ ] Clearing astralMode puts the token back on its mundane mode.
+- [ ] Dual-natured tick (GM) adds the Dual-Natured status and astral sight; unticking removes them.
+- [ ] Wall config shows the SR3 senses fieldset; Glass and Ward Force save.
 
 ## Open questions carried from the combat audit
 
@@ -3668,3 +3694,7 @@ no longer holds).
 ---
 
 <a id="56"></a>
+
+### 📌 Notes & parked
+
+### 📌 Notes & parked

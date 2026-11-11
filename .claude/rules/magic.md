@@ -20,6 +20,15 @@ paths:
 `system.astralMode`, toggled on the Magic tab (one at a time; clicking the active one clears it):
 `''` none · `'physical'` (grey badge) · `'dual'` (amber "Dual Nat.") · `'astral'` (purple; **INT + grade + 20 + 1d6** initiative — an initiate's grade is added to Astral Reaction, MitS p.58).
 
+**Astral sight on the canvas** · *SR3 pp.172-173* (TODO 299) — `scripts/data/token-senses.mjs` (pure), `scripts/SR3ESenses.js`.
+`astralMode` `'dual'` = perceiving, `'astral'` = projecting; the GM's `dualNatured` actor flag = always perceiving. Either
+switches the token to the `sr3eAstral` vision mode (grey, light-blind) and `sr3eAstralSight` detection (auras glow).
+⚠ **Perceiving keeps ordinary walls** (the body is still there); **projecting** is stopped only by walls flagged as a
+ward (`flags.The2ndChumming3e.ward` = Force) — done in a subclassed **sight polygon** (`polygonSense`), so map and
+detection agree. Projecting tokens drag through walls. ⚠ Astral-only tokens (projecting, or carrying `sr3e-astral`)
+are refused by the guarded core `lightPerception`/`basicSight`. An aura shows **Awakened/mundane only** — the rest of
+the Assensing Table stays a roll. Ward Force is a reminder, never applied.
+
 **Astral damage resistance** · *SR3 p.174-175* (TODO 132) — `SR3EActor.astralResistPool`: only `'astral'` is an
 astral being (**Willpower**, or a spirit's **Force**, no Combat Pool); every other mode, including none, is a
 dual being in astral combat (**Body + Combat Pool**, SR3 p.174). TN is `astralSoakTN` (Power − Mystic Armor).
