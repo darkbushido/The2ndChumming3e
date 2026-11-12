@@ -2944,6 +2944,9 @@ rules in `scripts/data/token-senses.mjs`, Foundry side `scripts/SR3ESenses.js`, 
 - [ ] Clearing astralMode puts the token back on its mundane mode.
 - [ ] Dual-natured tick (GM) adds the Dual-Natured status and astral sight; unticking removes them.
 - [ ] Wall config shows the SR3 senses fieldset; Glass and Ward Force save.
+- [ ] Ultrasound token: a grey, colourless sonar view of walls and surfaces out to 50 m, fading with distance; sound walls bound it.
+- [ ] Dual Natured stays in step three ways — the sheet button, the 👁 tick and the Token HUD status — and switching it off throws nothing.
+- [ ] Tile Config → SR3 Astral → Magical aura: "Visible to all" glows only for an astral viewer; "Astral only" is hidden from Player2's mundane token, seen glowing by an astral viewer; the GM sees both glowing.
 
 ## Open questions carried from the combat audit
 

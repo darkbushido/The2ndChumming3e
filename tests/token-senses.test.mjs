@@ -135,6 +135,17 @@ export async function run(t) {
   t.is('status already matching: no write (no hook bounce)', TS.astralModeFromStatus('dual', true), null);
   t.is('status never pulls a projecting form back', TS.astralModeFromStatus('astral', false), null);
 
+  /* ── Magical tiles (the maintainer, 2026-11-11) ─────────────────────────────────────────────── */
+  const mundane = { isGM: false, astralViewer: false };
+  const astralEye = { isGM: false, astralViewer: true };
+  const gmEye = { isGM: true, astralViewer: false };
+  t.eq('an ordinary tile: shown, no glow', TS.tileAura('', astralEye), { show: true, glow: false });
+  t.eq('a magical item: mundanes see it, no glow', TS.tileAura('aura', mundane), { show: true, glow: false });
+  t.eq('a magical item: astral sight sees it glow', TS.tileAura('aura', astralEye), { show: true, glow: true });
+  t.eq('an astral-only item: hidden from mundanes', TS.tileAura('astral', mundane), { show: false, glow: false });
+  t.eq('an astral-only item: astral sight sees it glow', TS.tileAura('astral', astralEye), { show: true, glow: true });
+  t.eq('the GM always sees an astral-only item, glowing', TS.tileAura('astral', gmEye), { show: true, glow: true });
+
   /* ── Foundry side (source-level) ──────────────────────────────────────────────────────── */
   const src = readFileSync(new URL('../scripts/SR3ESenses.js', import.meta.url), 'utf8');
   const main = readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8');
@@ -151,6 +162,7 @@ export async function run(t) {
   t.ok('core lightPerception and basicSight are guarded', /\['lightPerception', P\.DetectionModeLightPerception\], \['basicSight', P\.DetectionModeDarkvision\]/.test(src));
   t.ok('the dialog tick saves through dualTickUpdate, not a second flag', /dualTickUpdate\(actor\.system\?\.astralMode/.test(src) && !/upd\[`flags\.\$\{SYS\}\.dualNatured`\] = !!result\.dual/.test(src));
   t.ok('the HUD status writes the sheet field', /Hooks\.on\('createActiveEffect', statusHook\(true\)\)/.test(src) && /Hooks\.on\('deleteActiveEffect', statusHook\(false\)\)/.test(src));
+  t.ok('tiles get an Aura select and refresh on sight changes', /renderTileConfig/.test(src) && /Hooks\.on\('refreshTile'/.test(src) && /name="flags\.\$\{SYS\}\.aura"/.test(src));
   t.ok('no global renderDialogV2 wiring', !/renderDialogV2/.test(src));
   t.ok('dialogs wait, never render(true)', !/\.render\(true\)/.test(src));
   const lang = JSON.parse(readFileSync(new URL('../lang/en.json', import.meta.url), 'utf8'));
