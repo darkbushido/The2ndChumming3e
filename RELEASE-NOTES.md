@@ -92,6 +92,29 @@ Mods go *inside* things now: a gun carries its scope and gas vent, armour its ge
 - A new guide page: Legality Codes & Permits (SR3 pp.272–274).
 - Smaller fixes: a spent 💴 Pay button looks spent; checkboxes line up; the GM tools' buttons relabel when their state changes; ammo a gun cannot load is warned about; "1 reload × 10 rounds" reads as it should.
 
+<!-- CONDITIONAL: this section ships only if TODO 297 (claude/vehicle-designer-shop, tip 1716f67a) passes its live check (TESTING §86) and is merged into main. Otherwise delete it. -->
+### The Vehicle Designer becomes a shop
+
+- **🛠 Design a vehicle works in steps**: Chassis → Power plant → Design options → Mods → Finish. The vehicle's stats and name stay pinned at the top while you scroll. Each chassis is a card with a drawing and a one-line description, and drones have their own chips. Reopening 🛠 Design on a vehicle takes you to the last step.
+- **Mods are on shelves**, and every card shows its points, CF, Load and book page. Search works across all shelves. **+ Add** puts a mod in a 🛒 cart where you set its level. A mod that allows only one copy shows **✓ In cart**; a turret or hardpoint shows **+ Another**. A level past the book's maximum turns amber with a warning (for example, Autonav goes up to 4).
+- **What doesn't fit is hidden, with a reason**. Tick **Show what doesn't fit** to see it. Those cards are greyed with an amber edge, and you can still add them (warn, never refuse). Some examples:
+  - Setup/Breakdown Time needs Body 3 or less on a drone and Body 2 or less on other vehicles (R3R p.118).
+  - Ballast Tanks don't go on a boat, ship or submarine (R3R p.116).
+  - SunCell needs an electric drive: an electric plant, a Hybrid Engine or an electric Auxiliary Engine (R3R p.126).
+  - Amenities, a work shop and a facility need enough CF.
+  - A flight deck fits any vehicle an aircraft could land on.
+- **Ablative Armor is an aftermarket mod, not a design option** (R3R p.131).
+- **Turret cards say what they hold** (R3R pp.140–141).
+- **Tuning shows a Start · Added · Result · Limit table**. A row past its limit turns amber.
+- **Towed chassis**: a barge, trailer or rail car has no power plant. Trailers set their own Load and Cargo. A trailer can design its tow vehicle as a linked pair. A **road train** is one tractor and up to five trailers, each hitched or left behind. Only ground vehicles and boats offer Add a trailer.
+- **The top bar shows the book's second stat line, with Range** (Fuel × Economy). Fuel Tank Enlargement adds fuel.
+- **Availability explains itself**: the whole price ÷ 20,000, plus the class, with the biggest costs listed.
+- **Pickers for the auxiliary engine, Work Shop and Facility**. The Work Shop and Facility are priced from the gear pack.
+- **The mod shop offers only mods from the source books the GM turned on.**
+- **Drawn pictures and top-down tokens for all 78 designer chassis**. Boats and subs are drawn out of the water.
+- **Vehicle tokens come in to scale**: the vehicle's length in metres ÷ the scene's grid distance. Rideable seats come from the vehicle's Seating. A vehicle records its size when it is created, so a renamed copy still scales.
+- Fixes: each mod is listed once, and Amphibious Package is one rated mod; adding a Pop-Up or Anti-Air turret no longer marks the other turrets of its size as in the cart.
+
 ### Behind the scenes
 
 - Every 3e book's PDF text layer was checked against OCR (TODO 296): no misread in any pack value or code citation besides Hull Factor (above).
