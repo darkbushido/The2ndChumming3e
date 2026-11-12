@@ -3657,4 +3657,11 @@ export const MUTANTS = [
     was:    'never shipped — goggles in the backpack granting thermographic sight (the maintainer, 2026-11-11: only when worn; TODO 299)',
     impl:   () => true,
   },
+  {
+    id:     'null-detection-range',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'finiteRange',
+    was:    'shipped on the live build: astral sight written with range null — v14 rejects it, so turning Dual Natured off threw (2026-11-11; TODO 299)',
+    impl:   r => r,
+  },
 ];

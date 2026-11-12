@@ -82,7 +82,11 @@ export async function run(t) {
     { [TS.DETECTION.ultrasound]: { enabled: true, range: 20 }, [TS.DETECTION.astral]: { enabled: true, range: null }, basicSight: { enabled: true, range: 10 } },
     TS.detectionModesFor({ modes: ['normal'], ultrasound: true }));
   t.eq('the GM-edited ultrasound range survives', upd[TS.DETECTION.ultrasound], { enabled: true, range: 20 });
-  t.eq('astral sight no longer applying is disabled, not deleted', upd[TS.DETECTION.astral], { enabled: false, range: null });
+  t.eq('astral sight no longer applying is disabled, and a stored null range becomes finite (v14 rejects null)', upd[TS.DETECTION.astral], { enabled: false, range: TS.UNLIMITED });
+  const every = Object.values(TS.detectionUpdate({}, TS.detectionModesFor({ modes: ['thermo', 'normal'], ultrasound: true, astral: 'perceive' })));
+  t.ok('every detection range written is a finite number (turning Dual Natured off threw, 2026-11-11)', every.length === 3 && every.every(m => Number.isFinite(m.range)));
+  t.is('Infinity is not finite: UNLIMITED', TS.finiteRange(Infinity), TS.UNLIMITED);
+  t.is('a typed range is kept', TS.finiteRange(20), 20);
   t.ok('core basicSight is never touched', !('basicSight' in upd));
 
   /* ── Walls ─────────────────────────────────────────────────────────────────────────────── */
@@ -118,6 +122,14 @@ export async function run(t) {
   t.is('dual-natured critter: Awakened', TS.auraKind({ type: 'npc', dualNatured: true }), 'awakened');
   t.is('a vehicle has no aura', TS.auraKind({ type: 'vehicle' }), 'none');
 
+  /* ── One Dual Natured switch: the 👁 tick and the sheet button (live, 2026-11-11) ───────────── */
+  t.ok('the sheet set Dual Natured: the tick shows it', TS.dualTicked('dual', false));
+  t.ok('physical, no flag: unticked', !TS.dualTicked('physical', false));
+  t.eq('ticking writes the sheet field', TS.dualTickUpdate('physical', true), { 'system.astralMode': 'dual' });
+  t.eq('unticking turns the sheet back to Physical', TS.dualTickUpdate('dual', false), { 'system.astralMode': 'physical' });
+  t.eq('unticking clears the old flag too', TS.dualTickUpdate('', false, true), { [`flags.${SYS}.dualNatured`]: false });
+  t.eq('unticking never pulls a projecting form back', TS.dualTickUpdate('astral', false), {});
+
   /* ── Foundry side (source-level) ──────────────────────────────────────────────────────── */
   const src = readFileSync(new URL('../scripts/SR3ESenses.js', import.meta.url), 'utf8');
   const main = readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8');
@@ -132,6 +144,7 @@ export async function run(t) {
   t.ok('low-light remaps DIM to BRIGHT and requires light', /levels: \{ \[L\.DIM\]: L\.BRIGHT \}[\s\S]{0,80}V\.REQUIRED/.test(src));
   t.ok('the sight polygon backend is subclassed', /CONFIG\.Canvas\.polygonBackends\.sight = SR3ESightPolygon/.test(src));
   t.ok('core lightPerception and basicSight are guarded', /\['lightPerception', P\.DetectionModeLightPerception\], \['basicSight', P\.DetectionModeDarkvision\]/.test(src));
+  t.ok('the dialog tick saves through dualTickUpdate, not a second flag', /dualTickUpdate\(actor\.system\?\.astralMode/.test(src) && !/upd\[`flags\.\$\{SYS\}\.dualNatured`\] = !!result\.dual/.test(src));
   t.ok('no global renderDialogV2 wiring', !/renderDialogV2/.test(src));
   t.ok('dialogs wait, never render(true)', !/\.render\(true\)/.test(src));
   const lang = JSON.parse(readFileSync(new URL('../lang/en.json', import.meta.url), 'utf8'));

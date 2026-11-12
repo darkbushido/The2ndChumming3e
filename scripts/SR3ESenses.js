@@ -20,7 +20,7 @@
 import {
   VISION, DETECTION, FLAG_SCOPE, ULTRASOUND_RANGE,
   mundaneSenses, astralState, visionModeFor, detectionModesFor, detectionUpdate,
-  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind,
+  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate,
 } from './data/token-senses.mjs';
 import { detectVision } from './SR3ECombatModifiers.js';
 
@@ -295,7 +295,7 @@ export class SR3ESenses {
     Hooks.on('updateActor', async (actor, changes) => {
       if (!game.users.activeGM?.isSelf) return;
       if (!('dualNatured' in (changes.flags?.[SYS] ?? {}))) return;
-      await actor.toggleStatusEffect('sr3e-dual', { active: !!actor.getFlag(SYS, 'dualNatured') });
+      await actor.toggleStatusEffect('sr3e-dual', { active: dualTicked(actor.system?.astralMode, actor.getFlag(SYS, 'dualNatured')) });
     });
 
     // Wall config: Glass (thermographic) and Ward Force (astral barrier).
@@ -356,7 +356,7 @@ export class SR3ESenses {
         <label>${game.i18n.localize('SR3E.Senses.Mode')} <select id="sr3e-vision">${opts}</select></label>
         ${senses.ultrasound ? `<label>${game.i18n.localize('SR3E.Senses.UltrasoundRange')}
           <input type="number" id="sr3e-us-range" min="0" value="${actor.getFlag(SYS, 'ultrasoundRange') ?? ULTRASOUND_RANGE}"></label>` : ''}
-        ${gm ? `<label><input type="checkbox" id="sr3e-dual" ${actor.getFlag(SYS, 'dualNatured') ? 'checked' : ''}>
+        ${gm ? `<label><input type="checkbox" id="sr3e-dual" ${dualTicked(actor.system?.astralMode, actor.getFlag(SYS, 'dualNatured')) ? 'checked' : ''}>
           ${game.i18n.localize('SR3E.Senses.DualNatured')}</label>` : ''}
         <p style="font-size:11px;color:var(--sr-dim)">${game.i18n.localize('SR3E.Senses.Now')}: ${game.i18n.localize(CONFIG.Canvas.visionModes[visionMode]?.label ?? visionMode)}</p>
       </div>`,
@@ -371,7 +371,8 @@ export class SR3ESenses {
     if (!result) return;
     const upd = { [`flags.${SYS}.vision`]: result.vision };
     if (result.range !== undefined && result.range !== '') upd[`flags.${SYS}.ultrasoundRange`] = Math.max(0, Number(result.range) || 0);
-    if (gm && result.dual !== undefined) upd[`flags.${SYS}.dualNatured`] = !!result.dual;
+    // One switch, two views: the tick IS the sheet's Dual Natured button (system.astralMode), not a second flag.
+    if (gm && result.dual !== undefined) Object.assign(upd, dualTickUpdate(actor.system?.astralMode, !!result.dual, actor.getFlag(SYS, 'dualNatured')));
     await actor.update(upd);
     await SR3ESenses.apply(actor);   // the owner applies at once; the GM hook re-checks the rest
   }
