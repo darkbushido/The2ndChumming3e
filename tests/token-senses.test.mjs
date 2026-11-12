@@ -130,6 +130,11 @@ export async function run(t) {
   t.eq('unticking clears the old flag too', TS.dualTickUpdate('', false, true), { [`flags.${SYS}.dualNatured`]: false });
   t.eq('unticking never pulls a projecting form back', TS.dualTickUpdate('astral', false), {});
 
+  t.is('HUD status on: the sheet goes Dual Natured', TS.astralModeFromStatus('physical', true), 'dual');
+  t.is('HUD status off: the sheet goes Physical', TS.astralModeFromStatus('dual', false), 'physical');
+  t.is('status already matching: no write (no hook bounce)', TS.astralModeFromStatus('dual', true), null);
+  t.is('status never pulls a projecting form back', TS.astralModeFromStatus('astral', false), null);
+
   /* ── Foundry side (source-level) ──────────────────────────────────────────────────────── */
   const src = readFileSync(new URL('../scripts/SR3ESenses.js', import.meta.url), 'utf8');
   const main = readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8');
@@ -145,6 +150,7 @@ export async function run(t) {
   t.ok('the sight polygon backend is subclassed', /CONFIG\.Canvas\.polygonBackends\.sight = SR3ESightPolygon/.test(src));
   t.ok('core lightPerception and basicSight are guarded', /\['lightPerception', P\.DetectionModeLightPerception\], \['basicSight', P\.DetectionModeDarkvision\]/.test(src));
   t.ok('the dialog tick saves through dualTickUpdate, not a second flag', /dualTickUpdate\(actor\.system\?\.astralMode/.test(src) && !/upd\[`flags\.\$\{SYS\}\.dualNatured`\] = !!result\.dual/.test(src));
+  t.ok('the HUD status writes the sheet field', /Hooks\.on\('createActiveEffect', statusHook\(true\)\)/.test(src) && /Hooks\.on\('deleteActiveEffect', statusHook\(false\)\)/.test(src));
   t.ok('no global renderDialogV2 wiring', !/renderDialogV2/.test(src));
   t.ok('dialogs wait, never render(true)', !/\.render\(true\)/.test(src));
   const lang = JSON.parse(readFileSync(new URL('../lang/en.json', import.meta.url), 'utf8'));
