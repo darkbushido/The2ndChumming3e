@@ -2,6 +2,132 @@
 
 What changed, for the people running games with it. Newest first.
 
+## 0.9.0 — DRAFT (not yet dated)
+
+Mods go *inside* things now: a gun carries its scope and gas vent, armour its gel packs, a cybereye its magnification, a vehicle its armour and engine mods, and each one changes the numbers it should. Vehicles can be designed from a chassis with *Rigger 3*'s Design Points, and weapons sit on hardpoints, firmpoints and turrets. 🛒 Buy gear has a cart and a Quantity, and a GM toggle puts contact orders and natural healing on the clock. The GM gets 🔎 Legwork, a Matrix host generator, Karma Pools for NPCs, and the core book's sixteen sample characters. Every shipped spell, every Little Black Book contact and the IC pack were checked against their books.
+
+### Before you upgrade
+
+- **Fully restart Foundry** after updating, not just refresh the browser. NPCs gained a Karma Pool, characters a Hand of God flag, firearms and vehicle weapons a mount, vehicle mods their design figures, and there are new compendium packs (the core book's sample characters, the Matrix book's components, a legwork success-table template).
+- **A world migration updates the items your characters already own** (run once, by the GM's client). As in 0.8.0, a value changes **only while an owned copy is blank or still holds the old shipped value** — anything a GM edited is left alone:
+  - The rest of the levelled items become one item each — memory in Mp (pocket and wrist computers, telecoms, table-top PCs, headware Memory, optical chips), ECCM +N, virtual instruments, SkillSoft Jukeboxes and the fixed-level adept powers.
+  - Blank **Legality** codes are filled from the books.
+  - A firearm's printed accessories become installed mods, marked integral; its printed **Recoil Compensation** is filled where it was blank.
+  - Mods say what they change; military armour is marked hardened.
+  - Vehicle mods get their design cost, CF and Load (R3R pp.126–155).
+  - **IC** already in a world gets its book Memory and grading, and the hosts that stocked it are recounted (MDF p.33, pp.40–44).
+  - **Spells** take the corrections listed below.
+  - **Little Black Book contacts** get the book's gear, cyberware and spells (LBB pp.40–67).
+  - Characters' and NPCs' prototype tokens get vision turned on.
+  - An old single Panther Assault Cannon becomes its [Bipod] version.
+- **New NPC tokens and Little Black Book contacts come in unlinked**, so a burned Karma Pool point or a wound stays on that token.
+
+### Rules that now resolve differently
+
+**Magic** (244 spells checked against SR3 pp.191–198 and *Magic in the Shadows* pp.140–148)
+
+- **The Spell Pool on a Sorcery Test is capped at the Sorcery dice rolled** (SR3 p.182). It wasn't capped before.
+- **Steam, Smoke Cloud, Thunderbolt, Thunderclap, Waterbolt, Splash and Clout do Stun damage.**
+- **Clout** (SR3 p.197): its Damage Level is chosen at the cast, the target may dodge, and full Impact armour applies.
+- Spell data corrected: Mass Blindness is Physical; Fashion drains +1(M); Diagnose is Instant; Ram is touch range; Splash and Radiation Barrier are area spells; Personal Thermostat is personal; four misspelt names fixed; Manipulation spells use the book's subtypes.
+
+**Vehicles** (*Rigger 3 Revised*)
+
+- **Weapon mounts** (R3R pp.135–141): a hardpoint counts 2 and a firmpoint 1, no more than the vehicle's Body; heavy and vehicle weapons go on hardpoints. A fixed mount halves recoil before RC (rounded down) and cancels the heavy-weapon double; a pintle gives RC 2, a ring mount RC 6; turrets use the Weapon Values Table. Signature is shown, never changed. Warnings, never refusals.
+- **The Ares Vanquisher and Vengeance miniguns count 2.5** on the Weapon Values Table (R3R p.140); they counted 2.
+- **A vehicle's mods change its numbers** (R3R pp.127–147): armour, Handling, Pilot, Autonav, Sensor, ECM and ECCM apply over the typed figure; a rated system uses the higher rating. Vehicle and Concealed Armor give +1 a point and +1 Handling per full 6; Ablative +2 a level, no higher than Body. Cargo, Load and Body read the typed figure (they read a stale value before).
+- **Mods against Cargo and Load**: the Mods tab shows used / available and warns when over.
+- **Hull Factor is 100 × Hull²** (R3R p.114); a ship's Hull reads as its Body. Fin Drive rounds to the nearest.
+- New control, engine and signature mods — drive-by-wire, suspension, turbocharging, RAM, thermal baffles, masking, noisemaker. Drive-by-wire's split comes last and rounds to the nearest.
+
+**Firearms and armour**
+
+- **Bipods and tripods give their RC only while deployed** (SR3 p.280) — a tick in the fire dialog, the GM's call per shot in the TN window. The bracketed RC is the GM's call there too.
+- **Image magnification shifts the range band** (SR3 p.110) — scope, helmet or cybereyes, the highest only. Goggles and helmets count as cybernetic/electronic vision (the maintainer's ruling).
+- **Every shipped gun carries its printed RC** — 35 guns, mostly *Cannon Companion*, had none (CC pp.116–118, p.78; SR3 pp.278–279). The Panther Assault Cannon ships as two versions, [Bipod] (2) and [Shoulder Strap Hip-Brace] (1).
+- **What each weapon class takes** (SR3 pp.278–281): hold-outs, pistols, revolvers, SMGs and shotguns; the fore grip; scopes with a smartgun; no stock on a shotgun or rifle; a laser sight and a smartlink never both; no underbarrel on the Remington 750/950 or Defiance T-250. An internal smartgun costs 100% / 150% of the gun.
+- **One Gas Vent, Levels 1–4.** Taking one off is a gunsmith's test — the vent is destroyed on a success, the barrel on a failure; ✔ Repaired asks the repair cost (a destroyed barrel is 50% of the gun for now).
+- **Every Shotgun-category gun takes only normal or shot rounds**, not just one with a box ticked (the box is gone).
+- **Armour with mods**: hardened armour, gel packs and the *Cannon Companion* armour modifications, with caps and warnings. Worn helmets pass their mods up.
+
+**Cyberware**
+
+- **Cyberlimbs and cybereyes hold their mods** — the ECU, the cybereye's free 0.5 Essence; built-in cyberweapons, Stress, slots, Concealment, VCR and healing all read a built-in implant. Limb capacity follows grade. Moving an implant leaves no Essence hole. Interface items keep the book's Essence (M&M p.35).
+
+**Buying gear**
+
+- **Legal gear at a store**: list price, no contact, no roll; a contact is still the way to haggle a discount (SR3 p.273).
+- **The haggle counts the dice** (SR3 p.273) — it read every Negotiation contest as "0 vs 0".
+- **A cart**: the surcharge applies to the total, rounded once (SR3 p.272); through a contact, one Etiquette Test against the slowest line and one haggle on the total (the maintainer's ruling).
+- **Legality from the books** — 210 blank items filled with printed codes, and Legal for tables with no Legality column (SR3 p.273). The Virtual Instructor chips are Legal, 3-Y for illegal or restricted skills (SR3 p.95, p.296).
+
+**Matrix**
+
+- **The Hacking Pool follows the world's ruleset** — SR3 p.207 or MDF p.11.
+- **Every decker action charges a Complex Action** in the action ledger, a warning only (MDF p.8).
+- **Orthodox Matrix Initiative applies in VR-Hot only**; the Orthodox tab gets a user-mode selector. ⚠ *DRAFT: page citation to add.*
+- **IC**: Memory is Rating² × Final Multiplier (MDF p.33); Crippler, Gemini, Tracker, Killer and Sparky follow their stat blocks (MDF pp.40–44). A triggered sheaf's IC roll initiative on the GM's click, with an editable −10 per phase (MDF p.23). An IC's turn posts a GM prompt card with an Attack button. A GM "icon crashed" button adds +1 Overwatch, or degrades Suppression by 1 instead (MDF p.22, p.26).
+
+**Combat**
+
+- **Barrier damage** (SR3 p.125): firearm, melee and spell attack kinds, and when a door breaks open.
+
+**Karma**
+
+- **NPCs have a Karma Pool** (SR3 p.248), set by the GM. Refresh Karma Pools lists the scene's NPC tokens.
+- **✋ Hand of God** (SR3 p.248, optional): burns all Good Karma and the whole Pool, once ever; the book's conditions are warned, never refused.
+- The GM's ↺ undoes a Karma award.
+
+### New
+
+- **🛠 Vehicle Designer** (R3R pp.102–121): chassis and power plant tables, Design Points, functional improvements, smart materials, the 28 design options priced from the design, mods priced by their design figures, final cost, Street Index and Availability (minimum 2/24 hrs, the maintainer's ruling). Open it from the Actors directory, a macro or a vehicle's 🛠 Design. Re-saving offers the changes and never removes a mod.
+- **Matrix host generator** (GM, Actors directory): Generate Host and Test Scenario, both rulesets — a host from SR3 p.205's Host Rating Table (Orthodox), or with a proposed IC set inside its Memory (Defragged), all editable before it is created.
+- **🔎 Legwork** (GM, Rollable Tables tab; SR3 pp.253–256): ask a contact or search the Matrix — fee, TN, contact level, the success table and the hours. A template success table ships in its own pack; a new guide page, Contacts & Legwork.
+- **⏱ Downtime / In session** (GM): in session a contact order is placed, not paid (SR3 p.273), and delivered from the 📦 Orders window; natural healing becomes a recovery the GM marks ✅ Recovered.
+- **🛒 Buy gear** has a Quantity and a cart — several items, one card, one 💴 Pay. **🛒 Buy ammo** on a gun lists only what it loads.
+- **The core rulebook's sixteen sample characters** as an Actor pack (SR3 pp.65–80, pp.326–329).
+- **NPCs start with loaded guns** and 3–6 reloads when ammunition is tracked.
+- **Meet the contact** restates the stats for the chosen race (SR3 p.56); a Generic NPC rolls a race per token from a mix and picks a matching face.
+- **The Matrix book is a default book**: its Miscellaneous Component Table (Matrix p.169) has its own pack.
+- A new guide page: Legality Codes & Permits (SR3 pp.272–274).
+- Smaller fixes: a spent 💴 Pay button looks spent; checkboxes line up; the GM tools' buttons relabel when their state changes; ammo a gun cannot load is warned about; "1 reload × 10 rounds" reads as it should.
+
+### The Vehicle Designer becomes a shop
+
+- **🛠 Design a vehicle works in steps**: Chassis → Power plant → Design options → Mods → Finish. The vehicle's stats and name stay pinned at the top while you scroll. Each chassis is a card with a drawing and a one-line description, and drones have their own chips. Reopening 🛠 Design on a vehicle takes you to the last step.
+- **Mods are on shelves**, and every card shows its points, CF, Load and book page. Search works across all shelves. **+ Add** puts a mod in a 🛒 cart where you set its level. A mod that allows only one copy shows **✓ In cart**; a turret or hardpoint shows **+ Another**. A level past the book's maximum turns amber with a warning (for example, Autonav goes up to 4).
+- **What doesn't fit is hidden, with a reason**. Tick **Show what doesn't fit** to see it. Those cards are greyed with an amber edge, and you can still add them (warn, never refuse). Some examples:
+  - Setup/Breakdown Time needs Body 3 or less on a drone and Body 2 or less on other vehicles (R3R p.118).
+  - Ballast Tanks don't go on a boat, ship or submarine (R3R p.116).
+  - SunCell needs an electric drive: an electric plant, a Hybrid Engine or an electric Auxiliary Engine (R3R p.126).
+  - Amenities, a work shop and a facility need enough CF.
+  - A flight deck fits any vehicle an aircraft could land on.
+- **Ablative Armor is an aftermarket mod, not a design option** (R3R p.131).
+- **Turret cards say what they hold** (R3R pp.140–141).
+- **Tuning shows a Start · Added · Result · Limit table**. A row past its limit turns amber.
+- **Towed chassis**: a barge, trailer or rail car has no power plant. Trailers set their own Load and Cargo. A trailer can design its tow vehicle as a linked pair. A **road train** is one tractor and up to five trailers, each hitched or left behind. Only ground vehicles and boats offer Add a trailer.
+- **The top bar shows the book's second stat line, with Range** (Fuel × Economy). Fuel Tank Enlargement adds fuel.
+- **Availability explains itself**: the whole price ÷ 20,000, plus the class, with the biggest costs listed.
+- **Pickers for the auxiliary engine, Work Shop and Facility**. The Work Shop and Facility are priced from the gear pack.
+- **The mod shop offers only mods from the source books the GM turned on.**
+- **Drawn pictures and top-down tokens for all 78 designer chassis**. Boats and subs are drawn out of the water.
+- **Vehicle tokens come in to scale**: the vehicle's length in metres ÷ the scene's grid distance. Rideable seats come from the vehicle's Seating. A vehicle records its size when it is created, so a renamed copy still scales.
+- Fixes: each mod is listed once, and Amphibious Package is one rated mod; adding a Pop-Up or Anti-Air turret no longer marks the other turrets of its size as in the cart.
+
+<!-- CONDITIONAL: this section ships only if TODO 298 (claude/web-gear-designer-37eb2b) passes its live Foundry check and is merged into main. The weapons part is built (8b57012a). The vehicle part is NOT built on that branch as of 2026-11-12. Keep that bullet only if the vehicle web designer lands before the release. -->
+### Design gear on the web, bring it into Foundry
+
+- **A gear designer website**, published with the guides at `/designer/latest/`, plus a frozen copy for each version (`/designer/v0.9.0/`). Players can design without opening Foundry. It uses the same rules code as the system, and shows stats and book pages only, with no rule text.
+- **Weapons**: pick a gun, then fit its accessories and mods, mounts, integral items and ammunition. You get the same warnings the system gives.
+- **Vehicles**: the Vehicle Designer above, on the web. ⚠ *DRAFT: not built yet.*
+- **Sharing a design**: a design is a link (or a `.json` file) you can paste into chat or save.
+- **📥 Import design** (Items directory) or the **SR3E Import Gear Design** macro brings it into Foundry. Paste the link and you get a preview. Then import it onto a character you own: the gun arrives with its mods inside it and one ammo stockpile. A GM can also import it as a world item.
+- **Foundry's numbers win.** The import rebuilds the item from the system's own compendiums and re-runs the rules. Any difference, unknown entry or version mismatch is listed, and you can still import (warn, never refuse). A link made with an older version of the designer still imports.
+
+### Behind the scenes
+
+- Every 3e book's PDF text layer was checked against OCR (TODO 296): no misread in any pack value or code citation besides Hull Factor (above).
+
 ## 0.8.0 — 2026-10-25
 
 Rated gear is one item now. A Medkit, a Signal Locator or an ECCM is a single compendium entry with a **Level** dropdown, and an owned copy's name follows the level ("Medkit [5]"). Every mod says what it is a mod *for* — "Chemical Seal (Armor)", "Gas Vent IV (Weapon)", "Anti-Theft System (Vehicle)" — and the vehicle, cyberlimb and armour mods were checked against the books. Wounds and statuses on one unlinked NPC token no longer land on every copy of that NPC. The initiative tracker, Full Defense and multi-opponent melee behave as the table expects after the 2026-10-23 play session. A grenade's NPCs resist in one GM click. Vehicles and drones get drawn top-down token art. And a GM can turn a Little Black Book contact into a person with a name and a face.
