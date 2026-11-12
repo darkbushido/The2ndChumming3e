@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { GearDesign, LIMITS } from '../scripts/data/gear-design.mjs';
 import { VehicleDesign } from '../scripts/data/vehicle-design.mjs';
 import { VehicleDesignActor } from '../scripts/data/vehicle-design-actor.mjs';
-import { catalogue, publicDoc, moduleClosure, ratingTable, FIELDS, RATING_FIELDS } from '../tools/build-designer.mjs';
+import { catalogue, publicDoc, moduleClosure, ratingTable, FIELDS, RATING_FIELDS, designerCss } from '../tools/build-designer.mjs';
 
 export const name = 'designer';
 const src = p => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
@@ -21,11 +21,12 @@ export async function run(t) {
   t.ok('the catalogue has firearms, accessories and ammo', ['firearm', 'mod', 'ammo'].every(k => Object.values(items).some(i => i.kind === k)));
   const leaks = [];
   for (const [ref, it] of Object.entries(items)) {
-    for (const k of Object.keys(it)) if (!['kind', ...FIELDS.top, 'system', 'flags'].includes(k)) leaks.push(`${ref}.${k}`);
+    for (const k of Object.keys(it)) if (!['kind', ...FIELDS.top, 'img', 'system', 'flags'].includes(k)) leaks.push(`${ref}.${k}`);
     for (const k of Object.keys(it.system)) if (!FIELDS[it.kind].includes(k)) leaks.push(`${ref}.system.${k}`);
     for (const m of it.system.installed ?? []) for (const k of Object.keys(m.system)) if (!FIELDS.mod.includes(k)) leaks.push(`${ref} installed .${k}`);
   }
   t.eq('no field outside the allow-list reaches the page', leaks.slice(0, 5), []);
+  t.ok('an icon is only a path into the page’s own icons/ folder', Object.values(items).every(i => i.img === undefined || /^icons\/[\w-]+\.(svg|webp|png)$/.test(i.img)));
   t.ok('no description or notes text anywhere in the catalogue', !/"(description|notes)"/.test(JSON.stringify(cat)));
   t.ok('the build never reads SR-OCR', !/readFileSync\([^)]*SR-OCR|join\([^)]*'SR-OCR'/.test(src('tools/build-designer.mjs')));
   t.eq('a mod whose mount is only in its description still publishes it', publicDoc({ _id: 'x', name: 'Silencer (Weapon)', type: 'gear',
@@ -33,6 +34,16 @@ export async function run(t) {
   const table = await ratingTable();
   t.ok('the published rating table holds only weapon, ammunition and vehicle-mod rows', Object.keys(table).every(k => /^(weapon|ammunition|vehicle)\|/.test(k)));
   t.ok('…and only stat fields', Object.values(table).every(lv => Object.values(lv).every(row => Object.keys(row).every(f => RATING_FIELDS.includes(f)))));
+
+  const css = designerCss();
+  t.ok('the page gets the window’s colour tokens and the vd-* block', css.includes('--sr-bg') && css.includes('.vd-wizard'));
+  const b = src('tools/build-designer.mjs');
+  t.ok('the build ships both wizard views', b.includes("moduleClosure('vehicle-designer-view.mjs')") && b.includes("moduleClosure('weapon-designer-view.mjs')"));
+  const app = src('designer/app.js');
+  t.ok('the page renders the shared wizards, not its own markup', app.includes('WeaponDesignerView.html(') && app.includes('VehicleDesignerView.html('));
+  t.ok('the Foundry window renders the same vehicle view', src('scripts/SR3EVehicleDesigner.js').includes('VehicleDesignerView.html('));
+  const allMods = [...new Set([...moduleClosure(), ...moduleClosure('vehicle-designer-view.mjs'), ...moduleClosure('weapon-designer-view.mjs')])];
+  t.eq('no wizard module touches a Foundry global', allMods.filter(f => /(?<![.\w])(?:game|foundry|ui|Hooks|CONFIG)\.\w/.test(src(`scripts/data/${f}`).replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, ''))), []);
 
   /* ── One shared core, no Foundry in it ─────────────────────────────────────── */
   const mods = moduleClosure();
@@ -140,4 +151,34 @@ export async function run(t) {
   const vd = src('scripts/SR3EVehicleDesigner.js');
   t.ok('an imported vehicle opens the Vehicle Designer filled in — its Create is the one create path', imp.includes('SR3EVehicleDesigner.open(null, { design: prepared.result.designer })') && vd.includes('options.design ?? null'));
   t.ok('the importer prices vehicles with the shared assembleVehicle', imp.includes('GearDesign.assembleVehicle('));
+
+  /* ── A book vehicle with aftermarket mods (the maintainer, 2026-11-12) ─────── */
+  const books = Object.entries(items).filter(([, i]) => i.kind === 'vehicle');
+  t.ok('the catalogue has the packs’ book vehicles', books.length > 200);
+  t.ok('…their attributes are numbers only', books.every(([, v]) => Object.values(v.system.attributes ?? {}).every(a => Object.values(a).every(Number.isFinite))));
+  t.ok('…and no notes text', books.every(([, v]) => v.system.notes === undefined));
+  t.is('a book vehicle’s UUID is an Actor’s', GearDesign.uuidOf('sr3e-r3-vehicles/x', 'Actor'), 'Compendium.The2ndChumming3e.sr3e-r3-vehicles.Actor.x');
+  const americar = find('vehicle', /^Ford Americar$/);
+  const armorMod = find('vmod', /^Vehicle Armor \(Vehicle\)$/);
+  const turboMod = find('vmod', /^Turbocharging/);
+  t.ok('fixture: a book car, Vehicle Armor and Turbocharging', americar && armorMod && turboMod);
+  const bk = GearDesign.normalise({ format: 'sr3e-design', kind: 'vehicle', base: americar, vehicle: { chassis: 'sedan' },
+    mods: [{ ref: armorMod, rating: 4 }, { ref: turboMod, rating: 1 }] });
+  t.is('a vehicle keeps its book base', bk.design.base, americar);
+  t.is('…and an R3R chassis in the same link is not read', bk.design.vehicle.chassis, '');
+  const br = await GearDesign.assembleBookVehicle(bk.design, lookup);
+  const turbo = br.mods.find(m => /^Turbo/.test(m.name));
+  t.ok('a mod printed with no price is priced from the vehicle (R3R p.126)', Number(turbo?.system?.cost) > 0);
+  t.is('the price is the book vehicle plus every mod', br.totals.cost, items[americar].system.cost + br.mods.reduce((s, m) => s + m.system.cost, 0));
+  t.is('Vehicle Armor 4 adds 4 Armor (R3R p.131)', br.effective.stats.armor.value - br.effective.stats.armor.own, 4);
+  t.is('Turbocharging 1 adds 15 Speed (R3R p.126)', br.effective.stats.speed.value - br.effective.stats.speed.own, 15);
+  t.ok('a claimed price lower than the rules is a mismatch', GearDesign.mismatches({ ...bk.design, claimed: { cost: 1 } }, br.totals, cat.system).length > 0);
+  const lost = await GearDesign.assembleBookVehicle({ ...bk.design, base: 'sr3e-r3-vehicles/nope' }, lookup);
+  t.ok('an unknown book vehicle is reported, not thrown', lost.vehicle === null && lost.unknown.includes('sr3e-r3-vehicles/nope'));
+  const rbk = GearDesign.normalise(await GearDesign.decode(await GearDesign.encode(bk.design)));
+  t.eq('a book-vehicle link round-trips', [rbk.design.base, rbk.design.mods], [americar, bk.design.mods]);
+  t.ok('the importer prices book vehicles with assembleBookVehicle and copies through sr3e.actor.create',
+    imp.includes('GearDesign.assembleBookVehicle(') && /createVehicle[\s\S]*'sr3e\.actor\.create'/.test(imp));
+  t.ok('…looking the vehicle up as an Actor', imp.includes("lookup(ref, documentName = 'Item')") && imp.includes('GearDesign.uuidOf(ref, documentName)'));
+  t.ok('the page renders the book-vehicle wizard', src('designer/app.js').includes('BookVehicleView.html(') && src('tools/build-designer.mjs').includes("moduleClosure('book-vehicle-view.mjs')"));
 }

@@ -1,6 +1,6 @@
 # Web gear designer — proposal
 
-Status: **weapons and vehicles built on `claude/web-gear-designer-37eb2b`** (design settled with the maintainer 2026-11-11). TODO 298.
+Status: **weapons (wizard), vehicles (R3R design + modify a book vehicle) built on `claude/web-gear-designer-37eb2b`** (design settled with the maintainer 2026-11-11). TODO 298.
 
 ## What it is
 

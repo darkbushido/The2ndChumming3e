@@ -2972,8 +2972,20 @@ Items directory and the "SR3E Import Gear Design" macro. Unit-tested (`tests/des
 functional improvements, design options, R3R mods at their levels, class and mark-up — priced by the same `VehicleDesign`
 the 🛠 Vehicle Designer runs. Importing one opens that designer filled in, on its summary; its Create makes the vehicle
 (`sr3e.actor.create`). A hand-typed option figure in a link is ignored (mutant `vehicle-link-trusted`).
+**The Foundry look (2026-11-12, the maintainer: "the multi step graphic design we used in foundry"):** the 🛠 Vehicle
+Designer's markup and wiring moved to `scripts/data/vehicle-designer-view.mjs`, which the window AND the page render — the
+same five steps. Weapons get a wizard in the same style (`weapon-designer-view.mjs`: gun-type chips, gun cards, accessory
+shelves by mount, ammo, price). **Modify a book vehicle** ("Book stats + aftermarket mods"): the Vehicle tab's second mode
+picks one of the packs' 263 vehicles and adds R3R mods at their printed price, levels, CF and Load — no Design Points; a
+mod printed with no price is priced from that vehicle (`VehicleMods.price`, as on install), the stats shown with the mods
+applied (`VehicleMods.effective`). `GearDesign.assembleBookVehicle`; `book-vehicle-view.mjs`; mutant
+`book-vehicle-mod-unpriced`. Weapons have no "modify from the book" extra: SR3 prints no rules for designing a gun (the
+maintainer: skip it).
 🧪 **Still to check in a live Foundry (vehicles):** paste a vehicle link → the preview shows chassis, DP and price → Import
 opens the designer at its summary with the same DP → Create, as a player, gives an owned vehicle with its mods.
+🧪 **Still to check (book vehicle):** paste a "Modify a book vehicle" link → the preview names the vehicle, its mods and the
+recomputed price → Import, as a player, copies the vehicle (owned, not a template) with the mods on it at the page's prices,
+and the sheet's stats match the page's (Armor, Speed…).
 🧪 **Still to check in a live Foundry (weapons):** paste a designer link → preview shows the weapon, its mods and warnings → Import
 onto a character puts the gun (mods inside, ✎ opens them) and one ammo stockpile on the sheet; a GM's world-item import;
 a player with no character sees the warning.

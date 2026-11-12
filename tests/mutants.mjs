@@ -123,6 +123,13 @@ export const MUTANTS = [
     impl:   () => [],
   },
   {
+    id:     'book-vehicle-mod-unpriced',
+    suite:  'designer',
+    module: '../scripts/data/vehicle-mods.mjs', klass: 'VehicleMods', method: 'price',
+    was:    'not shipped — guards TODO 298: a book vehicle’s mod printed with no price (Turbocharging, R3R p.126) is priced from that vehicle on the page, as on install — never 0¥',
+    impl:   () => null,
+  },
+  {
     id:     'wound-assigned-twice',
     suite:  'open-steps',
     module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'runOnce',

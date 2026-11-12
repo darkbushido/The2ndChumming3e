@@ -4,131 +4,50 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SR3 Gear Designer</title>
+<!-- The Foundry designer's own look (tools/build-designer.mjs copies it from styles/sr3e.css). -->
+<link rel="stylesheet" href="designer.css">
 <style>
-  :root {
-    --bg: #f6f6f4; --surface: #ffffff; --border: #d4d4cf; --text: #1d1d1b; --muted: #6a6a64;
-    --accent: #2f6fb3; --gold: #a37f22; --red: #b03a2e; --amber: #8a5a00; --amber-bg: #fff4dc; --r: 6px;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg: #15171a; --surface: #1e2125; --border: #353a40; --text: #e4e4e0; --muted: #9a9a94;
-      --accent: #6aa5e6; --gold: #c8a040; --red: #e0705f; --amber: #f0c060; --amber-bg: #3a2f14; }
-  }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, sans-serif; }
-  main { max-width: 980px; margin: 0 auto; padding: 16px; }
-  h1 { font-size: 1.4rem; margin: 0 0 4px; }
-  .sub { color: var(--muted); margin: 0 0 16px; font-size: .9rem; }
-  section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 12px; margin-bottom: 12px; }
-  h2 { font-size: 1rem; margin: 0 0 8px; }
-  label { display: block; font-size: .85rem; color: var(--muted); margin: 6px 0 2px; }
-  input, select, button { font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 6px 8px; }
-  input[type=search], select.wide, input.wide { width: 100%; }
-  button { cursor: pointer; }
-  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 6px 0; border-bottom: 1px solid var(--border); }
-  .row:last-child { border-bottom: 0; }
-  .row .name { flex: 1 1 200px; min-width: 0; }
-  .muted { color: var(--muted); font-size: .85rem; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
-  .stat { border: 1px solid var(--border); border-radius: var(--r); padding: 6px 8px; }
-  .stat b { display: block; font-size: 1.1rem; color: var(--gold); }
-  .warn { background: var(--amber-bg); color: var(--amber); border-radius: var(--r); padding: 6px 8px; margin: 4px 0; font-size: .9rem; }
-  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  ul.pick { list-style: none; margin: 4px 0 0; padding: 0; max-height: 240px; overflow: auto; border: 1px solid var(--border); border-radius: var(--r); }
-  ul.pick li { padding: 4px 8px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+  body { margin: 0; background: var(--sr-bg); color: var(--sr-text); font: 14px/1.4 'Segoe UI', system-ui, sans-serif; }
+  main { max-width: 1200px; margin: 0 auto; padding: 12px 16px; }
+  .page-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 8px; }
+  h1 { font-size: 1.4rem; margin: 0; color: var(--sr-gold); letter-spacing: .02em; }
+  .sub { color: var(--sr-muted); margin: 0; font-size: .85rem; flex: 1 1 320px; }
+  .kinds { display: flex; gap: 6px; margin: 4px 0 10px; }
+  .kinds button { font: inherit; padding: 6px 14px; border-radius: var(--r); border: 1px solid var(--sr-border); background: var(--sr-surface); color: var(--sr-text); cursor: pointer; }
+  .kinds button.active { background: var(--sr-accent); color: var(--sr-bg); border-color: var(--sr-accent); font-weight: 600; }
+  /* The window gives the wizard a height; the page lets it grow. */
+  .wizard { border: 1px solid var(--sr-border); border-radius: var(--r-lg); background: var(--sr-surface); overflow: hidden; }
+  .wizard .vd-wizard { height: auto; }
+  .wizard input, .wizard select, .wizard button { font: inherit; }
+  .notice { color: var(--sr-muted); font-size: .8rem; margin-top: 10px; }
+  .loadwarn { background: var(--sr-amber-bg); color: var(--sr-amber); border-radius: var(--r); padding: 6px 8px; margin: 6px 0; }
+  .modes button { font-size: .85rem; padding: 4px 10px; }
+  .vd-chip.vd-changed b { color: var(--sr-green); }
   [hidden] { display: none !important; }
-  ul.pick li:hover, ul.pick li:focus { background: var(--bg); outline: none; }
-  footer { color: var(--muted); font-size: .8rem; margin-top: 16px; }
 </style>
 </head>
 <body>
 <main>
-  <h1>SR3 Gear Designer</h1>
-  <p class="sub">Build a weapon or a vehicle, then import it into Foundry (<em>📥 Import design</em> in the Items sidebar).
-    The design lives in this page's link — nothing is stored anywhere. <span id="version"></span></p>
-
-  <div class="actions" role="tablist" style="margin-bottom:12px">
-    <button data-kind="weapon" role="tab">Weapon</button>
-    <button data-kind="vehicle" role="tab">Vehicle (R3R)</button>
+  <div class="page-head">
+    <h1>SR3 Gear Designer</h1>
+    <p class="sub">Build it here, then import it in Foundry: <em>📥 Import design</em> in the Items sidebar. The design lives in this
+      page's link — nothing is stored anywhere. <span id="version"></span></p>
   </div>
-
-  <section>
-    <label for="name">Name (optional)</label>
-    <input id="name" class="wide" maxlength="80" placeholder="e.g. Lone Star's Predator">
-  </section>
-
-  <section class="weapon-only">
-    <h2>Weapon</h2>
-    <label for="base-search">Base firearm</label>
-    <input type="search" id="base-search" placeholder="Search firearms…" autocomplete="off">
-    <ul class="pick" id="base-list" hidden></ul>
-    <div id="base-chosen" class="muted"></div>
-  </section>
-
-  <section class="vehicle-only" hidden>
-    <h2>Chassis &amp; power plant</h2>
-    <label for="chassis-search">Chassis</label>
-    <input type="search" id="chassis-search" placeholder="Search chassis…" autocomplete="off">
-    <ul class="pick" id="chassis-list" hidden></ul>
-    <div id="chassis-chosen" class="muted"></div>
-    <label for="plant">Power plant</label>
-    <select id="plant" class="wide"></select>
-  </section>
-
-  <section class="vehicle-only" hidden>
-    <h2>Functional improvements <span class="muted">R3R pp.115-118</span></h2>
-    <div class="grid" id="improve"></div>
-    <label style="display:flex;gap:6px;align-items:center;margin-top:8px"><input type="checkbox" id="smart"> Smart materials (R3R p.118)</label>
-  </section>
-
-  <section class="vehicle-only" hidden>
-    <h2>Design options</h2>
-    <select id="option-add" class="wide"></select>
-    <div id="options"></div>
-  </section>
-
-  <section class="vehicle-only" hidden>
-    <h2>Vehicle modifications <span class="muted">priced in Design Points, R3R p.112</span></h2>
-    <input type="search" id="vmod-search" placeholder="Add a modification…" autocomplete="off">
-    <ul class="pick" id="vmod-list" hidden></ul>
-    <div id="vmods"></div>
-  </section>
-
-  <section class="vehicle-only" hidden>
-    <h2>Pricing <span class="muted">R3R p.113</span></h2>
-    <div class="grid">
-      <label>Class<select id="vclass" class="wide"></select></label>
-      <label>Prototype mark-up + (0–3)<input type="number" id="markup" min="0" max="3" step="0.1" class="wide"></label>
-    </div>
-  </section>
-
-  <section class="weapon-only">
-    <h2>Accessories &amp; mods</h2>
-    <input type="search" id="mod-search" placeholder="Add an accessory…" autocomplete="off">
-    <ul class="pick" id="mod-list" hidden></ul>
-    <div id="mods"></div>
-  </section>
-
-  <section class="weapon-only">
-    <h2>Ammunition</h2>
-    <input type="search" id="ammo-search" placeholder="Add ammunition…" autocomplete="off">
-    <ul class="pick" id="ammo-list" hidden></ul>
-    <div id="ammo"></div>
-  </section>
-
-  <section>
-    <h2>Result</h2>
-    <div class="grid" id="totals"></div>
-    <div id="warnings"></div>
-    <div class="actions" style="margin-top:8px">
-      <button class="primary" id="copy">Copy link</button>
-      <button id="download">Download JSON</button>
-      <button id="reset">Start over</button>
-    </div>
-  </section>
-
-  <footer>Unofficial fan tool for Shadowrun 3rd Edition. Stats and page references only — see the books for the rules.
-    Shadowrun is a trademark of its owners; no rulebook text is reproduced here.</footer>
+  <div class="kinds" role="tablist">
+    <button type="button" data-kind="weapon" role="tab">🔫 Weapon</button>
+    <button type="button" data-kind="vehicle" role="tab">🚗 Vehicle (R3R)</button>
+  </div>
+  <div id="loadwarn"></div>
+  <div class="wizard sr3e sr3e-vehicle-designer" id="weapon-root"><div class="sr3e-inner vd-wizard"></div></div>
+  <div class="kinds modes" id="vehicle-modes" hidden>
+    <button type="button" data-mode="design">🛠 Design from a chassis (R3R)</button>
+    <button type="button" data-mode="book">📖 Modify a book vehicle</button>
+  </div>
+  <div class="wizard sr3e sr3e-vehicle-designer" id="vehicle-root" hidden><div class="sr3e-inner vd-wizard"></div></div>
+  <div class="wizard sr3e sr3e-vehicle-designer" id="book-root" hidden><div class="sr3e-inner vd-wizard"></div></div>
+  <p class="notice">Unofficial fan tool for Shadowrun 3rd Edition. Names, numbers and page references only — see the books for
+    the rules. Shadowrun is a trademark of its owners; no rulebook text is reproduced here.</p>
 </main>
 <script type="module" src="app.js"></script>
 </body>
