@@ -1976,6 +1976,11 @@ export const MOD_RATING_TABLE = {
     4: {"availability":"10/35days","cost":500000,"streetIndex":"4"},
     5: {"availability":"14/70days","cost":2500000,"streetIndex":"GM"},
   },
+  "vehicle|Amphibious Package": {
+    1: {"availability":"3/6days","cfCost":"0","cost":2500,"installTime":"32 hrs/Vehicle B/R(4)","streetIndex":"1"},
+    2: {"availability":"5/10days","cfCost":"2","cost":7500,"installTime":"40 hrs/Vehicle B/R(5)","streetIndex":"1.25"},
+    3: {"availability":"6/12days","cfCost":"4","cost":15000,"installTime":"80 hrs/Vehicle B/R(6)","streetIndex":"1.5"},
+  },
   "vehicle|Anti-Theft System": {
     3: {"availability":"4/7days","cost":1200,"streetIndex":"1.25"},
     4: {"availability":"4/7days","cost":1600,"streetIndex":"1.25"},
@@ -2902,6 +2907,8 @@ export const COLLAPSED_SOURCES = {
     "sr3e-vehiclemod-0208": "sr3e-vehiclemod-0201",
     "sr3e-vehiclemod-0209": "sr3e-vehiclemod-0201",
     "sr3e-vehiclemod-0210": "sr3e-vehiclemod-0201",
+    "sr3e-vehiclemod-0224": "sr3e-vehiclemod-0223",
+    "sr3e-vehiclemod-0225": "sr3e-vehiclemod-0223",
     "sr3e-vehiclemod-0230": "sr3e-vehiclemod-0229",
     "sr3e-vehiclemod-0231": "sr3e-vehiclemod-0229",
     "sr3e-vehiclemod-0232": "sr3e-vehiclemod-0229",

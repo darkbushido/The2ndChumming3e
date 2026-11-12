@@ -793,8 +793,6 @@ export const LEGALITY = {
     "sr3e-vehiclemod-0221": ["Legal","r3.145"],
     "sr3e-vehiclemod-0222": ["Legal","r3.147"],
     "sr3e-vehiclemod-0223": ["Legal","r3.149"],
-    "sr3e-vehiclemod-0224": ["Legal","r3.149"],
-    "sr3e-vehiclemod-0225": ["Legal","r3.149"],
     "sr3e-vehiclemod-0229": ["Legal","r3.150"],
     "sr3e-vehiclemod-0237": ["Legal","r3.150"],
     "sr3e-vehiclemod-0238": ["Legal","r3.150"],

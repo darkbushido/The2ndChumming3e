@@ -118,6 +118,9 @@ const TAG_BEFORE_LEVEL = new RegExp(`\\s*\\((?:${Object.values(MOD_TAGS).join('|
 
 const tidy = s => String(s ?? '').replace(/\s+/g, ' ').trim();
 
+/** Families collapsed after the 0.8.0 migration ran — `levelFillDelta` fills a blank level only on these. */
+export const LATE_COLLAPSED = new Set(['vehicle|Amphibious Package']);
+
 export const ModRatings = {
   /** The item's kind (see the table above) for a rated type, else null. */
   kindOf(item) {
@@ -318,6 +321,25 @@ export const ModRatings = {
     const delta = ModRatings.renameDelta(item) ?? {};
     const to = ModRatings.repointSource(item);
     if (to) delta['_stats.compendiumSource'] = to;
+    return Object.keys(delta).length ? delta : null;
+  },
+
+  /**
+   * A copy of a family collapsed AFTER 0.8.0 (Amphibious Package, TODO 287 — the maintainer, 2026-11-08: "One rated pack
+   * entry"): its dead compendium link repointed (as `migrateDelta`), and a BLANK rating filled with the one level whose
+   * table row prices it exactly (its cost) — the three old documents had no rating, only their price. A rating anyone set
+   * is kept; no match, no fill. Idempotent.
+   */
+  levelFillDelta(item, table = MOD_RATING_TABLE, sources = COLLAPSED_SOURCES) {
+    const delta = {};
+    const to = ModRatings.repointSource(item, sources);
+    if (to) delta['_stats.compendiumSource'] = to;
+    const cur = item?.system?.rating;
+    const levels = LATE_COLLAPSED.has(ModRatings.keyOf(item)) ? ModRatings.levelsOf(item, table) : null;
+    if (levels && (cur == null || cur === '' || Number(cur) === 0)) {
+      const hits = Object.entries(levels).filter(([, row]) => row.cost != null && Number(row.cost) === Number(item.system?.cost));
+      if (hits.length === 1) delta['system.rating'] = Number(hits[0][0]);
+    }
     return Object.keys(delta).length ? delta : null;
   },
 

@@ -51,6 +51,7 @@ import { SR3EVehicleDesigner } from './SR3EVehicleDesigner.js';
 import { SR3EOrders } from './SR3EOrders.js';
 import { SR3EMeetContact } from './SR3EMeetContact.js';
 import { SR3EGenericNpc } from './SR3EGenericNpc.js';
+import { TokenScale } from './data/token-scale.mjs';
 import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
 import { SR3EActionLedger } from './SR3EActionLedger.js';
@@ -579,6 +580,24 @@ Hooks.on('preUpdateItem', (document, changes) => {
 // SYNCHRONOUS (Foundry does not await it); the portrait index was loaded at `ready` (`SR3EGenericNpc.warm`).
 Hooks.on('preCreateToken', (token) => {
   try { SR3EGenericNpc.prepareToken(token); } catch (err) { console.error('SR3E | generic NPC token:', err); }
+});
+// Vehicles to scale (TODO 297): a vehicle's footprint in metres ÷ this scene's grid distance — "always to scale" (the
+// maintainer, 2026-11-10). Only a token still at its prototype's size; a hand-sized prototype is left alone.
+Hooks.on('preCreateToken', (token) => {
+  try {
+    const size = TokenScale.forToken(token, token.actor, token.parent?.grid ?? {}, 'The2ndChumming3e');
+    if (size) token.updateSource(size);
+    // Rideable (optional module): its seat count is the vehicle's Seating.
+    const ride = game.modules.get('Rideable')?.active ? TokenScale.rideable(token, token.actor) : null;
+    if (ride) token.updateSource({ flags: { Rideable: ride } });
+  } catch (err) { console.error('SR3E | vehicle token scale:', err); }
+});
+// …and a vehicle remembers its footprint from birth, so a renamed copy still scales (the maintainer, 2026-11-11).
+Hooks.on('preCreateActor', (document) => {
+  try {
+    const fp = TokenScale.stamp(document);
+    if (fp) document.updateSource({ 'flags.The2ndChumming3e.sizeM': fp });
+  } catch (err) { console.error('SR3E | vehicle footprint:', err); }
 });
 Hooks.once('ready', () => { SR3EGenericNpc.warm(); });
 // …and the GM's way in: Actor Directory → right-click → Make Generic NPC…

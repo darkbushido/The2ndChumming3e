@@ -390,6 +390,17 @@ export async function run(t) {
   t.ok('the dead links of the collapsed power levels are repointed',
     ModRatings.repointSource({ _stats: { compendiumSource: 'Compendium.The2ndChumming3e.sr3e-sr3-adept-powers.Item.sr3e-adeptpower-0052' } })
       === 'Compendium.The2ndChumming3e.sr3e-sr3-adept-powers.Item.sr3e-adeptpower-0050');
+  // Amphibious Package collapsed after 0.8.0 (TODO 287): repoint the dead link, fill the blank level from its price.
+  const amphOld = (id, cost, rating = null) => ({ type: 'vehiclemod', name: 'Amphibious Package (Vehicle)',
+    system: { cost, rating }, _stats: { compendiumSource: `Compendium.The2ndChumming3e.sr3e-r3-vehicle-mods.Item.${id}` } });
+  t.eq('amphibious level 2: repointed to the kept document and given rating 2',
+    ModRatings.levelFillDelta(amphOld('sr3e-vehiclemod-0224', 7500)),
+    { '_stats.compendiumSource': 'Compendium.The2ndChumming3e.sr3e-r3-vehicle-mods.Item.sr3e-vehiclemod-0223', 'system.rating': 2 });
+  t.eq('amphibious level 1 (the kept document): only the rating', ModRatings.levelFillDelta(amphOld('sr3e-vehiclemod-0223', 2500)), { 'system.rating': 1 });
+  t.eq('…a rating anyone set is kept', ModRatings.levelFillDelta(amphOld('sr3e-vehiclemod-0223', 2500, 3)), null);
+  t.eq('…a price matching no level fills nothing', ModRatings.levelFillDelta(amphOld('sr3e-vehiclemod-0223', 9999)), null);
+  t.eq('…only the late-collapsed families', ModRatings.levelFillDelta({ type: 'vehiclemod', name: 'Anti-Theft System (Vehicle)', system: { cost: 1200, rating: null } }), null);
+  t.ok('a 0.9.0 migration runs levelFillDelta', /version: '0\.9\.0'[\s\S]*?ModRatings\.levelFillDelta\(item\)/.test(read('scripts/SR3EMigrations.js')));
   t.ok('a 0.9.0 migration renames the newly collapsed families\' owned copies',
     /version: '0\.9\.0',\s*label: 'The rest of the levelled items[\s\S]{0,2600}ModFor\.migrateDelta\(item\)/.test(mig));
   t.ok('the adept power sheet shows the Level dropdown when the power has printed levels',
