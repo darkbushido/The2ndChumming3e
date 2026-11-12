@@ -20,7 +20,7 @@
 import {
   VISION, DETECTION, FLAG_SCOPE, ULTRASOUND_RANGE,
   mundaneSenses, astralState, visionModeFor, detectionModesFor, detectionUpdate,
-  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate,
+  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate, astralModeFromStatus,
 } from './data/token-senses.mjs';
 import { detectVision } from './SR3ECombatModifiers.js';
 
@@ -297,6 +297,18 @@ export class SR3ESenses {
       if (!('dualNatured' in (changes.flags?.[SYS] ?? {}))) return;
       await actor.toggleStatusEffect('sr3e-dual', { active: dualTicked(actor.system?.astralMode, actor.getFlag(SYS, 'dualNatured')) });
     });
+
+    // The HUD's Dual-Natured status drives the sheet's Dual Natured button (sr3e.js mirrors the other way;
+    // writing only on a difference stops the two hooks bouncing).
+    const statusHook = on => async effect => {
+      if (!game.users.activeGM?.isSelf || !effect.statuses?.has?.('sr3e-dual')) return;
+      const actor = effect.parent;
+      if (!(actor instanceof Actor) || actor.getFlag(SYS, 'dualNatured')) return;
+      const next = astralModeFromStatus(actor.system?.astralMode ?? '', on);
+      if (next) await actor.update({ 'system.astralMode': next });
+    };
+    Hooks.on('createActiveEffect', statusHook(true));
+    Hooks.on('deleteActiveEffect', statusHook(false));
 
     // Wall config: Glass (thermographic) and Ward Force (astral barrier).
     Hooks.on('renderWallConfig', (app, html) => {

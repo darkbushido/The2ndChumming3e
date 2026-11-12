@@ -188,6 +188,16 @@ export function dualTickUpdate(astralMode = '', ticked = false, flag = false) {
 }
 
 /**
+ * The Token HUD's Dual-Natured STATUS is the same switch too (the maintainer, live 2026-11-11): setting it from the
+ * HUD must move the sheet. Returns the `system.astralMode` to write, or null for no change. Projecting is left alone.
+ */
+export function astralModeFromStatus(astralMode = '', on = false) {
+  if (on && astralMode !== 'dual' && astralMode !== 'astral') return 'dual';
+  if (!on && astralMode === 'dual') return 'physical';
+  return null;
+}
+
+/**
  * Which wall rule shapes a token's SIGHT polygon (what it sees of the map, and the line of sight every sight-based
  * detection then uses): 'project' (astral form — ward walls only), 'thermo' (sight walls + glass),
  * 'ultrasound' (sonar — SOUND walls), or 'sight'.
@@ -247,5 +257,5 @@ export function auraKind({ type = '', magic = 0, dualNatured = false, statuses =
 export const TokenSenses = {
   VISION, DETECTION, ULTRASOUND_RANGE, FLAG_SCOPE, UNLIMITED, finiteRange,
   isVisionGear, isWornGear, mundaneSenses, astralState, visionModeFor, detectionModesFor, detectionUpdate,
-  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate,
+  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate, astralModeFromStatus,
 };
