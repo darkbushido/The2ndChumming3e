@@ -15,7 +15,7 @@
  * accessory is cut down the same way. `tests/designer.test.mjs` asserts nothing else leaks. ⚠ Nothing from `SR-OCR/` is
  * ever read here.
  */
-import { readFileSync, readdirSync, writeFileSync, mkdirSync, copyFileSync, rmSync, cpSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync, copyFileSync, rmSync, cpSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ItemMods } from '../scripts/data/item-mods.mjs';
@@ -25,6 +25,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 /** Which pack documents are in the catalogue, by kind. */
 export const KIND_OF = doc => {
   if (doc?.type === 'firearm') return 'firearm';
+  if (doc?.type === 'melee') return 'melee';   // TODO 300: melee weapons get their own chip
   if (doc?.type === 'ammunition') return 'ammo';
   if (doc?.type === 'gear' && doc?.system?.modFor === 'weapon') return 'mod';
   if (doc?.type === 'vehiclemod') return 'vmod';
@@ -37,6 +38,7 @@ export const FIELDS = {
   top: ['_id', 'name', 'type'],
   firearm: ['category', 'concealability', 'ammunition', 'mode', 'damage', 'weight', 'availability', 'cost', 'streetIndex',
     'accessories', 'bookPage', 'hands', 'smartgun', 'laserSight', 'legality', 'recoilMod', 'recoilModIntegral', 'installed'],
+  melee: ['category', 'concealability', 'reach', 'damage', 'weight', 'availability', 'cost', 'streetIndex', 'bookPage', 'hands', 'legality'],
   mod: ['category', 'concealability', 'rating', 'cost', 'weight', 'availability', 'streetIndex', 'bookPage', 'modFor',
     'legality', 'modifiers', 'mount'],
   ammo: ['concealability', 'damage', 'ammoType', 'rounds', 'weight', 'cost', 'availability', 'streetIndex', 'bookPage',
@@ -157,6 +159,9 @@ export async function build(out) {
   // The Foundry designer's look (TODO 297) — its colours and its own stylesheet block — and the chassis pictures.
   writeFileSync(join(out, 'designer.css'), designerCss());
   cpSync(join(ROOT, 'styles', 'vehicles'), join(out, 'vehicles'), { recursive: true });
+  // The weapon pictures (TODO 300) — the folder may hold none yet.
+  mkdirSync(join(out, 'weapons'), { recursive: true });
+  if (existsSync(join(ROOT, 'styles', 'weapons'))) cpSync(join(ROOT, 'styles', 'weapons'), join(out, 'weapons'), { recursive: true });
   // The item icons the catalogue names.
   mkdirSync(join(out, 'icons'), { recursive: true });
   const icons = new Set(Object.values(cat.items).flatMap(i => [i.img, ...(i.system.installed ?? []).map(m => m.img)]).filter(Boolean));

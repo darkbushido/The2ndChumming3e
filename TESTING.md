@@ -3829,3 +3829,17 @@ Second pass (the maintainer's feedback, 2026-11-08):
       grey on grey.
 - [ ] **Token icon:** create a design → the new vehicle's portrait and its dragged token are the chassis' top-down icon
       (`styles/vehicles/top/<art>.webp`), no shadow. Re-saving an existing vehicle leaves its picture alone.
+
+## 87. 🔫 Weapon designer as a shop (TODO 300, branch `claude/weapon-designer-cards-62e865`)
+
+`npm run designer:build`, then `npm run designer:serve` (or `PORT=5188`), Weapon tab.
+
+- [ ] **Chips:** Pistols, SMGs, Rifles, Shotguns, Heavy weapons, Launchers, **Melee**, Other — each with a drawn silhouette
+      and a count. **Melee** lists the 66 melee weapons with Dmg / Reach / Conc.
+- [ ] **Cards:** every card shows a picture (a silhouette until its ComfyUI picture lands), a one-liner ("Heavy pistol · one
+      hand · smartgun"), the key stats and its page.
+- [ ] **Shop:** shelf tabs (Top mount, Barrel, Underbarrel, No mount) have icons and counts; on an AK-47 the switch reads
+      "Show the ones that don't fit (1 hidden)"; ticked, **Stock (Rigid)** appears dashed with the amber "own stock" reason
+      and **+ Add** still puts it in the 🛒 cart (step 4 then warns "Left out").
+- [ ] **Pictures, once the batch is keyed:** on a dark page, no white halo round any weapon; import a design in Foundry →
+      the item's image is its model picture; a weapon with no picture keeps its pack icon.

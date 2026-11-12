@@ -14,4 +14,4 @@ createServer(async (req, res) => {
   let body;
   try { body = await readFile(file); } catch { res.writeHead(404).end('not found'); return; }
   res.writeHead(200, { 'cache-control': 'no-store', 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' }).end(body);
-}).listen(5178, () => console.log('designer on http://localhost:5178'));
+}).listen(Number(process.env.PORT) || 5178, () => console.log(`designer on http://localhost:${Number(process.env.PORT) || 5178}`));
