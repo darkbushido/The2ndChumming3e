@@ -3713,6 +3713,12 @@ Hot reload is enough (no new fields). §80's two steps not yet walked live (Crea
       then open 🛠 Design, add **Pintle Mount**, click **Offer changes** → the stat rows,
       then "Mods … tick to add" listing **Ring Mount** and **Pintle Mount** (ticked). Untick Speed, apply → Speed stays 999,
       both mods arrive, and the hand-added mod is untouched.
+- [ ] **One entry per mod** (after `packs:install`, Foundry closed — the pack changed): the "add a mod" list shows **Datajack Port**,
+      **Rigger Adaptation**, **Pintle Mount**, **Bike Gyro-Stabilization Gear** and **Amphibious Package** once each, every entry
+      with its book page in [brackets]. Pick Amphibious Package, set its Level to 2 → 80 points; 3 → 200 points, CF 2. Create →
+      the vehicle's Amphibious Package is Level 3 at 15,000¥, CF 4. The item sheet's Level dropdown offers 1-3.
+- [ ] **Migration:** in a world that carried an old Amphibious Package (any of the three), after the reload its copy has a Level
+      (the one its price matches) and its 📖 link opens the single pack entry.
 
 ## 83. 🔮 The spell audit (TODO 123, branch `claude/spells-audit-123`)
 
@@ -3737,3 +3743,89 @@ Needs `npm run packs:install` (Foundry closed) first.
    "Desert Wars", and still has the knowledge SKILL Desert Wars.
 3. An unlinked Wiz Kid token on a scene is corrected the same way; a Clout you re-Forced by hand to F6 is left at F6.
 4. Re-run `force()`: nothing changes (console logs no item changes).
+
+## 86. 🛒 Vehicle Designer as a shop (TODO 297, branch `claude/vehicle-designer-shop`)
+
+Hot reload is enough (no new fields). Open **🛠 Design a vehicle** in the Actors sidebar.
+
+- [ ] **Result bar on top:** the stats chips (Handling … Cost) and the name stay pinned while every step scrolls under them.
+- [ ] **Step 1, Chassis:** type chips with silhouettes; **Drones** switches the chips to drone types (the art gets an antenna).
+      Click a **Bike** card → step 2 opens; the step tab shows the chassis name.
+- [ ] **Step 2, Power plant:** cards with plant icons and Speed/Accel/Load/Economy; a chassis with one plant has it picked
+      already. **Tune it** opens the improvements.
+- [ ] **Step 3, Design options** on that bike: Airlock and the robot options are NOT listed; **Flight Deck** IS (a Body 0 micro UAV fits under half a Body 2); tick **Show
+      options that don't fit** → they appear dashed with an amber reason, and **+ Add** still works (warn, never refuse).
+- [ ] **Step 4, Mods:** shelf tabs with icons and counts; every card has a one-line description, points, CF, Load and its page.
+      On the bike, **Bike Gyro-Stabilization Gear** and the sidecars are listed; switch to a **car** chassis → they're hidden
+      until **Show mods that don't fit**. Search "armor" finds across shelves. **+ Add** puts the mod in the 🛒 cart; set its
+      Lv and the points follow.
+- [ ] **Step 5:** class and mark-up, the points line by line, the warnings; **Create** makes the vehicle with its mods.
+- [ ] **Reopen:** 🛠 Design on that vehicle opens on step 5; **Offer changes** works as in §82.
+
+Second pass (the maintainer's feedback, 2026-11-08):
+
+- [ ] **Step tabs** are big filled buttons; the active one is solid blue, a finished one has a green number, and what you
+      picked sits on its own line under the label (never on an underline).
+- [ ] **Chassis drawings:** each bike looks different (racing, chopper, dirt bike, scooter, ATV); Special Vehicle shows a
+      locomotive chip; the **Barge** card is a hull on a dashed tow line behind a tug. Caterpillars Miniature → Heavy share a
+      drawing, drawn bigger for the bigger Body. Every card has a one-line description; hovering shows it too.
+- [ ] **Towed:** pick **Barge** (or a trailer / rail car) → step 2 says **Towed — no power plant** with the chassis' Load
+      ("Load 1,000,000 kg (max 10,000,000 kg)"); the step tab reads "Towed"; Next goes on to options.
+- [ ] **Tuning:** on a Racing Cycle with a plant, the table reads Start · Added · Result · Limit for every line. Type a Speed
+      far past the limit → that row turns amber with ⚠. Hover each row, **Smart materials** and **Freed CF/Load** → a tooltip
+      says what it changes, its cost and its range here.
+- [ ] **Options:** on a bike, **Depth Enhancement** and **Ballast Tanks** are hidden; add **Amphibious Package** (step 4),
+      come back → they're listed. **Extra Entry Points** says "Up to N for this chassis". On a boat, Ballast Tanks is hidden
+      ("Not for submarine, boat or ship chassis", R3R p.116).
+- [ ] **Once per vehicle:** add **Turbocharging** → its card says **✓ In cart** (no second copy); a turret or hardpoint says
+      **+ Another (1)**.
+- [ ] **Levels:** a rated mod's card says "levels 1-N" where the book sets one (Autonav 1-4, Nitrous 1-6, CMC 1-9); its cart
+      line has **Lv** capped at N ("/N"). Set Autonav Lv 10 → the line turns amber with "Level 10 is over the book's maximum of 4".
+      **Datajack Port** has no Lv box.
+- [ ] **Book filter:** with the France Sourcebook off (the default), search the mod shop for **VAUBAN** → nothing. Turn it on
+      (System settings → Source books), reopen the designer → the VAUBAN mods appear.
+- [ ] **SunCell on a hybrid:** a gasoline car → SunCell Power is hidden ("Needs an electric drive…"). Add a **Hybrid Engine**
+      option, or an **Auxiliary Engine** with an electric plant picked → SunCell shows and can be added. Never on a bike.
+- [ ] **Book stat line on top:** under the stats chips a second row reads Seating · Entry · Fuel · Econ · Range · S/B · L/T ·
+      Chassis · SI · Avail. A diesel **Tractor**: Fuel 750 liters, Econ 3 km/l, Range 2,250 km. Economy +100% (20 steps) →
+      6 km/l, 4,500 km. Fuel Tank Enlargement 250 → Fuel 1,000 liters. A helicopter shows L/T VTOL.
+- [ ] **Full names on hover:** in the mod shop, hover **Rem-Contr. Intr. Bod** → "Remote-Control Interface Body"; same in the cart.
+- [ ] **Tokens to scale:** drag a GMC 4201 onto a scene with 1 m squares → a 2.5 × 9 token; onto one with 3 m squares
+      → about 0.75 × 3. Design a van and place it → about 2 × 5.5 squares on a 1 m grid. A token you resized by hand, or a
+      prototype you sized yourself, keeps its size.
+- [ ] **Rideable seats** (with the Rideable module on): place a vehicle → its token is rideable, and it takes as many
+      riders as its Seating (a 4-seat car takes 4; the 5th is refused). A token whose Rideable settings you changed keeps them.
+- [ ] **Misfits look different:** tick **show the ones that don't fit** in the mod shop and the options step → those cards are
+      greyed with an amber dashed edge and a **Doesn't fit** badge, sharp again on hover; the fitting cards are unchanged.
+- [ ] **Availability explained:** on the price step, under Street Index · Availability, a line reads e.g.
+      "Availability: 590,000¥ ÷ 20,000 = 30 → 30 (the whole vehicle's price, R3R p.113) — biggest costs: …" with the three
+      largest Design Point lines. Push it past 30 → the warning carries the same sum.
+- [ ] **Turret sizes:** every turret card in the shop says what it holds — a Small Turret "Weapon Value 3 — up to an
+      assault cannon or autocannon…", a Mini-Turret(Pop-Up) "Weapon Value 1 — up to an SMG…" (R3R pp.140-141). On a
+      vehicle sheet an Ares Vanquisher on a Mini Turret warns Weapon Value 2.5 of 2.
+- [ ] **Turret variants:** add **Mini-Turret(Pop-Up)** → only that card is highlighted; Mini-Turret(Anti-Air) and the
+      other mini-turrets still say **+ Add**.
+- [ ] **Aftermarket:** **Morphing License Plate** shows 0 points and "Aftermarket — no design cost" — no ⚠.
+- [ ] **Pictures:** every chassis card, the towed step and the result bar show a coloured anime picture on a transparent
+      background — no green or magenta fringe, no grey ground shadow, tail lights still red.
+- [ ] **Trailer tuning:** pick **Trailer, 53-foot** → step 2 says Towed and shows a **Tune it** table with only **Load**
+      (start 10,000, max 25,000) and **Cargo** (start 1,200, max 1,600). Add 5,000 kg → Load 15,000 and the points go up;
+      add 20,000 → ⚠ over the maximum. No "Pick a power plant" warning.
+- [ ] **Truck and trailer:** create a trailer → its footer offers **🚚 Design its tow vehicle**; that opens a designer titled
+      "tow vehicle for <trailer>". Create a truck → the trailer's design says **Towed by <truck>**. Both are optional —
+      skip the button and the trailer stands alone.
+- [ ] **Road train (R3R p.193):** on a created truck the footer offers **🚛 Add a trailer (n/5)**; each opens "a trailer for
+      <truck>". Make five → the button greys out at 5/5. The truck's price step lists its **Trailers** with **Hitched**
+      ticks; untick three (the city run) → the hint counts 2 hitched and their Load. Hitch more Load than the truck's →
+      ⚠ the house-rule warning; tune the truck's Load up → it clears.
+      A jet, helicopter, sub or walker shows no **Add a trailer** button; a bike, car, hovercraft, boat or locomotive does.
+- [ ] **Setup/Breakdown Time:** pick a 55' trailer (or any Body 3+ vehicle) → the option is hidden; **Show all** shows it
+      dimmed with "Body 2 or less only (drones Body 3) — this one is Body N". A Body 2 car or Body 3 drone lists it.
+- [ ] **Auxiliary engine:** add **Auxiliary Engine** → its row shows a **Power plant** dropdown of the chassis' plants with
+      their points ("Same as the main plant" first); picking one sets the row's Points to that plant's.
+- [ ] **Work Shop / Facility:** each row has a **Kind of** dropdown with the prices (General, Computer, Cyberware,
+      Electronic, Gunsmith, Vehicle); picking sets the Points, and a Vehicle facility's CF becomes 500.
+- [ ] **Readable text:** the designer's hints, card stats, page numbers and step captions read clearly — light grey, not
+      grey on grey.
+- [ ] **Token icon:** create a design → the new vehicle's portrait and its dragged token are the chassis' top-down icon
+      (`styles/vehicles/top/<art>.webp`), no shadow. Re-saving an existing vehicle leaves its picture alone.

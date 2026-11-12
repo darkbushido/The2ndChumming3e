@@ -4,7 +4,7 @@
  */
 import { readFileSync } from 'node:fs';
 import { VehicleDesign as V } from '../scripts/data/vehicle-design.mjs';
-import { VehicleDesignActor as A, FLAG } from '../scripts/data/vehicle-design-actor.mjs';
+import { VehicleDesignActor as A, FLAG, TOW_FLAG, MAX_TRAILERS } from '../scripts/data/vehicle-design-actor.mjs';
 
 export const name = 'vehicle-design-actor';
 const src = p => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
@@ -65,4 +65,47 @@ export async function run(t) {
   t.ok("_embedMods never writes _stats (a player's create carrying it is dropped, §82 2026-11-08)", !/_stats/.test(w.slice(w.indexOf('async _embedMods'))) && w.includes('SOURCE_FLAG}`, m.uuid'));
   t.ok('_embedMods warns when fewer items were made than sent', /made\?\.length \?\? 0\) < docs\.length/.test(w));
   t.ok('the window lists the design options catalogue', w.includes('DesignOptions.OPTIONS') && w.includes('DesignOptions.newRow'));
+
+  // The mod list offers each name once (the user, 2026-11-08: "datajack port shows up twice").
+  const e = (uuid, name, bookPage, designCost = '') => ({ uuid, name, system: { bookPage, designCost } });
+  const list = A.pickList([e('a', 'Datajack Port (Vehicle)', 'sr3.306,r3.128'), e('b', 'Datajack Port (Vehicle)', 'r3.128', '25'),
+    e('c', 'Pintle Mount (Vehicle)', 'sr3.312', '1'), e('d', 'Pintle Mount (Vehicle)', 'sr3.312,r3.138', '1'), e('f', 'Ablative Armor (Vehicle)', 'r3.131')]);
+  t.eq('one entry per name, sorted', list.map(x => x.name), ['Ablative Armor (Vehicle)', 'Datajack Port (Vehicle)', 'Pintle Mount (Vehicle)']);
+  t.eq('…the copy with design figures, else the R3R one', list.map(x => x.uuid), ['f', 'b', 'd']);
+
+  // A mod with printed levels is embedded at the design's level, with that level's numbers (Amphibious Package, R3R p.149).
+  const amph = { name: 'Amphibious Package (Vehicle)', type: 'vehiclemod', _id: 'x', system: { rating: 1, cost: 2500, cfCost: '0' } };
+  const lv3 = A.modItemData(amph, { level: 3 });
+  t.eq('amphibious at level 3: rating 3, 15,000¥, CF 4', [lv3.system.rating, lv3.system.cost, lv3.system.cfCost], [3, 15000, '4']);
+  t.is('…the source is untouched', amph.system.cost, 2500);
+
+  // A tractor and up to five trailers (R3R p.193 — the Bergen road train; the maintainer, 2026-11-09).
+  const S = 'The2ndChumming3e', K = `flags.${S}.${TOW_FLAG}`;
+  const trk = { uuid: 'Actor.trk', name: 'Hauler' };
+  const trl = n => ({ uuid: `Actor.t${n}`, name: `Trailer ${n}` });
+  const link = A.towLink(S, trl(1), trk, null);
+  t.eq('the trailer names its tractor', link.trailer[K], { role: 'trailer', other: trk });
+  t.eq('…and the tractor lists it, hitched', link.tow[K], { role: 'tow', trailers: [{ ...trl(1), hitched: true }] });
+  let flag = link.tow[K];
+  for (const n of [2, 3, 4, 5]) flag = A.towLink(S, trl(n), trk, flag).tow[K];
+  t.is('a tractor takes five trailers', A.trailersOf(flag).length, MAX_TRAILERS);
+  t.is('…a sixth is refused, nothing written', A.towLink(S, trl(6), trk, flag).full, true);
+  t.is('…the same trailer is not listed twice', A.trailersOf(A.towLink(S, trl(1), trk, link.tow[K]).tow[K]).length, 1);
+  t.eq('an old one-trailer link reads as that trailer, hitched', A.trailersOf({ role: 'tow', other: trl(1) }), [{ ...trl(1), hitched: true }]);
+  const city = A.hitch(S, flag, 'Actor.t3', false)[K];
+  t.eq('unhitching one leaves the rest hitched', A.trailersOf(city).map(x => x.hitched), [true, true, false, true, true]);
+  // House rule: the tractor's Load covers its hitched trailers' Load.
+  const loads = [{ hitched: true, load: 10000 }, { hitched: true, load: 6000 }, { hitched: false, load: 25000 }];
+  t.eq('only hitched trailers count', [A.pull(20000, loads).count, A.pull(20000, loads).pulled, A.pull(20000, loads).ok], [2, 16000, true]);
+  t.ok('…more than the tractor\'s Load warns', !A.pull(15000, loads).ok && /16,000 kg.*15,000 kg/.test(A.pull(15000, loads).warning));
+  t.is('…exactly its Load is fine', A.pull(16000, loads).ok, true);
+
+  const win = src('scripts/SR3EVehicleDesigner.js');
+  t.ok('a created trailer offers to design its tow vehicle', win.includes('🚚 Design its tow vehicle') && win.includes("SR3EVehicleDesigner.open(null, { towing: this.actor })"));
+  t.ok('a tractor offers to add a trailer, disabled at five', /vd-add-trailer" \$\{n >= MAX_TRAILERS \? 'disabled' : ''\}/.test(win) && win.includes("SR3EVehicleDesigner.open(null, { towedBy: this.actor })"));
+  t.ok('…the price step lists its trailers with Hitched ticks', win.includes('${this._trailersPanel(r)}') && win.includes('class="vd-hitch"'));
+  t.ok('…a tick writes the hitch on the tractor', /VehicleDesignActor\.hitch\(SCOPE, this\.actor\.getFlag\(SCOPE, TOW_FLAG\), box\.dataset\.uuid, box\.checked\)/.test(win));
+  t.ok('…and the pull check warns', /VehicleDesignActor\.pull\(r\.load\?\.total \?\? null, rows\)/.test(win));
+  t.ok('creating a trailer for a tractor links it, or says the tractor is full', /towLink\(SCOPE, created, this\.towedBy, this\.towedBy\.getFlag\(SCOPE, TOW_FLAG\)\)[\s\S]{0,80}link\.full/.test(win));
+  t.ok('a towed chassis tunes only Load and Cargo', /towed \? lines\.filter\(\(\[k\]\) => k === 'load' \|\| k === 'cargo'\)/.test(win));
 }

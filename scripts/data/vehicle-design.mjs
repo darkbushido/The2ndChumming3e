@@ -22,7 +22,8 @@
  * is the GM's to overwrite (the maintainer, 2026-11-07: "compute, GM edits").
  */
 import { CHASSIS, POWER_PLANTS, PLANTS } from './vehicle-design-tables.mjs';
-import { DesignOptions } from './design-options.mjs';
+import { DesignOptions, fuelRow, setupBase } from './design-options.mjs';
+import { TOWED } from './chassis-catalog.mjs';
 
 export const PAGES = {
   steps: 'R3R p.104', chassis: 'R3R p.202', plant: 'R3R p.194', improvements: 'R3R p.115-116', smart: 'R3R p.118',
@@ -85,6 +86,18 @@ export const VehicleDesign = {
   },
 
   plantRow(id) { return POWER_PLANTS.find(p => p.id === id) ?? null; },
+
+  /**
+   * A towed chassis' own Load and maximum, from its Chassis Table row ("Load 10,000 kg (max 25,000 kg)", R3R p.204) —
+   * a trailer takes no power plant (R3R p.109), so its Load is printed on the chassis. null for a chassis with a plant.
+   */
+  towedLoad(ch) {
+    if (!ch || !TOWED.has(ch.id)) return null;
+    const m = /Load ([\d,.]+) ?kg(?: \(max ([\d,.]+) ?kg\))?/.exec(String(ch.features ?? ''));
+    if (!m) return null;
+    const n = t => (t == null ? null : Number(t.replace(/,/g, '')));
+    return { start: n(m[1]), max: n(m[2]) };
+  },
 
   /**
    * A printed cell as a number, with Body `B`. '5xB', '50-(5xB)', '10+(20xB)', '1.2÷B'. A pair keeps its first figure
@@ -153,7 +166,9 @@ export const VehicleDesign = {
     const ctx = {
       body, hull: body, hullFactor: hasHull ? OPTION_EFFECTS.hullFactor * body * body : body, hasHull, category: ch.category, drone: !!ch.drone, chassisId: ch.id, chassisDp: ch.dp,
       plantDp: row ? this.cell(row.dp, body) : null, plantCode: row?.plant ?? null,
-      startLoad: row ? this.cell(row.load, body) : null, maxLoad: row ? this.cell(row.loadMax, body) : null,
+      plantDpOf: id => { const r = this.plantRow(id); return r ? this.cell(r.dp, body) : null; },
+      startLoad: row ? this.cell(row.load, body) : this.towedLoad(ch)?.start ?? null,
+      maxLoad: row ? this.cell(row.loadMax, body) : this.towedLoad(ch)?.max ?? null,
       pilot, adaptation: pilot, smart: !!design.smartMaterials,
       modNames: (design.mods ?? []).map(m => String(m.name ?? '')), optionIds: rows.map(o => o.id).filter(Boolean),
     };
@@ -180,7 +195,13 @@ export const VehicleDesign = {
     const tn = Math.max(AVAIL.min, n) + mod;
     const hours = Math.max(AVAIL.minHours, n * 24) + mod * 24;
     const text = hours % 24 === 0 && hours > 24 ? `${tn}/${hours / 24} days` : `${tn}/${hours} hrs`;
-    return { tn, hours, days: hours / 24, text, outOfReach: tn > AVAIL.outOfReach };
+    // Where the number comes from — it is the whole vehicle's price, not one part (the maintainer, 2026-11-09: "an
+    // availability of 30 but doesn't show what it is").
+    const cls = CLASSES[vehicleClass] ?? CLASSES.standard;
+    const why = `${Math.round(num(cost)).toLocaleString()}¥ ÷ ${AVAIL.per.toLocaleString()} = ${Math.max(AVAIL.min, n)}`
+      + (CLASSES[vehicleClass]?.avail ? ` + ${cls.avail} ${cls.label}` : '') + (num(extra) ? ` + ${num(extra)} fin drive` : '')
+      + ` → ${tn} (the whole vehicle's price, R3R p.113)`;
+    return { tn, hours, days: hours / 24, text, why, outOfReach: tn > AVAIL.outOfReach };
   },
 
   /**
@@ -192,6 +213,11 @@ export const VehicleDesign = {
    * `improve` figures are the CHANGE: accel +2, handling −1 (as 1 — a reduction), cargo +2 CF, load +30 kg, signature +1.
    * Out: { chassis, plant, stats, dp: { total, lines }, cf, load, cost, streetIndex, price, availability, warnings }.
    */
+  /** Range in km (the maintainer, 2026-11-09): Fuel × Economy — the Trailblazer's 750 l at 3 km/l is 2,250 km (R3R p.169). */
+  range(fuel, economy) {
+    return fuel == null || economy == null ? null : Math.round(num(fuel) * num(economy));
+  },
+
   evaluate(design = {}) {
     const warnings = [];
     const ch = this.chassis(design.chassis);
@@ -201,7 +227,8 @@ export const VehicleDesign = {
     let row = this.plantRow(design.plant);
     if (!row && design.plant) row = this.plantsFor(ch.id, design.plant)[0] ?? null;
     if (row && !row.chassis.includes(ch.id)) warnings.push(`${PLANTS[row.plant]?.name ?? row.plant} is not listed for ${ch.name} — the book does not allow it (R3R p.110)`);
-    if (!row) warnings.push(design.plant ? `No ${PLANTS[design.plant]?.name ?? design.plant} row for ${ch.name} in the Power Plant Table (R3R p.194-201)` : 'Pick a power plant (R3R p.194)');
+    const towed = this.towedLoad(ch) ?? (TOWED.has(ch.id) ? {} : null);
+    if (!row && !towed) warnings.push(design.plant ? `No ${PLANTS[design.plant]?.name ?? design.plant} row for ${ch.name} in the Power Plant Table (R3R p.194-201)` : 'Pick a power plant (R3R p.194)');
 
     const imp = design.improve ?? {};
     const smart = !!design.smartMaterials;
@@ -266,8 +293,14 @@ export const VehicleDesign = {
       stats.economy = e0 == null ? null : Math.round(e0 * (1 + 0.05 * steps) * 1000) / 1000;
       if (stats.economy != null && eMax != null && stats.economy > eMax) warnings.push(`Economy ${stats.economy} is over the maximum ${eMax} (R3R p.115)`);
       line(`Economy +${steps * 5}%`, steps * RATES.economyStep, PAGES.improvements);
-      stats.fuel = this.cell(row.fuel, body);
+      // Fuel Tank Enlargement adds its increments to the tank (R3R p.115) — 1 liter each for diesel, 5 PF for a battery…
+      const tank = options.find(o => o.id === 'fuel');
+      const step = tank ? fuelRow({ plantCode: row.plant, body })?.amount ?? 0 : 0;
+      const fuel0 = this.cell(row.fuel, body);
+      stats.fuel = fuel0 == null ? null : fuel0 + step * Math.max(0, num(tank?.level));
       stats.fuelUnit = PLANTS[row.plant]?.fuel ?? null;
+      // Range: Economy is distance per unit of fuel (km/l, km/PF, km/bar — R3R p.169's Econ column), so Fuel × Economy.
+      stats.range = this.range(stats.fuel, stats.economy);
       stats.peopleSpace = row.people ?? null;
     }
 
@@ -287,9 +320,11 @@ export const VehicleDesign = {
 
     const loadAdd = Math.max(0, num(imp.load));
     let loadTotal = null, loadMax = null;
-    if (row) {
-      loadTotal = (this.cell(row.load, body) ?? 0) + loadAdd + Math.max(0, num(freed.load)) + noManual.load;
-      loadMax = this.cell(row.loadMax, body);
+    // A towed chassis has no plant: its Load and maximum are printed on its own row (R3R p.204).
+    const loadStart = row ? this.cell(row.load, body) : towed?.start ?? null;
+    if (row || loadStart != null) {
+      loadTotal = (loadStart ?? 0) + loadAdd + Math.max(0, num(freed.load)) + noManual.load;
+      loadMax = row ? this.cell(row.loadMax, body) : towed?.max ?? null;
       if (smart && loadMax != null) loadMax = this.smartMax(loadMax);
       if (loadMax != null && loadTotal > loadMax) warnings.push(`Load ${loadTotal} kg is over the maximum ${loadMax} (R3R p.116)`);
     }
@@ -298,6 +333,13 @@ export const VehicleDesign = {
     if (cfUsed > cfTotal) warnings.push(`Options and mods take ${cfUsed} CF of ${cfTotal} — "No vehicle can carry more design options than its CF or Load rating allows" (R3R p.111)`);
     if (loadTotal != null && loadUsed > loadTotal) warnings.push(`Options and mods take ${loadUsed} kg of ${loadTotal} kg Load (R3R p.111)`);
     stats.cargo = Math.round((cfTotal - cfUsed) * 100) / 100;
+    // The book's second stat line (R3R p.169): Entry with any extra points, S/B and L/T.
+    const extraEntry = options.find(o => o.id === 'entry');
+    if (extraEntry && stats.entry != null) stats.entry = `${stats.entry}+${Math.max(0, num(extraEntry.level))}`;
+    const setup = options.find(o => o.id === 'setup');
+    stats.sb = setup ? `${setupBase(body) - Math.max(0, num(setup.level))} min` : null;
+    const lt = /(\w+) L\/T Profile/.exec(String(ch.features ?? ''))?.[1] ?? null;
+    stats.lt = options.some(o => o.id === 'vstol') ? 'VSTOL' : options.some(o => o.id === 'stol') ? 'STOL' : lt;
     stats.load = loadTotal == null ? null : loadTotal - loadUsed;
 
     const total = lines.reduce((s, l) => s + l.points, 0);
@@ -307,7 +349,7 @@ export const VehicleDesign = {
     const fin = effects.has('fin');
     const streetIndex = CLASSES[vclass].streetIndex + (smart || fin ? SMART.streetIndex : 0) + num(design.streetIndexExtra);
     const availability = this.availability(cost, vclass, fin ? OPTION_EFFECTS.finAvail : 0);
-    if (availability.outOfReach) warnings.push(`Availability ${availability.tn} — over 30 is out of the players' reach (R3R p.113)`);
+    if (availability.outOfReach) warnings.push(`Availability ${availability.tn} — over 30 is out of the players' reach (R3R p.113): ${availability.why}`);
     const extra = num(design.markUpExtra);
     if (extra < 0 || extra > 3) warnings.push(`A Mark-Up modifier of ${extra} — the book suggests 1 to 3 for prototypes and one-offs (R3R p.113)`);
 
