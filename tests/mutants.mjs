@@ -101,6 +101,28 @@ const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment
 
 export const MUTANTS = [
   {
+    id:     'vehicle-link-trusted',
+    suite:  'designer',
+    module: '../scripts/data/gear-design.mjs', klass: 'GearDesign', method: 'normaliseVehicle',
+    was:    'not shipped — guards TODO 298: a vehicle design link is untrusted; its chassis, plant, improvements and hand-typed option figures must be cleaned, never taken as given',
+    impl:   raw => ({ chassis: '', plant: '', improve: {}, freed: { cf: 0, load: 0 }, smartMaterials: false, options: [], markUpExtra: 0,
+      vehicleClass: 'standard', streetIndexExtra: 0, extraNuyen: 0, ...(raw ?? {}) }),
+  },
+  {
+    id:     'design-claims-trusted',
+    suite:  'designer',
+    module: '../scripts/data/gear-design.mjs', klass: 'GearDesign', method: 'mismatches',
+    was:    'not shipped — guards TODO 298: an imported design whose link claims a lower price than the rules give must be warned, never taken on trust',
+    impl:   () => [],
+  },
+  {
+    id:     'book-vehicle-mod-unpriced',
+    suite:  'designer',
+    module: '../scripts/data/vehicle-mods.mjs', klass: 'VehicleMods', method: 'price',
+    was:    'not shipped — guards TODO 298: a book vehicle’s mod printed with no price (Turbocharging, R3R p.126) is priced from that vehicle on the page, as on install — never 0¥',
+    impl:   () => null,
+  },
+  {
     id:     'wound-assigned-twice',
     suite:  'open-steps',
     module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'runOnce',

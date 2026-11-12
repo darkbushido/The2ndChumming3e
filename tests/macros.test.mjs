@@ -34,8 +34,8 @@ function walk(dir, out = []) {
 export async function run(t) {
   const macroDir = fsPath(new URL('scripts/macros', root));
   const macros   = readdirSync(macroDir).filter(f => f.endsWith('.js')).sort();
-  t.eq('only the working macros remain (the Vehicle Designer, TODO 287)', macros,
-    ['generate-chrome-threat.js', 'import-sr3-character.js', 'populate-mr-johnsons-contacts.js', 'vehicle-designer.js']);
+  t.eq('only the working macros remain (the Vehicle Designer, TODO 287; Import Gear Design, TODO 298)', macros,
+    ['generate-chrome-threat.js', 'import-gear-design.js', 'import-sr3-character.js', 'populate-mr-johnsons-contacts.js', 'vehicle-designer.js']);
 
   /* ── The ready hook creates only macros that exist ─────────────────────────── */
   const sr3e = read('scripts/sr3e.js');

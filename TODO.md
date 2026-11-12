@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**89 open.** 208 done — see [TODO-DONE.md](TODO-DONE.md).
+**90 open.** 208 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -43,7 +43,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 🪄 Spells & drugs | [124](#124) Drug rules — addiction, tolerance and effects<br>[297](#297) The Vehicle Designer as a shop — a wizard with cards, art and a mod shelf |
 | 🖥 Matrix | [120](#120) A Matrix Defragged adapter for HoloSuite Hacking (fork)<br>[128](#128) Overwatch's crash trigger, Suppression, and the Security Sheaf's Trigger Steps<br>[130](#130) Store implant names plainly, with the rating only in the field<br>[178](#178) Ammunition: tip colour by ammo type, and magazine art by weapon class<br>[179](#179) Armour: a drawn icon per garment — and armour mods look wrong<br>[180](#180) Drugs: drawn icons in the same style<br>[181](#181) Firearms: one icon per weapon class<br>[182](#182) Melee, projectile, thrown and vehicle weapons: icons by weapon kind<br>[183](#183) Vehicles and drones: an icon that shows class, movement and seats<br>[184](#184) Adept powers: a meditating figure with an aura<br>[185](#185) Bioware and cyberware: an icon that shows what the implant is<br>[186](#186) Spells: a mystic circle, colour-coded to what the spell does<br>[187](#187) Gear descriptions — paraphrased from the books<br>[188](#188) Rated equipment: rethink "each item × the number of ratings"<br>[257](#257) Top-down token art for every vehicle and drone<br>[292](#292) The Killer, Sparky and Ripper IC: damage and notes follow the old gradings |
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
-| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[293](#293) Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image<br>[294](#294) Little Black Book contacts' alphaware ships as Standard grade — *LBB pp.40-67*<br>[295](#295) `patch-johnson-stats.mjs --check` churns the checkout's LevelDB |
+| 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[293](#293) Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image<br>[294](#294) Little Black Book contacts' alphaware ships as Standard grade — *LBB pp.40-67*<br>[295](#295) `patch-johnson-stats.mjs --check` churns the checkout's LevelDB<br>[298](#298) Web gear designer on GitHub Pages — weapons first, imports into Foundry |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches<br>[286](#286) Pack data no book in the library can verify |
 | 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
@@ -2957,6 +2957,38 @@ worlds (exact old grade only).
 Even with `--check`, `tools/patch-johnson-stats.mjs` opens `packs/sr3e-mr-johnsons-contacts` directly, which rewrites its
 log and MANIFEST. Read through `tools/lib/pack-copy.mjs` instead (the packs-and-migrations rule) and add it to
 `tests/pack-churn.test.mjs`.
+
+## 298. Web gear designer on GitHub Pages — weapons first, imports into Foundry
+
+Agreed design (2026-11-11): [docs/web-designer-proposal.md](docs/web-designer-proposal.md). A stateless page at
+`/designer/vX.Y.Z/` sharing the pure `scripts/data/` rule modules with the in-Foundry designer (TODO 297).
+Public data is stats + book/page only (never SR-OCR). A design travels as a compressed link or JSON of pack ids +
+choices; Foundry imports it through a paste dialog or a macro, recomputes, warns on any mismatch, and imports anyway.
+v1 = weapons (mods, mounts, integral items, ammo); vehicles, then cyberware/decks, follow as their own items.
+
+**Built (weapons v1):** `npm run designer:build` / `npm run designer:serve` (http://localhost:5178); 📥 Import design in the
+Items directory and the "SR3E Import Gear Design" macro. Unit-tested (`tests/designer.test.mjs`, mutant `design-claims-trusted`).
+**Vehicles (2026-11-12, on top of TODO 297's branch, merged in):** the page's Vehicle tab — chassis, power plant,
+functional improvements, design options, R3R mods at their levels, class and mark-up — priced by the same `VehicleDesign`
+the 🛠 Vehicle Designer runs. Importing one opens that designer filled in, on its summary; its Create makes the vehicle
+(`sr3e.actor.create`). A hand-typed option figure in a link is ignored (mutant `vehicle-link-trusted`).
+**The Foundry look (2026-11-12, the maintainer: "the multi step graphic design we used in foundry"):** the 🛠 Vehicle
+Designer's markup and wiring moved to `scripts/data/vehicle-designer-view.mjs`, which the window AND the page render — the
+same five steps. Weapons get a wizard in the same style (`weapon-designer-view.mjs`: gun-type chips, gun cards, accessory
+shelves by mount, ammo, price). **Modify a book vehicle** ("Book stats + aftermarket mods"): the Vehicle tab's second mode
+picks one of the packs' 263 vehicles and adds R3R mods at their printed price, levels, CF and Load — no Design Points; a
+mod printed with no price is priced from that vehicle (`VehicleMods.price`, as on install), the stats shown with the mods
+applied (`VehicleMods.effective`). `GearDesign.assembleBookVehicle`; `book-vehicle-view.mjs`; mutant
+`book-vehicle-mod-unpriced`. Weapons have no "modify from the book" extra: SR3 prints no rules for designing a gun (the
+maintainer: skip it).
+🧪 **Still to check in a live Foundry (vehicles):** paste a vehicle link → the preview shows chassis, DP and price → Import
+opens the designer at its summary with the same DP → Create, as a player, gives an owned vehicle with its mods.
+🧪 **Still to check (book vehicle):** paste a "Modify a book vehicle" link → the preview names the vehicle, its mods and the
+recomputed price → Import, as a player, copies the vehicle (owned, not a template) with the mods on it at the page's prices,
+and the sheet's stats match the page's (Armor, Speed…).
+🧪 **Still to check in a live Foundry (weapons):** paste a designer link → preview shows the weapon, its mods and warnings → Import
+onto a character puts the gun (mods inside, ✎ opens them) and one ammo stockpile on the sheet; a GM's world-item import;
+a player with no character sees the warning.
 
 ### 🧹 Housekeeping
 
