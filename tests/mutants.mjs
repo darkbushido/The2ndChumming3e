@@ -108,6 +108,14 @@ export const MUTANTS = [
     impl:   function (pack) { return this.rulesetAllows(pack); },
   },
   {
+    id:     'vehicle-link-trusted',
+    suite:  'designer',
+    module: '../scripts/data/gear-design.mjs', klass: 'GearDesign', method: 'normaliseVehicle',
+    was:    'not shipped — guards TODO 298: a vehicle design link is untrusted; its chassis, plant, improvements and hand-typed option figures must be cleaned, never taken as given',
+    impl:   raw => ({ chassis: '', plant: '', improve: {}, freed: { cf: 0, load: 0 }, smartMaterials: false, options: [], markUpExtra: 0,
+      vehicleClass: 'standard', streetIndexExtra: 0, extraNuyen: 0, ...(raw ?? {}) }),
+  },
+  {
     id:     'design-claims-trusted',
     suite:  'designer',
     module: '../scripts/data/gear-design.mjs', klass: 'GearDesign', method: 'mismatches',

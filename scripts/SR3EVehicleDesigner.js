@@ -60,7 +60,9 @@ export class SR3EVehicleDesigner extends foundry.applications.api.ApplicationV2 
     // is linked when it is created (the maintainer, 2026-11-09: a tractor and up to five trailers, R3R p.193).
     this.towing = options.towing ?? null;
     this.towedBy = options.towedBy ?? null;
-    const stored = this.actor?.getFlag(SCOPE, FLAG);
+    // `options.design`: a design brought in from the web designer (TODO 298, SR3EDesignImport) — opened on its summary, and
+    // Create makes the vehicle exactly as a design made here would be (sr3e.actor.create: a player owns it).
+    const stored = this.actor?.getFlag(SCOPE, FLAG) ?? options.design ?? null;
     this.design = foundry.utils.mergeObject(blankDesign(), stored ? foundry.utils.deepClone(stored) : {});
     if (!this.design.name) this.design.name = this.actor?.name ?? '';
     this._modIndex = null;

@@ -5,8 +5,9 @@
  * Paste a designer link or the JSON file's text; the dialog looks every reference up in THIS world's compendiums,
  * recomputes the weapon with the system's own rules, and shows the result and every warning (a mismatch with the
  * page's figures, an item this world doesn't have, a mount already taken). Import goes ahead regardless — warn, never
- * refuse — onto an actor you own, or (GM) as a world item. Reached from the Items directory header and the managed
- * "SR3E Import Gear Design" macro.
+ * refuse — onto an actor you own, or (GM) as a world item. A VEHICLE design opens the 🛠 Vehicle Designer (TODO 287/297)
+ * filled in, on its summary: its Create button makes the vehicle — the one create path (`sr3e.actor.create`, a player
+ * owns the result). Reached from the Items directory header and the managed "SR3E Import Gear Design" macro.
  */
 import { GearDesign } from './data/gear-design.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
@@ -28,7 +29,9 @@ export const SR3EDesignImport = {
   /** The parsed, recomputed design for `text`: `{ design, result, warnings }`. Throws when `text` is not a design. */
   async prepare(text) {
     const { design, warnings } = await GearDesign.parse(text);
-    const result = await GearDesign.assemble(design, SR3EDesignImport.lookup, { newId: () => foundry.utils.randomID() });
+    const result = design.kind === 'vehicle'
+      ? await GearDesign.assembleVehicle(design, SR3EDesignImport.lookup)
+      : await GearDesign.assemble(design, SR3EDesignImport.lookup, { newId: () => foundry.utils.randomID() });
     return { design, result, warnings: [...warnings, ...GearDesign.mismatches(design, result.totals, game.system.version), ...result.warnings] };
   },
 
@@ -44,7 +47,6 @@ export const SR3EDesignImport = {
   /** Open the paste dialog; `text` pre-fills it (the macro passes a link). */
   async open(text = '') {
     const targets = SR3EDesignImport.targets();
-    if (!targets.length) { ui.notifications.warn('You own no character to import onto.'); return null; }
     let prepared = null, chosen = null;
     const wire = (_app, el) => {
       const area = el.querySelector('#sr3e-design-text');
@@ -58,6 +60,14 @@ export const SR3EDesignImport = {
           const p = await SR3EDesignImport.prepare(area.value);
           if (mine !== seq) return;
           prepared = p;
+          el.querySelector('.sr3e-design-target-row').hidden = p.design.kind === 'vehicle';
+          if (p.design.kind === 'vehicle') {
+            const { designer, totals } = p.result;
+            out.innerHTML = `<p><strong>${esc(designer.name || totals.chassis || 'No chassis')}</strong>${totals.chassis ? ` — ${esc(totals.chassis)}, ${totals.dp} Design Points, ${yen(totals.cost)} recomputed` : ''}</p>`
+              + `<p class="sr-muted">${designer.mods.length ? `Mods: ${designer.mods.map(m => esc(m.name)).join(', ')}` : 'No modifications.'}<br>Import opens the 🛠 Vehicle Designer — check it, then Create.</p>`
+              + p.warnings.map(w => `<p style="color:var(--sr-amber)">⚠ ${esc(w)}</p>`).join('');
+            return;
+          }
           const { weapon, ammo, totals } = p.result;
           out.innerHTML = `<p><strong>${esc(weapon?.name ?? 'No weapon')}</strong>${weapon ? ` — ${yen(totals.cost)} recomputed` : ''}</p>`
             + (weapon ? `<p class="sr-muted">${installedList(weapon)}${ammo.length ? `<br>Ammo: ${ammo.map(a => `${esc(a.data.name)} ×${a.qty}`).join(', ')}` : ''}</p>` : '')
@@ -76,8 +86,8 @@ export const SR3EDesignImport = {
       content: `<div class="sr3e-inner">
         <label for="sr3e-design-text">Designer link or JSON</label>
         <textarea id="sr3e-design-text" rows="4" style="width:100%">${esc(text)}</textarea>
-        <label for="sr3e-design-target">Import onto</label>
-        <select id="sr3e-design-target">${targets.map(t => `<option value="${esc(t.value)}">${esc(t.label)}</option>`).join('')}</select>
+        <div class="sr3e-design-target-row"><label for="sr3e-design-target">Import onto</label>
+        <select id="sr3e-design-target">${targets.map(t => `<option value="${esc(t.value)}">${esc(t.label)}</option>`).join('')}</select></div>
         <div id="sr3e-design-preview"></div></div>`,
       buttons: [
         { label: 'Import', action: 'import', default: true, callback: (_e, _b, dialog) => { chosen = dialog.element.querySelector('#sr3e-design-target')?.value ?? null; } },
@@ -86,6 +96,11 @@ export const SR3EDesignImport = {
       render: (_event, dialog) => wire(dialog, dialog.element),
     });
     if (chosen === null) return null;
+    if (prepared?.design.kind === 'vehicle') {
+      if (!prepared.result.designer.chassis) { ui.notifications.warn('Nothing to import — the design has no chassis.'); return null; }
+      return game.sr3e.SR3EVehicleDesigner.open(null, { design: prepared.result.designer });
+    }
+    if (!targets.length) { ui.notifications.warn('You own no character to import onto.'); return null; }
     if (!prepared?.result?.weapon) { ui.notifications.warn('Nothing to import — the design has no weapon this world knows.'); return null; }
     return SR3EDesignImport.create(prepared.result, chosen);
   },
