@@ -70,7 +70,7 @@ export async function run(t) {
   t.ok('…a pop-up mini turret only 1 (p.141)', /^Weapon Value 1 — up to an SMG/.test(VehicleMounts.turretHolds({ name: 'Mini-Turret(Pop-Up) (Vehicle)' })));
   t.is('…a pintle mount is not a turret', VehicleMounts.turretHolds({ name: 'Pintle Mount (Vehicle)' }), null);
   t.ok('…every example fits the value it is listed at', VALUE_EXAMPLES.every(([v], i, a) => i === 0 || a[i - 1][0] < v));
-  t.ok('the designer shop shows it on turret cards', readFileSync(new URL('../scripts/SR3EVehicleDesigner.js', import.meta.url), 'utf8').includes('VehicleMounts.turretHolds(m)'));
+  t.ok('the designer shop shows it on turret cards', (readFileSync(new URL('../scripts/SR3EVehicleDesigner.js', import.meta.url), 'utf8') + readFileSync(new URL('../scripts/data/vehicle-designer-view.mjs', import.meta.url), 'utf8')).includes('VehicleMounts.turretHolds(m)'));
   t.eq('hardpoints for MMG and larger and every vehicle weapon; LMGs and small arms may use firmpoints (p.135)',
     [gun('', 'X', 'MMG'), gun('', 'X', 'ACan'), vw('', 'X', 'Autocannon'), gun('', 'X', 'LMG'), gun('', 'X', 'AsRf')].map(w => VehicleMounts.needsHardpoint(w)),
     [true, true, true, false, false]);

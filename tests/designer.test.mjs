@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { GearDesign, LIMITS } from '../scripts/data/gear-design.mjs';
 import { VehicleDesign } from '../scripts/data/vehicle-design.mjs';
 import { VehicleDesignActor } from '../scripts/data/vehicle-design-actor.mjs';
-import { catalogue, publicDoc, moduleClosure, ratingTable, FIELDS, RATING_FIELDS } from '../tools/build-designer.mjs';
+import { catalogue, publicDoc, moduleClosure, ratingTable, FIELDS, RATING_FIELDS, designerCss } from '../tools/build-designer.mjs';
 
 export const name = 'designer';
 const src = p => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
@@ -21,11 +21,12 @@ export async function run(t) {
   t.ok('the catalogue has firearms, accessories and ammo', ['firearm', 'mod', 'ammo'].every(k => Object.values(items).some(i => i.kind === k)));
   const leaks = [];
   for (const [ref, it] of Object.entries(items)) {
-    for (const k of Object.keys(it)) if (!['kind', ...FIELDS.top, 'system', 'flags'].includes(k)) leaks.push(`${ref}.${k}`);
+    for (const k of Object.keys(it)) if (!['kind', ...FIELDS.top, 'img', 'system', 'flags'].includes(k)) leaks.push(`${ref}.${k}`);
     for (const k of Object.keys(it.system)) if (!FIELDS[it.kind].includes(k)) leaks.push(`${ref}.system.${k}`);
     for (const m of it.system.installed ?? []) for (const k of Object.keys(m.system)) if (!FIELDS.mod.includes(k)) leaks.push(`${ref} installed .${k}`);
   }
   t.eq('no field outside the allow-list reaches the page', leaks.slice(0, 5), []);
+  t.ok('an icon is only a path into the page’s own icons/ folder', Object.values(items).every(i => i.img === undefined || /^icons\/[\w-]+\.(svg|webp|png)$/.test(i.img)));
   t.ok('no description or notes text anywhere in the catalogue', !/"(description|notes)"/.test(JSON.stringify(cat)));
   t.ok('the build never reads SR-OCR', !/readFileSync\([^)]*SR-OCR|join\([^)]*'SR-OCR'/.test(src('tools/build-designer.mjs')));
   t.eq('a mod whose mount is only in its description still publishes it', publicDoc({ _id: 'x', name: 'Silencer (Weapon)', type: 'gear',
@@ -33,6 +34,16 @@ export async function run(t) {
   const table = await ratingTable();
   t.ok('the published rating table holds only weapon, ammunition and vehicle-mod rows', Object.keys(table).every(k => /^(weapon|ammunition|vehicle)\|/.test(k)));
   t.ok('…and only stat fields', Object.values(table).every(lv => Object.values(lv).every(row => Object.keys(row).every(f => RATING_FIELDS.includes(f)))));
+
+  const css = designerCss();
+  t.ok('the page gets the window’s colour tokens and the vd-* block', css.includes('--sr-bg') && css.includes('.vd-wizard'));
+  const b = src('tools/build-designer.mjs');
+  t.ok('the build ships both wizard views', b.includes("moduleClosure('vehicle-designer-view.mjs')") && b.includes("moduleClosure('weapon-designer-view.mjs')"));
+  const app = src('designer/app.js');
+  t.ok('the page renders the shared wizards, not its own markup', app.includes('WeaponDesignerView.html(') && app.includes('VehicleDesignerView.html('));
+  t.ok('the Foundry window renders the same vehicle view', src('scripts/SR3EVehicleDesigner.js').includes('VehicleDesignerView.html('));
+  const allMods = [...new Set([...moduleClosure(), ...moduleClosure('vehicle-designer-view.mjs'), ...moduleClosure('weapon-designer-view.mjs')])];
+  t.eq('no wizard module touches a Foundry global', allMods.filter(f => /(?<![.\w])(?:game|foundry|ui|Hooks|CONFIG)\.\w/.test(src(`scripts/data/${f}`).replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, ''))), []);
 
   /* ── One shared core, no Foundry in it ─────────────────────────────────────── */
   const mods = moduleClosure();

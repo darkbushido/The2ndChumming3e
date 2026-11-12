@@ -155,6 +155,8 @@ export const TOKEN_DIR = `${PICTURE_DIR}/top`;
 export const tokenImage = art => (PICTURES.has(art) ? `${TOKEN_DIR}/${art}.webp` : null);
 
 export const DesignerArt = {
+  /** Where `picture` finds the chassis pictures — Foundry's system path; the web designer points it at its own copy (TODO 298). */
+  dir: PICTURE_DIR,
   /** A chassis card's silhouette (a drone gets the antenna badge). */
   chassis(category, drone = false) {
     return svg((CHASSIS[category] ?? CHASSIS.special) + (drone ? DRONE : ''));
@@ -172,7 +174,7 @@ export const DesignerArt = {
   picture(art, category, drone = false, scale = 1) {
     if (!PICTURES.has(art)) return this.vehicle(art, category, drone, scale);
     const s = Math.round(Math.min(1, Math.max(0.4, scale)) * 100);
-    return `<div class="vd-pic">${drone ? `<span class="vd-pic-drone">${svg(DRONE)}</span>` : ''}<img src="${PICTURE_DIR}/${art}.webp" alt="" loading="lazy" style="max-width:${s}%;max-height:${s}%"/></div>`;
+    return `<div class="vd-pic">${drone ? `<span class="vd-pic-drone">${svg(DRONE)}</span>` : ''}<img src="${this.dir}/${art}.webp" alt="" loading="lazy" style="max-width:${s}%;max-height:${s}%"/></div>`;
   },
   vehicle(art, category, drone = false, scale = 1) {
     const body = ART[art] ?? CHASSIS[category] ?? CHASSIS.special;

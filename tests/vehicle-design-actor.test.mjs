@@ -36,7 +36,7 @@ export async function run(t) {
   t.eq('chassis-relative mod needs the chassis', A.modRow({ name: 'Gyro', system: { designCost: 'Chassis x 0.25' } }, { chassis: 100 }).dp, 25);
 
   // The window (source-level — it needs Foundry).
-  const w = src('scripts/SR3EVehicleDesigner.js');
+  const w = (src('scripts/SR3EVehicleDesigner.js') + src('scripts/data/vehicle-designer-view.mjs'));
   t.ok('Create goes through sr3e.actor.create', w.includes("asGM('sr3e.actor.create'"));
   t.ok('the design is stored on the vehicle', w.includes('flags.${SCOPE}.${FLAG}') && FLAG === 'design');
   t.ok('re-save offers the changes through DialogV2.wait', /changes\(this\.actor\.toObject\(\)/.test(w) && w.includes('DialogV2.wait'));
@@ -100,10 +100,10 @@ export async function run(t) {
   t.ok('…more than the tractor\'s Load warns', !A.pull(15000, loads).ok && /16,000 kg.*15,000 kg/.test(A.pull(15000, loads).warning));
   t.is('…exactly its Load is fine', A.pull(16000, loads).ok, true);
 
-  const win = src('scripts/SR3EVehicleDesigner.js');
+  const win = (src('scripts/SR3EVehicleDesigner.js') + src('scripts/data/vehicle-designer-view.mjs'));
   t.ok('a created trailer offers to design its tow vehicle', win.includes('🚚 Design its tow vehicle') && win.includes("SR3EVehicleDesigner.open(null, { towing: this.actor })"));
   t.ok('a tractor offers to add a trailer, disabled at five', /vd-add-trailer" \$\{n >= MAX_TRAILERS \? 'disabled' : ''\}/.test(win) && win.includes("SR3EVehicleDesigner.open(null, { towedBy: this.actor })"));
-  t.ok('…the price step lists its trailers with Hitched ticks', win.includes('${this._trailersPanel(r)}') && win.includes('class="vd-hitch"'));
+  t.ok('…the price step lists its trailers with Hitched ticks', win.includes("(view.trailersPanel?.(r) ?? '')") && win.includes('class="vd-hitch"'));
   t.ok('…a tick writes the hitch on the tractor', /VehicleDesignActor\.hitch\(SCOPE, this\.actor\.getFlag\(SCOPE, TOW_FLAG\), box\.dataset\.uuid, box\.checked\)/.test(win));
   t.ok('…and the pull check warns', /VehicleDesignActor\.pull\(r\.load\?\.total \?\? null, rows\)/.test(win));
   t.ok('creating a trailer for a tractor links it, or says the tractor is full', /towLink\(SCOPE, created, this\.towedBy, this\.towedBy\.getFlag\(SCOPE, TOW_FLAG\)\)[\s\S]{0,80}link\.full/.test(win));

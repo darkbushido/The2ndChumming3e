@@ -67,7 +67,7 @@ export async function run(t) {
   t.ok('…nor a Body 4 drone', !!opt('setup', { category: 'car', body: 4, drone: true }));
   t.ok('…nor amenities or a facility', !!opt('amenities', { maxCf: 15 }) && !!opt('facility', { maxCf: 15 }));
   t.is('…a big enough chassis takes them, whatever its type', opt('workshop', { category: 'car', maxCf: 60 }), null);
-  t.ok('the designer passes the chassis maximum CF', /maxCf: VehicleDesign\.cell\(ch\.maxCf, body\)/.test(src('scripts/SR3EVehicleDesigner.js')));
+  t.ok('the designer passes the chassis maximum CF', /maxCf: VehicleDesign\.cell\(ch\.maxCf, body\)/.test((src('scripts/SR3EVehicleDesigner.js') + src('scripts/data/vehicle-designer-view.mjs'))));
   t.is('an unrestricted option always fits', opt('storage', { category: 'bike' }), null);
 
   // Art: every chassis type, plant and shelf has its own drawing.
@@ -78,15 +78,15 @@ export async function run(t) {
   t.ok('a drone carries the antenna badge', A.chassis('car', true).length > A.chassis('car').length);
 
   // The wizard's wiring (source-level: the window needs Foundry).
-  const w = src('scripts/SR3EVehicleDesigner.js');
+  const w = (src('scripts/SR3EVehicleDesigner.js') + src('scripts/data/vehicle-designer-view.mjs'));
   t.ok('the result bar renders above the steps', w.indexOf('${this._resultBar(r)}') < w.indexOf('<nav class="vd-steps">'));
   t.ok('five steps: chassis, plant, options, mods, price',
-    ['_stepChassis', '_stepPlant', '_stepOptions', '_stepMods', '_stepPrice'].every(f => w.includes(`${f}(`)));
+    ['stepChassis', 'stepPlant', 'stepOptions', 'stepMods', 'stepPrice'].every(f => w.includes(`  ${f}(view`)));
   t.ok('a stored design reopens on step 5', /this\.step = stored \? 5 : 1/.test(w));
   t.ok('options that don\'t fit are hidden unless the switch is on', /misfit\(o\.id, c\)[\s\S]{0,80}if \(why && !all\)/.test(w));
   t.ok('mods that don\'t fit are hidden unless the switch is on', /filter\(x => all \|\| !x\.why\)/.test(w));
   t.ok('mod cards show the one-liner', /card\.blurb/.test(w));
-  t.ok('picking a chassis moves on to the power plant', /data-chassis[\s\S]{0,600}this\.step = 2/.test(w));
+  t.ok('picking a chassis moves on to the power plant', /data-chassis[\s\S]{0,600}view.step = 2/.test(w));
   t.ok('no jQuery in the designer', !/\$\(|\.on\('|\.val\(/.test(w));
   t.ok('the styles live in sr3e.css', src('styles/sr3e.css').includes('.vd-result {'));
   // Second pass (the maintainer, 2026-11-08) — chassis drawings and one-liners.
@@ -137,7 +137,7 @@ export async function run(t) {
     t.ok('a Hybrid Engine is an electric drive', M.electricExtra([{ id: 'hybrid' }], plantOf));
     t.ok('…so is an Auxiliary Engine on an electric plant', M.electricExtra([{ id: 'aux-engine', auxPlant: 'e1' }], plantOf));
     t.ok('…not one on a gasoline plant', !M.electricExtra([{ id: 'aux-engine', auxPlant: 'g1' }], plantOf));
-    t.ok('the designer passes it to the fit check', w.includes('electric: ModCatalog.electricExtra(this.design.options ?? []'));
+    t.ok('the designer passes it to the fit check', w.includes('electric: ModCatalog.electricExtra(view.design.options ?? []'));
   }
   t.ok('the result bar carries the book’s second stat line', ['Seating', 'Entry', 'Fuel', 'Econ', 'Range', 'S/B', 'L/T', 'Chassis', 'SI', 'Avail'].every(l => w.includes(`chip('${l}'`)));
   t.is('a shortened name has its full form for the mouse-over', M.names('Rem-Contr. Intr. Bod (Vehicle)').full, 'Remote-Control Interface Body');
@@ -187,7 +187,7 @@ export async function run(t) {
   t.ok('a towed chassis skips the plant cards', /info\.towed[\s\S]{0,400}Towed — no power plant/.test(w));
   t.ok('tuning lays out start, added, result and limit', /<th>Start<\/th><th>Added<\/th><th>Result<\/th><th>Limit<\/th>/.test(w));
   t.ok('every tuning row has a tooltip', w.includes('<tr class="${over ? \'vd-over-row\' : \'\'}" title="${esc(tip)}">'));
-  t.ok('a once-per-vehicle mod is not added twice', /!ModCatalog\.stacks\(m\.name\) && this\.design\.mods\.some/.test(w));
+  t.ok('a once-per-vehicle mod is not added twice', /!ModCatalog\.stacks\(m\.name\) && view.design.mods\.some/.test(w));
   t.ok('the Level box is only for rated mods, capped at the max', /\$\{rated \? `<label[\s\S]{0,200}max="\$\{max\}"/.test(w));
   t.ok('the cart says why it warns', w.includes('vd-cart-why">⚠ ${esc(why)}'));
   t.ok('an aftermarket mod prices at 0 points', w.includes('aftermarket(m.name)) Object.assign(row, { dp: 0, unpriced: false })'));

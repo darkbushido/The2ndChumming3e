@@ -54,6 +54,6 @@ export async function run(t) {
 
   /* ── Wiring ────────────────────────────────────────────────────────────── */
   t.ok('the preCreateToken hook scales vehicle tokens', /TokenScale\.forToken\(token, token\.actor, token\.parent\?\.grid/.test(sr3e));
-  const des = readFileSync(new URL('../scripts/SR3EVehicleDesigner.js', import.meta.url), 'utf8');
+  const des = (readFileSync(new URL('../scripts/SR3EVehicleDesigner.js', import.meta.url), 'utf8') + readFileSync(new URL('../scripts/data/vehicle-designer-view.mjs', import.meta.url), 'utf8'));
   t.ok('the designer stamps the footprint on a new vehicle', des.includes('[`flags.${SCOPE}.sizeM`]: fp'));
 }

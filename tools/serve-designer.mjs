@@ -5,7 +5,8 @@ import { join, extname, resolve, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'dist', 'designer');
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json' };
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json', '.css': 'text/css',
+  '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png' };
 createServer(async (req, res) => {
   const path = resolve(join(ROOT, decodeURIComponent(new URL(req.url, 'http://x').pathname)));
   const file = path === ROOT ? join(ROOT, 'index.html') : path;
