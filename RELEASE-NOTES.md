@@ -115,6 +115,16 @@ Mods go *inside* things now: a gun carries its scope and gas vent, armour its ge
 - **Vehicle tokens come in to scale**: the vehicle's length in metres ÷ the scene's grid distance. Rideable seats come from the vehicle's Seating. A vehicle records its size when it is created, so a renamed copy still scales.
 - Fixes: each mod is listed once, and Amphibious Package is one rated mod; adding a Pop-Up or Anti-Air turret no longer marks the other turrets of its size as in the cart.
 
+<!-- CONDITIONAL: this section ships only if TODO 298 (claude/web-gear-designer-37eb2b) passes its live Foundry check and is merged into main. The weapons part is built (8b57012a). The vehicle part is NOT built on that branch as of 2026-11-12. Keep that bullet only if the vehicle web designer lands before the release. -->
+### Design gear on the web, bring it into Foundry
+
+- **A gear designer website**, published with the guides at `/designer/latest/`, plus a frozen copy for each version (`/designer/v0.9.0/`). Players can design without opening Foundry. It uses the same rules code as the system, and shows stats and book pages only, with no rule text.
+- **Weapons**: pick a gun, then fit its accessories and mods, mounts, integral items and ammunition. You get the same warnings the system gives.
+- **Vehicles**: the Vehicle Designer above, on the web. ⚠ *DRAFT: not built yet.*
+- **Sharing a design**: a design is a link (or a `.json` file) you can paste into chat or save.
+- **📥 Import design** (Items directory) or the **SR3E Import Gear Design** macro brings it into Foundry. Paste the link and you get a preview. Then import it onto a character you own: the gun arrives with its mods inside it and one ammo stockpile. A GM can also import it as a world item.
+- **Foundry's numbers win.** The import rebuilds the item from the system's own compendiums and re-runs the rules. Any difference, unknown entry or version mismatch is listed, and you can still import (warn, never refuse). A link made with an older version of the designer still imports.
+
 ### Behind the scenes
 
 - Every 3e book's PDF text layer was checked against OCR (TODO 296): no misread in any pack value or code citation besides Hull Factor (above).
