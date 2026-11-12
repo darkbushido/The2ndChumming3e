@@ -28,6 +28,7 @@ export const KIND_OF = doc => {
   if (doc?.type === 'ammunition') return 'ammo';
   if (doc?.type === 'gear' && doc?.system?.modFor === 'weapon') return 'mod';
   if (doc?.type === 'vehiclemod') return 'vmod';
+  if (doc?.type === 'vehicle') return 'vehicle';   // a book vehicle (an Actor) — "modify a book vehicle"
   return null;
 };
 
@@ -42,19 +43,30 @@ export const FIELDS = {
     'legality', 'gunClass'],
   vmod: ['cost', 'availability', 'streetIndex', 'cfCost', 'load', 'bookPage', 'rating', 'modFor', 'legality', 'designCost',
     'designCf', 'designLoad'],
+  vehicle: ['vehicleType', 'cost', 'streetIndex', 'availability', 'seating', 'bookPage', 'attributes'],
   /** The one flag the rules read on an installed accessory. */
   flags: ['integral'],
 };
 
 const pick = (obj, keys) => Object.fromEntries(keys.filter(k => obj?.[k] !== undefined).map(k => [k, obj[k]]));
 
+/** The system's own item icons and vehicle textures — the only pictures published (as `icons/<file>`). */
+export const ICON = /^systems\/The2ndChumming3e\/styles\/(icons|textures\/vehicles)\/([\w-]+\.(?:svg|webp|png))$/;
+/** Where a published `icons/<file>` comes from. */
+const iconSource = new Map();
+
 /** One document cut down to the allow-list. */
 export function publicDoc(doc, kind = KIND_OF(doc)) {
   const out = pick(doc, FIELDS.top);
   // Its icon, as the page's own copy (`icons/`): a path, never text. Only the system's own icons are published.
-  const icon = /^systems\/The2ndChumming3e\/styles\/icons\/([\w-]+\.(?:svg|webp|png))$/.exec(String(doc.img ?? ''))?.[1];
-  if (icon) out.img = `icons/${icon}`;
+  const icon = ICON.exec(String(doc.img ?? ''));
+  if (icon) out.img = `icons/${icon[2]}`;
   out.system = pick(doc.system, FIELDS[kind]);
+  // A vehicle's attributes are only its numbers — `{ handling: { base: 4, value: 4 } … }`, nothing else in them.
+  if (kind === 'vehicle' && out.system.attributes) {
+    out.system.attributes = Object.fromEntries(Object.entries(out.system.attributes).filter(([k]) => /^\w+$/.test(k))
+      .map(([k, a]) => [k, pick(a, ['base', 'value'].filter(x => Number.isFinite(a?.[x])))]));
+  }
   // A mod's mount is often only in its description ("Mount: Top") — which never ships. Publish what the rules read from it.
   if (kind === 'mod' && !out.system.mount) {
     const mounts = ItemMods.mountsOf(doc);
@@ -76,7 +88,12 @@ export function catalogue(root = ROOT) {
     for (const f of readdirSync(join(root, 'packs-src', pack)).filter(x => x.endsWith('.json')).sort()) {
       const { doc } = JSON.parse(readFileSync(join(root, 'packs-src', pack, f), 'utf8'));
       const kind = KIND_OF(doc);
-      if (kind && doc._id) items[`${pack}/${doc._id}`] = { kind, ...publicDoc(doc, kind) };
+      if (!kind || !doc._id) continue;
+      items[`${pack}/${doc._id}`] = { kind, ...publicDoc(doc, kind) };
+      for (const img of [doc.img, ...(doc.system?.installed ?? []).map(m => m.img)]) {
+        const m = ICON.exec(String(img ?? ''));
+        if (m) iconSource.set(m[2], join(root, 'styles', m[1], m[2]));
+      }
     }
   }
   const packs = Object.fromEntries([...new Set(Object.keys(items).map(r => r.split('/')[0]))].map(p => [p, label[p]]));
@@ -130,7 +147,7 @@ export async function build(out) {
   rmSync(out, { recursive: true, force: true });
   mkdirSync(join(out, 'lib'), { recursive: true });
   for (const f of readdirSync(join(ROOT, 'designer'))) copyFileSync(join(ROOT, 'designer', f), join(out, f));
-  const mods = [...new Set([...moduleClosure(), ...moduleClosure('vehicle-designer-view.mjs'), ...moduleClosure('weapon-designer-view.mjs')])];
+  const mods = [...new Set([...moduleClosure(), ...moduleClosure('vehicle-designer-view.mjs'), ...moduleClosure('weapon-designer-view.mjs'), ...moduleClosure('book-vehicle-view.mjs')])];
   for (const f of mods) {
     if (f === 'mod-rating-table.mjs') writeFileSync(join(out, 'lib', f), ratingTableSource());
     else copyFileSync(join(ROOT, 'scripts', 'data', f), join(out, 'lib', f));
@@ -143,7 +160,7 @@ export async function build(out) {
   // The item icons the catalogue names.
   mkdirSync(join(out, 'icons'), { recursive: true });
   const icons = new Set(Object.values(cat.items).flatMap(i => [i.img, ...(i.system.installed ?? []).map(m => m.img)]).filter(Boolean));
-  for (const p of icons) copyFileSync(join(ROOT, 'styles', p), join(out, p));
+  for (const p of icons) copyFileSync(iconSource.get(p.slice('icons/'.length)), join(out, p));
   return { modules: mods.length, items: Object.keys(cat.items).length, system: cat.system };
 }
 

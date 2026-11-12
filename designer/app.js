@@ -1,13 +1,15 @@
 /**
  * The web gear designer's page · TODO 298. Two wizards in the 🛠 Vehicle Designer's look:
  *  - Weapon — `lib/weapon-designer-view.mjs`, priced by `GearDesign.assemble`;
- *  - Vehicle — `lib/vehicle-designer-view.mjs`, the very markup and wiring of the Foundry window (TODO 287/297).
+ *  - Vehicle — `lib/vehicle-designer-view.mjs`, the very markup and wiring of the Foundry window (TODO 287/297);
+ *    or a book vehicle with aftermarket mods — `lib/book-vehicle-view.mjs`, priced by `GearDesign.assembleBookVehicle`.
  * `lib/` is the system's own scripts/data modules, copied as-is by tools/build-designer.mjs. This file only keeps the
  * state, the link and the two buttons on the last step.
  */
 import { GearDesign } from './lib/gear-design.mjs';
 import { WeaponDesignerView } from './lib/weapon-designer-view.mjs';
 import { VehicleDesignerView, blankDesign } from './lib/vehicle-designer-view.mjs';
+import { BookVehicleView } from './lib/book-vehicle-view.mjs';
 import { DesignerArt } from './lib/designer-art.mjs';
 
 const $ = sel => document.querySelector(sel);
@@ -25,10 +27,14 @@ const refOfUuid = uuid => vmods.find(m => m.uuid === uuid)?.ref ?? null;
 
 const FINISH = `<button type="button" class="vd-nav vd-copy">🔗 Copy link</button><button type="button" class="vd-next vd-download">💾 Download JSON</button>`;
 let kind = 'weapon';
+let mode = 'design';   // the vehicle tab: 'design' (R3R) or 'book'
 const weapon = { design: GearDesign.blank(cat.system), ui: {}, step: 1, items, r: null,
   img: ref => items[ref]?.img ?? '', finish: () => FINISH };
 const vehicle = { design: blankDesign(), ui: {}, step: 1, mods: vmods, modAll: vmods, isActor: false,
   finishLabel: 'Price & share', finish: ch => (ch ? FINISH : '') };
+
+const book = { design: { ...GearDesign.blank(cat.system), kind: 'vehicle' }, ui: {}, step: 1, items, r: null,
+  img: ref => items[ref]?.img ?? '', finish: () => FINISH };
 
 /** The vehicle wizard's design as a link's design: its mods become references. */
 function vehicleLink() {
@@ -47,7 +53,11 @@ if (fromHash) {
     loadWarnings.push(...r.warnings);
     if (r.design.system && r.design.system !== cat.system) loadWarnings.push(`This link was made with system ${r.design.system}; shown with ${cat.system}'s rules.`);
     kind = r.design.kind;
-    if (kind === 'vehicle') {
+    if (kind === 'vehicle' && r.design.base) {
+      mode = 'book';
+      book.design = { ...r.design, system: cat.system };
+      book.step = 3;
+    } else if (kind === 'vehicle') {
       const a = await GearDesign.assembleVehicle(r.design, lookup);
       Object.assign(vehicle.design, a.designer);
       vehicle.step = a.designer.chassis ? 5 : 1;
@@ -62,9 +72,13 @@ if (fromHash) {
 let seq = 0;
 async function render() {
   const mine = ++seq;
-  document.querySelectorAll('[data-kind]').forEach(b => b.classList.toggle('active', b.dataset.kind === kind));
+  document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => { mode = b.dataset.mode; loadWarnings.length = 0; render(); }));
+document.querySelectorAll('[data-kind]').forEach(b => b.classList.toggle('active', b.dataset.kind === kind));
   $('#weapon-root').hidden = kind !== 'weapon';
-  $('#vehicle-root').hidden = kind !== 'vehicle';
+  $('#vehicle-modes').hidden = kind !== 'vehicle';
+  document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  $('#vehicle-root').hidden = kind !== 'vehicle' || mode !== 'design';
+  $('#book-root').hidden = kind !== 'vehicle' || mode !== 'book';
   $('#loadwarn').innerHTML = loadWarnings.map(w => `<div class="loadwarn">⚠ ${esc(w)}</div>`).join('');
 
   let link;
@@ -77,6 +91,16 @@ async function render() {
     el.innerHTML = WeaponDesignerView.html(weapon);
     WeaponDesignerView.wire(el, weapon, { render });
     design.claimed = { cost: r.totals.cost, rc: r.totals.rc };
+    link = design;
+  } else if (mode === 'book') {
+    const { design } = GearDesign.normalise(book.design);
+    const r = await GearDesign.assembleBookVehicle(design, lookup);
+    if (mine !== seq) return;
+    book.r = r;
+    const el = $('#book-root .vd-wizard');
+    el.innerHTML = BookVehicleView.html(book);
+    BookVehicleView.wire(el, book, { render });
+    design.claimed = { cost: r.totals.cost };
     link = design;
   } else {
     const el = $('#vehicle-root .vd-wizard');
@@ -95,13 +119,13 @@ async function render() {
 }
 
 function wireFinish(link) {
-  const root = kind === 'weapon' ? $('#weapon-root') : $('#vehicle-root');
+  const root = kind === 'weapon' ? $('#weapon-root') : mode === 'book' ? $('#book-root') : $('#vehicle-root');
   root.querySelector('.vd-copy')?.addEventListener('click', async e => {
     try { await navigator.clipboard.writeText(location.href); e.target.textContent = '✓ Copied'; }
     catch { prompt('Copy this link:', location.href); }
   });
   root.querySelector('.vd-download')?.addEventListener('click', () => {
-    const name = link.name || (kind === 'weapon' ? items[link.base]?.name : vehicle.design.chassis) || 'design';
+    const name = link.name || (link.base ? items[link.base]?.name : vehicle.design.chassis) || 'design';
     const blob = new Blob([JSON.stringify(link, null, 2)], { type: 'application/json' });
     const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: `${name.replace(/[^\w-]+/g, '_')}.sr3e-design.json` });
     a.click();

@@ -13,5 +13,5 @@ createServer(async (req, res) => {
   if (!file.startsWith(ROOT + sep) && file !== ROOT) { res.writeHead(403).end(); return; }
   let body;
   try { body = await readFile(file); } catch { res.writeHead(404).end('not found'); return; }
-  res.writeHead(200, { 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' }).end(body);
+  res.writeHead(200, { 'cache-control': 'no-store', 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' }).end(body);
 }).listen(5178, () => console.log('designer on http://localhost:5178'));

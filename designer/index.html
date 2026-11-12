@@ -22,6 +22,8 @@
   .wizard input, .wizard select, .wizard button { font: inherit; }
   .notice { color: var(--sr-muted); font-size: .8rem; margin-top: 10px; }
   .loadwarn { background: var(--sr-amber-bg); color: var(--sr-amber); border-radius: var(--r); padding: 6px 8px; margin: 6px 0; }
+  .modes button { font-size: .85rem; padding: 4px 10px; }
+  .vd-chip.vd-changed b { color: var(--sr-green); }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -38,7 +40,12 @@
   </div>
   <div id="loadwarn"></div>
   <div class="wizard sr3e sr3e-vehicle-designer" id="weapon-root"><div class="sr3e-inner vd-wizard"></div></div>
+  <div class="kinds modes" id="vehicle-modes" hidden>
+    <button type="button" data-mode="design">🛠 Design from a chassis (R3R)</button>
+    <button type="button" data-mode="book">📖 Modify a book vehicle</button>
+  </div>
   <div class="wizard sr3e sr3e-vehicle-designer" id="vehicle-root" hidden><div class="sr3e-inner vd-wizard"></div></div>
+  <div class="wizard sr3e sr3e-vehicle-designer" id="book-root" hidden><div class="sr3e-inner vd-wizard"></div></div>
   <p class="notice">Unofficial fan tool for Shadowrun 3rd Edition. Names, numbers and page references only — see the books for
     the rules. Shadowrun is a trademark of its owners; no rulebook text is reproduced here.</p>
 </main>

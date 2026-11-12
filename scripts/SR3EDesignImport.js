@@ -7,7 +7,8 @@
  * page's figures, an item this world doesn't have, a mount already taken). Import goes ahead regardless — warn, never
  * refuse — onto an actor you own, or (GM) as a world item. A VEHICLE design opens the 🛠 Vehicle Designer (TODO 287/297)
  * filled in, on its summary: its Create button makes the vehicle — the one create path (`sr3e.actor.create`, a player
- * owns the result). Reached from the Items directory header and the managed "SR3E Import Gear Design" macro.
+ * owns the result). A BOOK vehicle with aftermarket mods (a design with `base`) is copied from its compendium through the same
+ * verb and gets its mods, priced as the page priced them. Reached from the Items directory header and the managed "SR3E Import Gear Design" macro.
  */
 import { GearDesign } from './data/gear-design.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
@@ -16,20 +17,21 @@ const esc = v => foundry.utils.escapeHTML(String(v ?? ''));
 const yen = n => `${Math.round(Number(n) || 0).toLocaleString()}¥`;
 
 export const SR3EDesignImport = {
-  /** Look a design reference up in this world's packs: the item's data, or null. */
-  async lookup(ref) {
-    const uuid = GearDesign.uuidOf(ref);
+  /** Look a design reference up in this world's packs: the document's data (an Item, or with `'Actor'` a vehicle), or null. */
+  async lookup(ref, documentName = 'Item') {
+    const uuid = GearDesign.uuidOf(ref, documentName);
     if (!uuid) return null;
     try {
       const doc = await fromUuid(uuid);
-      return doc?.documentName === 'Item' ? doc.toObject() : null;
+      return doc?.documentName === documentName ? doc.toObject() : null;
     } catch { return null; }
   },
 
   /** The parsed, recomputed design for `text`: `{ design, result, warnings }`. Throws when `text` is not a design. */
   async prepare(text) {
     const { design, warnings } = await GearDesign.parse(text);
-    const result = design.kind === 'vehicle'
+    const result = design.kind === 'vehicle' && design.base ? await GearDesign.assembleBookVehicle(design, SR3EDesignImport.lookup)
+      : design.kind === 'vehicle'
       ? await GearDesign.assembleVehicle(design, SR3EDesignImport.lookup)
       : await GearDesign.assemble(design, SR3EDesignImport.lookup, { newId: () => foundry.utils.randomID() });
     return { design, result, warnings: [...warnings, ...GearDesign.mismatches(design, result.totals, game.system.version), ...result.warnings] };
@@ -61,6 +63,13 @@ export const SR3EDesignImport = {
           if (mine !== seq) return;
           prepared = p;
           el.querySelector('.sr3e-design-target-row').hidden = p.design.kind === 'vehicle';
+          if (p.design.kind === 'vehicle' && p.design.base) {
+            const { vehicle, mods, totals } = p.result;
+            out.innerHTML = `<p><strong>${esc(p.design.name || vehicle?.name || 'No vehicle')}</strong>${vehicle ? ` — ${esc(vehicle.name)}, ${yen(totals.cost)} recomputed` : ''}</p>`
+              + `<p class="sr-muted">${mods.length ? `Mods: ${mods.map(m => esc(m.name)).join(', ')}` : 'No modifications.'}<br>Import copies the vehicle from the compendium as yours, with these mods.</p>`
+              + p.warnings.map(w => `<p style="color:var(--sr-amber)">⚠ ${esc(w)}</p>`).join('');
+            return;
+          }
           if (p.design.kind === 'vehicle') {
             const { designer, totals } = p.result;
             out.innerHTML = `<p><strong>${esc(designer.name || totals.chassis || 'No chassis')}</strong>${totals.chassis ? ` — ${esc(totals.chassis)}, ${totals.dp} Design Points, ${yen(totals.cost)} recomputed` : ''}</p>`
@@ -96,6 +105,10 @@ export const SR3EDesignImport = {
       render: (_event, dialog) => wire(dialog, dialog.element),
     });
     if (chosen === null) return null;
+    if (prepared?.design.kind === 'vehicle' && prepared.design.base) {
+      if (!prepared.result.vehicle) { ui.notifications.warn('Nothing to import — this world does not have that vehicle.'); return null; }
+      return SR3EDesignImport.createVehicle(prepared.design, prepared.result);
+    }
     if (prepared?.design.kind === 'vehicle') {
       if (!prepared.result.designer.chassis) { ui.notifications.warn('Nothing to import — the design has no chassis.'); return null; }
       return game.sr3e.SR3EVehicleDesigner.open(null, { design: prepared.result.designer });
@@ -103,6 +116,35 @@ export const SR3EDesignImport = {
     if (!targets.length) { ui.notifications.warn('You own no character to import onto.'); return null; }
     if (!prepared?.result?.weapon) { ui.notifications.warn('Nothing to import — the design has no weapon this world knows.'); return null; }
     return SR3EDesignImport.create(prepared.result, chosen);
+  },
+
+  /**
+   * Copy a book vehicle from its compendium (`sr3e.actor.create` — the requester owns it) and add its mods, as priced by
+   * `GearDesign.assembleBookVehicle`. Returns the new actor, or null.
+   */
+  async createVehicle(design, result) {
+    const ref = GearDesign.parseRef(design.base);
+    let created = null;
+    try {
+      const res = await game.sr3e.SR3EQuery.asGM('sr3e.actor.create', { source: `${GearDesign.SYSTEM_ID}.${ref.pack}|${ref.id}`, name: design.name || null });
+      created = res?.uuid ? await fromUuid(res.uuid) : null;
+    } catch (err) {
+      console.error('SR3E | design import: vehicle create failed:', err);
+      ui.notifications.error('Could not create the vehicle — is a GM connected?');
+      return null;
+    }
+    if (!created) return null;
+    const mods = result.mods.map(m => {
+      const data = foundry.utils.deepClone(m);
+      delete data._id;
+      data.flags = foundry.utils.mergeObject(data.flags ?? {}, { The2ndChumming3e: { designImport: true } });
+      return data;
+    });
+    const made = mods.length ? await created.createEmbeddedDocuments('Item', mods) : [];
+    if ((made?.length ?? 0) < mods.length) ui.notifications.warn(`${created.name}: only ${made?.length ?? 0} of ${mods.length} mod(s) were added — drop the rest on the sheet.`);
+    ui.notifications.info(`${created.name} imported with ${made?.length ?? 0} mod(s).`);
+    created.sheet?.render(true);
+    return created;
   },
 
   /** Create the weapon and its ammo on actor `actorId`, or in the world when it is ''. Returns the created items. */

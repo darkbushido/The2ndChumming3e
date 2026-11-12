@@ -25,6 +25,7 @@ import { PLANTS } from './vehicle-design-tables.mjs';
 import { VehicleDesignActor } from './vehicle-design-actor.mjs';
 import { DesignOptions } from './design-options.mjs';
 import { ModCatalog } from './mod-catalog.mjs';
+import { VehicleMods } from './vehicle-mods.mjs';
 
 export const FORMAT = 'sr3e-design';
 export const SCHEMA = 1;
@@ -53,7 +54,7 @@ const fromB64url = text => {
 const pipe = async (bytes, stream) => new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer());
 
 export const GearDesign = {
-  FORMAT, SCHEMA, KINDS, LIMITS,
+  FORMAT, SCHEMA, KINDS, LIMITS, SYSTEM_ID,
 
   /** `"pack/id"` → `{ pack, id }`, or null when it is not a reference. */
   parseRef(ref) {
@@ -61,10 +62,10 @@ export const GearDesign = {
     return m ? { pack: m[1], id: m[2] } : null;
   },
 
-  /** The compendium UUID for a reference, or null. */
-  uuidOf(ref) {
+  /** The compendium UUID for a reference, or null — an Item's, or with `'Actor'` a book vehicle's. */
+  uuidOf(ref, documentName = 'Item') {
     const r = GearDesign.parseRef(ref);
-    return r ? `Compendium.${SYSTEM_ID}.${r.pack}.Item.${r.id}` : null;
+    return r ? `Compendium.${SYSTEM_ID}.${r.pack}.${documentName === 'Actor' ? 'Actor' : 'Item'}.${r.id}` : null;
   },
 
   /** A blank design. */
@@ -98,7 +99,8 @@ export const GearDesign = {
     design.mods = list('mods', design.kind === 'vehicle' ? LIMITS.vehicleMods : LIMITS.mods,
       e => (e.rating == null || e.rating === '' ? { ref: e.ref } : { ref: e.ref, rating: clampInt(e.rating, 0, LIMITS.rating) }));
     design.ammo = design.kind === 'weapon' ? list('ammo', LIMITS.ammo, e => ({ ref: e.ref, qty: clampInt(e.qty ?? 1, 1, LIMITS.qty) })) : [];
-    if (design.kind === 'vehicle') { design.base = ''; design.vehicle = GearDesign.normaliseVehicle(raw.vehicle, warnings); }
+    // A vehicle with a `base` is a BOOK vehicle plus aftermarket mods (the maintainer, 2026-11-12); without one, an R3R design.
+    if (design.kind === 'vehicle') design.vehicle = GearDesign.normaliseVehicle(design.base ? {} : raw.vehicle, warnings);
     const claimed = raw.claimed && typeof raw.claimed === 'object' ? raw.claimed : {};
     design.claimed = Object.fromEntries(['cost', 'rc', 'dp'].filter(k => Number.isFinite(Number(claimed[k]))).map(k => [k, Number(claimed[k])]));
     return { design, warnings };
@@ -176,6 +178,54 @@ export const GearDesign = {
     warnings.push(...(result.warnings ?? []));
     const totals = { cost: num(result.price ?? result.cost), dp: num(result.dp?.total), chassis: result.chassis?.name ?? '' };
     return { designer, result, warnings: [...new Set(warnings)], unknown, totals };
+  },
+
+  /**
+   * A BOOK vehicle with aftermarket mods (the maintainer, 2026-11-12: "Book stats + aftermarket mods") — no Design Points:
+   * the vehicle's printed price plus each mod's, recomputed from `lookup(ref, documentName)`. Returns
+   * `{ vehicle, mods, effective, warnings, unknown, totals: { cost, base, mods, cf, load } }`:
+   *  - `vehicle` — the book vehicle's data (null when not found); import copies it (`sr3e.actor.create`) and embeds `mods`;
+   *  - `mods` — each mod's data at its level (`ModRatings.withLevel`), a blank price filled from the vehicle
+   *    (`VehicleMods.price`, R3R pp.126-135 — what `preCreateItem` does on install);
+   *  - `effective` — `VehicleMods.effective`: the stats with the mods applied, and its warnings;
+   *  - `cf` / `load` — the CF and Load the mods take (their printed figures at that level, R3R p.112), shown, never enforced.
+   */
+  async assembleBookVehicle(design, lookup) {
+    const warnings = [], unknown = [];
+    const vehicle = design.base ? await lookup(design.base, 'Actor') : null;
+    if (design.base && !vehicle) unknown.push(design.base);
+    else if (vehicle && vehicle.type !== 'vehicle') { warnings.push(`${vehicle.name} is not a vehicle.`); }
+    const body = num(vehicle?.system?.attributes?.body?.base ?? vehicle?.system?.attributes?.body?.value);
+    const mods = [];
+    let cf = 0, load = 0;
+    for (const entry of design.mods) {
+      let mod = await lookup(entry.ref, 'Item');
+      if (!mod) { unknown.push(entry.ref); continue; }
+      if (mod.type !== 'vehiclemod') { warnings.push(`${mod.name} is not a vehicle modification — skipped.`); continue; }
+      mod = structuredClone(mod);
+      if (entry.rating != null && ModRatings.levelsOf(mod)) {
+        if (!ModRatings.levelsOf(mod)[entry.rating]) warnings.push(`${mod.name}: level ${entry.rating} is not a printed level.`);
+        mod = ModRatings.withLevel(mod, entry.rating);
+      } else if (entry.rating != null) mod.system = { ...mod.system, rating: entry.rating };
+      const max = ModCatalog.maxLevel(mod);
+      if (max && entry.rating > max) warnings.push(`${mod.name}: level ${entry.rating} is over the book's maximum of ${max}.`);
+      if (!(num(mod.system?.cost) > 0) && vehicle) {
+        const price = VehicleMods.price(mod, vehicle, mods);
+        if (price != null) mod.system = { ...mod.system, cost: price };
+        else warnings.push(`${mod.name}: no price printed for this vehicle — 0¥ until the GM types one.`);
+      }
+      const row = VehicleDesignActor.modRow(mod, { body, level: entry.rating ?? mod.system?.rating ?? 1 });
+      cf += num(row.cf);
+      load += num(row.load);
+      mods.push(mod);
+    }
+    const effective = vehicle ? VehicleMods.effective(vehicle, mods) : null;
+    warnings.push(...(effective?.warnings ?? []));
+    if (unknown.length) warnings.push(`${unknown.length} item(s) not found in this catalogue: ${unknown.join(', ')} — left out.`);
+    const base = num(vehicle?.system?.cost);
+    const modCost = mods.reduce((t, m) => t + num(m.system?.cost), 0);
+    return { vehicle, mods, effective, warnings: [...new Set(warnings)], unknown,
+      totals: { cost: base + modCost, base, mods: modCost, cf, load } };
   },
 
   /* ── The link and the file ────────────────────────────────────────────────────────────── */
