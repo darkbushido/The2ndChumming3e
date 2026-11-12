@@ -4,6 +4,8 @@
  */
 import { readFileSync } from 'node:fs';
 import { GearDesign, LIMITS } from '../scripts/data/gear-design.mjs';
+import { VehicleDesign } from '../scripts/data/vehicle-design.mjs';
+import { VehicleDesignActor } from '../scripts/data/vehicle-design-actor.mjs';
 import { catalogue, publicDoc, moduleClosure, ratingTable, FIELDS, RATING_FIELDS } from '../tools/build-designer.mjs';
 
 export const name = 'designer';
@@ -29,7 +31,7 @@ export async function run(t) {
   t.eq('a mod whose mount is only in its description still publishes it', publicDoc({ _id: 'x', name: 'Silencer (Weapon)', type: 'gear',
     system: { modFor: 'weapon', description: '<p><strong>Mount:</strong> Barrel</p>', cost: 500 } }).system, { cost: 500, modFor: 'weapon', mount: 'Barrel' });
   const table = await ratingTable();
-  t.ok('the published rating table holds only weapon and ammunition rows', Object.keys(table).every(k => /^(weapon|ammunition)\|/.test(k)));
+  t.ok('the published rating table holds only weapon, ammunition and vehicle-mod rows', Object.keys(table).every(k => /^(weapon|ammunition|vehicle)\|/.test(k)));
   t.ok('…and only stat fields', Object.values(table).every(lv => Object.values(lv).every(row => Object.keys(row).every(f => RATING_FIELDS.includes(f)))));
 
   /* ── One shared core, no Foundry in it ─────────────────────────────────────── */
@@ -100,4 +102,42 @@ export async function run(t) {
   t.ok('targets are live owned actors', /game\.sr3e\.isLiveActor\(a\)/.test(imp) && /a\.isOwner/.test(imp));
   t.ok('the Items directory has the button', /renderItemDirectory[\s\S]{0,400}SR3EDesignImport\.open\(\)/.test(main));
   t.ok('the managed macro is registered', main.includes("'scripts/macros/import-gear-design.js'") && src('scripts/macros/import-gear-design.js').includes('SR3EDesignImport.open()'));
+
+  /* ── Vehicles (R3R, the in-Foundry designer's rules, TODO 287/297) ─────────── */
+  const anti = find('vmod', /^Anti-Theft System/);
+  t.ok('fixture: the catalogue has vehicle mods with design figures', anti && items[anti].system.designCost != null);
+  const veh = GearDesign.normalise({ format: 'sr3e-design', schema: 1, kind: 'vehicle', name: 'Getaway',
+    vehicle: { chassis: 'sedan', plant: 'G:Sedan', improve: { speed: 10, bogus: 5, accel: -3 }, smartMaterials: 'yes',
+      options: [{ id: 'fuel', level: 2, dp: 1 }, { id: 'nope' }], markUpExtra: 9, vehicleClass: 'warship' },
+    mods: [{ ref: anti, rating: 5 }], claimed: { dp: 1, cost: 100 } });
+  const v = veh.design.vehicle;
+  t.is('a vehicle design keeps its kind', veh.design.kind, 'vehicle');
+  t.eq('only the known improvements, as clamped numbers', v.improve, { speed: 10 });
+  t.is('smart materials only when exactly true', v.smartMaterials, false);
+  t.eq('unknown options are skipped; known ones keep their inputs', v.options.map(o => [o.id, o.level]), [['fuel', 2]]);
+  t.eq('…and a hand-typed figure in the link is NOT read', [v.options[0].dp, v.options[0].cf, v.options[0].load], ['', '', '']);
+  t.ok('…with a warning saying so', veh.warnings.some(w => /hand-typed figure/.test(w)));
+  t.is('the prototype mark-up is capped at 3 (R3R p.113)', v.markUpExtra, 3);
+  t.is('an unknown class falls back to standard', v.vehicleClass, 'standard');
+  t.is('an unknown chassis is left blank', GearDesign.normaliseVehicle({ chassis: 'deathstar' }).chassis, '');
+  t.is('an unknown plant is left blank', GearDesign.normaliseVehicle({ chassis: 'sedan', plant: 'X:Warp' }).plant, '');
+  t.is('a bare plant code is kept', GearDesign.normaliseVehicle({ chassis: 'sedan', plant: 'G' }).plant, 'G');
+
+  const va = await GearDesign.assembleVehicle(veh.design, lookup);
+  const ctx = GearDesign.vehicleCtx(v);
+  const want = VehicleDesign.evaluate({ ...v, mods: [{ ...VehicleDesignActor.modRow(items[anti], { ...ctx, level: 5 }) }] });
+  t.is('the Design Points are the in-Foundry designer’s for the same choices', va.totals.dp, want.dp.total);
+  t.is('…and so is the price', va.totals.cost, want.price);
+  t.is('the mod carries its compendium uuid, for the designer’s Create', va.designer.mods[0].uuid, GearDesign.uuidOf(anti));
+  t.is('…and the level picked', va.designer.mods[0].level, 5);
+  t.ok('a claimed DP that differs is warned', GearDesign.mismatches(veh.design, va.totals, '0.8.0').some(w => /Design Points/.test(w)));
+  const bad = await GearDesign.assembleVehicle({ ...veh.design, mods: [{ ref: pred }, { ref: 'sr3e-r3-vehicle-mods/nope' }] }, lookup);
+  t.ok('a weapon in a vehicle’s mod list is skipped with a warning', bad.designer.mods.length === 0 && bad.warnings.some(w => /not a vehicle modification/.test(w)));
+  t.eq('…an unknown one reported', bad.unknown, ['sr3e-r3-vehicle-mods/nope']);
+  const round = await GearDesign.parse(await GearDesign.encode(veh.design));
+  t.eq('a vehicle link round-trips', round.design.vehicle, v);
+
+  const vd = src('scripts/SR3EVehicleDesigner.js');
+  t.ok('an imported vehicle opens the Vehicle Designer filled in — its Create is the one create path', imp.includes('SR3EVehicleDesigner.open(null, { design: prepared.result.designer })') && vd.includes('options.design ?? null'));
+  t.ok('the importer prices vehicles with the shared assembleVehicle', imp.includes('GearDesign.assembleVehicle('));
 }

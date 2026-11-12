@@ -36,6 +36,7 @@
   .actions { display: flex; gap: 8px; flex-wrap: wrap; }
   ul.pick { list-style: none; margin: 4px 0 0; padding: 0; max-height: 240px; overflow: auto; border: 1px solid var(--border); border-radius: var(--r); }
   ul.pick li { padding: 4px 8px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+  [hidden] { display: none !important; }
   ul.pick li:hover, ul.pick li:focus { background: var(--bg); outline: none; }
   footer { color: var(--muted); font-size: .8rem; margin-top: 16px; }
 </style>
@@ -43,27 +44,72 @@
 <body>
 <main>
   <h1>SR3 Gear Designer</h1>
-  <p class="sub">Build a weapon with accessories and ammo, then import it into Foundry (<em>Import design</em> in the Items sidebar).
+  <p class="sub">Build a weapon or a vehicle, then import it into Foundry (<em>📥 Import design</em> in the Items sidebar).
     The design lives in this page's link — nothing is stored anywhere. <span id="version"></span></p>
 
+  <div class="actions" role="tablist" style="margin-bottom:12px">
+    <button data-kind="weapon" role="tab">Weapon</button>
+    <button data-kind="vehicle" role="tab">Vehicle (R3R)</button>
+  </div>
+
   <section>
+    <label for="name">Name (optional)</label>
+    <input id="name" class="wide" maxlength="80" placeholder="e.g. Lone Star's Predator">
+  </section>
+
+  <section class="weapon-only">
     <h2>Weapon</h2>
     <label for="base-search">Base firearm</label>
     <input type="search" id="base-search" placeholder="Search firearms…" autocomplete="off">
     <ul class="pick" id="base-list" hidden></ul>
     <div id="base-chosen" class="muted"></div>
-    <label for="name">Name (optional)</label>
-    <input id="name" class="wide" maxlength="80" placeholder="e.g. Lone Star's Predator">
   </section>
 
-  <section>
+  <section class="vehicle-only" hidden>
+    <h2>Chassis &amp; power plant</h2>
+    <label for="chassis-search">Chassis</label>
+    <input type="search" id="chassis-search" placeholder="Search chassis…" autocomplete="off">
+    <ul class="pick" id="chassis-list" hidden></ul>
+    <div id="chassis-chosen" class="muted"></div>
+    <label for="plant">Power plant</label>
+    <select id="plant" class="wide"></select>
+  </section>
+
+  <section class="vehicle-only" hidden>
+    <h2>Functional improvements <span class="muted">R3R pp.115-118</span></h2>
+    <div class="grid" id="improve"></div>
+    <label style="display:flex;gap:6px;align-items:center;margin-top:8px"><input type="checkbox" id="smart"> Smart materials (R3R p.118)</label>
+  </section>
+
+  <section class="vehicle-only" hidden>
+    <h2>Design options</h2>
+    <select id="option-add" class="wide"></select>
+    <div id="options"></div>
+  </section>
+
+  <section class="vehicle-only" hidden>
+    <h2>Vehicle modifications <span class="muted">priced in Design Points, R3R p.112</span></h2>
+    <input type="search" id="vmod-search" placeholder="Add a modification…" autocomplete="off">
+    <ul class="pick" id="vmod-list" hidden></ul>
+    <div id="vmods"></div>
+  </section>
+
+  <section class="vehicle-only" hidden>
+    <h2>Pricing <span class="muted">R3R p.113</span></h2>
+    <div class="grid">
+      <label>Class<select id="vclass" class="wide"></select></label>
+      <label>Prototype mark-up + (0–3)<input type="number" id="markup" min="0" max="3" step="0.1" class="wide"></label>
+    </div>
+  </section>
+
+  <section class="weapon-only">
     <h2>Accessories &amp; mods</h2>
     <input type="search" id="mod-search" placeholder="Add an accessory…" autocomplete="off">
     <ul class="pick" id="mod-list" hidden></ul>
     <div id="mods"></div>
   </section>
 
-  <section>
+  <section class="weapon-only">
     <h2>Ammunition</h2>
     <input type="search" id="ammo-search" placeholder="Add ammunition…" autocomplete="off">
     <ul class="pick" id="ammo-list" hidden></ul>

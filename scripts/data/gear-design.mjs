@@ -20,14 +20,21 @@
 import { ItemMods } from './item-mods.mjs';
 import { ModRatings } from './mod-ratings.mjs';
 import { WeaponAccessories } from './weapon-accessories.mjs';
+import { VehicleDesign, CLASSES } from './vehicle-design.mjs';
+import { PLANTS } from './vehicle-design-tables.mjs';
+import { VehicleDesignActor } from './vehicle-design-actor.mjs';
+import { DesignOptions } from './design-options.mjs';
+import { ModCatalog } from './mod-catalog.mjs';
 
 export const FORMAT = 'sr3e-design';
 export const SCHEMA = 1;
-export const KINDS = ['weapon'];
+export const KINDS = ['weapon', 'vehicle'];
 /** The system's id — compendium UUIDs are `Compendium.<SYSTEM_ID>.<pack>.Item.<id>`. */
 export const SYSTEM_ID = 'The2ndChumming3e';
 /** Caps on what a design may ask for — a link is untrusted input. Over the cap is cut, with a warning. */
-export const LIMITS = { mods: 12, ammo: 12, qty: 100, rating: 20, name: 80 };
+export const LIMITS = { mods: 12, vehicleMods: 40, options: 40, ammo: 12, qty: 100, rating: 20, name: 80, figure: 100000, markUpExtra: 3 };
+/** A vehicle design's functional improvements (R3R pp.115-116) — the keys `VehicleDesign.evaluate` reads from `improve`. */
+export const IMPROVE_KEYS = ['accel', 'speed', 'handling', 'handlingOffRoad', 'economySteps', 'cargo', 'load', 'signature'];
 
 const REF = /^([a-z0-9-]{1,64})\/([A-Za-z0-9_-]{1,64})$/;
 const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
@@ -88,11 +95,87 @@ export const GearDesign = {
       if (good.length < Math.min(src.length, cap)) warnings.push(`${Math.min(src.length, cap) - good.length} malformed ${key} reference(s) skipped.`);
       return good.map(shape);
     };
-    design.mods = list('mods', LIMITS.mods, e => (e.rating == null || e.rating === '' ? { ref: e.ref } : { ref: e.ref, rating: clampInt(e.rating, 0, LIMITS.rating) }));
-    design.ammo = list('ammo', LIMITS.ammo, e => ({ ref: e.ref, qty: clampInt(e.qty ?? 1, 1, LIMITS.qty) }));
+    design.mods = list('mods', design.kind === 'vehicle' ? LIMITS.vehicleMods : LIMITS.mods,
+      e => (e.rating == null || e.rating === '' ? { ref: e.ref } : { ref: e.ref, rating: clampInt(e.rating, 0, LIMITS.rating) }));
+    design.ammo = design.kind === 'weapon' ? list('ammo', LIMITS.ammo, e => ({ ref: e.ref, qty: clampInt(e.qty ?? 1, 1, LIMITS.qty) })) : [];
+    if (design.kind === 'vehicle') { design.base = ''; design.vehicle = GearDesign.normaliseVehicle(raw.vehicle, warnings); }
     const claimed = raw.claimed && typeof raw.claimed === 'object' ? raw.claimed : {};
-    design.claimed = Object.fromEntries(['cost', 'rc'].filter(k => Number.isFinite(Number(claimed[k]))).map(k => [k, Number(claimed[k])]));
+    design.claimed = Object.fromEntries(['cost', 'rc', 'dp'].filter(k => Number.isFinite(Number(claimed[k]))).map(k => [k, Number(claimed[k])]));
     return { design, warnings };
+  },
+
+  /**
+   * A vehicle design's choices (everything but its mods, which ride `design.mods` as references), cleaned: a chassis and
+   * plant the tables know, the improvements as clamped numbers, catalogue design options with their inputs only. ⚠ An
+   * option's typed `dp` / `cf` / `load` (the in-Foundry designer's "compute, GM edits") is NOT read from a link — the GM
+   * types it again in Foundry if they want it — so a link can never price an option by hand.
+   */
+  normaliseVehicle(raw, warnings = []) {
+    const v = raw && typeof raw === 'object' ? raw : {};
+    const out = { chassis: '', plant: '', improve: {}, freed: { cf: 0, load: 0 }, smartMaterials: false, options: [],
+      markUpExtra: 0, vehicleClass: 'standard', streetIndexExtra: 0, extraNuyen: 0 };
+    if (v.chassis && !VehicleDesign.chassis(v.chassis)) warnings.push(`Unknown chassis "${String(v.chassis).slice(0, 40)}" — left blank.`);
+    out.chassis = VehicleDesign.chassis(v.chassis) ? v.chassis : '';
+    // A Power Plant Table row id ('E:Sedan') or a bare plant code ('G') — anything else is not a plant.
+    const plant = String(v.plant ?? '').slice(0, 80);
+    if (plant && !VehicleDesign.plantRow(plant) && !PLANTS[plant]) warnings.push(`Unknown power plant "${plant.slice(0, 40)}" — left blank.`);
+    out.plant = VehicleDesign.plantRow(plant) || PLANTS[plant] ? plant : '';
+    const fig = x => Math.min(LIMITS.figure, Math.max(0, num(x)));
+    for (const k of IMPROVE_KEYS) if (fig(v.improve?.[k]) > 0) out.improve[k] = fig(v.improve[k]);
+    out.freed = { cf: fig(v.freed?.cf), load: fig(v.freed?.load) };
+    out.smartMaterials = v.smartMaterials === true;
+    const opts = Array.isArray(v.options) ? v.options : [];
+    if (opts.length > LIMITS.options) warnings.push(`${opts.length} design options — only the first ${LIMITS.options} are read.`);
+    for (const o of opts.slice(0, LIMITS.options)) {
+      const row = DesignOptions.newRow(o?.id);
+      if (!row) { warnings.push(`Unknown design option "${String(o?.id ?? '').slice(0, 30)}" — skipped.`); continue; }
+      for (const [k] of DesignOptions.get(o.id).inputs) if (o[k] != null) row[k] = typeof row[k] === 'number' ? fig(o[k]) : String(o[k]).slice(0, 40);
+      if (['dp', 'cf', 'load'].some(k => o[k] !== '' && o[k] != null)) warnings.push(`${row.name}: a hand-typed figure in the link is ignored — recomputed (type it again in Foundry if the GM allows it).`);
+      out.options.push(row);
+    }
+    out.markUpExtra = Math.min(LIMITS.markUpExtra, fig(v.markUpExtra));
+    out.vehicleClass = CLASSES[v.vehicleClass] ? v.vehicleClass : 'standard';
+    out.streetIndexExtra = Math.min(10, fig(v.streetIndexExtra));
+    out.extraNuyen = fig(v.extraNuyen);
+    return out;
+  },
+
+  /** What a vehicle mod's printed design figures read against (R3R p.112) — the in-Foundry designer's `_ctx`. */
+  vehicleCtx(vehicle) {
+    const ch = VehicleDesign.chassis(vehicle?.chassis);
+    const body = ch ? VehicleDesign.cell(ch.body, 0) : 0;
+    const plant = VehicleDesign.plantRow(vehicle?.plant) ?? (ch ? VehicleDesign.plantsFor(ch.id, vehicle?.plant)[0] : null);
+    return { body, chassis: ch?.dp ?? null, plant: plant ? VehicleDesign.cell(plant.dp, body) : null, pilot: null };
+  },
+
+  /**
+   * A vehicle design as the in-Foundry Vehicle Designer's own design object (TODO 287/297), every mod priced from its
+   * compendium entry by `lookup`: `{ designer, result, warnings, unknown, totals }`. `designer` opens in that window and
+   * creates the vehicle through its Create button (`sr3e.actor.create`, so a player owns it) — the one create path.
+   */
+  async assembleVehicle(design, lookup) {
+    const warnings = [], unknown = [];
+    const v = design.vehicle ?? GearDesign.normaliseVehicle({});
+    const ctx = GearDesign.vehicleCtx(v);
+    const mods = [];
+    for (const entry of design.mods) {
+      const item = await lookup(entry.ref);
+      if (!item) { unknown.push(entry.ref); continue; }
+      if (item.type !== 'vehiclemod') { warnings.push(`${item.name} is not a vehicle modification — skipped.`); continue; }
+      const level = ModCatalog.rated(item) ? (entry.rating ?? item.system?.rating ?? 1) : null;
+      const row = VehicleDesignActor.modRow(item, { ...ctx, level: level ?? 1 });
+      if (ModCatalog.aftermarket(item.name)) Object.assign(row, { dp: 0, unpriced: false });
+      const max = ModCatalog.maxLevel(item);
+      if (max && level > max) warnings.push(`${item.name}: level ${level} is over the book's maximum of ${max}.`);
+      if (row.unpriced) warnings.push(`${item.name}: no design cost is printed — 0 points until the GM types one (R3R p.112).`);
+      mods.push({ ...row, uuid: GearDesign.uuidOf(entry.ref), level });
+    }
+    const designer = { name: design.name, ...structuredClone(v), mods };
+    const result = VehicleDesign.evaluate(designer);
+    if (unknown.length) warnings.push(`${unknown.length} item(s) not found in this catalogue: ${unknown.join(', ')} — left out.`);
+    warnings.push(...(result.warnings ?? []));
+    const totals = { cost: num(result.price ?? result.cost), dp: num(result.dp?.total), chassis: result.chassis?.name ?? '' };
+    return { designer, result, warnings: [...new Set(warnings)], unknown, totals };
   },
 
   /* ── The link and the file ────────────────────────────────────────────────────────────── */
@@ -203,7 +286,10 @@ export const GearDesign = {
     if ('cost' in design.claimed && design.claimed.cost !== totals.cost) {
       out.push(`The design says ${design.claimed.cost.toLocaleString()}¥; recomputed: ${totals.cost.toLocaleString()}¥ (imported at the recomputed price).`);
     }
-    if ('rc' in design.claimed && design.claimed.rc !== totals.rc) {
+    if ('dp' in design.claimed && 'dp' in totals && design.claimed.dp !== totals.dp) {
+      out.push(`The design says ${design.claimed.dp} Design Points; recomputed: ${totals.dp}.`);
+    }
+    if ('rc' in design.claimed && 'rc' in totals && design.claimed.rc !== totals.rc) {
       out.push(`The design says RC ${design.claimed.rc} from mods; recomputed: ${totals.rc}.`);
     }
     return out;

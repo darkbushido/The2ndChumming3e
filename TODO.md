@@ -2968,7 +2968,13 @@ v1 = weapons (mods, mounts, integral items, ammo); vehicles, then cyberware/deck
 
 **Built (weapons v1):** `npm run designer:build` / `npm run designer:serve` (http://localhost:5178); 📥 Import design in the
 Items directory and the "SR3E Import Gear Design" macro. Unit-tested (`tests/designer.test.mjs`, mutant `design-claims-trusted`).
-🧪 **Still to check in a live Foundry:** paste a designer link → preview shows the weapon, its mods and warnings → Import
+**Vehicles (2026-11-12, on top of TODO 297's branch, merged in):** the page's Vehicle tab — chassis, power plant,
+functional improvements, design options, R3R mods at their levels, class and mark-up — priced by the same `VehicleDesign`
+the 🛠 Vehicle Designer runs. Importing one opens that designer filled in, on its summary; its Create makes the vehicle
+(`sr3e.actor.create`). A hand-typed option figure in a link is ignored (mutant `vehicle-link-trusted`).
+🧪 **Still to check in a live Foundry (vehicles):** paste a vehicle link → the preview shows chassis, DP and price → Import
+opens the designer at its summary with the same DP → Create, as a player, gives an owned vehicle with its mods.
+🧪 **Still to check in a live Foundry (weapons):** paste a designer link → preview shows the weapon, its mods and warnings → Import
 onto a character puts the gun (mods inside, ✎ opens them) and one ammo stockpile on the sheet; a GM's world-item import;
 a player with no character sees the warning.
 
