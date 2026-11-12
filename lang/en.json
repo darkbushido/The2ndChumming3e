@@ -40,5 +40,11 @@
   "SR3E.Senses.Glass": "Glass",
   "SR3E.Senses.GlassHint": "Blocks thermographic vision (house rule — the book is silent).",
   "SR3E.Senses.Ward": "Ward Force",
-  "SR3E.Senses.WardHint": "An astral barrier: stops a projecting astral form's sight, glows for astral viewers. Its Force is the visual penalty (SR3 p.173) — a reminder, not applied."
+  "SR3E.Senses.WardHint": "An astral barrier: stops a projecting astral form's sight, glows for astral viewers. Its Force is the visual penalty (SR3 p.173) — a reminder, not applied.",
+  "SR3E.Senses.TileLegend": "SR3 Astral",
+  "SR3E.Senses.TileAura": "Magical aura",
+  "SR3E.Senses.TileNone": "None — an ordinary tile",
+  "SR3E.Senses.TileGlow": "Visible to all, glows in astral sight",
+  "SR3E.Senses.TileAstral": "Astral only — seen (glowing) only in astral sight",
+  "SR3E.Senses.TileHint": "A focus, enchanted object or ritual circle. The GM always sees both kinds, glowing."
 }

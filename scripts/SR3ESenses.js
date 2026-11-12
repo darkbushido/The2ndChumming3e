@@ -20,7 +20,7 @@
 import {
   VISION, DETECTION, FLAG_SCOPE, ULTRASOUND_RANGE,
   mundaneSenses, astralState, visionModeFor, detectionModesFor, detectionUpdate,
-  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate, astralModeFromStatus,
+  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate, astralModeFromStatus, tileAura,
 } from './data/token-senses.mjs';
 import { detectVision } from './SR3ECombatModifiers.js';
 
@@ -328,6 +328,25 @@ export class SR3ESenses {
       (footer?.parentElement ?? el.querySelector('.window-content') ?? el).insertBefore(box, footer ?? null);
     });
 
+    // Magical tiles: an Aura select in Tile Config; glow / hide on every tile refresh and sight change.
+    Hooks.on('renderTileConfig', (app, html) => {
+      const el = html instanceof HTMLElement ? html : html?.[0];
+      if (!el || el.querySelector('.sr3e-tile-aura')) return;
+      const v = app.document?.flags?.[SYS]?.aura ?? '';
+      const opt = (val, key) => `<option value="${val}" ${v === val ? 'selected' : ''}>${game.i18n.localize(key)}</option>`;
+      const box = document.createElement('fieldset');
+      box.className = 'sr3e-tile-aura';
+      box.innerHTML = `<legend>${game.i18n.localize('SR3E.Senses.TileLegend')}</legend>
+        <div class="form-group"><label>${game.i18n.localize('SR3E.Senses.TileAura')}</label>
+          <select name="flags.${SYS}.aura">${opt('', 'SR3E.Senses.TileNone')}${opt('aura', 'SR3E.Senses.TileGlow')}${opt('astral', 'SR3E.Senses.TileAstral')}</select>
+          <p class="hint">${game.i18n.localize('SR3E.Senses.TileHint')}</p></div>`;
+      const footer = el.querySelector('footer, .form-footer');
+      (footer?.parentElement ?? el.querySelector('.window-content') ?? el).insertBefore(box, footer ?? null);
+    });
+    Hooks.on('refreshTile', tile => SR3ESenses._tileAura(tile));
+    Hooks.on('sightRefresh', () => { for (const t of canvas.tiles?.placeables ?? []) SR3ESenses._tileAura(t); });
+    Hooks.on('controlToken', () => { for (const t of canvas.tiles?.placeables ?? []) SR3ESenses._tileAura(t); });
+
     // 👁 Senses on the Token HUD — choose among the modes this character has; GM sets dual-natured and range.
     Hooks.on('renderTokenHUD', (hud, html) => {
       const actor = hud.object?.actor;
@@ -387,6 +406,19 @@ export class SR3ESenses {
     if (gm && result.dual !== undefined) Object.assign(upd, dualTickUpdate(actor.system?.astralMode, !!result.dual, actor.getFlag(SYS, 'dualNatured')));
     await actor.update(upd);
     await SR3ESenses.apply(actor);   // the owner applies at once; the GM hook re-checks the rest
+  }
+
+  /** Show, hide and glow one tile by its `aura` flag (TokenSenses.tileAura). */
+  static _tileAura(tile) {
+    const mesh = tile?.mesh;
+    if (!mesh) return;
+    const aura = tile.document?.flags?.[SYS]?.aura ?? '';
+    const { show, glow } = tileAura(aura, { isGM: game.user.isGM, astralViewer: SR3ESenses.viewerIsAstral() });
+    mesh.visible = !!tile.visible && show;
+    const GlowOverlayFilter = foundry.canvas.rendering.filters.GlowOverlayFilter;
+    SR3ESenses._tileGlow ??= GlowOverlayFilter.create({ glowColor: [0.95, 0.8, 0.35, 1] });
+    const others = (mesh.filters ?? []).filter(f => f !== SR3ESenses._tileGlow);
+    mesh.filters = glow ? [...others, SR3ESenses._tileGlow] : (others.length ? others : null);
   }
 
   /** Is this client looking through astral sight right now? */

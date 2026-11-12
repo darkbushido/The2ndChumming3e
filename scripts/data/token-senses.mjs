@@ -198,6 +198,18 @@ export function astralModeFromStatus(astralMode = '', on = false) {
 }
 
 /**
+ * A magical TILE (a focus on a table, an enchanted door, a ritual circle) — the tile flag `aura` (the maintainer,
+ * 2026-11-11): '' ordinary · 'aura' seen by everyone, glows in astral sight · 'astral' seen ONLY in astral sight,
+ * glowing. The GM always sees both kinds, glowing, so they can be placed and found.
+ * @returns {{ show: boolean, glow: boolean }}
+ */
+export function tileAura(aura = '', { isGM = false, astralViewer = false } = {}) {
+  if (aura !== 'aura' && aura !== 'astral') return { show: true, glow: false };
+  const sees = isGM || astralViewer;
+  return { show: aura === 'aura' || sees, glow: sees };
+}
+
+/**
  * Which wall rule shapes a token's SIGHT polygon (what it sees of the map, and the line of sight every sight-based
  * detection then uses): 'project' (astral form — ward walls only), 'thermo' (sight walls + glass),
  * 'ultrasound' (sonar — SOUND walls), or 'sight'.
@@ -257,5 +269,5 @@ export function auraKind({ type = '', magic = 0, dualNatured = false, statuses =
 export const TokenSenses = {
   VISION, DETECTION, ULTRASOUND_RANGE, FLAG_SCOPE, UNLIMITED, finiteRange,
   isVisionGear, isWornGear, mundaneSenses, astralState, visionModeFor, detectionModesFor, detectionUpdate,
-  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate, astralModeFromStatus,
+  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate, astralModeFromStatus, tileAura,
 };
