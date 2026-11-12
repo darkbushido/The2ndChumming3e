@@ -41,6 +41,18 @@ export const DETECTION = Object.freeze({
 /** House default — M&M p.20 gives ultrasound vision no range (the maintainer, 2026-11-11). Metres. */
 export const ULTRASOUND_RANGE = 50;
 
+/**
+ * "Unlimited" range for a detection mode. Foundry v14 stores the range as a REQUIRED FINITE number
+ * (`common/documents/token.mjs:103`) — null and Infinity both fail validation (seen live, 2026-11-11). Scene units.
+ */
+export const UNLIMITED = 100000;
+
+/** A detection range Foundry will accept: a finite number ≥ 0, else UNLIMITED. */
+export function finiteRange(r) {
+  const n = Number(r);
+  return r !== null && r !== '' && Number.isFinite(n) && n >= 0 ? n : UNLIMITED;
+}
+
 /** The system's flag scope on walls and actors. */
 export const FLAG_SCOPE = 'The2ndChumming3e';
 
@@ -128,13 +140,13 @@ export function visionModeFor(modes, astral, chosen = '') {
 
 /**
  * The SR3 detection modes a token should carry: `{ id, enabled, range }` (range in scene units, null =
- * unlimited). Core modes (lightPerception, basicSight) are left to Foundry.
+ * unlimited — written as UNLIMITED). Core modes (lightPerception, basicSight) are left to Foundry.
  */
 export function detectionModesFor({ modes = [], ultrasound = false, astral = '', ultrasoundRange = ULTRASOUND_RANGE } = {}) {
   const out = [];
-  if (modes.includes('thermo')) out.push({ id: DETECTION.thermo, enabled: true, range: null });
+  if (modes.includes('thermo')) out.push({ id: DETECTION.thermo, enabled: true, range: UNLIMITED });
   if (ultrasound) out.push({ id: DETECTION.ultrasound, enabled: true, range: ultrasoundRange });
-  if (astral) out.push({ id: DETECTION.astral, enabled: true, range: null });
+  if (astral) out.push({ id: DETECTION.astral, enabled: true, range: UNLIMITED });
   return out;
 }
 
@@ -151,10 +163,28 @@ export function detectionUpdate(existing = {}, ours = []) {
   const want = new Map(ours.map(m => [m.id, m]));
   for (const id of Object.values(DETECTION)) {
     const prior = existing?.[id];
-    if (want.has(id)) out[id] = { enabled: true, range: prior?.range ?? want.get(id).range };
-    else if (prior) out[id] = { enabled: false, range: prior.range ?? null };
+    if (want.has(id)) out[id] = { enabled: true, range: TokenSenses.finiteRange(prior?.range ?? want.get(id).range) };
+    else if (prior) out[id] = { enabled: false, range: TokenSenses.finiteRange(prior.range) };
   }
   return out;
+}
+
+/**
+ * The 👁 dialog's Dual Natured tick and the sheet's Dual Natured button are ONE switch: `system.astralMode` 'dual'
+ * (the maintainer, live 2026-11-11 — ticking one did not move the other). The older `dualNatured` flag still reads
+ * as ticked, and is cleared the first time the tick is saved.
+ */
+export function dualTicked(astralMode = '', flag = false) {
+  return astralMode === 'dual' || !!flag;
+}
+
+/** The actor update for saving the tick. Unticking leaves a projecting form alone; it only ends perceiving. */
+export function dualTickUpdate(astralMode = '', ticked = false, flag = false) {
+  const upd = {};
+  if (ticked && astralMode !== 'dual' && astralMode !== 'astral') upd['system.astralMode'] = 'dual';
+  if (!ticked && astralMode === 'dual') upd['system.astralMode'] = 'physical';
+  if (flag) upd[`flags.${FLAG_SCOPE}.dualNatured`] = false;
+  return upd;
 }
 
 /**
@@ -215,7 +245,7 @@ export function auraKind({ type = '', magic = 0, dualNatured = false, statuses =
 }
 
 export const TokenSenses = {
-  VISION, DETECTION, ULTRASOUND_RANGE, FLAG_SCOPE,
+  VISION, DETECTION, ULTRASOUND_RANGE, FLAG_SCOPE, UNLIMITED, finiteRange,
   isVisionGear, isWornGear, mundaneSenses, astralState, visionModeFor, detectionModesFor, detectionUpdate,
-  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind,
+  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate,
 };
