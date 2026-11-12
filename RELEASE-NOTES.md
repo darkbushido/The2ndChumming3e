@@ -92,7 +92,6 @@ Mods go *inside* things now: a gun carries its scope and gas vent, armour its ge
 - A new guide page: Legality Codes & Permits (SR3 pp.272–274).
 - Smaller fixes: a spent 💴 Pay button looks spent; checkboxes line up; the GM tools' buttons relabel when their state changes; ammo a gun cannot load is warned about; "1 reload × 10 rounds" reads as it should.
 
-<!-- CONDITIONAL: this section ships only if TODO 297 (claude/vehicle-designer-shop, tip 1716f67a) passes its live check (TESTING §86) and is merged into main. Otherwise delete it. -->
 ### The Vehicle Designer becomes a shop
 
 - **🛠 Design a vehicle works in steps**: Chassis → Power plant → Design options → Mods → Finish. The vehicle's stats and name stay pinned at the top while you scroll. Each chassis is a card with a drawing and a one-line description, and drones have their own chips. Reopening 🛠 Design on a vehicle takes you to the last step.
