@@ -8,7 +8,7 @@ import { WeaponCatalog as C, GROUPS, CATEGORY_NAMES } from '../scripts/data/weap
 import { WeaponArt as A, PICTURES, GROUP_IDS, slug } from '../scripts/data/weapon-art.mjs';
 import { WeaponDesignerView as V, MOD_SHELVES } from '../scripts/data/weapon-designer-view.mjs';
 import { KIND_OF } from '../tools/build-designer.mjs';
-import { batch } from '../tools/weapon-art-prompts.mjs';
+import { batch, features, LOOKS } from '../tools/weapon-art-prompts.mjs';
 
 export const name = 'weapon-designer-shop';
 const src = p => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
@@ -47,6 +47,15 @@ export async function run(t) {
   t.ok('the ComfyUI batch covers the hand weapons without pictures', b.length > 150 && b.every(e => e.slug && e.prompt.includes('white background')));
   t.ok('smartguns get LED lights in their prompt, others do not',
     b.some(e => e.smartgun) && b.every(e => e.prompt.includes('LED indicator lights') === e.smartgun));
+  const alpha = b.find(e => e.name === 'Ares Alpha');
+  t.ok('the Ares Alpha is drawn with its underbarrel grenade launcher', alpha?.prompt.includes('underbarrel grenade launcher'));
+  t.eq('a belt-fed gun gets its belt; a smartlink is not mistaken for a part',
+    features({ system: { accessories: 'Smartlink-2, Gas Vent 3', ammunition: '100(b)', mode: 'FA' } }),
+    ['vented muzzle brake', 'ammunition belt feeding from a box', 'full-auto']);
+  const guns = b.filter(e => e.group !== 'melee');
+  t.eq('every firearm has a look note', guns.filter(e => !e.look).map(e => e.slug), []);
+  t.eq('no stale look notes', Object.keys(LOOKS).filter(k => k !== '_about' && !guns.some(e => e.slug === k)), []);
+  t.ok('the briefcase SMG is drawn as a briefcase', /briefcase/.test(guns.find(e => e.slug === 'ares-exec-protector')?.prompt));
   t.eq('the batch has no duplicate slugs', b.length, new Set(b.map(e => e.slug)).size);
   t.ok('the keying script decontaminates the fringe', /decontaminat/i.test(src('tools/key-art.py')));
 
