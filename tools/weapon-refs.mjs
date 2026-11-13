@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+/**
+ * Reference photos for the weapon pictures · TODO 300 — the maintainer, 2026-11-13: "use the wiki images as reference
+ * art and have the attribution file".
+ *
+ *   node tools/weapon-refs.mjs search [--missing]find a Wikimedia Commons photo per modern-lookalike firearm → tools/data/weapon-refs.json
+ *                                         (keeps entries already marked "reviewed": true)
+ *   node tools/weapon-refs.mjs credits    write styles/weapons/CREDITS.md from tools/data/weapon-refs.json (no network)
+ *
+ * Only free licences are accepted (public domain, CC0, CC BY, CC BY-SA); the credits name file, author and licence.
+ * The photo is a guide for the drawing (ControlNet edges), never shipped itself.
+ */
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { join, dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const REFS = join(ROOT, 'tools', 'data', 'weapon-refs.json');
+const LOOKS = JSON.parse(readFileSync(join(ROOT, 'tools', 'data', 'weapon-looks.json'), 'utf8'));
+export const FREE = /^(public domain|pd|cc0|cc by(-sa)? \d)/i;
+
+/** The real gun a look note names: "…, like an FN Minimi / M249 SAW" → "FN Minimi". */
+export function realGun(look) {
+  const m = /\blike an? ([^,/]+?)(?:\s+(?:with|in|on|and)\b|\s*\/|,|$)/i.exec(look ?? '');
+  if (m) return m[1].trim();
+  // No "like a …": the note may itself name the gun ("classic AK-47 with wood furniture" → "AK-47").
+  const lead = /^(?:classic |replica of an? (?:classic )?)?([^,]+?)(?:\s+(?:with|firing|on)\b|,|$)/i.exec(look ?? '')?.[1]?.trim();
+  return lead && /[A-Z0-9]/.test(lead) ? lead : null;
+}
+
+const strip = s => String(s ?? '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+
+async function search(q, loose = false) {
+  const u = 'https://commons.wikimedia.org/w/api.php?' + new URLSearchParams({
+    action: 'query', format: 'json', generator: 'search', gsrnamespace: '6', gsrlimit: '15',
+    gsrsearch: `${q} filetype:bitmap`, prop: 'imageinfo', iiprop: 'url|size|extmetadata', iiurlwidth: '1024' });
+  let body;
+  for (let wait = 2000; ; wait *= 2) {   // Commons rate-limits bursts: back off and retry
+    await new Promise(ok => setTimeout(ok, 1500));
+    const r = await fetch(u, { headers: { 'User-Agent': 'sr3e-weapon-art/1.0 (reference lookup)' } });
+    const text = await r.text();
+    try { body = JSON.parse(text); break; } catch { if (wait > 64000) throw new Error(text.slice(0, 80)); await new Promise(ok => setTimeout(ok, wait)); }
+  }
+  const pages = Object.values(body.query?.pages ?? {});
+  return pages.map(p => {
+    const ii = p.imageinfo?.[0] ?? {}; const md = ii.extmetadata ?? {};
+    return { file: p.title, url: ii.descriptionurl, image: ii.thumburl ?? ii.url, width: ii.width, height: ii.height,
+      author: strip(md.Artist?.value), license: strip(md.LicenseShortName?.value), licenseUrl: md.LicenseUrl?.value ?? '', index: p.index };
+  }).filter(c => FREE.test(c.license) && c.width >= (loose ? 500 : 800) && c.width > c.height * (loose ? 1 : 1.3))   // free, big, side-on (landscape)
+    .sort((a, b) => a.index - b.index);
+}
+
+async function runSearch() {
+  const old = existsSync(REFS) ? JSON.parse(readFileSync(REFS, 'utf8')) : {};
+  const out = { _about: 'TODO 300 — a free-licence Wikimedia Commons photo per modern-lookalike firearm, used only as drawing guidance. "reviewed": true is the maintainer\'s pick; `node tools/weapon-refs.mjs credits` writes styles/weapons/CREDITS.md.' };
+  for (const [slug, v] of Object.entries(LOOKS)) {
+    if (slug === '_about' || v.tech) continue;
+    if (old[slug]?.reviewed || (process.argv.includes('--missing') && old[slug]?.file)) { out[slug] = old[slug]; continue; }
+    const gun = realGun(v.look);
+    if (!gun) { out[slug] = { gun: null, note: 'no real gun named in the look note' }; continue; }
+    let hits = await search(gun);
+    if (!hits.length) hits = await search(gun, true);   // second pass: smaller or squarer photos
+    const short = gun.split(/s+/).slice(0, 2).join(' ');
+    if (!hits.length && short !== gun) hits = await search(short, true);   // third: the first two words ("Hi-Point C9")
+    out[slug] = hits.length ? { gun, ...hits[0], alternatives: hits.slice(1, 4).map(h => h.file) } : { gun, note: 'no free side-on photo found' };
+    process.stdout.write(`${hits.length ? '✓' : '·'} ${slug} ← ${gun}\n`);
+  }
+  writeFileSync(REFS, JSON.stringify(out, null, 2) + '\n');
+}
+
+export function credits(refs) {
+  const rows = Object.entries(refs).filter(([k, r]) => k !== '_about' && r.file)
+    .map(([k, r]) => `| ${k} | [${r.file.replace(/^File:/, '')}](${r.url}) | ${r.author || 'unknown'} | ${r.licenseUrl ? `[${r.license}](${r.licenseUrl})` : r.license} |`);
+  return `# Weapon picture references\n\nThe weapon pictures are original drawings guided by these Wikimedia Commons photos (TODO 300).\n`
+    + `The photos themselves are not shipped. Generated by \`node tools/weapon-refs.mjs credits\`.\n\n`
+    + `| Picture | Reference photo | Author | Licence |\n|---|---|---|---|\n${rows.join('\n')}\n`;
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  if (process.argv[2] === 'search') await runSearch();
+  else if (process.argv[2] === 'credits') writeFileSync(join(ROOT, 'styles', 'weapons', 'CREDITS.md'), credits(JSON.parse(readFileSync(REFS, 'utf8'))));
+  else console.log('usage: node tools/weapon-refs.mjs search|credits');
+}

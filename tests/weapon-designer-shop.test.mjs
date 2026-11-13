@@ -9,6 +9,7 @@ import { WeaponArt as A, PICTURES, GROUP_IDS, slug } from '../scripts/data/weapo
 import { WeaponDesignerView as V, MOD_SHELVES } from '../scripts/data/weapon-designer-view.mjs';
 import { KIND_OF } from '../tools/build-designer.mjs';
 import { batch, features, LOOKS } from '../tools/weapon-art-prompts.mjs';
+import { realGun, credits, FREE } from '../tools/weapon-refs.mjs';
 
 export const name = 'weapon-designer-shop';
 const src = p => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
@@ -58,6 +59,16 @@ export async function run(t) {
   t.ok('the briefcase SMG is drawn as a briefcase', /briefcase/.test(guns.find(e => e.slug === 'ares-exec-protector')?.prompt));
   t.eq('the batch has no duplicate slugs', b.length, new Set(b.map(e => e.slug)).size);
   t.ok('the keying script decontaminates the fringe', /decontaminat/i.test(src('tools/key-art.py')));
+
+  // Reference photos (the maintainer, 2026-11-13: wiki images as reference art, with an attribution file).
+  t.eq('the real gun a look note names', realGun('light machine gun, like an FN Minimi / M249 SAW'), 'FN Minimi');
+  t.eq('a note that is the gun itself', realGun('classic AK-47 with wood furniture'), 'AK-47');
+  const refs = JSON.parse(src('tools/data/weapon-refs.json'));
+  const used = Object.entries(refs).filter(([k, r]) => k !== '_about' && r.file);
+  t.ok('every reference photo is free-licensed with a source page', used.length > 100 && used.every(([, r]) => FREE.test(r.license) && r.url?.startsWith('https://commons.wikimedia.org/')));
+  t.ok('high-tech guns take no photo reference', used.every(([k]) => !LOOKS[k]?.tech));
+  t.eq('CREDITS.md is current', src('styles/weapons/CREDITS.md'), credits(refs));
+  t.ok('the keying script greys out orange caps', /def de_orange/.test(src('tools/key-art.py')));
 
   // Catalogue and wiring.
   t.eq('the web catalogue carries melee', KIND_OF({ type: 'melee' }), 'melee');

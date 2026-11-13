@@ -71,6 +71,19 @@ def key(img, tol, min_hole=0.0015):
     return Image.fromarray(out, 'RGBA')
 
 
+def de_orange(img):
+    """Grey out safety-orange tips and caps (the maintainer, 2026-11-13: "i don't like the orange caps on them").
+    Only bright, saturated orange is touched; wood (darker, duller brown) is kept."""
+    a = np.asarray(img.convert('RGBA')).astype(np.float32)
+    hsv = np.asarray(img.convert('RGB').convert('HSV')).astype(np.float32)
+    h, sat, val = hsv[..., 0] * 360 / 255, hsv[..., 1] / 255, hsv[..., 2] / 255
+    mask = (h >= 8) & (h <= 45) & (sat > 0.35) & (val > 0.55)
+    grey = (a[..., 0] * 0.3 + a[..., 1] * 0.59 + a[..., 2] * 0.11) * 0.55   # darkened to gunmetal
+    for c in range(3):
+        a[..., c] = np.where(mask, grey, a[..., c])
+    return Image.fromarray(a.astype(np.uint8), 'RGBA')
+
+
 def fit(img, size):
     box = img.getchannel('A').point(lambda v: 255 if v > 8 else 0).getbbox()
     if box:
@@ -87,13 +100,15 @@ def main():
     p.add_argument('--tolerance', type=float, default=28)
     p.add_argument('--size', type=int, default=512)
     p.add_argument('--min-hole', type=float, default=0.0015, help='enclosed background blobs at least this share of the picture are keyed')
+    p.add_argument('--keep-orange', action='store_true', help='skip the de-orange step')
     args = p.parse_args()
     os.makedirs(args.dst, exist_ok=True)
     n = 0
     for f in sorted(os.listdir(args.src)):
         if not f.lower().endswith('.png'):
             continue
-        img = fit(key(Image.open(os.path.join(args.src, f)), args.tolerance, args.min_hole), args.size)
+        img = key(Image.open(os.path.join(args.src, f)), args.tolerance, args.min_hole)
+        img = fit(img if args.keep_orange else de_orange(img), args.size)
         img.save(os.path.join(args.dst, os.path.splitext(f)[0] + '.webp'), 'WEBP', lossless=True)
         n += 1
     print(f'{n} pictures keyed -> {args.dst}', file=sys.stderr)
