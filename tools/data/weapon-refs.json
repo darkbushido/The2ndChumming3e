@@ -15,7 +15,8 @@
       "File:Carl Gustav M4 (1) (brightened, no background).png",
       "File:Carl-Gustaf M4.jpg",
       "File:Carl Gustav M4 Kokonaisturvallisuus 2015.jpg"
-    ]
+    ],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — photo crops the launcher and shows a second weapon"
   },
   "ares-alpha": {
     "gun": "FN F2000",
@@ -62,7 +63,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — a cluttered table scene"
   },
   "ares-hvar": {
     "gun": "HK416",
@@ -136,41 +138,34 @@
     "index": 3,
     "alternatives": [
       "File:Crosse du fusil semi-automatique de combat M4.jpg"
-    ]
+    ],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — a faint line drawing, not a photo"
   },
   "armtech-mgl-12": {
     "gun": "Milkor MGL",
-    "file": "File:40 mm granatrevolver Armscor MGL (2).jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:40_mm_granatrevolver_Armscor_MGL_(2).jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/40_mm_granatrevolver_Armscor_MGL_%282%29.jpg/1280px-40_mm_granatrevolver_Armscor_MGL_%282%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "file": "File:40 mm granatrevolver Armscor MGL.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:40_mm_granatrevolver_Armscor_MGL.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/40_mm_granatrevolver_Armscor_MGL.jpg/1280px-40_mm_granatrevolver_Armscor_MGL.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
     "width": 4000,
     "height": 2250,
     "author": "Armémuseum",
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
-    "index": 3,
-    "alternatives": [
-      "File:40 mm granatrevolver Armscor MGL (3).jpg",
-      "File:40 mm granatrevolver Armscor MGL (1).jpg",
-      "File:40 mm granatrevolver Armscor MGL.jpg"
-    ]
+    "reviewed": true,
+    "note": "maintainer 2026-11-13: the first pick was end-on; side view chosen"
   },
   "armtech-mgl-6": {
     "gun": "Milkor MGL",
-    "file": "File:40 mm granatrevolver Armscor MGL (2).jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:40_mm_granatrevolver_Armscor_MGL_(2).jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/40_mm_granatrevolver_Armscor_MGL_%282%29.jpg/1280px-40_mm_granatrevolver_Armscor_MGL_%282%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "file": "File:40 mm granatrevolver Armscor MGL.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:40_mm_granatrevolver_Armscor_MGL.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/40_mm_granatrevolver_Armscor_MGL.jpg/1280px-40_mm_granatrevolver_Armscor_MGL.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
     "width": 4000,
     "height": 2250,
     "author": "Armémuseum",
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
-    "index": 3,
-    "alternatives": [
-      "File:40 mm granatrevolver Armscor MGL (3).jpg",
-      "File:40 mm granatrevolver Armscor MGL (1).jpg",
-      "File:40 mm granatrevolver Armscor MGL.jpg"
-    ]
+    "reviewed": true,
+    "note": "maintainer 2026-11-13: the first pick was end-on; side view chosen"
   },
   "aztechnology-lasher": {
     "gun": "FGM-148 Javelin",
@@ -187,7 +182,8 @@
       "File:200617-A-DS044-1013 - FGM-148 Javelin Norwegian Live Fire (Image 3 of 9).jpg",
       "File:200617-A-DS044-1150 - FGM-148 Javelin Norwegian live-fire (Image 7 of 9).jpg",
       "File:200617-A-DS044-1123 - FGM-148 Javelin Norwegian live-fire (Image 6 of 9).jpg"
-    ]
+    ],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — soldiers firing in a field"
   },
   "baretta-model-70": {
     "gun": "Beretta PMX",
@@ -200,7 +196,8 @@
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
     "index": 1,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — several guns on a display stand"
   },
   "barret-model-121": {
     "gun": "Barrett M82",
@@ -217,7 +214,8 @@
       "File:Barrett M82.jpg",
       "File:Dutch Barrett M82A1.jpg",
       "File:M82rifle.jpg"
-    ]
+    ],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — a soldier lying behind it in scenery"
   },
   "beretta-model-200st": {
     "gun": "Beretta APX",
@@ -232,7 +230,8 @@
     "index": 1,
     "alternatives": [
       "File:Beretta APX standard W.png"
-    ]
+    ],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — tabletop backdrop left behind the cut"
   },
   "blowgun": {
     "gun": null,
@@ -316,7 +315,8 @@
     "alternatives": [
       "File:Colt Mustang .380 MU30945 R DSC 4819.jpg",
       "File:ColtMustangxsp.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "colt-cobra-tz-110": {
     "gun": "Colt 9mm SMG",
@@ -333,7 +333,8 @@
       "File:Evers Colt 9mm SMG.PNG",
       "File:AR Colt 9mm right.jpg",
       "File:AR Colt 9mm left.jpg"
-    ]
+    ],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — gun lying on a patterned backdrop"
   },
   "colt-cobra-tz-115": {
     "gun": "Colt 9mm SMG",
@@ -350,7 +351,8 @@
       "File:Evers Colt 9mm SMG.PNG",
       "File:AR Colt 9mm right.jpg",
       "File:AR Colt 9mm left.jpg"
-    ]
+    ],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — gun lying on a patterned backdrop"
   },
   "colt-cobra-tz-118": {
     "gun": "Colt 9mm SMG",
@@ -367,7 +369,8 @@
       "File:Evers Colt 9mm SMG.PNG",
       "File:AR Colt 9mm right.jpg",
       "File:AR Colt 9mm left.jpg"
-    ]
+    ],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — gun lying on a patterned backdrop"
   },
   "colt-m-23": {
     "gun": "M4A1 carbine",
@@ -427,7 +430,8 @@
       "File:Colt Delta Elite with 10mm Auto ammunition.jpg",
       "File:Colt Delta Elite- NFM.JPG",
       "File:Colt Delta Elite.jpg"
-    ]
+    ],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — gun cropped by the frame"
   },
   "eichiro-hatamoto-ii": {
     "gun": "Sig Sauer P320",
@@ -461,7 +465,8 @@
       "File:Instruction Manual for pistol Walther PP and PPK.jpg",
       "File:Walther PPk.jpg",
       "File:Walther PPK-L.jpg"
-    ]
+    ],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — loose cartridges and a backdrop around it"
   },
   "flame-thrower": {
     "gun": "M2 flamethrower",
@@ -476,7 +481,8 @@
     "index": 2,
     "alternatives": [
       "File:M2 flamethrower operators.png"
-    ]
+    ],
+    "needsWork": "maintainer 2026-11-13: no workable reference photo — an explosion on an airfield"
   },
   "fn-5-7c": {
     "gun": "FN Five-seveN",
@@ -531,7 +537,8 @@
       "File:Franchi SPAS-12 Shotgun.JPG",
       "File:Franchi SPAS 12-P5120256-white.jpg",
       "File:Franchi SPAS 12-P5120256-gradient.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "great-dragon-atgm": {
     "gun": "BGM-71 TOW",
@@ -546,7 +553,8 @@
     "index": 5,
     "alternatives": [
       "File:Members of the 1ST Bn., 19th Inf., 25th Inf. Div., use a BGM-71 Tube-launched, Optically-tracked, Wire-guided (TOW) weapon system to cover the valley between Puu Haleiwa and Puu Wai - DPLA - e2f7166b8bb25687aa0a9f2d7d1e24dc.jpeg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a vehicle in a desert"
   },
   "gun-cane": {
     "gun": null,
@@ -571,7 +579,8 @@
       "File:G11 Schnittmodell.jpg",
       "File:G11 Prototyp 1.jpg",
       "File:G 11.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a partial cutaway"
   },
   "heckler-koch-mp-5-tx": {
     "gun": "HK MP5",
@@ -605,7 +614,8 @@
       "File:Gewehr G36 noBG.png",
       "File:Heckler & Koch G36.jpg",
       "File:German policeman with a Heckler & Koch G36 rifle.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "hk-g38-carbine": {
     "gun": "HK G36C",
@@ -635,7 +645,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — a captioned archive scan"
   },
   "ingram-supermach-100-std": {
     "gun": "MAC-10",
@@ -648,7 +659,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — a captioned archive scan"
   },
   "ingram-warrior-10": {
     "gun": "Ingram MAC-11",
@@ -680,7 +692,8 @@
       "File:130724-M-MX805-001 - 1-6 fires M224 mortar system (Image 1 of 5).jpg",
       "File:130724-M-MX805-005 - 1-6 fires M224 mortar system (Image 3 of 5).jpg",
       "File:130724-M-MX805-019 - 1-6 fires M224 mortar system (Image 4 of 5).jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a scene, not a product shot"
   },
   "m79b1-law": {
     "gun": "M72 LAW",
@@ -713,7 +726,8 @@
     "alternatives": [
       "File:Sig Sauer P226 Legion 2.jpg",
       "File:SIG P226 Legion .jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "morrissey-elan": {
     "gun": "Beretta Pico",
@@ -761,7 +775,8 @@
     "license": "CC BY-SA 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
     "index": 1,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "raecor-sting": {
     "gun": null,
@@ -799,7 +814,8 @@
       "File:ISIS Ruger M77 Sniper Rifle - Description Plate.jpg",
       "File:ISIS Ruger M77 Sniper Rifle - Left Side View.jpg",
       "File:ISIS Ruger M77 Sniper Rifle - Right Side View.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "ruger-thunderboltlaser": {
     "gun": "Ruger SR1911",
@@ -815,7 +831,8 @@
     "alternatives": [
       "File:Ruger SR1911.jpg",
       "File:Ruger SR1911 (1).jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "ruger-thunderboltsmart": {
     "gun": "Ruger SR1911",
@@ -831,7 +848,8 @@
     "alternatives": [
       "File:Ruger SR1911.jpg",
       "File:Ruger SR1911 (1).jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "sa-puzzler": {
     "gun": "Liberator-style plastic pistol",
@@ -906,7 +924,8 @@
       "File:Glock19-1.jpg",
       "File:Glock 19.JPG",
       "File:GLOCK 19.JPG"
-    ]
+    ],
+    "needsWork": "no workable reference photo — parts laid out"
   },
   "semopal-vz88v": {
     "gun": "CZ 805 Bren",
@@ -961,7 +980,8 @@
       "File:Steyr AUG Operators.png",
       "File:Steyr AUG 5,56 mm noBG.png",
       "File:Steyr AUG A1 and AG-C.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "steyr-aug-csl-lmg": {
     "gun": "Steyr AUG HBAR",
@@ -978,7 +998,8 @@
       "File:Steyr AUG Operators.png",
       "File:Steyr AUG 5,56 mm noBG.png",
       "File:Steyr AUG A1 and AG-C.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "steyr-aug-csl-smg": {
     "gun": "Steyr AUG 9mm",
@@ -1021,7 +1042,8 @@
       "File:1842 Augustin Model Austrian Musket approximate illustration.jpg",
       "File:Musket slit - old city walls - geograph.org.uk - 3823854.jpg",
       "File:1752 Model Spanish Musket approximate illustration.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — not the gun (wrong subject)"
   },
   "taurus-multi-6": {
     "gun": "Taurus 856",
@@ -1046,7 +1068,8 @@
       "File:HH-60G M134 2.jpg",
       "File:Huey M134.jpg",
       "File:M134 Cụm Nòng.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a scene, not a product shot"
   },
   "walther-ma-2100": {
     "gun": "Walther WA 2000",
@@ -1059,7 +1082,8 @@
     "license": "CC BY-SA 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
     "index": 1,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "walther-pb-120": {
     "gun": "Walther P99",
@@ -1133,7 +1157,8 @@
       "File:AKS-74U (2).jpg",
       "File:AKS74U (noBG).jpg",
       "File:AK74andAKS74U.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — hung on a wall at an angle"
   },
   "ak-97": {
     "gun": "AK-74M",
@@ -1150,7 +1175,8 @@
       "File:AK-74M airsoft 04.jpg",
       "File:AK-74M airsoft 02.jpg",
       "File:AK-74M airsoft 03.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "ak-98": {
     "gun": "AK-74M",
@@ -1167,7 +1193,8 @@
       "File:AK-74M airsoft 04.jpg",
       "File:AK-74M airsoft 02.jpg",
       "File:AK-74M airsoft 03.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "ares-antioch": {
     "gun": "HK69",
@@ -1205,7 +1232,8 @@
       "File:Beretta 92 Compact L PDRM edit.jpg",
       "File:Beretta-92FS Compact Type M (right side).jpg",
       "File:Beretta-92FS Compact Type M (left side).jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "browning-max-power": {
     "gun": "Browning Hi-Power",
@@ -1239,7 +1267,8 @@
       "File:VZ61-CH.png",
       "File:Kulsprutepistol m1961 (AM.096440).jpg",
       "File:Sa vz 61 Škorpion.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "colt-american-l36": {
     "gun": "Colt 1903 Pocket Hammerless",
@@ -1335,7 +1364,8 @@
     "index": 2,
     "alternatives": [
       "File:FN SCAR-L noBG.png"
-    ]
+    ],
+    "needsWork": "no workable reference photo — parts laid out on a backdrop"
   },
   "heckler-koch-hk227-s": {
     "gun": "HK MP5SD",
@@ -1348,7 +1378,8 @@
     "license": "Public domain",
     "licenseUrl": "",
     "index": 13,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "heckler-koch-hk227": {
     "gun": "HK MP5A3",
@@ -1361,7 +1392,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 15,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — carried by a person"
   },
   "ingram-smartgun-mod-20t": {
     "gun": "KRISS Vector",
@@ -1395,7 +1427,8 @@
       "File:Negev (997009858347705171.jpg",
       "File:Negev (997009858340105171.jpg",
       "File:Israel-2013-Aerial 00-Negev-Makhtesh Ramon.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — not the gun (wrong subject)"
   },
   "ranger-arms-sm-3": {
     "gun": "Accuracy International AXMC",
@@ -1408,7 +1441,8 @@
     "license": "CC0",
     "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
     "index": 1,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — end-on, on a bench"
   },
   "remington-750": {
     "gun": "Remington 750 Woodsmaster",
@@ -1429,7 +1463,8 @@
       "File:Ted Kaczynski's Remington Model 700 rifle.jpg",
       "File:Remington-700-SPS.jpg",
       "File:Remington-700-SPS-Tactical.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — not the gun (wrong subject)"
   },
   "rmngton-roomsweeper-shg": {
     "gun": "Taurus Judge",
@@ -1446,7 +1481,8 @@
       "File:Taurus Judge Magnum noBG.jpg",
       "File:Taurus Judge Magnum.JPG",
       "File:Taurus Judge (transparent background).jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "rpk-hmg": {
     "gun": "DShK",
@@ -1461,7 +1497,8 @@
     "index": 4,
     "alternatives": [
       "File:DShK 1938 in Vietnam.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a map"
   },
   "ruger-super-warhawk": {
     "gun": "Ruger Super Redhawk",
@@ -1478,7 +1515,8 @@
       "File:Ruger Super Redhawk Alaskan.JPG",
       "File:Ruger Super Redhawk Alaskan in .44 Magnum.JPG",
       "File:Ruger Super Redhawk Alaskan in 44 Magnum.JPG"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "streetline-special": {
     "gun": "Hi-Point C9 compact",
@@ -1491,7 +1529,8 @@
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
     "index": 1,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "ultimax-mmg": {
     "gun": "Ultimax 100",
@@ -1522,7 +1561,8 @@
     "alternatives": [
       "File:Uzi Pros at IDEX 2023.jpg",
       "File:Uzi Pros at IDEX 2023a.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — too small and cluttered"
   },
   "walther-palm-pistol": {
     "gun": "Chicago Palm Protector",
@@ -1539,7 +1579,8 @@
       "File:Brigitte Calls Me Baby performing Palm of Your Hand live in Chicago (Variant 3).png",
       "File:Brigitte Calls Me Baby performing Palm of Your Hand live in Chicago (Variant 1).png",
       "File:First Baptist Church- South Olive Avenue at Chicago Street, West Palm Beach, Florida.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — not the gun (wrong subject)"
   },
   "9mm-flechette-smg": {
     "gun": null,
@@ -1695,7 +1736,8 @@
       "File:M16A2 Safety Closeup.jpg",
       "File:M16A2 rightside noBG.jpg",
       "File:Inside of a muzzle of an M16A2 rifle..jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — two rifles in one photo"
   },
   "neostead-combat": {
     "gun": "Neostead",
@@ -1737,7 +1779,8 @@
       "File:Winchester 1873.jpg",
       "File:Winchester Model 1873.jpg",
       "File:7.03 Winchester Karabiner M 1873 in Wehrtechnische Studiensammlung.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "nostal-ind-police-pm5": {
     "gun": "Winchester Model 12",
@@ -1784,7 +1827,8 @@
     "license": "CC BY 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
     "index": 8,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — worn in a holster"
   },
   "nostalgia-ind-big-bore": {
     "gun": "M3 Grease Gun",
@@ -1801,7 +1845,8 @@
       "File:M3 submachine gun.jpg",
       "File:M3-SMG.jpg",
       "File:Field Modified Guide M3 Submachine gun in the collection of Musée National d'Histoire Militaire (The National Museum of Military History) in Diekirch, Luxembourg.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a scene, not a product shot"
   },
   "nova-inf-telcom-taser": {
     "gun": "Axon TASER 10",
@@ -1831,7 +1876,8 @@
     "license": "CC BY-SA 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
     "index": 1,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — cropped close-up"
   },
   "savage-model-77e": {
     "gun": "Savage Stevens 320",
@@ -1873,7 +1919,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "vehement-a-v-standard": {
     "gun": "Arsenal AR-M1",
@@ -1886,7 +1933,8 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
-    "alternatives": []
+    "alternatives": [],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   },
   "win-1300-defender-pg": {
     "gun": "Winchester 1300 Defender pistol-grip",
@@ -1903,7 +1951,8 @@
       "File:Winchester Model 1300 field stripped.jpg",
       "File:Winchester model. 1300 turkey.jpg",
       "File:1300 North Calhoun Street (Commercial Building), 1300 North Calhoun Street, Baltimore, Independent City, MD HABS MD,4-BALT,214-1.tif"
-    ]
+    ],
+    "needsWork": "no workable reference photo — close-up of parts"
   },
   "win-1300-defender-ss": {
     "gun": "Winchester 1300 Defender",
@@ -1919,6 +1968,7 @@
     "alternatives": [
       "File:Winchester Model 1300 field stripped.jpg",
       "File:Winchester Model 1300 bolt and breech.jpg"
-    ]
+    ],
+    "needsWork": "no workable reference photo — a backdrop or clutter left around the gun"
   }
 }
