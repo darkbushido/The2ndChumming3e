@@ -46,8 +46,20 @@ async function search(q, loose = false) {
     const ii = p.imageinfo?.[0] ?? {}; const md = ii.extmetadata ?? {};
     return { file: p.title, url: ii.descriptionurl, image: ii.thumburl ?? ii.url, width: ii.width, height: ii.height,
       author: strip(md.Artist?.value), license: strip(md.LicenseShortName?.value), licenseUrl: md.LicenseUrl?.value ?? '', index: p.index };
-  }).filter(c => FREE.test(c.license) && c.width >= (loose ? 500 : 800) && c.width > c.height * (loose ? 1 : 1.3))   // free, big, side-on (landscape)
+  }).filter(c => FREE.test(c.license) && relevant(c.file, q) && c.width >= (loose ? 500 : 800) && c.width > c.height * (loose ? 1 : 1.3))   // free, on topic, big, side-on
     .sort((a, b) => a.index - b.index);
+}
+
+/** Not a photo of the gun itself: maps, murals, prints, troops in action. */
+const OFF_TOPIC = /\b(map|users|mural|operation|maneuver|exercise|training|team|lccn|draft|patent|us\d{6,}|soldier|marines?|troops?|army|police|svg|logo|diagram)\b/i;
+const squash = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+/** The file is about this gun: its title carries every model number in the query ("M16A2", "G36C"), else its last word. */
+export function relevant(title, q) {
+  if (OFF_TOPIC.test(title)) return false;
+  const words = q.split(/[\s/]+/).filter(w => w.length > 1 && !/^(the|of|style|pistol|rifle|carbine|submachine|gun|shotgun|revolver|compact)$/i.test(w));
+  const need = words.filter(w => /\d/.test(w));
+  const t = squash(title);
+  return (need.length ? need : words.slice(-1)).every(w => t.includes(squash(w)));
 }
 
 async function runSearch() {
@@ -60,7 +72,7 @@ async function runSearch() {
     if (!gun) { out[slug] = { gun: null, note: 'no real gun named in the look note' }; continue; }
     let hits = await search(gun);
     if (!hits.length) hits = await search(gun, true);   // second pass: smaller or squarer photos
-    const short = gun.split(/s+/).slice(0, 2).join(' ');
+    const short = gun.split(/\s+/).slice(0, 2).join(' ');
     if (!hits.length && short !== gun) hits = await search(short, true);   // third: the first two words ("Hi-Point C9")
     out[slug] = hits.length ? { gun, ...hits[0], alternatives: hits.slice(1, 4).map(h => h.file) } : { gun, note: 'no free side-on photo found' };
     process.stdout.write(`${hits.length ? '✓' : '·'} ${slug} ← ${gun}\n`);

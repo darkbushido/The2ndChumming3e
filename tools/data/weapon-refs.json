@@ -13,8 +13,8 @@
     "index": 2,
     "alternatives": [
       "File:Carl Gustav M4 (1) (brightened, no background).png",
-      "File:Anti-tank weapons.jpg",
-      "File:Carl-Gustaf M4.jpg"
+      "File:Carl-Gustaf M4.jpg",
+      "File:Carl Gustav M4 Kokonaisturvallisuus 2015.jpg"
     ]
   },
   "ares-alpha": {
@@ -31,7 +31,7 @@
     "alternatives": [
       "File:FN F2000.png",
       "File:FN F2000 S.jpg",
-      "File:FN F2000 Users.png"
+      "File:FN F2000 partially disassembled.jpg"
     ]
   },
   "ares-crusader": {
@@ -47,8 +47,8 @@
     "index": 2,
     "alternatives": [
       "File:Evers Glock 18C.PNG",
-      "File:Glock 17 (6825676904) без фона.jpg",
-      "File:1991 Glock 20 10mm.jpg"
+      "File:Airsoft Glock 18C with laser sight.JPG",
+      "File:Airsoft Glock 18C with laser sight and action open.JPG"
     ]
   },
   "ares-hv-mp-lmg": {
@@ -62,26 +62,23 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
-    "alternatives": [
-      "File:Australian soldier armed with Minimi MK3 during Exercise Balikatan 23.webp",
-      "File:US and NATO Allies conduct weapons familiarization (7426987).jpg"
-    ]
+    "alternatives": []
   },
   "ares-hvar": {
     "gun": "HK416",
-    "file": "File:Heckler & Koch HK416 Users.png",
-    "url": "https://commons.wikimedia.org/wiki/File:Heckler_%26_Koch_HK416_Users.png",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Heckler_%26_Koch_HK416_Users.png/1280px-Heckler_%26_Koch_HK416_Users.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 6460,
-    "height": 3403,
-    "author": "TruncateVirus99",
+    "file": "File:Softairwaffe Heckler & Koch HK416.png",
+    "url": "https://commons.wikimedia.org/wiki/File:Softairwaffe_Heckler_%26_Koch_HK416.png",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Softairwaffe_Heckler_%26_Koch_HK416.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 1200,
+    "height": 494,
+    "author": "Freetargets",
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "index": 1,
+    "index": 2,
     "alternatives": [
-      "File:Softairwaffe Heckler & Koch HK416.png",
       "File:HK416.jpg",
-      "File:HK416N.png"
+      "File:HK416N.png",
+      "File:AR15 HK416 trigger.png"
     ]
   },
   "ares-light-fire-70": {
@@ -128,19 +125,17 @@
   },
   "ares-thunderer": {
     "gun": "Benelli M4",
-    "file": "File:Benelli M4 Users.png",
-    "url": "https://commons.wikimedia.org/wiki/File:Benelli_M4_Users.png",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4f/Benelli_M4_Users.png/1280px-Benelli_M4_Users.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 6460,
-    "height": 3403,
-    "author": "TruncateVirus99",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "index": 2,
+    "file": "File:Evers Benelli M4 Super 90.PNG",
+    "url": "https://commons.wikimedia.org/wiki/File:Evers_Benelli_M4_Super_90.PNG",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Evers_Benelli_M4_Super_90.PNG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 838,
+    "height": 172,
+    "author": "Evers",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
+    "index": 3,
     "alternatives": [
-      "File:Evers Benelli M4 Super 90.PNG",
-      "File:200617-M-BH464-1479 - SRT Marines qualify on multiple weapons (Image 2 of 11).jpg",
-      "File:200617-M-BH464-1493 - SRT Marines qualify on multiple weapons (Image 1 of 11).jpg"
+      "File:Crosse du fusil semi-automatique de combat M4.jpg"
     ]
   },
   "armtech-mgl-12": {
@@ -156,8 +151,8 @@
     "index": 3,
     "alternatives": [
       "File:40 mm granatrevolver Armscor MGL (3).jpg",
-      "File:Milkor MGL Users.png",
-      "File:40 mm granatrevolver Armscor MGL (1).jpg"
+      "File:40 mm granatrevolver Armscor MGL (1).jpg",
+      "File:40 mm granatrevolver Armscor MGL.jpg"
     ]
   },
   "armtech-mgl-6": {
@@ -173,8 +168,8 @@
     "index": 3,
     "alternatives": [
       "File:40 mm granatrevolver Armscor MGL (3).jpg",
-      "File:Milkor MGL Users.png",
-      "File:40 mm granatrevolver Armscor MGL (1).jpg"
+      "File:40 mm granatrevolver Armscor MGL (1).jpg",
+      "File:40 mm granatrevolver Armscor MGL.jpg"
     ]
   },
   "aztechnology-lasher": {
@@ -205,9 +200,7 @@
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
     "index": 1,
-    "alternatives": [
-      "File:65th Merdeka Day 2022 Picture 56.jpg"
-    ]
+    "alternatives": []
   },
   "barret-model-121": {
     "gun": "Barrett M82",
@@ -223,7 +216,7 @@
     "alternatives": [
       "File:Barrett M82.jpg",
       "File:Dutch Barrett M82A1.jpg",
-      "File:Barrett M82 Users.png"
+      "File:M82rifle.jpg"
     ]
   },
   "beretta-model-200st": {
@@ -264,19 +257,19 @@
   },
   "cavalier-deputy": {
     "gun": "Smith & Wesson Model 29",
-    "file": "File:Smith and Wesson model 39 IMG 3063.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Smith_and_Wesson_model_39_IMG_3063.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Smith_and_Wesson_model_39_IMG_3063.jpg/1280px-Smith_and_Wesson_model_39_IMG_3063.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 4732,
-    "height": 3480,
-    "author": "Rama (talk · contribs)",
-    "license": "CC BY-SA 2.0 fr",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en",
-    "index": 1,
+    "file": "File:Smith & Wesson Model 29 retouched.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:Smith_%26_Wesson_Model_29_retouched.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/2/27/Smith_%26_Wesson_Model_29_retouched.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 1245,
+    "height": 772,
+    "author": "The original uploader was Kaltduscher at German Wikipedia. (Original text: kaltduscher)",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "index": 2,
     "alternatives": [
-      "File:Smith & Wesson Model 29 retouched.jpg",
       "File:Smith & Wesson Mod.29.jpg",
-      "File:Smith & Wesson Model 642 LS Ladysmith (8212014974).jpg"
+      "File:Flickr - ~Steve Z~ - S^W Model 29.jpg",
+      "File:Flickr - ~Steve Z~ - S^W Pre Model 29.jpg"
     ]
   },
   "cavalier-scout": {
@@ -306,7 +299,7 @@
     "alternatives": [
       "File:CZ P-10 C right.jpg",
       "File:CZ P-10 C left.jpg",
-      "File:CZ P-10 C Pistol Opertors Map 29.07.2025.png"
+      "File:CZ P-10 C cal. 9x19.jpg"
     ]
   },
   "colt-asp": {
@@ -322,8 +315,7 @@
     "index": 3,
     "alternatives": [
       "File:Colt Mustang .380 MU30945 R DSC 4819.jpg",
-      "File:NIcholas Gil vs Colt Schilling 1454 (31067302768).jpg",
-      "File:NIcholas Gil vs Colt Schilling 1463 (44940311201).jpg"
+      "File:ColtMustangxsp.jpg"
     ]
   },
   "colt-cobra-tz-110": {
@@ -389,9 +381,9 @@
     "licenseUrl": "",
     "index": 1,
     "alternatives": [
-      "File:PEO M4 Carbine RAS M68 CCO.png",
-      "File:M4 PEO Soldier.jpg",
-      "File:Colt LE694CK M4A1 Monolithic Carbine 11.5 inch.jpg"
+      "File:Colt LE694CK M4A1 Monolithic Carbine 11.5 inch.jpg",
+      "File:USAG Benelux Soldiers qualify with brand new M4A1 carbines. 160824-A-BD610-0126.jpg",
+      "File:USAG Benelux Soldiers qualify with brand new M4A1 carbines. 160824-A-BD610-0118.jpg"
     ]
   },
   "colt-m22a2": {
@@ -405,11 +397,7 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 2,
-    "alternatives": [
-      "File:A Marine armed with an M16 rifle stands guard in a bunker at Beirut International Airport DN-SN-84-05182.jpg",
-      "File:Loading M203 40 mm grenade launcher attached to an M16 rifle.jpg",
-      "File:US Navy 110510-N-QP268-040 A Marine fires an M16 service rifle during a platoon live-fire weapons training aboard USS Whidbey Island (LSD 41).jpg"
-    ]
+    "alternatives": []
   },
   "colt-m24a3-water-carbine": {
     "gun": "Soviet APS underwater rifle",
@@ -422,9 +410,7 @@
     "license": "CC BY 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
     "index": 1,
-    "alternatives": [
-      "File:APS underwater rifle users.png"
-    ]
+    "alternatives": []
   },
   "colt-manhunter": {
     "gun": "Colt Delta Elite",
@@ -440,7 +426,7 @@
     "alternatives": [
       "File:Colt Delta Elite with 10mm Auto ammunition.jpg",
       "File:Colt Delta Elite- NFM.JPG",
-      "File:CDE1987.jpg"
+      "File:Colt Delta Elite.jpg"
     ]
   },
   "eichiro-hatamoto-ii": {
@@ -489,9 +475,7 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
     "index": 2,
     "alternatives": [
-      "File:Flamethrower Fresco (371694286).jpg",
-      "File:M2 flamethrower operators.png",
-      "File:噴火槍.JPG"
+      "File:M2 flamethrower operators.png"
     ]
   },
   "fn-5-7c": {
@@ -551,18 +535,16 @@
   },
   "great-dragon-atgm": {
     "gun": "BGM-71 TOW",
-    "file": "File:BGM-71 TOW Italian Army.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:BGM-71_TOW_Italian_Army.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/BGM-71_TOW_Italian_Army.jpg/1280px-BGM-71_TOW_Italian_Army.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 2820,
-    "height": 1830,
-    "author": "PO3 Jeffery Russell",
-    "license": "Public domain",
-    "licenseUrl": "",
-    "index": 4,
+    "file": "File:Humvee with a BGM-71 TOW missile tube.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:Humvee_with_a_BGM-71_TOW_missile_tube.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/Humvee_with_a_BGM-71_TOW_missile_tube.jpg/1280px-Humvee_with_a_BGM-71_TOW_missile_tube.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 3072,
+    "height": 2304,
+    "author": "Matanya",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "index": 5,
     "alternatives": [
-      "File:Humvee with a BGM-71 TOW missile tube.jpg",
-      "File:A student in a Schools Company classroom performs diagnostic procedures on a component of a tube-launched, optically-tracked, wire-guided (TOW) missile launcher - DPLA - 89d544adb9f96c85ea2796099825e61f.jpeg",
       "File:Members of the 1ST Bn., 19th Inf., 25th Inf. Div., use a BGM-71 Tube-launched, Optically-tracked, Wire-guided (TOW) weapon system to cover the valley between Puu Haleiwa and Puu Wai - DPLA - e2f7166b8bb25687aa0a9f2d7d1e24dc.jpeg"
     ]
   },
@@ -603,9 +585,9 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
     "index": 1,
     "alternatives": [
-      "File:A U.S. Air Force SSGT fires a 9-mm HK MP5 sub-machine gun at a firearms demonstration during exercise Bright Star '82 DF-ST-82-10100.jpg",
       "File:Heckler & Koch MP5 PDW Galaxy with + Eotech 551.jpg",
-      "File:Heckler & Koch MP5.jpg"
+      "File:Heckler & Koch MP5.jpg",
+      "File:Heckler & Koch MP5 b.jpg"
     ]
   },
   "hk-g38-assault": {
@@ -627,37 +609,20 @@
   },
   "hk-g38-carbine": {
     "gun": "HK G36C",
-    "file": "File:Heckler & Koch G36.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Heckler_%26_Koch_G36.jpg",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Heckler_%26_Koch_G36.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "file": "File:Heckler & Koch G36C.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:Heckler_%26_Koch_G36C.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Heckler_%26_Koch_G36C.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
     "width": 800,
-    "height": 240,
+    "height": 230,
     "author": "HobbyAstronaut",
     "license": "CC BY 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
-    "index": 1,
-    "alternatives": [
-      "File:Heckler & Koch G36A3 Prenzlau 2025.jpg",
-      "File:Heckler & Koch G36 Users.png",
-      "File:Gewehr G36 weiss.jpg"
-    ]
+    "index": 10,
+    "alternatives": []
   },
   "hk-g38-lmg": {
     "gun": "HK MG36",
-    "file": "File:Heckler & Koch G36.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Heckler_%26_Koch_G36.jpg",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/1/18/Heckler_%26_Koch_G36.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
-    "width": 800,
-    "height": 240,
-    "author": "HobbyAstronaut",
-    "license": "CC BY 3.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
-    "index": 1,
-    "alternatives": [
-      "File:Heckler & Koch G36A3 Prenzlau 2025.jpg",
-      "File:Heckler & Koch G36 Users.png",
-      "File:Gewehr G36 weiss.jpg"
-    ]
+    "note": "no free side-on photo found"
   },
   "ingram-supermach-100-ext": {
     "gun": "MAC-10",
@@ -670,11 +635,7 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
-    "alternatives": [
-      "File:MAC-10 Users.png",
-      "File:Char M10 Wolverine (Illhaeusern) (2).jpg",
-      "File:Douglas MacArthur lands Leyte1.jpg"
-    ]
+    "alternatives": []
   },
   "ingram-supermach-100-std": {
     "gun": "MAC-10",
@@ -687,27 +648,21 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
-    "alternatives": [
-      "File:MAC-10 Users.png",
-      "File:Char M10 Wolverine (Illhaeusern) (2).jpg",
-      "File:Douglas MacArthur lands Leyte1.jpg"
-    ]
+    "alternatives": []
   },
   "ingram-warrior-10": {
     "gun": "Ingram MAC-11",
-    "file": "File:Flickr - ~Steve Z~ - SOCOM ^ M11.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Flickr_-_~Steve_Z~_-_SOCOM_%5E_M11.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Flickr_-_~Steve_Z~_-_SOCOM_%5E_M11.jpg/1280px-Flickr_-_~Steve_Z~_-_SOCOM_%5E_M11.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 1600,
-    "height": 924,
-    "author": "Stephen Z",
-    "license": "CC BY-SA 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
-    "index": 4,
+    "file": "File:MAC11.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:MAC11.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/6/6b/MAC11.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 597,
+    "height": 348,
+    "author": "IkapitanzurseeI at English Wikipedia",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "index": 1,
     "alternatives": [
-      "File:Flickr - ~Steve Z~ - Cobray M11 (1).jpg",
-      "File:M11 2024.jpg",
-      "File:Leica M11 with Summicron-M 50mm F2 lens.jpg"
+      "File:MAC-11 CPC crop.JPG"
     ]
   },
   "m-12-portable-mortar": {
@@ -741,7 +696,7 @@
     "alternatives": [
       "File:M72 LAW 1986.jpg",
       "File:M72A2 LAW.png",
-      "File:M72 LAW Operators Map 29.03.2024.png"
+      "File:M72 LAW 66 KES 88 20180604.jpg"
     ]
   },
   "morrissey-alta": {
@@ -776,9 +731,7 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
     "index": 1,
     "alternatives": [
-      "File:Sig-sauer-P238 transparent.png",
-      "File:Isla Grande Airport (SIG), San Juan, Puerto Rico (12173864883).jpg",
-      "File:Isla Grande Airport SanJuan PuertoRico.jpg"
+      "File:Sig-sauer-P238 transparent.png"
     ]
   },
   "mossberg-cmdt": {
@@ -794,8 +747,7 @@
     "index": 1,
     "alternatives": [
       "File:PEO Mossberg 590A1 (cropped).jpg",
-      "File:590a1 001.jpg",
-      "File:Warrior skills Soldier badge (7420376).jpg"
+      "File:590a1 001.jpg"
     ]
   },
   "mossberg-sm-cmdt": {
@@ -828,8 +780,8 @@
     "index": 1,
     "alternatives": [
       "File:Remington 870 Wingmaster (55416717369).jpg",
-      "File:Remington 870 Police (55284788188).jpg",
-      "File:Recoil Pad Remington 870.jpg"
+      "File:Recoil Pad Remington 870.jpg",
+      "File:Remington 870 Wmaster.jpg"
     ]
   },
   "ruger-100": {
@@ -887,20 +839,7 @@
   },
   "sandler-tmp": {
     "gun": "B&T TP9",
-    "file": "File:Operation Golden Triangle-019 (48866781876) cropped.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Operation_Golden_Triangle-019_(48866781876)_cropped.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Operation_Golden_Triangle-019_%2848866781876%29_cropped.jpg/1280px-Operation_Golden_Triangle-019_%2848866781876%29_cropped.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 4529,
-    "height": 2523,
-    "author": "HobbyAstronaut",
-    "license": "Public domain",
-    "licenseUrl": "",
-    "index": 1,
-    "alternatives": [
-      "File:Operation Golden Triangle-019 (48866781876).jpg",
-      "File:Pulkovo-1-airport-2013.jpg",
-      "File:Pulkovo-airport-saint-petersburg.jpg"
-    ]
+    "note": "no free side-on photo found"
   },
   "savalette-guardian-sl2": {
     "gun": "HK USP",
@@ -949,8 +888,7 @@
     "index": 1,
     "alternatives": [
       "File:Ump-side.png",
-      "File:Heckler &Koch MP5s and UMP submachineguns.JPG",
-      "File:Operatori U.O.P.I.jpg"
+      "File:Heckler &Koch MP5s and UMP submachineguns.JPG"
     ]
   },
   "seco-ld-120": {
@@ -982,9 +920,9 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
     "alternatives": [
-      "File:CZ 805 BREN Users.png",
-      "File:CZ BREN users.png",
-      "File:Cz805.png"
+      "File:Cz805.png",
+      "File:CZ 805 BREN A1 5,56 x 45 NATO.jpg",
+      "File:CZ 805 with Meopta sights.JPG"
     ]
   },
   "spear-gun": {
@@ -993,75 +931,67 @@
   },
   "spike": {
     "gun": "Spike-MR",
-    "file": "File:Suske en Wiske mural.png",
-    "url": "https://commons.wikimedia.org/wiki/File:Suske_en_Wiske_mural.png",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Suske_en_Wiske_mural.png/1280px-Suske_en_Wiske_mural.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 1982,
-    "height": 1460,
-    "author": "Raphael De Vrieze",
-    "license": "CC0",
-    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
-    "index": 1,
-    "alternatives": [
-      "File:Suske en Wiske Logo.jpg",
-      "File:Etalage boekwinkel Delft.jpg",
-      "File:Suske en Wiske in Plopsa Station Antwerp.jpg"
-    ]
+    "note": "no free side-on photo found"
   },
   "steyr-aug-csl-assault": {
     "gun": "Steyr AUG A3",
-    "file": "File:Gebäude sicher (19667646080).jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Geb%C3%A4ude_sicher_(19667646080).jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Geb%C3%A4ude_sicher_%2819667646080%29.jpg/1280px-Geb%C3%A4ude_sicher_%2819667646080%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 3526,
-    "height": 2307,
-    "author": "Bundesheer Fotos",
-    "license": "CC BY-SA 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
-    "index": 2,
-    "alternatives": [
-      "File:130416-M-OM885-077 - New Zealanders maneuver, engage targets during Dawn Blitz 2013.jpg",
-      "File:USAJFKSWCS Students Train With Foreign Weapons and Machine Guns 200512-A-OP908-097.jpg",
-      "File:130416-M-OM885-092 - New Zealanders maneuver, engage targets during Dawn Blitz 2013.jpg"
-    ]
+    "file": "File:Steyr-AUG-A3-SF.webp",
+    "url": "https://commons.wikimedia.org/wiki/File:Steyr-AUG-A3-SF.webp",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Steyr-AUG-A3-SF.webp?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 650,
+    "height": 289,
+    "author": "Alexdelarge15",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "index": 1,
+    "alternatives": []
   },
   "steyr-aug-csl-carbine": {
     "gun": "Steyr AUG A3 carbine",
-    "note": "no free side-on photo found"
-  },
-  "steyr-aug-csl-lmg": {
-    "gun": "Steyr AUG HBAR",
-    "file": "File:130416-M-OM885-077 - New Zealanders maneuver, engage targets during Dawn Blitz 2013.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:130416-M-OM885-077_-_New_Zealanders_maneuver,_engage_targets_during_Dawn_Blitz_2013.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/130416-M-OM885-077_-_New_Zealanders_maneuver%2C_engage_targets_during_Dawn_Blitz_2013.jpg/1280px-130416-M-OM885-077_-_New_Zealanders_maneuver%2C_engage_targets_during_Dawn_Blitz_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 3888,
-    "height": 2592,
-    "author": "Cpl. Joseph Scanlan",
+    "file": "File:Steyr AUG 5,56 mm.JPG",
+    "url": "https://commons.wikimedia.org/wiki/File:Steyr_AUG_5,56_mm.JPG",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Steyr_AUG_5%2C56_mm.JPG/1280px-Steyr_AUG_5%2C56_mm.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 4475,
+    "height": 2557,
+    "author": "MoserB",
     "license": "Public domain",
     "licenseUrl": "",
     "index": 1,
     "alternatives": [
-      "File:USAJFKSWCS Students Train With Foreign Weapons and Machine Guns 200512-A-OP908-097.jpg",
-      "File:130416-M-OM885-092 - New Zealanders maneuver, engage targets during Dawn Blitz 2013.jpg",
-      "File:StG 77 and P 80.JPG"
+      "File:Steyr AUG Operators.png",
+      "File:Steyr AUG 5,56 mm noBG.png",
+      "File:Steyr AUG A1 and AG-C.jpg"
+    ]
+  },
+  "steyr-aug-csl-lmg": {
+    "gun": "Steyr AUG HBAR",
+    "file": "File:Steyr AUG 5,56 mm.JPG",
+    "url": "https://commons.wikimedia.org/wiki/File:Steyr_AUG_5,56_mm.JPG",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Steyr_AUG_5%2C56_mm.JPG/1280px-Steyr_AUG_5%2C56_mm.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 4475,
+    "height": 2557,
+    "author": "MoserB",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "index": 1,
+    "alternatives": [
+      "File:Steyr AUG Operators.png",
+      "File:Steyr AUG 5,56 mm noBG.png",
+      "File:Steyr AUG A1 and AG-C.jpg"
     ]
   },
   "steyr-aug-csl-smg": {
     "gun": "Steyr AUG 9mm",
-    "file": "File:130416-M-OM885-092 - New Zealanders maneuver, engage targets during Dawn Blitz 2013.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:130416-M-OM885-092_-_New_Zealanders_maneuver,_engage_targets_during_Dawn_Blitz_2013.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/130416-M-OM885-092_-_New_Zealanders_maneuver%2C_engage_targets_during_Dawn_Blitz_2013.jpg/1280px-130416-M-OM885-092_-_New_Zealanders_maneuver%2C_engage_targets_during_Dawn_Blitz_2013.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 3888,
-    "height": 2592,
-    "author": "Cpl. Joseph Scanlan",
-    "license": "Public domain",
-    "licenseUrl": "",
-    "index": 2,
-    "alternatives": [
-      "File:130416-M-OM885-077 - New Zealanders maneuver, engage targets during Dawn Blitz 2013.jpg",
-      "File:USAJFKSWCS Students Train With Foreign Weapons and Machine Guns 200512-A-OP908-097.jpg",
-      "File:130416-M-OM885-158 - New Zealanders maneuver, engage targets during Dawn Blitz 2013.jpg"
-    ]
+    "file": "File:AUG 9mm 03.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:AUG_9mm_03.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/0/09/AUG_9mm_03.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 550,
+    "height": 226,
+    "author": "Steyr Manlicher",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "index": 1,
+    "alternatives": []
   },
   "steyr-tmp": {
     "gun": "Steyr TMP",
@@ -1074,40 +1004,28 @@
     "license": "Public domain",
     "licenseUrl": "",
     "index": 1,
-    "alternatives": [
-      "File:Steyr SPP.jpg",
-      "File:Steyr SPP 9mmPara 008.jpg"
-    ]
+    "alternatives": []
   },
   "street-sweeper-shtg": {
     "gun": "old musket built from pipe",
-    "file": "File:A draft on sweet-wirt, from the Princes head on the road to London. (BM 1868,0808.6623).jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:A_draft_on_sweet-wirt,_from_the_Princes_head_on_the_road_to_London._(BM_1868,0808.6623).jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/A_draft_on_sweet-wirt%2C_from_the_Princes_head_on_the_road_to_London._%28BM_1868%2C0808.6623%29.jpg/1280px-A_draft_on_sweet-wirt%2C_from_the_Princes_head_on_the_road_to_London._%28BM_1868%2C0808.6623%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 1600,
-    "height": 1337,
-    "author": "",
-    "license": "Public domain",
-    "licenseUrl": "",
+    "file": "File:Musket Copse, Old Basing - geograph.org.uk - 7002475.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:Musket_Copse,_Old_Basing_-_geograph.org.uk_-_7002475.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Musket_Copse%2C_Old_Basing_-_geograph.org.uk_-_7002475.jpg/1280px-Musket_Copse%2C_Old_Basing_-_geograph.org.uk_-_7002475.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 3853,
+    "height": 2434,
+    "author": "Des Blenkinsopp",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
     "index": 1,
-    "alternatives": []
+    "alternatives": [
+      "File:1842 Augustin Model Austrian Musket approximate illustration.jpg",
+      "File:Musket slit - old city walls - geograph.org.uk - 3823854.jpg",
+      "File:1752 Model Spanish Musket approximate illustration.jpg"
+    ]
   },
   "taurus-multi-6": {
     "gun": "Taurus 856",
-    "file": "File:Taurus Model 85 Ultra-Lite (32616896880).jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Taurus_Model_85_Ultra-Lite_(32616896880).jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/Taurus_Model_85_Ultra-Lite_%2832616896880%29.jpg/1280px-Taurus_Model_85_Ultra-Lite_%2832616896880%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 4000,
-    "height": 3000,
-    "author": "James Case from Philadelphia, Mississippi, U.S.A.",
-    "license": "CC BY 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
-    "index": 4,
-    "alternatives": [
-      "File:Taurus Model 85 Ultra-Lite (32616901950).jpg",
-      "File:OvalTaurusRear.jpg",
-      "File:IMAG0290.jpg"
-    ]
+    "note": "no free side-on photo found"
   },
   "tiffani-self-defender": {
     "gun": "pearl-gripped derringer",
@@ -1126,8 +1044,8 @@
     "index": 1,
     "alternatives": [
       "File:HH-60G M134 2.jpg",
-      "File:M134 Minigun Users.png",
-      "File:Huey M134.jpg"
+      "File:Huey M134.jpg",
+      "File:M134 Cụm Nòng.jpg"
     ]
   },
   "walther-ma-2100": {
@@ -1141,10 +1059,7 @@
     "license": "CC BY-SA 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
     "index": 1,
-    "alternatives": [
-      "File:Geisterbeschwörer-Anfang-des-21.-Jahrhunderts.png",
-      "File:Schamanismus-früher-und-heute.png"
-    ]
+    "alternatives": []
   },
   "walther-pb-120": {
     "gun": "Walther P99",
@@ -1165,36 +1080,38 @@
   },
   "ww-infiltrator": {
     "gun": "HK Mk23",
-    "file": "File:Mark23SuppressedLeft.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Mark23SuppressedLeft.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Mark23SuppressedLeft.jpg/1280px-Mark23SuppressedLeft.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 1624,
-    "height": 976,
-    "author": "Joe Loong",
-    "license": "CC BY-SA 2.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0",
-    "index": 1,
-    "alternatives": [
-      "File:Mark23SuppressedRight.jpg"
-    ]
+    "note": "no free side-on photo found"
   },
   "yamaha-pulsar": {
     "gun": "Axon TASER 7",
-    "note": "no free side-on photo found"
+    "file": "File:Taser-x26.png",
+    "url": "https://commons.wikimedia.org/wiki/File:Taser-x26.png",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Taser-x26.png/1280px-Taser-x26.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 3200,
+    "height": 2400,
+    "author": "Baedr-9439",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "index": 1,
+    "alternatives": [
+      "File:Südtirol-Taser Pendelbahn.jpg",
+      "File:Taser rally.jpg",
+      "File:Taser rally 2.jpg"
+    ]
   },
   "fam-95": {
     "gun": "Beretta 93R",
-    "file": "File:Beretta 93R Users.png",
-    "url": "https://commons.wikimedia.org/wiki/File:Beretta_93R_Users.png",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Beretta_93R_Users.png/1280px-Beretta_93R_Users.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 6460,
-    "height": 3403,
-    "author": "TruncateVirus99",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "index": 2,
+    "file": "File:Beretta 93R.png",
+    "url": "https://commons.wikimedia.org/wiki/File:Beretta_93R.png",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Beretta_93R.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 568,
+    "height": 381,
+    "author": "Atirador",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "index": 1,
     "alternatives": [
-      "File:BRI d'Alger.jpg"
+      "File:Beretta 93r modern.jpg"
     ]
   },
   "jupiter-taser-club": {
@@ -1215,7 +1132,7 @@
     "alternatives": [
       "File:AKS-74U (2).jpg",
       "File:AKS74U (noBG).jpg",
-      "File:Ukrainian Marine with AKS-74U.JPEG"
+      "File:AK74andAKS74U.jpg"
     ]
   },
   "ak-97": {
@@ -1254,19 +1171,19 @@
   },
   "ares-antioch": {
     "gun": "HK69",
-    "file": "File:Heckler & Koch HK69A1 Users.png",
-    "url": "https://commons.wikimedia.org/wiki/File:Heckler_%26_Koch_HK69A1_Users.png",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Heckler_%26_Koch_HK69A1_Users.png/1280px-Heckler_%26_Koch_HK69A1_Users.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 6460,
-    "height": 3403,
-    "author": "TruncateVirus99",
+    "file": "File:HK69 Granatpistole 40mm noBG.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:HK69_Granatpistole_40mm_noBG.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/HK69_Granatpistole_40mm_noBG.jpg/1280px-HK69_Granatpistole_40mm_noBG.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 1900,
+    "height": 1100,
+    "author": "yetdark from Hamburg, Germany",
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "index": 2,
+    "index": 4,
     "alternatives": [
-      "File:Heckler & Koch MG5.jpg",
-      "File:HK69 Granatpistole 40mm noBG.jpg",
-      "File:HK69A1 40 kranaattipistooli 2002.JPG"
+      "File:HK69A1 40 kranaattipistooli 2002.JPG",
+      "File:HK69 Granatpistole 40mm noBG.png",
+      "File:HK69A1 40 kranaattipistooli 2002 Lippujuhlan päivä 2014.JPG"
     ]
   },
   "ares-predator": {
@@ -1285,9 +1202,9 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
     "index": 1,
     "alternatives": [
-      "File:Malaysian police with Beretta 92 Compact L.jpg",
       "File:Beretta 92 Compact L PDRM edit.jpg",
-      "File:Beretta-92FS Compact Type M (right side).jpg"
+      "File:Beretta-92FS Compact Type M (right side).jpg",
+      "File:Beretta-92FS Compact Type M (left side).jpg"
     ]
   },
   "browning-max-power": {
@@ -1319,9 +1236,9 @@
     "licenseUrl": "https://creativecommons.org/licenses/by/3.0/de/deed.en",
     "index": 2,
     "alternatives": [
-      "File:Airsoftguns.jpg",
       "File:VZ61-CH.png",
-      "File:Kulsprutepistol m1961 (AM.096440).jpg"
+      "File:Kulsprutepistol m1961 (AM.096440).jpg",
+      "File:Sa vz 61 Škorpion.jpg"
     ]
   },
   "colt-american-l36": {
@@ -1356,25 +1273,21 @@
     "license": "Public domain",
     "licenseUrl": "",
     "index": 1,
-    "alternatives": [
-      "File:Operation in Nahr-e Saraj Image 5 of 6 661579 120814-A-IN036-080.jpg"
-    ]
+    "alternatives": []
   },
   "enfield-as7": {
     "gun": "AA-12",
-    "file": "File:Vympel-R-77-maks2009.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Vympel-R-77-maks2009.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Vympel-R-77-maks2009.jpg/1280px-Vympel-R-77-maks2009.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 2380,
-    "height": 1808,
-    "author": "Allocer",
+    "file": "File:AA-12.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:AA-12.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/7/75/AA-12.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 1000,
+    "height": 436,
+    "author": "Mulhollant",
     "license": "CC BY-SA 3.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
-    "index": 1,
+    "index": 5,
     "alternatives": [
-      "File:R-77 operators.png",
-      "File:Map with R-77 operators in blue.png",
-      "File:AA-12.jpg"
+      "File:Landschaftsschutzgebiet Grünlandverbund Aa 12.JPG"
     ]
   },
   "fichetti-security-500": {
@@ -1390,23 +1303,23 @@
     "index": 1,
     "alternatives": [
       "File:Beretta 92 FSi.JPG",
-      "File:Beretta 92 Users.png",
-      "File:Beretta FS 92.jpg"
+      "File:Beretta FS 92.jpg",
+      "File:Beretta 92 Compact L PDRM.jpg"
     ]
   },
   "fichetti-security-500a": {
     "gun": "Beretta 93R",
-    "file": "File:Beretta 93R Users.png",
-    "url": "https://commons.wikimedia.org/wiki/File:Beretta_93R_Users.png",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Beretta_93R_Users.png/1280px-Beretta_93R_Users.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 6460,
-    "height": 3403,
-    "author": "TruncateVirus99",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "index": 2,
+    "file": "File:Beretta 93R.png",
+    "url": "https://commons.wikimedia.org/wiki/File:Beretta_93R.png",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Beretta_93R.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 568,
+    "height": 381,
+    "author": "Atirador",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "index": 1,
     "alternatives": [
-      "File:BRI d'Alger.jpg"
+      "File:Beretta 93r modern.jpg"
     ]
   },
   "fn-har": {
@@ -1421,44 +1334,34 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 2,
     "alternatives": [
-      "File:FN SCAR-L - Aimpoint CompM4- Belgian Army.png",
-      "File:FN SCAR-L noBG.png",
-      "File:FN SCAR Stock adapter prototype noBG.png"
+      "File:FN SCAR-L noBG.png"
     ]
   },
   "heckler-koch-hk227-s": {
     "gun": "HK MP5SD",
-    "file": "File:Heckler & Koch MP5-1.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Heckler_%26_Koch_MP5-1.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Heckler_%26_Koch_MP5-1.jpg/1280px-Heckler_%26_Koch_MP5-1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 1600,
-    "height": 1200,
-    "author": "Heckler_&amp;_Koch_MP5.jpg: Samuli Silvennoinen derivative work: Hic et nunc",
-    "license": "CC BY-SA 3.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
-    "index": 2,
-    "alternatives": [
-      "File:A U.S. Air Force SSGT fires a 9-mm HK MP5 sub-machine gun at a firearms demonstration during exercise Bright Star '82 DF-ST-82-10100.jpg",
-      "File:Heckler & Koch MP5 PDW Galaxy with + Eotech 551.jpg",
-      "File:Heckler & Koch MP5 b.jpg"
-    ]
+    "file": "File:MP5SD.JPG",
+    "url": "https://commons.wikimedia.org/wiki/File:MP5SD.JPG",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/MP5SD.JPG/1280px-MP5SD.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 2834,
+    "height": 1900,
+    "author": "",
+    "license": "Public domain",
+    "licenseUrl": "",
+    "index": 13,
+    "alternatives": []
   },
   "heckler-koch-hk227": {
     "gun": "HK MP5A3",
-    "file": "File:Heckler & Koch MP5-1.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Heckler_%26_Koch_MP5-1.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Heckler_%26_Koch_MP5-1.jpg/1280px-Heckler_%26_Koch_MP5-1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 1600,
-    "height": 1200,
-    "author": "Heckler_&amp;_Koch_MP5.jpg: Samuli Silvennoinen derivative work: Hic et nunc",
-    "license": "CC BY-SA 3.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
-    "index": 1,
-    "alternatives": [
-      "File:A U.S. Air Force SSGT fires a 9-mm HK MP5 sub-machine gun at a firearms demonstration during exercise Bright Star '82 DF-ST-82-10100.jpg",
-      "File:Heckler & Koch MP5 b.jpg",
-      "File:Heckler & Koch MP5.jpg"
-    ]
+    "file": "File:Buckingham Palace Guard with HK MP5A3 - DSCF1168.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:Buckingham_Palace_Guard_with_HK_MP5A3_-_DSCF1168.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/93/Buckingham_Palace_Guard_with_HK_MP5A3_-_DSCF1168.jpg/1280px-Buckingham_Palace_Guard_with_HK_MP5A3_-_DSCF1168.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 3262,
+    "height": 2464,
+    "author": "Tadeusz Hare",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "index": 15,
+    "alternatives": []
   },
   "ingram-smartgun-mod-20t": {
     "gun": "KRISS Vector",
@@ -1505,11 +1408,7 @@
     "license": "CC0",
     "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
     "index": 1,
-    "alternatives": [
-      "File:PrecisionGuidedFirearm.jpg",
-      "File:Precision Guided Firearm.jpg",
-      "File:High Angle shoot training-4 cropped.jpg"
-    ]
+    "alternatives": []
   },
   "remington-750": {
     "gun": "Remington 750 Woodsmaster",
@@ -1517,19 +1416,19 @@
   },
   "remington-950": {
     "gun": "Remington 700",
-    "file": "File:Hunting rifle 02.png",
-    "url": "https://commons.wikimedia.org/wiki/File:Hunting_rifle_02.png",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Hunting_rifle_02.png/1280px-Hunting_rifle_02.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 2000,
-    "height": 750,
-    "author": "Ragnhild Kjeldsen",
-    "license": "CC BY-SA 4.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "index": 1,
+    "file": "File:Remington 700 Standard.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:Remington_700_Standard.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Remington_700_Standard.jpg/1280px-Remington_700_Standard.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 3069,
+    "height": 1007,
+    "author": "Rizuan (talk)",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "index": 5,
     "alternatives": [
-      "File:Remington 700 Standard.jpg",
       "File:Ted Kaczynski's Remington Model 700 rifle.jpg",
-      "File:Remington-700-SPS.jpg"
+      "File:Remington-700-SPS.jpg",
+      "File:Remington-700-SPS-Tactical.jpg"
     ]
   },
   "rmngton-roomsweeper-shg": {
@@ -1551,18 +1450,16 @@
   },
   "rpk-hmg": {
     "gun": "DShK",
-    "file": "File:DShK Users.png",
-    "url": "https://commons.wikimedia.org/wiki/File:DShK_Users.png",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/DShK_Users.png/1280px-DShK_Users.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 6460,
-    "height": 3403,
-    "author": "TruncateVirus99",
+    "file": "File:DShK operators of the world.png",
+    "url": "https://commons.wikimedia.org/wiki/File:DShK_operators_of_the_world.png",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/DShK_operators_of_the_world.png/1280px-DShK_operators_of_the_world.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 1500,
+    "height": 740,
+    "author": "BlankMap-World.png: The map was made by User:Vardion and adapted by User:E Pluribus Anthony for Wikipedia. derivative work: GAU-19 (talk)",
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-    "index": 3,
+    "index": 4,
     "alternatives": [
-      "File:DShK operators of the world.png",
-      "File:12,7-мм станковый пулемёт ДШК образца 1938 года (3-1).jpg",
       "File:DShK 1938 in Vietnam.jpg"
     ]
   },
@@ -1585,7 +1482,16 @@
   },
   "streetline-special": {
     "gun": "Hi-Point C9 compact",
-    "note": "no free side-on photo found"
+    "file": "File:Hi-Point C9 Pistol.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:Hi-Point_C9_Pistol.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Hi-Point_C9_Pistol.jpg/1280px-Hi-Point_C9_Pistol.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 3092,
+    "height": 1748,
+    "author": "Jack Kingsman",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "index": 1,
+    "alternatives": []
   },
   "ultimax-mmg": {
     "gun": "Ultimax 100",
@@ -1599,9 +1505,7 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
     "alternatives": [
-      "File:Ultimax 100 Users.png",
-      "File:Ultimax 100 (Brunei 2024).jpg",
-      "File:Section Automatic Weapon.jpg"
+      "File:Ultimax 100 (Brunei 2024).jpg"
     ]
   },
   "uzi-iii": {
@@ -1616,14 +1520,26 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
     "alternatives": [
-      "File:Uzi-nobg.png",
       "File:Uzi Pros at IDEX 2023.jpg",
       "File:Uzi Pros at IDEX 2023a.jpg"
     ]
   },
   "walther-palm-pistol": {
     "gun": "Chicago Palm Protector",
-    "note": "no free side-on photo found"
+    "file": "File:Brigitte Calls Me Baby performing Palm of Your Hand live in Chicago (Variant 2).png",
+    "url": "https://commons.wikimedia.org/wiki/File:Brigitte_Calls_Me_Baby_performing_Palm_of_Your_Hand_live_in_Chicago_(Variant_2).png",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Brigitte_Calls_Me_Baby_performing_Palm_of_Your_Hand_live_in_Chicago_%28Variant_2%29.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 1280,
+    "height": 720,
+    "author": "trashbaggage",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "index": 3,
+    "alternatives": [
+      "File:Brigitte Calls Me Baby performing Palm of Your Hand live in Chicago (Variant 3).png",
+      "File:Brigitte Calls Me Baby performing Palm of Your Hand live in Chicago (Variant 1).png",
+      "File:First Baptist Church- South Olive Avenue at Chicago Street, West Palm Beach, Florida.jpg"
+    ]
   },
   "9mm-flechette-smg": {
     "gun": null,
@@ -1642,8 +1558,8 @@
     "index": 1,
     "alternatives": [
       "File:Cuban girl disassembles an AK-47 while blindfolded.jpg",
-      "File:Captured AK-47, Dragunov and ammunition in Khowst, Afghanistan, during Exercise Alamo Sweep.jpg",
-      "File:AK-47 assault rifle.jpg"
+      "File:AK-47 assault rifle.jpg",
+      "File:Avtomat Kalashnikova AK 47 FS.png"
     ]
   },
   "ares-black-knight": {
@@ -1652,53 +1568,27 @@
   },
   "ares-tommy-gun-heavy": {
     "gun": "Thompson-style submachine gun",
-    "file": "File:...)my Thomp(...) tackle, G.T. (i.e., Gerogetown) football team LCCN2016892674.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:...)my_Thomp(...)_tackle,_G.T._(i.e.,_Gerogetown)_football_team_LCCN2016892674.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/...%29my_Thomp%28...%29_tackle%2C_G.T._%28i.e.%2C_Gerogetown%29_football_team_LCCN2016892674.jpg/1280px-...%29my_Thomp%28...%29_tackle%2C_G.T._%28i.e.%2C_Gerogetown%29_football_team_LCCN2016892674.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 10008,
-    "height": 7752,
-    "author": "Harris &amp; Ewing, photographer",
-    "license": "Public domain",
-    "licenseUrl": "",
-    "index": 3,
-    "alternatives": [
-      "File:...)my Thomp(...) tackle, G.T. (i.e., Gerogetown) football team LCCN2016892674.tif",
-      "File:FMIB 46984 Calveria hystrix (W Thomp) 2,000 metres de profondeur.jpeg",
-      "File:TYPICAL ATTIC ROOM VIEW, VIEW NORTH - Grosvenor-Dale Company, Tenement, 110 Main Street, Thompson, Windham County, CT HABS CONN,8-THOMP,1-13.tif"
-    ]
+    "note": "no free side-on photo found"
   },
   "ares-tommy-gun-lite": {
     "gun": "Thompson-style submachine gun",
-    "file": "File:...)my Thomp(...) tackle, G.T. (i.e., Gerogetown) football team LCCN2016892674.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:...)my_Thomp(...)_tackle,_G.T._(i.e.,_Gerogetown)_football_team_LCCN2016892674.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/...%29my_Thomp%28...%29_tackle%2C_G.T._%28i.e.%2C_Gerogetown%29_football_team_LCCN2016892674.jpg/1280px-...%29my_Thomp%28...%29_tackle%2C_G.T._%28i.e.%2C_Gerogetown%29_football_team_LCCN2016892674.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 10008,
-    "height": 7752,
-    "author": "Harris &amp; Ewing, photographer",
-    "license": "Public domain",
-    "licenseUrl": "",
-    "index": 3,
-    "alternatives": [
-      "File:...)my Thomp(...) tackle, G.T. (i.e., Gerogetown) football team LCCN2016892674.tif",
-      "File:FMIB 46984 Calveria hystrix (W Thomp) 2,000 metres de profondeur.jpeg",
-      "File:TYPICAL ATTIC ROOM VIEW, VIEW NORTH - Grosvenor-Dale Company, Tenement, 110 Main Street, Thompson, Windham County, CT HABS CONN,8-THOMP,1-13.tif"
-    ]
+    "note": "no free side-on photo found"
   },
   "ares-tommy-gun": {
     "gun": "Thompson M1928 submachine gun",
-    "file": "File:Thompson submachine gun noBG.png",
-    "url": "https://commons.wikimedia.org/wiki/File:Thompson_submachine_gun_noBG.png",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Thompson_submachine_gun_noBG.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
-    "width": 1000,
-    "height": 330,
-    "author": "National Park Service",
+    "file": "File:Submachine gun M1928 Thompson.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:Submachine_gun_M1928_Thompson.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Submachine_gun_M1928_Thompson.jpg/1280px-Submachine_gun_M1928_Thompson.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 1383,
+    "height": 474,
+    "author": "User:Stefan Kühn, Überarbeitung de:Benutzer:Steschke",
     "license": "CC BY-SA 3.0",
-    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
-    "index": 1,
+    "licenseUrl": "http://creativecommons.org/licenses/by-sa/3.0/",
+    "index": 4,
     "alternatives": [
-      "File:Thompson submachine gun at Alcatraz.jpg",
-      "File:Submachine gun M1928 Thompson.jpg",
-      "File:US Army 1LT Kingston M. Winget with a Thompson submachine gun, Chipyong-ni, Korea, circa Feb 1951.jpg"
+      "File:Thompson SMG M1928, AM.006516, 05.jpg",
+      "File:Thompson SMG M1928, AM.006516, 01.jpg",
+      "File:Thompson SMG M1928, AM.006516, 04.jpg"
     ]
   },
   "colt-1911": {
@@ -1714,8 +1604,8 @@
     "index": 1,
     "alternatives": [
       "File:Pistol Colt M1911, handgun owned by Elvis Presley displayed in Elvis collection in Graceland (Memphis).jpg",
-      "File:Colt M1911 Pistol from 1912 Army manual.png",
-      "File:JGSDF M1911 Colt Government 20120422.jpg"
+      "File:JGSDF M1911 Colt Government 20120422.jpg",
+      "File:Pistol Colt M1911, digitally altered photography of handgun owned by Elvis Presley.jpg"
     ]
   },
   "db45-a-double-barrel": {
@@ -1787,7 +1677,7 @@
     "alternatives": [
       "File:2020-03-29 - Cache flammes de carabine Colt M16A1.jpg",
       "File:M16A1 cutaway noBg.jpg",
-      "File:A Marine armed with an M16A1 rifle escorts a captured member of the Peoples Revolutionary Army during Operation URGENT FURY.jpg"
+      "File:2020-03-29 - Carabine Colt M16A1 -fenêtre d'éjection fernée.jpg"
     ]
   },
   "m-16b": {
@@ -1809,16 +1699,7 @@
   },
   "neostead-combat": {
     "gun": "Neostead",
-    "file": "File:US5367810 29Nov1994 Heyns Stead pic2 rotated.png",
-    "url": "https://commons.wikimedia.org/wiki/File:US5367810_29Nov1994_Heyns_Stead_pic2_rotated.png",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/US5367810_29Nov1994_Heyns_Stead_pic2_rotated.png/1280px-US5367810_29Nov1994_Heyns_Stead_pic2_rotated.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 1999,
-    "height": 1245,
-    "author": "US Patent Office / STEAD HEYNS W (ZA); NEOPHYTOU ANTHONY S (ZA)",
-    "license": "Public domain",
-    "licenseUrl": "",
-    "index": 4,
-    "alternatives": []
+    "note": "no free side-on photo found"
   },
   "neostead-home-defense": {
     "gun": "Kel-Tec KSG",
@@ -1853,27 +1734,23 @@
     "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
     "index": 1,
     "alternatives": [
-      "File:Winchester Rifles Model 73, 86, 92, 05.JPG",
       "File:Winchester 1873.jpg",
-      "File:Winchester Model 1873.jpg"
+      "File:Winchester Model 1873.jpg",
+      "File:7.03 Winchester Karabiner M 1873 in Wehrtechnische Studiensammlung.jpg"
     ]
   },
   "nostal-ind-police-pm5": {
     "gun": "Winchester Model 12",
-    "file": "File:Winchester Model 1903 Semiauto Rimfire Rifle-NMAH-AHB2015q116466.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Winchester_Model_1903_Semiauto_Rimfire_Rifle-NMAH-AHB2015q116466.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Winchester_Model_1903_Semiauto_Rimfire_Rifle-NMAH-AHB2015q116466.jpg/1280px-Winchester_Model_1903_Semiauto_Rimfire_Rifle-NMAH-AHB2015q116466.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 2000,
-    "height": 1500,
-    "author": "The Smithsonian Institution",
+    "file": "File:Winchester Model 1912.JPG",
+    "url": "https://commons.wikimedia.org/wiki/File:Winchester_Model_1912.JPG",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/6/67/Winchester_Model_1912.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 598,
+    "height": 130,
+    "author": "Yaf at en.wikipedia",
     "license": "Public domain",
     "licenseUrl": "",
-    "index": 2,
-    "alternatives": [
-      "File:Winchester Model 1903 Semiauto Rimfire Rifle-NMAH-AHB2015q116467.jpg",
-      "File:Winchester Model 1903 Semiauto Rimfire Rifle-NMAH-AHB2015q116465.jpg",
-      "File:Winchester Model 1903 Semiauto Rimfire Rifle-NMAH-AHB2015q116464.jpg"
-    ]
+    "index": 1,
+    "alternatives": []
   },
   "nostal-ind-scattergun": {
     "gun": null,
@@ -1898,20 +1775,16 @@
   },
   "nostal-ind-yankee": {
     "gun": "Colt Peacemaker",
-    "file": "File:\"Peacemaker\" Colt Single-Action Army Revolver, serial no. 4519 MET 59.143.4 169744 jan2015.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:%22Peacemaker%22_Colt_Single-Action_Army_Revolver,_serial_no._4519_MET_59.143.4_169744_jan2015.jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/%22Peacemaker%22_Colt_Single-Action_Army_Revolver%2C_serial_no._4519_MET_59.143.4_169744_jan2015.jpg/1280px-%22Peacemaker%22_Colt_Single-Action_Army_Revolver%2C_serial_no._4519_MET_59.143.4_169744_jan2015.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 4000,
-    "height": 2527,
-    "author": "Samuel Colt",
-    "license": "CC0",
-    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
-    "index": 1,
-    "alternatives": [
-      "File:Colt single action 3.jpg",
-      "File:Colt single action 4 meglio.jpg",
-      "File:Colt single action modello 1873 - 1.jpg"
-    ]
+    "file": "File:Colt Peacemaker Pistol and Bridgeport Rig.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:Colt_Peacemaker_Pistol_and_Bridgeport_Rig.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Colt_Peacemaker_Pistol_and_Bridgeport_Rig.jpg/1280px-Colt_Peacemaker_Pistol_and_Bridgeport_Rig.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 3008,
+    "height": 2000,
+    "author": "Michaelpugh",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+    "index": 8,
+    "alternatives": []
   },
   "nostalgia-ind-big-bore": {
     "gun": "M3 Grease Gun",
@@ -1932,7 +1805,20 @@
   },
   "nova-inf-telcom-taser": {
     "gun": "Axon TASER 10",
-    "note": "no free side-on photo found"
+    "file": "File:Taser-x26.png",
+    "url": "https://commons.wikimedia.org/wiki/File:Taser-x26.png",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Taser-x26.png/1280px-Taser-x26.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 3200,
+    "height": 2400,
+    "author": "Baedr-9439",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "index": 1,
+    "alternatives": [
+      "File:Südtirol-Taser Pendelbahn.jpg",
+      "File:Taser rally.jpg",
+      "File:Taser rally 2.jpg"
+    ]
   },
   "nova-infranat-oneshot": {
     "gun": "FP-45 Liberator",
@@ -1963,23 +1849,14 @@
     "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
     "index": 1,
     "alternatives": [
-      "File:IWI Tavor X95 Users.png",
       "File:IWI-Tavor-TAR-21w1 new noBG.png",
-      "File:TAVOR TAR 21 IWI IMI.jpg"
+      "File:TAVOR TAR 21 IWI IMI.jpg",
+      "File:IDF Tavor X95 Flattop - Zachi Evenor 2019.jpg"
     ]
   },
   "us-m79": {
     "gun": "M79 break-action grenade launcher",
-    "file": "File:Gernade Launcher (10745470125).jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:Gernade_Launcher_(10745470125).jpg",
-    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Gernade_Launcher_%2810745470125%29.jpg/1280px-Gernade_Launcher_%2810745470125%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-    "width": 4208,
-    "height": 2956,
-    "author": "US Air Force from USA",
-    "license": "Public domain",
-    "licenseUrl": "",
-    "index": 1,
-    "alternatives": []
+    "note": "no free side-on photo found"
   },
   "vc-boxlock-hammerless": {
     "gun": null,
@@ -1987,7 +1864,16 @@
   },
   "vehement-a-v-full-auto": {
     "gun": "Arsenal AR-M1 select-fire",
-    "note": "no free side-on photo found"
+    "file": "File:AR-M1 5.56x45.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:AR-M1_5.56x45.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/AR-M1_5.56x45.jpg/1280px-AR-M1_5.56x45.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 4966,
+    "height": 1877,
+    "author": "Ivan 6",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "index": 1,
+    "alternatives": []
   },
   "vehement-a-v-standard": {
     "gun": "Arsenal AR-M1",
@@ -2000,15 +1886,24 @@
     "license": "CC BY-SA 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
-    "alternatives": [
-      "File:BulgAR.jpg",
-      "File:1-4 Infantry Air Assault 240404-A-PR716-1005.jpg",
-      "File:U.S. Army and Panama Security Services Strengthen Ties Through Joint Leadership Training 251120-A-GV534-8412.jpg"
-    ]
+    "alternatives": []
   },
   "win-1300-defender-pg": {
     "gun": "Winchester 1300 Defender pistol-grip",
-    "note": "no free side-on photo found"
+    "file": "File:Winchester Model 1300 bolt and breech.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:Winchester_Model_1300_bolt_and_breech.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/8/88/Winchester_Model_1300_bolt_and_breech.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "width": 1068,
+    "height": 639,
+    "author": "Cinderella157",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "index": 1,
+    "alternatives": [
+      "File:Winchester Model 1300 field stripped.jpg",
+      "File:Winchester model. 1300 turkey.jpg",
+      "File:1300 North Calhoun Street (Commercial Building), 1300 North Calhoun Street, Baltimore, Independent City, MD HABS MD,4-BALT,214-1.tif"
+    ]
   },
   "win-1300-defender-ss": {
     "gun": "Winchester 1300 Defender",
@@ -2023,8 +1918,7 @@
     "index": 1,
     "alternatives": [
       "File:Winchester Model 1300 field stripped.jpg",
-      "File:Winchester Model 1300 bolt and breech.jpg",
-      "File:Winchester1200Def-1.jpg"
+      "File:Winchester Model 1300 bolt and breech.jpg"
     ]
   }
 }
