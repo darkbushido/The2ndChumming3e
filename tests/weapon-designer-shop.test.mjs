@@ -45,6 +45,8 @@ export async function run(t) {
   t.eq('PICTURES matches styles/weapons/*.webp', [...PICTURES].sort(), files);
   const b = batch();
   t.ok('the ComfyUI batch covers the hand weapons without pictures', b.length > 150 && b.every(e => e.slug && e.prompt.includes('white background')));
+  t.ok('smartguns get LED lights in their prompt, others do not',
+    b.some(e => e.smartgun) && b.every(e => e.prompt.includes('LED indicator lights') === e.smartgun));
   t.eq('the batch has no duplicate slugs', b.length, new Set(b.map(e => e.slug)).size);
   t.ok('the keying script decontaminates the fringe', /decontaminat/i.test(src('tools/key-art.py')));
 

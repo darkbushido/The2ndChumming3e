@@ -20,6 +20,9 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const STYLE = 'anime style illustration, clean cel shading, crisp dark outline, side view, single object centred, '
   + 'plain flat pure white background, no text, no hands, no people, cyberpunk 2060s design';
 
+/** Added for a gun with a built-in smartgun system (`system.smartgun`). */
+export const SMARTGUN = 'built-in smartgun system with glowing LED indicator lights along the receiver and a lit smartlink contact on the grip';
+
 /** The batch: every shipped hand weapon without a picture, one entry per slug. */
 export function batch(root = ROOT) {
   const shipped = new Set((JSON.parse(readFileSync(join(root, 'system.json'), 'utf8')).packs ?? []).map(p => p.name));
@@ -30,7 +33,9 @@ export function batch(root = ROOT) {
       const s = slug(doc.name);
       if (!s || PICTURES.has(s) || out.has(s)) continue;
       const what = CATEGORY_NAMES[doc.system?.category] ?? (doc.type === 'melee' ? 'melee weapon' : 'firearm');
-      out.set(s, { slug: s, name: doc.name, group: WeaponCatalog.groupOf(doc), prompt: `${doc.name}, a ${what.toLowerCase()}, ${STYLE}` });
+      // The maintainer, 2026-11-13: "smartguns should get some LED lights".
+      const smart = doc.system?.smartgun ? `${SMARTGUN}, ` : '';
+      out.set(s, { slug: s, name: doc.name, group: WeaponCatalog.groupOf(doc), smartgun: !!doc.system?.smartgun, prompt: `${doc.name}, a ${what.toLowerCase()}, ${smart}${STYLE}` });
     }
   }
   return [...out.values()];

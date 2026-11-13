@@ -4,8 +4,9 @@
     python tools/key-art.py <in dir of .png> <out dir>  [--tolerance 28] [--size 512]
 
 The ComfyUI batch (tools/weapon-art-prompts.mjs) draws on a flat white background. For each picture:
-  1. the background is the colour connected to the border within --tolerance (a flood fill, so white INSIDE the
-     weapon -- a scope lens highlight -- stays opaque);
+  1. the background is the colour connected to the border within --tolerance (a flood fill), plus enclosed
+     background-coloured blobs of at least --min-hole of the picture (inside a trigger guard); a small white
+     highlight -- a lens glint -- stays opaque;
   2. the edge gets a soft alpha from the colour distance, and the background colour is un-mixed from those edge
      pixels (colour decontamination), so no white halo shows on a dark sheet;
   3. trimmed to the object, centred on a square --size canvas, saved as <name>.webp (lossless, alpha).
@@ -20,7 +21,7 @@ import numpy as np
 from PIL import Image
 
 
-def key(img, tol):
+def key(img, tol, min_hole=0.0015):
     rgb = np.asarray(img.convert('RGB'), dtype=np.float32)
     h, w, _ = rgb.shape
     border = np.concatenate([rgb[0], rgb[-1], rgb[:, 0], rgb[:, -1]])
@@ -39,6 +40,24 @@ def key(img, tol):
             if 0 <= ny < h and 0 <= nx < w and not seen[ny, nx] and near[ny, nx]:
                 seen[ny, nx] = True
                 q.append((ny, nx))
+    # Enclosed background (inside a trigger guard, a stock's cut-out): a near-background blob of at least --min-hole of
+    # the picture. Smaller ones (a lens glint, a white LED) stay opaque.
+    min_px = max(1, int(h * w * min_hole))
+    left = near & ~seen
+    for sy, sx in zip(*np.nonzero(left)):
+        if not left[sy, sx]:
+            continue
+        blob, q2 = [(sy, sx)], deque([(sy, sx)])
+        left[sy, sx] = False
+        while q2:
+            y, x = q2.popleft()
+            for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
+                if 0 <= ny < h and 0 <= nx < w and left[ny, nx]:
+                    left[ny, nx] = False
+                    blob.append((ny, nx)); q2.append((ny, nx))
+        if len(blob) >= min_px:
+            ys, xs = zip(*blob)
+            seen[list(ys), list(xs)] = True
     # Soft edge: pixels touching the background ramp from 0 at tol to 1 at 3*tol.
     alpha = np.where(seen, 0.0, 1.0)
     grown = seen.copy()
@@ -67,13 +86,14 @@ def main():
     p.add_argument('src'); p.add_argument('dst')
     p.add_argument('--tolerance', type=float, default=28)
     p.add_argument('--size', type=int, default=512)
+    p.add_argument('--min-hole', type=float, default=0.0015, help='enclosed background blobs at least this share of the picture are keyed')
     args = p.parse_args()
     os.makedirs(args.dst, exist_ok=True)
     n = 0
     for f in sorted(os.listdir(args.src)):
         if not f.lower().endswith('.png'):
             continue
-        img = fit(key(Image.open(os.path.join(args.src, f)), args.tolerance), args.size)
+        img = fit(key(Image.open(os.path.join(args.src, f)), args.tolerance, args.min_hole), args.size)
         img.save(os.path.join(args.dst, os.path.splitext(f)[0] + '.webp'), 'WEBP', lossless=True)
         n += 1
     print(f'{n} pictures keyed -> {args.dst}', file=sys.stderr)
