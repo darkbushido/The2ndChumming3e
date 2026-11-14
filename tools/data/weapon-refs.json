@@ -201,21 +201,16 @@
   },
   "barret-model-121": {
     "gun": "Barrett M82",
-    "file": "File:UA Border Guard with Barrett M82 01.jpg",
-    "url": "https://commons.wikimedia.org/wiki/File:UA_Border_Guard_with_Barrett_M82_01.jpg",
-    "image": "https://upload.wikimedia.org/wikipedia/commons/c/c0/UA_Border_Guard_with_Barrett_M82_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
-    "width": 1280,
-    "height": 854,
-    "author": "State Border Guard Service of Ukraine",
+    "file": "File:Barrett-M82A1-Independence-Day-2017-IZE-048-white.jpg",
+    "url": "https://commons.wikimedia.org/wiki/File:Barrett-M82A1-Independence-Day-2017-IZE-048-white.jpg",
+    "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Barrett-M82A1-Independence-Day-2017-IZE-048-white.jpg/1280px-Barrett-M82A1-Independence-Day-2017-IZE-048-white.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 4480,
+    "height": 1817,
+    "author": "MathKnight and Zachi Evenor",
     "license": "CC BY 4.0",
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
-    "index": 1,
-    "alternatives": [
-      "File:Barrett M82.jpg",
-      "File:Dutch Barrett M82A1.jpg",
-      "File:M82rifle.jpg"
-    ],
-    "needsWork": "no workable reference photo — a soldier lying behind it in scenery"
+    "reviewed": true,
+    "note": "the maintainer chose this photo, 2026-11-13"
   },
   "beretta-model-200st": {
     "gun": "Beretta APX",
