@@ -55,7 +55,8 @@ export async function run(t) {
     ['vented muzzle brake', 'ammunition belt feeding from a box', 'full-auto']);
   const guns = b.filter(e => e.group !== 'melee');
   t.eq('every firearm has a look note', guns.filter(e => !e.look).map(e => e.slug), []);
-  t.eq('no stale look notes', Object.keys(LOOKS).filter(k => k !== '_about' && !guns.some(e => e.slug === k)), []);
+  const shippedSlugs = new Set(docs.map(d => slug(d.name)));   // a drawn gun keeps its note (it leaves the batch, not the packs)
+  t.eq('no stale look notes', Object.keys(LOOKS).filter(k => k !== '_about' && !shippedSlugs.has(k)), []);
   t.ok('the briefcase SMG is drawn as a briefcase', /briefcase/.test(guns.find(e => e.slug === 'ares-exec-protector')?.prompt));
   t.eq('the batch has no duplicate slugs', b.length, new Set(b.map(e => e.slug)).size);
   t.ok('the keying script decontaminates the fringe', /decontaminat/i.test(src('tools/key-art.py')));
