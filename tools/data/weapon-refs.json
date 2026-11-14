@@ -16,7 +16,7 @@
       "File:Carl-Gustaf M4.jpg",
       "File:Carl Gustav M4 Kokonaisturvallisuus 2015.jpg"
     ],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — photo crops the launcher and shows a second weapon"
+    "needsWork": "no workable reference photo — photo crops the launcher and shows a second weapon"
   },
   "ares-alpha": {
     "gun": "FN F2000",
@@ -64,7 +64,7 @@
     "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
     "index": 1,
     "alternatives": [],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — a cluttered table scene"
+    "needsWork": "no workable reference photo — a cluttered table scene"
   },
   "ares-hvar": {
     "gun": "HK416",
@@ -139,7 +139,7 @@
     "alternatives": [
       "File:Crosse du fusil semi-automatique de combat M4.jpg"
     ],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — a faint line drawing, not a photo"
+    "needsWork": "no workable reference photo — a faint line drawing, not a photo"
   },
   "armtech-mgl-12": {
     "gun": "Milkor MGL",
@@ -183,7 +183,7 @@
       "File:200617-A-DS044-1150 - FGM-148 Javelin Norwegian live-fire (Image 7 of 9).jpg",
       "File:200617-A-DS044-1123 - FGM-148 Javelin Norwegian live-fire (Image 6 of 9).jpg"
     ],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — soldiers firing in a field"
+    "needsWork": "no workable reference photo — soldiers firing in a field"
   },
   "baretta-model-70": {
     "gun": "Beretta PMX",
@@ -197,7 +197,7 @@
     "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
     "index": 1,
     "alternatives": [],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — several guns on a display stand"
+    "needsWork": "no workable reference photo — several guns on a display stand"
   },
   "barret-model-121": {
     "gun": "Barrett M82",
@@ -215,7 +215,7 @@
       "File:Dutch Barrett M82A1.jpg",
       "File:M82rifle.jpg"
     ],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — a soldier lying behind it in scenery"
+    "needsWork": "no workable reference photo — a soldier lying behind it in scenery"
   },
   "beretta-model-200st": {
     "gun": "Beretta APX",
@@ -231,7 +231,7 @@
     "alternatives": [
       "File:Beretta APX standard W.png"
     ],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — tabletop backdrop left behind the cut"
+    "needsWork": "no workable reference photo — tabletop backdrop left behind the cut"
   },
   "blowgun": {
     "gun": null,
@@ -334,7 +334,7 @@
       "File:AR Colt 9mm right.jpg",
       "File:AR Colt 9mm left.jpg"
     ],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — gun lying on a patterned backdrop"
+    "needsWork": "no workable reference photo — gun lying on a patterned backdrop"
   },
   "colt-cobra-tz-115": {
     "gun": "Colt 9mm SMG",
@@ -352,7 +352,7 @@
       "File:AR Colt 9mm right.jpg",
       "File:AR Colt 9mm left.jpg"
     ],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — gun lying on a patterned backdrop"
+    "needsWork": "no workable reference photo — gun lying on a patterned backdrop"
   },
   "colt-cobra-tz-118": {
     "gun": "Colt 9mm SMG",
@@ -370,7 +370,7 @@
       "File:AR Colt 9mm right.jpg",
       "File:AR Colt 9mm left.jpg"
     ],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — gun lying on a patterned backdrop"
+    "needsWork": "no workable reference photo — gun lying on a patterned backdrop"
   },
   "colt-m-23": {
     "gun": "M4A1 carbine",
@@ -431,7 +431,7 @@
       "File:Colt Delta Elite- NFM.JPG",
       "File:Colt Delta Elite.jpg"
     ],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — gun cropped by the frame"
+    "needsWork": "no workable reference photo — gun cropped by the frame"
   },
   "eichiro-hatamoto-ii": {
     "gun": "Sig Sauer P320",
@@ -466,7 +466,7 @@
       "File:Walther PPk.jpg",
       "File:Walther PPK-L.jpg"
     ],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — loose cartridges and a backdrop around it"
+    "needsWork": "no workable reference photo — loose cartridges and a backdrop around it"
   },
   "flame-thrower": {
     "gun": "M2 flamethrower",
@@ -482,7 +482,7 @@
     "alternatives": [
       "File:M2 flamethrower operators.png"
     ],
-    "needsWork": "maintainer 2026-11-13: no workable reference photo — an explosion on an airfield"
+    "needsWork": "no workable reference photo — an explosion on an airfield"
   },
   "fn-5-7c": {
     "gun": "FN Five-seveN",
