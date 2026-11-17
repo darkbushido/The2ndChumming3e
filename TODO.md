@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**73 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**75 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[84](#84) Audit all 62 Little Black Book contacts against the book — *p.36-67*<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[302](#302) 🖨 Print a character sheet<br>[303](#303) Export a character to Nullsheen JSON |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -2916,6 +2916,29 @@ archetypes with no matching portrait job **fall back to the nearest one for now*
   `npcUuid`, name and — only when stock — picture. 🎲 on the Contacts tab (GM only), the face on the row for everyone.
 - `contact.npcUuid` — new field: **full Foundry restart**.
 - Live check: TESTING.md, *Meet the contact*.
+
+## 302. 🖨 Print a character sheet — **requested 2026-11-17**
+
+The maintainer: *"we may want the ability to export character sheets."* Settled in a grilling session
+(2026-11-17): a **printable sheet**, not a data format — Foundry's core *Export Data* / *Import Data* on
+the actor's sidebar menu already round-trips the whole actor as JSON.
+- A **🖨 Print sheet** control in the actor sheet's window header, for **owners** (players their PCs,
+  the GM everyone). Opens the sheet in a new window with the browser's print dialog (paper or Save as
+  PDF); a blocked popup downloads the `.html` instead.
+- Our own compact two-column layout (not the book's sheet art), flowing onto further pages.
+- Contents: attributes (augmented value with base), derived stats and pools, condition tracks, Karma
+  **totals only**, nuyen and reputation, magic, skills by type with specialisations, weapons, armour,
+  cyber/bioware, gear, spells, adept powers, contacts, and a stat block per **linked vehicle/drone** the
+  user can see. No Karma ledger, biography or notes.
+- Pure module `scripts/data/print-sheet.mjs`; `tests/print-sheet.test.mjs`; TESTING.md §71.
+
+## 303. Export a character to Nullsheen JSON — **requested 2026-11-17**
+
+Split from [#302](#302). Today the Nullsheen importer (`scripts/macros/import-sr3-character.js`) is
+one-way and keeps no copy of the pasted JSON. Nullsheen publishes no schema, so an export means
+inverting the importer's mappings and testing by round-tripping a real Nullsheen file through both.
+Foundry-side state (wounds, ledger, edited items, mods) has no obvious home there — decide what is
+carried before building. A feature, so it goes on a branch.
 
 ### 📌 Notes & parked
 

@@ -3136,3 +3136,12 @@ The gear packs change (`npm run packs:install`, Foundry closed).
 - [ ] **Cannon Companion gear:** Sawed-Off Shotgun Barrel 64¥; Rangefinder's description reads **Mount: Top**; **Laser Sight, Low-Power** 800¥, Mount Top/Under, page cc.82, and its description gives Design Points +100 × 8.
 - [ ] **SR3 core gear:** no low-power laser sight remains; Smart Shades I (Cost 6000¥) shows page sr3.281 and the "double the nuyen" line; Ultrasound Shades and Gas Vent I carry their source notes.
 - [ ] **Man & Machine gear:** Smart Shades II say "Derived; not printed".
+
+## 71. 🖨 Print a character sheet (TODO 302)
+
+JS only — F5 is enough. **Prerequisites:** a player-owned character with skills, a weapon, armour, cyberware, a spell or adept power, a contact, and a vehicle linked to them; an NPC the player does not own.
+
+- [ ] **Header control.** As the player, open the character: the window header (⋮ menu) has **Print sheet**. Open the NPC as an observer (if visible): no such control. As the GM, every character and NPC has it.
+- [ ] **The print window.** Click it: a new window opens with the sheet and the print dialog. Save as PDF: two-column core block on page 1, tables flow onto further pages, no row split across a page.
+- [ ] **Contents.** Augmented attributes read "value (base)"; wound boxes filled to the actor's damage; Karma shows totals only — no ledger, no notes or biography. The linked vehicle has a stat block with its weapons.
+- [ ] **Popup blocked.** Block popups for the Foundry origin and click again: a `.html` file downloads and a notice says so.
