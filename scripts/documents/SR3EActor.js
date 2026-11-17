@@ -5569,7 +5569,8 @@ _prepareCharacter(sys, attr) {
     riggerDisorient:   ['SR3EActor', '_riggerDisorientOutcome'], // TODO 198 — Willpower (4), p.156
     shockStun:         ['SR3EActor', '_shockStunOutcome'],       // Body or Willpower (4) vs a shock weapon, p.124-125
     collisionBraking:  ['SR3ECollision', 'brakingRolled'],      // TODO 189 — the Braking Test, p.142
-    concealPerception: ['SR3EConcealment', 'perceptionRolled'],  // TODO 195 — Perception vs Concealability, p.231
+    concealPerception: ['SR3EConcealment', 'perceptionRolled'],
+    perception:        ['SR3EPerception', 'rolled'],           // TODO 304 — the sheet's 👁 Perception Test, p.231-232  // TODO 195 — Perception vs Concealability, p.231
     legwork:           ['SR3ELegwork', 'rolled'],                 // TODO 268 — Etiquette for legwork, p.253-254
     modRemoval:        ['SR3EItemMods', 'removalRolled'],         // TODO 277 — a gunsmith takes a gas vent off, CC p.79-81
   };

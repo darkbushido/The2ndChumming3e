@@ -3727,3 +3727,13 @@ no longer holds).
 ---
 
 <a id="56"></a>
+
+## 304. 👁 Perception Test button on the character sheet — **requested 2026-11-17**
+
+Branch `todo-304-perception`. Under 🩹 Healing on the Attributes tab: Intelligence dice (plus Enhanced Perception,
+SR3 p.169) against TN 4, the Perception Test Modifiers Table and the Visibility Table with the character's own eyes
+pre-selected (SR3 p.231-232, p.111). Every number editable; the target number field is the GM's override. The result card
+reads the Perception Success Table (p.232) and decides nothing. Rules `scripts/data/perception.mjs` (also `groupDice`,
+p.231, for the planned GM "request a skill check" tool); dialog `scripts/SR3EPerception.js`; tests
+`tests/perception.test.mjs`; Foundry checklist TESTING.md §87.
+

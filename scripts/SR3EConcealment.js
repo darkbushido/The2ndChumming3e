@@ -1,5 +1,6 @@
 import { Concealment, MODES, NOTICE, SEARCH_FULL, SEARCH_TABLE } from './data/concealment.mjs';
 import { actorFrom, actorRef } from './data/actor-ref.mjs';
+import { Perception } from './data/perception.mjs';
 
 /**
  * 👁 Concealment — what a character carries that can be seen, and how well it is hidden · TODO 195.
@@ -244,14 +245,8 @@ export class SR3EConcealment {
   }
 
   /** The Perception Success Table · SR3 p.232, read on the roll's successes. */
-  static perceptionLine(successes) {
-    const s = Math.max(0, Math.trunc(Number(successes) || 0));
-    if (s === 0) return 'Nothing noticed.';
-    if (s === 1) return 'Something is there.';
-    if (s === 2) return 'Something is definitely there, and the perceiver suspects what general type of thing it is.';
-    if (s === 3) return 'The perceiver knows what type of thing it is and suspects its exact nature.';
-    return 'The perceiver knows what it is, but has no specifics without further information or examination.';
-  }
+  static perceptionLine(successes) { return Perception.successLine(successes); }
+
 
   /** FOLLOW_UPS.concealPerception — after the last 💥. */
   static async perceptionRolled(ctx, res) {

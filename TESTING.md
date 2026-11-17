@@ -3863,3 +3863,18 @@ JS only — F5 is enough. **Prerequisites:** a player-owned character with skill
 - [ ] **The print window.** Click it: a new window opens with the sheet and the print dialog. Save as PDF: two-column core block on page 1, tables flow onto further pages, no row split across a page.
 - [ ] **Contents.** Augmented attributes read "value (base)"; wound boxes filled to the actor's damage; Karma shows totals only — no ledger, no notes or biography. The linked vehicle has a stat block with its weapons.
 - [ ] **Popup blocked.** Block popups for the Foundry origin and click again: a `.html` file downloads and a notice says so.
+## 89. 👁 Perception Test on the character sheet (TODO 304, branch `todo-304-perception` — SR3 p.231-232)
+
+Hot reload is enough (no new fields). Open a character sheet, Attributes tab.
+
+- [ ] **Button:** 👁 Perception sits right after 🩹 Healing in the wound row; clicking opens the dialog for that character.
+- [ ] **Dice:** Intelligence is the character's; an adept with Enhanced Perception shows its dice (hover names the power).
+- [ ] **Target number:** starts at 4; ticking *Perceiver is distracted* makes it 6; switching Sense to Sound hides the
+      sight rows and drops their ticks from the sum; *active sound enhancements* at rating 0 reads −2, rating 3 reads −3.
+- [ ] **Visibility:** on Sight, pick *Full Darkness* — an elf (natural low-light) pre-selects Low-Light (natural), TN +8;
+      a character with thermographic cybereyes pre-selects it, TN +4. Changing *Seeing with* changes the TN.
+- [ ] **GM override:** type 9 in the Target number field last → the roll is against 9.
+- [ ] **Roll:** a wounded character's roll adds the wound modifier; after any 💥 rerolls a card reads the Perception
+      Success Table line ("Something is there." at 1). Nothing else changes on the actor.
+- [ ] **🔍 Concealment's Perception Test** still reads its success line exactly as before.
+

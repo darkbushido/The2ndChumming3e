@@ -75,6 +75,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       toggleCds:        SR3EActorSheet._onToggleCds,          // TODO 111
       cdsCheck:         SR3EActorSheet._onCdsCheck,           // TODO 111
       openHealing:    SR3EActorSheet._onOpenHealing,
+      openPerception: SR3EActorSheet._onOpenPerception,
       equipArmor:     SR3EActorSheet._onEquipArmor,
       equipMelee:     SR3EActorSheet._onEquipMelee,
         applyDamage:    SR3EActorSheet._onApplyDamage,
@@ -770,6 +771,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             </div>
             <button type="button" class="btn-sm" data-action="openHealing"
                     title="Guided healing: stabilize, first aid, magic, a doctor, healing stages and the bill (SR3 pp.126-129)">🩹 Healing</button>
+            <button type="button" class="btn-sm" data-action="openPerception"
+                    title="Perception Test: Intelligence dice against TN 4 and the Perception Test Modifiers — the GM names the number (SR3 p.231-232)">👁 Perception</button>
             <span class="wound-mod-display">
               Stim: <input type="number" name="system.stimBonus" value="${sys.stimBonus ?? 0}" min="0"
                 style="width:36px;text-align:center;background:var(--sr-surface);border:1px solid var(--sr-border);border-radius:var(--r);color:var(--sr-text);padding:1px 2px;font-size:12px;"
@@ -4008,6 +4011,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
    * Essence at all”, which is a different statement from “nobody has said”. Conflating them
    * would make the reset button read as “your chrome is free”.
    */
+  /** 👁 Perception Test (TODO 304) — SR3 p.231-232; the dice, never the verdict. */
+  static async _onOpenPerception(_event, _target) {
+    await game.sr3e.SR3EPerception.open(this.actor);
+  }
+
   /** 🩹 Healing (TODO 115) — the guided flow, one card per roll. */
   static async _onOpenHealing(_event, _target) {
     await game.sr3e.SR3EHealing.open(this.actor);
