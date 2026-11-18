@@ -36,6 +36,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 **91 open.** 208 done — see [TODO-DONE.md](TODO-DONE.md).
 **75 open.** 193 done — see [TODO-DONE.md](TODO-DONE.md).
+**92 open.** 208 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -54,6 +55,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches |
 | 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[302](#302) 🖨 Print a character sheet<br>[303](#303) Export a character to Nullsheen JSON |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens<br>[299](#299) Token senses — low-light, thermographic, ultrasound, astral sight<br>[304](#304) 👁 Perception Test button on the character sheet |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -3758,6 +3760,15 @@ no longer holds).
 ---
 
 <a id="56"></a>
+
+## 304. 👁 Perception Test button on the character sheet — **requested 2026-11-17**
+
+Branch `todo-304-perception`. Under 🩹 Healing on the Attributes tab: Intelligence dice (plus Enhanced Perception,
+SR3 p.169) against TN 4, the Perception Test Modifiers Table and the Visibility Table with the character's own eyes
+pre-selected (SR3 p.231-232, p.111). Every number editable; the target number field is the GM's override. The result card
+reads the Perception Success Table (p.232) and decides nothing. Rules `scripts/data/perception.mjs` (also `groupDice`,
+p.231, for the planned GM "request a skill check" tool); dialog `scripts/SR3EPerception.js`; tests
+`tests/perception.test.mjs`; Foundry checklist TESTING.md §87.
 
 ### 📌 Notes & parked
 
