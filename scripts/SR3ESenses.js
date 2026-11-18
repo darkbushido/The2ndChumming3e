@@ -23,6 +23,8 @@ import {
   polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate, astralModeFromStatus, tileAura,
 } from './data/token-senses.mjs';
 import { detectVision } from './SR3ECombatModifiers.js';
+import { InvisibilityRules } from './data/invisibility.mjs';
+import { TokenSenses } from './data/token-senses.mjs';
 
 const SYS = FLAG_SCOPE;
 
@@ -38,6 +40,20 @@ function tokenFacts(token) {
     dualNatured: !!actor?.getFlag?.(SYS, 'dualNatured'),
     statuses,
   };
+}
+
+/**
+ * Does this viewer, in this sense, see through the target's invisibility? Only PLAIN Invisibility, only for a
+ * technological viewer (`data/invisibility.mjs`, SR3 p.195-196). `thermo` asks about the viewer's thermographic.
+ */
+function techSeesInvisible(visionSource, target, thermo = false) {
+  const kind = target?.actor?.getFlag?.(SYS, 'invisFromSpell') ?? null;
+  if (kind !== 'plain') return false;
+  const viewer = visionSource?.object;
+  const t = viewer?.actor?.type === 'vehicle' || viewer?.actor?.getFlag?.(SYS, 'camera')
+    ? { all: true, thermo: true }
+    : (viewer?.document?.getFlag?.(SYS, 'techSight') ?? { all: false, thermo: false });
+  return InvisibilityRules.seesThrough(kind, thermo ? (t.thermo || t.all) : t.all);
 }
 
 function astralOnlyToken(target) {
@@ -144,7 +160,8 @@ export class SR3ESenses {
         const tgt = target.document;
         const SE = CONFIG.specialStatusEffects;
         if (src.hasStatusEffect(SE.BLIND) || src.hasStatusEffect(SE.BURROW)) return false;
-        return !(tgt.hasStatusEffect(SE.INVISIBLE) || tgt.hasStatusEffect(SE.BURROW));
+        if (tgt.hasStatusEffect(SE.BURROW)) return false;
+        return !tgt.hasStatusEffect(SE.INVISIBLE) || techSeesInvisible(visionSource, target, true);
       }
       // Line of sight: the viewer's sight polygon, which already counts glass for a thermographic viewer.
     }
@@ -192,6 +209,14 @@ export class SR3ESenses {
         if (astralOnlyToken(target)) return false;
         if (inAstralVision(visionSource) && target instanceof foundry.canvas.placeables.Token
           && auraKind(tokenFacts(target)) !== 'none') return false;
+        // A camera, drone or cybereye sees through PLAIN Invisibility (SR3 p.195) — core's own checks, minus INVISIBLE.
+        if (target instanceof foundry.canvas.placeables.Token && techSeesInvisible(visionSource, target)) {
+          const SE = CONFIG.specialStatusEffects;
+          const src = visionSource.object.document;
+          if (this.walls && visionSource.blinded?.darkness) return false;
+          if (src.hasStatusEffect(SE.BLIND) || src.hasStatusEffect(SE.BURROW)) return false;
+          return !target.document.hasStatusEffect(SE.BURROW);
+        }
         return super._canDetect(visionSource, target, level);
       }
     };
@@ -248,6 +273,16 @@ export class SR3ESenses {
     // Sonar reaches as far as the ultrasound range and no further.
     if (visionMode === VISION.ultrasound) update['sight.range'] = range;
     for (const [id, m] of Object.entries(detection)) update[`detectionModes.${id}`] = m;
+    // Technological sight sees through plain Invisibility (SR3 p.195) — read at detection time.
+    const vision = detectVision(actor);
+    update[`flags.${SYS}.techSight`] = InvisibilityRules.techSight({
+      actorType: actor.type,
+      camera: !!actor.getFlag?.(SYS, 'camera'),
+      replacedBy: vision.replacedBy,
+      cyberThermo: (vision.cyber ?? []).some(c => c.column === 'thermo'),
+      gearThermo: [...(actor.items ?? [])].some(i => i?.type === 'gear' && TokenSenses.isWornGear(i)
+        && TokenSenses.isVisionGear(i.name) && /thermograph|thermo\s*vision/i.test(i.name ?? '')),
+    });
     return { senses, astral, visionMode, update };
   }
 
@@ -279,7 +314,7 @@ export class SR3ESenses {
       if (!game.users.activeGM?.isSelf) return;
       const f = changes.flags?.[SYS] ?? {};
       if (changes.system && 'astralMode' in changes.system) return SR3ESenses.apply(actor);
-      if ('dualNatured' in f || 'vision' in f || 'ultrasoundRange' in f || 'metatype' in (changes.system ?? {})) return SR3ESenses.apply(actor);
+      if ('dualNatured' in f || 'vision' in f || 'ultrasoundRange' in f || 'camera' in f || 'metatype' in (changes.system ?? {})) return SR3ESenses.apply(actor);
     });
 
     // Eyes, goggles and powers come and go.

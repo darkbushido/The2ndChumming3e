@@ -4798,4 +4798,18 @@ export const MUTANTS = [
     was:    'never shipped — the status landing on the caster instead of the spell target',
     impl:   (_e, caster) => [caster],
   },
+  {
+    id:     'improved-invisibility-seen-by-camera',
+    suite:  'invisibility',
+    module: '../scripts/data/invisibility.mjs', klass: 'InvisibilityRules', method: 'seesThrough',
+    was:    'never shipped: a camera seeing through Improved Invisibility, which affects technological sensors as well (SR3 p.196)',
+    impl:   (_kind, tech) => !!tech,
+  },
+  {
+    id:     'natural-thermo-sees-invisible',
+    suite:  'invisibility',
+    module: '../scripts/data/invisibility.mjs', klass: 'InvisibilityRules', method: 'techSight',
+    was:    'never shipped: every viewer treated as a sensor, so a troll saw through a mana illusion (SR3 p.195)',
+    impl:   () => ({ all: true, thermo: true }),
+  },
 ];

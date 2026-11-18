@@ -3890,3 +3890,14 @@ Run as the **active GM** (the status hook runs only there); reload the GM tab fi
    only Sustaining. Drop it → Sam's Invisible comes off.
 4. GM sets **Invisible** on an unrelated token by hand, then sustains/drops any spell → that hand-set status stays.
 5. `game.actors.getName('Sam').getFlag('The2ndChumming3e','invisFromSpell')` reads `improved` while step 3 is up.
+
+## 91. 📷 Cameras, drones and cybereyes see through plain Invisibility (branch `feat/tech-sees-plain-invisibility` — SR3 pp.195-196; the maintainer, 2026-11-18)
+
+Needs §90's branch. Join as a player who owns only the viewer token; Sam is invisible (§90).
+
+1. Sam under **Invisibility**. A **drone** (vehicle actor) token owned by the player → Sam is visible to it.
+2. A character with **Cybereyes** → sees Sam. A **troll** (natural thermographic, no implants) → doesn't.
+3. A character wearing **thermographic goggles** (worn) in thermographic vision → sees Sam; take them off → doesn't.
+4. An NPC with `actor.setFlag('The2ndChumming3e','camera',true)` → sees Sam.
+5. Recast as **Improved Invisibility** → none of the above see Sam (astral sight and ultrasound still do).
+6. An existing token picks up its `techSight` flag on the next item/flag change to its actor — add and remove an item if needed.

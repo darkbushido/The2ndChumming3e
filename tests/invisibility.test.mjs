@@ -33,4 +33,22 @@ export async function run(t) {
   t.ok('the updateActor hook syncs invisibility on a sustainedSpells change',
     /'sustainedSpells' in sys\)[\s\S]{0,200}_syncInvisibility\(actor\)/.test(src));
   t.ok('a GM-set status (no flag) is never removed', /if \(!ours && !names\.has/.test(src));
+  /* ── Technological viewers see through PLAIN Invisibility (SR3 p.195; the maintainer, 2026-11-18) ── */
+  const T = IR.techSight;
+  t.eq('a drone/vehicle is a sensor', T({ actorType: 'vehicle' }), { all: true, thermo: true });
+  t.eq('a camera-flagged token is a sensor', T({ actorType: 'npc', camera: true }).all, true);
+  t.eq('cybereyes make all sight technological', T({ actorType: 'character', replacedBy: 'Cybereyes' }).all, true);
+  t.eq("Cat's Eyes are living eyes", T({ actorType: 'character', replacedBy: "Cat's Eyes" }), { all: false, thermo: false });
+  t.eq('a thermographic implant is tech thermo only', T({ cyberThermo: true }), { all: false, thermo: true });
+  t.eq('thermographic goggles are tech thermo', T({ gearThermo: true }).thermo, true);
+  t.eq('a troll\'s own eyes are not', T({ actorType: 'character' }), { all: false, thermo: false });
+  t.eq('plain + tech viewer → sees', IR.seesThrough('plain', true), true);
+  t.eq('improved + tech viewer → fooled', IR.seesThrough('improved', true), false);
+  t.eq('plain + living eyes → fooled', IR.seesThrough('plain', false), false);
+  t.eq('GM-set status (no spell) → fooled', IR.seesThrough(null, true), false);
+
+  const senses = readFileSync(new URL('../scripts/SR3ESenses.js', import.meta.url), 'utf8');
+  t.ok('thermographic detection lets tech thermo through', /techSeesInvisible\(visionSource, target, true\)/.test(senses));
+  t.ok('core sight lets a tech viewer through', /techSeesInvisible\(visionSource, target\)\)/.test(senses));
+  t.ok('plan() stores the viewer\'s techSight on the token', /flags\.\$\{SYS\}\.techSight/.test(senses));
 }
