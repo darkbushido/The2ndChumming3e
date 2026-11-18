@@ -4784,4 +4784,18 @@ export const MUTANTS = [
     was:    'shipped on the live build: astral sight written with range null — v14 rejects it, so turning Dual Natured off threw (2026-11-11; TODO 299)',
     impl:   r => r,
   },
+  {
+    id:     'invisibility-no-status',
+    suite:  'invisibility',
+    module: '../scripts/data/invisibility.mjs', klass: 'InvisibilityRules', method: 'invisibilityKind',
+    was:    'shipped: a sustained Invisibility set only sr3e-sustaining — the token never got the core invisible status (2026-11-18)',
+    impl:   () => null,
+  },
+  {
+    id:     'invisibility-on-caster',
+    suite:  'invisibility',
+    module: '../scripts/data/invisibility.mjs', klass: 'InvisibilityRules', method: 'coveredNames',
+    was:    'never shipped — the status landing on the caster instead of the spell target',
+    impl:   (_e, caster) => [caster],
+  },
 ];

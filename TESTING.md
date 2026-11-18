@@ -3878,3 +3878,15 @@ Hot reload is enough (no new fields). Open a character sheet, Attributes tab.
       Success Table line ("Something is there." at 1). Nothing else changes on the actor.
 - [ ] **🔍 Concealment's Perception Test** still reads its success line exactly as before.
 
+
+## 90. 👻 Invisibility puts the token's `invisible` status on (branch `fix/invisibility-status` — SR3 p.196)
+
+Run as the **active GM** (the status hook runs only there); reload the GM tab first.
+
+1. A mage casts **Invisibility** on themself (no target), hits > 0, clicks **Sustain** → the mage's token shows
+   ⚙ Sustaining **and** Foundry's **Invisible** status (token goes translucent for the GM, hidden from players).
+2. Drop the spell on the Magic tab → **Invisible** comes off, Sustaining too.
+3. Target another token (Sam), cast **Improved Invisibility**, Sustain → **Sam** gets Invisible; the mage gets
+   only Sustaining. Drop it → Sam's Invisible comes off.
+4. GM sets **Invisible** on an unrelated token by hand, then sustains/drops any spell → that hand-set status stays.
+5. `game.actors.getName('Sam').getFlag('The2ndChumming3e','invisFromSpell')` reads `improved` while step 3 is up.

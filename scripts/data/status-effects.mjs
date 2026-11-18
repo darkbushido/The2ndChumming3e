@@ -33,7 +33,7 @@ export const isSystemStatus = id => typeof id === 'string' && id.startsWith(SYST
  *   - `unconscious` — the same hook, a full track (SR3 p.125); read by `SR3EActor` (sustaining)
  *   - `prone`       — the result card's Mark prone button (SR3 p.105 Drop Prone)
  */
-export const ALWAYS_SHOWN = Object.freeze(['dead', 'unconscious', 'prone']);
+export const ALWAYS_SHOWN = Object.freeze(['dead', 'unconscious', 'prone', 'invisible']);
 
 /**
  * The default SR3 set of CORE statuses, with the reason each earns its place (printed pages, SR3 core).
