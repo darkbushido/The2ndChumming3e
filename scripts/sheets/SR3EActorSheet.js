@@ -18,6 +18,7 @@ import { ModFor } from '../data/mod-for.mjs';
 import { SR3EItemMods } from '../SR3EItemMods.js';
 import { ModRemoval } from '../data/mod-removal.mjs';
 import { ModMarkings } from '../data/mod-markings.mjs';
+import { PrintSheet } from '../data/print-sheet.mjs';
 
 /**
  * SR3EActorSheet — V2 Application framework (Foundry v13+).
@@ -148,8 +149,40 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
         useNodePrompt:           SR3EActorSheet._onUseNodePrompt,
         removeMatrixMark:        SR3EActorSheet._onRemoveMatrixMark,
         addMatrixMark:           SR3EActorSheet._onAddMatrixMark,
+        printSheet:              SR3EActorSheet._onPrintSheet,     // TODO 302
     }
   };
+
+  /** 🖨 Print sheet in the window header · TODO 302. Owners only (players their PCs, the GM everything). */
+  _getHeaderControls() {
+    const controls = super._getHeaderControls();
+    if (this.actor.isOwner && ['character', 'npc'].includes(this.actor.type)) {
+      controls.push({ icon: 'fa-solid fa-print', label: 'Print sheet', action: 'printSheet' });
+    }
+    return controls;
+  }
+
+  /**
+   * Open the printable sheet in a new window with the print dialog · TODO 302. Rules and layout live
+   * in scripts/data/print-sheet.mjs. Linked vehicles show only when this user can see them.
+   */
+  static _onPrintSheet() {
+    const actor = this.actor;
+    if (!actor.isOwner) return;
+    const vehicles = game.actors.filter(a => a.type === 'vehicle' && a.system?.driverActorId === actor.id
+      && a.testUserPermission(game.user, 'OBSERVER'));
+    const snap = PrintSheet.snapshot(actor, vehicles);
+    const generated = `Printed from Foundry VTT (SR3E) — ${new Date().toLocaleDateString()}`;
+    const url = URL.createObjectURL(new Blob([PrintSheet.render(snap, { generated })], { type: 'text/html' }));
+    const win = window.open(url, '_blank');
+    if (!win) {
+      // Popup blocked: hand the file over instead — it opens and prints in any browser.
+      foundry.utils.saveDataToFile(PrintSheet.render(snap, { generated, autoPrint: false }), 'text/html',
+        `${actor.name.replace(/[^\w-]+/g, '_')}-sheet.html`);
+      ui.notifications.info('The print window was blocked, so the sheet was downloaded instead.');
+    }
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  }
 
   /* ------------------------------------------------------------------ */
   /*  Title                                                               */
