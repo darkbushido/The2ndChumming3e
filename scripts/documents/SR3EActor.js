@@ -10615,6 +10615,24 @@ _prepareCharacter(sys, attr) {
    * its sheet (which records the base).
    */
   /**
+   * A chargen spell's learned Force, as a number — or null when the export carries none.
+   *
+   * The Shadowrun Character Generator stores the Force a spell was bought at as `Rating`
+   * (MagicPanel.js `handleAddSpell`: `{ ...spell, Rating: spellRating }`). The importer once
+   * dropped it, so every imported spell had no Force (seen on Velvet, 2026-11). Older/other
+   * exports may name it `Force`, or put it in the name ("Stunbolt (F4)"). Missing stays null,
+   * never 0, so the gap is visible on the sheet — learned Force caps the cast · SR3 p.178.
+   */
+  static importedSpellForce(sp = {}) {
+    for (const v of [sp.Force, sp.force, sp.Rating, sp.rating]) {
+      const n = parseInt(v);
+      if (Number.isFinite(n) && n >= 1) return n;
+    }
+    const m = String(sp.Name ?? sp.name ?? '').match(/\(\s*(?:F|Force)\s*(\d+)\s*\)/i);
+    return m ? parseInt(m[1]) : null;
+  }
+
+  /**
    * An imported implant's costs, un-graded · TODO 101 — the importer's rule, kept in system code
    * so a fix reaches worlds whose copy of the import macro is old.
    *
