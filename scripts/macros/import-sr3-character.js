@@ -425,6 +425,8 @@ function _spellItem(sp) {
     name: _str(sp.Name ?? sp.name),
     type: 'spell',
     system: {
+      // Learned Force — the generator calls it Rating; null (never 0) when absent.
+      force:       game.sr3e.SR3EActor.importedSpellForce(sp),
       category:    (SPELL_CLASS_MAP[classCode]    ?? classCode)    || 'Combat',
       type:        (SPELL_TYPE_MAP[typeCode]       ?? typeCode)    || 'Physical',
       range:       _str(sp.Range    ?? sp.range)                  || 'LOS',

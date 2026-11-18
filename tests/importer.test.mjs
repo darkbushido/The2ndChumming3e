@@ -172,4 +172,19 @@ export async function run(t) {
   t.is('with no award log, Total = Good Karma earned + the pool points (Shetani, p.244: 59 + 3 = 62)', noLog.totalKarma, 62);
   const fresh = r.created.system;
   t.ok('a fresh character still imports at 0 Karma, pool 1', fresh.totalKarma === 0 && fresh.karma === 0 && fresh.karmaPool === 1);
+
+  /* ── Spell Force (SR3 p.178) — the importer dropped it; Velvet's 7 spells came in blank ── */
+  const spells = [
+    { Name: 'Stunbolt', BookPage: 'sr3.195', Type: 'M', Target: 'W(R)', Duration: 'I', Range: 'LOS', Drain: '(D)', Class: 'C', Notes: '', Rating: 4, Fetish: false, Exclusive: false },
+    { Name: 'Heal', BookPage: 'sr3.197', Type: 'M', Target: '10-Essence', Duration: 'P', Range: 'T', Drain: '(DL)', Class: 'H', Notes: '' },
+    { Name: 'Armor (F3)', Class: 'M', Type: 'P' },
+  ];
+  const mage = await runImport({ ...troll, spells });
+  const spellItems = mage.embedded.filter(i => i.type === 'spell');
+  const byName = n => spellItems.find(i => i.name === n)?.system;
+  t.is('three spells imported', spellItems.length, 3);
+  t.is('the export\'s Rating is the learned Force (Stunbolt 4)', byName('Stunbolt')?.force, 4);
+  t.is('no Force in the export stays null, never 0 (Heal)', byName('Heal')?.force, null);
+  t.is('a Force written in the name is read ("Armor (F3)")', byName('Armor (F3)')?.force, 3);
+  t.is('importedSpellForce reads a capitalised Force too', SR3EActor.importedSpellForce({ Force: '6' }), 6);
 }
