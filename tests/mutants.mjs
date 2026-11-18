@@ -4755,4 +4755,18 @@ export const MUTANTS = [
     was:    "the Ares Vanquisher and Vengeance (vehicle weapons typed HMG/MMG) counted 2 against a turret, not the table's 2.5 (R3R p.140)",
     impl:   function (w) { return w?.type === 'vehicleweapon' && /vanquisher|vengeance/i.test(w.name) ? 2 : this._weaponValueOriginal(w); },
   },
+  {
+    id:     'invisibility-no-status',
+    suite:  'invisibility',
+    module: '../scripts/data/invisibility.mjs', klass: 'InvisibilityRules', method: 'invisibilityKind',
+    was:    'shipped: a sustained Invisibility set only sr3e-sustaining — the token never got the core invisible status (2026-11-18)',
+    impl:   () => null,
+  },
+  {
+    id:     'invisibility-on-caster',
+    suite:  'invisibility',
+    module: '../scripts/data/invisibility.mjs', klass: 'InvisibilityRules', method: 'coveredNames',
+    was:    'never shipped — the status landing on the caster instead of the spell target',
+    impl:   (_e, caster) => [caster],
+  },
 ];

@@ -75,6 +75,7 @@ import * as Sustaining from './data/sustaining.mjs';
 import { Blast } from './data/blast.mjs';
 import { Barrier } from './data/barrier.mjs';
 import { NpcAmmo } from './data/npc-ammo.mjs';
+import { InvisibilityRules } from './data/invisibility.mjs';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -2371,6 +2372,34 @@ Hooks.on('hotbarDrop', (_hotbar, data, slot) => {
   return false; // we handled the drop
 });
 
+/**
+ * Invisibility / Improved Invisibility → the core `invisible` status on whoever the spell covers · SR3 p.196,
+ * `data/invisibility.mjs`. Re-checks the caster, every name a sustained invisibility covers, and every actor
+ * the SYSTEM marked before (flag `invisFromSpell`) — so a dropped spell clears its old target. A status the GM
+ * set by hand (no flag) is never removed. Active GM only (called from the updateActor hook).
+ */
+async function _syncInvisibility(caster) {
+  const SYS = 'The2ndChumming3e';
+  const pool = [...game.actors.filter(a => game.sr3e.isLiveActor(a))];
+  for (const t of canvas?.scene?.tokens ?? []) if (t.actor && !t.actorLink) pool.push(t.actor);
+  const sustainers = pool.filter(a => (a.system?.sustainedSpells ?? []).length)
+    .map(a => ({ name: a.name, sustainedSpells: a.system.sustainedSpells }));
+  const names = new Set([caster.name, ...sustainers.flatMap(s => InvisibilityRules.namesTouched(s.sustainedSpells, s.name))]
+    .map(n => String(n).toLowerCase()));
+  for (const a of pool) {
+    const ours = !!a.getFlag(SYS, 'invisFromSpell');
+    if (!ours && !names.has(String(a.name).toLowerCase())) continue;
+    const kind = InvisibilityRules.invisibilityOn(a.name, sustainers);
+    if (kind) {
+      if (!a.statuses?.has('invisible')) await a.toggleStatusEffect('invisible', { active: true });
+      if (a.getFlag(SYS, 'invisFromSpell') !== kind) await a.setFlag(SYS, 'invisFromSpell', kind);
+    } else if (ours) {
+      await a.toggleStatusEffect('invisible', { active: false });
+      await a.unsetFlag(SYS, 'invisFromSpell');
+    }
+  }
+}
+
 // Auto-sync token status icons from system state, and auto-mark combatants defeated when down.
 // Runs only on the active GM's client to avoid every client racing to apply effects.
 Hooks.on('updateActor', async (actor, changes) => {
@@ -2391,6 +2420,7 @@ Hooks.on('updateActor', async (actor, changes) => {
   }
   if ('sustainedSpells' in sys) {
     await set('sr3e-sustaining', (actor.system.sustainedSpells ?? []).length > 0);
+    await _syncInvisibility(actor);
   }
 
   // Auto-defeated / down / dead from the wound tracks (reversible on healing).
