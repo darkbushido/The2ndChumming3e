@@ -77,6 +77,13 @@ const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment
 
 export const MUTANTS = [
   {
+    id:     'import-drops-spell-force',
+    suite:  'importer',
+    module: '../scripts/documents/SR3EActor.js', klass: 'SR3EActor', method: 'importedSpellForce',
+    was:    'the character importer never set the Force of a spell — every imported spell had force null (Velvet, 2026-11)',
+    impl:   () => null,
+  },
+  {
     id:     'wound-assigned-twice',
     suite:  'open-steps',
     module: '../scripts/data/open-steps.mjs', klass: 'OpenSteps', method: 'runOnce',
