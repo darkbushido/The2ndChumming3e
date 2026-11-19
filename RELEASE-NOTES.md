@@ -4,7 +4,7 @@ What changed, for the people running games with it. Newest first.
 
 ## 0.9.0 — DRAFT (not yet dated)
 
-Mods go *inside* things now: a gun carries its scope and gas vent, armour its gel packs, a cybereye its magnification, a vehicle its armour and engine mods, and each one changes the numbers it should. Vehicles can be designed from a chassis with *Rigger 3*'s Design Points, and weapons sit on hardpoints, firmpoints and turrets. 🛒 Buy gear has a cart and a Quantity, and a GM toggle puts contact orders and natural healing on the clock. The GM gets 🔎 Legwork, a Matrix host generator, Karma Pools for NPCs, and the core book's sixteen sample characters. Every shipped spell, every Little Black Book contact and the IC pack were checked against their books.
+Mods go *inside* things now: a gun carries its scope and gas vent, armour its gel packs, a cybereye its magnification, a vehicle its armour and engine mods, and each one changes the numbers it should. Vehicles can be designed from a chassis with *Rigger 3*'s Design Points, and weapons sit on hardpoints, firmpoints and turrets. 🛒 Buy gear has a cart and a Quantity, and a GM toggle puts contact orders and natural healing on the clock. The GM gets 🔎 Legwork, a Matrix host generator, Karma Pools for NPCs, and the core book's sixteen sample characters. Tokens see with low-light, thermographic, ultrasound and astral vision, and Invisibility hides them. A gear designer website lets players build weapons, armour and vehicles and import them into Foundry. Every shipped spell, every Little Black Book contact and the IC pack were checked against their books.
 
 ### Before you upgrade
 
@@ -20,6 +20,9 @@ Mods go *inside* things now: a gun carries its scope and gas vent, armour its ge
   - **Little Black Book contacts** get the book's gear, cyberware and spells (LBB pp.40–67).
   - Characters' and NPCs' prototype tokens get vision turned on.
   - An old single Panther Assault Cannon becomes its [Bipod] version.
+  - The **Street Sweeper** becomes a shotgun and the **Ballista** a missile launcher (CC p.23, p.28); both were filed under the wrong skill.
+  - **Orthodox deckers who are logged on get VR-Hot**, so they keep their Matrix Initiative under the new VR-Hot-only rule. A mode you chose is never touched.
+  - Existing Defragged hosts get the Convergence row on their sheaf, blanks only.
 - **New NPC tokens and Little Black Book contacts come in unlinked**, so a burned Karma Pool point or a wound stays on that token.
 
 ### Rules that now resolve differently
@@ -65,8 +68,21 @@ Mods go *inside* things now: a gun carries its scope and gas vent, armour its ge
 
 - **The Hacking Pool follows the world's ruleset** — SR3 p.207 or MDF p.11.
 - **Every decker action charges a Complex Action** in the action ledger, a warning only (MDF p.8).
-- **Orthodox Matrix Initiative applies in VR-Hot only**; the Orthodox tab gets a user-mode selector. ⚠ *DRAFT: page citation to add.*
+- **Orthodox Matrix Initiative applies in VR-Hot only** (the maintainer's ruling, as MDF p.10 has it for Defragged). The Orthodox tab gets a user-mode selector; Log On asks for the mode and Log Off clears it.
+- **Orthodox play hosts get IC and Trigger Steps** from the alert ladder (SR3 pp.211–212): IC rated from Security Value − 2 up to the Security Value (the maintainer's ruling).
+- **The Defragged sheaf has ten rows**: Trigger Steps 1–9 plus Convergence (MDF pp.23–24).
+- **A crash offers Dumpshock on both rulesets.** Under Defragged, Tortoise and AR users are immune, and everyone takes the +2 for 10 minutes (MDF p.27).
 - **IC**: Memory is Rating² × Final Multiplier (MDF p.33); Crippler, Gemini, Tracker, Killer and Sparky follow their stat blocks (MDF pp.40–44). A triggered sheaf's IC roll initiative on the GM's click, with an editable −10 per phase (MDF p.23). An IC's turn posts a GM prompt card with an Attack button. A GM "icon crashed" button adds +1 Overwatch, or degrades Suppression by 1 instead (MDF p.22, p.26).
+
+**Seeing and being seen**
+
+- **Tokens see as their eyes do** (SR3 p.56, pp.111–112, pp.172–173; M&M p.20). Vision comes from metatype, cyberware and bioware (replaced eyes lose racial vision, SR3 p.299), adept Improved Sense, and **worn** vision gear (👓 on the Gear tab). The 👁 column on the Token HUD picks among the modes a character has.
+  - **Low-light** turns dim light bright and keeps colour; total darkness stays dark.
+  - **Thermographic** ignores light. Walls block it, and so do walls flagged **Glass** (a house rule; the book is silent).
+  - **Ultrasound** ignores light and invisibility, shows walls and distance but never colour, and is blocked by a wall's sound setting. Its 50 m range is a house figure, editable.
+  - **Astral sight** is grey and light-blind, and auras glow. Projecting sees and moves through walls except **Ward** walls. Projecting characters and spirits marked astral are hidden from mundane sight. Astral perception is offered only to magicians and adepts with Astral Perception; switching astral mode switches the vision.
+  - **Magical tiles**: a tile can carry an aura, visible to all and glowing in astral sight, or astral-only. The GM sees both.
+- **Invisibility puts Foundry's invisible status on its subject** while sustained, and clears it when the spell drops (SR3 p.196). Improved Invisibility adds its own status. Cameras, drones, vehicles, cybereyes and cyber or goggle thermographic see through plain Invisibility but not Improved (SR3 pp.195–196, the maintainer's ruling); natural thermographic and adept senses don't. A GM-set invisible status fools everyone.
 
 **Combat**
 
@@ -88,6 +104,13 @@ Mods go *inside* things now: a gun carries its scope and gas vent, armour its ge
 - **The core rulebook's sixteen sample characters** as an Actor pack (SR3 pp.65–80, pp.326–329).
 - **NPCs start with loaded guns** and 3–6 reloads when ammunition is tracked.
 - **Meet the contact** restates the stats for the chosen race (SR3 p.56); a Generic NPC rolls a race per token from a mix and picks a matching face.
+- **🔧 Buy modded…** beside 🛒 on the character sheet: pick a gun, armour, cyberware or a vehicle and its mods, see each price and the total, sourced against the slowest part (SR3 p.272). It goes into the cart as one line, and 💴 Pay builds it with the mods installed. A vehicle is created with its mods.
+- **👁 Perception Test** under 🩹 Healing (SR3 pp.231–232, p.111): Intelligence dice (plus Enhanced Perception) against TN 4, with the modifiers and Visibility tables and the character's own eyes preselected. Every number is editable; the card reads the Perception Success Table and decides nothing.
+- **🖨 Print sheet** in the actor sheet's header (owners): a printable two-column character sheet in a new window.
+- **Every named vehicle model has its own picture and top-down token** (211 entries). A picture you chose is kept.
+- The character importer keeps a spell's learned Force (SR3 p.178); imported spells came in blank.
+- The vehicle and sample-character pickers no longer offer packs from source books the GM switched off.
+- The *Crime Scene Investigation Toolkit* module is recommended at install, beside Security Cameras. Never required.
 - **The Matrix book is a default book**: its Miscellaneous Component Table (Matrix p.169) has its own pack.
 - A new guide page: Legality Codes & Permits (SR3 pp.272–274).
 - Smaller fixes: a spent 💴 Pay button looks spent; checkboxes line up; the GM tools' buttons relabel when their state changes; ammo a gun cannot load is warned about; "1 reload × 10 rounds" reads as it should.
@@ -114,14 +137,14 @@ Mods go *inside* things now: a gun carries its scope and gas vent, armour its ge
 - **Vehicle tokens come in to scale**: the vehicle's length in metres ÷ the scene's grid distance. Rideable seats come from the vehicle's Seating. A vehicle records its size when it is created, so a renamed copy still scales.
 - Fixes: each mod is listed once, and Amphibious Package is one rated mod; adding a Pop-Up or Anti-Air turret no longer marks the other turrets of its size as in the cart.
 
-<!-- CONDITIONAL: this section ships only if TODO 298 (claude/web-gear-designer-37eb2b) passes its live Foundry check and is merged into main. Weapons built 8b57012a; vehicles built 984614b3 (not yet live-checked). -->
 ### Design gear on the web, bring it into Foundry
 
-- **A gear designer website**, published with the guides at `/designer/latest/`, plus a frozen copy for each version (`/designer/v0.9.0/`). Players can design without opening Foundry. It uses the same rules code as the system, and shows stats and book pages only, with no rule text.
-- **Weapons**: pick a gun, then fit its accessories and mods, mounts, integral items and ammunition. You get the same warnings the system gives.
-- **Vehicles**: a Vehicle tab with the *Rigger 3* design (R3R pp.102–155): chassis, power plant, functional improvements, design options, mods at their levels, class and mark-up. It is priced by the same rules as the 🛠 Vehicle Designer. When you import a vehicle design, the 🛠 Vehicle Designer opens filled in, and its Create makes the vehicle.
+- **A gear designer website**, published with the guides at `/designer/latest/`, plus a frozen copy for each version (`/designer/v0.9.0/`). Players can design without opening Foundry. It uses the same rules code as the system, and shows stats and book pages only, with no rule text. A guide page explains it.
+- **Weapons** work as a shop, like the Vehicle Designer: chips by weapon type (firearms and melee), cards with a picture, a one-liner, key stats and the page, and accessories on mount shelves. Accessories that don't fit are hidden behind a switch, shown with the reason, and still addable. 63 firearms have their own picture.
+- **Vehicles**: the same five steps as the 🛠 Vehicle Designer, priced by the same rules (R3R pp.102–155). Or **modify a book vehicle**: any of the 263 compendium vehicles plus aftermarket mods at their levels. Importing a design opens the 🛠 Vehicle Designer filled in; importing a book vehicle copies it from the compendium and adds the mods.
+- **Armour**: pick a garment, then its *Cannon Companion* modifications and helmet options (SR3 p.284), one of each, at their levels. It imports onto a character with its mods inside, not worn.
 - **Sharing a design**: a design is a link (or a `.json` file) you can paste into chat or save.
-- **📥 Import design** (Items directory) or the **SR3E Import Gear Design** macro brings it into Foundry. Paste the link and you get a preview. A weapon imports onto a character you own: the gun arrives with its mods inside it and one ammo stockpile. A GM can also import it as a world item.
+- **📥 Import design** (Items directory) or the **SR3E Import Gear Design** macro brings it into Foundry. Paste the link and you get a preview. A weapon or armour imports onto a character you own: the gun arrives with its mods inside it and one ammo stockpile. A GM can also import it as a world item.
 - **Foundry's numbers win.** The import rebuilds the item from the system's own compendiums and re-runs the rules. Any difference, unknown entry or version mismatch is listed, and you can still import (warn, never refuse). A link made with an older version of the designer still imports.
 
 ### Behind the scenes
