@@ -70,7 +70,7 @@ export async function run(t) {
   t.is('…a non-ammunition entry none', GearSearch.fromIndex({ name: 'Katana', type: 'melee', system: {} }, null).ammo, null);
 
   const flow = read('scripts/SR3EPurchase.js');
-  t.ok('Buy gear takes forWeapon', /async open\(actor, item = null, \{ forWeapon = null \} = \{\}\)/.test(flow));
+  t.ok('Buy gear takes forWeapon', /async open\(actor, item = null, \{ forWeapon = null[,} ]/.test(flow));
   t.ok('…reads the gun exactly as reload() does', /_weaponLoadMechanism\?\.\(\)/.test(flow) && /_weaponMagazineSize\?\.\(\)/.test(flow)
     && /weaponAcceptsAmmoType\(gun\?\.system/.test(flow) && /MiniGrenade\.isLauncher\(gun\.system\)/.test(flow));
   t.ok('…lists only what fits', /all\.filter\(e => e\.type === 'ammunition' && AmmoShop\.fits\(e\.ammo \?\? \{\}, crit, e\.name\)\)/.test(flow));

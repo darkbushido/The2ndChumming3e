@@ -143,7 +143,7 @@ export const SR3EPurchase = {
    *   the ammunition that gun loads (`AmmoShop.fits`, the rule `reload()` uses) and the box bought is stamped with
    *   the gun's class
    */
-  async open(actor, item = null, { forWeapon = null } = {}) {
+  async open(actor, item = null, { forWeapon = null, lines = [] } = {}) {
     if (!actor) return;
     const gun = forWeapon;
     const crit = gun ? SR3EPurchase.ammoCriteria(gun) : null;
@@ -188,7 +188,8 @@ export const SR3EPurchase = {
       : unknown ? '<strong style="color:var(--sr-amber)">This item has no Availability code — the GM sets one.</strong>' : '');
 
     // The cart (TODO 285): lines added with ➕, each { name, cost (of ONE), quantity, index, tn, time, unit, … }.
-    const cart = [];
+    // 🔧 A modded item (TODO 283) arrives as one line already in the cart.
+    const cart = [...lines];
     const readLine = el => {
       const n = id => Number(el.querySelector(id)?.value) || 0;
       const lvl = el.querySelector('#sr-buy-level-row')?.style.display === 'none' ? null : (Number(el.querySelector('#sr-buy-level')?.value) || null);
@@ -734,6 +735,13 @@ export const SR3EPurchase = {
         if (empties.length) { added += ` — ${empties.map(k => k.name).join(', ')} restocked`; continue; }
       }
       if (!line.itemUuid) continue;
+      // 🔧 A modded item (TODO 283): the host with its mods, built again at the quoted prices; a vehicle is created here.
+      if (line.modded) {
+        const made = await game.sr3e.SR3EModdedBuy.materialise(actor, line);
+        if (made.item) toCreate.push(made.item);
+        if (made.vehicle) added += ` — ${made.vehicle} deployed`;
+        continue;
+      }
       const src = await fromUuid(line.itemUuid).catch(() => null);
       if (!src) continue;
       let data = src.toObject();

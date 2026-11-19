@@ -3965,3 +3965,17 @@ The CC firearms pack changes (`npm run packs:install`, Foundry closed); the 0.9.
 - [ ] Gel Packs → 4,500¥, hardened. Copy link, reload: the same design on step 3.
 - [ ] In Foundry, 📥 Import design with that link onto a character → the jacket with its mods inside, not worn; the
       sheet's price matches. Edit the link's claimed cost → the dialog warns, imports the recomputed price.
+## 95. 🔧 Buy or build a modded item (TODO 283, branch `claude/todo-283-modded-buy-a37c6f` — SR3 pp.272-273, p.281, p.303; R3R p.129; CC pp.52-53)
+
+Rules: `scripts/data/modded-buy.mjs` (`tests/modded-buy.test.mjs`, two mutants). Dialog: `scripts/SR3EModdedBuy.js`.
+
+- [ ] Character sheet, Karma/nuyen block: **🔧 Buy modded…** sits beside 🛒 Buy gear and opens the dialog.
+- [ ] Search "Predator", pick it; search mods — only weapon mods are offered. Add Gas Vent and an Internal Smartgun: the
+      breakdown shows the smartgun "from the host" at the gun's price, a Total, and "Sourced against the slowest part".
+- [ ] Add a second barrel mod: an amber mount warning, and both still count in the total.
+- [ ] Drop a vehicle from a compendium onto the dialog, then Drive-by-Wire: a level dropdown; level 2 is 50% of the vehicle's price.
+- [ ] Armour Vest + Gel Packs: the total is the vest ×5, Availability ×2/×4.
+- [ ] **Add without paying**: the gun lands on the sheet with its mods inside (open it — the mods list); nuyen unchanged.
+- [ ] **🛒 Buy…** opens Buy gear with one cart line "<host> (+N mods)" at the total; at the store → 💴 Pay: nuyen falls by the
+      total, the ledger reads "Bought <host> (+N mods)", and the modded item appears. For a vehicle, the vehicle is created with its mods
+      and linked to the buyer.
