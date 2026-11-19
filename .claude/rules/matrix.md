@@ -90,6 +90,13 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
   included), no Response.
 - Tortoise: +2 TN to all Matrix actions. VR-Cold: overflow past the stun track → physical.
 - **Dumpshock is SERIOUS**, Power = the System Rating of the grid/host that dumped the user (MDF p.27).
+- ⚠ **Tortoise and AR users are IMMUNE; VR-Cold takes it on Stun, VR-Hot on Physical; everyone takes +2 to all TNs for 10 minutes**
+  (MDF p.27). `data/dump-shock.mjs` (`DumpShock.defragged`) and one card, `SR3EActor._postDefraggedDumpshock`, used by the manual button,
+  Convergence and a crash. Before 2026-11 every non-VR-Hot user was offered Stun damage and the +2 was never mentioned.
+- ⚠ **A crash offers Dumpshock** (MDF p.26: 10 boxes of Overload "crashes, dumping its user"): hooks in `sr3e.js` (`preUpdate`/`update`
+  on the cyberdeck item for Defragged, on the actor's `orthodoxMatrixCM` for Orthodox, active GM only) fire only on the save that FILLS
+  the monitor (`DumpShock.crossedFull`; the previous value rides `options`). The Orthodox IC-damage card posts its own and passes
+  `{ sr3eCrashCard: true }` so it is not announced twice.
 - **Every dump shock is resisted with Willpower and no armour** — the maintainer's rulings, 2026-09-27/28
   (TODO 201): SR3 p.227 and MDF p.27 name no attribute; SR3 p.156 says Willpower for riggers. Payloads
   carry `resistAttr: 'willpower'`, `noArmor: true`.
@@ -116,9 +123,12 @@ The character sheet's Matrix tab already lists the current node's prompts with a
 - 10 boxes, on the host's **Security Sheaf**.
 - Triggers: *"Failing a test using the Hacking skill"* and *"Crashing an icon without Suppressing it"*.
   The crash trigger is a GM-only **💥 crashed** button on the IC wound card (`handleIconCrashClick`, pure rules in
-  `data/overwatch-crash.mjs`): +1 Overwatch, or degrade Suppression by 1 instead (MDF p.26). ⚠ The sheaf's ten
-  Trigger Steps are still TODO 128.
-- Box 10 = **Convergence**: Dumpshock (Power = System Rating) + GOD/corporate response + possible physical security.
+  `data/overwatch-crash.mjs`): +1 Overwatch, or degrade Suppression by 1 instead (MDF p.26).
+- ⚠ **The sheaf has ten rows: TS 1-9 and Convergence** (MDF p.23-24, "10 Trigger Steps, with the final step resulting in Convergence").
+  `data/sheaf-steps.mjs`: a new host is seeded with `defaultSteps()`, the host sheet shows the tenth as **C** (gold), and the 0.9.0
+  migration (`convergenceDelta`) appends it to a nine-row host or relabels an untouched "TS 10" — fill blanks only.
+- Box 10 = **Convergence**: "any or all" of — dumped with Dumpshock, the user's meta-data to the Grid Overwatch Division, a security
+  team at their jackpoint (MDF p.24). `_postConvergenceCard` whispers that list to the GM and posts the Dumpshock card (offered, never applied).
 
 ### Cybercombat  · *MDF p.26*
 1. **Attack**: Cybercombat + Hacking Pool *"against a base target number 4, modified as appropriate"* —
@@ -157,7 +167,10 @@ Table (SR3 p.205; Blue Easy, Green/Orange Average, Red Hard is a suggestion only
 rating, tier and Memory (rating × 500, MDF p.24), and a proposed IC set from `AGENT_IC` that fits the Memory; Gray/Black IC
 raise a Mainframe Support warning and the generator never ticks it. Play hosts leave IC unassigned to Trigger Steps; the
 scenario spreads them over TS 1… and adds a VR-Hot decker logged in (Defragged: deck + Hacking; Orthodox: deck stats +
-`orthodoxRunState`). Everything generated carries `flags.The2ndChumming3e.generated`. Orthodox play hosts get no IC yet.
+`orthodoxRunState`). Everything generated carries `flags.The2ndChumming3e.generated`. **Orthodox play hosts** get IC and Trigger Steps from `data/orthodox-sheaf.mjs` (SR3 p.211-212): steps add 1D6 ÷ 2 (rounded up) + Blue +4 / Green +3 /
+Orange +2 / Red +1; no alert runs reactive IC (Probe, Scramble, Tar Baby), passive alert (the 3rd step) proactive white/gray (Crippler, Ripper,
+Blaster, Killer), active alert (the 5th) Killer/Blaster/Sparky. Counts per code and the type lists are a starting point (the book fixes neither);
+IC Rating ramps from Security Value − 2 up to the Security Value (the maintainer, 2026-11-19). The Orthodox IC sheet has no Black type yet.
 
 ### Matrix Condition Monitor
 - 10 boxes, click-to-toggle; *"When an icon achieves 10 boxes of Overload Damage, it crashes"* (MDF p.26).

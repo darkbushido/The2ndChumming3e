@@ -1,4 +1,5 @@
 import { actorFrom } from '../data/actor-ref.mjs';
+import { defaultSteps, isConvergence } from '../data/sheaf-steps.mjs';
 const SEC_TIERS = ['Ivory','Blue','Green','Orange','Red','Black','Ultraviolet'];
 
 const TIER_DATA = {
@@ -131,13 +132,8 @@ export function defaultTopology(systemRating) {
     { id: foundry.utils.randomID(), fromId: spuId, toId: cpuId, blocked: false, blockedBy: null },
   ];
 
-  const triggerSteps = Array.from({ length: 9 }, (_, i) => ({
-    step: i + 1,
-    label: `TS ${i + 1}`,
-    triggered: false,
-    ic: [],
-    description: '',
-  }));
+  // TS 1-9 and Convergence as the tenth row — MDF p.23-24 (data/sheaf-steps.mjs).
+  const triggerSteps = defaultSteps();
 
   return { nodes, pathways, triggerSteps };
 }
@@ -547,14 +543,14 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
         </span>`).join('');
 
       return `
-        <div class="trigger-step ${s.triggered ? 'triggered' : ''} ${isHidden ? 'sheaf-hidden' : ''}" data-step="${idx}">
+        <div class="trigger-step ${s.triggered ? 'triggered' : ''} ${isHidden ? 'sheaf-hidden' : ''} ${isConvergence(s) ? 'convergence' : ''}" data-step="${idx}">
           <div class="ts-left">
             <button type="button" class="sheaf-eye-btn ${isHidden ? 'eye-off' : ''}"
                     data-action="toggleStepHidden" data-step="${idx}"
                     title="${isHidden ? 'Hidden from players — click to reveal' : 'Visible — click to hide'}">
               ${isHidden ? '🚫' : '👁'}
             </button>
-            <span class="ts-num">${s.step ?? idx + 1}</span>
+            <span class="ts-num" title="${isConvergence(s) ? 'Convergence — Overwatch box 10 (MDF p.24)' : `Trigger Step ${s.step ?? idx + 1}`}">${isConvergence(s) ? 'C' : (s.step ?? idx + 1)}</span>
             <input type="checkbox" ${s.triggered ? 'checked' : ''}
                    data-action="toggleTriggered" data-step="${idx}" title="Mark triggered"/>
           </div>
@@ -577,7 +573,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const initSheafBtn = steps.length === 0 ? `
       <button type="button" class="host-action-btn" data-action="initSheaf">
-        Add Default Security Sheaf (10 steps)
+        Add Default Security Sheaf (9 steps + Convergence)
       </button>` : '';
 
     const alertLabel = alertCount === 0 ? 'Passive' : alertCount === 1 ? 'Active Alert (+2 TN)' : 'Full Alert (+4 TN)';
@@ -1072,10 +1068,7 @@ export class SR3EHostSheet extends foundry.applications.sheets.ActorSheetV2 {
   }
 
   static async _onInitSheaf(_e, _t) {
-    const steps = Array.from({ length: 10 }, (_, i) => ({
-      step: i + 1, label: `TS ${i + 1}`, triggered: false, hidden: false, ic: [], description: '',
-    }));
-    await this.actor.update({ 'system.triggerSteps': steps });
+    await this.actor.update({ 'system.triggerSteps': defaultSteps() });
   }
 
   static async _onAddNode(_e, _t) {

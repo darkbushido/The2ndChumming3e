@@ -3464,6 +3464,9 @@ label.act-field input[type=number] {
 }
 .trigger-step:nth-child(odd) { background: color-mix(in srgb, var(--sr-surface) 60%, transparent); }
 .trigger-step.triggered { background: color-mix(in srgb, var(--sr-red-bg) 40%, transparent); border-color: color-mix(in srgb, var(--sr-red) 30%, transparent); }
+/* The tenth row — Convergence, Overwatch box 10 (MDF p.24): gold, like the track's own last box. */
+.trigger-step.convergence { border-color: var(--sr-gold); background: color-mix(in srgb, var(--sr-gold) 10%, transparent); }
+.trigger-step.convergence .ts-num { color: var(--sr-gold); font-weight: 700; }
 
 .ts-left { display: flex; align-items: center; gap: 6px; }
 .ts-num { font-weight: 700; font-size: 0.85rem; color: var(--sr-accent); min-width: 1.2em; }

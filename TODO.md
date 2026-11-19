@@ -1393,6 +1393,13 @@ Mainframe Support module. Any implementation should report that, not enforce it.
 > world: the dialog shows code/difficulty/SV/subsystems; Create writes them; the scenario adds a Probe and a logged-in
 > decker. (5) Delete the generated actors (flag `generated`). The active GM's tab must be reloaded first. **Open:** Orthodox
 > IC proposals, and the 10-row sheaf with Convergence.
+>
+> **The three gaps (2026-11-19, branch `claude/matrix-gaps-0-9-0`):** built — Orthodox play hosts get IC and Trigger Steps
+> (`orthodox-sheaf.mjs`, SR3 p.211-212; the maintainer chose the ramped rating, the alert ladder and rolling the steps); the Defragged
+> sheaf has ten rows with Convergence as the tenth (`sheaf-steps.mjs`, MDF p.23-24, migration 0.9.0); a crash offers Dumpshock on both
+> rulesets (`dump-shock.mjs`, MDF p.26-27), and Tortoise/AR users are now immune as the book says. 18 mutants (crash, sheaf, Dumpshock,
+> Orthodox sheaf); live steps in TESTING.md §18. **Still open:** Black IC (the Orthodox IC sheet has no Black type), a stocking summary on
+> the host sheet, and applying the sheaf's −10/phase offset automatically (the maintainer chose "offer on the card").
 
 **Shape:** the crash trigger and Suppression are small and self-contained — do them first. The sheaf
 is a host-sheet feature (a list of steps, each with IC and a rating) and is worth its own pass.

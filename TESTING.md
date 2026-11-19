@@ -1228,6 +1228,32 @@ the Defragged decks and programs only under Defragged. `tests/odm-packs.test.mjs
 - [ ] Orthodox → add a program → the 22 utilities, Attack at four levels; Track shows multiplier 8.
 - [ ] Open *Fairlight Excalibur* from the pack → the Book / Page box reads *SR3 p.207 · SR3 p.304*; *Track* reads *SR3 p.221*.
 
+### The ten-row sheaf, Dumpshock on a crash, Orthodox IC on play hosts — TODO 128 · `claude/matrix-gaps-0-9-0` · 2026-11-19
+Unit and source-level cover: `tests/sheaf-steps`, `dump-shock`, `orthodox-sheaf`, `matrix-gaps-wiring`; 18 mutants. These need a
+live pass (join as **mcp-api**; the active GM's tab must be reloaded; a Defragged and an Orthodox world — Orthodox needs the
+setting changed and a full restart).
+
+**Ten-row sheaf (Defragged · MDF p.23-24)**
+- [ ] A host with no sheaf → Security Sheaf tab → *Add Default Security Sheaf (9 steps + Convergence)* → ten rows; the tenth reads **C**, has a gold edge and the Convergence text (dumped + Dumpshock, Overwatch Division, security team).
+- [ ] 🎲 Generate Host (Defragged) → its sheaf already has the ten rows.
+- [ ] An existing host with nine rows (or an untouched *TS 10*) → after a reload (migration 0.9.0) → the tenth row is Convergence; a host whose tenth row you had typed in keeps your text; a second reload changes nothing.
+- [ ] Fill the host's Overwatch to 10 (failed Hacking tests, or the 💥 crashed button ten times) → a GM-only whispered Convergence card lists the three options, then a public **Convergence Dumpshock** card for the decker.
+
+**Dumpshock (MDF p.26-27)**
+- [ ] A decker in **VR-Hot**, linked to a host of System Rating 7 → fill their cyberdeck's Matrix Condition Monitor to 10 → one card, *Persona crashed — Dumpshock*: **7S Physical**, a Resist (Willpower) button, and the "+2 to all target numbers for 10 minutes" line. Resist rolls; no damage is applied by itself.
+- [ ] Same in **VR-Cold** → **Stun**. In **Tortoise** or **AR** → the card says the user is immune and offers no roll (the +2 line remains).
+- [ ] Untick a box and tick it again to 10 → a new crash card; clicking a box that is already full, or saving with the monitor at 10, posts nothing.
+- [ ] A decker with no host linked → Power reads 6 and the card says so.
+- [ ] The manual ⚡ Dumpshock button on a Tortoise decker → immune, not Stun (this was wrong before).
+- [ ] **Orthodox world:** fill a decker's Matrix Condition Monitor to 10 by hand → one Orthodox dump shock card (Stun, Power = the host's Security Value, level by code). Assign IC damage that fills it → still exactly **one** crash card (the IC handler's own).
+
+**Orthodox play hosts (SR3 p.211-212)**
+- [ ] 🎲 Generate Host (Orthodox) → code/difficulty/Security Value/subsystems as before; Create → the host sheet lists IC (Green: 5 — two no-alert Probe/Scramble/Tar Baby, two on Passive alert, one on Active alert) and Trigger Steps (tally and event) with *Passive Alert* on the third and *Active Alert* on the fifth step; no IC deployed.
+- [ ] Each IC actor exists, rated from the Security Value − 2 up to the Security Value, reactive ones with *proactive* unticked.
+- [ ] A Blue host → 3 IC, no active alert; a Red host → 7 IC, three on active. Tallies climb by 5-7 (Blue) … 2-4 (Red).
+- [ ] 🎲 Test Scenario (Orthodox) → the first IC is deployed and the decker is logged in, VR-Hot.
+- [ ] Delete the generated actors afterwards (flag `generated`).
+
 ### User modes (Matrix tab)
 
 | Mode | Initiative formula | Notes |

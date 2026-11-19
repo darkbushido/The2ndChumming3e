@@ -17,7 +17,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - `initiative-and-vehicles.md` 1babb7afb959
 - `karma-and-economy.md` cf28a25407d7
 - `magic.md` 5f625ae6d810
-- `matrix.md` a23085020f25
+- `matrix.md` f279e21c87c8
 - `melee-combat.md` 73eba60f8bfb
 - `packs-and-migrations.md` 470e0fd91b3a
 - `portraits.md` 9fca86734575
@@ -108,13 +108,13 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **System Rating** — *(no citation: not audited)*
 - **Security Tiers** — *(no citation: not audited)*
 - **Hacking Pool** — MDF p.11, SR3 p.207
-- **User modes** — MDF p.10, MDF p.27, SR3 p.227, SR3 p.156, SR3 p.226, SR3 p.145 — scripts/data/rigger-shock.mjs
+- **User modes** — MDF p.10, MDF p.27, MDF p.26, SR3 p.227, SR3 p.156, SR3 p.226, SR3 p.145 — data/dump-shock.mjs, sr3e.js, scripts/data/rigger-shock.mjs
 - **Matrix actions are Complex · MDF p.8** — MDF p.8
 - **Hacking procedure** — *(no citation: not audited)*
-- **Overwatch / Convergence** — MDF p.22-23, MDF p.26 — data/overwatch-crash.mjs
+- **Overwatch / Convergence** — MDF p.22-23, MDF p.26, MDF p.23-24, MDF p.24 — data/overwatch-crash.mjs, data/sheaf-steps.mjs
 - **Cybercombat** — MDF p.26
 - **IC / Agents** — MDF p.40-44, MDF p.33, MDF p.40, MDF p.25 — scripts/data/ic-memory.mjs, tests/ic-memory.test.mjs, scripts/data/ic-book-fixes.mjs
-- **Matrix generator · TODO 128** — SR3 p.205, MDF p.24 — scripts/SR3EMatrixGenerator.js, scripts/data/matrix-generator.mjs, tests/matrix-generator*.test.mjs
+- **Matrix generator · TODO 128** — SR3 p.205, MDF p.24, SR3 p.211-212 — scripts/SR3EMatrixGenerator.js, scripts/data/matrix-generator.mjs, tests/matrix-generator*.test.mjs, data/orthodox-sheaf.mjs
 - **Matrix Condition Monitor** — MDF p.26, MDF p.12, MDF p.11, SR3 p.207
 - **Sys/Sec modifiers** — MDF p.14
 - **Host sheet (SR3EHostSheet.js)** — *(no citation: not audited)* — SR3EHostSheet.js
