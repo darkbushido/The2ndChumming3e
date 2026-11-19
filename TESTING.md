@@ -3924,3 +3924,18 @@ Needs §90's branch. Join as a player who owns only the viewer token; Sam is inv
 - [ ] The core status-effects palette no longer lists Dual-Natured (a token that carries it still shows it, to clear).
 - [ ] A token with ultrasound shows a range field at the foot of the column; changing it updates the token's ultrasound detection range.
 - [ ] GM: the Token HUD's hide/show toggle shows a 🎭 mask (not an eye), lit when the token is hidden; clicking still hides and shows it, and re-opening the HUD keeps the mask.
+
+## 94. 🔧 Buy or build a modded item (TODO 283, branch `claude/todo-283-modded-buy-a37c6f` — SR3 pp.272-273, p.281, p.303; R3R p.129; CC pp.52-53)
+
+Rules: `scripts/data/modded-buy.mjs` (`tests/modded-buy.test.mjs`, two mutants). Dialog: `scripts/SR3EModdedBuy.js`.
+
+- [ ] Character sheet, Karma/nuyen block: **🔧 Buy modded…** sits beside 🛒 Buy gear and opens the dialog.
+- [ ] Search "Predator", pick it; search mods — only weapon mods are offered. Add Gas Vent and an Internal Smartgun: the
+      breakdown shows the smartgun "from the host" at the gun's price, a Total, and "Sourced against the slowest part".
+- [ ] Add a second barrel mod: an amber mount warning, and both still count in the total.
+- [ ] Drop a vehicle from a compendium onto the dialog, then Drive-by-Wire: a level dropdown; level 2 is 50% of the vehicle's price.
+- [ ] Armour Vest + Gel Packs: the total is the vest ×5, Availability ×2/×4.
+- [ ] **Add without paying**: the gun lands on the sheet with its mods inside (open it — the mods list); nuyen unchanged.
+- [ ] **🛒 Buy…** opens Buy gear with one cart line "<host> (+N mods)" at the total; at the store → 💴 Pay: nuyen falls by the
+      total, the ledger reads "Bought <host> (+N mods)", and the modded item appears. For a vehicle, the vehicle is created with its mods
+      and linked to the buyer.

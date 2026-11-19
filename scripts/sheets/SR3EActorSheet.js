@@ -70,6 +70,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       applyStress:      SR3EActorSheet._onApplyStress,        // TODO 109
       woundEffects:     SR3EActorSheet._onWoundEffects,        // TODO 129
       buyGear:          SR3EActorSheet._onBuyGear,             // TODO 82
+      buildModded:      SR3EActorSheet._onBuildModded,         // TODO 283
       deleteLedgerEntry: SR3EActorSheet._onDeleteLedgerEntry,  // TODO 153
       toggleTlex:       SR3EActorSheet._onToggleTlex,         // TODO 110
       toggleCybermancy: SR3EActorSheet._onToggleCybermancy,   // TODO 111
@@ -3437,6 +3438,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
           : ''}
         <button type="button" class="btn-sm" data-action="buyGear" style="align-self:flex-end"
           title="Find a source for gear — an Etiquette Test against its Availability, then haggle (SR3 pp.272-273).">🛒 Buy gear…</button>
+        <button type="button" class="btn-sm" data-action="buildModded" style="align-self:flex-end"
+          title="Pick a gun, armour, cyberware or vehicle and its mods, see the whole price, then buy it as one purchase or add it without paying (TODO 283).">🔧 Buy modded…</button>
       </div>
       ${this._ledgerTable(this.actor)}
 
@@ -4079,6 +4082,11 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
   /** ⚙ Apply Stress — GM only, because Stress is the GM saying what a wound did (TODO 109). */
   static async _onApplyStress(_event, _target) {
     await game.sr3e.SR3EStress.open(this.actor);
+  }
+
+  /** 🔧 Buy or build a modded item (TODO 283). */
+  static async _onBuildModded(_event, _target) {
+    await game.sr3e.SR3EModdedBuy.open(this.actor);
   }
 
   /** 🛒 Buy gear — anyone who owns the sheet; the rules are SR3 pp.272-273 (TODO 82). */

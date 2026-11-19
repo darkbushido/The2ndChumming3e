@@ -2506,6 +2506,26 @@ export const MUTANTS = [
       : acted?.['buy:negotiate'] ? { negotiate: 'Already haggled.', pay: null } : { negotiate: null, pay: null }),
   },
   {
+    id:     'modded-buy-mods-priced-only-as-printed',
+    suite:  'modded-buy',
+    module: '../scripts/data/modded-buy.mjs', klass: 'ModdedBuy', method: 'quote',
+    was:    'TODO 283 - a quote that summed printed prices only: the internal smartgun (priced from the gun, SR3 p.281), '
+          + 'drive-by-wire (from the vehicle, R3R p.129) and gel packs (the armour x5, CC p.53) all came out wrong',
+    impl:   (host, mods = []) => {
+      const lines = [{ name: host?.name, cost: Number(host?.system?.cost) || 0, basis: 'fixed', availability: '', part: 'host' },
+        ...mods.map(m => ({ name: m.data.name, cost: Number(m.data.system?.cost) || 0, basis: 'fixed', availability: '', part: 'mod' }))];
+      return { kind: 'weapon', lines, total: lines.reduce((s, l) => s + l.cost, 0), slowest: { tn: 0, time: 0, unit: 'day', code: '', name: '' },
+        warnings: [], built: host, mods: mods.map(m => m.data), refs: mods.map(m => ({ itemUuid: m.ref ?? '', level: null, cost: Number(m.data.system?.cost) || 0 })) };
+    },
+  },
+  {
+    id:     'modded-buy-first-part-sets-availability',
+    suite:  'modded-buy',
+    module: '../scripts/data/cart.mjs', klass: 'Cart', method: 'slowest',
+    was:    'TODO 283 - the lot sourced against the host only (the first part), so a restricted mod rode in at the gun TN (SR3 p.272)',
+    impl:   (lines = []) => ({ tn: Number(lines[0]?.tn) || 0, time: Number(lines[0]?.time) || 0, unit: lines[0]?.unit || 'day' }),
+  },
+  {
     id:     'cart-surcharge-rounded-per-unit',
     suite:  'cart',
     ...CART, method: 'storePrice',
