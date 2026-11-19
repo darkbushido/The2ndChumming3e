@@ -13761,12 +13761,12 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense-2.sr3e-adeptpower-0013.json",
+          "file": "scripts/data/mod-rating-table.mjs",
           "line": 9,
-          "snippet": "\"powerCost\": 2,"
+          "snippet": "2: {\"mods\":\"+2CPL\",\"powerCost\":2},"
         }
       ],
-      "note": "Cost and Combat Pool bonus are the pack items (+1CPL/+2CPL/+3CPL); the Usable-Pool-dice fraction is only a sheet note."
+      "note": "Combat Sense is one levelled item since 0.9.0 (2026-10-25 collapse); each level's cost and Combat Pool bonus are its row in the generated level table. The Usable-Pool-dice fraction is only a sheet note."
     },
     {
       "id": "magic/physical-adepts.md#40",
@@ -13788,12 +13788,12 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense-3.sr3e-adeptpower-0014.json",
-          "line": 9,
-          "snippet": "\"powerCost\": 3,"
+          "file": "scripts/data/mod-rating-table.mjs",
+          "line": 10,
+          "snippet": "3: {\"mods\":\"+3CPL\",\"powerCost\":3},"
         }
       ],
-      "note": "Cost and Combat Pool bonus are the pack items (+1CPL/+2CPL/+3CPL); the Usable-Pool-dice fraction is only a sheet note."
+      "note": "Combat Sense is one levelled item since 0.9.0 (2026-10-25 collapse); each level's cost and Combat Pool bonus are its row in the generated level table. The Usable-Pool-dice fraction is only a sheet note."
     },
     {
       "id": "magic/physical-adepts.md#41",
@@ -13919,11 +13919,12 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes-level-2.sr3e-adeptpower-0051.json",
-          "line": 9,
-          "snippet": "\"powerCost\": 3,"
+          "file": "scripts/data/mod-rating-table.mjs",
+          "line": 26,
+          "snippet": "2: {\"bonusInitDice\":2,\"bonusRea\":4,\"mods\":\"+4RCT,+2INI\",\"powerCost\":3},"
         }
-      ]
+      ],
+      "note": "Improved Reflexes is one levelled item since 0.9.0; level 2 costs 3 in the level table."
     },
     {
       "id": "magic/physical-adepts.md#47",
@@ -13945,11 +13946,12 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes-level-3.sr3e-adeptpower-0052.json",
-          "line": 9,
-          "snippet": "\"powerCost\": 5,"
+          "file": "scripts/data/mod-rating-table.mjs",
+          "line": 27,
+          "snippet": "3: {\"bonusInitDice\":3,\"bonusRea\":6,\"mods\":\"+6RCT,+3INI\",\"powerCost\":5},"
         }
-      ]
+      ],
+      "note": "Improved Reflexes is one levelled item since 0.9.0; level 3 costs 5 in the level table."
     },
     {
       "id": "magic/physical-adepts.md#48",
@@ -14971,14 +14973,14 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-mits-adept-powers/flexibility.sr3e-adeptpower-0033.json",
-          "line": 9,
-          "snippet": "\"powerCost\": 0.5,"
+          "file": "scripts/data/mod-rating-table.mjs",
+          "line": 21,
+          "snippet": "1: {\"description\":\"This power reduces the target numbers for athletics (escape artist) by 1.\",\"powerCost\":0.5},"
         },
         {
-          "file": "packs-src/sr3e-mits-adept-powers/flexibility-2.sr3e-adeptpower-0034.json",
-          "line": 9,
-          "snippet": "\"powerCost\": 1,"
+          "file": "scripts/data/mod-rating-table.mjs",
+          "line": 22,
+          "snippet": "2: {\"description\":\"This power reduces the target numbers for athletics (escape artist) by 2.\",\"powerCost\":1},"
         },
         {
           "file": "scripts/config.js",
@@ -15008,16 +15010,9 @@
           "printedNote": "OCR lost this page footer; printed 150 confirmed from the neighbouring footers (149, 151); anchored on page text"
         }
       ],
-      "code": [
-        {
-          "file": "packs-src/sr3e-mits-adept-powers/freefall.sr3e-adeptpower-0035.json",
-          "line": 9,
-          "snippet": "\"powerCost\": 0.25,"
-        }
-      ],
       "search": [
         {
-          "pattern": "freefallLevel|adeptFreefall|cushion",
+          "pattern": "freefallLevel|adeptFreefall",
           "path": "scripts"
         }
       ],
@@ -15604,9 +15599,9 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes-level-2.sr3e-adeptpower-0051.json",
-          "line": 9,
-          "snippet": "\"powerCost\": 3,"
+          "file": "scripts/data/mod-rating-table.mjs",
+          "line": 26,
+          "snippet": "2: {\"bonusInitDice\":2,\"bonusRea\":4,\"mods\":\"+4RCT,+2INI\",\"powerCost\":3},"
         }
       ]
     },
@@ -17562,11 +17557,11 @@
       ],
       "search": [
         {
-          "pattern": "cast across|across its boundar|(ward|circle|lodge)\\w*Force|barrierForce",
+          "pattern": "cast across|across its boundar|barrierForce|wardTN|ward.{0,20}spell TN",
           "path": "scripts"
         }
       ],
-      "note": "An astral barrier's Force is added only for the Detection spells (a checkbox on the cast dialog, SpellTarget.detectionTN). The general rule - a ward, hermetic circle or lodge adds its Force to the TN of any spell cast across it - is not coded."
+      "note": "An astral barrier's Force is added only for the Detection spells (a checkbox on the cast dialog, SpellTarget.detectionTN). The general rule - a ward, hermetic circle or lodge adds its Force to the TN of any spell cast across it - is not coded. Since 0.9.0 a scene wall can carry a ward Force (token-senses.mjs wardForce) for astral sight and drawing; it is not added to a spell's TN."
     },
     {
       "id": "magic/spellcasting.md#57",
@@ -28335,8 +28330,8 @@
       ],
       "search": [
         {
-          "pattern": "black IC|gray IC|lethal black|Etiquette \\(Matrix\\)",
-          "path": "scripts/documents"
+          "pattern": "lethal black|lethalBlack|blackIC|hackingPool.{0,80}(Etiquette|gray|black)|(gray|black).{0,80}hackingPool",
+          "path": "scripts"
         }
       ],
       "note": "The formula is implemented (SR3EActor.js:2304, and the Orthodox equivalent). Not implemented: (1) the cap 'the maximum number of Hacking Pool dice that can be added to any test is equal to the base number of skill dice' — the pool prompts offer everything available (only defaulting caps it); (2) the prohibition on Hacking Pool for Body / Willpower resistance against gray or black IC (no IC damage resistance flow exists for the Orthodox ruleset); (3) the prohibition on Etiquette (Matrix) tests."
@@ -28559,7 +28554,7 @@
       ],
       "search": [
         {
-          "pattern": "Tar Pit|tar pit|tarPit",
+          "pattern": "'Tar Pit'|\"Tar Pit\"|tarPit",
           "path": "scripts"
         }
       ],
@@ -36193,8 +36188,8 @@
       ],
       "search": [
         {
-          "pattern": "lethalBlack|blackIC|black IC|Black IC",
-          "path": "scripts/documents"
+          "pattern": "lethal black|lethalBlack|blackIC|nonLethalBlack|jack.?out.{0,40}Willpower",
+          "path": "scripts"
         }
       ],
       "note": "Guide corrected in 0.6.3 (e06c95f7); it was guide-differs in this check. Black IC is not modelled (TODO 176)."
@@ -36387,8 +36382,8 @@
       ],
       "search": [
         {
-          "pattern": "lethalBlack|blackIC|black IC|Black IC",
-          "path": "scripts/documents"
+          "pattern": "lethal black|lethalBlack|blackIC|nonLethalBlack|jack.?out.{0,40}Willpower",
+          "path": "scripts"
         }
       ],
       "note": "Black IC — the Body resistance, Hardening, and the Willpower jack-out test — is not modelled in the rules code (TODO 176); only a skill name and a Hardening tooltip mention it."
@@ -37610,15 +37605,11 @@
       ],
       "search": [
         {
-          "pattern": "remote.control interface",
-          "path": "scripts"
-        },
-        {
-          "pattern": "adapted for rigger",
+          "pattern": "remoteControlInterface|rciPilot|pilot.{0,30}remote.control|remote.control.{0,60}sensor|adapted for rigger",
           "path": "scripts"
         }
       ],
-      "note": "The system has no adaptation check: a vehicle of any kind can be given a driver and a control mode, with no remote-control interface, Pilot 1 or Sensor 1 required. (Manual grep of packs-src: no \"Remote Control Interface\" vehicle mod item exists; the drone actors only name it in notes. The script search can only scan .js/.mjs, so the pack half is not machine-proven.)"
+      "note": "The designer sells the remote-control interface and says a drone has it built in, but nothing requires it, sets Pilot 1 or checks Sensor 1: any vehicle can be given a driver and a control mode."
     },
     {
       "id": "rules/drones.md#8",
@@ -37640,15 +37631,11 @@
       ],
       "search": [
         {
-          "pattern": "datajack (port|system)",
-          "path": "scripts"
-        },
-        {
-          "pattern": "adapted for rigger",
+          "pattern": "requiresDatajack|needsDatajack|hasDatajack|adapted for rigger",
           "path": "scripts"
         }
       ],
-      "note": "No vehicle datajack system or \"adapted for rigger control\" requirement is modelled (the Driving Test only has a \"Non-Rigger w/ Datajack\" TN row)."
+      "note": "A Datajack Port vehicle mod can be bought (designer and pack), but nothing requires one to jack in: the rule that it is needed only for a physical jack-in is not checked."
     },
     {
       "id": "rules/drones.md#9",
@@ -41513,14 +41500,19 @@
       ],
       "code": [
         {
-          "file": "scripts/documents/SR3EActor.js",
-          "line": 4915,
-          "snippet": "const effectiveBR = attackType === 'blast' ? currentBR * 2 : currentBR;"
+          "file": "scripts/data/barrier.mjs",
+          "line": 21,
+          "snippet": "blast:       { mult: 2, label: 'Blast (grenade / explosive)',    page: 'p.119' },"
         },
         {
-          "file": "scripts/documents/SR3EActor.js",
-          "line": 4926,
-          "snippet": "const remainPower   = attackType === 'blast' ? power - currentBR : null;"
+          "file": "scripts/data/barrier.mjs",
+          "line": 53,
+          "snippet": "const effectiveBR = currentBR * Barrier.multiplier(attack);"
+        },
+        {
+          "file": "scripts/data/barrier.mjs",
+          "line": 65,
+          "snippet": "const remainPower   = attack === 'blast' ? power - currentBR : null;"
         }
       ]
     },
@@ -55504,7 +55496,7 @@
       ],
       "hash": "bdf06ab4fc",
       "text": "| **Body** | Toughness. It also sets the number of weapon mounts. |",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -55519,17 +55511,19 @@
           "quote": "A vehicle's Body Rating also indicates how many weapons can be mounted on it"
         }
       ],
-      "search": [
+      "note": "Body as toughness throughout; since 0.9.0 the mounts' points are counted against Body and over-Body is warned (TODO 234).",
+      "code": [
         {
-          "pattern": "hardpoint",
-          "path": "scripts"
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 170,
+          "snippet": "const points = { used, of: body, over: Math.max(0, used - body) };"
         },
         {
-          "pattern": "firmpoint",
-          "path": "scripts"
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 173,
+          "snippet": "if (points.over > 0) {"
         }
-      ],
-      "note": "Body as toughness is used throughout (damage track, soak, ramming, collisions: e.g. SR3EVehicleChase.js:531, SR3ECollision.js:69), but nothing counts weapon mounts against Body: no hardpoint or firmpoint appears anywhere in scripts/."
+      ]
     },
     {
       "id": "rules/vehicles.md#11",
@@ -57582,15 +57576,11 @@
       ],
       "search": [
         {
-          "pattern": "remote.control (interface|gear)",
-          "path": "scripts"
-        },
-        {
-          "pattern": "rem.contr.{0,8}intr(?!\\. Bod)",
+          "pattern": "remoteControlInterface|rciPilot|pilot.{0,30}remote.control|remote.control.{0,60}sensor|adapted for rigger",
           "path": "scripts"
         }
       ],
-      "note": "Since 0.8.0 the \"Rem-Contr. Intr. Bod\" vehicle mod's price is in the level table (2,500¥ × level, the level being the Body; SR3 p.306 \"Remote Control Gear … 2,500¥ x Body\"), but nothing gives the vehicle a Pilot Rating of 1 or a place on a remote-control network. The search skips that table key."
+      "note": "The Rem-Contr. Intr. Bod vehicle mod is in the pack and the designer (2,500¥ × Body) and its blurb says Pilot 1, but nothing gives the vehicle a Pilot Rating of 1 or checks Sensor 1 when it is installed."
     },
     {
       "id": "rules/vehicles.md#60",
@@ -57709,7 +57699,7 @@
       ],
       "hash": "68682f21c8",
       "text": "- **Hardpoints** carry heavy and vehicle weapons (MMGs and larger);\n  **firmpoints** carry LMGs, assault rifles and smaller.",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -57718,17 +57708,19 @@
           "quote": "Heavy and vehicular weapons (MMGs and larger) must be mounted on hardpoints; smaller arms (LMGs, assault rifles and smaller) may be mounted on firmpoints"
         }
       ],
-      "search": [
+      "note": "A heavy or vehicle weapon on a firmpoint is warned, never refused (TODO 234).",
+      "code": [
         {
-          "pattern": "hardpoint",
-          "path": "scripts"
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 50,
+          "snippet": "export const HARDPOINT_ONLY = new Set(['MMG', 'HMG', 'MinG', 'ACan']);"
         },
         {
-          "pattern": "firmpoint",
-          "path": "scripts"
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 179,
+          "snippet": "if (m.slot === 'firmpoint' && VehicleMounts.needsHardpoint(w)) {"
         }
-      ],
-      "note": "No hardpoint/firmpoint concept: any weapon item can be added to any vehicle's Weapons tab."
+      ]
     },
     {
       "id": "rules/vehicles.md#65",
@@ -57739,7 +57731,7 @@
       ],
       "hash": "1045876731",
       "text": "- A vehicle's **Body** sets how many it has: a hardpoint takes 2 points of\n  Body, a firmpoint 1. A Body 4 vehicle could have 2 hardpoints, or a\n  hardpoint and 2 firmpoints, or 4 firmpoints.",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -57748,17 +57740,19 @@
           "quote": "Each hardpoint is worth 2 points of Body, and each firmpoint counts for 1 point"
         }
       ],
-      "search": [
+      "note": "Hardpoint 2, firmpoint 1, total against Body: warned when over (TODO 234).",
+      "code": [
         {
-          "pattern": "hardpoint",
-          "path": "scripts"
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 89,
+          "snippet": "return { kind: 'fixed', points: hard ? 2 : 1, slot: hard ? 'hardpoint' : 'firmpoint', external: m[1] === 'external',"
         },
         {
-          "pattern": "firmpoint",
-          "path": "scripts"
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 170,
+          "snippet": "const points = { used, of: body, over: Math.max(0, used - body) };"
         }
-      ],
-      "note": "Nothing counts mounts against Body; the Body 4 example (2 hardpoints, or a hardpoint and 2 firmpoints, or 4 firmpoints) cannot be checked by the system."
+      ]
     },
     {
       "id": "rules/vehicles.md#66",
@@ -57769,7 +57763,7 @@
       ],
       "hash": "e2c45c9207",
       "text": "- **Firmpoints** are fixed mounts or pintle mounts; **hardpoints** are\n  fixed mounts or turrets.",
-      "verdict": "not-implemented",
+      "verdict": "diverges",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -57778,17 +57772,29 @@
           "quote": "Firmpoints can be a fixed mount or a pintle mount. Hardpoints can be a fixed mount or a turret."
         }
       ],
-      "search": [
+      "note": "Fixed (hard or firm), pintle (firmpoint) and turret (hardpoint) follow SR3 p.307, but the code also takes Rigger 3 Revised's ring mount as a hardpoint (R3R p.139) and a micro-turret as a firmpoint (R3R p.140), which SR3's \"Firmpoints can be a fixed mount or a pintle mount\" does not allow. Whether R3R governs is the maintainer's call.",
+      "code": [
         {
-          "pattern": "hardpoint",
-          "path": "scripts"
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 89,
+          "snippet": "return { kind: 'fixed', points: hard ? 2 : 1, slot: hard ? 'hardpoint' : 'firmpoint', external: m[1] === 'external',"
         },
         {
-          "pattern": "firmpoint",
-          "path": "scripts"
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 92,
+          "snippet": "if (/^pintle mount\\b/.test(n)) return { kind: 'pintle', points: 1, slot: 'firmpoint', external: true, popup: false, remote: false, weaponValue: null, rc: 2, hal"
+        },
+        {
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 93,
+          "snippet": "if (/^ring mount\\b/.test(n)) return { kind: 'ring', points: 2, slot: 'hardpoint', external: true, popup: false, remote: false, weaponValue: null, rc: 6, halve: "
+        },
+        {
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 100,
+          "snippet": "return { kind: 'turret', size, points: t.points, slot: t.slot, external: true, popup, remote: !!m[1], weaponValue, rc: 0, halve: true };"
         }
-      ],
-      "note": "The fixed mount, pintle mount and turret exist as gear items; the rule that firmpoints take only fixed/pintle and hardpoints only fixed/turret is not modelled."
+      ]
     },
     {
       "id": "rules/vehicles.md#67",
@@ -57799,7 +57805,7 @@
       ],
       "hash": "2569bfa1e7",
       "text": "- **Fixed mounts** fire in a fixed arc, usually forward or back, and\n  **halve recoil**, which cancels a heavy weapon's doubling. The driving\n  rigger can fire them. A side-firing fixed mount adds its recoil to the\n  vehicle's Handling and forces a Crash Test. External fixed mounts lower\n  the Signature by 1.",
-      "verdict": "not-implemented",
+      "verdict": "diverges",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -57820,21 +57826,24 @@
           "quote": "External fixed mounts reduce the vehicle's Signature by 1"
         }
       ],
-      "search": [
+      "note": "Since 0.9.0 (TODO 234) a firearm on a fixed mount halves recoil before compensation, cancelling the heavy double, and external fixed mounts take 1 off Signature. Not modelled: a side-firing fixed mount adding its recoil to Handling and forcing a Crash Test (no side-firing concept), and vehicle-weapon recoil (TODO 282).",
+      "code": [
         {
-          "pattern": "hardpoint",
-          "path": "scripts"
+          "file": "scripts/documents/SR3EItem.js",
+          "line": 4191,
+          "snippet": "const mult = ((isHeavy && !halve) || (isShotgun && mode === 'BF')) ? 2 : 1;"
         },
         {
-          "pattern": "firmpoint",
-          "path": "scripts"
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 143,
+          "snippet": "recoilFor(vehicleItems, weapon) {"
         },
         {
-          "pattern": "side.firing",
-          "path": "scripts"
+          "file": "scripts/data/vehicle-mounts.mjs",
+          "line": 204,
+          "snippet": "if (mounts.some(m => m.kind === 'fixed' && m.external)) { reduction += 1; sigNotes.push(`external mounts −1 (${PAGES.fixed})`); }"
         }
-      ],
-      "note": "None of the four effects (recoil halved, side-firing Handling and Crash Test, Signature -1, the rigger firing a fixed mount) is modelled; mounts are plain gear items."
+      ]
     },
     {
       "id": "rules/vehicles.md#68",
@@ -58689,7 +58698,7 @@
       ],
       "hash": "edf1373f42",
       "text": "| **Legal** | The Legality Code, like **6P-E** *(SR3 p.274)*. |",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -58704,13 +58713,19 @@
           "quote": "If an item's Legality Code features a \"P,\" a permit"
         }
       ],
-      "search": [
+      "note": "Since 0.9.0 firearms store the printed Legality Code in system.legality (filled from the books, legality-table.mjs) and the buy dialog reads it.",
+      "code": [
         {
-          "pattern": "class FirearmData(?:(?!export class)[\\s\\S])*legal",
-          "path": "scripts"
+          "file": "scripts/data/ItemDataModels.js",
+          "line": 192,
+          "snippet": "legality:        new StringField({ initial: '' }),   // as printed: \"Legal\", \"6P-V\", \"As Weapon\" · SR3 p.273 (2026-10-25)"
+        },
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 59,
+          "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
         }
-      ],
-      "note": "No firearm carries a Legality Code: the firearm data model has no legal field, and the melee/projectile models hold only a legal true/false. The weapon packs store no code like 6P-E. (Legality Codes as a whole are also recorded as not modelled on street/gear-and-fencing.md.)"
+      ]
     },
     {
       "id": "rules/weapons.md#14",
@@ -64832,7 +64847,7 @@
       ],
       "hash": "e44f7cf1b1",
       "text": "- **Revolvers** can't take silencers or sound suppressors; **hold-outs**\n  take no accessories. **SMGs** take sound suppressors but not silencers;\n  **shotguns** take neither.",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -64853,17 +64868,29 @@
           "quote": "silencers or sound suppressers. Rifles include the following:"
         }
       ],
-      "search": [
+      "note": "Warned when the mod is installed, never refused (TODO 276).",
+      "code": [
         {
-          "pattern": "silencer.{0,40}revolver|revolver.{0,40}silencer",
-          "path": "scripts"
+          "file": "scripts/data/weapon-accessories.mjs",
+          "line": 90,
+          "snippet": "if ((silencer || suppressor) && /\\(cy\\)/i.test(String(weapon?.system?.ammunition ?? ''))) out.push(`${gun} is a revolver: \"Revolvers cannot use silencers or sou"
         },
         {
-          "pattern": "hold-?out.{0,40}accessor",
-          "path": "scripts"
+          "file": "scripts/data/weapon-accessories.mjs",
+          "line": 88,
+          "snippet": "if (cat === 'HOPist') out.push(`${gun} is a hold-out pistol: \"Hold-out pistols cannot mount any accessories\" (SR3 p.276).`);"
+        },
+        {
+          "file": "scripts/data/weapon-accessories.mjs",
+          "line": 91,
+          "snippet": "if (silencer && cat === 'SMG') out.push(`${gun} is an SMG: \"SMGs cannot use silencers, but can use sound suppressers\" (SR3 p.277).`);"
+        },
+        {
+          "file": "scripts/data/weapon-accessories.mjs",
+          "line": 92,
+          "snippet": "if ((silencer || suppressor) && cat === 'ShtG') out.push(`${gun} is a shotgun: \"Shotguns cannot mount silencers or sound suppressers\" (SR3 p.277).`);"
         }
-      ],
-      "note": "Accessory compatibility (no silencer on a revolver or shotgun, no accessories on a hold-out, no silencer on an SMG) is not enforced or even stored: accessories are free gear items and a free-text list on the weapon."
+      ]
     },
     {
       "id": "rules/weapons.md#195",
@@ -65321,11 +65348,11 @@
       ],
       "search": [
         {
-          "pattern": "antioch",
+          "pattern": "antioch.{0,80}(mini|underbarrel|remov)",
           "path": "scripts"
         }
       ],
-      "note": "Mini-grenade-only is not enforced and nothing treats the Antioch as an underbarrel accessory that cannot be removed (the pack stores Concealability as the text \"6(-3)\")."
+      "note": "Mini-grenade-only is not enforced and nothing treats the Antioch as an underbarrel accessory that cannot be removed (the pack stores Concealability as the text \"6(-3)\"). Its Legality Code is filled since 0.9.0; that is all the code knows of it."
     },
     {
       "id": "rules/weapons.md#208",
@@ -65374,7 +65401,7 @@
       ],
       "hash": "f25d60aa35",
       "text": "A firearm has **top**, **barrel** and **underbarrel** mounts, one accessory\neach; integral accessories use up their mount *(SR3 p.280)*. Pistols take\none barrel and one top accessory, SMGs one of each but no grenade\nlauncher, rifles and heavy weapons one of each *(SR3 p.276–279)*.",
-      "verdict": "not-implemented",
+      "verdict": "diverges",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -65395,17 +65422,24 @@
           "quote": "SMGs can accept one top-mounting, one barrel-mounting, and one underbarrel-mount-"
         }
       ],
-      "search": [
+      "note": "Since 0.9.0 (TODO 276) top/barrel/underbarrel mounts hold one accessory each, integral accessories hold theirs, and an underbarrel mod on a pistol is warned. Not checked: an SMG taking a grenade launcher underbarrel (SR3 p.277).",
+      "code": [
         {
-          "pattern": "underbarrel|barrel.?mount|top.?mount",
-          "path": "scripts"
+          "file": "scripts/data/item-mods.mjs",
+          "line": 245,
+          "snippet": "assignMounts(installed) {"
         },
         {
-          "pattern": "mount slot",
-          "path": "scripts"
+          "file": "scripts/data/item-mods.mjs",
+          "line": 301,
+          "snippet": "out.push(`${taken[0].toUpperCase()}${taken.slice(1)} (SR3 p.280: one accessory per mount).`);"
+        },
+        {
+          "file": "scripts/data/weapon-accessories.mjs",
+          "line": 89,
+          "snippet": "else if (PISTOLS.includes(cat) && under) out.push(`${gun} is a pistol — one barrel and one top mount, no underbarrel (SR3 p.276); ${name} would go underbarrel.`"
         }
-      ],
-      "note": "Mounts are not modelled: accessories are separate gear items (the mount is a line of description text) and nothing limits a firearm to one accessory per top/barrel/underbarrel mount or by weapon class."
+      ]
     },
     {
       "id": "rules/weapons.md#211",
@@ -65673,22 +65707,17 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-gear/gas-vent-ii-weapon.cac4e7808bef4494.json",
-          "line": 21,
-          "snippet": "\"cost\": 450,"
+          "file": "scripts/data/mod-rating-table.mjs",
+          "line": 2217,
+          "snippet": "2: {\"bookPage\":\"sr3.282\",\"concealability\":\"(-1)\",\"cost\":450,\"description\":\"<p><strong>Mount:</strong> Barrel</p>\",\"streetIndex\":\".8\",\"weight\":0.5},"
         },
         {
-          "file": "packs-src/sr3e-sr3-gear/gas-vent-ii-weapon.cac4e7808bef4494.json",
-          "line": 19,
-          "snippet": "\"concealability\": \"(-1)\","
-        },
-        {
-          "file": "packs-src/sr3e-sr3-gear/gas-vent-ii-weapon.cac4e7808bef4494.json",
-          "line": 20,
-          "snippet": "\"rating\": 2,"
+          "file": "packs-src/sr3e-sr3-gear/gas-vent-weapon.a4b62ae9cd2730a3.json",
+          "line": 33,
+          "snippet": "\"perRating\": true"
         }
       ],
-      "note": "Barrel, Conceal -1, Rating 2, 450 agree. The 2 points of recoil compensation are not computed from the item. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
+      "note": "Gas Vent is one levelled item since 0.9.0 (level = rating); level 2: Barrel, Conceal -1, 450. Its RC modifier is 1 per rating, so level 2 gives 2 recoil compensation when installed (TODO 276)."
     },
     {
       "id": "rules/weapons.md#219",
@@ -65710,22 +65739,17 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-gear/gas-vent-iii-weapon.1cf913cb9de7b39b.json",
-          "line": 21,
-          "snippet": "\"cost\": 700,"
+          "file": "scripts/data/mod-rating-table.mjs",
+          "line": 2218,
+          "snippet": "3: {\"bookPage\":\"sr3.282\",\"concealability\":\"(-2)\",\"cost\":700,\"description\":\"<p><strong>Mount:</strong> Barrel</p>\",\"streetIndex\":\"1\",\"weight\":0.75},"
         },
         {
-          "file": "packs-src/sr3e-sr3-gear/gas-vent-iii-weapon.1cf913cb9de7b39b.json",
-          "line": 19,
-          "snippet": "\"concealability\": \"(-2)\","
-        },
-        {
-          "file": "packs-src/sr3e-sr3-gear/gas-vent-iii-weapon.1cf913cb9de7b39b.json",
-          "line": 20,
-          "snippet": "\"rating\": 3,"
+          "file": "packs-src/sr3e-sr3-gear/gas-vent-weapon.a4b62ae9cd2730a3.json",
+          "line": 33,
+          "snippet": "\"perRating\": true"
         }
       ],
-      "note": "Barrel, Conceal -2, Rating 3, 700 agree. The 3 points of recoil compensation are not computed from the item. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
+      "note": "Gas Vent is one levelled item since 0.9.0 (level = rating); level 3: Barrel, Conceal -2, 700. Its RC modifier is 1 per rating, so level 3 gives 3 recoil compensation when installed (TODO 276)."
     },
     {
       "id": "rules/weapons.md#220",
@@ -66069,7 +66093,7 @@
       ],
       "hash": "ab8cf33377",
       "text": "| Smartgun, internal | — | — | — | +100% | Built in; doubles the gun's cost if added later. |",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -66078,13 +66102,19 @@
           "quote": "Ultrasound Goggles Top/under -1 .25 6/36 hrs +100% Weapon 4P-N"
         }
       ],
-      "search": [
+      "note": "An internal smartgun installed later adds the gun's cost (doubling it); a Smartlink-2 adds 150% (M&M p.32, the maintainer's ruling Q10). Printed (integral) ones are not priced.",
+      "code": [
         {
-          "pattern": "doubles? (the )?(weapon|gun)",
-          "path": "scripts"
+          "file": "scripts/data/weapon-accessories.mjs",
+          "line": 108,
+          "snippet": "const share = /smart\\s*link\\s*[-\\s]*(?:2|ii)\\b|level\\s+ii\\b/i.test(name) ? 1.5 : 1;"
+        },
+        {
+          "file": "scripts/data/weapon-accessories.mjs",
+          "line": 109,
+          "snippet": "return Math.round((Number(weapon?.system?.cost) || 0) * share);"
         }
-      ],
-      "note": "No Smartgun, internal item or cost doubling exists; firearms carry a built-in smartgun as a true/false flag (system.smartgun) with no pricing."
+      ]
     },
     {
       "id": "rules/weapons.md#230",
@@ -66218,7 +66248,7 @@
       ],
       "hash": "7d6b54bf0e",
       "text": "- Imaging scopes can't be used with a smartlink *(SR3 p.280)*.",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -66227,13 +66257,14 @@
           "quote": "only be top-mounted, may not be used with smartlink systems,"
         }
       ],
-      "search": [
+      "note": "Warned when either is installed with the other, never refused (ruled 2026-11-07).",
+      "code": [
         {
-          "pattern": "incompatible with (a )?smartlink|(scope|imaging).{0,40}(may not|cannot) (be )?used? with (a )?smartlink",
-          "path": "scripts"
+          "file": "scripts/data/weapon-accessories.mjs",
+          "line": 68,
+          "snippet": "out.push(`${gun} would have an imaging scope and a smartgun system: SR3 p.280 says imaging scopes may not be used with smartlink systems.`);"
         }
-      ],
-      "note": "No code stops or warns about an imaging scope together with a smartlink."
+      ]
     },
     {
       "id": "rules/weapons.md#234",
@@ -69834,7 +69865,7 @@
       ],
       "hash": "f6eaabb122",
       "text": "| **Legality** | Restriction level, permit availability, and category. |",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -69843,13 +69874,19 @@
           "quote": "Legality represents whether or not it is illegal to own the item, carry or transport it, what restriction category it falls into, and whether or not permits for the item are available"
         }
       ],
-      "search": [
+      "note": "The code is stored and parsed into restriction level, permit and category for the buy dialog; the category's meaning (Fines table) is not modelled (see the Categories rows).",
+      "code": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
-          "path": "scripts"
+          "file": "scripts/data/legality.mjs",
+          "line": 59,
+          "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
+        },
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 60,
+          "snippet": "if (m && c) return { status: 'restricted', code: c, permit: m[2].toUpperCase() === 'P', defersTo: '' };"
         }
-      ],
-      "note": "A legality text field exists on a few item types (drugs, one other), but Legality Codes are not stored on weapons and gear and nothing interprets them."
+      ]
     },
     {
       "id": "street/gear-and-fencing.md#13",
@@ -70045,7 +70082,7 @@
       ],
       "hash": "1de21d1bcc",
       "text": "5. **Pick up.** If you won't pay, the deal is off, and the GM may raise the\n   Availability TN next time you use that contact. *(SR3 p.273)*",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -70054,13 +70091,14 @@
           "quote": "gamemasters can adjust the Availability target number upward the next time the character searches for something through that contact"
         }
       ],
-      "search": [
+      "note": "The GM's Cancel says the deal is off and that the GM may raise this contact's Availability next time; it is said, not applied (the book's \"may\").",
+      "code": [
         {
-          "pattern": "stingy|raise the Availability|contact.*Availability.*next time|contactPenalty",
-          "path": "scripts"
+          "file": "scripts/data/orders.mjs",
+          "line": 114,
+          "snippet": "CANCEL_NOTE: 'The deal is off. The GM may raise this contact\\'s Availability for the next purchase (SR3 p.273) — not applied.',"
         }
-      ],
-      "note": "The deal being off if you won't pay is a card nobody presses (nothing is charged until 💴). Raising the Availability TN for that contact next time is not tracked."
+      ]
     },
     {
       "id": "street/gear-and-fencing.md#21",
@@ -70259,7 +70297,7 @@
       ],
       "hash": "b8617bb180",
       "text": "## Legality Codes  *(SR3 p.273–274)*",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -70274,13 +70312,19 @@
           "quote": "Any additional successes indicate that the officer will press the issue"
         }
       ],
-      "search": [
+      "note": "Codes are stored and read for buying (a restricted item needs a permit; warn, never refuse). The enforcement test and the Local Fines and Punishment Table are not modelled (rows below).",
+      "code": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
-          "path": "scripts"
+          "file": "scripts/data/legality.mjs",
+          "line": 59,
+          "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
+        },
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 91,
+          "snippet": "case 'restricted': return `Legality ${k.code} — restricted: buying it legally needs a permit${k.permit ? ' (one is available)' : ' (none is issued)'} (${PAGE})."
         }
-      ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      ]
     },
     {
       "id": "street/gear-and-fencing.md#30",
@@ -70320,11 +70364,11 @@
       ],
       "search": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
+          "pattern": "Police Procedures.{0,40}(test|roll)|restrictionLevel|noticeTN",
           "path": "scripts"
         }
       ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      "note": "The restriction level is parsed from the code, but no officer's Security / Police Procedures test against it exists."
     },
     {
       "id": "street/gear-and-fencing.md#32",
@@ -70335,7 +70379,7 @@
       ],
       "hash": "8471bb4cb5",
       "text": "- **P** means a **permit is available**. See\n  [SINs & the SINless](../sins/#permits-and-licenses).",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -70350,13 +70394,14 @@
           "quote": "Any additional successes indicate that the officer will press the issue"
         }
       ],
-      "search": [
+      "note": "The buy dialog says whether a permit is available.",
+      "code": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
-          "path": "scripts"
+          "file": "scripts/data/legality.mjs",
+          "line": 60,
+          "snippet": "if (m && c) return { status: 'restricted', code: c, permit: m[2].toUpperCase() === 'P', defersTo: '' };"
         }
-      ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      ]
     },
     {
       "id": "street/gear-and-fencing.md#33",
@@ -70384,11 +70429,11 @@
       ],
       "search": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
+          "pattern": "\\bFines\\b|Punishment Table",
           "path": "scripts"
         }
       ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      "note": "The category letter is parsed from the code but given no meaning: no category names, no Local Fines and Punishment Table."
     },
     {
       "id": "street/gear-and-fencing.md#34",
@@ -70399,7 +70444,7 @@
       ],
       "hash": "46d00d0e04",
       "text": "Legal items have no code. They can be bought over the counter, but only in\nyour own name, which leaves a data trail. *(SR3 p.273)*",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -70414,13 +70459,19 @@
           "quote": "Any additional successes indicate that the officer will press the issue"
         }
       ],
-      "search": [
+      "note": "A Legal item defaults to buying at the store. The data trail of buying in your own name is not modelled.",
+      "code": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
-          "path": "scripts"
+          "file": "scripts/data/legality.mjs",
+          "line": 82,
+          "snippet": "storeByDefault(code) {"
+        },
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 90,
+          "snippet": "case 'legal': return `Legal — sold openly at list price (${PAGE}).`;"
         }
-      ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      ]
     },
     {
       "id": "street/gear-and-fencing.md#35",
@@ -70448,11 +70499,11 @@
       ],
       "search": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
+          "pattern": "Small blade|Large blade|Blunt weapon|LEGALITY_CATEGORIES|categoryLabel",
           "path": "scripts"
         }
       ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      "note": "The category letter is parsed from the code but given no meaning: no category names, no Local Fines and Punishment Table."
     },
     {
       "id": "street/gear-and-fencing.md#36",
@@ -70480,11 +70531,11 @@
       ],
       "search": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
+          "pattern": "Small blade|Large blade|Blunt weapon|LEGALITY_CATEGORIES|categoryLabel",
           "path": "scripts"
         }
       ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      "note": "The category letter is parsed from the code but given no meaning: no category names, no Local Fines and Punishment Table."
     },
     {
       "id": "street/gear-and-fencing.md#37",
@@ -70512,11 +70563,11 @@
       ],
       "search": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
+          "pattern": "Small blade|Large blade|Blunt weapon|LEGALITY_CATEGORIES|categoryLabel",
           "path": "scripts"
         }
       ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      "note": "The category letter is parsed from the code but given no meaning: no category names, no Local Fines and Punishment Table."
     },
     {
       "id": "street/gear-and-fencing.md#38",
@@ -70544,11 +70595,11 @@
       ],
       "search": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
+          "pattern": "Small blade|Large blade|Blunt weapon|LEGALITY_CATEGORIES|categoryLabel",
           "path": "scripts"
         }
       ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      "note": "The category letter is parsed from the code but given no meaning: no category names, no Local Fines and Punishment Table."
     },
     {
       "id": "street/gear-and-fencing.md#39",
@@ -70576,11 +70627,11 @@
       ],
       "search": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
+          "pattern": "Small blade|Large blade|Blunt weapon|LEGALITY_CATEGORIES|categoryLabel",
           "path": "scripts"
         }
       ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      "note": "The category letter is parsed from the code but given no meaning: no category names, no Local Fines and Punishment Table."
     },
     {
       "id": "street/gear-and-fencing.md#40",
@@ -70608,11 +70659,11 @@
       ],
       "search": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
+          "pattern": "Small blade|Large blade|Blunt weapon|LEGALITY_CATEGORIES|categoryLabel",
           "path": "scripts"
         }
       ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      "note": "The category letter is parsed from the code but given no meaning: no category names, no Local Fines and Punishment Table."
     },
     {
       "id": "street/gear-and-fencing.md#41",
@@ -70640,11 +70691,11 @@
       ],
       "search": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
+          "pattern": "\\bFines\\b|Punishment Table",
           "path": "scripts"
         }
       ],
-      "note": "Legality Codes and the Local Fines and Punishment Table are not modelled: nothing interprets a code, rolls a Security / Police Procedures test, applies enforcement modifiers, or lists fines."
+      "note": "The category letter is parsed from the code but given no meaning: no category names, no Local Fines and Punishment Table."
     },
     {
       "id": "street/gear-and-fencing.md#42",
@@ -74460,7 +74511,7 @@
       ],
       "search": [
         {
-          "pattern": "Local Fines|restriction level|enforcement area",
+          "pattern": "Class E Magic|\\bFines\\b|Punishment Table",
           "path": "scripts"
         }
       ]
