@@ -8148,6 +8148,18 @@ Win. 1300 Defender SS ("Collapsible stock") — so the 🔧 list shows an RC the
 books' RC column, or the maintainer's word that these are blank (and whether a rifle or shotgun stock gives RC at all — SR3
 p.277 says the core rifle stocks do not). `tests/printed-rc.test.mjs` lists the three.
 
+## 283. ✅ Buy or build a modded item — its whole price before it reaches the sheet — **requested 2026-10-27** · 38f917f6
+
+The maintainer, building TODO 265's priced vehicle mods: *"We may need to build a way to 'buy / build a modded item' something
+that can calculate the cost before you add it to your character sheet."* Today a host and its mods are bought one at a time
+(🛒 `SR3EPurchase.js`, TODO 82), and a mod priced from its host (R3R drive-by-wire, turbocharging, thermal baffles…;
+`VehicleMods.price`) is priced only once it is ON the vehicle (`preCreateItem`). **Wanted:** pick a host (gun, armour, cyberlimb,
+vehicle) and its mods, see each price — fixed, per level, or worked out from the host — and the total (and the Availability /
+time the slowest part needs) before anything is created; then buy it as one purchase, or add it without paying. Reads
+`ItemMods` (TODO 276), `CyberCapacity.builtInCost`, `VehicleMods.price`, the mount and budget checks as warnings.
+✔ **Scope ruled 2026-11-07** (mods ruling Q21): **one dialog for every host type** — gun, armour, cyberware, vehicle — on the shared
+`ItemMods` price, not vehicles or weapons first. Not designed further yet.
+
 ## 284. ✅ 🛒 Buy more than one — a Quantity in Buy gear — **requested 2026-10-28** — done in 8c38b266
 
 The maintainer, buying ammo from an Ares Thunderer: *"we need an option to buy more then one"*. Today every 🛒 purchase
