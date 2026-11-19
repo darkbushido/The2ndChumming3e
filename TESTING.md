@@ -3908,3 +3908,5 @@ Needs §90's branch. Join as a player who owns only the viewer token; Sam is inv
 2. Sustain plain **Invisibility** → only **Invisible**.
 3. GM ticks **Invisible** by hand on an NPC → a drone/cybereyed viewer sees it (plain). Tick **Improved Invisibility** too → they don't.
 4. System settings → **Configure Status Effects** lists only the SR3 core set by default; untick unused ones and the Token HUD drops them live.
+- [ ] **Row fits (bug 2026-11-18):** at the sheet's default width (860) Stun sits over Physical, and Overflow, 🩹 Healing,
+      👁 Perception, Stim and Carry share ONE line — nothing wraps. Narrowing the sheet moves the button group down whole.
