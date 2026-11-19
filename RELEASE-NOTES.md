@@ -93,6 +93,16 @@ Mods go *inside* things now: a gun carries its scope and gas vent, armour its ge
 - **NPCs have a Karma Pool** (SR3 p.248), set by the GM. Refresh Karma Pools lists the scene's NPC tokens.
 - **✋ Hand of God** (SR3 p.248, optional): burns all Good Karma and the whole Pool, once ever; the book's conditions are warned, never refused.
 - The GM's ↺ undoes a Karma award.
+- **Train first…** in Spend Karma (optional). It's a learning roll at TN 2 × the rating sought (SR3 p.245). An instructor's Instruction (4) Test adds a die for every two successes (SR3 p.95). It never spends Karma and never blocks the purchase.
+- **Training rule** (world setting): **Core** by default, or **Shadowrun Companion** (pp.48–50).
+  - Training takes Karma × 7 days for Active skills, or × 15 for Knowledge and Language skills, divided by the successes on a test against the new rating + 2.
+  - An instructor adds a success for every two Instruction successes.
+  - Instructor fees come from the Suggested Instructor Fees Table (p.50). They're editable and paid with a 💴 button.
+
+**House rules and rulings**
+
+- **An underbarrel grenade launcher is warned on anything smaller than an assault rifle** (a house rule). SR3 p.277 bars only SMGs. Warned, never refused.
+- **Vehicle weapon mounts follow *Rigger 3 Revised*** where it differs from SR3 p.307 (the maintainer's ruling).
 
 ### New
 
@@ -112,7 +122,7 @@ Mods go *inside* things now: a gun carries its scope and gas vent, armour its ge
 - The vehicle and sample-character pickers no longer offer packs from source books the GM switched off.
 - The *Crime Scene Investigation Toolkit* module is recommended at install, beside Security Cameras. Never required.
 - **The Matrix book is a default book**: its Miscellaneous Component Table (Matrix p.169) has its own pack.
-- A new guide page: Legality Codes & Permits (SR3 pp.272–274).
+- A new guide page: Legality Codes & Permits (SR3 pp.272–274). The guide's Matrix Defragged Overwatch notes now describe the crash trigger and Suppression.
 - Smaller fixes: a spent 💴 Pay button looks spent; checkboxes line up; the GM tools' buttons relabel when their state changes; ammo a gun cannot load is warned about; "1 reload × 10 rounds" reads as it should.
 
 ### The Vehicle Designer becomes a shop
