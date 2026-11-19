@@ -4,6 +4,10 @@ Unofficial Foundry VTT **v14** system for **Shadowrun 3rd Edition** and Matrix D
 📖 **[SR3 Table Reference](https://darkbushido.github.io/The2ndChumming3e/)** — the rules tables and
 how this system handles them, published per release ([all versions](https://darkbushido.github.io/The2ndChumming3e/versions/)). It ships with each release as `guides.zip`, and is not part of the system download.
 
+🔧 **[Gear Designer](https://darkbushido.github.io/The2ndChumming3e/designer/latest/)** — build a customised weapon
+or vehicle in the browser and import it with **📥 Import design** in Foundry's Items sidebar
+([how it works](https://darkbushido.github.io/The2ndChumming3e/latest/gear-designer/)). Each release also publishes `designer/<version>/`.
+
 ## Installation
 Under 'Game Systems', click Install System and paste the URL below into the Manifest URL field. This will install the system and associated compendiums.
 
