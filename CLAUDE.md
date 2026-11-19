@@ -291,6 +291,13 @@ without Foundry, so nothing on them can be unit-tested or mutated.
 
 **Building a feature?** Read `.claude/rules-digest.md` (~3k tokens), then `npm run rules -- <topic>` (`/rules`) — TODO 289.
 
+**Raw PDF lookups go to a cheaper subagent** (the maintainer, 2026-11-19). When the digest and `npm run rules` don't
+answer it and you must read the books ("find the page and paraphrase the rule for X"), spawn an `Explore` subagent with
+`model: "haiku"` (or `"sonnet"` for dense tables or two-column pages) to run `pdftotext` and report back. It returns
+the **book, printed page, and a short paraphrase** — never rulebook text pasted wholesale. Keep the judgement here:
+comparing book vs code, 🔴 DIVERGES calls, and anything the maintainer decides stay in the main session, which
+spot-checks the cited page itself before it changes code or a 🔴 marker on the subagent's word.
+
 | Rules file (`.claude/rules/`) | Covers |
 |---|---|
 | `dice-and-defaulting.md` | Rule of Six/One, 💥 explosions, opposed ⏳ cards, `rollOpposedPair`/`rollThen`, Default Table |
