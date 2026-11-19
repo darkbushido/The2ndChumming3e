@@ -8246,3 +8246,15 @@ more likely means tables read in a different order than real misreads.
 against the OCR. 46 were flagged, and all were OCR failures; none is a text-layer misread. See `audit/text-layer-check.md`.
 **Code citations done too:** all 1,717 in `scripts/` checked; none is a text-layer misread.
 **Done:** the remaining entries were checked too; see `audit/text-layer-check.md`. No text-layer misread found outside R3R.
+## 301. ✅ Street Sweeper filed as a taser, Ballista as a dart gun — **found 2026-11-19** — fixed on main
+
+Found while TODO 300's weapon art was checked against the Cannon Companion. In `sr3e-cc-firearms`:
+- **Street Sweeper** was `Tasr` (Pistols, and a shock weapon). CC p.23 lists it under Shotguns: a jury-rigged,
+  muzzle-loaded black-powder shotgun that uses taser ranges with shotgun choke. Now `ShtG`, Shotguns,
+  `rangeOverride` 5/10/12/15, shotgun icon.
+- **Ballista** was `BlsTa` (rolled on Gunnery). CC p.28: a backpack missile launcher. Now `MisLn`,
+  Launch Weapons / Intelligence (SR3 p.86).
+
+`scripts/data/weapon-category-fixes.mjs` (pure), the 0.9.0 migration for owned copies (guarded by the shipped
+value), `tests/weapon-category-fixes.test.mjs`, mutants `street-sweeper-filed-as-taser` /
+`ballista-filed-as-blowgun`, TESTING §71.

@@ -6,9 +6,9 @@
     "type": "firearm",
     "img": "systems/The2ndChumming3e/styles/icons/firearm-missile-launcher.svg",
     "system": {
-      "category": "BlsTa",
-      "skill": "Gunnery",
-      "attribute": "quickness",
+      "category": "MisLn",
+      "skill": "Launch Weapons",
+      "attribute": "intelligence",
       "concealability": "-",
       "ammunition": "4(m)",
       "mode": "SS",

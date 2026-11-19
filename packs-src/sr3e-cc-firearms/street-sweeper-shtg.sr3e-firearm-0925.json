@@ -4,10 +4,10 @@
     "_id": "sr3e-firearm-0925",
     "name": "Street Sweeper ShtG",
     "type": "firearm",
-    "img": "systems/The2ndChumming3e/styles/icons/firearm-taser.svg",
+    "img": "systems/The2ndChumming3e/styles/icons/firearm-shotgun.svg",
     "system": {
-      "category": "Tasr",
-      "skill": "Tasers",
+      "category": "ShtG",
+      "skill": "Shotguns",
       "attribute": "quickness",
       "concealability": "-",
       "ammunition": "1(b)",
@@ -24,7 +24,8 @@
       "hands": 1,
       "smartgun": false,
       "laserSight": false,
-      "legality": "3-F"
+      "legality": "3-F",
+      "rangeOverride": "5/10/12/15"
     },
     "effects": []
   },

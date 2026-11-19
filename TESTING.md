@@ -3924,3 +3924,9 @@ Needs §90's branch. Join as a player who owns only the viewer token; Sam is inv
 - [ ] The core status-effects palette no longer lists Dual-Natured (a token that carries it still shows it, to clear).
 - [ ] A token with ultrasound shows a range field at the foot of the column; changing it updates the token's ultrasound detection range.
 - [ ] GM: the Token HUD's hide/show toggle shows a 🎭 mask (not an eye), lit when the token is hidden; clicking still hides and shows it, and re-opening the HUD keeps the mask.
+## 71. Street Sweeper and Ballista categories (TODO 301, CC pp.23, 28)
+
+The CC firearms pack changes (`npm run packs:install`, Foundry closed); the 0.9.0 migration fixes owned copies.
+
+- [ ] **From the pack:** drag **Street Sweeper ShtG** onto a character: category Shotgun, rolls **Shotguns**, range 5/10/12/15 (taser ranges, CC p.23), shotgun icon, and a hit is **not** treated as a shock/stun weapon. Drag **Ballista Mis. Launcher**: category Missile Launcher, rolls **Launch Weapons** (Intelligence).
+- [ ] **Owned copy:** a character that held both before the update shows the same after the 0.9.0 migration runs; a copy whose category the GM had changed keeps it.
