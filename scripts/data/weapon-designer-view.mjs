@@ -12,30 +12,27 @@
 import { ItemMods } from './item-mods.mjs';
 import { ModRatings } from './mod-ratings.mjs';
 import { GearDesign } from './gear-design.mjs';
+import { WeaponCatalog, GROUPS } from './weapon-catalog.mjs';
+import { WeaponArt } from './weapon-art.mjs';
 
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const yen = n => `${Math.round(Number(n) || 0).toLocaleString()}¥`;
 
-/** The gun types — step 1's chips — by weapon category code (CLAUDE.md, weapon codes). Anything unlisted is "Other". */
-export const GUN_TYPES = [
-  ['pistol', 'Pistols', ['HOPist', 'LPist', 'MPist', 'HPist', 'VHP', 'GJPist']],
-  ['smg', 'SMGs', ['MaPist', 'SMG']],
-  ['rifle', 'Rifles', ['Carb', 'AsRf', 'SptR', 'Snip', 'LCarb']],
-  ['shotgun', 'Shotguns', ['ShtG']],
-  ['mg', 'Heavy weapons', ['LMG', 'MMG', 'HMG', 'MinG', 'ACan']],
-  ['launcher', 'Launchers', ['GrLn', 'MisLn', 'GATGM', 'MrTr', 'BlsTa']],
-  ['other', 'Other', []],
-];
+/** The weapon types — step 1's chips (TODO 300: firearms and melee, by skill group). */
+export const GUN_TYPES = GROUPS;
 /** Accessory shelves: the three mounts (SR3 p.280), then everything that takes none. */
 export const MOD_SHELVES = [['Top', 'Top mount'], ['Barrel', 'Barrel'], ['Under', 'Underbarrel'], ['', 'No mount']];
-export const STEPS = [[1, 'Firearm'], [2, 'Accessories'], [3, 'Ammunition'], [4, 'Price']];
+export const STEPS = [[1, 'Weapon'], [2, 'Accessories'], [3, 'Ammunition'], [4, 'Price']];
 const PAGE = 60;   // cards shown at once
 
 export const WeaponDesignerView = {
   /** The type a firearm category falls under. */
   typeOf(category) {
-    return (GUN_TYPES.find(([, , cats]) => cats.includes(category)) ?? GUN_TYPES.at(-1))[0];
+    return WeaponCatalog.groupOf({ type: 'firearm', system: { category } });
   },
+
+  /** The chip a catalogue weapon sits under (melee by its item type). */
+  groupOf(item) { return WeaponCatalog.groupOf(item); },
 
   /** The shelf an accessory sits on — its first mount, '' for none. */
   shelfOf(mod) {
@@ -65,11 +62,11 @@ export const WeaponDesignerView = {
     const t = r?.totals ?? {};
     const chip = (label, v, cls = '') => `<div class="vd-chip ${cls}"><span>${label}</span><b>${esc(v ?? '—')}</b></div>`;
     const warn = (r?.warnings ?? []).length;
-    const pic = base && view.img(view.design.base) ? `<img src="${esc(view.img(view.design.base))}" alt="" style="width:100%;height:100%;object-fit:contain"/>` : '';
+    const pic = base ? WeaponArt.picture(base.name, W.groupOf(base)) : '';
     return `<header class="vd-result">
       <div class="vd-result-art">${pic}</div>
       <div class="vd-result-main">
-        <input type="text" class="vd-name" data-wpath="name" value="${esc(view.design.name)}" placeholder="${esc(base?.name ?? 'Pick a firearm')}" maxlength="${GearDesign.LIMITS.name}"/>
+        <input type="text" class="vd-name" data-wpath="name" value="${esc(view.design.name)}" placeholder="${esc(base?.name ?? 'Pick a weapon')}" maxlength="${GearDesign.LIMITS.name}"/>
         <div class="vd-chips">
           ${chip('Damage', s.damage)}${chip('Mode', s.mode)}${chip('Ammo', s.ammunition)}${chip('Conceal', s.concealability)}
           ${chip('RC mods', base ? t.rc : null)}${chip('Smartgun', base ? (t.smartgun ? 'yes' : 'no') : null)}${chip('Laser', base ? (t.laserSight ? 'yes' : 'no') : null)}
@@ -84,33 +81,33 @@ export const WeaponDesignerView = {
     </header>`;
   },
 
-  /** Step 1 — gun types as chips, then that type's guns as cards. */
+  /** Step 1 — weapon types as chips with silhouettes, then that type's weapons as picture cards. */
   stepGun(view) {
-    const guns = Object.entries(view.items).filter(([, i]) => i.kind === 'firearm');
+    const guns = Object.entries(view.items).filter(([, i]) => i.kind === 'firearm' || i.kind === 'melee');
     const cur = view.items[view.design.base];
-    const type = view.ui.type ?? (cur ? W.typeOf(cur.system.category) : 'pistol');
-    const types = GUN_TYPES.filter(([id]) => guns.some(([, g]) => W.typeOf(g.system.category) === id));
+    const type = view.ui.type ?? (cur ? W.groupOf(cur) : 'pistol');
+    const types = GUN_TYPES.filter(([id]) => guns.some(([, g]) => W.groupOf(g) === id));
     const chips = types.map(([id, label]) => {
-      const n = guns.filter(([, g]) => W.typeOf(g.system.category) === id).length;
-      const icon = guns.find(([, g]) => W.typeOf(g.system.category) === id)?.[0];
+      const n = guns.filter(([, g]) => W.groupOf(g) === id).length;
       return `<button type="button" class="vd-type ${id === type ? 'active' : ''}" data-wtype="${id}">
-        ${icon && view.img(icon) ? `<img src="${esc(view.img(icon))}" alt="" style="width:48px;height:48px;object-fit:contain"/>` : ''}<span>${esc(label)} <small>${n}</small></span></button>`;
+        ${WeaponArt.group(id)}<span>${esc(label)} <small>${n}</small></span></button>`;
     }).join('');
-    const list = guns.filter(([, g]) => W.typeOf(g.system.category) === type).sort(([, a], [, b]) => a.name.localeCompare(b.name));
+    const list = guns.filter(([, g]) => W.groupOf(g) === type).sort(([, a], [, b]) => a.name.localeCompare(b.name));
     const cards = list.map(([ref, g]) => {
       const s = g.system;
       const built = (s.installed ?? []).map(m => m.name.replace(/\s*\(Weapon\)/, '')).join(', ');
+      const stats = g.kind === 'melee'
+        ? `<span>Dmg <b>${esc(s.damage)}</b></span><span>Reach <b>${esc(s.reach ?? '0')}</b></span><span>Conc <b>${esc(s.concealability)}</b></span>`
+        : `<span>Dmg <b>${esc(s.damage)}</b></span><span>Mode <b>${esc(s.mode)}</b></span><span>Ammo <b>${esc(s.ammunition)}</b></span><span>Conc <b>${esc(s.concealability)}</b></span>`;
       return `<button type="button" class="vd-card ${ref === view.design.base ? 'picked' : ''}" data-wbase="${esc(ref)}">
-        <div class="vd-card-art">${view.img(ref) ? `<img src="${esc(view.img(ref))}" alt="" style="max-width:80%;max-height:80%"/>` : ''}</div>
+        <div class="vd-card-art">${WeaponArt.picture(g.name, W.groupOf(g))}</div>
         <div class="vd-card-name">${esc(g.name)}</div>
+        <div class="vd-blurb">${esc(WeaponCatalog.blurb(g))}</div>
         ${built ? `<div class="vd-blurb">Built in: ${esc(built)}</div>` : ''}
-        <div class="vd-card-stats">
-          <span>Dmg <b>${esc(s.damage)}</b></span><span>Mode <b>${esc(s.mode)}</b></span><span>Ammo <b>${esc(s.ammunition)}</b></span>
-          <span>Conc <b>${esc(s.concealability)}</b></span><span>Cat <b>${esc(s.category)}</b></span><span>¥ <b>${esc(Number(s.cost || 0).toLocaleString())}</b></span>
-        </div>
+        <div class="vd-card-stats">${stats}<span>¥ <b>${esc(Number(s.cost || 0).toLocaleString())}</b></span></div>
         <div class="vd-card-page">${esc(s.bookPage)}</div></button>`;
     }).join('');
-    return `<div class="vd-types">${chips}</div><div class="vd-grid">${cards || '<p class="vd-empty">No guns of this type.</p>'}</div>`;
+    return `<div class="vd-types">${chips}</div><div class="vd-grid">${cards || '<p class="vd-empty">No weapons of this type.</p>'}</div>`;
   },
 
   /** Step 2 — accessory shelves by mount, search, cards, and the cart (with levels and where each one sits). */
@@ -118,17 +115,25 @@ export const WeaponDesignerView = {
     const { design: d, r } = view;
     const q = (view.ui.q ?? '').toLowerCase();
     const shelf = view.ui.shelf ?? 'Top';
-    const mods = Object.entries(view.items).filter(([, i]) => i.kind === 'mod');
-    const count = id => mods.filter(([, m]) => W.shelfOf(m) === id).length;
-    const tabs = MOD_SHELVES.map(([id, label]) => `<button type="button" class="vd-shelf ${id === shelf && !q ? 'active' : ''}" data-wshelf="${esc(id)}">
-      <span>${esc(label)}</span><small>${count(id)}</small></button>`).join('');
-    const shown = mods.filter(([, m]) => (q ? m.name.toLowerCase().includes(q) : W.shelfOf(m) === shelf)).sort(([, a], [, b]) => a.name.localeCompare(b.name));
+    const all = !!view.ui.allMods;
+    const host = r?.weapon ?? view.items[d.base] ?? null;
     const inCart = ref => d.mods.filter(x => x.ref === ref).length;
-    const cards = shown.slice(0, PAGE).map(([ref, m]) => {
+    // Why each one doesn't fit the weapon as built so far — hidden unless asked, never refused (TODO 300).
+    const rows = Object.entries(view.items).filter(([, i]) => i.kind === 'mod')
+      .map(([ref, m]) => [ref, m, inCart(ref) ? null : WeaponCatalog.misfit(host, m)]);
+    const visible = rows.filter(([, , why]) => all || !why);
+    const hidden = rows.length - visible.length;
+    const count = id => visible.filter(([, m]) => W.shelfOf(m) === id).length;
+    const tabs = MOD_SHELVES.map(([id, label]) => `<button type="button" class="vd-shelf ${id === shelf && !q ? 'active' : ''}" data-wshelf="${esc(id)}" title="${esc(label)}">
+      ${WeaponArt.shelf(id)}<span>${esc(label)}</span><small>${count(id)}</small></button>`).join('');
+    const shown = visible.filter(([, m]) => (q ? m.name.toLowerCase().includes(q) : W.shelfOf(m) === shelf)).sort(([, a], [, b]) => a.name.localeCompare(b.name));
+    const cards = shown.slice(0, PAGE).map(([ref, m, why]) => {
       const n = inCart(ref);
       const levels = ModRatings.levelsOf(m);
-      return `<div class="vd-card vd-mod ${n ? 'picked' : ''}">
-        <div class="vd-card-name">${esc(m.name.replace(/\s*\(Weapon\)/, ''))}</div>
+      return `<div class="vd-card vd-mod ${why ? 'vd-misfit' : ''} ${n ? 'picked' : ''}">
+        <div class="vd-mod-head"><span class="vd-mod-icon">${WeaponArt.shelf(W.shelfOf(m))}</span>
+          <div class="vd-card-name">${esc(m.name.replace(/\s*\(Weapon\)/, ''))}</div></div>
+        ${why ? `<div class="vd-amber">⚠ ${esc(why)}</div>` : ''}
         <div class="vd-card-stats"><span>Mount <b>${esc(m.system.mount || '—')}</b></span><span>¥ <b>${esc(Number(m.system.cost || 0).toLocaleString())}</b></span>
           ${levels ? `<span class="vd-dim">levels ${esc(Object.keys(levels).join(', '))}</span>` : ''}</div>
         <div class="vd-card-foot"><span class="vd-card-page">${esc(m.system.bookPage ?? '')}</span>
@@ -151,7 +156,8 @@ export const WeaponDesignerView = {
     const more = shown.length > PAGE ? `<p class="vd-dim">${shown.length - PAGE} more — search to narrow.</p>` : '';
     return `<div class="vd-shop">
       <div class="vd-shop-main">
-        <div class="vd-row"><input type="search" class="vd-wsearch" placeholder="Search every accessory…" value="${esc(view.ui.q ?? '')}"/></div>
+        <div class="vd-row"><input type="search" class="vd-wsearch" placeholder="Search every accessory…" value="${esc(view.ui.q ?? '')}"/>
+          <label class="vd-switch"><input type="checkbox" class="vd-wall-mods" ${all ? 'checked' : ''}/> Show the ones that don't fit${hidden ? ` (${hidden} hidden)` : ''}</label></div>
         <nav class="vd-shelves">${tabs}</nav>
         <div class="vd-grid vd-grid-sm">${cards || '<p class="vd-empty">Nothing on this shelf.</p>'}</div>${more}
       </div>
@@ -225,6 +231,7 @@ export const WeaponDesignerView = {
       s?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); view.ui[key] = s.value; render(); } });
       s?.addEventListener('change', () => { view.ui[key] = s.value; render(); });
     };
+    el.querySelector('.vd-wall-mods')?.addEventListener('change', e => { view.ui.allMods = e.target.checked; render(); });
     search('.vd-wsearch', 'q');
     search('.vd-asearch', 'aq');
   },

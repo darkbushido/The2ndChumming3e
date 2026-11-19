@@ -25,6 +25,7 @@ import { PLANTS } from './vehicle-design-tables.mjs';
 import { VehicleDesignActor } from './vehicle-design-actor.mjs';
 import { DesignOptions } from './design-options.mjs';
 import { ModCatalog } from './mod-catalog.mjs';
+import { WeaponArt } from './weapon-art.mjs';
 import { VehicleMods } from './vehicle-mods.mjs';
 
 export const FORMAT = 'sr3e-design';
@@ -299,6 +300,9 @@ export const GearDesign = {
       weapon = { ...weapon, system: { ...weapon.system, installed: ItemMods.install(ItemMods.installed(weapon), mod, newId) } };
     }
     if (weapon && design.name) weapon.name = design.name;
+    // Its model's picture, once the ComfyUI batch has drawn one (TODO 300); else the pack icon stays.
+    const pic = base && WeaponArt.pictureOf(base.name);
+    if (weapon && pic) weapon.img = pic;
     const ammo = [];
     for (const entry of design.ammo) {
       const data = await get(entry.ref);

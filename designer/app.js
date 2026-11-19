@@ -11,11 +11,13 @@ import { WeaponDesignerView } from './lib/weapon-designer-view.mjs';
 import { VehicleDesignerView, blankDesign } from './lib/vehicle-designer-view.mjs';
 import { BookVehicleView } from './lib/book-vehicle-view.mjs';
 import { DesignerArt } from './lib/designer-art.mjs';
+import { WeaponArt } from './lib/weapon-art.mjs';
 
 const $ = sel => document.querySelector(sel);
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 DesignerArt.dir = 'vehicles';
+WeaponArt.dir = 'weapons';
 const cat = await (await fetch('catalogue.json')).json();
 const items = cat.items;
 const lookup = ref => items[ref] ?? null;

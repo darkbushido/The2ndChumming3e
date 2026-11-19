@@ -1,0 +1,503 @@
+{
+  "_about": "TODO 300 — what each firearm's picture should look like, in our own words (never book text). 'look' names a real-world gun or describes the form; 'tech': true draws it as high-tech sci-fi, else as a modern-day firearm. Smartgun LEDs are added from the pack data, not here. Drafted 2026-11-13 for the maintainer's review; exotics checked against the book pages in side-session-notes/weapon-art-exotics-checked.md. Real-gun names are the drafting session's own judgment, not the books (the books give no looks); the maintainer corrects them (Predator: their reference art, 2026-11-13).",
+  "arbelast-ii-maw": {
+    "look": "shoulder-fired rigid launcher canister with an optical sight, like a Carl Gustaf M4 / AT4"
+  },
+  "ares-alpha": {
+    "look": "bullpup-style combat rifle with an integrated underbarrel grenade launcher, like an FN F2000 with its GL"
+  },
+  "ares-crusader": {
+    "look": "compact machine pistol, like a Glock 18C with an extended magazine"
+  },
+  "ares-exec-protector": {
+    "look": "compact folding SMG like the Magpul FMG9, shown as a sleek hard-shell executive briefcase with a small barrel port in its side",
+    "tech": true
+  },
+  "ares-heavy-laser-plus": {
+    "look": "heavy laser rifle on an underbarrel tripod, cabled to a backpack battery case, glowing emitter instead of a muzzle",
+    "tech": true
+  },
+  "ares-hv-mp-lmg": {
+    "look": "light machine gun with a heavy barrel, like an FN Minimi Mk3"
+  },
+  "ares-hvar": {
+    "look": "modern assault rifle with a heavy barrel, like an HK416 with a long rail"
+  },
+  "ares-light-fire-70": {
+    "look": "slim polymer light pistol, like a Walther PPQ"
+  },
+  "ares-mp-laser-iii": {
+    "look": "man-portable laser rifle with a sleek shroud, cabled to hip-mounted battery packs, glowing emitter instead of a muzzle",
+    "tech": true
+  },
+  "ares-mp-lmg": {
+    "look": "light machine gun, like an FN Minimi / M249 SAW"
+  },
+  "ares-predator-ii": {
+    "look": "oversized squared-off heavy pistol: long flat-sided slide with horizontal grooves and a raised top rail, slotted vent cuts in a tall rear sight block, exposed hammer and beavertail, a full-length underbarrel rail housing running to a big flat muzzle face with a round bore, chunky grip with dark panels and screws, steel-grey finish, slightly more rounded edges"
+  },
+  "ares-predator-iii": {
+    "look": "oversized squared-off heavy pistol: long flat-sided slide with horizontal grooves and a raised top rail, slotted vent cuts in a tall rear sight block, exposed hammer and beavertail, a full-length underbarrel rail housing running to a big flat muzzle face with a round bore, chunky grip with dark panels and screws, steel-grey finish, extra vent slots on the slide"
+  },
+  "ares-redline": {
+    "look": "laser pistol slightly larger than a heavy pistol, battery clip in the grip, glowing emitter instead of a muzzle",
+    "tech": true
+  },
+  "ares-thunderer": {
+    "look": "heavy semi-auto combat shotgun, like a Benelli M4"
+  },
+  "armtech-mgl-12": {
+    "look": "12-round revolver-cylinder grenade launcher, like a Milkor MGL with a longer cylinder"
+  },
+  "armtech-mgl-6": {
+    "look": "6-round revolver-cylinder grenade launcher, like a Milkor MGL"
+  },
+  "aztechnology-lasher": {
+    "look": "shoulder-fired missile launcher tube with a sight unit, like an FGM-148 Javelin"
+  },
+  "ballista-mis-launcher": {
+    "look": "backpack missile unit with a shoulder-fired tube deployed from it on an arm, laser designator on the tube",
+    "tech": true
+  },
+  "baretta-model-70": {
+    "look": "compact submachine gun, like a Beretta PMX"
+  },
+  "barret-model-121": {
+    "look": "heavy anti-materiel sniper rifle with a large muzzle brake and bipod, like a Barrett M82"
+  },
+  "beretta-model-200st": {
+    "look": "light semi-auto pistol, like a Beretta APX"
+  },
+  "blowgun": {
+    "look": "long thin blowgun tube with a mouthpiece, with a few darts"
+  },
+  "bracer": {
+    "look": "large ornate platinum bracelet with a tiny muzzle and a small button trigger below the wrist",
+    "tech": true
+  },
+  "browning-ultra-power": {
+    "look": "heavy steel service pistol, like a Browning Hi-Power with a longer slide"
+  },
+  "cavalier-deputy": {
+    "look": "heavy double-action revolver, like a Smith & Wesson Model 29"
+  },
+  "cavalier-scout": {
+    "look": "tiny pocket hold-out pistol, like a Kel-Tec P3AT"
+  },
+  "ceska-vz120": {
+    "look": "light polymer pistol, like a CZ P-10"
+  },
+  "colt-asp": {
+    "look": "compact light pistol, like a Colt Mustang"
+  },
+  "colt-cobra-tz-110": {
+    "look": "compact submachine gun, like a Colt 9mm SMG"
+  },
+  "colt-cobra-tz-115": {
+    "look": "submachine gun with a folding stock, like a Colt 9mm SMG"
+  },
+  "colt-cobra-tz-118": {
+    "look": "submachine gun with a long rail and a folding stock, like a Colt 9mm SMG"
+  },
+  "colt-m-23": {
+    "look": "assault rifle, like an M4A1 carbine"
+  },
+  "colt-m22a2": {
+    "look": "assault rifle with an underbarrel grenade launcher, like an M16A4 with an M203"
+  },
+  "colt-m24a3-water-carbine": {
+    "look": "underwater carbine with a long thin barrel and a box magazine, like a Soviet APS underwater rifle"
+  },
+  "colt-manhunter": {
+    "look": "heavy pistol with a laser sight, like a Colt Delta Elite with an underbarrel laser"
+  },
+  "eichiro-hatamoto-ii": {
+    "look": "heavy pistol, like a Sig Sauer P320"
+  },
+  "executive-action": {
+    "look": "slim engraved executive light pistol, like a Walther PPK in polished steel"
+  },
+  "flame-thrower": {
+    "look": "flamethrower wand cabled to a backpack fuel tank, like an M2 flamethrower"
+  },
+  "fn-5-7c": {
+    "look": "heavy pistol, like an FN Five-seveN"
+  },
+  "fn-aal-gyrojet-pistol": {
+    "look": "rocket-firing pistol with a slim ported barrel, like an MBA Gyrojet"
+  },
+  "fn-mag-5-mmg": {
+    "look": "medium machine gun on a bipod with an ammunition belt, like an FN MAG / M240"
+  },
+  "franchi-spas-22": {
+    "look": "pump/semi combat shotgun with a folding stock, like a Franchi SPAS-12"
+  },
+  "great-dragon-atgm": {
+    "look": "anti-tank guided missile canister on a tripod with an optical sight, like a BGM-71 TOW"
+  },
+  "gun-cane": {
+    "look": "an ordinary elegant walking stick with a hidden muzzle in its tip"
+  },
+  "hammerli-model-610s": {
+    "look": "precision target pistol with an anatomical grip, like a Hammerli 208"
+  },
+  "heckler-koch-g12a3z": {
+    "look": "boxy caseless rifle with a smooth shell and top scope, like an HK G11"
+  },
+  "heckler-koch-mp-5-tx": {
+    "look": "submachine gun, like an HK MP5"
+  },
+  "hk-g38-assault": {
+    "look": "assault rifle, like an HK G36"
+  },
+  "hk-g38-carbine": {
+    "look": "carbine, like an HK G36C"
+  },
+  "hk-g38-lmg": {
+    "look": "light machine gun with a bipod and drum, like an HK MG36"
+  },
+  "ingram-supermach-100-ext": {
+    "look": "machine pistol with an extended magazine and long suppressor, like a MAC-10"
+  },
+  "ingram-supermach-100-std": {
+    "look": "boxy machine pistol, like a MAC-10"
+  },
+  "ingram-warrior-10": {
+    "look": "submachine gun, like an Ingram MAC-11 with a stock"
+  },
+  "m-12-portable-mortar": {
+    "look": "light portable mortar tube on a bipod and baseplate, like an M224"
+  },
+  "m79b1-law": {
+    "look": "disposable telescoping rocket tube, like an M72 LAW"
+  },
+  "morrissey-alta": {
+    "look": "elegant heavy pistol with an engraved slide, like a Sig P226 Legion"
+  },
+  "morrissey-elan": {
+    "look": "elegant small hold-out pistol, like a Beretta Pico"
+  },
+  "morrissey-elite": {
+    "look": "elegant light pistol, like a Sig P238 with wood grips"
+  },
+  "mossberg-cmdt": {
+    "look": "combat shotgun with a top-mounted laser sight, like a Mossberg 590A1"
+  },
+  "mossberg-sm-cmdt": {
+    "look": "combat shotgun with a top-mounted laser and smartgun, like a Mossberg 930 SPX"
+  },
+  "panther-assault-cannon-bipod": {
+    "look": "huge man-portable assault cannon with a thick barrel, box magazine and a detachable underbarrel folding bipod",
+    "tech": true
+  },
+  "panther-assault-cannon-shoulder-strap-hip-brace": {
+    "look": "huge man-portable assault cannon with a thick barrel and box magazine, carried on a shoulder strap with a hip brace",
+    "tech": true
+  },
+  "raecor-sting": {
+    "look": "tiny all-plastic dart hold-out pistol, smooth and seamless"
+  },
+  "remington-990": {
+    "look": "pump-action shotgun, like a Remington 870"
+  },
+  "ruger-100": {
+    "look": "bolt-action hunting rifle with a scope, like a Ruger M77"
+  },
+  "ruger-thunderboltlaser": {
+    "look": "heavy pistol with an underbarrel laser sight, like a Ruger SR1911"
+  },
+  "ruger-thunderboltsmart": {
+    "look": "heavy pistol, like a Ruger SR1911"
+  },
+  "sa-puzzler": {
+    "look": "small all-polymer pistol that breaks into parts, like a Liberator-style plastic pistol, smooth and seamless"
+  },
+  "sandler-tmp": {
+    "look": "compact machine pistol with a foregrip, like a B&T TP9"
+  },
+  "savalette-guardian-sl2": {
+    "look": "heavy pistol, like an HK USP"
+  },
+  "savalette-guardian": {
+    "look": "heavy pistol, like an HK USP"
+  },
+  "sck-model-100": {
+    "look": "submachine gun, like an HK UMP"
+  },
+  "seco-ld-120": {
+    "look": "light pistol, like a Glock 19"
+  },
+  "semopal-vz88v": {
+    "look": "assault rifle, like a CZ 805 Bren"
+  },
+  "shiawase-blazer": {
+    "look": "compact bullpup flamethrower with a fuel tank at the rear and a nozzle at the front",
+    "tech": true
+  },
+  "spear-gun": {
+    "look": "pneumatic spear gun with a long metal spear loaded"
+  },
+  "spike": {
+    "look": "shoulder-fired missile launcher tube with a sight, like a Spike-MR"
+  },
+  "steyr-aug-csl-assault": {
+    "look": "bullpup assault rifle, like a Steyr AUG A3"
+  },
+  "steyr-aug-csl-carbine": {
+    "look": "short bullpup carbine, like a Steyr AUG A3 carbine"
+  },
+  "steyr-aug-csl-lmg": {
+    "look": "bullpup light machine gun with a long heavy barrel and bipod, like a Steyr AUG HBAR"
+  },
+  "steyr-aug-csl-smg": {
+    "look": "bullpup submachine gun, like a Steyr AUG 9mm"
+  },
+  "steyr-tmp": {
+    "look": "compact machine pistol with a foregrip, like a Steyr TMP"
+  },
+  "street-sweeper-shtg": {
+    "look": "crude jury-rigged muzzle-loading shotgun, like an old musket built from pipe and scrap, ganger-made"
+  },
+  "taurus-multi-6": {
+    "look": "light revolver, like a Taurus 856"
+  },
+  "tiffani-needler": {
+    "look": "dainty, jewel-like flechette hold-out pistol with a thin needle barrel",
+    "tech": true
+  },
+  "tiffani-self-defender": {
+    "look": "dainty, jewel-like single-shot hold-out pistol, like a pearl-gripped derringer"
+  },
+  "vindicator-minigun": {
+    "look": "rotary minigun with six barrels and an ammunition feed, like an M134"
+  },
+  "vogeljager-man-portable": {
+    "look": "backpack anti-air missile unit with a shoulder launch tube and a sensor head, like a Stinger on a backpack frame",
+    "tech": true
+  },
+  "walther-ma-2100": {
+    "look": "sniper rifle with a large scope and bipod, like a Walther WA 2000"
+  },
+  "walther-pb-120": {
+    "look": "light pistol, like a Walther P99"
+  },
+  "ww-infiltrator": {
+    "look": "heavy pistol with an integral suppressor, like an HK Mk23 with suppressor"
+  },
+  "yamaha-pulsar": {
+    "look": "pistol-shaped taser with a dart cartridge, like an Axon TASER 7"
+  },
+  "fam-95": {
+    "look": "machine pistol, like a Beretta 93R"
+  },
+  "ares-supersquirt-ii": {
+    "look": "compressed-air chemical pistol with two differently shaped, coloured clips (gel reservoir and capsules)",
+    "tech": true
+  },
+  "ares-sonic-beam-rifle": {
+    "look": "rifle with a wide dish-shaped sonic emitter instead of a barrel, power pack in the stock",
+    "tech": true
+  },
+  "briefcase-rocket": {
+    "look": "slim hard-shell briefcase that opens into a short rocket launcher tube",
+    "tech": true
+  },
+  "jupiter-taser-club": {
+    "look": "police baton with electrode contacts at the tip and a glowing charge indicator"
+  },
+  "ak-97-smgcarbine": {
+    "look": "short folding-stock carbine, like an AKS-74U"
+  },
+  "ak-97": {
+    "look": "assault rifle, like an AK-74M with a polymer stock"
+  },
+  "ak-98": {
+    "look": "assault rifle with an underbarrel grenade launcher, like an AK-74M with a GP-25"
+  },
+  "ares-antioch": {
+    "look": "single-shot break-action grenade launcher with a folding stock, like an HK69"
+  },
+  "ares-predator": {
+    "look": "oversized squared-off heavy pistol: long flat-sided slide with horizontal grooves and a raised top rail, slotted vent cuts in a tall rear sight block, exposed hammer and beavertail, a full-length underbarrel rail housing running to a big flat muzzle face with a round bore, chunky grip with dark panels and screws, steel-grey finish"
+  },
+  "ares-viper-slivergun": {
+    "look": "heavy pistol with a thick integral silencer shroud and a high-capacity flechette magazine",
+    "tech": true
+  },
+  "beretta-model-101t": {
+    "look": "light pistol, like a Beretta 92 Compact"
+  },
+  "browning-max-power": {
+    "look": "heavy steel pistol, like a Browning Hi-Power"
+  },
+  "ceska-black-scorpion": {
+    "look": "machine pistol with a folding stock, like a CZ Skorpion vz. 61"
+  },
+  "colt-american-l36": {
+    "look": "light pistol, like a Colt 1903 Pocket Hammerless"
+  },
+  "defiance-super-shock": {
+    "look": "rifle-sized taser with a dart cartridge, like a long-barrel stun gun"
+  },
+  "defiance-t-250": {
+    "look": "pump-action shotgun with a short barrel and pistol grip, like a Remington 870 Breacher"
+  },
+  "enfield-as7": {
+    "look": "automatic combat shotgun with a drum magazine, like an AA-12"
+  },
+  "fichetti-security-500": {
+    "look": "light pistol, like a Beretta 92"
+  },
+  "fichetti-security-500a": {
+    "look": "light pistol with a detachable shoulder stock, like a Beretta 93R with stock"
+  },
+  "fn-har": {
+    "look": "assault rifle, like an FN SCAR-L"
+  },
+  "heckler-koch-hk227-s": {
+    "look": "submachine gun with an integral suppressor, like an HK MP5SD"
+  },
+  "heckler-koch-hk227": {
+    "look": "submachine gun with a retractable stock, like an HK MP5A3"
+  },
+  "ingram-smartgun-mod-20t": {
+    "look": "submachine gun with a gas vent, like a KRISS Vector"
+  },
+  "ingram-valiant": {
+    "look": "light machine gun with a bipod, like a Negev"
+  },
+  "iws-multi-launcher": {
+    "look": "multi-tube shoulder launcher with a sight unit, like a rotary multi-rocket launcher",
+    "tech": true
+  },
+  "ranger-arms-sm-3": {
+    "look": "sniper rifle with a large scope and bipod, like an Accuracy International AXMC"
+  },
+  "remington-750": {
+    "look": "semi-auto hunting rifle with a scope, like a Remington 750 Woodsmaster"
+  },
+  "remington-950": {
+    "look": "bolt-action rifle with a scope, like a Remington 700"
+  },
+  "rmngton-roomsweeper-shg": {
+    "look": "large revolver that fires shotgun shells, like a Taurus Judge"
+  },
+  "rpk-hmg": {
+    "look": "heavy machine gun on a tripod with a belt feed, like a DShK"
+  },
+  "ruger-super-warhawk": {
+    "look": "large heavy revolver, like a Ruger Super Redhawk"
+  },
+  "streetline-special": {
+    "look": "small cheap hold-out pistol, like a Hi-Point C9 compact"
+  },
+  "ultimax-mmg": {
+    "look": "medium machine gun with a bipod, like an Ultimax 100"
+  },
+  "uzi-iii": {
+    "look": "submachine gun with a folding stock, like an Uzi Pro"
+  },
+  "vigorous-assault-cannon": {
+    "look": "huge man-portable assault cannon with a thick barrel and a large magazine",
+    "tech": true
+  },
+  "walther-palm-pistol": {
+    "look": "tiny palm-squeeze hold-out pistol, like a Chicago Palm Protector"
+  },
+  "9mm-flechette-smg": {
+    "look": "submachine gun firing flechettes, with a long ribbed barrel shroud and a box magazine"
+  },
+  "ak-47": {
+    "look": "classic AK-47 with wood furniture"
+  },
+  "ares-black-knight": {
+    "look": "heavy pistol with a matte black finish, like an FN FNX-45 Tactical"
+  },
+  "ares-tommy-gun-heavy": {
+    "look": "Thompson-style submachine gun with a drum magazine and a heavier barrel"
+  },
+  "ares-tommy-gun-lite": {
+    "look": "Thompson-style submachine gun with a stick magazine, lighter build"
+  },
+  "ares-tommy-gun": {
+    "look": "Thompson M1928 submachine gun with a drum magazine"
+  },
+  "colt-1911": {
+    "look": "Colt M1911 pistol"
+  },
+  "db45-a-double-barrel": {
+    "look": "submachine gun with two stacked barrels and twin magazines"
+  },
+  "fa-sb5": {
+    "look": "assault rifle, like an FN FAL"
+  },
+  "fn-5-7-tss-version": {
+    "look": "heavy pistol, like an FN Five-seveN"
+  },
+  "lemat-revolver": {
+    "look": "LeMat revolver, with its second shotgun barrel under the main barrel"
+  },
+  "m-16a1": {
+    "look": "M16A1 rifle with its triangular handguard and carry handle"
+  },
+  "m-16b": {
+    "look": "M16A2 rifle"
+  },
+  "neostead-combat": {
+    "look": "pump-action bullpup shotgun with twin tube magazines, like a Neostead / KSG"
+  },
+  "neostead-home-defense": {
+    "look": "short pump-action bullpup shotgun with twin tube magazines, like a Kel-Tec KSG"
+  },
+  "nostal-ind-gentleman": {
+    "look": "replica of a classic gentleman's pocket revolver, nickel and ivory"
+  },
+  "nostal-ind-long-gun": {
+    "look": "replica of a classic lever-action rifle, like a Winchester 1873"
+  },
+  "nostal-ind-police-pm5": {
+    "look": "replica of a classic police pump shotgun, like a Winchester Model 12"
+  },
+  "nostal-ind-scattergun": {
+    "look": "replica of a classic double-barrel coach gun"
+  },
+  "nostal-ind-southerner": {
+    "look": "replica of a classic cap-and-ball revolver, like a Colt Navy 1851"
+  },
+  "nostal-ind-yankee": {
+    "look": "replica of a classic single-action revolver, like a Colt Peacemaker"
+  },
+  "nostalgia-ind-big-bore": {
+    "look": "replica of a classic submachine gun, like an M3 Grease Gun"
+  },
+  "nova-inf-telcom-taser": {
+    "look": "compact taser pistol with a dart cartridge, like an Axon TASER 10"
+  },
+  "nova-infranat-oneshot": {
+    "look": "tiny single-shot disposable hold-out pistol, like an FP-45 Liberator"
+  },
+  "savage-model-77e": {
+    "look": "pump-action shotgun, like a Savage Stevens 320"
+  },
+  "shadow-arms-bullpup-ar": {
+    "look": "bullpup assault rifle, like an IWI Tavor"
+  },
+  "us-m79": {
+    "look": "M79 break-action grenade launcher with a wooden stock"
+  },
+  "vc-boxlock-hammerless": {
+    "look": "double-barrel boxlock hammerless shotgun with wood stock"
+  },
+  "vehement-a-v-full-auto": {
+    "look": "assault rifle, like an Arsenal AR-M1 select-fire"
+  },
+  "vehement-a-v-standard": {
+    "look": "assault rifle, like an Arsenal AR-M1"
+  },
+  "win-1300-defender-pg": {
+    "look": "pump shotgun with a pistol grip, like a Winchester 1300 Defender pistol-grip"
+  },
+  "win-1300-defender-ss": {
+    "look": "pump shotgun with a full stock, like a Winchester 1300 Defender"
+  }
+}
