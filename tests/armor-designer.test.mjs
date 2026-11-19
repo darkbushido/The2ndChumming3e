@@ -82,6 +82,9 @@ export async function run(t) {
   t.ok('step 2 shows the rules\' warnings', /CC p\.52/.test(html2));
   t.ok('a mod in the cart is not offered again', html2.includes('✓ In cart') && !html2.includes(`data-aadd-mod="${insul}"`));
   t.ok('step 3 has the finish buttons', V.html({ ...view, step: 3 }).includes('<b>FIN</b>'));
+  const css = src('styles/sr3e.css');
+  t.ok('an armour picture is held inside its card box', /\.vd-card-art > img[^{]*\{[^}]*height: 100%[^}]*object-fit: contain/.test(css)
+    && css.indexOf('.vd-card-art > img') > css.indexOf('/* 🛠 Vehicle Designer as a shop'));
   t.ok('no Foundry global in the view', !/(?<![.\w])(?:game|foundry|ui|Hooks|CONFIG)\.\w/.test(src('scripts/data/armor-designer-view.mjs').replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, '')));
   t.ok('the build copies the view', moduleClosure('armor-designer-view.mjs').includes('armor-mods.mjs') && /moduleClosure\('armor-designer-view\.mjs'\)/.test(src('tools/build-designer.mjs')));
   const app = src('designer/app.js');
