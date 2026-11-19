@@ -78,7 +78,7 @@ import { Barrier } from './data/barrier.mjs';
 import { NpcAmmo } from './data/npc-ammo.mjs';
 import { SR3ESenses } from './SR3ESenses.js';
 import { TokenSenses } from './data/token-senses.mjs';
-import { InvisibilityRules } from './data/invisibility.mjs';
+import { InvisibilityRules, IMPROVED_INVISIBLE } from './data/invisibility.mjs';
 
 Hooks.once('init', () => {
   console.log('SR3E | Initialising');
@@ -217,6 +217,9 @@ Hooks.once('init', () => {
     { id: 'sr3e-vr',          name: 'Jacked In (VR)',     img: 'icons/svg/net.svg' },
     // Stunned by a shock weapon (SR3 p.124-125): +2 to all tests. Marked from the result card; counts down in combat.
     { id: 'sr3e-stunned',     name: 'Stunned (shock weapon)', img: 'icons/svg/lightning.svg' },
+    // Improved Invisibility (SR3 p.196): rides WITH core `invisible` (which does the hiding) and marks that cameras
+    // and other sensors are fooled too. Set by the spell; the GM may tick it by hand (data/invisibility.mjs).
+    { id: 'sr3e-improved-invisible', name: 'Improved Invisibility', img: 'icons/svg/invisible.svg' },
   );
 
   // Token Status Effects (TODO 247): the GM picks which CORE statuses the Token HUD offers (default: the SR3
@@ -2399,9 +2402,12 @@ async function _syncInvisibility(caster) {
     const kind = InvisibilityRules.invisibilityOn(a.name, sustainers);
     if (kind) {
       if (!a.statuses?.has('invisible')) await a.toggleStatusEffect('invisible', { active: true });
+      const improved = kind === 'improved';
+      if (!!a.statuses?.has(IMPROVED_INVISIBLE) !== improved) await a.toggleStatusEffect(IMPROVED_INVISIBLE, { active: improved });
       if (a.getFlag(SYS, 'invisFromSpell') !== kind) await a.setFlag(SYS, 'invisFromSpell', kind);
     } else if (ours) {
       await a.toggleStatusEffect('invisible', { active: false });
+      await a.toggleStatusEffect(IMPROVED_INVISIBLE, { active: false });
       await a.unsetFlag(SYS, 'invisFromSpell');
     }
   }

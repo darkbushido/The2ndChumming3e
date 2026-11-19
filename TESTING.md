@@ -3901,3 +3901,10 @@ Needs §90's branch. Join as a player who owns only the viewer token; Sam is inv
 4. An NPC with `actor.setFlag('The2ndChumming3e','camera',true)` → sees Sam.
 5. Recast as **Improved Invisibility** → none of the above see Sam (astral sight and ultrasound still do).
 6. An existing token picks up its `techSight` flag on the next item/flag change to its actor — add and remove an item if needed.
+
+## 92. 👻 The Improved Invisibility status (branch `feat/improved-invisibility-status` — SR3 p.196; the maintainer, 2026-11-18)
+
+1. Sustain **Improved Invisibility** on Sam → Sam's token shows **Invisible** and **Improved Invisibility**. Drop it → both clear.
+2. Sustain plain **Invisibility** → only **Invisible**.
+3. GM ticks **Invisible** by hand on an NPC → a drone/cybereyed viewer sees it (plain). Tick **Improved Invisibility** too → they don't.
+4. System settings → **Configure Status Effects** lists only the SR3 core set by default; untick unused ones and the Token HUD drops them live.
