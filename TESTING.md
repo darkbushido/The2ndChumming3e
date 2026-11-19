@@ -3855,3 +3855,11 @@ Run as the **active GM** (the status hook runs only there); reload the GM tab fi
    only Sustaining. Drop it → Sam's Invisible comes off.
 4. GM sets **Invisible** on an unrelated token by hand, then sustains/drops any spell → that hand-set status stays.
 5. `game.actors.getName('Sam').getFlag('The2ndChumming3e','invisFromSpell')` reads `improved` while step 3 is up.
+## 88. 🖨 Print a character sheet (TODO 302)
+
+JS only — F5 is enough. **Prerequisites:** a player-owned character with skills, a weapon, armour, cyberware, a spell or adept power, a contact, and a vehicle linked to them; an NPC the player does not own.
+
+- [ ] **Header control.** As the player, open the character: the window header (⋮ menu) has **Print sheet**. Open the NPC as an observer (if visible): no such control. As the GM, every character and NPC has it.
+- [ ] **The print window.** Click it: a new window opens with the sheet and the print dialog. Save as PDF: two-column core block on page 1, tables flow onto further pages, no row split across a page.
+- [ ] **Contents.** Augmented attributes read "value (base)"; wound boxes filled to the actor's damage; Karma shows totals only — no ledger, no notes or biography. The linked vehicle has a stat block with its weapons.
+- [ ] **Popup blocked.** Block popups for the Foundry origin and click again: a `.html` file downloads and a notice says so.
