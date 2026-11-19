@@ -213,7 +213,7 @@ Hooks.once('init', () => {
     { id: 'sr3e-fulldefense', name: 'Full Defense',       img: 'icons/svg/shield.svg' },
     { id: 'sr3e-dumpshock',   name: 'Dumpshocked',        img: 'icons/svg/lightning.svg' },
     { id: 'sr3e-astral',      name: 'Astral Projection',  img: 'icons/svg/aura.svg' },
-    { id: 'sr3e-dual',        name: 'Dual-Natured',       img: 'icons/svg/eye.svg' },
+    { id: 'sr3e-dual',        name: 'Dual-Natured',       img: 'icons/svg/eye.svg', hud: false },   // set from the 👁 vision column, which gates who may (TODO 299)
     { id: 'sr3e-vr',          name: 'Jacked In (VR)',     img: 'icons/svg/net.svg' },
     // Stunned by a shock weapon (SR3 p.124-125): +2 to all tests. Marked from the result card; counts down in combat.
     { id: 'sr3e-stunned',     name: 'Stunned (shock weapon)', img: 'icons/svg/lightning.svg' },

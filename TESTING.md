@@ -3910,3 +3910,17 @@ Needs §90's branch. Join as a player who owns only the viewer token; Sam is inv
 4. System settings → **Configure Status Effects** lists only the SR3 core set by default; untick unused ones and the Token HUD drops them live.
 - [ ] **Row fits (bug 2026-11-18):** at the sheet's default width (860) Stun sits over Physical, and Overflow, 🩹 Healing,
       👁 Perception, Stim and Carry share ONE line — nothing wraps. Narrowing the sheet moves the button group down whole.
+
+## 93. 👁 The vision column on the Token HUD (TODO 299, branch `claude/vision-palette` — SR3 p.169; the maintainer, 2026-11-18)
+
+**Prerequisites:** a full magician, an adept WITH the Astral Perception power, an adept without it, and a mundane troll, each with a token on a scene. Player2 owns the mundane troll.
+
+- [ ] Right-click each token → 👁: a column opens beside the HUD like the status effects, and the active entry is lit.
+- [ ] Mundane troll (as Player2): Best, Thermographic, Normal — no Dual Natured, no Astral.
+- [ ] Adept with Astral Perception: Dual Natured, no Astral. Adept without it: neither. The sheet's Magic tab matches (no Dual Natured button for the adept without the power).
+- [ ] Full magician: Dual Natured and Astral. Clicking Dual Natured perceives (the sheet button lights); clicking it again goes back to Physical Plane.
+- [ ] Picking Thermographic while perceiving ends perceiving; while projecting it does not.
+- [ ] GM on the mundane troll: Dual Natured and Astral show greyed with a tooltip; clicking warns and still sets it.
+- [ ] The core status-effects palette no longer lists Dual-Natured (a token that carries it still shows it, to clear).
+- [ ] A token with ultrasound shows a range field at the foot of the column; changing it updates the token's ultrasound detection range.
+- [ ] GM: the Token HUD's hide/show toggle shows a 🎭 mask (not an eye), lit when the token is hidden; clicking still hides and shows it, and re-opening the HUD keeps the mask.

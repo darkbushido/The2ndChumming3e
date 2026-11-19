@@ -20,7 +20,7 @@
   "SR3E.Metatype.other": "Other",
 
   "SR3E.Senses.Title": "Senses",
-  "SR3E.Senses.HudTip": "Senses — vision mode, ultrasound range, dual-natured",
+  "SR3E.Senses.HudTip": "Vision — mode, Dual Natured, Astral",
   "SR3E.Senses.Normal": "Normal",
   "SR3E.Senses.LowLight": "Low-Light (SR3)",
   "SR3E.Senses.Thermographic": "Thermographic (SR3)",
@@ -46,5 +46,11 @@
   "SR3E.Senses.TileNone": "None — an ordinary tile",
   "SR3E.Senses.TileGlow": "Visible to all, glows in astral sight",
   "SR3E.Senses.TileAstral": "Astral only — seen (glowing) only in astral sight",
-  "SR3E.Senses.TileHint": "A focus, enchanted object or ritual circle. The GM always sees both kinds, glowing."
+  "SR3E.Senses.TileHint": "A focus, enchanted object or ritual circle. The GM always sees both kinds, glowing.",
+  "SR3E.Senses.PaletteDual": "Dual Natured — perceiving astrally",
+  "SR3E.Senses.PaletteAstral": "Astral — projecting",
+  "SR3E.Senses.CannotPerceive": "Not a magician, or an adept without Astral Perception (SR3 p.169) — GM override",
+  "SR3E.Senses.CannotProject": "Only a full magician projects — GM override",
+  "SR3E.Senses.GmOverride": "{name} cannot normally do this — set anyway by the GM.",
+  "SR3E.Senses.UltrasoundRangeShort": "Ultrasound range (m)"
 }
