@@ -2,7 +2,7 @@ import { ModdedBuy } from './data/modded-buy.mjs';
 import { GearSearch } from './data/gear-search.mjs';
 import { ModRatings } from './data/mod-ratings.mjs';
 import { Legality } from './data/legality.mjs';
-import { actorFrom } from './data/actor-ref.mjs';
+import { actorRef } from './data/actor-ref.mjs';
 
 /**
  * 🔧 Buy or build a modded item — the Foundry side · TODO 283. The rules are scripts/data/modded-buy.mjs.
@@ -170,14 +170,13 @@ export const SR3EModdedBuy = {
     let created = null;
     try {
       const source = host.pack ? `${host.pack}|${host.id}` : null;
-      const res = await game.sr3e.SR3EQuery.asGM('sr3e.actor.create', source ? { source } : { fromActorId: host.id });
+      const res = await game.sr3e.SR3EQuery.asGM('sr3e.actor.create', source ? { source } : { fromActorId: actorRef(host) });
       created = res?.uuid ? await fromUuid(res.uuid) : null;
     } catch (err) { console.error('SR3E | modded buy: vehicle create failed:', err); }
     if (!created) { ui.notifications.error('Could not create the vehicle — is a GM connected?'); return {}; }
     const data = q.mods.map(m => { const d = foundry.utils.deepClone(m); delete d._id; return d; });
     if (data.length) await created.createEmbeddedDocuments('Item', data);
-    const owner = actorFrom(actor.id) ?? actor;
-    await game.sr3e.SR3EQuery.asGM('sr3e.vehicle.link', { vehicleId: created.id, driverActorId: owner.id }).catch(() => null);
+    await game.sr3e.SR3EQuery.asGM('sr3e.vehicle.link', { vehicleId: actorRef(created), driverActorId: actorRef(actor) }).catch(() => null);
     return { vehicle: created.name };
   },
 };
