@@ -230,8 +230,9 @@ instead of taking the usual Overwatch hit for the crash. *(MDF p.26)*
 
 {: .note }
 > The book gives hosts two ways to gain Overwatch and a full sheaf of scripted Trigger Steps with
-> Suppression as the counter-play. This system currently only automates the first trigger — a
-> failed Hacking Test. See *Doing it in The 2nd Chumming*, below, for what's automated today.
+> Suppression as the counter-play. The system raises Overwatch on a failed Hacking Test, and
+> offers the second trigger and Suppression's degrade through the GM's *Icon crashed* dialog.
+> See *Doing it in The 2nd Chumming*, below, for what's automated today.
 
 ### Convergence *(MDF p.23–24)*
 
@@ -444,10 +445,10 @@ supplies its damage. Any IC flagged as deployed to a host becomes a valid cyberc
 everyone connected there.
 
 {: .note }
-> Right now, only the first Overwatch trigger — a failed Hacking Test — raises the tracker
-> automatically. Crashing an icon without Suppression, live Trigger Step countdowns, and the
-> Suppression utility itself are still manual, GM-adjudicated calls from the Security Sheaf tab
-> (tracked as open work, TODO 128).
+> A failed Hacking Test raises the Overwatch tracker by itself. When an icon is crashed, the GM's
+> **Icon crashed** dialog offers the second trigger (a crash without Suppression adds to
+> Overwatch) or, with Suppression running, its degrade instead. As the tally passes each Trigger
+> Step, the sheaf posts that step for the GM to act on. Nothing is applied without the GM's click.
 
 ---
 

@@ -288,7 +288,6 @@
       "hash": "dad6b1b7a9",
       "text": "Three steps. **Armour** — chips for clothing, body armour, helmets and shields, then picture cards. **Modifications** — two\nshelves: the Cannon Companion modifications (CC pp.52-53, gel packs among them) and the helmet options (SR3 p.284). Each mod\ngoes in the cart once; change its level there. Past the mod-point caps (CC p.52), a mod on a helmet or shield, two sets of\ngel packs — all warned, never refused. **Price** — the bill (gel packs: the armour's price ×5 in all), and the armour as\nbuilt: Concealability, weight, Availability, Street Index and what it protects against. In Foundry it imports with its\nmods inside it, not worn.",
       "verdict": "match",
-      "note": "CC p.52's footer is misread as a lone 'i' in the OCR (ocrPrinted); the PDF footer reads 52. Helmets and shields: CC p.52 lists the armour types that take modifications and names neither — the guide and code warn, consistent with that list.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Cannon Companion.pdf",
@@ -320,7 +319,8 @@
           "line": 46,
           "snippet": "CC p.52 does not list shields among the armour that takes modifications"
         }
-      ]
+      ],
+      "note": "CC p.52's footer is misread as a lone 'i' in the OCR (ocrPrinted); the PDF footer reads 52. Helmets and shields: CC p.52 lists the armour types that take modifications and names neither — the guide and code warn, consistent with that list."
     },
     {
       "id": "gear-designer.md#25",
@@ -31866,7 +31866,6 @@
           "quote": "in an active utility slot, may degrade 1 point of the"
         }
       ],
-      "note": "Since 0.9.0 (TODO 128): the GM's Icon crashed dialog offers \"Suppress it\"; with a Suppression program running it degrades the program 1 point and adds no Overwatch (MDF p.26). Offered, never automatic.",
       "code": [
         {
           "file": "scripts/data/overwatch-crash.mjs",
@@ -31878,41 +31877,58 @@
           "line": 1880,
           "snippet": "const res = OverwatchCrash.resolve({"
         }
-      ]
+      ],
+      "note": "Since 0.9.0 (TODO 128): the GM's Icon crashed dialog offers \"Suppress it\"; with a Suppression program running it degrades the program 1 point and adds no Overwatch (MDF p.26). Offered, never automatic."
     },
     {
       "id": "rules/decking-defragged.md#121",
       "file": "rules/decking-defragged.md",
       "lines": [
         231,
-        234
+        235
       ],
-      "hash": "c8145d4cda",
-      "text": "{: .note }\n> The book gives hosts two ways to gain Overwatch and a full sheaf of scripted Trigger Steps with\n> Suppression as the counter-play. This system currently only automates the first trigger — a\n> failed Hacking Test. See *Doing it in The 2nd Chumming*, below, for what's automated today.",
-      "verdict": "guide-differs",
+      "hash": "f330070d5e",
+      "text": "{: .note }\n> The book gives hosts two ways to gain Overwatch and a full sheaf of scripted Trigger Steps with\n> Suppression as the counter-play. The system raises Overwatch on a failed Hacking Test, and\n> offers the second trigger and Suppression's degrade through the GM's *Icon crashed* dialog.\n> See *Doing it in The 2nd Chumming*, below, for what's automated today.",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
           "pdfPage": 23,
           "printedPage": 23,
-          "quote": "Crashing an icon without Suppressing it"
+          "quote": "Overwatch is tracked on the Security Sheaf of"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "in an active utility slot, may degrade 1 point of the"
         }
       ],
-      "note": "The guide's note is stale about the system: since 0.9.0 (TODO 128) the second trigger (crashing an icon without Suppression) and the Suppression degrade are offered through the GM's Icon crashed dialog (SR3EActor.handleIconCrashClick), and the sheaf prompt posts each Trigger Step. The book's rule is unchanged; the guide note needs updating.",
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 1892,
-          "snippet": "await SR3EActor._incrementOverwatch(pick.hostId, pick.deckerId || null, 'An icon crashed without Suppression (MDF p.22).');"
+          "line": 1536,
+          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId, reason = 'Hack attempt failed Security Threshold check.') {"
+        },
+        {
+          "file": "scripts/data/overwatch-crash.mjs",
+          "line": 34,
+          "snippet": "return { overwatch: 0, degrade: 1, suppressed: true, newRating: rating - 1 };"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1880,
+          "snippet": "const res = OverwatchCrash.resolve({"
         }
-      ]
+      ],
+      "note": "Guide note rewritten 2026-11-19 at the maintainer's direction (it was stale): the failed-Hacking-Test trigger, the crash trigger and Suppression's degrade are what the code now does."
     },
     {
       "id": "rules/decking-defragged.md#122",
       "file": "rules/decking-defragged.md",
       "lines": [
-        236,
-        236
+        237,
+        237
       ],
       "hash": "8749616e73",
       "text": "### Convergence *(MDF p.23–24)*",
@@ -31937,8 +31953,8 @@
       "id": "rules/decking-defragged.md#123",
       "file": "rules/decking-defragged.md",
       "lines": [
-        238,
-        241
+        239,
+        242
       ],
       "hash": "3fc739786f",
       "text": "At 10 boxes of Overwatch, the decker's connection gets traced back to their real body. The GM can\nrespond with any mix of: dumping the decker (triggering Dumpshock, below), leaking pieces of\ntheir session to the authorities (what their icon looked like, their handle, their gear, and\nroughly where they're jacked in from), and sending a physical security response their way.",
@@ -31969,8 +31985,8 @@
       "id": "rules/decking-defragged.md#124",
       "file": "rules/decking-defragged.md",
       "lines": [
-        243,
-        243
+        244,
+        244
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -31981,8 +31997,8 @@
       "id": "rules/decking-defragged.md#125",
       "file": "rules/decking-defragged.md",
       "lines": [
-        245,
-        245
+        246,
+        246
       ],
       "hash": "a92755e2ee",
       "text": "## Cybercombat *(MDF p.26)*",
@@ -32007,8 +32023,8 @@
       "id": "rules/decking-defragged.md#126",
       "file": "rules/decking-defragged.md",
       "lines": [
-        247,
-        248
+        248,
+        249
       ],
       "hash": "068ddf8445",
       "text": "Any icon can attack any other icon it can see sharing the same node or zone. Attacking\nautomatically reveals your own icon if it wasn't visible already.",
@@ -32039,8 +32055,8 @@
       "id": "rules/decking-defragged.md#127",
       "file": "rules/decking-defragged.md",
       "lines": [
-        250,
-        251
+        251,
+        252
       ],
       "hash": "4c507065f5",
       "text": "1. **Attacker rolls** Cybercombat plus Hacking Pool against a **base TN of 4**, adjusted for\n   circumstances.",
@@ -32065,8 +32081,8 @@
       "id": "rules/decking-defragged.md#128",
       "file": "rules/decking-defragged.md",
       "lines": [
-        252,
-        252
+        253,
+        253
       ],
       "hash": "a9f171d7ec",
       "text": "2. **Defender rolls** the same way, same base TN.",
@@ -32091,8 +32107,8 @@
       "id": "rules/decking-defragged.md#129",
       "file": "rules/decking-defragged.md",
       "lines": [
-        253,
-        253
+        254,
+        254
       ],
       "hash": "6eadd5de6f",
       "text": "3. **Compare successes.** Whoever has more hits their target — **a tie favours the defender**.",
@@ -32117,8 +32133,8 @@
       "id": "rules/decking-defragged.md#130",
       "file": "rules/decking-defragged.md",
       "lines": [
-        254,
-        255
+        255,
+        256
       ],
       "hash": "63872adea7",
       "text": "4. **Stage the damage.** The winner's Damage Level rises one step for every two net successes;\n   past Deadly, extra net successes add to Power instead.",
@@ -32149,8 +32165,8 @@
       "id": "rules/decking-defragged.md#131",
       "file": "rules/decking-defragged.md",
       "lines": [
-        256,
-        259
+        257,
+        260
       ],
       "hash": "13c20193f5",
       "text": "5. **Resist.** The target rolls its **System Rating (or MPCP)** against a TN equal to the\n   **attack's Power minus its own Security Threshold or Firewall** — those numbers work as\n   armour here. Every two successes drops the Damage Level by one. Utilities like Armor,\n   Biofeedback Filtering, and Shield can chip in too.",
@@ -32181,8 +32197,8 @@
       "id": "rules/decking-defragged.md#132",
       "file": "rules/decking-defragged.md",
       "lines": [
-        261,
-        264
+        262,
+        265
       ],
       "hash": "dd6194ae2e",
       "text": "An icon's own **Matrix Condition Monitor** is 10 boxes; filling it crashes the icon and — for a\npersona — dumps its user. Damage that overflows the user's Matrix CM becomes real **Biofeedback**\ndamage, Stun or Physical depending on their User Mode, the same split as Dumpshock below.\n*(MDF p.26)*",
@@ -32213,8 +32229,8 @@
       "id": "rules/decking-defragged.md#133",
       "file": "rules/decking-defragged.md",
       "lines": [
-        266,
-        268
+        267,
+        269
       ],
       "hash": "2f7a1b01e3",
       "text": "As it fills, the Matrix Condition Monitor penalises the icon's tests the same way a character's\nwounds do: **+1 TN** from the 1st box, **+2** from the 3rd, **+3** from the 6th, and **+4** at the\n10th. *(MDF p.12)*",
@@ -32250,8 +32266,8 @@
       "id": "rules/decking-defragged.md#134",
       "file": "rules/decking-defragged.md",
       "lines": [
-        270,
-        273
+        271,
+        274
       ],
       "hash": "f7e9473305",
       "text": "Two more Matrix hazards worth knowing: a decker can permanently or temporarily disable a\nreal-world Matrix device by finding its icon and crashing it in cybercombat, and an aggressive\nicon can **Link-Lock** a target so it can't go hidden and needs a Willpower test just to log off\ncleanly — failing that test causes Dumpshock. *(MDF p.27)*",
@@ -32283,8 +32299,8 @@
       "id": "rules/decking-defragged.md#135",
       "file": "rules/decking-defragged.md",
       "lines": [
-        275,
-        275
+        276,
+        276
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -32295,8 +32311,8 @@
       "id": "rules/decking-defragged.md#136",
       "file": "rules/decking-defragged.md",
       "lines": [
-        277,
-        277
+        278,
+        278
       ],
       "hash": "9f618561a5",
       "text": "## Dumpshock *(MDF p.27)*",
@@ -32321,8 +32337,8 @@
       "id": "rules/decking-defragged.md#137",
       "file": "rules/decking-defragged.md",
       "lines": [
-        279,
-        279
+        280,
+        280
       ],
       "hash": "dd9ec32ccf",
       "text": "Getting yanked off the Matrix without a clean logoff hits you with Dumpshock:",
@@ -32347,8 +32363,8 @@
       "id": "rules/decking-defragged.md#138",
       "file": "rules/decking-defragged.md",
       "lines": [
-        281,
-        282
+        282,
+        283
       ],
       "hash": "c99db89533",
       "text": "- You immediately resist **Serious** biofeedback damage, with **Power equal to the System Rating\n  of whatever dumped you**.",
@@ -32385,8 +32401,8 @@
       "id": "rules/decking-defragged.md#139",
       "file": "rules/decking-defragged.md",
       "lines": [
-        283,
-        284
+        284,
+        285
       ],
       "hash": "6d5c775888",
       "text": "- Tortoise and AR users don't feel it at all. **VR-Cold** takes it as Stun; **VR-Hot** takes it as\n  Physical.",
@@ -32418,8 +32434,8 @@
       "id": "rules/decking-defragged.md#140",
       "file": "rules/decking-defragged.md",
       "lines": [
-        285,
-        286
+        286,
+        287
       ],
       "hash": "b96224f7b4",
       "text": "- You're also rattled for the next 10 minutes — everything you do carries a **+2 TN** penalty\n  until it wears off.",
@@ -32450,8 +32466,8 @@
       "id": "rules/decking-defragged.md#141",
       "file": "rules/decking-defragged.md",
       "lines": [
-        288,
-        288
+        289,
+        289
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -32462,8 +32478,8 @@
       "id": "rules/decking-defragged.md#142",
       "file": "rules/decking-defragged.md",
       "lines": [
-        290,
-        290
+        291,
+        291
       ],
       "hash": "a3558ac76b",
       "text": "## IC and Agents *(MDF p.24, p.36)*",
@@ -32488,8 +32504,8 @@
       "id": "rules/decking-defragged.md#143",
       "file": "rules/decking-defragged.md",
       "lines": [
-        292,
-        292
+        293,
+        293
       ],
       "hash": "f4d225214c",
       "text": "IC (and Agents, which work the same way mechanically) come in three grades:",
@@ -32500,8 +32516,8 @@
       "id": "rules/decking-defragged.md#144",
       "file": "rules/decking-defragged.md",
       "lines": [
-        294,
-        295
+        295,
+        296
       ],
       "hash": "1a7adb2904",
       "text": "- **White** — nuisance-tier defenses. Can't do more than Moderate damage to an icon, and can't\n  touch a decker's real body at all. Every host can field it.",
@@ -32533,8 +32549,8 @@
       "id": "rules/decking-defragged.md#145",
       "file": "rules/decking-defragged.md",
       "lines": [
-        296,
-        298
+        297,
+        299
       ],
       "hash": "ec962acdec",
       "text": "- **Gray** — full cybercombat capability, and can permanently damage a decker's actual deck (burn\n  MPCP or utility slots). Still can't reach the decker's body directly. Needs the host's\n  Mainframe Support module.",
@@ -32565,8 +32581,8 @@
       "id": "rules/decking-defragged.md#146",
       "file": "rules/decking-defragged.md",
       "lines": [
-        299,
-        300
+        300,
+        301
       ],
       "hash": "fa7c191de9",
       "text": "- **Black** — the only grade that can hurt the decker's real body directly, and it's legally\n  allowed to. Also needs Mainframe Support.",
@@ -32591,8 +32607,8 @@
       "id": "rules/decking-defragged.md#147",
       "file": "rules/decking-defragged.md",
       "lines": [
-        302,
-        302
+        303,
+        303
       ],
       "hash": "a273c9233a",
       "text": "A sample of named agents from the book, by grade *(MDF p.34)*:",
@@ -32619,8 +32635,8 @@
       "id": "rules/decking-defragged.md#148",
       "file": "rules/decking-defragged.md",
       "lines": [
-        304,
-        304
+        305,
+        305
       ],
       "hash": "a682d6bfba",
       "text": "| Grade | Examples |",
@@ -32631,8 +32647,8 @@
       "id": "rules/decking-defragged.md#149",
       "file": "rules/decking-defragged.md",
       "lines": [
-        306,
-        306
+        307,
+        307
       ],
       "hash": "94cc3ffc4d",
       "text": "| White | ARis, Authenticator, Crippler, Gemini, Looper, Mr. Medkit, Scrambler, Tracker |",
@@ -32659,8 +32675,8 @@
       "id": "rules/decking-defragged.md#150",
       "file": "rules/decking-defragged.md",
       "lines": [
-        307,
-        307
+        308,
+        308
       ],
       "hash": "c52f42b1dd",
       "text": "| Gray | Blaster, Dataworm, Hydra, Killer, Tar Baby |",
@@ -32687,8 +32703,8 @@
       "id": "rules/decking-defragged.md#151",
       "file": "rules/decking-defragged.md",
       "lines": [
-        308,
-        308
+        309,
+        309
       ],
       "hash": "29e8b80b68",
       "text": "| Black | Ripper, Sparky |",
@@ -32715,8 +32731,8 @@
       "id": "rules/decking-defragged.md#152",
       "file": "rules/decking-defragged.md",
       "lines": [
-        310,
-        310
+        311,
+        311
       ],
       "hash": "68a0c74762",
       "text": "**Initiative** for IC and Agents comes from the *host's* Security Tier, not their own stats:",
@@ -32741,8 +32757,8 @@
       "id": "rules/decking-defragged.md#153",
       "file": "rules/decking-defragged.md",
       "lines": [
-        312,
-        312
+        313,
+        313
       ],
       "hash": "bada7e7466",
       "text": "| Host Security Tier | Initiative |",
@@ -32753,8 +32769,8 @@
       "id": "rules/decking-defragged.md#154",
       "file": "rules/decking-defragged.md",
       "lines": [
-        314,
-        314
+        315,
+        315
       ],
       "hash": "d9280022a4",
       "text": "| Ivory | Agent's Rating |",
@@ -32779,8 +32795,8 @@
       "id": "rules/decking-defragged.md#155",
       "file": "rules/decking-defragged.md",
       "lines": [
-        315,
-        315
+        316,
+        316
       ],
       "hash": "9c6bb6e114",
       "text": "| Blue | 1D6 + Agent's Rating |",
@@ -32805,8 +32821,8 @@
       "id": "rules/decking-defragged.md#156",
       "file": "rules/decking-defragged.md",
       "lines": [
-        316,
-        316
+        317,
+        317
       ],
       "hash": "f4ffe942b1",
       "text": "| Green | 2D6 + Agent's Rating |",
@@ -32831,8 +32847,8 @@
       "id": "rules/decking-defragged.md#157",
       "file": "rules/decking-defragged.md",
       "lines": [
-        317,
-        317
+        318,
+        318
       ],
       "hash": "cf24dd397b",
       "text": "| Orange | 3D6 + Agent's Rating |",
@@ -32857,8 +32873,8 @@
       "id": "rules/decking-defragged.md#158",
       "file": "rules/decking-defragged.md",
       "lines": [
-        318,
-        318
+        319,
+        319
       ],
       "hash": "614786edea",
       "text": "| Red and above | 4D6 + Agent's Rating |",
@@ -32883,8 +32899,8 @@
       "id": "rules/decking-defragged.md#159",
       "file": "rules/decking-defragged.md",
       "lines": [
-        320,
-        322
+        321,
+        323
       ],
       "hash": "e0309e6abd",
       "text": "*(MDF p.36)* Their **Firewall equals their host's Security Threshold** — there's no separate IC\nstat for it. Agents automatically know Computer and Cybercombat at their own Rating and share\ntheir host's memory and active utilities.",
@@ -32909,8 +32925,8 @@
       "id": "rules/decking-defragged.md#160",
       "file": "rules/decking-defragged.md",
       "lines": [
-        324,
-        324
+        325,
+        325
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -32921,8 +32937,8 @@
       "id": "rules/decking-defragged.md#161",
       "file": "rules/decking-defragged.md",
       "lines": [
-        326,
-        326
+        327,
+        327
       ],
       "hash": "1b66a2a4e0",
       "text": "## Utilities *(MDF p.29–32)*",
@@ -32947,8 +32963,8 @@
       "id": "rules/decking-defragged.md#162",
       "file": "rules/decking-defragged.md",
       "lines": [
-        328,
-        330
+        329,
+        331
       ],
       "hash": "721ff3efb6",
       "text": "Utilities load into a deck's numbered utility slots, and most either lower a target number for\nthe user or raise one for whoever's targeting them; **degradable** utilities lose a point of\nrating every time they're actually used, and eventually need reloading.",
@@ -32979,8 +32995,8 @@
       "id": "rules/decking-defragged.md#163",
       "file": "rules/decking-defragged.md",
       "lines": [
-        332,
-        332
+        333,
+        333
       ],
       "hash": "e29bbc2026",
       "text": "| Utility | Type | What it does |",
@@ -32991,8 +33007,8 @@
       "id": "rules/decking-defragged.md#164",
       "file": "rules/decking-defragged.md",
       "lines": [
-        334,
-        334
+        335,
+        335
       ],
       "hash": "846fca0aa2",
       "text": "| Analyze | Offensive | Lowers your TN on Search and Render |",
@@ -33017,8 +33033,8 @@
       "id": "rules/decking-defragged.md#165",
       "file": "rules/decking-defragged.md",
       "lines": [
-        335,
-        335
+        336,
+        336
       ],
       "hash": "d939fe22b6",
       "text": "| Armor | Operational, degradable | Soaks Overload Damage instead of your Matrix CM |",
@@ -33043,8 +33059,8 @@
       "id": "rules/decking-defragged.md#166",
       "file": "rules/decking-defragged.md",
       "lines": [
-        336,
-        336
+        337,
+        337
       ],
       "hash": "7004e67931",
       "text": "| Attack | Combat | Deals Overload (or, for the nastiest versions, direct Biofeedback) damage in cybercombat |",
@@ -33069,8 +33085,8 @@
       "id": "rules/decking-defragged.md#167",
       "file": "rules/decking-defragged.md",
       "lines": [
-        337,
-        337
+        338,
+        338
       ],
       "hash": "7b9e51c1a6",
       "text": "| Baby Monitor | Operational, degradable | Lets you check your own Overwatch level via Scrub Datastream |",
@@ -33095,8 +33111,8 @@
       "id": "rules/decking-defragged.md#168",
       "file": "rules/decking-defragged.md",
       "lines": [
-        338,
-        338
+        339,
+        339
       ],
       "hash": "f99613417d",
       "text": "| Biofeedback Filtering | Operational, degradable | Soaks Biofeedback damage instead of your real condition monitor |",
@@ -33121,8 +33137,8 @@
       "id": "rules/decking-defragged.md#169",
       "file": "rules/decking-defragged.md",
       "lines": [
-        339,
-        339
+        340,
+        340
       ],
       "hash": "2bf019fb20",
       "text": "| Browse | Offensive | Lowers your TN on any Index prompt |",
@@ -33147,8 +33163,8 @@
       "id": "rules/decking-defragged.md#170",
       "file": "rules/decking-defragged.md",
       "lines": [
-        340,
-        340
+        341,
+        341
       ],
       "hash": "cc5a04c6b9",
       "text": "| Decrypt | Offensive | Lowers your TN cracking Encryption |",
@@ -33173,8 +33189,8 @@
       "id": "rules/decking-defragged.md#171",
       "file": "rules/decking-defragged.md",
       "lines": [
-        341,
-        341
+        342,
+        342
       ],
       "hash": "093aa84b0f",
       "text": "| Encrypt | Operational | Lets you Encrypt a target file or datastream |",
@@ -33199,8 +33215,8 @@
       "id": "rules/decking-defragged.md#172",
       "file": "rules/decking-defragged.md",
       "lines": [
-        342,
-        342
+        343,
+        343
       ],
       "hash": "57fff16219",
       "text": "| Evasion | Operational, degradable | Lets you go Hidden even while Link-Locked |",
@@ -33225,8 +33241,8 @@
       "id": "rules/decking-defragged.md#173",
       "file": "rules/decking-defragged.md",
       "lines": [
-        343,
-        343
+        344,
+        344
       ],
       "hash": "2e4475ff2f",
       "text": "| Exploit | Offensive, degradable | Lowers your TN on Access Node |",
@@ -33251,8 +33267,8 @@
       "id": "rules/decking-defragged.md#174",
       "file": "rules/decking-defragged.md",
       "lines": [
-        344,
-        344
+        345,
+        345
       ],
       "hash": "b190990a59",
       "text": "| Jackpot | Offensive, degradable | Lowers your TN on Siphon Paydata |",
@@ -33277,8 +33293,8 @@
       "id": "rules/decking-defragged.md#175",
       "file": "rules/decking-defragged.md",
       "lines": [
-        345,
-        345
+        346,
+        346
       ],
       "hash": "ada63d8032",
       "text": "| Jamboree | Offensive | Lowers your TN on Jam Signal |",
@@ -33303,8 +33319,8 @@
       "id": "rules/decking-defragged.md#176",
       "file": "rules/decking-defragged.md",
       "lines": [
-        346,
-        346
+        347,
+        347
       ],
       "hash": "29d52dc4df",
       "text": "| Kill Switch | Offensive | Lowers your TN disarming a Databomb |",
@@ -33329,8 +33345,8 @@
       "id": "rules/decking-defragged.md#177",
       "file": "rules/decking-defragged.md",
       "lines": [
-        347,
-        347
+        348,
+        348
       ],
       "hash": "f1b5c63a01",
       "text": "| Lock-On | Offensive, operational | Lowers your TN on Trace Signal; a single success starts a Link-Lock |",
@@ -33356,8 +33372,8 @@
       "id": "rules/decking-defragged.md#178",
       "file": "rules/decking-defragged.md",
       "lines": [
-        348,
-        348
+        349,
+        349
       ],
       "hash": "f9566809cd",
       "text": "| Medic | Offensive, degradable | Lowers your TN repairing another icon's Matrix CM |",
@@ -33382,8 +33398,8 @@
       "id": "rules/decking-defragged.md#179",
       "file": "rules/decking-defragged.md",
       "lines": [
-        349,
-        349
+        350,
+        350
       ],
       "hash": "842f458419",
       "text": "| Mirrors | — degradable | Lowers your TN resisting a System Sweep or an agent's Authenticate ability |",
@@ -33409,8 +33425,8 @@
       "id": "rules/decking-defragged.md#180",
       "file": "rules/decking-defragged.md",
       "lines": [
-        350,
-        350
+        351,
+        351
       ],
       "hash": "745d5ed280",
       "text": "| Read/Write | Offensive | Lowers your TN on datafile prompts (Access, Duplicate/Download, Edit/Upload) |",
@@ -33435,8 +33451,8 @@
       "id": "rules/decking-defragged.md#181",
       "file": "rules/decking-defragged.md",
       "lines": [
-        351,
-        351
+        352,
+        352
       ],
       "hash": "995aefd6ac",
       "text": "| Redirect | Defensive, degradable | Raises the TN for anyone Trace Signal-ing you |",
@@ -33461,8 +33477,8 @@
       "id": "rules/decking-defragged.md#182",
       "file": "rules/decking-defragged.md",
       "lines": [
-        352,
-        352
+        353,
+        353
       ],
       "hash": "7106e5dc47",
       "text": "| Saboteur | Operational | Lets you plant a Databomb on a target |",
@@ -33487,8 +33503,8 @@
       "id": "rules/decking-defragged.md#183",
       "file": "rules/decking-defragged.md",
       "lines": [
-        353,
-        353
+        354,
+        354
       ],
       "hash": "a8c9fdf742",
       "text": "| Shield | Operational, degradable | Soaks hardware-damaging IC attacks instead of your actual deck |",
@@ -33513,8 +33529,8 @@
       "id": "rules/decking-defragged.md#184",
       "file": "rules/decking-defragged.md",
       "lines": [
-        354,
-        354
+        355,
+        355
       ],
       "hash": "8d3bf15312",
       "text": "| Signal Booster | Offensive | Lowers your TN on Send Transmission |",
@@ -33539,8 +33555,8 @@
       "id": "rules/decking-defragged.md#185",
       "file": "rules/decking-defragged.md",
       "lines": [
-        355,
-        355
+        356,
+        356
       ],
       "hash": "01712e8016",
       "text": "| Sleaze | Operational, degradable | Passes harmlessly through a barrier at or below its rating |",
@@ -33565,8 +33581,8 @@
       "id": "rules/decking-defragged.md#186",
       "file": "rules/decking-defragged.md",
       "lines": [
-        356,
-        356
+        357,
+        357
       ],
       "hash": "d8aa5e6d51",
       "text": "| Slow | Combat | Drains an enemy icon's Initiative instead of dealing damage |",
@@ -33591,8 +33607,8 @@
       "id": "rules/decking-defragged.md#187",
       "file": "rules/decking-defragged.md",
       "lines": [
-        357,
-        357
+        358,
+        358
       ],
       "hash": "3bfc5489c0",
       "text": "| Smoke Screen | Defensive, degradable | Raises the TN for anyone Search and Render-ing you |",
@@ -33617,8 +33633,8 @@
       "id": "rules/decking-defragged.md#188",
       "file": "rules/decking-defragged.md",
       "lines": [
-        358,
-        358
+        359,
+        359
       ],
       "hash": "5896f1e814",
       "text": "| Snoop | Offensive | Lowers your TN on Tap Datastream or Spoof Datastream |",
@@ -33643,8 +33659,8 @@
       "id": "rules/decking-defragged.md#189",
       "file": "rules/decking-defragged.md",
       "lines": [
-        359,
-        359
+        360,
+        360
       ],
       "hash": "b823b60d18",
       "text": "| Suppression | Operational, degradable | Lets you crash an icon without gaining Overwatch for it |",
@@ -33669,8 +33685,8 @@
       "id": "rules/decking-defragged.md#190",
       "file": "rules/decking-defragged.md",
       "lines": [
-        361,
-        364
+        362,
+        365
       ],
       "hash": "ccb8bc6779",
       "text": "Beyond programs, two other utility types exist: **passcodes**, which grant automatic, no-roll\nmarks on whatever they're keyed to, and **protocols**, unusual GM-defined applications (the book\ngives a few examples, like one that purges an infiltrating agent or one that buys a convergent\ndecker extra time before the trace lands).",
@@ -33701,8 +33717,8 @@
       "id": "rules/decking-defragged.md#191",
       "file": "rules/decking-defragged.md",
       "lines": [
-        366,
-        366
+        367,
+        367
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -33713,8 +33729,8 @@
       "id": "rules/decking-defragged.md#192",
       "file": "rules/decking-defragged.md",
       "lines": [
-        368,
-        368
+        369,
+        369
       ],
       "hash": "b57eaf6c24",
       "text": "## Doing it in The 2nd Chumming (Foundry)",
@@ -33725,8 +33741,8 @@
       "id": "rules/decking-defragged.md#193",
       "file": "rules/decking-defragged.md",
       "lines": [
-        370,
-        370
+        371,
+        371
       ],
       "hash": "49af45c821",
       "text": "### Choosing the ruleset",
@@ -33737,8 +33753,8 @@
       "id": "rules/decking-defragged.md#194",
       "file": "rules/decking-defragged.md",
       "lines": [
-        372,
-        375
+        373,
+        376
       ],
       "hash": "5d2de6e74a",
       "text": "A world setting, **Matrix Ruleset** (under Foundry's Configure Settings), switches between\n**\"Matrix Defragged v2\"** (the default, described on this page) and **\"Orthodox SR3 Matrix\"**.\nChanging it needs a full Foundry restart, and the GM sees a warning that switching mid-campaign\ncould break things — this is a session-zero decision, not a mid-run one.",
@@ -33749,8 +33765,8 @@
       "id": "rules/decking-defragged.md#195",
       "file": "rules/decking-defragged.md",
       "lines": [
-        377,
-        377
+        378,
+        378
       ],
       "hash": "a6b48c540f",
       "text": "### Getting on the Matrix",
@@ -33761,8 +33777,8 @@
       "id": "rules/decking-defragged.md#196",
       "file": "rules/decking-defragged.md",
       "lines": [
-        379,
-        379
+        380,
+        380
       ],
       "hash": "10132e4464",
       "text": "On the **Matrix** tab of a character or NPC sheet:",
@@ -33773,8 +33789,8 @@
       "id": "rules/decking-defragged.md#197",
       "file": "rules/decking-defragged.md",
       "lines": [
-        381,
-        386
+        382,
+        387
       ],
       "hash": "304d883c10",
       "text": "- **User Mode buttons** — `TRM`, `AR`, `VR-Cold`, `VR-Hot` — set your Matrix mode. Clicking one\n  opens an \"Enter Matrix\" dialog to pick which **host actor** you're connecting to; confirming\n  sets both the mode and your active host. Clicking the same mode again disconnects you and\n  drops you from that host's roster. Switching into either VR mode while driving a vehicle in\n  rigger-control mode automatically kicks the vehicle back to remote control, since the two are\n  mutually exclusive.",
@@ -33785,8 +33801,8 @@
       "id": "rules/decking-defragged.md#198",
       "file": "rules/decking-defragged.md",
       "lines": [
-        387,
-        390
+        388,
+        391
       ],
       "hash": "db12cfeae1",
       "text": "- **Cyberdecks** are items in your inventory. The Matrix tab lists yours (name, MPCP, Firewall,\n  Response) with an **Equip** toggle. The equipped deck shows its full stat block — MPCP,\n  Firewall, Response, memory used/total, free utility slots, transfer rate, Flux rating, your\n  Hacking Pool bonus, and your Matrix Initiative — plus its own 10-box Matrix condition track.",
@@ -33797,8 +33813,8 @@
       "id": "rules/decking-defragged.md#199",
       "file": "rules/decking-defragged.md",
       "lines": [
-        391,
-        393
+        392,
+        394
       ],
       "hash": "6221052709",
       "text": "- **Programs** are also items; drag one onto a numbered utility slot on your deck to load it. A\n  slot can be marked **burned** if an attack knocks it out, or ejected to swap the program out.\n  Loaded programs are rolled straight from their slot (hold Shift for physical dice).",
@@ -33809,8 +33825,8 @@
       "id": "rules/decking-defragged.md#200",
       "file": "rules/decking-defragged.md",
       "lines": [
-        395,
-        395
+        396,
+        396
       ],
       "hash": "73f1037cc4",
       "text": "### Node tracking and prompts",
@@ -33821,8 +33837,8 @@
       "id": "rules/decking-defragged.md#201",
       "file": "rules/decking-defragged.md",
       "lines": [
-        397,
-        401
+        398,
+        402
       ],
       "hash": "445def1bce",
       "text": "While connected to a host, the Matrix tab shows which node you're in, a **Link-Locked** flag, and\nyour current marks as removable chips — plus a manual \"add a mark\" option for anything the GM\nrules outside the normal roll. Picking a node lists that node's available prompts, each flagged\nfor whether failing it raises Overwatch and whether succeeding grants a mark, with a one-click\n**Use** button that rolls it.",
@@ -33847,8 +33863,8 @@
       "id": "rules/decking-defragged.md#202",
       "file": "rules/decking-defragged.md",
       "lines": [
-        403,
-        403
+        404,
+        404
       ],
       "hash": "1b4a54904b",
       "text": "### Rolling a hacking action",
@@ -33859,8 +33875,8 @@
       "id": "rules/decking-defragged.md#203",
       "file": "rules/decking-defragged.md",
       "lines": [
-        405,
-        412
+        406,
+        413
       ],
       "hash": "526b667507",
       "text": "A **Hacking Action** button (visible once you're connected) opens a dialog pre-filled with your\nHacking or Computer rating, your available Hacking Pool, the connected host, a default TN drawn\nfrom the host's System Rating (plus any deck-damage or host-alert penalty already in effect), its\nSecurity Threshold, a field to allocate Hacking Pool dice, and a checkbox — on by default — to\nraise Overwatch automatically if you miss the threshold. Rolling it compares your successes to\nthe threshold exactly as described above; falling short with that box checked posts an Overwatch\nwarning against the host and bumps its tracked total by one. No Hacking or Computer skill at all\nroutes you through the system's usual Default Table first.",
@@ -33901,8 +33917,8 @@
       "id": "rules/decking-defragged.md#204",
       "file": "rules/decking-defragged.md",
       "lines": [
-        414,
-        414
+        415,
+        415
       ],
       "hash": "d39eba31c5",
       "text": "### Cybercombat",
@@ -33913,8 +33929,8 @@
       "id": "rules/decking-defragged.md#205",
       "file": "rules/decking-defragged.md",
       "lines": [
-        416,
-        423
+        417,
+        424
       ],
       "hash": "4123f22ffe",
       "text": "A **Cybercombat** button lets you target anyone sharing your host connection — other connected\ndeckers, deployed IC, or agents — and posts a two-sided card for the exchange. Each side's own\nhalf shows their skill, available Hacking Pool, TN, and damage code, editable only by that side; a\nGM-only resolve button settles things if someone goes AFK. Resolving the card charges each side's\nHacking Pool properly (both attacker and defender, through the same GM-routed pool spend used\nelsewhere in this system, so it works correctly even from a non-owning client) and rolls only the\ndice actually paid for. A degradable attack program used in the exchange loses a point of rating\neach time, and crashes outright once it would drop below 1.",
@@ -33939,8 +33955,8 @@
       "id": "rules/decking-defragged.md#206",
       "file": "rules/decking-defragged.md",
       "lines": [
-        425,
-        425
+        426,
+        426
       ],
       "hash": "1cd04603f8",
       "text": "### Dumpshock",
@@ -33951,8 +33967,8 @@
       "id": "rules/decking-defragged.md#207",
       "file": "rules/decking-defragged.md",
       "lines": [
-        427,
-        432
+        428,
+        433
       ],
       "hash": "bc22a23016",
       "text": "A **Dumpshock** button (shown while in either VR mode) is a manual trigger for a GM or player to\nuse whenever the fiction calls for an abrupt disconnection — a reboot, a cut connection, a power\nloss. It opens a small dialog to pick a connected host (which fills in Power from that host's\nSystem Rating) or set Power by hand, then posts a Serious biofeedback announcement — Physical for\nVR-Hot, Stun for VR-Cold — with a resist button. As everywhere else in this system, the roll only\nannounces the damage; the GM still clicks the wound boxes.",
@@ -33984,8 +34000,8 @@
       "id": "rules/decking-defragged.md#208",
       "file": "rules/decking-defragged.md",
       "lines": [
-        434,
-        434
+        435,
+        435
       ],
       "hash": "061ffa4d7e",
       "text": "### Host sheets, Security Sheaf, and IC",
@@ -33996,8 +34012,8 @@
       "id": "rules/decking-defragged.md#209",
       "file": "rules/decking-defragged.md",
       "lines": [
-        436,
-        444
+        437,
+        445
       ],
       "hash": "edaa1d45cc",
       "text": "A **host** is its own actor type with a dedicated sheet covering its node layout, its Security\nSheaf, its I/O ports, and its roster of connected users and agents. The Security Sheaf tab sets\nthe host's Security Tier (which fills in the matching Threshold automatically) and shows its\n10-box Overwatch track; the GM can seed a standard set of Trigger Steps, assign specific IC to\neach one, and deploy that IC into the current encounter when a step fires. **IC** and **Agent**\nactors get their own sheet type, tracking Rating, grade (White/Gray/Black), and their own Matrix\ncondition track — an Agent additionally names the actor operating it, whose loaded attack program\nsupplies its damage. Any IC flagged as deployed to a host becomes a valid cybercombat target for\neveryone connected there.",
@@ -34022,35 +34038,51 @@
       "id": "rules/decking-defragged.md#210",
       "file": "rules/decking-defragged.md",
       "lines": [
-        446,
-        450
+        447,
+        451
       ],
-      "hash": "aee9dc2bca",
-      "text": "{: .note }\n> Right now, only the first Overwatch trigger — a failed Hacking Test — raises the tracker\n> automatically. Crashing an icon without Suppression, live Trigger Step countdowns, and the\n> Suppression utility itself are still manual, GM-adjudicated calls from the Security Sheaf tab\n> (tracked as open work, TODO 128).",
-      "verdict": "guide-differs",
+      "hash": "a65fa6464d",
+      "text": "{: .note }\n> A failed Hacking Test raises the Overwatch tracker by itself. When an icon is crashed, the GM's\n> **Icon crashed** dialog offers the second trigger (a crash without Suppression adds to\n> Overwatch) or, with Suppression running, its degrade instead. As the tally passes each Trigger\n> Step, the sheaf posts that step for the GM to act on. Nothing is applied without the GM's click.",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
           "pdfPage": 23,
           "printedPage": 23,
-          "quote": "Crashing an icon without Suppressing it"
+          "quote": "Overwatch is tracked on the Security Sheaf of"
+        },
+        {
+          "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
+          "pdfPage": 26,
+          "printedPage": 26,
+          "quote": "in an active utility slot, may degrade 1 point of the"
         }
       ],
-      "note": "The guide's note is stale about the system: since 0.9.0 (TODO 128) the second trigger (crashing an icon without Suppression) and the Suppression degrade are offered through the GM's Icon crashed dialog (SR3EActor.handleIconCrashClick), and the sheaf prompt posts each Trigger Step. The book's rule is unchanged; the guide note needs updating.",
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 1892,
-          "snippet": "await SR3EActor._incrementOverwatch(pick.hostId, pick.deckerId || null, 'An icon crashed without Suppression (MDF p.22).');"
+          "line": 1536,
+          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId, reason = 'Hack attempt failed Security Threshold check.') {"
+        },
+        {
+          "file": "scripts/data/overwatch-crash.mjs",
+          "line": 34,
+          "snippet": "return { overwatch: 0, degrade: 1, suppressed: true, newRating: rating - 1 };"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1880,
+          "snippet": "const res = OverwatchCrash.resolve({"
         }
-      ]
+      ],
+      "note": "Guide note rewritten 2026-11-19 at the maintainer's direction (it was stale): the failed-Hacking-Test trigger, the crash trigger and Suppression's degrade are what the code now does."
     },
     {
       "id": "rules/decking-defragged.md#211",
       "file": "rules/decking-defragged.md",
       "lines": [
-        452,
-        452
+        453,
+        453
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -34061,8 +34093,8 @@
       "id": "rules/decking-defragged.md#212",
       "file": "rules/decking-defragged.md",
       "lines": [
-        454,
-        454
+        455,
+        455
       ],
       "hash": "ecda77397d",
       "text": "## Worked example",
@@ -34073,8 +34105,8 @@
       "id": "rules/decking-defragged.md#213",
       "file": "rules/decking-defragged.md",
       "lines": [
-        456,
-        459
+        457,
+        460
       ],
       "hash": "aa53eb5e4a",
       "text": "**Voss** decks with Intelligence 4 and a cyberdeck running **MPCP 8, Firewall 4, Response 1**,\nand Hacking 5. Her Hacking Pool is Intelligence 4 + ⌊8 ÷ 3⌋ = 4 + 2 = **6**. She's running\n**VR-Hot**, so her Matrix Initiative gets the Response bonus: +2 Reaction and one extra die on\ntop of her usual 1D6.",
@@ -34105,8 +34137,8 @@
       "id": "rules/decking-defragged.md#214",
       "file": "rules/decking-defragged.md",
       "lines": [
-        461,
-        461
+        462,
+        462
       ],
       "hash": "5f80138d5c",
       "text": "She jacks into a corporate research host: **System Rating 7, Security Tier Red (Threshold 4)**.",
@@ -34117,8 +34149,8 @@
       "id": "rules/decking-defragged.md#215",
       "file": "rules/decking-defragged.md",
       "lines": [
-        463,
-        464
+        464,
+        465
       ],
       "hash": "e160526ca5",
       "text": "1. **First hack.** She commits 3 Hacking Pool dice to her Hacking 5, rolling 8 dice against\n   **TN 7** (the host's System Rating), and gets 5 successes.",
@@ -34143,8 +34175,8 @@
       "id": "rules/decking-defragged.md#216",
       "file": "rules/decking-defragged.md",
       "lines": [
-        465,
-        466
+        466,
+        467
       ],
       "hash": "9b58528619",
       "text": "2. **Check the Threshold.** 5 is at or above 4, so she succeeds and picks up a mark on the node\n   she's targeting. No Overwatch gained.",
@@ -34169,8 +34201,8 @@
       "id": "rules/decking-defragged.md#217",
       "file": "rules/decking-defragged.md",
       "lines": [
-        467,
-        469
+        468,
+        470
       ],
       "hash": "5aeef0eb0e",
       "text": "3. **Second hack, pushing further** in the same Combat Turn, committing her remaining 3 Hacking\n   Pool dice: 8 dice against TN 7 nets her only 3 successes this time — short of the Red host's\n   Threshold 4. The hack fails, and her **Overwatch** on this host rises from 0 to **1**.",
@@ -34200,8 +34232,8 @@
       "id": "rules/decking-defragged.md#218",
       "file": "rules/decking-defragged.md",
       "lines": [
-        470,
-        472
+        471,
+        473
       ],
       "hash": "92d254f816",
       "text": "4. **If her Overwatch ever reached 10**, Convergence would follow: the GM might trigger\n   Dumpshock at Power 7 (the host's System Rating) — Physical for her, since she's in VR-Hot —\n   leak pieces of her session, and send security to her jackpoint.",
@@ -34232,8 +34264,8 @@
       "id": "rules/decking-defragged.md#219",
       "file": "rules/decking-defragged.md",
       "lines": [
-        474,
-        478
+        475,
+        479
       ],
       "hash": "ab07b0e376",
       "text": "**If instead an IC engaged her in cybercombat:** say a Gray IC (Rating 5) attacks. Both sides roll\nCybercombat plus Hacking Pool against the base TN 4. If Voss nets 3 successes over the IC's\ntotal, her attack utility's Damage Level steps up once (two successes per step). The IC then\nresists with its own Rating against a TN equal to her attack's Power minus its Firewall (its\nhost's Security Threshold — 4 here), soaking off Damage Levels two successes at a time.",
@@ -45053,7 +45085,6 @@
       "hash": "d85ac6acf4",
       "text": "How a character learns a new skill or improves one: the **Good Karma** it costs, the **training** the gamemaster\nmay require, a **teacher** with the Instruction skill, and the **virtual instructor** programs and chips sold on the\nMatrix. Karma costs are on the [Karma](../karma/#skills) page and aren't repeated here. All rules are from the\ncore rulebook, *(SR3 p.87, p.95, p.245, p.296)*.",
       "verdict": "match",
-      "note": "Page introduction citing the four pages its rules come from; each rule is resolved in its own unit below. Evidence: one quote per cited page and the code that holds the parts the system models.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45096,7 +45127,8 @@
           "line": 27,
           "snippet": "\"legality\": \"Legal (3-Y for illegal or restricted skills)\""
         }
-      ]
+      ],
+      "note": "Page introduction citing the four pages its rules come from; each rule is resolved in its own unit below. Evidence: one quote per cited page and the code that holds the parts the system models."
     },
     {
       "id": "rules/instruction.md#3",
@@ -45132,7 +45164,6 @@
       "hash": "2247a48fb9",
       "text": "## Learning a new skill  *(SR3 p.245)*",
       "verdict": "match",
-      "note": "Section heading citing SR3 p.245 (Learning New Skills).",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45147,7 +45178,8 @@
           "line": 7984,
           "snippet": "return 1;"
         }
-      ]
+      ],
+      "note": "Section heading citing SR3 p.245 (Learning New Skills)."
     },
     {
       "id": "rules/instruction.md#6",
@@ -45284,7 +45316,6 @@
       "hash": "213446d3c0",
       "text": "## The Instruction skill  *(SR3 p.87, p.95)*",
       "verdict": "match",
-      "note": "Section heading citing SR3 p.87 and p.95.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45305,7 +45336,8 @@
           "line": 106,
           "snippet": "name: \"Instruction\",   linkedAttribute: \"charisma\""
         }
-      ]
+      ],
+      "note": "Section heading citing SR3 p.87 and p.95."
     },
     {
       "id": "rules/instruction.md#14",
@@ -45317,7 +45349,6 @@
       "hash": "f313bee4d6",
       "text": "**Instruction** is a Charisma-linked Active skill. It **defaults to the Charisma Attribute**, and its specializations\nare **by specific subject** *(SR3 p.87)*.",
       "verdict": "match",
-      "note": "Defaulting to the linked Attribute is the general Default Table rule; the link to Charisma and the \"specific subject\" specialization are what the code holds.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45332,7 +45363,8 @@
           "line": 106,
           "snippet": "name: \"Instruction\",   linkedAttribute: \"charisma\""
         }
-      ]
+      ],
+      "note": "Defaulting to the linked Attribute is the general Default Table rule; the link to Charisma and the \"specific subject\" specialization are what the code holds."
     },
     {
       "id": "rules/instruction.md#15",
@@ -45443,7 +45475,6 @@
       "hash": "d91076d3ae",
       "text": "## Virtual instructors  *(SR3 p.95, p.296)*",
       "verdict": "not-implemented",
-      "note": "Section heading: the virtual instructor sizing and pricing rules are not modelled (see #21-#23).",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45457,7 +45488,8 @@
           "pattern": "virtualInstructor|instructorSize",
           "path": "scripts"
         }
-      ]
+      ],
+      "note": "Section heading: the virtual instructor sizing and pricing rules are not modelled (see #21-#23)."
     },
     {
       "id": "rules/instruction.md#21",
@@ -45544,7 +45576,6 @@
       "hash": "4322d0ae12",
       "text": "3. **As a chip.** A **Virtual Instructor Chip** is sold for **Mp × 100¥**, Availability **(ratings total)/72 hrs**,\n   Street Index **1** *(SR3 p.296)*.",
       "verdict": "diverges",
-      "note": "The book prices the chip by size (Mp x 100¥) with Availability = ratings total/72 hrs. The two pack items (Virt Instr Gen. / Spec) carry a flat 600¥ / 500¥ and Availability 2/72hrs — one fixed instance, not the formula. Street Index 1 and the Legality agree. For the maintainer: intended example ratings, or should the price follow the formula?",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45570,7 +45601,8 @@
           "line": 23,
           "snippet": "\"availability\": \"2/72hrs\","
         }
-      ]
+      ],
+      "note": "The book prices the chip by size (Mp x 100¥) with Availability = ratings total/72 hrs. The two pack items (Virt Instr Gen. / Spec) carry a flat 600¥ / 500¥ and Availability 2/72hrs — one fixed instance, not the formula. Street Index 1 and the Legality agree. For the maintainer: intended example ratings, or should the price follow the formula?"
     },
     {
       "id": "rules/instruction.md#25",
@@ -45594,7 +45626,6 @@
       "hash": "86dfee1f74",
       "text": "### Restricted skills  *(SR3 p.95)*",
       "verdict": "not-implemented",
-      "note": "Section heading; the rule is #27.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45608,7 +45639,8 @@
           "pattern": "restrictedSkillProgram",
           "path": "scripts"
         }
-      ]
+      ],
+      "note": "Section heading; the rule is #27."
     },
     {
       "id": "rules/instruction.md#27",
@@ -45645,7 +45677,6 @@
       "hash": "dd055dda3f",
       "text": "### Legality  *(SR3 p.296)*",
       "verdict": "match",
-      "note": "Section heading citing the Legality column of SR3 p.296.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45660,7 +45691,8 @@
           "line": 27,
           "snippet": "\"legality\": \"Legal (3-Y for illegal or restricted skills)\""
         }
-      ]
+      ],
+      "note": "Section heading citing the Legality column of SR3 p.296."
     },
     {
       "id": "rules/instruction.md#29",
@@ -45727,7 +45759,6 @@
       "hash": "646753e9ef",
       "text": "## Skillsofts and chips  *(SR3 p.295–296)*",
       "verdict": "match",
-      "note": "Section heading citing the Skillsofts and Chips table.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45742,7 +45773,8 @@
           "line": 27,
           "snippet": "\"legality\": \"Legal (3-Y for illegal or restricted skills)\""
         }
-      ]
+      ],
+      "note": "Section heading citing the Skillsofts and Chips table."
     },
     {
       "id": "rules/instruction.md#33",
@@ -46757,7 +46789,6 @@
       "hash": "0cd6eb58c8",
       "text": "### Skills  *(SR3 p.244–245)*\n{: #skills }",
       "verdict": "match",
-      "note": "Section heading citing SR3 p.244-245; its rows are resolved below it.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -46777,7 +46808,8 @@
           "line": 7984,
           "snippet": "return 1;"
         }
-      ]
+      ],
+      "note": "Section heading citing SR3 p.244-245; its rows are resolved below it."
     },
     {
       "id": "rules/karma.md#30",
@@ -55511,7 +55543,6 @@
           "quote": "A vehicle's Body Rating also indicates how many weapons can be mounted on it"
         }
       ],
-      "note": "Body as toughness throughout; since 0.9.0 the mounts' points are counted against Body and over-Body is warned (TODO 234).",
       "code": [
         {
           "file": "scripts/data/vehicle-mounts.mjs",
@@ -55523,7 +55554,8 @@
           "line": 173,
           "snippet": "if (points.over > 0) {"
         }
-      ]
+      ],
+      "note": "Body as toughness throughout; since 0.9.0 the mounts' points are counted against Body and over-Body is warned (TODO 234)."
     },
     {
       "id": "rules/vehicles.md#11",
@@ -57708,7 +57740,6 @@
           "quote": "Heavy and vehicular weapons (MMGs and larger) must be mounted on hardpoints; smaller arms (LMGs, assault rifles and smaller) may be mounted on firmpoints"
         }
       ],
-      "note": "A heavy or vehicle weapon on a firmpoint is warned, never refused (TODO 234).",
       "code": [
         {
           "file": "scripts/data/vehicle-mounts.mjs",
@@ -57720,7 +57751,8 @@
           "line": 179,
           "snippet": "if (m.slot === 'firmpoint' && VehicleMounts.needsHardpoint(w)) {"
         }
-      ]
+      ],
+      "note": "A heavy or vehicle weapon on a firmpoint is warned, never refused (TODO 234)."
     },
     {
       "id": "rules/vehicles.md#65",
@@ -57740,7 +57772,6 @@
           "quote": "Each hardpoint is worth 2 points of Body, and each firmpoint counts for 1 point"
         }
       ],
-      "note": "Hardpoint 2, firmpoint 1, total against Body: warned when over (TODO 234).",
       "code": [
         {
           "file": "scripts/data/vehicle-mounts.mjs",
@@ -57752,7 +57783,8 @@
           "line": 170,
           "snippet": "const points = { used, of: body, over: Math.max(0, used - body) };"
         }
-      ]
+      ],
+      "note": "Hardpoint 2, firmpoint 1, total against Body: warned when over (TODO 234)."
     },
     {
       "id": "rules/vehicles.md#66",
@@ -57763,7 +57795,7 @@
       ],
       "hash": "e2c45c9207",
       "text": "- **Firmpoints** are fixed mounts or pintle mounts; **hardpoints** are\n  fixed mounts or turrets.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -57772,7 +57804,6 @@
           "quote": "Firmpoints can be a fixed mount or a pintle mount. Hardpoints can be a fixed mount or a turret."
         }
       ],
-      "note": "Fixed (hard or firm), pintle (firmpoint) and turret (hardpoint) follow SR3 p.307, but the code also takes Rigger 3 Revised's ring mount as a hardpoint (R3R p.139) and a micro-turret as a firmpoint (R3R p.140), which SR3's \"Firmpoints can be a fixed mount or a pintle mount\" does not allow. Whether R3R governs is the maintainer's call.",
       "code": [
         {
           "file": "scripts/data/vehicle-mounts.mjs",
@@ -57794,7 +57825,8 @@
           "line": 100,
           "snippet": "return { kind: 'turret', size, points: t.points, slot: t.slot, external: true, popup, remote: !!m[1], weaponValue, rc: 0, halve: true };"
         }
-      ]
+      ],
+      "note": "Maintainer ruling 2026-11-19: \"r3r overrides core\". Rigger 3 Revised's mounts (ring mount as a hardpoint, R3R p.139; micro-turret as a firmpoint, R3R p.140) govern over SR3 p.307's shorter list. Fixed (hard or firm), pintle (firmpoint) and turret (hardpoint) follow SR3 p.307, but the code also takes Rigger 3 Revised's ring mount as a hardpoint (R3R p.139) and a micro-turret as a firmpoint (R3R p.140), which SR3's \"Firmpoints can be a fixed mount or a pintle mount\" does not allow. Whether R3R governs is the maintainer's call."
     },
     {
       "id": "rules/vehicles.md#67",
@@ -57826,7 +57858,6 @@
           "quote": "External fixed mounts reduce the vehicle's Signature by 1"
         }
       ],
-      "note": "Since 0.9.0 (TODO 234) a firearm on a fixed mount halves recoil before compensation, cancelling the heavy double, and external fixed mounts take 1 off Signature. Not modelled: a side-firing fixed mount adding its recoil to Handling and forcing a Crash Test (no side-firing concept), and vehicle-weapon recoil (TODO 282).",
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
@@ -57843,7 +57874,8 @@
           "line": 204,
           "snippet": "if (mounts.some(m => m.kind === 'fixed' && m.external)) { reduction += 1; sigNotes.push(`external mounts −1 (${PAGES.fixed})`); }"
         }
-      ]
+      ],
+      "note": "Since 0.9.0 (TODO 234) a firearm on a fixed mount halves recoil before compensation, cancelling the heavy double, and external fixed mounts take 1 off Signature. Not modelled: a side-firing fixed mount adding its recoil to Handling and forcing a Crash Test (no side-firing concept), and vehicle-weapon recoil (TODO 282)."
     },
     {
       "id": "rules/vehicles.md#68",
@@ -58713,7 +58745,6 @@
           "quote": "If an item's Legality Code features a \"P,\" a permit"
         }
       ],
-      "note": "Since 0.9.0 firearms store the printed Legality Code in system.legality (filled from the books, legality-table.mjs) and the buy dialog reads it.",
       "code": [
         {
           "file": "scripts/data/ItemDataModels.js",
@@ -58725,7 +58756,8 @@
           "line": 59,
           "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
         }
-      ]
+      ],
+      "note": "Since 0.9.0 firearms store the printed Legality Code in system.legality (filled from the books, legality-table.mjs) and the buy dialog reads it."
     },
     {
       "id": "rules/weapons.md#14",
@@ -64868,7 +64900,6 @@
           "quote": "silencers or sound suppressers. Rifles include the following:"
         }
       ],
-      "note": "Warned when the mod is installed, never refused (TODO 276).",
       "code": [
         {
           "file": "scripts/data/weapon-accessories.mjs",
@@ -64890,7 +64921,8 @@
           "line": 92,
           "snippet": "if ((silencer || suppressor) && cat === 'ShtG') out.push(`${gun} is a shotgun: \"Shotguns cannot mount silencers or sound suppressers\" (SR3 p.277).`);"
         }
-      ]
+      ],
+      "note": "Warned when the mod is installed, never refused (TODO 276)."
     },
     {
       "id": "rules/weapons.md#195",
@@ -65422,7 +65454,6 @@
           "quote": "SMGs can accept one top-mounting, one barrel-mounting, and one underbarrel-mount-"
         }
       ],
-      "note": "Since 0.9.0 (TODO 276) top/barrel/underbarrel mounts hold one accessory each, integral accessories hold theirs, and an underbarrel mod on a pistol is warned. Not checked: an SMG taking a grenade launcher underbarrel (SR3 p.277).",
       "code": [
         {
           "file": "scripts/data/item-mods.mjs",
@@ -65439,7 +65470,8 @@
           "line": 89,
           "snippet": "else if (PISTOLS.includes(cat) && under) out.push(`${gun} is a pistol — one barrel and one top mount, no underbarrel (SR3 p.276); ${name} would go underbarrel.`"
         }
-      ]
+      ],
+      "note": "Since 0.9.0 (TODO 276) top/barrel/underbarrel mounts hold one accessory each, integral accessories hold theirs, and an underbarrel mod on a pistol is warned. Not checked: an SMG taking a grenade launcher underbarrel (SR3 p.277)."
     },
     {
       "id": "rules/weapons.md#211",
@@ -66102,7 +66134,6 @@
           "quote": "Ultrasound Goggles Top/under -1 .25 6/36 hrs +100% Weapon 4P-N"
         }
       ],
-      "note": "An internal smartgun installed later adds the gun's cost (doubling it); a Smartlink-2 adds 150% (M&M p.32, the maintainer's ruling Q10). Printed (integral) ones are not priced.",
       "code": [
         {
           "file": "scripts/data/weapon-accessories.mjs",
@@ -66114,7 +66145,8 @@
           "line": 109,
           "snippet": "return Math.round((Number(weapon?.system?.cost) || 0) * share);"
         }
-      ]
+      ],
+      "note": "An internal smartgun installed later adds the gun's cost (doubling it); a Smartlink-2 adds 150% (M&M p.32, the maintainer's ruling Q10). Printed (integral) ones are not priced."
     },
     {
       "id": "rules/weapons.md#230",
@@ -66257,14 +66289,14 @@
           "quote": "only be top-mounted, may not be used with smartlink systems,"
         }
       ],
-      "note": "Warned when either is installed with the other, never refused (ruled 2026-11-07).",
       "code": [
         {
           "file": "scripts/data/weapon-accessories.mjs",
           "line": 68,
           "snippet": "out.push(`${gun} would have an imaging scope and a smartgun system: SR3 p.280 says imaging scopes may not be used with smartlink systems.`);"
         }
-      ]
+      ],
+      "note": "Warned when either is installed with the other, never refused (ruled 2026-11-07)."
     },
     {
       "id": "rules/weapons.md#234",
@@ -69874,7 +69906,6 @@
           "quote": "Legality represents whether or not it is illegal to own the item, carry or transport it, what restriction category it falls into, and whether or not permits for the item are available"
         }
       ],
-      "note": "The code is stored and parsed into restriction level, permit and category for the buy dialog; the category's meaning (Fines table) is not modelled (see the Categories rows).",
       "code": [
         {
           "file": "scripts/data/legality.mjs",
@@ -69886,7 +69917,8 @@
           "line": 60,
           "snippet": "if (m && c) return { status: 'restricted', code: c, permit: m[2].toUpperCase() === 'P', defersTo: '' };"
         }
-      ]
+      ],
+      "note": "The code is stored and parsed into restriction level, permit and category for the buy dialog; the category's meaning (Fines table) is not modelled (see the Categories rows)."
     },
     {
       "id": "street/gear-and-fencing.md#13",
@@ -70091,14 +70123,14 @@
           "quote": "gamemasters can adjust the Availability target number upward the next time the character searches for something through that contact"
         }
       ],
-      "note": "The GM's Cancel says the deal is off and that the GM may raise this contact's Availability next time; it is said, not applied (the book's \"may\").",
       "code": [
         {
           "file": "scripts/data/orders.mjs",
           "line": 114,
           "snippet": "CANCEL_NOTE: 'The deal is off. The GM may raise this contact\\'s Availability for the next purchase (SR3 p.273) — not applied.',"
         }
-      ]
+      ],
+      "note": "The GM's Cancel says the deal is off and that the GM may raise this contact's Availability next time; it is said, not applied (the book's \"may\")."
     },
     {
       "id": "street/gear-and-fencing.md#21",
@@ -70312,7 +70344,6 @@
           "quote": "Any additional successes indicate that the officer will press the issue"
         }
       ],
-      "note": "Codes are stored and read for buying (a restricted item needs a permit; warn, never refuse). The enforcement test and the Local Fines and Punishment Table are not modelled (rows below).",
       "code": [
         {
           "file": "scripts/data/legality.mjs",
@@ -70324,7 +70355,8 @@
           "line": 91,
           "snippet": "case 'restricted': return `Legality ${k.code} — restricted: buying it legally needs a permit${k.permit ? ' (one is available)' : ' (none is issued)'} (${PAGE})."
         }
-      ]
+      ],
+      "note": "Codes are stored and read for buying (a restricted item needs a permit; warn, never refuse). The enforcement test and the Local Fines and Punishment Table are not modelled (rows below)."
     },
     {
       "id": "street/gear-and-fencing.md#30",
@@ -70394,14 +70426,14 @@
           "quote": "Any additional successes indicate that the officer will press the issue"
         }
       ],
-      "note": "The buy dialog says whether a permit is available.",
       "code": [
         {
           "file": "scripts/data/legality.mjs",
           "line": 60,
           "snippet": "if (m && c) return { status: 'restricted', code: c, permit: m[2].toUpperCase() === 'P', defersTo: '' };"
         }
-      ]
+      ],
+      "note": "The buy dialog says whether a permit is available."
     },
     {
       "id": "street/gear-and-fencing.md#33",
@@ -70459,7 +70491,6 @@
           "quote": "Any additional successes indicate that the officer will press the issue"
         }
       ],
-      "note": "A Legal item defaults to buying at the store. The data trail of buying in your own name is not modelled.",
       "code": [
         {
           "file": "scripts/data/legality.mjs",
@@ -70471,7 +70502,8 @@
           "line": 90,
           "snippet": "case 'legal': return `Legal — sold openly at list price (${PAGE}).`;"
         }
-      ]
+      ],
+      "note": "A Legal item defaults to buying at the store. The data trail of buying in your own name is not modelled."
     },
     {
       "id": "street/gear-and-fencing.md#35",
@@ -71720,7 +71752,6 @@
       "hash": "e0ea5930ee",
       "text": "What a Legality Code like **`8P-V`** means, how to get restricted gear **legally** (a permit)\nand **through a contact** (the street), and what it costs if you're caught with it. All rules\nare from the core rulebook, *(SR3 p.270–274)*.",
       "verdict": "match",
-      "note": "Page introduction citing SR3 p.270-274; each rule resolved below.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -71735,7 +71766,8 @@
           "line": 59,
           "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
         }
-      ]
+      ],
+      "note": "Page introduction citing SR3 p.270-274; each rule resolved below."
     },
     {
       "id": "street/legality.md#3",
@@ -71771,7 +71803,6 @@
       "hash": "6f7eb90fad",
       "text": "## Reading a code  *(SR3 p.273)*",
       "verdict": "match",
-      "note": "Section heading.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -71786,7 +71817,8 @@
           "line": 59,
           "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
         }
-      ]
+      ],
+      "note": "Section heading."
     },
     {
       "id": "street/legality.md#6",
@@ -71842,7 +71874,6 @@
       "hash": "c603f59ca0",
       "text": "| **The number** | The **severity of the restriction**. *\"The lower the number, the higher the restriction level.\"* It is the target number an officer rolls against (below). |",
       "verdict": "match",
-      "note": "The code reads the number; the officer test it feeds is not modelled (#14).",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -71857,7 +71888,8 @@
           "line": 59,
           "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
         }
-      ]
+      ],
+      "note": "The code reads the number; the officer test it feeds is not modelled (#14)."
     },
     {
       "id": "street/legality.md#9",
@@ -71900,7 +71932,6 @@
       "hash": "7f05e63cc1",
       "text": "| **The letter** | The category on the **Local Fines and Punishment Table**, which is what getting caught costs (below). |",
       "verdict": "match",
-      "note": "The letter is parsed; the fines it selects are not modelled (#49).",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -71915,7 +71946,8 @@
           "line": 59,
           "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
         }
-      ]
+      ],
+      "note": "The letter is parsed; the fines it selects are not modelled (#49)."
     },
     {
       "id": "street/legality.md#11",
@@ -71953,7 +71985,6 @@
       "hash": "f6a8913f70",
       "text": "The code is **Seattle / UCAS law**. *\"An item's legality may vary among federal UCAS\nagencies, other countries and the various extraterritorial megacorporations. What is illegal in\nSeattle may simply be controlled at Mitsuhama.\"* *(SR3 p.273)* The GM decides the code for\nanything the books leave out (military hardware, drones, vehicle-grade weapons).",
       "verdict": "match",
-      "note": "The final sentence (the GM decides codes the books leave out) is the guide's advice, not the book's; the system leaves blank codes to the GM (data/legality-table.mjs fills only printed codes).",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -71968,7 +71999,8 @@
           "line": 83,
           "snippet": "return Legality.classify(code).status === 'legal';"
         }
-      ]
+      ],
+      "note": "The final sentence (the GM decides codes the books leave out) is the guide's advice, not the book's; the system leaves blank codes to the GM (data/legality-table.mjs fills only printed codes)."
     },
     {
       "id": "street/legality.md#13",
@@ -72155,7 +72187,6 @@
       "hash": "86217b0adc",
       "text": "## Getting it legally: the permit  *(SR3 p.273–274)*\n{: #permits }",
       "verdict": "match",
-      "note": "Section heading. The permit itself is not modelled (#23-#28); the code tells the buyer a permit is needed and whether one exists.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -72170,7 +72201,8 @@
           "line": 91,
           "snippet": "buying it legally needs a permit${k.permit ? ' (one is available)' : ' (none is issued)'}"
         }
-      ]
+      ],
+      "note": "Section heading. The permit itself is not modelled (#23-#28); the code tells the buyer a permit is needed and whether one exists."
     },
     {
       "id": "street/legality.md#22",
@@ -72468,7 +72500,6 @@
       "hash": "d479c5df3b",
       "text": "## Getting it through a contact: the street  *(SR3 p.272–273)*",
       "verdict": "match",
-      "note": "Section heading.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -72483,7 +72514,8 @@
           "line": 59,
           "snippet": "talismonger:  { good: ['focus', 'spell', 'magical'], bad: ['firearm', 'melee', 'projectile', 'ammunition'], note: 'ideal for magical items, poor for weapons (p.272)' },"
         }
-      ]
+      ],
+      "note": "Section heading."
     },
     {
       "id": "street/legality.md#36",
@@ -72708,7 +72740,6 @@
       "hash": "e231cdeb49",
       "text": "| Needs | **A valid SIN**, and a **permit** if the item is restricted | A contact, and a successful Etiquette roll |",
       "verdict": "match",
-      "note": "The system does not check a SIN or permit at the store; it warns (house rule on the guide's note #78).",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -72723,7 +72754,8 @@
           "line": 91,
           "snippet": "buying it legally needs a permit${k.permit ? ' (one is available)' : ' (none is issued)'}"
         }
-      ]
+      ],
+      "note": "The system does not check a SIN or permit at the store; it warns (house rule on the guide's note #78)."
     },
     {
       "id": "street/legality.md#45",
@@ -73457,7 +73489,6 @@
       "hash": "bb7883f0ae",
       "text": "*Example:* a Legality of **`8P-V`** (Broadcast Encryption, Rating 1-4, *SR3 p.290*) is **Class B\nEquipment**: **4,000¥** for possession. The number **8** is the officer's target number, and the\n**P** means a permit can be had.",
       "verdict": "match",
-      "note": "The example parses as the guide says; the fine itself is not modelled (#49).",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -73477,7 +73508,8 @@
           "line": 60,
           "snippet": "permit: m[2].toUpperCase() === 'P'"
         }
-      ]
+      ],
+      "note": "The example parses as the guide says; the fine itself is not modelled (#49)."
     },
     {
       "id": "street/legality.md#76",
