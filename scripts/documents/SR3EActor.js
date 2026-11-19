@@ -32,6 +32,7 @@ import { ExtraDamage } from '../data/extra-damage.mjs';
 import { ShockStun, STUN_TN, STUN_STATUS, STUN_PAGE } from '../data/shock-stun.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 import { NpcCorner } from '../data/npc-corner.mjs';
+import { DumpShock } from '../data/dump-shock.mjs';
 
 export class SR3EActor extends Actor {
 
@@ -1247,33 +1248,44 @@ export class SR3EActor extends Actor {
     if (!result) return;
     if (result.kind !== 'matrix') return this._postRiggerDumpshock(result.kind, result.deck);
     if (ortho) return this._postOrthoDumpshock(result.code, result.secValue);
-    const power = result.power;
+    return this._postDefraggedDumpshock(result.power);
+  }
 
-    const trackLabel = isStun ? 'Stun' : 'Physical';
+  /**
+   * A Defragged persona's Dumpshock — MDF p.27 (rules in `data/dump-shock.mjs`). Serious, Power = the System Rating of the
+   * grid or host that dumped the user, resisted with Willpower and no armour (the maintainer's rulings, TODO 201). Tortoise and
+   * AR users are IMMUNE to the damage (the card says so and offers no roll); VR-Cold takes it on Stun, VR-Hot on Physical; and
+   * every user takes +2 to all target numbers for ten minutes. Offered, never applied.
+   * @param {number} systemRating  Power — the System Rating of the host that dumped them.
+   * @param {{headline?: string, why?: string}} [opts]
+   */
+  async _postDefraggedDumpshock(systemRating, { headline = '⚡ Dumpshock', why = '' } = {}) {
+    const mode = this.system.matrixUserMode ?? '';
+    const ds = DumpShock.defragged(mode, systemRating);
     const soakCtx = JSON.stringify({
       attackerActorId: null,
       targetActorId:   actorRef(this),
       isMelee:         false,
-      stagedPower:     power,
-      stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
-      isStun,
-      rawDamage:       `${power}S`,
+      stagedPower:     ds.power,
+      stagedLevel:     ds.level,
+      isStun:          ds.isStun,
+      rawDamage:       `${ds.power}${ds.level}`,
       resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)
       noArmor:         true,          // no armour against dump shock — the maintainer's ruling, 2026-09-28
       noArmorNote:     'Dump shock — no armour applies',
     }).replace(/'/g, '&#39;');
-
+    const body = ds.immune
+      ? `<div class="sr-staging-result">${ds.note}</div>`
+      : `<div class="sr-staging-result">Dumpshock (${mode || 'no mode set — read as VR-Cold'} → ${ds.track}): <strong>${ds.power}S ${ds.track}</strong></div>
+         <div class="sr-soak-action"><button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${this.name}: Resist Dumpshock (Willpower)</button></div>`;
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
       content: `
         <div class="sr-roll-card">
-          <div class="sr-roll-header" style="color:var(--sr-red)">⚡ Dumpshock — ${this.name}</div>
-          <div class="sr-staging-result">
-            Dumpshock ${isVRHot ? '(VR-Hot → Physical)' : '(VR-Cold → Stun)'}: <strong>${power}S ${trackLabel}</strong>
-          </div>
-          <div class="sr-soak-action">
-            <button class="sr-soak-btn" data-payload='${soakCtx}'>🛡 ${this.name}: Resist Dumpshock (Willpower)</button>
-          </div>
+          <div class="sr-roll-header" style="color:var(--sr-red)">${headline} — ${this.name}</div>
+          ${why ? `<div class="sr-roll-meta">${why}</div>` : ''}
+          ${body}
+          <div class="sr-roll-meta">+${DumpShock.TN_PENALTY} to all target numbers for the next ${DumpShock.TN_MINUTES} minutes (MDF p.27).</div>
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
@@ -1621,44 +1633,37 @@ export class SR3EActor extends Actor {
     });
   }
 
+  /**
+   * Convergence — Overwatch has filled all ten boxes (MDF p.24): "the decker may experience any or all of the following at the
+   * discretion of the offended system". The first of those is the one with a roll, so it is offered here straight away (the
+   * Defragged Dumpshock card, Power = this host's System Rating); the rest are for the GM to decide and are listed, not applied.
+   */
   static async _postConvergenceCard(hostActor, attackerActorId) {
-    const systemRating  = hostActor.system.systemRating ?? 6;
-    const attacker      = actorFrom(attackerActorId);
-    const attackerName  = attacker?.name ?? 'Decker';
-    const isVRHot       = (attacker?.system?.matrixUserMode ?? '') === 'VR-Hot';
-    const isStun        = !isVRHot;
-    const damageCode    = `${systemRating}S`;   // Serious — MDF p.27 (TODO 119)
-    const trackLabel    = isStun ? 'Stun' : 'Physical';
-
-    const soakCtx = JSON.stringify({
-      attackerActorId: actorRef(hostActor),
-      targetActorId:   attackerActorId,
-      isMelee:         false,
-      stagedPower:     systemRating,
-      stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)
-      isStun,
-      rawDamage:       damageCode,
-      resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)
-      noArmor:         true,          // no armour against dump shock — the maintainer's ruling, 2026-09-28
-      noArmorNote:     'Dump shock — no armour applies',
-    }).replace(/'/g, '&#39;');
+    const attacker = actorFrom(attackerActorId);
+    const rating   = hostActor.system.systemRating ?? 6;
+    const gm       = game.users.filter(u => u.isGM).map(u => u.id);
 
     await ChatMessage.create({
+      whisper: gm,
       content: `
         <div class="sr-roll-card">
           <div class="sr-roll-header" style="color:var(--sr-red)">⚠ CONVERGENCE — ${hostActor.name}</div>
-          <div class="sr-roll-result" style="color:var(--sr-red)">GOD Response activated! Overwatch reached 10.</div>
-          <div class="sr-staging-result">
-            Dumpshock on ${attackerName}${isVRHot ? ' (VR-Hot → Physical)' : ' (VR-Cold → Stun)'}: <strong>${systemRating}S ${trackLabel}</strong>
-          </div>
-          <div class="sr-soak-action">
-            <button class="sr-soak-btn" data-payload='${soakCtx}'>
-              🛡 ${attackerName}: Resist Dumpshock (Willpower, TN ${systemRating})
-            </button>
-          </div>
+          <div class="sr-roll-result" style="color:var(--sr-red)">Overwatch reached 10: ${attacker?.name ?? 'the decker'}'s signal is traced to their jackpoint (MDF p.24).</div>
+          <div style="font-size:11px;color:var(--sr-text);margin:4px 0">At the host's discretion, any or all of:</div>
+          <ul style="font-size:11px;margin:2px 0 4px 16px">
+            <li>the user is dumped from the Matrix and takes Dumpshock (offered on the next card);</li>
+            <li>the Grid Overwatch Division receives their icon type, persona street name, a render of the icon, a profile of the deck (mode, MPCP, memory, active utilities), their GPS or I/O address and a summary of the session;</li>
+            <li>a security team is sent to the coordinates.</li>
+          </ul>
         </div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
+    if (attacker) {
+      await attacker._postDefraggedDumpshock(rating, {
+        headline: '⚡ Convergence Dumpshock',
+        why: `${hostActor.name} dumped the user — Power is its System Rating (${rating}).`,
+      });
+    }
   }
 
   /* ------------------------------------------------------------------ */
@@ -14296,7 +14301,7 @@ _prepareCharacter(sys, attr) {
 
     const cur    = deckerActor.system.orthodoxMatrixCM?.value ?? 0;
     const newVal = Math.min(10, cur + ctx.boxes);
-    await deckerActor.update({ 'system.orthodoxMatrixCM.value': newVal });
+    await deckerActor.update({ 'system.orthodoxMatrixCM.value': newVal }, { sr3eCrashCard: true });   // this handler posts the crash card itself
 
     if (newVal >= 10 && cur < 10) {
       // Cyberdeck just crashed — trigger dumpshock

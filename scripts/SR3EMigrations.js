@@ -49,6 +49,7 @@ import { DesignCosts } from './data/design-costs.mjs';
 import { IcBookFixes } from './data/ic-book-fixes.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
 import { WeaponCategoryFixes } from './data/weapon-category-fixes.mjs';
+import { convergenceDelta } from './data/sheaf-steps.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -702,6 +703,21 @@ const MIGRATIONS = [
      * still equals the sum of the old rows. World actors and unlinked tokens; idempotent.
      */
     fixActor: actor => IcBookFixes.fixActor(actor, ref => actorFrom(ref)?.system?.rating),
+  },
+  {
+    version: '0.9.0',
+    label: 'A Defragged host Security Sheaf gets its tenth row, Convergence (TODO 128, MDF p.23-24)',
+    /**
+     * The book's sheaf has ten rows — TS 1-9 and Convergence (p.23, "10 Trigger Steps, with the final step resulting in
+     * Convergence", p.24). Hosts seeded before this have nine rows, or ten with the last an untouched "TS 10". Rule in
+     * `convergenceDelta` (`scripts/data/sheaf-steps.mjs`, pure, tested).
+     *
+     * ⚠ **This is a fill-blanks fix:** it appends the row only to a host with exactly rows 1-9, and relabels a tenth row only
+     * while it is still the untouched "TS 10" (no text, no IC, not triggered, not hidden). A row a GM filled in or
+     * renamed is theirs; an empty sheaf and an Orthodox host's tally rows are left alone. Idempotent. Hosts only (world
+     * actors and unlinked tokens).
+     */
+    fixActor: actor => (actor?.type === 'host' ? convergenceDelta(actor.system?.triggerSteps) : null),
   },
   {
     version: '0.9.0',

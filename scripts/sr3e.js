@@ -24,6 +24,7 @@ import { sceneFirst } from './data/actor-scope.mjs';
 import { ActorRef, actorFrom, actorRef } from './data/actor-ref.mjs';
 import { SR3ENpcReset } from './SR3ENpcReset.js';
 import { SR3EMatrixGenerator } from './SR3EMatrixGenerator.js';
+import { DumpShock } from './data/dump-shock.mjs';
 import { TokenLink } from './data/token-link.mjs';
 import { HandOfGod } from './data/hand-of-god.mjs';
 import { SR3EItem } from './documents/SR3EItem.js';
@@ -2219,6 +2220,44 @@ Hooks.on('renderActorDirectory', (_app, html) => {
   const header = el.querySelector('.directory-header');
   if (header) header.insertAdjacentElement('afterend', tools);
   else el.prepend(tools);
+});
+
+
+// 💥 A decker's crash offers Dumpshock — the Matrix Condition Monitor filling (MDF p.26-27; SR3 p.226-227) · TODO 128.
+// Defragged keeps the monitor on the cyberdeck item, Orthodox on the actor. A track is the crash only on the save that FILLS it
+// (`DumpShock.crossedFull`), so re-saving a full monitor does not repeat it; the previous value rides `options` from the pre-hook.
+// The Orthodox IC-damage card posts its own crash card and passes `sr3eCrashCard` so it is not announced twice.
+const _isActiveGM = () => game.user?.id === game.users?.activeGM?.id;
+const _matrixRuleset = () => { try { return game.settings.get('The2ndChumming3e', 'matrixRuleset'); } catch { return 'defragged'; } };
+const _changed = (changes, path) => foundry.utils.getProperty(changes, path) ?? changes?.[path];
+Hooks.on('preUpdateItem', (item, changes, options) => {
+  if (item.type !== 'cyberdeck' || _changed(changes, 'system.damage.matrixConditionMonitor.current') === undefined) return;
+  options.sr3eCmBefore = item.system.damage?.matrixConditionMonitor?.current ?? 0;
+});
+Hooks.on('updateItem', async (item, changes, options) => {
+  if (!_isActiveGM() || item.type !== 'cyberdeck' || _matrixRuleset() === 'orthodox') return;
+  const now = _changed(changes, 'system.damage.matrixConditionMonitor.current');
+  if (now === undefined || options?.sr3eCmBefore === undefined) return;
+  if (!DumpShock.crossedFull(options.sr3eCmBefore, now, item.system.damage?.matrixConditionMonitor?.boxes ?? 10)) return;
+  const decker = item.parent;
+  if (!decker || decker.documentName !== 'Actor') return;
+  const host = actorFrom(decker.system.activeHostId ?? '');
+  await decker._postDefraggedDumpshock(host?.system?.systemRating ?? 6, {
+    headline: '💥 Persona crashed — Dumpshock',
+    why: `Matrix Condition Monitor full (MDF p.26).${host ? '' : ' No host is linked, so Power is read as 6 — correct it if the host that dumped them rates differently.'}`,
+  });
+});
+Hooks.on('preUpdateActor', (actor, changes, options) => {
+  if (_changed(changes, 'system.orthodoxMatrixCM.value') === undefined) return;
+  options.sr3eOrthoCmBefore = actor.system.orthodoxMatrixCM?.value ?? 0;
+});
+Hooks.on('updateActor', async (actor, changes, options) => {
+  if (!_isActiveGM() || options?.sr3eCrashCard || _matrixRuleset() !== 'orthodox') return;
+  const now = _changed(changes, 'system.orthodoxMatrixCM.value');
+  if (now === undefined || options?.sr3eOrthoCmBefore === undefined) return;
+  if (!DumpShock.crossedFull(options.sr3eOrthoCmBefore, now, 10)) return;
+  const host = actorFrom(actor.system.orthodoxRunState?.currentHostId ?? '');
+  await actor._postOrthoDumpshock(host?.system?.orthodoxSecurityCode ?? 'Green', host?.system?.orthodoxSecurityValue ?? 6);
 });
 
 

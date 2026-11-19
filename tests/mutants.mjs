@@ -26,6 +26,11 @@
 
 const { LEGALITY: LEGALITY_TABLE } = await import('../scripts/data/legality-table.mjs');
 const { SPELL_CORRECTIONS: SPELL_FIXES_FOR_MUTANT } = await import('../scripts/data/spell-book-fixes.mjs');
+const OWCRASH = { module: '../scripts/data/overwatch-crash.mjs', klass: 'OverwatchCrash' };
+const SHEAFRULES = { module: '../scripts/data/sheaf-rules.mjs', klass: 'SheafRules' };
+const DUMPSHOCK = { module: '../scripts/data/dump-shock.mjs', klass: 'DumpShock' };
+const SHEAFSTEPS = { module: '../scripts/data/sheaf-steps.mjs', klass: 'SheafSteps' };
+const ORTHOSHEAF = { module: '../scripts/data/orthodox-sheaf.mjs', klass: 'OrthodoxSheaf' };
 const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
@@ -4861,4 +4866,177 @@ export const MUTANTS = [
       { key: 'dual', kind: 'astral', active: astralMode === 'dual', eligible: true },
       { key: 'astral', kind: 'astral', active: astralMode === 'astral', eligible: true }],
   },
+  /* ── Matrix: the crash trigger, the sheaf, Dumpshock, the Orthodox sheaf (TODO 128) ─────────────────────── */
+  {
+    id:     'crash-suppression-still-costs-overwatch',
+    suite:  'overwatch-crash',
+    ...OWCRASH, method: 'resolve',
+    was:    'MDF p.26: crashing an icon while running Suppression avoids the Overwatch — a decker who chose it was still charged 1',
+    impl:   ({ suppressionRating = 0, suppress = false } = {}) => {
+      const rating = Math.max(0, Math.round(Number(suppressionRating) || 0));
+      const used = suppress && rating > 0;
+      return { overwatch: 1, degrade: used ? 1 : 0, suppressed: used, newRating: used ? rating - 1 : rating };
+    },
+  },
+  {
+    id:     'crash-suppression-is-free',
+    suite:  'overwatch-crash',
+    ...OWCRASH, method: 'resolve',
+    was:    "MDF p.26: Suppression degrades 1 point of the utility's rating — it was a free pass, the program never wore down",
+    impl:   ({ suppressionRating = 0, suppress = false } = {}) => {
+      const rating = Math.max(0, Math.round(Number(suppressionRating) || 0));
+      return suppress && rating > 0
+        ? { overwatch: 0, degrade: 0, suppressed: true, newRating: rating }
+        : { overwatch: 1, degrade: 0, suppressed: false, newRating: rating };
+    },
+  },
+  {
+    id:     'crash-suppress-without-the-program',
+    suite:  'overwatch-crash',
+    ...OWCRASH, method: 'resolve',
+    was:    'choosing Suppression avoided the Overwatch even with no Suppression program running (it needs one "in an active utility slot")',
+    impl:   ({ suppressionRating = 0, suppress = false } = {}) => {
+      const rating = Math.max(0, Math.round(Number(suppressionRating) || 0));
+      return suppress
+        ? { overwatch: 0, degrade: rating > 0 ? 1 : 0, suppressed: true, newRating: Math.max(0, rating - 1) }
+        : { overwatch: 1, degrade: 0, suppressed: false, newRating: rating };
+    },
+  },
+  {
+    id:     'sheaf-penalty-counts-the-current-phase',
+    suite:  'sheaf-rules',
+    ...SHEAFRULES, method: 'initiativePenalty',
+    was:    'MDF p.23: −10 per phase that has ALREADY transpired — the first phase was charged too, so IC triggered in pass 1 came in at −10',
+    impl:   pass => -10 * Math.max(0, Math.round(Number(pass) || 0)),
+  },
+  {
+    id:     'sheaf-penalty-is-a-bonus',
+    suite:  'sheaf-rules',
+    ...SHEAFRULES, method: 'initiativePenalty',
+    was:    'the sign flipped: late-triggered IC got +10 per phase instead of −10',
+    impl:   pass => 10 * Math.max(0, Math.round(Number(pass) || 0) - 1),
+  },
+  {
+    id:     'sheaf-mainframe-support-ignored',
+    suite:  'sheaf-rules',
+    ...SHEAFRULES, method: 'stockingReport',
+    was:    'MDF p.24: Mainframe Support lifts both limits (Gray/Black IC, and the Memory cap) — a host with the module was still told off',
+    impl:   ({ memoryTotal = 0, ic = [] } = {}) => {
+      const used = ic.reduce((n, r) => n + (Math.round(Number(r.memoryRequired) || 0)), 0);
+      const total = Math.round(Number(memoryTotal) || 0);
+      return { used, total, over: Math.max(0, used - total), graded: ic.filter(r => /^(gray|grey|black)$/i.test(r.grading ?? '')).map(r => r.name ?? 'IC') };
+    },
+  },
+  {
+    id:     'dumpshock-tortoise-takes-damage',
+    suite:  'dump-shock',
+    ...DUMPSHOCK, method: 'defragged',
+    was:    'MDF p.27: Tortoise and AR users are IMMUNE to Dumpshock — every non-VR-Hot user was offered Stun damage (shipped until 2026-11)',
+    impl:   (mode, rating) => {
+      const power = Math.max(1, Math.round(Number(rating) || 6));
+      const isStun = (mode || 'VR-Cold') !== 'VR-Hot';
+      return { immune: false, power, level: 'S', track: isStun ? 'Stun' : 'Physical', isStun, note: '' };
+    },
+  },
+  {
+    id:     'dumpshock-vr-cold-physical',
+    suite:  'dump-shock',
+    ...DUMPSHOCK, method: 'defragged',
+    was:    'MDF p.27: VR-Cold users apply the damage to their STUN track — a cold-sim decker took it as Physical',
+    impl:   (mode, rating) => {
+      const power = Math.max(1, Math.round(Number(rating) || 6));
+      const m = mode || 'VR-Cold';
+      const immune = m === 'TRM' || m === 'AR';
+      return { immune, power, level: 'S', track: immune ? null : 'Physical', isStun: false, note: immune ? 'immune (MDF p.27) +2' : '' };
+    },
+  },
+  {
+    id:     'dumpshock-vr-hot-stun',
+    suite:  'dump-shock',
+    ...DUMPSHOCK, method: 'defragged',
+    was:    'MDF p.27: VR-Hot users apply it to their PHYSICAL track — a hot-sim decker took Stun',
+    impl:   (mode, rating) => {
+      const power = Math.max(1, Math.round(Number(rating) || 6));
+      const m = mode || 'VR-Cold';
+      const immune = m === 'TRM' || m === 'AR';
+      return { immune, power, level: 'S', track: immune ? null : 'Stun', isStun: !immune, note: immune ? 'immune (MDF p.27) +2' : '' };
+    },
+  },
+  {
+    id:     'dumpshock-power-fixed',
+    suite:  'dump-shock',
+    ...DUMPSHOCK, method: 'defragged',
+    was:    'MDF p.27: Power is the System Rating of the host that dumped the user — it was a flat 6 whatever the host',
+    impl:   (mode) => {
+      const m = mode || 'VR-Cold';
+      const immune = m === 'TRM' || m === 'AR';
+      const isStun = m !== 'VR-Hot';
+      return { immune, power: 6, level: 'S', track: immune ? null : (isStun ? 'Stun' : 'Physical'), isStun: immune ? false : isStun, note: immune ? 'immune (MDF p.27) +2' : '' };
+    },
+  },
+  {
+    id:     'dumpshock-refires-on-a-full-track',
+    suite:  'dump-shock',
+    ...DUMPSHOCK, method: 'crossedFull',
+    was:    'the crash offer fired on every save of a full Matrix monitor, not only the one that filled it',
+    impl:   (_before, after, boxes = 10) => (Number(after) || 0) >= (Number(boxes) || 10),
+  },
+  {
+    id:     'sheaf-gm-tenth-row-overwritten',
+    suite:  'sheaf-steps',
+    ...SHEAFSTEPS, method: 'convergenceDelta',
+    was:    "the migration relabelled any tenth row as Convergence, wiping a GM's own text and IC (it must fill blanks only)",
+    impl:   steps => {
+      if (!Array.isArray(steps) || !steps.length || steps.some(s => s && ('tally' in s || 'event' in s))) return null;
+      const tenth = steps.find(s => s.step === 10);
+      if (tenth) return { 'system.triggerSteps': steps.map(s => (s === tenth ? { ...s, label: 'Convergence', convergence: true, description: 'x' } : s)) };
+      return steps.length === 9 ? { 'system.triggerSteps': [...steps, { step: 10, label: 'Convergence', convergence: true, ic: [], description: 'x' }] } : null;
+    },
+  },
+  {
+    id:     'sheaf-tenth-row-appended-to-any-length',
+    suite:  'sheaf-steps',
+    ...SHEAFSTEPS, method: 'convergenceDelta',
+    was:    'the migration appended a Convergence row to a sheaf of ANY length, renumbering a half-built one',
+    impl:   steps => {
+      if (!Array.isArray(steps) || !steps.length || steps.some(s => s && ('tally' in s || 'event' in s))) return null;
+      return steps.some(s => s.step === 10) ? null : { 'system.triggerSteps': [...steps, { step: 10, label: 'Convergence', convergence: true, ic: [], description: 'x' }] };
+    },
+  },
+  {
+    id:     'sheaf-seeded-with-nine-rows',
+    suite:  'sheaf-steps',
+    ...SHEAFSTEPS, method: 'defaultSteps',
+    was:    'a new host was seeded with nine plain rows and no Convergence row (TODO 128, before 0.9.0)',
+    impl:   () => Array.from({ length: 9 }, (_, i) => ({ step: i + 1, label: 'TS ' + (i + 1), triggered: false, hidden: false, ic: [], description: '' })),
+  },
+  {
+    id:     'orthodox-trigger-step-rounds-down',
+    suite:  'orthodox-sheaf',
+    ...ORTHOSHEAF, method: 'stepGap',
+    was:    'SR3 p.211: 1D6 ÷ 2 rounded DOWN gives 0-3, so a Blue gap could be 4 — the printed final range for Blue is 5-7',
+    impl:   (code, rng = Math.random) => Math.floor((1 + Math.floor(rng() * 6)) / 2) + ({ Blue: 4, Green: 3, Orange: 2, Red: 1 }[code] ?? 3),
+  },
+  {
+    id:     'orthodox-trigger-step-modifier-flat',
+    suite:  'orthodox-sheaf',
+    ...ORTHOSHEAF, method: 'stepGap',
+    was:    'SR3 p.211: the modifier depends on the security code (Blue +4 … Red +1) — every code used the Green +3',
+    impl:   (_code, rng = Math.random) => Math.ceil((1 + Math.floor(rng() * 6)) / 2) + 3,
+  },
+  {
+    id:     'orthodox-ic-ratings-flat',
+    suite:  'orthodox-sheaf',
+    ...ORTHOSHEAF, method: 'rampRatings',
+    was:    "the maintainer's ruling (2026-11-19): IC ratings ramp from Security Value − 2 up to the Security Value — every IC took the flat Security Value",
+    impl:   (sv, n) => Array.from({ length: Math.max(0, n) }, () => Math.max(1, Math.round(Number(sv) || 1))),
+  },
+  {
+    id:     'orthodox-ic-ratings-overshoot-the-sv',
+    suite:  'orthodox-sheaf',
+    ...ORTHOSHEAF, method: 'rampRatings',
+    was:    'the ramp ran from the Security Value UP past it, so late IC out-rated their own host',
+    impl:   (sv, n) => Array.from({ length: Math.max(0, n) }, (_, k) => Math.max(1, Math.round((Number(sv) || 1) + (n > 1 ? (2 * k) / (n - 1) : 0)))),
+  },
+
 ];

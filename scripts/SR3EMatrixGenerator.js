@@ -15,6 +15,7 @@
 import * as G from './data/matrix-generator.mjs';
 import { defaultTopology } from './sheets/SR3EHostSheet.js';
 import { actorRef } from './data/actor-ref.mjs';
+import { plan as orthodoxPlan } from './data/orthodox-sheaf.mjs';
 
 const SYSTEM  = 'The2ndChumming3e';
 const IC_PACK = `${SYSTEM}.sr3e-mdf-ic`;
@@ -46,8 +47,7 @@ export class SR3EMatrixGenerator {
       ${row('Intrusion difficulty', `<select id="gen-diff">${options(G.DIFFICULTIES, G.SUGGESTED_DIFFICULTY[d.orthodoxSecurityCode])}</select>`)}
       ${row('Security Value', `<input id="gen-sv" type="number" min="0" value="${d.orthodoxSecurityValue}" style="width:70px"/>`)}
       ${row('Subsystems', G.SUBSYSTEMS.map(s => `<span>${s[0].toUpperCase()}<input id="gen-sub-${s}" type="number" min="0" value="${d.orthodoxSubsystems[s]}" style="width:48px"/></span>`).join(' '))}
-      <p style="font-size:11px;color:var(--sr-muted)">SR3 p.205 Host Rating Table. The book does not pair a code with a difficulty — Blue Easy, Green and Orange Average, Red Hard is a starting point.</p>
-      ${scenario ? row('IC rating', '<input id="gen-icrating" type="number" min="1" value="5" style="width:70px"/>') : ''}`
+      <p style="font-size:11px;color:var(--sr-muted)">SR3 p.205 Host Rating Table. The book does not pair a code with a difficulty — Blue Easy, Green and Orange Average, Red Hard is a starting point. IC and Trigger Steps follow the alert ladder (SR3 p.211-212); each IC rates from Security Value − 2 up to the Security Value.</p>`
     : `
       ${row('System Rating', `<input id="gen-rating" type="number" min="1" max="12" value="${d.systemRating}" style="width:70px"/>`)}
       ${row('Security tier', `<select id="gen-tier">${options(Object.keys(G.TIER_DATA), tier)}</select>`)}
@@ -107,7 +107,6 @@ export class SR3EMatrixGenerator {
       Object.assign(v, {
         orthodoxSecurityCode: $('#gen-code').value, orthodoxSecurityValue: num($('#gen-sv')),
         orthodoxSubsystems: Object.fromEntries(G.SUBSYSTEMS.map(s => [s, num($(`#gen-sub-${s}`))])),
-        icRating: scenario ? Math.max(1, num($('#gen-icrating'), 5)) : 0,
       });
     } else {
       const h = G.rollDefraggedHost({ systemRating: num($('#gen-rating'), 6), tier: $('#gen-tier').value });
@@ -181,13 +180,21 @@ export class SR3EMatrixGenerator {
         orthodoxSubsystems: v.orthodoxSubsystems,
       },
     });
-    if (scenario && v.icRating) {
+    // IC and Trigger Steps from the alert ladder — SR3 p.211-212 (data/orthodox-sheaf.mjs). The scenario also has the first
+    // (reactive, no-alert) IC already deployed so there is something live on the host.
+    const sheaf = orthodoxPlan({ code: v.orthodoxSecurityCode, securityValue: v.orthodoxSecurityValue });
+    const rows = [];
+    for (const [i, p] of sheaf.ic.entries()) {
       const ic = await Actor.create({
-        name: 'Generated Probe', type: 'ic', flags: generatedFlag('ic'),
-        system: { orthodoxIcType: 'Probe', rating: v.icRating, activeHostId: host.id, deployed: true },
+        name: `${p.icType}-${p.rating}`, type: 'ic', flags: generatedFlag('ic'),
+        system: {
+          orthodoxIcType: p.icType, orthodoxProactive: p.proactive, rating: p.rating,
+          hostSecurityTier: v.orthodoxSecurityCode, activeHostId: host.id, deployed: scenario && i === 0,
+        },
       });
-      if (ic) await host.update({ 'system.orthodoxActiveIC': [{ actorId: actorRef(ic), name: ic.name, icType: 'Probe', rating: v.icRating, alertRequired: 'any' }] });
+      if (ic) rows.push({ actorId: actorRef(ic), name: ic.name, icType: p.icType, rating: p.rating, alertRequired: p.alertRequired });
     }
+    await host.update({ 'system.orthodoxActiveIC': rows, 'system.triggerSteps': sheaf.steps });
     return host;
   }
 

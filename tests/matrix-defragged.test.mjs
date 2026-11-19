@@ -36,10 +36,14 @@ export async function run(t) {
   /* ── Dumpshock is SERIOUS, MDF p.27 ──────────────────────────────────────── */
   // "The user must immediately resist Serious Biofeedback Damage. The attack's Power is equal to the
   //  System Rating of the grid or host that dumped the user."
-  // Two cards: the ⚡ tool and Convergence. The Orthodox deck crash follows SR3 p.226-227 (TODO 202).
-  t.is('both Defragged dumpshock cards stage Serious', (actor.match(/stagedLevel:     'S',   \/\/ Serious — MDF p\.27/g) ?? []).length, 2);
+  // One Defragged card since 2026-11 (`_postDefraggedDumpshock`): the ⚡ tool, Convergence and a crash all use it, and its level
+  // comes from the pure rule (`DumpShock.defragged`, level 'S'). The Orthodox deck crash follows SR3 p.226-227 (TODO 202).
+  const { DumpShock } = await import('../scripts/data/dump-shock.mjs');
+  t.is('the Defragged dumpshock rule stages Serious for every mode', ['VR-Hot', 'VR-Cold', 'TRM', 'AR'].map(m => DumpShock.defragged(m, 6).level).join(''), 'SSSS');
+  t.ok('…and the one Defragged card stages what the rule says', /_postDefraggedDumpshock[\s\S]*?stagedLevel:     ds\.level/.test(actor));
+  t.ok('…the manual tool, Convergence and a crash all go through it', actor.includes('return this._postDefraggedDumpshock(result.power);') && actor.includes('attacker._postDefraggedDumpshock(rating'));
   t.is('…and none of them still says Moderate', (actor.match(/Dumpshock[^\n]*\$\{(power|secVal|systemRating)\}M /g) ?? []).length, 0);
-  t.ok('…including the IC-initiated one', /const damageCode    = `\$\{systemRating\}S`;/.test(actor));
+  t.ok('…including Convergence, whose Power is the host\'s System Rating', /attacker\._postDefraggedDumpshock\(rating/.test(actor) && /const rating   = hostActor\.system\.systemRating \?\? 6;/.test(actor));
 
   /* ── User modes and initiative, MDF p.10 ─────────────────────────────────── */
   // "Tortoise users rely on their meat world Initiative; cannot benefit from Response" — and the same
