@@ -48,6 +48,7 @@ import { PrintedRC } from './data/printed-rc.mjs';
 import { DesignCosts } from './data/design-costs.mjs';
 import { IcBookFixes } from './data/ic-book-fixes.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
+import { OrthodoxMode } from './data/orthodox-mode.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -732,6 +733,21 @@ const MIGRATIONS = [
      * an item added only when the contact has nothing of that name — copied from the corrected pack contact.
      */
     fixActorItems: actor => JohnsonGearFixes.migrate(actor),
+  },
+  {
+    version: '0.9.0',
+    label: 'Orthodox deckers already logged on get the VR-Hot mode they had been using without one (MDF p.10; TODO 128)',
+    /**
+     * Until 2026-11-07 an Orthodox decker logged on to a host got Matrix Initiative whatever their mode; now only VR-Hot does
+     * (MDF p.10), and an existing decker has no mode saved, so they quietly lost it. Rule in `OrthodoxMode.migrationDelta`
+     * (`scripts/data/orthodox-mode.mjs`, pure, tested). The maintainer chose the scope, 2026-11-19: logged-on deckers only.
+     *
+     * ⚠ **This WRITES a mode, and argues for it:** only a `character` or `npc` with deck stats (`orthodoxDeck.mccp` > 0), logged on
+     * to a host, and with NO mode saved — exactly the group that had Matrix Initiative before. A mode anyone chose, even Tortoise
+     * or VR-Cold, is never touched, and a decker between runs gets nothing (a mode also puts the VR status icon on their token).
+     * World actors and unlinked tokens. Idempotent: once a mode is set it yields null.
+     */
+    fixActor: actor => OrthodoxMode.migrationDelta(actor),
   },
 
 ];

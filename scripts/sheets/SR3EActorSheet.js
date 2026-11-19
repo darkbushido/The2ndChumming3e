@@ -12,6 +12,7 @@ import { Funds } from '../data/funds.mjs';
 import { CombatPool } from '../data/combat-pool.mjs';
 import { InitiateAstral } from '../data/initiate-astral.mjs';
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
+import { OrthodoxMode } from '../data/orthodox-mode.mjs';
 import { ItemMods } from '../data/item-mods.mjs';
 import { ArmorMods } from '../data/armor-mods.mjs';
 import { ModFor } from '../data/mod-for.mjs';
@@ -4639,24 +4640,37 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const hosts   = game.actors.filter(a => a.type === 'host' && game.sr3e.isLiveActor(a));
     if (!hosts.length) { ui.notifications.warn('No host actors found.'); return; }
     const opts    = hosts.map(h => `<option value="${h.id}">${h.name}</option>`).join('');
-    let chosen    = null;
+    let chosen    = null, chosenMode = '';
+    // The mode is chosen HERE, as Defragged's activation does — only VR-Hot uses Matrix Initiative (MDF p.10), so a logon that
+    // leaves it blank would quietly give the decker meat-world Initiative. Defaults to the mode already set, else VR-Hot.
+    const current = actor.system.matrixUserMode ?? '';
+    const modeOpts = [['TRM', 'Tortoise'], ['AR', 'AR'], ['VR-Cold', 'VR-Cold'], ['VR-Hot', 'VR-Hot']]
+      .map(([v, l]) => `<option value="${v}"${v === OrthodoxMode.modeFor('', current) ? ' selected' : ''}>${l}</option>`).join('');
     await foundry.applications.api.DialogV2.wait({
       window: { title: 'Log On To Host' },
       content: `<label style="display:flex;align-items:center;gap:8px;margin:8px 0">
         Host: <select id="ortho-host-sel" style="flex:1">${opts}</select>
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;margin:8px 0" title="Only VR-Hot uses Matrix Initiative; the other modes use the decker's own Initiative (MDF p.10).">
+        User mode: <select id="ortho-mode-sel" style="flex:1">${modeOpts}</select>
       </label>`,
       buttons: [
         { label: 'Log On', action: 'ok', default: true,
-          callback: (_e, _b, dlg) => { chosen = dlg.element.querySelector('#ortho-host-sel')?.value; } },
+          callback: (_e, _b, dlg) => {
+            chosen = dlg.element.querySelector('#ortho-host-sel')?.value;
+            chosenMode = dlg.element.querySelector('#ortho-mode-sel')?.value;
+          } },
         { label: 'Cancel', action: 'cancel' },
       ],
     });
     if (!chosen) return;
-    await actor.update({ 'system.orthodoxRunState.currentHostId': chosen, 'system.orthodoxRunState.securityTally': 0, 'system.orthodoxRunState.alertLevel': 'none' });
+    await actor.update(OrthodoxMode.logOnUpdate(chosen, chosenMode, current));
   }
 
   static async _onClearOrthoHost(_ev, _target) {
-    await this.actor.update({ 'system.orthodoxRunState.currentHostId': '', 'system.orthodoxRunState.securityTally': 0, 'system.orthodoxRunState.alertLevel': 'none' });
+    // Log off ends the run, so the mode goes with it (Defragged's does the same) — otherwise a decker out of the Matrix keeps
+    // Matrix Initiative and the VR status icon.
+    await this.actor.update(OrthodoxMode.logOffUpdate());
   }
 
   static async _onRollOrthodoxSystemTest(_ev, _target) {

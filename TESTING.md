@@ -1228,6 +1228,26 @@ the Defragged decks and programs only under Defragged. `tests/odm-packs.test.mjs
 - [ ] Orthodox → add a program → the 22 utilities, Attack at four levels; Track shows multiplier 8.
 - [ ] Open *Fairlight Excalibur* from the pack → the Book / Page box reads *SR3 p.207 · SR3 p.304*; *Track* reads *SR3 p.221*.
 
+### Orthodox user mode and the Orthodox IC attack card — `claude/orthodox-matrix-fix` · 2026-11-19
+Unit and source-level cover: `tests/orthodox-mode`; 6 mutants. **Neither the Orthodox User mode selector nor the IC attack card was ever
+exercised live** — these steps are the first pass. Orthodox needs the world on `matrixRuleset` 'orthodox' and a full restart; join as
+**mcp-api** (GM) and **Player2** (a decker); reload the active GM's tab first.
+
+**User mode selector and Log On / Log Off (MDF p.10)**
+- [ ] A decker's Orthodox Matrix tab → *Current Run* shows **User mode** with none / Tortoise / AR / VR-Cold / VR-Hot; picking VR-Hot saves and survives a re-render.
+- [ ] 📡 *Set Host* → the Log On dialog has a **User mode** picker, defaulting to VR-Hot (or the mode already set); Log On → the host is linked, the mode is set, and the token shows the VR status for VR-Cold/VR-Hot.
+- [ ] ✕ *Log Off* → host cleared **and** the mode back to none, the VR icon gone.
+- [ ] Roll initiative: **VR-Hot** → card says *Orthodox Matrix Init* (REA base + Response ×2, 1 + Response dice); **VR-Cold**, **Tortoise**, **AR**, or none → the decker's own initiative.
+- [ ] **Migration** (0.9.0, needs the release bump or `game.sr3e.SR3EMigrations.force()`): an Orthodox decker with deck stats, logged on, no mode → VR-Hot after the reload; one with Tortoise saved keeps it; one between runs (no host) gets nothing; running it again changes nothing.
+
+**Orthodox IC attack card (SR3 p.212, p.222-224)**
+- [ ] A host with Security Value 6 (Green) and an IC with `activeHostId` set; a decker logged on to that host. On the IC's sheet (or the combat tracker card) → attack → the setup dialog lists the deckers **on that host** first, shows IC attack pool = Security Value d6, TN by code (Blue 6 · Green 5 · Orange 4 · Red 3), base damage = rating + level (Blue/Green M, Orange/Red S).
+- [ ] Post Card → a two-corner card: the IC corner is the GM's, the decker corner is the decker's. The decker's dice are seeded from their Cybercombat rating and a *Hack pool* box (starts 0, max = available pool). The GM cannot edit the decker's half.
+- [ ] Both Submit → one Resolve; the decker's Hacking Pool is spent only by what the **decker** submitted (check the pool before and after).
+- [ ] Result card: hits vs hits, ties and fewer go to the decker (*evades*); a win stages up 1 per 2 net successes → *Assign N boxes to the decker's Matrix CM*; clicking it fills the monitor.
+- [ ] Fill the monitor to 10 through that button → one *Cyberdeck Crashed* card with Orthodox dump shock (Stun, Power = Security Value, level by code); on a world with the gaps branch merged, still exactly **one** crash card.
+- [ ] Open question to settle against SR3 pp.222-224: the card goes from hits straight to boxes with **no damage-resistance test for the decker** — check the book and whether one is owed.
+
 ### User modes (Matrix tab)
 
 | Mode | Initiative formula | Notes |

@@ -26,6 +26,7 @@
 
 const { LEGALITY: LEGALITY_TABLE } = await import('../scripts/data/legality-table.mjs');
 const { SPELL_CORRECTIONS: SPELL_FIXES_FOR_MUTANT } = await import('../scripts/data/spell-book-fixes.mjs');
+const ORTHOMODE = { module: '../scripts/data/orthodox-mode.mjs', klass: 'OrthodoxMode' };
 const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
@@ -4836,4 +4837,57 @@ export const MUTANTS = [
       { key: 'dual', kind: 'astral', active: astralMode === 'dual', eligible: true },
       { key: 'astral', kind: 'astral', active: astralMode === 'astral', eligible: true }],
   },
+  /* ── Orthodox decker user mode: the 0.9.0 migration, Log On and Log Off (TODO 128) ───────────────────── */
+  {
+    id:     'ortho-mode-migration-overwrites-a-saved-mode',
+    suite:  'orthodox-mode',
+    ...ORTHOMODE, method: 'migrationDelta',
+    was:    'the migration set VR-Hot on every logged-on decker, overwriting a Tortoise or VR-Cold someone had chosen',
+    impl:   actor => (actor?.type === 'character' || actor?.type === 'npc')
+      && Number(actor.system?.orthodoxDeck?.mccp) > 0 && actor.system?.orthodoxRunState?.currentHostId
+      ? { 'system.matrixUserMode': 'VR-Hot' } : null,
+  },
+  {
+    id:     'ortho-mode-migration-ignores-logon',
+    suite:  'orthodox-mode',
+    ...ORTHOMODE, method: 'migrationDelta',
+    was:    'the migration gave VR-Hot (and the VR status icon) to every Orthodox decker with a deck, logged on or between runs',
+    impl:   actor => (actor?.type === 'character' || actor?.type === 'npc')
+      && !actor.system?.matrixUserMode && Number(actor.system?.orthodoxDeck?.mccp) > 0
+      ? { 'system.matrixUserMode': 'VR-Hot' } : null,
+  },
+  {
+    id:     'ortho-mode-migration-takes-any-actor',
+    suite:  'orthodox-mode',
+    ...ORTHOMODE, method: 'migrationDelta',
+    was:    'the migration did not check the actor type, so an IC or a host with leftover run fields was given a user mode',
+    impl:   actor => !actor?.system?.matrixUserMode && Number(actor?.system?.orthodoxDeck?.mccp) > 0 && actor?.system?.orthodoxRunState?.currentHostId
+      ? { 'system.matrixUserMode': 'VR-Hot' } : null,
+  },
+  {
+    id:     'ortho-log-off-keeps-the-mode',
+    suite:  'orthodox-mode',
+    ...ORTHOMODE, method: 'logOffUpdate',
+    was:    'Log Off cleared the host but left the mode, so a decker out of the Matrix kept Matrix Initiative and the VR icon (shipped until 2026-11)',
+    impl:   () => ({
+      'system.orthodoxRunState.currentHostId': '', 'system.orthodoxRunState.securityTally': 0, 'system.orthodoxRunState.alertLevel': 'none',
+    }),
+  },
+  {
+    id:     'ortho-log-on-sets-no-mode',
+    suite:  'orthodox-mode',
+    ...ORTHOMODE, method: 'logOnUpdate',
+    was:    'Log On wrote the host but never a mode, so a decker who logged on had meat-world Initiative (shipped until 2026-11)',
+    impl:   hostId => ({
+      'system.orthodoxRunState.currentHostId': hostId, 'system.orthodoxRunState.securityTally': 0, 'system.orthodoxRunState.alertLevel': 'none',
+    }),
+  },
+  {
+    id:     'ortho-log-on-ignores-the-choice',
+    suite:  'orthodox-mode',
+    ...ORTHOMODE, method: 'modeFor',
+    was:    'Log On always applied VR-Hot whatever mode the player picked in the dialog',
+    impl:   () => 'VR-Hot',
+  },
+
 ];
