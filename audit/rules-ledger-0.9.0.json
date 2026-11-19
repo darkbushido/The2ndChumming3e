@@ -11,7 +11,8 @@
       ],
       "hash": "b89a4d7c79",
       "text": "# Gear Designer\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#2",
@@ -22,7 +23,8 @@
       ],
       "hash": "1d55965224",
       "text": "**[Open the Gear Designer](https://darkbushido.github.io/The2ndChumming3e/designer/latest/)** — a web page\nfor building a customised weapon or vehicle away from the table, then bringing it into\nThe 2nd Chumming in Foundry with one paste. Each release publishes its own frozen copy\nat `designer/<version>/` (for example `designer/v0.9.0/`); `designer/latest/` is the newest.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#3",
@@ -33,7 +35,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#4",
@@ -44,7 +47,8 @@
       ],
       "hash": "85633513d5",
       "text": "## What it is",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#5",
@@ -55,7 +59,8 @@
       ],
       "hash": "ddd6a8a8ec",
       "text": "The designer runs the **same rules modules as the Foundry system** — the code that prices\nweapon accessories and vehicle modifications in Foundry is copied into the page as it is.\nSo a price you see on the page is the price Foundry will work out, for the version of the\nsystem that page came from. It shows names, numbers and page references only; read the\nbook for how a piece of gear works.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#6",
@@ -66,7 +71,8 @@
       ],
       "hash": "7e1672e016",
       "text": "The page has two tabs: **🔫 Weapon** and **🚗 Vehicle (R3R)**. Every design ends on a price\nstep with two buttons: **🔗 Copy link** and **💾 Download JSON**.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#7",
@@ -77,7 +83,8 @@
       ],
       "hash": "c5dda5649f",
       "text": "## The Weapon tab",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#8",
@@ -88,7 +95,8 @@
       ],
       "hash": "79bc59581c",
       "text": "Four steps, shown across the top: **Weapon**, **Accessories**, **Ammunition**, **Price**.\nA bar pinned above them shows the weapon's picture, a name you can type, and what the\nbuild comes to so far — damage, mode, ammo, Concealability, recoil compensation from\naccessories, smartgun and laser, cost, and what sits on each mount (Top, Barrel, Under).\nA ⚠ chip counts warnings; hover it to read them.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#9",
@@ -99,7 +107,8 @@
       ],
       "hash": "ceb4caa570",
       "text": "### Step 1 — pick a weapon",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#10",
@@ -110,7 +119,8 @@
       ],
       "hash": "c02aaf3312",
       "text": "**Category chips** across the top sort the weapons by type — Pistols, SMGs, Rifles,\nShotguns, Heavy weapons, Launchers, Melee and Other — each with a silhouette and a\ncount. Pick one and its weapons appear as **picture cards**: the picture (a drawn\nsilhouette where there's no artwork yet), a one-line summary such as \"Heavy pistol · one\nhand · smartgun\", anything built in, the key stats (melee cards show Damage, Reach and\nConcealability instead of mode and ammo), the price and the book page. Click a card to\nchoose it.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#11",
@@ -121,7 +131,8 @@
       ],
       "hash": "5309d2f1a5",
       "text": "### Step 2 — accessories: the shop",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#12",
@@ -132,7 +143,8 @@
       ],
       "hash": "c1a0c7c83a",
       "text": "Accessories sit on **shelves** by where they mount: **Top mount**, **Barrel**,\n**Underbarrel**, and **No mount** for everything that takes no mount slot. A search box\nnarrows the shelf. Each card shows the accessory, its levels if it has them, and\n**+ Add**.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#13",
@@ -143,7 +155,8 @@
       ],
       "hash": "3c56109f15",
       "text": "Accessories that don't fit the weapon as you've built it so far are hidden. The switch\n**Show the ones that don't fit** says how many are hidden; turn it on and they appear\nwith a dashed edge and the reason (for example, a weapon that already has its own stock).\nYou can still add one: the designer warns, it never refuses. The Price step then lists\nit as left out.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#14",
@@ -154,7 +167,8 @@
       ],
       "hash": "0fa35ae471",
       "text": "Everything you add goes into the **🛒 cart** beside the shelves, where you pick a level\nfor rated accessories, see which mount each one takes, and remove it again.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#15",
@@ -165,7 +179,8 @@
       ],
       "hash": "98286d8aae",
       "text": "### Step 3 — ammunition",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#16",
@@ -176,7 +191,8 @@
       ],
       "hash": "9e415aa46a",
       "text": "Ammunition cards, with a search box. Pick a type and how many to buy.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#17",
@@ -187,7 +203,8 @@
       ],
       "hash": "4752bee8ad",
       "text": "### Step 4 — price",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#18",
@@ -198,7 +215,8 @@
       ],
       "hash": "c8ff3c922c",
       "text": "One line per purchase — the weapon, each accessory, each lot of ammunition — with its\nprice and book page, then the total and any warnings. Copy the link or download the JSON\nhere.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#19",
@@ -209,7 +227,8 @@
       ],
       "hash": "d6989bbf07",
       "text": "## The Vehicle (R3R) tab",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#20",
@@ -220,7 +239,8 @@
       ],
       "hash": "4e9fc78490",
       "text": "Two buttons choose how to start:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#21",
@@ -231,7 +251,8 @@
       ],
       "hash": "48141be1e1",
       "text": "- **🛠 Design from a chassis (R3R)** — the same wizard as the 🛠 Vehicle Designer window\n  in Foundry: **Chassis**, **Power plant**, **Design options**, **Mods**, then **Price &\n  share**. It counts Design Points as well as nuyen. The Mods step is a shop like the\n  weapon one: shelves, cards and a cart.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#22",
@@ -242,7 +263,8 @@
       ],
       "hash": "123a8b60d3",
       "text": "- **📖 Modify a book vehicle** — take a vehicle exactly as printed and add aftermarket\n  modifications: **Vehicle** (type chips, then picture cards), **Modifications**, **Price**.\n  Mods cost their printed price and take their Cargo Factor and Load; there are no Design\n  Points, because the vehicle itself isn't being redesigned.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#23",
@@ -253,7 +275,8 @@
       ],
       "hash": "1fba9affd2",
       "text": "## The Armour tab",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#24",
@@ -264,7 +287,40 @@
       ],
       "hash": "dad6b1b7a9",
       "text": "Three steps. **Armour** — chips for clothing, body armour, helmets and shields, then picture cards. **Modifications** — two\nshelves: the Cannon Companion modifications (CC pp.52-53, gel packs among them) and the helmet options (SR3 p.284). Each mod\ngoes in the cart once; change its level there. Past the mod-point caps (CC p.52), a mod on a helmet or shield, two sets of\ngel packs — all warned, never refused. **Price** — the bill (gel packs: the armour's price ×5 in all), and the armour as\nbuilt: Concealability, weight, Availability, Street Index and what it protects against. In Foundry it imports with its\nmods inside it, not worn.",
-      "verdict": null
+      "verdict": "match",
+      "note": "CC p.52's footer is misread as a lone 'i' in the OCR (ocrPrinted); the PDF footer reads 52. Helmets and shields: CC p.52 lists the armour types that take modifications and names neither — the guide and code warn, consistent with that list.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Cannon Companion.pdf",
+          "pdfPage": 53,
+          "printedPage": 52,
+          "ocrPrinted": "i",
+          "quote": "the total ratings of the modifications given to an armor item cannot exceed the combined Ballistic and Impact ratings of the armor"
+        },
+        {
+          "file": "Shadowrun 3e - Cannon Companion.pdf",
+          "pdfPage": 54,
+          "printedPage": 53,
+          "quote": "Only one set of gel paclts can be added to any"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/armor-mods.mjs",
+          "line": 168,
+          "snippet": "return { single: Math.max(b, i), total: b + i };"
+        },
+        {
+          "file": "scripts/data/armor-mods.mjs",
+          "line": 122,
+          "snippet": "return (ArmorMods.gelPacked(item) ? base * 5 : base) + mods;"
+        },
+        {
+          "file": "scripts/data/armor-mods.mjs",
+          "line": 46,
+          "snippet": "CC p.52 does not list shields among the armour that takes modifications"
+        }
+      ]
     },
     {
       "id": "gear-designer.md#25",
@@ -275,7 +331,8 @@
       ],
       "hash": "d86a62e241",
       "text": "## Your design lives in the link",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#26",
@@ -286,7 +343,8 @@
       ],
       "hash": "f81ebab25e",
       "text": "Nothing is stored — not on a server, not in your browser. As you work, the page writes\nthe whole design into its own address, after `#d=`. That link **is** the design:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#27",
@@ -297,7 +355,8 @@
       ],
       "hash": "c6964a29b3",
       "text": "- **🔗 Copy link** copies it. Bookmark it, paste it to your GM, or open it later and the\n  page picks up where you left off.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#28",
@@ -308,7 +367,8 @@
       ],
       "hash": "85d50dc2a7",
       "text": "- **💾 Download JSON** saves the same design as a `.sr3e-design.json` file.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#29",
@@ -319,7 +379,8 @@
       ],
       "hash": "e56d9f7e31",
       "text": "- A link carries the price the page showed, but only so Foundry can tell you if its own\n  sum differs. Editing the link can't make anything cheaper (below).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#30",
@@ -330,7 +391,8 @@
       ],
       "hash": "536c650739",
       "text": "- A link made with an older version of the designer still opens; the page says which\n  version made it and shows the figures with its own rules.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#31",
@@ -341,7 +403,8 @@
       ],
       "hash": "9ceb6451c4",
       "text": "## Importing into Foundry",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#32",
@@ -352,7 +415,8 @@
       ],
       "hash": "71edbccbb3",
       "text": "In Foundry, open the **Items** sidebar and click **📥 Import design** in its header (the\n**SR3E Import Gear Design** macro opens the same dialog, as does\n`game.sr3e.SR3EDesignImport.open()` from the console).",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#33",
@@ -363,7 +427,8 @@
       ],
       "hash": "4b4248f4d5",
       "text": "1. **Paste** the link — or the JSON file's text — into the box. The dialog looks every\n   piece up in **this world's** compendiums and works the design out again with the\n   system's rules, then shows what you'll get: the weapon and its accessories and\n   ammunition, or the vehicle and its mods, with the recomputed price.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#34",
@@ -374,7 +439,8 @@
       ],
       "hash": "c0fc56a91a",
       "text": "2. **Read the warnings** (amber). They include:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#35",
@@ -385,7 +451,8 @@
       ],
       "hash": "517f5907ab",
       "text": "   - **the link's price disagrees with the rules** — the dialog shows both; the\n     **recomputed** price is the one imported, so a hand-edited link that claims a\n     lower price than the rules give is caught here, in front of the GM;",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#36",
@@ -396,7 +463,8 @@
       ],
       "hash": "7ebcc918fd",
       "text": "   - the same for Design Points and recoil compensation;",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#37",
@@ -407,7 +475,8 @@
       ],
       "hash": "d3e202d917",
       "text": "   - a piece this world doesn't have (a book turned off, or a newer pack);",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#38",
@@ -418,7 +487,8 @@
       ],
       "hash": "ca3d3811eb",
       "text": "   - a mount already taken, and a design made with a different system version.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#39",
@@ -429,7 +499,8 @@
       ],
       "hash": "f235ee11b5",
       "text": "3. **Choose where it goes** (weapons only): **Import onto** lists the characters you\n   own, your own character first. The GM also gets **World item (Items directory)**.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#40",
@@ -440,7 +511,8 @@
       ],
       "hash": "1ca7f3552e",
       "text": "4. Click **Import**. The design is imported despite any warnings — the warnings are for\n   you and your GM to judge.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#41",
@@ -451,7 +523,8 @@
       ],
       "hash": "11b1ad744a",
       "text": "**Vehicles** work differently:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#42",
@@ -462,7 +535,8 @@
       ],
       "hash": "f92e9bee11",
       "text": "- A **chassis design** opens the **🛠 Vehicle Designer** window, filled in and on its\n  summary. Check it there, then click its Create button; you own the new vehicle.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#43",
@@ -473,7 +547,8 @@
       ],
       "hash": "69de0676d1",
       "text": "- A **book vehicle with mods** is copied from its compendium as your own vehicle, with the\n  mods added at the price the page showed. This needs a GM connected.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "gear-designer.md#44",
@@ -484,7 +559,8 @@
       ],
       "hash": "aea30ace02",
       "text": "{: .note }\n> Imported items are ordinary items: every number on them can still be edited on the\n> sheet, like anything else in the system.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
     },
     {
       "id": "hiring/combat-mage.md#1",
@@ -7194,7 +7270,8 @@
       ],
       "hash": "3f66b080dd",
       "text": "| **Rules** | [Actions & Combat](rules/combat/) · [Reloading](rules/reloading/) · [Grenades](rules/grenades/) · [Healing](rules/healing/) · [Instruction & Learning Skills](rules/instruction/) |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "navigation row: links to the rules pages — states no rule"
     },
     {
       "id": "index.md#12",
@@ -7217,7 +7294,8 @@
       ],
       "hash": "8cab2eec41",
       "text": "| **The Street** | [SINs & the SINless](street/sins/) · [Buying Gear & Fencing](street/gear-and-fencing/) · [Legality Codes & Permits](street/legality/) · [Cyberware Grades & Used Chrome](street/cyberware-grades/) · [Contacts & Legwork](street/contacts/) |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "navigation row: links to the street pages — states no rule"
     },
     {
       "id": "index.md#14",
@@ -7240,7 +7318,8 @@
       ],
       "hash": "a56f2b50f6",
       "text": "| **Tools** | [Gear Designer](gear-designer/) — build a weapon or vehicle on the web, import it in Foundry |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "navigation row: link to the Gear Designer tool — states no rule"
     },
     {
       "id": "index.md#16",
@@ -44943,7 +45022,8 @@
       ],
       "hash": "49da2c57b7",
       "text": "Combat, weapons, grenades, healing, Karma, instruction and learning skills, decking, rigging, vehicles and\ndrones, from the *Shadowrun, Third Edition* core rulebook.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "section description listing topics — states no rule"
     },
     {
       "id": "rules/instruction.md#1",
@@ -46266,7 +46346,8 @@
       ],
       "hash": "0cd6eb58c8",
       "text": "### Skills  *(SR3 p.244–245)*\n{: #skills }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "section heading; its rules are in the units below it"
     },
     {
       "id": "rules/karma.md#30",
@@ -69084,7 +69165,8 @@
       ],
       "hash": "2ed3cce644",
       "text": "The full rules, with permits, buying through a contact versus legally, and the fines, are on\n[Legality Codes & Permits](../legality/). In short, a code like **`6P-E`** reads as follows:",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "cross-reference to the Legality page, introducing the example code below — states no rule itself"
     },
     {
       "id": "street/gear-and-fencing.md#31",
@@ -70436,7 +70518,8 @@
       ],
       "hash": "4813cdcb37",
       "text": "Identity, buying and selling gear, secondhand chrome, and contacts and legwork.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "section description listing topics — states no rule"
     },
     {
       "id": "street/legality.md#1",
