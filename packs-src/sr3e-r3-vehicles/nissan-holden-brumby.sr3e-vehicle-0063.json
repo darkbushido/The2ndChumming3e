@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0063",
     "name": "Nissan-Holden Brumby",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/pickup-green.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/nissan-holden-brumby.webp",
     "system": {
       "vehicleType": "car",
       "cost": 19000,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/pickup-green.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/nissan-holden-brumby-top.webp"
       }
     }
   },

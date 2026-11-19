@@ -101,6 +101,13 @@ const CONCEAL = { module: '../scripts/data/concealment.mjs', klass: 'Concealment
 
 export const MUTANTS = [
   {
+    id:     'disabled-book-still-offered',
+    suite:  'source-books',
+    module: '../scripts/SR3ESourceBooks.js', klass: 'SR3ESourceBooks', method: 'packAllowed',
+    was:    'the Vehicle Designer offered VAUBAN mods from the France Sourcebook, a book switched off by default — a pack read that skipped the book filter (2026-11-09)',
+    impl:   function (pack) { return this.rulesetAllows(pack); },
+  },
+  {
     id:     'vehicle-link-trusted',
     suite:  'designer',
     module: '../scripts/data/gear-design.mjs', klass: 'GearDesign', method: 'normaliseVehicle',
@@ -4749,11 +4756,33 @@ export const MUTANTS = [
     },
   },
   {
-    id:     'mount-vehicle-minigun-by-type',
-    suite:  'vehicle-mounts',
-    module: '../scripts/data/vehicle-mounts.mjs', klass: 'VehicleMounts', method: 'weaponValue', needsOriginal: '_weaponValueOriginal',
-    was:    "the Ares Vanquisher and Vengeance (vehicle weapons typed HMG/MMG) counted 2 against a turret, not the table's 2.5 (R3R p.140)",
-    impl:   function (w) { return w?.type === 'vehicleweapon' && /vanquisher|vengeance/i.test(w.name) ? 2 : this._weaponValueOriginal(w); },
+    id:     'projection-stopped-by-walls',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'wallBlocks',
+    was:    'never shipped — the likely slip: a projecting astral form treated like a perceiving one, stopped by every sight wall (SR3 p.173: only wards; TODO 299)',
+    impl:   (sense, wall = {}) => (sense === 'thermo' ? (!!wall.sight || !!wall.flags?.The2ndChumming3e?.glass)
+      : sense === 'ultrasound' ? !!wall.sound : !!wall.sight),
+  },
+  {
+    id:     'perceiving-sees-through-walls',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'polygonSense',
+    was:    'never shipped — the likely slip: astral perception given the projecting polygon, so a mage in a chair saw through walls (SR3 p.172; TODO 299)',
+    impl:   (mode, _astralMode) => (mode === 'sr3eAstral' ? 'project' : mode === 'sr3eThermographic' ? 'thermo' : 'sight'),
+  },
+  {
+    id:     'stowed-goggles-see',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'isWornGear',
+    was:    'never shipped — goggles in the backpack granting thermographic sight (the maintainer, 2026-11-11: only when worn; TODO 299)',
+    impl:   () => true,
+  },
+  {
+    id:     'null-detection-range',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'finiteRange',
+    was:    'shipped on the live build: astral sight written with range null — v14 rejects it, so turning Dual Natured off threw (2026-11-11; TODO 299)',
+    impl:   r => r,
   },
   {
     id:     'invisibility-no-status',
@@ -4768,5 +4797,43 @@ export const MUTANTS = [
     module: '../scripts/data/invisibility.mjs', klass: 'InvisibilityRules', method: 'coveredNames',
     was:    'never shipped — the status landing on the caster instead of the spell target',
     impl:   (_e, caster) => [caster],
+  },
+  {
+    id:     'improved-invisibility-seen-by-camera',
+    suite:  'invisibility',
+    module: '../scripts/data/invisibility.mjs', klass: 'InvisibilityRules', method: 'seesThrough',
+    was:    'never shipped: a camera seeing through Improved Invisibility, which affects technological sensors as well (SR3 p.196)',
+    impl:   (_kind, tech) => !!tech,
+  },
+  {
+    id:     'natural-thermo-sees-invisible',
+    suite:  'invisibility',
+    module: '../scripts/data/invisibility.mjs', klass: 'InvisibilityRules', method: 'techSight',
+    was:    'never shipped: every viewer treated as a sensor, so a troll saw through a mana illusion (SR3 p.195)',
+    impl:   () => ({ all: true, thermo: true }),
+  },
+  {
+    id:     'improved-status-ignored',
+    suite:  'invisibility',
+    module: '../scripts/data/invisibility.mjs', klass: 'InvisibilityRules', method: 'kindOnToken',
+    was:    'never shipped: the Improved Invisibility status ignored, so a camera saw through it (SR3 p.196)',
+    impl:   st => ([...(st ?? [])].includes('invisible') ? 'plain' : null),
+  },
+  {
+    id:     'adept-perceives-without-the-power',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'astralAccess',
+    was:    'shipped on the live build: every Adept was offered Dual Natured, Astral Perception power or not (the maintainer, 2026-11-18; SR3 p.169; TODO 299)',
+    impl:   ({ magic = 0, magicType = '', typeCap = '' } = {}) => (!(magic > 0) ? '' : !magicType ? 'projection' : magicType === 'Adept' ? 'perception' : typeCap),
+  },
+  {
+    id:     'mundane-offered-astral',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'paletteEntries',
+    was:    'never shipped — the likely slip: the vision column offering Dual Natured and Astral to every player (the maintainer, 2026-11-18; TODO 299)',
+    impl:   ({ modes = ['normal'], astralMode = '' } = {}) => [{ key: 'best', kind: 'mode', active: true, eligible: true },
+      ...modes.map(k => ({ key: k, kind: 'mode', active: false, eligible: true })),
+      { key: 'dual', kind: 'astral', active: astralMode === 'dual', eligible: true },
+      { key: 'astral', kind: 'astral', active: astralMode === 'astral', eligible: true }],
   },
 ];

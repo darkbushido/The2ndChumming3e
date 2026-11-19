@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0124",
     "name": "Lockheed C-260 Transport",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/transport-maroon.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/lockheed-c-260-transport.webp",
     "system": {
       "vehicleType": "car",
       "cost": 5876500,
@@ -74,7 +74,7 @@
       "width": 32,
       "height": 28,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/transport-maroon.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/lockheed-c-260-transport-top.webp"
       }
     }
   },

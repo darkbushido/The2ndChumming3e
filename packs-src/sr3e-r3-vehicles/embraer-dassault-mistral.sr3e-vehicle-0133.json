@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0133",
     "name": "Embraer-Dassault Mistral",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/bizjet-orange.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/embraer-dassault-mistral.webp",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 362000,
@@ -74,7 +74,7 @@
       "width": 16,
       "height": 18,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/bizjet-orange.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/embraer-dassault-mistral-top.webp"
       }
     }
   },

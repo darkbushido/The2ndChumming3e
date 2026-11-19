@@ -71,6 +71,17 @@ export class SR3EStatusEffects {
  * with an icon nobody can remove from the HUD.
  */
 export class SR3ETokenHUD extends foundry.applications.hud.TokenHUD {
+  /**
+   * The GM's hide/show toggle wears a MASK, not an eye — the eye is the 👁 vision column (TODO 299; the
+   * maintainer, 2026-11-18: "Yes, swap it"). Icon only: core keeps the action and the `active` styling
+   * (`templates/hud/token-hud.hbs:53`, Foundry 14.365.0). Setting the class outright makes it idempotent.
+   */
+  async _onRender(context, options) {
+    await super._onRender(context, options);
+    const icon = this.element?.querySelector('.control-icon[data-action="visibility"] > i');
+    if (icon) icon.className = 'fa-solid fa-mask';
+  }
+
   _getStatusEffectChoices() {
     const choices = super._getStatusEffectChoices();
     const effects = this.actor?.effects ?? [];

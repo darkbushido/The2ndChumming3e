@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0026",
     "name": "Suzuki Watersport(G)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/jetski-maroon.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/suzuki-watersport.webp",
     "system": {
       "vehicleType": "boat",
       "cost": 10000,
@@ -73,7 +73,7 @@
       "width": 1,
       "height": 3,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/jetski-maroon.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/suzuki-watersport-top.webp"
       }
     }
   },

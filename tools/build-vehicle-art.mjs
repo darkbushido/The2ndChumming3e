@@ -1018,7 +1018,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     if (!check) writeFileSync(p, text);
   }
   for (const f of existsSync(OUT) ? readdirSync(OUT) : []) {
-    if (files.has(f)) continue;
+    if (files.has(f) || f === 'models') continue;   // models/ holds each model's own picture (not generated)
     drift++;
     if (!check) rmSync(join(OUT, f));
   }

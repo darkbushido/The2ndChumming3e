@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0170",
     "name": "Doc Wagon SRT",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/heli-light-docwagon.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/doc-wagon-srt.webp",
     "system": {
       "vehicleType": "helicopter",
       "cost": 773750,
@@ -73,7 +73,7 @@
       "width": 8,
       "height": 9,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/heli-light-docwagon.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/doc-wagon-srt-top.webp"
       }
     }
   },

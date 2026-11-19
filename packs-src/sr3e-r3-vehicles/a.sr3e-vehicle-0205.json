@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0205",
     "name": "A",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/airliner-white.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/a.webp",
     "system": {
       "vehicleType": "car",
       "cost": 75000000,
@@ -74,7 +74,7 @@
       "width": 30,
       "height": 60,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/airliner-white.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/a-top.webp"
       }
     }
   },

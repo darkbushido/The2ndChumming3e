@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0174",
     "name": "E-D Dorocilo(Luxury)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/heli-heavy-blue.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/e-d-dorocilo-luxury.webp",
     "system": {
       "vehicleType": "helicopter",
       "cost": 800000,
@@ -73,7 +73,7 @@
       "width": 16,
       "height": 28,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/heli-heavy-blue.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/e-d-dorocilo-luxury-top.webp"
       }
     }
   },

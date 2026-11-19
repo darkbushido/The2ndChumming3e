@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0106",
     "name": "Leyland-Rover Trans(E Mini)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/van-black.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/leyland-rover-trans-mini.webp",
     "system": {
       "vehicleType": "car",
       "cost": 52000,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/van-black.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/leyland-rover-trans-mini-top.webp"
       }
     }
   },

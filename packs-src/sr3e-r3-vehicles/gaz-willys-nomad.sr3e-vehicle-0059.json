@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0059",
     "name": "Gaz-Willys Nomad",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/jeep-forest.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/gaz-willys-nomad.webp",
     "system": {
       "vehicleType": "car",
       "cost": 34500,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 4,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/jeep-forest.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/gaz-willys-nomad-top.webp"
       }
     }
   },

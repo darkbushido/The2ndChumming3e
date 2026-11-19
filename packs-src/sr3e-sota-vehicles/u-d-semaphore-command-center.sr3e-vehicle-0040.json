@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0040",
     "name": "U-D Semaphore Command Center",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/tracked-apc-forest.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/u-d-semaphore-command-center.webp",
     "system": {
       "vehicleType": "military",
       "cost": 1196500,
@@ -73,7 +73,7 @@
       "width": 3.5,
       "height": 7,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/tracked-apc-forest.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/u-d-semaphore-command-center-top.webp"
       }
     }
   },

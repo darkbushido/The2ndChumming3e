@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0000",
     "name": "BMW Blitzen 2050",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sportbike-blue.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/bmw-blitzen-2050.webp",
     "system": {
       "vehicleType": "motorcycle",
       "cost": 26300,
@@ -73,7 +73,7 @@
       "width": 1,
       "height": 2,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sportbike-blue.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/bmw-blitzen-2050-top.webp"
       }
     }
   },

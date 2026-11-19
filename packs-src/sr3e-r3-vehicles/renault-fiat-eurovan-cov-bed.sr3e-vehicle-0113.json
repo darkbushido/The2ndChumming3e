@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0113",
     "name": "Renault-Fiat Eurovan(Cov. Bed)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/pickup-cover-silver.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/renault-fiat-eurovan-cov-bed.webp",
     "system": {
       "vehicleType": "car",
       "cost": 34000,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/pickup-cover-silver.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/renault-fiat-eurovan-cov-bed-top.webp"
       }
     }
   },

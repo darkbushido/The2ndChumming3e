@@ -16,7 +16,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - `essence-and-cyberware.md` cac57ed6e24b
 - `initiative-and-vehicles.md` 1babb7afb959
 - `karma-and-economy.md` cf28a25407d7
-- `magic.md` fc73e7b7bd02
+- `magic.md` 5f625ae6d810
 - `matrix.md` a23085020f25
 - `melee-combat.md` 73eba60f8bfb
 - `packs-and-migrations.md` 470e0fd91b3a
@@ -96,7 +96,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **👁 Concealment — what a character carries that shows — TODO 195** — SR3 p.45, SR3 p.231-232, SR3 p.236-237, SR3 p.270, SR3 p.231, SR3 p.303, SR3 p.301, MM p.21, SR3 p.237, SR3 p.236, SR3 p.232 — scripts/SR3EConcealment.js, scripts/data/concealment.mjs
 
 ## magic
-- **Astral state** — SR3 p.41, SR3 p.62, MITS p.58, SR3 p.174-175, SR3 p.174, SR3 p.176 — scripts/data/initiate-astral.mjs, tests/initiate-astral.test.mjs
+- **Astral state** — SR3 p.41, SR3 p.62, MITS p.58, SR3 p.172-173, SR3 p.174-175, SR3 p.174, SR3 p.176 — scripts/data/token-senses.mjs, scripts/SR3ESenses.js, scripts/data/initiate-astral.mjs, tests/initiate-astral.test.mjs
 - **Sustained spells** — SR3 p.178, SR3 p.180, SR3 p.183, SR3 p.125 — scripts/data/sustaining.mjs
 - **Spell Pool** — SR3 p.43
 - **Spellcasting flow** — SR3 p.178, SR3 p.181, SR3 p.182, SR3 p.192, SR3 p.191, SR3 p.183, SR3 p.180-181, SR3 p.160, SR3 p.196, MITS p.56, SR3 p.197, SR3 p.182-183 — scripts/data/spell-pool-cap.mjs, scripts/data/spell-target.mjs, scripts/data/spell-limits.mjs, scripts/data/clout.mjs, scripts/data/fling.mjs, tests/fling.test.mjs, tests/spell-defense.test.mjs

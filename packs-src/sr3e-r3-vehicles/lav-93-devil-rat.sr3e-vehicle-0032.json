@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0032",
     "name": "LAV-93 Devil Rat",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/apc-fieldgrey.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/lav-93-devil-rat.webp",
     "system": {
       "vehicleType": "military",
       "cost": 260100,
@@ -73,7 +73,7 @@
       "width": 3,
       "height": 7.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/apc-fieldgrey.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/lav-93-devil-rat-top.webp"
       }
     }
   },

@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0176",
     "name": "E-D Dorocilo(Drone Carrier)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/heli-heavy-green.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/e-d-dorocilo-drone-carrier.webp",
     "system": {
       "vehicleType": "helicopter",
       "cost": 1050000,
@@ -73,7 +73,7 @@
       "width": 16,
       "height": 28,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/heli-heavy-green.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/e-d-dorocilo-drone-carrier-top.webp"
       }
     }
   },

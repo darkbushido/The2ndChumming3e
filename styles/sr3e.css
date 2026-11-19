@@ -4115,3 +4115,9 @@ button.vd-card:hover, .vd-card.vd-mod:hover { border-color: var(--sr-border-hi);
 .vd-line { display: grid; grid-template-columns: 1fr 70px 90px; gap: 6px; font-size: 12px; }
 .vd-line b { text-align: right; }
 .vd-total { border-top: 1px solid var(--sr-border); font-weight: 600; }
+.sr3e-aura-hint{pointer-events:none;transform:translateX(-50%);padding:2px 8px;border-radius:var(--r,4px);background:rgba(20,16,30,.85);color:var(--sr-gold,#c8a040);font-size:12px;z-index:100;white-space:nowrap}
+
+/* TODO 299 — the 👁 vision column on the Token HUD (core .palette-list styling; ours adds the greyed GM override). */
+#token-hud .sr3e-vision-palette .sr3e-ineligible { opacity: 0.45; font-style: italic; }
+#token-hud .sr3e-vision-palette .sr3e-us-range { display: flex; gap: 4px; align-items: center; font-size: 11px; padding: 2px 6px; }
+#token-hud .sr3e-vision-palette .sr3e-us-range input { width: 52px; }

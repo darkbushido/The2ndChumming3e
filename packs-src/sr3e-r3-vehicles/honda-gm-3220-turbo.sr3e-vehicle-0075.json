@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0075",
     "name": "Honda-GM 3220 Turbo",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/sedan-red.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/honda-gm-3220-turbo.webp",
     "system": {
       "vehicleType": "car",
       "cost": 44000,
@@ -73,7 +73,7 @@
       "width": 2,
       "height": 5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/sedan-red.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/honda-gm-3220-turbo-top.webp"
       }
     }
   },

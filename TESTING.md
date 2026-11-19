@@ -518,6 +518,18 @@ packs and `system.json`), then `npm run packs:check`. New packs and a data-model
 
 ---
 
+## Pickers honour the source books (`tests/pack-reads.test.mjs`) — needs a live pass
+
+Reported 2026-11-09: the Vehicle Designer offered VAUBAN mods from the France Sourcebook, which is off.
+Configure Source Books → untick one book that ships gear, one with vehicles and one with an archetype, then:
+- [ ] its packs vanish from the Compendium sidebar.
+- [ ] 🛒 Buy gear: search finds none of its items; dragging one in still fills in, with the "switched off" warning.
+- [ ] An item sheet's *Pick from compendium* lists none of its entries.
+- [ ] Character sheet → add a vehicle: its vehicles are not in the compendium groups.
+- [ ] Character sheet → link an archetype: its archetypes are not listed.
+- [ ] Vehicle Designer mod shop (once `claude/vehicle-designer-shop` lands): none of its mods.
+- [ ] Re-tick the book → everything comes back, no reload.
+
 ## Dialog wiring — TODO 20 (0.5.2) — needs a live pass
 
 Eighteen dialogs moved from the global `renderDialogV2` hook to their own `render` option. For
@@ -3843,18 +3855,6 @@ Second pass (the maintainer's feedback, 2026-11-08):
       and **+ Add** still puts it in the 🛒 cart (step 4 then warns "Left out").
 - [ ] **Pictures, once the batch is keyed:** on a dark page, no white halo round any weapon; import a design in Foundry →
       the item's image is its model picture; a weapon with no picture keeps its pack icon.
-
-## 90. 👻 Invisibility puts the token's `invisible` status on (branch `fix/invisibility-status` — SR3 p.196)
-
-Run as the **active GM** (the status hook runs only there); reload the GM tab first.
-
-1. A mage casts **Invisibility** on themself (no target), hits > 0, clicks **Sustain** → the mage's token shows
-   ⚙ Sustaining **and** Foundry's **Invisible** status (token goes translucent for the GM, hidden from players).
-2. Drop the spell on the Magic tab → **Invisible** comes off, Sustaining too.
-3. Target another token (Sam), cast **Improved Invisibility**, Sustain → **Sam** gets Invisible; the mage gets
-   only Sustaining. Drop it → Sam's Invisible comes off.
-4. GM sets **Invisible** on an unrelated token by hand, then sustains/drops any spell → that hand-set status stays.
-5. `game.actors.getName('Sam').getFlag('The2ndChumming3e','invisFromSpell')` reads `improved` while step 3 is up.
 ## 88. 🖨 Print a character sheet (TODO 302)
 
 JS only — F5 is enough. **Prerequisites:** a player-owned character with skills, a weapon, armour, cyberware, a spell or adept power, a contact, and a vehicle linked to them; an NPC the player does not own.
@@ -3878,5 +3878,49 @@ Hot reload is enough (no new fields). Open a character sheet, Attributes tab.
       Success Table line ("Something is there." at 1). Nothing else changes on the actor.
 - [ ] **🔍 Concealment's Perception Test** still reads its success line exactly as before.
 
+
+## 90. 👻 Invisibility puts the token's `invisible` status on (branch `fix/invisibility-status` — SR3 p.196)
+
+Run as the **active GM** (the status hook runs only there); reload the GM tab first.
+
+1. A mage casts **Invisibility** on themself (no target), hits > 0, clicks **Sustain** → the mage's token shows
+   ⚙ Sustaining **and** Foundry's **Invisible** status (token goes translucent for the GM, hidden from players).
+2. Drop the spell on the Magic tab → **Invisible** comes off, Sustaining too.
+3. Target another token (Sam), cast **Improved Invisibility**, Sustain → **Sam** gets Invisible; the mage gets
+   only Sustaining. Drop it → Sam's Invisible comes off.
+4. GM sets **Invisible** on an unrelated token by hand, then sustains/drops any spell → that hand-set status stays.
+5. `game.actors.getName('Sam').getFlag('The2ndChumming3e','invisFromSpell')` reads `improved` while step 3 is up.
+
+## 91. 📷 Cameras, drones and cybereyes see through plain Invisibility (branch `feat/tech-sees-plain-invisibility` — SR3 pp.195-196; the maintainer, 2026-11-18)
+
+Needs §90's branch. Join as a player who owns only the viewer token; Sam is invisible (§90).
+
+1. Sam under **Invisibility**. A **drone** (vehicle actor) token owned by the player → Sam is visible to it.
+2. A character with **Cybereyes** → sees Sam. A **troll** (natural thermographic, no implants) → doesn't.
+3. A character wearing **thermographic goggles** (worn) in thermographic vision → sees Sam; take them off → doesn't.
+4. An NPC with `actor.setFlag('The2ndChumming3e','camera',true)` → sees Sam.
+5. Recast as **Improved Invisibility** → none of the above see Sam (astral sight and ultrasound still do).
+6. An existing token picks up its `techSight` flag on the next item/flag change to its actor — add and remove an item if needed.
+
+## 92. 👻 The Improved Invisibility status (branch `feat/improved-invisibility-status` — SR3 p.196; the maintainer, 2026-11-18)
+
+1. Sustain **Improved Invisibility** on Sam → Sam's token shows **Invisible** and **Improved Invisibility**. Drop it → both clear.
+2. Sustain plain **Invisibility** → only **Invisible**.
+3. GM ticks **Invisible** by hand on an NPC → a drone/cybereyed viewer sees it (plain). Tick **Improved Invisibility** too → they don't.
+4. System settings → **Configure Status Effects** lists only the SR3 core set by default; untick unused ones and the Token HUD drops them live.
 - [ ] **Row fits (bug 2026-11-18):** at the sheet's default width (860) Stun sits over Physical, and Overflow, 🩹 Healing,
       👁 Perception, Stim and Carry share ONE line — nothing wraps. Narrowing the sheet moves the button group down whole.
+
+## 93. 👁 The vision column on the Token HUD (TODO 299, branch `claude/vision-palette` — SR3 p.169; the maintainer, 2026-11-18)
+
+**Prerequisites:** a full magician, an adept WITH the Astral Perception power, an adept without it, and a mundane troll, each with a token on a scene. Player2 owns the mundane troll.
+
+- [ ] Right-click each token → 👁: a column opens beside the HUD like the status effects, and the active entry is lit.
+- [ ] Mundane troll (as Player2): Best, Thermographic, Normal — no Dual Natured, no Astral.
+- [ ] Adept with Astral Perception: Dual Natured, no Astral. Adept without it: neither. The sheet's Magic tab matches (no Dual Natured button for the adept without the power).
+- [ ] Full magician: Dual Natured and Astral. Clicking Dual Natured perceives (the sheet button lights); clicking it again goes back to Physical Plane.
+- [ ] Picking Thermographic while perceiving ends perceiving; while projecting it does not.
+- [ ] GM on the mundane troll: Dual Natured and Astral show greyed with a tooltip; clicking warns and still sets it.
+- [ ] The core status-effects palette no longer lists Dual-Natured (a token that carries it still shows it, to clear).
+- [ ] A token with ultrasound shows a range field at the foot of the column; changing it updates the token's ultrasound detection range.
+- [ ] GM: the Token HUD's hide/show toggle shows a 🎭 mask (not an eye), lit when the token is hidden; clicking still hides and shows it, and re-opening the HUD keeps the mask.

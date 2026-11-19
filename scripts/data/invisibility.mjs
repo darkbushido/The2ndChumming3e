@@ -63,5 +63,43 @@ function namesTouched(entries, casterName) {
     .flatMap(e => InvisibilityRules.coveredNames(e, casterName));
 }
 
+/* ── Who sees through it · SR3 p.195-196 ─────────────────────────────────────────────────────────────────
+ * > Mana-based illusions "are ineffective against technological viewing systems like cameras" (p.195);
+ * > Improved Invisibility "affects technological sensors as well" (p.196).
+ * The maintainer's ruling (2026-11-18): drones/vehicles, cameras, CYBEREYES and technological thermographic
+ * vision (cyber implants, worn goggles) are technological viewers — they see through PLAIN Invisibility, never
+ * Improved. Natural thermo (trolls, dwarfs) and an adept's Improved Sense are living eyes and are fooled.
+ * A GM-set `invisible` alone is PLAIN; the GM ticks Improved Invisibility too to fool sensors (2026-11-18). */
+
+const CYBEREYES = /\bcyber\s*eyes?\b|cyber\s*replacement/i;
+
+/**
+ * How a viewer's sight is technological.
+ * @param {{ actorType?: string, camera?: boolean, replacedBy?: string|null, cyberThermo?: boolean, gearThermo?: boolean }} f
+ * @returns {{ all: boolean, thermo: boolean }} `all` — every sight mode is a sensor; `thermo` — its thermographic is.
+ */
+function techSight(f = {}) {
+  const all = f.actorType === 'vehicle' || !!f.camera || CYBEREYES.test(String(f.replacedBy ?? ''));
+  return { all, thermo: all || !!f.cyberThermo || !!f.gearThermo };
+}
+
+/** The system status marking Improved Invisibility — it rides alongside core `invisible`, which does the hiding. */
+export const IMPROVED_INVISIBLE = 'sr3e-improved-invisible';
+
+/**
+ * Which invisibility a token carries, from its statuses — the token is what the GM sees and can tick by hand.
+ * Core `invisible` alone is PLAIN (a camera sees through it); with the Improved status it is IMPROVED.
+ */
+function kindOnToken(statuses) {
+  const has = id => (statuses instanceof Set ? statuses.has(id) : [...(statuses ?? [])].includes(id));
+  if (!has('invisible')) return null;
+  return has(IMPROVED_INVISIBLE) ? 'improved' : 'plain';
+}
+
+/** Does a viewer whose sight in this mode is (or is not) technological see through invisibility of `kind`? */
+function seesThrough(kind, techViewer) {
+  return kind === 'plain' && !!techViewer;
+}
+
 // Called through the object so mutants reach the inner calls.
-export const InvisibilityRules = { invisibilityKind, coveredNames, invisibilityOn, namesTouched };
+export const InvisibilityRules = { invisibilityKind, coveredNames, invisibilityOn, namesTouched, techSight, seesThrough, kindOnToken };

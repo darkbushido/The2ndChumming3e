@@ -156,7 +156,7 @@ export const SR3EDesignImport = {
       return data;
     });
     if (actorId) {
-      const actor = actorFrom(actorId);
+      const actor = actorFrom(actorId);   // a plain id, or a token actor's uuid (TODO 260)
       if (!actor?.isOwner) { ui.notifications.warn('You don\'t own that actor.'); return []; }
       const created = await actor.createEmbeddedDocuments('Item', items);
       ui.notifications.info(`${result.weapon.name} imported onto ${actor.name}.`);

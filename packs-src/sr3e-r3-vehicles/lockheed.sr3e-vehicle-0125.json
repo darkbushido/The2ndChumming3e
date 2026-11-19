@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0125",
     "name": "Lockheed",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/airliner-blue.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/lockheed.webp",
     "system": {
       "vehicleType": "car",
       "cost": 8275000,
@@ -74,7 +74,7 @@
       "width": 30,
       "height": 60,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/airliner-blue.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/lockheed-top.webp"
       }
     }
   },

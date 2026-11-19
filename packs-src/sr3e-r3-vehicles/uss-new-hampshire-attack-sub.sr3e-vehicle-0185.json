@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0185",
     "name": "USS New Hampshire Attack Sub",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/submarine-battleship.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/uss-new-hampshire-attack-sub.webp",
     "system": {
       "vehicleType": "submarine",
       "cost": 860000000,
@@ -73,7 +73,7 @@
       "width": 10,
       "height": 110,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/submarine-battleship.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/uss-new-hampshire-attack-sub-top.webp"
       }
     }
   },

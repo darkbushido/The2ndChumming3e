@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0057",
     "name": "CAT Snowbear Standard",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/snowcat-maroon.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/cat-snowbear-standard.webp",
     "system": {
       "vehicleType": "car",
       "cost": 186300,
@@ -73,7 +73,7 @@
       "width": 3,
       "height": 6.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/snowcat-maroon.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/cat-snowbear-standard-top.webp"
       }
     }
   },

@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0142",
     "name": "Silkorsky-Bell Red Ranger",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/hovercraft-blue.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/silkorsky-bell-red-ranger.webp",
     "system": {
       "vehicleType": "hovercraft",
       "cost": 336000,
@@ -73,7 +73,7 @@
       "width": 5,
       "height": 12,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/hovercraft-blue.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/silkorsky-bell-red-ranger-top.webp"
       }
     }
   },

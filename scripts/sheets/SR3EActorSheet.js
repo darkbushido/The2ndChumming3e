@@ -1,3 +1,4 @@
+import { TokenSenses } from '../data/token-senses.mjs';
 import { SR3E, getSpecializationsForSkill, skillTypeForCategory } from '../config.js';
 import { CHARGEN_SPEC_GAP } from '../data/skill-rules.mjs';
 import { itemRating, vcrLevel, displayName } from '../data/item-rating.mjs';
@@ -77,6 +78,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
       openHealing:    SR3EActorSheet._onOpenHealing,
       openPerception: SR3EActorSheet._onOpenPerception,
       equipArmor:     SR3EActorSheet._onEquipArmor,
+      wearGear:       SR3EActorSheet._onWearGear,
       equipMelee:     SR3EActorSheet._onEquipMelee,
         applyDamage:    SR3EActorSheet._onApplyDamage,
         healDamage:     SR3EActorSheet._onHealDamage,
@@ -2746,7 +2748,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     const gRows = gear.length ? gear.map(g => `
       <div class="item-row" data-item-id="${g.id}">
         <span class="item-name">${displayName(g)}${SR3EActorSheet.markChip(g)}</span>
-        <span class="item-cell">×${g.system.quantity ?? 1}</span>
+        <span class="item-cell">${TokenSenses.isVisionGear(g.name)
+          ? `<i class="fas ${g.getFlag('The2ndChumming3e', 'worn') ? 'fa-glasses' : 'fa-eye-slash'}" data-action="wearGear" data-item-id="${g.id}"
+              style="cursor:pointer;${g.getFlag('The2ndChumming3e', 'worn') ? 'color:var(--sr-accent)' : 'color:var(--sr-dim)'}"
+              title="${g.getFlag('The2ndChumming3e', 'worn') ? 'Worn — its vision applies to the token. Click to take off.' : 'Not worn — wear it for its vision on the token (TODO 299).'}"></i> ` : ''}×${g.system.quantity ?? 1}</span>
         <span class="item-cell">${g.system.cost ?? 0}¥</span>
         <span class="item-cell col-xs">${g.system.weight ?? 0}</span>
         ${this._itemControls(g.id, false, 'rollWeapon', false)}
@@ -2875,7 +2880,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const typeEntry  = SR3E.magicTypes.find(t => t.name === magicType);
     // No type set → no restriction; otherwise derive from astral field
-    const astralCap  = magicType ? (typeEntry?.astral ?? '') : 'projection';
+    // Adepts perceive only with the Astral Perception power (SR3 p.169) — one rule with the 👁 vision column (TODO 299).
+    const astralCap  = game.sr3e.TokenSenses.astralAccess({ magic: 1, magicType, typeCap: typeEntry?.astral ?? '', items: actor.items });
     const canProject = astralCap === 'projection';
     const canPerceive = astralCap === 'projection' || astralCap === 'perception';
 
@@ -4533,6 +4539,12 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     await Promise.all(ops);
   }
 
+  /** Put vision gear on or take it off (goggles, shades, helmets) — its sense reaches the token · TODO 299. */
+  static async _onWearGear(ev, target) {
+    const item = this.actor.items.get(target.dataset.itemId);
+    if (item) await item.setFlag('The2ndChumming3e', 'worn', !item.getFlag('The2ndChumming3e', 'worn'));
+  }
+
   static async _onApplyDamage(ev, target) {
     const track  = target.dataset.track;
     const amount = parseInt(target.dataset.amount);
@@ -5154,7 +5166,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     // Compendium entries, grouped by pack.
     const packGroups = [];
-    for (const pack of game.packs.filter(p => p.metadata.type === 'Actor')) {
+    // Only books the GM has switched on (SR3ESourceBooks.packAllowed) — a disabled book's entries
+    // must not be offered here (tests/pack-reads.test.mjs).
+    for (const pack of game.packs.filter(p => p.metadata.type === 'Actor'
+        && (game.sr3e?.SR3ESourceBooks?.packAllowed(p) ?? true))) {
       const entries = (await pack.getIndex()).filter(e => e.type === 'vehicle');
       if (!entries.length) continue;
       const opts = entries
@@ -5261,7 +5276,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     if (!item) return;
 
     const entries = [];
-    for (const pack of game.packs.filter(p => p.metadata.type === 'Actor')) {
+    // Only books the GM has switched on (SR3ESourceBooks.packAllowed) — a disabled book's entries
+    // must not be offered here (tests/pack-reads.test.mjs).
+    for (const pack of game.packs.filter(p => p.metadata.type === 'Actor'
+        && (game.sr3e?.SR3ESourceBooks?.packAllowed(p) ?? true))) {
       for (const e of await pack.getIndex()) {
         if (e.type !== 'character' && e.type !== 'npc') continue;
         entries.push({ uuid: `Compendium.${pack.collection}.${e._id}`,

@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0085",
     "name": "Leyland-Zil Tsarina(E)",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/compact-blue.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/leyland-zil-tsarina.webp",
     "system": {
       "vehicleType": "car",
       "cost": 16000,
@@ -73,7 +73,7 @@
       "width": 1.5,
       "height": 3.5,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/compact-blue.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/leyland-zil-tsarina-top.webp"
       }
     }
   },

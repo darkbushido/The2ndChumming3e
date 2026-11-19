@@ -4,7 +4,7 @@
     "_id": "sr3e-vehicle-0135",
     "name": "Lear-Cessna Platinum II",
     "type": "vehicle",
-    "img": "systems/The2ndChumming3e/styles/textures/vehicles/bizjet-silver.svg",
+    "img": "systems/The2ndChumming3e/styles/textures/vehicles/models/lear-cessna-platinum-ii.webp",
     "system": {
       "vehicleType": "fixedwing",
       "cost": 427000,
@@ -74,7 +74,7 @@
       "width": 16,
       "height": 18,
       "texture": {
-        "src": "systems/The2ndChumming3e/styles/textures/vehicles/bizjet-silver.svg"
+        "src": "systems/The2ndChumming3e/styles/textures/vehicles/models/lear-cessna-platinum-ii-top.webp"
       }
     }
   },
