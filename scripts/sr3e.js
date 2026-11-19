@@ -56,6 +56,7 @@ import { SR3EGenericNpc } from './SR3EGenericNpc.js';
 import { TokenScale } from './data/token-scale.mjs';
 import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EPerception } from './SR3EPerception.js';
+import { SR3ETraining } from './SR3ETraining.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
 import { SR3EActionLedger } from './SR3EActionLedger.js';
 import { Ledger } from './data/ledger.mjs';
@@ -148,7 +149,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EPerception, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, SR3EModdedBuy, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc, SR3EItemMods, SR3EDesignImport, SR3EVehicleDesigner, SR3EOrders, SR3ESenses, TokenSenses };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EPerception, SR3ETraining, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, SR3EModdedBuy, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc, SR3EItemMods, SR3EDesignImport, SR3EVehicleDesigner, SR3EOrders, SR3ESenses, TokenSenses };
 
   // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
   // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
@@ -333,6 +334,17 @@ Hooks.once('init', () => {
   });
 
   // Register system setting for initiative mode
+  // TODO 309 — which book's training rule Spend Karma's optional "Train first…" roll uses.
+  game.settings.register('The2ndChumming3e', 'trainingRule', {
+    name: 'Training Rule',
+    hint: 'Spend Karma\'s optional "Train first…" roll. Core: a Skill Test against twice the rating sought (SR3 p.245). Shadowrun Companion: training time in days, divided by the test\'s successes, with instructor fees (SC p.48-50). Never blocks a purchase.',
+    scope: 'world',
+    config: true,
+    type: String,
+    choices: { core: 'Core rules (SR3 p.245)', companion: 'Shadowrun Companion (training time and fees)' },
+    default: 'core',
+  });
+
   game.settings.register('The2ndChumming3e', 'initiativeMode', {
     name: 'Initiative Mode',
     hint: 'SR3: Everyone acts once in order, then fast characters get additional passes. SR2: Pure descending order, subtract 10 per pass.',
@@ -3038,6 +3050,21 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       }
       btn.disabled    = true;
       btn.textContent = '🧹 Cleared';
+    });
+  });
+
+  // 🎓 Training card's 💴 instructor fee (TODO 309) — offered, confirmed, then debited.
+  html.querySelectorAll('.sr-train-pay-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'trainpay', i)) return;
+    const p = _payload(btn);
+    if (!_mine(p)) return _denyBtn(btn, 'Only this character\'s owner (or the GM) can pay this fee.');
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'trainpay', i)) return;
+      btn.disabled = true;
+      // Cancelled → the button comes back (the claim is released by a reload only, so re-enable it here).
+      if (!await game.sr3e.SR3ETraining.pay(p)) { btn.disabled = false; _usedButtons.delete(`${mid}|trainpay|${i}`); }
     });
   });
 

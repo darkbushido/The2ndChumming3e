@@ -3705,9 +3705,18 @@ Decided with the maintainer, 2026-11-19 (0.9.0 rules check, ledger units `rules/
 - SR3 p.95: an instructor needs the skill at 3+ and at least the rating sought; "Teaching requires an
   Instruction (4) Test. For every two successes … the student receives an additional die".
 
-Built on `claude/awesome-chaum-3f5285`: `scripts/data/training.mjs` (pure), `SR3EActorSheet._trainForKarma`.
+**Shadowrun Companion instructor fees folded in (maintainer, 2026-11-19):** a world setting `trainingRule`
+chooses **Core** (default) or **Shadowrun Companion** (printed pp.48-50): training time = Karma × 7 (Active) /
+× 15 (Knowledge, Language) days ÷ the successes of a test against new rating + 2; an instructor adds +1 success
+per 2 Instruction successes (Charisma (8) without the skill); a lesson with no successes on either side fails
+(a day's pay, +1.5 days); −1 TN for a new skill with an instructor; a virtual instructor makes no Instruction
+Test. Fees from the Suggested Instructor Fees Table (p.50), editable, offered as a 💴 button that debits nuyen
+after a confirm. Each mode follows its own book.
+
+Built on `claude/awesome-chaum-3f5285`: `scripts/data/training.mjs` (pure), `scripts/SR3ETraining.js`.
 Rolls and reports; Karma is spent separately afterwards. Instructor shortfalls warn. Still to check live:
-the button on a skill row, an instructor's bonus dice, the warning for an under-rated teacher.
+the button on a skill row; an instructor's bonus (core: dice, Companion: successes); the warning for an
+under-rated teacher; with the Companion rule, the days and the 💴 Pay button debiting nuyen.
 
 ## 310. Virtual Instructor chips priced by the formula, not flat (SR3 p.296, p.95) — **requested 2026-11-19**
 

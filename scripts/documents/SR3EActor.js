@@ -5577,7 +5577,8 @@ _prepareCharacter(sys, attr) {
     concealPerception: ['SR3EConcealment', 'perceptionRolled'],
     perception:        ['SR3EPerception', 'rolled'],           // TODO 304 — the sheet's 👁 Perception Test, p.231-232  // TODO 195 — Perception vs Concealability, p.231
     legwork:           ['SR3ELegwork', 'rolled'],                 // TODO 268 — Etiquette for legwork, p.253-254
-    modRemoval:        ['SR3EItemMods', 'removalRolled'],         // TODO 277 — a gunsmith takes a gas vent off, CC p.79-81
+    training:          ['SR3ETraining', 'rolled'],                // TODO 309 — Train first, SR3 p.245 / Shadowrun Companion p.49
+    modRemoval:        ['SR3EItemMods', 'removalRolled'],        // TODO 277 — a gunsmith takes a gas vent off, CC p.79-81
   };
 
   static _registryFn([cls, fn] = [], what) {
