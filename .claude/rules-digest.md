@@ -17,7 +17,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - `initiative-and-vehicles.md` 1babb7afb959
 - `karma-and-economy.md` cf28a25407d7
 - `magic.md` 5f625ae6d810
-- `matrix.md` f279e21c87c8
+- `matrix.md` 1f16c873b268
 - `melee-combat.md` 73eba60f8bfb
 - `packs-and-migrations.md` 470e0fd91b3a
 - `portraits.md` 9fca86734575
@@ -108,7 +108,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - **System Rating** — *(no citation: not audited)*
 - **Security Tiers** — *(no citation: not audited)*
 - **Hacking Pool** — MDF p.11, SR3 p.207
-- **User modes** — MDF p.10, MDF p.27, MDF p.26, SR3 p.227, SR3 p.156, SR3 p.226, SR3 p.145 — data/dump-shock.mjs, sr3e.js, scripts/data/rigger-shock.mjs
+- **User modes** — MDF p.10, MDF p.27, MDF p.26, SR3 p.227, SR3 p.156, SR3 p.226, SR3 p.145 — data/dump-shock.mjs, sr3e.js, data/orthodox-mode.mjs, scripts/data/rigger-shock.mjs
 - **Matrix actions are Complex · MDF p.8** — MDF p.8
 - **Hacking procedure** — *(no citation: not audited)*
 - **Overwatch / Convergence** — MDF p.22-23, MDF p.26, MDF p.23-24, MDF p.24 — data/overwatch-crash.mjs, data/sheaf-steps.mjs

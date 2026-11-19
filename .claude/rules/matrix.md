@@ -102,7 +102,9 @@ Colour (flavour) + **Security Threshold**. A hack needs successes **≥ Threshol
   carry `resistAttr: 'willpower'`, `noArmor: true`.
 - ⚠ **Orthodox user modes follow the same VR-Hot-only rule** (maintainer, 2026-11-07): the Orthodox Matrix tab has a user-mode
   selector (`system.matrixUserMode`), and Orthodox Matrix Initiative (Response ×2) applies only in VR-Hot. Before this any logged-in
-  decker got it; existing Orthodox deckers must be set to VR-Hot by hand (no migration can know their mode).
+  decker got it. Existing deckers: the 0.9.0 migration (`data/orthodox-mode.mjs`, `OrthodoxMode.migrationDelta`) sets VR-Hot **only** for a
+  character/NPC with deck stats, logged on to a host, with NO mode saved (the maintainer, 2026-11-19) — a chosen mode is never touched. The Orthodox
+  Log On dialog now asks for the mode (default: the current one, else VR-Hot) and Log Off clears it, as Defragged's does.
 - ⚠ **Orthodox is different** (TODO 202, `SR3EActor.orthoDumpShock`): SR3 p.227 — always **Stun**, Power =
   Security Value, level by Security Code from the **Dump Shock Damage Levels** table (SR3 p.226: Blue L, Green M,
   Orange S, Red D). **Not the IC table** beside it (`_orthoICDmgLevel`: Blue/Green M, Orange/Red S).

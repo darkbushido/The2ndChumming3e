@@ -50,6 +50,7 @@ import { IcBookFixes } from './data/ic-book-fixes.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
 import { WeaponCategoryFixes } from './data/weapon-category-fixes.mjs';
 import { convergenceDelta } from './data/sheaf-steps.mjs';
+import { OrthodoxMode } from './data/orthodox-mode.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -762,6 +763,21 @@ const MIGRATIONS = [
      * Street Sweeper's taser picture changes only while it is the stock icon. Idempotent.
      */
     fixItem: WeaponCategoryFixes.fixItem,
+  },
+  {
+    version: '0.9.0',
+    label: 'Orthodox deckers already logged on get the VR-Hot mode they had been using without one (MDF p.10; TODO 128)',
+    /**
+     * Until 2026-11-07 an Orthodox decker logged on to a host got Matrix Initiative whatever their mode; now only VR-Hot does
+     * (MDF p.10), and an existing decker has no mode saved, so they quietly lost it. Rule in `OrthodoxMode.migrationDelta`
+     * (`scripts/data/orthodox-mode.mjs`, pure, tested). The maintainer chose the scope, 2026-11-19: logged-on deckers only.
+     *
+     * ⚠ **This WRITES a mode, and argues for it:** only a `character` or `npc` with deck stats (`orthodoxDeck.mccp` > 0), logged on
+     * to a host, and with NO mode saved — exactly the group that had Matrix Initiative before. A mode anyone chose, even Tortoise
+     * or VR-Cold, is never touched, and a decker between runs gets nothing (a mode also puts the VR status icon on their token).
+     * World actors and unlinked tokens. Idempotent: once a mode is set it yields null.
+     */
+    fixActor: actor => OrthodoxMode.migrationDelta(actor),
   },
 
 ];
