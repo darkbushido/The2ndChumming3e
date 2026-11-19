@@ -1,8 +1,8 @@
-﻿# SR3E System Testing Guide
+# SR3E System Testing Guide
 
-Verify each feature by checking the **in â†’ out** numbers against what the chat card shows.
+Verify each feature by checking the **in → out** numbers against what the chat card shows.
 
-## Automated coverage â€” read this before walking anything by hand
+## Automated coverage — read this before walking anything by hand
 
 Two suites, and they cover different things. Neither replaces the other.
 
@@ -12,15 +12,15 @@ npm run test:e2e  # 20 tests / 12 files, two real clients + a GM. Needs Foundry 
 npm run test:mutate  # proves the unit suites can FAIL. Seconds, no browser.
 ```
 
-### `npm run test:mutate` â€” because a green suite proves nothing on its own
+### `npm run test:mutate` — because a green suite proves nothing on its own
 
 A passing test is only evidence if you know it would have gone red had the rule been wrong,
 and twice in one session that did not hold here. Two ways a test quietly stops testing:
 
-- **Vacuous arrangement** â€” the setup neutered the assertion. A decker with no cyberdeck has
+- **Vacuous arrangement** — the setup neutered the assertion. A decker with no cyberdeck has
   a `null` Hacking Pool, `?? 0` turns every field into 0, and every "charged correctly"
   assertion passes against zeros.
-- **Non-discriminating fixture** â€” the old and new rules agree on the numbers chosen. Had the
+- **Non-discriminating fixture** — the old and new rules agree on the numbers chosen. Had the
   complementary-dice test used Flux 4 against skill 6, capped and uncapped both give 4.
 
 `tests/mutants.mjs` holds **bugs this project actually shipped**. Each is reinstated in turn
@@ -28,33 +28,33 @@ and its suite must go **red**:
 
 | Mutant | The bug it restores |
 |---|---|
-| `complementary-capped` | `min(Flux, skill)` â€” a cap in neither book |
+| `complementary-capped` | `min(Flux, skill)` — a cap in neither book |
 | `recoil-fa-ignores-own-rounds` | full auto counting only prior rounds |
 | `recoil-double-before-compensating` | doubling heavy recoil before compensation |
-| `essence-high-water-mark` | `max(lost, installed)` â€” blocks a GM correction |
+| `essence-high-water-mark` | `max(lost, installed)` — blocks a GM correction |
 | `dodge-tie-goes-to-defender` | `>=` instead of `>` |
-| `glitch-sr4-threshold` | `ones > pool/2` â€” SR4's rule, not SR3's |
+| `glitch-sr4-threshold` | `ones > pool/2` — SR4's rule, not SR3's |
 | `stage-power-past-deadly` | melee staging applied outside melee |
 
-âš  **Read it the right way round: a suite FAILING is the pass condition.** Output says
+⚠ **Read it the right way round: a suite FAILING is the pass condition.** Output says
 "killed" and "SURVIVED", never "passed". A **survivor means the TEST is wrong**, not the code
-â€” that rule is not actually covered.
+— that rule is not actually covered.
 
 **Add a mutant whenever you fix a rules bug.** It costs four lines and turns the fix into a
 permanent tripwire.
 
-âš  It cannot cover the **e2e** specs â€” mutating live Foundry code is slow and awkward. There
+⚠ It cannot cover the **e2e** specs — mutating live Foundry code is slow and awkward. There
 the discipline stays manual: run a new spec against the OLD behaviour, confirm it fails, and
 record the observed value in the comment ("Before the fix this read 5.8").
 
-### âš  The e2e suite tests whatever Foundry is SERVING, not what you just wrote
+### ⚠ The e2e suite tests whatever Foundry is SERVING, not what you just wrote
 
 Foundry serves from its own data directory. On this machine `scripts/`, `styles/` and `lang/`
 under `%LOCALAPPDATA%\FoundryVTT\Data\systems\The2ndChumming3e` are **NTFS junctions** back to
-this checkout, so a save is live in the next page load â€” no build, no copy step.
+this checkout, so a save is live in the next page load — no build, no copy step.
 
 A junction is not in the repo and is easily lost: a system reinstall, a fresh clone, another
-machine. When it is lost, **nothing announces it** â€” the suite just starts testing the data
+machine. When it is lost, **nothing announces it** — the suite just starts testing the data
 directory's copy, and a full run passed against the previous session's code exactly once
 before this note existed. `preflight()` in `tests/e2e/fixtures.mjs` now byte-compares the two
 executable scripts before joining and refuses to run on a mismatch, printing the re-link
@@ -66,29 +66,29 @@ cmd //c mklink //J "$LOCALAPPDATA\\FoundryVTT\\Data\\systems\\The2ndChumming3e\\
 
 **Do not junction the whole system directory.** `packs/` holds live LevelDB that Foundry
 compacts and rewrites while running, and the install also carries 22 pre-split packs the repo
-does not â€” pointing it at the committed copy would swap real compendium data.
+does not — pointing it at the committed copy would swap real compendium data.
 
 **`npm test`** covers the rules: staging, Rule of One, dodge resolution, defaulting tiers,
 corner TN, combat and melee modifiers, initiative, source books. If a section below restates
-one of those, trust the suite over a manual walk â€” the manual "- passed" markers are what let
+one of those, trust the suite over a manual walk — the manual "- passed" markers are what let
 an SR4 glitch rule sit here wrongly for months.
 
 **`npm run test:e2e`** covers what unit tests structurally cannot: behaviour that only exists
-when two people are looking at the same card. Â§6 melee, Â§11 spellcasting's permission split,
-Â§16 astral, Â§35 MIJI, plus contested, cybercombat and the three Orthodox Matrix cards â€” all
-eight two-corner cards are now driven by two real clients. The bug that motivated it â€”
-submitted values silently dropped, so resolution used whichever client happened to resolve â€”
+when two people are looking at the same card. §6 melee, §11 spellcasting's permission split,
+§16 astral, §35 MIJI, plus contested, cybercombat and the three Orthodox Matrix cards — all
+eight two-corner cards are now driven by two real clients. The bug that motivated it —
+submitted values silently dropped, so resolution used whichever client happened to resolve —
 was invisible to a green `npm test`, as were every one of the defects these specs then found:
 an opponent's dice chosen by the initiator, a defender's Hacking Pool never charged, an
 Orthodox decker offered no pool at all, and the GM spending a player's pool for them.
 
-âš  **A stale GM browser makes correct fixes look broken.** Foundry runs every authoritative
+⚠ **A stale GM browser makes correct fixes look broken.** Foundry runs every authoritative
 write on `game.users.activeGM`, so a tab left open from before your edit executes the OLD
-code on everyone's behalf â€” the caller just sees a wrong number. The preflight now compares
+code on everyone's behalf — the caller just sees a wrong number. The preflight now compares
 that client's `sr3e.debug.loadedAt` against the files and refuses to run, naming whose tab to
 reload. If a pool assertion fails for no reason you can see, this is why.
 
-Note the janitor account is an *assistant* GM, which is **not** `activeGM` â€” so while the real
+Note the janitor account is an *assistant* GM, which is **not** `activeGM` — so while the real
 Gamemaster is logged in, the writes happen in their browser. Either reload that tab, or log
 out and run:
 
@@ -96,35 +96,35 @@ out and run:
 FOUNDRY_JANITOR=Gamemaster npm run test:e2e
 ```
 
-âš  **Neither judges whether anything is USABLE.** Layout, legibility, whether a read-only
-corner looks disabled, whether a dialog makes sense â€” those need a human, and the sections
+⚠ **Neither judges whether anything is USABLE.** Layout, legibility, whether a read-only
+corner looks disabled, whether a dialog makes sense — those need a human, and the sections
 below are still the checklist for them.
 
-âš  **`- passed` markers below are historical.** They record a build nobody can identify now.
+⚠ **`- passed` markers below are historical.** They record a build nobody can identify now.
 Treat a section as verified only if it says AUTOMATED, or if you have just walked it.
 
-### Agent-driven live checks â€” the Browser pane (no maintainer needed)
+### Agent-driven live checks — the Browser pane (no maintainer needed)
 
 Added 2026-09-13, because this method was **lost once to a context compaction**: the next
 session concluded it could not test in Foundry and asked the maintainer to do it. It can. Most
-of the manual checklist below â€” and a branch's Foundry checklist (e.g. TODO 93) â€” can be walked
+of the manual checklist below — and a branch's Foundry checklist (e.g. TODO 93) — can be walked
 by the agent in the in-app **Browser pane** (`mcp__Claude_Browser__*`), driving `game.sr3e.*`
 with `javascript_tool` exactly the way `tests/e2e/foundry.mjs` does.
 
 | | |
 |---|---|
-| Server | `http://localhost:30000` â€” the maintainer's Foundry desktop app (v14) |
-| World | **`test-shadowrun`** â€” the ONLY world on this machine, and a **test world, not a campaign** (New Runner, Troll Street Dealer, SWAT Team Member, Bruce Leeâ€¦ are test actors). Changing it is fine in a development session; clean up afterwards. |
-| Users | **Gamemaster** (the maintainer's seat â€” usually connected), **Player2**, **Player3**, **mcp-api** (Assistant GM, for automation). **All passwordless.** |
+| Server | `http://localhost:30000` — the maintainer's Foundry desktop app (v14) |
+| World | **`test-shadowrun`** — the ONLY world on this machine, and a **test world, not a campaign** (New Runner, Troll Street Dealer, SWAT Team Member, Bruce Lee… are test actors). Changing it is fine in a development session; clean up afterwards. |
+| Users | **Gamemaster** (the maintainer's seat — usually connected), **Player2**, **Player3**, **mcp-api** (Assistant GM, for automation). **All passwordless.** |
 
-**1 â€” Is a world up?** Navigate the pane to `http://localhost:30000`. If it shows the setup screen:
+**1 — Is a world up?** Navigate the pane to `http://localhost:30000`. If it shows the setup screen:
 
 ```js
 await fetch('/setup', { method: 'POST', headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ action: 'launchWorld', world: 'test-shadowrun' }) }).then(r => r.text());
 ```
 
-**2 â€” Join.** On `/join` (the form is built by JS â€” wait until `select[name="userid"]` exists):
+**2 — Join.** On `/join` (the form is built by JS — wait until `select[name="userid"]` exists):
 
 ```js
 const sel = document.querySelector('select[name="userid"]');
@@ -134,27 +134,27 @@ sel.dispatchEvent(new Event('change', { bubbles: true }));
 ```
 
 Then wait for `game.ready`. Navigating to `/join` again logs out (to switch user).
-âš  **One session per user** â€” the maintainer is usually on Gamemaster, so join as **mcp-api** (GM
+⚠ **One session per user** — the maintainer is usually on Gamemaster, so join as **mcp-api** (GM
 rights) or **Player2/Player3** (a player's view). Never try to take a connected seat.
-âš  **Never type a password.** These accounts have none. If one ever gets a password, stop and ask.
+⚠ **Never type a password.** These accounts have none. If one ever gets a password, stop and ask.
 
-**3 â€” Drive the API, read state from `game`.** The rules from `tests/e2e/foundry.mjs` apply:
+**3 — Drive the API, read state from `game`.** The rules from `tests/e2e/foundry.mjs` apply:
 drive `game.sr3e.*` rather than the WebGL canvas; **do not await a flow that opens a dialog**
 (fire it, then find `.application.dialog` in the DOM, fill it and click its button); scope chat
 selectors to `#chat` (every message renders twice); assert on `game.*` / `game.messages`; use a
 `computer` screenshot only for visual questions (colour, layout, a blank dropdown). Delete the
 chat messages and documents you created and restore fields you changed.
 
-**4 â€” Stale code.** Scripts are junctioned (above), so F5 in the pane loads your edit â€” but
+**4 — Stale code.** Scripts are junctioned (above), so F5 in the pane loads your edit — but
 authoritative writes run on **`game.users.activeGM`**, usually the maintainer's tab. Compare its
 `sr3e.debug.loadedAt` with the files' mtime; if it is older, GM-routed results are from old code.
 Say so in the results rather than reporting a false failure.
 
 **What still needs a human (or Playwright):** a **full Foundry restart** after a data-model
 change (the agent cannot restart the desktop app); anything behind a password. Two clients at
-once â€” a GM plus players, i.e. **simulated combat** â€” is the next section, and the agent runs it.
+once — a GM plus players, i.e. **simulated combat** — is the next section, and the agent runs it.
 
-### Simulated combat â€” GM + two players, by the agent (Playwright)
+### Simulated combat — GM + two players, by the agent (Playwright)
 
 Added 2026-09-13 for the same reason as the section above: it had been done in several sessions
 and the *how* was not written down anywhere a fresh session would look. **"Simulate a combat" =
@@ -167,14 +167,14 @@ with each person deciding their own part:
 | `player3` | **Player3** | the defender (owns the target PC) |
 | `janitor` | **mcp-api** (Assistant GM), or `FOUNDRY_JANITOR=Gamemaster` | the GM: TN window, resolve-now, cleanup |
 
-**Before running â€” who may be connected.** Foundry refuses a second session for a connected user.
-Check `Invoke-RestMethod http://localhost:30000/api/status` â†’ `users` is the connected count.
+**Before running — who may be connected.** Foundry refuses a second session for a connected user.
+Check `Invoke-RestMethod http://localhost:30000/api/status` → `users` is the connected count.
 - **The Browser pane must NOT be holding mcp-api** (or Player2/3). Close it or navigate it to `/join`
-  first â€” the pane from the section above is the usual culprit.
+  first — the pane from the section above is the usual culprit.
 - If the maintainer is on **Gamemaster**, their tab is `activeGM` and runs every authoritative
   write; the preflight refuses to start if that tab is older than the working tree ("reload
   Gamemaster's tab"). With **nobody** connected, the Playwright mcp-api client becomes activeGM
-  on fresh code â€” the simplest case, and how the 2026-09-13 run was done.
+  on fresh code — the simplest case, and how the 2026-09-13 run was done.
 
 ```bash
 npx playwright test                                   # every spec, ~18 tests, a few minutes
@@ -184,12 +184,12 @@ npx playwright test --headed tests/e2e/melee-two-corner.spec.mjs   # watch the t
 
 From the agent: run it with `run_in_background`, redirecting output to a scratchpad file
 (`$env:FORCE_COLOR='0'; npx playwright test *> ...\e2e-run.txt` in PowerShell), and read the
-file when notified â€” the list reporter prints one line per test, and the error details only at
+file when notified — the list reporter prints one line per test, and the error details only at
 the END of the run (a run you stop early shows bare `x` lines). A failure leaves a trace
-(`test-results/â€¦/trace.zip`, open with `npx playwright show-trace`). A full run took **8.7 min**
+(`test-results/…/trace.zip`, open with `npx playwright show-trace`). A full run took **8.7 min**
 for 18 tests on 2026-09-13, all passing.
 
-âš  **A test that fails in milliseconds failed in the fixture, not in play** â€” the three clients
+⚠ **A test that fails in milliseconds failed in the fixture, not in play** — the three clients
 never joined (a seat still held, Foundry not ready). Re-run that spec alone before touching code;
 on 2026-09-13 five such failures all passed after a reboot.
 
@@ -197,7 +197,7 @@ on 2026-09-13 five such failures all passed after a reboot.
 
 | Spec | The combat |
 |---|---|
-| `ranged` | attacker fires â†’ **GM sets the TN** in the modifier window â†’ attacker rolls â†’ **defender declares a dodge after seeing the hits** â†’ soak; each pays their own Combat Pool |
+| `ranged` | attacker fires → **GM sets the TN** in the modifier window → attacker rolls → **defender declares a dodge after seeing the hits** → soak; each pays their own Combat Pool |
 | `melee-two-corner` | boxing card, each fighter submits their own corner, the last submission resolves |
 | `astral-two-corner` | the same between two mages |
 | `contested` | each side picks its own pool source; the GM can resolve with a side outstanding |
@@ -205,19 +205,19 @@ on 2026-09-13 five such failures all passed after a reboot.
 | `cybercombat`, `orthodox-matrix` | decker vs IC; both sides charged for the Hacking Pool they submit |
 | `miji` | rigger vs rigger; an unmanned drone's corner falls to the GM |
 | `player-sheet` | the sheet from **Player2's** seat: Species locked, Essence warning colours as the GM changes it, a Matrix skill priced as active in the karma dialog |
-| `healing` | **Player2's** medic treats **Player3's** character: picked as patient, Dice/TN read-only to the player and the GM's saved numbers rolled, the time box on the result, and *Lower* pressed by the medic with the GM making the write (`sr3e.heal.apply`). âš  Needs a GM tab loaded after this change â€” see *stale GM*. **Passed 2026-09-13** (1.5 min). âš  The `foundryvtt` MCP connector can hold the mcp-api seat â€” if the janitor cannot join, check the join page for who is connected |
+| `healing` | **Player2's** medic treats **Player3's** character: picked as patient, Dice/TN read-only to the player and the GM's saved numbers rolled, the time box on the result, and *Lower* pressed by the medic with the GM making the write (`sr3e.heal.apply`). ⚠ Needs a GM tab loaded after this change — see *stale GM*. **Passed 2026-09-13** (1.5 min). ⚠ The `foundryvtt` MCP connector can hold the mcp-api seat — if the janitor cannot join, check the join page for who is connected |
 | `essence`, `migrations` | GM-only checks that ride the same harness |
 
 **To simulate something the specs do not cover**, write a new spec rather than driving three
 tabs by hand: copy `ranged.spec.mjs`, keep its `arrangeActor` / `createTestActor` setup and its
-teardown, and use the helpers in `tests/e2e/foundry.mjs` â€” `fireAndForget` (never await a flow
-that opens a dialog), `selectTarget` (the target dialog pre-selects the FIRST actor â€” always
+teardown, and use the helpers in `tests/e2e/foundry.mjs` — `fireAndForget` (never await a flow
+that opens a dialog), `selectTarget` (the target dialog pre-selects the FIRST actor — always
 pick by name), `answerDialog` / `answerDialogIfPresent`, `newestCardId` + `cardIn` (scope every
 card by message id; stale cards exist), `clickNewestChatButton` (dispatch in-page, never
 `locator.click()` on a card). Tests **mutate the world**: arrange, then put back
 (`resetPools`, `deleteActors`, `sweepTestActors('__TEST')`).
 
-âš  The Browser pane (one user) and Playwright (three users) cannot both hold mcp-api â€” do the
+⚠ The Browser pane (one user) and Playwright (three users) cannot both hold mcp-api — do the
 pane checks first, release the seat, then run the suite, or the reverse.
 
 **MCP servers** (`foundry-mcp` / `foundryvtt`, with the `foundry-mcp-bridge` module) have been
@@ -227,11 +227,11 @@ MCP configuration (`~/.claude.json`), **never in this repository**.
 **Record results** in the branch's Foundry checklist (TODO 93 on `fix/racial-mods`): tick each
 step with the date and what was seen; log a new failure as its own TODO, observation only.
 
-âš  **Opening a LevelDB rewrites its log and MANIFEST files, even to read.** Foundry opens the
+⚠ **Opening a LevelDB rewrites its log and MANIFEST files, even to read.** Foundry opens the
 *install's* copy, not the checkout's; the churn in `packs/` came from our own tests and checks, which
 now read a temporary copy (`tools/lib/pack-copy.mjs`, enforced by `tests/pack-churn.test.mjs`).
 If `git status` ever shows pack files you did not mean to change, the content is almost certainly
-identical â€” verify, then `git checkout -- packs && git clean -f packs`.
+identical — verify, then `git checkout -- packs && git clean -f packs`.
 
 ---
 
@@ -239,31 +239,31 @@ identical â€” verify, then `git checkout -- packs && git clean -f packs`.
 
 ### Basic roll
 **Setup:** Any attribute or skill roll.
-- Roll **4 dice vs TN 4** â†’ expect 0â€“4 successes; any die showing 4, 5, or 6 is a success. - Passed
+- Roll **4 dice vs TN 4** → expect 0–4 successes; any die showing 4, 5, or 6 is a success. - Passed
 
 ### Explosion - passed
-- Any die showing **6** â†’ an explosion button appears.
-- Click it â†’ all dice roll again. If the running total â‰¥ TN it's a success, button disappears. - Passed 
-- If running total < TN and the new roll is 6 again â†’ button reappears, keep exploding. - Passed
+- Any die showing **6** → an explosion button appears.
+- Click it → all dice roll again. If the running total ≥ TN it's a success, button disappears. - Passed 
+- If running total < TN and the new roll is 6 again → button reappears, keep exploding. - Passed
 
 ### Rule of One - **RETEST REQUIRED**
 
-âš  **The two tests that used to live here asserted SR4's glitch rule and have been removed.**
+⚠ **The two tests that used to live here asserted SR4's glitch rule and have been removed.**
 They passed against behaviour that was wrong: a "glitch" on *more than half* the pool showing 1s,
 and a "critical glitch" tier on top of it. SR3 has neither. Both were fixed in code (TODO 32), so
 these cases must be re-run against the correct rule.
 
 **The rule** (SR3 p.38): *"If ALL the dice rolled for a test come up 1s, it means that the
-character has made a disastrous mistake."* One sweep, no second tier â€” a sweep is already an
+character has made a disastrous mistake."* One sweep, no second tier — a sweep is already an
 automatic zero-success failure, so a "critical" tier could only relabel the same event. What
 follows is GM adjudication: *"The gamemaster determines whatever tone is appropriate."*
 
-- **In:** 4 ones out of 6 dice â†’ **Out:** *no* Rule of One warning. Just a poor roll.
-- **In:** 3 dice, all showing 1 â†’ **Out:** Rule of One warning shown.
-- **In:** 1 die showing 1 â†’ **Out:** warning shown (a pool of one that comes up 1 is all of it).
-- **In:** 5 dice, four 1s and one success â†’ **Out:** no warning, and the success still counts.
+- **In:** 4 ones out of 6 dice → **Out:** *no* Rule of One warning. Just a poor roll.
+- **In:** 3 dice, all showing 1 → **Out:** Rule of One warning shown.
+- **In:** 1 die showing 1 → **Out:** warning shown (a pool of one that comes up 1 is all of it).
+- **In:** 5 dice, four 1s and one success → **Out:** no warning, and the success still counts.
 
-âš  The 4-of-6 case is the one that matters â€” it is what the old rule flagged, and at 3 dice the
+⚠ The 4-of-6 case is the one that matters — it is what the old rule flagged, and at 3 dice the
 half-pool threshold fires roughly **twenty times** more often than RAW. Covered by
 `tests/rule-of-one.test.mjs`, but confirm the chat card agrees.
 ---
@@ -271,19 +271,19 @@ Reporting of 1s omitted with Physical dice mode - triggers nothing, GM convenien
 
 ## 2. Wound Modifier - Passed
 
-Each track (stun and physical) contributes its own modifier â€” both sum to give the total wound mod.
+Each track (stun and physical) contributes its own modifier — both sum to give the total wound mod.
 
 | Boxes filled (per track) | Wound level | Mod per track |
 |---|---|---|
-| 0 | â€” | 0 |
-| 1â€“2 | Light | âˆ’1 |
-| 3â€“5 | Moderate | âˆ’2 |
-| 6â€“9 | Serious | âˆ’3 |
+| 0 | — | 0 |
+| 1–2 | Light | −1 |
+| 3–5 | Moderate | −2 |
+| 6–9 | Serious | −3 |
 | 10 | Deadly | *unconscious* |
 - Passed
 
 **Effect:** wound mod is a TN penalty applied to all rolls, and reduces initiative base.
-**Example:** 3 stun boxes â†’ TN +2 on all rolls, initiative âˆ’2.
+**Example:** 3 stun boxes → TN +2 on all rolls, initiative −2.
 
 **Unconscious:** When either track reaches 10 boxes, the Wound Mod field displays `unconscious` instead of a number.
 
@@ -292,10 +292,10 @@ Each track (stun and physical) contributes its own modifier â€” both sum to
 **adding/removing wounds updates overflow automatically. - passed
 
 **Tests:**
-- Fill **1 stun box** â†’ wound mod reads **âˆ’1**.
-- Fill **3 stun boxes** on a character with Combat Pool 5 â†’ Combat Pool reads **3**.
-- Fill **6 physical boxes** â†’ wound mod from physical track is **âˆ’3**.
-- Fill **10 stun boxes** â†’ Wound Mod field reads `unconscious`.
+- Fill **1 stun box** → wound mod reads **−1**.
+- Fill **3 stun boxes** on a character with Combat Pool 5 → Combat Pool reads **3**.
+- Fill **6 physical boxes** → wound mod from physical track is **−3**.
+- Fill **10 stun boxes** → Wound Mod field reads `unconscious`.
 
 - TN modifier passed
 - Initiative modifier passed
@@ -304,7 +304,7 @@ Each track (stun and physical) contributes its own modifier â€” both sum to
 ## 3. Derived Pools - Passed
 
 ### Combat Pool - passed
-Formula: `âŒŠ(QUI + INT + WIL) / 2âŒ‹ + modifier`
+Formula: `⌊(QUI + INT + WIL) / 2⌋ + modifier`
 
 | QUI | INT | WIL | Expected Pool |
 |---|---|---|---|
@@ -314,7 +314,7 @@ Formula: `âŒŠ(QUI + INT + WIL) / 2âŒ‹ + modifier`
 
 
 ### Spell Pool (Awakened only) - passed
-Formula: `âŒŠ(INT + WIL + MAG) / 3âŒ‹`
+Formula: `⌊(INT + WIL + MAG) / 3⌋`
 
 | INT | WIL | MAG | Expected Pool |
 |---|---|---|---|
@@ -325,7 +325,7 @@ Formula: `âŒŠ(INT + WIL + MAG) / 3âŒ‹`
 
 
 ### Astral Pool (Awakened only) - passed
-Formula: `âŒŠ(INT + CHA + WIL) / 2âŒ‹`
+Formula: `⌊(INT + CHA + WIL) / 2⌋`
 
 | INT | CHA | WIL | Expected Pool |
 |---|---|---|---|
@@ -334,7 +334,7 @@ Formula: `âŒŠ(INT + CHA + WIL) / 2âŒ‹`
 
 
 ### Hacking Pool - passed
-Formula: `âŒŠ(INT + MPCP) / 3âŒ‹` where MPCP comes from the equipped cyberdeck. Hidden if no cyberdeck is equipped.
+Formula: `⌊(INT + MPCP) / 3⌋` where MPCP comes from the equipped cyberdeck. Hidden if no cyberdeck is equipped.
 
 | INT | MPCP | Expected Pool |
 |---|---|---|
@@ -347,74 +347,74 @@ Formula: `âŒŠ(INT + MPCP) / 3âŒ‹` where MPCP comes from the equipped cybe
 
 ### Physical (default) - passed
 Formula: `REA + woundMod` base + `initiativeDice d6` (wired reflexes add to REA and grant extra dice)
-**In:** REA 4, no wounds, no cyber â†’ **Out:** rolls `4 + 1d6`, result 5â€“10.
+**In:** REA 4, no wounds, no cyber → **Out:** rolls `4 + 1d6`, result 5–10.
 
 ### Astral Projection - passed
 Formula: `INT + 20` base + `1d6`
-**In:** INT 5 â†’ **Out:** rolls `25 + 1d6`, result 26â€“31.
+**In:** INT 5 → **Out:** rolls `25 + 1d6`, result 26–31.
 
 ### Matrix TRM / AR / VR-Cold - passed
 Formula: `REA + woundMod` base + `1d6` (wired reflexes apply to REA; dice **forced to 1** regardless of cyber; Response does NOT apply)
 
-**In:** REA 5 (includes wired reflex bonus), no wounds â†’ base `5`, dice `1d6` â†’ result 6â€“11.
+**In:** REA 5 (includes wired reflex bonus), no wounds → base `5`, dice `1d6` → result 6–11.
 
 ### Matrix VR-Hot - passed
-Formula: `(reaction.base + woundMod + ResponseÃ—2)` base + `(1 + Response)d6` (wired reflexes **excluded** from base; Response replaces them)
+Formula: `(reaction.base + woundMod + Response×2)` base + `(1 + Response)d6` (wired reflexes **excluded** from base; Response replaces them)
 
-**In:** base REA 4 (no cyber), Response 3 â†’ base `4 + 6 = 10`, dice `4d6` â†’ result 14â€“34.
+**In:** base REA 4 (no cyber), Response 3 → base `4 + 6 = 10`, dice `4d6` → result 14–34.
 
 
-### VCR (Vehicle â€” jumped-in rigger) - passed
+### VCR (Vehicle — jumped-in rigger) - passed
 Formula: `Rigger REA + VCR level + woundMod` base + `(1 + VCR)d6`
 
-**In:** REA 5, VCR 2 â†’ base `7`, dice `3d6` â†’ result 10â€“25.
+**In:** REA 5, VCR 2 → base `7`, dice `3d6` → result 10–25.
 
-### RCD (Vehicle â€” remote control) - failed - passed
+### RCD (Vehicle — remote control) - failed - passed
 Formula, rigger **without** a VCR: `Rigger REA + woundMod` base + `1d6`
 
-**In:** REA 5 â†’ **Out:** `5 + 1d6`, result 6â€“11.
+**In:** REA 5 → **Out:** `5 + 1d6`, result 6–11.
 
-### RCD with a VCR â€” the captain's chair (SR3 p.154) - not yet tested
-A rigger with a VCR keeps the VCR Initiative when running a drone in RCD: base REA 5, VCR 2 â†’ base `9`,
+### RCD with a VCR — the captain's chair (SR3 p.154) - not yet tested
+A rigger with a VCR keeps the VCR Initiative when running a drone in RCD: base REA 5, VCR 2 → base `9`,
 `3d6`, and the card says "Captain's chair (RCD)". With that drone in RCD, its **vehicle weapon** attack
 and its **Driving Test** roll the drone's **Pilot Rating**, with no Control Pool row, and the Driving
 Test card is posted by the drone, not the rigger. Switch the drone to **VCR**: both go back to the
 rigger's Gunnery / vehicle skill plus Control Pool.
 
-### Auto / Pilot (Vehicle â€” no rigger) - passed
+### Auto / Pilot (Vehicle — no rigger) - passed
 Formula: `Pilot rating` base + `2d6`
 
-**In:** Pilot 4 â†’ **Out:** `4 + 2d6`, result 6â€“16.
+**In:** Pilot 4 → **Out:** `4 + 2d6`, result 6–16.
 
 ### Shift-click (physical dice mode) - passed but not all situations tested
-Any initiative button â†’ shift-click â†’ dialog asks for result â†’ enter manually, posts card with that value.
+Any initiative button → shift-click → dialog asks for result → enter manually, posts card with that value.
 
 ### SR3 pass mode - passed
-After everyone acts: all initiatives drop by 10. Combatants with initiative â‰¤ 0 are done. Continue until none left, then GM prompted to re-roll.
+After everyone acts: all initiatives drop by 10. Combatants with initiative ≤ 0 are done. Continue until none left, then GM prompted to re-roll.
 
 ### SR2 flat queue mode - passed
-Full action list built upfront (init, initâˆ’10, initâˆ’20 â€¦). Walk top to bottom.
+Full action list built upfront (init, init−10, init−20 …). Walk top to bottom.
 
 ### Pre-start initiative lock
-Before **Begin Encounter**, the per-combatant init roll icons are dimmed and unclickable (incl. shift-click) â€” initiative is rolled only via the Begin Encounter dialog. After combat starts they work again.
-- **In:** add combatants, don't start â†’ clicking a bolt does nothing. Begin Encounter (auto-roll) â†’ inits set. After start â†’ bolt rolls/re-rolls normally.
+Before **Begin Encounter**, the per-combatant init roll icons are dimmed and unclickable (incl. shift-click) — initiative is rolled only via the Begin Encounter dialog. After combat starts they work again.
+- **In:** add combatants, don't start → clicking a bolt does nothing. Begin Encounter (auto-roll) → inits set. After start → bolt rolls/re-rolls normally.
 
 ### Action Tracker (GM, active combatant card)
 On the active combatant's card: **Complex** (full width) + two **Simple** buttons.
-- **In:** click **Complex** â†’ advances to next actor (like the arrow).
-- **In:** click first **Simple** â†’ Complex greys out, first Simple highlights; click it again â†’ undo (Complex re-enabled).
-- **In:** click second **Simple** â†’ advances to next actor.
+- **In:** click **Complex** → advances to next actor (like the arrow).
+- **In:** click first **Simple** → Complex greys out, first Simple highlights; click it again → undo (Complex re-enabled).
+- **In:** click second **Simple** → advances to next actor.
 - State resets when the turn/round changes (also via the normal arrow).
 
 ---
 
-## Meet the contact â€” TODO 262 (`feature/meet-the-contact`)
+## Meet the contact — TODO 262 (`feature/meet-the-contact`)
 
 Needs a **full Foundry restart** (new `contact.npcUuid` field). With a portrait module active and without one:
-- [ ] GM: a contact linked to a Little Black Book archetype shows ðŸŽ² on the Contacts tab; a player does not see it.
-- [ ] ðŸŽ² opens the dialog: the book's metatype preselected, a face grid best match first, a name that fits the face.
-- [ ] Changing the metatype shows the amber "stats stay the book's â€¦" line; ðŸŽ² Seattle mix mostly rolls human.
-- [ ] Clicking a face rerolls the name (until the name is typed over); ðŸŽ² beside the name rerolls it alone.
+- [ ] GM: a contact linked to a Little Black Book archetype shows 🎲 on the Contacts tab; a player does not see it.
+- [ ] 🎲 opens the dialog: the book's metatype preselected, a face grid best match first, a name that fits the face.
+- [ ] Changing the metatype shows the amber "stats stay the book's …" line; 🎲 Seattle mix mostly rolls human.
+- [ ] Clicking a face rerolls the name (until the name is typed over); 🎲 beside the name rerolls it alone.
 - [ ] Cancel / Esc writes nothing. Create NPC makes a world actor with that name, picture, token art, metatype, gender.
 - [ ] The contact shows the face and new name to its player; clicking the face opens the NPC only for those who may see it.
 - [ ] A contact whose picture someone chose keeps it (the name still changes only if "Show on the contact" is ticked).
@@ -422,140 +422,140 @@ Needs a **full Foundry restart** (new `contact.npcUuid` field). With a portrait 
 
 **Fixes from play, 2026-10-25** (`claude/fix-meet-the-contact-1bc711`; packs need `npm run packs:install`, Foundry closed):
 - [ ] Create NPC from a pack archetype (e.g. Dock Worker): the world actor AND its prototype token carry the rolled name, not "Dock Worker".
-- [ ] Pick a metatype with few portraits (e.g. dwarf): the grid shows only that metatype (and its variants) â€” never another race.
-- [ ] Contacts tab â†’ Link Archetype: the list shows ~16 rows (360px tall), not one collapsed row.
+- [ ] Pick a metatype with few portraits (e.g. dwarf): the grid shows only that metatype (and its variants) — never another race.
+- [ ] Contacts tab → Link Archetype: the list shows ~16 rows (360px tall), not one collapsed row.
 - [ ] Drag a Mr. Johnson's contact onto a scene: the token has vision on and wears the dynamic ring.
 - [ ] Create a brand-new actor (any type) from the sidebar: its prototype token has vision on.
 - [ ] 0.9.0 migration (after the bump; or `game.sr3e.SR3EMigrations.force()`): a world character/NPC whose prototype token was blind now sees; a token already placed on a scene with vision off stays off; vehicles unchanged.
 
-## Legwork â€” TODO 268 (`feature/legwork`) â€” needs a live pass
+## Legwork — TODO 268 (`feature/legwork`) — needs a live pass
 
 New pack `sr3e-legwork-tables` and a `system.json` change: with Foundry **closed**, `npm run packs:install` and copy
 `system.json` into the install (or `npm run sync:install`), then a **full restart**. Rules and the card are unit-tested
 (`legwork`, `legwork-tool`); this is what only a client shows.
-- [ ] Compendium sidebar â†’ *Reference â†’ GM Only* shows **GM: Legwork Success Tables**; a player does not see it.
+- [ ] Compendium sidebar → *Reference → GM Only* shows **GM: Legwork Success Tables**; a player does not see it.
 - [ ] Import *Legwork success table (template)* into the world; its sheet shows rows 1 / 2 / 3+ (ranges 1-1, 2-2, 3-30)
       and the description's *Target Number: 4*. Change it to 5.
-- [ ] Rollable Tables tab (GM): **ðŸ”Ž Legwork** sits after Escape Artist; a player has no button.
+- [ ] Rollable Tables tab (GM): **🔎 Legwork** sits after Escape Artist; a player has no button.
 - [ ] The dialog: runner list has no templates, scene tokens first; the contact list is that runner's contacts. Changing
       runner refills it. Level starts at the contact's Loyalty (capped at 3), and the note shows Loyalty/Connection.
-- [ ] A contact linked to a Little Black Book archetype fills Charisma and Intelligence "From â€¦ (archetype)"; one met as
+- [ ] A contact linked to a Little Black Book archetype fills Charisma and Intelligence "From … (archetype)"; one met as
       an NPC fills them from the NPC; a bare contact leaves them blank with the "links to no stat block" note.
 - [ ] Specialisation starts on Street (or Corporate) for asking, Matrix for a search; Dice = Etiquette (+spec) + Level
       dice and follows every change; typing Dice by hand sticks until runner / contact / mode / spec / level changes.
 - [ ] Picking the imported table sets TN 5; Rushed adds +2 (ask only, the row hides otherwise); a wounded runner's TN
       readout includes the wounds; Ear to the ground shows +2 and the contact's dice (amber prompt with no stats).
-- [ ] Roll at TN â‰¤ 6: the card posts at once, whispered to the GM (untick â†’ public): successes, the dice, every table
-      row up to the successes, the fee (C Ã— I Ã— 50 Ã· successes). Esc / Cancel rolls nothing.
-- [ ] Roll at TN 7+ until a 6 comes up: a ðŸ’¥ wave card appears and the legwork card waits for the last explosion.
+- [ ] Roll at TN ≤ 6: the card posts at once, whispered to the GM (untick → public): successes, the dice, every table
+      row up to the successes, the fee (C × I × 50 ÷ successes). Esc / Cancel rolls nothing.
+- [ ] Roll at TN 7+ until a 6 comes up: a 💥 wave card appears and the legwork card waits for the last explosion.
 - [ ] Ear to the ground with a success: "reports back in N hours"; with none: "hears nothing". Matrix: base time in
       hours, "No Hacking Pool", the search limit (half Intelligence, rounded up), no fee.
 - [ ] A row with a secret block: shown on a GM-only card, hidden on a public one.
 
-## NPC loaded guns â€” TODO 270 (`feature/npc-loaded-guns`)
+## NPC loaded guns — TODO 270 (`feature/npc-loaded-guns`)
 
 With `trackAmmo` ON:
-- [ ] Meet the contact (or drag) a Little Black Book archetype with a gun (SWAT Team Member, Mercenary): every gun shows a full magazine of Regular, and one ammunition item per gun with 3â€“6 reloads (a shotgun/sniper rifle: loose rounds), named for the gun.
-- [ ] â†» Reload on that gun offers its own stock; a rifle's stock is not offered to the pistol.
+- [ ] Meet the contact (or drag) a Little Black Book archetype with a gun (SWAT Team Member, Mercenary): every gun shows a full magazine of Regular, and one ammunition item per gun with 3–6 reloads (a shotgun/sniper rifle: loose rounds), named for the gun.
+- [ ] ↻ Reload on that gun offers its own stock; a rifle's stock is not offered to the pistol.
 - [ ] The NPC can fire straight away (no "out of ammo").
 - [ ] Deploying a copy of that actor gives it nothing extra (it already carries ammunition).
 - [ ] The example characters pack (already has ammunition) is unchanged on import.
 With `trackAmmo` OFF: the same NPC is created with no ammunition and its guns unchanged.
 
-## Open combat steps â€” TODO 147 (`feature/open-steps`)
+## Open combat steps — TODO 147 (`feature/open-steps`)
 
 **Checked live by the agent, 2026-09-24** (mcp-api, then with the maintainer's Gamemaster seat also on):
 a card with a soak and a Drain button gets the gold "Waiting on you" edge and line, the chat tab shows
-**2**, and the tracker's â³ panel lists both. Clicking *Resist Drain* recorded the step, greyed the
+**2**, and the tracker's ⏳ panel lists both. Clicking *Resist Drain* recorded the step, greyed the
 button and the Drain card's roll button became the next row. Once both steps were taken the card folded
-to its header; the header opens and re-folds it. The GM's âœ• records "dismissed by the GM". Clicking a row
+to its header; the header opens and re-folds it. The GM's ✕ records "dismissed by the GM". Clicking a row
 switches to chat and flashes the card. Deleting the messages clears the panel and the badge.
 
-**Still to walk â€” needs two clients (Playwright, or a person):**
+**Still to walk — needs two clients (Playwright, or a person):**
 - [ ] As **Player2**, a card waiting on Player2's character: gold edge, "Waiting on you", badge on
-      Player2's chat tab â€” and **no** highlight on the GM's screen for that card.
-- [ ] The panel on Player2's screen says "you" on their row and the GM's name on the others; no âœ•.
+      Player2's chat tab — and **no** highlight on the GM's screen for that card.
+- [ ] The panel on Player2's screen says "you" on their row and the GM's name on the others; no ✕.
 - [ ] Player2 takes the step: the row disappears on **both** screens.
 - [ ] Reload (F5) on either client: finished cards stay folded and done buttons stay greyed.
-- [ ] Configure Settings â†’ *Collapse finished combat cards* off: finished cards stay open.
+- [ ] Configure Settings → *Collapse finished combat cards* off: finished cards stay open.
 
-## Gear ratings in the field â€” TODO 118 (0.5.2) â€” needs a live pass
+## Gear ratings in the field — TODO 118 (0.5.2) — needs a live pass
 
 Data-model change (gear's `rating` is nullable): **full Foundry restart** first.
-- [ ] A new gear item named *Medkit* (no bracket) â†’ its sheet's Rating box shows **3**, and the gear tab reads *Medkit [3]*.
-- [ ] *Medkit [6]* created by hand â†’ Rating 6; the gear tab reads *Medkit [6]* (not doubled).
-- [ ] Clearing the Rating box on a gear item â†’ blank stays blank (no rating); healing no longer finds a rating on it.
-- [ ] *Stabilization Unit* â†’ 2; the healing Stabilize form pre-ticks it.
-- [ ] `game.sr3e.SR3EMigrations.force()` on a world gear item with rating 0 and a name with none â†’ rating becomes blank (null).
+- [ ] A new gear item named *Medkit* (no bracket) → its sheet's Rating box shows **3**, and the gear tab reads *Medkit [3]*.
+- [ ] *Medkit [6]* created by hand → Rating 6; the gear tab reads *Medkit [6]* (not doubled).
+- [ ] Clearing the Rating box on a gear item → blank stays blank (no rating); healing no longer finds a rating on it.
+- [ ] *Stabilization Unit* → 2; the healing Stabilize form pre-ticks it.
+- [ ] `game.sr3e.SR3EMigrations.force()` on a world gear item with rating 0 and a name with none → rating becomes blank (null).
 - [ ] Cyberware is unchanged: *Wired Reflexes [2]* dragged from the pack still gives its bonus and shows no suffix.
 
-## Book and page â€” TODO 117 (`feature/book-pages`)
+## Book and page — TODO 117 (`feature/book-pages`)
 
 Data-model change: **full Foundry restart** first. **Walked by the agent 2026-09-14** (Browser pane, mcp-api, after a restart on a local branch merging main + both 0.6 features):
-- [x] Compendium sheets show the Book / Page box with the citation beneath: *Physics* SR3 p.90 Â· *Analyze* Matrix Defragged p.30 Â· *Fuchi Cyber-6* Matrix Defragged p.35 Â· *Wired Reflexes [1]* SR3 p.302 â€” one box each.
-- [x] A quality (a layout that never had the field) gets the box; typing `sr3.312,r3.172` saves and shows *SR3 p.312 Â· R3 p.172*.
+- [x] Compendium sheets show the Book / Page box with the citation beneath: *Physics* SR3 p.90 · *Analyze* Matrix Defragged p.30 · *Fuchi Cyber-6* Matrix Defragged p.35 · *Wired Reflexes [1]* SR3 p.302 — one box each.
+- [x] A quality (a layout that never had the field) gets the box; typing `sr3.312,r3.172` saves and shows *SR3 p.312 · R3 p.172*.
 - [x] A Little Black Book contact's Bio tab (as GM): `lbb.59` with *Little Black Book p.59*.
-- [ ] â€¦as a player, shown only when set.
+- [ ] …as a player, shown only when set.
 - [x] A skill added to a character from the pack keeps `sr3.90`.
-- âš  Looking pack entries up by name in the install can land on its **null-`_id` duplicate** (install drift, `npm run packs:fix`) â€” filter `x._id`.
+- ⚠ Looking pack entries up by name in the install can land on its **null-`_id` duplicate** (install drift, `npm run packs:fix`) — filter `x._id`.
 
 ---
 
-## Default-book gear â€” TODO 91/92, branch `feature/default-books-gear` â€” needs a live pass
+## Default-book gear — TODO 91/92, branch `feature/default-books-gear` — needs a live pass
 
 First, **with Foundry closed**: `node tools/build-default-gear.mjs --install` (writes the install's
 packs and `system.json`), then `npm run packs:check`. New packs and a data-model change (gear
-`category` / `concealability`) â†’ **full restart**.
-- [ ] The Compendium sidebar shows *Weapons & Gear â†’ Gear / Ammunition / Medical* folders, one pack per book, labelled with the book's name.
-- [ ] Configure Source Books â†’ untick Cannon Companion â†’ `sr3e-cc-gear` and `sr3e-cc-ammunition` disappear; re-tick â†’ back.
-- [ ] Drag *Medkit* (Shadowrun 3rd â†’ Medical) onto a character â†’ the ðŸ©¹ Healing flow finds it.
-- [ ] Drag *15-Rnd Clip (APDS)* onto a character with an Ares Predator, tracking on â†’ â†» Reload offers it as one reload of 15, and the gun loads 15 APDS.
-- [ ] Drag *APDS Rnds* â†’ it is 10 rounds at 70Â¥; reloading a break-action or internal-magazine gun from it tops up round by round.
-- [ ] Drag *Arrows* onto a bow-user â†’ â†» Reload on the bow nocks one.
-- [ ] Open *Gyro Mount* (SR3 gear) â†’ two entries, reading *Gyro Mount [5]* and *[6]*; the sheet shows Category *Firearms Accessories*, the Rating field filled.
-- [ ] Open *ACTH* (Man & Machine drugs) â†’ one item carrying tolerance **and** vector, with *Also listed* in its notes.
-- [ ] Nothing already shipped was duplicated â€” search *Armor Jacket* in Shadowrun 3rd: one result.
+`category` / `concealability`) → **full restart**.
+- [ ] The Compendium sidebar shows *Weapons & Gear → Gear / Ammunition / Medical* folders, one pack per book, labelled with the book's name.
+- [ ] Configure Source Books → untick Cannon Companion → `sr3e-cc-gear` and `sr3e-cc-ammunition` disappear; re-tick → back.
+- [ ] Drag *Medkit* (Shadowrun 3rd → Medical) onto a character → the 🩹 Healing flow finds it.
+- [ ] Drag *15-Rnd Clip (APDS)* onto a character with an Ares Predator, tracking on → ↻ Reload offers it as one reload of 15, and the gun loads 15 APDS.
+- [ ] Drag *APDS Rnds* → it is 10 rounds at 70¥; reloading a break-action or internal-magazine gun from it tops up round by round.
+- [ ] Drag *Arrows* onto a bow-user → ↻ Reload on the bow nocks one.
+- [ ] Open *Gyro Mount* (SR3 gear) → two entries, reading *Gyro Mount [5]* and *[6]*; the sheet shows Category *Firearms Accessories*, the Rating field filled.
+- [ ] Open *ACTH* (Man & Machine drugs) → one item carrying tolerance **and** vector, with *Also listed* in its notes.
+- [ ] Nothing already shipped was duplicated — search *Armor Jacket* in Shadowrun 3rd: one result.
 
 ---
 
-## Pickers honour the source books (`tests/pack-reads.test.mjs`) â€” needs a live pass
+## Pickers honour the source books (`tests/pack-reads.test.mjs`) — needs a live pass
 
 Reported 2026-11-09: the Vehicle Designer offered VAUBAN mods from the France Sourcebook, which is off.
-Configure Source Books â†’ untick one book that ships gear, one with vehicles and one with an archetype, then:
+Configure Source Books → untick one book that ships gear, one with vehicles and one with an archetype, then:
 - [ ] its packs vanish from the Compendium sidebar.
-- [ ] ðŸ›’ Buy gear: search finds none of its items; dragging one in still fills in, with the "switched off" warning.
+- [ ] 🛒 Buy gear: search finds none of its items; dragging one in still fills in, with the "switched off" warning.
 - [ ] An item sheet's *Pick from compendium* lists none of its entries.
-- [ ] Character sheet â†’ add a vehicle: its vehicles are not in the compendium groups.
-- [ ] Character sheet â†’ link an archetype: its archetypes are not listed.
+- [ ] Character sheet → add a vehicle: its vehicles are not in the compendium groups.
+- [ ] Character sheet → link an archetype: its archetypes are not listed.
 - [ ] Vehicle Designer mod shop (once `claude/vehicle-designer-shop` lands): none of its mods.
-- [ ] Re-tick the book â†’ everything comes back, no reload.
+- [ ] Re-tick the book → everything comes back, no reload.
 
-## Dialog wiring â€” TODO 20 (0.5.2) â€” needs a live pass
+## Dialog wiring — TODO 20 (0.5.2) — needs a live pass
 
 Eighteen dialogs moved from the global `renderDialogV2` hook to their own `render` option. For
 each, open it and change the one control that recomputes something; the live value must follow.
-Then open the same dialog **twice at once** where that is possible â€” both copies must work.
-- [x] Defaulting â€” **two open at once**, each followed only its own dropdown (Quickness 4 / Strength 5 â†’ Willpower 6 / Body 2). 2026-09-13.
+Then open the same dialog **twice at once** where that is possible — both copies must work.
+- [x] Defaulting — **two open at once**, each followed only its own dropdown (Quickness 4 / Strength 5 → Willpower 6 / Body 2). 2026-09-13.
 - [ ] Vehicle weapon, Gunnery shot type (a degraded channel): Sig TN follows the shot type.
-- [x] Grenade roll options: at 60 m, Standard / Aerodynamic / Launcher â†’ TN 9 / 8 / 5. 2026-09-13.
+- [x] Grenade roll options: at 60 m, Standard / Aerodynamic / Launcher → TN 9 / 8 / 5. 2026-09-13.
 - [x] Called shot: "Specific sub-target" shows the sub-target row. 2026-09-13.
 - [x] Fire Mode: FA shows its section; the recoil preview follows rounds and compensation. 2026-09-13.
 - [ ] Ward attack: Sorcery / Spirit shows the extra row.
-- [ ] Browse Orthodox Cyberdecks, Browse Orthodox Programs (Orthodox ruleset). *(Browse Skills 419 â†’ 4 on "pistol", the compendium picker 132 â†’ 18 on "ares" âœ“ 2026-09-13)*
+- [ ] Browse Orthodox Cyberdecks, Browse Orthodox Programs (Orthodox ruleset). *(Browse Skills 419 → 4 on "pistol", the compendium picker 132 → 18 on "ares" ✓ 2026-09-13)*
 - [x] Drone Comprehension: the TN readout follows TN. 2026-09-13.
 - [x] Chunky Salsa (the canvas draws), Barrier Damage, Falling Damage, Escape Artist (each readout recomputes). 2026-09-13.
-- [ ] MIJI Infiltration allocation counter; IVIS split counter. *(IVIS setup TN readout âœ“ 2026-09-13)*
+- [ ] MIJI Infiltration allocation counter; IVIS split counter. *(IVIS setup TN readout ✓ 2026-09-13)*
 
 ---
 
-## Attribute hover explanations â€” TODO 100 (`feature/modifier-tooltips`)
+## Attribute hover explanations — TODO 100 (`feature/modifier-tooltips`)
 
 **Walked by the agent 2026-09-14** (Browser pane, mcp-api) on a troll with Muscle Replac. [2], a running Adrenal Pump [1], a Pain Editor and Wired Reflexes [1]:
-- [x] Quickness: green **2** hovers *+2 Muscle Replac. [2]*; amber **1** hovers the pump *â€” 3 Combat Turns left (M&M p.63)*; the total reads **(7)**, the real value, and hovers Base 4 + both.
+- [x] Quickness: green **2** hovers *+2 Muscle Replac. [2]*; amber **1** hovers the pump *— 3 Combat Turns left (M&M p.63)*; the total reads **(7)**, the real value, and hovers Base 4 + both.
 - [x] Body's dermal armor chip reads *Troll dermal armor (SR3 p.56)*, total (4).
-- [x] Pain Editor: amber **âˆ’ 1** on Intelligence, total (3).
+- [x] Pain Editor: amber **− 1** on Intelligence, total (3).
 - [x] Initiative dice chip names *Wired Reflexes [1]*.
-- [x] Reaction hovers *(Quickness 4 + Intelligence 4) Ã· 2 = 4*, Wired Reflexes +2, the pump +2, and Muscle Replacement's Quickness as *does not count toward Reaction (M&M p.60)*. âš  Found live: it first printed the FINAL Quickness 7 / Intelligence 3, which did not add up â€” fixed with `derived.reactionInputs`.
+- [x] Reaction hovers *(Quickness 4 + Intelligence 4) ÷ 2 = 4*, Wired Reflexes +2, the pump +2, and Muscle Replacement's Quickness as *does not count toward Reaction (M&M p.60)*. ⚠ Found live: it first printed the FINAL Quickness 7 / Intelligence 3, which did not add up — fixed with `derived.reactionInputs`.
 - [ ] An adept with Improved Physical Attribute 3: the gold chip names the power *and its level*.
 - [ ] An active Attribute Boost shows as an amber chip with its turns left.
 - [ ] Wired Reflexes and Improved Reflexes both: the dropped one listed as *not applied (SR3 p.169)* (unit-tested).
@@ -563,19 +563,19 @@ Then open the same dialog **twice at once** where that is possible â€” both
 
 ---
 
-## 5. Ranged Combat â€” **PARTLY AUTOMATED** (`npm run test:e2e`)
+## 5. Ranged Combat — **PARTLY AUTOMATED** (`npm run test:e2e`)
 
-Full flow: click weapon â†’ target dialog â†’ **GM's TN window** â†’ roll options (TN, range,
-called shot, Combat Pool) â†’ attack roll â†’ **defender declares** â†’ dodge roll â†’ Resist Damage
-â†’ soak card â†’ soak roll â†’ assign damage button.
+Full flow: click weapon → target dialog → **GM's TN window** → roll options (TN, range,
+called shot, Combat Pool) → attack roll → **defender declares** → dodge roll → Resist Damage
+→ soak card → soak roll → assign damage button.
 
-âš  **That order was wrong here until 2026-08-13.** This section used to read "target dialog â†’
-dodge declaration â†’ attack roll", which is the pre-fix sequence. SR3 resolves the Dodge Test
-at step 4, *after* counting the attacker's successes at step 3 â€” the defender must see the
+⚠ **That order was wrong here until 2026-08-13.** This section used to read "target dialog →
+dodge declaration → attack roll", which is the pre-fix sequence. SR3 resolves the Dodge Test
+at step 4, *after* counting the attacker's successes at step 3 — the defender must see the
 hits before choosing between dodging and saving the pool for the Damage Resistance Test. The
 code was fixed 2026-08-05; this file kept describing the old flow for another week.
 
-### âœ… Covered by `tests/e2e/ranged.spec.mjs` â€” three clients
+### ✅ Covered by `tests/e2e/ranged.spec.mjs` — three clients
 
 - **The GM's TN window opens on the GM and NOT on the attacker**, and the attacker's own TN
   field is read-only once a GM has adjudicated. The negative is the valuable half: a GM
@@ -583,21 +583,21 @@ code was fixed 2026-08-05; this file kept describing the old flow for another we
 - **The declaration comes AFTER the roll and comes TO the defender.** The card states the
   incoming hits; the declare button auto-clicks on the decider's client, so the dialog opens
   on the defender and never on the attacker, whose button is refused outright.
-- **Each side pays its own pool** â€” attacker for attack dice, defender for dodge dice and
+- **Each side pays its own pool** — attacker for attack dice, defender for dodge dice and
   again for soak dice, on three separate spends across two actors.
 - **`.sr-soak-btn` vs `.sr-soak-roll-btn`** carry deliberately different gates: the first only
   posts a card onward (`_mine`, any owner), the second rolls (`_isDecider`, exactly one).
 
-âš  **Not covered, still needs a human:** fire modes beyond SS (BF/FA recoil accumulation),
+⚠ **Not covered, still needs a human:** fire modes beyond SS (BF/FA recoil accumulation),
 ammunition types and depletion, called shots, range-band TN changes, and grenade/AoE scatter.
-The spec deliberately holds every TN at or below 6 so no die can explode â€” real play does not.
+The spec deliberately holds every TN at or below 6 so no die can explode — real play does not.
 
 ### drag and drop weapon sections - passed
 Move preferred weapon types to the top of the weapons tab - passed
 
 
 ### Attack dice - passed 
-**In:** Pistols skill 5, TN 4 â†’ **Out:** 5 dice chat card vs TN 4.
+**In:** Pistols skill 5, TN 4 → **Out:** 5 dice chat card vs TN 4.
 
 ### Firing modes - passed
 
@@ -610,23 +610,23 @@ Move preferred weapon types to the top of the weapons tab - passed
 | FA (6 rds) | 6 | +6 | +2 stages |
 | FA (9 rds) | 9 | +9 | +3 stages |
 
-**BF example:** Weapon `9M` â†’ BF â†’ damage becomes `12S`.
+**BF example:** Weapon `9M` → BF → damage becomes `12S`.
 
 ### Recoil (SA / BF / FA) - passed
 `totalComp = actor recoilCompensation (Cyber tab) + weapon recoilMod ("Recoil Comp" on the item)`
 Both are editable inline in the fire-mode dialog and persist on confirm.
 
-- **SS/SA/FA cumulative:** `max(0, roundsBeforeThisShot âˆ’ totalComp) Ã— heavyMult`. **In:** fired 3 rounds previously, totalComp 2 â†’ TN penalty **+1**.
-- **BF stacks:** `max(0, (roundsBeforeThisShot + 3) âˆ’ totalComp) Ã— heavyMult` â€” **+3 first burst, +6 second** (BF counts its own 3 rounds). **In:** totalComp 0, first burst â†’ **+3**; fire a second burst (roundsBefore now 3) â†’ **+6**.
+- **SS/SA/FA cumulative:** `max(0, roundsBeforeThisShot − totalComp) × heavyMult`. **In:** fired 3 rounds previously, totalComp 2 → TN penalty **+1**.
+- **BF stacks:** `max(0, (roundsBeforeThisShot + 3) − totalComp) × heavyMult` — **+3 first burst, +6 second** (BF counts its own 3 rounds). **In:** totalComp 0, first burst → **+3**; fire a second burst (roundsBefore now 3) → **+6**.
 - **Heavy weapons** (LMG/MMG/HMG/MinG) double the uncompensated recoil.
-- **Shotgun in Burst Fire** doubles uncompensated recoil (SR3 p.111) â€” NEW 2026-07-07, verify:
-  - **In:** shotgun (ShtG) with SA/BF modes, no compensation, first shot of the phase â†’ fire-mode
+- **Shotgun in Burst Fire** doubles uncompensated recoil (SR3 p.111) — NEW 2026-07-07, verify:
+  - **In:** shotgun (ShtG) with SA/BF modes, no compensation, first shot of the phase → fire-mode
     dialog shows BF recoil preview **+6** (not +3); SA preview stays +0/+1. A second BF burst in
-    the same phase previews **+12**. The dialog shows an amber "âš  Shotgun: 2Ã— uncompensated
+    the same phase previews **+12**. The dialog shows an amber "⚠ Shotgun: 2× uncompensated
     recoil in Burst Fire" note.
-  - **In:** same shotgun with total comp 3 â†’ BF preview +0 first burst ((3+0âˆ’3)Ã—2), +6 second.
-  - **In:** non-shotgun SA/BF weapon (e.g. SMG) â†’ BF preview still +3 (unchanged).
-- `roundsFiredThisPhase` resets at the start of each combat phase (and via the â†º Reset button).
+  - **In:** same shotgun with total comp 3 → BF preview +0 first burst ((3+0−3)×2), +6 second.
+  - **In:** non-shotgun SA/BF weapon (e.g. SMG) → BF preview still +3 (unchanged).
+- `roundsFiredThisPhase` resets at the start of each combat phase (and via the ↺ Reset button).
 
 ### FA multi-target TN penalty - passed
 
@@ -638,122 +638,122 @@ Both are editable inline in the fire-mode dialog and persist on confirm.
 | 4th | +6 |
 | 5th+ | +8 |
 
-### Ammunition â€” stockpile / magazine model - passed
+### Ammunition — stockpile / magazine model - passed
 
-World setting **Track Ammunition** (Configure Settings â†’ System) gates all counting (off by default).
+World setting **Track Ammunition** (Configure Settings → System) gates all counting (off by default).
 
-**Stockpile (gear/ammo tabs):** ammo items are a reservoir. Each has Ammo Type, Loading Mechanism (c/m/cy/b/d/sb/internal), and its stock â€” loose rounds or reloads. The tab shows Type / Load / Stock
+**Stockpile (gear/ammo tabs):** ammo items are a reservoir. Each has Ammo Type, Loading Mechanism (c/m/cy/b/d/sb/internal), and its stock — loose rounds or reloads. The tab shows Type / Load / Stock
 
-**Magazine (weapons tab):** each firearm shows its capacity, a loaded badge (type + `loaded/magSize` when tracking), and a â†» **Reload** button. Magazine size is parsed from the gun's capacity string (`15(c)` â†’ 15).
+**Magazine (weapons tab):** each firearm shows its capacity, a loaded badge (type + `loaded/magSize` when tracking), and a ↻ **Reload** button. Magazine size is parsed from the gun's capacity string (`15(c)` → 15).
 
-**Reload:** â†» â†’ prompts compatible stockpiles (matched by loading mechanism; with rounds, when tracking on) â†’ loads up to magazine size, subtracts from the stockpile, **discards any rounds left in the old mag** (full swap). Tracking off â†’ only sets the loaded type, no stock math.
+**Reload:** ↻ → prompts compatible stockpiles (matched by loading mechanism; with rounds, when tracking on) → loads up to magazine size, subtracts from the stockpile, **discards any rounds left in the old mag** (full swap). Tracking off → only sets the loaded type, no stock math.
 
-**Firing** uses whatever is loaded â€” no per-shot picker. When tracking on, the magazine decrements (1 SS/SA, 3 BF, N FA + walking-fire waste) and warns (never blocks) when empty.
+**Firing** uses whatever is loaded — no per-shot picker. When tracking on, the magazine decrements (1 SS/SA, 3 BF, N FA + walking-fire waste) and warns (never blocks) when empty.
 
-**Rounds or reloads â€” the Ammo Reloading Table (TODO 114, 0.5.2).** Tracking on. **Walked by the agent 2026-09-13**, Browser pane as mcp-api:
-- [x] Migration via `force()`: *7-round cy reload Ã—6* (0 rounds) on an actor with a `7(cy)` revolver â†’ 6 reloads of 7, `cy`; *10-Rnd Clip (Explosive) Ã—2* â†’ 2 reloads of 10, Explosive; a *Box* of 42 untouched.
+**Rounds or reloads — the Ammo Reloading Table (TODO 114, 0.5.2).** Tracking on. **Walked by the agent 2026-09-13**, Browser pane as mcp-api:
+- [x] Migration via `force()`: *7-round cy reload ×6* (0 rounds) on an actor with a `7(cy)` revolver → 6 reloads of 7, `cy`; *10-Rnd Clip (Explosive) ×2* → 2 reloads of 10, Explosive; a *Box* of 42 untouched.
 - [x] Ammo tab reads **6 reloads of 7**; the reload dialog offers "6 reloads of 7", shows *In the gun now: 3/7*; after the swap: 7/7, **3 unfired rounds lost**, one speed loader used, *Complex Action to use a speed loader (SR3 p.280)*.
 - [x] A 10-round clip into an 8(c) gun loads 8, names the mismatch, uses the whole clip.
-- [x] Loose rounds into an 8(c) gun holding 2: the dialog asks how many (default 6 = full, *2 Complex Actions* at Quickness 4); 3 chosen â†’ 5/8, *1 Complex Action to insert 3 rounds into the clip*, box 34 â†’ 31.
+- [x] Loose rounds into an 8(c) gun holding 2: the dialog asks how many (default 6 = full, *2 Complex Actions* at Quickness 4); 3 chosen → 5/8, *1 Complex Action to insert 3 rounds into the clip*, box 34 → 31.
 - [x] Item sheet: clip ammo offers *Loose rounds / Pre-filled clips*; internal-magazine (`m`) shells show Rounds only, even with `countedIn: reloads` stored.
-- [x] Storage: a stack of 5 reloads asks "of 5"; storing 2 leaves 3 out, 2 stored â€” and the **stored stack is no longer offered** by the reload dialog (it was; fixed).
-- [x] Round by round never loses a round (2026-09-14): a 6(m) shotgun holding 4 regular, loaded with gel shells â†’ 6 gel, and the 4 regular **unloaded** into a new *Regular rounds (unloaded)* item; loading regular back â†’ the 3 gel shells returned to the existing gel item (6 â†’ 9).
+- [x] Storage: a stack of 5 reloads asks "of 5"; storing 2 leaves 3 out, 2 stored — and the **stored stack is no longer offered** by the reload dialog (it was; fixed).
+- [x] Round by round never loses a round (2026-09-14): a 6(m) shotgun holding 4 regular, loaded with gel shells → 6 gel, and the 4 regular **unloaded** into a new *Regular rounds (unloaded)* item; loading regular back → the 3 gel shells returned to the existing gel item (6 → 9).
 - [ ] Import the troll fixture in a live world (covered end-to-end by `tests/importer.test.mjs`).
 
-**Loading-mechanism filter:** a clip-fed gun (`(c)`) only offers clip-mechanism ammo on reload. **In:** gun `15(c)`, stockpiles of clip-APDS and belt-FMJ â†’ only clip-APDS is offered.
+**Loading-mechanism filter:** a clip-fed gun (`(c)`) only offers clip-mechanism ammo on reload. **In:** gun `15(c)`, stockpiles of clip-APDS and belt-FMJ → only clip-APDS is offered.
 
 **Type effects (applied automatically from the loaded type):**
 
 | Type | Effect | When |
 |---|---|---|
-| Regular | none | â€” |
+| Regular | none | — |
 | Explosive | Power +1 | attack |
 | EX Explosive | Power +2 | attack |
-| Gel | Power âˆ’2, damage â†’ Stun | attack |
+| Gel | Power −2, damage → Stun | attack |
 | APDS | target ballistic halved (round down) | soak card |
-| Flechette | unarmoured â†’ level +1; armoured â†’ effective armour Ã—2 (incl. vehicle) | soak card |
-| Tracer | FA-only; tracer rounds raise Level not Power (5M Ã—10 rds â†’ 12D); âˆ’1 TN/3 rds shown as a manual note | attack |
-| Anti-Vehicle | bypasses the vehicle PowerÃ·2 reduction | attack |
+| Flechette | unarmoured → level +1; armoured → effective armour ×2 (incl. vehicle) | soak card |
+| Tracer | FA-only; tracer rounds raise Level not Power (5M ×10 rds → 12D); −1 TN/3 rds shown as a manual note | attack |
+| Anti-Vehicle | bypasses the vehicle Power÷2 reduction | attack |
 
 **Examples:**
-- Explosive on `5M` â†’ `6M`. EX on `5M` â†’ `7M`.
-- Gel on `9M` â†’ `7M Stun`.
-- APDS vs ballistic 6 â†’ soak card shows ballistic **3**, gold note "APDS â€” ballistic armour halved".
-- Flechette vs unarmoured target â†’ soak card incoming level raised one (e.g. `9M` â†’ `9S`). Vs armour 5 â†’ effective armour **10**.
-- Tracer FA 10 rounds on `5M` â†’ `12D` (not 15D), gold-noted tracer TN bonus.
-- Anti-Vehicle vs vehicle â†’ no PowerÃ·2 applied (no manual checkbox needed on character firearms).
+- Explosive on `5M` → `6M`. EX on `5M` → `7M`.
+- Gel on `9M` → `7M Stun`.
+- APDS vs ballistic 6 → soak card shows ballistic **3**, gold note "APDS — ballistic armour halved".
+- Flechette vs unarmoured target → soak card incoming level raised one (e.g. `9M` → `9S`). Vs armour 5 → effective armour **10**.
+- Tracer FA 10 rounds on `5M` → `12D` (not 15D), gold-noted tracer TN bonus.
+- Anti-Vehicle vs vehicle → no Power÷2 applied (no manual checkbox needed on character firearms).
 
-**Vehicle-mounted weapons** keep their own AV-munition checkbox in the ðŸš— dialog (no clip system).
+**Vehicle-mounted weapons** keep their own AV-munition checkbox in the 🚗 dialog (no clip system).
 
-### Bows & crossbows â€” nocked arrows / bolts
+### Bows & crossbows — nocked arrows / bolts
 
-Bows and crossbows draw from the same **Ammunition** stockpile as guns, but hold **one** nocked round (capacity 1). Loading mechanism: **bows â†” Arrow, crossbows â†” Bolt** (auto-matched by weapon category; slings never deplete). No special arrow/bolt types yet (always Regular). Gated by **Track Ammunition** like firearms.
+Bows and crossbows draw from the same **Ammunition** stockpile as guns, but hold **one** nocked round (capacity 1). Loading mechanism: **bows ↔ Arrow, crossbows ↔ Bolt** (auto-matched by weapon category; slings never deplete). No special arrow/bolt types yet (always Regular). Gated by **Track Ammunition** like firearms.
 
 **Setup:** Add an Ammunition item, set Loading Mechanism = **Arrow** (or **Bolt**), Stock = e.g. 10. Add a Bow (or LCB/MCB/HCB crossbow) on the Projectiles section.
 
-- **Projectiles section (tracking on):** shows a **Nocked** column (Arrow/Bolt when loaded, red "empty" when not) + â†» Reload. Tracking off â†’ no Nocked column, fires freely (old behaviour).
-- **Reload:** â†» on the bow â†’ offers only **Arrow** stock (crossbow â†’ only **Bolt**). Loads 1, stock 10 â†’ **9**, Nocked shows "Arrow". **In:** bow with arrow stock 10 â†’ reload â†’ stock 9, nocked Arrow.
-- **Fire:** looses the nocked round â†’ `loadedRounds` 1 â†’ 0, info "no arrow nocked â€” reload". **In:** fire the bow â†’ Nocked shows red "empty", dice icon faded.
-- **Empty = inoperable:** with no arrow nocked (tracking on), the dice icon is disabled and `rollWeapon` warns "has no arrow nocked â€” reload"; â†» stays active. **In:** empty bow â†’ click dice â†’ warning, no roll.
-- **Mechanism filter:** a bow offers only Arrow stock, never Bolt (and vice-versa). **In:** actor with both Arrow and Bolt stock, fire a crossbow â†’ reload lists only Bolt.
-- **Slings (SL) & uncategorised:** never deplete â€” no Nocked column entry, always operable.
+- **Projectiles section (tracking on):** shows a **Nocked** column (Arrow/Bolt when loaded, red "empty" when not) + ↻ Reload. Tracking off → no Nocked column, fires freely (old behaviour).
+- **Reload:** ↻ on the bow → offers only **Arrow** stock (crossbow → only **Bolt**). Loads 1, stock 10 → **9**, Nocked shows "Arrow". **In:** bow with arrow stock 10 → reload → stock 9, nocked Arrow.
+- **Fire:** looses the nocked round → `loadedRounds` 1 → 0, info "no arrow nocked — reload". **In:** fire the bow → Nocked shows red "empty", dice icon faded.
+- **Empty = inoperable:** with no arrow nocked (tracking on), the dice icon is disabled and `rollWeapon` warns "has no arrow nocked — reload"; ↻ stays active. **In:** empty bow → click dice → warning, no roll.
+- **Mechanism filter:** a bow offers only Arrow stock, never Bolt (and vice-versa). **In:** actor with both Arrow and Bolt stock, fire a crossbow → reload lists only Bolt.
+- **Slings (SL) & uncategorised:** never deplete — no Nocked column entry, always operable.
 - **Tracking off:** bows/crossbows fire freely with no counting (reload only sets the type, which is always Regular).
-- **Canvas picker:** a bow with no nocked round (tracking on) is **not** listed as ready; nock one â†’ it appears.
+- **Canvas picker:** a bow with no nocked round (tracking on) is **not** listed as ready; nock one → it appears.
 
 ### Empty weapons are inoperable (tracking on) - passed
 When **Track Ammunition** is on, an empty weapon's dice icon is faded and cannot be rolled; the Reload button stays active.
-- **In:** firearm with `loadedRounds 0` â†’ dice icon disabled; clicking does nothing; â†» Reload still works. After reload â†’ dice icon active.
-- **In:** thrown weapon with quantity 0 â†’ dice icon disabled.
-- **In:** bow/crossbow with no nocked round â†’ dice icon disabled; â†» Reload still works.
-- Tracking **off** â†’ all weapons always operable (no fading).
+- **In:** firearm with `loadedRounds 0` → dice icon disabled; clicking does nothing; ↻ Reload still works. After reload → dice icon active.
+- **In:** thrown weapon with quantity 0 → dice icon disabled.
+- **In:** bow/crossbow with no nocked round → dice icon disabled; ↻ Reload still works.
+- Tracking **off** → all weapons always operable (no fading).
 
 ### Range (firearms, bows/crossbows, thrown) - passed
 Needs both combatants as tokens on a scene whose grid distance is in **metres**.
-- **Auto-measure:** target a token (T tool), fire â†’ roll dialog shows a **Range** dropdown pre-set to the measured band, with "measured Nm". TN pre-fills to base + range mod (Short +0 / Medium +1 / Long +2 / Extreme +5).
-  - **In:** firearm vs target 37m, Assault Rifle (`50/150/350/550`) â†’ Short, TN 4. At 200m â†’ Long, TN 6. At 600m â†’ "beyond Extreme" warning, TN 9.
-- **Override:** change the dropdown â†’ TN recomputes live; or edit the TN field directly. **In:** auto says Long (TN 6); GM picks Medium â†’ TN becomes 5.
-- **Strength-scaled (bows/thrown):** bands = STR Ã— multiplier. **In:** STR 5 Bow (`1/10/30/60`) â†’ bands 5/50/150/300m; target 40m â†’ Medium.
+- **Auto-measure:** target a token (T tool), fire → roll dialog shows a **Range** dropdown pre-set to the measured band, with "measured Nm". TN pre-fills to base + range mod (Short +0 / Medium +1 / Long +2 / Extreme +5).
+  - **In:** firearm vs target 37m, Assault Rifle (`50/150/350/550`) → Short, TN 4. At 200m → Long, TN 6. At 600m → "beyond Extreme" warning, TN 9.
+- **Override:** change the dropdown → TN recomputes live; or edit the TN field directly. **In:** auto says Long (TN 6); GM picks Medium → TN becomes 5.
+- **Strength-scaled (bows/thrown):** bands = STR × multiplier. **In:** STR 5 Bow (`1/10/30/60`) → bands 5/50/150/300m; target 40m → Medium.
 - **Per-weapon override:** item sheet "Range Override" = "5/15/30/50" wins over the category table.
 - **No tokens / no scale:** no dropdown; set TN manually (unchanged behaviour).
 
 ### Attacking from the canvas - passed
-- **Token HUD:** select an owned token â†’ ðŸŽ¯ button â†’ weapon picker lists *ready* weapons (firearm w/ ammo, equipped melee, thrown w/ qty, bow/crossbow w/ nocked round, slings) â†’ fires the normal flow. One ready weapon â†’ fires immediately. **In:** runner with loaded pistol + equipped sword â†’ picker shows both.
-- **Hotbar drag:** drag a weapon row from the sheet to the hotbar â†’ "Fire: \<weapon\>" macro created â†’ click fires it. âš  Script macros only run for users granted script-macro permission; the Token HUD works for everyone.
+- **Token HUD:** select an owned token → 🎯 button → weapon picker lists *ready* weapons (firearm w/ ammo, equipped melee, thrown w/ qty, bow/crossbow w/ nocked round, slings) → fires the normal flow. One ready weapon → fires immediately. **In:** runner with loaded pistol + equipped sword → picker shows both.
+- **Hotbar drag:** drag a weapon row from the sheet to the hotbar → "Fire: \<weapon\>" macro created → click fires it. ⚠ Script macros only run for users granted script-macro permission; the Token HUD works for everyone.
 
 
 ### Dodge - **RETEST REQUIRED (ordering and tie rule both changed)**
 
-âš  The version here asserted two things that are wrong, and it passed against both.
+⚠ The version here asserted two things that are wrong, and it passed against both.
 
 **Ordering.** The defender now declares **after** seeing the attack's successes (SR3 p.112 step 4;
 the book's own worked example has Snot decide only once Liam has rolled 5). The prompt opens on the
-**defender's** client, not the attacker's. Committing blind was not a simplification â€” it deleted
+**defender's** client, not the attacker's. Committing blind was not a simplification — it deleted
 the dodge-vs-soak trade the rule exists to create, since pool spent dodging is gone from the
 Damage Resistance Test.
 
-**Ties.** A clean miss requires dodge successes to **exceed** the attack's â€” *"more than"*,
-*"exceeds"*, both strict. Equal successes is a **hit**. The old `â‰¥` is the single most likely thing
+**Ties.** A clean miss requires dodge successes to **exceed** the attack's — *"more than"*,
+*"exceeds"*, both strict. Equal successes is a **hit**. The old `≥` is the single most likely thing
 to get "helpfully" relaxed back.
 
 **Failed dodges are not wasted.** Their successes carry into the soak and stage damage down at the
 usual 2-per-level. Staging *up* is unaffected: dodge hits never cancel attack hits.
 
-- **In:** attack 3 hits, dodge 2 â†’ **Out:** hit. Soak card shows the 2 carried, e.g. `5 hits
+- **In:** attack 3 hits, dodge 2 → **Out:** hit. Soak card shows the 2 carried, e.g. `5 hits
   (3 soak + 2 dodge)`.
-- **In:** attack 3 hits, dodge 3 â†’ **Out:** **hit** (tie goes to the attacker), 3 carried to soak.
-- **In:** attack 3 hits, dodge 4 â†’ **Out:** clean miss.
+- **In:** attack 3 hits, dodge 3 → **Out:** **hit** (tie goes to the attacker), 3 carried to soak.
+- **In:** attack 3 hits, dodge 4 → **Out:** clean miss.
 
 Pinned by `tests/dodge-resolution.test.mjs`, including the tie.
 
-### Soak card â€” Body and Combat Pool are separate fields
+### Soak card — Body and Combat Pool are separate fields
 The card offers **Body dice** (free) and **Combat Pool** (charged, capped at what is available).
-When the pool is empty it says so in amber rather than silently offering nothing â€” which is the
+When the pool is empty it says so in amber rather than silently offering nothing — which is the
 p.113 trade made visible, since a defender who burned pool dodging arrives here with less.
-- **In:** spend 2 pool on the soak â†’ **Out:** that actor's Combat Pool drops by 2 on the sheet.
-- **In:** dodge with all your pool, fail, then soak â†’ **Out:** soak card shows **0 left**.
+- **In:** spend 2 pool on the soak → **Out:** that actor's Combat Pool drops by 2 on the sheet.
+- **In:** dodge with all your pool, fail, then soak → **Out:** soak card shows **0 left**.
 
 ### Soak TN - passed
-Formula: `max(2, Damage Power âˆ’ Armor)`
+Formula: `max(2, Damage Power − Armor)`
 
 | Power | Armor (Ballistic) | Soak TN |
 |---|---|---|
@@ -762,12 +762,12 @@ Formula: `max(2, Damage Power âˆ’ Armor)`
 | 4 | 8 | 2 (min) |
 
 ### Damage staging (after soak) - passed
-Every 2 soak hits = 1 stage down (Dâ†’Sâ†’Mâ†’L). Below L = fully soaked.
+Every 2 soak hits = 1 stage down (D→S→M→L). Below L = fully soaked.
 
-**In:** `9S` damage, 4 soak hits â†’ staged down 2 â†’ `9L`. 6 soak hits â†’ `9L` â†’ fully soaked.
+**In:** `9S` damage, 4 soak hits → staged down 2 → `9L`. 6 soak hits → `9L` → fully soaked.
 
 ### Assign Damage button - passed
-After soak resolves â†’ **ðŸ©¸ Assign \<Level\> \<Stun/Physical\> Wound to [Name]** button (e.g. "Assign Serious Stun Wound to Dave Decker"). The **Power number is dropped** (it doesn't change wound severity â€” only the level does), and "Wound" is used instead of "damage" for clarity. Click â†’ wound track updates (boxes from L/M/S/D = 1/3/6/10), button disables. This wording is shared across **all** combat cards (ranged, melee, spell, drain, matrix/IC, vehicle).
+After soak resolves → **🩸 Assign \<Level\> \<Stun/Physical\> Wound to [Name]** button (e.g. "Assign Serious Stun Wound to Dave Decker"). The **Power number is dropped** (it doesn't change wound severity — only the level does), and "Wound" is used instead of "damage" for clarity. Click → wound track updates (boxes from L/M/S/D = 1/3/6/10), button disables. This wording is shared across **all** combat cards (ranged, melee, spell, drain, matrix/IC, vehicle).
 
 Boxes applied per level:
 | Level | Boxes |
@@ -781,32 +781,32 @@ Boxes applied per level:
 
 ## 6. Melee Combat - **AUTOMATED** (`npm run test:e2e`)
 
-Click melee weapon â†’ target dialog â†’ two-corner card appears for both sides simultaneously.
+Click melee weapon → target dialog → two-corner card appears for both sides simultaneously.
 
-### âœ… Covered by `tests/e2e/melee-two-corner.spec.mjs`
+### ✅ Covered by `tests/e2e/melee-two-corner.spec.mjs`
 
-Two real clients â€” Player2 attacking, Player3 defending â€” driving actual browsers against a
+Two real clients — Player2 attacking, Player3 defending — driving actual browsers against a
 running Foundry. Player-vs-player rather than GM-vs-NPC on purpose: the GM is the decider for
 every actor and sees every corner unlocked, so a GM-side test **cannot** exercise the thing
 that was broken.
 
 What it asserts, so this section need not be walked by hand:
 
-- Each player's own Submit is enabled and the opponent's is disabled â€” checked on **both**
+- Each player's own Submit is enabled and the opponent's is disabled — checked on **both**
   clients, since "my button works" is only half the guarantee.
 - Each player sees the other's inputs `readonly`.
 - One submission does **not** resolve: the ledger records the attacker, the defender's slot
   stays empty, and the progress strip appears **on the other client**.
 - The last submission resolves.
-- **Each side is charged exactly what that side submitted** â€” attacker 2 pool, defender 0.
+- **Each side is charged exactly what that side submitted** — attacker 2 pool, defender 0.
   This is the assertion the suite exists for: under the bug found in play, both corners came
   from whichever client happened to resolve.
 
-âš  **Still walk this by hand for anything the assertions do not describe** â€” layout, whether
+⚠ **Still walk this by hand for anything the assertions do not describe** — layout, whether
 the read-only corner *looks* disabled, whether the strip is legible. Automation proves the
 values are right; it says nothing about whether the card is usable.
 
-### âš  There is no longer a shared "Roll!" button â€” retest every card that had one
+### ⚠ There is no longer a shared "Roll!" button — retest every card that had one
 
 This applies to **all eight** two-corner cards: melee, astral, contested, both cybercombat
 rulesets, MIJI, and the Orthodox System Test / IC Attack. Anything below that says *"GM clicks
@@ -815,116 +815,116 @@ Roll!"* or *"both sides editable"* describes the old behaviour.
 **What to verify, with two clients logged in (a GM and a player):**
 
 - Each side sees **its own corner editable** and the **opponent's read-only** and dimmed, with a
-  tooltip explaining why. The GM sees *both* unlocked â€” that is intended, since the GM is the
+  tooltip explaining why. The GM sees *both* unlocked — that is intended, since the GM is the
   decider for every actor and must be able to submit an NPC's corner.
 - Each side gets its **own Submit button**; the other side's is disabled for you.
-- A progress strip appears after the first submission â€” `âœ“ <name> Â· waiting for <other>` â€” and it
+- A progress strip appears after the first submission — `✓ <name> · waiting for <other>` — and it
   appears **on every client**, not just the one that clicked.
 - **The last submission resolves the exchange.** Neither side can roll for both.
-- Your submitted numbers are the ones used: put pool dice in your corner and confirm that actor â€”
-  and only that actor â€” is charged for them.
+- Your submitted numbers are the ones used: put pool dice in your corner and confirm that actor —
+  and only that actor — is charged for them.
 - The GM's **Resolve now** override resolves with card defaults for anyone outstanding.
 
-âš  **Verified in play for melee only** (2026-08-12, GM + Player2). The other seven share the
-mechanism but have not been exercised live â€” and the bug found during that session (submitted
+⚠ **Verified in play for melee only** (2026-08-12, GM + Player2). The other seven share the
+mechanism but have not been exercised live — and the bug found during that session (submitted
 values silently dropped, resolution falling back to the clicking client's DOM) was invisible to
 the test suite, so a green `npm test` is not evidence here.
 
 ### Adjacency (warn only)
-Melee reaches **adjacent squares only**. If both attacker and target are tokens on a scene and the target isn't in an adjacent square, a warning posts ("â€¦Nm away â€” out of reach for a melee attack") but the attack **still proceeds**. Reach affects TN, not range.
-- **In:** attacker and target on neighbouring squares â†’ no warning. Target several squares away â†’ warning, boxing card still appears. Off a scene / no tokens â†’ no warning.
+Melee reaches **adjacent squares only**. If both attacker and target are tokens on a scene and the target isn't in an adjacent square, a warning posts ("…Nm away — out of reach for a melee attack") but the attack **still proceeds**. Reach affects TN, not range.
+- **In:** attacker and target on neighbouring squares → no warning. Target several squares away → warning, boxing card still appears. Off a scene / no tokens → no warning.
 
 ### TN formula
-`4 âˆ’ own reach + woundMod`
+`4 − own reach + woundMod`
 
-**In:** Attacker reach 1 â†’ TN `4 âˆ’ 1 = 3`. Reach 0 â†’ TN 4.
+**In:** Attacker reach 1 → TN `4 − 1 = 3`. Reach 0 → TN 4.
 
 ### Defender auto-selects weapon
 1. Equipped melee item (equippedMelee field)
 2. First unarmed/cyber item found
 3. Bare hands: STR + M damage
 
-âš  **That fall-through is silent, and it caused a two-day misdiagnosis.** A character carrying a
+⚠ **That fall-through is silent, and it caused a two-day misdiagnosis.** A character carrying a
 pole arm who never pressed **Equip** defends bare-handed at reach 0, and the only place it used to
-surface was mid-combat as an unexpected defaulting prompt. Two things now make it visible â€” verify
+surface was mid-combat as an unexpected defaulting prompt. Two things now make it visible — verify
 both:
 
 - The Melee section of the sheet states **"Defends with: X (Reach N)"**, turning **amber** with a
   prompt to press Equip when armed melee weapons are owned but none is equipped. A character with
-  no melee weapons at all stays quiet â€” that one is simply correct.
+  no melee weapons at all stays quiet — that one is simply correct.
 - The defaulting prompt names **the weapon and the skill it needs**, e.g. *"Bare Hands needs
   Unarmed Combat / Martial Arts, which X does not have"*. It reads the requirement from the same
   lookup that failed, so the wording cannot drift from the rule.
-- **In:** actor owns a Katana, nothing equipped â†’ sheet shows amber "Defends with: Bare Hands";
-  incoming melee prompts *"Bare Hands needsâ€¦"*, not *"has no Unarmed Combat"*.
-- **In:** actor owns cyber spurs, nothing equipped â†’ **quiet** (spurs are a real answer).
+- **In:** actor owns a Katana, nothing equipped → sheet shows amber "Defends with: Bare Hands";
+  incoming melee prompts *"Bare Hands needs…"*, not *"has no Unarmed Combat"*.
+- **In:** actor owns cyber spurs, nothing equipped → **quiet** (spurs are a real answer).
 
-### Net hits â†’ staging
-Winner hits âˆ’ loser hits = net successes â†’ stage up base damage.
+### Net hits → staging
+Winner hits − loser hits = net successes → stage up base damage.
 
-**In:** Attacker 3 hits, defender 1 hit â†’ net 2 â†’ base weapon `6M` stages up 1 â†’ `6S`.
+**In:** Attacker 3 hits, defender 1 hit → net 2 → base weapon `6M` stages up 1 → `6S`.
 
 ### Loser soak
-Loser gets Resist Damage button â†’ soak card for their Body dice vs TN power âˆ’ armor. Same soak/assign flow as ranged.
+Loser gets Resist Damage button → soak card for their Body dice vs TN power − armor. Same soak/assign flow as ranged.
 
 ---
 
 ## 7. Unarmed Combat - passed
 
-A built-in **Unarmed Combat** entry is always available â€” it's not a real item (uneditable).
+A built-in **Unarmed Combat** entry is always available — it's not a real item (uneditable).
 - **Where:** top of the Weapons tab's **Cyber & Unarmed** section (a row with a dice icon), and in the canvas Token-HUD attack picker.
-- **Damage:** `(STR)M Stun`. **In:** STR 4 â†’ `4M Stun`.
-- **Pool / skill choice:** Unarmed Combat and Martial Arts (`MA:`-prefixed, e.g. `MA:Karate`) skills are interchangeable â€” use the **highest-rated** among them; if none exist, the **interactive Default dialog** opens (see Â§9).
-- Runs the normal melee flow (target â†’ adjacency warn â†’ boxing card â†’ soak).
-- **In:** `Unarmed Combat 4` only â†’ boxing card uses **Unarmed Combat 4**, TN 4.
-- **In:** `Unarmed Combat 4` and `MA:Karate 6` â†’ boxing card uses **MA:Karate 6** (highest), TN 4, **not** defaulting.
-- **In:** no Unarmed Combat and no MA skill â†’ Default dialog pops; choose Attribute â†’ Strength 4 â†’ boxing card shows **STR 4 dice, TN 8 (4+4), Pool max 0**. Choosing Skill/Spec uses Â½ rating, +2/+3 TN, pool allowed.
-- **In:** both attacker and defender lack a skill â†’ **both** get the dialog (attacker first, then defender).
-- **In:** Token HUD attack picker lists "Unarmed Combat" alongside ready weapons â†’ choosing it runs the unarmed attack.
+- **Damage:** `(STR)M Stun`. **In:** STR 4 → `4M Stun`.
+- **Pool / skill choice:** Unarmed Combat and Martial Arts (`MA:`-prefixed, e.g. `MA:Karate`) skills are interchangeable — use the **highest-rated** among them; if none exist, the **interactive Default dialog** opens (see §9).
+- Runs the normal melee flow (target → adjacency warn → boxing card → soak).
+- **In:** `Unarmed Combat 4` only → boxing card uses **Unarmed Combat 4**, TN 4.
+- **In:** `Unarmed Combat 4` and `MA:Karate 6` → boxing card uses **MA:Karate 6** (highest), TN 4, **not** defaulting.
+- **In:** no Unarmed Combat and no MA skill → Default dialog pops; choose Attribute → Strength 4 → boxing card shows **STR 4 dice, TN 8 (4+4), Pool max 0**. Choosing Skill/Spec uses ½ rating, +2/+3 TN, pool allowed.
+- **In:** both attacker and defender lack a skill → **both** get the dialog (attacker first, then defender).
+- **In:** Token HUD attack picker lists "Unarmed Combat" alongside ready weapons → choosing it runs the unarmed attack.
 - The defender's bare-hands fallback is also `(STR)M Stun` (aligned).
 
 ---
 
 ## 8. AoE / Grenades (RAW scatter-first) - passed 
 
-Needs a scene with tokens. Flow: **nominate** the blast point (drag the template, Confirm) â†’ **roll to throw** â†’ scatter **relocates** the blast â†’ re-detect who's caught â†’ soak.
-- **In:** throw a grenade, place the template, set grenade type â†’ throw TN auto-fills from the Grenade Range Table for that type (Standard/Aero = STR-scaled, Launcher = fixed); changing the type updates the TN.
-- **In:** roll the throw. Scatter = (1d6 standard / 2d6 aero / 3d6 launcher) âˆ’ **2m per success** (4m aero/launcher). The chat reports direction (relative to throw: 1 overthrow â€¦ 4 short) + distance; a result template appears where it landed.
-- **In:** **0 successes â†’ grenade does NOT vanish** â€” it scatters the full rolled distance, lands somewhere, and hits whoever's in range there (possibly no one, possibly the thrower).
-- **In:** scatter carries the blast onto a bystander / the thrower â†’ they get a soak card; the nominated target may be missed entirely. (This is intended â€” grenades are deadly.)
-- Per-target power = base damage âˆ’ distance from the (scattered) epicentre. Damage is **not** staged up by successes.
-- **Confined Space (Chunky Salsa):** tick the box â†’ after the throw + scatter, the Chunky Salsa GUI opens seeded with whoever was caught; draw walls / drag positions â†’ it returns each target's code into the soak cards.
+Needs a scene with tokens. Flow: **nominate** the blast point (drag the template, Confirm) → **roll to throw** → scatter **relocates** the blast → re-detect who's caught → soak.
+- **In:** throw a grenade, place the template, set grenade type → throw TN auto-fills from the Grenade Range Table for that type (Standard/Aero = STR-scaled, Launcher = fixed); changing the type updates the TN.
+- **In:** roll the throw. Scatter = (1d6 standard / 2d6 aero / 3d6 launcher) − **2m per success** (4m aero/launcher). The chat reports direction (relative to throw: 1 overthrow … 4 short) + distance; a result template appears where it landed.
+- **In:** **0 successes → grenade does NOT vanish** — it scatters the full rolled distance, lands somewhere, and hits whoever's in range there (possibly no one, possibly the thrower).
+- **In:** scatter carries the blast onto a bystander / the thrower → they get a soak card; the nominated target may be missed entirely. (This is intended — grenades are deadly.)
+- Per-target power = base damage − distance from the (scattered) epicentre. Damage is **not** staged up by successes.
+- **Confined Space (Chunky Salsa):** tick the box → after the throw + scatter, the Chunky Salsa GUI opens seeded with whoever was caught; draw walls / drag positions → it returns each target's code into the soak cards.
 
-### The thrower's wounds â€” FIXED 2026-09-14 (0.5.2)
+### The thrower's wounds — FIXED 2026-09-14 (0.5.2)
 The throw rolls with `skipWoundMod` (the single-target path's convention: the roll-options TN
 already holds the wound), but the grenade dialog built its TN as 4 + range alone, so a wounded
 thrower never paid the wound modifier (SR3 p.126). Layered armour (p.285) was missing the same way.
 `SR3EItem.throwPreTN` now feeds the dialog; `tests/aoe-throw-tn.test.mjs` + the
 `grenade-throw-ignores-wounds` mutant.
-**Walked by the agent 2026-09-14** (mcp-api, the dialog opened directly â€” the pane draws no canvas):
+**Walked by the agent 2026-09-14** (mcp-api, the dialog opened directly — the pane draws no canvas):
 a Moderate wound at 12 m starts at **TN 6** (4 + 2, Short), says *"Wound +2 (pre-applied)"*, and keeps
 the +2 when the grenade type changes.
 - [ ] A real throw on a drawn canvas by a wounded character: the dialog's TN includes the wound, and the throw card rolls at that TN (not +2 again).
 
 ### Blast power at distance - passed
-`Power at target = weapon power âˆ’ distance in metres` (from the scattered epicentre).
+`Power at target = weapon power − distance in metres` (from the scattered epicentre).
 
-**In:** Grenade power 12, target 4m from where it landed â†’ effective power **8**.
+**In:** Grenade power 12, target 4m from where it landed → effective power **8**.
 
 ### Blast power at distance
-`Power at target = weapon power âˆ’ distance in metres`
+`Power at target = weapon power − distance in metres`
 
-**In:** Grenade power 12, target 4m away â†’ effective power **8**.
+**In:** Grenade power 12, target 4m away → effective power **8**.
 
 Multiple walls/reflections: additional power penalty applied per path. All wave hits on a target are summed.
 
-Each target gets their own Resist Damage button â†’ soak flow runs per-target.
+Each target gets their own Resist Damage button → soak flow runs per-target.
 
 ### Thrown-weapon quantity (tracking on) - passed
-Thrown weapons / grenades (`thrown` type, or `projectile` with a thrown category) carry a **Quantity** and are decremented 1 per throw. Bows/crossbows are never consumed. The weapons-tab thrown section shows `Ã—qty` (amber â‰¤2, red at 0).
+Thrown weapons / grenades (`thrown` type, or `projectile` with a thrown category) carry a **Quantity** and are decremented 1 per throw. Bows/crossbows are never consumed. The weapons-tab thrown section shows `×qty` (amber ≤2, red at 0).
 
-- **In:** grenade quantity 3 â†’ throw it â†’ quantity **2**, card resolves as normal.
-- **In:** quantity 1 â†’ throw â†’ quantity **0**, "last one" warning, dice icon now disabled.
+- **In:** grenade quantity 3 → throw it → quantity **2**, card resolves as normal.
+- **In:** quantity 1 → throw → quantity **0**, "last one" warning, dice icon now disabled.
 
 
 ---
@@ -934,44 +934,44 @@ Thrown weapons / grenades (`thrown` type, or `projectile` with a thrown category
 ### With skill rating
 Pool = skill rating (wound mod adds to TN, not pool)
 
-**In:** Pistols 5, no wounds â†’ 5 dice.
+**In:** Pistols 5, no wounds → 5 dice.
 
 ### Specialisation bonus - passed 
 Pool = skill rating + 2 (when spec applies)
 
-**In:** Pistols 5, specialisation "Ares Predator", firing an Ares Predator â†’ **7 dice**.
+**In:** Pistols 5, specialisation "Ares Predator", firing an Ares Predator → **7 dice**.
 
-### Defaulting (no skill) â€” interactive SR3 Default Table - passed
+### Defaulting (no skill) — interactive SR3 Default Table - passed
 When a roll has **no appropriate skill**, a dialog pops asking how to default. Three tiers:
 
 | Default to | TN modifier | Dice pool | Pool dice |
 |---|---|---|---|
-| Specialization | +3 | Â½ underlying skill **base** rating (round down) | allowed |
-| Skill | +2 | Â½ chosen skill rating (round down) | allowed |
+| Specialization | +3 | ½ underlying skill **base** rating (round down) | allowed |
+| Skill | +2 | ½ chosen skill rating (round down) | allowed |
 | Attribute | +4 | full attribute value | **not allowed** |
 
 - The conditional dropdown lists **all** the actor's active skills / specialisations (the GM judges
   relevance) and every attribute. Live preview shows resulting dice / TN mod / pool-allowed.
 - **Cancel** aborts the whole action.
 
-**In:** untrained skill â†’ roll â†’ choose **Attribute â†’ Intelligence 4** â†’ pool **4**, TN +4, no pool
-dice. Roll label includes `Defaulting â†’ Intelligence 4, TN +4 (no pool)`.
-**In:** choose **Skill â†’ Pistols 5** â†’ pool **2** (âŒŠ5/2âŒ‹), TN +2, may add combat pool.
-**In:** choose **Specialization â†’ Pistols (Ares) base 5** â†’ pool **2** (âŒŠ5/2âŒ‹), TN +3, may add pool.
+**In:** untrained skill → roll → choose **Attribute → Intelligence 4** → pool **4**, TN +4, no pool
+dice. Roll label includes `Defaulting → Intelligence 4, TN +4 (no pool)`.
+**In:** choose **Skill → Pistols 5** → pool **2** (⌊5/2⌋), TN +2, may add combat pool.
+**In:** choose **Specialization → Pistols (Ares) base 5** → pool **2** (⌊5/2⌋), TN +3, may add pool.
 
 ---
 
 ## 10. Attribute Rolls - passed
 
-Click attribute die on Bio/Attributes tab â†’ rolls pool equal to attribute value vs chosen TN.
+Click attribute die on Bio/Attributes tab → rolls pool equal to attribute value vs chosen TN.
 
-**In:** Body 5, TN 4 â†’ 5 dice chat card.
+**In:** Body 5, TN 4 → 5 dice chat card.
 
 ---
 
-## 11. Spellcasting â€” **PARTLY AUTOMATED** (`npm run test:e2e`)
+## 11. Spellcasting — **PARTLY AUTOMATED** (`npm run test:e2e`)
 
-### âœ… Who may click what â€” `tests/e2e/spellcasting.spec.mjs`
+### ✅ Who may click what — `tests/e2e/spellcasting.spec.mjs`
 
 The result card carries buttons belonging to **two different people**, and the spec proves
 each is refused to the other across two real clients:
@@ -981,93 +981,93 @@ each is refused to the other across two real clients:
 | **Resist Spell** (`.sr-spell-soak-btn`) | the target's owner | the **caster** |
 | **Resist Drain** (`.sr-drain-btn`) | the caster's owner | the **target** |
 
-âš  **This cannot be checked from one seat.** The GM passes both gates, and a lone player sees
-only their own half and would report it working. The negative assertions are the guarantee â€”
+⚠ **This cannot be checked from one seat.** The GM passes both gates, and a lone player sees
+only their own half and would report it working. The negative assertions are the guarantee —
 and they are what silently regresses when a gate is loosened for an unrelated complaint,
 which is how [#27]'s original defect survived so long.
 
 It also asserts Spell Pool is charged to the caster and that the target spends nothing.
 
-**Still walk by hand:** the rules maths below â€” Force, drain codes, staging, the resist
-attribute â€” plus anything about how the cards read.
+**Still walk by hand:** the rules maths below — Force, drain codes, staging, the resist
+attribute — plus anything about how the cards read.
 
-Combat spells are a single **opposed (resisted) test** â€” like melee, not like a ranged attack + soak.
-Full flow: Cast â†’ Force **+ Damage Level** dialog â†’ Target selection (**no dodge**) â†’ Magic Pool allocation â†’ **Sorcery vs TN = the spell's Target attribute** (e.g. target Willpower) â†’ per-target **Resist Spell** (that same attribute vs **TN = Force**) â†’ **net stages the damage** â†’ Assign Damage. Caster also gets a Drain button. **There is NO soak step after the resist.**
+Combat spells are a single **opposed (resisted) test** — like melee, not like a ranged attack + soak.
+Full flow: Cast → Force **+ Damage Level** dialog → Target selection (**no dodge**) → Magic Pool allocation → **Sorcery vs TN = the spell's Target attribute** (e.g. target Willpower) → per-target **Resist Spell** (that same attribute vs **TN = Force**) → **net stages the damage** → Assign Damage. Caster also gets a Drain button. **There is NO soak step after the resist.**
 
 ### Force + Damage Level dialog
-Spells have **no damage code** â€” power = Force, and the level is chosen at cast. For a **Combat-category** spell the cast dialog shows a **Damage level** dropdown (Light/Moderate/Serious/Deadly, default Moderate). The chosen level sets the base damage `(Force)(level)` for the target **and** the caster's drain level. Non-Combat spells (Heal, Detectâ€¦) show no dropdown.
+Spells have **no damage code** — power = Force, and the level is chosen at cast. For a **Combat-category** spell the cast dialog shows a **Damage level** dropdown (Light/Moderate/Serious/Deadly, default Moderate). The chosen level sets the base damage `(Force)(level)` for the target **and** the caster's drain level. Non-Combat spells (Heal, Detect…) show no dropdown.
 
-**In:** Manabolt (Combat) â†’ dropdown defaults **Moderate**; pick **Serious** â†’ base `(F)S`, drain level S. The spell item sheet has **no Damage Code field**, and a spell is only flagged "incomplete" if its **Drain** is blank.
+**In:** Manabolt (Combat) → dropdown defaults **Moderate**; pick **Serious** → base `(F)S`, drain level S. The spell item sheet has **no Damage Code field**, and a spell is only flagged "incomplete" if its **Drain** is blank.
 
 ### Damage track follows spell Type (Mana = Stun, Physical = Physical)
-The target's damage track is **not** read from the Damage text â€” it's the spell `Type`: **Mana â†’ Stun**, **Physical â†’ Physical**. (Drain track is separate: Stun, or Physical if Force > Magic.)
+The target's damage track is **not** read from the Damage text — it's the spell `Type`: **Mana → Stun**, **Physical → Physical**. (Drain track is separate: Stun, or Physical if Force > Magic.)
 
-**In:** Manaball (Type Mana) `5S`, net 5 â†’ **6D Stun**. A Physical spell at the same numbers â†’ **6D Physical**.
+**In:** Manaball (Type Mana) `5S`, net 5 → **6D Stun**. A Physical spell at the same numbers → **6D Physical**.
 
 ### Sorcery pool
 Skill rating + committed magic pool dice.
 
-**In:** Sorcery 5, 2 magic pool committed â†’ **7 dice**.
+**In:** Sorcery 5, 2 magic pool committed → **7 dice**.
 
 ### Cast result card shows TN source + staging
-The caster's result card reads: **"ðŸ”® &lt;Spell&gt; (&lt;base&gt;) cast â€” N successes vs TN X (Target's Attribute)"** then **"N hits stages up Ã—K. base â†’ staged"** (the cast's own staging, K = âŒŠhits/2âŒ‹; the target's resistance then reduces it via net).
+The caster's result card reads: **"🔮 &lt;Spell&gt; (&lt;base&gt;) cast — N successes vs TN X (Target's Attribute)"** then **"N hits stages up ×K. base → staged"** (the cast's own staging, K = ⌊hits/2⌋; the target's resistance then reduces it via net).
 
-**In:** Manaball (5M) vs Dave Decker, 4 hits, TN 3 â†’ "ðŸ”® Manaball (5M) cast â€” 4 successes vs TN 3 (Dave Decker's Willpower)" / "4 hits stages up Ã—2. 5M â†’ 5D". With 1 hit â†’ "1 hit â€” no stage up. 5M".
+**In:** Manaball (5M) vs Dave Decker, 4 hits, TN 3 → "🔮 Manaball (5M) cast — 4 successes vs TN 3 (Dave Decker's Willpower)" / "4 hits stages up ×2. 5M → 5D". With 1 hit → "1 hit — no stage up. 5M".
 
 ### Cast TN = the spell's Target attribute (NOT Force)
-The caster rolls Sorcery vs **TN = the target's attribute named in the spell's Target field**. Codes: `W`â†’Willpower, `B`â†’Body, `I`â†’Intelligence, `Q`â†’Quickness, `F`â†’Force, or a fixed number. The **Force** is the TN for the *resistance* roll, not the cast.
+The caster rolls Sorcery vs **TN = the target's attribute named in the spell's Target field**. Codes: `W`→Willpower, `B`→Body, `I`→Intelligence, `Q`→Quickness, `F`→Force, or a fixed number. The **Force** is the TN for the *resistance* roll, not the cast.
 
-**In:** Manaball (Target W), target Willpower 2 â†’ cast **TN 2**. Same spell vs Willpower 5 â†’ cast TN 5.
+**In:** Manaball (Target W), target Willpower 2 → cast **TN 2**. Same spell vs Willpower 5 → cast TN 5.
 
 ### Target-code parsing (suffixes stripped, no errors)
-Any `(R)/(T)/(RC)/(V)/(DT)` suffix is descriptive â€” it's stripped before parsing, so the base code drives both the cast TN and the resist attribute. `OR`/blank/unknown â†’ Mana=Willpower, Physical=Body.
+Any `(R)/(T)/(RC)/(V)/(DT)` suffix is descriptive — it's stripped before parsing, so the base code drives both the cast TN and the resist attribute. `OR`/blank/unknown → Mana=Willpower, Physical=Body.
 
-**In:** Target `W(R)` â†’ Willpower (same as `W`). `B(T)` â†’ Body. `I` â†’ Intelligence. `Q` â†’ Quickness. `4(V)` â†’ fixed TN **4** (resist defaults to Willpower). `F` â†’ cast TN = Force. None of these throw or fall back wrongly.
+**In:** Target `W(R)` → Willpower (same as `W`). `B(T)` → Body. `I` → Intelligence. `Q` → Quickness. `4(V)` → fixed TN **4** (resist defaults to Willpower). `F` → cast TN = Force. None of these throw or fall back wrongly.
 
 ### Force vs Magic (drain Stun/Physical)
-- Force â‰¤ **Magic attribute** â†’ drain is **Stun**.
-- Force > **Magic attribute** â†’ drain is **Physical** (warning shown in Force dialog). SR3 RAW â€” Magic, not Sorcery.
+- Force ≤ **Magic attribute** → drain is **Stun**.
+- Force > **Magic attribute** → drain is **Physical** (warning shown in Force dialog). SR3 RAW — Magic, not Sorcery.
 
-**In:** Magic 5, Force 5 â†’ Stun. Magic 5, Force 6 â†’ Physical. (Sorcery rating is irrelevant here.)
+**In:** Magic 5, Force 5 → Stun. Magic 5, Force 6 → Physical. (Sorcery rating is irrelevant here.)
 
 ### Drain TN from the drain code
-The spell's **Drain** code sets the resist TN: `F`â†’Force, then the math is evaluated (min 2). Include a level letter (L/M/S/D) or it defaults to S.
+The spell's **Drain** code sets the resist TN: `F`→Force, then the math is evaluated (min 2). Include a level letter (L/M/S/D) or it defaults to S.
 
-**In:** drain `(F/2+1)M`, Force 4 â†’ TN `4/2+1 = 3`, level M. Drain `(F/2)S`, Force 6 â†’ TN 3, level S.
+**In:** drain `(F/2+1)M`, Force 4 → TN `4/2+1 = 3`, level M. Drain `(F/2)S`, Force 6 → TN 3, level S.
 
 ### Resist Spell = opposed, net stages the damage (NO soak)
-Target rolls the **same attribute named in the spell's Target field** (the resist reuses the same parser as the cast, so it always matches â€” Wâ†’Willpower, Bâ†’Body, Iâ†’Intelligence, Qâ†’Quickness) â€” **attribute only, no pool** â€” vs **TN = Force**. **Net = caster successes âˆ’ resister successes**:
-- net â‰¤ 0 â†’ **"Spell resisted â€” no effect"** (no Assign button).
-- net â‰¥ 1 â†’ base damage (Power = Force, the spell's level) staged up by net (every 2 net = +1 level) â†’ **Assign Damage** button. No further soak card.
+Target rolls the **same attribute named in the spell's Target field** (the resist reuses the same parser as the cast, so it always matches — W→Willpower, B→Body, I→Intelligence, Q→Quickness) — **attribute only, no pool** — vs **TN = Force**. **Net = caster successes − resister successes**:
+- net ≤ 0 → **"Spell resisted — no effect"** (no Assign button).
+- net ≥ 1 → base damage (Power = Force, the spell's level) staged up by net (every 2 net = +1 level) → **Assign Damage** button. No further soak card.
 
 ### Worked example (Manaball, Target W, Force 6)
 Caster Sorcery 4 / Willpower 4; target Street Sam Willpower 2; base level Moderate (M).
-1. **Cast:** Sorcery 4 vs **TN = target Willpower 2** â†’ say **3 successes**.
-2. **Resist:** target Willpower **2** dice vs **TN = Force 6** â†’ say **1 success**.
-3. **Net = 3 âˆ’ 1 = 2** â†’ +1 stage â†’ **M â†’ Serious (S)** â†’ **Assign Serious Stun Wound** (Mana spell; no armour, no soak).
-4. **Drain:** (Damage Level +1 = S), Drain Power = ForceÃ·2 = **3** â†’ caster Willpower 4 vs TN 3 stages it down (unchanged step â€” works as before).
+1. **Cast:** Sorcery 4 vs **TN = target Willpower 2** → say **3 successes**.
+2. **Resist:** target Willpower **2** dice vs **TN = Force 6** → say **1 success**.
+3. **Net = 3 − 1 = 2** → +1 stage → **M → Serious (S)** → **Assign Serious Stun Wound** (Mana spell; no armour, no soak).
+4. **Drain:** (Damage Level +1 = S), Drain Power = Force÷2 = **3** → caster Willpower 4 vs TN 3 stages it down (unchanged step — works as before).
 
 ### 0 successes (cast)
-Spell fails â€” no Resist buttons â€” but the Drain button still appears.
+Spell fails — no Resist buttons — but the Drain button still appears.
 
-### Area spells (AoE) â€” canvas template + auto-detect
+### Area spells (AoE) — canvas template + auto-detect
 
-Set the spell's **Range** to an `(A)` value (`LOS (A)` or `Touch (A)`) â€” there is **no AoE checkbox**; the `(A)` in the Range code is what makes it area-effect. On cast:
+Set the spell's **Range** to an `(A)` value (`LOS (A)` or `Touch (A)`) — there is **no AoE checkbox**; the `(A)` in the Range code is what makes it area-effect. On cast:
 - The **Force dialog** also shows an **Area radius (m)** input, defaulting to the caster's **Magic** attribute (editable).
-- Then a purple circle follows the cursor â†’ **left-click** places it, **right-click/Esc** cancels.
-- **Every live actor inside the radius (except the caster & vehicles) is auto-targeted** â€” no checkbox list. **No scatter, no falloff**: each caught target resists at full Force (normal per-target staging).
-- A purple **Region** area marker is drawn for **all players**; the result card has a ðŸ§¹ **Clear** button (warning-free).
-- Empty area â†’ casts anyway, drain still applies.
-- **Off a scene** â†’ falls back to the old manual checkbox target list.
+- Then a purple circle follows the cursor → **left-click** places it, **right-click/Esc** cancels.
+- **Every live actor inside the radius (except the caster & vehicles) is auto-targeted** — no checkbox list. **No scatter, no falloff**: each caught target resists at full Force (normal per-target staging).
+- A purple **Region** area marker is drawn for **all players**; the result card has a 🧹 **Clear** button (warning-free).
+- Empty area → casts anyway, drain still applies.
+- **Off a scene** → falls back to the old manual checkbox target list.
 
-**In:** Magic 6 caster, AoE spell â†’ Force dialog radius pre-fills **6**; place over 3 tokens â†’ 3 Resist Spell buttons + 1 Drain button + purple area marker + Clear button.
-**In:** place over empty ground â†’ "no targets in the 6m area â€” casting anyway", only the Drain button + marker.
+**In:** Magic 6 caster, AoE spell → Force dialog radius pre-fills **6**; place over 3 tokens → 3 Resist Spell buttons + 1 Drain button + purple area marker + Clear button.
+**In:** place over empty ground → "no targets in the 6m area — casting anyway", only the Drain button + marker.
 
-### Casting from the canvas (ðŸŽ¯ Token-HUD)
+### Casting from the canvas (🎯 Token-HUD)
 
-Combat/damaging spells (those with a damage code) on an **Awakened** actor appear in the ðŸŽ¯ attack picker alongside weapons; choosing one runs the normal cast flow. Utility/health spells (no damage code) and mundane actors are excluded.
+Combat/damaging spells (those with a damage code) on an **Awakened** actor appear in the 🎯 attack picker alongside weapons; choosing one runs the normal cast flow. Utility/health spells (no damage code) and mundane actors are excluded.
 
-**In:** mage with Manabolt `8M` + a pistol â†’ ðŸŽ¯ picker lists both; pick Manabolt â†’ Force dialog opens. **In:** mage with only Heal (no damage) â†’ ðŸŽ¯ does not list it.
+**In:** mage with Manabolt `8M` + a pistol → 🎯 picker lists both; pick Manabolt → Force dialog opens. **In:** mage with only Heal (no damage) → 🎯 does not list it.
 
 ---
 
@@ -1075,9 +1075,9 @@ Combat/damaging spells (those with a damage code) on an **Awakened** actor appea
 
 After spellcasting, Resist Drain button on caster.
 
-### Drain code = two modifiers; Â½F and the damage level are the implicit base
-- **Power â†’ resist TN** = âŒŠForce/2âŒ‹ + the **number outside the brackets** (Â½F is implicit; default +0).
-- **Level** = the cast **Damage Level** + the **number inside the brackets** (`(+1)` or `(DL+1)`/`(Damage Level +1)` = +1 stage; `(DL)`/`()` = +0; `(DL-1)` = âˆ’1).
+### Drain code = two modifiers; ½F and the damage level are the implicit base
+- **Power → resist TN** = ⌊Force/2⌋ + the **number outside the brackets** (½F is implicit; default +0).
+- **Level** = the cast **Damage Level** + the **number inside the brackets** (`(+1)` or `(DL+1)`/`(Damage Level +1)` = +1 stage; `(DL)`/`()` = +0; `(DL-1)` = −1).
 
 | Drain code | Force | cast level | TN | Drain level |
 |---|---|---|---|---|
@@ -1085,40 +1085,40 @@ After spellcasting, Resist Drain button on caster.
 | `(DL+1)` | 6 | M | 3 | **S** (M +1) |
 | `(DL)` | 6 | M | 3 | M |
 | `(DL-1)` | 6 | S | 3 | M |
-| `+1` (power mod) | 6 | S | **4** (Â½F+1) | S |
+| `+1` (power mod) | 6 | S | **4** (½F+1) | S |
 | `+1(+1)` | 6 | S | 4 | D |
 | `(F/2+1)S` (legacy F-formula) | 6 | M | 4 | M |
-| `(F/2)S` (Heal, non-damaging) | 6 | â€” | 3 | S |
+| `(F/2)S` (Heal, non-damaging) | 6 | — | 3 | S |
 
-**In:** Manaball drain `(DL+1)`, cast at **Force 6 Serious** â†’ **3D** (TN âŒŠ6/2âŒ‹=3, level Serious+1=Deadly), resisted with Willpower â€” **Stun** (or Physical if Force > Magic). No more "Could not parse drain formula" error.
+**In:** Manaball drain `(DL+1)`, cast at **Force 6 Serious** → **3D** (TN ⌊6/2⌋=3, level Serious+1=Deadly), resisted with Willpower — **Stun** (or Physical if Force > Magic). No more "Could not parse drain formula" error.
 
 Pool: Willpower + committed Magic Pool dice.
 
 ### Drain staging from resist hits
-Every 2 hits = 1 stage down (Sâ†’Mâ†’Mâ†’Lâ†’fully resisted).
+Every 2 hits = 1 stage down (S→M→M→L→fully resisted).
 
 ### Assign Drain button
-**âš¡ Assign \<Level\> \<Stun/Physical\> Wound to [Caster]** â†’ applies boxes to correct track, disables.
+**⚡ Assign \<Level\> \<Stun/Physical\> Wound to [Caster]** → applies boxes to correct track, disables.
 
-### Sustained spells â€” `feature/sustained-spells` (0.6.0) Â· SR3 p.178
+### Sustained spells — `feature/sustained-spells` (0.6.0) · SR3 p.178
 
 *"+2 target modifier per sustained spell applied to all tests, including Drain Resistance Tests (but
 not normal Damage Resistance Tests)"*, up to the Sorcery rating. `tests/sustained-spells.test.mjs` (53
-assertions) + two mutants. âš  **Data-model change** â€” `system.sustainedSpells` on characters and NPCs;
+assertions) + two mutants. ⚠ **Data-model change** — `system.sustainedSpells` on characters and NPCs;
 the live world picked it up on reload, but restart Foundry fully if an actor shows no field.
 
 **Walked by the agent 2026-09-14** (mcp-api, a disposable `__TEST Sustainer`, Sorcery 4, deleted
-after): two spells held, one ticked *focus* â†’ **+2** (the focus costs nothing), the token shows
-*Sustaining*; the Magic tab lists both with *1 / 4 (Sorcery) Â· +2 TN*; a 4-die roll at TN 4 went at
-**6**, labelled *(sustaining +2)*; adding 2 Stun posted *took damage while sustaining* with **one** ðŸŽ²
-Keep (the focus-held spell is not tested); ðŸ”’ on a cast card added a third (+4); a Force 6 `(F/2)` Drain
+after): two spells held, one ticked *focus* → **+2** (the focus costs nothing), the token shows
+*Sustaining*; the Magic tab lists both with *1 / 4 (Sorcery) · +2 TN*; a 4-die roll at TN 4 went at
+**6**, labelled *(sustaining +2)*; adding 2 Stun posted *took damage while sustaining* with **one** 🎲
+Keep (the focus-held spell is not tested); 🔒 on a cast card added a third (+4); a Force 6 `(F/2)` Drain
 card pre-filled **TN 7** (3 + 4, said on the card); dropping all cleared the status.
-- [ ] Cast a Sustained spell (Armor) for real â†’ the result card offers **ðŸ”’ Sustain**; an Instant one (Manabolt) does not; the Resist Drain that follows is NOT raised by the spell just sustained.
-- [ ] Player-seat: a player sees ðŸ”’ and ðŸŽ² Keep enabled for their own caster, disabled on someone else's.
-- [ ] Sustaining one spell: the melee GM window shows *"â€¦ sustaining +2"*, a dodge prompt's TN includes it, and a **soak card's TN does not** change.
-- [ ] A target sustaining one spell resists a combat spell â†’ the resist card's TN is Force **+2** (the maintainer's ruling, 2026-09-14).
+- [ ] Cast a Sustained spell (Armor) for real → the result card offers **🔒 Sustain**; an Instant one (Manabolt) does not; the Resist Drain that follows is NOT raised by the spell just sustained.
+- [ ] Player-seat: a player sees 🔒 and 🎲 Keep enabled for their own caster, disabled on someone else's.
+- [ ] Sustaining one spell: the melee GM window shows *"… sustaining +2"*, a dodge prompt's TN includes it, and a **soak card's TN does not** change.
+- [ ] A target sustaining one spell resists a combat spell → the resist card's TN is Force **+2** (the maintainer's ruling, 2026-09-14).
 - [ ] A decker sustaining one spell: cybercombat corner +2 whether attacking or defending; a rigger's MIJI corner and EW tests +2.
-- [ ] Sustain more than the Sorcery rating â†’ an amber warning on the Magic tab and a notification; nothing is refused.
+- [ ] Sustain more than the Sorcery rating → an amber warning on the Magic tab and a notification; nothing is refused.
 
 ---
 
@@ -1126,7 +1126,7 @@ card pre-filled **TN 7** (3 + 4, said on the card); dropping all cleared the sta
 
 Roll Sorcery (+ Dispelling spec bonus if applicable) + optional spell pool vs TN = Force of target spell.
 
-**In:** Sorcery 5, spec bonus, Force 6 â†’ **7 dice vs TN 6**.
+**In:** Sorcery 5, spec bonus, Force 6 → **7 dice vs TN 6**.
 
 Each 2 net hits over defender's Sorcery roll = 1 stage of Force reduction (not yet fully wired into effects, but roll + drain resolve).
 
@@ -1136,20 +1136,20 @@ Dispeller resists drain as normal.
 
 ## 14. Conjuring / Summoning
 
-SR3 RAW. Summon dialog (Magic tab): pick spirit + Force + **Hold back dice** (0â€¦Conjuringâˆ’1, saved for the Drain Resist). The dialog previews the drain level (Force-vs-Charisma) and Stun/Physical, with a totem/foci reminder.
+SR3 RAW. Summon dialog (Magic tab): pick spirit + Force + **Hold back dice** (0…Conjuring−1, saved for the Drain Resist). The dialog previews the drain level (Force-vs-Charisma) and Stun/Physical, with a totem/foci reminder.
 
-### Step 2 â€” Conjuring Test (straight success test)
-Pool = **Conjuring skill âˆ’ held-back**, TN = **Force**. **Each success = one service** (no spirit-resistance roll). 0 successes â†’ "Conjuring failed â€” no spirit appears (Drain still applies)".
+### Step 2 — Conjuring Test (straight success test)
+Pool = **Conjuring skill − held-back**, TN = **Force**. **Each success = one service** (no spirit-resistance roll). 0 successes → "Conjuring failed — no spirit appears (Drain still applies)".
 
-**In:** Conjuring 6, hold back 2, Force 4 â†’ roll **4 dice vs TN 4**. 3 successes â†’ **3 services**, "Confirm Summoning" button (creates the spirit, adds to combat).
+**In:** Conjuring 6, hold back 2, Force 4 → roll **4 dice vs TN 4**. 3 successes → **3 services**, "Confirm Summoning" button (creates the spirit, adds to combat).
 
-### Step 3 â€” Drain Resistance
-Always, even on failure. **Level from the Force-vs-Charisma table** (F â‰¤ Â½C Light, â‰¤ C Moderate, â‰¤ 1.5C Serious, else Deadly). **TN = Force.** Pool = **Charisma + held-back dice** (no Willpower; totem/foci added by GM via the editable field). **Physical if Force > Magic, else Stun.**
+### Step 3 — Drain Resistance
+Always, even on failure. **Level from the Force-vs-Charisma table** (F ≤ ½C Light, ≤ C Moderate, ≤ 1.5C Serious, else Deadly). **TN = Force.** Pool = **Charisma + held-back dice** (no Willpower; totem/foci added by GM via the editable field). **Physical if Force > Magic, else Stun.**
 
-**In:** Force 4 vs Charisma 4 â†’ Moderate; held back 2 â†’ drain pool = Charisma 4 + 2 = 6, TN 4. Force 4 vs Magic 5 â†’ **Stun**. Force 7 vs Charisma 4 â†’ Deadly.
+**In:** Force 4 vs Charisma 4 → Moderate; held back 2 → drain pool = Charisma 4 + 2 = 6, TN 4. Force 4 vs Magic 5 → **Stun**. Force 7 vs Charisma 4 → Deadly.
 
-### Step 4 â€” Result
-"âœ… ... successfully summoned a \<Spirit\> (Force F). It is bound for X services."
+### Step 4 — Result
+"✅ ... successfully summoned a \<Spirit\> (Force F). It is bound for X services."
 
 ---
 
@@ -1157,29 +1157,29 @@ Always, even on failure. **Level from the Force-vs-Charisma table** (F â‰¤ �
 
 Intelligence roll vs TN (entered in dialog).
 
-**In:** INT 5, TN 4 â†’ 5 dice vs TN 4.
+**In:** INT 5, TN 4 → 5 dice vs TN 4.
 
-Aura Reading complementary roll button appears on result card â€” rolls Assensing skill after first Assensing roll.
+Aura Reading complementary roll button appears on result card — rolls Assensing skill after first Assensing roll.
 
 ---
 
-## 16. Astral Combat â€” **AUTOMATED** (`npm run test:e2e`)
+## 16. Astral Combat — **AUTOMATED** (`npm run test:e2e`)
 
-Both combatants must be in astral space or dual-natured. Each side submits its own corner on the astral card; the last submission resolves. See the âš  note in Â§6.
+Both combatants must be in astral space or dual-natured. Each side submits its own corner on the astral card; the last submission resolves. See the ⚠ note in §6.
 
-### âœ… Covered by `tests/e2e/astral-two-corner.spec.mjs`
+### ✅ Covered by `tests/e2e/astral-two-corner.spec.mjs`
 
 Two real clients, two purpose-built mages (created and deleted by the spec, so no existing
-character is touched). Same assertions as Â§6's melee spec â€” own corner editable, opponent's
-read-only, one submission does not resolve, the last one does â€” plus the one that is specific
+character is touched). Same assertions as §6's melee spec — own corner editable, opponent's
+read-only, one submission does not resolve, the last one does — plus the one that is specific
 to astral: it must charge the **Astral** pool, not Combat. A card wired to the wrong helper
 would still resolve and still look right on screen.
 
 ### Attack / defence dice
-Sorcery skill (+ 2 if Astral Combat spec), or **defaulting** (interactive â€” see Â§9, linked attribute = Willpower).
+Sorcery skill (+ 2 if Astral Combat spec), or **defaulting** (interactive — see §9, linked attribute = Willpower).
 
-**In:** Sorcery 5, no spec â†’ **5 dice**, TN 4. No Sorcery â†’ the Default dialog opens; **both sides**
-are prompted (attacker first, defender second) when both lack Sorcery. Choosing Attribute â†’ WIL 4
+**In:** Sorcery 5, no spec → **5 dice**, TN 4. No Sorcery → the Default dialog opens; **both sides**
+are prompted (attacker first, defender second) when both lack Sorcery. Choosing Attribute → WIL 4
 gives **4 dice**, TN **8** (4 + 4), astral pool **0**.
 
 ### TN: 4 (both sides)
@@ -1188,15 +1188,15 @@ gives **4 dice**, TN **8** (4 + 4), astral pool **0**.
 Unarmed: Charisma + M Stun
 Armed (focus): Charisma + weapon focus damage code
 
-**In:** CHA 4 â†’ bare astral damage `4M Stun`.
+**In:** CHA 4 → bare astral damage `4M Stun`.
 
-### Net hits â†’ staging
-Same as physical melee â€” every 2 net hits = +1 stage.
+### Net hits → staging
+Same as physical melee — every 2 net hits = +1 stage.
 
 ### Soak
 Loser rolls Willpower vs TN = winner's Charisma.
 
-**In:** Winner CHA 5 â†’ soak TN **5**.
+**In:** Winner CHA 5 → soak TN **5**.
 
 ---
 
@@ -1210,23 +1210,23 @@ Set on the Magic tab. Only one active at a time; clicking active button deactiva
 | Dual Natured | Amber "Dual Nat." | Normal |
 | Astral Projection | Purple "Astral" | INT + 20 + 1d6 |
 
-- Clicking Astral Projection on a character with INT 5 â†’ initiative card shows base **25 + 1d6**.
+- Clicking Astral Projection on a character with INT 5 → initiative card shows base **25 + 1d6**.
 
 ---
 
 ## 18. Matrix
 
-### Orthodox packs, shown by ruleset â€” `feature/orthodox-packs` Â· 2026-09-14
+### Orthodox packs, shown by ruleset — `feature/orthodox-packs` · 2026-09-14
 `sr3e-sr3-odm-cyberdecks` (8 decks, SR3 p.207/304) and `sr3e-sr3-odm-programs` (22 utilities,
 pp.220-222), built by `tools/build-odm-packs.mjs` and shown only under the Orthodox Matrix ruleset;
 the Defragged decks and programs only under Defragged. `tests/odm-packs.test.mjs`,
-`tests/source-books.test.mjs`. Written to the install and the manifest synced on 2026-09-14 â€”
+`tests/source-books.test.mjs`. Written to the install and the manifest synced on 2026-09-14 —
 **restart Foundry fully** before walking these.
-- [ ] Matrix Ruleset = Defragged â†’ the Compendium sidebar's Matrix â†’ Cyberdecks folder shows only the Defragged pack; Orthodox packs absent.
-- [ ] Switch to Orthodox (reload) â†’ the folder shows *Cyberdecks (Orthodox)* and *Programs (Orthodox)*, not the Defragged ones.
-- [ ] Orthodox, a decker's Matrix tab â†’ pick a cyberdeck â†’ the 8 stock decks; pick Fairlight Excalibur â†’ MPCP 12, Hardening 6, 3000/5000 Mp, I/O 600, Response 3 fill in.
-- [ ] Orthodox â†’ add a program â†’ the 22 utilities, Attack at four levels; Track shows multiplier 8.
-- [ ] Open *Fairlight Excalibur* from the pack â†’ the Book / Page box reads *SR3 p.207 Â· SR3 p.304*; *Track* reads *SR3 p.221*.
+- [ ] Matrix Ruleset = Defragged → the Compendium sidebar's Matrix → Cyberdecks folder shows only the Defragged pack; Orthodox packs absent.
+- [ ] Switch to Orthodox (reload) → the folder shows *Cyberdecks (Orthodox)* and *Programs (Orthodox)*, not the Defragged ones.
+- [ ] Orthodox, a decker's Matrix tab → pick a cyberdeck → the 8 stock decks; pick Fairlight Excalibur → MPCP 12, Hardening 6, 3000/5000 Mp, I/O 600, Response 3 fill in.
+- [ ] Orthodox → add a program → the 22 utilities, Attack at four levels; Track shows multiplier 8.
+- [ ] Open *Fairlight Excalibur* from the pack → the Book / Page box reads *SR3 p.207 · SR3 p.304*; *Track* reads *SR3 p.221*.
 
 ### User modes (Matrix tab)
 
@@ -1235,10 +1235,10 @@ the Defragged decks and programs only under Defragged. `tests/odm-packs.test.mjs
 | Tortoise (TRM) | REA + woundMod + 1d6 | +2 TN to all Matrix actions; wired reflexes apply |
 | AR | REA + woundMod + 1d6 | Wired reflexes apply |
 | VR-Cold | REA + woundMod + 1d6 | Wired reflexes apply; dumpshock = Stun |
-| VR-Hot | (REA_base + woundMod + ResponseÃ—2) + (1+Response)d6 | Wired reflexes excluded; Response replaces them; dumpshock = Physical |
+| VR-Hot | (REA_base + woundMod + Response×2) + (1+Response)d6 | Wired reflexes excluded; Response replaces them; dumpshock = Physical |
 
 ### Hacking pool
-Formula: `âŒŠ(INT + MPCP) / 3âŒ‹` â€” displayed on sheet when cyberdeck is equipped.
+Formula: `⌊(INT + MPCP) / 3⌋` — displayed on sheet when cyberdeck is equipped.
 
 | INT | MPCP | Expected Pool |
 |---|---|---|
@@ -1246,22 +1246,22 @@ Formula: `âŒŠ(INT + MPCP) / 3âŒ‹` â€” displayed on sheet when cyberd
 | 5 | 9 | 4 |
 
 ### IC wound track
-IC soak roll result â†’ **ðŸ’‰ Assign \<Level\> Matrix Wound to [IC name]** button â†’ updates IC `system.woundValue`.
+IC soak roll result → **💉 Assign \<Level\> Matrix Wound to [IC name]** button → updates IC `system.woundValue`.
 
-IC wound max = `rating Ã— 2`. Hitting max = destroyed.
+IC wound max = `rating × 2`. Hitting max = destroyed.
 
 ---
 
-## 19. Matrix Combat â€” Cybercombat (Decker attacks IC/Agent)
+## 19. Matrix Combat — Cybercombat (Decker attacks IC/Agent)
 
-**Prerequisites:** Decker must be connected to a host (User Mode button â†’ host selection dialog). IC must be deployed from a host sheet. Both must share the same `activeHostId`.
+**Prerequisites:** Decker must be connected to a host (User Mode button → host selection dialog). IC must be deployed from a host sheet. Both must share the same `activeHostId`.
 
-Flow: Cybercombat button on decker sheet â†’ **target dialog** (lists all actors on same host) â†’ **two-corner card** posts â†’ each side submits its own corner, last submission resolves â†’ both wave cards posted â†’ result card. See the âš  note in Â§6.
+Flow: Cybercombat button on decker sheet → **target dialog** (lists all actors on same host) → **two-corner card** posts → each side submits its own corner, last submission resolves → both wave cards posted → result card. See the ⚠ note in §6.
 
 ### Boxing card layout
 
 Both attacker (Decker) and defender (IC/Agent) shown side-by-side. Each corner is editable **only by that side** (the GM sees both) and has:
-- **Skill** dice (pre-filled from skill rating; if no Cybercombat skill, the **interactive Default dialog** opens first â€” see Â§9 â€” and pre-fills the chosen pool)
+- **Skill** dice (pre-filled from skill rating; if no Cybercombat skill, the **interactive Default dialog** opens first — see §9 — and pre-fills the chosen pool)
 - **Pool** (hacking pool, 0 to available; 0 for IC/Agent side; **0** when defaulting to an attribute)
 - **TN** (pre-filled 4, + MCM penalty for decker, + the chosen default TN modifier)
 - **Damage** code (editable text)
@@ -1270,7 +1270,7 @@ Firewall and soak pool shown read-only in each corner for reference.
 
 ### TN is always 4
 
-**In:** Decker cybercombat skill 5, TN pre-filled **4** â†’ **Out:** boxing card shows 4 in TN field.
+**In:** Decker cybercombat skill 5, TN pre-filled **4** → **Out:** boxing card shows 4 in TN field.
 
 ### Decker damage code
 
@@ -1279,33 +1279,33 @@ Firewall and soak pool shown read-only in each corner for reference.
 | Has Attack/Offensive category program | `${currentRating or rating}S` |
 | No such program (fallback) | `${deck.MPCP}L` |
 
-**In:** Attack utility Rating 5 â†’ damage `5S` pre-filled. No attack utility, MPCP 8 â†’ damage `8L`.
+**In:** Attack utility Rating 5 → damage `5S` pre-filled. No attack utility, MPCP 8 → damage `8L`.
 
 ### MCM penalty pre-applied to decker TN
 
 | MCM boxes | TN penalty |
 |---|---|
-| 0â€“2 | 0 |
-| 3â€“5 | +1 |
-| 6â€“7 | +2 |
+| 0–2 | 0 |
+| 3–5 | +1 |
+| 6–7 | +2 |
 | 8+ | +3 |
 
-**In:** 6 deck damage boxes â†’ decker corner TN pre-filled **6** (4+2).
+**In:** 6 deck damage boxes → decker corner TN pre-filled **6** (4+2).
 
 ### Tri-state outcome (result card after the exchange resolves)
 
 **Attacker (decker) more hits:**
 - Net hits staged into decker's damage code
-- **Out:** IC/Agent gets **ðŸ’» IC Name: Resist Matrix Damage (Rating N)** button
-- Soak TN = `max(2, Power âˆ’ IC Firewall)` where IC Firewall = host's Security Threshold
+- **Out:** IC/Agent gets **💻 IC Name: Resist Matrix Damage (Rating N)** button
+- Soak TN = `max(2, Power − IC Firewall)` where IC Firewall = host's Security Threshold
 
 **Defender (IC/Agent) more hits:**
 - Net hits staged into defender's damage code
-- **Out:** Decker gets **ðŸ›¡ Decker Name: Resist Matrix Damage (MPCP N)** button
-- Soak TN = `max(2, Power âˆ’ Decker Firewall)` where Decker Firewall = own deck's Firewall attribute
+- **Out:** Decker gets **🛡 Decker Name: Resist Matrix Damage (MPCP N)** button
+- Soak TN = `max(2, Power − Decker Firewall)` where Decker Firewall = own deck's Firewall attribute
 
 **Tie:**
-- **Out:** "Tie! X vs X â€” no damage dealt."
+- **Out:** "Tie! X vs X — no damage dealt."
 
 ### Net hit staging
 
@@ -1315,29 +1315,29 @@ Firewall and soak pool shown read-only in each corner for reference.
 | 6S | 2 net | 6D |
 | 6L | 4 net | 6S |
 
-### Soak pool â€” IC soaks with IC Rating (not System Rating)
+### Soak pool — IC soaks with IC Rating (not System Rating)
 
-**In:** IC Rating 5, soak TN 4 (Power 6, host threshold 2) â†’ **Out:** soak card pre-filled pool **5**, TN **4**.
+**In:** IC Rating 5, soak TN 4 (Power 6, host threshold 2) → **Out:** soak card pre-filled pool **5**, TN **4**.
 
-### Soak pool â€” Decker soaks with MPCP
+### Soak pool — Decker soaks with MPCP
 
-**In:** Decker MPCP 8, soak TN 3 (Power 5, Firewall 2) â†’ **Out:** soak card pre-filled pool **8**, TN **3**.
+**In:** Decker MPCP 8, soak TN 3 (Power 5, Firewall 2) → **Out:** soak card pre-filled pool **8**, TN **3**.
 
 ### Hacking pool
 
 Decker allocates hacking pool dice in their own corner's Pool field. Spent when the exchange resolves.
 
-**In:** Hacking pool 4, enter 2 in Pool field â†’ pool reads **2** after roll.
+**In:** Hacking pool 4, enter 2 in Pool field → pool reads **2** after roll.
 
 ---
 
-## 20. Matrix Combat â€” IC/Agent attacks Decker
+## 20. Matrix Combat — IC/Agent attacks Decker
 
 **Prerequisites:** IC must be deployed from the host sheet (sets `deployed: true` and `activeHostId`). Agent must be added to the host's Active Agents (sets `activeHostId`). Decker must be connected to the same host. Target list = all actors sharing the same `activeHostId`.
 
-Flow: IC/Agent Attack button â†’ **target dialog** (host-based list) â†’ **two-corner card** posts â†’ each side submits its own corner, last submission resolves â†’ result card. See the âš  note in Â§6.
+Flow: IC/Agent Attack button → **target dialog** (host-based list) → **two-corner card** posts → each side submits its own corner, last submission resolves → result card. See the ⚠ note in §6.
 
-### Boxing card â€” IC/Agent side
+### Boxing card — IC/Agent side
 
 - Skill = IC/Agent `rating` dice, TN 4
 - Hacking Pool = 0 (IC/agents don't have hacking pool)
@@ -1348,27 +1348,27 @@ Flow: IC/Agent Attack button â†’ **target dialog** (host-based list) â†�
 | IC has `system.damage` set | Damage used |
 |---|---|
 | Yes (e.g. `6M`) | `6M` |
-| No | `${icRating}S` (e.g. Rating 5 â†’ `5S`) |
+| No | `${icRating}S` (e.g. Rating 5 → `5S`) |
 
 ### Agent attack flow (auto-selects best program)
 
-Agent's Attack button â†’ target dialog â†’ boxing card. Agent's attack program is **auto-selected** as the highest-rating Attack/Offensive program from the operator's deck. Damage code pre-filled in the boxing card and editable by GM.
+Agent's Attack button → target dialog → boxing card. Agent's attack program is **auto-selected** as the highest-rating Attack/Offensive program from the operator's deck. Damage code pre-filled in the boxing card and editable by GM.
 
-**In:** Agent with operator whose deck has "Attack" (Rating 4) â†’ boxing card damage pre-filled `4S`. GM can edit before rolling.
+**In:** Agent with operator whose deck has "Attack" (Rating 4) → boxing card damage pre-filled `4S`. GM can edit before rolling.
 
 ### IC deployment flow
 
-Host sheet â†’ Security Sheaf tab â†’ Trigger Step â†’ **âš” Deploy** button (or Stocked IC â†’ **âš” Deploy to Encounter**) â†’ IC added to combat + `deployed: true` + `activeHostId` set â†’ IC now appears in matrix target lists.
+Host sheet → Security Sheaf tab → Trigger Step → **⚔ Deploy** button (or Stocked IC → **⚔ Deploy to Encounter**) → IC added to combat + `deployed: true` + `activeHostId` set → IC now appears in matrix target lists.
 
-IC sheet shows **âš” Deployed** badge and host name. **âœ• Clear** button resets deployment for reuse.
+IC sheet shows **⚔ Deployed** badge and host name. **✕ Clear** button resets deployment for reuse.
 
-**In:** Agent with no Attack programs on operator's deck â†’ dialog skipped, damage falls back to `${agentRating}L`.
+**In:** Agent with no Attack programs on operator's deck → dialog skipped, damage falls back to `${agentRating}L`.
 
-**In:** Agent with no operator linked â†’ damage falls back to `${agentRating}L`.
+**In:** Agent with no operator linked → damage falls back to `${agentRating}L`.
 
-### Boxing card â€” Decker side (defender)
+### Boxing card — Decker side (defender)
 
-- Skill = decker's Cybercombat (or the interactive Default dialog â€” see Â§9 â€” when no skill)
+- Skill = decker's Cybercombat (or the interactive Default dialog — see §9 — when no skill)
 - Hacking Pool = available hacking pool (0 to max; **0** when defaulting to an attribute)
 - TN = 4 + MCM penalty + chosen default TN modifier
 - Damage = decker's own attack program or MPCP-L (for counter-attack)
@@ -1381,20 +1381,20 @@ IC sheet shows **âš” Deployed** badge and host name. **âœ• Clear** butto
 | Agent | Operator's cyberdeck Firewall attribute |
 | Decker | Own cyberdeck Firewall attribute |
 
-### Tri-state outcome (same result card as Â§19)
+### Tri-state outcome (same result card as §19)
 
-- Attacker (IC/Agent) more hits â†’ decker soaks with MPCP
-- Defender (decker) more hits â†’ IC/agent soaks (IC: System Rating; agent: Rating)
-- Tie â†’ no damage
+- Attacker (IC/Agent) more hits → decker soaks with MPCP
+- Defender (decker) more hits → IC/agent soaks (IC: System Rating; agent: Rating)
+- Tie → no damage
 
 ---
 
-## 21. Matrix Combat â€” Program Degradation (Agents)
+## 21. Matrix Combat — Program Degradation (Agents)
 
 ### Setup
 
 - Operator actor with cyberdeck equipped
-- Deck has an Attack program with `degradable: true`, `rating: 3`, `currentRating: 0` (initial â€” means "use base rating")
+- Deck has an Attack program with `degradable: true`, `rating: 3`, `currentRating: 0` (initial — means "use base rating")
 - Agent actor with `operatorActorId` set to operator
 
 ### Effective rating rule
@@ -1404,14 +1404,14 @@ IC sheet shows **âš” Deployed** badge and host name. **âœ• Clear** butto
 | 0 (never degraded) | `rating` (base) |
 | > 0 | `currentRating` |
 
-### On each use â€” decrement
+### On each use — decrement
 
 After agent attack roll resolves (regardless of hit count):
 - If program is Degradable, `currentRating` decrements by 1
-- Amber chat card: **ðŸ’» Program Degraded â€” [Name]: Rating 3 â†’ 2 (on [Operator]'s deck)**
+- Amber chat card: **💻 Program Degraded — [Name]: Rating 3 → 2 (on [Operator]'s deck)**
 - Both decker and agents using the same deck now see effective rating **2**
 
-**In:** Attack (Degradable, Rating 3, currentRating 0) used â†’ **Out:** currentRating set to **2**, degradation card posted.
+**In:** Attack (Degradable, Rating 3, currentRating 0) used → **Out:** currentRating set to **2**, degradation card posted.
 
 ### Use sequence
 
@@ -1425,14 +1425,14 @@ After agent attack roll resolves (regardless of hit count):
 
 When effective rating = 1 and the program is used:
 - Program item **deleted** from operator's items
-- Red chat card: **ðŸ’» Program Crash â€” [Name]: Rating 1 degraded to 0, removed from [Operator]'s deck**
+- Red chat card: **💻 Program Crash — [Name]: Rating 1 degraded to 0, removed from [Operator]'s deck**
 - Program no longer appears in Attack Utility dialog for any agent
 
-**In:** Attack (Degradable, currentRating 1) used â†’ **Out:** item deleted, crash card posted, agent attack falls back to `${agentRating}L` on next attack.
+**In:** Attack (Degradable, currentRating 1) used → **Out:** item deleted, crash card posted, agent attack falls back to `${agentRating}L` on next attack.
 
 ---
 
-## 22. Matrix â€” Firewall as Armor (Summary)
+## 22. Matrix — Firewall as Armor (Summary)
 
 | Actor type | Firewall source | Soak pool |
 |---|---|---|
@@ -1440,17 +1440,17 @@ When effective rating = 1 and the program is used:
 | IC | Host's `securityTierThreshold` (IC lives on a host) | IC `systemRating` |
 | Agent | Operator's cyberdeck `firewall.base` (agent lives on a deck) | Agent `rating` |
 
-Soak TN = `max(2, stagedPower âˆ’ Firewall)`.
+Soak TN = `max(2, stagedPower − Firewall)`.
 
-**In:** Staged power 8, Firewall 3 â†’ TN **5**. Staged power 4, Firewall 6 â†’ TN **2** (min).
+**In:** Staged power 8, Firewall 3 → TN **5**. Staged power 4, Firewall 6 → TN **2** (min).
 
 ---
 
-## 23. Matrix â€” Hacking Action (3-step threshold check)
+## 23. Matrix — Hacking Action (3-step threshold check)
 
-Flow: Hacking Action button â†’ host / TN / threshold / pool dialog â†’ roll â†’ threshold check.
+Flow: Hacking Action button → host / TN / threshold / pool dialog → roll → threshold check.
 
-**Defaulting:** with no Hacking/Computer skill the **interactive Default dialog** (see Â§9) opens
+**Defaulting:** with no Hacking/Computer skill the **interactive Default dialog** (see §9) opens
 before the action dialog; the chosen pool / TN modifier / pool-allowed are then baked into the
 dialog. Applies to the Hacking Action, node-prompt, and program-roll dialogs alike.
 
@@ -1468,29 +1468,29 @@ dialog. Applies to the Hacking Action, node-prompt, and program-roll dialogs ali
 
 ### Threshold check
 
-- successes â‰¥ Security Threshold â†’ action proceeds (chat card shows success)
-- successes < Security Threshold â†’ action fails + Overwatch +1
+- successes ≥ Security Threshold → action proceeds (chat card shows success)
+- successes < Security Threshold → action fails + Overwatch +1
 
-**In:** Hacking 5, TN 6, threshold 2. Roll 3 successes â†’ threshold met, action proceeds. Roll 1 success â†’ fail, Overwatch increments.
+**In:** Hacking 5, TN 6, threshold 2. Roll 3 successes → threshold met, action proceeds. Roll 1 success → fail, Overwatch increments.
 
 ### Overwatch track
 
 Each failed threshold check increments the host's `system.overwatchCurrent`.
 
-**In:** Overwatch at 3, fail â†’ reads **4**. At 9, fail â†’ reads **10** and Convergence triggers.
+**In:** Overwatch at 3, fail → reads **4**. At 9, fail → reads **10** and Convergence triggers.
 
 ### Convergence
 
-Overwatch 10 â†’ red **âš  CONVERGENCE** card posts:
+Overwatch 10 → red **⚠ CONVERGENCE** card posts:
 - Dumpshock attack on decker: Power = host System Rating
 - Damage type: Stun (VR-Cold) or Physical (VR-Hot)
 - Soak card posted with Body dice
 
-**In:** Host System Rating 8, decker in VR-Hot â†’ Convergence posts `8M Physical`, Body soak card.
+**In:** Host System Rating 8, decker in VR-Hot → Convergence posts `8M Physical`, Body soak card.
 
 ---
 
-## 24. Matrix â€” Dumpshock
+## 24. Matrix — Dumpshock
 
 Manual trigger via dumpshock button (or auto from Convergence).
 
@@ -1501,7 +1501,7 @@ Manual trigger via dumpshock button (or auto from Convergence).
 
 Power = host System Rating (selected in dialog or set automatically from Convergence).
 
-**In:** System Rating 6, VR-Cold â†’ `6M Stun` soak card. VR-Hot â†’ `6M Physical` soak card.
+**In:** System Rating 6, VR-Cold → `6M Stun` soak card. VR-Hot → `6M Physical` soak card.
 
 Soak: Body dice vs TN = Power (no armor reduction for dumpshock).
 
@@ -1512,7 +1512,7 @@ Soak: Body dice vs TN = Power (no armor reduction for dumpshock).
 ### Damage track
 All vehicles have a fixed **10-box** damage track regardless of Body. DESTROYED badge appears when all 10 are filled.
 
-**In:** Vehicle with Body 2 â†’ track still shows **10 boxes**.
+**In:** Vehicle with Body 2 → track still shows **10 boxes**.
 
 ### Vehicle initiative
 Confirm the correct formula fires based on `vcrMode` / `controlledBy` fields on the vehicle actor.
@@ -1520,48 +1520,48 @@ Confirm the correct formula fires based on `vcrMode` / `controlledBy` fields on 
 | Mode | Expected formula |
 |---|---|
 | VCR (jumped-in) | Rigger REA + VCR level, (1+VCR)d6 |
-| RCD (remote) | Rigger REA, 1d6 â€” or the VCR formula when the rigger has a VCR (captain's chair, SR3 p.154) |
+| RCD (remote) | Rigger REA, 1d6 — or the VCR formula when the rigger has a VCR (captain's chair, SR3 p.154) |
 | Auto (no pilot) | Pilot rating, 2d6 |
 
-### Mode sync â€” actor sheet and vehicle sheet must agree
+### Mode sync — actor sheet and vehicle sheet must agree
 Mode is stored on the vehicle actor (`system.vcrMode`, `system.controlledBy`). Both sheets read from and write to the same data.
 
-- Set VCR on the actor sheet vehicle tab â†’ open vehicle sheet â†’ VCR button is highlighted.
-- Set RCD on the vehicle sheet â†’ switch back to actor sheet â†’ RCD button is highlighted.
-- Activating VCR on one vehicle in a multi-vehicle list â†’ all other vehicles switch to RCD automatically.
-- Entering VR-Cold or VR-Hot on the actor â†’ any vehicle in VCR mode drops to RCD automatically.
+- Set VCR on the actor sheet vehicle tab → open vehicle sheet → VCR button is highlighted.
+- Set RCD on the vehicle sheet → switch back to actor sheet → RCD button is highlighted.
+- Activating VCR on one vehicle in a multi-vehicle list → all other vehicles switch to RCD automatically.
+- Entering VR-Cold or VR-Hot on the actor → any vehicle in VCR mode drops to RCD automatically.
 
 ### Link Existing
 `+ Link Existing` dialog only shows in-world vehicle actors. Compendium-imported templates (isTemplate flag) must **not** appear.
 
 ### Create & Link
 `+ Create & Link` dialog has a **Source** dropdown:
-- First option "-- Create blank --" â†’ shows name input â†’ creates a new blank vehicle actor.
-- Subsequent options are compendium entries (sr3e-vehicles, sr3e-drones, etc.) grouped by pack â†’ creates a world actor from that entry with isTemplate cleared.
+- First option "-- Create blank --" → shows name input → creates a new blank vehicle actor.
+- Subsequent options are compendium entries (sr3e-vehicles, sr3e-drones, etc.) grouped by pack → creates a world actor from that entry with isTemplate cleared.
 
 In both cases the new actor is linked to the rigger and opens its sheet.
 
 ### Vehicle soak TN
 Formula: `Damage Power` (no armor reduction for vehicles).
 
-**In:** Power 9 â†’ soak TN **9**.
+**In:** Power 9 → soak TN **9**.
 
 ### Assign Damage (vehicle)
-**ðŸ©¸ Assign \<Level\> Wound to [VehicleName]** â†’ updates `system.damage.value`. Capped at **10**.
+**🩸 Assign \<Level\> Wound to [VehicleName]** → updates `system.damage.value`. Capped at **10**.
 
 ### Vehicle targeting TN
-Formula: `max(2, Signature âˆ’ Sensor rating)` (or âˆ’ VCR level if jumped in).
+Formula: `max(2, Signature − Sensor rating)` (or − VCR level if jumped in).
 
-**In:** Target Sig 4, Sensor 2 â†’ TN **2**. Sig 4, Sensor 6 â†’ TN **2** (min).
+**In:** Target Sig 4, Sensor 2 → TN **2**. Sig 4, Sensor 6 → TN **2** (min).
 
-### Chase â€” quarry & auto-distance
-Open **ðŸš— Chase Scene** (Rollable Tables tab). Add 2+ participants with vehicles + speeds.
-- Tick **Quarry** on one â†’ its Distance box fades/locks (distance 0) and the checkbox clears on any
+### Chase — quarry & auto-distance
+Open **🚗 Chase Scene** (Rollable Tables tab). Add 2+ participants with vehicles + speeds.
+- Tick **Quarry** on one → its Distance box fades/locks (distance 0) and the checkbox clears on any
   other vehicle (exactly one quarry).
-- Set quarry Speed 250 km/h, a pursuer Speed 275 km/h, pursuer Distance 350 â†’ **Next Turn** â†’
-  pursuer closes by the speed difference; chat card reports e.g. "â€¦ â†’ Xm behind (closing)".
-- Quarry faster than a pursuer â†’ that pursuer's distance grows (opening); distance passing 0 â†’ flips
-  to "Xm ahead". No quarry set â†’ card notes distances weren't auto-updated.
+- Set quarry Speed 250 km/h, a pursuer Speed 275 km/h, pursuer Distance 350 → **Next Turn** →
+  pursuer closes by the speed difference; chat card reports e.g. "… → Xm behind (closing)".
+- Quarry faster than a pursuer → that pursuer's distance grows (opening); distance passing 0 → flips
+  to "Xm ahead". No quarry set → card notes distances weren't auto-updated.
 
 | Check | Expected |
 |---|---|
@@ -1569,31 +1569,31 @@ Open **ðŸš— Chase Scene** (Rollable Tables tab). Add 2+ participants with v
 | Quarry box | faded/disabled, distance 0 |
 | Pursuer faster, Next Turn | distance decreases (closing), reported on card |
 | Quarry faster, Next Turn | distance increases (opening) |
-| Sign convention | + = behind, âˆ’ = ahead |
+| Sign convention | + = behind, − = ahead |
 
 ---
 
 ## 26. Pool Refresh
 
 ### Combat pool
-End combat â†’ GM prompted "Refresh all combat pools?" â†’ Yes clears `combatPoolSpent` on all combatants.
+End combat → GM prompted "Refresh all combat pools?" → Yes clears `combatPoolSpent` on all combatants.
 
 Mid-combat: manually via actor sheet Reset Pools button.
 
 ### Pool spending during combat
 - Dodge: chosen dice deducted immediately from available combat pool.
 - Attack: chosen dice deducted.
-- Available = Derived pool âˆ’ spent. Should never go below 0.
+- Available = Derived pool − spent. Should never go below 0.
 
-**Test:** Combat pool 5, spend 3 on attack â†’ available reads **2**. Try spending 4 more â†’ capped at **2** actually spent.
+**Test:** Combat pool 5, spend 3 on attack → available reads **2**. Try spending 4 more → capped at **2** actually spent.
 
 ---
 
 ## 27. Damage Overflow
 
-Physical track full (10 boxes) â†’ additional physical damage goes to overflow. Overflow track visible on character sheet. - Passed
+Physical track full (10 boxes) → additional physical damage goes to overflow. Overflow track visible on character sheet. - Passed
 
-Stun track full â†’ overflow goes to physical track. - Passed
+Stun track full → overflow goes to physical track. - Passed
 
 When overflow matches or exceeds body attribute show 'dead' - Passed
 ---
@@ -1602,53 +1602,53 @@ When overflow matches or exceeds body attribute show 'dead' - Passed
 
 ### Token wound bars
 Newly-created character/npc tokens show Physical (bar1) and Stun (bar2) as bars that **fill as damage rises**, visible to owners on hover.
-- **In:** create a new character, drop a token â†’ hover shows two bars. Tick 3 physical boxes â†’ physical bar ~30% filled. (Existing pre-update actors need their prototype token bars set manually.)
+- **In:** create a new character, drop a token → hover shows two bars. Tick 3 physical boxes → physical bar ~30% filled. (Existing pre-update actors need their prototype token bars set manually.)
 
 ### Status icons
-- **Auto-synced:** toggling Astral Projection / Dual-Natured (magic tab), VR-Cold/Hot (matrix tab), or Full Defense sets the matching token status icon automatically; clearing removes it. **In:** set Astral â†’ token shows the aura icon; switch to Physical â†’ icon gone.
+- **Auto-synced:** toggling Astral Projection / Dual-Natured (magic tab), VR-Cold/Hot (matrix tab), or Full Defense sets the matching token status icon automatically; clearing removes it. **In:** set Astral → token shows the aura icon; switch to Physical → icon gone.
 - **Manual:** the token HUD status palette includes Sustaining a Spell, Full Defense, Dumpshocked (GM toggles).
 
 ### Auto-defeated
-- **In:** fill a combatant's physical or stun track â†’ in combat, the combatant is marked **defeated** (skull in tracker) and the token gets the unconscious icon. Heal below full â†’ defeated clears.
-- **In:** physical full AND overflow â‰¥ Body â†’ token shows the **dead** overlay.
+- **In:** fill a combatant's physical or stun track → in combat, the combatant is marked **defeated** (skull in tracker) and the token gets the unconscious icon. Heal below full → defeated clears.
+- **In:** physical full AND overflow ≥ Body → token shows the **dead** overlay.
 
 ### Text enrichers (Biography / Notes)
-The Bio tab shows Background/Notes as read-only **enriched** text â€” `@UUID[...]` links and inline `[[/r ...]]` rolls render and are clickable. Click **âœŽ Edit** to reveal the textarea; saving re-renders back to enriched.
-- **In:** put `@UUID[Actor.xxx]{Mr. J}` in Background â†’ displays as a clickable link, not raw text.
+The Bio tab shows Background/Notes as read-only **enriched** text — `@UUID[...]` links and inline `[[/r ...]]` rolls render and are clickable. Click **✎ Edit** to reveal the textarea; saving re-renders back to enriched.
+- **In:** put `@UUID[Actor.xxx]{Mr. J}` in Background → displays as a clickable link, not raw text.
 
 ---
 
-## GM tools â€” Rollable Tables tab
+## GM tools — Rollable Tables tab
 Chase Scene, Driving Test, Threat Clocks, Session Rewards, Chunky Salsa, Barrier Damage, Falling Damage and Escape Artist buttons now live on the **Rollable Tables** sidebar tab (not the combat tracker). Chase Scene, Driving Test & Threat Clocks show for all players; the rest are GM-only.
-- **In:** open Rollable Tables tab â†’ buttons appear below the header. **Driving Test** â†’ prompts for vehicle + driver, then the usual driving-test dialog. Same dialog opens from each vehicle sheet's Driving Test button.
+- **In:** open Rollable Tables tab → buttons appear below the header. **Driving Test** → prompts for vehicle + driver, then the usual driving-test dialog. Same dialog opens from each vehicle sheet's Driving Test button.
 
 ### Threat Clocks
-- **In:** GM clicks **ðŸ• Threat Clocks** â†’ **+ Add Clock** â†’ a new 6-segment clock appears (default
-  color cycles through a small palette). Click wedge 3 â†’ fills to 3/6; click **+** â†’ 4/6; click **âˆ’**
-  â†’ 3/6. Edit the name field, change Segments to 8 (box re-renders an 8-wedge dial, fill clamps to
+- **In:** GM clicks **🕐 Threat Clocks** → **+ Add Clock** → a new 6-segment clock appears (default
+  color cycles through a small palette). Click wedge 3 → fills to 3/6; click **+** → 4/6; click **−**
+  → 3/6. Edit the name field, change Segments to 8 (box re-renders an 8-wedge dial, fill clamps to
   the new max), pick a color, tick **Visible to players**.
-- **In:** a player opens the same **ðŸ• Threat Clocks** button â†’ sees only the one clock marked
-  visible, read-only (no wedge clicks, no +/âˆ’ steppers), showing "4 / 8". A second hidden clock the
+- **In:** a player opens the same **🕐 Threat Clocks** button → sees only the one clock marked
+  visible, read-only (no wedge clicks, no +/− steppers), showing "4 / 8". A second hidden clock the
   GM also created does not appear in the player's view at all.
-- **In:** with two clients open (GM + player), GM clicks a wedge â†’ the player's already-open Threat
+- **In:** with two clients open (GM + player), GM clicks a wedge → the player's already-open Threat
   Clocks window updates immediately without needing to reopen it (world-setting sync via the
   `updateSetting` hook).
-- **In:** GM clicks ðŸ—‘ on a clock â†’ it's removed from both the GM and player views on next render.
+- **In:** GM clicks 🗑 on a clock → it's removed from both the GM and player views on next render.
 
 ### Driving Test pool & TN (SR3 p.134)
-Base **TN = Handling**; TN modifiers via dropdowns (unfamiliar +1, stress, size +2/+3, weather +2/+4, terrain âˆ’1/0/+1/+3, combat +2, datajack âˆ’1, **VCR âˆ’2Ã—rating**). The dice **pool** auto-composes (and is editable):
+Base **TN = Handling**; TN modifiers via dropdowns (unfamiliar +1, stress, size +2/+3, weather +2/+4, terrain −1/0/+1/+3, combat +2, datajack −1, **VCR −2×rating**). The dice **pool** auto-composes (and is editable):
 - **Vehicle Skill + Autonav** out of combat.
-- **Action During Combat** selected â†’ Autonav drops (pool = Skill), TN +2.
-- Driver with a VCR, **Using VCR** selected â†’ Autonav dropped, **Control Pool = Vehicle Skill** added, TN âˆ’2Ã—VCR.
+- **Action During Combat** selected → Autonav drops (pool = Skill), TN +2.
+- Driver with a VCR, **Using VCR** selected → Autonav dropped, **Control Pool = Vehicle Skill** added, TN −2×VCR.
 
-**In:** Skill 4 / Autonav 2, no VCR, not combat â†’ pool **6**, TN = Handling. Tick combat â†’ pool **4**, TN +2. VCR 1 driver picks Using VCR â†’ pool = **4 + 4 (skill)**, Autonav gone, TN âˆ’2.
-- **In:** driver with **no matching vehicle skill** â†’ the **interactive Default dialog** opens (Â§9, linked attribute = Reaction); the chosen pool/TN-mod flow through (Attribute = +4 TN; Skill/Spec = Â½ rating, +2/+3 TN).
+**In:** Skill 4 / Autonav 2, no VCR, not combat → pool **6**, TN = Handling. Tick combat → pool **4**, TN +2. VCR 1 driver picks Using VCR → pool = **4 + 4 (skill)**, Autonav gone, TN −2.
+- **In:** driver with **no matching vehicle skill** → the **interactive Default dialog** opens (§9, linked attribute = Reaction); the chosen pool/TN-mod flow through (Attribute = +4 TN; Skill/Spec = ½ rating, +2/+3 TN).
 
-> Note: the Â§28/Â§29 references to "combat tracker sidebar" below are historical â€” these buttons moved to the Rollable Tables tab.
+> Note: the §28/§29 references to "combat tracker sidebar" below are historical — these buttons moved to the Rollable Tables tab.
 
 ## 28. Escape Artist
 
-Triggered via the **ðŸ”“ Escape Artist** button (Rollable Tables tab, GM only).
+Triggered via the **🔓 Escape Artist** button (Rollable Tables tab, GM only).
 
 ### Pool
 
@@ -1656,7 +1656,7 @@ Triggered via the **ðŸ”“ Escape Artist** button (Rollable Tables tab, GM o
 |---|---|
 | Athletics skill, no spec | Athletics rating |
 | Athletics + Escape Artist spec | Athletics rating + 2 |
-| No Athletics (defaulting) | interactive Default dialog â€” see Â§9 (linked attribute = Body) |
+| No Athletics (defaulting) | interactive Default dialog — see §9 (linked attribute = Body) |
 
 ### Restraint TN table
 
@@ -1671,70 +1671,70 @@ TN modifier field in dialog: positive values reduce TN (e.g. Pain Resistance lev
 
 ### Success
 
-**In:** Athletics 5 (Escape Artist spec), Handcuffs (TN 6), no modifier â†’ **7 dice vs TN 6**.
+**In:** Athletics 5 (Escape Artist spec), Handcuffs (TN 6), no modifier → **7 dice vs TN 6**.
 
-1 success â†’ escaped in **30 min** (5 Ã— 6 Ã· 1). 3 successes â†’ **10 min** (30 Ã· 3, rounded up).
+1 success → escaped in **30 min** (5 × 6 ÷ 1). 3 successes → **10 min** (30 ÷ 3, rounded up).
 
 ### Failure
 
-0 successes â†’ chat card reads "Cannot try again for **30 minutes**" (5 Ã— 6).
+0 successes → chat card reads "Cannot try again for **30 minutes**" (5 × 6).
 
 ### Defaulting
 
-**In:** No Athletics â†’ preview shows "defaulting â€” choose at roll". On ðŸŽ², the Default dialog
-opens (linked attribute = Body). Choose Attribute â†’ Body 4 â†’ pool **4**, Ropes effective TN
-**8** (4 + 4). Choosing Skill/Spec uses Â½ rating, +2/+3 TN.
+**In:** No Athletics → preview shows "defaulting — choose at roll". On 🎲, the Default dialog
+opens (linked attribute = Body). Choose Attribute → Body 4 → pool **4**, Ropes effective TN
+**8** (4 + 4). Choosing Skill/Spec uses ½ rating, +2/+3 TN.
 
 ### Pain Resistance modifier
 
-**In:** Handcuffs TN 6, adept with 3 levels Pain Resistance â†’ TN modifier +3 â†’ effective TN **3**.
+**In:** Handcuffs TN 6, adept with 3 levels Pain Resistance → TN modifier +3 → effective TN **3**.
 
 ---
 
 ## 29. Falling Damage
 
 
-Triggered via the **ðŸª‚ Falling Damage** button (Rollable Tables tab, GM only).
+Triggered via the **🪂 Falling Damage** button (Rollable Tables tab, GM only).
 
 ### Damage calculation
 
-| Distance | Power (distÃ·2) | Level |
+| Distance | Power (dist÷2) | Level |
 |---|---|---|
-| 1â€“2 m | 1 | L |
-| 3â€“6 m | 2â€“3 | M |
-| 7â€“20 m | 4â€“10 | S |
+| 1–2 m | 1 | L |
+| 3–6 m | 2–3 | M |
+| 7–20 m | 4–10 | S |
 | 21+ m | 11+ | D |
 
-Impact armour reduces Power by `âŒŠImpactÃ·2âŒ‹` before the Athletics test.
+Impact armour reduces Power by `⌊Impact÷2⌋` before the Athletics test.
 
-**In:** 10 m fall, Impact armour 4 â†’ Power `5 âˆ’ 2 = 3`, Level S â†’ base damage code **3S**.
+**In:** 10 m fall, Impact armour 4 → Power `5 − 2 = 3`, Level S → base damage code **3S**.
 
 ### Athletics test
 
-Pool = Athletics rating; if no Athletics skill, the **interactive Default dialog** opens (see Â§9).
+Pool = Athletics rating; if no Athletics skill, the **interactive Default dialog** opens (see §9).
 TN = distance in metres (+ chosen default TN modifier). Each success reduces Power by 1.
 
-**In:** Athletics 4, distance 10 â†’ 4 dice vs TN 10.
+**In:** Athletics 4, distance 10 → 4 dice vs TN 10.
 
-**In:** No Athletics â†’ Default dialog â†’ Attribute Body 4 â†’ pool **4** vs TN **14** (10 + 4).
+**In:** No Athletics → Default dialog → Attribute Body 4 → pool **4** vs TN **14** (10 + 4).
 
 ### Athletics negates all damage
 
-**In:** Power 2 after armour, Athletics roll 3 successes â†’ Power reduced to 0 â†’ chat card reads "Athletics negates all damage", no soak card posted.
+**In:** Power 2 after armour, Athletics roll 3 successes → Power reduced to 0 → chat card reads "Athletics negates all damage", no soak card posted.
 
 ### Soak card
 
 After the Athletics roll, a standard Resist Damage soak card posts for the faller using Impact armour (not Ballistic).
 
-**In:** Final power 3S â†’ soak card shows TN = `max(2, 3 âˆ’ Impact)`, Body dice editable.
+**In:** Final power 3S → soak card shows TN = `max(2, 3 − Impact)`, Body dice editable.
 
-### No armour â†’ armour reduction 0
+### No armour → armour reduction 0
 
-**In:** 6 m fall, no armour â†’ Power 3, no reduction â†’ base 3M â†’ soak card posts for 3M.
+**In:** 6 m fall, no armour → Power 3, no reduction → base 3M → soak card posts for 3M.
 
 ---
 
-## 30. Matrix â€” Node Tracking (Character / NPC Sheet)
+## 30. Matrix — Node Tracking (Character / NPC Sheet)
 
 The Matrix tab shows a node-tracking section when the actor is connected to a host (`activeHostId` is set).
 
@@ -1742,66 +1742,66 @@ The Matrix tab shows a node-tracking section when the actor is connected to a ho
 
 A dropdown lists all nodes on the active host. Selecting one stores `system.currentMatrixNode`.
 
-**In:** Decker connected to a host with nodes SAN, SPU, DS â†’ dropdown shows those three â†’ select DS â†’ `currentMatrixNode` saved.
+**In:** Decker connected to a host with nodes SAN, SPU, DS → dropdown shows those three → select DS → `currentMatrixNode` saved.
 
 ### Mark chips
 
 Each mark is stored as a node ID. Chips display the node's abbreviation in green.
 
-- **+ Mark** button â†’ dialog lists all host nodes â†’ select one â†’ chip appears.
-- **âœ•** on a chip â†’ removes that mark.
+- **+ Mark** button → dialog lists all host nodes → select one → chip appears.
+- **✕** on a chip → removes that mark.
 
-**In:** Decker has no marks â†’ add mark on SPU â†’ green "SPU" chip appears.
-**In:** Remove that chip â†’ chip disappears, `matrixMarks` array is empty.
+**In:** Decker has no marks → add mark on SPU → green "SPU" chip appears.
+**In:** Remove that chip → chip disappears, `matrixMarks` array is empty.
 
 ### Auto-mark on Access Node success
 
 When a Hacking Action roll succeeds AND the prompt has `grantsAccess: true` (the Access Node prompt), a mark is automatically added for the current node.
 
-**In:** Decker in SPU, clicks "Access Node" Use button, rolls enough hits to meet Security Threshold â†’ green "âœ“ Mark Granted â€” SPU" card posts + SPU chip appears on sheet.
+**In:** Decker in SPU, clicks "Access Node" Use button, rolls enough hits to meet Security Threshold → green "✓ Mark Granted — SPU" card posts + SPU chip appears on sheet.
 
 ### Requires-mark prompt
 
 If a node prompt has `requiresMark: true` and the decker has no mark on that node, a confirmation dialog appears before the roll.
 
-**In:** Decker in DS with no mark, clicks "Duplicate / Download" Use button â†’ dialog asks "This action requires a mark on this node. Proceed anyway?" â†’ Cancel aborts roll, OK proceeds.
+**In:** Decker in DS with no mark, clicks "Duplicate / Download" Use button → dialog asks "This action requires a mark on this node. Proceed anyway?" → Cancel aborts roll, OK proceeds.
 
 ### Link Lock
 
-Checkbox stored as `system.linkLocked`. No automated effect yet â€” GM reference flag.
+Checkbox stored as `system.linkLocked`. No automated effect yet — GM reference flag.
 
 ---
 
-## 31. Matrix â€” Node Prompts (Use Buttons)
+## 31. Matrix — Node Prompts (Use Buttons)
 
 Each node on a host has a `prompts[]` array. When a decker is in that node, the prompts list is shown on the Matrix tab.
 
 ### Prompt badges
 
-- **OWâ†‘** badge (amber) = `overwatchOnFail: true` â€” a failed threshold check increments Overwatch.
-- **+mark** badge (green) = `grantsAccess: true` â€” a successful Access Node roll auto-marks the node.
+- **OW↑** badge (amber) = `overwatchOnFail: true` — a failed threshold check increments Overwatch.
+- **+mark** badge (green) = `grantsAccess: true` — a successful Access Node roll auto-marks the node.
 
-### Use button â€” Hacking prompt (`overwatchOnFail: true`)
+### Use button — Hacking prompt (`overwatchOnFail: true`)
 
 Fires `rollPool` with `isHackingActionRoll: true`. Standard hacking flow: threshold check, overwatch on fail, auto-mark if `grantsAccess`.
 
-**In:** Decker clicks Use on "Duplicate / Download" (DS node, `overwatchOnFail: true`) â†’ dialog to set TN and hacking pool dice â†’ Hacking skill + pool dice rolled vs TN â†’ threshold checked against host Security Threshold.
+**In:** Decker clicks Use on "Duplicate / Download" (DS node, `overwatchOnFail: true`) → dialog to set TN and hacking pool dice → Hacking skill + pool dice rolled vs TN → threshold checked against host Security Threshold.
 
-### Use button â€” Computer prompt (`overwatchOnFail: false`)
+### Use button — Computer prompt (`overwatchOnFail: false`)
 
 Fires plain `rollPool` with no hacking context. No threshold check, no overwatch.
 
-**In:** Decker clicks Use on "Host Services" (SAN node, `overwatchOnFail: false`) â†’ dialog â†’ Computer skill + pool dice rolled â†’ success count shown, no security check.
+**In:** Decker clicks Use on "Host Services" (SAN node, `overwatchOnFail: false`) → dialog → Computer skill + pool dice rolled → success count shown, no security check.
 
 ### Dim prompt (requires mark, no mark held)
 
 Prompts with `requiresMark: true` are dimmed (opacity 0.55) when the decker holds no mark on the current node. Still clickable but shows confirmation dialog first.
 
-**In:** Decker in DS, no mark, "Access Datafile" prompt (requiresMark) â†’ appears dim â†’ clicking shows confirmation before roll fires.
+**In:** Decker in DS, no mark, "Access Datafile" prompt (requiresMark) → appears dim → clicking shows confirmation before roll fires.
 
 ---
 
-## 32. Matrix â€” Security Sheaf Automation
+## 32. Matrix — Security Sheaf Automation
 
 When a hacking action fails the Security Threshold check, Overwatch increments. If the host has a Trigger Step whose `step` number matches the new Overwatch count, a **GM-only** whisper card appears.
 
@@ -1810,32 +1810,32 @@ When a hacking action fails the Security Threshold check, Overwatch increments. 
 Card shows:
 - Step description (if set)
 - IC assigned to that step (names)
-- Three buttons: **ðŸ“¢ Public**, **ðŸ”‡ Silent**, **âœ— No**
+- Three buttons: **📢 Public**, **🔇 Silent**, **✗ No**
 
-**In:** Decker fails hack on a Green (threshold 2) host. Overwatch was 6, now 7. Trigger Step 7 has description "Killer deployed" with Killer IC assigned â†’ whisper card appears for GM only. Players see only the amber "âš  Overwatch: 7/10" card.
+**In:** Decker fails hack on a Green (threshold 2) host. Overwatch was 6, now 7. Trigger Step 7 has description "Killer deployed" with Killer IC assigned → whisper card appears for GM only. Players see only the amber "⚠ Overwatch: 7/10" card.
 
 ### Public activation
 
-Clicks **ðŸ“¢ Public**:
+Clicks **📢 Public**:
 1. A visible chat card posts to all players: step number, description, IC names.
 2. Each regular IC in the step is deployed to the active encounter (`game.combat`) and its `system.deployed` and `system.activeHostId` are set. `system.currentMatrixNode` is set from the IC's stocked entry `nodeId`.
-3. Any Alert IC (actor `icType` starts with "alert") sets `system.alertCount` on the host instead of joining the encounter. Alert (Passive) â†’ alertCount 1; Alert (Active) â†’ alertCount 2.
+3. Any Alert IC (actor `icType` starts with "alert") sets `system.alertCount` on the host instead of joining the encounter. Alert (Passive) → alertCount 1; Alert (Active) → alertCount 2.
 4. The trigger step's `triggered` checkbox is checked.
 5. All three buttons disable (one-shot guard).
 
-**In:** Step 7 has Killer IC + Alert (Active) â†’ click Public â†’ Killer appears in encounter, host alertCount set to 2, step 7 checked triggered, public chat posted.
+**In:** Step 7 has Killer IC + Alert (Active) → click Public → Killer appears in encounter, host alertCount set to 2, step 7 checked triggered, public chat posted.
 
 ### Silent activation
 
-Clicks **ðŸ”‡ Silent**:
+Clicks **🔇 Silent**:
 - Same deploy logic as Public (IC deployed, alert set, step triggered).
 - **No** public chat card. A GM-only whisper confirmation posts instead.
 
-**In:** Step 7 â†’ click Silent â†’ Killer deployed, alertCount 2, step triggered, GM sees "ðŸ”‡ Sheaf level 7 activated silently." Players see nothing additional.
+**In:** Step 7 → click Silent → Killer deployed, alertCount 2, step triggered, GM sees "🔇 Sheaf level 7 activated silently." Players see nothing additional.
 
 ### No activation
 
-Clicks **âœ— No**:
+Clicks **✗ No**:
 - Nothing happens beyond the already-posted Overwatch increment card.
 - All three buttons disable.
 
@@ -1843,135 +1843,135 @@ Clicks **âœ— No**:
 
 If the matching trigger step is already `triggered: true`, no whisper card is posted.
 
-**In:** Step 7 triggered in a previous turn â†’ Overwatch reaches 7 again (impossible in normal play, but resetting overwatch manually) â†’ no sheaf prompt appears.
+**In:** Step 7 triggered in a previous turn → Overwatch reaches 7 again (impossible in normal play, but resetting overwatch manually) → no sheaf prompt appears.
 
 ### Alert IC in Active Presence tab
 
-Alert IC that are "deployed" via the sheaf (or Deploy button) appear in the host sheet's **Active Presence â†’ Active Agents / IC** section with "âš” Deployed" badge, same as regular IC.
+Alert IC that are "deployed" via the sheaf (or Deploy button) appear in the host sheet's **Active Presence → Active Agents / IC** section with "⚔ Deployed" badge, same as regular IC.
 
 ---
 
-## 33. Host Sheet â€” Stocked IC Improvements
+## 33. Host Sheet — Stocked IC Improvements
 
 ### Node assignment dropdown
 
 Each stocked IC row has a node dropdown (pulls from host's `nodes[]`). Selecting a node stores `nodeId` on the stocked IC entry.
 
-**In:** Stocked IC list has Killer â†’ select "CPU" from its dropdown â†’ on next deploy, Killer's `system.currentMatrixNode` is set to the CPU node ID.
+**In:** Stocked IC list has Killer → select "CPU" from its dropdown → on next deploy, Killer's `system.currentMatrixNode` is set to the CPU node ID.
 
 ### Deployed indicator
 
-Each row shows `âš”` (gold) when the IC actor has `system.deployed: true`, `Â·` (dim) otherwise. Updates when the host sheet re-renders.
+Each row shows `⚔` (gold) when the IC actor has `system.deployed: true`, `·` (dim) otherwise. Updates when the host sheet re-renders.
 
-**In:** Deploy Killer from the sheaf prompt â†’ host sheet re-renders â†’ Killer row shows gold âš”.
+**In:** Deploy Killer from the sheaf prompt → host sheet re-renders → Killer row shows gold ⚔.
 
 ### Deploy to Encounter applies node
 
-When IC is deployed (via sheaf prompt or âš” Deploy button), if its stocked entry has a `nodeId` set, `system.currentMatrixNode` is set on the IC actor automatically.
+When IC is deployed (via sheaf prompt or ⚔ Deploy button), if its stocked entry has a `nodeId` set, `system.currentMatrixNode` is set on the IC actor automatically.
 
-**In:** Killer stocked with node = CPU â†’ deploy â†’ Killer actor `system.currentMatrixNode` = CPU node ID.
+**In:** Killer stocked with node = CPU → deploy → Killer actor `system.currentMatrixNode` = CPU node ID.
 
-### Hide All toggle â€” Stocked IC
+### Hide All toggle — Stocked IC
 
-ðŸ‘ button in the Stocked IC section header. If any IC are visible â†’ hides all. If all hidden â†’ reveals all.
+👁 button in the Stocked IC section header. If any IC are visible → hides all. If all hidden → reveals all.
 
-**In:** 4 IC visible â†’ click ðŸ‘ â†’ all show blur. Click again â†’ all revealed.
+**In:** 4 IC visible → click 👁 → all show blur. Click again → all revealed.
 
-### Hide All toggle â€” Trigger Steps
+### Hide All toggle — Trigger Steps
 
-Same ðŸ‘ button in the Trigger Steps section header, same toggle logic.
+Same 👁 button in the Trigger Steps section header, same toggle logic.
 
-**In:** 10 steps, 3 triggered (visible) â†’ click ðŸ‘ â†’ all blurred. Click again â†’ all revealed.
+**In:** 10 steps, 3 triggered (visible) → click 👁 → all blurred. Click again → all revealed.
 
 ---
 
-## 34. Host Sheet â€” Operational Changes
+## 34. Host Sheet — Operational Changes
 
 ### GM-only visibility
 
 Non-GM users who attempt to open a host sheet see: *"Host sheets are visible to Game Masters only."* and the sheet does not open.
 
-**In:** Player double-clicks a host actor â†’ warning notification, no sheet appears.
+**In:** Player double-clicks a host actor → warning notification, no sheet appears.
 
 ### Overwatch + Alerts inline
 
-The Alerts section has been merged into the Overwatch section header row. Alert label (Passive / Active Alert (+2 TN) / Full Alert (+4 TN)) appears to the right of the OW count, with âˆ’ and + buttons.
+The Alerts section has been merged into the Overwatch section header row. Alert label (Passive / Active Alert (+2 TN) / Full Alert (+4 TN)) appears to the right of the OW count, with − and + buttons.
 
-**In:** alertCount 0 â†’ right side shows grey "Passive" badge. alertCount 1 â†’ amber "Active Alert (+2 TN)". alertCount 2 â†’ red "Full Alert (+4 TN)".
+**In:** alertCount 0 → right side shows grey "Passive" badge. alertCount 1 → amber "Active Alert (+2 TN)". alertCount 2 → red "Full Alert (+4 TN)".
 
 Alert description (no alert / active / full text) appears below the OW track, replacing the old static OW description.
 
 ### Scroll position preserved
 
-Clicking the ðŸ‘ eye toggle (hide/show individual or all) no longer jumps the Security Sheaf tab back to the top. Scroll position is preserved across re-renders.
+Clicking the 👁 eye toggle (hide/show individual or all) no longer jumps the Security Sheaf tab back to the top. Scroll position is preserved across re-renders.
 
 ---
 
-## 35. Electronic Warfare â€” Flux / Footprint / ECM / ECCM / MIJI
+## 35. Electronic Warfare — Flux / Footprint / ECM / ECCM / MIJI
 
-**Adds data-model fields â†’ needs a full Foundry restart, not just F5.** Subsections below cover the
+**Adds data-model fields → needs a full Foundry restart, not just F5.** Subsections below cover the
 core MIJI loop, the degradation modifiers, the Drone Comprehension Test and the IVIS Test.
 
-### âœ… Step 3 (the MIJI contest) is AUTOMATED â€” `tests/e2e/miji.spec.mjs`
+### ✅ Step 3 (the MIJI contest) is AUTOMATED — `tests/e2e/miji.spec.mjs`
 
 Two clients plus a GM. Covered there, so do not re-walk it by hand:
 
 - **Both pools derive from their OWN rigger.** Intruder Electronics 5 (Electronic Warfare +2)
   + min(Flux 2, 7) = **9** dice; defender Electronics 3, no specialisation, + min(Flux 1, 3)
   = **4**. Deliberately different, so a card built from one rigger twice fails.
-- **The TNs cross over** â€” intruder TN = *defender's* deck rating; Jamming's defender TN =
+- **The TNs cross over** — intruder TN = *defender's* deck rating; Jamming's defender TN =
   *intruder vehicle's* ECM. Swapping them is invisible on screen but reverses the odds.
 - **Corner ownership travels through `driverActorId`.** Each rigger's own submit button is
   enabled and the other's disabled, on both clients, with the far corner's inputs read-only.
 - **An unmanned drone's corner is GM-only** (fail-closed), and the GM can complete the
   exchange on its behalf.
-- **The result card credits the riggers**, who actually rolled â€” not the vehicle names.
+- **The result card credits the riggers**, who actually rolled — not the vehicle names.
 
 `tests/ew-skill.test.mjs` pins the skill-selection rule underneath it: `Electronics B/R` and
 `Electronic Intelligence` also contain "electronic", so which skill supplies the dice must not
 depend on the order the sheet was built in, and the Electronic Warfare specialisation bonus
 must be counted. Both were wrong until 2026-08-13.
 
-âš  Still needs a human: whether the card is legible, whether a locked corner *looks* locked,
+⚠ Still needs a human: whether the card is legible, whether a locked corner *looks* locked,
 and every other subsection below.
 
 Two riggers, each with an Electronics skill specialised in *Electronic Warfare*, each linked as the driver of a vehicle.
-On each rigger's **Matrix tab â†’ Rigger â€” Electronic Warfare**: set Deck, Flux, Protocol Module.
+On each rigger's **Matrix tab → Rigger — Electronic Warfare**: set Deck, Flux, Protocol Module.
 On each vehicle's **Electronic Warfare tab**: set ECM, ECCM, Flux.
 
-1. **Footprint** â€” Intruder deck Flux 8, vehicle Flux 6, ECM 0 â†’ derived Footprint shows
-   `âŒŠ(8+6+0)/10âŒ‰ = 1`. Click **â†» Recalc** â†’ the Footprint field becomes 1. The Sig note reads
-   `TN = Sig âˆ’ 1`.
-2. **Signal Monitor** â€” each channel starts **locked** (boxes + Â±1 faded). Click **Infil** on
-   Command â†’ it highlights and the controls unlock. **+1** raises degradation a box (tier shows
-   +1 Light â†’ +2 Moderate at 4 â†’ +3 Serious at 7 â†’ Channel Lost at 10); **âˆ’1** lowers it; clicking
-   a box still sets it directly. Click **Infil** again â†’ controls re-lock but the value is kept.
-   Reload the page â†’ values + breach state persist. (Infil stays in sync with the Infiltration
+1. **Footprint** — Intruder deck Flux 8, vehicle Flux 6, ECM 0 → derived Footprint shows
+   `⌊(8+6+0)/10⌉ = 1`. Click **↻ Recalc** → the Footprint field becomes 1. The Sig note reads
+   `TN = Sig − 1`.
+2. **Signal Monitor** — each channel starts **locked** (boxes + ±1 faded). Click **Infil** on
+   Command → it highlights and the controls unlock. **+1** raises degradation a box (tier shows
+   +1 Light → +2 Moderate at 4 → +3 Serious at 7 → Channel Lost at 10); **−1** lowers it; clicking
+   a box still sets it directly. Click **Infil** again → controls re-lock but the value is kept.
+   Reload the page → values + breach state persist. (Infil stays in sync with the Infiltration
    panel's breached/clear tags.)
-3. **MIJI contest** â€” on the **defender** vehicle's EW tab click **âš¡ MIJI Attack** â†’ pick the
+3. **MIJI contest** — on the **defender** vehicle's EW tab click **⚡ MIJI Attack** → pick the
    intruder vehicle, **Jamming**, channel **Command**. Card shows intruder dice = EW skill +
    `min(Flux,skill)` complementary, TN = defender deck rating; defender TN = **intruder ECM**
-   (switch operation to Intrusion â†’ defender TN flips to **intruder Protocol Module** and the
-   channel list narrows to System). Click **âš¡ Roll MIJI Test** â†’ both sides roll; if the intruder
+   (switch operation to Intrusion → defender TN flips to **intruder Protocol Module** and the
+   channel list narrows to System). Click **⚡ Roll MIJI Test** → both sides roll; if the intruder
    nets >0, an **Apply N degradation** button fills the chosen channel (re-click is blocked); a
    defender win posts "channel holds".
-4. **Infiltration** â€” **ðŸ“¡ Attempt Infiltration** â†’ pick intruder â†’ rolls EW vs `6 âˆ’ (Protocol âˆ’
-   Deck)`; the allocation dialog lets you freely split successes **three ways** â€” channels (1 each),
-   **time reduction** (10 Ã· spent) and **Intrusion Factor**, each its own input with a live
-   spent/remaining counter. E.g. 6 successes: System (1) + 2 on time + 3 on Factor â†’ infiltrate in
-   `âŒˆ10/2âŒ‰ = 5` turns, Intrusion Factor 3, 0 unspent. Vehicle
+4. **Infiltration** — **📡 Attempt Infiltration** → pick intruder → rolls EW vs `6 − (Protocol −
+   Deck)`; the allocation dialog lets you freely split successes **three ways** — channels (1 each),
+   **time reduction** (10 ÷ spent) and **Intrusion Factor**, each its own input with a live
+   spent/remaining counter. E.g. 6 successes: System (1) + 2 on time + 3 on Factor → infiltrate in
+   `⌈10/2⌉ = 5` turns, Intrusion Factor 3, 0 unspent. Vehicle
    `infiltration` shows the intruder, breached channels, Factor, and the reduced turn count.
-   Advancing a **combat round** decrements Turns left (GM client); the **âˆ’1** button does so
-   manually. **ðŸ” Detect Infiltration** rolls defender EW vs Intrusion Factor.
-5. **ECCM repair** â€” with Command at 6 boxes, click **ðŸ›¡ ECCM: Command** â†’ rolls ECCM + EW comp vs
+   Advancing a **combat round** decrements Turns left (GM client); the **−1** button does so
+   manually. **🔍 Detect Infiltration** rolls defender EW vs Intrusion Factor.
+5. **ECCM repair** — with Command at 6 boxes, click **🛡 ECCM: Command** → rolls ECCM + EW comp vs
    (attacker ECM/Protocol + 3); each success removes a box; chat shows the new total.
-6. **Reduce Footprint** â€” **ðŸ“‰ Reduce Footprint** rolls EW vs (Footprint + 4); each success lowers
+6. **Reduce Footprint** — **📉 Reduce Footprint** rolls EW vs (Footprint + 4); each success lowers
    vehicle Flux by 1 and recomputes Footprint.
 
 | Check | Expected |
 |---|---|
 | Footprint, deckFlux 8 + vehFlux 6 + ECM 0 | 1 |
-| Channel before Infil | boxes + Â±1 faded/locked |
+| Channel before Infil | boxes + ±1 faded/locked |
 | Channel after Infil | controls unlock; MIJI also auto-sets Infil |
 | Signal box 8 filled (infiltrated) | +3 Serious |
 | Signal box 10 filled | Channel Lost |
@@ -1979,8 +1979,8 @@ On each vehicle's **Electronic Warfare tab**: set ECM, ECCM, Flux.
 | Intrusion / Meaconing / Interference defender TN | intruder Protocol Module |
 | Intruder TN (all ops) | defender deck rating |
 | MIJI net successes (intruder wins) | degradation boxes added to channel |
-| Infiltration TN | 6 âˆ’ (Protocol âˆ’ Deck), min 2 |
-| Infiltration time, 2 successes on time | âŒˆ10/2âŒ‰ = 5 turns |
+| Infiltration TN | 6 − (Protocol − Deck), min 2 |
+| Infiltration time, 2 successes on time | ⌈10/2⌉ = 5 turns |
 | Infiltration time, 5 / 10 on time | 2 turns / 1 turn |
 | Complementary dice | min(Flux, skill rating) |
 
@@ -1988,34 +1988,34 @@ On each vehicle's **Electronic Warfare tab**: set ECM, ECCM, Flux.
 
 7. **Simsense = wound-equivalent (auto).** Link a rigger as a vehicle's driver, set the vehicle
    `controlMode` to **VCR** (jumped in). Fill the vehicle's **Simsense** channel to 5 boxes
-   (Moderate, +2). Now roll any skill/attribute test on that rigger â†’ the TN is **+2** (shown in the
+   (Moderate, +2). Now roll any skill/attribute test on that rigger → the TN is **+2** (shown in the
    roll card's modifier line, same place as wounds). Roll the rigger's (or the vehicle's) Initiative
-   â†’ base is **âˆ’2** with a "Simsense jam (2)" note. Heal Simsense to 0 â†’ penalties vanish.
+   → base is **−2** with a "Simsense jam (2)" note. Heal Simsense to 0 → penalties vanish.
 8. **Gunnery shot type.** With the vehicle's **System** channel at 7 (Serious, +3), fire a vehicle
-   weapon â†’ the dialog shows a **Shot type** select; choosing **Indirect fire (System +3)** raises
+   weapon → the dialog shows a **Shot type** select; choosing **Indirect fire (System +3)** raises
    the TN by 3 (editable); **Manual gunnery** uses the Simsense tier; **Direct** adds nothing.
-9. **Channel lost.** Fill Simsense to 10 â†’ the degradation card flags **Channel Lost** and posts a
+9. **Channel lost.** Fill Simsense to 10 → the degradation card flags **Channel Lost** and posts a
    **Dumpshock** pointer naming the jacked rigger.
 10. **Readout.** The vehicle EW tab shows an **Active Degradation Modifiers** panel listing each
-    degraded channel's +N and which tests it hits (Command â†’ Drone Comprehension/IVIS; System â†’
+    degraded channel's +N and which tests it hits (Command → Drone Comprehension/IVIS; System →
     Indirect-fire/Smartlink-cancel), with "(auto-applied)" on Simsense when a VCR rigger is jacked.
 
 | Check | Expected |
 |---|---|
-| VCR rigger, Simsense 5 (Mod) â†’ any roll | TN +2 (like wounds) |
-| VCR rigger, Simsense 5 â†’ initiative | base âˆ’2 ("Simsense jam") |
+| VCR rigger, Simsense 5 (Mod) → any roll | TN +2 (like wounds) |
+| VCR rigger, Simsense 5 → initiative | base −2 ("Simsense jam") |
 | Vehicle weapon, System 7, Indirect fire | TN +3 (editable) |
 | Simsense 10 reached | Channel Lost + Dumpshock pointer |
 | Simsense healed to 0 | no penalty on rolls/init |
 
 ### Drone Comprehension Test (SR3 p.157)
 
-11. Open a vehicle â†’ Stats tab â†’ **ðŸ“¡ Drone Comprehension** (also via the vehicle token's
-    satellite-dish **Vehicle Tools** HUD button â†’ pick the tool; the same menu also offers Driving
+11. Open a vehicle → Stats tab → **📡 Drone Comprehension** (also via the vehicle token's
+    satellite-dish **Vehicle Tools** HUD button → pick the tool; the same menu also offers Driving
     Test). Dialog pre-fills **Pilot dice** = Pilot Rating, **Base TN** 4, and
     **Command degradation** from the vehicle's Command channel. Tick **secondary drone (+2)** and
-    watch Final TN update live. **Roll** â†’ interactive Pilot-vs-TN card with the "0 = no
-    comprehension Â· 1 = literal Â· 2+ = leeway" footer. Everything in the dialog is editable.
+    watch Final TN update live. **Roll** → interactive Pilot-vs-TN card with the "0 = no
+    comprehension · 1 = literal · 2+ = leeway" footer. Everything in the dialog is editable.
 
 | Check | Expected |
 |---|---|
@@ -2025,19 +2025,19 @@ On each vehicle's **Electronic Warfare tab**: set ECM, ECCM, Flux.
 
 ### IVIS Test (BattleTac, R3 p.96)
 
-12. On a **rigger** with a Small Unit Tactics (or Vehicle Tactics) skill: Matrix tab â†’ EW block â†’
-    **ðŸ“¶ IVIS Test** (also a tower-broadcast button on that character's token HUD). Setup dialog
-    pre-fills Small Unit Tactics dice + **TN 5** (+ editable System-degradation). **Roll** â†’ on
+12. On a **rigger** with a Small Unit Tactics (or Vehicle Tactics) skill: Matrix tab → EW block →
+    **📶 IVIS Test** (also a tower-broadcast button on that character's token HUD). Setup dialog
+    pre-fills Small Unit Tactics dice + **TN 5** (+ editable System-degradation). **Roll** → on
     success, the split dialog allocates hits between **Comprehension bonus dice** and **IVIS Pool**
-    (live spent/remaining). Confirm â†’ the EW block shows **IVIS Pool value / max**; **âˆ’1** spends,
-    **Clear** expires it. Advance a **combat round** â†’ the pool refreshes to max.
+    (live spent/remaining). Confirm → the EW block shows **IVIS Pool value / max**; **−1** spends,
+    **Clear** expires it. Advance a **combat round** → the pool refreshes to max.
 
 | Check | Expected |
 |---|---|
 | IVIS dice / TN default | Small Unit Tactics rating / 5 |
-| 4 successes â†’ 1 comp + 3 pool | EW block shows IVIS Pool 3 / 3 |
-| âˆ’1 button | pool 3 â†’ 2 |
-| New combat round | pool refreshes 2 â†’ 3 (max) |
+| 4 successes → 1 comp + 3 pool | EW block shows IVIS Pool 3 / 3 |
+| −1 button | pool 3 → 2 |
+| New combat round | pool refreshes 2 → 3 (max) |
 | Clear | pool 0 / 0 |
 | Token HUD broadcast button | only on chars with Small Unit/Vehicle Tactics |
 
@@ -2046,51 +2046,51 @@ On each vehicle's **Electronic Warfare tab**: set ECM, ECCM, Flux.
 ## 36. Wards (astral barriers, SR3 Core p.174 / MitS p.88-89)
 
 ### Casting
-On an Awakened actor's Magic tab â†’ **ðŸ›¡ Cast Ward**: set Force, Ward Type, Area Radius (m), and an
+On an Awakened actor's Magic tab → **🛡 Cast Ward**: set Force, Ward Type, Area Radius (m), and an
 optional **Permanent** checkbox. Confirm rolls **Magic Attribute dice vs TN = Force** (Rule of Six).
 
-- **In:** Magic 6, default Force 6 â†’ **6 dice vs TN 6**. 3 successes (not Permanent) â†’ card reads
-  "ward holds for **3 weeks**" and shows **ðŸ›¡ Place Ward on Canvas**. 0 successes â†’ "Ward fails to
-  form â€” no successes." either way a **âš¡ Resist Ward Drain** button appears.
-- **In:** click **âš¡ Resist Ward Drain** â†’ drain card shows **TN = Force** (6 in the example above,
-  *not* halved), level **L**, track **Stun** â€” confirm this stays Stun even if Force > Magic (RAW:
+- **In:** Magic 6, default Force 6 → **6 dice vs TN 6**. 3 successes (not Permanent) → card reads
+  "ward holds for **3 weeks**" and shows **🛡 Place Ward on Canvas**. 0 successes → "Ward fails to
+  form — no successes." either way a **⚡ Resist Ward Drain** button appears.
+- **In:** click **⚡ Resist Ward Drain** → drain card shows **TN = Force** (6 in the example above,
+  *not* halved), level **L**, track **Stun** — confirm this stays Stun even if Force > Magic (RAW:
   ward drain is never physical, unlike spell drain).
-- **In:** click **ðŸ›¡ Place Ward on Canvas** â†’ cursor shows the aiming circle at the chosen radius;
-  left-click drops it â†’ a new **ward** Actor + Token appears at that point, and a silvery-grey
-  boundary Region is drawn around it. Open the new actor's sheet â€” confirm Force/maxForce match
+- **In:** click **🛡 Place Ward on Canvas** → cursor shows the aiming circle at the chosen radius;
+  left-click drops it → a new **ward** Actor + Token appears at that point, and a silvery-grey
+  boundary Region is drawn around it. Open the new actor's sheet — confirm Force/maxForce match
   what was cast, Creator shows the caster's name, and the box track has **Force** boxes (0 filled).
 
 ### Attacking (breaking)
-Ward sheet â†’ **âš” Attack This Ward**: pick an attacker + mode (unarmed astral / weapon focus /
+Ward sheet → **⚔ Attack This Ward**: pick an attacker + mode (unarmed astral / weapon focus /
 offensive sorcery / spirit).
 
-- **In:** declaring the attack immediately posts a whisper card "âš  \<ward\> attacked!" to the **GM
-  and the ward's creator** â€” confirm this appears *before* any dice are rolled, and that a player
+- **In:** declaring the attack immediately posts a whisper card "⚠ \<ward\> attacked!" to the **GM
+  and the ward's creator** — confirm this appears *before* any dice are rolled, and that a player
   with no ownership of the creator's actor does **not** see it.
-- **In:** Unarmed mode on an attacker with Magic 5 â†’ damage code defaults to **5M Stun**, editable.
-  Attacker rolls Sorcery (+2 if Astral Combat spec) vs **TN = ward's current Force**. 4 successes â†’
-  staged to **5D Stun** (2 successes per stage). A **ðŸ›¡ \<ward\> Resists** button appears.
-- **In:** click **ðŸ›¡ Resists** â†’ ward rolls **Force dice vs TN = attacker's Magic**, reducing the
-  staged level by 1 per 2 soak successes (same loop as a normal soak). Staged to nothing â†’ "Ward
-  holds â€” attacker bounced back!" (no damage, must win another contest). Otherwise the surviving
+- **In:** Unarmed mode on an attacker with Magic 5 → damage code defaults to **5M Stun**, editable.
+  Attacker rolls Sorcery (+2 if Astral Combat spec) vs **TN = ward's current Force**. 4 successes →
+  staged to **5D Stun** (2 successes per stage). A **🛡 \<ward\> Resists** button appears.
+- **In:** click **🛡 Resists** → ward rolls **Force dice vs TN = attacker's Magic**, reducing the
+  staged level by 1 per 2 soak successes (same loop as a normal soak). Staged to nothing → "Ward
+  holds — attacker bounced back!" (no damage, must win another contest). Otherwise the surviving
   level converts to boxes via the system's standard **L=1 / M=3 / S=6 / D=10** table and an
   **Assign Damage** button appears.
-- **In:** assign damage that fills the box track completely â†’ `system.damage === maxForce` â†’
-  `system.force` derives to **0** and a "ðŸ’€ \<ward\> destroyed" card posts to the GM. The ward is
-  **not** auto-deleted â€” confirm **ðŸ§¹ Dispel Ward** on its sheet still works (with a confirm prompt)
+- **In:** assign damage that fills the box track completely → `system.damage === maxForce` →
+  `system.force` derives to **0** and a "💀 \<ward\> destroyed" card posts to the GM. The ward is
+  **not** auto-deleted — confirm **🧹 Dispel Ward** on its sheet still works (with a confirm prompt)
   and that it also removes the boundary marker.
 
 ### Fooling (Masking metamagic)
-Ward sheet â†’ **ðŸŒ« Fool This Ward**: pick an Initiate (their Grade is shown in the dropdown).
+Ward sheet → **🌫 Fool This Ward**: pick an Initiate (their Grade is shown in the dropdown).
 
-- **In:** Grade 3 attacker vs a Force 5 ward â†’ attacker rolls **6 dice (2Ã—3) vs TN 5**; ward rolls
+- **In:** Grade 3 attacker vs a Force 5 ward → attacker rolls **6 dice (2×3) vs TN 5**; ward rolls
   **5 dice vs TN 3**. More successes wins; a tie favors the ward. Confirm **no GM/creator whisper is
-  posted** for this flow (unlike Attack, above) â€” Fooling is meant to be quiet.
-- **In:** Grade 0 attacker â†’ a warning toast appears ("no Initiate Grade â€” proceeding anyway") but
-  the roll still happens (minimal-guardrails â€” GM may rule it auto-fails narratively).
+  posted** for this flow (unlike Attack, above) — Fooling is meant to be quiet.
+- **In:** Grade 0 attacker → a warning toast appears ("no Initiate Grade — proceeding anyway") but
+  the roll still happens (minimal-guardrails — GM may rule it auto-fails narratively).
 
 ### Initiate Grade field
-- **In:** Magic tab â†’ Magic Identity block â†’ **Initiate Grade** number input, default **0**, only
+- **In:** Magic tab → Magic Identity block → **Initiate Grade** number input, default **0**, only
   visible on Awakened actors (hidden entirely when Magic attribute is 0).
 
 ---
@@ -2103,7 +2103,7 @@ Use these as fast checks with a fresh character (QUI 4, INT 3, WIL 3, STR 3, BOD
 |---|---|
 | Combat Pool | 5 |
 | Initiative base | 4 (+ 1d6) |
-| 3 stun boxes wound mod | âˆ’2 (TN +2 on all rolls) |
+| 3 stun boxes wound mod | −2 (TN +2 on all rolls) |
 | Combat pool (unchanged by wounds) | 5 |
 | Defaulting (INT 3, Attribute tier) | 3 dice, +4 TN, no pool (via Default dialog) |
 | Soak TN (power 9, ballistic 4) | 5 |
@@ -2114,25 +2114,25 @@ Use these as fast checks with a fresh character (QUI 4, INT 3, WIL 3, STR 3, BOD
 
 ## 37. Visual / Theme refresh (Blade Runner-inspired)
 
-Mostly visual checks â€” reload Foundry (CSS/JS hot-reload; no `system.json` styling change needed)
+Mostly visual checks — reload Foundry (CSS/JS hot-reload; no `system.json` styling change needed)
 and look, rather than roll dice.
 
-- **In:** Foundry sidebar â€” the **Chat** tab icon is a walkie-talkie, the **Combat** tab icon is a
+- **In:** Foundry sidebar — the **Chat** tab icon is a walkie-talkie, the **Combat** tab icon is a
   gun (not the default speech-bubble/crossed-swords). If either still shows a default Font Awesome
-  icon (or, notably, a hearing-aid icon on Combat), the `::before` content codepoint regressed â€”
+  icon (or, notably, a hearing-aid icon on Combat), the `::before` content codepoint regressed —
   check `#sidebar-tabs .fa-comments`/`.fa-swords` in `styles/sr3e.css`.
 - **In:** any sheet header, tab label, or chat-card header renders in the condensed **Teko** font;
   body text/inputs render in **Quantico**. If both still look like the system-default sans-serif,
   the Google Fonts `@import` likely failed (no internet access from the Foundry client is the most
-  common cause â€” confirm by checking the Network tab for a blocked `fonts.googleapis.com` request).
+  common cause — confirm by checking the Network tab for a blocked `fonts.googleapis.com` request).
 - **In:** sheets/dialogs/chat cards show a near-black/cream base with a blue accent (Blade Runner's
-  actual UI palette) â€” not the navy/cyan scheme from before this refresh, and not the brighter neon
+  actual UI palette) — not the navy/cyan scheme from before this refresh, and not the brighter neon
   magenta/teal scheme from partway through this refresh (both superseded).
 - **In:** a roll/soak chat card with `styles/textures/sr-card-bg.webp` present shows the texture
   blended under the card content (55%-opacity dark scrim over the image); with no file at that path
-  the card just shows its flat background color â€” no broken-image icon either way.
-- **In:** roll dice â€” success = neon blue, fail = grey, a rolled 1 = red, a pending "6" awaiting an
-  explosion reroll = solid neon blue with a **black** number (no `â˜…` glyph on it). The "ðŸ’¥ Roll
+  the card just shows its flat background color — no broken-image icon either way.
+- **In:** roll dice — success = neon blue, fail = grey, a rolled 1 = red, a pending "6" awaiting an
+  explosion reroll = solid neon blue with a **black** number (no `★` glyph on it). The "💥 Roll
   explosions" button is also neon blue, not gold.
 - **In:** hovering a dice-roll icon (e.g. an attribute's roll icon) turns it **red**, not green/teal.
 - **In:** Rollable Tables GM-tools row buttons and the Actors-directory "Create Actor"/"Create
@@ -2144,21 +2144,21 @@ and look, rather than roll dice.
 
 ## 38. Orthodox SR3 Matrix
 
-**Prerequisites:** Switch Configure Settings â†’ System â†’ Matrix Ruleset to **Orthodox SR3** and do a
+**Prerequisites:** Switch Configure Settings → System → Matrix Ruleset to **Orthodox SR3** and do a
 full Foundry restart (not just F5). The two compendiums ship built (`sr3e-sr3-odm-cyberdecks`,
-`sr3e-sr3-odm-programs`, from `tools/build-odm-packs.mjs`) and appear only under this ruleset â€”
+`sr3e-sr3-odm-programs`, from `tools/build-odm-packs.mjs`) and appear only under this ruleset —
 confirm both are listed and populated; there is no macro to run.
 
 ### Settings warning
 
-**In:** Configure Settings â†’ System â†’ scroll to Matrix Ruleset â†’ a red bold line reads
-*"âš  Changing Matrix rules midgame could break your game."* should appear beneath the dropdown.
+**In:** Configure Settings → System → scroll to Matrix Ruleset → a red bold line reads
+*"⚠ Changing Matrix rules midgame could break your game."* should appear beneath the dropdown.
 
 ### Cyberdeck picker
 
-**In:** Open a character sheet â†’ Matrix tab â†’ **ðŸ“¦ Browse Cyberdecks** â†’ picker opens showing a
-filter box and a grid (Model / MPCP / Act.Mem / I/O / Hard. / Resp+ / Cost). Type "nova" â†’ only
-Novatech decks remain. Click **Novatech Slimcase-10** â†’ confirm â†’ actor `system.orthodoxDeck`:
+**In:** Open a character sheet → Matrix tab → **📦 Browse Cyberdecks** → picker opens showing a
+filter box and a grid (Model / MPCP / Act.Mem / I/O / Hard. / Resp+ / Cost). Type "nova" → only
+Novatech decks remain. Click **Novatech Slimcase-10** → confirm → actor `system.orthodoxDeck`:
 `mpcp: 10`, `activeMemory: 2000`, `storageMemory: 2500`, `ioSpeed: 480`, `hardening: 5`,
 `responseIncrease: 2`.
 
@@ -2172,28 +2172,28 @@ Novatech decks remain. Click **Novatech Slimcase-10** â†’ confirm â†’ 
 
 ### Program picker + memory tracking
 
-**In:** Matrix tab â†’ **+ Browse Programs** â†’ picker opens (Program / Category / Mult / Mem@1 / Mem@4
-columns). Filter "attack" â†’ only Attack-category programs show. Click **Attack-S** â†’ confirm â†’ a
+**In:** Matrix tab → **+ Browse Programs** → picker opens (Program / Category / Mult / Mem@1 / Mem@4
+columns). Filter "attack" → only Attack-category programs show. Click **Attack-S** → confirm → a
 `program` item "Attack-S" appears in the Loaded Programs list with Category "Attack", Rating 0, Mem
-shown as `Ã—4` (size formula: RatingÂ² Ã— 4).
+shown as `×4` (size formula: Rating² × 4).
 
-**Edit rating:** click the Rating input for Attack-S, type **3**, press Tab/blur â†’ `system.rating`
-updates to 3; size column now shows `36 Mp` (3Â² Ã— 4). Editing triggers `updateEmbeddedDocuments`,
-not the form submit â€” confirm the sheet re-renders showing the new value.
+**Edit rating:** click the Rating input for Attack-S, type **3**, press Tab/blur → `system.rating`
+updates to 3; size column now shows `36 Mp` (3² × 4). Editing triggers `updateEmbeddedDocuments`,
+not the form submit — confirm the sheet re-renders showing the new value.
 
 **Memory bar:** Active Memory = 2000 (from Slimcase-10 above). Add Attack-S (r3, 36 Mp) + Armor (r4,
-48 Mp, Ã—3) + Browse (r5, 25 Mp, Ã—1) â†’ total 109 Mp â€” bar shows "109 / 2000 Mp used" in dim text.
-Edit Attack-S rating to 20 (400 Ã— 4 = 1600 Mp) â†’ total exceeds 2000 â†’ bar turns **red** and reads
+48 Mp, ×3) + Browse (r5, 25 Mp, ×1) → total 109 Mp — bar shows "109 / 2000 Mp used" in dim text.
+Edit Attack-S rating to 20 (400 × 4 = 1600 Mp) → total exceeds 2000 → bar turns **red** and reads
 "OVER CAPACITY".
 
-**Duplicate block:** try to add Attack-S a second time â†’ `ui.notifications.warn` fires "Attack-S is
-already in your programs â€” update its rating directly.", no second item created.
+**Duplicate block:** try to add Attack-S a second time → `ui.notifications.warn` fires "Attack-S is
+already in your programs — update its rating directly.", no second item created.
 
-**Delete:** item controls on each row; delete Attack-S â†’ it disappears from the list.
+**Delete:** item controls on each row; delete Attack-S → it disappears from the list.
 
 ### Hacking Pool formula
 
-Formula: `âŒŠ(Intelligence + MPCP) / 3âŒ‹`
+Formula: `⌊(Intelligence + MPCP) / 3⌋`
 
 | INT | MPCP | Expected HP |
 |---|---|---|
@@ -2201,192 +2201,192 @@ Formula: `âŒŠ(Intelligence + MPCP) / 3âŒ‹`
 | 5 | 6 | 3 |
 | 4 | 0 | 1 |
 
-**In:** Set MPCP to 6 on an INT 5 character â†’ Matrix tab shows Hacking Pool **3** (shown as
-`available / total`). Spend 1 â†’ shows `2 / 3`.
+**In:** Set MPCP to 6 on an INT 5 character → Matrix tab shows Hacking Pool **3** (shown as
+`available / total`). Spend 1 → shows `2 / 3`.
 
 ### Matrix Condition Monitor (decker)
 
-**In:** Matrix tab (MPCP > 0) shows a 10-box CM track. Click box 3 â†’ boxes 1â€“3 fill; TN penalty
-readout shows **+1**. Click box 6 â†’ shows **+2**. Click box 8 â†’ shows **+3**. Click the box again
+**In:** Matrix tab (MPCP > 0) shows a 10-box CM track. Click box 3 → boxes 1–3 fill; TN penalty
+readout shows **+1**. Click box 6 → shows **+2**. Click box 8 → shows **+3**. Click the box again
 to toggle off (works like the wound track).
 
-**L/M/S/D buttons:** click **M** (3 boxes) on a fresh track â†’ boxes 1â€“3 fill. Click **S** â†’ boxes
-1â€“6 fill. The **Crashed!** badge appears only when all 10 are filled.
+**L/M/S/D buttons:** click **M** (3 boxes) on a fresh track → boxes 1–3 fill. Click **S** → boxes
+1–6 fill. The **Crashed!** badge appears only when all 10 are filled.
 
 **TN penalty table:**
 
 | CM boxes filled | Penalty |
 |---|---|
-| 0â€“2 | 0 |
-| 3â€“5 | +1 |
-| 6â€“7 | +2 |
-| 8â€“9 | +3 |
+| 0–2 | 0 |
+| 3–5 | +1 |
+| 6–7 | +2 |
+| 8–9 | +3 |
 | 10 | Crashed |
 
-### IC â†’ Decker attack
+### IC → Decker attack
 
 **Prerequisites:** Orthodox host sheet with Security Code and Security Value set; IC actor (type
 `ic`) deployed to the host (activeHostId set); decker connected to same host.
 
-**In:** IC sheet â†’ **âš” Roll Attack** â†’ target dropdown shows the connected decker. Select them â†’
+**In:** IC sheet → **⚔ Roll Attack** → target dropdown shows the connected decker. Select them →
 two-corner card posts with IC stats on one side (Rating dice, TN 4, damage code) and Decker on the
 other (Cybercombat skill dice, editable HP, TN 4 + CM penalty). Each side submits its own corner
-and the last submission rolls both. See the âš  note in Â§6.
+and the last submission rolls both. See the ⚠ note in §6.
 
 **If IC wins (more hits):** net hits stage the IC's damage code upwards (every 2 net = +1 level).
-Result card shows a **ðŸ’» Assign X Matrix CM damage** button. Clicking it â†’ decker's `orthodoxMatrixCM.value`
+Result card shows a **💻 Assign X Matrix CM damage** button. Clicking it → decker's `orthodoxMatrixCM.value`
 increases by the box count (L=1 / M=3 / S=6 / D=10), capped at 10. CM track on sheet updates.
 
 **Dumpshock at 10:** when the CM assignment hits 10 boxes, a dumpshock soak card auto-posts for
 the decker (Power = host Security Value; Stun if VR-Cold/TRM/AR, Physical if VR-Hot).
 
 **If decker wins (more hits):** result shows the net success count; GM resolves as IC damage (no
-automatic IC wound assignment currently â€” GM adjudicates IC destruction).
+automatic IC wound assignment currently — GM adjudicates IC destruction).
 
-**Tie:** "Tie! N vs N â€” no damage." result, no assign buttons.
+**Tie:** "Tie! N vs N — no damage." result, no assign buttons.
 
-### Settings â€” red warning in Configure Settings
+### Settings — red warning in Configure Settings
 
-**In:** Go to Configure Settings â†’ System â†’ the Matrix Ruleset dropdown should have a bold red
-warning beneath it: *"âš  Changing Matrix rules midgame could break your game."* â€” confirm it appears
+**In:** Go to Configure Settings → System → the Matrix Ruleset dropdown should have a bold red
+warning beneath it: *"⚠ Changing Matrix rules midgame could break your game."* — confirm it appears
 and is not cut off or hidden by surrounding elements.
 
 ---
 
-# Code-review findings â€” 2026-07-04 (statuses updated 2026-07-07)
+# Code-review findings — 2026-07-04 (statuses updated 2026-07-07)
 
 Suspected bugs found by static code review. Each entry: what the code does, where, what should
 happen, and how to reproduce. Tick each one passed/confirmed and the fix can go in.
 
-## F1. `isLiveActor` infinite recursion (compendium-imported actors) â€” FIXED 2026-07-07
+## F1. `isLiveActor` infinite recursion (compendium-imported actors) — FIXED 2026-07-07
 
-`scripts/sr3e.js:77-81` â€” the compendium-source branch called `game.sr3e.isLiveActor(a)`,
+`scripts/sr3e.js:77-81` — the compendium-source branch called `game.sr3e.isLiveActor(a)`,
 but line 83 assigns *this same function* to `game.sr3e.isLiveActor`, so it recursed forever
 (RangeError: Maximum call stack size exceeded) for any actor with `_stats.compendiumSource`.
 Called from most selection dialogs and the actor sheet header (`appearsInUI`), so sheets of
 compendium-imported actors crashed on render.
 
-**Fix applied (user-approved):** the branch now tests the flag â€”
+**Fix applied (user-approved):** the branch now tests the flag —
 `a.getFlag('The2ndChumming3e', 'isTemplate') === false` (hidden unless explicitly marked live;
 "Mark as Live" sets the flag to explicit `false`).
 
-**Verify:** import an actor from any compendium (e.g. Mr. Johnson's Contacts) â†’ open its sheet â†’
+**Verify:** import an actor from any compendium (e.g. Mr. Johnson's Contacts) → open its sheet →
 renders normally. "Mark as Live"/"Mark as Template" toggles show/hide it in targeting dialogs.
 
-## F2. Actor lists wider than they should be â€” FIXED 2026-09-14 (0.5.2)
+## F2. Actor lists wider than they should be — FIXED 2026-09-14 (0.5.2)
 
 Widened in play: *"they also show up on the rewards rollable table and a few other things they
 probably shouldn't"* and *"chunky salsa lists everything, not just the actors on the scene."*
-Three rules now, one per question a list answers â€” `tests/actor-lists.test.mjs` pins each site and
+Three rules now, one per question a list answers — `tests/actor-lists.test.mjs` pins each site and
 **ratchets**: every `game.actors` list in `scripts/` must use one, or be a named internal lookup.
 
 | Rule | Lists |
 |---|---|
-| **No templates** â€” `game.sr3e.isLiveActor` (one rule; five sites used a bare `isTemplate` flag, which lets an unflagged compendium import through) | Barrier Damage Â· both IC pickers (deploying puts the stocked actor itself into combat) Â· Orthodox host pickers Â· Driving Test Â· MIJI vehicles Â· vehicle link Â· ward dialogs Â· matrix targets |
-| **The party** â€” `SR3EQuery.isPlayerCharacter` | **Session Rewards** â€” it listed every live character, the GM's Chrome Threats and contacts included |
-| **The scene** â€” `sceneFirst` (`scripts/data/actor-scope.mjs`): tokens on the drawn canvas, else the viewed/active scene's token documents, else everyone (theatre of the mind) | **Chunky Salsa** (unless the grenade flow passed its own list) Â· Barrier Damage Â· Falling Damage Â· Escape Artist Â· contested roll (plus the actor it was opened from; it also offered hosts, IC and vehicles) Â· healing medic and casters Â· ward attack / fool Â· the target pickers (which already worked this way â€” now the shared rule) |
-| **Narrower** | Orthodox IC attack â†’ the deckers on its host (`orthodoxRunState.currentHostId`), else every live character |
+| **No templates** — `game.sr3e.isLiveActor` (one rule; five sites used a bare `isTemplate` flag, which lets an unflagged compendium import through) | Barrier Damage · both IC pickers (deploying puts the stocked actor itself into combat) · Orthodox host pickers · Driving Test · MIJI vehicles · vehicle link · ward dialogs · matrix targets |
+| **The party** — `SR3EQuery.isPlayerCharacter` | **Session Rewards** — it listed every live character, the GM's Chrome Threats and contacts included |
+| **The scene** — `sceneFirst` (`scripts/data/actor-scope.mjs`): tokens on the drawn canvas, else the viewed/active scene's token documents, else everyone (theatre of the mind) | **Chunky Salsa** (unless the grenade flow passed its own list) · Barrier Damage · Falling Damage · Escape Artist · contested roll (plus the actor it was opened from; it also offered hosts, IC and vehicles) · healing medic and casters · ward attack / fool · the target pickers (which already worked this way — now the shared rule) |
+| **Narrower** | Orthodox IC attack → the deckers on its host (`orthodoxRunState.currentHostId`), else every live character |
 
-âš  **Rosters stay world-wide on purpose** â€” pilot/passengers, agent operator, chase, Driving Test,
+⚠ **Rosters stay world-wide on purpose** — pilot/passengers, agent operator, chase, Driving Test,
 and the healing *patient* picker (downtime care is off the map).
 
 **Walked by the agent 2026-09-14** (mcp-api): Session Rewards lists only SWAT Team Member and
 Troll Street Dealer (was five); `sceneFirst` against *Test Map*'s tokens gives its four and drops
 Windage; the empty active scene falls back to everyone.
-- [x] **Automated â€” `tests/e2e/actor-lists.spec.mjs`** (the GM's Playwright client draws the canvas the
-  agent's pane cannot): a disposable actor with a token on the active scene is offered by ðŸ’¥ Chunky
+- [x] **Automated — `tests/e2e/actor-lists.spec.mjs`** (the GM's Playwright client draws the canvas the
+  agent's pane cannot): a disposable actor with a token on the active scene is offered by 💥 Chunky
   Salsa, and every live character with no token there is not. Passing 2026-09-14.
 - [ ] Falling Damage / Escape Artist / Barrier Damage the same (same `sceneFirst` call; not automated).
 
-## F3. Melee boxing-card TNs omit the wound modifier â€” FIXED 2026-09-14 (0.5.2)
+## F3. Melee boxing-card TNs omit the wound modifier — FIXED 2026-09-14 (0.5.2)
 
-The Melee Modifiers Table (SR3 p.123) has *"Character is wounded â€” Damage Modifier (see p. 126)"*;
+The Melee Modifiers Table (SR3 p.123) has *"Character is wounded — Damage Modifier (see p. 126)"*;
 astral combat *"uses the same rules as Melee Combat"* (p.174). Both boxing cards roll through
-`_rollWave`, which never adds `woundMod` â€” and `SR3ECombatModifiers.js` said `rollPool` did. Each
+`_rollWave`, which never adds `woundMod` — and `SR3ECombatModifiers.js` said `rollPool` did. Each
 fighter's own wounds now go into their own TN (`SR3EActor.woundTN`), melee and astral, and the GM
 window's note says so. `tests/melee-wounds.test.mjs` + a mutant.
-- [x] **Automated â€” `tests/e2e/melee-wounds.spec.mjs`**: Player2's attacker with 3 Stun boxes (âˆ’2)
+- [x] **Automated — `tests/e2e/melee-wounds.spec.mjs`**: Player2's attacker with 3 Stun boxes (−2)
   attacks Player3's troll; the GM window on the GM's client starts the attacker **+2** over an unhurt
-  baseline run, the defender's TN does not move, and the note reads *"â€¦ wounded +2"*. Passing 2026-09-14.
-- [ ] The same from ðŸŒ€ astral combat (same `woundTN`; not automated).
+  baseline run, the defender's TN does not move, and the note reads *"… wounded +2"*. Passing 2026-09-14.
+- [ ] The same from 🌀 astral combat (same `woundTN`; not automated).
 
-## F4. Melee / cybercombat / contested results ignore explosion waves (TN > 6 only) â€” FIXED 2026-09-14 (0.5.2)
+## F4. Melee / cybercombat / contested results ignore explosion waves (TN > 6 only) — FIXED 2026-09-14 (0.5.2)
 
 At TN 7+ (defaulting +4, a called shot +4, a System Rating of 7) the result card was posted off
-the FIRST wave, so ðŸ’¥ changed the dice and never the winner (the Rule of Six, SR3 p.38). Melee,
-astral, contested and cybercombat now open a **â³ card** when either side has dice to explode; its
-message flag holds both sides' dice, each side's ðŸ’¥ payload carries a reference to it, and a side's
+the FIRST wave, so 💥 changed the dice and never the winner (the Rule of Six, SR3 p.38). Melee,
+astral, contested and cybercombat now open a **⏳ card** when either side has dice to explode; its
+message flag holds both sides' dice, each side's 💥 payload carries a reference to it, and a side's
 final wave reports its dice to the GM (`sr3e.opposed.settle`), who serialises the writes and posts
 the real result once both are in. **Not an in-memory map** as first proposed: the two sides usually
-explode on different clients, so only a shared record can see both. **âš” Resolve with the dice as
-they stand (GM)** is the AFK escape. Nothing to explode â†’ the result posts at once, as before.
+explode on different clients, so only a shared record can see both. **⚔ Resolve with the dice as
+they stand (GM)** is the AFK escape. Nothing to explode → the result posts at once, as before.
 `tests/opposed-explosions.test.mjs` drives it end to end through the registered handler; a mutant.
 
-**Walked by the agent 2026-09-14** (mcp-api, a contested roll at TN 8 through real wave cards and ðŸ’¥
-buttons): the â³ card held; the attacker's two 6s exploded to 12/11, the defender's to 10; the result
-(2 vs 1) posted once, **below** both wave-1 cards. The first run put it above the deciding wave â€”
+**Walked by the agent 2026-09-14** (mcp-api, a contested roll at TN 8 through real wave cards and 💥
+buttons): the ⏳ card held; the attacker's two 6s exploded to 12/11, the defender's to 10; the result
+(2 vs 1) posted once, **below** both wave-1 cards. The first run put it above the deciding wave —
 the settle now runs after the wave card is posted.
-- [ ] A real melee exchange with a called shot (TN 8) between two players: roll the ðŸ’¥ on both cards â†’ one result, after the last explosion.
+- [ ] A real melee exchange with a called shot (TN 8) between two players: roll the 💥 on both cards → one result, after the last explosion.
 
-**MIJI and the other silent resolvers â€” FIXED 2026-09-14 (0.5.2).** The maintainer: *"all explosions
+**MIJI and the other silent resolvers — FIXED 2026-09-14 (0.5.2).** The maintainer: *"all explosions
 should be interactive, we should wait for dice explosions to finish before queing up other things."*
-Every roll that looped `_rollWave` itself now goes through `SR3EActor.rollOpposedPair` (the â³ card)
+Every roll that looped `_rollWave` itself now goes through `SR3EActor.rollOpposedPair` (the ⏳ card)
 or `SR3EActor.rollThen` (one roll, then its next step on the final wave):
 
 | Was silent | Now |
 |---|---|
-| MIJI contest Â· Orthodox System Test Â· Orthodox IC attack Â· Orthodox cybercombat Â· fooling a ward | `rollOpposedPair` â€” the result waits for both sides |
-| MIJI infiltration (allocation dialog) Â· detect infiltration Â· ECCM repair Â· reduce footprint Â· IVIS (split dialog) | `rollThen` â€” the dialog / result waits |
+| MIJI contest · Orthodox System Test · Orthodox IC attack · Orthodox cybercombat · fooling a ward | `rollOpposedPair` — the result waits for both sides |
+| MIJI infiltration (allocation dialog) · detect infiltration · ECCM repair · reduce footprint · IVIS (split dialog) | `rollThen` — the dialog / result waits |
 | A spirit resisting banishment | its own wave card when it explodes; the outcome posts after |
-| Chase Scene Driver Points (an Open Test, p.40) | a ðŸ’¥ per wave of 6s, for the user who rolled; Driver Points land after the last |
+| Chase Scene Driver Points (an Open Test, p.40) | a 💥 per wave of 6s, for the user who rolled; Driver Points land after the last |
 
-Nothing to explode â†’ exactly as before, no extra cards. `tests/interactive-explosions.test.mjs` (58
+Nothing to explode → exactly as before, no extra cards. `tests/interactive-explosions.test.mjs` (58
 assertions, through the real registry and settle handler) + the `next-step-before-the-explosions` mutant.
 
-**Walked by the agent 2026-09-14** (mcp-api): Reduce Footprint at TN 8 through `rollThen` â€” one wave
-card with a ðŸ’¥, Flux untouched; the click exploded the 6 to 10, then the result card posted below it
-(Flux 20 â†’ 19, restored after). A MIJI pair at TN 8 â€” the â³ card and a ðŸ’¥ card for the intruder only;
-the click (6 â†’ 7), then the MIJI result once, below it.
-- [ ] Infiltration with a rigger at TN 7+ (Protocol below the target's Deck): the allocation dialog opens only after the last ðŸ’¥.
-- [ ] Chase Scene: roll Driver Points until a 6 comes up â†’ the card offers ðŸ’¥, the chase shows the points only after the last wave, and another player's copy of the card shows the button disabled.
+**Walked by the agent 2026-09-14** (mcp-api): Reduce Footprint at TN 8 through `rollThen` — one wave
+card with a 💥, Flux untouched; the click exploded the 6 to 10, then the result card posted below it
+(Flux 20 → 19, restored after). A MIJI pair at TN 8 — the ⏳ card and a 💥 card for the intruder only;
+the click (6 → 7), then the MIJI result once, below it.
+- [ ] Infiltration with a rigger at TN 7+ (Protocol below the target's Deck): the allocation dialog opens only after the last 💥.
+- [ ] Chase Scene: roll Driver Points until a 6 comes up → the card offers 💥, the chase shows the points only after the last wave, and another player's copy of the card shows the button disabled.
 
-**Found during the live check â€” old ðŸ’¥ buttons re-roll after a reload.** The one-shot guard
-(`_usedButtons`) is in memory and resets on reload by design, so after an F5 an old wave card's ðŸ’¥
+**Found during the live check — old 💥 buttons re-roll after a reload.** The one-shot guard
+(`_usedButtons`) is in memory and resets on reload by design, so after an F5 an old wave card's 💥
 can be clicked again and posts a new wave for a roll long since resolved. It cannot change an opposed
-result any more (a resolved â³ card ignores it), but it does for a plain roll's own card.
-**FIXED 2026-09-14 (0.5.2):** a ðŸ’¥ click is claimed on the message through `sr3e.card.mark` (append-only,
-GM-serialised) before it rolls; a claimed ðŸ’¥ renders *"ðŸ’¥ Explosions rolled"* on every client and after
-any reload, and a second click â€” the owner and the GM at once, say â€” stops. The Chase Scene's ðŸ’¥ too,
-which checks its window is open before claiming. GM unreachable â†’ it rolls anyway.
+result any more (a resolved ⏳ card ignores it), but it does for a plain roll's own card.
+**FIXED 2026-09-14 (0.5.2):** a 💥 click is claimed on the message through `sr3e.card.mark` (append-only,
+GM-serialised) before it rolls; a claimed 💥 renders *"💥 Explosions rolled"* on every client and after
+any reload, and a second click — the owner and the GM at once, say — stops. The Chase Scene's 💥 too,
+which checks its window is open before claiming. GM unreachable → it rolls anyway.
 `tests/interactive-explosions.test.mjs`.
-- [ ] Roll at TN 8 until a ðŸ’¥ appears â†’ click it â†’ F5 â†’ the old card's ðŸ’¥ shows *Explosions rolled*, disabled.
-- [ ] The actor's owner and the GM click the same ðŸ’¥ together â†’ one wave posts, not two.
+- [ ] Roll at TN 8 until a 💥 appears → click it → F5 → the old card's 💥 shows *Explosions rolled*, disabled.
+- [ ] The actor's owner and the GM click the same 💥 together → one wave posts, not two.
 
-## F5. Drain track (Stun vs Physical) inconsistent between casting and dispelling â€” FIXED 2026-09-14 (0.5.2)
+## F5. Drain track (Stun vs Physical) inconsistent between casting and dispelling — FIXED 2026-09-14 (0.5.2)
 
-The book says **Magic Attribute** every time â€” casting (*"If the Force of the spell is greater than
+The book says **Magic Attribute** every time — casting (*"If the Force of the spell is greater than
 the caster's Magic Attribute, the Drain causes physical damage"*, SR3 p.183), dispelling, summoning,
-and a ward's maximum Force â€” and Essence loss lowers that attribute (*"a magician with an Essence
+and a ward's maximum Force — and Essence loss lowers that attribute (*"a magician with an Essence
 Rating of 4.5 has a Magic Rating of 4"*). That is `magic.value`. Casting read it; these read
 `magic.base`, all now `SR3EActor.magicAttribute`:
 
-- **Drain track** â€” dispelling, conjuring (all three uses), and the Drain card's "Force > Magic" warning.
-- **Banishing** â€” the spirit resisted against base Magic.
-- **Spell Pool** â€” `spendSpellPool`, `rollDispel` and the casting flow each recounted it from base
+- **Drain track** — dispelling, conjuring (all three uses), and the Drain card's "Force > Magic" warning.
+- **Banishing** — the spirit resisted against base Magic.
+- **Spell Pool** — `spendSpellPool`, `rollDispel` and the casting flow each recounted it from base
   INT/WIL/Magic, so a caster whose Magic had dropped could spend dice the sheet did not show. One
   formula now, `SR3EActor.spellPoolFor`, which the derivation uses too.
 - **Wards** (default/max Force, an attacker's Magic damage and resist TN) and the contested roll's
   *Magic* source.
 
-âš  **Kept on `base` by design:** the "is this character Awakened?" gates, adept power-level caps
+⚠ **Kept on `base` by design:** the "is this character Awakened?" gates, adept power-level caps
 (documented at the call site), and permanent Magic loss (a write). `tests/magic-attribute.test.mjs`
 ratchets every other read; two mutants.
 
-**Checked live 2026-09-14:** *Bruce Lee* in the test world is the repro â€” base 6, effective 5; a
+**Checked live 2026-09-14:** *Bruce Lee* in the test world is the repro — base 6, effective 5; a
 Force 6 dispel now takes Physical Drain as a Force 6 cast does, and `spellPoolFor` equals the sheet's
 Spell Pool for every actor.
 
-## F7. Wound modifiers missing from the tests that roll outside `rollPool` â€” FIXED 2026-09-14 (0.5.2)
+## F7. Wound modifiers missing from the tests that roll outside `rollPool` — FIXED 2026-09-14 (0.5.2)
 
 SR3 p.125: *"The Injury Modifier is a universal target number modifier that applies to nearly all
 Success Tests the injured character may attempt, except those for resisting or avoiding damage."*
@@ -2395,53 +2395,53 @@ editable):
 
 | Test | Now takes the wound |
 |---|---|
-| Contested roll | both sides â€” the initiator's TN follows the actor picked, the opponent's corner starts with theirs |
-| Cybercombat (Defragged) Â· Orthodox cybercombat | the **attacker**; the defence avoids damage |
+| Contested roll | both sides — the initiator's TN follows the actor picked, the opponent's corner starts with theirs |
+| Cybercombat (Defragged) · Orthodox cybercombat | the **attacker**; the defence avoids damage |
 | Orthodox System Test | the decker |
 | MIJI contest | both riggers |
-| Infiltration Â· detect Â· ECCM repair Â· reduce footprint Â· IVIS | the rigger |
-| Knockdown Test | the target â€” **the maintainer's ruling**, though its threshold also scales with the wound (p.124) |
-| Vehicle weapons | the gunner â€” they were taking the wounds off the **dice pool**, from the raw boxes (so Pain Resistance, compensators and the Pain Editor were ignored); now a TN, from `woundMod` |
+| Infiltration · detect · ECCM repair · reduce footprint · IVIS | the rigger |
+| Knockdown Test | the target — **the maintainer's ruling**, though its threshold also scales with the wound (p.124) |
+| Vehicle weapons | the gunner — they were taking the wounds off the **dice pool**, from the raw boxes (so Pain Resistance, compensators and the Pain Editor were ignored); now a TN, from `woundMod` |
 
-âš  **Left alone on purpose:** **Missile Parry** avoids damage (excluded by p.125, and not the dodge,
+⚠ **Left alone on purpose:** **Missile Parry** avoids damage (excluded by p.125, and not the dodge,
 whose own example works the wound in, p.113). `tests/wound-modifiers.test.mjs` + the
 `cybercombat-attack-ignores-wounds` mutant.
-- [ ] Give a decker 3 Stun boxes â†’ Cybercombat â†’ their corner starts at TN 6, the defender's at 4.
-- [ ] Contested roll from a wounded actor's sheet â†’ the TN box starts at 4 + the wound; pick another actor and it follows.
-- [ ] MIJI with a wounded intruder rigger â†’ the intruder corner's TN is the deck rating + the wound.
-- [ ] A wounded rigger fires a vehicle weapon â†’ the pool is NOT reduced; the card's TN is +the wound and its label says so.
-- [ ] Knockdown on a wounded target â†’ the TN box includes their wound, and the dialog says so.
+- [ ] Give a decker 3 Stun boxes → Cybercombat → their corner starts at TN 6, the defender's at 4.
+- [ ] Contested roll from a wounded actor's sheet → the TN box starts at 4 + the wound; pick another actor and it follows.
+- [ ] MIJI with a wounded intruder rigger → the intruder corner's TN is the deck rating + the wound.
+- [ ] A wounded rigger fires a vehicle weapon → the pool is NOT reduced; the card's TN is +the wound and its label says so.
+- [ ] Knockdown on a wounded target → the TN box includes their wound, and the dialog says so.
 
-## F6. Wrong range-TN fallback array â€” FIXED 2026-09-14 (0.5.2)
+## F6. Wrong range-TN fallback array — FIXED 2026-09-14 (0.5.2)
 
-`SR3EItem._rangeBandForDistance` fell back to `[0, 1, 2, 3]` and `tn[3] ?? 3` â€” Extreme at TN 7,
+`SR3EItem._rangeBandForDistance` fell back to `[0, 1, 2, 3]` and `tn[3] ?? 3` — Extreme at TN 7,
 not 9 (SR3 p.111). Both now **5**; inert unless `SR3E.rangeTN` is undefined. Pinned in
 `tests/tables.test.mjs` with the config table removed.
 
-## 39. Drugs â€” addiction, tolerance, withdrawal (TODO 124, `feature/drug-rules`)
+## 39. Drugs — addiction, tolerance, withdrawal (TODO 124, `feature/drug-rules`)
 
 **Prerequisites:** a **full Foundry restart** (new `substances` actor field and new drug item fields),
 then `npm run packs:install` with Foundry closed so the rebuilt M&M drug pack reaches the install.
 
-- [ ] Compendium â†’ M&M drugs: **one** Jazz, Kamikaze, Psyche, Long Haul, ACTH, Anabolic Steroids; no
+- [ ] Compendium → M&M drugs: **one** Jazz, Kamikaze, Psyche, Long Haul, ACTH, Anabolic Steroids; no
       "CS" or "Neurostun"; Kamikaze reads **5P**; CS/Tear Gas reads Speed *1 Combat Turn*.
-- [ ] Drag **Cram** onto a character â†’ Gear tab â†’ **ðŸ’Š** â†’ a dose card (Dose 1, +1 Reaction, +1D6
-      Initiative for 12 âˆ’ Body hours) and a roll card *Willpower (4)* with the **unaugmented** dice.
+- [ ] Drag **Cram** onto a character → Gear tab → **💊** → a dose card (Dose 1, +1 Reaction, +1D6
+      Initiative for 12 − Body hours) and a roll card *Willpower (4)* with the **unaugmented** dice.
       The Attributes tab: Reaction up by 1 with a live chip naming Cram; Initiative dice +1.
-- [ ] A player rolls it; with 0 successes the result card offers **âœ” Mark addicted** â†’ the record reads
-      Addiction 5Mâ€¢ and *addicted*. The GM can change Dice/TN on the roll card; a player cannot.
-- [ ] **â³ Wears off** â†’ the crash card (Moderate Stun for the same duration), the tolerance roll card
-      *Body (2)*; the Reaction chip is gone; Stun modifiers show as Moderate while crashing; **âœ” Crash
+- [ ] A player rolls it; with 0 successes the result card offers **✔ Mark addicted** → the record reads
+      Addiction 5M• and *addicted*. The GM can change Dice/TN on the roll card; a player cannot.
+- [ ] **⏳ Wears off** → the crash card (Moderate Stun for the same duration), the tolerance roll card
+      *Body (2)*; the Reaction chip is gone; Stun modifiers show as Moderate while crashing; **✔ Crash
       over** clears them.
-- [ ] Take Cram four more times â†’ on the 5th dose the dose card says *Edge reached* and a Willpower (5)
+- [ ] Take Cram four more times → on the 5th dose the dose card says *Edge reached* and a Willpower (5)
       card appears (only if not already addicted).
-- [ ] Addicted: **â›“ No fix** â†’ *Forced withdrawal +3*; every roll card label reads *Drugs +3*; the
-      Stun modifier is Moderate with an empty Stun track. **â­ A day passes** lowers the rating by 1.
-- [ ] **ðŸŽ² Kick it** â†’ Willpower vs current + 1; success offers **âœ” Begin withdrawal** (+2); a dose
+- [ ] Addicted: **⛓ No fix** → *Forced withdrawal +3*; every roll card label reads *Drugs +3*; the
+      Stun modifier is Moderate with an empty Stun track. **⏭ A day passes** lowers the rating by 1.
+- [ ] **🎲 Kick it** → Willpower vs current + 1; success offers **✔ Begin withdrawal** (+2); a dose
       taken during withdrawal says *Relapse* and raises the rating by 1.
-- [ ] **Jazz** â†’ Quickness +2 (and Reaction with it); wears off â†’ a **ðŸ©¸ Resist 8L Stun** button â†’ the
+- [ ] **Jazz** → Quickness +2 (and Reaction with it); wears off → a **🩸 Resist 8L Stun** button → the
       soak card shows *armour does not apply*.
-- [ ] A second player cannot press another character's âœ” buttons or ðŸŽ² (greyed with a reason).
+- [ ] A second player cannot press another character's ✔ buttons or 🎲 (greyed with a reason).
 
 ## 40. The action ledger (TODO 48, `feature/action-economy`)
 
@@ -2449,48 +2449,48 @@ then `npm run packs:install` with Foundry closed so the rebuilt M&M drug pack re
 MAIN checkout, so merge first or point it at the branch), then F5. A combat with two PCs, started.
 
 - [ ] The active combatant's row shows pips (one wide Complex, two Simple, one small Free) to **every**
-      user; the GM also sees Complex / Simple / Simple / â†º.
-- [ ] On their phase a player fires a pistol **SA** â†’ one Simple pip fills; a second SA â†’ both; a
-      third â†’ âš  and a GM warning, recorded not refused. The turn does **not** advance by itself; after
+      user; the GM also sees Complex / Simple / Simple / ↺.
+- [ ] On their phase a player fires a pistol **SA** → one Simple pip fills; a second SA → both; a
+      third → ⚠ and a GM warning, recorded not refused. The turn does **not** advance by itself; after
       the second, the GM's second **Simple** button is lit (TODO 141).
-- [ ] Full auto â†’ the Complex pip, not a Simple. A skill roll, a spell, a melee attack â†’ Complex.
+- [ ] Full auto → the Complex pip, not a Simple. A skill roll, a spell, a melee attack → Complex.
 - [ ] The defender's dodge, soak and spell resistance fill **nothing** on the defender.
-- [ ] An actor who is not the active combatant rolls â†’ nothing is charged.
-- [ ] â†º (GM): pick the SA shot â†’ the dialog lists `combatPoolSpent`, `roundsFiredThisPhase`, the gun's
-      `loadedRounds` and the chat cards since, all ticked â†’ **â†© Undo** puts them back, deletes the
-      cards and frees the pip. Untick one row â†’ that value is left alone.
-- [ ] **TODO 152:** fire a put-away pistol, pick âœ‹ Ready â†’ two pips (Ready, Fire). â†º once â†’ the dialog
-      (defaulting to the shot) lists the rounds and pool dice to put back â€” not "No snapshot". Same
+- [ ] An actor who is not the active combatant rolls → nothing is charged.
+- [ ] ↺ (GM): pick the SA shot → the dialog lists `combatPoolSpent`, `roundsFiredThisPhase`, the gun's
+      `loadedRounds` and the chat cards since, all ticked → **↩ Undo** puts them back, deletes the
+      cards and frees the pip. Untick one row → that value is left alone.
+- [ ] **TODO 152:** fire a put-away pistol, pick ✋ Ready → two pips (Ready, Fire). ↺ once → the dialog
+      (defaulting to the shot) lists the rounds and pool dice to put back — not "No snapshot". Same
       after a clip swap (Remove Clip, Insert Clip).
 - [ ] Reload: a clip swap fills both Simples; loose rounds a Complex each; nocking an arrow one Simple.
 - [ ] F5 on any client keeps the pips (they are a combatant flag); the next combatant's phase starts empty.
-- [ ] **Ready (TODO 47):** a weapon row's âœ‹ puts it away (grey) and readies it (green); readying fills
+- [ ] **Ready (TODO 47):** a weapon row's ✋ puts it away (grey) and readies it (green); readying fills
       a Simple pip on the character's phase, putting away does not.
 - [ ] **Nothing arrives in hand (TODO 135/136):** drag a pistol, a sword and grenades from the compendium
-      onto a new character, and buy one â†’ every âœ‹ is grey and "In hand" reads 0. A cyber-implant weapon
+      onto a new character, and buy one → every ✋ is grey and "In hand" reads 0. A cyber-implant weapon
       stays ready; a vehicle's mounted gun is unaffected.
-- [ ] Fire a put-away pistol â†’ the dialog offers Ready / âš¡ Quick Draw / Attack anyway. Quick Draw rolls
-      Reaction vs 4 (6 with the holster box unticked); a success posts ðŸŽ¯ Fire, which attacks without a
+- [ ] Fire a put-away pistol → the dialog offers Ready / ⚡ Quick Draw / Attack anyway. Quick Draw rolls
+      Reaction vs 4 (6 with the holster box unticked); a success posts 🎯 Fire, which attacks without a
       second charge; a failure says it cannot fire this phase. A rifle (Concealability < 4) offers no
       Quick Draw. A put-away sword gets the same dialog without it; fists never ask.
-- [ ] **Hands (TODO 49):** the Weapons tab says "âœ‹ In hand: N of 2 hands â€” â€¦"; ready a rifle and a
-      pistol â†’ amber and a warning; the GM's extra-hands box set to 1 â†’ it clears. A weapon's item
+- [ ] **Hands (TODO 49):** the Weapons tab says "✋ In hand: N of 2 hands — …"; ready a rifle and a
+      pistol → amber and a warning; the GM's extra-hands box set to 1 → it clears. A weapon's item
       sheet shows its Hands (a compendium rifle 2, a pistol 1).
-- [ ] Two ready pistols, fire one â†’ the GM window's Gear group pre-ticks "Using a second firearm +2" and
-      does NOT tick smartlink/laser; holster the second â†’ neither. Two assault rifles â†’ never ticked.
+- [ ] Two ready pistols, fire one → the GM window's Gear group pre-ticks "Using a second firearm +2" and
+      does NOT tick smartlink/laser; holster the second → neither. Two assault rifles → never ticked.
 - [ ] After merging, `npm run packs:install` (Foundry closed) so the install's weapons carry `hands`.
 - [ ] **Gyro (TODO 18):**
   - [ ] Give a character a compendium *Gyro Mount* (sr3 gear, rating 5). The Combat Pool halves, rounded
         down. The soak card's armour rises by 1/1.
-  - [ ] Fire SA twice (+1 recoil on the second shot). The breakdown says "Gyro âˆ’1 of recoil (up to 5 off
+  - [ ] Fire SA twice (+1 recoil on the second shot). The breakdown says "Gyro −1 of recoil (up to 5 off
         movement)".
-  - [ ] In the GM window, "Gyro 5 â€” off movement" reads 5. Tick "Attacker running": the TN does not
+  - [ ] In the GM window, "Gyro 5 — off movement" reads 5. Tick "Attacker running": the TN does not
         rise (4 offset). Set the box to 2: the TN rises by 2.
   - [ ] Put the gyro in storage. All of the above goes away.
   - [ ] Melee with the gyro worn: the GM window's base TN for that fighter is 4 higher.
 - [ ] **Accessories (TODO 18):**
   - [ ] A compendium Ares Predator shows smartgun/laser as the packs store them.
-  - [ ] Fire a smartgun with Smartlink cyberware: âˆ’2 is pre-ticked.
+  - [ ] Fire a smartgun with Smartlink cyberware: −2 is pre-ticked.
   - [ ] The Ballista (Laser Designator) never pre-ticks a laser sight.
   - [ ] After merging, run `npm run packs:install` (Foundry closed), then restart Foundry fully: the data
         model changed.
@@ -2498,16 +2498,16 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [ ] In `test-shadowrun`, open Configure Settings. Track Ammunition is still OFF, and the console logged
         "trackAmmo: default changed in 0.6.0; this world keeps false".
   - [ ] A brand-new world has it ON (after the 0.6.0 bump; before it, the second load pins it off).
-  - [ ] Its hint describes empty guns and â†» Reload.
+  - [ ] Its hint describes empty guns and ↻ Reload.
 - [ ] **Shotgun shot (TODO 57):**
   - [ ] Give a character an ammunition item of type Shot with a clip load mechanism, then reload a
         shotgun with it.
-  - [ ] Fire at a token 15 m away with choke 5. The breakdown shows "Shot spread âˆ’2 (choke 5, 3 m wideâ€¦)",
+  - [ ] Fire at a token 15 m away with choke 5. The breakdown shows "Shot spread −2 (choke 5, 3 m wide…)",
         the damage Power is 2 lower, and the defender's Dodge TN is 6.
   - [ ] Fire again: the choke box remembers 5.
   - [ ] Load slugs (Regular): no choke box, no spread.
   - [ ] With a smartlink and a smartgun shotgun firing shot, the GM window pre-ticks "Smartlink, shotgun
-        firing shot âˆ’1", not âˆ’2.
+        firing shot −1", not −2.
   - [ ] Choke 2 at 20 m against a 6-Power gun stops with "ineffective".
 - [ ] **Smartgun walking fire (TODO 56.1):** Fire FA from a compendium smartgun (e.g. an Ares Alpha).
       The Smartgun box is ticked, and metres 2 wastes nothing: the recoil preview does not change.
@@ -2517,16 +2517,16 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [ ] In FA, the metres box holds the measured A-to-B distance.
   - [ ] Target A again: back to 1st.
   - [ ] Next phase: 1st again.
-  - [ ] GM â†º on B's shot lists "targetsThisPhase: 2 targets shot at â†’ 1 target shot at".
+  - [ ] GM ↺ on B's shot lists "targetsThisPhase: 2 targets shot at → 1 target shot at".
 - [ ] **Quick Strike (TODO 78):**
   - [ ] Give an adept the MITS Quick Strike power and start combat with two faster combatants.
-  - [ ] At the start of pass 1, the âš¡ on the adept's row is enabled for its owner. Press it: the adept
+  - [ ] At the start of pass 1, the ⚡ on the adept's row is enabled for its owner. Press it: the adept
         becomes the active combatant, the card posts, and the initiative number is unchanged.
   - [ ] The other two still act in pass 1, and the adept does not act again in that pass.
-  - [ ] âš¡ is disabled for the rest of the round, and enabled again next round.
-  - [ ] With damage enough for an injury modifier (a Light wound), âš¡ asks for confirmation. With Pain
+  - [ ] ⚡ is disabled for the rest of the round, and enabled again next round.
+  - [ ] With damage enough for an injury modifier (a Light wound), ⚡ asks for confirmation. With Pain
         Resistance cancelling it, it does not.
-  - [ ] Player3 cannot see the âš¡ on Player2's adept.
+  - [ ] Player3 cannot see the ⚡ on Player2's adept.
 - [ ] **Melee multiple targets (TODO 38 / 56.2):** in combat, punch token A, then attack B in the same
       phase. The GM melee window's "additional targets" starts at 1 and the attacker's TN includes +2.
       Attacking A again starts at 0.
@@ -2538,91 +2538,91 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [x] Drag in a 2.0 implant with the tick: 1.0 off, 1.0 to pay, and the hole reads 0.
   - [x] Without the tick, an implant costs full price and leaves the hole alone.
   - [x] The GM can correct the hole by hand (a bookkeeping mistake); a player sees it greyed out.
-  - [x] Full restart first â€” the data model changed.
+  - [x] Full restart first — the data model changed.
 - [x] **Carried load (TODO 126):**
-  - [x] A Strength 4 character with a rifle and a few clips: the Gear tab reads "âš– Carried N kg, free
-        to 20 kg (Str Ã— 5)".
+  - [x] A Strength 4 character with a rifle and a few clips: the Gear tab reads "⚖ Carried N kg, free
+        to 20 kg (Str × 5)".
   - [x] Load it past 20 kg: the line turns amber and names the Light Wound and the (Body) turns.
   - [x] Past 40 kg it turns red (Moderate), and nothing is ever applied automatically.
   - [x] Move a heavy item into storage: the total drops.
   - [x] Fire a box of ammunition down: the total drops with it (weight is per round).
-  - [x] After merging, `npm run packs:install` â€” the 661 ammunition documents changed.
+  - [x] After merging, `npm run packs:install` — the 661 ammunition documents changed.
 - [x] **Stress (TODO 109):**
-  - [x] Cyber tab â†’ âš™ Apply Stress (GM only â€” a player does not see it). Pick a basic cyberware item,
-        roll 1D6 Ã· 2: the card names the die, the new total and its level, and offers the test.
+  - [x] Cyber tab → ⚙ Apply Stress (GM only — a player does not see it). Pick a basic cyberware item,
+        roll 1D6 ÷ 2: the card names the die, the new total and its level, and offers the test.
   - [x] The row now shows the Stress in amber; at 6+ it turns red.
   - [x] Roll the test: 1 die vs TN = the new total. One success avoids failure; nothing is applied.
   - [x] Apply Stress to an Attribute: the test rolls half its unaugmented rating.
   - [x] Take one to 10: the card says it fails automatically and offers no roll.
-  - [x] Full restart first â€” the data model changed.
+  - [x] Full restart first — the data model changed.
 - [x] **Move-by-wire TLE-x (TODO 110):**
   - [x] Give a character Move-by-Wire [2]. The Cyber tab shows "1 Stress every 4 months, to Quickness
         AND Reaction" and "unaugmented Willpower (4) or TLE-x".
-  - [x] âš™ Apply Stress to Quickness: the card offers ðŸŽ² Willpower vs TLE-x as well as the Stress Test,
+  - [x] ⚙ Apply Stress to Quickness: the card offers 🎲 Willpower vs TLE-x as well as the Stress Test,
         and rolls the character's BASE Willpower.
-  - [x] ï¼‹ mark TLE-x: the line turns amber and lists the effects. âœ• clears it and counts a surgery.
+  - [x] ＋ mark TLE-x: the line turns amber and lists the effects. ✕ clears it and counts a surgery.
   - [x] A third clearing warns that the book allows only two.
   - [x] A character with no move-by-wire sees none of this.
 - [ ] **Buying gear (TODO 82):**
-  - [ ] Bio tab â†’ ðŸ›’ Buy gearâ€¦. With no item chosen the fields are blank and editable.
+  - [ ] Bio tab → 🛒 Buy gear…. With no item chosen the fields are blank and editable.
   - [ ] Pick a contact: a talismonger against a firearm shows the amber "poor source" line; a fixer
-        against gear shows âœ“. Neither blocks the button.
-  - [ ] Set TN 24, time 14, cost 3000, index 3, wait 12 â†’ the preview reads TN 12, base time 38
-        days, Street Index 4.2, asking Â¥12,600 (the book's monofilament whip, SR3 p.272).
-  - [ ] Roll with 2 successes â†’ the card says 19 days and a meet at 9.5.
-  - [ ] Roll 0 successes â†’ "No source", and the card explains the wait option rather than ending it.
-  - [ ] ðŸ¤ Negotiate, buyer wins by 4 â†’ 20% off, Â¥10,080. Buyer LOSES by 2 â†’ the price goes UP 10%.
-  - [ ] ðŸ’´ Pay confirms first, deducts the nuyen, adds the item if one was chosen, and leaves a
-        ledger entry reading "Bought â€¦".
-  - [ ] A player can press ðŸ¤ and ðŸ’´ on their own character; another player's client cannot.
+        against gear shows ✓. Neither blocks the button.
+  - [ ] Set TN 24, time 14, cost 3000, index 3, wait 12 → the preview reads TN 12, base time 38
+        days, Street Index 4.2, asking ¥12,600 (the book's monofilament whip, SR3 p.272).
+  - [ ] Roll with 2 successes → the card says 19 days and a meet at 9.5.
+  - [ ] Roll 0 successes → "No source", and the card explains the wait option rather than ending it.
+  - [ ] 🤝 Negotiate, buyer wins by 4 → 20% off, ¥10,080. Buyer LOSES by 2 → the price goes UP 10%.
+  - [ ] 💴 Pay confirms first, deducts the nuyen, adds the item if one was chosen, and leaves a
+        ledger entry reading "Bought …".
+  - [ ] A player can press 🤝 and 💴 on their own character; another player's client cannot.
 - [ ] **Karma / nuyen ledger (TODO 79):**
-  - [ ] Award karma from Session Rewards: the Bio tab's ðŸ“’ Ledger shows "+N Â· Session rewards".
+  - [ ] Award karma from Session Rewards: the Bio tab's 📒 Ledger shows "+N · Session rewards".
   - [ ] Spend karma on a skill: a negative entry naming the skill and its new rating.
-  - [ ] Type a new Nuyen total in the box: an entry with an em-dash for the reason â€” logged, not blocked.
+  - [ ] Type a new Nuyen total in the box: an entry with an em-dash for the reason — logged, not blocked.
   - [ ] Re-submit the sheet without changing anything: NO new entry.
   - [ ] A healing Charge names the treatment.
   - [ ] A player sees their own ledger; from the console, `actor.update({'system.ledger': []})`
         as a player is refused with a notice, and as the GM is allowed.
-  - [ ] Full restart first â€” the data model changed.
+  - [ ] Full restart first — the data model changed.
 - [ ] **Cybersystem damage (TODO 129):**
-  - [ ] Cyber tab â†’ ðŸŽ² Wound effectsâ€¦ (GM only â€” a player does not see it). 6 boxes, highest die 3
-        â†’ the card says 3 wound effects.
+  - [ ] Cyber tab → 🎲 Wound effects… (GM only — a player does not see it). 6 boxes, highest die 3
+        → the card says 3 wound effects.
   - [ ] Each line names its kind and, for a cybersystem hit, the slot and the implants in it.
   - [ ] A hit on a half-full slot says so as a percentage chance, not as a certain hit.
   - [ ] An empty slot says the effect is ignored, and offers no button.
-  - [ ] âš™ Apply Stress â€” <implant> opens the Stress dialog with that implant already chosen.
-  - [ ] Tick Electrical: every effect is a cybersystem one, and some carry the âš¡ spread note.
-  - [ ] A character with no bioware never gets a bioware hit â€” those lines read "ignored".
+  - [ ] ⚙ Apply Stress — <implant> opens the Stress dialog with that implant already chosen.
+  - [ ] Tick Electrical: every effect is a cybersystem one, and some carry the ⚡ spread note.
+  - [ ] A character with no bioware never gets a bioware hit — those lines read "ignored".
 - [x] **Cyberzombies (TODO 111):**
-  - [x] On a character with Essence 0, the Cyber tab offers ï¼‹ mark cyberzombie (GM only).
-  - [x] Marked: set Essence loss to 8 on a base of 6 â€” the box now shows âˆ’2 and the block says
+  - [x] On a character with Essence 0, the Cyber tab offers ＋ mark cyberzombie (GM only).
+  - [x] Marked: set Essence loss to 8 on a base of 6 — the box now shows −2 and the block says
         Cyberzombie, not dead.
-  - [x] ðŸŽ² CDS check rolls Willpower against TN 6, and says one test every 4 months.
-  - [x] ï¼‹ mark CDS: the line lists +4 Perception / +3 other, the weeks left, and the treatment TN.
+  - [x] 🎲 CDS check rolls Willpower against TN 6, and says one test every 4 months.
+  - [x] ＋ mark CDS: the line lists +4 Perception / +3 other, the weeks left, and the treatment TN.
   - [x] Unmark cyberzombie: Essence clamps back to 0 and reads dead again.
-  - [x] Full restart first â€” the data model changed.
+  - [x] Full restart first — the data model changed.
 
-**Ran 2026-09-20 by the agent in the Browser pane** (mcp-api, sole user, fresh load, system 0.5.2 after merging `feature/0-6-rules` + `feature/release-pipeline`): every box above verified by driving `game.sr3e.*` directly. The *player sees it greyed out* half is covered by `tests/e2e/player-sheet.spec.mjs`, which has the seats the Browser pane does not: the GM opens a 1.5 hole, Player2's sheet shows all three Essence boxes unnamed and disabled, and the same block is read back from the GM's seat named and editable â€” so a sheet that locked everyone out would fail too.
+**Ran 2026-09-20 by the agent in the Browser pane** (mcp-api, sole user, fresh load, system 0.5.2 after merging `feature/0-6-rules` + `feature/release-pipeline`): every box above verified by driving `game.sr3e.*` directly. The *player sees it greyed out* half is covered by `tests/e2e/player-sheet.spec.mjs`, which has the seats the Browser pane does not: the GM opens a 1.5 hole, Player2's sheet shows all three Essence boxes unnamed and disabled, and the same block is read back from the GM's seat named and editable — so a sheet that locked everyone out would fail too.
 
-## 41. Spells â€” cover and visibility (TODO 131, SR3 p.182-183; every spell since 0.6.2)
+## 41. Spells — cover and visibility (TODO 131, SR3 p.182-183; every spell since 0.6.2)
 
 **Prerequisites:** F5 after merging. `gmApprovesTN` on `player` (default). A mage PC with Flamethrower
 (LOS) and Fireball (LOS(A)), an NPC target on the scene.
 
-- [ ] Player casts Flamethrower at the NPC â†’ after the target, **before** the Spell Pool prompt, the GM
-      gets the window titled with the spell. Groups: Target, Attacker, Conditions â€” **no Gear**. Base TN 4,
+- [ ] Player casts Flamethrower at the NPC → after the target, **before** the Spell Pool prompt, the GM
+      gets the window titled with the spell. Groups: Target, Attacker, Conditions — **no Gear**. Base TN 4,
       and the note says "regardless of range".
-- [ ] GM ticks Partial cover and picks Thermal Smoke â†’ the TN follows; âœ“ â†’ the cast card rolls at that TN
+- [ ] GM ticks Partial cover and picks Thermal Smoke → the TN follows; ✓ → the cast card rolls at that TN
       and its TN source reads "GM +N cover/visibility".
-- [ ] GM presses **Cancel attack** â†’ nothing is cast, no Spell Pool spent.
-- [ ] Fireball â†’ the window shows Attacker and Conditions only (no Target); on Cancel the purple area
+- [ ] GM presses **Cancel attack** → nothing is cast, no Spell Pool spent.
+- [ ] Fireball → the window shows Attacker and Conditions only (no Target); on Cancel the purple area
       marker is removed.
-- [ ] A touch-range elemental spell â†’ no window. A personal-range spell â†’ no window.
-- [ ] **0.6.2 â€” every spell asks** (p.182, rules check 0.6.2): a **Manabolt** at the NPC â†’ the window opens,
+- [ ] A touch-range elemental spell → no window. A personal-range spell → no window.
+- [ ] **0.6.2 — every spell asks** (p.182, rules check 0.6.2): a **Manabolt** at the NPC → the window opens,
       Target/Attacker/Conditions, and the note says the caster must see the target; Partial cover moves the
-      roll's TN. A **Manaball** â†’ the window **keeps Target** (only an elemental area drops it), and its note
+      roll's TN. A **Manaball** → the window **keeps Target** (only an elemental area drops it), and its note
       says a target completely hidden is not affected.
-- [ ] GM casts at an NPC with `gmApprovesTN` on `player` â†’ no window (NPC vs NPC); set `always` â†’ it opens.
+- [ ] GM casts at an NPC with `gmApprovesTN` on `player` → no window (NPC vs NPC); set `always` → it opens.
 
 ## 42. Weapon icons by kind (TODO 182, unreleased 0.6.2)
 
@@ -2637,18 +2637,18 @@ already on a character (the migration reaches those), and a fresh drag from each
       EXOCET the missile, a Lure Launcher the tube box, a vehicle laser the cyan laser, a Snake-Spine the arm.
 - [ ] An **owned** weapon with a stock picture switches after one reload (the 0.6.2 pictures migration); one
       whose picture you chose yourself does **not** change.
-- [ ] Drag a weapon onto a character whose item list shows icons â†’ the drawn icon appears, not a texture.
+- [ ] Drag a weapon onto a character whose item list shows icons → the drawn icon appears, not a texture.
 
 ## 43. Full Defense declares once (TODO 221)
 
-**Prerequisites:** a world with an attacker and a target that has **Full Defense** on (ðŸ›¡ on its sheet, pool
+**Prerequisites:** a world with an attacker and a target that has **Full Defense** on (🛡 on its sheet, pool
 reserved). One client is enough; repeat once with the pop-up and the chat log both showing.
 
-- [ ] Attack the Full Defense target. The attack card is followed by **one** "ðŸ›¡ â€¦ Full Defense (N dice
-      auto-committed)" card and **one** "ðŸŽ¯ â€¦ dodges" card â€” not two of each.
+- [ ] Attack the Full Defense target. The attack card is followed by **one** "🛡 … Full Defense (N dice
+      auto-committed)" card and **one** "🎯 … dodges" card — not two of each.
 - [ ] The target's Combat Pool is charged N once, and Full Defense is switched off afterwards.
 - [ ] The attack card's button reads spent/"already acted" in both the pop-up and the log; clicking it again as GM
-      does nothing and posts nothing ("âœ“ Defence already declared").
+      does nothing and posts nothing ("✓ Defence already declared").
 - [ ] Only one soak button follows the dodge.
 
 ## 44. Limited spells (TODO 223, SR3 p.180-181)
@@ -2656,29 +2656,29 @@ reserved). One client is enough; repeat once with the pop-up and the chat log bo
 **Prerequisites:** a full Foundry restart is NOT needed (new spell fields default to blank). An Awakened character
 with Magic 6, Sorcery, and a Fireball (Combat, Drain `(DL+1)`) with some Good Karma.
 
-- [ ] **Spend Karma â†’ Learn a spell** (Fireball): the dialog has a **Fetish (âˆ’1)** and an **Exclusive (âˆ’2)** select,
-      each None / Taken off the Karma cost / Taken off the Force for Drain. Pick Force 8 and Exclusive â†’ **off the
-      Karma cost**: it costs **6**, the ledger line says "limit: exclusive âˆ’2 (learning)", and the spell's sheet shows
+- [ ] **Spend Karma → Learn a spell** (Fireball): the dialog has a **Fetish (−1)** and an **Exclusive (−2)** select,
+      each None / Taken off the Karma cost / Taken off the Force for Drain. Pick Force 8 and Exclusive → **off the
+      Karma cost**: it costs **6**, the ledger line says "limit: exclusive −2 (learning)", and the spell's sheet shows
       Exclusive limit = "Off the Karma cost to learn".
-- [ ] Learn it again (or edit the spell sheet) with Exclusive â†’ **off the Force for Drain**: it costs the full **8**.
+- [ ] Learn it again (or edit the spell sheet) with Exclusive → **off the Force for Drain**: it costs the full **8**.
 - [ ] Cast it at Force 8 (Magic 6) with the limit off **Drain**: warnings pop up (Exclusive Action, p.160); the cast
-      card shows "Limit âˆ’2: drains as Force 6 (cast at 8)"; **Resist Drain** reads **Stun**, formula F=6 (TN 3 for
+      card shows "Limit −2: drains as Force 6 (cast at 8)"; **Resist Drain** reads **Stun**, formula F=6 (TN 3 for
       `(DL+1)`), with no "Force > Magic" warning. The target still resists at Force 8.
 - [ ] Same spell with the limit off the **cost**: Drain is **Physical**, F=8, TN 4.
 - [ ] A fetish-limited spell warns that the fetish must be touching the caster; casting is never refused.
-- [ ] The GM's â†º on the "Learned Fireball" ledger line puts the spell's Force **and both limits** back.
+- [ ] The GM's ↺ on the "Learned Fireball" ledger line puts the spell's Force **and both limits** back.
 
-## 45. Table QoL (TODO 211, 208, 154 â€” `feature/table-qol`)
+## 45. Table QoL (TODO 211, 208, 154 — `feature/table-qol`)
 
 ### Action tracker reads "Complex or two Simples" (TODO 211)
 
 **Prerequisites:** a started combat with a combatant active. One client as GM, one as a player.
 
-- [ ] On the active combatant's row the pips read **[Complex] or [Simple][Simple]  + Free â—** â€” the Free pip sits
+- [ ] On the active combatant's row the pips read **[Complex] or [Simple][Simple]  + Free ●** — the Free pip sits
       apart, behind a divider; no longer four pips in a row.
-- [ ] The GM's buttons read **Complex  or  Simple Simple  â†º**.
+- [ ] The GM's buttons read **Complex  or  Simple Simple  ↺**.
 - [ ] Click Simple: the first Simple pip fills. Click the second: both fill and the turn ends, as before. A Complex
-      still ends the turn. â†º still opens the undo list.
+      still ends the turn. ↺ still opens the undo list.
 - [ ] A player's client shows the pips with the same grouping and no buttons.
 - [ ] Narrow the sidebar: the row wraps without overlapping the combatant name.
 
@@ -2687,19 +2687,19 @@ with Magic 6, Sorcery, and a Fireball (Combat, Drain `(DL+1)`) with some Good Ka
 **Prerequisites:** a scene with a player character, a friendly or neutral NPC token, and a hostile NPC token
 (token disposition Hostile, ideally unlinked); the player character's name sorts last alphabetically.
 
-- [ ] GM tools â†’ ðŸ©¹ Healing: the "who is hurt?" list shows the **player characters first**, then the other NPCs,
-      and the **hostile NPC last** â€” even though the alphabetical order would put them elsewhere.
+- [ ] GM tools → 🩹 Healing: the "who is hurt?" list shows the **player characters first**, then the other NPCs,
+      and the **hostile NPC last** — even though the alphabetical order would put them elsewhere.
 - [ ] The hostile NPC is still listed and can be picked and treated.
 - [ ] Turn the hostile token to Neutral and reopen: it moves up into the NPC group.
-- [ ] As a player, "Treat someone elseâ€¦": your own character and the other players' characters lead the list.
+- [ ] As a player, "Treat someone else…": your own character and the other players' characters lead the list.
 
 ### Buy gear: search the compendium, or drag an item in (TODO 154)
 
 **Prerequisites:** a character with a contact and Etiquette; Configure Source Books with core (`sr3`) on and one
-book (say `sota2`) switched OFF. Open **ðŸ›’ Buy gearâ€¦** from the Bio tab with no item.
+book (say `sota2`) switched OFF. Open **🛒 Buy gear…** from the Bio tab with no item.
 
-- [ ] A **ðŸ”Ž Search the gear compendiums** box sits above the Item field. Type `predator`: after "Reading the
-      compendiumsâ€¦" a list of matches appears (name Â· type Â· Availability Â· book page), best match first.
+- [ ] A **🔎 Search the gear compendiums** box sits above the Item field. Type `predator`: after "Reading the
+      compendiums…" a list of matches appears (name · type · Availability · book page), best match first.
 - [ ] Type `ares viper` (two words): only names containing both appear. Clear the box: the list empties.
 - [ ] Click a hit: Item, Availability TN/time/unit, Base cost and Street Index fill in, the preview line updates,
       and a contact poor for that type turns amber. Every field stays editable.
@@ -2707,79 +2707,79 @@ book (say `sota2`) switched OFF. Open **ðŸ›’ Buy gearâ€¦** from the Bi
 - [ ] Search for something that exists only in the switched-off book: **no hit**, "Nothing in the allowed books
       matches". Switch the book on in Configure Source Books and reopen: it is found.
 - [ ] Open the Compendium sidebar and drag a gear item onto the open dialog: the same fields fill in.
-- [ ] Drag a **spell** onto the dialog: a warning names the type ("not normally bought here â€” filled in anyway") and the
+- [ ] Drag a **spell** onto the dialog: a warning names the type ("not normally bought here — filled in anyway") and the
       form **still fills** (ruled 2026-10-17). Drag an **Actor** or a scene: nothing changes.
 - [ ] With the book off, its packs are hidden in the sidebar; if one is still reachable (an item's link in a
-      journal), dragging it warns "from a book that is switched off â€¦ filled in anyway" and **fills the form**.
-- [ ] Find a source for a searched item, negotiate and **ðŸ’´ Pay**: the item lands on the sheet, price in the ledger.
+      journal), dragging it warns "from a book that is switched off … filled in anyway" and **fills the form**.
+- [ ] Find a source for a searched item, negotiate and **💴 Pay**: the item lands on the sheet, price in the ledger.
 - [ ] Open Buy gear from an item's own row: it still pre-fills from that item; searching replaces it.
 - [ ] The medkit **Buy Medkit Supplies** button still fills the form and still refills the medkit on payment.
 
 
-## 46. The ðŸ“’ Ledger tab and the GM's âœ• (TODO 153, `feature/ledger-tab`)
+## 46. The 📒 Ledger tab and the GM's ✕ (TODO 153, `feature/ledger-tab`)
 
 **Prerequisites:** a character with more than 8 ledger entries (change nuyen or karma by hand a few times),
-owned by Player2. JS only â€” reload the tab, no restart.
+owned by Player2. JS only — reload the tab, no restart.
 
-- [ ] The sheet has a **ðŸ“’ Ledger** tab at the end of the tab bar. It lists **every** entry, newest first,
-      with date and time, From â†’ To and By.
-- [ ] Type a new Nuyen value in the box â†’ its row's **Why** reads **By hand**, never a dash (both tabs).
-- [ ] The **Bio** tab shows only the latest **8**, then "â€¦ and N older â€” see the ðŸ“’ Ledger tab"; the link
+- [ ] The sheet has a **📒 Ledger** tab at the end of the tab bar. It lists **every** entry, newest first,
+      with date and time, From → To and By.
+- [ ] Type a new Nuyen value in the box → its row's **Why** reads **By hand**, never a dash (both tabs).
+- [ ] The **Bio** tab shows only the latest **8**, then "… and N older — see the 📒 Ledger tab"; the link
       switches to the tab.
-- [ ] As the **GM**, each row on the Ledger tab has a âœ•. Click one â†’ a confirm names the change, its reason
-      and who made it, and says the totals stay. Confirm â†’ the row is gone; **Nuyen / Good Karma unchanged**.
-- [ ] Cancel the confirm â†’ nothing changes.
-- [ ] As **Player2** on the same sheet: the Ledger tab shows the rows **without** âœ•.
-- [ ] Stale click: GM opens the Ledger tab, Player2 then changes their nuyen, GM clicks âœ• on a row before the
-      sheet redraws â†’ "The ledger changed since the sheet was drawn â€” nothing was removed."
+- [ ] As the **GM**, each row on the Ledger tab has a ✕. Click one → a confirm names the change, its reason
+      and who made it, and says the totals stay. Confirm → the row is gone; **Nuyen / Good Karma unchanged**.
+- [ ] Cancel the confirm → nothing changes.
+- [ ] As **Player2** on the same sheet: the Ledger tab shows the rows **without** ✕.
+- [ ] Stale click: GM opens the Ledger tab, Player2 then changes their nuyen, GM clicks ✕ on a row before the
+      sheet redraws → "The ledger changed since the sheet was drawn — nothing was removed."
 
-## 47. Sheet quality of life (TODO 218, 213, 192 â€” `feature/sheet-qol`)
+## 47. Sheet quality of life (TODO 218, 213, 192 — `feature/sheet-qol`)
 
 **Prerequisites:** a character owned by Player2 with some Good Karma, Total Karma, a Karma Pool and a few
-nuyen; a second live character owned by Player3. JS/CSS only â€” reload the tabs, no restart.
+nuyen; a second live character owned by Player3. JS/CSS only — reload the tabs, no restart.
 
 ### Karma fields are the GM's (TODO 218)
 
-- [ ] As **Player2**: on the sheet, Good Karma and Total Karma (Bio â†’ Resources) and both Karma Pool boxes
+- [ ] As **Player2**: on the sheet, Good Karma and Total Karma (Bio → Resources) and both Karma Pool boxes
       (Attributes) are greyed and cannot be typed into; the tooltip says only the GM edits them.
-- [ ] Still as Player2: edit **Nuyen** â†’ it saves and the ðŸ“’ Ledger line appears (the sheet submit still works,
+- [ ] Still as Player2: edit **Nuyen** → it saves and the 📒 Ledger line appears (the sheet submit still works,
       and Good Karma / Karma Pool did not change).
-- [ ] Roll a skill, tick **Use Karma Pool**, add a die â†’ the pool's "left" box drops and the roll gets the die.
-- [ ] As the **GM** on the same sheet all four boxes are editable; type a Karma Pool â†’ it saves.
+- [ ] Roll a skill, tick **Use Karma Pool**, add a die → the pool's "left" box drops and the roll gets the die.
+- [ ] As the **GM** on the same sheet all four boxes are editable; type a Karma Pool → it saves.
 
 ### Why Combat Pool is lower (TODO 213)
 
-- [ ] Character with Quickness 4, Intelligence 4, Willpower 2 and **no** armour or gyro: Attributes â†’ Combat Pool
-      shows 5 / 5, no note; the hover text starts "Base âŒŠ(Quickness + Intelligence + Willpower) Ã· 2âŒ‹ â€¦ = 5".
-- [ ] Add a **Gyro Mount** (Gear tab, not in Storage): the pool reads 2 / 2 and the block says **"5 halved by gyro Â·
-      Gyro Mount"**; the hover text has "Gyro harness (Gyro Mount): only half the pool â€¦ âŒŠ5 Ã· 2âŒ‹ = 2 (SR3 p.282â€¦)".
+- [ ] Character with Quickness 4, Intelligence 4, Willpower 2 and **no** armour or gyro: Attributes → Combat Pool
+      shows 5 / 5, no note; the hover text starts "Base ⌊(Quickness + Intelligence + Willpower) ÷ 2⌋ … = 5".
+- [ ] Add a **Gyro Mount** (Gear tab, not in Storage): the pool reads 2 / 2 and the block says **"5 halved by gyro ·
+      Gyro Mount"**; the hover text has "Gyro harness (Gyro Mount): only half the pool … ⌊5 ÷ 2⌋ = 2 (SR3 p.282…)".
 - [ ] Send the Gyro Mount to **Storage**: back to 5 / 5, note gone.
-- [ ] Wear armour heavy enough to cost dice (SR3 p.285): the note reads "N lost to armour (â€¦)" and the hover
-      text has an "Armour âˆ’N" line. With both, the hover shows armour then the gyro halving.
-- [ ] Spend some pool (type a lower left value): hover text ends "Spent N â†’ M left of T".
+- [ ] Wear armour heavy enough to cost dice (SR3 p.285): the note reads "N lost to armour (…)" and the hover
+      text has an "Armour −N" line. With both, the hover shows armour then the gyro halving.
+- [ ] Spend some pool (type a lower left value): hover text ends "Spent N → M left of T".
 - [ ] An adept with Combat Sense +3: a "Combat Sense +3 (SR3 p.169)" line. The number itself is unchanged from before.
 
-### Â± Funds and giving money (TODO 192)
+### ± Funds and giving money (TODO 192)
 
-**Prerequisites:** Player2 owns *Alpha* (Â¥1,000), Player3 owns *Bravo* (Â¥200). GM may be a third client. Release
+**Prerequisites:** Player2 owns *Alpha* (¥1,000), Player3 owns *Bravo* (¥200). GM may be a third client. Release
 the seats first if running Playwright.
 
-- [ ] Alpha's **Bio â†’ Resources** has a **Â± Fundsâ€¦** button beside Nuyen.
-- [ ] As Player2: Â± Funds â†’ **Add nuyen**, amount `Â¥250`, reason "sold a car" â†’ Confirm. Nuyen reads 1,250; the
-      ðŸ“’ Ledger line is +Â¥250, From 1,000 â†’ To 1,250, Why "sold a car", By Player2.
-- [ ] **Take away** `400` with no reason â†’ 850; the Ledger "Why" reads **By hand**.
-- [ ] **Take away** `5000`: while typing, the dialog shows "only Â¥850 available â€” it stops at Â¥0" in red; Confirm â†’
+- [ ] Alpha's **Bio → Resources** has a **± Funds…** button beside Nuyen.
+- [ ] As Player2: ± Funds → **Add nuyen**, amount `¥250`, reason "sold a car" → Confirm. Nuyen reads 1,250; the
+      📒 Ledger line is +¥250, From 1,000 → To 1,250, Why "sold a car", By Player2.
+- [ ] **Take away** `400` with no reason → 850; the Ledger "Why" reads **By hand**.
+- [ ] **Take away** `5000`: while typing, the dialog shows "only ¥850 available — it stops at ¥0" in red; Confirm →
       a warning toast, Nuyen 0, nothing refused. Put some back with Add.
 - [ ] **Give to another player character** lists Bravo (and other live PLAYER characters), NOT Alpha, vehicles,
-      NPCs (any character no player owns or has assigned) or templates (check an NPC and a template exist and are absent). Give Bravo `300` "cut of the run" â†’ toast; Alpha 550,
-      Bravo (on Player3's sheet, no refresh needed) 500. Alpha's Ledger: "Gave to Bravo: cut of the run" âˆ’Â¥300;
-      Bravo's: "Received from Alpha: cut of the run" +Â¥300, By Player2. A whispered ðŸ’´ chat line shows to the owners and GM.
-- [ ] **Blocked gifts (ruled 2026-10-17):** Alpha (Â¥550) gives Bravo `900` â†’ the dialog shows a red "you cannot give
+      NPCs (any character no player owns or has assigned) or templates (check an NPC and a template exist and are absent). Give Bravo `300` "cut of the run" → toast; Alpha 550,
+      Bravo (on Player3's sheet, no refresh needed) 500. Alpha's Ledger: "Gave to Bravo: cut of the run" −¥300;
+      Bravo's: "Received from Alpha: cut of the run" +¥300, By Player2. A whispered 💴 chat line shows to the owners and GM.
+- [ ] **Blocked gifts (ruled 2026-10-17):** Alpha (¥550) gives Bravo `900` → the dialog shows a red "you cannot give
       more than you have" and **Confirm is disabled**; nothing moves. The same for `-50` ("negative"), `0`, and `2.5`
       ("whole number"). `550` exactly is allowed (Alpha 0, Bravo +550). From the console
       `game.sr3e.SR3EQuery.asGM('sr3e.money.give', {payerUuid: <Alpha>, recipientUuid: <Bravo>, amount: 9999})` and `amount: -5` are
       rejected by the GM verb; so is a recipient that is an NPC.
-- [ ] An **NPC's** sheet: Â± Funds â†’ the Give option is disabled ("only player characters can give").
+- [ ] An **NPC's** sheet: ± Funds → the Give option is disabled ("only player characters can give").
 - [ ] As **GM**, give from Alpha to Bravo works the same; with the GM tab closed and a player giving, the
       toast reads a "no GM connected" error and nobody's nuyen changed.
 - [ ] Player3 cannot give *from* Alpha (the button isn't on a sheet they cannot edit; from the console
@@ -2792,7 +2792,7 @@ and a Combat spell (Manabolt), and a second actor on the scene. No restart neede
 
 - [ ] Cast **Increase Reflexes** and pick **yourself**: a "willing targets?" dialog follows the target pick, with
       yourself **ticked** ("the caster"). Cast. The card shows the success count and **no Resist Spell button**:
-      a line says "is willing â€” no Spell Resistance Test (p.183). All N successes set the effect". The Drain
+      a line says "is willing — no Spell Resistance Test (p.183). All N successes set the effect". The Drain
       button is still there.
 - [ ] Cast the same spell at another **player's character** (or a Friendly-disposition token): ticked by default.
       Cast it at a hostile NPC: **unticked**; tick it by hand and it skips the test; untick yourself and it
@@ -2812,16 +2812,16 @@ and a Combat spell (Manabolt), and a second actor on the scene. No restart neede
 
 ## 49. Smoke, gas and flash clouds (TODO 164, SR3 p.112, p.249-250, p.283)
 
-**Prerequisites:** a scene with a canvas (the in-app Browser pane can't draw one â€” use a real client), a few
+**Prerequisites:** a scene with a canvas (the in-app Browser pane can't draw one — use a real client), a few
 tokens, **at least one movement wall** (and a door you can open and close) near where you will throw, and a
 running combat. Gas / Smoke / Smoke (IR) / Flash-Pak grenades from the Projectiles pack on a thrower. No restart.
 The texture files are `styles/regions/*.svg`; if a cloud shows only the coloured outline, note it (the Drawing
-could not be laid) â€” the Region still works.
+could not be laid) — the Region still works.
 
-**Marker, expiry, ðŸ§¹ (items 0 and 1)**
+**Marker, expiry, 🧹 (items 0 and 1)**
 - [ ] Throw a **Smoke Grenade** in the open: a grey **textured** cloud (a Drawing under a grey Region outline), 10 m
       radius, on every client. Advance **two rounds**: both the Region and the texture disappear.
-- [ ] Throw another and press **ðŸ§¹ Clear blast marker**: both go at once. Delete the Region by hand from the
+- [ ] Throw another and press **🧹 Clear blast marker**: both go at once. Delete the Region by hand from the
       Regions layer: the texture goes too.
 - [ ] Throw it with a **wall** 3-4 m from the blast point: the cloud **stops at the wall** (a clipped polygon, not
       a circle) and the card says "The cloud stops at the walls". A token behind the wall is not listed in the area.
@@ -2834,27 +2834,27 @@ could not be laid) â€” the Region still works.
       wash with strobe spokes. Check each on a busy map and on both a light and a dark scene.
 
 **Wind (items 2 and 6)**
-- [ ] As **GM**, the smoke card has **ðŸŒ¬ GM wind: âˆ’1 Combat Turn** and **+1**. âˆ’1 on a fresh 2-turn cloud: the
+- [ ] As **GM**, the smoke card has **🌬 GM wind: −1 Combat Turn** and **+1**. −1 on a fresh 2-turn cloud: the
       Region's name now says "1 Combat Turn left", a chat line announces it, and it vanishes one round sooner.
-      âˆ’1 again on a cloud with one turn left: it is blown away. +1 extends it by a round.
+      −1 again on a cloud with one turn left: it is blown away. +1 extends it by a round.
 - [ ] A **player's** view of the same card shows no wind buttons.
 
 **Smoke visibility (item 3)**
 - [ ] A player inside a smoke cloud attacks a token outside it (or the reverse). The GM's TN window opens with
-      **Heavy Smoke/Fog/Rain** preselected, an amber line "â€¦ stands in smoke â€” â€¦ offered", and the TN already
+      **Heavy Smoke/Fog/Rain** preselected, an amber line "… stands in smoke — … offered", and the TN already
       includes it. The GM can change or clear the row.
 - [ ] Same inside **Smoke (IR)**: **Thermal Smoke** is offered; a thermographic attacker's modifier is +8/+6.
 - [ ] Both fighters outside any cloud: nothing is preselected. A cast spell shows the same offer.
 
 **Gas (item 4)**
-- [ ] Drag the **Gas Grenade (Neuro-Stun VIII)** from the Projectiles pack (and the Gas Mini-grenade from Ammunition): both are named VIII (maintainer ruling 2026-10-17; the p.283 table row prints VII). Throw the **Gas Grenade**: each token inside (not behind a wall) gets its own "â˜£ in the cloud" card with
+- [ ] Drag the **Gas Grenade (Neuro-Stun VIII)** from the Projectiles pack (and the Gas Mini-grenade from Ammunition): both are named VIII (maintainer ruling 2026-10-17; the p.283 table row prints VII). Throw the **Gas Grenade**: each token inside (not behind a wall) gets its own "☣ in the cloud" card with
       **Resist Neuro-Stun VIII (6S)**, the speed, the +2 disorientation and the repeat-test-at-+4 rule, and no VII/VIII
       note on a grenade named VIII (an older world copy still named VII shows the amber note). Only the
       character's owner (or the GM) can press it; it opens a Body soak card with **no armour**, Power 6.
-- [ ] The Waiting-on panel lists the gas buttons as steps; âœ• clears one.
+- [ ] The Waiting-on panel lists the gas buttons as steps; ✕ clears one.
 
 **Flash-Pak (item 5)**
-- [ ] Throw a **Flash-Pak**: the GM sees **âš¡ GM: who was facing the flash?**; players see it disabled. It lists
+- [ ] Throw a **Flash-Pak**: the GM sees **⚡ GM: who was facing the flash?**; players see it disabled. It lists
       every token, nearest first, with flare compensation pre-ticked for anyone carrying a Flare Comp item.
       Tick two and post: each gets a card with **+4 (+2 with flare compensation)** and the pak's **+2** strobe,
       total +6 (+4), and "nothing is applied". Cancel / tick no one: the button comes back.
@@ -2862,69 +2862,69 @@ could not be laid) â€” the Region still works.
 ## 50. Typing a Combat Pool total under a gyro (TODO 225, SR3 p.282)
 
 **Prerequisites:** a character with a Gyro Mount worn (not in Storage) and a Combat Pool base of 5
-(Quickness 4, Intelligence 4, Willpower 2), no armour. As GM. JS only â€” reload the tab.
+(Quickness 4, Intelligence 4, Willpower 2), no armour. As GM. JS only — reload the tab.
 
 - [ ] The Combat Pool box shows **2** and the note says it is halved by the gyro.
 - [ ] Type **4** into the total box: after the sheet re-renders it still reads **4** (not 3), and the
       tooltip's "Manual modifier" line reads **+3**.
 - [ ] Type **2**, then **0**: each reads back exactly.
 - [ ] Put the gyro in Storage: the box shows the full pool; type **4** and it reads **4** with a modifier of
-      the plain difference (base 5 â†’ âˆ’1) â€” behaviour without a gyro is unchanged.
+      the plain difference (base 5 → −1) — behaviour without a gyro is unchanged.
 - [ ] Karma Pool and Spell Pool total boxes still accept a typed total as before.
 
 ## 51. Vehicle collisions (TODO 189, SR3 p.142-148)
 
 **Prerequisites:** a world with a car (Body 3, Acceleration 14, a driver and one passenger aboard on the vehicle
 sheet), a second vehicle, a pedestrian NPC with some impact armour, and a Combat Pool. Three clients if you can
-(GM, the driver's player, the pedestrian's player); one will do. JS hot-reloads, but **press F5 once** â€” the Braking
-Test is a new follow-up kind. The dialog is the same from the vehicle sheet (ðŸš— Collision), the Vehicle Tools HUD
-menu, the Chase Scene (ðŸ’¥ Collision) and the ðŸ’¥ Crash tool (ðŸ§ Hit a pedestrianâ€¦).
+(GM, the driver's player, the pedestrian's player); one will do. JS hot-reloads, but **press F5 once** — the Braking
+Test is a new follow-up kind. The dialog is the same from the vehicle sheet (🚗 Collision), the Vehicle Tools HUD
+menu, the Chase Scene (💥 Collision) and the 💥 Crash tool (🧍 Hit a pedestrian…).
 
-**A. Hit a pedestrian â€” accident** (the common case)
-- [ ] ðŸš— Collision, accident, ðŸ§, the pedestrian, 120 km/h. The preview line reads "100 m/turn â†’ pedestrian 10D"
-      (Serious on the table â†’ Deadly) and the vehicle "10M". **Roll the test (driver)**.
+**A. Hit a pedestrian — accident** (the common case)
+- [ ] 🚗 Collision, accident, 🧍, the pedestrian, 120 km/h. The preview line reads "100 m/turn → pedestrian 10D"
+      (Serious on the table → Deadly) and the vehicle "10M". **Roll the test (driver)**.
 - [ ] The Driving Test dialog is titled **Braking Test**; terrain/exceeds-Speed-Rating/autonav/VCR rows and an "Other
       modifiers" field; the TN is Handling + the rows. Roll it.
-- [ ] A **ðŸ›‘ Braking** card follows: "N successes â€¦ speed drops by Acceleration 14 Ã— N", **120 km/h â†’ X km/h**. With 5+
-      successes it warns of a **Crash Test** (more than Acceleration Ã— 4) and offers ðŸ’¥. A **Speed at impact** box is
-      pre-filled; only the GM can press **ðŸ’¥ Resolve the collision** (a player sees it greyed).
-- [ ] The â³ Waiting-on panel lists "Resolve the collision" for the GM.
-- [ ] Set the box to **60** and press it: a **ðŸ’¥ Collision** card, "60 km/h (50 m/turn)": pedestrian **5S Physical**,
+- [ ] A **🛑 Braking** card follows: "N successes … speed drops by Acceleration 14 × N", **120 km/h → X km/h**. With 5+
+      successes it warns of a **Crash Test** (more than Acceleration × 4) and offers 💥. A **Speed at impact** box is
+      pre-filled; only the GM can press **💥 Resolve the collision** (a player sees it greyed).
+- [ ] The ⏳ Waiting-on panel lists "Resolve the collision" for the GM.
+- [ ] Set the box to **60** and press it: a **💥 Collision** card, "60 km/h (50 m/turn)": pedestrian **5S Physical**,
       the car **5L**, a vehicle soak button and (once it soaks and is damaged) a **Crash Test** button and the occupants'
-      resist buttons. With the dodge box ticked there is a **ðŸŽ¯ Dodge (house rule) or take it?** button, the card
-      says **HOUSE RULE â€” not in the book**, and the dodge must beat **1 hit** (an accident). Unticked: a plain
-      ðŸ›¡ Resist Damage button, no dodge.
-- [ ] The pedestrian's player is the only one (besides the GM) who can press their button. Dodge with 2+ successes â†’
-      "Dodge Successful"; with 1 â†’ "Dodge Failed (a tie goes to the attacker)", the hit carried into the soak.
-- [ ] The soak card's **armour type defaults to Impact**; the roll then offers Assign Wound **and a ðŸ’¥ Knockdown Test** (ruled
+      resist buttons. With the dodge box ticked there is a **🎯 Dodge (house rule) or take it?** button, the card
+      says **HOUSE RULE — not in the book**, and the dodge must beat **1 hit** (an accident). Unticked: a plain
+      🛡 Resist Damage button, no dodge.
+- [ ] The pedestrian's player is the only one (besides the GM) who can press their button. Dodge with 2+ successes →
+      "Dodge Successful"; with 1 → "Dodge Failed (a tie goes to the attacker)", the hit carried into the soak.
+- [ ] The soak card's **armour type defaults to Impact**; the roll then offers Assign Wound **and a 💥 Knockdown Test** (ruled
       2026-10-17: the core Knockdown rule, SR3 p.124, applied to the collision's Power; the card says the book gives none for
       collisions). Roll it: TN = half the collision's Power, rounded down; a Deadly wound is "knocked down automatically". The
-      Knockdown button shows as a step in the combat tracker's **â³ Waiting-on** panel until pressed. A fully soaked hit offers none.
+      Knockdown button shows as a step in the combat tracker's **⏳ Waiting-on** panel until pressed. A fully soaked hit offers none.
 - [ ] 1-20 m/turn (e.g. 20 km/h): the pedestrian takes **2M**; the car "takes no damage" and has no soak button.
 - [ ] 250 m/turn (300 km/h): the pedestrian **37D** (Power 25 + half, rounded down); the card says "past Deadly".
-- [ ] Type **9** in Power and **D** in Level before rolling: the card shows 9D and "set by the GM; the rule gives â€¦".
+- [ ] Type **9** in Power and **D** in Level before rolling: the card shows 9D and "set by the GM; the rule gives …".
 
-**B. Hit a pedestrian â€” ram**
+**B. Hit a pedestrian — ram**
 - [ ] Collision, **Ram**, the pedestrian. The test is a **Ramming Test** (title and rows); on a success the card posts
       under the dice with the pedestrian's code; the dodge must beat **the Ramming Test's successes**; with 0 successes the
       card says **the ram misses**.
-- [ ] Chase Scene â†’ **Ramming**: the dialog has a **pedestrian** dropdown and a "dodge â€” house rule" box; pick one,
-      roll â€” the same card, and the vehicle is **not** reduced by Body Ã— successes (SR3 p.148).
+- [ ] Chase Scene → **Ramming**: the dialog has a **pedestrian** dropdown and a "dodge — house rule" box; pick one,
+      roll — the same card, and the vehicle is **not** reduced by Body × successes (SR3 p.148).
 - [ ] **Post the collision now** (the second button) posts without any test.
 
 **C. Another vehicle**
-- [ ] Collision, accident, ðŸš—, speeds 152 and 300 km/h: **15S** soak buttons for **both**; the card says "Accident, not a
+- [ ] Collision, accident, 🚗, speeds 152 and 300 km/h: **15S** soak buttons for **both**; the card says "Accident, not a
       ram: neither vehicle's Power is reduced". The same as a **Ram** (5 successes, Body 3): the rammer's button reads
       **2S**, the target's **15S** (SR3 p.147). Each damaged vehicle offers a **Crash Test**; occupants roll only for
       the level their vehicle actually took.
 - [ ] A negative speed for the other vehicle (head-on) adds the speeds.
 
 **D. A barrier**
-- [ ] Barrier, *Heavy Structural Material* (BR 16), 300 m/turn â‰ˆ 360 km/h: "BR Ã— 20 = 320 â€¦ 300 â€” no faster, so it
-      stops": the **ðŸ’¥ CRASH!** card at 30D (the existing Crash flow).
+- [ ] Barrier, *Heavy Structural Material* (BR 16), 300 m/turn ≈ 360 km/h: "BR × 20 = 320 … 300 — no faster, so it
+      stops": the **💥 CRASH!** card at 30D (the existing Crash flow).
 - [ ] *Standard Glass* (BR 2), 120 km/h (100 m/turn): breaks through, "carries on at 72 km/h, lost 40", **2M** soak
-      for the car, and its occupants' buttons: **belted â†’ no damage**, **unbelted â†’ one level lower** (the dialog's
-      checkbox text changes for a breakthrough). A **ðŸ§± Open the Barrier Damage tool** button opens that tool (GM only)
+      for the car, and its occupants' buttons: **belted → no damage**, **unbelted → one level lower** (the dialog's
+      checkbox text changes for a breakthrough). A **🧱 Open the Barrier Damage tool** button opens that tool (GM only)
       and applies nothing.
 
 **E. Entry points and refusals**
@@ -2934,30 +2934,30 @@ menu, the Chase Scene (ðŸ’¥ Collision) and the ðŸ’¥ Crash tool (ðŸ§
 
 ## 52. The Concealment view (TODO 195, SR3 p.45, p.231-232, p.236-237, p.270)
 
-**Prerequisites:** a character with a few weapons (one in hand, two âœ‹-toggled away with Concealabilities such as 5
+**Prerequisites:** a character with a few weapons (one in hand, two ✋-toggled away with Concealabilities such as 5
 and 8), a worn armour piece with a Concealability, a spare armour piece **not** worn, an Obvious Cyberarm and a
 Synthetic Cyberarm installed, Eyes Cyber Replacement, and Wired Reflexes (internal). A second character as the
 looker. Log in as the GM; F5 once (new follow-up kind and button class).
 
-- [ ] The **Rollable Tables** tab has **ðŸ‘ Concealment** (GM only â€” a player does not see it). The character's
-      Attributes tab has **ðŸ‘ Concealment** beside Success Test (GM only).
+- [ ] The **Rollable Tables** tab has **👁 Concealment** (GM only — a player does not see it). The character's
+      Attributes tab has **👁 Concealment** beside Success Test (GM only).
 - [ ] The dialog lists, **least concealed first**: the weapon in hand ("in hand") and the Obvious Cyberarm ("obvious")
       at the top with their number box greyed; then ascending by number (the Synthetic Cyberarm is **8**, with a note
       about clothing +3); the GM's-call rows ("Eyes, Cyber Replacement") after the rated; unrated rows last.
       **Not listed:** the unworn jacket, fists, the Wired Reflexes, anything in storage.
-- [ ] Changing the actor dropdown redraws the list. Unticking a row and **ðŸ“£ Post to chat** posts a card "What <name> is
-      carrying" without it; changing a number changes the card only â€” the item is unchanged.
-- [ ] The card tells the table that a lower number is easier to spot. A player sees the ðŸ” Test buttons **greyed**.
-- [ ] ðŸ” (in the dialog, or on the card as GM) opens a Perception dialog: observer, dice = their Intelligence, the
-      Concealability, **two readings** â€” Noticing (full) and A search (p.237: the full Concealability + the Physical
+- [ ] Changing the actor dropdown redraws the list. Unticking a row and **📣 Post to chat** posts a card "What <name> is
+      carrying" without it; changing a number changes the card only — the item is unchanged.
+- [ ] The card tells the table that a lower number is easier to spot. A player sees the 🔍 Test buttons **greyed**.
+- [ ] 🔍 (in the dialog, or on the card as GM) opens a Perception dialog: observer, dice = their Intelligence, the
+      Concealability, **two readings** — Noticing (full) and A search (p.237: the full Concealability + the Physical
       Search table). There is **no** half-rating option (p.270's was ruled out 2026-10-17). The "Target number" line
       updates live; Concealability 7 searches at 7 (+ the table); nothing goes below 2.
 - [ ] The search reading shows the three search selects; **Strip search (6-10 minutes)** rolls nothing and posts "finds
-      the weapon". Otherwise **Roll** makes the roll and, after any ðŸ’¥, a card gives the successes against the TN and the
-      **Perception Success Table** line (1: "Something is there" â€¦ 4+: "knows what it is, but no specifics").
+      the weapon". Otherwise **Roll** makes the roll and, after any 💥, a card gives the successes against the TN and the
+      **Perception Success Table** line (1: "Something is there" … 4+: "knows what it is, but no specifics").
 - [ ] Nothing is written to any item in any of the above.
 
-## 53. Compendium data corrections and their migration (rules check 0.7.0 â€” melee, bows, spells, firing modes, vehicles, drones, DocWagon medkit)
+## 53. Compendium data corrections and their migration (rules check 0.7.0 — melee, bows, spells, firing modes, vehicles, drones, DocWagon medkit)
 
 Needs a world stamped **before 0.7.0** holding: a Sap, a Monofilament Whip, a Shock Glove, a Combat Axe, a Standard Bow
 (Str Min 3), the Heavy Crossbow, a Taser, an Uzi III, a Hughes WK-2 and a Generic Surv. Drone VTOL (all from the OLD
@@ -2966,20 +2966,20 @@ packs), a copy of the **DocWagon Paramedic** contact, a second character with an
 
 - [ ] The console reports the 0.7.0 migration; the notification says it migrated documents.
 - [ ] Sap damage reads **(STR+2)M Stun**; the Monofilament Whip has **Reach 2**; the Shock Glove's damage is
-      **(STR-1)M Stun** and its notes carry the extra **+7S Stun** (the roller handles one code â€” the GM adds the 7S).
+      **(STR-1)M Stun** and its notes carry the extra **+7S Stun** (the roller handles one code — the GM adds the 7S).
 - [ ] The Combat Axe is now **Pole Arms/Staff** (POL); its Thrusting Point is **Concealability 12, Reach 0, POL**.
 - [ ] The Str Min 3 bow is **5M**; a Str Min 2 bow is still **4M**. Heavy Crossbow **6S**.
 - [ ] The Taser fires **SS**, the Uzi III **SA/BF**.
-- [ ] Hughes WK-2 Cargo **72**; the Generic Surveillance Drone costs **8,125Â¥**; the old "Dalmation" is now
-      "Cyberspace Designs Dalmatian" (still on its scene, not deleted), 16,000Â¥, Speed 105.
+- [ ] Hughes WK-2 Cargo **72**; the Generic Surveillance Drone costs **8,125¥**; the old "Dalmation" is now
+      "Cyberspace Designs Dalmatian" (still on its scene, not deleted), 16,000¥, Speed 105.
 - [ ] The Paramedic's medkit is **Medkit [Rating 5]**; the other character's ordinary Medkit is **still Rating 3**.
 - [ ] A value the GM had typed beforehand (e.g. a Sap at (STR+3)M) is **not** changed. Reloading again changes nothing.
-- [ ] In the vehicle compendium there is a **Chrysler-Nissan G12A(passenger)** (57,000Â¥, Cargo 12, Load 250, 10 seats)
+- [ ] In the vehicle compendium there is a **Chrysler-Nissan G12A(passenger)** (57,000¥, Cargo 12, Load 250, 10 seats)
       beside the cargo variant, and only one Dalmatian in the drones.
 - [ ] Firearm Recoil Compensation: an old-pack **HK227**, **Ingram Smartgun**, **Ranger Arms SM-3** and **FN HAR** now show
       **Recoil Comp 2** on the item sheet, the **Ingram Valiant 3**; the FN HAR's accessories no longer list a Fold Stock.
       The fire-mode dialog's weapon-comp field opens at that figure. A copy whose Recoil Comp the GM set is untouched.
-- [ ] Gear compendium: **Imaging Scope, Low-Light** and **Imaging Scope, Thermographic** (1,500Â¥, Concealability -2, Top mount,
+- [ ] Gear compendium: **Imaging Scope, Low-Light** and **Imaging Scope, Thermographic** (1,500¥, Concealability -2, Top mount,
       sr3.282) replace the single untyped "Imaging Scope"; the Rating 1-3 magnification scopes are unchanged. An
       "Imaging Scope" already on an actor is left as it was (its kind cannot be known).
 - [ ] Both **Chrysler-Nissan G12A** variants show Availability **3/72 hrs** (a world copy at the old 4/96 hrs is corrected).
@@ -2991,15 +2991,15 @@ carries the normalised tokens); a second character with a known Essence; a vehic
 No restart (JS only). Every dialog has a **GM adjustment** field: type +2 once and the card says "GM +2".
 
 - [ ] **Heal** / **Treat** at a target with Essence 6: after the target pick, a "target number" dialog shows
-      "10 âˆ’ Essence 6 (p.193) â†’ TN 4"; Cast. The card's TN source reads the same. Essence 5.5 gives TN 5 (rounds up).
-- [ ] **Decrease Attribute (Body)**: TN 10 âˆ’ Essence; the target's Resist Spell button rolls **Body** (the Attribute affected).
+      "10 − Essence 6 (p.193) → TN 4"; Cast. The card's TN source reads the same. Essence 5.5 gives TN 5 (rounds up).
+- [ ] **Decrease Attribute (Body)**: TN 10 − Essence; the target's Resist Spell button rolls **Body** (the Attribute affected).
 - [ ] **Detect Life** (or any Detect): the dialog lists the Detection table rows (in sight 4 / out of sight 6 / different plane
       10) with a "behind an astral barrier (+ Force)" tick. The default is **in sight** for a visible token on the scene,
       **out of sight** for an off-scene target. Pick "different plane": TN 10. Tick the barrier at Force 5 on "in sight": 9.
-- [ ] **Analyze Device**: the dialog lists the Object Resistance Table (3 / 5 / 8 / 10) with a familiarity (âˆ’2) tick; the card
+- [ ] **Analyze Device**: the dialog lists the Object Resistance Table (3 / 5 / 8 / 10) with a familiarity (−2) tick; the card
       states the Force needed (half the Resistance, rounded down) and warns, never refuses, when Force is below it.
 - [ ] A **Physical** spell cast at a **vehicle** actor: the dialog offers the Object Resistance rows (vehicles add Body and
-      half Armor â€” stated, not applied).
+      half Armor — stated, not applied).
 - [ ] **Detox**, **Antidote**, **Cure Disease**: a number field for the toxin Strength / disease Power. Leave it blank: TN 2 and the
       card says it was not entered. Enter 6: TN 6.
 - [ ] **Increase Attribute (Strength)** / Cybered / **Increase Reaction** / **Increase Reflexes**: TN is the target's rating in that
@@ -3014,7 +3014,7 @@ No restart (JS only). Every dialog has a **GM adjustment** field: type +2 once a
 - [ ] A spell whose Target the system cannot read (edit a spell's Target to "ZZ"): Willpower fallback and the card says the GM is
       to check the TN.
 
-## 55. Ranged weapons â€” range, heavy recoil, minimum range (rules check 0.7.0, SR3 p.110-111, p.118)
+## 55. Ranged weapons — range, heavy recoil, minimum range (rules check 0.7.0, SR3 p.110-111, p.118)
 
 **Prerequisites:** a character with Strength 2 and a token on a scene with a grid; a target token. No restart (JS only).
 
@@ -3039,7 +3039,7 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 
 - [ ] Every attack die a 1 with explosive loaded: the result card says the round **MISFIRES**, the shot misses, and offers
       "Resist the misfire (9M, no Combat Pool)" with the weapon's **normal** code (no +1 Power). Click it: a soak card for the
-      **shooter**, no Combat Pool field ("Explosive round misfiredâ€¦"), normal-ammo armour. Nothing is applied until the GM clicks the wound boxes.
+      **shooter**, no Combat Pool field ("Explosive round misfired…"), normal-ammo armour. Nothing is applied until the GM clicks the wound boxes.
 - [ ] The same Rule of One with ordinary ammunition: no misfire button.
 
 ## 58. Attribute Maximum and specialisations in Spend Karma (rules check 0.7.0, SR3 p.244-245, p.84)
@@ -3047,17 +3047,17 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 **Prerequisites:** a character with Good Karma ~60, a skill (say Pistols 3, Quickness 4) with one specialisation at base +2 (rolls 5).
 
 - [ ] **Attribute Maximum.** Spend Karma for a troll's Body (limit 11): the row says "past max" only above **17**, not above 16.
-- [ ] **A base raise leaves the specialisation where it was.** Spend Karma, raise Pistols 3 â†’ 4. The skill's specialisation still
+- [ ] **A base raise leaves the specialisation where it was.** Spend Karma, raise Pistols 3 → 4. The skill's specialisation still
       rolls **5** (its bonus drops from +2 to +1); the dice pool dialog's Specialization tier reads 5 dice, not 6.
 - [ ] Raise Pistols again to 5: the specialisation rolls 5 (bonus +0, "Lv0" on the item sheet). Raise it to 6: still +0, still listed.
-- [ ] **â†º Undo** the base raises (GM): rating and specialisation come back together as they were.
+- [ ] **↺ Undo** the base raises (GM): rating and specialisation come back together as they were.
 - [ ] **A third improvement works.** Improve the specialisation three times in a row; no validation error, each costs the NEW
       specialisation rating x the table multiplier; one over twice the base shows the amber "over N" warning but still buys.
 - [ ] Edit the skill's Rating by hand on its item sheet: the specialisation's dice stay the same (the bonus moves the other way).
 
-## 59. The Magic Loss check â€” a roll of 2 always loses (rules check 0.7.0, SR3 p.160)
+## 59. The Magic Loss check — a roll of 2 always loses (rules check 0.7.0, SR3 p.160)
 
-**Prerequisites:** an Awakened patient with Magic 1 (set the base by hand), a Deadly physical wound, a medic. Open ðŸ©¹ Healing, the Deadly-wound Magic loss step.
+**Prerequisites:** an Awakened patient with Magic 1 (set the base by hand), a Deadly physical wound, a medic. Open 🩹 Healing, the Deadly-wound Magic loss step.
 
 - [ ] The Magic loss card rolls 2D6 and, on a total of **2**, reports a point lost even at Magic 1; a total above Magic is "no loss"; a total at or below Magic loses one.
       (To force a 2, stub `game.sr3e.SR3EHealing._d` to return `{ total: 2 }`; with Magic 1, a 3 must be "no loss".)
@@ -3072,17 +3072,17 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 
 ## 61. The initiate's Astral Pool and Astral Reaction (rules check 0.7.0, Magic in the Shadows p.58)
 
-âš  New persisted fields (`initiatePoolSpent`, `initiatePoolMod`): **fully restart Foundry**, not F5.
+⚠ New persisted fields (`initiatePoolSpent`, `initiatePoolMod`): **fully restart Foundry**, not F5.
 
-**Prerequisites:** an Awakened character with Magic 5, `Initiate grade` 2 (Magic tab) â€” and a second Awakened character with grade 0. Two players for the multi-client steps.
+**Prerequisites:** an Awakened character with Magic 5, `Initiate grade` 2 (Magic tab) — and a second Awakened character with grade 0. Two players for the multi-client steps.
 
-- [ ] **Sheet.** The initiate's Derived Pools shows **Initiate Astral Pool 2 / 2** beside **Astral Combat Pool** (the old "Astral Pool", still âŒŠ(INT+CHA+WIL)/2âŒ‹). The grade-0 character shows only the Astral Combat Pool. Hover text names the book page. Editing the left box changes spent; the right box adds a manual modifier.
+- [ ] **Sheet.** The initiate's Derived Pools shows **Initiate Astral Pool 2 / 2** beside **Astral Combat Pool** (the old "Astral Pool", still ⌊(INT+CHA+WIL)/2⌋). The grade-0 character shows only the Astral Combat Pool. Hover text names the book page. Editing the left box changes spent; the right box adds a manual modifier.
 - [ ] **Astral Initiative.** Switch to **Astral** mode and roll initiative: the card reads "INT n + grade 2 (Astral Reaction) + 20", the score is Intelligence + 2 + 20 + 1D6. The grade-0 character still gets Intelligence + 20 + 1D6. Dual and Physical modes are unchanged.
-- [ ] **Astral Perception.** Click **Assensing**: the dialog has "âœ¦ Initiate Astral Pool +[0] of 2 left". Enter 2 and roll: the card label says "+2 Initiate Astral Pool", the pool is Intelligence + 2 dice and the sheet now shows 0 / 2. The grade-0 character's Assensing dialog has no such row.
+- [ ] **Astral Perception.** Click **Assensing**: the dialog has "✦ Initiate Astral Pool +[0] of 2 left". Enter 2 and roll: the card label says "+2 Initiate Astral Pool", the pool is Intelligence + 2 dice and the sheet now shows 0 / 2. The grade-0 character's Assensing dialog has no such row.
 - [ ] **A general test while perceiving.** Dual Nat. mode, roll an attribute and a non-magical skill from the sheet: the row appears and charges. In Physical mode it does not appear. Roll **Sorcery** with dice entered: a warning says Astral Pool dice can't be used on Magical Skill Tests and the pool stays unspent.
-- [ ] **Astral Combat pool kind (SR3 p.174, fix after 0.8.0).** Astral Combat with both fighters on **Dual Nat.** (or no mode â€” an astrally perceiving adept): each corner reads "+ Combat Pool (avail. N)", N the sheet's available Combat Pool; resolving charges the **Combat Pool** and leaves the Astral Combat Pool untouched. With the attacker set to **Astral** (projecting mage): that corner reads "+ Astral Combat Pool (avail. N)" and resolving charges the Astral Combat Pool. A corner asked for more than is available warns and rolls only what was deducted. **Damage field (SR3 p.176):** a perceiving adept (Dual Nat. or no mode) reads **(Strength)M** (effective Strength), a projecting mage **(Charisma)M**, a spirit **(Force)M**; a dual being with an active weapon focus reads the weapon's own code, a projector Charisma + the focus. The field stays editable.
+- [ ] **Astral Combat pool kind (SR3 p.174, fix after 0.8.0).** Astral Combat with both fighters on **Dual Nat.** (or no mode — an astrally perceiving adept): each corner reads "+ Combat Pool (avail. N)", N the sheet's available Combat Pool; resolving charges the **Combat Pool** and leaves the Astral Combat Pool untouched. With the attacker set to **Astral** (projecting mage): that corner reads "+ Astral Combat Pool (avail. N)" and resolving charges the Astral Combat Pool. A corner asked for more than is available warns and rolls only what was deducted. **Damage field (SR3 p.176):** a perceiving adept (Dual Nat. or no mode) reads **(Strength)M** (effective Strength), a projecting mage **(Charisma)M**, a spirit **(Force)M**; a dual being with an active weapon focus reads the weapon's own code, a projector Charisma + the focus. The field stays editable.
 - [ ] **Astral Combat (two clients).** (Put both fighters in **Astral** mode for this step.) Initiate attacks, a second Awakened actor defends: the initiate's corner has "+ Astral Combat Pool" and "+ Initiate Astral Pool (avail. 2)"; the defender's corner (grade 0) has only the first. Submit 1 initiate die, resolve: the roll uses skill dice + Astral Combat Pool dice + 1, the initiate pool drops to 1 / 2 from the **player's own** client.
-- [ ] **Refresh.** With the pool spent, advance to the next Combat Turn (or end combat): it returns to 2 / 2. **â†º Reset All Pools** also refills it.
+- [ ] **Refresh.** With the pool spent, advance to the next Combat Turn (or end combat): it returns to 2 / 2. **↺ Reset All Pools** also refills it.
 
 ## 62. Combat Pool on a jumped-in drone's gunnery (rules check 0.7.0, SR3 p.152, p.154, p.157)
 
@@ -3093,65 +3093,65 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 - [ ] Rigger with no Gunnery skill (Default dialog, attribute default): the Combat Pool offered is limited by the Default Table cap.
 - [ ] Spend the rigger's pool from another client mid-way (or leave 1 die): asking for more than is left rolls only what was deducted and warns.
 
-## 63. Vehicle armour is hardened â€” burst and full-auto Power do not count (rules check 0.7.0, SR3 p.132, p.149)
+## 63. Vehicle armour is hardened — burst and full-auto Power do not count (rules check 0.7.0, SR3 p.132, p.149)
 
 **Prerequisites:** a vehicle with Armor 3 (e.g. an actor with `Armor` set to 3), a character with an Uzi III (6M, SA/BF/FA) and a target the vehicle.
 
 - [ ] Fire a **single shot** at the vehicle: after the hits, the Resist Damage card's gold note says the Power (3) does not exceed armour 3, hardened armour deflects it, no damage (p.132, p.149).
-- [ ] Fire a **burst** (BF, Power +3 â†’ 9, halved 4): the staged Incoming reads 4, but the card **still** says it is deflected (the unaugmented 6 halves to 3). Before this fix the burst beat the armour.
+- [ ] Fire a **burst** (BF, Power +3 → 9, halved 4): the staged Incoming reads 4, but the card **still** says it is deflected (the unaugmented 6 halves to 3). Before this fix the burst beat the armour.
 - [ ] Fire a **full-auto** burst at Armor 3: same, deflected.
 - [ ] Raise the weapon's code by hand to 8M (retype the Damage Code in the dialog): Power 4 beats Armor 3, no deflection note.
 - [ ] An **AV munition** against Armor 6 (halved to 3): a Power 3 AV hit is deflected, a Power 4 is not.
 
 ## 64. Aircraft have a stall speed (rules check 0.7.0, SR3 p.132; Rigger 3 Revised, Running Out of Gas)
 
-âš  New persisted field (`system.stallSpeed` on vehicles): **fully restart Foundry**, not F5. The aircraft packs and the 0.7.0 migration change too, so the packs must be rebuilt/installed (`npm run packs:install`, Foundry closed).
+⚠ New persisted field (`system.stallSpeed` on vehicles): **fully restart Foundry**, not F5. The aircraft packs and the 0.7.0 migration change too, so the packs must be rebuilt/installed (`npm run packs:install`, Foundry closed).
 
 **Prerequisites:** a world with a vehicle copied from the **old** packs (an owned Cessna C750(Cargo) with Speed 135, or any aircraft made before this change), a fresh Cessna C750(Cargo) from the Vehicles pack, a GM and a player who can drive it.
 
 - [ ] **Packs.** The new Cessna C750(Cargo) shows **Speed 340** and **Stall Speed 135** on its Stats tab (the book row is 135/340, SR3 p.310). GMC Banshee: Speed 1000, Stall 250. A Cunard liner / any boat: Stall Speed 0, Speed unchanged.
 - [ ] **Migration.** Load the world with the old Cessna: it becomes Speed 340 / Stall 135. Then edit its Speed to 200 by hand and run `game.sr3e.SR3EMigrations.force()`: Speed stays 200 (the GM's value), Stall Speed stays 135.
 - [ ] **Editable.** Type a Stall Speed on any vehicle; it saves and survives a reload. Blank/0 means none.
-- [ ] **Speed rating.** In a Chase Scene give the Cessna a speed of 200 m/turn Ã— 1.2 = 240 km/h: the Accel/Brake dialog's "Exceeds speed rating" tick is **off** (it was on while Speed held 135). At 500 km/h (417 m/turn) it ticks on (above 340).
-- [ ] **Below stall.** In the Chase Scene type 120 km/h (100 m/turn) in the Cessna's speed box and press Tab: a warning appears and a chat card "below its stall speed" with a **ðŸ’¥ Crash Test** button; clicking it opens the Crash dialog (nothing is rolled by itself). Re-typing the same speed does not post a second card; type 300 km/h then 100 again and it posts once more. A speed of 0 posts nothing.
-- [ ] **Braking.** Run the ðŸ’¥ Collision tool as an accident with the Cessna at 300 km/h so the Braking Test leaves it under 135 m/turn: the Braking card carries the same stall warning and a Crash Test button (one button, not two, when the deceleration already called for a Crash Test).
+- [ ] **Speed rating.** In a Chase Scene give the Cessna a speed of 200 m/turn × 1.2 = 240 km/h: the Accel/Brake dialog's "Exceeds speed rating" tick is **off** (it was on while Speed held 135). At 500 km/h (417 m/turn) it ticks on (above 340).
+- [ ] **Below stall.** In the Chase Scene type 120 km/h (100 m/turn) in the Cessna's speed box and press Tab: a warning appears and a chat card "below its stall speed" with a **💥 Crash Test** button; clicking it opens the Crash dialog (nothing is rolled by itself). Re-typing the same speed does not post a second card; type 300 km/h then 100 again and it posts once more. A speed of 0 posts nothing.
+- [ ] **Braking.** Run the 💥 Collision tool as an accident with the Cessna at 300 km/h so the Braking Test leaves it under 135 m/turn: the Braking card carries the same stall warning and a Crash Test button (one button, not two, when the deceleration already called for a Crash Test).
 - [ ] A thunderbird (GMC Harpy Scout LAV): same stall speed 250, and the card says the stall speed applies only at 75 m or higher.
 
 ## 65. The Remington Roomsweeper follows the shotgun rules (rules check 0.7.0, SR3 p.277-278)
 
-âš  New persisted field (`system.shotgunRules` on firearms): **fully restart Foundry**, not F5. The firearms pack and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
+⚠ New persisted field (`system.shotgunRules` on firearms): **fully restart Foundry**, not F5. The firearms pack and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
 
 **Prerequisites:** a character with Pistols, a fresh Rmngton Roomsweeper ShG from the Firearms pack, a copy owned before this change, a target token, and (Items) Shotgun-class shot ammunition (an Ammunition item, Ammo Type Shot) plus ordinary heavy-pistol rounds.
 
 - [ ] **Item sheet.** The Roomsweeper shows **Shotgun rules (p.117; implied for category Shotgun)** ticked; category is still Heavy Pistol, Damage 9S(f). An ordinary Ares Predator is unticked.
 - [ ] **Migration.** The copy owned before this change gains the tick on load (or `game.sr3e.SR3EMigrations.force()`). Untick it by hand and force again: it is set again (the shipped value was wrong); a ShtG keeps working with the box unticked.
 - [ ] **Shot, by default.** With nothing loaded, fire at a token 12 m away: the fire dialog shows **Choke** and the spread box, the recoil line says "Shotgun: 2x uncompensated recoil in Burst Fire", the damage code is **9S(f)** less one Power per spread. Range band is the **heavy pistol** range table (not a shotgun's).
-- [ ] **Ammunition.** â†» Reload offers both the heavy-pistol rounds and the shot box (not rifle rounds). Load the **normal rounds**: fire again: no choke row ("Slugs loaded"), damage code **9M**, the soak card applies no flechette rule. Load the **shot**: 9S(f), choke row back.
+- [ ] **Ammunition.** ↻ Reload offers both the heavy-pistol rounds and the shot box (not rifle rounds). Load the **normal rounds**: fire again: no choke row ("Slugs loaded"), damage code **9M**, the soak card applies no flechette rule. Load the **shot**: 9S(f), choke row back.
 - [ ] A Gel or APDS box is not offered for the Roomsweeper.
 - [ ] **Gear.** Give the Roomsweeper a laser sight: the GM's TN window does not pre-tick the laser sight (shotguns get none, p.117).
 - [ ] **Skill.** The Roomsweeper's attack pool uses the **Shotguns** skill (not Pistols); a character with only Pistols defaults (Quickness). The range bands stay heavy-pistol. The owned copy's skill label reads Shotguns after the migration.
 
 ## 66. The Shock Glove's extra 7S Stun (rules check 0.7.0, SR3 p.275-276, p.124)
 
-âš  New persisted field (`system.extraDamage` on melee weapons): **fully restart Foundry**, not F5. The melee pack and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
+⚠ New persisted field (`system.extraDamage` on melee weapons): **fully restart Foundry**, not F5. The melee pack and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
 
 **Prerequisites:** a Shock Glove from the Melee pack (and one owned before this change), an attacker with Unarmed Combat equipped with it, a target, a GM.
 
 - [ ] **Item sheet.** The Shock Glove shows Damage `(STR-1)M Stun` and **Extra Damage** `7S Stun`; an ordinary Club's Extra Damage is blank. The old owned glove gains `7S Stun` on load (or after `game.sr3e.SR3EMigrations.force()`); a hand-typed extra code survives.
 - [ ] **Fight.** Attack with the glove and win the exchange. The Result card shows the fist's staged damage and its **Resist Damage** button, then a second line "Extra 7S Stun ... resisted separately" with its own **Resist the Shock** button. Both buttons work (the second after the first; each once).
 - [ ] **Staging.** With 2 net hits the fist code (STR-1)M stages to S and the extra 7S to D; the tie case (net 0) shows both at base.
-- [ ] **Armour.** The target wears Impact 4 armour: the fist card's TN is Power âˆ’ 4; the **Shock** card says "Impact armour at half (4 â†’ 2)" and its TN is 7 âˆ’ 2 = 5.
+- [ ] **Armour.** The target wears Impact 4 armour: the fist card's TN is Power − 4; the **Shock** card says "Impact armour at half (4 → 2)" and its TN is 7 − 2 = 5.
 - [ ] **Defender's glove.** Equip the glove on the defender and let the defender win: the extra 7S Stun is offered against the attacker. A defender without a glove, winning, offers only its own code.
 - [ ] No damage is applied by itself, and the 8-discharge limit is not enforced (stated on the card).
 
-## 67. The bracketed Recoil Compensation â€” integral accessories (rules check 0.7.0, SR3 p.276-279)
+## 67. The bracketed Recoil Compensation — integral accessories (rules check 0.7.0, SR3 p.276-279)
 
-âš  Two new persisted firearm fields (`system.recoilModIntegral`, `system.integralInUse`): **fully restart Foundry**, not F5. The firearms pack and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
+⚠ Two new persisted firearm fields (`system.recoilModIntegral`, `system.integralInUse`): **fully restart Foundry**, not F5. The firearms pack and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
 
 **Prerequisites:** a character, a fresh Heckler & Koch HK227 (RC 2, bracketed 3), an Ultimax MMG (bracketed 6), an Ares Predator, an HK227 copied from the old pack, a target token.
 
 - [ ] **Item sheet.** The HK227 shows Recoil Comp `2` and **Recoil Comp (integral)** `3`; the Ultimax `0` / `6`; the Predator's integral field is blank. The old HK227 gains 3 on load (or after `game.sr3e.SR3EMigrations.force()`); type 9 there first and it stays 9.
-- [ ] **Fire dialog, HK227.** Its Recoil comp bar has the tick "Integral accessories in use (stock folded out / tripod set up) - RC 2 â†’ 3", **unticked**, Weapon comp 2. Tick it: Weapon becomes 3 (not 5), the Total and every mode's recoil preview drop by 1. Untick: back to 2.
+- [ ] **Fire dialog, HK227.** Its Recoil comp bar has the tick "Integral accessories in use (stock folded out / tripod set up) - RC 2 → 3", **unticked**, Weapon comp 2. Tick it: Weapon becomes 3 (not 5), the Total and every mode's recoil preview drop by 1. Untick: back to 2.
 - [ ] **Remembered.** Tick it and confirm; fire again: the tick is already on. Untick and confirm: next time it is off.
 - [ ] **Typed override.** Tick, type 4 over the Weapon figure and confirm: the sheet's integral field now reads 4 and the plain Recoil Comp is still 2.
 - [ ] **Ultimax tripod.** FA, 10 rounds, with the tripod ticked: the recoil preview is **+8**; unticked **+20** (SR3 p.115's worked MMG example).
@@ -3160,88 +3160,88 @@ roll is not enough (it has no dice): set the pool to 1 die with a TN of 2 and ro
 
 ## 68. Shock weapons stun the target (rules check 0.7.0, SR3 p.124-125)
 
-âš  New persisted field (`system.shock` on melee weapons and firearms): **fully restart Foundry**, not F5. The packs and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
+⚠ New persisted field (`system.shock` on melee weapons and firearms): **fully restart Foundry**, not F5. The packs and the 0.7.0 migration change too (`npm run packs:install`, Foundry closed).
 
 **Prerequisites:** a Stun Baton (Melee pack), a Defiance Super Shock (Firearms pack), a Shock Glove, an old copy of each owned before this change, an attacker, a target with Impact armour 4 and a player owner, a GM, a combat with both in it.
 
 - [ ] **Item sheet.** The Stun Baton, Shock Glove and Super Shock show **Shock weapon** ticked; a Club does not; a Taser-category firearm shows it ticked by itself. The old owned copies gain the tick on load (or `game.sr3e.SR3EMigrations.force()`).
-- [ ] **Melee.** Hit the target with the baton (6S Stun). The soak card shows "Armour type" Impact at **half** (4 â†’ 2) and, under Roll to Resist, a **âš¡ Resist the stun** button with the note "Power 6 âˆ’ Â½ Impact (2) âˆ’ the successes â€¦". Only the target's player (or the GM) can press it; it is on the â³ Waiting-on panel.
-- [ ] **The test.** Press it: the roll is Body or Willpower, **whichever is greater**, against TN **4** (the card says which). If it explodes (ðŸ’¥) the result waits for the last wave.
-- [ ] **The result card** says "Stunned for N Combat Turns: Power 6 âˆ’ Â½ Impact 2 âˆ’ S successes". N = 6 âˆ’ 2 âˆ’ S, and with S = 4 or more it reads **Not stunned** with no Mark button. Nothing is applied by the roll.
-- [ ] **âš¡ Mark stunned (N Combat Turns).** The target's owner (or the GM) clicks it once: the token gets the **Stunned (shock weapon)** icon, and every roll of that actor shows +2 on its TN ("Stunned +2 (N Combat Turns)" in the breakdown) - skill roll, Knockdown, and the **Dodge Test** TN line ("+2 stunned"). Another player cannot press Mark.
+- [ ] **Melee.** Hit the target with the baton (6S Stun). The soak card shows "Armour type" Impact at **half** (4 → 2) and, under Roll to Resist, a **⚡ Resist the stun** button with the note "Power 6 − ½ Impact (2) − the successes …". Only the target's player (or the GM) can press it; it is on the ⏳ Waiting-on panel.
+- [ ] **The test.** Press it: the roll is Body or Willpower, **whichever is greater**, against TN **4** (the card says which). If it explodes (💥) the result waits for the last wave.
+- [ ] **The result card** says "Stunned for N Combat Turns: Power 6 − ½ Impact 2 − S successes". N = 6 − 2 − S, and with S = 4 or more it reads **Not stunned** with no Mark button. Nothing is applied by the roll.
+- [ ] **⚡ Mark stunned (N Combat Turns).** The target's owner (or the GM) clicks it once: the token gets the **Stunned (shock weapon)** icon, and every roll of that actor shows +2 on its TN ("Stunned +2 (N Combat Turns)" in the breakdown) - skill roll, Knockdown, and the **Dodge Test** TN line ("+2 stunned"). Another player cannot press Mark.
 - [ ] **Count.** Advance the combat one Combat Turn (new round): the sheet/flag turns drop by one (`actor.getFlag('The2ndChumming3e','stunTurns')`). At 0 a chat line says the target is no longer stunned and the icon and +2 go. Ending the combat clears it too.
-- [ ] **Soak while stunned.** Hit an already-stunned target with any weapon: its Resist Damage card's TN label reads "Power N âˆ’ Armour + 2 stunned" and the TN is 2 higher. The soak of the hit that STUNS it (before âš¡ Mark) has no +2. Hit someone with the M&M **Shock Hand**: the stun button appears.
+- [ ] **Soak while stunned.** Hit an already-stunned target with any weapon: its Resist Damage card's TN label reads "Power N − Armour + 2 stunned" and the TN is 2 higher. The soak of the hit that STUNS it (before ⚡ Mark) has no +2. Hit someone with the M&M **Shock Hand**: the stun button appears.
 - [ ] **By hand.** Remove the icon from the token HUD: the +2 stops (flag cleared). Tick it on by hand: the +2 applies with no count; the GM tracks the duration.
 - [ ] **Shock Glove.** Win a melee exchange with the glove: the fist's Resist Damage card has **no** stun button; the **Resist the Shock (7S Stun)** card has one, and its Power is **7** (not the staged Power).
 - [ ] **Ranged.** Shoot the Super Shock (10S Stun): the soak card's Armour type defaults to **Impact** at half, and the stun button states Power 10.
 - [ ] A hit with an ordinary weapon (Club, Predator) shows no stun button.
 
-## 69. Cyberlimb Mods â€” book corrections and in-limb cyberweapons (TODO 255, SR3 p.303, M&M pp.36-41)
+## 69. Cyberlimb Mods — book corrections and in-limb cyberweapons (TODO 255, SR3 p.303, M&M pp.36-41)
 
 The packs change (`npm run packs:install`, Foundry closed). Copies already on characters keep their old numbers until the 0.7.1 migration (TODO 256).
 
 - [x] **In-limb weapons.** Install the Cyberlimb Mods **Spur** (SR3 Cyberware) and **CyGun Shotgun(ShtG)(CYB)** (M&M Cyberware) on a new character: a melee **Spur** (STR)M and a firearm **CyGun Shotgun** 8S appear on the weapons tab, each linked to its implant. The in-limb **Venom Sack** makes no weapon. *Walked by the agent 2026-10-23 (mcp-api as active GM, a disposable actor, deleted).*
-- [ ] **Pack values.** After `packs:install`, drag from the compendiums: Direct Neural Interface 4,500Â¥ 5P-Q; the SR3 in-limb Smartlink 6/4 days, Street Index 1.5; Mount, Tracking 25,000Â¥; Cyber Holster 5P-N; the Cyberlimbs Fingertip Compartment 0 Essence; Rigger Decryption Module **[10]** (Cyberlimb Mods) at 175,000Â¥, and only one [1].
+- [ ] **Pack values.** After `packs:install`, drag from the compendiums: Direct Neural Interface 4,500¥ 5P-Q; the SR3 in-limb Smartlink 6/4 days, Street Index 1.5; Mount, Tracking 25,000¥; Cyber Holster 5P-N; the Cyberlimbs Fingertip Compartment 0 Essence; Rigger Decryption Module **[10]** (Cyberlimb Mods) at 175,000¥, and only one [1].
 
-## 70. Weapon mods â€” book corrections in the generated accessories (TODO 258, SR3 p.281-282, CC pp.33, 80-83)
+## 70. Weapon mods — book corrections in the generated accessories (TODO 258, SR3 p.281-282, CC pp.33, 80-83)
 
 The gear packs change (`npm run packs:install`, Foundry closed).
 
-- [ ] **Cannon Companion gear:** Sawed-Off Shotgun Barrel 64Â¥; Rangefinder's description reads **Mount: Top**; **Laser Sight, Low-Power** 800Â¥, Mount Top/Under, page cc.82, and its description gives Design Points +100 Ã— 8.
-- [ ] **SR3 core gear:** no low-power laser sight remains; Smart Shades I (Cost 6000Â¥) shows page sr3.281 and the "double the nuyen" line; Ultrasound Shades and Gas Vent I carry their source notes.
+- [ ] **Cannon Companion gear:** Sawed-Off Shotgun Barrel 64¥; Rangefinder's description reads **Mount: Top**; **Laser Sight, Low-Power** 800¥, Mount Top/Under, page cc.82, and its description gives Design Points +100 × 8.
+- [ ] **SR3 core gear:** no low-power laser sight remains; Smart Shades I (Cost 6000¥) shows page sr3.281 and the "double the nuyen" line; Ultrasound Shades and Gas Vent I carry their source notes.
 - [ ] **Man & Machine gear:** Smart Shades II say "Derived; not printed".
 
 ## 71. Karma on NPCs, and Total Karma in the ledger (Karma audit, 2026-10-25, SR3 p.242-246)
 
 **Prerequisites:** an `npc` actor owned by Player2 (so it is a player character), and a non-human character
-owned by a player. JS only â€” reload the tabs, no restart.
+owned by a player. JS only — reload the tabs, no restart.
 
 **Walked by the agent 2026-10-25** (mcp-api as active GM, fresh code, test world; actors restored after).
 
-- [x] The NPC's sheet has **no** Good Karma, Total Karma, Award Karmaâ€¦, Spend Karmaâ€¦ (Bio â†’ Resources) and **no**
+- [x] The NPC's sheet has **no** Good Karma, Total Karma, Award Karma…, Spend Karma… (Bio → Resources) and **no**
       Karma Pool block (Attributes); Nuyen and Combat Pool are still there. A character's sheet still has all of them.
 - [x] Calling Award Karma / Spend Karma on the NPC's sheet only warns "has no Good or Total Karma to award" / "has no
-      Good Karma to spend" â€” no dialog, no ledger line.
-- [x] **ðŸŽ– Session Rewards** lists the NPC as "(no karma â€” NPC | Â¥â€¦)". Award 25 karma and Â¥100 to the NPC and a troll at
-      Total 0, Pool 3: the troll gets Good Karma +24, Total 25, Pool 4; the NPC gets Â¥100 only; the card says
-      "No karma for <NPC> â€” an NPC carries no karma fields" and cites SR3 p.242.
-- [x] The troll's ðŸ“’ Ledger has four lines: Good Karma +24, **Total Karma +25 (0 â†’ 25)**, Nuyen +Â¥100, Karma Pool +1.
-- [ ] By eye: the NPC's Resources row (Nuyen, Â± Fundsâ€¦, ðŸ›’ Buy gearâ€¦) lays out sensibly without the karma boxes.
+      Good Karma to spend" — no dialog, no ledger line.
+- [x] **🎖 Session Rewards** lists the NPC as "(no karma — NPC | ¥…)". Award 25 karma and ¥100 to the NPC and a troll at
+      Total 0, Pool 3: the troll gets Good Karma +24, Total 25, Pool 4; the NPC gets ¥100 only; the card says
+      "No karma for <NPC> — an NPC carries no karma fields" and cites SR3 p.242.
+- [x] The troll's 📒 Ledger has four lines: Good Karma +24, **Total Karma +25 (0 → 25)**, Nuyen +¥100, Karma Pool +1.
+- [ ] By eye: the NPC's Resources row (Nuyen, ± Funds…, 🛒 Buy gear…) lays out sensibly without the karma boxes.
 - [ ] `game.sr3e.SR3EMigrations.force()` on a character whose Karma Pool was burned (a "Karma Pool" ledger line with a
-      negative change) leaves the Pool where it is; the migration's own ledger lines, if any, read "Migration 0.x.y: â€¦",
+      negative change) leaves the Pool where it is; the migration's own ledger lines, if any, read "Migration 0.x.y: …",
       not "By hand".
 
-## 72. Buy gear â€” the card remembers, the store, one item per level (bugs reported 2026-10-25, SR3 pp.272-273)
+## 72. Buy gear — the card remembers, the store, one item per level (bugs reported 2026-10-25, SR3 pp.272-273)
 
-**Prerequisites:** a character owned by Player2 with Â¥50,000 and an Etiquette skill. JS only for the card; the packs
+**Prerequisites:** a character owned by Player2 with ¥50,000 and an Etiquette skill. JS only for the card; the packs
 need `npm run packs:install` (Foundry closed) and a restart.
 
 **The card is recorded on the message**
-- [ ] Player2 buys a Fichetti Security 500 through a contact and gets a "Source found" card. Player2 presses ðŸ¤ and
-      haggles. **On the GM's tab** the card's ðŸ¤ and ðŸ’´ are now greyed out (hover: "Already haggledâ€¦" / "The haggle set
-      a new priceâ€¦"), and only the haggle card's ðŸ’´ is live.
-- [ ] Player2 presses ðŸ’´ on the haggle card and confirms. On the GM's tab that ðŸ’´ is greyed out ("Paid."). **F5 on both
+- [ ] Player2 buys a Fichetti Security 500 through a contact and gets a "Source found" card. Player2 presses 🤝 and
+      haggles. **On the GM's tab** the card's 🤝 and 💴 are now greyed out (hover: "Already haggled…" / "The haggle set
+      a new price…"), and only the haggle card's 💴 is live.
+- [ ] Player2 presses 💴 on the haggle card and confirms. On the GM's tab that 💴 is greyed out ("Paid."). **F5 on both
       tabs**: still greyed out.
-- [ ] Press ðŸ’´ on a fresh card and **Cancel** the confirm: the button is live again and nothing was paid.
+- [ ] Press 💴 on a fresh card and **Cancel** the confirm: the button is live again and nothing was paid.
 
 **At the store, or through a contact** (needs the restart: new `legality` field)
-- [ ] ðŸ›’ Buy gear â†’ search "armor jacket" (Legal, SR3 p.284): the dialog opens on ðŸª **At the store**, the contact,
-      Etiquette, TN and Street Index rows are hidden, the preview reads "List price Â¥900". Buy at the store â†’ a
-      "ðŸª At the store" card at Â¥900 with ðŸ’´ Pay; paying adds the jacket and the ðŸ“’ Ledger line. No Etiquette roll.
-- [ ] Search "ares predator" (6P-E): the dialog opens on ðŸ¤ **Through a contact**; the legality note says a permit is
-      needed. Switch to ðŸª: the note turns amber but the button still works (warn, never refuse).
-- [ ] Switch a Legal item to ðŸ¤: the contact flow runs as before (Etiquette, Street Index, ðŸ¤ haggle for the discount).
-- [ ] The haggle's result card counts the dice: "N vs M â€” net K" matches the two roll cards' successes, and the price moves
-      5% per net success (it read "0 vs 0 â€” no movement" whatever was rolled until 2026-10-26).
+- [ ] 🛒 Buy gear → search "armor jacket" (Legal, SR3 p.284): the dialog opens on 🏪 **At the store**, the contact,
+      Etiquette, TN and Street Index rows are hidden, the preview reads "List price ¥900". Buy at the store → a
+      "🏪 At the store" card at ¥900 with 💴 Pay; paying adds the jacket and the 📒 Ledger line. No Etiquette roll.
+- [ ] Search "ares predator" (6P-E): the dialog opens on 🤝 **Through a contact**; the legality note says a permit is
+      needed. Switch to 🏪: the note turns amber but the button still works (warn, never refuse).
+- [ ] Switch a Legal item to 🤝: the contact flow runs as before (Etiquette, Street Index, 🤝 haggle for the discount).
+- [ ] The haggle's result card counts the dice: "N vs M — net K" matches the two roll cards' successes, and the price moves
+      5% per net success (it read "0 vs 0 — no movement" whatever was rolled until 2026-10-26).
 - [ ] The item sheet of a Katana shows Legality "5-B", editable. A clip of Regular rounds reads "As Weapon".
 - [ ] `game.sr3e.SR3EMigrations.force()` on a character with an old Ares Predator from the compendium (Legality blank):
       it reads 6P-E afterwards; one whose Legality was typed keeps it.
 
 **One item per level** (restart Foundry after `npm run packs:install`)
-- [ ] The SR3 gear compendium has ONE "Pocket Computer". Its sheet's Level dropdown reads 10 Mp, 25 Mp â€¦ 1000 Mp, and
-      picking 250 Mp sets the cost to 25,000Â¥. Dragged onto a character it reads "Pocket Computer [10]".
-- [ ] ðŸ›’ Buy gear â†’ search "pocket computer": one hit; the Level picker says "250 Mp"; buying it adds
-      "Pocket Computer [250]" at 25,000Â¥ list.
+- [ ] The SR3 gear compendium has ONE "Pocket Computer". Its sheet's Level dropdown reads 10 Mp, 25 Mp … 1000 Mp, and
+      picking 250 Mp sets the cost to 25,000¥. Dragged onto a character it reads "Pocket Computer [10]".
+- [ ] 🛒 Buy gear → search "pocket computer": one hit; the Level picker says "250 Mp"; buying it adds
+      "Pocket Computer [250]" at 25,000¥ list.
 - [ ] Same for Wrist Computer, Telecom, Table Top PC, headware Memory (cyberware), ECCM, a SkillSoft Jukebox (its
       ports) and the Virtual Instrument chips.
 - [ ] The SR3 adept powers have ONE "Imp. Reflexes": dropped on an adept it reads "Imp. Reflexes [1]"; picking level 3
@@ -3250,489 +3250,489 @@ need `npm run packs:install` (Foundry closed) and a restart.
 - [ ] `game.sr3e.SR3EMigrations.force()` on a character holding an old "Pocket Computer (250Mp)" and "Combat Sense +2":
       they become "Pocket Computer [250]" (rating 250) and "Combat Sense [2]" (level 2, still two Combat Pool dice).
 
-## 73. ðŸ›’ Buy ammo from the gun (TODO 271, branch `feature/buy-ammo-from-gun`)
+## 73. 🛒 Buy ammo from the gun (TODO 271, branch `feature/buy-ammo-from-gun`)
 
-**Prerequisites:** a character owned by Player2 with an Ares Predator (15(c)), a grenade launcher, a bow, and Â¥5,000.
-JS only â€” no restart.
+**Prerequisites:** a character owned by Player2 with an Ares Predator (15(c)), a grenade launcher, a bow, and ¥5,000.
+JS only — no restart.
 
-- [ ] The Predator's item sheet has **ðŸ›’ Buy ammo** in its header; a melee weapon's and an unowned compendium gun's do not.
-- [ ] Click it: Buy gear opens titled "â€¦ammunition for Ares Predator", a line "ðŸ”« Ammunition for Ares Predator â€” 15-round
-      (c), HPist class", and the list fills at once: 15-Rnd Clips (Regular, APDS, Gelâ€¦) and loose rounds â€” no 10-Rnd
+- [ ] The Predator's item sheet has **🛒 Buy ammo** in its header; a melee weapon's and an unowned compendium gun's do not.
+- [ ] Click it: Buy gear opens titled "…ammunition for Ares Predator", a line "🔫 Ammunition for Ares Predator — 15-round
+      (c), HPist class", and the list fills at once: 15-Rnd Clips (Regular, APDS, Gel…) and loose rounds — no 10-Rnd
       clips, no arrows, no mini-grenades, no Assault Cannon rounds, no darts. Typing "gel" narrows it.
 - [ ] Buy "Gel Rnds" (at the store or through a contact) and pay: the new box on the sheet has Gun class **HPist**.
-- [ ] The grenade launcher's ðŸ›’ Buy ammo lists only mini-grenades; the bow's only arrows.
-- [ ] â†» Reload the Predator: the bought box is offered, as before.
+- [ ] The grenade launcher's 🛒 Buy ammo lists only mini-grenades; the bow's only arrows.
+- [ ] ↻ Reload the Predator: the bought box is offered, as before.
 
-## 74. Metatype Shift and Generic NPCs (TODO 272, 273 â€” SR3 p.56, p.245)
+## 74. Metatype Shift and Generic NPCs (TODO 272, 273 — SR3 p.56, p.245)
 
 Needs Foundry running with a Little Black Book archetype in an Actor compendium; a portrait module is optional (walk it once with, once without).
 
-- [ ] **Meet the contact shifts the stats.** Open Meet the contact on an ork archetype (e.g. Dock Worker if a troll). Pick **Human**: the amber line reads "Stats are adjusted from the book's ork to human (SR3 p.56): Body 9 â†’ 6, â€¦". Create NPC: the sheet shows those numbers, metatype Human, Essence and skills unchanged, and a notification repeats the changes. Picking the book's own metatype shows no amber line and changes nothing.
-- [ ] **Caps and floor.** Make a human Face-type NPC an ork or troll and check no attribute exceeds round(limit Ã— 1.5) from the Racial Attribute Limit Table (p.245) and none is below 1.
+- [ ] **Meet the contact shifts the stats.** Open Meet the contact on an ork archetype (e.g. Dock Worker if a troll). Pick **Human**: the amber line reads "Stats are adjusted from the book's ork to human (SR3 p.56): Body 9 → 6, …". Create NPC: the sheet shows those numbers, metatype Human, Essence and skills unchanged, and a notification repeats the changes. Picking the book's own metatype shows no amber line and changes nothing.
+- [ ] **Caps and floor.** Make a human Face-type NPC an ork or troll and check no attribute exceeds round(limit × 1.5) from the Racial Attribute Limit Table (p.245) and none is below 1.
 - [ ] **Traits follow the metatype.** On a troll made from a human archetype: Body shows the dermal-armour +1 (derived), melee Reach has +1, and the vision line says thermographic. Switch the same actor to human by hand: all three go.
-- [ ] **Make a Generic NPC.** GM: Actors tab â†’ right-click an NPC â†’ **Make Generic NPCâ€¦** (also `game.sr3e.SR3EGenericNpc.create({ archetypeUuid })` for a compendium archetype). Dialog: Seattle mix is preselected; typing in a race box switches to Custom. Confirm: the actor's prototype token is **unlinked**, numbered, ring and vision on; `actor.getFlag('The2ndChumming3e','genericNpc')` holds the mix; the actor is **not** a template (it appears in target lists).
+- [ ] **Make a Generic NPC.** GM: Actors tab → right-click an NPC → **Make Generic NPC…** (also `game.sr3e.SR3EGenericNpc.create({ archetypeUuid })` for a compendium archetype). Dialog: Seattle mix is preselected; typing in a race box switches to Custom. Confirm: the actor's prototype token is **unlinked**, numbered, ring and vision on; `actor.getFlag('The2ndChumming3e','genericNpc')` holds the mix; the actor is **not** a template (it appears in target lists).
 - [ ] **Each token is a person.** Drag 10+ tokens onto a scene (GM client, the active GM). Open several: their metatypes differ (roughly 2 in 3 human with the Seattle mix), stats are the book's shifted for that race, and with a portrait module each has a face of its race whose job matches the archetype. With no portrait module the stats still vary and the token keeps the prototype art.
 - [ ] **The sidebar actor is untouched** (still the book's race and numbers), and wounding one token does not wound the others or the sidebar actor (TODO 260).
 - [ ] **A custom mix** of `troll 1` makes every token a troll; a linked copy of the actor is not rolled.
-- [ ] Reload the GM tab after pulling this branch (a stale GM client will not roll â€” the hook runs on the client that creates the token).
+- [ ] Reload the GM tab after pulling this branch (a stale GM client will not roll — the hook runs on the client that creates the token).
 ## 75. The core rulebook's sample characters (TODO 274, SR3 pp.65-80 and record sheets pp.326-329)
 
 **Prerequisites:** `npm run packs:install` (Foundry closed) and a restart; a test world with Player2 and a GM. The numbers
-under each character are the book's â€” check them against the sheet, not the other way round.
+under each character are the book's — check them against the sheet, not the other way round.
 `node tests/run.mjs core-archetypes` proves the pack matches the book on paper; this walks it in Foundry.
 
-- [ ] Compendium sidebar â†’ Reference â†’ **Sample Characters** holds **16** actors (the book prints sixteen, not fifteen).
+- [ ] Compendium sidebar → Reference → **Sample Characters** holds **16** actors (the book prints sixteen, not fifteen).
       The core rulebook is never switchable (`SR3ESourceBooks.isAllowed` always allows a `.core` book), so unticking it in
-      *Configure Source Books* leaves the pack visible â€” that is expected.
-- [ ] Drag **The Adept** into the world. Body 5, Quickness 6, **Strength 6 â†’ 7** (Improved Strength), Intelligence 6, Willpower 4,
+      *Configure Source Books* leaves the pack visible — that is expected.
+- [ ] Drag **The Adept** into the world. Body 5, Quickness 6, **Strength 6 → 7** (Improved Strength), Intelligence 6, Willpower 4,
       Essence 6, Magic 6. **Reaction 8** and Initiative **8 + 2D6** (Increased Reflexes 1). Combat Pool **8**. Unarmed Combat 6, Clubs 5
       (specialisation Rattan Sticks 7). The five adept powers are on the Magic tab; Pain Resistance at level 3.
-- [ ] **Combat Decker** (ork): Strength 5 â†’ **7**, Reaction 4 â†’ **6**, Essence **1.54**, Combat Pool **7**, Hacking Pool **4** by the
-      core formula âŒŠ(INT+MPCP)Ã·3âŒ‹ (SR3 p.207) â€” that is the **Orthodox SR3** ruleset; under **Matrix Defragged** (the default) the same
-      sheet shows **7** (INT + âŒŠMPCPÃ·3âŒ‹, MDF p.11). The pool follows the world's Matrix ruleset (TODO 275, Â§76). The Ceska Black Scorpion reads
+- [ ] **Combat Decker** (ork): Strength 5 → **7**, Reaction 4 → **6**, Essence **1.54**, Combat Pool **7**, Hacking Pool **4** by the
+      core formula ⌊(INT+MPCP)÷3⌋ (SR3 p.207) — that is the **Orthodox SR3** ruleset; under **Matrix Defragged** (the default) the same
+      sheet shows **7** (INT + ⌊MPCP÷3⌋, MDF p.11). The pool follows the world's Matrix ruleset (TODO 275, §76). The Ceska Black Scorpion reads
       loaded **35/35** (35(c)); the record sheet's "50 rounds and 20 explosive rounds" are the 15 spare Regular and 20 Explosive
       rounds, as two loose-round stacks.
-- [ ] **Combat Mage** (troll): Body 6 â†’ **7** (the hide, nothing else), Spell Pool **5**, Astral Combat Pool **7**, Combat Pool **7**,
+- [ ] **Combat Mage** (troll): Body 6 → **7** (the hide, nothing else), Spell Pool **5**, Astral Combat Pool **7**, Combat Pool **7**,
       Essence 6. Seven spells, each at its printed Force in the name; Manaball and Powerball say *Exclusive*.
-- [ ] **The Mercenary** (troll): Body 10 â†’ **13**, Quickness 5 â†’ **7**, Strength 9 â†’ **11**, Reaction 4 â†’ **5**, Initiative 5 + 2D6,
+- [ ] **The Mercenary** (troll): Body 10 → **13**, Quickness 5 → **7**, Strength 9 → **11**, Reaction 4 → **5**, Initiative 5 + 2D6,
       Essence **1.02**, Combat Pool **7**. The Ares Antioch is loaded with a mini-grenade stock beside it.
-- [ ] **Street Samurai**: Body 4 â†’ 6, Reaction 6 â†’ **11** (Wired 2 + Reaction Enhancer 1), Initiative 11 + 3D6, Essence **.01**,
-      Combat Pool 7. âš  **Strength 5 â†’ 8 here, the book prints 7** â€” Strength Enhancement 3 is +3 in the packs; known, TODO 274.
+- [ ] **Street Samurai**: Body 4 → 6, Reaction 6 → **11** (Wired 2 + Reaction Enhancer 1), Initiative 11 + 3D6, Essence **.01**,
+      Combat Pool 7. ⚠ **Strength 5 → 8 here, the book prints 7** — Strength Enhancement 3 is +3 in the packs; known, TODO 274.
 - [ ] **Drone Rigger** and **Vehicle Rigger**: with the rig active, rigged Reaction **9** / **11**, Control Pool **9** / **11**,
       Combat Pool 7 / 8; Essence 1.43 / 0.44.
 - [ ] **Street Shaman**, **Tribal Shaman**, **Street Mage**: Spell Pool 5, Astral Combat Pool 8 (Street Mage 8, Tribal 8), Magic 6;
       the shamans' totem reads Rat / Raven, the mage's tradition Hermetic.
 - [ ] Every character: Karma Pool 1, a token with sight and the dynamic ring, `bookPage` shown as the book and page, and the
-      Notes tab names the priorities, lifestyle, contacts and starting nuyen (the 3D6 Ã— 100Â¥ is rolled by the GM).
+      Notes tab names the priorities, lifestyle, contacts and starting nuyen (the 3D6 × 100¥ is rolled by the GM).
 - [ ] Put one of them in a combat: the weapons roll, the loaded magazine counts down, Reload uses the spare clips.
 
 ## 76. The Hacking Pool follows the world's Matrix ruleset (TODO 275, SR3 p.207, MDF p.11)
 
 Found live 2026-10-26: the Combat Decker sample showed 7 where the core book gives 4. One derived value now:
-Orthodox â†’ âŒŠ(INT + MPCP) Ã· 3âŒ‹ (SR3 p.207); Defragged â†’ INT + âŒŠMPCP Ã· 3âŒ‹ (MDF p.11). The equipped deck's MPCP feeds it; an
+Orthodox → ⌊(INT + MPCP) ÷ 3⌋ (SR3 p.207); Defragged → INT + ⌊MPCP ÷ 3⌋ (MDF p.11). The equipped deck's MPCP feeds it; an
 Orthodox decker with no deck item uses `system.orthodoxDeck.mccp`. The ruleset setting needs a **full restart** to change.
 
-**Prerequisites:** the **Combat Decker** from Reference â†’ Sample Characters in the world (CMT Avatar equipped); a disposable
+**Prerequisites:** the **Combat Decker** from Reference → Sample Characters in the world (CMT Avatar equipped); a disposable
 copy is fine. Note the world's current `matrixRuleset` and restore it afterwards.
 
-- [ ] **Defragged** (default): Derived Stats â†’ Hacking Pool reads **7** (tooltip "INT â€¦ + floor(MPCP â€¦ / 3) (MDF p.11)").
-- [ ] **Orthodox** (Configure Settings â†’ Matrix ruleset, restart): the Hacking Pool reads **4** (tooltip "floor((INT â€¦ + MPCP â€¦) / 3) (SR3 p.207)"), on the character tab **and** the Orthodox Matrix tab's Derived Stats â€” the same number.
-- [ ] **One value everywhere (Orthodox):** an Orthodox cybercombat/IC roll dialog offers up to **4** Hacking Pool dice; spend 2 â†’ the sheet reads 2 / 4.
-- [ ] **Actor-held deck:** under Orthodox, an actor with no deck item and `orthodoxDeck.mccp` 6, INT 5 â†’ pool **3**. Under Defragged the same actor has no pool.
+- [ ] **Defragged** (default): Derived Stats → Hacking Pool reads **7** (tooltip "INT … + floor(MPCP … / 3) (MDF p.11)").
+- [ ] **Orthodox** (Configure Settings → Matrix ruleset, restart): the Hacking Pool reads **4** (tooltip "floor((INT … + MPCP …) / 3) (SR3 p.207)"), on the character tab **and** the Orthodox Matrix tab's Derived Stats — the same number.
+- [ ] **One value everywhere (Orthodox):** an Orthodox cybercombat/IC roll dialog offers up to **4** Hacking Pool dice; spend 2 → the sheet reads 2 / 4.
+- [ ] **Actor-held deck:** under Orthodox, an actor with no deck item and `orthodoxDeck.mccp` 6, INT 5 → pool **3**. Under Defragged the same actor has no pool.
 - [ ] Restore the original ruleset setting and restart.
 
 ## 77. Mods installed inside an item (TODO 276, branch `claude/quirky-mayer-32wuvg`)
 
-**Full Foundry restart** â€” firearm, melee, armour, cyberware, gear, bioware and vehicle-mod models gained `installed` /
+**Full Foundry restart** — firearm, melee, armour, cyberware, gear, bioware and vehicle-mod models gained `installed` /
 `modifiers`. A character with an Ares Predator (or any firearm) and Cybereyes; a Gas Vent II and a Smartgun, external from
 the gear compendium; a second user (Player2) owning the character.
 
 - [ ] **Install from the compendium:** open the Predator's sheet; **Installed mods** says "Nothing installed". Drag Gas Vent II
-      from the compendium onto that section â†’ it is listed (mount **Barrel**), the inventory does NOT gain a Gas Vent.
-- [ ] **Changes:** âœŽ the Gas Vent â†’ its sheet says "ðŸ”§ Installed in Ares Predator". **+ Add a change** â†’ Recoil Compensation 2.
+      from the compendium onto that section → it is listed (mount **Barrel**), the inventory does NOT gain a Gas Vent.
+- [ ] **Changes:** ✎ the Gas Vent → its sheet says "🔧 Installed in Ares Predator". **+ Add a change** → Recoil Compensation 2.
       Close it: the Predator's row shows **RC 2** in Changes, the summary chip "RC 2" (tooltip "RC 2: Gas Vent II +2").
-- [ ] **The fire dialog:** fire the Predator SA â†’ Recoil comp â†’ Weapon reads **2** (tooltip names the Gas Vent). Type 3 over it,
-      fire: reopen the gun's sheet â€” its own RC is **1**, not 3 (the vent's 2 is never baked in).
+- [ ] **The fire dialog:** fire the Predator SA → Recoil comp → Weapon reads **2** (tooltip names the Gas Vent). Type 3 over it,
+      fire: reopen the gun's sheet — its own RC is **1**, not 3 (the vent's 2 is never baked in).
 - [ ] **Move, not copy:** drag a Smartgun, external from the compendium into the character's inventory, then drag it from the
-      inventory onto the **Predator's row** on the Combat tab â†’ it is installed and gone from the inventory; the row shows ðŸ”§2.
-      Give it a change "Smartgun system" (ticked) â†’ the fire dialog's Smartgun box is pre-ticked.
-- [ ] **Mount warning, never a refusal:** install a second barrel accessory (a Silencer) â†’ a warning "The barrel mount already
-      holds Gas Vent IIâ€¦", and it is installed anyway. Its row's mount reads amber **âš  Barrel** (tooltip: wants the barrel mount,
-      which already holds the Gas Vent) â€” not "â€”" / "No weapon mount" (fixed 2026-10-27).
-- [ ] **A Level picked on an installed mod sets its price:** âœŽ the Gas Vent, Level 3 â†’ 700Â¥, Conceal (-2), 0.75 kg on its sheet
-      AND in the gun's Installed mods (it kept level 1's 250Â¥ before the 2026-10-27 fix â€” the form's own submit put it back).
-- [ ] **Wrong kind warns:** drop an armour mod (Chemical Seal (Armor)) on the Predator â†’ "is a mod for armour, not a weapon", installed.
-- [ ] **â Take out:** â the Silencer â†’ it is in the inventory again, gone from the gun. **ðŸ—‘** the Chemical Seal â†’ confirm â†’ gone entirely.
-- [ ] **It travels:** drag the Predator to another actor â†’ its mods are there. Drag it to the Items sidebar â†’ the world item
+      inventory onto the **Predator's row** on the Combat tab → it is installed and gone from the inventory; the row shows 🔧2.
+      Give it a change "Smartgun system" (ticked) → the fire dialog's Smartgun box is pre-ticked.
+- [ ] **Mount warning, never a refusal:** install a second barrel accessory (a Silencer) → a warning "The barrel mount already
+      holds Gas Vent II…", and it is installed anyway. Its row's mount reads amber **⚠ Barrel** (tooltip: wants the barrel mount,
+      which already holds the Gas Vent) — not "—" / "No weapon mount" (fixed 2026-10-27).
+- [ ] **A Level picked on an installed mod sets its price:** ✎ the Gas Vent, Level 3 → 700¥, Conceal (-2), 0.75 kg on its sheet
+      AND in the gun's Installed mods (it kept level 1's 250¥ before the 2026-10-27 fix — the form's own submit put it back).
+- [ ] **Wrong kind warns:** drop an armour mod (Chemical Seal (Armor)) on the Predator → "is a mod for armour, not a weapon", installed.
+- [ ] **⏏ Take out:** ⏏ the Silencer → it is in the inventory again, gone from the gun. **🗑** the Chemical Seal → confirm → gone entirely.
+- [ ] **It travels:** drag the Predator to another actor → its mods are there. Drag it to the Items sidebar → the world item
       shows the same mods. An unlinked token of an NPC with a modded gun: install in the token's copy; the sidebar NPC's gun is unchanged.
-- [ ] **Vision climbs:** on the Cybereyes' sheet, drop any gear item into Installed mods, âœŽ it, add a change **Thermographic
+- [ ] **Vision climbs:** on the Cybereyes' sheet, drop any gear item into Installed mods, ✎ it, add a change **Thermographic
       vision**. Fire at a target in darkness: the GM window's vision reminder / pre-selected vision offers **thermo** from
-      "Cybereyes (â€¦)". Move the Cybereyes to Storage â†’ it is gone.
-- [ ] **Player2** (owning the character, not the GM): installs, âœŽ edits, â and ðŸ—‘ all work. Player2 opening a GM-only item's mod sees it read-only.
-- [ ] **Dragging a gun over a gun** on the Combat tab still only sorts â€” nothing is installed.
+      "Cybereyes (…)". Move the Cybereyes to Storage → it is gone.
+- [ ] **Player2** (owning the character, not the GM): installs, ✎ edits, ⏏ and 🗑 all work. Player2 opening a GM-only item's mod sees it read-only.
+- [ ] **Dragging a gun over a gun** on the Combat tab still only sorts — nothing is installed.
 
-### 77b. Armour with mods (TODO 276, armour slice â€” the maintainer's rulings of 2026-10-27; CC pp.51-54)
+### 77b. Armour with mods (TODO 276, armour slice — the maintainer's rulings of 2026-10-27; CC pp.51-54)
 
-**Full restart** (ArmorData gained `hardened`, modifiers gained `perRating`). Use an Armor Jacket (5/3, 900Â¥, 3/36hrs, SI .75,
+**Full restart** (ArmorData gained `hardened`, modifiers gained `perRating`). Use an Armor Jacket (5/3, 900¥, 3/36hrs, SI .75,
 Conceal 6, 2 kg) on a character with Quickness 3; from the Cannon Companion gear compendium Fire Resistance, Insulation, Gel Packs.
 
-- [ ] **Rated mod:** drop Fire Resistance on the jacket's sheet (Installed mods), âœŽ it, Level 3 â†’ its Changes row reads "Power âˆ’ vs fire", 1, **per level** ticked
-      (untick and re-tick it: it stays a per-level change); the jacket reads "With mods: 5B / 3I Â· Conceal 6 Â· 2 kg Â· 1,200Â¥ Â· Avail 4/48hrs Â· SI 1 Â· mod points 3 / 8".
+- [ ] **Rated mod:** drop Fire Resistance on the jacket's sheet (Installed mods), ✎ it, Level 3 → its Changes row reads "Power − vs fire", 1, **per level** ticked
+      (untick and re-tick it: it stays a per-level change); the jacket reads "With mods: 5B / 3I · Conceal 6 · 2 kg · 1,200¥ · Avail 4/48hrs · SI 1 · mod points 3 / 8".
 - [ ] **Insulation [3]:** Conceal 5, weight 3.5 kg, Avail 5/60hrs (each mod once), mod points 6 / 8.
-- [ ] **Caps warn, never refuse:** set Fire Resistance to 6 â†’ amber "one mod may be at most 5"; add more to pass 8 total â†’ "at most 8".
-- [ ] **Gel packs:** install â†’ "hardened", Conceal halved (5 â†’ 2), weight +25%, cost 4,500Â¥ + the other mods, Avail TN Ã—2 / time Ã—4,
-      mod points unchanged. Install a second set â†’ warned. Drop gel on a Form-fitting Shirt / Diving Armor â†’ warned, installed.
-- [ ] **Wearing it:** Combat tab â†’ Currently Worn says "(hardened â€” CC p.51)" and "Protects: Fire res. âˆ’3 Â· Insulation âˆ’3";
-      Combat Pool loss reads the gel figures (7/4 vs Quickness 3 â†’ âˆ’2) â€” the jacket alone was âˆ’1. Wear a Lined Coat too â†’ amber
-      "nothing layers with it". A helmet with it â†’ no warning.
-- [ ] **Soak â€” deflected:** shoot the wearer with a 6M pistol SA â†’ the soak card says "ðŸ›¡ Deflected (hardened): Power 6 â€¦ does not
-      exceed the hardened armour's â€¦ â€” no damage" only when the Power â‰¤ 5; a burst (6M + 3) still compares 6, not 9. APDS: compared
-      to half (2). Nothing is applied â€” the GM still decides. The protections note lists Fire / Insulation for the GM.
+- [ ] **Caps warn, never refuse:** set Fire Resistance to 6 → amber "one mod may be at most 5"; add more to pass 8 total → "at most 8".
+- [ ] **Gel packs:** install → "hardened", Conceal halved (5 → 2), weight +25%, cost 4,500¥ + the other mods, Avail TN ×2 / time ×4,
+      mod points unchanged. Install a second set → warned. Drop gel on a Form-fitting Shirt / Diving Armor → warned, installed.
+- [ ] **Wearing it:** Combat tab → Currently Worn says "(hardened — CC p.51)" and "Protects: Fire res. −3 · Insulation −3";
+      Combat Pool loss reads the gel figures (7/4 vs Quickness 3 → −2) — the jacket alone was −1. Wear a Lined Coat too → amber
+      "nothing layers with it". A helmet with it → no warning.
+- [ ] **Soak — deflected:** shoot the wearer with a 6M pistol SA → the soak card says "🛡 Deflected (hardened): Power 6 … does not
+      exceed the hardened armour's … — no damage" only when the Power ≤ 5; a burst (6M + 3) still compares 6, not 9. APDS: compared
+      to half (2). Nothing is applied — the GM still decides. The protections note lists Fire / Insulation for the GM.
 - [ ] **Knockdown** with gel armour: the dialog says "Includes gel-packed armour +2 (CC p.54)".
 - [ ] **Military armour:** the CC compendium's Heavy Military Armor has Hardened ticked; worn alone, a 9M ranged shot reads deflected.
-- [ ] **Host warnings:** Fire Resistance on a Secure Jacket â†’ "SecureTech armour clothing takes no modifications", installed anyway;
-      on a Security Helmet â†’ helmets warning. A Signal Locator (Armor) on the jacket â†’ "SR3 p.284 prints it as an option for security
-      armour and helmets"; on the helmet â†’ nothing.
+- [ ] **Host warnings:** Fire Resistance on a Secure Jacket → "SecureTech armour clothing takes no modifications", installed anyway;
+      on a Security Helmet → helmets warning. A Signal Locator (Armor) on the jacket → "SR3 p.284 prints it as an option for security
+      armour and helmets"; on the helmet → nothing.
 - [ ] **Migration:** in a 0.8.0 world, an owned Fire Resistance (Armor) / Gas Vent II with no Changes gains them on load; one a GM
       edited keeps the GM's; an owned Heavy Military Armor becomes Hardened.
 - [ ] **Concealment view / encumbrance** read the gel jacket at Conceal 2 and its +25% weight.
 
 
-### 77c. One Gas Vent, the rifle stock, the ðŸ”§ tooltip (TODO 276 â€” the maintainer's rulings of 2026-10-27)
+### 77c. One Gas Vent, the rifle stock, the 🔧 tooltip (TODO 276 — the maintainer's rulings of 2026-10-27)
 
 **Full restart** (packs changed). Cannon Companion ON to start.
 
 - [ ] **One item:** the SR3 gear compendium has ONE "Gas Vent (Weapon)" (no I/II/III); the Cannon Companion gear compendium has no
-      Gas Vent IV. Its sheet's Level dropdown offers **1-4**; picking 3 sets 700Â¥, Conceal (-2), 0.75 kg; picking 4 sets 1,000Â¥ and
-      Book cc.35. Its Changes row: Recoil Compensation 1, **per level** â€” installed in a gun, the gun's RC rises by the level.
-- [ ] **Cannon Companion OFF** (Configure Source Books): the Level dropdown and ðŸ›’ Buy gear offer **1-3** only; a vent already at
+      Gas Vent IV. Its sheet's Level dropdown offers **1-4**; picking 3 sets 700¥, Conceal (-2), 0.75 kg; picking 4 sets 1,000¥ and
+      Book cc.35. Its Changes row: Recoil Compensation 1, **per level** — installed in a gun, the gun's RC rises by the level.
+- [ ] **Cannon Companion OFF** (Configure Source Books): the Level dropdown and 🛒 Buy gear offer **1-3** only; a vent already at
       level 4 still shows 4 selected.
 - [ ] **Migration:** in a 0.8.0 world, an owned "Gas Vent II (Weapon)" becomes "Gas Vent (Weapon) [2]", level 2, linked to the
       new document (its sheet's compendium link opens it); an owned "Gas Vent IV (Weapon)" becomes "Gas Vent (Weapon) [4]".
-- [ ] **No stock on a rifle:** drop "Stock (Rigid (Weapon)" on an assault rifle's Installed mods (or its row) â†’ a red
-      "cannot go on â€¦: a rifle has its own stock (SR3 p.277)", nothing installed, the stock stays in the inventory. On an SMG it installs.
+- [ ] **No stock on a rifle:** drop "Stock (Rigid (Weapon)" on an assault rifle's Installed mods (or its row) → a red
+      "cannot go on …: a rifle has its own stock (SR3 p.277)", nothing installed, the stock stays in the inventory. On an SMG it installs.
       On a shotgun it still installs (not ruled).
-- [ ] **The ðŸ”§ tooltip:** hover the ðŸ”§1 after a modded gun's name on the Combat tab â†’ a Foundry tooltip: "Installed mods",
-      "Barrel Â· Gas Vent (Weapon) [2] â€” RC +2", then "RC 2: â€¦", "Open â€¦ to change them." No bare "?" cursor. The Installed mods
+- [ ] **The 🔧 tooltip:** hover the 🔧1 after a modded gun's name on the Combat tab → a Foundry tooltip: "Installed mods",
+      "Barrel · Gas Vent (Weapon) [2] — RC +2", then "RC 2: …", "Open … to change them." No bare "?" cursor. The Installed mods
       section's mount and summary chips show tooltips the same way.
 
-### 77d. Taking a gas vent off â€” the gunsmith (TODO 277, the maintainer's ruling of 2026-10-27)
+### 77d. Taking a gas vent off — the gunsmith (TODO 277, the maintainer's ruling of 2026-10-27)
 
 **F5 is enough** (no data-model change). An Ares Predator with "Gas Vent (Weapon)" installed (level 2); a character with Pistols B/R.
 
-- [ ] **â on the vent** opens "Take Gas Vent (Weapon) off Ares Predator": gunsmith list (the scene's characters first, NPCs marked),
+- [ ] **⏏ on the vent** opens "Take Gas Vent (Weapon) off Ares Predator": gunsmith list (the scene's characters first, NPCs marked),
       Pistols B/R dice pre-filled from the chosen gunsmith, TN 5, base 24 h, labour 0 for a player character; picking an NPC sets
-      100Â¥/h; contact Level 2 â†’ 50, 3 â†’ 25.
+      100¥/h; contact Level 2 → 50, 3 → 25.
 - [ ] The dialog's text says a failure destroys **the barrel, and the vent with it** (it said "the vent stays" until 2026-10-27).
-- [ ] **Success** (â‰¥1): the card says the vent is off and **destroyed** â€” it is gone from Installed mods and NOT in the inventory;
-      time = 24 Ã· successes; labour shown, nothing deducted.
-- [ ] **Failure** (0 successes â€” set the TN high): the card says the **barrel is destroyed, and the vent with it** â€” the vent is
-      gone from Installed mods (and not in the inventory); the Combat tab row shows "âš  needs repair" (tooltip says why); firing it
-      warns but still fires; the gun's sheet shows the banner with **âœ” Repaired** â†’ a dialog with the repair cost pre-filled at
-      **50% of the gun's own cost** (a 450Â¥ Predator â†’ 225Â¥; editable â€” the interim ruling, TODO 278/279) â†’ a card "repaired for NÂ¥ â€¦ Not deducted", and the mark is gone.
-- [ ] **An explosion** (TN 7+, a 6): the result card waits for the last ðŸ’¥, then resolves as above.
-- [ ] **Player2 as the gunsmith on their own gun** works start to finish; an NPC gunsmith's ðŸ’¥ is the GM's to click.
-- [ ] **ðŸ—‘ on the vent** asks for confirmation and says it only corrects the record.
+- [ ] **Success** (≥1): the card says the vent is off and **destroyed** — it is gone from Installed mods and NOT in the inventory;
+      time = 24 ÷ successes; labour shown, nothing deducted.
+- [ ] **Failure** (0 successes — set the TN high): the card says the **barrel is destroyed, and the vent with it** — the vent is
+      gone from Installed mods (and not in the inventory); the Combat tab row shows "⚠ needs repair" (tooltip says why); firing it
+      warns but still fires; the gun's sheet shows the banner with **✔ Repaired** → a dialog with the repair cost pre-filled at
+      **50% of the gun's own cost** (a 450¥ Predator → 225¥; editable — the interim ruling, TODO 278/279) → a card "repaired for N¥ … Not deducted", and the mark is gone.
+- [ ] **An explosion** (TN 7+, a 6): the result card waits for the last 💥, then resolves as above.
+- [ ] **Player2 as the gunsmith on their own gun** works start to finish; an NPC gunsmith's 💥 is the GM's to click.
+- [ ] **🗑 on the vent** asks for confirmation and says it only corrects the record.
 
-### 77e. Image magnification (TODO 276, SR3 p.110 â€” the highest device counts, TODO 235)
+### 77e. Image magnification (TODO 276, SR3 p.110 — the highest device counts, TODO 235)
 
 **Full restart** (packs). A rifle with an Imaging Scope installed (Level 2), a target measured at Long range.
 
-- [ ] **Scope:** attack â†’ the roll dialog's Range is **Short** (TN 4), with "ðŸ”­ â€¦ magnification 2: Long â†’ Short (SR3 p.110; the best
-      device only)"; pick Long by hand â†’ TN 6 (still editable).
-- [ ] **Never below Short:** a Level 3 scope at Medium â†’ Short.
-- [ ] **Helmet:** no scope; wear a Security Helmet with Electronic Magnification (Armor) installed â†’ shifted 3. Take it off â†’ no shift.
-- [ ] **Cybereyes:** Eyes, Vision Magnification, Electronic at Level 2 â†’ shifted 2.
-- [ ] **No stacking:** scope 2 + helmet 3 â†’ shifted **3**, not 5; the note names the helmet.
-- [ ] **The helmet is worn by its Wear toggle** (the `worn` flag) â€” before the 2026-10-27 fix a worn helmet's magnification and
+- [ ] **Scope:** attack → the roll dialog's Range is **Short** (TN 4), with "🔭 … magnification 2: Long → Short (SR3 p.110; the best
+      device only)"; pick Long by hand → TN 6 (still editable).
+- [ ] **Never below Short:** a Level 3 scope at Medium → Short.
+- [ ] **Helmet:** no scope; wear a Security Helmet with Electronic Magnification (Armor) installed → shifted 3. Take it off → no shift.
+- [ ] **Cybereyes:** Eyes, Vision Magnification, Electronic at Level 2 → shifted 2.
+- [ ] **No stacking:** scope 2 + helmet 3 → shifted **3**, not 5; the note names the helmet.
+- [ ] **The helmet is worn by its Wear toggle** (the `worn` flag) — before the 2026-10-27 fix a worn helmet's magnification and
       vision never reached the character (`passesToActor` read a `system.worn` nothing writes).
 - [ ] **Beyond Extreme:** no shift, the usual warning.
 
-### 77f. Bipod and tripod â€” the GM's call per shot (TODO 276, SR3 p.280; the maintainer, 2026-10-27)
+### 77f. Bipod and tripod — the GM's call per shot (TODO 276, SR3 p.280; the maintainer, 2026-10-27)
 
 **Full restart** (packs, and the modifier gained `whenDeployed`). An Ultimax (or any MG) with a Bipod and a Tripod installed; the
 GM approves target numbers (`gmApprovesTN` on).
 
 - [ ] The gun's Installed mods: Bipod "RC +2 (set up)" and "GM: when set up" (no tick); the summary RC leaves them out.
-- [ ] **Fire dialog:** no pod tick â€” a line says the GM decides; the Weapon comp leaves the pods out.
-- [ ] **GM's window:** "Bipod (Weapon) set up â€” shooter stationary (RC 2â€¦)" and "Tripod â€¦ (RC 6â€¦, prone or seated)", unticked.
-      Fire 10 rounds FA: the base note shows the recoil; tick the tripod â†’ "âˆ’12 recoil" and the TN drops by 12 (heavy: 20 â†’ 8).
-      Tick nothing â†’ no change. An SS shot (no recoil) â†’ ticking saves nothing.
+- [ ] **Fire dialog:** no pod tick — a line says the GM decides; the Weapon comp leaves the pods out.
+- [ ] **GM's window:** "Bipod (Weapon) set up — shooter stationary (RC 2…)" and "Tripod … (RC 6…, prone or seated)", unticked.
+      Fire 10 rounds FA: the base note shows the recoil; tick the tripod → "−12 recoil" and the TN drops by 12 (heavy: 20 → 8).
+      Tick nothing → no change. An SS shot (no recoil) → ticking saves nothing.
 - [ ] Next shot: both unticked again (nothing remembered).
 - [ ] **Changes editor:** a Bipod's row has "when deployed" ticked; editing its value keeps the tick.
 
-### 77g. Cyberlimbs and cybereyes â€” what they hold (TODO 276, M&M pp.36-37, SR3 p.299, p.303)
+### 77g. Cyberlimbs and cybereyes — what they hold (TODO 276, M&M pp.36-37, SR3 p.299, p.303)
 
 **Full restart** (cyberware gained `ecu`). A character with an Obvious Cyberarm, Eyes, Cyber Replacement and a few Cyberlimb Mods
 and eye options (loose).
 
-- [ ] **The arm's sheet:** "Holds (ECU)" blank with placeholder 10; Installed mods empty, "Holds 0 / 10 ECU". A Synthetic arm â†’ 5;
-      a Pair of arms â†’ 20.
-- [ ] **Install** a Smartlink (Internal) (Cyberlimb) from the inventory into the arm â†’ "Holds .5 / 10 ECU"; its sheet's "Takes (ECU)"
-      placeholder .5. Essence on the Attributes tab rises by its .25 (it did before, as a loose item â€” unchanged), nothing double.
-      **No "adds â€¦ to the Essence hole" notice**, and â it back out â†’ Essence and the hole unchanged (fixed 2026-10-27: the move
-      was recorded as a removal). As **Player2** with the GM on line, the same â€” the GM's hook reads the move's `sr3eModMove` option.
-- [ ] **Over capacity:** fill a Cyber Hand (2 ECU) with a Foot Anchor (4) â†’ warned, installed; the line shows over.
-- [ ] **Unknown size:** install something not on the table â†’ "ECU not known", set "Takes (ECU)" on it â†’ counted.
-- [ ] **Grade:** make the arm Alpha â†’ "Holds â€¦ / 8 ECU (Alpha â€¦)"; install a Standard smartlink â†’ "match their host" warning.
+- [ ] **The arm's sheet:** "Holds (ECU)" blank with placeholder 10; Installed mods empty, "Holds 0 / 10 ECU". A Synthetic arm → 5;
+      a Pair of arms → 20.
+- [ ] **Install** a Smartlink (Internal) (Cyberlimb) from the inventory into the arm → "Holds .5 / 10 ECU"; its sheet's "Takes (ECU)"
+      placeholder .5. Essence on the Attributes tab rises by its .25 (it did before, as a loose item — unchanged), nothing double.
+      **No "adds … to the Essence hole" notice**, and ⏏ it back out → Essence and the hole unchanged (fixed 2026-10-27: the move
+      was recorded as a removal). As **Player2** with the GM on line, the same — the GM's hook reads the move's `sr3eModMove` option.
+- [ ] **Over capacity:** fill a Cyber Hand (2 ECU) with a Foot Anchor (4) → warned, installed; the line shows over.
+- [ ] **Unknown size:** install something not on the table → "ECU not known", set "Takes (ECU)" on it → counted.
+- [ ] **Grade:** make the arm Alpha → "Holds … / 8 ECU (Alpha …)"; install a Standard smartlink → "match their host" warning.
 - [ ] **Strength Enhancement** installed in the arm still raises Strength (Attributes tab source tooltip names it).
-- [ ] **Eyes:** install Low-Light and Thermographic (.2 each) into the replacement â†’ "Holds .4 / .5 Essence free"; the character's
-      Essence counts only the eyes' .2 (it counted .6 with them loose). Add a third .2 option â†’ ".1 Essence over, charged".
-      A Delta eye: holds .25, delta options at half â€” the same number fit.
+- [ ] **Eyes:** install Low-Light and Thermographic (.2 each) into the replacement → "Holds .4 / .5 Essence free"; the character's
+      Essence counts only the eyes' .2 (it counted .6 with them loose). Add a third .2 option → ".1 Essence over, charged".
+      A Delta eye: holds .25, delta options at half — the same number fit.
 - [ ] **Vision:** a "Low-Light" module inside the eyes still shows as cyber low-light in the GM window's vision reminder.
-- [ ] **Built-in price:** install a pocket secretary (gear) into the arm â†’ "Built in: â€¦ Ã—4" with Man & Machine off, the normal price
-      with it on; add a Direct Neural Interface to the arm â†’ "+50% DNI" on top.
+- [ ] **Built-in price:** install a pocket secretary (gear) into the arm → "Built in: … ×4" with Man & Machine off, the normal price
+      with it on; add a Direct Neural Interface to the arm → "+50% DNI" on top.
 
-### 77h. Built-ins everywhere â€” weapons, Stress, slots, Concealment, VCR, healing (TODO 276, step a)
+### 77h. Built-ins everywhere — weapons, Stress, slots, Concealment, VCR, healing (TODO 276, step a)
 
 A character with an Obvious Cyberarm (and a Cyberskull for the VCR line). Each bullet: what a loose implant did before still
 works, and the same implant **built in** now does it too.
 
-- [ ] **Spur built in:** install a Spur (Cyberlimb Mods) into the arm â†’ the Weapons tab gains "Spur" (melee, CYB) with no âš” offer
-      row. â it out â†’ the entry from inside the arm goes, the loose spur's own entry comes back. Delete the arm with the spur in it
-      â†’ its spur entry goes. Store the arm â†’ the entry stays (storage is not removal).
-- [ ] **Cybergun built in:** a CyGun Heavy (HPist) in the arm â†’ a firearm entry, 10(m), fires through the ranged flow.
-- [ ] **An entry made before step a** (or one deleted by hand): the âš” offer row reads "built into Obvious Cyberarm"; clicking it arms it.
-- [ ] **Stress** (M&M p.126): the target list shows "Smartlink (Internal) (in Obvious Cyberarm)"; apply 2 â†’ its card; the arm's
+- [ ] **Spur built in:** install a Spur (Cyberlimb Mods) into the arm → the Weapons tab gains "Spur" (melee, CYB) with no ⚔ offer
+      row. ⏏ it out → the entry from inside the arm goes, the loose spur's own entry comes back. Delete the arm with the spur in it
+      → its spur entry goes. Store the arm → the entry stays (storage is not removal).
+- [ ] **Cybergun built in:** a CyGun Heavy (HPist) in the arm → a firearm entry, 10(m), fires through the ranged flow.
+- [ ] **An entry made before step a** (or one deleted by hand): the ⚔ offer row reads "built into Obvious Cyberarm"; clicking it arms it.
+- [ ] **Stress** (M&M p.126): the target list shows "Smartlink (Internal) (in Obvious Cyberarm)"; apply 2 → its card; the arm's
       Installed list (open the smartlink's sheet) shows Stress 2. The arm itself is unchanged apart from that.
-- [ ] **Cybersystem slots:** the arm and its smartlink are separate entries; an eye's options do not appear on their own â€” the eye's
+- [ ] **Cybersystem slots:** the arm and its smartlink are separate entries; an eye's options do not appear on their own — the eye's
       entry grows only by Essence over its .5.
-- [ ] **Concealment** (GM tool): a Datajack built into a cyberhand appears as "Datajack (in â€¦)", note "Built into â€¦"; storing the
+- [ ] **Concealment** (GM tool): a Datajack built into a cyberhand appears as "Datajack (in …)", note "Built into …"; storing the
       hand removes it.
-- [ ] **VCR:** a Vehicle Control Rig [2] installed into a Cyberskull (no loose VCR) â†’ the vehicle sheet's Driving Test shows VCR 2
+- [ ] **VCR:** a Vehicle Control Rig [2] installed into a Cyberskull (no loose VCR) → the vehicle sheet's Driving Test shows VCR 2
       and its Control Pool; the chase's driver row, too.
 - [ ] **Healing:** Dermal Plating 2 built into the arm (unusual, but a GM's call) counts in the permanent-damage test's dermal armour.
-- [ ] **Removing the limb:** delete the arm with built-ins â†’ its weapon entries go; the Essence hole grows by the arm's own cost only
-      (open question in TODO 276 â€” note what the maintainer rules).
+- [ ] **Removing the limb:** delete the arm with built-ins → its weapon entries go; the Essence hole grows by the arm's own cost only
+      (open question in TODO 276 — note what the maintainer rules).
 
-### 77i. Printed accessories as integral mods (TODO 276, step b â€” the maintainer's rulings of 2026-10-27)
+### 77i. Printed accessories as integral mods (TODO 276, step b — the maintainer's rulings of 2026-10-27)
 
 **Foundry CLOSED first: `npm run packs:install`**, then start it. The 0.9.0 migration runs on load (a branch world re-runs it).
 
-- [ ] **Compendium:** open the Ares Crusader (CC Firearms) â†’ Installed mods: "Laser Sight (Weapon)" on Top, "Gas Vent (Weapon)"
+- [ ] **Compendium:** open the Ares Crusader (CC Firearms) → Installed mods: "Laser Sight (Weapon)" on Top, "Gas Vent (Weapon)"
       on Barrel, each tagged **integral**, their change in brackets "(Laser sight)", "(RC +2)". The Accessories text unchanged.
-- [ ] **Not counted:** fire the Crusader from a character â†’ the fire dialog's RC is the printed figure, not +2 on top. The ðŸ”§
+- [ ] **Not counted:** fire the Crusader from a character → the fire dialog's RC is the printed figure, not +2 on top. The 🔧
       chip's totals show no RC from the vent.
 - [ ] **An owned copy** made before this build (a character's gun from an older import): after the load it holds the same
-      integral mods. Reload again â†’ nothing doubles.
-- [ ] **Mounts:** the Ranger Arms SM-3 (gas vent + silencer, both Barrel) shows both on Barrel, no âš . Drop a Sound Suppresser on
-      it â†’ warned, "the barrel mount already holds Gas Vent". A Laser Sight onto a gun with an integral top scope â†’ goes Under.
-- [ ] **Pods:** the RPK HMG's integral tripod is NOT offered in the GM's TN window (its RC is the bracketed RC â€” the fire
+      integral mods. Reload again → nothing doubles.
+- [ ] **Mounts:** the Ranger Arms SM-3 (gas vent + silencer, both Barrel) shows both on Barrel, no ⚠. Drop a Sound Suppresser on
+      it → warned, "the barrel mount already holds Gas Vent". A Laser Sight onto a gun with an integral top scope → goes Under.
+- [ ] **Pods:** the RPK HMG's integral tripod is NOT offered in the GM's TN window (its RC is the bracketed RC — the fire
       dialog's integral tick). A tripod the GM installs IS.
-- [ ] **â an integral laser sight** â†’ an ordinary Laser Sight in the inventory (no "integral" tag), and a warning "â€¦its
-      laser-sight flag still includes it". ðŸ—‘ the gas vent â†’ "â€¦its RC still includes it". Reload â†’ they do not come back.
-- [ ] **Left as text:** the Colt M22A2's "Grenade Launcher 6(m)", the Ballista's "Laser Designator" â€” no mod for either.
-      (The Panther is two documents now, Â§77j â€” each holds its own bipod or hip brace.)
+- [ ] **⏏ an integral laser sight** → an ordinary Laser Sight in the inventory (no "integral" tag), and a warning "…its
+      laser-sight flag still includes it". 🗑 the gas vent → "…its RC still includes it". Reload → they do not come back.
+- [ ] **Left as text:** the Colt M22A2's "Grenade Launcher 6(m)", the Ballista's "Laser Designator" — no mod for either.
+      (The Panther is two documents now, §77j — each holds its own bipod or hip brace.)
 
-### 77j. Each gun's printed RC (TODO 280 â€” CC pp.116-118, p.78; SR3 pp.278-279)
+### 77j. Each gun's printed RC (TODO 280 — CC pp.116-118, p.78; SR3 pp.278-279)
 
 **Foundry CLOSED first: `npm run packs:install`**, then start it. The 0.9.0 migration fills owned copies on load.
 
-- [ ] **Compendium:** CC Firearms â†’ the Ares Crusader's RC reads **2**; the Colt Cobra TZ-110 **2**, its bracketed RC **3**; the
+- [ ] **Compendium:** CC Firearms → the Ares Crusader's RC reads **2**; the Colt Cobra TZ-110 **2**, its bracketed RC **3**; the
       Sandler TMP RC 0, bracketed **1**; the Ares Thunderer **3**.
-- [ ] **Fire it:** the Crusader from a character, burst fire â†’ the fire dialog counts RC 2 (its integral gas vent is shown in ðŸ”§,
-      not added again â€” Â§77i). The TZ-110 with "Integral accessories in use" ticked â†’ RC 3; unticked â†’ 2.
+- [ ] **Fire it:** the Crusader from a character, burst fire → the fire dialog counts RC 2 (its integral gas vent is shown in 🔧,
+      not added again — §77i). The TZ-110 with "Integral accessories in use" ticked → RC 3; unticked → 2.
 - [ ] **The Panther:** CC Firearms lists **Panther Assault Cannon [Bipod]** (bracketed RC 2, a Bipod mod) and **[Shoulder Strap
       Hip-Brace]** (bracketed RC 1, a Hip Pad Bracing System mod); no plain "Panther Assault Cannon". Both read Legality 2-H.
-- [ ] **An owned copy** of the Crusader with RC 0 (from an older import) â†’ RC 2 after the load. One with RC typed as 1 â†’ still 1.
-      Reload â†’ nothing changes.
-- [ ] **Contacts:** a Little Black Book contact's FN HAR / Ranger Arms SM-3 â†’ RC 2; the Ultimax MMG â†’ bracketed 6.
-- [ ] **An old Panther** (a world item or a character's, named "Panther Assault Cannon", from before the split) â†’ after the
+- [ ] **An owned copy** of the Crusader with RC 0 (from an older import) → RC 2 after the load. One with RC typed as 1 → still 1.
+      Reload → nothing changes.
+- [ ] **Contacts:** a Little Black Book contact's FN HAR / Ranger Arms SM-3 → RC 2; the Ultimax MMG → bracketed 6.
+- [ ] **An old Panther** (a world item or a character's, named "Panther Assault Cannon", from before the split) → after the
       load it reads **Panther Assault Cannon [Bipod]**, bracketed RC 2, accessories "Folding Bipod(2RC)", a Bipod integral mod
-      in ðŸ”§ (no Hip Pad Bracing System), Legality 2-H. A mod the GM had installed on it is still there. Reload â†’ nothing changes.
+      in 🔧 (no Hip Pad Bracing System), Legality 2-H. A mod the GM had installed on it is still there. Reload → nothing changes.
 
-### 77k. A laser sight and a smartlink never both (TODO 276 â€” SR3 p.281; the maintainer's ruling of 2026-11-07)
+### 77k. A laser sight and a smartlink never both (TODO 276 — SR3 p.281; the maintainer's ruling of 2026-11-07)
 
-JS only â€” F5 is enough.
+JS only — F5 is enough.
 
-- [ ] **Install:** drop a Laser Sight onto a smartgun (an Ares Predator II) â†’ a warning "â€¦can't be used together (SR3 p.281) â€” only
-      the smartlink's âˆ’2 counts"; it installs anyway. Drop a Smartgun, external onto a gun with a laser sight â†’ the same warning.
-- [ ] **The GM's TN window:** a smartlinked shooter fires that Predator â†’ Gear has **Smartlink** ticked, **Laser sight** not. Tick
-      Laser sight â†’ Smartlink unticks and the TN goes up by 1; tick Smartlink â†’ Laser sight unticks. Never both ticked.
-- [ ] **No receptor:** a shooter with no smartlink or goggles fires it â†’ Laser sight is pre-ticked (the smartgun is dead weight).
-- [ ] **No underbarrel** (SR3 pp.278-279, ruled the same day): drop a Bipod onto a Remington 750 â†’ warned "â€¦has no underbarrel mount
-      (SR3 pp.278-279)", and it installs. The same on a Defiance T-250. A Laser Sight (Top/Under) on the 750 â†’ no warning (top).
+- [ ] **Install:** drop a Laser Sight onto a smartgun (an Ares Predator II) → a warning "…can't be used together (SR3 p.281) — only
+      the smartlink's −2 counts"; it installs anyway. Drop a Smartgun, external onto a gun with a laser sight → the same warning.
+- [ ] **The GM's TN window:** a smartlinked shooter fires that Predator → Gear has **Smartlink** ticked, **Laser sight** not. Tick
+      Laser sight → Smartlink unticks and the TN goes up by 1; tick Smartlink → Laser sight unticks. Never both ticked.
+- [ ] **No receptor:** a shooter with no smartlink or goggles fires it → Laser sight is pre-ticked (the smartgun is dead weight).
+- [ ] **No underbarrel** (SR3 pp.278-279, ruled the same day): drop a Bipod onto a Remington 750 → warned "…has no underbarrel mount
+      (SR3 pp.278-279)", and it installs. The same on a Defiance T-250. A Laser Sight (Top/Under) on the 750 → no warning (top).
 
-### 77l. What each weapon class takes (TODO 276 â€” SR3 pp.276-280, CC pp.34, 82-83; the maintainer's rulings of 2026-11-07)
+### 77l. What each weapon class takes (TODO 276 — SR3 pp.276-280, CC pp.34, 82-83; the maintainer's rulings of 2026-11-07)
 
-JS only â€” F5 is enough. Every one of these installs; only the shotgun stock is refused.
+JS only — F5 is enough. Every one of these installs; only the shotgun stock is refused.
 
-- [ ] **Hold-out:** drop a Laser Sight onto a Streetline Special â†’ warned "Hold-out pistols cannot mount any accessories (SR3 p.276)".
-- [ ] **Pistol:** a Bipod onto an Ares Predator â†’ warned "â€¦no underbarrel". A Laser Sight onto it â†’ no warning (goes on top).
-- [ ] **Revolver:** a Silencer onto a Ruger Super Warhawk â†’ warned "Revolvers cannot use silencers or sound suppressers".
-- [ ] **SMG / shotgun:** a Silencer onto an Uzi III â†’ warned; a Sound Suppresser onto it â†’ nothing. Either onto an Enfield AS7 â†’ warned.
-- [ ] **Fore grip** onto a Ranger Arms SM-3 â†’ warned (CC p.34); onto an AK-97 â†’ nothing.
-- [ ] **Stock on a shotgun:** a Stock onto an Enfield AS7 â†’ refused, red, "Rifles and shotguns may not have this modification (CC p.83)".
-- [ ] **Internal smartgun:** make a gear item "Smartgun, internal (Weapon)", Cost 0, and drop it on an Ares Predator (450Â¥) â†’ "450Â¥ â€”
-      100% of Ares Predator's price"; its Cost is 450. Named "Smartlink-2 Modification, Internal (Weapon)" â†’ 675Â¥. With a Cost typed
-      first â†’ left alone.
-- [ ] **Scope:** an Imaging Scope onto an Ingram Smartgun Mod 20T â†’ warned (SR3 p.280). With a scope already on top, a second Imaging Scope
+- [ ] **Hold-out:** drop a Laser Sight onto a Streetline Special → warned "Hold-out pistols cannot mount any accessories (SR3 p.276)".
+- [ ] **Pistol:** a Bipod onto an Ares Predator → warned "…no underbarrel". A Laser Sight onto it → no warning (goes on top).
+- [ ] **Revolver:** a Silencer onto a Ruger Super Warhawk → warned "Revolvers cannot use silencers or sound suppressers".
+- [ ] **SMG / shotgun:** a Silencer onto an Uzi III → warned; a Sound Suppresser onto it → nothing. Either onto an Enfield AS7 → warned.
+- [ ] **Fore grip** onto a Ranger Arms SM-3 → warned (CC p.34); onto an AK-97 → nothing.
+- [ ] **Stock on a shotgun:** a Stock onto an Enfield AS7 → refused, red, "Rifles and shotguns may not have this modification (CC p.83)".
+- [ ] **Internal smartgun:** make a gear item "Smartgun, internal (Weapon)", Cost 0, and drop it on an Ares Predator (450¥) → "450¥ —
+      100% of Ares Predator's price"; its Cost is 450. Named "Smartlink-2 Modification, Internal (Weapon)" → 675¥. With a Cost typed
+      first → left alone.
+- [ ] **Scope:** an Imaging Scope onto an Ingram Smartgun Mod 20T → warned (SR3 p.280). With a scope already on top, a second Imaging Scope
       goes Under (CC p.82, Top or Under).
 
-### 77m. The bracketed RC is the GM's call (TODO 276 â€” SR3 p.276; the maintainer's ruling of 2026-11-07)
+### 77m. The bracketed RC is the GM's call (TODO 276 — SR3 p.276; the maintainer's ruling of 2026-11-07)
 
-JS only â€” F5 is enough.
+JS only — F5 is enough.
 
-- [ ] **Fire dialog:** fire an HK227 (RC 2(3)) in burst â†’ no "Integral accessories in use" tick; the Weapon box reads 2 and a line
-      says "RC 2 â†’ 3 â€” the GM decides whether they are in use, in the GM's window".
-- [ ] **GM's TN window:** the same shot â†’ a row "Integral accessories (stock folded out / tripod set up) in use (RC +1 â€¦)". Tick it â†’
+- [ ] **Fire dialog:** fire an HK227 (RC 2(3)) in burst → no "Integral accessories in use" tick; the Weapon box reads 2 and a line
+      says "RC 2 → 3 — the GM decides whether they are in use, in the GM's window".
+- [ ] **GM's TN window:** the same shot → a row "Integral accessories (stock folded out / tripod set up) in use (RC +1 …)". Tick it →
       the TN drops by what one more point of RC saves; the note under it says the recoil saved.
 - [ ] **RPK HMG (6):** its row offers RC +6 (with a tripod mod installed as well, both rows show).
 
-### 77n. A higher-grade limb holds less (TODO 276 â€” M&M p.36; the maintainer's ruling Q15 of 2026-11-07)
+### 77n. A higher-grade limb holds less (TODO 276 — M&M p.36; the maintainer's ruling Q15 of 2026-11-07)
 
-JS only â€” F5 is enough. A character with an obvious full cyberarm (10 ECU at standard grade).
+JS only — F5 is enough. A character with an obvious full cyberarm (10 ECU at standard grade).
 
-- [ ] **Grade:** set the arm's Grade to Alpha â†’ its capacity reads 9; Beta â†’ 8; Delta â†’ 7.5. Back to Standard â†’ 10.
-- [ ] **A mod's size is not graded:** with the arm at Delta, install a smartgun link â†’ it still takes its printed ECU.
-- [ ] **Eyes keep the old ruling:** a Delta cybereye â†’ its options still fit as many as a Standard eye's.
+- [ ] **Grade:** set the arm's Grade to Alpha → its capacity reads 9; Beta → 8; Delta → 7.5. Back to Standard → 10.
+- [ ] **A mod's size is not graded:** with the arm at Delta, install a smartgun link → it still takes its printed ECU.
+- [ ] **Eyes keep the old ruling:** a Delta cybereye → its options still fit as many as a Standard eye's.
 
-### 77o. Cyberlimb mods and weapon mods are marked (TODOs 256/259 â€” mods ruling Q22 of 2026-11-07)
+### 77o. Cyberlimb mods and weapon mods are marked (TODOs 256/259 — mods ruling Q22 of 2026-11-07)
 
-âš  **Full Foundry restart** â€” `GearData` gained `mount`, and two gear items were added (`npm run packs:install`, Foundry CLOSED).
+⚠ **Full Foundry restart** — `GearData` gained `mount`, and two gear items were added (`npm run packs:install`, Foundry CLOSED).
 
-- [ ] **ðŸ¦¾:** give a character "Smartlink II" from Cyberlimb Mods and "Smartlink II" from Headware â†’ only the first shows ðŸ¦¾ on the
-      Cyberware row; its tooltip says "Built into a cyberlimbâ€¦". Open it â†’ the same line shows above Attribute Bonuses.
-- [ ] **Mount chip:** a Laser Sight on the Gear tab shows "Top/Under"; a Silencer "Barrel". Open the Laser Sight â†’ a Mount field,
-      blank, its placeholder "Top/Under"; type "Under" â†’ the chip reads "Under". Plain gear (a Medkit) has no chip and no field.
+- [ ] **🦾:** give a character "Smartlink II" from Cyberlimb Mods and "Smartlink II" from Headware → only the first shows 🦾 on the
+      Cyberware row; its tooltip says "Built into a cyberlimb…". Open it → the same line shows above Attribute Bonuses.
+- [ ] **Mount chip:** a Laser Sight on the Gear tab shows "Top/Under"; a Silencer "Barrel". Open the Laser Sight → a Mount field,
+      blank, its placeholder "Top/Under"; type "Under" → the chip reads "Under". Plain gear (a Medkit) has no chip and no field.
 - [ ] **Internal smartgun:** "Smartgun, internal (Weapon)" (SR3 gear) and "Smartlink-2 Modification, Internal (Weapon)" (M&M gear) are
-      in the compendium, 0Â¥, chip "Internal". Drop the first on an Ares Predator (450Â¥) â†’ its price is filled at 450Â¥; the second
-      â†’ 675Â¥.
+      in the compendium, 0¥, chip "Internal". Drop the first on an Ares Predator (450¥) → its price is filled at 450¥; the second
+      → 675¥.
 
-## 78. A vehicle's mods against its Cargo and Load (TODO 265, step c's first slice â€” R3R p.124)
+## 78. A vehicle's mods against its Cargo and Load (TODO 265, step c's first slice — R3R p.124)
 
 JS / CSS only (no restart needed beyond a reload). A vehicle from the packs, e.g. an Ares Roadmaster (Body 5, Cargo 80, Load 2000).
 
-- [ ] **Mods tab:** the header reads "CF 0 / 80" and "Load 0 / 2000 kg". Drag in ECM (Vehicle) and Crash Cages (Vehicle) â†’
+- [ ] **Mods tab:** the header reads "CF 0 / 80" and "Load 0 / 2000 kg". Drag in ECM (Vehicle) and Crash Cages (Vehicle) →
       "CF 3 / 80", "Load 30 / 2000 kg"; each row shows its "CF / Load", and the printed text in the tooltip.
-- [ ] **Per point:** Vehicle Armor at rating 3 â†’ Load 375 kg (BodyÂ² Ã— 5 a point, R3R p.131); Concealed Armor 2 â†’ 6 CF, 250 kg.
-- [ ] **Over:** set the vehicle's Cargo to 2 â†’ the CF chip turns amber and the warning reads "â€¦ 1 over (R3R p.124 â€¦)" with the
-      passenger room it could scrape (Roadmaster seating 3 â†’ 2 passenger seats â†’ up to 3 CF, +1 Power to crash damage). Set
-      Load to 20 â†’ the Load chip and warning. Nothing is blocked. Put the figures back.
-- [ ] **Unread:** an Internal Missile Mount â†’ "1 not counted" (its tooltip names it); its Load cell shows an amber "?".
-- [ ] **Mount reminder:** an External Hardpoint â†’ its 10 kg counted, and "A weapon mount's Load leaves out the weapon on it".
+- [ ] **Per point:** Vehicle Armor at rating 3 → Load 375 kg (Body² × 5 a point, R3R p.131); Concealed Armor 2 → 6 CF, 250 kg.
+- [ ] **Over:** set the vehicle's Cargo to 2 → the CF chip turns amber and the warning reads "… 1 over (R3R p.124 …)" with the
+      passenger room it could scrape (Roadmaster seating 3 → 2 passenger seats → up to 3 CF, +1 Power to crash damage). Set
+      Load to 20 → the Load chip and warning. Nothing is blocked. Put the figures back.
+- [ ] **Unread:** an Internal Missile Mount → "1 not counted" (its tooltip names it); its Load cell shows an amber "?".
+- [ ] **Mount reminder:** an External Hardpoint → its 10 kg counted, and "A weapon mount's Load leaves out the weapon on it".
 - [ ] **A drone** (seating 0): over Cargo shows no passenger-room offer.
 
-### 78a. Weapon mounts (TODO 234 â€” R3R pp.135-141; the maintainer's rulings of 2026-10-27)
+### 78a. Weapon mounts (TODO 234 — R3R pp.135-141; the maintainer's rulings of 2026-10-27)
 
 **Full Foundry restart first** (`mountId` is a new field on firearms and vehicle weapons). A Body 4 vehicle from the packs.
 
-- [ ] **Mods tab:** add External Hardpoint, Internal Firmpoint and Small Turret â†’ "Mounts 7 / 4 (Body)", amber, and "âš  The mounts
-      take 7 points â€¦ 3 over (R3R p.135)". "Signature âˆ’2: external mounts âˆ’1 (R3R p.136); 1 turret âˆ’1 (R3R p.140); âˆ’1 more while an
-      internal mount's weapon is out" â€” and the Stats tab's Sig shows "â†’ N" two lower (applied since Â§78b: SR3 p.307; the maintainer reversed
+- [ ] **Mods tab:** add External Hardpoint, Internal Firmpoint and Small Turret → "Mounts 7 / 4 (Body)", amber, and "⚠ The mounts
+      take 7 points … 3 over (R3R p.135)". "Signature −2: external mounts −1 (R3R p.136); 1 turret −1 (R3R p.140); −1 more while an
+      internal mount's weapon is out" — and the Stats tab's Sig shows "→ N" two lower (applied since §78b: SR3 p.307; the maintainer reversed
       "shown, never changed" on 2026-10-27).
 - [ ] **Weapons tab:** each weapon row has a Mount dropdown listing the three. Put an Ultimax MMG and a vehicle Autocannon on the
-      Small Turret â†’ the Mods tab lists both under it, "Weapon Value 5 / 3", and warns. A note: "Ultimax MMG on Small Turret: â€¦ needs
+      Small Turret → the Mods tab lists both under it, "Weapon Value 5 / 3", and warns. A note: "Ultimax MMG on Small Turret: … needs
       a firearm conversion kit (R3R p.136)".
-- [ ] **Firmpoint:** move the Ultimax to the Internal Firmpoint â†’ "âš  Ultimax MMG is on Internal Firmpoint â€¦, a firmpoint â€” heavy
-      weapons â€¦ need a hardpoint". Nothing is refused.
-- [ ] **Fire it from the turret** (the vehicle's Weapons tab, ðŸŽ² on the Ultimax, FA 10 rounds): the fire dialog shows "ðŸ”© Small
-      Turret: recoil halved before compensation, no heavy-weapon doubling (R3R p.140)", no "Heavy weapon: 2Ã—" line; with comp 0 the
-      FA 10 preview is +5 (âŒŠ10 Ã· 2âŒ‹), not +20.
-- [ ] **Pintle / ring:** a Pintle Mount â†’ the dialog has a "Mount" box at 2; a Ring Mount â†’ 6; the total includes it. Change it and
-      fire â†’ the gun's own RC and the vehicle's comp are not rewritten with it.
-- [ ] **Delete the turret** with weapons on it â†’ their Mount dropdown reads "âš  a mount no longer here" and the Mods tab warns.
+- [ ] **Firmpoint:** move the Ultimax to the Internal Firmpoint → "⚠ Ultimax MMG is on Internal Firmpoint …, a firmpoint — heavy
+      weapons … need a hardpoint". Nothing is refused.
+- [ ] **Fire it from the turret** (the vehicle's Weapons tab, 🎲 on the Ultimax, FA 10 rounds): the fire dialog shows "🔩 Small
+      Turret: recoil halved before compensation, no heavy-weapon doubling (R3R p.140)", no "Heavy weapon: 2×" line; with comp 0 the
+      FA 10 preview is +5 (⌊10 ÷ 2⌋), not +20.
+- [ ] **Pintle / ring:** a Pintle Mount → the dialog has a "Mount" box at 2; a Ring Mount → 6; the total includes it. Change it and
+      fire → the gun's own RC and the vehicle's comp are not rewritten with it.
+- [ ] **Delete the turret** with weapons on it → their Mount dropdown reads "⚠ a mount no longer here" and the Mods tab warns.
 - [ ] **A personal gun** on a character fires exactly as before (no mount line, no Mount box).
 
-### 78b. What a vehicle's mods change (TODO 265 â€” R3R pp.127-147; the maintainer's rulings of 2026-10-27)
+### 78b. What a vehicle's mods change (TODO 265 — R3R pp.127-147; the maintainer's rulings of 2026-10-27)
 
-JS only â€” F5. A vehicle with Body 4, Armor 2, Handling 4, Sensor 2, Pilot 1, ECM 0. *(Walked by the agent 2026-10-27: the figures
+JS only — F5. A vehicle with Body 4, Armor 2, Handling 4, Sensor 2, Pilot 1, ECM 0. *(Walked by the agent 2026-10-27: the figures
 below, the typed edit and the Mods tab text all as stated.)*
 
-- [ ] **Vehicle Armor [6]** (Mods tab, rating 6) â†’ Stats tab: Armor's input still reads 2, "â†’ 8" beside it (tooltip "Vehicle Armor â€¦ +6
-      (R3R p.131)"); Handling "â†’ 5" (6 points added: +1); off-road Handling +1 too. The Mods tab's "What the mods change" lists both.
-- [ ] **Ablative Armor [1]** on top â†’ no change (Armor 8 is already past Body 4) and a note says "raised only to the vehicle's Body 4".
-      Remove the Vehicle Armor â†’ Ablative gives 2 â†’ 4 (Body), not past.
-- [ ] **Sensors [5]** â†’ Sensor "â†’ 5"; **Sensors [1]** instead â†’ no arrow, a note "no higher than the vehicle's Sensor 2" (the higher of
-      the two). **Advanced Drone Pilot [3]** â†’ Pilot 3; **ECM [2]** â†’ the EW footprint line reads ECM 2.
-- [ ] **Rolls use it:** soak a hit on the vehicle â†’ its armour is 8 (base 2 + 6); a vehicle sensor test rolls 5 dice; a drone's
+- [ ] **Vehicle Armor [6]** (Mods tab, rating 6) → Stats tab: Armor's input still reads 2, "→ 8" beside it (tooltip "Vehicle Armor … +6
+      (R3R p.131)"); Handling "→ 5" (6 points added: +1); off-road Handling +1 too. The Mods tab's "What the mods change" lists both.
+- [ ] **Ablative Armor [1]** on top → no change (Armor 8 is already past Body 4) and a note says "raised only to the vehicle's Body 4".
+      Remove the Vehicle Armor → Ablative gives 2 → 4 (Body), not past.
+- [ ] **Sensors [5]** → Sensor "→ 5"; **Sensors [1]** instead → no arrow, a note "no higher than the vehicle's Sensor 2" (the higher of
+      the two). **Advanced Drone Pilot [3]** → Pilot 3; **ECM [2]** → the EW footprint line reads ECM 2.
+- [ ] **Rolls use it:** soak a hit on the vehicle → its armour is 8 (base 2 + 6); a vehicle sensor test rolls 5 dice; a drone's
       initiative uses Pilot 3; a chase test's Handling TN is 5.
-- [ ] **Typing a stat** (Armor 2 â†’ 3) saves 3 and the arrow reads 9 â€” the typed figure stays the vehicle's own; nothing derived is saved.
-- [ ] **Concealed Armor** together with Vehicle Armor â†’ "âš  Concealed Armor is not compatible with standard vehicle armor (R3R p.132)",
-      both still counted. A Body 0 drone with armour â†’ warned.
+- [ ] **Typing a stat** (Armor 2 → 3) saves 3 and the arrow reads 9 — the typed figure stays the vehicle's own; nothing derived is saved.
+- [ ] **Concealed Armor** together with Vehicle Armor → "⚠ Concealed Armor is not compatible with standard vehicle armor (R3R p.132)",
+      both still counted. A Body 0 drone with armour → warned.
 
-### 78c. Control, engine and signature mods (TODO 265 â€” R3R pp.126, 129-130, 134-135; SR3 p.307)
+### 78c. Control, engine and signature mods (TODO 265 — R3R pp.126, 129-130, 134-135; SR3 p.307)
 
 **Full Foundry restart** (`dbwSplit` is a new field) and `npm run packs:install` with Foundry CLOSED first (nine new R3R vehicle
-mods). A car with cost 40,000Â¥, Body 4, Handling 4 / 5 off-road, Speed 100, Accel 10, Sig 4.
+mods). A car with cost 40,000¥, Body 4, Handling 4 / 5 off-road, Speed 100, Accel 10, Sig 4.
 *(Walked by the agent 2026-10-27 after the restart: every figure, price, warning and note below as stated; Legality "Legal".)*
 
-- [ ] **Drop Drive-by-Wire System** on it â†’ its Cost fills 10,000Â¥ (0.25 Ã— 40,000 at level 1); its sheet says "On <car> at this
-      level: 10,000Â¥" and has three +% boxes. Set level 2 â†’ the price line reads 20,000Â¥ (Cost stays what was filled â€” edit it).
-      Handling "â†’ 2" / off-road "â†’ 3"; the Mods tab asks for the split. Type Accel 6 / Speed 4 â†’ Speed "â†’ 104", Accel "â†’ 11" (0.6
-      rounds to 1). With Turbocharging [2] too, Speed 10% â†’ 143 (10% of 130: the split comes after every other change).
+- [ ] **Drop Drive-by-Wire System** on it → its Cost fills 10,000¥ (0.25 × 40,000 at level 1); its sheet says "On <car> at this
+      level: 10,000¥" and has three +% boxes. Set level 2 → the price line reads 20,000¥ (Cost stays what was filled — edit it).
+      Handling "→ 2" / off-road "→ 3"; the Mods tab asks for the split. Type Accel 6 / Speed 4 → Speed "→ 104", Accel "→ 11" (0.6
+      rounds to 1). With Turbocharging [2] too, Speed 10% → 143 (10% of 130: the split comes after every other change).
       The nine new mods read Legality "Legal".
-- [ ] **Add Improved Suspension** â†’ "âš  â€¦ may not be used with drive-by-wire". Remove both; Off-Road Suspension 2 â†’ off-road "â†’ 3",
-      on-road "â†’ 6", Speed "â†’ 85".
-- [ ] **Turbocharging [2]** â†’ Speed +30, Accel +2, Sig âˆ’2. **Radar-Absorbent Materials [3]** (Cost 675,000Â¥) and **Thermal Baffles
-      [2]** (Cost 40,000Â¥; the budget counts 6 CF and 400 kg) â†’ Sig +5. **Active Thermal Masking [1]** â†’ no Sig change, a note
+- [ ] **Add Improved Suspension** → "⚠ … may not be used with drive-by-wire". Remove both; Off-Road Suspension 2 → off-road "→ 3",
+      on-road "→ 6", Speed "→ 85".
+- [ ] **Turbocharging [2]** → Speed +30, Accel +2, Sig −2. **Radar-Absorbent Materials [3]** (Cost 675,000¥) and **Thermal Baffles
+      [2]** (Cost 40,000¥; the budget counts 6 CF and 400 kg) → Sig +5. **Active Thermal Masking [1]** → no Sig change, a note
       ("while it runs (55 minutes)"); with no turbocharging, warned.
-- [ ] **Weapon mounts** â€” an External Hardpoint and a Small Turret â†’ Sig two lower ("weapon mounts", SR3 p.307 in the tooltip).
+- [ ] **Weapon mounts** — an External Hardpoint and a Small Turret → Sig two lower ("weapon mounts", SR3 p.307 in the tooltip).
 - [ ] **Rolls use it:** a chase test's Speed / Handling, a sensor test against this car (its Sig), a collision's Acceleration.
 
-## 79. ðŸ›’ Quantity and the cart (TODO 284, 285, branch `claude/shop-quantity-cart-57b85a`)
+## 79. 🛒 Quantity and the cart (TODO 284, 285, branch `claude/shop-quantity-cart-57b85a`)
 
-**Prerequisites:** a troll character owned by Player2 with an Ares Thunderer (or any clip-fed gun), a fixer contact, Â¥5,000.
-JS only â€” no restart.
+**Prerequisites:** a troll character owned by Player2 with an Ares Thunderer (or any clip-fed gun), a fixer contact, ¥5,000.
+JS only — no restart.
 
-- [ ] Gun sheet â†’ ðŸ›’ Buy ammo â†’ pick its 10-Rnd Clip (Â¥31 list) â†’ **Quantity 4**, ðŸª at the store. Preview and card read
-      **Â¥155** (4 Ã— Â¥31 = Â¥124, +25% troll on the total, SR3 p.272). ðŸ’´ Pay: nuyen âˆ’155, ONE clip item on the sheet with
-      **4 reloads** ("4 reloads Ã— 10 rounds"), stamped with the gun's class; the ðŸ“’ reason reads "Bought 4 Ã— 10-Rnd Clip".
-- [ ] Buy gear â†’ a box of loose rounds Ã— 3: one item with 3Ã— the rounds. A stackable item (grenade, medkit) Ã— 2: one item,
-      quantity 2. A gun Ã— 2: two copies.
-- [ ] **Cart.** Buy gear â†’ pick the clip, Qty 2, **âž• Add to cart**; pick an armour jacket, Qty 1, âž•; pick a Predator (form
+- [ ] Gun sheet → 🛒 Buy ammo → pick its 10-Rnd Clip (¥31 list) → **Quantity 4**, 🏪 at the store. Preview and card read
+      **¥155** (4 × ¥31 = ¥124, +25% troll on the total, SR3 p.272). 💴 Pay: nuyen −155, ONE clip item on the sheet with
+      **4 reloads** ("4 reloads × 10 rounds"), stamped with the gun's class; the 📒 reason reads "Bought 4 × 10-Rnd Clip".
+- [ ] Buy gear → a box of loose rounds × 3: one item with 3× the rounds. A stackable item (grenade, medkit) × 2: one item,
+      quantity 2. A gun × 2: two copies.
+- [ ] **Cart.** Buy gear → pick the clip, Qty 2, **➕ Add to cart**; pick an armour jacket, Qty 1, ➕; pick a Predator (form
       left filled). Through a contact: the preview's TN and base time are the **slowest** item's (the highest TN, the longest
       time). Find a source: ONE Etiquette roll; the Source found card lists each line with its own Street Index and one asking
-      price. ðŸ¤ Negotiate moves the whole total. ðŸ’´ Pay once: all three land on the sheet.
-- [ ] âœ• on a cart row removes it; an emptied form is not bought as "gear".
+      price. 🤝 Negotiate moves the whole total. 💴 Pay once: all three land on the sheet.
+- [ ] ✕ on a cart row removes it; an emptied form is not bought as "gear".
 
 
-## 80. ðŸ›  The Vehicle Designer (TODO 287, slice 2 â€” R3R pp.109-121; the maintainer's rulings of 2026-11-07)
+## 80. 🛠 The Vehicle Designer (TODO 287, slice 2 — R3R pp.109-121; the maintainer's rulings of 2026-11-07)
 
 Full restart first (a new `vehiclemod` field), and the packs installed (`npm run packs:install`, Foundry closed).
 
-- [ ] **Three ways in:** the Actors directory header shows **ðŸ›  Design a vehicle** (as a player too); the world macro
-      **SR3E Vehicle Designer** opens the same window; a vehicle sheet's **ðŸ›  Design** button opens it titled with the vehicle.
-- [ ] **Steffi's Light Strike Vehicle** (pp.109-113): chassis Sand Buggy, plant Gasoline; Off-road Handling âˆ’ 1, Acceleration + 2,
+- [ ] **Three ways in:** the Actors directory header shows **🛠 Design a vehicle** (as a player too); the world macro
+      **SR3E Vehicle Designer** opens the same window; a vehicle sheet's **🛠 Design** button opens it titled with the vehicle.
+- [ ] **Steffi's Light Strike Vehicle** (pp.109-113): chassis Sand Buggy, plant Gasoline; Off-road Handling − 1, Acceleration + 2,
       Cargo + 2, Load + 30; class security. Add mods **Roll Bars**, **Electronics Port**, **Ring Mount**, **Pintle Mount** from the
-      picker â†’ their points pre-fill 0 / 10 / 10 / 1. Result: 169 Design Points; Availability shows with the security +6.
-- [ ] **A level-priced mod:** add **Nitrous Oxide Injectors**, set Level 6 â†’ Points 330, CF 1.5, Load 15. A mod with no design
-      figure (a Cannon Companion or SOTA mod) shows âš  and 0 points â€” type them; the total follows.
-- [ ] **Warnings, never refusals:** push Speed past the plant's maximum â†’ an amber warning; **Create vehicle** still works.
+      picker → their points pre-fill 0 / 10 / 10 / 1. Result: 169 Design Points; Availability shows with the security +6.
+- [ ] **A level-priced mod:** add **Nitrous Oxide Injectors**, set Level 6 → Points 330, CF 1.5, Load 15. A mod with no design
+      figure (a Cannon Companion or SOTA mod) shows ⚠ and 0 points — type them; the total follows.
+- [ ] **Warnings, never refusals:** push Speed past the plant's maximum → an amber warning; **Create vehicle** still works.
 - [ ] **Create (as Player2):** the vehicle appears, Player2 owns it, its sheet opens with the computed Handling, Speed, Accel,
-      Body, Armor, Sig, Cargo, Load, Cost, Street Index and Availability â€” every one still editable.
-- [ ] **Re-save offers:** on that vehicle type Speed 999 by hand, open ðŸ›  Design, change Acceleration, click **Offer changes** â†’
-      a list of old â†’ new, ticked. Untick Speed, apply â†’ Acceleration changes, Speed stays 999. Reopen â†’ the design is remembered.
+      Body, Armor, Sig, Cargo, Load, Cost, Street Index and Availability — every one still editable.
+- [ ] **Re-save offers:** on that vehicle type Speed 999 by hand, open 🛠 Design, change Acceleration, click **Offer changes** →
+      a list of old → new, ticked. Untick Speed, apply → Acceleration changes, Speed stays 999. Reopen → the design is remembered.
 - [ ] **Owned copies get the figures:** an actor that owned a Nitrous Oxide Injectors before the update shows its Design Cost
       "55 per level" after the 0.9.0 migration (a figure a GM typed is kept).
-## 81. â± Downtime / In session, ðŸ“¦ Orders and â³ recoveries (TODO 288)
+## 81. ⏱ Downtime / In session, 📦 Orders and ⏳ recoveries (TODO 288)
 
 GM seat plus one player. Full Foundry restart first (two new world settings).
 
-- [ ] GM tools (Rollable Tables tab) show **â± Downtime (instant)** and **ðŸ“¦ Orders (0)** to the GM only. Click â±: it reads
-      **â± In session (time passes)**; the player's ðŸ›’ Buy gear dialog shows the In session note.
-- [ ] In session, player buys **through a contact**: the Source found card's money button reads **ðŸ“ Place order â€” Â¥X due at
-      delivery**. Click: nuyen unchanged, nothing on the sheet; a ðŸ“ chat line; the Gear tab shows **ðŸ“¦ On order** with the
-      delivery time; GM's ðŸ“¦ Orders lists it. ðŸ¤ Negotiate first: the negotiated card also offers ðŸ“.
-- [ ] In session, **ðŸª at the store**: ðŸ’´ Pay as before â€” instant.
-- [ ] GM ðŸ“¦ Deliver: confirm, nuyen drops, the items land (stacked as in Â§79), ðŸ“’ reads "Delivered â€¦", the On order list empties.
+- [ ] GM tools (Rollable Tables tab) show **⏱ Downtime (instant)** and **📦 Orders (0)** to the GM only. Click ⏱: it reads
+      **⏱ In session (time passes)**; the player's 🛒 Buy gear dialog shows the In session note.
+- [ ] In session, player buys **through a contact**: the Source found card's money button reads **📝 Place order — ¥X due at
+      delivery**. Click: nuyen unchanged, nothing on the sheet; a 📝 chat line; the Gear tab shows **📦 On order** with the
+      delivery time; GM's 📦 Orders lists it. 🤝 Negotiate first: the negotiated card also offers 📝.
+- [ ] In session, **🏪 at the store**: 💴 Pay as before — instant.
+- [ ] GM 📦 Deliver: confirm, nuyen drops, the items land (stacked as in §79), 📒 reads "Delivered …", the On order list empties.
       With the buyer short: an amber warning, Deliver still works, nuyen stops at 0.
-- [ ] GM âœ• Cancel: the chat line says the contact's Availability *may* rise (p.273); nothing changes on the buyer.
-- [ ] Healing in session: ðŸ©¹ Healing â†’ heal one stage â†’ the card's button is **â³ Start recovery â€” Lower the wound â€¦ (time)**;
-      click â†’ nothing healed, it appears in ðŸ“¦ Orders. Wound the character more â†’ the row shows the amber **Wounds changed**
-      line; âœ… Recovered asks and then applies against the live track. Stun rest's *Erase 1 Stun box* likewise. First aid
+- [ ] GM ✕ Cancel: the chat line says the contact's Availability *may* rise (p.273); nothing changes on the buyer.
+- [ ] Healing in session: 🩹 Healing → heal one stage → the card's button is **⏳ Start recovery — Lower the wound … (time)**;
+      click → nothing healed, it appears in 📦 Orders. Wound the character more → the row shows the amber **Wounds changed**
+      line; ✅ Recovered asks and then applies against the live track. Stun rest's *Erase 1 Stun box* likewise. First aid
       and a Heal spell stay instant.
-- [ ] With an order and a recovery waiting, flip to â± Downtime: a ticked dialog. Untick the recovery, Confirm: the order is
+- [ ] With an order and a recovery waiting, flip to ⏱ Downtime: a ticked dialog. Untick the recovery, Confirm: the order is
       delivered, the recovery stays. Flip again and press Esc: nothing happens.
 
 
-## 82. ðŸ›  Vehicle Designer â€” design options and mods on the vehicle (TODO 287, slice 3 â€” R3R pp.115-121; rulings of 2026-11-08)
+## 82. 🛠 Vehicle Designer — design options and mods on the vehicle (TODO 287, slice 3 — R3R pp.115-121; rulings of 2026-11-08)
 
-Hot reload is enough (no new fields). Â§80's two steps not yet walked live (Create as Player2, the re-save offer) fold in here.
+Hot reload is enough (no new fields). §80's two steps not yet walked live (Create as Player2, the re-save offer) fold in here.
 
 - [ ] **The catalogue:** the Design options picker lists Functional / Enhancement / Facility / Robot options, each with its page.
-      Pick **Ballast Tanks** on a Sand Buggy (Body 2) â†’ 40 points, 8 CF, 100 kg, its â“˜ note (EnviroSeal) on hover.
-- [ ] **Inputs and overrides:** add **Special Machinery** â†’ CF 4 and Load 100 shown greyed (computed); type Points 40 â†’ the total
-      follows; clear it â†’ back to the computed figure. **Special Storage Area**, CF designated 2 â†’ 3 points, 1 CF.
-- [ ] **Permanent effects:** Sand Buggy on Gasoline, add **Hybrid Engine** â†’ Acceleration âˆ’2 and Signature +1 in the Result. A
-      Speedboat with **Fin Drive** â†’ Speed and Accel up a quarter, Street Index +1, Availability +4. **Removed Manual Controls**
-      â†’ Cargo +2 and Load +10.
-- [ ] **Restrictions warn, never refuse:** **Airlock** on a car â†’ amber warning, Create still works. **Structural Agility** without
-      a Drive-by-Wire mod â†’ a warning; add the mod â†’ it clears.
-- [ ] **Create as Player2** with Ring Mount Ã—2 and Nitrous Oxide Injectors at level 6 picked â†’ the vehicle's Mods tab carries all
+      Pick **Ballast Tanks** on a Sand Buggy (Body 2) → 40 points, 8 CF, 100 kg, its ⓘ note (EnviroSeal) on hover.
+- [ ] **Inputs and overrides:** add **Special Machinery** → CF 4 and Load 100 shown greyed (computed); type Points 40 → the total
+      follows; clear it → back to the computed figure. **Special Storage Area**, CF designated 2 → 3 points, 1 CF.
+- [ ] **Permanent effects:** Sand Buggy on Gasoline, add **Hybrid Engine** → Acceleration −2 and Signature +1 in the Result. A
+      Speedboat with **Fin Drive** → Speed and Accel up a quarter, Street Index +1, Availability +4. **Removed Manual Controls**
+      → Cargo +2 and Load +10.
+- [ ] **Restrictions warn, never refuse:** **Airlock** on a car → amber warning, Create still works. **Structural Agility** without
+      a Drive-by-Wire mod → a warning; add the mod → it clears.
+- [ ] **Create as Player2** with Ring Mount ×2 and Nitrous Oxide Injectors at level 6 picked → the vehicle's Mods tab carries all
       three, the Nitrous at rating 6; its CF/Load budget counts them.
 - [ ] **Re-save offers, never removes:** on that vehicle type Speed 999 by hand and delete one Ring Mount and drop a Roll Bars on the sheet;
-      then open ðŸ›  Design, add **Pintle Mount**, click **Offer changes** â†’ the stat rows,
-      then "Mods â€¦ tick to add" listing **Ring Mount** and **Pintle Mount** (ticked). Untick Speed, apply â†’ Speed stays 999,
+      then open 🛠 Design, add **Pintle Mount**, click **Offer changes** → the stat rows,
+      then "Mods … tick to add" listing **Ring Mount** and **Pintle Mount** (ticked). Untick Speed, apply → Speed stays 999,
       both mods arrive, and the hand-added mod is untouched.
-- [ ] **One entry per mod** (after `packs:install`, Foundry closed â€” the pack changed): the "add a mod" list shows **Datajack Port**,
+- [ ] **One entry per mod** (after `packs:install`, Foundry closed — the pack changed): the "add a mod" list shows **Datajack Port**,
       **Rigger Adaptation**, **Pintle Mount**, **Bike Gyro-Stabilization Gear** and **Amphibious Package** once each, every entry
-      with its book page in [brackets]. Pick Amphibious Package, set its Level to 2 â†’ 80 points; 3 â†’ 200 points, CF 2. Create â†’
-      the vehicle's Amphibious Package is Level 3 at 15,000Â¥, CF 4. The item sheet's Level dropdown offers 1-3.
+      with its book page in [brackets]. Pick Amphibious Package, set its Level to 2 → 80 points; 3 → 200 points, CF 2. Create →
+      the vehicle's Amphibious Package is Level 3 at 15,000¥, CF 4. The item sheet's Level dropdown offers 1-3.
 - [ ] **Migration:** in a world that carried an old Amphibious Package (any of the three), after the reload its copy has a Level
-      (the one its price matches) and its ðŸ“– link opens the single pack entry.
+      (the one its price matches) and its 📖 link opens the single pack entry.
 
-## 83. ðŸ”® The spell audit (TODO 123, branch `claude/spells-audit-123`)
+## 83. 🔮 The spell audit (TODO 123, branch `claude/spells-audit-123`)
 
 1. **Spell Pool cap (SR3 p.182).** A caster with Sorcery 3 and Spell Pool 6 casts Manabolt: the Spell Pool dialog
    offers at most **3** and says why. Withhold 2 dice on a Manaball: the cap drops with the Sorcery dice.
@@ -3745,7 +3745,7 @@ Hot reload is enough (no new fields). Â§80's two steps not yet walked live (Cr
 5. **Migration.** In a world with a pre-0.9.0 copy of Mass Blindness / Fashion / Astral Barrior on an actor, reload
    as GM: they read Physical / +1(M) / Astral Barrier; an edited drain on a copy is left alone.
 
-## 85. ðŸ“’ Little Black Book contacts â€” gear, cyberware and spells (TODO 84, LBB pp.40-67)
+## 85. 📒 Little Black Book contacts — gear, cyberware and spells (TODO 84, LBB pp.40-67)
 
 Needs `npm run packs:install` (Foundry closed) first.
 
@@ -3756,112 +3756,112 @@ Needs `npm run packs:install` (Foundry closed) first.
 3. An unlinked Wiz Kid token on a scene is corrected the same way; a Clout you re-Forced by hand to F6 is left at F6.
 4. Re-run `force()`: nothing changes (console logs no item changes).
 
-## 86. ðŸ›’ Vehicle Designer as a shop (TODO 297, branch `claude/vehicle-designer-shop`)
+## 86. 🛒 Vehicle Designer as a shop (TODO 297, branch `claude/vehicle-designer-shop`)
 
-Hot reload is enough (no new fields). Open **ðŸ›  Design a vehicle** in the Actors sidebar.
+Hot reload is enough (no new fields). Open **🛠 Design a vehicle** in the Actors sidebar.
 
-- [ ] **Result bar on top:** the stats chips (Handling â€¦ Cost) and the name stay pinned while every step scrolls under them.
+- [ ] **Result bar on top:** the stats chips (Handling … Cost) and the name stay pinned while every step scrolls under them.
 - [ ] **Step 1, Chassis:** type chips with silhouettes; **Drones** switches the chips to drone types (the art gets an antenna).
-      Click a **Bike** card â†’ step 2 opens; the step tab shows the chassis name.
+      Click a **Bike** card → step 2 opens; the step tab shows the chassis name.
 - [ ] **Step 2, Power plant:** cards with plant icons and Speed/Accel/Load/Economy; a chassis with one plant has it picked
       already. **Tune it** opens the improvements.
 - [ ] **Step 3, Design options** on that bike: Airlock and the robot options are NOT listed; **Flight Deck** IS (a Body 0 micro UAV fits under half a Body 2); tick **Show
-      options that don't fit** â†’ they appear dashed with an amber reason, and **+ Add** still works (warn, never refuse).
+      options that don't fit** → they appear dashed with an amber reason, and **+ Add** still works (warn, never refuse).
 - [ ] **Step 4, Mods:** shelf tabs with icons and counts; every card has a one-line description, points, CF, Load and its page.
-      On the bike, **Bike Gyro-Stabilization Gear** and the sidecars are listed; switch to a **car** chassis â†’ they're hidden
-      until **Show mods that don't fit**. Search "armor" finds across shelves. **+ Add** puts the mod in the ðŸ›’ cart; set its
+      On the bike, **Bike Gyro-Stabilization Gear** and the sidecars are listed; switch to a **car** chassis → they're hidden
+      until **Show mods that don't fit**. Search "armor" finds across shelves. **+ Add** puts the mod in the 🛒 cart; set its
       Lv and the points follow.
 - [ ] **Step 5:** class and mark-up, the points line by line, the warnings; **Create** makes the vehicle with its mods.
-- [ ] **Reopen:** ðŸ›  Design on that vehicle opens on step 5; **Offer changes** works as in Â§82.
+- [ ] **Reopen:** 🛠 Design on that vehicle opens on step 5; **Offer changes** works as in §82.
 
 Second pass (the maintainer's feedback, 2026-11-08):
 
 - [ ] **Step tabs** are big filled buttons; the active one is solid blue, a finished one has a green number, and what you
       picked sits on its own line under the label (never on an underline).
 - [ ] **Chassis drawings:** each bike looks different (racing, chopper, dirt bike, scooter, ATV); Special Vehicle shows a
-      locomotive chip; the **Barge** card is a hull on a dashed tow line behind a tug. Caterpillars Miniature â†’ Heavy share a
+      locomotive chip; the **Barge** card is a hull on a dashed tow line behind a tug. Caterpillars Miniature → Heavy share a
       drawing, drawn bigger for the bigger Body. Every card has a one-line description; hovering shows it too.
-- [ ] **Towed:** pick **Barge** (or a trailer / rail car) â†’ step 2 says **Towed â€” no power plant** with the chassis' Load
+- [ ] **Towed:** pick **Barge** (or a trailer / rail car) → step 2 says **Towed — no power plant** with the chassis' Load
       ("Load 1,000,000 kg (max 10,000,000 kg)"); the step tab reads "Towed"; Next goes on to options.
-- [ ] **Tuning:** on a Racing Cycle with a plant, the table reads Start Â· Added Â· Result Â· Limit for every line. Type a Speed
-      far past the limit â†’ that row turns amber with âš . Hover each row, **Smart materials** and **Freed CF/Load** â†’ a tooltip
+- [ ] **Tuning:** on a Racing Cycle with a plant, the table reads Start · Added · Result · Limit for every line. Type a Speed
+      far past the limit → that row turns amber with ⚠. Hover each row, **Smart materials** and **Freed CF/Load** → a tooltip
       says what it changes, its cost and its range here.
 - [ ] **Options:** on a bike, **Depth Enhancement** and **Ballast Tanks** are hidden; add **Amphibious Package** (step 4),
-      come back â†’ they're listed. **Extra Entry Points** says "Up to N for this chassis". On a boat, Ballast Tanks is hidden
+      come back → they're listed. **Extra Entry Points** says "Up to N for this chassis". On a boat, Ballast Tanks is hidden
       ("Not for submarine, boat or ship chassis", R3R p.116).
-- [ ] **Once per vehicle:** add **Turbocharging** â†’ its card says **âœ“ In cart** (no second copy); a turret or hardpoint says
+- [ ] **Once per vehicle:** add **Turbocharging** → its card says **✓ In cart** (no second copy); a turret or hardpoint says
       **+ Another (1)**.
 - [ ] **Levels:** a rated mod's card says "levels 1-N" where the book sets one (Autonav 1-4, Nitrous 1-6, CMC 1-9); its cart
-      line has **Lv** capped at N ("/N"). Set Autonav Lv 10 â†’ the line turns amber with "Level 10 is over the book's maximum of 4".
+      line has **Lv** capped at N ("/N"). Set Autonav Lv 10 → the line turns amber with "Level 10 is over the book's maximum of 4".
       **Datajack Port** has no Lv box.
-- [ ] **Book filter:** with the France Sourcebook off (the default), search the mod shop for **VAUBAN** â†’ nothing. Turn it on
-      (System settings â†’ Source books), reopen the designer â†’ the VAUBAN mods appear.
-- [ ] **SunCell on a hybrid:** a gasoline car â†’ SunCell Power is hidden ("Needs an electric driveâ€¦"). Add a **Hybrid Engine**
-      option, or an **Auxiliary Engine** with an electric plant picked â†’ SunCell shows and can be added. Never on a bike.
-- [ ] **Book stat line on top:** under the stats chips a second row reads Seating Â· Entry Â· Fuel Â· Econ Â· Range Â· S/B Â· L/T Â·
-      Chassis Â· SI Â· Avail. A diesel **Tractor**: Fuel 750 liters, Econ 3 km/l, Range 2,250 km. Economy +100% (20 steps) â†’
-      6 km/l, 4,500 km. Fuel Tank Enlargement 250 â†’ Fuel 1,000 liters. A helicopter shows L/T VTOL.
-- [ ] **Full names on hover:** in the mod shop, hover **Rem-Contr. Intr. Bod** â†’ "Remote-Control Interface Body"; same in the cart.
-- [ ] **Tokens to scale:** drag a GMC 4201 onto a scene with 1 m squares â†’ a 2.5 Ã— 9 token; onto one with 3 m squares
-      â†’ about 0.75 Ã— 3. Design a van and place it â†’ about 2 Ã— 5.5 squares on a 1 m grid. A token you resized by hand, or a
+- [ ] **Book filter:** with the France Sourcebook off (the default), search the mod shop for **VAUBAN** → nothing. Turn it on
+      (System settings → Source books), reopen the designer → the VAUBAN mods appear.
+- [ ] **SunCell on a hybrid:** a gasoline car → SunCell Power is hidden ("Needs an electric drive…"). Add a **Hybrid Engine**
+      option, or an **Auxiliary Engine** with an electric plant picked → SunCell shows and can be added. Never on a bike.
+- [ ] **Book stat line on top:** under the stats chips a second row reads Seating · Entry · Fuel · Econ · Range · S/B · L/T ·
+      Chassis · SI · Avail. A diesel **Tractor**: Fuel 750 liters, Econ 3 km/l, Range 2,250 km. Economy +100% (20 steps) →
+      6 km/l, 4,500 km. Fuel Tank Enlargement 250 → Fuel 1,000 liters. A helicopter shows L/T VTOL.
+- [ ] **Full names on hover:** in the mod shop, hover **Rem-Contr. Intr. Bod** → "Remote-Control Interface Body"; same in the cart.
+- [ ] **Tokens to scale:** drag a GMC 4201 onto a scene with 1 m squares → a 2.5 × 9 token; onto one with 3 m squares
+      → about 0.75 × 3. Design a van and place it → about 2 × 5.5 squares on a 1 m grid. A token you resized by hand, or a
       prototype you sized yourself, keeps its size.
-- [ ] **Rideable seats** (with the Rideable module on): place a vehicle â†’ its token is rideable, and it takes as many
+- [ ] **Rideable seats** (with the Rideable module on): place a vehicle → its token is rideable, and it takes as many
       riders as its Seating (a 4-seat car takes 4; the 5th is refused). A token whose Rideable settings you changed keeps them.
-- [ ] **Misfits look different:** tick **show the ones that don't fit** in the mod shop and the options step â†’ those cards are
+- [ ] **Misfits look different:** tick **show the ones that don't fit** in the mod shop and the options step → those cards are
       greyed with an amber dashed edge and a **Doesn't fit** badge, sharp again on hover; the fitting cards are unchanged.
-- [ ] **Availability explained:** on the price step, under Street Index Â· Availability, a line reads e.g.
-      "Availability: 590,000Â¥ Ã· 20,000 = 30 â†’ 30 (the whole vehicle's price, R3R p.113) â€” biggest costs: â€¦" with the three
-      largest Design Point lines. Push it past 30 â†’ the warning carries the same sum.
-- [ ] **Turret sizes:** every turret card in the shop says what it holds â€” a Small Turret "Weapon Value 3 â€” up to an
-      assault cannon or autocannonâ€¦", a Mini-Turret(Pop-Up) "Weapon Value 1 â€” up to an SMGâ€¦" (R3R pp.140-141). On a
+- [ ] **Availability explained:** on the price step, under Street Index · Availability, a line reads e.g.
+      "Availability: 590,000¥ ÷ 20,000 = 30 → 30 (the whole vehicle's price, R3R p.113) — biggest costs: …" with the three
+      largest Design Point lines. Push it past 30 → the warning carries the same sum.
+- [ ] **Turret sizes:** every turret card in the shop says what it holds — a Small Turret "Weapon Value 3 — up to an
+      assault cannon or autocannon…", a Mini-Turret(Pop-Up) "Weapon Value 1 — up to an SMG…" (R3R pp.140-141). On a
       vehicle sheet an Ares Vanquisher on a Mini Turret warns Weapon Value 2.5 of 2.
-- [ ] **Turret variants:** add **Mini-Turret(Pop-Up)** â†’ only that card is highlighted; Mini-Turret(Anti-Air) and the
+- [ ] **Turret variants:** add **Mini-Turret(Pop-Up)** → only that card is highlighted; Mini-Turret(Anti-Air) and the
       other mini-turrets still say **+ Add**.
-- [ ] **Aftermarket:** **Morphing License Plate** shows 0 points and "Aftermarket â€” no design cost" â€” no âš .
+- [ ] **Aftermarket:** **Morphing License Plate** shows 0 points and "Aftermarket — no design cost" — no ⚠.
 - [ ] **Pictures:** every chassis card, the towed step and the result bar show a coloured anime picture on a transparent
-      background â€” no green or magenta fringe, no grey ground shadow, tail lights still red.
-- [ ] **Trailer tuning:** pick **Trailer, 53-foot** â†’ step 2 says Towed and shows a **Tune it** table with only **Load**
-      (start 10,000, max 25,000) and **Cargo** (start 1,200, max 1,600). Add 5,000 kg â†’ Load 15,000 and the points go up;
-      add 20,000 â†’ âš  over the maximum. No "Pick a power plant" warning.
-- [ ] **Truck and trailer:** create a trailer â†’ its footer offers **ðŸšš Design its tow vehicle**; that opens a designer titled
-      "tow vehicle for <trailer>". Create a truck â†’ the trailer's design says **Towed by <truck>**. Both are optional â€”
+      background — no green or magenta fringe, no grey ground shadow, tail lights still red.
+- [ ] **Trailer tuning:** pick **Trailer, 53-foot** → step 2 says Towed and shows a **Tune it** table with only **Load**
+      (start 10,000, max 25,000) and **Cargo** (start 1,200, max 1,600). Add 5,000 kg → Load 15,000 and the points go up;
+      add 20,000 → ⚠ over the maximum. No "Pick a power plant" warning.
+- [ ] **Truck and trailer:** create a trailer → its footer offers **🚚 Design its tow vehicle**; that opens a designer titled
+      "tow vehicle for <trailer>". Create a truck → the trailer's design says **Towed by <truck>**. Both are optional —
       skip the button and the trailer stands alone.
-- [ ] **Road train (R3R p.193):** on a created truck the footer offers **ðŸš› Add a trailer (n/5)**; each opens "a trailer for
-      <truck>". Make five â†’ the button greys out at 5/5. The truck's price step lists its **Trailers** with **Hitched**
-      ticks; untick three (the city run) â†’ the hint counts 2 hitched and their Load. Hitch more Load than the truck's â†’
-      âš  the house-rule warning; tune the truck's Load up â†’ it clears.
+- [ ] **Road train (R3R p.193):** on a created truck the footer offers **🚛 Add a trailer (n/5)**; each opens "a trailer for
+      <truck>". Make five → the button greys out at 5/5. The truck's price step lists its **Trailers** with **Hitched**
+      ticks; untick three (the city run) → the hint counts 2 hitched and their Load. Hitch more Load than the truck's →
+      ⚠ the house-rule warning; tune the truck's Load up → it clears.
       A jet, helicopter, sub or walker shows no **Add a trailer** button; a bike, car, hovercraft, boat or locomotive does.
-- [ ] **Setup/Breakdown Time:** pick a 55' trailer (or any Body 3+ vehicle) â†’ the option is hidden; **Show all** shows it
-      dimmed with "Body 2 or less only (drones Body 3) â€” this one is Body N". A Body 2 car or Body 3 drone lists it.
-- [ ] **Auxiliary engine:** add **Auxiliary Engine** â†’ its row shows a **Power plant** dropdown of the chassis' plants with
+- [ ] **Setup/Breakdown Time:** pick a 55' trailer (or any Body 3+ vehicle) → the option is hidden; **Show all** shows it
+      dimmed with "Body 2 or less only (drones Body 3) — this one is Body N". A Body 2 car or Body 3 drone lists it.
+- [ ] **Auxiliary engine:** add **Auxiliary Engine** → its row shows a **Power plant** dropdown of the chassis' plants with
       their points ("Same as the main plant" first); picking one sets the row's Points to that plant's.
 - [ ] **Work Shop / Facility:** each row has a **Kind of** dropdown with the prices (General, Computer, Cyberware,
       Electronic, Gunsmith, Vehicle); picking sets the Points, and a Vehicle facility's CF becomes 500.
-- [ ] **Readable text:** the designer's hints, card stats, page numbers and step captions read clearly â€” light grey, not
+- [ ] **Readable text:** the designer's hints, card stats, page numbers and step captions read clearly — light grey, not
       grey on grey.
-- [ ] **Token icon:** create a design â†’ the new vehicle's portrait and its dragged token are the chassis' top-down icon
+- [ ] **Token icon:** create a design → the new vehicle's portrait and its dragged token are the chassis' top-down icon
       (`styles/vehicles/top/<art>.webp`), no shadow. Re-saving an existing vehicle leaves its picture alone.
 
-## 87. ðŸ”« Weapon designer as a shop (TODO 300, branch `claude/weapon-designer-cards-62e865`)
+## 87. 🔫 Weapon designer as a shop (TODO 300, branch `claude/weapon-designer-cards-62e865`)
 
 `npm run designer:build`, then `npm run designer:serve` (or `PORT=5188`), Weapon tab.
 
-- [ ] **Chips:** Pistols, SMGs, Rifles, Shotguns, Heavy weapons, Launchers, **Melee**, Other â€” each with a drawn silhouette
+- [ ] **Chips:** Pistols, SMGs, Rifles, Shotguns, Heavy weapons, Launchers, **Melee**, Other — each with a drawn silhouette
       and a count. **Melee** lists the 66 melee weapons with Dmg / Reach / Conc.
-- [ ] **Cards:** every card shows a picture (a silhouette until its ComfyUI picture lands), a one-liner ("Heavy pistol Â· one
-      hand Â· smartgun"), the key stats and its page.
+- [ ] **Cards:** every card shows a picture (a silhouette until its ComfyUI picture lands), a one-liner ("Heavy pistol · one
+      hand · smartgun"), the key stats and its page.
 - [ ] **Shop:** shelf tabs (Top mount, Barrel, Underbarrel, No mount) have icons and counts; on an AK-47 the switch reads
       "Show the ones that don't fit (1 hidden)"; ticked, **Stock (Rigid)** appears dashed with the amber "own stock" reason
-      and **+ Add** still puts it in the ðŸ›’ cart (step 4 then warns "Left out").
-- [ ] **Pictures, once the batch is keyed:** on a dark page, no white halo round any weapon; import a design in Foundry â†’
+      and **+ Add** still puts it in the 🛒 cart (step 4 then warns "Left out").
+- [ ] **Pictures, once the batch is keyed:** on a dark page, no white halo round any weapon; import a design in Foundry →
       the item's image is its model picture; a weapon with no picture keeps its pack icon.
-## 71. ðŸ–¨ Print a character sheet (TODO 302)
+## 88. 🖨 Print a character sheet (TODO 302)
 
-JS only â€” F5 is enough. **Prerequisites:** a player-owned character with skills, a weapon, armour, cyberware, a spell or adept power, a contact, and a vehicle linked to them; an NPC the player does not own.
+JS only — F5 is enough. **Prerequisites:** a player-owned character with skills, a weapon, armour, cyberware, a spell or adept power, a contact, and a vehicle linked to them; an NPC the player does not own.
 
-- [ ] **Header control.** As the player, open the character: the window header (â‹® menu) has **Print sheet**. Open the NPC as an observer (if visible): no such control. As the GM, every character and NPC has it.
+- [ ] **Header control.** As the player, open the character: the window header (⋮ menu) has **Print sheet**. Open the NPC as an observer (if visible): no such control. As the GM, every character and NPC has it.
 - [ ] **The print window.** Click it: a new window opens with the sheet and the print dialog. Save as PDF: two-column core block on page 1, tables flow onto further pages, no row split across a page.
-- [ ] **Contents.** Augmented attributes read "value (base)"; wound boxes filled to the actor's damage; Karma shows totals only â€” no ledger, no notes or biography. The linked vehicle has a stat block with its weapons.
+- [ ] **Contents.** Augmented attributes read "value (base)"; wound boxes filled to the actor's damage; Karma shows totals only — no ledger, no notes or biography. The linked vehicle has a stat block with its weapons.
 - [ ] **Popup blocked.** Block popups for the Foundry origin and click again: a `.html` file downloads and a notice says so.
 ## 89. 👁 Perception Test on the character sheet (TODO 304, branch `todo-304-perception` — SR3 p.231-232)
 
