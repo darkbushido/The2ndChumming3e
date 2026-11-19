@@ -4819,4 +4819,21 @@ export const MUTANTS = [
     was:    'never shipped: the Improved Invisibility status ignored, so a camera saw through it (SR3 p.196)',
     impl:   st => ([...(st ?? [])].includes('invisible') ? 'plain' : null),
   },
+  {
+    id:     'adept-perceives-without-the-power',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'astralAccess',
+    was:    'shipped on the live build: every Adept was offered Dual Natured, Astral Perception power or not (the maintainer, 2026-11-18; SR3 p.169; TODO 299)',
+    impl:   ({ magic = 0, magicType = '', typeCap = '' } = {}) => (!(magic > 0) ? '' : !magicType ? 'projection' : magicType === 'Adept' ? 'perception' : typeCap),
+  },
+  {
+    id:     'mundane-offered-astral',
+    suite:  'token-senses',
+    module: '../scripts/data/token-senses.mjs', klass: 'TokenSenses', method: 'paletteEntries',
+    was:    'never shipped — the likely slip: the vision column offering Dual Natured and Astral to every player (the maintainer, 2026-11-18; TODO 299)',
+    impl:   ({ modes = ['normal'], astralMode = '' } = {}) => [{ key: 'best', kind: 'mode', active: true, eligible: true },
+      ...modes.map(k => ({ key: k, kind: 'mode', active: false, eligible: true })),
+      { key: 'dual', kind: 'astral', active: astralMode === 'dual', eligible: true },
+      { key: 'astral', kind: 'astral', active: astralMode === 'astral', eligible: true }],
+  },
 ];

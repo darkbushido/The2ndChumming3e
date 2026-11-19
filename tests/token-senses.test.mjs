@@ -146,6 +146,35 @@ export async function run(t) {
   t.eq('an astral-only item: astral sight sees it glow', TS.tileAura('astral', astralEye), { show: true, glow: true });
   t.eq('the GM always sees an astral-only item, glowing', TS.tileAura('astral', gmEye), { show: true, glow: true });
 
+  /* ── Who may perceive or project (the maintainer, 2026-11-18) ───────────────────────────────── */
+  const AP = { type: 'adeptpower', name: 'Astral Perception' };
+  t.is('a mundane: nothing', TS.astralAccess({ magic: 0, magicType: 'Full Magician', typeCap: 'projection' }), '');
+  t.is('a full magician projects', TS.astralAccess({ magic: 6, magicType: 'Full Magician', typeCap: 'projection' }), 'projection');
+  t.is('an aspected conjurer perceives only', TS.astralAccess({ magic: 5, magicType: 'Conjurer', typeCap: 'perception' }), 'perception');
+  t.is('an adept WITHOUT Astral Perception: nothing (SR3 p.169)', TS.astralAccess({ magic: 6, magicType: 'Adept', typeCap: 'perception', items: [] }), '');
+  t.is('an adept WITH Astral Perception perceives', TS.astralAccess({ magic: 6, magicType: 'Adept', typeCap: 'perception', items: [AP] }), 'perception');
+  t.is('a spell named Astral Perception is not the power', TS.astralAccess({ magic: 6, magicType: 'Adept', items: [{ type: 'spell', name: 'Astral Perception' }] }), '');
+  t.is('Awakened, no type set: the sheet has always allowed projection', TS.astralAccess({ magic: 3 }), 'projection');
+
+  /* ── The HUD vision column ─────────────────────────────────────────────────────────────────── */
+  const keys = es => es.map(e => e.key);
+  t.eq('a mundane player: modes only, no Dual Natured or Astral',
+    keys(TS.paletteEntries({ modes: ['thermo', 'normal'], access: '', isGM: false })), ['best', 'thermo', 'normal']);
+  t.eq('an adept with Astral Perception: Dual Natured, not Astral',
+    keys(TS.paletteEntries({ modes: ['normal'], access: 'perception' })), ['best', 'normal', 'dual']);
+  t.eq('a full magician: both', keys(TS.paletteEntries({ modes: ['normal'], access: 'projection' })), ['best', 'normal', 'dual', 'astral']);
+  const gmView = TS.paletteEntries({ modes: ['normal'], access: '', isGM: true });
+  t.eq('the GM sees the ineligible astral entries too', keys(gmView), ['best', 'normal', 'dual', 'astral']);
+  t.ok('…greyed (eligible false)', gmView.filter(e => e.kind === 'astral').every(e => e.eligible === false));
+  t.ok('Best is active when nothing is chosen', TS.paletteEntries({ modes: ['normal'] })[0].active);
+  t.ok('perceiving lights Dual Natured, not a mundane mode',
+    TS.paletteEntries({ modes: ['normal'], chosen: 'normal', astralMode: 'dual', access: 'perception' }).filter(e => e.active).map(e => e.key).join() === 'dual');
+  t.eq('clicking Dual Natured perceives', TS.paletteClick({ key: 'dual', kind: 'astral' }, 'physical'), { 'system.astralMode': 'dual' });
+  t.eq('clicking it again goes back to Physical', TS.paletteClick({ key: 'dual', kind: 'astral' }, 'dual'), { 'system.astralMode': 'physical' });
+  t.eq('picking a mundane mode ends perceiving', TS.paletteClick({ key: 'thermo', kind: 'mode' }, 'dual'), { [`flags.${SYS}.vision`]: 'thermo', 'system.astralMode': 'physical' });
+  t.eq('…but never pulls a projecting form back', TS.paletteClick({ key: 'thermo', kind: 'mode' }, 'astral'), { [`flags.${SYS}.vision`]: 'thermo' });
+  t.eq('Best clears the choice', TS.paletteClick({ key: 'best', kind: 'mode' }, ''), { [`flags.${SYS}.vision`]: '' });
+
   /* ── Foundry side (source-level) ──────────────────────────────────────────────────────── */
   const src = readFileSync(new URL('../scripts/SR3ESenses.js', import.meta.url), 'utf8');
   const main = readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8');
@@ -160,7 +189,14 @@ export async function run(t) {
   t.ok('low-light remaps DIM to BRIGHT and requires light', /levels: \{ \[L\.DIM\]: L\.BRIGHT \}[\s\S]{0,80}V\.REQUIRED/.test(src));
   t.ok('the sight polygon backend is subclassed', /CONFIG\.Canvas\.polygonBackends\.sight = SR3ESightPolygon/.test(src));
   t.ok('core lightPerception and basicSight are guarded', /\['lightPerception', P\.DetectionModeLightPerception\], \['basicSight', P\.DetectionModeDarkvision\]/.test(src));
-  t.ok('the dialog tick saves through dualTickUpdate, not a second flag', /dualTickUpdate\(actor\.system\?\.astralMode/.test(src) && !/upd\[`flags\.\$\{SYS\}\.dualNatured`\] = !!result\.dual/.test(src));
+  t.ok('the HUD vision column is a core palette (togglePalette, data-palette)', /dataset\.action = 'togglePalette'/.test(src) && /pal\.dataset\.palette = 'sr3eVision'/.test(src) && /btn\.dataset\.palette = 'sr3eVision'/.test(src));
+  const hudSrc = readFileSync(new URL('../scripts/SR3EStatusEffects.js', import.meta.url), 'utf8');
+  t.ok('the GM hide toggle wears a mask, set outright in _onRender (idempotent)', /async _onRender\(context, options\)[\s\S]{0,200}data-action="visibility"\] > i'[\s\S]{0,80}icon\.className = 'fa-solid fa-mask'/.test(hudSrc));
+  t.ok('the dialog is gone — the column replaces it', !/static async openDialog/.test(src));
+  t.ok('the column reads astral access from the actor', /access: SR3ESenses\.access\(actor\)/.test(src));
+  t.ok('the core Dual-Natured status is hidden from the HUD list (hud: false)', /id: 'sr3e-dual'[^\n]*hud: false/.test(main));
+  const sheet = readFileSync(new URL('../scripts/sheets/SR3EActorSheet.js', import.meta.url), 'utf8');
+  t.ok('the sheet gates its Dual Natured button by the same rule', /astralCap\s*=\s*game\.sr3e\.TokenSenses\.astralAccess\(/.test(sheet));
   t.ok('the HUD status writes the sheet field', /Hooks\.on\('createActiveEffect', statusHook\(true\)\)/.test(src) && /Hooks\.on\('deleteActiveEffect', statusHook\(false\)\)/.test(src));
   t.ok('tiles get an Aura select and refresh on sight changes', /renderTileConfig/.test(src) && /Hooks\.on\('refreshTile'/.test(src) && /name="flags\.\$\{SYS\}\.aura"/.test(src));
   t.ok('no global renderDialogV2 wiring', !/renderDialogV2/.test(src));

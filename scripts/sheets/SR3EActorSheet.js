@@ -2880,7 +2880,8 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     const typeEntry  = SR3E.magicTypes.find(t => t.name === magicType);
     // No type set → no restriction; otherwise derive from astral field
-    const astralCap  = magicType ? (typeEntry?.astral ?? '') : 'projection';
+    // Adepts perceive only with the Astral Perception power (SR3 p.169) — one rule with the 👁 vision column (TODO 299).
+    const astralCap  = game.sr3e.TokenSenses.astralAccess({ magic: 1, magicType, typeCap: typeEntry?.astral ?? '', items: actor.items });
     const canProject = astralCap === 'projection';
     const canPerceive = astralCap === 'projection' || astralCap === 'perception';
 

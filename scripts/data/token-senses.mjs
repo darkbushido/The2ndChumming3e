@@ -210,6 +210,56 @@ export function tileAura(aura = '', { isGM = false, astralViewer = false } = {})
 }
 
 /**
+ * Who may perceive or project astrally (the maintainer, 2026-11-18: "physical adepts with the astral perception and
+ * mages should get dual natured. not everyone else"). Returns 'projection' (perceive + project), 'perception', or ''.
+ *
+ * - Magic 0 → nothing.
+ * - An Adept perceives ONLY with the Astral Perception adept power (SR3 p.169), and never projects.
+ * - Any other magic type: its `astral` capability from `SR3E.magicTypes` (full magician projects; aspected perceive).
+ * - Awakened with no magic type set: projection — what the sheet has always allowed (no type, no restriction).
+ *
+ * @param {{ magic?: number, magicType?: string, typeCap?: string, items?: Array<{type:string,name:string}> }} a
+ */
+export function astralAccess({ magic = 0, magicType = '', typeCap = '', items = [] } = {}) {
+  if (!((Number(magic) || 0) > 0)) return '';
+  if (magicType === 'Adept') {
+    return [...items].some(i => i?.type === 'adeptpower' && /astral\s*perception/i.test(i?.name ?? '')) ? 'perception' : '';
+  }
+  if (!magicType) return 'projection';
+  return typeCap === 'projection' || typeCap === 'perception' ? typeCap : '';
+}
+
+/**
+ * The Token HUD's vision column (the maintainer, 2026-11-18: "look like the status effects ... a side option").
+ * Each entry: `{ key, kind: 'mode'|'astral', active, eligible }`. Players see only what the actor may use; the GM
+ * also sees what it may not, `eligible: false` (greyed, still clickable — warn, never refuse).
+ */
+export function paletteEntries({ modes = ['normal'], chosen = '', astralMode = '', access = '', isGM = false } = {}) {
+  const inAstral = astralMode === 'dual' || astralMode === 'astral';
+  const out = [{ key: 'best', kind: 'mode', active: !inAstral && !chosen, eligible: true }];
+  for (const k of modes) out.push({ key: k, kind: 'mode', active: !inAstral && chosen === k, eligible: true });
+  const astral = [
+    { key: 'dual', eligible: access === 'perception' || access === 'projection' },
+    { key: 'astral', eligible: access === 'projection' },
+  ];
+  for (const a of astral) {
+    if (a.eligible || isGM) out.push({ key: a.key, kind: 'astral', active: astralMode === a.key, eligible: a.eligible });
+  }
+  return out;
+}
+
+/**
+ * The actor update for a click on a vision-column entry. A mundane mode ends PERCEIVING (back to the physical
+ * plane) but never pulls a projecting form back. Clicking the active astral entry turns it off.
+ */
+export function paletteClick({ key, kind }, astralMode = '') {
+  if (kind === 'astral') return { 'system.astralMode': astralMode === key ? 'physical' : key };
+  const upd = { [`flags.${FLAG_SCOPE}.vision`]: key === 'best' ? '' : key };
+  if (astralMode === 'dual') upd['system.astralMode'] = 'physical';
+  return upd;
+}
+
+/**
  * Which wall rule shapes a token's SIGHT polygon (what it sees of the map, and the line of sight every sight-based
  * detection then uses): 'project' (astral form — ward walls only), 'thermo' (sight walls + glass),
  * 'ultrasound' (sonar — SOUND walls), or 'sight'.
@@ -269,5 +319,5 @@ export function auraKind({ type = '', magic = 0, dualNatured = false, statuses =
 export const TokenSenses = {
   VISION, DETECTION, ULTRASOUND_RANGE, FLAG_SCOPE, UNLIMITED, finiteRange,
   isVisionGear, isWornGear, mundaneSenses, astralState, visionModeFor, detectionModesFor, detectionUpdate,
-  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate, astralModeFromStatus, tileAura,
+  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate, astralModeFromStatus, tileAura, astralAccess, paletteEntries, paletteClick,
 };

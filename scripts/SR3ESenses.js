@@ -20,8 +20,9 @@
 import {
   VISION, DETECTION, FLAG_SCOPE, ULTRASOUND_RANGE,
   mundaneSenses, astralState, visionModeFor, detectionModesFor, detectionUpdate,
-  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, dualTickUpdate, astralModeFromStatus, tileAura,
+  polygonSense, wallBlocks, wardForce, isAstralOnly, auraKind, dualTicked, astralModeFromStatus, tileAura, paletteEntries, paletteClick,
 } from './data/token-senses.mjs';
+import { SR3E } from './config.js';
 import { detectVision } from './SR3ECombatModifiers.js';
 import { InvisibilityRules } from './data/invisibility.mjs';
 import { TokenSenses } from './data/token-senses.mjs';
@@ -383,18 +384,7 @@ export class SR3ESenses {
     Hooks.on('controlToken', () => { for (const t of canvas.tiles?.placeables ?? []) SR3ESenses._tileAura(t); });
 
     // 👁 Senses on the Token HUD — choose among the modes this character has; GM sets dual-natured and range.
-    Hooks.on('renderTokenHUD', (hud, html) => {
-      const actor = hud.object?.actor;
-      if (!actor?.isOwner || !['character', 'npc'].includes(actor.type)) return;
-      const el = html instanceof HTMLElement ? html : html?.[0];
-      if (!el || el.querySelector('.sr3e-senses-hud')) return;
-      const btn = document.createElement('div');
-      btn.className = 'control-icon sr3e-senses-hud';
-      btn.innerHTML = '<i class="fas fa-eye"></i>';
-      btn.dataset.tooltip = game.i18n.localize('SR3E.Senses.HudTip');
-      btn.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); SR3ESenses.openDialog(actor); });
-      (el.querySelector('.col.right') ?? el.querySelector('.col.left') ?? el).appendChild(btn);
-    });
+    Hooks.on('renderTokenHUD', (hud, html) => SR3ESenses._visionPalette(hud, html));
 
     // Hovering a token with astral sight: Awakened or mundane — the first line of the Assensing Table only.
     Hooks.on('hoverToken', (token, hovered) => SR3ESenses._auraHint(token, hovered));
@@ -403,44 +393,72 @@ export class SR3ESenses {
     Hooks.on('sightRefresh', () => SR3ESenses._drawWards());
   }
 
-  static async openDialog(actor) {
-    const tok = actor.getActiveTokens(false, true)[0];
-    const { senses, astral, visionMode } = SR3ESenses.plan(actor, tok);
-    const label = k => game.i18n.localize({ normal: 'SR3E.Senses.Normal', lowLight: 'SR3E.Senses.LowLight', thermo: 'SR3E.Senses.Thermographic', ultrasound: 'SR3E.Senses.Ultrasound' }[k]);
-    const current = actor.getFlag(SYS, 'vision') ?? '';
-    const opts = [`<option value="">${game.i18n.localize('SR3E.Senses.Best')}</option>`,
-      ...senses.modes.map(k => `<option value="${k}" ${current === k ? 'selected' : ''}>${label(k)}</option>`)].join('');
-    const src = Object.entries(senses.sources).filter(([, v]) => v.length)
-      .map(([k, v]) => `${k}: ${foundry.utils.escapeHTML(v.join(', '))}`).join('<br>') || '—';
-    const gm = game.user.isGM;
-    let result = null;
-    await foundry.applications.api.DialogV2.wait({
-      window: { title: `${actor.name} — ${game.i18n.localize('SR3E.Senses.Title')}` },
-      content: `<div class="sr3e-senses-dialog">
-        <p style="font-size:12px;color:var(--sr-muted)">${src}</p>
-        ${astral ? `<p style="font-size:12px;color:var(--sr-gold)">${game.i18n.localize(astral === 'project' ? 'SR3E.Senses.Projecting' : 'SR3E.Senses.Perceiving')}</p>` : ''}
-        <label>${game.i18n.localize('SR3E.Senses.Mode')} <select id="sr3e-vision">${opts}</select></label>
-        ${senses.ultrasound ? `<label>${game.i18n.localize('SR3E.Senses.UltrasoundRange')}
-          <input type="number" id="sr3e-us-range" min="0" value="${actor.getFlag(SYS, 'ultrasoundRange') ?? ULTRASOUND_RANGE}"></label>` : ''}
-        ${gm ? `<label><input type="checkbox" id="sr3e-dual" ${dualTicked(actor.system?.astralMode, actor.getFlag(SYS, 'dualNatured')) ? 'checked' : ''}>
-          ${game.i18n.localize('SR3E.Senses.DualNatured')}</label>` : ''}
-        <p style="font-size:11px;color:var(--sr-dim)">${game.i18n.localize('SR3E.Senses.Now')}: ${game.i18n.localize(CONFIG.Canvas.visionModes[visionMode]?.label ?? visionMode)}</p>
-      </div>`,
-      buttons: [
-        { label: game.i18n.localize('SR3E.Senses.Apply'), action: 'ok', default: true, callback: (_e, _b, d) => {
-          const q = s => d.element.querySelector(s);
-          result = { vision: q('#sr3e-vision')?.value ?? '', range: q('#sr3e-us-range')?.value, dual: q('#sr3e-dual')?.checked };
-        } },
-        { label: game.i18n.localize('Cancel'), action: 'cancel' },
-      ],
+  /** The actor's astral capability (TokenSenses.astralAccess), from its magic type and adept powers. */
+  static access(actor) {
+    const magicType = actor.system?.magicType ?? '';
+    return TokenSenses.astralAccess({
+      magic: actor.system?.attributes?.magic?.base ?? actor.system?.attributes?.magic?.value ?? 0,
+      magicType,
+      typeCap: SR3E.magicTypes?.find(t => t.name === magicType)?.astral ?? '',
+      items: actor.items ?? [],
     });
-    if (!result) return;
-    const upd = { [`flags.${SYS}.vision`]: result.vision };
-    if (result.range !== undefined && result.range !== '') upd[`flags.${SYS}.ultrasoundRange`] = Math.max(0, Number(result.range) || 0);
-    // One switch, two views: the tick IS the sheet's Dual Natured button (system.astralMode), not a second flag.
-    if (gm && result.dual !== undefined) Object.assign(upd, dualTickUpdate(actor.system?.astralMode, !!result.dual, actor.getFlag(SYS, 'dualNatured')));
-    await actor.update(upd);
-    await SR3ESenses.apply(actor);   // the owner applies at once; the GM hook re-checks the rest
+  }
+
+  /**
+   * 👁 on the Token HUD opens a side column like the status effects (core `togglePalette` takes any `data-palette`
+   * — Foundry 14.365.0 `placeable-hud.mjs:218`): Best, each mode the token has, Dual Natured and Astral for those
+   * who may use them. The GM sees the rest greyed and may still click (warn, never refuse).
+   */
+  static _visionPalette(hud, html) {
+    const actor = hud.object?.actor;
+    if (!actor?.isOwner || !['character', 'npc'].includes(actor.type)) return;
+    const el = html instanceof HTMLElement ? html : html?.[0];
+    if (!el || el.querySelector('.sr3e-senses-hud')) return;
+    const { senses } = SR3ESenses.plan(actor, hud.object.document);
+    const entries = paletteEntries({
+      modes: senses.modes, chosen: actor.getFlag(SYS, 'vision') ?? '', astralMode: actor.system?.astralMode ?? '',
+      access: SR3ESenses.access(actor), isGM: game.user.isGM,
+    });
+    const LABEL = { best: 'SR3E.Senses.Best', normal: 'SR3E.Senses.Normal', lowLight: 'SR3E.Senses.LowLight',
+      thermo: 'SR3E.Senses.Thermographic', ultrasound: 'SR3E.Senses.Ultrasound',
+      dual: 'SR3E.Senses.PaletteDual', astral: 'SR3E.Senses.PaletteAstral' };
+    const ICON = { best: 'fa-wand-magic-sparkles', normal: 'fa-eye', lowLight: 'fa-moon', thermo: 'fa-temperature-half',
+      ultrasound: 'fa-wave-square', dual: 'fa-eye-low-vision', astral: 'fa-ghost' };
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'control-icon sr3e-senses-hud';
+    btn.dataset.action = 'togglePalette';
+    btn.dataset.palette = 'sr3eVision';
+    btn.dataset.tooltip = game.i18n.localize('SR3E.Senses.HudTip');
+    btn.innerHTML = '<i class="fas fa-eye"></i>';
+
+    const pal = document.createElement('div');
+    pal.className = 'palette palette-list sr3e-vision-palette';
+    pal.dataset.palette = 'sr3eVision';
+    const why = k => game.i18n.localize(k === 'astral' ? 'SR3E.Senses.CannotProject' : 'SR3E.Senses.CannotPerceive');
+    pal.innerHTML = entries.map((e, i) => `<a class="palette-list-entry${e.active ? ' active' : ''}${e.eligible ? '' : ' sr3e-ineligible'}"
+        data-sr3e-entry="${i}"${e.eligible ? '' : ` data-tooltip="${why(e.key)}"`}>
+        <span><i class="fas ${ICON[e.key]} fa-fw" inert></i> ${game.i18n.localize(LABEL[e.key])}</span></a>`).join('')
+      + (senses.ultrasound ? `<label class="sr3e-us-range">${game.i18n.localize('SR3E.Senses.UltrasoundRangeShort')}
+        <input type="number" min="0" value="${actor.getFlag(SYS, 'ultrasoundRange') ?? ULTRASOUND_RANGE}"></label>` : '');
+
+    pal.querySelectorAll('[data-sr3e-entry]').forEach(a => a.addEventListener('click', async ev => {
+      ev.preventDefault(); ev.stopPropagation();
+      const e = entries[Number(a.dataset.sr3eEntry)];
+      if (!e.eligible) ui.notifications.warn(game.i18n.format('SR3E.Senses.GmOverride', { name: actor.name }));
+      await actor.update(paletteClick(e, actor.system?.astralMode ?? ''));
+      await SR3ESenses.apply(actor);
+      hud.render();
+    }));
+    const range = pal.querySelector('.sr3e-us-range input');
+    range?.addEventListener('keydown', ev => ev.stopPropagation());
+    range?.addEventListener('change', async ev => {
+      await actor.update({ [`flags.${SYS}.ultrasoundRange`]: Math.max(0, Number(ev.target.value) || 0) });
+      await SR3ESenses.apply(actor);
+    });
+
+    (el.querySelector('.col.right') ?? el.querySelector('.col.left') ?? el).append(btn, pal);
   }
 
   /** Show, hide and glow one tile by its `aura` flag (TokenSenses.tileAura). */
