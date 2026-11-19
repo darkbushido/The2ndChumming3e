@@ -8,7 +8,8 @@
  * refuse — onto an actor you own, or (GM) as a world item. A VEHICLE design opens the 🛠 Vehicle Designer (TODO 287/297)
  * filled in, on its summary: its Create button makes the vehicle — the one create path (`sr3e.actor.create`, a player
  * owns the result). A BOOK vehicle with aftermarket mods (a design with `base`) is copied from its compendium through the same
- * verb and gets its mods, priced as the page priced them. Reached from the Items directory header and the managed "SR3E Import Gear Design" macro.
+ * verb and gets its mods, priced as the page priced them. An ARMOUR design (TODO 305) arrives with its mods installed inside
+ * it (`system.installed`, as SR3EItemMods installs them), priced by armor-mods.mjs, NOT worn (the maintainer, 2026-11-19). Reached from the Items directory header and the managed "SR3E Import Gear Design" macro.
  */
 import { GearDesign } from './data/gear-design.mjs';
 import { actorFrom } from './data/actor-ref.mjs';
@@ -30,7 +31,8 @@ export const SR3EDesignImport = {
   /** The parsed, recomputed design for `text`: `{ design, result, warnings }`. Throws when `text` is not a design. */
   async prepare(text) {
     const { design, warnings } = await GearDesign.parse(text);
-    const result = design.kind === 'vehicle' && design.base ? await GearDesign.assembleBookVehicle(design, SR3EDesignImport.lookup)
+    const result = design.kind === 'armor' ? await GearDesign.assembleArmor(design, SR3EDesignImport.lookup, { newId: () => foundry.utils.randomID() })
+      : design.kind === 'vehicle' && design.base ? await GearDesign.assembleBookVehicle(design, SR3EDesignImport.lookup)
       : design.kind === 'vehicle'
       ? await GearDesign.assembleVehicle(design, SR3EDesignImport.lookup)
       : await GearDesign.assemble(design, SR3EDesignImport.lookup, { newId: () => foundry.utils.randomID() });
@@ -77,6 +79,13 @@ export const SR3EDesignImport = {
               + p.warnings.map(w => `<p style="color:var(--sr-amber)">⚠ ${esc(w)}</p>`).join('');
             return;
           }
+          if (p.design.kind === 'armor') {
+            const { armor, totals } = p.result;
+            out.innerHTML = `<p><strong>${esc(armor?.name ?? 'No armour')}</strong>${armor ? ` — ${totals.ballistic}/${totals.impact}${totals.hardened ? ' hardened' : ''}, ${yen(totals.cost)} recomputed` : ''}</p>`
+              + (armor ? `<p class="sr-muted">${installedList(armor)}<br>Imported not worn — put it on from the sheet.</p>` : '')
+              + p.warnings.map(w => `<p style="color:var(--sr-amber)">⚠ ${esc(w)}</p>`).join('');
+            return;
+          }
           const { weapon, ammo, totals } = p.result;
           out.innerHTML = `<p><strong>${esc(weapon?.name ?? 'No weapon')}</strong>${weapon ? ` — ${yen(totals.cost)} recomputed` : ''}</p>`
             + (weapon ? `<p class="sr-muted">${installedList(weapon)}${ammo.length ? `<br>Ammo: ${ammo.map(a => `${esc(a.data.name)} ×${a.qty}`).join(', ')}` : ''}</p>` : '')
@@ -114,6 +123,10 @@ export const SR3EDesignImport = {
       return game.sr3e.SR3EVehicleDesigner.open(null, { design: prepared.result.designer });
     }
     if (!targets.length) { ui.notifications.warn('You own no character to import onto.'); return null; }
+    if (prepared?.design.kind === 'armor') {
+      if (!prepared.result.armor) { ui.notifications.warn('Nothing to import — the design has no armour this world knows.'); return null; }
+      return SR3EDesignImport.createArmor(prepared.result, chosen);
+    }
     if (!prepared?.result?.weapon) { ui.notifications.warn('Nothing to import — the design has no weapon this world knows.'); return null; }
     return SR3EDesignImport.create(prepared.result, chosen);
   },
@@ -144,6 +157,28 @@ export const SR3EDesignImport = {
     if ((made?.length ?? 0) < mods.length) ui.notifications.warn(`${created.name}: only ${made?.length ?? 0} of ${mods.length} mod(s) were added — drop the rest on the sheet.`);
     ui.notifications.info(`${created.name} imported with ${made?.length ?? 0} mod(s).`);
     created.sheet?.render(true);
+    return created;
+  },
+
+  /**
+   * Create the armour — its mods inside it, at the recomputed price — on actor `actorId`, or in the world when it is ''.
+   * Not worn: `worn` is cleared so nothing layers by surprise (the maintainer, 2026-11-19). The armour's own `cost` stays
+   * the book's; the price shown is `ArmorMods.cost`, which the sheet recomputes from the same mods.
+   */
+  async createArmor(result, actorId) {
+    const data = foundry.utils.deepClone(result.armor);
+    delete data._id;
+    data.system = { ...data.system, worn: false };
+    data.flags = foundry.utils.mergeObject(data.flags ?? {}, { The2ndChumming3e: { designImport: true } });
+    if (actorId) {
+      const actor = actorFrom(actorId);
+      if (!actor?.isOwner) { ui.notifications.warn('You don't own that actor.'); return []; }
+      const created = await actor.createEmbeddedDocuments('Item', [data]);
+      ui.notifications.info(`${data.name} imported onto ${actor.name} (not worn).`);
+      return created;
+    }
+    const created = await Item.implementation.createDocuments([data]);
+    ui.notifications.info(`${data.name} imported into the Items directory.`);
     return created;
   },
 

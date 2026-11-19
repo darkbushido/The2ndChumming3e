@@ -27,10 +27,11 @@ import { DesignOptions } from './design-options.mjs';
 import { ModCatalog } from './mod-catalog.mjs';
 import { WeaponArt } from './weapon-art.mjs';
 import { VehicleMods } from './vehicle-mods.mjs';
+import { ArmorMods } from './armor-mods.mjs';
 
 export const FORMAT = 'sr3e-design';
 export const SCHEMA = 1;
-export const KINDS = ['weapon', 'vehicle'];
+export const KINDS = ['weapon', 'vehicle', 'armor'];
 /** The system's id — compendium UUIDs are `Compendium.<SYSTEM_ID>.<pack>.Item.<id>`. */
 export const SYSTEM_ID = 'The2ndChumming3e';
 /** Caps on what a design may ask for — a link is untrusted input. Over the cap is cut, with a warning. */
@@ -103,7 +104,7 @@ export const GearDesign = {
     // A vehicle with a `base` is a BOOK vehicle plus aftermarket mods (the maintainer, 2026-11-12); without one, an R3R design.
     if (design.kind === 'vehicle') design.vehicle = GearDesign.normaliseVehicle(design.base ? {} : raw.vehicle, warnings);
     const claimed = raw.claimed && typeof raw.claimed === 'object' ? raw.claimed : {};
-    design.claimed = Object.fromEntries(['cost', 'rc', 'dp'].filter(k => Number.isFinite(Number(claimed[k]))).map(k => [k, Number(claimed[k])]));
+    design.claimed = Object.fromEntries(['cost', 'rc', 'dp', 'conceal'].filter(k => Number.isFinite(Number(claimed[k]))).map(k => [k, Number(claimed[k])]));
     return { design, warnings };
   },
 
@@ -229,6 +230,56 @@ export const GearDesign = {
       totals: { cost: base + modCost, base, mods: modCost, cf, load } };
   },
 
+  /**
+   * An ARMOUR design (TODO 305): a pack armour with mods installed in it — the CC pp.52-53 modifications, gel packs and
+   * the SR3 p.284 helmet options — each at its level (`ModRatings.withLevel`), installed as Foundry installs them
+   * (`ItemMods.install`). Every figure is `ArmorMods`' (armor-mods.mjs, TODO 276). Returns
+   * `{ armor, warnings, unknown, totals: { cost, base, mods, conceal, weight, availability, streetIndex, ballistic, impact,
+   * hardened, gel, points, caps, protections } }`. Warn, never refuse: past the caps, the wrong host, two sets of gel packs —
+   * all warnings, the mod still goes in.
+   */
+  async assembleArmor(design, lookup, { newId = defaultId } = {}) {
+    const warnings = [], unknown = [];
+    const base = design.base ? await lookup(design.base) : null;
+    if (!design.base) warnings.push('No armour chosen.');
+    else if (!base) unknown.push(design.base);
+    if (base && base.type !== 'armor') warnings.push(`${base.name} is a ${base.type}, not armour.`);
+    let armor = base ? structuredClone(base) : null;
+    for (const entry of design.mods) {
+      let mod = await lookup(entry.ref);
+      if (!mod) { unknown.push(entry.ref); continue; }
+      if (!armor) continue;
+      mod = structuredClone(mod);
+      if (entry.rating != null && ModRatings.levelsOf(mod)) {
+        if (!ModRatings.levelsOf(mod)[entry.rating]) warnings.push(`${mod.name}: level ${entry.rating} is not a printed level.`);
+        mod = ModRatings.withLevel(mod, entry.rating);
+      } else if (entry.rating != null) mod.system = { ...mod.system, rating: entry.rating };
+      warnings.push(...ItemMods.warnings(armor, mod), ...ArmorMods.installWarnings(armor, mod));
+      armor = { ...armor, system: { ...armor.system, installed: ItemMods.install(ItemMods.installed(armor), mod, newId) } };
+    }
+    // The problems as the finished armour stands, read on the BOOK name (a helmet renamed "Lucky Hat" is still a helmet);
+    // the per-install ones above repeat some — the Set below folds them.
+    if (armor) warnings.push(...ArmorMods.problems(armor));
+    if (unknown.length) warnings.push(`${unknown.length} item(s) not found in this catalogue: ${unknown.join(', ')} — left out.`);
+    const cost = armor ? ArmorMods.cost(armor) : 0;
+    const r = armor ? ArmorMods.ratings(armor) : { ballistic: 0, impact: 0 };
+    const totals = {
+      cost, base: num(base?.system?.cost), mods: cost - (armor && ArmorMods.gelPacked(armor) ? num(base?.system?.cost) * 5 : num(base?.system?.cost)),
+      conceal: armor ? ArmorMods.concealability(armor).value : null,
+      weight: armor ? ArmorMods.weight(armor) : 0,
+      availability: armor ? ArmorMods.availability(armor) : null,
+      streetIndex: armor ? ArmorMods.streetIndex(armor) : null,
+      ballistic: r.ballistic, impact: r.impact,
+      hardened: armor ? ArmorMods.hardened(armor) : false,
+      gel: armor ? ArmorMods.gelPacked(armor) : false,
+      points: armor ? ArmorMods.points(armor).total : 0,
+      caps: armor ? ArmorMods.caps(armor) : { single: 0, total: 0 },
+      protections: armor ? ArmorMods.protections([armor]) : [],
+    };
+    if (armor && design.name) armor.name = design.name;
+    return { armor, warnings: [...new Set(warnings)], unknown, totals };
+  },
+
   /* ── The link and the file ────────────────────────────────────────────────────────────── */
 
   /** The design as a URL-hash payload: JSON, deflated, base64url. */
@@ -342,6 +393,9 @@ export const GearDesign = {
     }
     if ('dp' in design.claimed && 'dp' in totals && design.claimed.dp !== totals.dp) {
       out.push(`The design says ${design.claimed.dp} Design Points; recomputed: ${totals.dp}.`);
+    }
+    if ('conceal' in design.claimed && 'conceal' in totals && design.claimed.conceal !== totals.conceal) {
+      out.push(`The design says Concealability ${design.claimed.conceal}; recomputed: ${totals.conceal}.`);
     }
     if ('rc' in design.claimed && 'rc' in totals && design.claimed.rc !== totals.rc) {
       out.push(`The design says RC ${design.claimed.rc} from mods; recomputed: ${totals.rc}.`);

@@ -2,6 +2,7 @@
  * The web gear designer's page · TODO 298. Two wizards in the 🛠 Vehicle Designer's look:
  *  - Weapon — `lib/weapon-designer-view.mjs`, priced by `GearDesign.assemble`;
  *  - Vehicle — `lib/vehicle-designer-view.mjs`, the very markup and wiring of the Foundry window (TODO 287/297);
+ *  - Armour — `lib/armor-designer-view.mjs`, priced by `GearDesign.assembleArmor` (TODO 305);
  *    or a book vehicle with aftermarket mods — `lib/book-vehicle-view.mjs`, priced by `GearDesign.assembleBookVehicle`.
  * `lib/` is the system's own scripts/data modules, copied as-is by tools/build-designer.mjs. This file only keeps the
  * state, the link and the two buttons on the last step.
@@ -10,6 +11,7 @@ import { GearDesign } from './lib/gear-design.mjs';
 import { WeaponDesignerView } from './lib/weapon-designer-view.mjs';
 import { VehicleDesignerView, blankDesign } from './lib/vehicle-designer-view.mjs';
 import { BookVehicleView } from './lib/book-vehicle-view.mjs';
+import { ArmorDesignerView } from './lib/armor-designer-view.mjs';
 import { DesignerArt } from './lib/designer-art.mjs';
 import { WeaponArt } from './lib/weapon-art.mjs';
 
@@ -38,6 +40,9 @@ const vehicle = { design: blankDesign(), ui: {}, step: 1, mods: vmods, modAll: v
 const book = { design: { ...GearDesign.blank(cat.system), kind: 'vehicle' }, ui: {}, step: 1, items, r: null,
   img: ref => items[ref]?.img ?? '', finish: () => FINISH };
 
+const armor = { design: { ...GearDesign.blank(cat.system), kind: 'armor' }, ui: {}, step: 1, items, r: null,
+  img: ref => items[ref]?.img ?? '', finish: () => FINISH };
+
 /** The vehicle wizard's design as a link's design: its mods become references. */
 function vehicleLink() {
   const v = vehicle.design;
@@ -63,6 +68,9 @@ if (fromHash) {
       const a = await GearDesign.assembleVehicle(r.design, lookup);
       Object.assign(vehicle.design, a.designer);
       vehicle.step = a.designer.chassis ? 5 : 1;
+    } else if (kind === 'armor') {
+      armor.design = { ...r.design, system: cat.system };
+      armor.step = r.design.base ? 3 : 1;
     } else {
       weapon.design = { ...r.design, system: cat.system };
       weapon.step = r.design.base ? 4 : 1;
@@ -77,6 +85,7 @@ async function render() {
   document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => { mode = b.dataset.mode; loadWarnings.length = 0; render(); }));
 document.querySelectorAll('[data-kind]').forEach(b => b.classList.toggle('active', b.dataset.kind === kind));
   $('#weapon-root').hidden = kind !== 'weapon';
+  $('#armor-root').hidden = kind !== 'armor';
   $('#vehicle-modes').hidden = kind !== 'vehicle';
   document.querySelectorAll('[data-mode]').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
   $('#vehicle-root').hidden = kind !== 'vehicle' || mode !== 'design';
@@ -93,6 +102,16 @@ document.querySelectorAll('[data-kind]').forEach(b => b.classList.toggle('active
     el.innerHTML = WeaponDesignerView.html(weapon);
     WeaponDesignerView.wire(el, weapon, { render });
     design.claimed = { cost: r.totals.cost, rc: r.totals.rc };
+    link = design;
+  } else if (kind === 'armor') {
+    const { design } = GearDesign.normalise(armor.design);
+    const r = await GearDesign.assembleArmor(design, lookup);
+    if (mine !== seq) return;
+    armor.r = r;
+    const el = $('#armor-root .vd-wizard');
+    el.innerHTML = ArmorDesignerView.html(armor);
+    ArmorDesignerView.wire(el, armor, { render });
+    design.claimed = { cost: r.totals.cost, ...(r.totals.conceal != null ? { conceal: r.totals.conceal } : {}) };
     link = design;
   } else if (mode === 'book') {
     const { design } = GearDesign.normalise(book.design);
@@ -121,7 +140,7 @@ document.querySelectorAll('[data-kind]').forEach(b => b.classList.toggle('active
 }
 
 function wireFinish(link) {
-  const root = kind === 'weapon' ? $('#weapon-root') : mode === 'book' ? $('#book-root') : $('#vehicle-root');
+  const root = kind === 'weapon' ? $('#weapon-root') : kind === 'armor' ? $('#armor-root') : mode === 'book' ? $('#book-root') : $('#vehicle-root');
   root.querySelector('.vd-copy')?.addEventListener('click', async e => {
     try { await navigator.clipboard.writeText(location.href); e.target.textContent = '✓ Copied'; }
     catch { prompt('Copy this link:', location.href); }

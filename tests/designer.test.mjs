@@ -32,7 +32,8 @@ export async function run(t) {
   t.eq('a mod whose mount is only in its description still publishes it', publicDoc({ _id: 'x', name: 'Silencer (Weapon)', type: 'gear',
     system: { modFor: 'weapon', description: '<p><strong>Mount:</strong> Barrel</p>', cost: 500 } }).system, { cost: 500, modFor: 'weapon', mount: 'Barrel' });
   const table = await ratingTable();
-  t.ok('the published rating table holds only weapon, ammunition and vehicle-mod rows', Object.keys(table).every(k => /^(weapon|ammunition|vehicle)\|/.test(k)));
+  t.ok('the published rating table holds only weapon, ammunition, vehicle-mod and armour rows', Object.keys(table).every(k => /^(weapon|ammunition|vehicle|armor)\|/.test(k)
+    || /^gear\|(Chemical Seal|Fire Resistance|Insulation|Nonconductive|Thermal Dampening|Gel Packs)$/.test(k)));
   t.ok('…and only stat fields', Object.values(table).every(lv => Object.values(lv).every(row => Object.keys(row).every(f => RATING_FIELDS.includes(f)))));
 
   const css = designerCss();

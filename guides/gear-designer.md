@@ -82,6 +82,15 @@ Two buttons choose how to start:
   Mods cost their printed price and take their Cargo Factor and Load; there are no Design
   Points, because the vehicle itself isn't being redesigned.
 
+## The Armour tab
+
+Three steps. **Armour** — chips for clothing, body armour, helmets and shields, then picture cards. **Modifications** — two
+shelves: the Cannon Companion modifications (CC pp.52-53, gel packs among them) and the helmet options (SR3 p.284). Each mod
+goes in the cart once; change its level there. Past the mod-point caps (CC p.52), a mod on a helmet or shield, two sets of
+gel packs — all warned, never refused. **Price** — the bill (gel packs: the armour's price ×5 in all), and the armour as
+built: Concealability, weight, Availability, Street Index and what it protects against. In Foundry it imports with its
+mods inside it, not worn.
+
 ## Your design lives in the link
 
 Nothing is stored — not on a server, not in your browser. As you work, the page writes

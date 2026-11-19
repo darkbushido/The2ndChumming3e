@@ -3650,6 +3650,13 @@ reads the Perception Success Table (p.232) and decides nothing. Rules `scripts/d
 p.231, for the planned GM "request a skill check" tool); dialog `scripts/SR3EPerception.js`; tests
 `tests/perception.test.mjs`; Foundry checklist TESTING.md §87.
 
+## 305. 🛡 Armour tab on the web gear designer — **requested 2026-11-19**
+
+Branch `claude/designer-armor-tab-29af84`. Pick armour (four chips), a mods shop (CC modifications + SR3 p.284 helmet
+options, one of each, levels in the cart), a price step; `GearDesign.assembleArmor` (armor-mods.mjs) prices it, and
+📥 Import design puts it on a character (mods inside, not worn) or in the world. Tests: `tests/armor-designer.test.mjs`.
+- [ ] Live check in Foundry (TESTING.md checklist 94) and a preview of the page.
+
 ### 📌 Notes & parked
 
 ## Open questions carried from the combat audit
