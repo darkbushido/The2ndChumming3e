@@ -5638,7 +5638,7 @@
         },
         {
           "file": "scripts/data/mod-rating-table.mjs",
-          "line": 620,
+          "line": 672,
           "snippet": "\"essenceCost\":3"
         }
       ]
@@ -5665,12 +5665,12 @@
       "code": [
         {
           "file": "scripts/data/mod-rating-table.mjs",
-          "line": 621,
+          "line": 590,
           "snippet": "\"cost\":300000"
         },
         {
           "file": "scripts/data/mod-rating-table.mjs",
-          "line": 621,
+          "line": 673,
           "snippet": "\"essenceCost\":5"
         }
       ]
@@ -6676,7 +6676,7 @@
         },
         {
           "file": "scripts/data/mod-rating-table.mjs",
-          "line": 634,
+          "line": 686,
           "snippet": "\"cost\":500000"
         }
       ]
@@ -6703,12 +6703,12 @@
       "code": [
         {
           "file": "scripts/data/mod-rating-table.mjs",
-          "line": 309,
+          "line": 300,
           "snippet": "\"cost\":90000"
         },
         {
           "file": "scripts/data/mod-rating-table.mjs",
-          "line": 308,
+          "line": 345,
           "snippet": "\"essenceCost\":1.25"
         }
       ]
@@ -6735,7 +6735,7 @@
       "code": [
         {
           "file": "scripts/data/mod-rating-table.mjs",
-          "line": 343,
+          "line": 380,
           "snippet": "\"cost\":45000"
         },
         {
@@ -9593,12 +9593,12 @@
       "code": [
         {
           "file": "scripts/data/ActorDataModels.js",
-          "line": 228,
+          "line": 234,
           "snippet": "magic: new SchemaField({"
         },
         {
           "file": "scripts/data/ActorDataModels.js",
-          "line": 229,
+          "line": 235,
           "snippet": "value: new NumberField({ integer: true, initial: 0, min: 0 }),"
         }
       ],
@@ -13138,7 +13138,7 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense-1.sr3e-adeptpower-0012.json",
+          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense.sr3e-adeptpower-0012.json",
           "line": 9,
           "snippet": "\"powerCost\": 1,"
         },
@@ -13282,7 +13282,7 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes-level-1.sr3e-adeptpower-0050.json",
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes.sr3e-adeptpower-0050.json",
           "line": 9,
           "snippet": "\"powerCost\": 2,"
         },
@@ -13476,7 +13476,7 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9970,
+          "line": 10129,
           "snippet": "const mysticArmor = Math.max(0, this.system.derived?.mysticArmor ?? 0);"
         },
         {
@@ -13615,7 +13615,7 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense-1.sr3e-adeptpower-0012.json",
+          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense.sr3e-adeptpower-0012.json",
           "line": 9,
           "snippet": "\"powerCost\": 1,"
         }
@@ -13654,7 +13654,7 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense-1.sr3e-adeptpower-0012.json",
+          "file": "packs-src/sr3e-sr3-adept-powers/combat-sense.sr3e-adeptpower-0012.json",
           "line": 9,
           "snippet": "\"powerCost\": 1,"
         }
@@ -13813,7 +13813,7 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes-level-1.sr3e-adeptpower-0050.json",
+          "file": "packs-src/sr3e-sr3-adept-powers/imp-reflexes.sr3e-adeptpower-0050.json",
           "line": 9,
           "snippet": "\"powerCost\": 2,"
         }
@@ -14118,7 +14118,7 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 9076,
+          "line": 9232,
           "snippet": "drainIsPhysical: false,"
         }
       ]
@@ -14208,7 +14208,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8666,
+          "line": 8822,
           "snippet": "return 'S';"
         }
       ]
@@ -14637,7 +14637,7 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 2304,
+          "line": 2429,
           "snippet": "const physBoxes = SR3EActor.painAdjustedBoxes(sys.wounds?.physical?.value ?? 0, woundOffset);"
         }
       ],
@@ -14787,7 +14787,7 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-mits-adept-powers/delay-damage-1.sr3e-adeptpower-0019.json",
+          "file": "packs-src/sr3e-mits-adept-powers/delay-damage.sr3e-adeptpower-0019.json",
           "line": 9,
           "snippet": "\"powerCost\": 1,"
         }
@@ -14891,7 +14891,7 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-mits-adept-powers/flexibility-1.sr3e-adeptpower-0033.json",
+          "file": "packs-src/sr3e-mits-adept-powers/flexibility.sr3e-adeptpower-0033.json",
           "line": 9,
           "snippet": "\"powerCost\": 0.5,"
         },
@@ -15808,7 +15808,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 2428,
+          "line": 2538,
           "snippet": "does not stack with"
         },
         {
@@ -18908,7 +18908,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 11647,
+          "line": 11845,
           "snippet": "const effectiveTN = Math.max(2, tn);"
         }
       ]
@@ -24210,7 +24210,7 @@
       ],
       "code": [
         {
-          "file": "packs-src/sr3e-sr3-spells/astral-barrior.sr3e-spell-0200.json",
+          "file": "packs-src/sr3e-sr3-spells/astral-barrier.sr3e-spell-0200.json",
           "line": 13,
           "snippet": "\"drain\": \"+1(S)\","
         }
@@ -25734,7 +25734,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 3800,
+          "line": 3918,
           "snippet": "} else if (successes === 0) {"
         }
       ]
@@ -32288,7 +32288,7 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 1250,
+          "line": 1273,
           "snippet": "resistAttr:      'willpower',   // the maintainer's ruling, 2026-09-27 (TODO 201)"
         }
       ],
@@ -32645,7 +32645,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 133,
+          "line": 143,
           "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
         }
       ]
@@ -32683,7 +32683,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 133,
+          "line": 143,
           "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
         }
       ]
@@ -32709,7 +32709,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 133,
+          "line": 143,
           "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
         }
       ]
@@ -32735,7 +32735,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 133,
+          "line": 143,
           "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
         }
       ]
@@ -32761,7 +32761,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 133,
+          "line": 143,
           "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
         }
       ]
@@ -32787,7 +32787,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 133,
+          "line": 143,
           "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
         }
       ]
@@ -33926,7 +33926,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 133,
+          "line": 143,
           "snippet": "const tierDice = { Ivory: 0, Blue: 1, Green: 2, Orange: 3, Red: 4, Black: 4, Ultraviolet: 4 };"
         }
       ]
@@ -37791,7 +37791,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 782,
+          "line": 865,
           "snippet": "#dc-secondary')?.checked ? 2 : 0"
         },
         {
@@ -37867,7 +37867,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 11694,
+          "line": 11892,
           "snippet": "captain's chair"
         },
         {
@@ -40447,7 +40447,7 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 11694,
+          "line": 11892,
           "snippet": "captain's chair"
         },
         {
@@ -46301,12 +46301,12 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 7838,
+          "line": 7984,
           "snippet": "return 1;"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 7807,
+          "line": 7953,
           "snippet": "return Math.floor(n * m);"
         },
         {
@@ -46559,7 +46559,7 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 7807,
+          "line": 7953,
           "snippet": "return Math.floor(n * m);"
         }
       ],
@@ -54647,7 +54647,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 5965,
+          "line": 6102,
           "snippet": "while (remaining >= 2 && idx >= 0) { remaining -= 2; idx--; }"
         }
       ],
@@ -54680,7 +54680,7 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 5965,
+          "line": 6102,
           "snippet": "while (remaining >= 2 && idx >= 0) { remaining -= 2; idx--; }"
         }
       ],
@@ -57132,7 +57132,7 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 11703,
+          "line": 11901,
           "snippet": "base = Rigging.vcrReaction(reactionBase, vcrLevel) + wm - jam;"
         }
       ]
@@ -65266,7 +65266,7 @@
       "code": [
         {
           "file": "scripts/data/mod-rating-table.mjs",
-          "line": 1929,
+          "line": 1959,
           "snippet": "\"cost\":6000"
         },
         {
