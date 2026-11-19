@@ -1414,6 +1414,11 @@ background-color: var(--sr-surface) !important;
   flex-wrap: wrap;
 }
 
+/* TODO 304 follow-up: Stun over Physical, and the buttons as one unbreakable group, so the row fits the
+   sheet's default 860px (it wrapped Perception, Stim and Carry onto a ragged second line). */
+.wound-track-stack { display: flex; flex-direction: column; gap: 4px; }
+.wound-actions { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; white-space: nowrap; }
+
 .wound-track {
   display: flex;
   align-items: center;

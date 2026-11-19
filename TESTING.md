@@ -3878,3 +3878,5 @@ Hot reload is enough (no new fields). Open a character sheet, Attributes tab.
       Success Table line ("Something is there." at 1). Nothing else changes on the actor.
 - [ ] **🔍 Concealment's Perception Test** still reads its success line exactly as before.
 
+- [ ] **Row fits (bug 2026-11-18):** at the sheet's default width (860) Stun sits over Physical, and Overflow, 🩹 Healing,
+      👁 Perception, Stim and Carry share ONE line — nothing wraps. Narrowing the sheet moves the button group down whole.
