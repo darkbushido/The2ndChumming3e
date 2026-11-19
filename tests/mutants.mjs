@@ -28,6 +28,7 @@ const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun'
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
 const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
+const WCATFIX = { module: '../scripts/data/weapon-category-fixes.mjs', klass: 'WeaponCategoryFixes' };
 const MODFIX = { module: '../scripts/data/mod-book-fixes.mjs', klass: 'ModBookFixes' };
 const FAMILIES = { module: '../scripts/data/rated-families.mjs', klass: 'RatedFamilies' };
 const MODFOR = { module: '../scripts/data/mod-for.mjs', klass: 'ModFor' };
@@ -3411,6 +3412,30 @@ export const MUTANTS = [
       const acted = Object.fromEntries(Object.entries(p.acted ?? {}).filter(([, v]) => v?.label !== 'dismissed by the GM'));
       const soakCards = (p.soakCards ?? []).map(c => ({ ...c, dismissed: false }));
       return this._resolvedReal({ ...p, acted, soakCards });
+    },
+  },
+  {
+    id:     'street-sweeper-filed-as-taser',
+    suite:  'weapon-category-fixes',
+    ...WCATFIX, method: 'fixItem',
+    was:    'the Street Sweeper shipped as a taser (Tasr: Pistols, a shock weapon) though CC p.23 makes it a jury-rigged black-powder shotgun (TODO 301)',
+    impl:   function (item) {
+      if (item?.type !== 'firearm' || item.name === 'Street Sweeper ShtG') return item?.name === 'Ballista Mis. Launcher' && item.system?.category === 'BlsTa'
+        ? { 'system.category': 'MisLn', 'system.skill': 'Launch Weapons', 'system.attribute': 'intelligence' } : null;
+      return null;
+    },
+  },
+  {
+    id:     'ballista-filed-as-blowgun',
+    suite:  'weapon-category-fixes',
+    ...WCATFIX, method: 'fixItem',
+    was:    'the Ballista shipped as BlsTa (a dart/blowgun code, rolled on Gunnery) though CC p.28 makes it a backpack missile launcher (TODO 301)',
+    impl:   function (item) {
+      if (item?.name === 'Ballista Mis. Launcher') return null;
+      const d = {};
+      for (const f of this.FIXES) if (f.name === item?.name && item?.type === 'firearm' && String(item.system?.[f.field] ?? '') === String(f.from)) d['system.' + f.field] = f.to;
+      if (item?.type === 'firearm' && item.name === 'Street Sweeper ShtG' && /firearm-taser.svg$/.test(item.img ?? '')) d.img = item.img.replace(/firearm-taser.svg$/, 'firearm-shotgun.svg');
+      return Object.keys(d).length ? d : null;
     },
   },
   {

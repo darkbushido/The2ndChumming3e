@@ -3136,3 +3136,10 @@ The gear packs change (`npm run packs:install`, Foundry closed).
 - [ ] **Cannon Companion gear:** Sawed-Off Shotgun Barrel 64¥; Rangefinder's description reads **Mount: Top**; **Laser Sight, Low-Power** 800¥, Mount Top/Under, page cc.82, and its description gives Design Points +100 × 8.
 - [ ] **SR3 core gear:** no low-power laser sight remains; Smart Shades I (Cost 6000¥) shows page sr3.281 and the "double the nuyen" line; Ultrasound Shades and Gas Vent I carry their source notes.
 - [ ] **Man & Machine gear:** Smart Shades II say "Derived; not printed".
+
+## 71. Street Sweeper and Ballista categories (TODO 301, CC pp.23, 28)
+
+The CC firearms pack changes (`npm run packs:install`, Foundry closed); the 0.8.1 migration fixes owned copies.
+
+- [ ] **From the pack:** drag **Street Sweeper ShtG** onto a character: category Shotgun, rolls **Shotguns**, range 5/10/12/15 (taser ranges, CC p.23), shotgun icon, and a hit is **not** treated as a shock/stun weapon. Drag **Ballista Mis. Launcher**: category Missile Launcher, rolls **Launch Weapons** (Intelligence).
+- [ ] **Owned copy:** a character that held both before the update shows the same after the 0.8.1 migration runs; a copy whose category the GM had changed keeps it.

@@ -7737,3 +7737,16 @@ roll, and the setup dialog names it "Medkit [5]". Step 13 with the macro's new b
 refreshed it, still built "[N]" names with 0¥ implants). Not ours: Foundry 14.365 leaves `_stats.compendiumSource`
 null on any item created from a compendium (a plain firearm too), so step 7's link check only proves the migration's
 repoint of an existing dead link.
+
+## 301. ✅ Street Sweeper filed as a taser, Ballista as a dart gun — **found 2026-11-19** — fixed on main
+
+Found while TODO 300's weapon art was checked against the Cannon Companion. In `sr3e-cc-firearms`:
+- **Street Sweeper** was `Tasr` (Pistols, and a shock weapon). CC p.23 lists it under Shotguns: a jury-rigged,
+  muzzle-loaded black-powder shotgun that uses taser ranges with shotgun choke. Now `ShtG`, Shotguns,
+  `rangeOverride` 5/10/12/15, shotgun icon.
+- **Ballista** was `BlsTa` (rolled on Gunnery). CC p.28: a backpack missile launcher. Now `MisLn`,
+  Launch Weapons / Intelligence (SR3 p.86).
+
+`scripts/data/weapon-category-fixes.mjs` (pure), the 0.8.1 migration for owned copies (guarded by the shipped
+value), `tests/weapon-category-fixes.test.mjs`, mutants `street-sweeper-filed-as-taser` /
+`ballista-filed-as-blowgun`, TESTING §71.

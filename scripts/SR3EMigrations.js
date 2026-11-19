@@ -37,6 +37,7 @@ import { VehicleArt } from './data/vehicle-art.mjs';
 import { ModRatings } from './data/mod-ratings.mjs';
 import { ModFor } from './data/mod-for.mjs';
 import { ModBookFixes } from './data/mod-book-fixes.mjs';
+import { WeaponCategoryFixes } from './data/weapon-category-fixes.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -557,6 +558,19 @@ const MIGRATIONS = [
      * once corrected nothing equals `from`, so a second run yields null.
      */
     fixItem: ModBookFixes.fixItem,
+  },
+  {
+    version: '0.8.1',
+    label: 'Street Sweeper is a shotgun and the Ballista a missile launcher, not a taser and a dart gun (TODO 301, CC pp.23, 28)',
+    /**
+     * Both shipped in `sr3e-cc-firearms` under the wrong category; the pack is fixed, an owned copy is its own.
+     * The list is `WeaponCategoryFixes.FIXES` (`scripts/data/weapon-category-fixes.mjs`, pure, tested).
+     *
+     * ⚠ **This OVERWRITES, and argues for it:** a field changes only while it still holds the exact wrong value
+     * we shipped, on a firearm of that exact name. A GM who re-filed either weapon keeps their choice; the
+     * Street Sweeper's taser picture changes only while it is the stock icon. Idempotent.
+     */
+    fixItem: WeaponCategoryFixes.fixItem,
   },
 
 ];
