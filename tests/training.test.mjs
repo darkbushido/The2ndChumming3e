@@ -1,4 +1,5 @@
 /**
+ * Train first — the optional training roll before a Karma purchase (TODO 309).
  *
  * Core · SR3 p.245, p.95:
  *   the learning test's target number is "twice the Skill Rating" sought; an instructor needs the skill

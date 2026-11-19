@@ -3713,7 +3713,7 @@ per 2 Instruction successes (Charisma (8) without the skill); a lesson with no s
 Test. Fees from the Suggested Instructor Fees Table (p.50), editable, offered as a 💴 button that debits nuyen
 after a confirm. Each mode follows its own book.
 
-Built on `claude/awesome-chaum-3f5285`: `scripts/data/training.mjs` (pure), `scripts/SR3ETraining.js`.
+Built on `claude/awesome-chaum-3f5285` (core) and `claude/training-companion` (Companion): `scripts/data/training.mjs` (pure), `scripts/SR3ETraining.js`.
 Rolls and reports; Karma is spent separately afterwards. Instructor shortfalls warn. Still to check live:
 the button on a skill row; an instructor's bonus (core: dice, Companion: successes); the warning for an
 under-rated teacher; with the Companion rule, the days and the 💴 Pay button debiting nuyen.
