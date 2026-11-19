@@ -70954,7 +70954,8 @@
       ],
       "hash": "e869f0bfde",
       "text": "# Legality Codes & Permits\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title"
     },
     {
       "id": "street/legality.md#2",
@@ -70965,7 +70966,23 @@
       ],
       "hash": "e0ea5930ee",
       "text": "What a Legality Code like **`8P-V`** means, how to get restricted gear **legally** (a permit)\nand **through a contact** (the street), and what it costs if you're caught with it. All rules\nare from the core rulebook, *(SR3 p.270–274)*.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Page introduction citing SR3 p.270-274; each rule resolved below.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "Code. The first number of this two-part code represents the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 59,
+          "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
+        }
+      ]
     },
     {
       "id": "street/legality.md#3",
@@ -70976,7 +70993,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table of contents"
     },
     {
       "id": "street/legality.md#4",
@@ -70987,7 +71005,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "street/legality.md#5",
@@ -70998,7 +71017,23 @@
       ],
       "hash": "6f7eb90fad",
       "text": "## Reading a code  *(SR3 p.273)*",
-      "verdict": null
+      "verdict": "match",
+      "note": "Section heading.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "Code. The first number of this two-part code represents the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 59,
+          "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
+        }
+      ]
     },
     {
       "id": "street/legality.md#6",
@@ -71009,7 +71044,28 @@
       ],
       "hash": "af79ccc9f4",
       "text": "A code has two parts: **`8P-V`** is a **restriction level** (`8`), an optional **`P`**, and a\n**category letter** (`V`).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "Code. The first number of this two-part code represents the"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "The second part of the Legality Code lists the restriction"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 59,
+          "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
+        }
+      ]
     },
     {
       "id": "street/legality.md#7",
@@ -71020,7 +71076,8 @@
       ],
       "hash": "ab880a74b0",
       "text": "| Part | What it tells you |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "street/legality.md#8",
@@ -71031,7 +71088,23 @@
       ],
       "hash": "c603f59ca0",
       "text": "| **The number** | The **severity of the restriction**. *\"The lower the number, the higher the restriction level.\"* It is the target number an officer rolls against (below). |",
-      "verdict": null
+      "verdict": "match",
+      "note": "The code reads the number; the officer test it feeds is not modelled (#14).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "severity of restriction; the lower the number, the higher the"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 59,
+          "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
+        }
+      ]
     },
     {
       "id": "street/legality.md#9",
@@ -71042,7 +71115,27 @@
       ],
       "hash": "bf8a4bdc3d",
       "text": "| **P** | Present: a **permit is available**, so you can own, carry or use it legally. Absent: no permit is issued. |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "If the restriction level is followed by a"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 60,
+          "snippet": "permit: m[2].toUpperCase() === 'P'"
+        },
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 91,
+          "snippet": "buying it legally needs a permit${k.permit ? ' (one is available)' : ' (none is issued)'}"
+        }
+      ]
     },
     {
       "id": "street/legality.md#10",
@@ -71053,7 +71146,23 @@
       ],
       "hash": "7f05e63cc1",
       "text": "| **The letter** | The category on the **Local Fines and Punishment Table**, which is what getting caught costs (below). |",
-      "verdict": null
+      "verdict": "match",
+      "note": "The letter is parsed; the fines it selects are not modelled (#49).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "The second part of the Legality Code lists the restriction"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 59,
+          "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
+        }
+      ]
     },
     {
       "id": "street/legality.md#11",
@@ -71064,7 +71173,22 @@
       ],
       "hash": "8c33386748",
       "text": "An item whose table prints **\"Legal\"** (or no Legality column at all) isn't restricted:\n*\"For legal items, this isn't a problem; characters can probably pick them up at the corner\nStuffer Shack.\"* *(SR3 p.273)*",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "characters can probably pick them"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 83,
+          "snippet": "return Legality.classify(code).status === 'legal';"
+        }
+      ]
     },
     {
       "id": "street/legality.md#12",
@@ -71075,7 +71199,23 @@
       ],
       "hash": "f6a8913f70",
       "text": "The code is **Seattle / UCAS law**. *\"An item's legality may vary among federal UCAS\nagencies, other countries and the various extraterritorial megacorporations. What is illegal in\nSeattle may simply be controlled at Mitsuhama.\"* *(SR3 p.273)* The GM decides the code for\nanything the books leave out (military hardware, drones, vehicle-grade weapons).",
-      "verdict": null
+      "verdict": "match",
+      "note": "The final sentence (the GM decides codes the books leave out) is the guide's advice, not the book's; the system leaves blank codes to the GM (data/legality-table.mjs fills only printed codes).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "What is illegal in Seattle may simply be con"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 83,
+          "snippet": "return Legality.classify(code).status === 'legal';"
+        }
+      ]
     },
     {
       "id": "street/legality.md#13",
@@ -71086,7 +71226,22 @@
       ],
       "hash": "cb634807a3",
       "text": "### When an officer notices  *(SR3 p.273)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "Police Procedures Knowledge Skill with the restriction level as"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "officerNotices|restrictionTest|lawEnforcementTest",
+          "path": "scripts"
+        }
+      ],
+      "note": "Section heading: the officer test is not modelled."
     },
     {
       "id": "street/legality.md#14",
@@ -71097,7 +71252,21 @@
       ],
       "hash": "e3d4856974",
       "text": "In a casual encounter with law enforcement, or security staff empowered to act as law\nenforcement, the officer rolls their **Security or Police Procedures Knowledge Skill against the\nrestriction level** as the target number. If the item is **concealed**, make a **Perception Test**\nfirst to see whether the officer notices it. In most cases the roll is only needed if the officer\nsuspects or sees a restricted item.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "Police Procedures Knowledge Skill with the restriction level as"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "officerNotices|restrictionTest|lawEnforcementTest",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#15",
@@ -71108,7 +71277,8 @@
       ],
       "hash": "2c4b7693b2",
       "text": "| Successes | What happens |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "street/legality.md#16",
@@ -71119,7 +71289,21 @@
       ],
       "hash": "b9fefe1c0f",
       "text": "| 0 | The officer notices nothing wrong. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "If the test fails, the officer notices no improprieties."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "officerNotices|restrictionTest|lawEnforcementTest",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#17",
@@ -71130,7 +71314,21 @@
       ],
       "hash": "133467b1e4",
       "text": "| 1 | The officer is aware, but **won't try to arrest you**. They may issue a warning. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "cess, the officer is aware of the situation, but will not make the"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "officerNotices|restrictionTest|lawEnforcementTest",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#18",
@@ -71141,7 +71339,21 @@
       ],
       "hash": "b7df6a5238",
       "text": "| 2 or more | The officer **presses the issue**: asks for a permit, or tries to arrest you. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "Any additional successes indicate that the officer will press the"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "officerNotices|restrictionTest|lawEnforcementTest",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#19",
@@ -71152,7 +71364,21 @@
       ],
       "hash": "125c10a085",
       "text": "Enforcement varies. In a **low-enforcement area** the target number can go up by as much as\n**+3** (\"almost everyone looks the other way\"). In a **high-enforcement area** it can drop by as\nmuch as **−3**, to a minimum of **2**.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "enforcement areas, the target number may drop by as much as"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "officerNotices|restrictionTest|lawEnforcementTest",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#20",
@@ -71163,7 +71389,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "street/legality.md#21",
@@ -71174,7 +71401,23 @@
       ],
       "hash": "86217b0adc",
       "text": "## Getting it legally: the permit  *(SR3 p.273–274)*\n{: #permits }",
-      "verdict": null
+      "verdict": "match",
+      "note": "Section heading. The permit itself is not modelled (#23-#28); the code tells the buyer a permit is needed and whether one exists.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "For restricted items—gear with"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 91,
+          "snippet": "buying it legally needs a permit${k.permit ? ' (one is available)' : ' (none is issued)'}"
+        }
+      ]
     },
     {
       "id": "street/legality.md#22",
@@ -71185,7 +71428,33 @@
       ],
       "hash": "06a4141390",
       "text": "*\"The price listed for all items in SR3 are the legal retail prices. That means that you can get\nitems for the price listed, but must prove you are legally allowed to own them.\"* A restricted\nitem (one with a Legality Code) needs a **permit** to be bought legally, and only a code with a\n**P** can have one.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "but must prove you are legally allowed to own them."
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "For restricted items—gear with"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 91,
+          "snippet": "buying it legally needs a permit${k.permit ? ' (one is available)' : ' (none is issued)'}"
+        },
+        {
+          "file": "scripts/data/purchasing.mjs",
+          "line": 136,
+          "snippet": "storePrice(cost, { metatype = '' } = {}) {"
+        }
+      ]
     },
     {
       "id": "street/legality.md#23",
@@ -71196,7 +71465,21 @@
       ],
       "hash": "a2d6396e7b",
       "text": "1. **Apply** to the proper government or corporate authority and fill out the paperwork. The\n   application needs a **valid SIN**, and may also need **proof of employment** and **adequate\n   reasons** for the permit.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "valid SIN, and may also require proof of employment, as well"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permitCost|permitTest|applyForPermit|permitPrice",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#24",
@@ -71207,7 +71490,21 @@
       ],
       "hash": "e9d8bf9b97",
       "text": "2. **Roll Etiquette** against the item's **Availability + 2**. *Example from the book: an item with\n   Availability 4 needs an Etiquette (6) Test.*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "ability of 4, the character must make an Etiquette (6) Test. The"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permitCost|permitTest|applyForPermit|permitPrice",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#25",
@@ -71218,7 +71515,21 @@
       ],
       "hash": "f30f4e65f2",
       "text": "3. **Time**: the item's base acquisition time **divided by your successes**.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "item, divided by successes from the Etiquette Test. The"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permitCost|permitTest|applyForPermit|permitPrice",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#26",
@@ -71229,7 +71540,21 @@
       ],
       "hash": "7180db2bd7",
       "text": "4. **Price**: **5%** of the item's price for a permit to **possess**; **10%** for a permit to\n   **possess and transport**.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "price 10 percent for a permit to possess and transport."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permitCost|permitTest|applyForPermit|permitPrice",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#27",
@@ -71240,7 +71565,8 @@
       ],
       "hash": "fc0a16d093",
       "text": "*Illustration (not from the book):* a 1,000¥ item. A possess-only permit is 50¥, and possess and\ntransport is 100¥, on top of the item's own price.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "illustration marked \"not from the book\": arithmetic of the 5% / 10% rule in #26"
     },
     {
       "id": "street/legality.md#28",
@@ -71251,7 +71577,21 @@
       ],
       "hash": "036c586ec5",
       "text": "A permit then makes the item **easier to buy on the street**: apply a **−2 modifier to its\nAvailability** while you hold the appropriate permit. *(SR3 p.274)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "modifier to the Availability of an item when a char"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permitModifier|holdsPermit|hasPermit",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#29",
@@ -71262,7 +71602,22 @@
       ],
       "hash": "2f9fa6ecce",
       "text": "### A permit is tied to an identity  *(SR3 p.273–274)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "Permits are not available to those with criminal SINs (or"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permitCost|permitTest|applyForPermit|permitPrice",
+          "path": "scripts"
+        }
+      ],
+      "note": "Section heading."
     },
     {
       "id": "street/legality.md#30",
@@ -71273,7 +71628,21 @@
       ],
       "hash": "c977ccbb78",
       "text": "- A permit is applied for **with a SIN**. **Permits are not available to criminal SINs, or to\n  the SINless.**",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "Permits are not available to those with criminal SINs (or"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permitCost|permitTest|applyForPermit|permitPrice",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#31",
@@ -71284,7 +71653,21 @@
       ],
       "hash": "211d83f8a5",
       "text": "- A **fake ID** can be used to apply, but it must **beat a Rating 6 verification system in an\n  Opposed Test**. *(See [SINs & the SINless](../sins/) for forging IDs.)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "the ID must beat a Rating 6 verification sys"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "permitCost|permitTest|applyForPermit|permitPrice",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#32",
@@ -71295,7 +71678,8 @@
       ],
       "hash": "540e78440f",
       "text": "- **Legal purchases leave records**: credit trails, inventory, perhaps video, depending on where\n  you shop. Payment is expected **in full at delivery**, and keeping a legal identity has\n  overhead of its own.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "narrative consequences of legal buying (records, overhead) — states no mechanic the system could model; the book wording is quoted for flavour"
     },
     {
       "id": "street/legality.md#33",
@@ -71306,7 +71690,8 @@
       ],
       "hash": "1f4aa13b17",
       "text": "- Makers and stores don't want bad press. *\"If they discover that they're being conned by\n  shadowrunners, they will provide all pertinent records to the police,\"* which usually **ends the\n  forged legal documents' usefulness** for that character.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "narrative consequence (stores hand records to the police) — no mechanic"
     },
     {
       "id": "street/legality.md#34",
@@ -71317,7 +71702,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "street/legality.md#35",
@@ -71328,7 +71714,23 @@
       ],
       "hash": "d479c5df3b",
       "text": "## Getting it through a contact: the street  *(SR3 p.272–273)*",
-      "verdict": null
+      "verdict": "match",
+      "note": "Section heading.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 274,
+          "printedPage": 272,
+          "quote": "characters must use an appropriate contact"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/purchasing.mjs",
+          "line": 59,
+          "snippet": "talismonger:  { good: ['focus', 'spell', 'magical'], bad: ['firearm', 'melee', 'projectile', 'ammunition'], note: 'ideal for magical items, poor for weapons (p.272)' },"
+        }
+      ]
     },
     {
       "id": "street/legality.md#36",
@@ -71339,7 +71741,22 @@
       ],
       "hash": "41d2d9ee79",
       "text": "The usual route for shadowrunners. *\"In order to purchase gear, characters must use an\nappropriate contact (see Contacts, p. 253).\"* Fixers are the usual middlemen, but other contacts\nsuit other goods (a talismonger for magical items, say).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 274,
+          "printedPage": 272,
+          "quote": "characters must use an appropriate contact"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/purchasing.mjs",
+          "line": 59,
+          "snippet": "talismonger:  { good: ['focus', 'spell', 'magical'], bad: ['firearm', 'melee', 'projectile', 'ammunition'], note: 'ideal for magical items, poor for weapons (p.272)' },"
+        }
+      ]
     },
     {
       "id": "street/legality.md#37",
@@ -71350,7 +71767,22 @@
       ],
       "hash": "f66b32cc29",
       "text": "1. **Find a source.** Roll **Etiquette** with a number of dice equal to the character's Etiquette\n   Skill, against the **left number of the Availability Code** (the target number). Success means a\n   source is found and the order is placed. No successes means the contact can't, or won't, find it.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 274,
+          "printedPage": 272,
+          "quote": "the player gets in touch with a contact (usually a fixer) and makes an Etiquette Test"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/purchasing.mjs",
+          "line": 117,
+          "snippet": "if (s <= 0) return { time: null, halfway: null, found: false };"
+        }
+      ]
     },
     {
       "id": "street/legality.md#38",
@@ -71361,7 +71793,33 @@
       ],
       "hash": "709658820d",
       "text": "2. **Time.** The **right number** is the base time (hours, days or months). It is **divided by your\n   successes**. Halfway through, the face-to-face haggle takes place.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 274,
+          "printedPage": 272,
+          "quote": "The base time divided by the number of successes provides the actual time it takes the source to locate the item"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 274,
+          "printedPage": 272,
+          "quote": "Halfway through this period, face-to-face negotiations to determine the actual cost take place"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/purchasing.mjs",
+          "line": 118,
+          "snippet": "const time = num(baseTime) / s;"
+        },
+        {
+          "file": "scripts/data/purchasing.mjs",
+          "line": 120,
+          "snippet": "return { time, halfway: time / 2, found: true };"
+        }
+      ]
     },
     {
       "id": "street/legality.md#39",
@@ -71372,7 +71830,33 @@
       ],
       "hash": "aad0a6f03d",
       "text": "3. **Price.** The street price is the item's **Cost × Street Index**, plus anything added for hurrying\n   the search. Source and buyer then make an opposed **Negotiation vs Intelligence** contest, and\n   each **net success moves the price 5%**. If the buyer can't or won't pay, the deal is off.",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "is equal to the Cost of the item multiplied by the Street Index, plus"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "every net success. For example, if the player rolls 4 successes"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/purchasing.mjs",
+          "line": 125,
+          "snippet": "const base = num(cost) * (num(streetIndex) || 1);"
+        },
+        {
+          "file": "scripts/data/purchasing.mjs",
+          "line": 47,
+          "snippet": "export const NEGOTIATION_STEP = 0.05;"
+        }
+      ]
     },
     {
       "id": "street/legality.md#40",
@@ -71383,7 +71867,22 @@
       ],
       "hash": "0d111bb6ff",
       "text": "Waiting longer (adding **2 days and +0.1 Street Index per −1** to the Availability target number)\ncan buy back a failed search. Both of those, and the worked example with the monofilament whip, are\non [Buying Gear & Fencing](../gear-and-fencing/).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 274,
+          "printedPage": 272,
+          "quote": "the character may add 2 days to the acquisition time period and .1 to the Street Index (increasing the cost) in order to reduce the Availability target number by 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/purchasing.mjs",
+          "line": 44,
+          "snippet": "export const REDUCTION = { daysPerPoint: 2, streetIndexPerPoint: 0.1, page: 'SR3 p.272' };"
+        }
+      ]
     },
     {
       "id": "street/legality.md#41",
@@ -71394,7 +71893,8 @@
       ],
       "hash": "278076eb5d",
       "text": "**The two routes compared:**",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "label introducing the comparison table"
     },
     {
       "id": "street/legality.md#42",
@@ -71405,7 +71905,8 @@
       ],
       "hash": "6d30e932ce",
       "text": "| | Legal purchase | Through a contact |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "street/legality.md#43",
@@ -71416,7 +71917,33 @@
       ],
       "hash": "73ea083227",
       "text": "| Price | The **listed (retail) price** | **Cost × Street Index**, haggled |",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "The price listed for all items in SR3 are the legal retail"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "is equal to the Cost of the item multiplied by the Street Index, plus"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/purchasing.mjs",
+          "line": 136,
+          "snippet": "storePrice(cost, { metatype = '' } = {}) {"
+        },
+        {
+          "file": "scripts/data/purchasing.mjs",
+          "line": 125,
+          "snippet": "const base = num(cost) * (num(streetIndex) || 1);"
+        }
+      ]
     },
     {
       "id": "street/legality.md#44",
@@ -71427,7 +71954,23 @@
       ],
       "hash": "e231cdeb49",
       "text": "| Needs | **A valid SIN**, and a **permit** if the item is restricted | A contact, and a successful Etiquette roll |",
-      "verdict": null
+      "verdict": "match",
+      "note": "The system does not check a SIN or permit at the store; it warns (house rule on the guide's note #78).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "valid SIN, and may also require proof of employment, as well"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 91,
+          "snippet": "buying it legally needs a permit${k.permit ? ' (one is available)' : ' (none is issued)'}"
+        }
+      ]
     },
     {
       "id": "street/legality.md#45",
@@ -71438,7 +71981,8 @@
       ],
       "hash": "ecf7234a86",
       "text": "| Leaves | A paper and data trail | None with the buyer, but the item is still restricted |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "summary of the narrative consequences in #32 — no mechanic"
     },
     {
       "id": "street/legality.md#46",
@@ -71449,7 +71993,8 @@
       ],
       "hash": "4beb937a46",
       "text": "| Who can | Someone with a clean SIN (and the permit) | Anyone with a contact who can find it |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "summary row restating #44 — no rule of its own"
     },
     {
       "id": "street/legality.md#47",
@@ -71460,7 +72005,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "street/legality.md#48",
@@ -71471,7 +72017,22 @@
       ],
       "hash": "4775622f53",
       "text": "## What it costs to be caught  *(SR3 p.274)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "Category                        Possession         Transport"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Section heading."
     },
     {
       "id": "street/legality.md#49",
@@ -71482,7 +72043,21 @@
       ],
       "hash": "721c709537",
       "text": "The **letter** of the code picks a row on the **Local Fines and Punishment (Seattle)** table. The\ncolumns are the offence: **1 Possession, 2 Transport, 3 Threat, 4 Use, 5 Intent**. Only\nPossession is printed for categories **L through Z**.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "Category                        Possession         Transport"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#50",
@@ -71493,7 +72068,8 @@
       ],
       "hash": "b6102d55f5",
       "text": "| Category | 1 Possession | 2 Transport | 3 Threat | 4 Use | 5 Intent |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row (the five offence columns are resolved in #49)"
     },
     {
       "id": "street/legality.md#51",
@@ -71504,7 +72080,22 @@
       ],
       "hash": "33cf696dd1",
       "text": "| **A** Small Blade | 100¥ | 500¥ | 1,000¥ | 2,000¥ / 2 mths | 5,000¥ / 6 mths |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(A) Small Blade                    100¥               500¥             1,000¥             2,000¥/2 mths          5,000¥/6 mths"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#52",
@@ -71515,7 +72106,22 @@
       ],
       "hash": "ba67ff7955",
       "text": "| **B** Large Blade | 200¥ | 800¥ | 2,000¥ | 5,000¥ / 4 mths | 10,000¥ / 8 mths |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(B) Large Blade                    200¥               800¥             2,000¥             5,000¥/4 mths          10,000¥/8 mths"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#53",
@@ -71526,7 +72132,22 @@
       ],
       "hash": "d492b8d84e",
       "text": "| **C** Blunt Weapon | 150¥ | 650¥ | 1,500¥ | 3,000¥ / 3 mths | 7,000¥ / 8 mths |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(C) Blunt Weapon                   150¥               650¥             1,500¥              3,000¥/3 mths          7,000¥/8 mths"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#54",
@@ -71537,7 +72158,22 @@
       ],
       "hash": "c195378ac7",
       "text": "| **D** Projectile | 300¥ | 1,000¥ | 2,000¥ | 3,000¥ / 4 mths | 5,000¥ / 8 mths |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(D) Projectile                     300¥              1,000¥            2,000¥             3,000¥/4 mths          5,000¥/8 mths"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#55",
@@ -71548,7 +72184,22 @@
       ],
       "hash": "d6b0a49a44",
       "text": "| **E** Pistol | 500¥ | 1,500¥ | 5,000¥ | 10,000¥ / 1 yr | 10,000¥ / 2 yrs |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(E) Pistol                         500¥              1,500¥            5,000¥               10,000¥/1 yr          10,000¥/2 yrs"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#56",
@@ -71559,7 +72210,22 @@
       ],
       "hash": "b263717170",
       "text": "| **F** Rifle | 1,000¥ | 3,000¥ | 8,000¥ | 8,000¥ / 18 mths | 8,000¥ / 3 yrs |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(F) Rifle                         1,000¥             3,000¥            8,000¥             8,000¥/18 mths           8,000¥/3 yrs"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#57",
@@ -71570,7 +72236,22 @@
       ],
       "hash": "286c3b7efc",
       "text": "| **G** Automatic Weapon | 5,000¥ | 10,000¥ | 10,000¥ / 6 mths | 10,000¥ / 2 yrs | 10,000¥ / 4 yrs |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(G) Automatic Weapon              5,000¥            10,000¥        10,000¥/6 mths          10,000¥/2 yrs          10,000¥/4 yrs"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#58",
@@ -71581,7 +72262,22 @@
       ],
       "hash": "b14b856915",
       "text": "| **H** Heavy Weapon | 10,000¥ | 20,000¥ | 20,000¥ / 1 yr | 20,000¥ / 4 yrs | 20,000¥ / 10 yrs |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(H) Heavy Weapon                 10,000¥            20,000¥         20,000¥/1 yr           20,000¥/4 yrs         20,000¥/10 yrs"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#59",
@@ -71592,7 +72288,22 @@
       ],
       "hash": "090a7e1968",
       "text": "| **J** Explosives | 10,000¥ | 40,000¥ | 40,000¥ / 1 yr | 40,000¥ / 4 yrs | 40,000¥ / 10 yrs |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(J) Explosives                   10,000¥            40,000¥         40,000¥/1 yr           40,000¥/4 yrs         40,000¥/10 yrs"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#60",
@@ -71603,7 +72314,22 @@
       ],
       "hash": "749e8aec04",
       "text": "| **K** Military Weapon | 10,000¥ / 6 mths | 10,000¥ / 1 yr | 10,000¥ / 2 yrs | 10,000¥ / 8 yrs | 10,000¥ / 20 yrs |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(K) Military Weapon          10,000¥/6 mths       10,000¥/1 yr      10,000¥/2 yrs          10,000¥/8 yrs         10,000¥/20 yrs"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#61",
@@ -71614,7 +72340,22 @@
       ],
       "hash": "9da449d320",
       "text": "| **L** Military Armor | 1,200¥ | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(L) Military Armor                1,200¥"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#62",
@@ -71625,7 +72366,22 @@
       ],
       "hash": "72f326c514",
       "text": "| **M** Military Ammunition | 3,000¥ | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(M) Military Ammunition           3,000¥"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#63",
@@ -71636,7 +72392,22 @@
       ],
       "hash": "42679e8315",
       "text": "| **N** Class A Cyberware | 5,000¥ / 3 yrs | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(N) Class A Cyberware          5,000¥/3 yrs"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#64",
@@ -71647,7 +72418,22 @@
       ],
       "hash": "4b3d2c003a",
       "text": "| **Q** Class B Cyberware | 15,000¥ | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(Q) Class B Cyberware            15,000¥"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#65",
@@ -71658,7 +72444,22 @@
       ],
       "hash": "27d9e80e5a",
       "text": "| **R** Class C Cyberware | 15,000¥ / 3 yrs | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(R) Class C Cyberware         15,000¥/3 yrs"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#66",
@@ -71669,7 +72470,22 @@
       ],
       "hash": "ef604784c8",
       "text": "| **S** Class D Matrix | 8,000¥ / 2 yrs | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(S) Class D Matrix             8,000¥/2 yrs"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#67",
@@ -71680,7 +72496,22 @@
       ],
       "hash": "1446311e87",
       "text": "| **T** Class E Magic | 10,000¥ / 1 yr | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(T) Class E Magic             10,000¥/1 yr"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#68",
@@ -71691,7 +72522,22 @@
       ],
       "hash": "083f96c96f",
       "text": "| **U** Class A Equipment | 2,000¥ | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(U) Class A Equipment             2,000¥"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#69",
@@ -71702,7 +72548,22 @@
       ],
       "hash": "d02fe8052b",
       "text": "| **V** Class B Equipment | 4,000¥ | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(V) Class B Equipment             4,000¥"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#70",
@@ -71713,7 +72574,22 @@
       ],
       "hash": "18c2164bcc",
       "text": "| **W** Class C Equipment | 8,000¥ / 2 yrs | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(W) Class C Equipment          8,000¥/2 yrs"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#71",
@@ -71724,7 +72600,22 @@
       ],
       "hash": "d17cf730e2",
       "text": "| **X** Class A Controlled | 500¥ / 1 mth | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(X) Class A Controlled         500¥/1 mth"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#72",
@@ -71735,7 +72626,22 @@
       ],
       "hash": "c7849608d4",
       "text": "| **Y** Class B Controlled | 2,000¥ / 1 mth | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(Y) Class B Controlled        2,000¥/1 mth"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#73",
@@ -71746,7 +72652,22 @@
       ],
       "hash": "6a5d93b818",
       "text": "| **Z** Class C Controlled | federal | | | | |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "(Z) Class C Controlled            federal"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ],
+      "note": "Row checked against the printed table: every figure agrees with the guide."
     },
     {
       "id": "street/legality.md#74",
@@ -71757,7 +72678,21 @@
       ],
       "hash": "cf1003924a",
       "text": "*Notes printed under the table:* Class A cyberware or equipment is of a paralegal nature; Class B\nis security-grade and law-enforcement gear; Class C is military-grade. Class D Matrix covers all\nunregistered cyberdecks and software. Class E Magic covers unregistered spells, spirits and foci.\nControlled substances are chemical or pharmaceutical (Class A), neural electronics such as BTLs\n(Class B), and biological agents (Class C).",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 276,
+          "printedPage": 274,
+          "quote": "Class D Matrix Tech refers to all unregistered cyberdecks and software."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Small Blade|finesTable|FINES_TABLE|fineFor",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "street/legality.md#75",
@@ -71768,7 +72703,28 @@
       ],
       "hash": "bb7883f0ae",
       "text": "*Example:* a Legality of **`8P-V`** (Broadcast Encryption, Rating 1-4, *SR3 p.290*) is **Class B\nEquipment**: **4,000¥** for possession. The number **8** is the officer's target number, and the\n**P** means a permit can be had.",
-      "verdict": null
+      "verdict": "match",
+      "note": "The example parses as the guide says; the fine itself is not modelled (#49).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 275,
+          "printedPage": 273,
+          "quote": "The second part of the Legality Code lists the restriction"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 59,
+          "snippet": "const m = /^(\\([^)]*\\)|-?\\d+)\\s*(P?)\\s*-\\s*([A-Z]{1,3})/i.exec(c);"
+        },
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 60,
+          "snippet": "permit: m[2].toUpperCase() === 'P'"
+        }
+      ]
     },
     {
       "id": "street/legality.md#76",
@@ -71779,7 +72735,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "street/legality.md#77",
@@ -71790,7 +72747,8 @@
       ],
       "hash": "5f74958d89",
       "text": "## In the Foundry system",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "section heading for the system note"
     },
     {
       "id": "street/legality.md#78",
@@ -71801,7 +72759,8 @@
       ],
       "hash": "e35edc67e1",
       "text": "{: .note }\n> The system follows the *warn, never refuse* rule. **🛒 Buy gear** reads an item's code and\n> opens on **\"At the store\"** only for an item the book calls Legal. For anything restricted it\n> opens on a contact, says so, and still lets the buyer pick either way (the GM may rule the\n> character holds the permit). It doesn't look permits up on a SIN or apply fines; the GM decides.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "system note marked {: .note }: describes the Foundry flow (warn, never refuse) — a house rule, no SR3 claim"
     },
     {
       "id": "street/sins.md#1",
