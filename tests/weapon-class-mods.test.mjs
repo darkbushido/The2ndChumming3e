@@ -10,6 +10,7 @@
  */
 const { WeaponAccessories } = await import('../scripts/data/weapon-accessories.mjs');
 const { ItemMods } = await import('../scripts/data/item-mods.mjs');
+const { WeaponCatalog } = await import('../scripts/data/weapon-catalog.mjs');
 
 export const name = 'weapon-class-mods';
 
@@ -60,6 +61,17 @@ export async function run(t) {
     { name: 'Smartgun, internal (Weapon)', system: {}, flags: { The2ndChumming3e: { integral: true } } }), null);
   const glue = (await import('node:fs')).readFileSync(new URL('../scripts/SR3EItemMods.js', import.meta.url), 'utf8');
   t.ok('install fills only a blank cost', /internalSmartgunCost\(host, data\)[\s\S]{0,120}!\(Number\(data\.system\?\.cost\) > 0\)/.test(glue));
+
+  /* ── Underbarrel grenade launcher: nothing smaller than an assault rifle (house rule 2026-11-19; SR3 p.277 SMGs) ── */
+  const ugl = mod('Underbarrel Grenade Launcher', 'Under');
+  const small = /smaller than an assault rifle — no underbarrel grenade launcher/;
+  for (const c of ['LPist', 'HPist', 'MaPist', 'SMG', 'ShtG', 'SptR', 'Snip', 'Carb', 'LCarb']) t.ok(`launcher on ${c}: warned`, has(gun(c), ugl, small));
+  for (const c of ['AsRf', 'LMG', 'MMG', 'HMG', 'MinG', 'ACan']) t.ok(`launcher on ${c}: fits`, !has(gun(c), ugl, small));
+  t.ok('…the Ares Antioch by name too', has(gun('SMG'), mod('Ares Antioch'), small));
+  t.ok('…a Grenade Link is not a launcher', !has(gun('SMG'), mod('Grenade Link'), small));
+  t.ok('…the designer hides it on an SMG', WeaponCatalog.misfit(gun('SMG'), ugl) !== null && small.test(WeaponCatalog.misfit(gun('SMG'), ugl)));
+  t.ok('…and shows it on an assault rifle', WeaponCatalog.misfit(gun('AsRf'), ugl) === null);
+  t.ok('…warned, never refused', ItemMods.blocked(gun('SMG'), ugl) === null);
 
   /* ── Warn, never refuse ────────────────────────────────────────────────────── */
   t.ok('none of these is a refusal', [silencer, suppressor, laser, bipod, grip, scope].every(m => ItemMods.blocked(gun('HOPist', { ammunition: '6(cy)' }), m) === null));

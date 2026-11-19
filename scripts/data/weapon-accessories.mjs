@@ -27,6 +27,16 @@ const PISTOLS = ['LPist', 'MPist', 'HPist', 'VHP'];
 /** The fore grip's guns — CC p.34: it "can only be used on submachine guns, assault rifles and shotguns". */
 const FORE_GRIP_GUNS = ['SMG', 'AsRf', 'ShtG'];
 const baseName = item => String(item?.name ?? '').replace(/\s*\[\d+\]\s*$/, '').replace(/\s*\((?:Weapon|Armor)\)\s*$/, '').trim();
+/**
+ * Guns too small for an underbarrel grenade launcher — 🏠 HOUSE RULE. SR3 p.277 bars only SMGs ("SMGs … cannot mount
+ * underbarrel grenade launchers"); the maintainer, 2026-11-19 (TODO 121, rules/weapons.md#210): "prevent an under barrel
+ * grenade launcher from going on anything smaller than an assault riffle" — hide + warn, never refuse. Assault rifles, machine
+ * guns and the heavy weapons keep it; anything else (an unknown or launcher category) is left alone.
+ */
+export const TOO_SMALL_FOR_LAUNCHER = ['HOPist', 'LPist', 'MPist', 'HPist', 'VHP', 'GJPist', 'MaPist', 'SMG', 'ShtG',
+  'SptR', 'Snip', 'Carb', 'LCarb'];
+/** An underbarrel grenade launcher accessory, by name ("Underbarrel Grenade Launcher", "Ares Antioch") — not a Grenade Link. */
+const GRENADE_LAUNCHER = /\bgrenade\s+launcher\b|\bantioch\b/i;
 const NO_UNDERBARREL = /\b(?:remington\s+[79]50|defiance\s+t-?250)\b/i;
 const SMARTGUN    = /\bsmart/i;
 
@@ -90,6 +100,7 @@ export const WeaponAccessories = {
     if ((silencer || suppressor) && /\(cy\)/i.test(String(weapon?.system?.ammunition ?? ''))) out.push(`${gun} is a revolver: "Revolvers cannot use silencers or sound suppressers" (SR3 p.276).`);
     if (silencer && cat === 'SMG') out.push(`${gun} is an SMG: "SMGs cannot use silencers, but can use sound suppressers" (SR3 p.277).`);
     if ((silencer || suppressor) && cat === 'ShtG') out.push(`${gun} is a shotgun: "Shotguns cannot mount silencers or sound suppressers" (SR3 p.277).`);
+    if (GRENADE_LAUNCHER.test(base) && WeaponAccessories.tooSmallForLauncher(weapon)) out.push(`${gun} is smaller than an assault rifle — no underbarrel grenade launcher (house rule, 2026-11-19; SR3 p.277 bars SMGs).`);
     if (/^fore\s*grip\b/i.test(base) && !FORE_GRIP_GUNS.includes(cat)) out.push(`A fore grip "can only be used on submachine guns, assault rifles and shotguns" (CC p.34) — ${gun} is none of them.`);
     return out;
   },
@@ -107,6 +118,11 @@ export const WeaponAccessories = {
     if (mod?.flags?.The2ndChumming3e?.integral === true) return null;
     const share = /smart\s*link\s*[-\s]*(?:2|ii)\b|level\s+ii\b/i.test(name) ? 1.5 : 1;
     return Math.round((Number(weapon?.system?.cost) || 0) * share);
+  },
+
+  /** True when `weapon` is smaller than an assault rifle (`TOO_SMALL_FOR_LAUNCHER`) — house rule over SR3 p.277, warned. */
+  tooSmallForLauncher(weapon) {
+    return TOO_SMALL_FOR_LAUNCHER.includes(weapon?.system?.category ?? '');
   },
 
   noUnderbarrel(weapon) {

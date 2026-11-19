@@ -449,6 +449,13 @@ export const MUTANTS = [
     impl:   () => [],
   },
   {
+    id:     'launcher-on-smg-allowed',
+    suite:  'weapon-class-mods',
+    ...ACCESSORIES, method: 'tooSmallForLauncher',
+    was:    'an underbarrel grenade launcher on an SMG said nothing — SR3 p.277 bars it; widened to everything below an assault rifle (house rule, 2026-11-19)',
+    impl:   weapon => ['HOPist', 'LPist', 'MPist', 'HPist', 'VHP', 'GJPist', 'ShtG', 'SptR', 'Snip', 'Carb', 'LCarb'].includes(weapon?.system?.category ?? ''),
+  },
+  {
     id:     'shotgun-stock-allowed',
     suite:  'item-mods',
     ...ITEMMODS, method: 'blocked',

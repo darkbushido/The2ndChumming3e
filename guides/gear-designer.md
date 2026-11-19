@@ -52,7 +52,8 @@ narrows the shelf. Each card shows the accessory, its levels if it has them, and
 
 Accessories that don't fit the weapon as you've built it so far are hidden. The switch
 **Show the ones that don't fit** says how many are hidden; turn it on and they appear
-with a dashed edge and the reason (for example, a weapon that already has its own stock).
+with a dashed edge and the reason (for example, a weapon that already has its own stock, or an underbarrel grenade
+launcher on anything smaller than an assault rifle — a house rule).
 You can still add one: the designer warns, it never refuses. The Price step then lists
 it as left out.
 

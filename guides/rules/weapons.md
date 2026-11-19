@@ -332,6 +332,12 @@ each; integral accessories use up their mount *(SR3 p.280)*. Pistols take
 one barrel and one top accessory, SMGs one of each but no grenade
 launcher, rifles and heavy weapons one of each *(SR3 p.276–279)*.
 
+> **House rule:** the system keeps an underbarrel grenade launcher off
+> **everything smaller than an assault rifle** (pistols, SMGs, shotguns,
+> sporting, sniper and other non-assault rifles), not only SMGs. It warns
+> and still lets you install it.
+{: .house }
+
 | Accessory | Mount | Conceal | Rating | Cost | Effect |
 | :--- | :---: | :---: | :---: | ---: | :--- |
 | Bipod | Under | — | 2 | 400¥ | 2 recoil compensation when deployed (a Simple Action). |

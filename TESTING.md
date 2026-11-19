@@ -3998,3 +3998,10 @@ Rules: `scripts/data/modded-buy.mjs` (`tests/modded-buy.test.mjs`, two mutants).
 - [ ] **🛒 Buy…** opens Buy gear with one cart line "<host> (+N mods)" at the total; at the store → 💴 Pay: nuyen falls by the
       total, the ledger reads "Bought <host> (+N mods)", and the modded item appears. For a vehicle, the vehicle is created with its mods
       and linked to the buyer.
+
+## 96. 💣 Underbarrel grenade launcher — nothing smaller than an assault rifle (house rule 2026-11-19; SR3 p.277; ledger `rules/weapons.md#210`)
+Make a gear item **Underbarrel Grenade Launcher (Weapon)** (category Firearms Accessories, modFor weapon, Mount: Under) — no pack ships one.
+- [ ] Web designer (`npm run designer:serve`): on an SMG, a shotgun, a heavy pistol and a sporting rifle it is hidden; **Show the ones that
+      don't fit** shows it dashed with "smaller than an assault rifle — no underbarrel grenade launcher"; it can still be added.
+- [ ] …on an assault rifle and an LMG it is listed normally, no reason.
+- [ ] Foundry: drop it on an SMG's mods — an amber warning with the same reason, and it **is** installed. On an AK-97: no warning.
