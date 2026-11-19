@@ -4812,4 +4812,11 @@ export const MUTANTS = [
     was:    'never shipped: every viewer treated as a sensor, so a troll saw through a mana illusion (SR3 p.195)',
     impl:   () => ({ all: true, thermo: true }),
   },
+  {
+    id:     'improved-status-ignored',
+    suite:  'invisibility',
+    module: '../scripts/data/invisibility.mjs', klass: 'InvisibilityRules', method: 'kindOnToken',
+    was:    'never shipped: the Improved Invisibility status ignored, so a camera saw through it (SR3 p.196)',
+    impl:   st => ([...(st ?? [])].includes('invisible') ? 'plain' : null),
+  },
 ];

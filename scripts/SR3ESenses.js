@@ -47,7 +47,7 @@ function tokenFacts(token) {
  * technological viewer (`data/invisibility.mjs`, SR3 p.195-196). `thermo` asks about the viewer's thermographic.
  */
 function techSeesInvisible(visionSource, target, thermo = false) {
-  const kind = target?.actor?.getFlag?.(SYS, 'invisFromSpell') ?? null;
+  const kind = InvisibilityRules.kindOnToken(target?.actor?.statuses ?? target?.document?.actor?.statuses);
   if (kind !== 'plain') return false;
   const viewer = visionSource?.object;
   const t = viewer?.actor?.type === 'vehicle' || viewer?.actor?.getFlag?.(SYS, 'camera')

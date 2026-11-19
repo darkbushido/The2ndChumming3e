@@ -3,7 +3,7 @@
  * `sr3e-sustaining` on the caster; the subject's token never went invisible.
  */
 import { readFileSync } from 'node:fs';
-import { InvisibilityRules as IR } from '../scripts/data/invisibility.mjs';
+import { InvisibilityRules as IR, IMPROVED_INVISIBLE } from '../scripts/data/invisibility.mjs';
 
 export const name = 'invisibility';
 
@@ -51,4 +51,14 @@ export async function run(t) {
   t.ok('thermographic detection lets tech thermo through', /techSeesInvisible\(visionSource, target, true\)/.test(senses));
   t.ok('core sight lets a tech viewer through', /techSeesInvisible\(visionSource, target\)\)/.test(senses));
   t.ok('plan() stores the viewer\'s techSight on the token', /flags\.\$\{SYS\}\.techSight/.test(senses));
+  /* ── The Improved Invisibility status on the token (the maintainer, 2026-11-18) ── */
+  t.eq('core invisible alone is plain', IR.kindOnToken(new Set(['invisible'])), 'plain');
+  t.eq('with the Improved status it is improved', IR.kindOnToken(new Set(['invisible', IMPROVED_INVISIBLE])), 'improved');
+  t.eq('the Improved status alone hides nothing', IR.kindOnToken(new Set([IMPROVED_INVISIBLE])), null);
+  t.eq('no statuses', IR.kindOnToken(undefined), null);
+  const sys = readFileSync(new URL('../scripts/sr3e.js', import.meta.url), 'utf8');
+  t.ok('the Improved status is declared', sys.includes(`id: '${IMPROVED_INVISIBLE}'`));
+  t.ok('the spell sync sets it only for Improved', /active: improved \}/.test(sys));
+  t.ok('dropping the spell clears it', /toggleStatusEffect\(IMPROVED_INVISIBLE, \{ active: false \}\)/.test(sys));
+  t.ok('vision reads the kind from the token statuses', /InvisibilityRules\.kindOnToken\(/.test(readFileSync(new URL('../scripts/SR3ESenses.js', import.meta.url), 'utf8')));
 }
