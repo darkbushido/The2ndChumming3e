@@ -7,6 +7,7 @@ import { AmmoStock } from '../data/ammo-stock.mjs';
 import { BookPage } from '../data/book-page.mjs';
 import { CyberWeapons } from '../data/cyber-weapons.mjs';
 import { SpellLimits } from '../data/spell-limits.mjs';
+import { Training } from '../data/training.mjs';
 import { GmOnlyFields } from '../data/gm-only-fields.mjs';
 import { Funds } from '../data/funds.mjs';
 import { CombatPool } from '../data/combat-pool.mjs';
@@ -6104,6 +6105,61 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
     });
   }
 
+  /**
+   * The optional training roll before a Karma purchase · SR3 p.245, p.95 (TODO 309). A Skill Test
+   * against twice the rating sought; an instructor's Instruction (4) Test adds a die per two
+   * successes. Rolls and reports only — no Karma moves, nothing is refused.
+   */
+  static async _trainForKarma(actor, choice) {
+    const skill  = actor.items.get(String(choice).split(':')[1]);
+    const target = Training.targetFor(choice, skill?.system);
+    if (!skill || target === null) {
+      ui.notifications.warn('Train first: pick one of the character\'s own skill rows (a skill not yet on the sheet can be added at rating 0 first).');
+      return;
+    }
+    const tn     = Training.tn(target);
+    const rating = skill.system.rating ?? 0;
+    const teachers = game.sr3e.sceneFirst(game.actors.filter(a => a.id !== actor.id
+        && (a.type === 'character' || a.type === 'npc') && game.sr3e.isLiveActor(a)))
+      .map(a => ({ a, skill: a.items.find(i => i.type === 'skill' && i.name === skill.name),
+                   instr: a.items.find(i => i.type === 'skill' && /^instruction$/i.test(i.name)) }))
+      .filter(t => t.skill);
+    const opts = teachers.map(t => `<option value="${t.a.id}">${t.a.name} (${skill.name} ${t.skill.system.rating ?? 0}, Instruction ${t.instr?.system.rating ?? 0})</option>`).join('');
+    let pool = null, teacherId = '';
+    await foundry.applications.api.DialogV2.wait({
+      window: { title: `Train first — ${skill.name} → ${target}` },
+      content: `<div style="padding:8px;display:flex;flex-direction:column;gap:6px;font-size:12px">
+        <div>Learning test: <b>${skill.name}</b> against TN <b>${tn}</b> (twice the rating sought · SR3 p.245).</div>
+        <label>Dice <input type="number" id="tr-pool" value="${rating}" min="0" style="width:50px"/></label>
+        ${rating === 0 ? '<div style="color:var(--sr-amber)">Unskilled — default per the Default Table; set the dice (and the GM may raise the TN).</div>' : ''}
+        <label>Instructor <select id="tr-teacher"><option value="">None</option>${opts}</select></label>
+        <div style="color:var(--sr-muted)">An instructor rolls Instruction (4); every 2 successes add a die (SR3 p.95). Nothing is charged — buy with Spend Karma afterwards if the GM agrees.</div>
+      </div>`,
+      buttons: [
+        { label: 'Roll', action: 'roll', default: true, callback: (_e, _b, d) => {
+          pool      = Math.max(0, parseInt(d.element.querySelector('#tr-pool')?.value) || 0);
+          teacherId = d.element.querySelector('#tr-teacher')?.value ?? '';
+        } },
+        { label: 'Cancel', action: 'cancel' },
+      ],
+    });
+    if (pool === null) return;
+    let bonus = 0, teachNote = '';
+    const t = teachers.find(x => x.a.id === teacherId);
+    if (t) {
+      for (const w of Training.instructorWarnings(t.skill.system.rating ?? 0, target)) ui.notifications.warn(`${t.a.name}: ${w}`);
+      const n = t.instr?.system.rating ?? 0;
+      let hits = 0;
+      if (n > 0) {
+        const roll = await new Roll(`${n}d6`).evaluate();
+        hits = Training.successes(roll.dice[0].results.map(r => r.result), Training.INSTRUCTION_TN);
+      }
+      bonus = Training.instructorBonus(hits);
+      teachNote = ` — ${t.a.name} taught: Instruction ${n} → ${hits} success${hits === 1 ? '' : 'es'}, +${bonus} dice`;
+    }
+    return actor.rollPool(pool + bonus, tn, `Training: ${skill.name} → ${target} (TN ${tn}, SR3 p.245)${teachNote}`);
+  }
+
   static async _onSpendKarmaCalculator() {
     const actor  = this.actor;
     if (!game.sr3e.SR3EActor.hasGoodKarma(actor)) { ui.notifications.warn(`${actor.name} has no Good Karma to spend (NPCs carry none).`); return; }
@@ -6242,6 +6298,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
 
     let chosen = null;
     let chosenCost = 0;
+    let trainChoice = null;
 
     await foundry.applications.api.DialogV2.wait({
       window: { title: `Spend Karma — ${actor.name}` },
@@ -6269,10 +6326,19 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             chosenCost = parseInt(checked.dataset.cost) || 0;
           }
         },
+        /* SR3 p.245 Training — OFFERED, never required: rolls the learning test for the chosen skill
+         * row and spends nothing. The player reopens Spend Karma to buy (TODO 309). */
+        {
+          label: 'Train first…', action: 'train',
+          callback: (_e, _b, dlg) => {
+            trainChoice = dlg.element.querySelector('input[name="karma-choice"]:checked')?.value ?? null;
+          }
+        },
         { label: 'Cancel', action: 'cancel' },
       ],
     });
 
+    if (trainChoice) return SR3EActorSheet._trainForKarma(actor, trainChoice);
     if (!chosen || chosenCost <= 0) return;
     if (chosenCost > karma) { ui.notifications.warn('Not enough karma!'); return; }
 

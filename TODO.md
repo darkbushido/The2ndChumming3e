@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**98 open.** 210 done — see [TODO-DONE.md](TODO-DONE.md).
+**100 open.** 210 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[293](#293) Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image<br>[294](#294) Little Black Book contacts' alphaware ships as Standard grade — *LBB pp.40-67*<br>[295](#295) `patch-johnson-stats.mjs --check` churns the checkout's LevelDB<br>[298](#298) Web gear designer on GitHub Pages — weapons first, imports into Foundry<br>[300](#300) Weapon designer as a shop — chips, picture cards, misfits, per-model art (follow-up to TODO 298) |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches<br>[286](#286) Pack data no book in the library can verify |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens<br>[299](#299) Token senses — low-light, thermographic, ultrasound, astral sight<br>[302](#302) 🖨 Print a character sheet<br>[303](#303) Export a character to Nullsheen JSON<br>[304](#304) 👁 Perception Test button on the character sheet<br>[305](#305) 🛡 Armour tab on the web gear designer<br>[306](#306) 🛡 Per-model armour art, as the weapons, vehicles and drones have |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens<br>[299](#299) Token senses — low-light, thermographic, ultrasound, astral sight<br>[302](#302) 🖨 Print a character sheet<br>[303](#303) Export a character to Nullsheen JSON<br>[304](#304) 👁 Perception Test button on the character sheet<br>[305](#305) 🛡 Armour tab on the web gear designer<br>[306](#306) 🛡 Per-model armour art, as the weapons, vehicles and drones have<br>[309](#309) Train first — an optional learning roll in Spend Karma (SR3 p.245, p.95)<br>[310](#310) Virtual Instructor chips priced by the formula, not flat (SR3 p.296, p.95) |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -3695,6 +3695,30 @@ pipeline: a prompt list per armour model (`tools/weapon-art-prompts.mjs` is the 
 - [ ] Prompt list for every armour model in the shipped packs (reference photos where one exists).
 - [ ] Run the ComfyUI batch and key it (the maintainer's GPU); the maintainer picks keepers.
 - [ ] Wire `PICTURES` into the designer's armour cards and into armour import; source-level test.
+
+## 309. Train first — an optional learning roll in Spend Karma (SR3 p.245, p.95) — **requested 2026-11-19**
+
+Decided with the maintainer, 2026-11-19 (0.9.0 rules check, ledger units `rules/instruction.md#7`, `#9`):
+**wanted, in 0.9.0, as an optional "Train first…" button** in the Spend Karma dialog — never a gate.
+- SR3 p.245: training "can be made into a short and simple mechanic, such as requiring a Skill Test using the
+  skill … The target number for such a test would be twice the Skill Rating" sought.
+- SR3 p.95: an instructor needs the skill at 3+ and at least the rating sought; "Teaching requires an
+  Instruction (4) Test. For every two successes … the student receives an additional die".
+
+Built on `claude/awesome-chaum-3f5285`: `scripts/data/training.mjs` (pure), `SR3EActorSheet._trainForKarma`.
+Rolls and reports; Karma is spent separately afterwards. Instructor shortfalls warn. Still to check live:
+the button on a skill row, an instructor's bonus dice, the warning for an under-rated teacher.
+
+## 310. Virtual Instructor chips priced by the formula, not flat (SR3 p.296, p.95) — **requested 2026-11-19**
+
+The 0.9.0 rules check (ledger unit `rules/instruction.md#24`, verdict *diverges*) found the two pack items
+(`packs-src/sr3e-sr3-gear/virt-instr-gen.6eb8a46819080ba8.json` 600¥, `virt-instr-spec.5f5a3b1fe50cf0a7.json`
+500¥, Availability `2/72hrs`) flat-priced. SR3 p.296 prices a Virtual Instructor Chip at **Mp × 100¥**,
+Availability **ratings total/72 hrs**, Street Index 1; SR3 p.95: size = skill rating + Instruction rating on the
+Program Size Table (p.223), multiplier 3; restricted skills double the Street Index and take Availability 10+.
+
+Maintainer's decision, 2026-11-19: **a TODO, not a 0.9.0 fix.** Wanted: rated items priced by a pure module in
+`scripts/data/` (program size → Mp → ¥ and Availability), the pack change, and a migration in the release it ships.
 
 ### 📌 Notes & parked
 
