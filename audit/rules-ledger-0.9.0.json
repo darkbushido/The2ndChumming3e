@@ -151,19 +151,19 @@
       "file": "gear-designer.md",
       "lines": [
         53,
-        57
+        58
       ],
-      "hash": "3c56109f15",
-      "text": "Accessories that don't fit the weapon as you've built it so far are hidden. The switch\n**Show the ones that don't fit** says how many are hidden; turn it on and they appear\nwith a dashed edge and the reason (for example, a weapon that already has its own stock).\nYou can still add one: the designer warns, it never refuses. The Price step then lists\nit as left out.",
+      "hash": "6796b08506",
+      "text": "Accessories that don't fit the weapon as you've built it so far are hidden. The switch\n**Show the ones that don't fit** says how many are hidden; turn it on and they appear\nwith a dashed edge and the reason (for example, a weapon that already has its own stock, or an underbarrel grenade\nlauncher on anything smaller than an assault rifle — a house rule).\nYou can still add one: the designer warns, it never refuses. The Price step then lists\nit as left out.",
       "verdict": "no-rule-claim",
-      "reason": "Gear Designer tool page: describes the web tool and the Foundry import (screens, steps, links, warnings) — states no SR3 rule"
+      "reason": "Gear Designer tool behaviour (hiding misfits); the launcher example is the house rule in weapons.md#211"
     },
     {
       "id": "gear-designer.md#14",
       "file": "gear-designer.md",
       "lines": [
-        59,
-        60
+        60,
+        61
       ],
       "hash": "0fa35ae471",
       "text": "Everything you add goes into the **🛒 cart** beside the shelves, where you pick a level\nfor rated accessories, see which mount each one takes, and remove it again.",
@@ -174,8 +174,8 @@
       "id": "gear-designer.md#15",
       "file": "gear-designer.md",
       "lines": [
-        62,
-        62
+        63,
+        63
       ],
       "hash": "98286d8aae",
       "text": "### Step 3 — ammunition",
@@ -186,8 +186,8 @@
       "id": "gear-designer.md#16",
       "file": "gear-designer.md",
       "lines": [
-        64,
-        64
+        65,
+        65
       ],
       "hash": "9e415aa46a",
       "text": "Ammunition cards, with a search box. Pick a type and how many to buy.",
@@ -198,8 +198,8 @@
       "id": "gear-designer.md#17",
       "file": "gear-designer.md",
       "lines": [
-        66,
-        66
+        67,
+        67
       ],
       "hash": "4752bee8ad",
       "text": "### Step 4 — price",
@@ -210,8 +210,8 @@
       "id": "gear-designer.md#18",
       "file": "gear-designer.md",
       "lines": [
-        68,
-        70
+        69,
+        71
       ],
       "hash": "c8ff3c922c",
       "text": "One line per purchase — the weapon, each accessory, each lot of ammunition — with its\nprice and book page, then the total and any warnings. Copy the link or download the JSON\nhere.",
@@ -222,8 +222,8 @@
       "id": "gear-designer.md#19",
       "file": "gear-designer.md",
       "lines": [
-        72,
-        72
+        73,
+        73
       ],
       "hash": "d6989bbf07",
       "text": "## The Vehicle (R3R) tab",
@@ -234,8 +234,8 @@
       "id": "gear-designer.md#20",
       "file": "gear-designer.md",
       "lines": [
-        74,
-        74
+        75,
+        75
       ],
       "hash": "4e9fc78490",
       "text": "Two buttons choose how to start:",
@@ -246,8 +246,8 @@
       "id": "gear-designer.md#21",
       "file": "gear-designer.md",
       "lines": [
-        76,
-        79
+        77,
+        80
       ],
       "hash": "48141be1e1",
       "text": "- **🛠 Design from a chassis (R3R)** — the same wizard as the 🛠 Vehicle Designer window\n  in Foundry: **Chassis**, **Power plant**, **Design options**, **Mods**, then **Price &\n  share**. It counts Design Points as well as nuyen. The Mods step is a shop like the\n  weapon one: shelves, cards and a cart.",
@@ -258,8 +258,8 @@
       "id": "gear-designer.md#22",
       "file": "gear-designer.md",
       "lines": [
-        80,
-        83
+        81,
+        84
       ],
       "hash": "123a8b60d3",
       "text": "- **📖 Modify a book vehicle** — take a vehicle exactly as printed and add aftermarket\n  modifications: **Vehicle** (type chips, then picture cards), **Modifications**, **Price**.\n  Mods cost their printed price and take their Cargo Factor and Load; there are no Design\n  Points, because the vehicle itself isn't being redesigned.",
@@ -270,8 +270,8 @@
       "id": "gear-designer.md#23",
       "file": "gear-designer.md",
       "lines": [
-        85,
-        85
+        86,
+        86
       ],
       "hash": "1fba9affd2",
       "text": "## The Armour tab",
@@ -282,8 +282,8 @@
       "id": "gear-designer.md#24",
       "file": "gear-designer.md",
       "lines": [
-        87,
-        92
+        88,
+        93
       ],
       "hash": "dad6b1b7a9",
       "text": "Three steps. **Armour** — chips for clothing, body armour, helmets and shields, then picture cards. **Modifications** — two\nshelves: the Cannon Companion modifications (CC pp.52-53, gel packs among them) and the helmet options (SR3 p.284). Each mod\ngoes in the cart once; change its level there. Past the mod-point caps (CC p.52), a mod on a helmet or shield, two sets of\ngel packs — all warned, never refused. **Price** — the bill (gel packs: the armour's price ×5 in all), and the armour as\nbuilt: Concealability, weight, Availability, Street Index and what it protects against. In Foundry it imports with its\nmods inside it, not worn.",
@@ -326,8 +326,8 @@
       "id": "gear-designer.md#25",
       "file": "gear-designer.md",
       "lines": [
-        94,
-        94
+        95,
+        95
       ],
       "hash": "d86a62e241",
       "text": "## Your design lives in the link",
@@ -338,8 +338,8 @@
       "id": "gear-designer.md#26",
       "file": "gear-designer.md",
       "lines": [
-        96,
-        97
+        97,
+        98
       ],
       "hash": "f81ebab25e",
       "text": "Nothing is stored — not on a server, not in your browser. As you work, the page writes\nthe whole design into its own address, after `#d=`. That link **is** the design:",
@@ -350,8 +350,8 @@
       "id": "gear-designer.md#27",
       "file": "gear-designer.md",
       "lines": [
-        99,
-        100
+        100,
+        101
       ],
       "hash": "c6964a29b3",
       "text": "- **🔗 Copy link** copies it. Bookmark it, paste it to your GM, or open it later and the\n  page picks up where you left off.",
@@ -362,8 +362,8 @@
       "id": "gear-designer.md#28",
       "file": "gear-designer.md",
       "lines": [
-        101,
-        101
+        102,
+        102
       ],
       "hash": "85d50dc2a7",
       "text": "- **💾 Download JSON** saves the same design as a `.sr3e-design.json` file.",
@@ -374,8 +374,8 @@
       "id": "gear-designer.md#29",
       "file": "gear-designer.md",
       "lines": [
-        102,
-        103
+        103,
+        104
       ],
       "hash": "e56d9f7e31",
       "text": "- A link carries the price the page showed, but only so Foundry can tell you if its own\n  sum differs. Editing the link can't make anything cheaper (below).",
@@ -386,8 +386,8 @@
       "id": "gear-designer.md#30",
       "file": "gear-designer.md",
       "lines": [
-        104,
-        105
+        105,
+        106
       ],
       "hash": "536c650739",
       "text": "- A link made with an older version of the designer still opens; the page says which\n  version made it and shows the figures with its own rules.",
@@ -398,8 +398,8 @@
       "id": "gear-designer.md#31",
       "file": "gear-designer.md",
       "lines": [
-        107,
-        107
+        108,
+        108
       ],
       "hash": "9ceb6451c4",
       "text": "## Importing into Foundry",
@@ -410,8 +410,8 @@
       "id": "gear-designer.md#32",
       "file": "gear-designer.md",
       "lines": [
-        109,
-        111
+        110,
+        112
       ],
       "hash": "71edbccbb3",
       "text": "In Foundry, open the **Items** sidebar and click **📥 Import design** in its header (the\n**SR3E Import Gear Design** macro opens the same dialog, as does\n`game.sr3e.SR3EDesignImport.open()` from the console).",
@@ -422,8 +422,8 @@
       "id": "gear-designer.md#33",
       "file": "gear-designer.md",
       "lines": [
-        113,
-        116
+        114,
+        117
       ],
       "hash": "4b4248f4d5",
       "text": "1. **Paste** the link — or the JSON file's text — into the box. The dialog looks every\n   piece up in **this world's** compendiums and works the design out again with the\n   system's rules, then shows what you'll get: the weapon and its accessories and\n   ammunition, or the vehicle and its mods, with the recomputed price.",
@@ -434,8 +434,8 @@
       "id": "gear-designer.md#34",
       "file": "gear-designer.md",
       "lines": [
-        117,
-        117
+        118,
+        118
       ],
       "hash": "c0fc56a91a",
       "text": "2. **Read the warnings** (amber). They include:",
@@ -446,8 +446,8 @@
       "id": "gear-designer.md#35",
       "file": "gear-designer.md",
       "lines": [
-        118,
-        120
+        119,
+        121
       ],
       "hash": "517f5907ab",
       "text": "   - **the link's price disagrees with the rules** — the dialog shows both; the\n     **recomputed** price is the one imported, so a hand-edited link that claims a\n     lower price than the rules give is caught here, in front of the GM;",
@@ -458,8 +458,8 @@
       "id": "gear-designer.md#36",
       "file": "gear-designer.md",
       "lines": [
-        121,
-        121
+        122,
+        122
       ],
       "hash": "7ebcc918fd",
       "text": "   - the same for Design Points and recoil compensation;",
@@ -470,8 +470,8 @@
       "id": "gear-designer.md#37",
       "file": "gear-designer.md",
       "lines": [
-        122,
-        122
+        123,
+        123
       ],
       "hash": "d3e202d917",
       "text": "   - a piece this world doesn't have (a book turned off, or a newer pack);",
@@ -482,8 +482,8 @@
       "id": "gear-designer.md#38",
       "file": "gear-designer.md",
       "lines": [
-        123,
-        123
+        124,
+        124
       ],
       "hash": "ca3d3811eb",
       "text": "   - a mount already taken, and a design made with a different system version.",
@@ -494,8 +494,8 @@
       "id": "gear-designer.md#39",
       "file": "gear-designer.md",
       "lines": [
-        124,
-        125
+        125,
+        126
       ],
       "hash": "f235ee11b5",
       "text": "3. **Choose where it goes** (weapons only): **Import onto** lists the characters you\n   own, your own character first. The GM also gets **World item (Items directory)**.",
@@ -506,8 +506,8 @@
       "id": "gear-designer.md#40",
       "file": "gear-designer.md",
       "lines": [
-        126,
-        127
+        127,
+        128
       ],
       "hash": "1ca7f3552e",
       "text": "4. Click **Import**. The design is imported despite any warnings — the warnings are for\n   you and your GM to judge.",
@@ -518,8 +518,8 @@
       "id": "gear-designer.md#41",
       "file": "gear-designer.md",
       "lines": [
-        129,
-        129
+        130,
+        130
       ],
       "hash": "11b1ad744a",
       "text": "**Vehicles** work differently:",
@@ -530,8 +530,8 @@
       "id": "gear-designer.md#42",
       "file": "gear-designer.md",
       "lines": [
-        131,
-        132
+        132,
+        133
       ],
       "hash": "f92e9bee11",
       "text": "- A **chassis design** opens the **🛠 Vehicle Designer** window, filled in and on its\n  summary. Check it there, then click its Create button; you own the new vehicle.",
@@ -542,8 +542,8 @@
       "id": "gear-designer.md#43",
       "file": "gear-designer.md",
       "lines": [
-        133,
-        134
+        134,
+        135
       ],
       "hash": "69de0676d1",
       "text": "- A **book vehicle with mods** is copied from its compendium as your own vehicle, with the\n  mods added at the price the page showed. This needs a GM connected.",
@@ -554,8 +554,8 @@
       "id": "gear-designer.md#44",
       "file": "gear-designer.md",
       "lines": [
-        136,
-        138
+        137,
+        139
       ],
       "hash": "aea30ace02",
       "text": "{: .note }\n> Imported items are ordinary items: every number on them can still be edited on the\n> sheet, like anything else in the system.",
@@ -5502,7 +5502,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 2537,
+          "line": 2549,
           "snippet": "if (next === undefined || actor.system?.controlMode !== 'vcr' || !actor.system?.driverActorId) return;"
         }
       ],
@@ -5611,7 +5611,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 2537,
+          "line": 2549,
           "snippet": "if (next === undefined || actor.system?.controlMode !== 'vcr' || !actor.system?.driverActorId) return;"
         }
       ]
@@ -16100,7 +16100,7 @@
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6318,
+          "line": 6334,
           "snippet": "await actor.update({ 'system.powerPointsBought': had + 1, 'system.karma': karma - chosenCost },"
         }
       ],
@@ -20551,7 +20551,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6364,
+          "line": 6380,
           "snippet": "const cost = GK.spellCost(force, limit);"
         }
       ]
@@ -20582,7 +20582,7 @@
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6364,
+          "line": 6380,
           "snippet": "const cost = GK.spellCost(force, limit);"
         }
       ],
@@ -20678,10 +20678,11 @@
       ],
       "search": [
         {
-          "pattern": "instructionTest|Instruction \\(4\\)|teacher",
+          "pattern": "learnSpell|spellTeacher|teacherFeePerForce",
           "path": "scripts"
         }
-      ]
+      ],
+      "note": "The TODO 309 training roll is for skills; learning a spell is not modelled."
     },
     {
       "id": "magic/spells.md#34",
@@ -20734,7 +20735,7 @@
       ],
       "search": [
         {
-          "pattern": "learnSpellTest|learning test|twice the desired force",
+          "pattern": "learnSpell|spellLearningTest|twiceTheForce",
           "path": "scripts"
         }
       ],
@@ -20760,7 +20761,7 @@
       ],
       "search": [
         {
-          "pattern": "learnSpellTest|learning test|daysToLearn",
+          "pattern": "learnSpell|spellLearningDays",
           "path": "scripts"
         }
       ]
@@ -20791,7 +20792,7 @@
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6364,
+          "line": 6380,
           "snippet": "const cost = GK.spellCost(force, limit);"
         }
       ]
@@ -20816,7 +20817,7 @@
       ],
       "search": [
         {
-          "pattern": "learnSpellTest|learning test|daysToLearn",
+          "pattern": "learnSpell|spellLearningDays",
           "path": "scripts"
         }
       ]
@@ -20842,12 +20843,12 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6364,
+          "line": 6380,
           "snippet": "const cost = GK.spellCost(force, limit);"
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6367,
+          "line": 6383,
           "snippet": "await spell.update({ 'system.force': force,"
         }
       ],
@@ -24568,7 +24569,7 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6364,
+          "line": 6380,
           "snippet": "const cost = GK.spellCost(force, limit);"
         },
         {
@@ -27838,7 +27839,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2499,
+          "line": 2511,
           "snippet": "await set('unconscious', down && !dead);"
         }
       ]
@@ -27934,7 +27935,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 2496,
+          "line": 2508,
           "snippet": "const down     = physFull || (stunFull && !painEditor);"
         }
       ]
@@ -27971,7 +27972,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 2485,
+          "line": 2497,
           "snippet": "const dead     = physFull && game.sr3e.SR3EActor.deadFromOverflow(w.overflow?.value, body);"
         },
         {
@@ -28973,7 +28974,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 2537,
+          "line": 2549,
           "snippet": "if (next === undefined || actor.system?.controlMode !== 'vcr' || !actor.system?.driverActorId) return;"
         }
       ]
@@ -41569,7 +41570,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 932,
+          "line": 944,
           "snippet": "function calcBlastM(amx, amy, walls, power) {"
         }
       ]
@@ -41621,7 +41622,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 948,
+          "line": 960,
           "snippet": "label = `Behind @${W.toFixed(1)}m`;"
         }
       ]
@@ -41647,7 +41648,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 1084,
+          "line": 1096,
           "snippet": "const totalP = Math.round(waves.reduce((s, w) => s + w.power, 0));"
         }
       ]
@@ -41673,7 +41674,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 1231,
+          "line": 1243,
           "snippet": "power: Math.round(waves.reduce((s, w) => s + w.power, 0)),"
         }
       ]
@@ -42388,7 +42389,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 2485,
+          "line": 2497,
           "snippet": "const dead     = physFull && game.sr3e.SR3EActor.deadFromOverflow(w.overflow?.value, body);"
         },
         {
@@ -44821,7 +44822,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2499,
+          "line": 2511,
           "snippet": "await set('unconscious', down && !dead);"
         }
       ],
@@ -45216,7 +45217,8 @@
       ],
       "hash": "07723c936d",
       "text": "**The gamemaster controls how fast.** *\"Gamemasters should not allow characters to simply spend large amounts of Karma\nand become vastly more powerful almost overnight.\"* Characters should train, or use and improve their skills over time,\nand may need to **search out a teacher** *(SR3 p.245)*. The book leaves the balance to the gamemaster and offers two ways:",
-      "verdict": "not-implemented",
+      "verdict": "match",
+      "note": "Since 0.9.0 (TODO 309) Spend Karma offers an optional \"Train first…\" roll; the GM still decides whether training is required — nothing is gated.",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45225,13 +45227,13 @@
           "quote": "They may even need to search out a teacher to learn"
         }
       ],
-      "search": [
+      "code": [
         {
-          "pattern": "searchOutATeacher|trainingRequired|requireTraining",
-          "path": "scripts"
+          "file": "scripts/data/training.mjs",
+          "line": 36,
+          "snippet": "return Math.max(2, 2 * (Math.max(1, parseInt(targetRating) || 1)));"
         }
-      ],
-      "note": "The book leaves the pace of learning to the GM; the system gates nothing (consistent with its ethos), so there is no training requirement in code."
+      ]
     },
     {
       "id": "rules/instruction.md#8",
@@ -45254,7 +45256,7 @@
       ],
       "hash": "70a2661556",
       "text": "| **A short, simple mechanic** | Make a **Skill Test** using the skill, against a target number of **twice the Skill Rating sought**. A character without the skill **defaults**. An instructor **adds dice** to this test (see below). Good Karma can be spent to learn or raise the skill **only after this test succeeds**. |",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45263,12 +45265,14 @@
           "quote": "get number for such a test would be twice the Skill Rating"
         }
       ],
-      "search": [
+      "code": [
         {
-          "pattern": "learnSkillTest|learningTest|twiceTheSkillRating",
-          "path": "scripts"
+          "file": "scripts/data/training.mjs",
+          "line": 36,
+          "snippet": "return Math.max(2, 2 * (Math.max(1, parseInt(targetRating) || 1)));"
         }
-      ]
+      ],
+      "note": "The roll is offered, never required; Karma is spent separately (TODO 309)."
     },
     {
       "id": "rules/instruction.md#10",
@@ -45375,7 +45379,8 @@
       ],
       "hash": "aee43b2544",
       "text": "- To teach a skill, spell or other subject, the instructor must have that skill at **Rating 3 or higher**. They must\n  also have it **at or above the rating the pupil wants to reach** *(SR3 p.95)*.",
-      "verdict": "not-implemented",
+      "verdict": "match",
+      "note": "Warned, not refused (TODO 309).",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45384,10 +45389,16 @@
           "quote": "possess a skill at Rating 3 or higher in order to teach it to"
         }
       ],
-      "search": [
+      "code": [
         {
-          "pattern": "canTeach|instructorRating|teachSkill",
-          "path": "scripts"
+          "file": "scripts/data/training.mjs",
+          "line": 79,
+          "snippet": "if (r < 3) out.push(`the instructor needs the skill at 3 or higher to teach it (has ${r}) · SR3 p.95`);"
+        },
+        {
+          "file": "scripts/data/training.mjs",
+          "line": 80,
+          "snippet": "if (r < t) out.push("
         }
       ]
     },
@@ -45400,7 +45411,7 @@
       ],
       "hash": "a57bf8130b",
       "text": "- Teaching requires an **Instruction (4) Test**. For **every 2 successes**, the student gets **one additional die** on the\n  test to learn the skill *(SR3 p.95)*.",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45409,10 +45420,16 @@
           "quote": "Teaching requires an Instruction (4) Test. For every two"
         }
       ],
-      "search": [
+      "code": [
         {
-          "pattern": "Instruction \\(4\\)|instructionTest|instructionDice",
-          "path": "scripts"
+          "file": "scripts/data/training.mjs",
+          "line": 30,
+          "snippet": "INSTRUCTION_TN: 4,"
+        },
+        {
+          "file": "scripts/data/training.mjs",
+          "line": 72,
+          "snippet": "return Math.floor(Math.max(0, parseInt(instructionSuccesses) || 0) / 2);"
         }
       ]
     },
@@ -45425,7 +45442,7 @@
       ],
       "hash": "ec8059d507",
       "text": "- The instructor's effect is on the **pupil's learning test**, so it pairs with the Skill Test option above.",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -45434,10 +45451,11 @@
           "quote": "the student receives an addi"
         }
       ],
-      "search": [
+      "code": [
         {
-          "pattern": "instructionDice|pupilDice|learnSkillTest",
-          "path": "scripts"
+          "file": "scripts/data/training.mjs",
+          "line": 72,
+          "snippet": "return Math.floor(Math.max(0, parseInt(instructionSuccesses) || 0) / 2);"
         }
       ]
     },
@@ -46043,7 +46061,7 @@
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6279,
+          "line": 6295,
           "snippet": "const parts  = chosen.split(':');"
         }
       ]
@@ -46619,36 +46637,23 @@
       ],
       "hash": "f25df9258c",
       "text": "Good Karma is spent **between adventures** *(SR3 p.244)*. The gamemaster can also require training\ntime, a teacher, or a test to learn or improve something *(SR3 p.245)*.",
-      "verdict": "not-implemented",
+      "verdict": "match",
+      "note": "Training is an optional roll offered by Spend Karma (TODO 309); the GM decides whether to require it.",
       "pdf": [
-        {
-          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
-          "pdfPage": 246,
-          "printedPage": 244,
-          "quote": "Players can use Good Karma between adventures to improve a character"
-        },
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
           "pdfPage": 247,
           "printedPage": 245,
-          "quote": "Gamemasters should not allow characters to simply spend large amounts of Karma"
+          "quote": "They may even need to search out a teacher to learn"
         }
       ],
-      "search": [
+      "code": [
         {
-          "pattern": "between adventures",
-          "path": "scripts"
-        },
-        {
-          "pattern": "karma.{0,60}(teacher|training time|instructor)",
-          "path": "scripts"
-        },
-        {
-          "pattern": "(teacher|training time|instructor).{0,60}karma",
-          "path": "scripts"
+          "file": "scripts/data/training.mjs",
+          "line": 36,
+          "snippet": "return Math.max(2, 2 * (Math.max(1, parseInt(targetRating) || 1)));"
         }
-      ],
-      "note": "The Spend Karma calculator works at any time; no training time, teacher or Skill Test is asked for or checked (the system never refuses, by design)."
+      ]
     },
     {
       "id": "rules/karma.md#26",
@@ -47172,7 +47177,7 @@
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6472,
+          "line": 6488,
           "snippet": "specs.push({ name: specName, level: 1 });"
         }
       ],
@@ -47288,7 +47293,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 639,
+          "line": 651,
           "snippet": "const next = SkillRules.specsAfterRatingChange(document.system.special"
         }
       ],
@@ -47445,7 +47450,7 @@
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6318,
+          "line": 6334,
           "snippet": "await actor.update({ 'system.powerPointsBought': had + 1, 'system.karma': karma - chosenCost },"
         }
       ]
@@ -47482,7 +47487,7 @@
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6364,
+          "line": 6380,
           "snippet": "const cost = GK.spellCost(force, limit);"
         }
       ],
@@ -47514,7 +47519,7 @@
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6363,
+          "line": 6379,
           "snippet": "limit = SpellLimits.learningReduction(chosen);"
         },
         {
@@ -47551,7 +47556,7 @@
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6396,
+          "line": 6412,
           "snippet": "cost = GK.bondingCost(GK.focusType(focus)?.key, force, focus.system?.reach ?? 0) ?? 0;"
         }
       ]
@@ -48544,7 +48549,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 2186,
+          "line": 2198,
           "snippet": "mk('sr3e-karma-refresh-btn', '🍀 Refresh Karma Pools', _openKarmaRefreshDialog, true);"
         },
         {
@@ -48745,12 +48750,12 @@
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6364,
+          "line": 6380,
           "snippet": "const cost = GK.spellCost(force, limit);"
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 6396,
+          "line": 6412,
           "snippet": "cost = GK.bondingCost(GK.focusType(focus)?.key, force, focus.system?.reach ?? 0) ?? 0;"
         },
         {
@@ -48848,7 +48853,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 3080,
+          "line": 3107,
           "snippet": "else if (!_isDeciderId(held.actorId)) kBtns.forEach(b => _denyBtn(b, 'Only the roller decides how their Karma Pool is spent.'));"
         }
       ],
@@ -48929,7 +48934,7 @@
         },
         {
           "file": "scripts/sr3e.js",
-          "line": 2186,
+          "line": 2198,
           "snippet": "mk('sr3e-karma-refresh-btn', '🍀 Refresh Karma Pools', _openKarmaRefreshDialog, true);"
         },
         {
@@ -64903,22 +64908,22 @@
       "code": [
         {
           "file": "scripts/data/weapon-accessories.mjs",
-          "line": 90,
+          "line": 100,
           "snippet": "if ((silencer || suppressor) && /\\(cy\\)/i.test(String(weapon?.system?.ammunition ?? ''))) out.push(`${gun} is a revolver: \"Revolvers cannot use silencers or sou"
         },
         {
           "file": "scripts/data/weapon-accessories.mjs",
-          "line": 88,
+          "line": 98,
           "snippet": "if (cat === 'HOPist') out.push(`${gun} is a hold-out pistol: \"Hold-out pistols cannot mount any accessories\" (SR3 p.276).`);"
         },
         {
           "file": "scripts/data/weapon-accessories.mjs",
-          "line": 91,
+          "line": 101,
           "snippet": "if (silencer && cat === 'SMG') out.push(`${gun} is an SMG: \"SMGs cannot use silencers, but can use sound suppressers\" (SR3 p.277).`);"
         },
         {
           "file": "scripts/data/weapon-accessories.mjs",
-          "line": 92,
+          "line": 102,
           "snippet": "if ((silencer || suppressor) && cat === 'ShtG') out.push(`${gun} is a shotgun: \"Shotguns cannot mount silencers or sound suppressers\" (SR3 p.277).`);"
         }
       ],
@@ -65433,7 +65438,7 @@
       ],
       "hash": "f25d60aa35",
       "text": "A firearm has **top**, **barrel** and **underbarrel** mounts, one accessory\neach; integral accessories use up their mount *(SR3 p.280)*. Pistols take\none barrel and one top accessory, SMGs one of each but no grenade\nlauncher, rifles and heavy weapons one of each *(SR3 p.276–279)*.",
-      "verdict": "diverges",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
@@ -65467,18 +65472,35 @@
         },
         {
           "file": "scripts/data/weapon-accessories.mjs",
-          "line": 89,
+          "line": 99,
           "snippet": "else if (PISTOLS.includes(cat) && under) out.push(`${gun} is a pistol — one barrel and one top mount, no underbarrel (SR3 p.276); ${name} would go underbarrel.`"
+        },
+        {
+          "file": "scripts/data/weapon-accessories.mjs",
+          "line": 103,
+          "snippet": "is smaller than an assault rifle — no underbarrel grenade launcher (house rule, 2026-11-19; SR3 p.277 bars SMGs)."
         }
       ],
-      "note": "Since 0.9.0 (TODO 276) top/barrel/underbarrel mounts hold one accessory each, integral accessories hold theirs, and an underbarrel mod on a pistol is warned. Not checked: an SMG taking a grenade launcher underbarrel (SR3 p.277)."
+      "note": "Since 0.9.0 the SMG case is covered: an underbarrel grenade launcher is warned on anything smaller than an assault rifle (house rule, the maintainer 2026-11-19, wider than SR3 p.277's SMG bar). Since 0.9.0 (TODO 276) top/barrel/underbarrel mounts hold one accessory each, integral accessories hold theirs, and an underbarrel mod on a pistol is warned. Not checked: an SMG taking a grenade launcher underbarrel (SR3 p.277)."
     },
     {
       "id": "rules/weapons.md#211",
       "file": "rules/weapons.md",
       "lines": [
         335,
-        335
+        339
+      ],
+      "hash": "44d4a80ea4",
+      "text": "> **House rule:** the system keeps an underbarrel grenade launcher off\n> **everything smaller than an assault rifle** (pistols, SMGs, shotguns,\n> sporting, sniper and other non-assault rifles), not only SMGs. It warns\n> and still lets you install it.\n{: .house }",
+      "verdict": "no-rule-claim",
+      "reason": "house rule marked {: .house } (the maintainer, 2026-11-19): the launcher kept off everything below an assault rifle"
+    },
+    {
+      "id": "rules/weapons.md#212",
+      "file": "rules/weapons.md",
+      "lines": [
+        341,
+        341
       ],
       "hash": "ceab7afef2",
       "text": "| Accessory | Mount | Conceal | Rating | Cost | Effect |",
@@ -65486,11 +65508,11 @@
       "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
-      "id": "rules/weapons.md#212",
+      "id": "rules/weapons.md#213",
       "file": "rules/weapons.md",
       "lines": [
-        337,
-        337
+        343,
+        343
       ],
       "hash": "a4caac18f6",
       "text": "| Bipod | Under | — | 2 | 400¥ | 2 recoil compensation when deployed (a Simple Action). |",
@@ -65523,11 +65545,11 @@
       "note": "Under, Conceal -, Rating 2, 400 agree. The effect (2 recoil compensation when deployed, a Simple Action to set up) is not computed: accessories do not feed recoil compensation, the GM sets the weapon's Recoil Comp. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#213",
+      "id": "rules/weapons.md#214",
       "file": "rules/weapons.md",
       "lines": [
-        338,
-        338
+        344,
+        344
       ],
       "hash": "32b6c00695",
       "text": "| Concealable Holster | — | +2 | — | 100¥ | +2 Concealability for a pistol. |",
@@ -65566,11 +65588,11 @@
       "note": "Conceal +2, 100 agree (the pack's \"(+2)\"). The +2 Concealability for a pistol is not applied by anything. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#214",
+      "id": "rules/weapons.md#215",
       "file": "rules/weapons.md",
       "lines": [
-        339,
-        339
+        345,
+        345
       ],
       "hash": "e7b5130b21",
       "text": "| Silencer | Barrel | −2 | — | 500¥ | SS and SA only, not revolvers. +2 to notice the shot or find the shooter. |",
@@ -65603,11 +65625,11 @@
       "note": "Barrel, Conceal -2, 500 agree. SS/SA-only, no revolvers, and +2 to notice the shot are not modelled. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#215",
+      "id": "rules/weapons.md#216",
       "file": "rules/weapons.md",
       "lines": [
-        340,
-        340
+        346,
+        346
       ],
       "hash": "6e8ec90958",
       "text": "| Sound Suppresser | Barrel | −2 | — | 750¥ | The same for BF and FA. Replace every 300 rounds. |",
@@ -65640,11 +65662,11 @@
       "note": "Barrel, Conceal -2, 750 agree. BF/FA use and the 300-round replacement are not modelled. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#216",
+      "id": "rules/weapons.md#217",
       "file": "rules/weapons.md",
       "lines": [
-        341,
-        341
+        347,
+        347
       ],
       "hash": "b294c645eb",
       "text": "| Spare Clips | — | — | — | 5¥ | Not interchangeable between weapons, even of one class. |",
@@ -65683,11 +65705,11 @@
       "note": "Cost 5 agrees (pack item \"Spare Clip\"). Clips not interchangeable between weapons is enforced only by ammunition class (see unit 65), not weapon-by-weapon. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#217",
+      "id": "rules/weapons.md#218",
       "file": "rules/weapons.md",
       "lines": [
-        342,
-        342
+        348,
+        348
       ],
       "hash": "1463aee509",
       "text": "| Tripod | Under | — | 6 | 600¥ | 6 recoil compensation, prone or sitting. |",
@@ -65720,11 +65742,11 @@
       "note": "Under, Rating 6, 600 agree. 6 recoil compensation (prone or sitting) is not computed. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#218",
+      "id": "rules/weapons.md#219",
       "file": "rules/weapons.md",
       "lines": [
-        343,
-        343
+        349,
+        349
       ],
       "hash": "8346b22fe6",
       "text": "| Gas Vent II | Barrel | −1 | 2 | 450¥ | 2 recoil compensation. Permanent. |",
@@ -65752,11 +65774,11 @@
       "note": "Gas Vent is one levelled item since 0.9.0 (level = rating); level 2: Barrel, Conceal -1, 450. Its RC modifier is 1 per rating, so level 2 gives 2 recoil compensation when installed (TODO 276)."
     },
     {
-      "id": "rules/weapons.md#219",
+      "id": "rules/weapons.md#220",
       "file": "rules/weapons.md",
       "lines": [
-        344,
-        344
+        350,
+        350
       ],
       "hash": "5d50d6a6ca",
       "text": "| Gas Vent III | Barrel | −2 | 3 | 700¥ | 3 recoil compensation. Permanent. |",
@@ -65784,11 +65806,11 @@
       "note": "Gas Vent is one levelled item since 0.9.0 (level = rating); level 3: Barrel, Conceal -2, 700. Its RC modifier is 1 per rating, so level 3 gives 3 recoil compensation when installed (TODO 276)."
     },
     {
-      "id": "rules/weapons.md#220",
+      "id": "rules/weapons.md#221",
       "file": "rules/weapons.md",
       "lines": [
-        345,
-        345
+        351,
+        351
       ],
       "hash": "b3c9e1bdbf",
       "text": "| Gyro Mount, Standard | Under | −5 | 5 | 2,500¥ | Cancels recoil **and movement** modifiers up to its rating. |",
@@ -65821,11 +65843,11 @@
       "note": "Under, Conceal -5, Rating 5, 2,500 agree. Gyro effects are modelled (SR3EActor.gyroOnRecoil, gyroRating). (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#221",
+      "id": "rules/weapons.md#222",
       "file": "rules/weapons.md",
       "lines": [
-        346,
-        346
+        352,
+        352
       ],
       "hash": "f8dec17b2d",
       "text": "| Gyro Mount, Deluxe | Under | −6 | 6 | 6,000¥ | As standard, rating 6. |",
@@ -65858,11 +65880,11 @@
       "note": "Under, Conceal -6, Rating 6, 6,000 agree. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#222",
+      "id": "rules/weapons.md#223",
       "file": "rules/weapons.md",
       "lines": [
-        347,
-        347
+        353,
+        353
       ],
       "hash": "3395aa17fb",
       "text": "| Shock Pads | — | — | 1 | 200¥ | 1 recoil compensation. |",
@@ -65895,11 +65917,11 @@
       "note": "Rating 1, 200 agree. The 1 point of recoil compensation is not computed from the item. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#223",
+      "id": "rules/weapons.md#224",
       "file": "rules/weapons.md",
       "lines": [
-        348,
-        348
+        354,
+        354
       ],
       "hash": "f970ff2fb0",
       "text": "| Imaging scope, Low-Light | Top | −2 | — | 1,500¥ | |",
@@ -65932,11 +65954,11 @@
       "note": "Fixed in 0.7.0 (1c80ada8): the Imaging Scope is two items, Low-Light and Thermographic, each Top, Concealability -2, 1,500 nuyen."
     },
     {
-      "id": "rules/weapons.md#224",
+      "id": "rules/weapons.md#225",
       "file": "rules/weapons.md",
       "lines": [
-        349,
-        349
+        355,
+        355
       ],
       "hash": "57b9914e39",
       "text": "| Imaging scope, Magnification 1–3 | Top | −1 | 1–3 | 500¥–1,200¥ | Shifts the range column. |",
@@ -65969,11 +65991,11 @@
       "note": "Magnification 1 (500, Top, -1), 2 (800) and 3 (1,200): since 0.8.0 ONE pack item, \"Imaging Scope (Weapon)\", its Levels 1-3 in the level table (TODO 261). The range shift they give (SR3 p.110) is NOT modelled — planned in TODO 235, which also takes helmet and cybereye magnification and does not stack them (the maintainer, 2026-10-24). (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row.)"
     },
     {
-      "id": "rules/weapons.md#225",
+      "id": "rules/weapons.md#226",
       "file": "rules/weapons.md",
       "lines": [
-        350,
-        350
+        356,
+        356
       ],
       "hash": "8c5332c812",
       "text": "| Imaging scope, Thermographic | Top | −2 | — | 1,500¥ | |",
@@ -66006,11 +66028,11 @@
       "note": "Fixed in 0.7.0 (1c80ada8): see the Low-Light row."
     },
     {
-      "id": "rules/weapons.md#226",
+      "id": "rules/weapons.md#227",
       "file": "rules/weapons.md",
       "lines": [
-        351,
-        351
+        357,
+        357
       ],
       "hash": "3b56c17d17",
       "text": "| Laser Sight | Top/under | −1 | — | 500¥ | **−1 TN**. Not with a smartlink. |",
@@ -66043,11 +66065,11 @@
       "note": "Top/Under, Conceal -1, 500 agree. -1 TN is a gear modifier in the GM window (laserSight); \"not with a smartlink\" is applied by the second-firearm cancel only, the GM unticks the rest. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#227",
+      "id": "rules/weapons.md#228",
       "file": "rules/weapons.md",
       "lines": [
-        352,
-        352
+        358,
+        358
       ],
       "hash": "75ff714767",
       "text": "| Ultrasound Sight | Top/under | −2 | — | 1,300¥ | Halves lighting and invisibility modifiers, rounded up. Needs ultrasound goggles (1,100¥). |",
@@ -66080,11 +66102,11 @@
       "note": "Top/Under, Conceal -2, 1,300 agree; the Ultrasound Goggles item is 1,100. The halved lighting/invisibility modifier is not computed. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#228",
+      "id": "rules/weapons.md#229",
       "file": "rules/weapons.md",
       "lines": [
-        353,
-        353
+        359,
+        359
       ],
       "hash": "10f963fea1",
       "text": "| Smart Goggles | — | 0 | — | 3,000¥ | The receptor for a smartgun without a cybernetic smartlink. |",
@@ -66117,11 +66139,11 @@
       "note": "Smart Goggles (level I) 3,000 agree (a second \"Smart Goggles I\" item costs 4,000). The -1 TN with a smartgun is in the GM window (smartGoggles). (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#229",
+      "id": "rules/weapons.md#230",
       "file": "rules/weapons.md",
       "lines": [
-        354,
-        354
+        360,
+        360
       ],
       "hash": "ab8cf33377",
       "text": "| Smartgun, internal | — | — | — | +100% | Built in; doubles the gun's cost if added later. |",
@@ -66137,23 +66159,23 @@
       "code": [
         {
           "file": "scripts/data/weapon-accessories.mjs",
-          "line": 108,
+          "line": 119,
           "snippet": "const share = /smart\\s*link\\s*[-\\s]*(?:2|ii)\\b|level\\s+ii\\b/i.test(name) ? 1.5 : 1;"
         },
         {
           "file": "scripts/data/weapon-accessories.mjs",
-          "line": 109,
+          "line": 120,
           "snippet": "return Math.round((Number(weapon?.system?.cost) || 0) * share);"
         }
       ],
       "note": "An internal smartgun installed later adds the gun's cost (doubling it); a Smartlink-2 adds 150% (M&M p.32, the maintainer's ruling Q10). Printed (integral) ones are not priced."
     },
     {
-      "id": "rules/weapons.md#230",
+      "id": "rules/weapons.md#231",
       "file": "rules/weapons.md",
       "lines": [
-        355,
-        355
+        361,
+        361
       ],
       "hash": "76bbda8e07",
       "text": "| Smartgun, external | Top/under | −2 | — | 600¥ | Moves between guns with an hour's work. |",
@@ -66186,11 +66208,11 @@
       "note": "Top/Under, Conceal -2, 600 agree - under the pack name \"Smartlink level I\" (there is no item called Smartgun, external). The hour of maintenance to move it is not modelled. (The text layer of the table prints Mount, Conceal and Rating one line off from the names; read in order they agree with the guide row. The pack keeps the Mount in the item description.)"
     },
     {
-      "id": "rules/weapons.md#231",
+      "id": "rules/weapons.md#232",
       "file": "rules/weapons.md",
       "lines": [
-        357,
-        358
+        363,
+        364
       ],
       "hash": "69855ccb8e",
       "text": "- **A smartgun** is −2 TN with a smartlink, −1 with smart goggles\n  *(SR3 p.112, p.281)*.",
@@ -66223,11 +66245,11 @@
       ]
     },
     {
-      "id": "rules/weapons.md#232",
+      "id": "rules/weapons.md#233",
       "file": "rules/weapons.md",
       "lines": [
-        359,
-        361
+        365,
+        367
       ],
       "hash": "28f6e13177",
       "text": "- **A gyro mount** is a harness: +1 Impact and Ballistic armor, not\n  concealable, **+4 TN in melee** and **only half the Combat Pool**. Five\n  minutes to get into, a Complex Action to quick-release *(SR3 p.280)*.",
@@ -66272,11 +66294,11 @@
       "note": "+1 Impact and Ballistic, +4 melee TN and half the Combat Pool are implemented. Not modelled: five minutes to get into the harness, a Complex Action to quick-release, two Complex Actions to attach or remove a weapon."
     },
     {
-      "id": "rules/weapons.md#233",
+      "id": "rules/weapons.md#234",
       "file": "rules/weapons.md",
       "lines": [
-        362,
-        362
+        368,
+        368
       ],
       "hash": "7d6b54bf0e",
       "text": "- Imaging scopes can't be used with a smartlink *(SR3 p.280)*.",
@@ -66292,18 +66314,18 @@
       "code": [
         {
           "file": "scripts/data/weapon-accessories.mjs",
-          "line": 68,
+          "line": 78,
           "snippet": "out.push(`${gun} would have an imaging scope and a smartgun system: SR3 p.280 says imaging scopes may not be used with smartlink systems.`);"
         }
       ],
       "note": "Warned when either is installed with the other, never refused (ruled 2026-11-07)."
     },
     {
-      "id": "rules/weapons.md#234",
+      "id": "rules/weapons.md#235",
       "file": "rules/weapons.md",
       "lines": [
-        364,
-        364
+        370,
+        370
       ],
       "hash": "58b63e273b",
       "text": "---",
@@ -66311,11 +66333,11 @@
       "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
-      "id": "rules/weapons.md#235",
+      "id": "rules/weapons.md#236",
       "file": "rules/weapons.md",
       "lines": [
-        366,
-        367
+        372,
+        373
       ],
       "hash": "8e605c4c08",
       "text": "## Doing it in The 2nd Chumming (Foundry)\n{: #doing-it-in-the-2nd-chumming-foundry }",
@@ -66323,11 +66345,11 @@
       "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
-      "id": "rules/weapons.md#236",
+      "id": "rules/weapons.md#237",
       "file": "rules/weapons.md",
       "lines": [
-        369,
-        369
+        375,
+        375
       ],
       "hash": "efc65edded",
       "text": "### Getting a weapon",
@@ -66335,11 +66357,11 @@
       "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
-      "id": "rules/weapons.md#237",
+      "id": "rules/weapons.md#238",
       "file": "rules/weapons.md",
       "lines": [
-        371,
-        374
+        377,
+        380
       ],
       "hash": "a9af5f8c77",
       "text": "Drag a weapon onto the character from the compendiums, or buy it with\n**🛒 Buy gear**. It appears on the **Weapons** tab. Its category picks the\nskill and the range bands; **Range override** on the weapon replaces the\nbands, as \"5/15/30/50\".",
@@ -66347,11 +66369,11 @@
       "reason": "describes the system's interface, not a book rule"
     },
     {
-      "id": "rules/weapons.md#238",
+      "id": "rules/weapons.md#239",
       "file": "rules/weapons.md",
       "lines": [
-        376,
-        376
+        382,
+        382
       ],
       "hash": "c08773c24a",
       "text": "### Shooting",
@@ -66359,11 +66381,11 @@
       "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
-      "id": "rules/weapons.md#239",
+      "id": "rules/weapons.md#240",
       "file": "rules/weapons.md",
       "lines": [
-        378,
-        379
+        384,
+        385
       ],
       "hash": "e4cd25775d",
       "text": "- **✋** marks a weapon **ready** in hand; drawing one is a Ready Weapon\n  action *(SR3 p.107)*.",
@@ -66391,11 +66413,11 @@
       "note": "The ✋ toggle marks a weapon in hand; readying charges a Simple Action (Ready Weapon), putting away is free."
     },
     {
-      "id": "rules/weapons.md#240",
+      "id": "rules/weapons.md#241",
       "file": "rules/weapons.md",
       "lines": [
-        380,
-        384
+        386,
+        390
       ],
       "hash": "b48cb6231e",
       "text": "- The **🎲** on the row opens the attack. Choose the **fire mode** and, for\n  full-auto, the rounds. The dialog shows the **range band** measured on the\n  map, the **recoil** after compensation (the weapon's own and the\n  character's, both editable), the target count for this phase, and every\n  other modifier. The TN is yours to change before you roll.",
@@ -66403,11 +66425,11 @@
       "reason": "describes the system's interface, not a book rule"
     },
     {
-      "id": "rules/weapons.md#241",
+      "id": "rules/weapons.md#242",
       "file": "rules/weapons.md",
       "lines": [
-        385,
-        386
+        391,
+        392
       ],
       "hash": "9efae1a1fb",
       "text": "- **Smartgun**, **laser sight** and **recoil compensation** are fields on the\n  weapon. A smartgun saves the rounds walked fire would waste.",
@@ -66415,11 +66437,11 @@
       "reason": "describes the system's interface, not a book rule"
     },
     {
-      "id": "rules/weapons.md#242",
+      "id": "rules/weapons.md#243",
       "file": "rules/weapons.md",
       "lines": [
-        387,
-        388
+        393,
+        394
       ],
       "hash": "d7008ec0c2",
       "text": "- A shotgun loaded with **shot** asks for the **choke**, and the card shows\n  each spread's Power and TN.",
@@ -66427,11 +66449,11 @@
       "reason": "describes the system's interface, not a book rule"
     },
     {
-      "id": "rules/weapons.md#243",
+      "id": "rules/weapons.md#244",
       "file": "rules/weapons.md",
       "lines": [
-        389,
-        389
+        395,
+        395
       ],
       "hash": "2411793186",
       "text": "- **🎯** on the token's HUD fires a ready weapon from the map.",
@@ -66439,11 +66461,11 @@
       "reason": "describes the system's interface, not a book rule"
     },
     {
-      "id": "rules/weapons.md#244",
+      "id": "rules/weapons.md#245",
       "file": "rules/weapons.md",
       "lines": [
-        391,
-        391
+        397,
+        397
       ],
       "hash": "46aaa882c5",
       "text": "### Ammunition",
@@ -66451,11 +66473,11 @@
       "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
-      "id": "rules/weapons.md#245",
+      "id": "rules/weapons.md#246",
       "file": "rules/weapons.md",
       "lines": [
-        393,
-        396
+        399,
+        402
       ],
       "hash": "66cb50c590",
       "text": "- **↻ Reload** loads from ammunition on the character: loose rounds of the\n  gun's class, or a spare clip. The loaded type (regular, APDS, explosive,\n  gel, flechette, tracer, shot) changes the damage and the armor used on the\n  soak card by itself.",
@@ -66463,11 +66485,11 @@
       "reason": "describes the system's interface, not a book rule"
     },
     {
-      "id": "rules/weapons.md#246",
+      "id": "rules/weapons.md#247",
       "file": "rules/weapons.md",
       "lines": [
-        397,
-        398
+        403,
+        404
       ],
       "hash": "209e291d8e",
       "text": "- With the world setting **Track ammunition** on, firing counts rounds down,\n  and an empty gun won't fire until reloaded.",
@@ -66475,11 +66497,11 @@
       "reason": "describes the system's interface, not a book rule"
     },
     {
-      "id": "rules/weapons.md#247",
+      "id": "rules/weapons.md#248",
       "file": "rules/weapons.md",
       "lines": [
-        399,
-        400
+        405,
+        406
       ],
       "hash": "9b205ed167",
       "text": "- Thrown weapons count down their quantity; bows and crossbows nock an\n  arrow or bolt.",
@@ -66487,11 +66509,11 @@
       "reason": "describes the system's interface, not a book rule"
     },
     {
-      "id": "rules/weapons.md#248",
+      "id": "rules/weapons.md#249",
       "file": "rules/weapons.md",
       "lines": [
-        402,
-        402
+        408,
+        408
       ],
       "hash": "65d7ed57f2",
       "text": "### Melee",
@@ -66499,11 +66521,11 @@
       "reason": "page title / table of contents / heading / table header row / category label / rule — states no rule"
     },
     {
-      "id": "rules/weapons.md#249",
+      "id": "rules/weapons.md#250",
       "file": "rules/weapons.md",
       "lines": [
-        404,
-        407
+        410,
+        413
       ],
       "hash": "484ffb7027",
       "text": "**Equip** a melee weapon on the Weapons tab, then use its **🎲 Melee\nattack**. Reach is read from the weapon. **Unarmed** is always there, and\nuses the best of Unarmed Combat and any martial art. See\n[Actions & Combat](../combat/#melee-combat).",
@@ -69400,7 +69422,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2970,
+          "line": 2982,
           "snippet": "Hooks.on('deleteItem', (item, options) => { if (!options?.sr3eModMove) _recordEssenceHoleOnRemoval(item); });"
         }
       ]
@@ -69426,7 +69448,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2970,
+          "line": 2982,
           "snippet": "Hooks.on('deleteItem', (item, options) => { if (!options?.sr3eModMove) _recordEssenceHoleOnRemoval(item); });"
         }
       ]
@@ -69484,7 +69506,7 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2872,
+          "line": 2884,
           "snippet": "if (item.system?.essenceSlot) {"
         }
       ]
