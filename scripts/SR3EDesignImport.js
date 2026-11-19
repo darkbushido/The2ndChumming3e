@@ -172,7 +172,7 @@ export const SR3EDesignImport = {
     data.flags = foundry.utils.mergeObject(data.flags ?? {}, { The2ndChumming3e: { designImport: true } });
     if (actorId) {
       const actor = actorFrom(actorId);
-      if (!actor?.isOwner) { ui.notifications.warn('You don't own that actor.'); return []; }
+      if (!actor?.isOwner) { ui.notifications.warn("You don't own that actor."); return []; }
       const created = await actor.createEmbeddedDocuments('Item', [data]);
       ui.notifications.info(`${data.name} imported onto ${actor.name} (not worn).`);
       return created;
