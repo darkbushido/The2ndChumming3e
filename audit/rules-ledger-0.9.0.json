@@ -45034,7 +45034,8 @@
       ],
       "hash": "bee5eb3416",
       "text": "# Instruction & Learning Skills\n{: .no_toc }",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "page title"
     },
     {
       "id": "rules/instruction.md#2",
@@ -45045,7 +45046,51 @@
       ],
       "hash": "d85ac6acf4",
       "text": "How a character learns a new skill or improves one: the **Good Karma** it costs, the **training** the gamemaster\nmay require, a **teacher** with the Instruction skill, and the **virtual instructor** programs and chips sold on the\nMatrix. Karma costs are on the [Karma](../karma/#skills) page and aren't repeated here. All rules are from the\ncore rulebook, *(SR3 p.87, p.95, p.245, p.296)*.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Page introduction citing the four pages its rules come from; each rule is resolved in its own unit below. Evidence: one quote per cited page and the code that holds the parts the system models.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 89,
+          "printedPage": 87,
+          "quote": "The Instruction Skill allows a character to more efficiently"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "Teaching requires an Instruction (4) Test. For every two"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "New skills can be purchased at a skill rating of 1"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 298,
+          "printedPage": 296,
+          "quote": "Virtual Instructor Chip              12                       Mp x 100"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7984,
+          "snippet": "return 1;"
+        },
+        {
+          "file": "scripts/config.js",
+          "line": 106,
+          "snippet": "name: \"Instruction\",   linkedAttribute: \"charisma\""
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/virt-instr-gen.6eb8a46819080ba8.json",
+          "line": 27,
+          "snippet": "\"legality\": \"Legal (3-Y for illegal or restricted skills)\""
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#3",
@@ -45056,7 +45101,8 @@
       ],
       "hash": "1dd6ad0a8a",
       "text": "1. TOC\n{:toc}",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table of contents"
     },
     {
       "id": "rules/instruction.md#4",
@@ -45067,7 +45113,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/instruction.md#5",
@@ -45078,7 +45125,23 @@
       ],
       "hash": "2247a48fb9",
       "text": "## Learning a new skill  *(SR3 p.245)*",
-      "verdict": null
+      "verdict": "match",
+      "note": "Section heading citing SR3 p.245 (Learning New Skills).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "New skills can be purchased at a skill rating of 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7984,
+          "snippet": "return 1;"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#6",
@@ -45089,7 +45152,22 @@
       ],
       "hash": "616b2723b1",
       "text": "A new skill is bought at **rating 1** for **1 Good Karma**, whether it is an Active, Knowledge or Language skill.\nRaising it past 1 follows the improvement costs on [Karma](../karma/#skills).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "New skills can be purchased at a skill rating of 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7984,
+          "snippet": "return 1;"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#7",
@@ -45100,7 +45178,22 @@
       ],
       "hash": "07723c936d",
       "text": "**The gamemaster controls how fast.** *\"Gamemasters should not allow characters to simply spend large amounts of Karma\nand become vastly more powerful almost overnight.\"* Characters should train, or use and improve their skills over time,\nand may need to **search out a teacher** *(SR3 p.245)*. The book leaves the balance to the gamemaster and offers two ways:",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "They may even need to search out a teacher to learn"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "searchOutATeacher|trainingRequired|requireTraining",
+          "path": "scripts"
+        }
+      ],
+      "note": "The book leaves the pace of learning to the GM; the system gates nothing (consistent with its ethos), so there is no training requirement in code."
     },
     {
       "id": "rules/instruction.md#8",
@@ -45111,7 +45204,8 @@
       ],
       "hash": "197c708066",
       "text": "| Option | How it works |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "table header row"
     },
     {
       "id": "rules/instruction.md#9",
@@ -45122,7 +45216,21 @@
       ],
       "hash": "70a2661556",
       "text": "| **A short, simple mechanic** | Make a **Skill Test** using the skill, against a target number of **twice the Skill Rating sought**. A character without the skill **defaults**. An instructor **adds dice** to this test (see below). Good Karma can be spent to learn or raise the skill **only after this test succeeds**. |",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "get number for such a test would be twice the Skill Rating"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "learnSkillTest|learningTest|twiceTheSkillRating",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#10",
@@ -45133,7 +45241,8 @@
       ],
       "hash": "512c4d55ad",
       "text": "| **Roleplay it** | Make the training the basis of an adventure: the instructor was just the target of a corporate extraction, a shaman's totem demands a quest before the character can improve at conjuring. |",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "roleplay suggestion (an adventure hook), not a mechanic"
     },
     {
       "id": "rules/instruction.md#11",
@@ -45144,7 +45253,8 @@
       ],
       "hash": "e4f175191c",
       "text": "*Worked example (arithmetic from the rule, not from the book):* a character wants **Pistols 4**. The test target number\nis 2 × 4 = **8**. A teacher with the Instruction skill adds dice (below). Only after a success does the character spend\nthe **6 Good Karma** the [Karma](../karma/#skills) page works out for Pistols 4 at Quickness 4.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "worked example marked as arithmetic from the rules in units #9 and the Karma page — no rule of its own"
     },
     {
       "id": "rules/instruction.md#12",
@@ -45155,7 +45265,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/instruction.md#13",
@@ -45166,7 +45277,29 @@
       ],
       "hash": "213446d3c0",
       "text": "## The Instruction skill  *(SR3 p.87, p.95)*",
-      "verdict": null
+      "verdict": "match",
+      "note": "Section heading citing SR3 p.87 and p.95.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 89,
+          "printedPage": 87,
+          "quote": "The Instruction Skill allows a character to more efficiently"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "Teaching requires an Instruction (4) Test. For every two"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 106,
+          "snippet": "name: \"Instruction\",   linkedAttribute: \"charisma\""
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#14",
@@ -45177,7 +45310,23 @@
       ],
       "hash": "f313bee4d6",
       "text": "**Instruction** is a Charisma-linked Active skill. It **defaults to the Charisma Attribute**, and its specializations\nare **by specific subject** *(SR3 p.87)*.",
-      "verdict": null
+      "verdict": "match",
+      "note": "Defaulting to the linked Attribute is the general Default Table rule; the link to Charisma and the \"specific subject\" specialization are what the code holds.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 89,
+          "printedPage": 87,
+          "quote": "The Instruction Skill allows a character to more efficiently"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/config.js",
+          "line": 106,
+          "snippet": "name: \"Instruction\",   linkedAttribute: \"charisma\""
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#15",
@@ -45188,7 +45337,21 @@
       ],
       "hash": "aee43b2544",
       "text": "- To teach a skill, spell or other subject, the instructor must have that skill at **Rating 3 or higher**. They must\n  also have it **at or above the rating the pupil wants to reach** *(SR3 p.95)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "possess a skill at Rating 3 or higher in order to teach it to"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "canTeach|instructorRating|teachSkill",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#16",
@@ -45199,7 +45362,21 @@
       ],
       "hash": "a57bf8130b",
       "text": "- Teaching requires an **Instruction (4) Test**. For **every 2 successes**, the student gets **one additional die** on the\n  test to learn the skill *(SR3 p.95)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "Teaching requires an Instruction (4) Test. For every two"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "Instruction \\(4\\)|instructionTest|instructionDice",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#17",
@@ -45210,7 +45387,21 @@
       ],
       "hash": "ec8059d507",
       "text": "- The instructor's effect is on the **pupil's learning test**, so it pairs with the Skill Test option above.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "the student receives an addi"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "instructionDice|pupilDice|learnSkillTest",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#18",
@@ -45221,7 +45412,8 @@
       ],
       "hash": "a4804d60af",
       "text": "- Teaching spells works the same way. See [Spells](../../magic/spells/) for the teacher's fee and study time.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "cross-reference to the Spells page for teaching spells; states no rule here"
     },
     {
       "id": "rules/instruction.md#19",
@@ -45232,7 +45424,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/instruction.md#20",
@@ -45243,7 +45436,22 @@
       ],
       "hash": "d91076d3ae",
       "text": "## Virtual instructors  *(SR3 p.95, p.296)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Section heading: the virtual instructor sizing and pricing rules are not modelled (see #21-#23).",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "Consider virtual instructors to have a multiplier of 3."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "virtualInstructor|instructorSize",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#21",
@@ -45254,7 +45462,21 @@
       ],
       "hash": "93964c3291",
       "text": "*\"Numerous 'virtual instructor' programs are now available widely, especially through the Matrix.\"* Each is a program with\n**a rating in the skill it teaches, and a rating in Instruction**.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "such program to have a rating in the skill it is providing instruc"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "virtualInstructor|instructorRating",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#22",
@@ -45265,7 +45487,21 @@
       ],
       "hash": "622e2798f6",
       "text": "1. **Size.** Add the two ratings together and read the **Program Size Table** *(SR3 p.223)* with a **multiplier of 3**.\n   The size is the total squared, times 3.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "Consider virtual instructors to have a multiplier of 3."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "virtualInstructor|instructorSize",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#23",
@@ -45276,7 +45512,21 @@
       ],
       "hash": "6f2bccfe71",
       "text": "2. **Price.** For a program, use the **Program Costs and Availability Table** *(SR3 p.304)*: the rating band sets the\n   Availability, Street Index and cost per Mp of size.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "Consult the Program Costs and Availability Table (p. 304) for"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "virtualInstructor|instructorPrice",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#24",
@@ -45287,7 +45537,34 @@
       ],
       "hash": "4322d0ae12",
       "text": "3. **As a chip.** A **Virtual Instructor Chip** is sold for **Mp × 100¥**, Availability **(ratings total)/72 hrs**,\n   Street Index **1** *(SR3 p.296)*.",
-      "verdict": null
+      "verdict": "diverges",
+      "note": "The book prices the chip by size (Mp x 100¥) with Availability = ratings total/72 hrs. The two pack items (Virt Instr Gen. / Spec) carry a flat 600¥ / 500¥ and Availability 2/72hrs — one fixed instance, not the formula. Street Index 1 and the Legality agree. For the maintainer: intended example ratings, or should the price follow the formula?",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 298,
+          "printedPage": 296,
+          "quote": "Virtual Instructor Chip              12                       Mp x 100"
+        },
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "Consider virtual instructors to have a multiplier of 3."
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/virt-instr-gen.6eb8a46819080ba8.json",
+          "line": 21,
+          "snippet": "\"cost\": 600,"
+        },
+        {
+          "file": "packs-src/sr3e-sr3-gear/virt-instr-gen.6eb8a46819080ba8.json",
+          "line": 23,
+          "snippet": "\"availability\": \"2/72hrs\","
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#25",
@@ -45298,7 +45575,8 @@
       ],
       "hash": "e98ef3c271",
       "text": "**Worked example** (the sum and the squaring are from the book's rule; the rest is the arithmetic):\nPistols 4 and Instruction 3 give a total of **7**. The Program Size Table's rating 7 row is 49, and **49 × 3 = 147 Mp**.\nAs a **chip**: 147 Mp × 100¥ = **14,700¥**, Availability **7/72 hrs**, Street Index 1.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "worked example: the arithmetic of units #22 and #24, no rule of its own"
     },
     {
       "id": "rules/instruction.md#26",
@@ -45309,7 +45587,22 @@
       ],
       "hash": "86dfee1f74",
       "text": "### Restricted skills  *(SR3 p.95)*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "note": "Section heading; the rule is #27.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "twice the Street Index and an Availability of 10 or higher."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "restrictedSkillProgram",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#27",
@@ -45320,7 +45613,21 @@
       ],
       "hash": "bec89a955d",
       "text": "*\"Programs for illegal or restricted skills (such as Demolitions) typically have **twice the Street Index** and an\n**Availability of 10 or higher**.\"*",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 97,
+          "printedPage": 95,
+          "quote": "twice the Street Index and an Availability of 10 or higher."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "restrictedSkillProgram|virtualInstructor",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#28",
@@ -45331,7 +45638,23 @@
       ],
       "hash": "dd055dda3f",
       "text": "### Legality  *(SR3 p.296)*",
-      "verdict": null
+      "verdict": "match",
+      "note": "Section heading citing the Legality column of SR3 p.296.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 298,
+          "printedPage": 296,
+          "quote": "Virtual Instructor Chip              12                       Mp x 100"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/virt-instr-gen.6eb8a46819080ba8.json",
+          "line": 27,
+          "snippet": "\"legality\": \"Legal (3-Y for illegal or restricted skills)\""
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#29",
@@ -45342,7 +45665,27 @@
       ],
       "hash": "e59b88de69",
       "text": "The Virtual Instructor Chip's Legality is printed as **`Legal/3-Y`** on the Skillsofts and Chips table. The category **Y**\nis on the fines table: see [Legality Codes & Permits](../../street/legality/).",
-      "verdict": null
+      "verdict": "match",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 298,
+          "printedPage": 296,
+          "quote": "Virtual Instructor Chip              12                       Mp x 100"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/virt-instr-gen.6eb8a46819080ba8.json",
+          "line": 27,
+          "snippet": "\"legality\": \"Legal (3-Y for illegal or restricted skills)\""
+        },
+        {
+          "file": "scripts/data/legality.mjs",
+          "line": 54,
+          "snippet": "the Virtual Instructor Chip prints \"Legal/3-Y\" (SR3 p.296)"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#30",
@@ -45353,7 +45696,8 @@
       ],
       "hash": "bc10d6a40f",
       "text": "{: .house }\n> **How the system reads the split.** The book prints both values and doesn't spell out when each applies. The system reads it\n> as: **Legal** for an ordinary skill, **3-Y** for the illegal or restricted skills that page 95 singles out. It's recorded\n> on the chips as \"Legal (3-Y for illegal or restricted skills)\", and the GM decides which skills count.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "house rule, marked {: .house }: how the system reads the printed Legal/3-Y split"
     },
     {
       "id": "rules/instruction.md#31",
@@ -45364,7 +45708,8 @@
       ],
       "hash": "58b63e273b",
       "text": "---",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "horizontal rule"
     },
     {
       "id": "rules/instruction.md#32",
@@ -45375,7 +45720,23 @@
       ],
       "hash": "646753e9ef",
       "text": "## Skillsofts and chips  *(SR3 p.295–296)*",
-      "verdict": null
+      "verdict": "match",
+      "note": "Section heading citing the Skillsofts and Chips table.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 298,
+          "printedPage": 296,
+          "quote": "Virtual Instructor Chip              12                       Mp x 100"
+        }
+      ],
+      "code": [
+        {
+          "file": "packs-src/sr3e-sr3-gear/virt-instr-gen.6eb8a46819080ba8.json",
+          "line": 27,
+          "snippet": "\"legality\": \"Legal (3-Y for illegal or restricted skills)\""
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#33",
@@ -45386,7 +45747,8 @@
       ],
       "hash": "1e86b5965d",
       "text": "Virtual instructors are one of the products on the **Skillsofts and Chips** table. The others (Activesoft, Datasoft,\nKnowsoft, Linguasoft, Skillsoft Jukebox, Optical Memory Chip, Autonav Map Chip and the BTL chips) are\nsold as chips with their own price, Availability and Legality.",
-      "verdict": null
+      "verdict": "no-rule-claim",
+      "reason": "list of the products on the Skillsofts and Chips table — names only, no rule"
     },
     {
       "id": "rules/instruction.md#34",
@@ -45397,7 +45759,21 @@
       ],
       "hash": "e725a0dd8c",
       "text": "- **Softs don't provide dice pools.** A Pistols activesoft doesn't give Combat Pool dice for Pistols Tests unless the\n  character has the skill *(SR3 p.296)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 298,
+          "printedPage": 296,
+          "quote": "the user of a Pistols activesoft does not receive Combat Pool"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "softsGiveNoPool|softNoPool|activesoftPool",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#35",
@@ -45408,7 +45784,21 @@
       ],
       "hash": "1ef9d7c18a",
       "text": "- **Magic skills** such as Sorcery and Conjuring can't be made into activesofts *(SR3 p.296)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 298,
+          "printedPage": 296,
+          "quote": "ing cannot be made into activesofts."
+        }
+      ],
+      "search": [
+        {
+          "pattern": "magicActivesoft|noMagicSoft|activesoftMagic",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/instruction.md#36",
@@ -45419,7 +45809,21 @@
       ],
       "hash": "e9510498ba",
       "text": "- **Memory** a skillsoft takes up comes from the Program Size Table *(SR3 p.223)*: a **multiplier of 3** for a base skill\n  and **2** for a specialization *(SR3 p.296)*.",
-      "verdict": null
+      "verdict": "not-implemented",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 298,
+          "printedPage": 296,
+          "quote": "Base skill skillsofts have a multiplier of 3, specializations a mul"
+        }
+      ],
+      "search": [
+        {
+          "pattern": "skillsoftSize|softMultiplier",
+          "path": "scripts"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#1",
@@ -46346,8 +46750,28 @@
       ],
       "hash": "0cd6eb58c8",
       "text": "### Skills  *(SR3 p.244–245)*\n{: #skills }",
-      "verdict": "no-rule-claim",
-      "reason": "section heading; its rules are in the units below it"
+      "verdict": "match",
+      "note": "Section heading citing SR3 p.244-245; its rows are resolved below it.",
+      "pdf": [
+        {
+          "file": "Shadowrun 3e - Core Rules {FAN25000}.pdf",
+          "pdfPage": 247,
+          "printedPage": 245,
+          "quote": "New skills can be purchased at a skill rating of 1"
+        }
+      ],
+      "code": [
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7947,
+          "snippet": "static karmaSkillCost(newRating, attrRating, isActive) {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 7984,
+          "snippet": "return 1;"
+        }
+      ]
     },
     {
       "id": "rules/karma.md#30",
