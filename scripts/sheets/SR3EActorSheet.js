@@ -761,8 +761,10 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
               return engaged ? `<div class="wound-gm-note">👁 Pain Editor engaged — the player
                 sees "?" here. You are keeping track (M&amp;M p.71).</div>` : '';
             })()}
+            <div class="wound-track-stack">
             ${this._woundTrack('stun', 'Stun', w.stun?.value ?? 0, 10)}
             ${this._woundTrack('physical', 'Physical', w.physical?.value ?? 0, 10)}
+            </div>
             <div class="overflow-track">
               <span class="wound-track-label" style="color:var(--sr-amber);font-size:11px;">↑ Overflow</span>
               <div style="display:flex;align-items:center;gap:6px;">
@@ -771,6 +773,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
                   title="Dead if this exceeds Body (${body})"/>
               </div>
             </div>
+            <div class="wound-actions">
             <button type="button" class="btn-sm" data-action="openHealing"
                     title="Guided healing: stabilize, first aid, magic, a doctor, healing stages and the bill (SR3 pp.126-129)">🩹 Healing</button>
             <button type="button" class="btn-sm" data-action="openPerception"
@@ -784,6 +787,7 @@ export class SR3EActorSheet extends foundry.applications.sheets.ActorSheetV2 {
             <span class="wound-mod-display">
               Carry: <strong>${weightDisplay}</strong>
             </span>
+            </div>
             ${deadHtml}
             ${(() => {
               const wm    = sys.woundMod    ?? 0;
