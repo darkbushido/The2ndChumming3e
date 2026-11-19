@@ -70,6 +70,16 @@ export async function run(t) {
   t.is('…carrying each mod\'s reference and quoted price', JSON.stringify(line.modded.mods.map(m => [m.itemUuid, m.cost])), '[["u:vent",450],["u:smart",450]]');
   t.is('a blocked mod has no reference on the line', ModdedBuy.cartLine(r, { hostUuid: 'x' }).modded.mods.length, 0);
 
+  /* ── Live check 2026-11-19: 💴 Pay charged for a modded line and created nothing ── */
+  const { Cart } = await import('../scripts/data/cart.mjs');
+  t.is('the line carries the host uuid', line.itemUuid, 'u:pred');
+  t.is('…and again inside modded, for 💴 Pay', line.modded.hostUuid, 'u:pred');
+  const onCard = Cart.linesOf(JSON.parse(JSON.stringify({ lines: [line], store: true })))[0];
+  t.is('the line survives the card payload with its host uuid', onCard.itemUuid, 'u:pred');
+  t.ok('…and its mods', onCard.modded.mods.length === 2);
+  t.is('a gun is not offered as a gun mod (Ingram Smartgun)', ModdedBuy.offerable('weapon', { type: 'firearm', name: 'Ingram Smartgun', system: {} }), false);
+  t.is('…a gear accessory is', ModdedBuy.offerable('weapon', smart), true);
+
   /* ── Source checks: the dialog ── */
   const src = readFileSync(new URL('../scripts/SR3EModdedBuy.js', import.meta.url), 'utf8');
   t.ok('the dialog is a DialogV2.wait', /DialogV2\.wait\(/.test(src));
@@ -78,6 +88,7 @@ export async function run(t) {
   t.ok('Buy goes through the 🛒 flow with the line in its cart', /SR3EPurchase\.open\([^)]*lines:/.test(src));
   t.ok('Add without paying exists', /add without paying/i.test(src));
   const pur = readFileSync(new URL('../scripts/SR3EPurchase.js', import.meta.url), 'utf8');
+  t.ok('💴 Pay handles a modded line BEFORE skipping lines with no uuid', pur.indexOf('if (line.modded)') > 0 && pur.indexOf('if (line.modded)') < pur.indexOf('if (!line.itemUuid) continue;'));
   t.ok('💴 Pay builds a modded line through SR3EModdedBuy', /line\.modded/.test(pur) && /SR3EModdedBuy\.materialise/.test(pur));
   const sheet = readFileSync(new URL('../scripts/sheets/SR3EActorSheet.js', import.meta.url), 'utf8');
   t.ok('the sheet has the 🔧 button beside 🛒', /data-action="buildModded"/.test(sheet));

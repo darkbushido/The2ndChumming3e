@@ -149,7 +149,7 @@ export const SR3EModdedBuy = {
    * caller to create) or `{ vehicle }` (the created vehicle's name — created here, through the GM, mods embedded).
    */
   async materialise(actor, line) {
-    const host = await fromUuid(line.itemUuid).catch(() => null);
+    const host = await fromUuid(line.itemUuid || line.modded?.hostUuid).catch(() => null);
     if (!host) { ui.notifications.warn(`${line.name}: its host can no longer be found.`); return {}; }
     const mods = [];
     for (const r of line.modded?.mods ?? []) {

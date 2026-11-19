@@ -47,6 +47,8 @@ export const ModdedBuy = {
     if (!kind || !mod) return false;
     if (kind === 'vehicle') return mod.type === 'vehiclemod';
     if (mod.type === 'vehiclemod' || mod.type === 'vehicle') return false;
+    // A gun is not a gun mod ("Ingram Smartgun" matched a Smartgun search, live check 2026-11-19); a cyberlimb may hold a cyberweapon.
+    if (['firearm', 'melee', 'projectile', 'thrown', 'ammunition'].includes(mod.type) && kind !== 'cyberware') return false;
     const modFor = mod.system?.modFor ?? '';
     const want = kind === 'cyberware' ? 'cyberlimb' : kind;
     return !modFor || modFor === want;
@@ -141,7 +143,7 @@ export const ModdedBuy = {
       cost: quote.total, quantity: 1, index: num(quote.built?.system?.streetIndex) || 1,
       tn: quote.slowest.tn, time: quote.slowest.time, unit: quote.slowest.unit,
       itemUuid: hostUuid ?? '', level: null, gunClass: '', legality,
-      modded: { vehicle: quote.kind === 'vehicle', mods: quote.refs.map(r => ({ ...r })) },
+      modded: { hostUuid: hostUuid ?? '', vehicle: quote.kind === 'vehicle', mods: quote.refs.map(r => ({ ...r })) },
     };
   },
 };

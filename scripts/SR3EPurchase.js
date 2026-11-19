@@ -734,14 +734,14 @@ export const SR3EPurchase = {
         for (const kit of empties) await kit.unsetFlag('The2ndChumming3e', 'suppliesOut');
         if (empties.length) { added += ` — ${empties.map(k => k.name).join(', ')} restocked`; continue; }
       }
-      if (!line.itemUuid) continue;
-      // 🔧 A modded item (TODO 283): the host with its mods, built again at the quoted prices; a vehicle is created here.
+      // 🔧 A modded item (TODO 283) — before the itemUuid guard (live check 2026-11-19: Pay charged and created nothing): the host with its mods, built again at the quoted prices; a vehicle is created here.
       if (line.modded) {
         const made = await game.sr3e.SR3EModdedBuy.materialise(actor, line);
         if (made.item) toCreate.push(made.item);
         if (made.vehicle) added += ` — ${made.vehicle} deployed`;
         continue;
       }
+      if (!line.itemUuid) continue;
       const src = await fromUuid(line.itemUuid).catch(() => null);
       if (!src) continue;
       let data = src.toObject();
