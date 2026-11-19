@@ -2515,7 +2515,7 @@ export const MUTANTS = [
       const lines = [{ name: host?.name, cost: Number(host?.system?.cost) || 0, basis: 'fixed', availability: '', part: 'host' },
         ...mods.map(m => ({ name: m.data.name, cost: Number(m.data.system?.cost) || 0, basis: 'fixed', availability: '', part: 'mod' }))];
       return { kind: 'weapon', lines, total: lines.reduce((s, l) => s + l.cost, 0), slowest: { tn: 0, time: 0, unit: 'day', code: '', name: '' },
-        warnings: [], built: host, mods: mods.map(m => m.data), refs: mods.map(m => ({ itemUuid: m.ref ?? '', level: null, cost: Number(m.data.system?.cost) || 0 })) };
+        warnings: [], built: { ...host, system: { ...host?.system, installed: mods.map(m => m.data) } }, mods: mods.map(m => m.data), refs: mods.map(m => ({ itemUuid: m.ref ?? '', level: null, cost: Number(m.data.system?.cost) || 0 })) };
     },
   },
   {
