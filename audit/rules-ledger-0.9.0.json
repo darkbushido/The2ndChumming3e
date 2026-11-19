@@ -7470,10 +7470,11 @@
       "code": [
         {
           "file": "scripts/config.js",
-          "line": 1551,
-          "snippet": "spellCategories: ['Combat', 'Detection', 'Health', 'Illusion', 'Manipulation'],"
+          "line": 1557,
+          "snippet": "spellCategories: ['Combat', 'Detection', 'Health', 'Illusion', 'Control', 'Elemental', 'Telekinetic', 'Transformation', 'Manipulation'],"
         }
-      ]
+      ],
+      "note": "The list adds the four Manipulation subtypes (Control, Elemental, Telekinetic, Transformation; SR3 pp.196-198) beside Manipulation, so packs can file a spell under its subtype; the five categories are all there."
     },
     {
       "id": "magic/awakened-primer.md#9",
@@ -17483,8 +17484,8 @@
         },
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 5070,
-          "snippet": "if (SR3EItem.spellTakesGMWindow(this.system.range) || isFling) {"
+          "line": 5156,
+          "snippet": "if (SR3EItem.spellTakesGMWindow(this.system.range) || isFling || isClout) {   // Fling: a ranged attack, cover and visibility count"
         }
       ],
       "note": "Found diverging in this check (only elemental spells opened the GM cover/visibility window) and fixed before release at the maintainer's call (2026-09-26): spellTakesGMWindow now takes only the range, so every spell but touch and personal ones opens the window."
@@ -17764,8 +17765,8 @@
         },
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 5020,
-          "snippet": "if (WillingTarget.canBeWilling(this.system.category) && !isFling && targetActors.length) {"
+          "line": 5106,
+          "snippet": "if (WillingTarget.canBeWilling(this.system.category) && !isFling && !isClout && targetActors.length) {"
         }
       ],
       "note": "Fixed in 0.7.0 (68164b15): a willing target (including of a Combat spell, never the default) gets no Resist Spell button. Elemental spells are the one category excluded, because their Resistance Test is a Damage Resistance Test (p.183)."
@@ -29731,9 +29732,9 @@
           "snippet": "return whole(intelligence) + Math.floor(whole(mpcp) / 3);"
         },
         {
-          "file": "scripts/documents/SR3EActor.js",
-          "line": 2632,
-          "snippet": "? MdfRules.hackingPool(attr.intelligence?.value ?? 0, mpcp)"
+          "file": "scripts/data/mdf-rules.mjs",
+          "line": 19,
+          "snippet": "return whole(intelligence) + Math.floor(whole(mpcp) / 3);"
         }
       ],
       "note": "Fixed in 0.6.3 on the maintainer's ruling, 2026-09-28 (756e33c2); it was a divergence in this check."
@@ -29769,9 +29770,9 @@
           "snippet": "return whole(intelligence) + Math.floor(whole(mpcp) / 3);"
         },
         {
-          "file": "scripts/documents/SR3EActor.js",
-          "line": 2632,
-          "snippet": "? MdfRules.hackingPool(attr.intelligence?.value ?? 0, mpcp)"
+          "file": "scripts/data/mdf-rules.mjs",
+          "line": 19,
+          "snippet": "return whole(intelligence) + Math.floor(whole(mpcp) / 3);"
         }
       ],
       "note": "Fixed in 0.6.3 on the maintainer's ruling, 2026-09-28 (756e33c2); it was a divergence in this check."
@@ -31355,8 +31356,8 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 1509,
-          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId) {"
+          "line": 1536,
+          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId, reason = 'Hack attempt failed Security Threshold check.') {"
         }
       ]
     },
@@ -31525,8 +31526,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 1509,
-          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId) {"
+          "line": 1536,
+          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId, reason = 'Hack attempt failed Security Threshold check.') {"
         }
       ]
     },
@@ -31557,16 +31558,21 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 1509,
-          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId) {"
+          "line": 1536,
+          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId, reason = 'Hack attempt failed Security Threshold check.') {"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
           "line": 1554,
           "snippet": "if (newOW >= 10) {"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1892,
+          "snippet": "await SR3EActor._incrementOverwatch(pick.hostId, pick.deckerId || null, 'An icon crashed without Suppression (MDF p.22).');"
         }
       ],
-      "note": "Only the first trigger is automated; crashing without Suppression is the GM's (TODO 128)."
+      "note": "Both triggers: a failed Hacking Test raises Overwatch automatically; a crash is the GM's Icon crashed dialog, which adds the point unless the decker suppresses it (TODO 128)."
     },
     {
       "id": "rules/decking-defragged.md#109",
@@ -31856,7 +31862,7 @@
       ],
       "hash": "cde356437a",
       "text": "A decker who crashes an enemy icon while running the **Suppression** utility can degrade it\ninstead of taking the usual Overwatch hit for the crash. *(MDF p.26)*",
-      "verdict": "not-implemented",
+      "verdict": "match",
       "pdf": [
         {
           "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
@@ -31865,13 +31871,19 @@
           "quote": "in an active utility slot, may degrade 1 point of the"
         }
       ],
-      "search": [
+      "note": "Since 0.9.0 (TODO 128): the GM's Icon crashed dialog offers \"Suppress it\"; with a Suppression program running it degrades the program 1 point and adds no Overwatch (MDF p.26). Offered, never automatic.",
+      "code": [
         {
-          "pattern": "suppression|Suppression",
-          "path": "scripts/documents"
+          "file": "scripts/data/overwatch-crash.mjs",
+          "line": 34,
+          "snippet": "return { overwatch: 0, degrade: 1, suppressed: true, newRating: rating - 1 };"
+        },
+        {
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1880,
+          "snippet": "const res = OverwatchCrash.resolve({"
         }
-      ],
-      "note": "The Suppression utility ships as a program item; nothing in the rules code reads it (TODO 128)."
+      ]
     },
     {
       "id": "rules/decking-defragged.md#121",
@@ -31882,7 +31894,7 @@
       ],
       "hash": "c8145d4cda",
       "text": "{: .note }\n> The book gives hosts two ways to gain Overwatch and a full sheaf of scripted Trigger Steps with\n> Suppression as the counter-play. This system currently only automates the first trigger — a\n> failed Hacking Test. See *Doing it in The 2nd Chumming*, below, for what's automated today.",
-      "verdict": "not-implemented",
+      "verdict": "guide-differs",
       "pdf": [
         {
           "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
@@ -31891,13 +31903,14 @@
           "quote": "Crashing an icon without Suppressing it"
         }
       ],
-      "search": [
+      "note": "The guide's note is stale about the system: since 0.9.0 (TODO 128) the second trigger (crashing an icon without Suppression) and the Suppression degrade are offered through the GM's Icon crashed dialog (SR3EActor.handleIconCrashClick), and the sheaf prompt posts each Trigger Step. The book's rule is unchanged; the guide note needs updating.",
+      "code": [
         {
-          "pattern": "suppression|Suppression",
-          "path": "scripts/documents"
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1892,
+          "snippet": "await SR3EActor._incrementOverwatch(pick.hostId, pick.deckerId || null, 'An icon crashed without Suppression (MDF p.22).');"
         }
-      ],
-      "note": "The guide's note says the same."
+      ]
     },
     {
       "id": "rules/decking-defragged.md#122",
@@ -32303,9 +32316,9 @@
       ],
       "code": [
         {
-          "file": "scripts/documents/SR3EActor.js",
-          "line": 1247,
-          "snippet": "stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)"
+          "file": "scripts/data/dump-shock.mjs",
+          "line": 33,
+          "snippet": "level: 'S',                                       // Serious — MDF p.27"
         }
       ]
     },
@@ -32329,9 +32342,9 @@
       ],
       "code": [
         {
-          "file": "scripts/documents/SR3EActor.js",
-          "line": 1247,
-          "snippet": "stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)"
+          "file": "scripts/data/dump-shock.mjs",
+          "line": 33,
+          "snippet": "level: 'S',                                       // Serious — MDF p.27"
         }
       ]
     },
@@ -32361,9 +32374,9 @@
       ],
       "code": [
         {
-          "file": "scripts/documents/SR3EActor.js",
-          "line": 1247,
-          "snippet": "stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)"
+          "file": "scripts/data/dump-shock.mjs",
+          "line": 33,
+          "snippet": "level: 'S',                                       // Serious — MDF p.27"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
@@ -33965,9 +33978,9 @@
       ],
       "code": [
         {
-          "file": "scripts/documents/SR3EActor.js",
-          "line": 1247,
-          "snippet": "stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)"
+          "file": "scripts/data/dump-shock.mjs",
+          "line": 33,
+          "snippet": "level: 'S',                                       // Serious — MDF p.27"
         }
       ],
       "note": "The resist roll is Willpower with no armour — the maintainer's ruling."
@@ -34019,7 +34032,7 @@
       ],
       "hash": "aee9dc2bca",
       "text": "{: .note }\n> Right now, only the first Overwatch trigger — a failed Hacking Test — raises the tracker\n> automatically. Crashing an icon without Suppression, live Trigger Step countdowns, and the\n> Suppression utility itself are still manual, GM-adjudicated calls from the Security Sheaf tab\n> (tracked as open work, TODO 128).",
-      "verdict": "not-implemented",
+      "verdict": "guide-differs",
       "pdf": [
         {
           "file": "Shadowrun 3e - The Matrix Defragged v2.pdf",
@@ -34028,13 +34041,14 @@
           "quote": "Crashing an icon without Suppressing it"
         }
       ],
-      "search": [
+      "note": "The guide's note is stale about the system: since 0.9.0 (TODO 128) the second trigger (crashing an icon without Suppression) and the Suppression degrade are offered through the GM's Icon crashed dialog (SR3EActor.handleIconCrashClick), and the sheaf prompt posts each Trigger Step. The book's rule is unchanged; the guide note needs updating.",
+      "code": [
         {
-          "pattern": "suppression|Suppression",
-          "path": "scripts/documents"
+          "file": "scripts/documents/SR3EActor.js",
+          "line": 1892,
+          "snippet": "await SR3EActor._incrementOverwatch(pick.hostId, pick.deckerId || null, 'An icon crashed without Suppression (MDF p.22).');"
         }
-      ],
-      "note": "The guide's note says the same (TODO 128)."
+      ]
     },
     {
       "id": "rules/decking-defragged.md#211",
@@ -34085,9 +34099,9 @@
           "snippet": "return whole(intelligence) + Math.floor(whole(mpcp) / 3);"
         },
         {
-          "file": "scripts/documents/SR3EActor.js",
-          "line": 2632,
-          "snippet": "? MdfRules.hackingPool(attr.intelligence?.value ?? 0, mpcp)"
+          "file": "scripts/data/mdf-rules.mjs",
+          "line": 19,
+          "snippet": "return whole(intelligence) + Math.floor(whole(mpcp) / 3);"
         }
       ],
       "note": "Fixed in 0.6.3 on the maintainer's ruling, 2026-09-28 (756e33c2); it was a divergence in this check. INT 4 + ⌊8 ÷ 3⌋ = 6: checks."
@@ -34182,8 +34196,8 @@
         },
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 1509,
-          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId) {"
+          "line": 1536,
+          "snippet": "static async _incrementOverwatch(hostActorId, attackerActorId, reason = 'Hack attempt failed Security Threshold check.') {"
         }
       ]
     },
@@ -34213,9 +34227,9 @@
       ],
       "code": [
         {
-          "file": "scripts/documents/SR3EActor.js",
-          "line": 1247,
-          "snippet": "stagedLevel:     'S',   // Serious — MDF p.27 (TODO 119)"
+          "file": "scripts/data/dump-shock.mjs",
+          "line": 33,
+          "snippet": "level: 'S',                                       // Serious — MDF p.27"
         }
       ]
     },
@@ -34444,9 +34458,9 @@
       ],
       "code": [
         {
-          "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 2297,
-          "snippet": "const hackingPool    = mccp > 0 ? Math.floor((intl + mccp) / 3) : 0;"
+          "file": "scripts/data/hacking-pool.mjs",
+          "line": 22,
+          "snippet": "return Math.floor((whole(intelligence) + whole(mpcp)) / 3);"
         }
       ]
     },
@@ -34476,9 +34490,9 @@
       ],
       "code": [
         {
-          "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 2297,
-          "snippet": "const hackingPool    = mccp > 0 ? Math.floor((intl + mccp) / 3) : 0;"
+          "file": "scripts/data/hacking-pool.mjs",
+          "line": 22,
+          "snippet": "return Math.floor((whole(intelligence) + whole(mpcp)) / 3);"
         }
       ]
     },
@@ -37276,9 +37290,9 @@
       ],
       "code": [
         {
-          "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 2297,
-          "snippet": "const hackingPool    = mccp > 0 ? Math.floor((intl + mccp) / 3) : 0;"
+          "file": "scripts/data/hacking-pool.mjs",
+          "line": 22,
+          "snippet": "return Math.floor((whole(intelligence) + whole(mpcp)) / 3);"
         },
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
@@ -37529,13 +37543,13 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 1803,
-          "snippet": "const pilotRating = actor.system.attributes?.pilot?.base ?? 0;"
+          "line": 1836,
+          "snippet": "const pilotRating = vehicleStat(actor, 'pilot');"
         },
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 774,
-          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+          "line": 857,
+          "snippet": "const pilot   = vehicleStat(this.actor, 'pilot');"
         }
       ]
     },
@@ -37560,8 +37574,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 1803,
-          "snippet": "const pilotRating = actor.system.attributes?.pilot?.base ?? 0;"
+          "line": 1836,
+          "snippet": "const pilotRating = vehicleStat(actor, 'pilot');"
         },
         {
           "file": "scripts/documents/SR3EItem.js",
@@ -39336,8 +39350,8 @@
         },
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 774,
-          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+          "line": 857,
+          "snippet": "const pilot   = vehicleStat(this.actor, 'pilot');"
         }
       ]
     },
@@ -39462,8 +39476,8 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 774,
-          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+          "line": 857,
+          "snippet": "const pilot   = vehicleStat(this.actor, 'pilot');"
         },
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
@@ -40441,8 +40455,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 1803,
-          "snippet": "const pilotRating = actor.system.attributes?.pilot?.base ?? 0;"
+          "line": 1836,
+          "snippet": "const pilotRating = vehicleStat(actor, 'pilot');"
         },
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
@@ -46938,8 +46952,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 7806,
-          "snippet": ": (isActive ? 2.5 : 2);"
+          "line": 7952,
+          "snippet": ":              (isActive ? 2.5 : 2);"
         }
       ]
     },
@@ -48627,8 +48641,8 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EActorSheet.js",
-          "line": 1092,
-          "snippet": "${this._poolBlock('Karma Pool',"
+          "line": 1192,
+          "snippet": "${game.sr3e.SR3EActor.hasKarmaPool(this.actor) ? this._poolBlock('Karma Pool',"
         },
         {
           "file": "scripts/data/karma-uses.mjs",
@@ -51124,8 +51138,8 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 774,
-          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+          "line": 857,
+          "snippet": "const pilot   = vehicleStat(this.actor, 'pilot');"
         }
       ]
     },
@@ -51359,8 +51373,8 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 774,
-          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+          "line": 857,
+          "snippet": "const pilot   = vehicleStat(this.actor, 'pilot');"
         }
       ]
     },
@@ -54288,8 +54302,8 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 774,
-          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+          "line": 857,
+          "snippet": "const pilot   = vehicleStat(this.actor, 'pilot');"
         }
       ]
     },
@@ -54320,8 +54334,8 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 774,
-          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+          "line": 857,
+          "snippet": "const pilot   = vehicleStat(this.actor, 'pilot');"
         }
       ]
     },
@@ -54930,8 +54944,8 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 774,
-          "snippet": "const pilot   = sys.attributes?.pilot?.base ?? 0;"
+          "line": 857,
+          "snippet": "const pilot   = vehicleStat(this.actor, 'pilot');"
         }
       ]
     },
@@ -55373,13 +55387,13 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 1117,
-          "snippet": "const handling = (sys.attributes?.handling?.base ?? 4) + defTnMod;"
+          "line": 1200,
+          "snippet": "const handling = vehicleStat(this.actor, 'handling') + defTnMod;   // defaulting TN modifier baked in"
         },
         {
           "file": "scripts/SR3EVehicleChase.js",
           "line": 846,
-          "snippet": "const handling   = vehicle?.system.attributes?.handling?.base ?? 4;"
+          "snippet": "const handling   = vehicle ? vehicleStat(vehicle, 'handling') : 4;"
         },
         {
           "file": "scripts/data/ActorDataModels.js",
@@ -55417,7 +55431,7 @@
         {
           "file": "scripts/SR3EVehicleChase.js",
           "line": 848,
-          "snippet": "const speedAttr  = vehicle?.system.attributes?.speed?.base    ?? 0;"
+          "snippet": "const speedAttr  = vehicleStat(vehicle, 'speed');"
         },
         {
           "file": "scripts/SR3EVehicleChase.js",
@@ -55538,8 +55552,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 8267,
-          "snippet": "const v = actor.system?.attributes?.armor?.base ?? 0;"
+          "line": 8417,
+          "snippet": "const v = vehicleStat(actor, 'armor');   // its mods included (TODO 265)"
         },
         {
           "file": "scripts/documents/SR3EActor.js",
@@ -55595,8 +55609,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 1826,
-          "snippet": "? (targetActor.system.attributes?.sig?.base ?? 4)"
+          "line": 1859,
+          "snippet": "? vehicleStat(targetActor, 'sig')"
         },
         {
           "file": "scripts/documents/SR3EItem.js",
@@ -55606,7 +55620,7 @@
         {
           "file": "scripts/SR3EVehicleChase.js",
           "line": 1928,
-          "snippet": "const sig    = oppV?.system.attributes?.sig?.base ?? 4;"
+          "snippet": "const sig    = oppV ? vehicleStat(oppV, 'sig') : 4;"
         }
       ],
       "note": "A vehicle weapon's base TN and the chase's Sensor/targeting tests default to the target vehicle's Sig."
@@ -55632,8 +55646,8 @@
       "code": [
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 1116,
-          "snippet": "const autonav  = sys.attributes?.autonav?.base ?? 0;"
+          "line": 1199,
+          "snippet": "const autonav  = vehicleStat(this.actor, 'autonav');"
         },
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
@@ -55669,13 +55683,13 @@
       "code": [
         {
           "file": "scripts/documents/SR3EActor.js",
-          "line": 11684,
-          "snippet": "const pilotRating = this.system.attributes?.pilot?.base ?? 0;"
+          "line": 11882,
+          "snippet": "const pilotRating = vehicleStat(this, 'pilot');"
         },
         {
           "file": "scripts/sheets/SR3EVehicleSheet.js",
-          "line": 1043,
-          "snippet": "const pilotRating = sys.attributes?.pilot?.base ?? 0;"
+          "line": 1126,
+          "snippet": "const pilotRating = vehicleStat(this.actor, 'pilot');"
         },
         {
           "file": "packs-src/sr3e-sr3-vehicles/ares-roadmaster.sr3e-vehicle-0098.json",
@@ -55706,13 +55720,13 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 1888,
-          "snippet": "const sensorRating    = weapon.actor?.system.attributes?.sensor?.base ?? 0;"
+          "line": 1921,
+          "snippet": "const sensorRating    = vehicleStat(weapon.actor, 'sensor');"
         },
         {
           "file": "scripts/SR3EVehicleChase.js",
           "line": 1810,
-          "snippet": "return v?.system.attributes?.sensor?.base ?? 0;"
+          "snippet": "return vehicleStat(v, 'sensor');"
         }
       ],
       "note": "Sensor is read for sensor-enhanced gunnery and the chase's sensor tests."
@@ -58655,8 +58669,8 @@
         },
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4185,
-          "snippet": "const weaponComp   = IntegralRC.weaponComp(weapon.system, inUse0);"
+          "line": 4263,
+          "snippet": "const weaponComp   = IntegralRC.totalComp(weapon.system, inUse0);"
         },
         {
           "file": "scripts/data/integral-rc.mjs",
@@ -60325,8 +60339,8 @@
         },
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4138,
-          "snippet": "return Math.max(0, (roundsBefore + own) - totalComp) * mult;"
+          "line": 4200,
+          "snippet": "return Math.max(0, (halve ? Math.floor(uncompensated / 2) : uncompensated) - totalComp) * mult;"
         }
       ]
     },
@@ -60476,8 +60490,8 @@
       "code": [
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4138,
-          "snippet": "return Math.max(0, (roundsBefore + own) - totalComp) * mult;"
+          "line": 4200,
+          "snippet": "return Math.max(0, (halve ? Math.floor(uncompensated / 2) : uncompensated) - totalComp) * mult;"
         },
         {
           "file": "scripts/documents/SR3EItem.js",
@@ -60567,11 +60581,11 @@
         },
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4130,
-          "snippet": "const mult = (isHeavy || (isShotgun && mode === 'BF')) ? 2 : 1;"
+          "line": 4191,
+          "snippet": "const mult = ((isHeavy && !halve) || (isShotgun && mode === 'BF')) ? 2 : 1;"
         }
       ],
-      "note": "Fixed in 0.7.0 (722911fc): the Assault Cannon (ACan) is a Heavy Weapon for recoil (HEAVY_CATEGORIES); the doubling, the (10-6)x2 = 8 example and the shotgun-in-burst case are coded."
+      "note": "Fixed in 0.7.0 (722911fc): the Assault Cannon (ACan) is a Heavy Weapon for recoil (HEAVY_CATEGORIES); the doubling, the (10-6)x2 = 8 example and the shotgun-in-burst case are coded. Since 0.9.0 a weapon on a vehicle fixed mount or turret halves recoil first, which cancels the heavy double (R3R pp.136, 140; TODO 234)."
     },
     {
       "id": "rules/weapons.md#76",
@@ -61045,8 +61059,8 @@
         },
         {
           "file": "scripts/documents/SR3EItem.js",
-          "line": 4138,
-          "snippet": "return Math.max(0, (roundsBefore + own) - totalComp) * mult;"
+          "line": 4200,
+          "snippet": "return Math.max(0, (halve ? Math.floor(uncompensated / 2) : uncompensated) - totalComp) * mult;"
         },
         {
           "file": "scripts/documents/SR3EItem.js",
@@ -69323,8 +69337,8 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2655,
-          "snippet": "Hooks.on('deleteItem', (item) => _recordEssenceHoleOnRemoval(item));"
+          "line": 2970,
+          "snippet": "Hooks.on('deleteItem', (item, options) => { if (!options?.sr3eModMove) _recordEssenceHoleOnRemoval(item); });"
         }
       ]
     },
@@ -69349,8 +69363,8 @@
       "code": [
         {
           "file": "scripts/sr3e.js",
-          "line": 2655,
-          "snippet": "Hooks.on('deleteItem', (item) => _recordEssenceHoleOnRemoval(item));"
+          "line": 2970,
+          "snippet": "Hooks.on('deleteItem', (item, options) => { if (!options?.sr3eModMove) _recordEssenceHoleOnRemoval(item); });"
         }
       ]
     },
