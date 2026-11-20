@@ -66,6 +66,11 @@ export async function run(t) {
   t.is('a plain 4 misses TN 5', InsectSpirits.rollSuccesses(1, 5, seq([0.6])), 0);
   t.is('three dice vs TN 4: a 4 hits, a 1 misses, a 6 (+1) hits', InsectSpirits.rollSuccesses(3, 4, seq([0.6, 0.1, 0.9, 0.01])), 2);
 
+  t.is('the table\'s flesh Body half is kept (Ant soldier F)', InsectSpirits.fleshBodyTable('ant', 'soldier'), 'F');
+  t.is('…Beetle male F x 2', InsectSpirits.fleshBodyTable('beetle', 'male'), 'F x 2');
+  t.ok('…one per table row', Object.entries(INSECT_TABLE).every(([ty, d]) => Object.keys(d.castes).every(c => InsectSpirits.fleshBodyTable(ty, c))));
+  t.is('…and it is NOT applied: a flesh soldier follows the host (p.128)', InsectSpirits.fleshStats('ant', 'soldier', 4, { body: 5, quickness: 4, strength: 3 }).body, 9);
+
   // ── Who may summon ─────────────────────────────────────────────────────────────────────
   t.ok('Wasp is an insect totem', InsectSpirits.isInsectTotem('Wasp'));
   t.ok('case does not matter', InsectSpirits.isInsectTotem(' wasp '));

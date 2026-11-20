@@ -21,8 +21,9 @@ export const INSECT_TOTEMS = {
   Beetle: 'solitary', Cicada: 'solitary', Firefly: 'solitary', Mantid: 'solitary', Mosquito: 'solitary', Roach: 'solitary',
 };
 
-// reading of MitS p.136 table — maintainer to confirm: (1) Body "F+b/y": only b is used; what y means is UNKNOWN (maintainer, 2026-11-20:
-// not simply armour; the Essence column is a pair too, "F/A") and it is NOT applied. Verified against the text-layer PDF.
+// reading of MitS p.136 table — maintainer to confirm: (1) Body "x/y" = true-form / flesh-form // MitS p.136 Body = true/flesh (maintainer 2026-11-20, tentative).
+// Only the true-form half `b` drives stats. The flesh half is kept below as FLESH_BODY_TABLE and NOT applied: the p.128 prose makes a
+// flesh-form's physical Attributes host-based (soldier host + Force, worker host − 1), which CONFLICTS with a fixed flesh Body — reported to the maintainer.
 // (2) Quickness "(F+q) x m": q is the attribute, m the movement multiplier — confirmed by the maintainer. (3) Reaction column is literal (Fx r) — settled.
 // The whole table is this one block — a correction is one edit. Every stat stays editable on the spirit's sheet.
 const row = (label, b, q, m, s, r, attack, powers) => ({ label, b, q, m, s, r, attack, powers });
@@ -68,7 +69,17 @@ export const INSECT_TABLE = {
   } },
 };
 
+/** The table's flesh-form Body half, as printed ("F", "F − 3", "F x 2") — tentative, NOT applied (see the comment above the table). */
+export const FLESH_BODY_TABLE = {
+  'ant.soldier': 'F', 'ant.worker': 'F − 3', 'termite.soldier': 'F', 'termite.worker': 'F − 3',
+  'wasp.male': 'F − 1', 'wasp.female': 'F − 1', 'fly.male': 'F − 2', 'beetle.male': 'F x 2', 'beetle.female': 'F',
+  'cicada.male': 'F − 2', 'firefly.male': 'F − 2', 'mantid.male': 'F + 1', 'mosquito.male': 'F', 'mosquito.female': 'F − 1', 'roach.male': 'F + 1',
+};
+
 export const InsectSpirits = {
+  /** The table's printed flesh-form Body for a type + caste (information only; flesh stats follow the host, p.128). */
+  fleshBodyTable: (type, caste) => FLESH_BODY_TABLE[`${type}.${caste}`] ?? null,
+
   /** Every totem an insect shaman can follow. */
   totems: () => Object.keys(INSECT_TOTEMS),
 
