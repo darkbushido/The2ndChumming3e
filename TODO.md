@@ -1318,9 +1318,9 @@ MitS p.128-129, 136-137) by the ordinary Conjuring Test and Drain; insect totems
 shamans, see the types. A flesh-form rolls the host's Willpower against the spirit's Force and reads the Transformation Table
 (p.128); nothing is done to the host — the card says it dies and the GM decides. Left out:
 
-- **⚠ OPEN CONFLICT (maintainer's call):** the maintainer reads the table's Body pair as *true-form / flesh-form* (tentative,
-  2026-11-20). The p.128 prose instead makes a flesh-form's physical Attributes **host-based** (soldier host + Force, worker
-  host − 1). The code follows the prose; the table's flesh half is kept as `FLESH_BODY_TABLE`, not applied.
+- **The Body pair's meaning is unconfirmed:** the maintainer's tentative reading is *true-form / flesh-form*; but p.128 makes
+  flesh Body host-based and says flesh-forms have **no natural armour** (so true-forms may have it — the second value may
+  be armour after all). Decided 2026-11-20: the prose wins; `FLESH_BODY_TABLE` is stored, unused.
 - **(superseded by the above) Confirm two table cells' meaning** (table re-read against the text-layer PDF 2026-11-20 — every number matches, and
   Fly/Firefly Quickness is F+1, fixed): the Body column's "/y" half (read as natural armour, **not applied**; flesh-forms
   have none, p.128) and the Reaction multiplier (stored as the table says, `Fx2`; INIT is Reaction + 10).

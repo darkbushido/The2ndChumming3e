@@ -48,6 +48,7 @@ export async function run(t) {
   t.ok('a soldier is', InsectSpirits.fleshAvailable('ant', 'soldier'));
   t.ok('a flesh-form is not banishable', !InsectSpirits.banishable('flesh') && InsectSpirits.banishable('true'));
   t.ok('flesh powers drop Materialization', !InsectSpirits.fleshPowers('ant', 'soldier').includes('Materialization') && InsectSpirits.fleshPowers('ant', 'soldier').includes('Venom'));
+  t.ok('flesh workers keep the Skill power (p.128)', InsectSpirits.fleshPowers('ant', 'worker').includes('Skill'));
   t.eq('flesh weaknesses: sight only, no insecticide vulnerability', InsectSpirits.fleshWeaknesses(), ['Reduced Senses (Sight)']);
   t.is('Karma Pool: flesh 1', InsectSpirits.karmaPool('flesh'), 1);
   t.is('Karma Pool: true-form 2', InsectSpirits.karmaPool('true'), 2);

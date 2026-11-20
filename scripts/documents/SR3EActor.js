@@ -2,6 +2,7 @@ import { SR3EItem } from './SR3EItem.js';
 import { parseMods } from '../SR3EMods.js';
 import { itemRating, vcrLevel as vcrLevelOf } from '../data/item-rating.mjs';
 import { Rigging } from '../data/rigging.mjs';
+import { InsectSpirits } from '../data/insect-spirits.mjs';
 import { AmmoStock } from '../data/ammo-stock.mjs';
 import * as Sustaining from '../data/sustaining.mjs';
 import { DrugRules } from '../data/drug-rules.mjs';
@@ -12265,9 +12266,11 @@ _prepareCharacter(sys, attr) {
     // Find spirits in the active combat tracker
     const spiritCombatants = (game.combat?.combatants ?? [])
       .map(c => c.actor)
-      .filter(a => a && game.sr3e.SR3ESpiritSummoning._spiritFlag(a, 'isSpirit'));
+      // A flesh-form insect spirit cannot be banished (MitS p.128), so it is not offered.
+      .filter(a => a && game.sr3e.SR3ESpiritSummoning._spiritFlag(a, 'isSpirit')
+        && game.sr3e.SR3ESpiritSummoning._spiritFlag(a, 'insectForm') !== 'flesh');
     if (!spiritCombatants.length) {
-      ui.notifications.warn('No spirits found in the active combat tracker.');
+      ui.notifications.warn('No banishable spirits found in the active combat tracker (flesh-form insect spirits cannot be banished).');
       return null;
     }
 
@@ -12293,7 +12296,10 @@ _prepareCharacter(sys, attr) {
       if (!spirit) return null;
     }
 
-    const spiritForce  = game.sr3e.SR3ESpiritSummoning._spiritFlag(spirit, 'force') ?? 4;
+    // A true-form insect spirit counts its Force doubled for banishing (MitS p.128).
+    const rawForce     = game.sr3e.SR3ESpiritSummoning._spiritFlag(spirit, 'force') ?? 4;
+    const spiritForce  = game.sr3e.SR3ESpiritSummoning._spiritFlag(spirit, 'spiritType') === 'insect'
+      ? InsectSpirits.banishForce(rawForce) : rawForce;
     const isSummoner   = game.sr3e.SR3ESpiritSummoning._spiritFlag(spirit, 'conjurerId') === this.id;
     const tempLoss     = this.getFlag('The2ndChumming3e', 'tempMagicLoss') ?? 0;
     // The spirit resists against the banisher's Magic ATTRIBUTE — the effective one (F5) — less

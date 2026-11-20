@@ -504,13 +504,15 @@ export class SR3ESpiritSummoning {
           reaction:     { value: stats.reaction,     base: stats.reaction },
         },
         ...(flesh ? { karmaPool: flesh.karmaPool } : {}),
+        // A flesh-form is a dual being (MitS p.128).
+        ...(isFlesh ? { astralMode: 'dual' } : {}),
       },
       flags: {
         The2ndChumming3e: {
           isSpirit:       true,
           spiritType:     spiritDef.category === 'elemental' ? 'elemental' : spiritDef.category === 'insect' ? 'insect' : 'nature',
           ...(spiritDef.category === 'insect' ? { insectForm: isFlesh ? 'flesh' : 'true', insectTotem: spiritDef.totem } : {}),
-          ...(isFlesh ? { fleshHost: flesh.hostName, transformation: flesh.outcome.key, incubationWeeks: InsectSpirits.incubationWeeks(force), banishable: false } : {}),
+          ...(isFlesh ? { fleshHost: flesh.hostName, transformation: flesh.outcome.key, incubationWeeks: InsectSpirits.incubationWeeks(force), banishable: false, dualBeing: true, naturalArmor: 0 } : {}),
           spiritTypeKey:  Object.keys(SPIRIT_TYPES).find(k => SPIRIT_TYPES[k] === spiritDef),
           spiritLabel:    spiritDef.label,
           spiritCategory: spiritDef.category,
