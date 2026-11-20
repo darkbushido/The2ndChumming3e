@@ -1823,6 +1823,25 @@ Hooks.on('renderCombatTracker', (_app, html) => {
           }
           const nameEl = row.querySelector('.combatant-name, .token-name, h4');
           if (nameEl) nameEl.appendChild(passTag);
+
+          // The initiative column shows THIS phase's score (16 → 6 in Phase 2), not the roll. The input still edits
+          // the roll (`initiative`, the source of truth): focusing it swaps the roll back in, so a GM edit never
+          // writes the phase score over it.
+          const shown = Math.max(0, curInit);
+          const base  = cbt.initiative;
+          if (shown !== base) {
+            const input = row.querySelector('.token-initiative input');
+            if (input && !input.dataset.sr3eCur) {
+              input.dataset.sr3eCur = '1';
+              input.value = String(shown);
+              input.title = `Phase ${passNum} score ${shown} — rolled ${base}. Edit to change the roll.`;
+              input.addEventListener('focus', () => { input.value = String(base); input.select?.(); });
+              input.addEventListener('blur',  () => { if (input.value === String(base)) input.value = String(shown); });
+            } else if (!input) {
+              const span = row.querySelector('.token-initiative .initiative');
+              if (span) { span.textContent = String(shown); span.title = `Phase ${passNum} — rolled ${base}`; }
+            }
+          }
         }
       } else if (initMode === 'sr2' && combat) {
         const queue = combat.flags?.The2ndChumming3e?.sr2Queue ?? [];
