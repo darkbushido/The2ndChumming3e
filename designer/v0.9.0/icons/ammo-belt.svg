@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+<filter id="neon" filterUnits="userSpaceOnUse" x="-16" y="-16" width="160" height="160"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000" flood-opacity="0.8"/></filter>
+</defs>
+<rect width="128" height="128" rx="6" fill="#1b1c1f"/>
+<path d="M16 0V128M0 16H128M32 0V128M0 32H128M48 0V128M0 48H128M64 0V128M0 64H128M80 0V128M0 80H128M96 0V128M0 96H128M112 0V128M0 112H128" stroke="#fff" stroke-opacity="0.045" stroke-width="1"/>
+<rect x="3" y="3" width="122" height="122" rx="4" fill="none" stroke="#3a3b40" stroke-width="6" filter="url(#shadow)"/>
+<rect x="3" y="3" width="122" height="122" rx="4" fill="none" stroke="#4a4b50" stroke-width="2"/>
+<path d="M40 3H88" stroke="#ff962d" stroke-width="3" filter="url(#neon)"/>
+<g filter="url(#shadow)" fill="#35363b" stroke="#64656a" stroke-width="2" stroke-linejoin="round">
+<g transform="rotate(-30 64 64)">
+<rect x="22" y="40" width="12" height="34" fill="#ff962d" stroke="none" filter="url(#neon)"/><path d="M22 40 V32 Q28 18 34 32 V40 Z"/><rect x="19" y="52" width="18" height="10" rx="2"/><rect x="40" y="40" width="12" height="34" fill="#ff962d" stroke="none" filter="url(#neon)"/><path d="M40 40 V32 Q46 18 52 32 V40 Z"/><rect x="37" y="52" width="18" height="10" rx="2"/><rect x="58" y="40" width="12" height="34" fill="#ff962d" stroke="none" filter="url(#neon)"/><path d="M58 40 V32 Q64 18 70 32 V40 Z"/><rect x="55" y="52" width="18" height="10" rx="2"/><rect x="76" y="40" width="12" height="34" fill="#ff962d" stroke="none" filter="url(#neon)"/><path d="M76 40 V32 Q82 18 88 32 V40 Z"/><rect x="73" y="52" width="18" height="10" rx="2"/><rect x="94" y="40" width="12" height="34" fill="#ff962d" stroke="none" filter="url(#neon)"/><path d="M94 40 V32 Q100 18 106 32 V40 Z"/><rect x="91" y="52" width="18" height="10" rx="2"/>
+</g><text x="64" y="118" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', Arial, sans-serif" font-size="12" fill="#9a9ba0" stroke="none" letter-spacing="0.5">belt</text>
+</g>
+</svg>

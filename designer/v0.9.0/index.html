@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SR3 Gear Designer</title>
+<!-- The Foundry designer's own look (tools/build-designer.mjs copies it from styles/sr3e.css). -->
+<link rel="stylesheet" href="designer.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--sr-bg); color: var(--sr-text); font: 14px/1.4 'Segoe UI', system-ui, sans-serif; }
+  main { max-width: 1200px; margin: 0 auto; padding: 12px 16px; }
+  .page-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 8px; }
+  h1 { font-size: 1.4rem; margin: 0; color: var(--sr-gold); letter-spacing: .02em; }
+  .sub { color: var(--sr-muted); margin: 0; font-size: .85rem; flex: 1 1 320px; }
+  .kinds { display: flex; gap: 6px; margin: 4px 0 10px; }
+  .kinds button { font: inherit; padding: 6px 14px; border-radius: var(--r); border: 1px solid var(--sr-border); background: var(--sr-surface); color: var(--sr-text); cursor: pointer; }
+  .kinds button.active { background: var(--sr-accent); color: var(--sr-bg); border-color: var(--sr-accent); font-weight: 600; }
+  /* The window gives the wizard a height; the page lets it grow. */
+  .wizard { border: 1px solid var(--sr-border); border-radius: var(--r-lg); background: var(--sr-surface); overflow: hidden; }
+  .wizard .vd-wizard { height: auto; }
+  .wizard input, .wizard select, .wizard button { font: inherit; }
+  .notice { color: var(--sr-muted); font-size: .8rem; margin-top: 10px; }
+  .loadwarn { background: var(--sr-amber-bg); color: var(--sr-amber); border-radius: var(--r); padding: 6px 8px; margin: 6px 0; }
+  .modes button { font-size: .85rem; padding: 4px 10px; }
+  .vd-chip.vd-changed b { color: var(--sr-green); }
+  .vd-emoji { font-size: 2.4rem; display: grid; place-items: center; height: 100%; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div class="page-head">
+    <h1>SR3 Gear Designer</h1>
+    <p class="sub">Build it here, then import it in Foundry: <em>📥 Import design</em> in the Items sidebar. The design lives in this
+      page's link — nothing is stored anywhere. <span id="version"></span></p>
+  </div>
+  <div class="kinds" role="tablist">
+    <button type="button" data-kind="weapon" role="tab">🔫 Weapon</button>
+    <button type="button" data-kind="vehicle" role="tab">🚗 Vehicle (R3R)</button>
+    <button type="button" data-kind="armor" role="tab">🛡 Armour</button>
+  </div>
+  <div id="loadwarn"></div>
+  <div class="wizard sr3e sr3e-vehicle-designer" id="weapon-root"><div class="sr3e-inner vd-wizard"></div></div>
+  <div class="wizard sr3e sr3e-vehicle-designer" id="armor-root" hidden><div class="sr3e-inner vd-wizard"></div></div>
+  <div class="kinds modes" id="vehicle-modes" hidden>
+    <button type="button" data-mode="design">🛠 Design from a chassis (R3R)</button>
+    <button type="button" data-mode="book">📖 Modify a book vehicle</button>
+  </div>
+  <div class="wizard sr3e sr3e-vehicle-designer" id="vehicle-root" hidden><div class="sr3e-inner vd-wizard"></div></div>
+  <div class="wizard sr3e sr3e-vehicle-designer" id="book-root" hidden><div class="sr3e-inner vd-wizard"></div></div>
+  <p class="notice">Unofficial fan tool for Shadowrun 3rd Edition. Names, numbers and page references only — see the books for
+    the rules. Shadowrun is a trademark of its owners; no rulebook text is reproduced here.</p>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

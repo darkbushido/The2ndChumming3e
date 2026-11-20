@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+<filter id="neon" filterUnits="userSpaceOnUse" x="-16" y="-16" width="160" height="160"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000" flood-opacity="0.8"/></filter>
+</defs>
+<rect width="128" height="128" rx="6" fill="#1b1c1f"/>
+<path d="M16 0V128M0 16H128M32 0V128M0 32H128M48 0V128M0 48H128M64 0V128M0 64H128M80 0V128M0 80H128M96 0V128M0 96H128M112 0V128M0 112H128" stroke="#fff" stroke-opacity="0.045" stroke-width="1"/>
+<rect x="3" y="3" width="122" height="122" rx="4" fill="none" stroke="#3a3b40" stroke-width="6" filter="url(#shadow)"/>
+<rect x="3" y="3" width="122" height="122" rx="4" fill="none" stroke="#4a4b50" stroke-width="2"/>
+<path d="M40 3H88" stroke="#ff962d" stroke-width="3" filter="url(#neon)"/>
+<g filter="url(#shadow)" fill="#35363b" stroke="#64656a" stroke-width="2" stroke-linejoin="round">
+<path d="M4 46 H12 L40 48 V62 H33 L26 67 Q14 67 10 62 H4 Z"/><path d="M14 52 L32 54 L26 62 L16 60 Z" fill="none"/>
+<rect x="38" y="44" width="44" height="19" rx="2"/><path d="M44 50 H62" stroke="#131416" stroke-width="2" fill="none" stroke-linecap="round"/>
+<rect x="80" y="46" width="26" height="13" rx="1"/><circle cx="86" cy="52.5" r="2" fill="#131416" stroke="none"/><circle cx="92" cy="52.5" r="2" fill="#131416" stroke="none"/><circle cx="98" cy="52.5" r="2" fill="#131416" stroke="none"/>
+<rect x="104" y="50" width="12" height="4"/>
+<path d="M114 46 H125 V58 H114 Z"/><path d="M118 48 V56 M122 48 V56" stroke="#131416" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+<rect x="46" y="40" width="42" height="4" rx="1"/>
+<rect x="50" y="27" width="36" height="12" rx="5"/><path d="M84 24 H96 L99 27 V39 L96 42 H84 Z"/><rect x="42" y="28" width="10" height="10" rx="2"/>
+<path d="M58 39 V44 M76 39 V44" stroke="#64656a" stroke-width="3.5" fill="none"/><circle cx="47" cy="33" r="2.5" fill="#131416" stroke="none"/>
+<path d="M46 63 H60 L54 84 H42 Z"/><path d="M60 63 V70 Q60 74 54 74" fill="none"/>
+<rect x="62" y="63" width="18" height="20" rx="2"/><path d="M66 68 H76 M66 73 H76 M66 78 H76" stroke="#131416" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+<path d="M92 59 L84 92 M100 59 L110 92" stroke="#64656a" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M96 33 v0" stroke="#ff962d" stroke-width="5" fill="none" stroke-linecap="round" filter="url(#neon)"/><path d="M44 55 H74" stroke="#ff962d" stroke-width="1.8" fill="none" stroke-linecap="round" filter="url(#neon)"/><text x="64" y="118" text-anchor="middle" font-family="Bahnschrift, 'Segoe UI', Arial, sans-serif" font-size="12" fill="#9a9ba0" stroke="none" letter-spacing="0.5">sniper rifle</text>
+</g>
+</svg>

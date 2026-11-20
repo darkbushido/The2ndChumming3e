@@ -1,0 +1,568 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/latest/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/The2ndChumming3e/latest/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    
+    .site-nav > ul.nav-list:first-child > li:not(:nth-child(7)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(7) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(7) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(7) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/The2ndChumming3e/latest/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/The2ndChumming3e/latest/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Gear Designer | SR3 Table Reference</title>
+<meta name="generator" content="Jekyll v4.4.1" />
+<meta property="og:title" content="Gear Designer" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<meta name="twitter:description" property="og:description" content="Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule." />
+<link rel="canonical" href="https://darkbushido.github.io/The2ndChumming3e/latest/gear-designer/" />
+<meta property="og:url" content="https://darkbushido.github.io/The2ndChumming3e/latest/gear-designer/" />
+<meta property="og:site_name" content="SR3 Table Reference" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Gear Designer" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Unofficial Shadowrun 3rd Edition reference pages for players and GMs, checked against the rulebooks with a book and page for every rule.","headline":"Gear Designer","url":"https://darkbushido.github.io/The2ndChumming3e/latest/gear-designer/"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- Corrections toggle: set the class before first paint so hidden boxes never flash. -->
+<script>
+  try {
+    if (localStorage.getItem('showCorrections') === '1') {
+      document.documentElement.classList.add('show-corrections');
+    }
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap">
+
+<!-- Digital rain behind the page. Throttled, paused in hidden tabs, off for reduced motion. -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.id = 'sw-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.prepend(canvas);
+    var ctx = canvas.getContext('2d');
+    var glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789';
+    var size = 16, cols = 0, drops = [], gold = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      cols = Math.ceil(canvas.width / size);
+      drops = []; gold = [];
+      for (var i = 0; i < cols; i++) {
+        drops[i] = Math.random() * -canvas.height / size;
+        gold[i] = Math.random() < 0.06;
+      }
+    }
+
+    function frame() {
+      ctx.fillStyle = 'rgba(3, 8, 7, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = size + 'px "Share Tech Mono", monospace';
+      for (var i = 0; i < cols; i++) {
+        var ch = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+        ctx.fillStyle = gold[i] ? '#d9a93f' : (Math.random() < 0.1 ? '#c8ffe0' : '#3ddc84');
+        ctx.fillText(ch, i * size, drops[i] * size);
+        if (drops[i] * size > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+          gold[i] = Math.random() < 0.06;
+        }
+        drops[i] += 1;
+      }
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+    var timer = null;
+    function start() { if (!timer) timer = setInterval(frame, 60); }
+    function stop() { clearInterval(timer); timer = null; }
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  });
+</script>
+
+<style>
+  html:not(.show-corrections) blockquote.fixed { display: none; }
+  .corrections-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .corrections-toggle input { cursor: pointer; }
+  .guides-version {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-family: "Share Tech Mono", monospace;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <header class="side-bar">
+  <div class="site-header">
+    <a href="/The2ndChumming3e/latest/" class="site-title lh-tight"><svg class="sw-emblem" viewBox="0 0 48 48" aria-hidden="true">
+  <circle cx="24" cy="13" r="6" fill="none" stroke="#d9a93f" stroke-width="2"/>
+  <path d="M24 3v3M24 20v3M14 13h3M31 13h3M17 6l2 2M29 18l2 2M17 20l2-2M29 8l2-2" stroke="#d9a93f" stroke-width="1.5"/>
+  <path d="M6 44h36v-5h-4v-5h-4v-5h-4v-4h-8v4h-4v5h-4v5h-4v5H6z" fill="none" stroke="#2fd6b0" stroke-width="2" stroke-linejoin="miter"/>
+  <path d="M21 44v-7h6v7" fill="none" stroke="#5dff9d" stroke-width="1.5"/>
+</svg>
+<span class="sw-title-text">SR3 Table Reference</span>
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/" class="nav-list-link">Home</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Rules submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/latest/rules/" class="nav-list-link">Rules</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/combat/" class="nav-list-link">Actions & Combat</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/weapons/" class="nav-list-link">Weapons</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/reloading/" class="nav-list-link">Reloading</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/grenades/" class="nav-list-link">Grenades</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/healing/" class="nav-list-link">Healing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/karma/" class="nav-list-link">Karma</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/instruction/" class="nav-list-link">Instruction & Learning Skills</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/decking-defragged/" class="nav-list-link">Decking (Matrix Defragged)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/decking/" class="nav-list-link">Decking (SR3 core)</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/rigging/" class="nav-list-link">Rigging</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/vehicles/" class="nav-list-link">Vehicles</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/rules/drones/" class="nav-list-link">Drones</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Magic submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/latest/magic/" class="nav-list-link">Magic</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/magic/awakened-primer/" class="nav-list-link">Primer for the Awakened</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/magic/spellcasting/" class="nav-list-link">Spellcasting, Resistance & Drain</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/magic/spells/" class="nav-list-link">Spells</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/magic/physical-adepts/" class="nav-list-link">Physical Adepts</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/magic/initiation/" class="nav-list-link">How to Initiate</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Street submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/latest/street/" class="nav-list-link">The Street</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/street/sins/" class="nav-list-link">SINs & the SINless</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/street/gear-and-fencing/" class="nav-list-link">Buying Gear & Fencing</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/street/legality/" class="nav-list-link">Legality Codes & Permits</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/street/cyberware-grades/" class="nav-list-link">Cyberware Grades & Used Chrome</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/street/contacts/" class="nav-list-link">Contacts & Legwork</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="Hiring & Service Costs submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/latest/hiring/" class="nav-list-link">Hiring & Service Costs</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/decker/" class="nav-list-link">Decker</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/rigger/" class="nav-list-link">Rigger</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/combat-mage/" class="nav-list-link">Combat Mage</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/shaman/" class="nav-list-link">Shaman</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/physical-adept/" class="nav-list-link">Physical Adept</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/street-samurai/" class="nav-list-link">Street Samurai</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/face/" class="nav-list-link">Face</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/infiltrator/" class="nav-list-link">Infiltrator</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/hiring/combat-medic/" class="nav-list-link">Combat Medic</a></li></ul></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="The Sixth World submenu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/The2ndChumming3e/latest/world/" class="nav-list-link">The Sixth World</a><ul class="nav-list"><li class="nav-list-item"><a href="/The2ndChumming3e/latest/world/megacorporations/" class="nav-list-link">Megacorporations</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/world/underworld/" class="nav-list-link">The Underworld</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/world/politics-and-security/" class="nav-list-link">Politics, Police & Policlubs</a></li></ul></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/gear-designer/" class="nav-list-link">Gear Designer</a></li><li class="nav-list-item"><a href="/The2ndChumming3e/latest/sources/" class="nav-list-link">Source Books & Method</a></li></ul>
+  
+</nav>
+
+
+<div class="d-md-block d-none site-footer">
+  
+  
+    This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+  
+  </div>
+</header>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search SR3 Table Reference" autocomplete="off">
+    <label for="search-input" class="search-label">
+      <span class="sr-only">Search SR3 Table Reference</span>
+      <svg viewBox="0 0 24 24" class="search-icon" aria-hidden="true"><use xlink:href="#svg-search"></use></svg>
+    </label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  <a class="guides-version" href="https://darkbushido.github.io/The2ndChumming3e/versions/" title="These guides describe how this version of The 2nd Chumming handles the rules. Other versions">v0.9.0</a><label class="corrections-toggle" title="Show what was corrected from the original Gemini gists">
+  <input type="checkbox" id="show-corrections">
+  Show corrections
+</label>
+<script>
+  (function () {
+    var box = document.getElementById('show-corrections');
+    var root = document.documentElement;
+    box.checked = root.classList.contains('show-corrections');
+    box.addEventListener('change', function () {
+      root.classList.toggle('show-corrections', box.checked);
+      try { localStorage.setItem('showCorrections', box.checked ? '1' : '0'); } catch (e) {}
+    });
+  })();
+</script>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 class="no_toc" id="gear-designer">
+  
+  
+    <a href="#gear-designer" class="anchor-heading" aria-labelledby="gear-designer"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Gear Designer
+  
+  
+</h1>
+    
+
+<p><strong><a href="https://darkbushido.github.io/The2ndChumming3e/designer/latest/">Open the Gear Designer</a></strong> — a web page
+for building a customised weapon or vehicle away from the table, then bringing it into
+The 2nd Chumming in Foundry with one paste. Each release publishes its own frozen copy
+at <code class="language-plaintext highlighter-rouge">designer/&lt;version&gt;/</code> (for example <code class="language-plaintext highlighter-rouge">designer/v0.9.0/</code>); <code class="language-plaintext highlighter-rouge">designer/latest/</code> is the newest.</p>
+
+<ol id="markdown-toc">
+  <li><a href="#what-it-is" id="markdown-toc-what-it-is">What it is</a></li>
+  <li><a href="#the-weapon-tab" id="markdown-toc-the-weapon-tab">The Weapon tab</a>    <ol>
+      <li><a href="#step-1--pick-a-weapon" id="markdown-toc-step-1--pick-a-weapon">Step 1 — pick a weapon</a></li>
+      <li><a href="#step-2--accessories-the-shop" id="markdown-toc-step-2--accessories-the-shop">Step 2 — accessories: the shop</a></li>
+      <li><a href="#step-3--ammunition" id="markdown-toc-step-3--ammunition">Step 3 — ammunition</a></li>
+      <li><a href="#step-4--price" id="markdown-toc-step-4--price">Step 4 — price</a></li>
+    </ol>
+  </li>
+  <li><a href="#the-vehicle-r3r-tab" id="markdown-toc-the-vehicle-r3r-tab">The Vehicle (R3R) tab</a></li>
+  <li><a href="#the-armour-tab" id="markdown-toc-the-armour-tab">The Armour tab</a></li>
+  <li><a href="#your-design-lives-in-the-link" id="markdown-toc-your-design-lives-in-the-link">Your design lives in the link</a></li>
+  <li><a href="#importing-into-foundry" id="markdown-toc-importing-into-foundry">Importing into Foundry</a></li>
+</ol>
+<h2 id="what-it-is">
+  
+  
+    <a href="#what-it-is" class="anchor-heading" aria-labelledby="what-it-is"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> What it is
+  
+  
+</h2>
+    
+
+<p>The designer runs the <strong>same rules modules as the Foundry system</strong> — the code that prices
+weapon accessories and vehicle modifications in Foundry is copied into the page as it is.
+So a price you see on the page is the price Foundry will work out, for the version of the
+system that page came from. It shows names, numbers and page references only; read the
+book for how a piece of gear works.</p>
+
+<p>The page has two tabs: <strong>🔫 Weapon</strong> and <strong>🚗 Vehicle (R3R)</strong>. Every design ends on a price
+step with two buttons: <strong>🔗 Copy link</strong> and <strong>💾 Download JSON</strong>.</p>
+<h2 id="the-weapon-tab">
+  
+  
+    <a href="#the-weapon-tab" class="anchor-heading" aria-labelledby="the-weapon-tab"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Weapon tab
+  
+  
+</h2>
+    
+
+<p>Four steps, shown across the top: <strong>Weapon</strong>, <strong>Accessories</strong>, <strong>Ammunition</strong>, <strong>Price</strong>.
+A bar pinned above them shows the weapon’s picture, a name you can type, and what the
+build comes to so far — damage, mode, ammo, Concealability, recoil compensation from
+accessories, smartgun and laser, cost, and what sits on each mount (Top, Barrel, Under).
+A ⚠ chip counts warnings; hover it to read them.</p>
+<h3 id="step-1--pick-a-weapon">
+  
+  
+    <a href="#step-1--pick-a-weapon" class="anchor-heading" aria-labelledby="step-1--pick-a-weapon"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 1 — pick a weapon
+  
+  
+</h3>
+    
+
+<p><strong>Category chips</strong> across the top sort the weapons by type — Pistols, SMGs, Rifles,
+Shotguns, Heavy weapons, Launchers, Melee and Other — each with a silhouette and a
+count. Pick one and its weapons appear as <strong>picture cards</strong>: the picture (a drawn
+silhouette where there’s no artwork yet), a one-line summary such as “Heavy pistol · one
+hand · smartgun”, anything built in, the key stats (melee cards show Damage, Reach and
+Concealability instead of mode and ammo), the price and the book page. Click a card to
+choose it.</p>
+<h3 id="step-2--accessories-the-shop">
+  
+  
+    <a href="#step-2--accessories-the-shop" class="anchor-heading" aria-labelledby="step-2--accessories-the-shop"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 2 — accessories: the shop
+  
+  
+</h3>
+    
+
+<p>Accessories sit on <strong>shelves</strong> by where they mount: <strong>Top mount</strong>, <strong>Barrel</strong>,
+<strong>Underbarrel</strong>, and <strong>No mount</strong> for everything that takes no mount slot. A search box
+narrows the shelf. Each card shows the accessory, its levels if it has them, and
+<strong>+ Add</strong>.</p>
+
+<p>Accessories that don’t fit the weapon as you’ve built it so far are hidden. The switch
+<strong>Show the ones that don’t fit</strong> says how many are hidden; turn it on and they appear
+with a dashed edge and the reason (for example, a weapon that already has its own stock, or an underbarrel grenade
+launcher on anything smaller than an assault rifle — a house rule).
+You can still add one: the designer warns, it never refuses. The Price step then lists
+it as left out.</p>
+
+<p>Everything you add goes into the <strong>🛒 cart</strong> beside the shelves, where you pick a level
+for rated accessories, see which mount each one takes, and remove it again.</p>
+<h3 id="step-3--ammunition">
+  
+  
+    <a href="#step-3--ammunition" class="anchor-heading" aria-labelledby="step-3--ammunition"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 3 — ammunition
+  
+  
+</h3>
+    
+
+<p>Ammunition cards, with a search box. Pick a type and how many to buy.</p>
+<h3 id="step-4--price">
+  
+  
+    <a href="#step-4--price" class="anchor-heading" aria-labelledby="step-4--price"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Step 4 — price
+  
+  
+</h3>
+    
+
+<p>One line per purchase — the weapon, each accessory, each lot of ammunition — with its
+price and book page, then the total and any warnings. Copy the link or download the JSON
+here.</p>
+<h2 id="the-vehicle-r3r-tab">
+  
+  
+    <a href="#the-vehicle-r3r-tab" class="anchor-heading" aria-labelledby="the-vehicle-r3r-tab"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Vehicle (R3R) tab
+  
+  
+</h2>
+    
+
+<p>Two buttons choose how to start:</p>
+
+<ul>
+  <li><strong>🛠 Design from a chassis (R3R)</strong> — the same wizard as the 🛠 Vehicle Designer window
+in Foundry: <strong>Chassis</strong>, <strong>Power plant</strong>, <strong>Design options</strong>, <strong>Mods</strong>, then <strong>Price &amp;
+share</strong>. It counts Design Points as well as nuyen. The Mods step is a shop like the
+weapon one: shelves, cards and a cart.</li>
+  <li><strong>📖 Modify a book vehicle</strong> — take a vehicle exactly as printed and add aftermarket
+modifications: <strong>Vehicle</strong> (type chips, then picture cards), <strong>Modifications</strong>, <strong>Price</strong>.
+Mods cost their printed price and take their Cargo Factor and Load; there are no Design
+Points, because the vehicle itself isn’t being redesigned.</li>
+</ul>
+<h2 id="the-armour-tab">
+  
+  
+    <a href="#the-armour-tab" class="anchor-heading" aria-labelledby="the-armour-tab"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> The Armour tab
+  
+  
+</h2>
+    
+
+<p>Three steps. <strong>Armour</strong> — chips for clothing, body armour, helmets and shields, then picture cards. <strong>Modifications</strong> — two
+shelves: the Cannon Companion modifications (CC pp.52-53, gel packs among them) and the helmet options (SR3 p.284). Each mod
+goes in the cart once; change its level there. Past the mod-point caps (CC p.52), a mod on a helmet or shield, two sets of
+gel packs — all warned, never refused. <strong>Price</strong> — the bill (gel packs: the armour’s price ×5 in all), and the armour as
+built: Concealability, weight, Availability, Street Index and what it protects against. In Foundry it imports with its
+mods inside it, not worn.</p>
+<h2 id="your-design-lives-in-the-link">
+  
+  
+    <a href="#your-design-lives-in-the-link" class="anchor-heading" aria-labelledby="your-design-lives-in-the-link"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Your design lives in the link
+  
+  
+</h2>
+    
+
+<p>Nothing is stored — not on a server, not in your browser. As you work, the page writes
+the whole design into its own address, after <code class="language-plaintext highlighter-rouge">#d=</code>. That link <strong>is</strong> the design:</p>
+
+<ul>
+  <li><strong>🔗 Copy link</strong> copies it. Bookmark it, paste it to your GM, or open it later and the
+page picks up where you left off.</li>
+  <li><strong>💾 Download JSON</strong> saves the same design as a <code class="language-plaintext highlighter-rouge">.sr3e-design.json</code> file.</li>
+  <li>A link carries the price the page showed, but only so Foundry can tell you if its own
+sum differs. Editing the link can’t make anything cheaper (below).</li>
+  <li>A link made with an older version of the designer still opens; the page says which
+version made it and shows the figures with its own rules.</li>
+</ul>
+<h2 id="importing-into-foundry">
+  
+  
+    <a href="#importing-into-foundry" class="anchor-heading" aria-labelledby="importing-into-foundry"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Importing into Foundry
+  
+  
+</h2>
+    
+
+<p>In Foundry, open the <strong>Items</strong> sidebar and click <strong>📥 Import design</strong> in its header (the
+<strong>SR3E Import Gear Design</strong> macro opens the same dialog, as does
+<code class="language-plaintext highlighter-rouge">game.sr3e.SR3EDesignImport.open()</code> from the console).</p>
+
+<ol>
+  <li><strong>Paste</strong> the link — or the JSON file’s text — into the box. The dialog looks every
+piece up in <strong>this world’s</strong> compendiums and works the design out again with the
+system’s rules, then shows what you’ll get: the weapon and its accessories and
+ammunition, or the vehicle and its mods, with the recomputed price.</li>
+  <li><strong>Read the warnings</strong> (amber). They include:
+    <ul>
+      <li><strong>the link’s price disagrees with the rules</strong> — the dialog shows both; the
+<strong>recomputed</strong> price is the one imported, so a hand-edited link that claims a
+lower price than the rules give is caught here, in front of the GM;</li>
+      <li>the same for Design Points and recoil compensation;</li>
+      <li>a piece this world doesn’t have (a book turned off, or a newer pack);</li>
+      <li>a mount already taken, and a design made with a different system version.</li>
+    </ul>
+  </li>
+  <li><strong>Choose where it goes</strong> (weapons only): <strong>Import onto</strong> lists the characters you
+own, your own character first. The GM also gets <strong>World item (Items directory)</strong>.</li>
+  <li>Click <strong>Import</strong>. The design is imported despite any warnings — the warnings are for
+you and your GM to judge.</li>
+</ol>
+
+<p><strong>Vehicles</strong> work differently:</p>
+
+<ul>
+  <li>A <strong>chassis design</strong> opens the <strong>🛠 Vehicle Designer</strong> window, filled in and on its
+summary. Check it there, then click its Create button; you own the new vehicle.</li>
+  <li>A <strong>book vehicle with mods</strong> is copied from its compendium as your own vehicle, with the
+mods added at the price the page showed. This needs a GM connected.</li>
+</ul>
+
+<blockquote class="note">
+  <p>Imported items are ordinary items: every number on them can still be edited on the
+sheet, like anything else in the system.</p>
+</blockquote>
+
+          
+
+          
+            
+          
+        </main>
+        
+<hr>
+<footer>
+  
+    <p><a href="#top" id="back-to-top">Back to top</a></p>
+  
+
+  <p class="text-small mb-0">Unofficial fan reference. Shadowrun is a registered trademark of its owners; no challenge to their rights is intended. Page numbers refer to the printed page of each book, not the PDF page.</p>
+
+  <div class="d-md-none mt-4 fs-2">
+    
+    
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    
+  </div>
+</footer>
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+
