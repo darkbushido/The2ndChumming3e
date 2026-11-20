@@ -1,5 +1,6 @@
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 import { spiritIcon } from '../data/item-icons.mjs';
+import { InsectSpirits } from '../data/insect-spirits.mjs';
 /**
  * SR3ESpiritSummoning
  *
@@ -116,6 +117,18 @@ export const SPIRIT_TYPES = {
   },
 };
 
+// ---- Insect spirits, true-form (MitS p.127-137; rules in data/insect-spirits.mjs) ----------------------------
+for (const e of InsectSpirits.list()) {
+  SPIRIT_TYPES[e.key] = {
+    label:    e.label,
+    category: 'insect',
+    totem:    e.totem,
+    colony:   InsectSpirits.colony(e.totem),
+    stats:    (F) => InsectSpirits.stats(e.type, e.caste, F),
+    powers:   [...InsectSpirits.powers(e.type, e.caste), ...InsectSpirits.weaknesses().map(w => `Weakness: ${w}`)],
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -147,6 +160,15 @@ export class SR3ESpiritSummoning {
       .map(([k, v]) => `<option value="${k}" ${k === defaultSpiritType ? 'selected' : ''}>${v.label} — ${v.domain}</option>`)
       .join('');
 
+    // Insect spirits (MitS p.127): offered to the GM and to insect-totem shamans; anyone else is warned, never refused.
+    const totem     = conjurer.system?.magicTotem ?? '';
+    const verdict   = InsectSpirits.summonVerdict({ isGM: !!game.user?.isGM, totem });
+    const insectOptions = (verdict.offered || SPIRIT_TYPES[defaultSpiritType]?.category === 'insect')
+      ? Object.entries(SPIRIT_TYPES).filter(([, v]) => v.category === 'insect')
+        .map(([k, v]) => `<option value="${k}" ${k === defaultSpiritType ? 'selected' : ''}>${v.label}</option>`).join('')
+      : '';
+    const insectGroup = insectOptions ? `<optgroup label="── Insect Spirits (true-form) ──">${insectOptions}</optgroup>` : '';
+
     const holdBackField = maxHold > 0
       ? `<div style="display:grid; grid-template-columns:130px 70px 1fr; align-items:center; gap:6px;">
            <label style="font-weight:bold;">Hold back dice</label>
@@ -162,6 +184,7 @@ export class SR3ESpiritSummoning {
           <select id="sr3e-spirit-type">
             <optgroup label="── Elementals ──">${elementalOptions}</optgroup>
             <optgroup label="── Nature Spirits ──">${natureOptions}</optgroup>
+            ${insectGroup}
           </select>
         </div>
         <div style="display:grid; grid-template-columns:130px 70px 1fr; align-items:center; gap:6px;">
@@ -183,6 +206,9 @@ export class SR3ESpiritSummoning {
         <div id="sr3e-phys-warn" style="color:var(--sr-red,#c44); font-size:0.85em; display:none;">
           ⚠ Force &gt; Magic (${magicBase}) — Drain will be Physical!
         </div>
+        <div id="sr3e-insect-warn" style="color:var(--sr-amber,#c90); font-size:0.85em; display:none;">
+          ⚠ ${conjurer.name}'s totem (${totem || 'none'}) is not an insect — only insect shamans summon insect spirits (MitS p.127). GM's call.
+        </div>
         <div style="font-size:0.8em; color:var(--color-text-dark-secondary,#888);">
           GM: totem modifiers &amp; spirit foci dice may be added to either test.
         </div>
@@ -202,7 +228,10 @@ export class SR3ESpiritSummoning {
         const drainLbl = el.querySelector('#sr3e-drain-preview');
         const physWarn = el.querySelector('#sr3e-phys-warn');
         const poolSpan = el.querySelector('#sr3e-conj-pool');
+        const typeSel  = el.querySelector('#sr3e-spirit-type');
+        const insWarn  = el.querySelector('#sr3e-insect-warn');
         const refresh  = () => {
+          if (insWarn) insWarn.style.display = SPIRIT_TYPES[typeSel.value]?.category === 'insect' && !InsectSpirits.isInsectTotem(totem) ? '' : 'none';
           const f      = parseInt(forceIn.value) || 0;
           const held   = Math.min(maxHold, Math.max(0, parseInt(holdIn?.value) || 0));
           const lvl    = SR3ESpiritSummoning._conjuringDrainLevel(f, charisma);
@@ -212,6 +241,7 @@ export class SR3ESpiritSummoning {
           if (poolSpan) poolSpan.textContent = held > 0 ? `(− ${held} held = ${Math.max(1, conjuringSkill - held)})` : '';
         };
         forceIn.addEventListener('input', refresh);
+        typeSel.addEventListener('change', refresh);
         holdIn?.addEventListener('input', refresh);
         refresh();
       },
@@ -339,7 +369,8 @@ export class SR3ESpiritSummoning {
       flags: {
         The2ndChumming3e: {
           isSpirit:       true,
-          spiritType:     spiritDef.category === 'elemental' ? 'elemental' : 'nature',
+          spiritType:     spiritDef.category === 'elemental' ? 'elemental' : spiritDef.category === 'insect' ? 'insect' : 'nature',
+          ...(spiritDef.category === 'insect' ? { insectForm: 'true', insectTotem: spiritDef.totem } : {}),
           spiritTypeKey:  Object.keys(SPIRIT_TYPES).find(k => SPIRIT_TYPES[k] === spiritDef),
           spiritLabel:    spiritDef.label,
           spiritCategory: spiritDef.category,

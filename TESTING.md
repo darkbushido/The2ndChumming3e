@@ -408,6 +408,10 @@ On the active combatant's card: **Complex** (full width) + two **Simple** button
 
 ---
 
+## Insect spirits — TODO 312 (branch `claude/insect-spirits-d6ed61`) — needs a live pass
+- [ ] Give a shaman the **Wasp** totem (Magic tab) and Conjuring ≥ 4. Summon → the dialog lists *Insect Spirits (true-form)*. Pick **Wasp Spirit — Female**, Force 4, Summon: Conjuring card (TN 4) and Drain card post. Confirm → NPC **Wasp Spirit — Female F4**: Body 5, Quickness 8, Strength 8, Cha/Int/Wil/Ess/Mag 4, Reaction 8; powers Enhanced Senses (Smell), Materialization, Paralyzing Touch, Venom + the two weaknesses; image is the neon insect icon (MitS p.137). An **Ant soldier** F4 reads B5 Q8 S8 R8 (MitS p.136).
+- [ ] As GM with a **Bear** shaman: the insect group shows; picking one shows the amber "not an insect shaman" warning and still lets you Summon. As a **Player** with a Bear shaman the group is absent.
+
 ## Meet the contact — TODO 262 (`feature/meet-the-contact`)
 
 Needs a **full Foundry restart** (new `contact.npcUuid` field). With a portrait module active and without one:

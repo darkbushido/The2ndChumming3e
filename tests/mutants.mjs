@@ -31,6 +31,7 @@ const SHEAFRULES = { module: '../scripts/data/sheaf-rules.mjs', klass: 'SheafRul
 const DUMPSHOCK = { module: '../scripts/data/dump-shock.mjs', klass: 'DumpShock' };
 const SHEAFSTEPS = { module: '../scripts/data/sheaf-steps.mjs', klass: 'SheafSteps' };
 const ORTHOSHEAF = { module: '../scripts/data/orthodox-sheaf.mjs', klass: 'OrthodoxSheaf' };
+const INSECTSPIRITS = { module: '../scripts/data/insect-spirits.mjs', klass: 'InsectSpirits' };
 const SPIRITART = { module: '../scripts/data/spirit-art.mjs', klass: 'SpiritArt' };
 const ORTHOMODE = { module: '../scripts/data/orthodox-mode.mjs', klass: 'OrthodoxMode' };
 const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
@@ -5135,6 +5136,22 @@ export const MUTANTS = [
     was:    'the migration gave every spirit the spirit icon, replacing a picture a GM had chosen instead of only the dead systems/sr3e path',
     impl:   actor => (actor?.flags?.The2ndChumming3e?.spiritCategory
       ? { img: `systems/The2ndChumming3e/styles/icons/spirit-${actor.flags.The2ndChumming3e.spiritCategory}.svg` } : null),
+  },
+
+  /* ── Insect spirits (MitS p.136-137) ─────────────────────────────────────────────────────────────────── */
+  {
+    id:     'insect-spirit-plain-stats',
+    suite:  'insect-spirits',
+    ...INSECTSPIRITS, method: 'stats',
+    was:    'insect spirits were built like any spirit (every attribute = Force), ignoring the Insect Spirit Table: a soldier ant lost its Strength and Quickness bonuses and its Reaction',
+    impl:   (type, caste, F) => ({ body: F, quickness: F, strength: F, charisma: F, intelligence: F, willpower: F, essence: F, magic: F, reaction: F, initiative: F * 2 + 20, moveMult: 1, attack: '(STR)M' }),
+  },
+  {
+    id:     'insect-warns-the-gm',
+    suite:  'insect-spirits',
+    ...INSECTSPIRITS, method: 'summonVerdict',
+    was:    'the GM was treated as a non-insect shaman and warned on every insect summon',
+    impl:   ({ totem = '' } = {}) => ({ offered: false, warn: true, totem }),
   },
 
 ];
