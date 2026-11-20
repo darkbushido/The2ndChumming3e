@@ -4015,3 +4015,4 @@ Make a gear item **Underbarrel Grenade Launcher (Weapon)** (category Firearms Ac
 ## 97. 👻 Spirit icons (0.9.1 fix — summoned spirits pointed at `systems/sr3e/assets/spirits/…`, a broken image)
 - [ ] Summon an elemental and a nature spirit: the new actor's sheet and its token both show the spirit icon (orange flame / green leaf), no broken image.
 - [ ] A spirit summoned before the fix (broken picture) is repointed on the next world load; a spirit whose art a GM changed keeps it.
+- [ ] Summon dialog lists Sea Spirit (and Hearth, Prairie, Mist, Storm, Lake); summoning a Sea Spirit creates it with the leaf icon.

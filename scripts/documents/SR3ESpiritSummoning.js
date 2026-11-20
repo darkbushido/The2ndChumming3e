@@ -115,6 +115,53 @@ export const SPIRIT_TYPES = {
     stats: (F) => ({ ...BASE_STATS(F), body: F + 1 }),
     powers: ['Accident', 'Concealment', 'Confusion', 'Fear', 'Guard', 'Materialization', 'Movement'],
   },
+
+  // ---- The nature spirits the list above was missing (TODO: 0.9.1 fix) ------
+  // Four classes · SR3 p.266 (Land: forest, mountain, desert, prairie · Waters: sea, lake, river, swamp ·
+  // Sky: storm, mist · Man: city, field, hearth). Class attribute lines p.267; each type's powers p.267-268.
+  // These use the book's class modifiers (B/S/R as printed); the eight above predate the audit.
+  hearth_spirit: {   // Spirits of Man · SR3 p.267 (a home is a hearth spirit's domain, p.184)
+    label:    'Hearth Spirit',
+    category: 'nature',
+    domain:   'Home',
+    stats: (F) => ({ ...BASE_STATS(F), body: F + 1, quickness: F + 2, strength: F - 2, reaction: F + 1 }),
+    powers: ['Accident', 'Concealment', 'Confusion', 'Guard', 'Materialization', 'Search'],
+  },
+  prairie_spirit: {   // Spirits of the Land · SR3 p.267
+    label:    'Prairie Spirit',
+    category: 'nature',
+    domain:   'Prairie',
+    stats: (F) => ({ ...BASE_STATS(F), body: F + 4, quickness: F - 2, strength: F + 4, reaction: F - 2 }),
+    powers: ['Accident', 'Concealment', 'Guard', 'Materialization', 'Movement', 'Search'],
+  },
+  mist_spirit: {   // Spirits of the Sky · SR3 p.267
+    label:    'Mist Spirit',
+    category: 'nature',
+    domain:   'Mist',
+    stats: (F) => ({ ...BASE_STATS(F), body: F - 2, quickness: F + 3, strength: F - 3, reaction: F + 2 }),
+    powers: ['Accident', 'Concealment', 'Confusion', 'Guard', 'Materialization', 'Movement'],
+  },
+  storm_spirit: {   // Spirits of the Sky · SR3 p.267
+    label:    'Storm Spirit',
+    category: 'nature',
+    domain:   'Storm',
+    stats: (F) => ({ ...BASE_STATS(F), body: F - 2, quickness: F + 3, strength: F - 3, reaction: F + 2 }),
+    powers: ['Concealment', 'Confusion', 'Fear', 'Materialization', 'Innate Spell (Lightning Bolt)'],
+  },
+  lake_spirit: {   // Spirits of the Waters · SR3 p.267
+    label:    'Lake Spirit',
+    category: 'nature',
+    domain:   'Lake',
+    stats: (F) => ({ ...BASE_STATS(F), body: F + 2, reaction: F - 1 }),
+    powers: ['Accident', 'Engulf (Water)', 'Fear', 'Guard', 'Materialization', 'Movement', 'Search'],
+  },
+  sea_spirit: {   // Spirits of the Waters · SR3 p.268
+    label:    'Sea Spirit',
+    category: 'nature',
+    domain:   'Sea',
+    stats: (F) => ({ ...BASE_STATS(F), body: F + 2, reaction: F - 1 }),
+    powers: ['Accident', 'Concealment', 'Confusion', 'Engulf (Water)', 'Fear', 'Guard', 'Materialization', 'Movement', 'Search'],
+  },
 };
 
 // ---- Insect spirits, true-form (MitS p.127-137; rules in data/insect-spirits.mjs) ----------------------------
