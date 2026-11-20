@@ -36,6 +36,12 @@ export const LOOKS = {
   'desert-spirit':     { name: 'Desert Spirit',     look: 'seen from above: a lithe jackal-headed being of sand and bone, arms spread, billowing sand cloak around it, burning orange eyes' },
   'mountain-spirit':   { name: 'Mountain Spirit',   look: 'seen from above: a massive rugged stone giant, broad craggy granite shoulders with snowy caps, icicle beard, fists spread wide, pale blue eyes' },
   'swamp-spirit':      { name: 'Swamp Spirit',      look: 'seen from above: a sprawling bog creature of dark mud and rotting roots, hanging moss, lily pads and will-o-wisp lights, limbs splayed, yellow-green eyes' },
+  'sea-spirit':        { name: 'Sea Spirit',        look: 'seen from above: a vast ocean being, a sprawling body of dark deep-blue waves with a whirlpool at its centre, long tentacle-like arms of surging water, foam crests, a pair of pale glowing eyes in the swirl' },
+  'lake-spirit':       { name: 'Lake Spirit',       look: 'seen from above: a single graceful water creature with a long finned body of blue-green water curled in a gentle circle, lily pads on its back, a serene face, silver eyes' },
+  'storm-spirit':      { name: 'Storm Spirit',      look: 'seen from above: a churning thundercloud being, dark grey swirling cloud body with crackling yellow lightning arcs spreading outward like limbs, bright white eyes' },
+  'mist-spirit':       { name: 'Mist Spirit',       look: 'seen from above: a drifting ghostly fog being, soft pale grey wisps curling outward from a hazy hooded face, thin tendrils of vapour, faint cold blue glowing eyes' },
+  'prairie-spirit':    { name: 'Prairie Spirit',    look: 'seen from above: a single large bison-like grassland guardian, shaggy brown back covered in long grass and wildflowers, two curved horns spread wide, amber eyes, one creature only' },
+  'hearth-spirit':     { name: 'Hearth Spirit',     look: 'seen from above: a small domestic household guardian with a round body of warm embers and glowing coals ringed by a circle of bricks, tiny arms holding a lit candle and a broom, soft orange glow, friendly bright eyes' },
 };
 
 export const batch = () => Object.entries(LOOKS).map(([slug, { name, look }]) =>
