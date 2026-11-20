@@ -51,6 +51,7 @@ import { actorFrom } from './data/actor-ref.mjs';
 import { WeaponCategoryFixes } from './data/weapon-category-fixes.mjs';
 import { convergenceDelta } from './data/sheaf-steps.mjs';
 import { OrthodoxMode } from './data/orthodox-mode.mjs';
+import { ExampleCharacterArt } from './data/example-character-art.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -778,6 +779,20 @@ const MIGRATIONS = [
      * World actors and unlinked tokens. Idempotent: once a mode is set it yields null.
      */
     fixActor: actor => OrthodoxMode.migrationDelta(actor),
+  },
+
+  {
+    version: '0.9.1',
+    label: "Example characters' broken world-relative art is repointed to the default actor icon",
+    /**
+     * The four example characters shipped with `assets/<Name>.png` pictures that exist only on the maintainer's server.
+     * Rule in `ExampleCharacterArt` (`scripts/data/example-character-art.mjs`, pure, tested).
+     *
+     * ⚠ **This OVERWRITES `img` and the prototype token texture, and argues for it:** only while the value is EXACTLY one of
+     * the four shipped paths and `_stats.compendiumSource` names the example-characters pack. A GM's own art is never touched.
+     * World actors and unlinked tokens (picture only). Idempotent.
+     */
+    fixActor: actor => ExampleCharacterArt.fixActor(actor),
   },
 
 ];

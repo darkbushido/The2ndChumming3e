@@ -5,7 +5,7 @@
     "name": "Mercenary Human",
     "type": "character",
     "_id": "ltiJ2SPBBe9G2pd2",
-    "img": "assets/Merc%20human.png",
+    "img": "icons/svg/mystery-man.svg",
     "system": {
       "biography": "Mr J's LBB p40",
       "notes": "",
@@ -142,7 +142,7 @@
       "height": 1,
       "depth": 1,
       "texture": {
-        "src": "assets/Merc%20human.png",
+        "src": "icons/svg/mystery-man.svg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "fit": "contain",

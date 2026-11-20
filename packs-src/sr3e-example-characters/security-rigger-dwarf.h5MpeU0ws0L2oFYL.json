@@ -5,7 +5,7 @@
     "name": "Security Rigger Dwarf",
     "type": "character",
     "_id": "h5MpeU0ws0L2oFYL",
-    "img": "assets/Security%20Rigger%20Dwarf.png",
+    "img": "icons/svg/mystery-man.svg",
     "system": {
       "biography": "",
       "notes": "",
@@ -142,7 +142,7 @@
       "height": 1,
       "depth": 1,
       "texture": {
-        "src": "assets/Security%20Rigger%20Dwarf.png",
+        "src": "icons/svg/mystery-man.svg",
         "anchorX": 0.5,
         "anchorY": 0.5,
         "fit": "contain",
