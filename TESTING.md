@@ -4000,6 +4000,14 @@ Rules: `scripts/data/modded-buy.mjs` (`tests/modded-buy.test.mjs`, two mutants).
       total, the ledger reads "Bought <host> (+N mods)", and the modded item appears. For a vehicle, the vehicle is created with its mods
       and linked to the buyer.
 
+## 97. 🗂 One Characters compendium (TODO 311, 0.9.1 — needs a FULL Foundry restart: `system.json` changed)
+- [ ] Compendium sidebar: no "Example Characters" folder; **Characters** holds one pack "Shadowrun 3rd — Characters".
+- [ ] Open it: six folders (Street Fighters 5 · Magic 5 · Matrix & Tech 2 · Riggers 2 · Face & Legwork 2 · Opposition (GM) 4); nothing loose.
+- [ ] Open Corporate Security Human: sheet loads, art is the default silhouette, items present.
+- [ ] A world copy made before the update (`_stats.compendiumSource` …sr3e-example-characters…): after load,
+      `game.actors.getName('Mercenary Human')._stats.compendiumSource` ends `sr3e-sr3-archetypes.Actor.<id>`; no console errors.
+- [ ] Re-run `game.sr3e.SR3EMigrations.force()` — nothing changes (idempotent).
+
 ## 96. 💣 Underbarrel grenade launcher — nothing smaller than an assault rifle (house rule 2026-11-19; SR3 p.277; ledger `rules/weapons.md#210`)
 Make a gear item **Underbarrel Grenade Launcher (Weapon)** (category Firearms Accessories, modFor weapon, Mount: Under) — no pack ships one.
 - [ ] Web designer (`npm run designer:serve`): on an SMG, a shotgun, a heavy pistol and a sporting rifle it is hidden; **Show the ones that

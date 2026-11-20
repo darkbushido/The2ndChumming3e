@@ -1,0 +1,25 @@
+{
+  "_key": "!folders!c34592825d58b994",
+  "doc": {
+    "_id": "c34592825d58b994",
+    "name": "Riggers",
+    "type": "Actor",
+    "description": "",
+    "folder": null,
+    "sorting": "a",
+    "sort": 400000,
+    "color": null,
+    "flags": {},
+    "_stats": {
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "coreVersion": "14",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": null,
+      "createdTime": 1788537621572,
+      "modifiedTime": 1788537621572,
+      "lastModifiedBy": null
+    }
+  },
+  "embedded": {}
+}

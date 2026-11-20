@@ -1,0 +1,25 @@
+{
+  "_key": "!folders!4d2377996c629796",
+  "doc": {
+    "_id": "4d2377996c629796",
+    "name": "Street Fighters",
+    "type": "Actor",
+    "description": "",
+    "folder": null,
+    "sorting": "a",
+    "sort": 100000,
+    "color": null,
+    "flags": {},
+    "_stats": {
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "coreVersion": "14",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": null,
+      "createdTime": 1788537621572,
+      "modifiedTime": 1788537621572,
+      "lastModifiedBy": null
+    }
+  },
+  "embedded": {}
+}

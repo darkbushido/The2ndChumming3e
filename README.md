@@ -182,7 +182,7 @@ You don't have to open the character sheet to fire:
 ---
 
 ## Compendiums
-Compendiums for weapons, spells, cyberware, bioware, adept powers, melee, armour and matrix programs are bundled with the system — **82 packs, one per source book per item type**, named `sr3e-<book>-<type>` (e.g. `sr3e-mm-cyberware`, `sr3e-r3-vehicles`). Three packs are system content with no book of their own: `sr3e-skills`, `sr3e-example-characters`, `sr3e-mr-johnsons-contacts`.
+Compendiums for weapons, spells, cyberware, bioware, adept powers, melee, armour and matrix programs are bundled with the system — **82 packs, one per source book per item type**, named `sr3e-<book>-<type>` (e.g. `sr3e-mm-cyberware`, `sr3e-r3-vehicles`). Two packs are system content with no book of their own: `sr3e-skills`, `sr3e-mr-johnsons-contacts` (the Characters pack, `sr3e-sr3-archetypes`, holds the core book's sample characters plus four opposition NPCs, in role folders).
 
 ### Source books — turn off what you don't own
 **Configure Settings → System → Configure Source Books** lists every book the packs come from and lets the GM switch each one on or off. Hidden books disappear from the compendium sidebar *and* stop offering their gear in the item pickers, so a table playing core-only never sees Cannon Companion cyberware in a dropdown.

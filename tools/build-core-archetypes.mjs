@@ -33,6 +33,22 @@ const SYSTEM_ID = 'The2ndChumming3e';
 const GENERATOR = 'build-core-archetypes';
 const CHECK = process.argv.includes('--check');
 
+/**
+ * The pack's role folders (TODO 311; the 4 hand-kept opposition NPCs from the old example-characters pack live in
+ * the last one). Ids are derived from the name, never random, like `tools/folder-johnson-contacts.mjs`.
+ * ⚠ A folder's `type` must equal the pack's document type (Actor) or Foundry refuses it on load.
+ */
+export const FOLDERS = [
+  { name: 'Street Fighters', keys: ['street-samurai', 'weapons-specialist', 'mercenary', 'covert-ops-specialist', 'sprawl-ganger'] },
+  { name: 'Magic', keys: ['combat-mage', 'street-mage', 'street-shaman', 'tribal-shaman', 'adept'] },
+  { name: 'Matrix & Tech', keys: ['combat-decker', 'tech-wiz'] },
+  { name: 'Riggers', keys: ['drone-rigger', 'vehicle-rigger'] },
+  { name: 'Face & Legwork', keys: ['face', 'investigator'] },
+  { name: 'Opposition (GM)', keys: [] },
+];
+export const folderIdFor = name => createHash('sha1').update(`sr3e-chars-${name}`).digest('hex').slice(0, 16);
+const folderOfKey = key => FOLDERS.find(f => f.keys.includes(key));
+
 const { SR3E } = await import(pathToFileURL(join(ROOT, 'scripts', 'config.js')).href);
 
 // ── ids ──────────────────────────────────────────────────────────────────────────────────
@@ -52,7 +68,7 @@ const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 function indexPacks() {
   const idx = new Map();   // `${type}|${norm(name)}` → [{pack, doc}]
   for (const pack of readdirSync(SRC)) {
-    if (pack === PACK || pack === 'sr3e-mr-johnsons-contacts' || pack === 'sr3e-example-characters') continue;
+    if (pack === PACK || pack === 'sr3e-mr-johnsons-contacts') continue;
     for (const f of readdirSync(join(SRC, pack))) {
       if (f.startsWith('_folder')) continue;
       const g = JSON.parse(readFileSync(join(SRC, pack, f), 'utf8'));
@@ -358,7 +374,7 @@ export function buildActor(a) {
     ...tpl,
     _id: id, name: a.name, img: 'icons/svg/mystery-man.svg',
     items: items.map(i => i._id),
-    folder: null, ownership: { default: 0 },
+    folder: folderIdFor(folderOfKey(a.key).name), ownership: { default: 0 },
     flags: { [SYSTEM_ID]: { isTemplate: false, generatedBy: GENERATOR } },
     _stats: { ...tpl._stats, lastModifiedBy: null, createdTime: 1788537621572, modifiedTime: 1788537621572, systemVersion: null, coreVersion: '14' },
     sort: 0,
@@ -384,6 +400,14 @@ export function buildAll() {
     g.embedded = embeddedSorted;
     files.set(`${slugName(g.doc.name)}.${t}.json`, `${JSON.stringify(g, null, 2)}\n`);
   }
+  FOLDERS.forEach((f, i) => {
+    const _id = folderIdFor(f.name);
+    const doc = { _id, name: f.name, type: 'Actor', description: '', folder: null, sorting: 'a', sort: (i + 1) * 100000, color: null, flags: {},
+      _stats: { compendiumSource: null, duplicateSource: null, coreVersion: '14', systemId: SYSTEM_ID, systemVersion: null,
+        createdTime: 1788537621572, modifiedTime: 1788537621572, lastModifiedBy: null } };
+    files.set(`_folder.${slugName(f.name)}.${_id}.json`, `${JSON.stringify({ _key: `!folders!${_id}`, doc, embedded: {} }, null, 2)}
+`);
+  });
   return { files, unresolved: [...unresolved] };
 }
 
@@ -403,8 +427,12 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     process.exit(0);
   }
   const dir = join(SRC, PACK);
-  if (existsSync(dir)) rmSync(dir, { recursive: true });
+  // ⚠ Remove only what this tool generated (folders + flagged actors): the opposition NPCs in this pack are hand-kept.
   mkdirSync(dir, { recursive: true });
+  for (const f of readdirSync(dir)) {
+    const path = join(dir, f);
+    if (f.startsWith('_folder.') || JSON.parse(readFileSync(path, 'utf8')).doc?.flags?.[SYSTEM_ID]?.generatedBy === GENERATOR) rmSync(path);
+  }
   for (const [n, text] of files) writeFileSync(join(dir, n), text);
   console.log(`\nWrote ${files.size} actors to packs-src/${PACK}/`);
 }

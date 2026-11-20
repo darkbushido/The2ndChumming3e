@@ -14,6 +14,8 @@
 
 export const DEFAULT_ACTOR_IMG = 'icons/svg/mystery-man.svg';
 export const PACK = 'sr3e-example-characters';
+/** The pack they moved into (TODO 311) — a world actor re-pointed there by the character-pack migration still counts. */
+export const PACK_NOW = 'sr3e-sr3-archetypes';
 /** The exact paths the pack shipped (as stored, URL-encoded). */
 export const SHIPPED = [
   'assets/Human%20Corp%20Enforcer.png', 'assets/Merc%20human.png',
@@ -22,7 +24,8 @@ export const SHIPPED = [
 
 export const ExampleCharacterArt = {
   fixActor(actor) {
-    if (!String(actor?._stats?.compendiumSource ?? '').includes(PACK)) return null;
+    const cs = String(actor?._stats?.compendiumSource ?? '');
+    if (!cs.includes(PACK) && !cs.includes(PACK_NOW)) return null;
     const delta = {};
     if (SHIPPED.includes(actor.img)) delta.img = DEFAULT_ACTOR_IMG;
     if (!actor.isToken && SHIPPED.includes(actor.prototypeToken?.texture?.src)) {

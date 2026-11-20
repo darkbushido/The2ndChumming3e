@@ -16,7 +16,7 @@ paths:
 # Source books & compendium filtering
 
 One pack per source book, `sr3e-<book>-<type>`, each declaring `flags.The2ndChumming3e.book` in `system.json`.
-Packs without the flag are system content (exactly four: `sr3e-skills`, `sr3e-example-characters`,
+Packs without the flag are system content (exactly three: `sr3e-skills`,
 `sr3e-mr-johnsons-contacts`, and the GM-only journal `sr3e-gm-sixth-world`). **82 packs ship**, all SR3 or system (the core book's sample characters, `sr3e-sr3-archetypes`, carry `book: sr3`, the core book, which is never switchable).
 
 ### The GM-only journal — `sr3e-gm-sixth-world` (2026-10-11)
@@ -54,7 +54,7 @@ Packs per book: `sr3` 16 · `sr2` 11 · `mm` 9 · `tss` 9 · `cc` 7 · `sota2` 7
 `fof` 4 · `fra` 4 · `r3` 4 · `ssc` 4 · `mits` 3 · `sota` 3 · `st` 3 · `ct` 2 · `ger` 1 · `pna` 1 · `ssg` 1 · `tal` 1
 
 ### The core book's sample characters — `sr3e-sr3-archetypes` (TODO 274)
-**16** Actor documents — the book prints sixteen (SR3 p.64), not fifteen; the Weapons Specialist is SR3 p.80 — from the
+**16** generated Actor documents (plus four hand-kept opposition NPCs — Corporate Security, Mercenary, Parasecurity Expert, Security Rigger — merged in from the old `sr3e-example-characters` pack in 0.9.1, TODO 311, same `_id`s; the builder removes only what it generated, and writes the six role folders) — the book prints sixteen (SR3 p.64), not fifteen; the Weapons Specialist is SR3 p.80 — from the
 character pages (SR3 pp.65-80) and record sheets (SR3 pp.326-329). **Generated** by `tools/build-core-archetypes.mjs` from
 `tools/data/core-archetypes.mjs` (never hand-edit the pack source; `tests/core-archetypes.test.mjs` rebuilds the plan).
 - ⚠ **Attributes are the book's NATURAL number**; the parenthesised figure is what the cyberware, adept-power and troll-hide

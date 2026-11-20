@@ -52,6 +52,7 @@ import { WeaponCategoryFixes } from './data/weapon-category-fixes.mjs';
 import { convergenceDelta } from './data/sheaf-steps.mjs';
 import { OrthodoxMode } from './data/orthodox-mode.mjs';
 import { ExampleCharacterArt } from './data/example-character-art.mjs';
+import { CharacterPackMerge } from './data/character-pack-merge.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -793,6 +794,18 @@ const MIGRATIONS = [
      * World actors and unlinked tokens (picture only). Idempotent.
      */
     fixActor: actor => ExampleCharacterArt.fixActor(actor),
+  },
+
+  {
+    version: '0.9.1',
+    label: "The example characters' compendium source follows them into the Characters pack",
+    /**
+     * `sr3e-example-characters` was merged into `sr3e-sr3-archetypes` (TODO 311, same `_id`s). `CharacterPackMerge`
+     * (`scripts/data/character-pack-merge.mjs`, pure, tested) re-points `_stats.compendiumSource` on a world copy.
+     * ⚠ OVERWRITES that one field, and only for the four moved ids from the old pack. Runs AFTER the art entry above,
+     * which accepts either pack name. World actors and unlinked tokens. Idempotent.
+     */
+    fixActor: actor => CharacterPackMerge.fixActor(actor),
   },
 
 ];

@@ -254,17 +254,6 @@
       }
     },
     {
-      "name": "sr3e-example-characters",
-      "label": "Example Characters",
-      "path": "packs/sr3e-example-characters",
-      "type": "Actor",
-      "system": "The2ndChumming3e",
-      "ownership": {
-        "PLAYER": "OBSERVER",
-        "ASSISTANT": "OWNER"
-      }
-    },
-    {
       "name": "sr3e-cc-armor",
       "label": "Cannon Companion",
       "path": "packs/sr3e-cc-armor",
@@ -1647,7 +1636,7 @@
     },
     {
       "name": "sr3e-sr3-archetypes",
-      "label": "Shadowrun 3rd — Sample Characters",
+      "label": "Shadowrun 3rd — Characters",
       "path": "packs/sr3e-sr3-archetypes",
       "type": "Actor",
       "system": "The2ndChumming3e",
@@ -1694,13 +1683,6 @@
           ]
         },
         {
-          "name": "Example Characters",
-          "sorting": "a",
-          "packs": [
-            "sr3e-example-characters"
-          ]
-        },
-        {
           "name": "Mr. Johnson's Contacts",
           "sorting": "a",
           "packs": [
@@ -1708,7 +1690,7 @@
           ]
         },
         {
-          "name": "Sample Characters",
+          "name": "Characters",
           "sorting": "a",
           "packs": [
             "sr3e-sr3-archetypes"

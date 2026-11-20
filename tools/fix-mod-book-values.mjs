@@ -22,7 +22,7 @@ import { ModBookFixes } from '../scripts/data/mod-book-fixes.mjs';
 const SRC = join(dirname(fileURLToPath(import.meta.url)), '..', 'packs-src');
 
 /** The packs these documents live in; Remote Control ECCM is also embedded on an example character. */
-export const PACKS = ['sr3e-r3-vehicle-mods', 'sr3e-mm-cyberware', 'sr3e-example-characters'];
+export const PACKS = ['sr3e-r3-vehicle-mods', 'sr3e-mm-cyberware', 'sr3e-sr3-archetypes'];
 
 /** Run over one pack's entries (a Map key → doc); returns the number of changes. Pure on its input. */
 export function fixEntries(entries, pack) {
