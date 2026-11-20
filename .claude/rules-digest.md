@@ -23,7 +23,7 @@ Format: **heading** — citations — modules/tests named. Sources (sha256/12):
 - `portraits.md` 9fca86734575
 - `ranged-combat.md` 4c7dc8c908f1
 - `release-and-process.md` 0d9e9521c16a
-- `source-books.md` 703c5114fe09
+- `source-books.md` 1dfbf1672a7b
 
 ## adept-powers
 - **Attribute Boost is ACTIVATED — never passive** — SR3 p.168-169, SR3 p.245 — tests/adept-powers.test.mjs

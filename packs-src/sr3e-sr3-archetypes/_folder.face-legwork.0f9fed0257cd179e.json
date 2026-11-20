@@ -1,0 +1,25 @@
+{
+  "_key": "!folders!0f9fed0257cd179e",
+  "doc": {
+    "_id": "0f9fed0257cd179e",
+    "name": "Face & Legwork",
+    "type": "Actor",
+    "description": "",
+    "folder": null,
+    "sorting": "a",
+    "sort": 500000,
+    "color": null,
+    "flags": {},
+    "_stats": {
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "coreVersion": "14",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": null,
+      "createdTime": 1788537621572,
+      "modifiedTime": 1788537621572,
+      "lastModifiedBy": null
+    }
+  },
+  "embedded": {}
+}

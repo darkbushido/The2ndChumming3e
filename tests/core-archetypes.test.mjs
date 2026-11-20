@@ -69,7 +69,9 @@ const ATTRS = ['body', 'quickness', 'strength', 'charisma', 'intelligence', 'wil
 
 export async function run(t) {
   const dir = fsPath(new URL('packs-src/sr3e-sr3-archetypes', root));
-  const files = readdirSync(dir).filter(f => f.endsWith('.json'));
+  // The pack also holds the role folders and the four hand-kept opposition NPCs (TODO 314) — neither is generated archetype data.
+  const all = readdirSync(dir).filter(f => f.endsWith('.json'));
+  const files = all.filter(f => JSON.parse(readFileSync(join(dir, f), 'utf8')).doc?.flags?.The2ndChumming3e?.generatedBy === 'build-core-archetypes' && !f.startsWith('_folder'));
   const docs = files.map(f => JSON.parse(readFileSync(join(dir, f), 'utf8')));
   const byName = new Map(docs.map(g => [g.doc.name, g]));
 
@@ -166,7 +168,7 @@ export async function run(t) {
 
   // ── the pack is exactly what the builder makes ──
   const { files: planned } = buildAll();
-  t.eq('the pack source is what tools/build-core-archetypes.mjs produces', [...planned.keys()].sort(), files.sort());
+  t.eq('the pack source is what tools/build-core-archetypes.mjs produces', [...planned.keys()].filter(k => !k.startsWith('_folder')).sort(), files.sort());
   let drift = 0;
   for (const [fname, text] of planned) if (readFileSync(join(dir, fname), 'utf8') !== text) drift++;
   t.is('…byte for byte', drift, 0);

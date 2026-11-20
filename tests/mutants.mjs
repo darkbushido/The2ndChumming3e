@@ -5200,4 +5200,12 @@ export const MUTANTS = [
       ? { img: 'systems/The2ndChumming3e/styles/spirits/earth-elemental.webp' } : null),
   },
 
+  {
+    id:     'character-pack-merge-repoints-everything',
+    suite:  'character-pack-merge',
+    module: '../scripts/data/character-pack-merge.mjs', klass: 'CharacterPackMerge', method: 'repoint',
+    was:    'the compendium-source re-point rewrote any source naming the old pack (a Johnson contact id, an unmoved id) instead of only the four moved actors',
+    impl:   source => /sr3e-example-characters/.test(String(source ?? '')) ? String(source).replace('sr3e-example-characters', 'sr3e-sr3-archetypes') : null,
+  },
+
 ];

@@ -1,0 +1,25 @@
+{
+  "_key": "!folders!28c173c292519914",
+  "doc": {
+    "_id": "28c173c292519914",
+    "name": "Matrix & Tech",
+    "type": "Actor",
+    "description": "",
+    "folder": null,
+    "sorting": "a",
+    "sort": 300000,
+    "color": null,
+    "flags": {},
+    "_stats": {
+      "compendiumSource": null,
+      "duplicateSource": null,
+      "coreVersion": "14",
+      "systemId": "The2ndChumming3e",
+      "systemVersion": null,
+      "createdTime": 1788537621572,
+      "modifiedTime": 1788537621572,
+      "lastModifiedBy": null
+    }
+  },
+  "embedded": {}
+}
