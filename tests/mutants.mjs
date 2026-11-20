@@ -32,6 +32,7 @@ const DUMPSHOCK = { module: '../scripts/data/dump-shock.mjs', klass: 'DumpShock'
 const SHEAFSTEPS = { module: '../scripts/data/sheaf-steps.mjs', klass: 'SheafSteps' };
 const ORTHOSHEAF = { module: '../scripts/data/orthodox-sheaf.mjs', klass: 'OrthodoxSheaf' };
 const NATURESPIRITS = { module: '../scripts/data/nature-spirits.mjs', klass: 'NatureSpirits' };
+const INSECTSPIRITS = { module: '../scripts/data/insect-spirits.mjs', klass: 'InsectSpirits' };
 const SPIRITART = { module: '../scripts/data/spirit-art.mjs', klass: 'SpiritArt' };
 const ORTHOMODE = { module: '../scripts/data/orthodox-mode.mjs', klass: 'OrthodoxMode' };
 const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
@@ -5158,6 +5159,36 @@ export const MUTANTS = [
     was:    'spirits were built with Reaction = Force, ignoring the printed class Reaction modifier (and every other class line)',
     impl:   (cls, F) => ({ body: F, quickness: F, strength: F, charisma: F, intelligence: F, willpower: F, essence: F, magic: F, reaction: F,
       initiative: F * 2 + 20, initiativePhysical: F * 2 + 20, moveMultiplier: 1 }),
+  },
+
+  /* ── Insect spirits (MitS p.136-137) ─────────────────────────────────────────────────────────────────── */
+  {
+    id:     'insect-spirit-plain-stats',
+    suite:  'insect-spirits',
+    ...INSECTSPIRITS, method: 'stats',
+    was:    'insect spirits were built like any spirit (every attribute = Force), ignoring the Insect Spirit Table: a soldier ant lost its Strength and Quickness bonuses and its Reaction',
+    impl:   (type, caste, F) => ({ body: F, quickness: F, strength: F, charisma: F, intelligence: F, willpower: F, essence: F, magic: F, reaction: F, initiative: F * 2 + 20, moveMult: 1, attack: '(STR)M' }),
+  },
+  {
+    id:     'insect-flesh-soldier-ignores-host',
+    suite:  'insect-spirits',
+    ...INSECTSPIRITS, method: 'fleshStats',
+    was:    'a flesh-form soldier was built from Force alone, as a true-form, ignoring the host body it merged with (MitS p.128: physical = host + Force)',
+    impl:   (type, caste, F) => ({ body: F, quickness: F, strength: F, charisma: F, intelligence: F, willpower: F, essence: F, magic: F, reaction: F, initiative: F + 10, moveMult: 1, attack: '(STR)M' }),
+  },
+  {
+    id:     'insect-transformation-table-off-by-one',
+    suite:  'insect-spirits',
+    ...INSECTSPIRITS, method: 'transformation',
+    was:    'the Transformation Table counted 4 net successes as a good merge (it is 5+): a host with a single insect aspect was given aura masking and the host\'s memories',
+    impl:   net => (net >= 4 ? { key: 'good-merge', flesh: true, merge: true, text: '' } : net <= 0 ? { key: 'destroyed', flesh: false, merge: false, text: '' } : net <= 2 ? { key: 'full', flesh: true, merge: false, text: '' } : { key: 'partial', flesh: true, merge: false, text: '' }),
+  },
+  {
+    id:     'insect-warns-the-gm',
+    suite:  'insect-spirits',
+    ...INSECTSPIRITS, method: 'summonVerdict',
+    was:    'the GM was treated as a non-insect shaman and warned on every insect summon',
+    impl:   ({ totem = '' } = {}) => ({ offered: false, warn: true, totem }),
   },
 
 ];

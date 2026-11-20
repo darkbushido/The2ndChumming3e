@@ -1623,23 +1623,23 @@ export const SR3E = {
 
   // Full TOTEMS list (core + expanded/MITS), sorted alphabetically
   magicTotems: [
-    'Adversary', 'Bacchus', 'Badger', 'Bat', 'Bear', 'Boar', 'Buffalo', 'Bull',
-    'Cat', 'Cheetah', 'Cobra', 'Coyote', 'Crab', 'Creator', 'Crocodile',
+    'Adversary', 'Ant', 'Bacchus', 'Badger', 'Bat', 'Bear', 'Beetle', 'Boar', 'Buffalo', 'Bull',
+    'Cat', 'Cheetah', 'Cicada', 'Cobra', 'Coyote', 'Crab', 'Creator', 'Crocodile',
     'Dark King', 'Dog', 'Dolphin', 'Dove', 'Dragonslayer',
     'Eagle', 'Elk',
-    'Fenrir', 'Fire-Bringer', 'Fish', 'Fox',
+    'Fenrir', 'Fire-Bringer', 'Firefly', 'Fish', 'Fly', 'Fox',
     'Gargoyle', 'Gator', 'Gecko', 'Goose', 'Great Mother', 'Griffin',
     'Horse', 'Horned Man', 'Hyena',
     'Jackal', 'Jaguar',
     'Leopard', 'Leviathan', 'Lion', 'Lizard', 'Lover',
-    'Monkey', 'Moon', 'Moon Maiden', 'Mountain', 'Mouse',
+    'Mantid', 'Monkey', 'Moon', 'Moon Maiden', 'Mosquito', 'Mountain', 'Mouse',
     'Oak', 'Otter', 'Owl',
     'Parrot', 'Pegasus', 'Phoenix', 'Plumed Serpent', 'Polecat', 'Prairie Dog', 'Puma', 'Python',
-    'Raccoon', 'Rat', 'Raven',
+    'Raccoon', 'Rat', 'Raven', 'Roach',
     'Scorpion', 'Sea', 'Sea King', 'Seductress', 'Shark', 'Siren', 'Sky Father', 'Snake', 'Spider', 'Stag', 'Stream', 'Sun',
-    'Thunderbird', 'Trickster', 'Turtle',
+    'Termite', 'Thunderbird', 'Trickster', 'Turtle',
     'Unicorn',
-    'Whale', 'Wild Huntsman', 'Wind', 'Wise Warrior', 'Wolf', 'Wyrm',
+    'Wasp', 'Whale', 'Wild Huntsman', 'Wind', 'Wise Warrior', 'Wolf', 'Wyrm',
   ],
 
   // Voodoo loa (kept separate for flavour, combined under one dropdown with optgroup)
@@ -1651,6 +1651,16 @@ export const SR3E = {
 
   // Full reference data keyed by name for the magic-tab notes card
   magicTotemData: {
+    'Ant': { environment: 'Hive or nest', advantages: 'None — insect totems bestow no special advantages (MitS p.127). An insect shaman summons actual ant spirits instead of ordinary spirits (MitS p.128).', disadvantages: 'The totem perverts the shaman toward its hive or nest; Potency starts at 1D6 ÷ 2 (MitS p.127).' },
+    'Beetle': { environment: 'Hive or nest', advantages: 'None — insect totems bestow no special advantages (MitS p.127). An insect shaman summons actual beetle spirits instead of ordinary spirits (MitS p.128).', disadvantages: 'The totem perverts the shaman toward its hive or nest; Potency starts at 1D6 ÷ 2 (MitS p.127).' },
+    'Cicada': { environment: 'Hive or nest', advantages: 'None — insect totems bestow no special advantages (MitS p.127). An insect shaman summons actual cicada spirits instead of ordinary spirits (MitS p.128).', disadvantages: 'The totem perverts the shaman toward its hive or nest; Potency starts at 1D6 ÷ 2 (MitS p.127).' },
+    'Firefly': { environment: 'Hive or nest', advantages: 'None — insect totems bestow no special advantages (MitS p.127). An insect shaman summons actual firefly spirits instead of ordinary spirits (MitS p.128).', disadvantages: 'The totem perverts the shaman toward its hive or nest; Potency starts at 1D6 ÷ 2 (MitS p.127).' },
+    'Fly': { environment: 'Hive or nest', advantages: 'None — insect totems bestow no special advantages (MitS p.127). An insect shaman summons actual fly spirits instead of ordinary spirits (MitS p.128).', disadvantages: 'The totem perverts the shaman toward its hive or nest; Potency starts at 1D6 ÷ 2 (MitS p.127).' },
+    'Mantid': { environment: 'Hive or nest', advantages: 'None — insect totems bestow no special advantages (MitS p.127). An insect shaman summons actual mantid spirits instead of ordinary spirits (MitS p.128).', disadvantages: 'The totem perverts the shaman toward its hive or nest; Potency starts at 1D6 ÷ 2 (MitS p.127).' },
+    'Mosquito': { environment: 'Hive or nest', advantages: 'None — insect totems bestow no special advantages (MitS p.127). An insect shaman summons actual mosquito spirits instead of ordinary spirits (MitS p.128).', disadvantages: 'The totem perverts the shaman toward its hive or nest; Potency starts at 1D6 ÷ 2 (MitS p.127).' },
+    'Roach': { environment: 'Hive or nest', advantages: 'None — insect totems bestow no special advantages (MitS p.127). An insect shaman summons actual roach spirits instead of ordinary spirits (MitS p.128).', disadvantages: 'The totem perverts the shaman toward its hive or nest; Potency starts at 1D6 ÷ 2 (MitS p.127).' },
+    'Termite': { environment: 'Hive or nest', advantages: 'None — insect totems bestow no special advantages (MitS p.127). An insect shaman summons actual termite spirits instead of ordinary spirits (MitS p.128).', disadvantages: 'The totem perverts the shaman toward its hive or nest; Potency starts at 1D6 ÷ 2 (MitS p.127).' },
+    'Wasp': { environment: 'Hive or nest', advantages: 'None — insect totems bestow no special advantages (MitS p.127). An insect shaman summons actual wasp spirits instead of ordinary spirits (MitS p.128).', disadvantages: 'The totem perverts the shaman toward its hive or nest; Potency starts at 1D6 ÷ 2 (MitS p.127).' },
     'Adversary':     { environment: 'Everywhere', advantages: '+2 dice for combat and manipulation spells', disadvantages: 'If wounded, Adversary shamans go berserk in the same way as Bear shamans. Adversary shamans must succeed in a Willpower (8) Test to be friendly and civil to authority figures.' },
     'Bacchus':       { environment: 'Anywhere on land', advantages: '+2 dice for illusion spells, +2 dice for spirits of man', disadvantages: 'A Bacchus shaman must succeed in a Willpower (6) Test to continue on a course of action if something more interesting, prettier or more relaxing presents itself. Additionally, Bacchus shamans are easily distracted; apply a -1 Perception die modifier whenever a Bacchus shaman is in the presence of music, art, motion or great beauty.' },
     'Badger':        { environment: 'Forest', advantages: '+2 dice for combat spells, +2 dice for forest spirits', disadvantages: 'Badger shamans may go berserk in combat, the same as Bear shamans.' },
