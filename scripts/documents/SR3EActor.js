@@ -4746,7 +4746,7 @@ _prepareCharacter(sys, attr) {
           eff.staggered   = successes > 0 && successes < kc.needed;
           eff.standing    = successes >= kc.needed;
         }
-        await SR3EActor._postKnockdownResult(tgt, eff);
+        await SR3EActor._postKnockdownResult(tgt, eff, { attackerRef: kc.attackerActorId ?? null });
       }
     }
 
@@ -9962,7 +9962,7 @@ _prepareCharacter(sys, attr) {
   }
 
   /** Announce a knockdown outcome, with a prone toggle when they went down. */
-  static async _postKnockdownResult(target, out) {
+  static async _postKnockdownResult(target, out, { attackerRef = null } = {}) {
     const proneP = JSON.stringify({ actorId: actorRef(target) }).replace(/'/g, '&#39;');
     let body;
     if (out.automatic) {
@@ -9994,8 +9994,17 @@ _prepareCharacter(sys, attr) {
          </div>`
       : '';
 
+    // Driven back about a metre (p.124): an optional ↩ move that changes x/y only, never facing (TODO 311).
+    // Like Mark prone it is offered, not applied, and is not an Open-steps step.
+    const pushP = JSON.stringify({ actorId: actorRef(target), attackerRef }).replace(/'/g, '&#39;');
+    const pushBtn = out.staggered
+      ? `<div class="sr-soak-action">
+           <button class="sr-pushback-btn" data-payload='${pushP}'>↩ Move ${target.name} back 1 m</button>
+         </div>`
+      : '';
+
     await ChatMessage.create({
-      content: `<div class="sr-roll-card">${body}${proneBtn}</div>`,
+      content: `<div class="sr-roll-card">${body}${proneBtn}${pushBtn}</div>`,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     });
   }

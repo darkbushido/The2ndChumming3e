@@ -4005,3 +4005,11 @@ Make a gear item **Underbarrel Grenade Launcher (Weapon)** (category Firearms Ac
       don't fit** shows it dashed with "smaller than an assault rifle — no underbarrel grenade launcher"; it can still be added.
 - [ ] …on an assault rifle and an LMG it is listed normally, no reason.
 - [ ] Foundry: drop it on an SMG's mods — an amber warning with the same reason, and it **is** installed. On an AK-97: no warning.
+
+### Knockdown push-back · TODO 311
+- [ ] Make a Knockdown Test come out *some successes but below the threshold*: the card says "driven back about a metre" and shows **↩ Move <name> back 1 m**. A full-success or no-success result shows no such button.
+- [ ] As the target's owner (Player2/3): the button works; as a non-owner it is disabled with a tooltip. Click → dialog lists *Directly away from the attacker* first (when the attacker has a token on the scene) plus eight compass points; distance defaults to 1 in the scene's units.
+- [ ] Move: the token slides about one grid square directly away from the attacker; **its facing (rotation) is unchanged** (check `token.document.rotation` before/after in `javascript_tool`). With About Face enabled, still unchanged — if it rotates, note it.
+- [ ] Cancel the dialog → the button is usable again. After a move it reads "↩ Moved" and is spent.
+- [ ] A player who cannot update the token directly (e.g. only the actor is shared) still moves it via the GM client (`sr3e.token.nudge`); the GM tab must be reloaded to the new code.
+- [ ] Token HUD: right-click an owned token → **Step 1 m** opens the same dialog (no attacker → no "away" option), moves x/y only.

@@ -57,6 +57,7 @@ import { TokenScale } from './data/token-scale.mjs';
 import { SR3EHealing } from './SR3EHealing.js';
 import { SR3EPerception } from './SR3EPerception.js';
 import { SR3ETraining } from './SR3ETraining.js';
+import { SR3ETokenNudge } from './SR3ETokenNudge.js';
 import { SR3EDrugs } from './SR3EDrugs.js';
 import { SR3EActionLedger } from './SR3EActionLedger.js';
 import { Ledger } from './data/ledger.mjs';
@@ -149,7 +150,7 @@ Hooks.once('init', () => {
       : a.getFlag('The2ndChumming3e', 'isTemplate') !== true;
   }
 
-  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EPerception, SR3ETraining, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, SR3EModdedBuy, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc, SR3EItemMods, SR3EDesignImport, SR3EVehicleDesigner, SR3EOrders, SR3ESenses, TokenSenses };
+  game.sr3e = { SR3E, SR3EActor, SR3EItem, SR3ESpiritSummoning, SR3EVehicleChase, SR3ECollision, SR3EConcealment, SR3EVehicleSheet, SR3EMIJI, SR3EClocks, SR3EHealing, SR3EPerception, SR3ETraining, SR3ETokenNudge, SR3EDrugs, SR3EActionLedger, SR3EOpenSteps, ReadyWeapon, Hands, SR3EWard, SR3ESourceBooks, buildSkillsCompendium, isLiveActor, sceneFirst, SR3EQuery, SR3EQueue, SR3EGMUnavailable, SR3EMigrations, SR3EPackRepair, AmmoStock, ItemRating, ModRatings, EssenceHoles, SR3EStress, Stress, MoveByWire, Cyberzombie, CyberSlots, Ledger, SR3EPurchase, SR3EModdedBuy, Purchasing, KarmaPool, GoodKarma, HandOfGod, ActorRef, SR3EStatusEffects, SR3EMeetContact, SR3ELegwork, SR3EGenericNpc, SR3EItemMods, SR3EDesignImport, SR3EVehicleDesigner, SR3EOrders, SR3ESenses, TokenSenses };
 
   // TODO 260: name an actor on a card by actorRef (a token actor's uuid, else its id) and read it back with
   // actorFrom (a plain id resolves exactly as game.actors.get did). An unlinked token's actor shares its sidebar
@@ -2409,6 +2410,24 @@ Hooks.on('renderTokenHUD', (hud, html) => {
   col.appendChild(btn);
 });
 
+// Token HUD — "Step 1 m": nudge any owned token without changing its facing (TODO 311). Same dialog as the
+// Knockdown card's ↩ button.
+Hooks.on('renderTokenHUD', (hud, html) => {
+  const doc = hud.object?.document;
+  if (!doc || !doc.actor?.isOwner) return;
+  const el = html instanceof HTMLElement ? html : html?.[0];
+  if (!el || el.querySelector('.sr3e-nudge-hud')) return;
+
+  const btn = document.createElement('div');
+  btn.className = 'control-icon sr3e-nudge-hud';
+  btn.innerHTML = '<i class="fas fa-arrows-up-down-left-right"></i>';
+  btn.dataset.tooltip = 'Step 1 m (does not turn the token)';
+  btn.addEventListener('click', ev => { ev.preventDefault(); ev.stopPropagation(); SR3ETokenNudge.open(doc); });
+
+  const col = el.querySelector('.col.left') ?? el.querySelector('.col.right') ?? el;
+  col.appendChild(btn);
+});
+
 // Hotbar: dropping a weapon item creates a one-click "fire this weapon" macro.
 Hooks.on('hotbarDrop', (_hotbar, data, slot) => {
   if (data?.type !== 'Item' || !data.uuid) return;
@@ -3287,6 +3306,29 @@ Hooks.on('renderChatMessageHTML', (message, html, _data) => {
       await actor.toggleStatusEffect('prone', { active: true });
       btn.disabled    = true;
       btn.textContent = '🔻 Prone';
+    });
+  });
+
+  // ↩ Move back 1 m — the Knockdown card's "driven back" outcome (SR3 p.124, TODO 311). `_mine`: it only moves a
+  // token, an owner or the GM may. Optional, like Mark prone. Opens a dialog; x/y only, never facing.
+  html.querySelectorAll('.sr-pushback-btn').forEach((btn, i) => {
+    if (!_checkBtn(btn, mid, 'pushback', i)) return;
+    try {
+      if (!_mine(JSON.parse(btn.dataset.payload ?? '{}'))) {
+        return _denyBtn(btn, 'Only the target’s owner (or the GM) can move them.');
+      }
+    } catch { /* unreadable payload — leave the button alone */ }
+    btn.addEventListener('click', async event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!_claimBtn(btn, mid, 'pushback', i)) return;
+      const { actorId, attackerRef } = JSON.parse(btn.dataset.payload ?? '{}');
+      const doc = SR3ETokenNudge.tokenDocFor(actorFrom(actorId));
+      let moved = null;
+      try { moved = await SR3ETokenNudge.open(doc, { attackerRef }); }
+      catch (err) { console.error('SR3E | token nudge failed', err); ui.notifications?.error(err.message); }
+      if (moved) { btn.disabled = true; btn.textContent = '↩ Moved'; }
+      else _usedButtons.delete(`${mid}|pushback|${i}`);   // cancelled or failed — let them try again
     });
   });
 
