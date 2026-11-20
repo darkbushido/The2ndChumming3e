@@ -4010,3 +4010,8 @@ Make a gear item **Underbarrel Grenade Launcher (Weapon)** (category Firearms Ac
 ## 97. 👻 Spirit icons (0.9.1 fix — summoned spirits pointed at `systems/sr3e/assets/spirits/…`, a broken image)
 - [ ] Summon an elemental and a nature spirit: the new actor's sheet and its token both show the spirit icon (orange flame / green leaf), no broken image.
 - [ ] A spirit summoned before the fix (broken picture) is repointed on the next world load; a spirit whose art a GM changed keeps it.
+
+## 98. 👻 Spirit portraits (0.9.2 — a drawn picture per spirit type, `styles/spirits/<type>.webp`)
+- [ ] Summon a fire elemental, a forest spirit and a city spirit: each new actor's sheet and token show **its own** portrait (flame being, antlered woodland guardian, scrap-and-neon figure), on a transparent background with no white fringe on the dark sheet.
+- [ ] A spirit summoned under 0.9.1 (neon icon) takes its type's portrait on the next world load; a spirit whose art a GM changed keeps it.
+- [ ] All twelve types (four elementals; forest, river, wind, field, city, desert, mountain, swamp) show a portrait, none the neon fallback.

@@ -318,11 +318,12 @@ export class SR3ESpiritSummoning {
   static async _createSpiritActor(conjurer, spiritDef, force, services) {
     const stats = spiritDef.stats(force);
 
+    const typeKey = Object.keys(SPIRIT_TYPES).find(k => SPIRIT_TYPES[k] === spiritDef);
     const spirit = await Actor.create({
       name:   `${spiritDef.label} F${force} [${conjurer?.name ?? '?'}]`,
       type:   'npc',
-      img:    spiritIcon(spiritDef.category),
-      prototypeToken: { texture: { src: spiritIcon(spiritDef.category) } },
+      img:    spiritIcon(spiritDef.category, typeKey),
+      prototypeToken: { texture: { src: spiritIcon(spiritDef.category, typeKey) } },
       system: {
         attributes: {
           body:         { value: stats.body,         base: stats.body },
@@ -340,7 +341,7 @@ export class SR3ESpiritSummoning {
         The2ndChumming3e: {
           isSpirit:       true,
           spiritType:     spiritDef.category === 'elemental' ? 'elemental' : 'nature',
-          spiritTypeKey:  Object.keys(SPIRIT_TYPES).find(k => SPIRIT_TYPES[k] === spiritDef),
+          spiritTypeKey:  typeKey,
           spiritLabel:    spiritDef.label,
           spiritCategory: spiritDef.category,
           force,

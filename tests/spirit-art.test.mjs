@@ -5,9 +5,10 @@
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { spiritIcon, ICON_DIR } from '../scripts/data/item-icons.mjs';
+import { spiritIcon, spiritCategoryIcon, SPIRIT_PICTURES, SPIRIT_PICTURE_DIR, ICON_DIR } from '../scripts/data/item-icons.mjs';
 import { SpiritArt } from '../scripts/data/spirit-art.mjs';
 import { SPIRIT_TYPES } from '../scripts/documents/SR3ESpiritSummoning.js';
+import { LOOKS, batch, STYLE, NEGATIVE } from '../tools/spirit-art-prompts.mjs';
 
 export const name = 'spirit-art';
 
@@ -50,4 +51,27 @@ export async function run(t) {
     if (/systems\/sr3e\//.test(readFileSync(f, 'utf8').replace(/DEAD_PREFIX = '[^']*'/, ''))) bad.push(f.slice(ROOT.length + 1));
   }
   t.eq('no scripts/ file names the wrong system id (systems/sr3e/)', bad.filter(f => !/SR3EMigrations|spirit-art/.test(f)), []);
+
+  // ── Per-type portraits (0.9.2): styles/spirits/<type-slug>.webp, drawn on the maintainer's ComfyUI ──
+  const slugs = Object.keys(SPIRIT_TYPES).map(k => k.replace(/_/g, '-'));
+  const files = readdirSync(join(ROOT, 'styles/spirits')).filter(f => f.endsWith('.webp')).map(f => f.slice(0, -5)).sort();
+  t.eq('SPIRIT_PICTURES matches styles/spirits/*.webp', [...SPIRIT_PICTURES].sort(), files);
+  t.eq('every spirit type has a portrait', slugs.filter(s => !SPIRIT_PICTURES.has(s)), []);
+  t.eq('the prompt batch covers exactly the spirit types', Object.keys(LOOKS).sort(), [...slugs].sort());
+  t.ok('every prompt states the flat dark background and no shadow; the negative bans shadow and gradient',
+    batch().every(e => e.prompt.includes('#242422') && e.prompt.includes('no shadow') && /shadow/.test(e.negative) && /gradient/.test(e.negative)) && STYLE && NEGATIVE);
+  const [first] = Object.keys(SPIRIT_TYPES);
+  t.is('a type with a portrait gets it', spiritIcon('elemental', first), `${SPIRIT_PICTURE_DIR}/${first.replace(/_/g, '-')}.webp`);
+  t.is('an unknown type falls back to the category icon', spiritIcon('nature', 'dragon_spirit'), spiritCategoryIcon('nature'));
+  const sp = (img, typeKey, category, isToken = false) => ({ img, isToken, flags: { The2ndChumming3e: { isSpirit: true, spiritTypeKey: typeKey, spiritCategory: category } },
+    prototypeToken: { texture: { src: img } } });
+  const pic = spiritIcon('elemental', first);
+  t.eq('a spirit still on our neon default gets its type portrait', SpiritArt.fixActor(sp(spiritCategoryIcon('elemental'), first, 'elemental')),
+    { img: pic, 'prototypeToken.texture.src': pic });
+  t.eq('an unlinked token actor gets the picture only', SpiritArt.fixActor(sp(spiritCategoryIcon('elemental'), first, 'elemental', true)), { img: pic });
+  t.is('a GM own art is never replaced by the portrait', SpiritArt.fixActor(sp('worlds/x/mine.webp', first, 'elemental')), null);
+  t.is('a portrait already in place is left alone', SpiritArt.fixActor(sp(pic, first, 'elemental')), null);
+  t.is('an actor with no spirit flag is never touched', SpiritArt.fixActor({ img: spiritCategoryIcon('nature'), flags: {}, prototypeToken: {} }), null);
+  const src = readFileSync(join(ROOT, 'scripts/documents/SR3ESpiritSummoning.js'), 'utf8');
+  t.ok('summoning passes the type key to spiritIcon', /spiritIcon\(spiritDef\.category, typeKey\)/.test(src));
 }
