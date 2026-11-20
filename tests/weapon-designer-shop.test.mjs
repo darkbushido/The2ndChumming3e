@@ -45,7 +45,8 @@ export async function run(t) {
   const files = existsSync(dir) ? readdirSync(dir).filter(f => f.endsWith('.webp')).map(f => f.slice(0, -5)).sort() : [];
   t.eq('PICTURES matches styles/weapons/*.webp', [...PICTURES].sort(), files);
   const b = batch();
-  t.ok('the ComfyUI batch covers the hand weapons without pictures', b.length > 150 && b.every(e => e.slug && e.prompt.includes('white background')));
+  t.ok('the ComfyUI batch covers the hand weapons without pictures, on the designer's dark grey with no shadow', b.length > 150 && b.every(e => e.slug && e.prompt.includes('#242422') && e.prompt.includes('no shadow') && /shadow/.test(e.negative)));
+  t.ok('--all lists every weapon, pictured or not (regenerating the set)', batch(undefined, { all: true }).length === b.length + PICTURES.size);
   t.ok('smartguns get LED lights in their prompt, others do not',
     b.some(e => e.smartgun) && b.every(e => e.prompt.includes('LED indicator lights') === e.smartgun));
   const alpha = b.find(e => e.name === 'Ares Alpha');

@@ -20,7 +20,11 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 /** What each firearm should look like, in our own words — `tools/data/weapon-looks.json` (the maintainer's review, 2026-11-13). */
 export const LOOKS = JSON.parse(readFileSync(join(ROOT, 'tools', 'data', 'weapon-looks.json'), 'utf8'));
 export const STYLE = 'anime style illustration, clean cel shading, crisp dark outline, side view, single object centred, '
-  + 'plain flat pure white background, no text, no hands, no people, cyberpunk 2060s design';
+  + 'plain flat solid dark charcoal grey background (#242422), no shadow, no drop shadow, no cast shadow, no glow, no text, no hands, no people, cyberpunk 2060s design';
+/** The background is the designer card's --sr-surface (#242422): key-art.py keys whatever colour the border is, so any
+ *  leftover edge blends into the card instead of showing as a white halo (the maintainer, 2026-11-19). */
+/** Things the model must not draw — fed to the sampler's negative prompt. The baked-in grey drop shadow survived keying (0.9.0 bug). */
+export const NEGATIVE = 'white background, light background, gradient background, shadow, drop shadow, cast shadow, ground shadow, reflection, white outline, halo, glow edge, border, frame, text, watermark, hands, people';
 
 /**
  * What a gun visibly carries, from its pack data — the maintainer, 2026-11-13: "the ares alpha has an integrated under
@@ -58,20 +62,20 @@ export function features(doc) {
 export const SMARTGUN = 'built-in smartgun system with glowing LED indicator lights along the receiver and a lit smartlink contact on the grip';
 
 /** The batch: every shipped hand weapon without a picture, one entry per slug. */
-export function batch(root = ROOT) {
+export function batch(root = ROOT, { all = false } = {}) {
   const shipped = new Set((JSON.parse(readFileSync(join(root, 'system.json'), 'utf8')).packs ?? []).map(p => p.name));
   const out = new Map();
   for (const pack of readdirSync(join(root, 'packs-src')).filter(p => /-(firearms|melee)$/.test(p) && shipped.has(p)).sort()) {
     for (const f of readdirSync(join(root, 'packs-src', pack)).filter(x => x.endsWith('.json')).sort()) {
       const { doc } = JSON.parse(readFileSync(join(root, 'packs-src', pack, f), 'utf8'));
       const s = slug(doc.name);
-      if (!s || PICTURES.has(s) || out.has(s)) continue;
+      if (!s || (!all && PICTURES.has(s)) || out.has(s)) continue;
       const what = CATEGORY_NAMES[doc.system?.category] ?? (doc.type === 'melee' ? 'melee weapon' : 'firearm');
       // The maintainer, 2026-11-13: "smartguns should get some LED lights".
       const smart = doc.system?.smartgun ? `${SMARTGUN}, ` : '';
       const parts = features(doc);
       out.set(s, { slug: s, name: doc.name, group: WeaponCatalog.groupOf(doc), smartgun: !!doc.system?.smartgun, what: what.toLowerCase(),
-        features: parts, page: doc.system?.bookPage ?? '', look: LOOKS[s]?.look ?? '', tech: !!LOOKS[s]?.tech,
+        features: parts, page: doc.system?.bookPage ?? '', look: LOOKS[s]?.look ?? '', tech: !!LOOKS[s]?.tech, negative: NEGATIVE,
         prompt: `${doc.name}, ${LOOKS[s]?.look ?? `a ${what.toLowerCase()}`}, ${parts.length ? `${parts.join(', ')}, ` : ''}${smart}${STYLE}` });
     }
   }
@@ -79,8 +83,11 @@ export function batch(root = ROOT) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const file = resolve(process.argv[2] ?? join(ROOT, 'dist', 'weapon-art', 'prompts.json'));
-  const list = batch();
+  // --all: every weapon, pictured or not — regenerating the whole set without the baked-in shadow.
+  const args = process.argv.slice(2);
+  const all  = args.includes('--all');
+  const file = resolve(args.find(a => a !== '--all') ?? join(ROOT, 'dist', 'weapon-art', 'prompts.json'));
+  const list = batch(ROOT, { all });
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, JSON.stringify(list, null, 2));
   console.log(`${list.length} weapon pictures to draw → ${file}`);
