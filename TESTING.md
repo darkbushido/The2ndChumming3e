@@ -4027,3 +4027,8 @@ Make a gear item **Underbarrel Grenade Launcher (Weapon)** (category Firearms Ac
 - [ ] Cancel the dialog → the button is usable again. After a move it reads "↩ Moved" and is spent.
 - [ ] A player who cannot update the token directly (e.g. only the actor is shared) still moves it via the GM client (`sr3e.token.nudge`); the GM tab must be reloaded to the new code.
 - [ ] Token HUD: right-click an owned token → **Step 1 m** opens the same dialog (no attacker → no "away" option), moves x/y only.
+
+## 98. 👻 Spirit portraits (0.9.1 — a drawn picture per spirit type, `styles/spirits/<type>.webp`)
+- [ ] Summon a fire elemental, a forest spirit and a city spirit: each new actor's sheet and token show **its own** portrait (flame being, antlered woodland guardian, scrap-and-neon figure), on a transparent background with no white fringe on the dark sheet.
+- [ ] A spirit summoned under 0.9.1 (neon icon) takes its type's portrait on the next world load; a spirit whose art a GM changed keeps it.
+- [ ] All eighteen types (four elementals; forest, river, wind, field, city, desert, mountain, swamp, hearth, prairie, mist, storm, lake, sea) show a portrait, none the neon fallback.

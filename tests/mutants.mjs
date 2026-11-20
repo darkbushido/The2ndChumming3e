@@ -5191,4 +5191,13 @@ export const MUTANTS = [
     impl:   ({ totem = '' } = {}) => ({ offered: false, warn: true, totem }),
   },
 
+  {
+    id:     'spirit-portrait-overwrites-gm-art',
+    suite:  'spirit-art',
+    ...SPIRITART, method: 'fixActor',
+    was:    'the portrait upgrade replaced any spirit picture with its type portrait, not only our own neon default - a GM-chosen art was lost',
+    impl:   actor => (actor?.flags?.The2ndChumming3e?.isSpirit
+      ? { img: 'systems/The2ndChumming3e/styles/spirits/earth-elemental.webp' } : null),
+  },
+
 ];

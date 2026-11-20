@@ -289,7 +289,36 @@ export function restockImage(item) {
 /** A summoned spirit's picture by `spiritCategory` (`SPIRIT_TYPES` in SR3ESpiritSummoning); anything else gets the plain spirit. */
 export const SPIRIT_ICON_OF = { elemental: 'spirit-elemental', nature: 'spirit-nature', insect: 'spirit-insect' };
 export const SPIRIT_FALLBACK = 'spirit';
-export const spiritIcon = category => icon(SPIRIT_ICON_OF[category] ?? SPIRIT_FALLBACK);
+/** Spirit types (the `SPIRIT_TYPES` key, dashes) with a drawn portrait in `styles/spirits/<slug>.webp`; tests/spirit-art.test.mjs keeps it equal to the folder. */
+export const SPIRIT_PICTURES = new Set([
+  'air-elemental',
+  'city-spirit',
+  'desert-spirit',
+  'earth-elemental',
+  'field-spirit',
+  'fire-elemental',
+  'forest-spirit',
+  'hearth-spirit',
+  'lake-spirit',
+  'mist-spirit',
+  'mountain-spirit',
+  'prairie-spirit',
+  'river-spirit',
+  'sea-spirit',
+  'storm-spirit',
+  'swamp-spirit',
+  'water-elemental',
+  'wind-spirit',
+]);
+export const SPIRIT_PICTURE_DIR = `${SYS}/spirits`;
+export const spiritSlug = typeKey => String(typeKey ?? '').replace(/_/g, '-');
+/** The neon SVG for a category — what a spirit with no portrait gets, and what the migration recognises as ours. */
+export const spiritCategoryIcon = category => icon(SPIRIT_ICON_OF[category] ?? SPIRIT_FALLBACK);
+/** A summoned spirit's picture: its type's portrait when drawn, else the category's neon icon. */
+export const spiritIcon = (category, typeKey) => {
+  const s = spiritSlug(typeKey);
+  return SPIRIT_PICTURES.has(s) ? `${SPIRIT_PICTURE_DIR}/${s}.webp` : spiritCategoryIcon(category);
+};
 
 export function allIconNames() {
   const names = new Set(['gear-case', 'medical-patch', 'medical-clinic', 'medical-medkit', 'ammo-arrows', 'ammo-bolts',

@@ -368,11 +368,12 @@ export class SR3ESpiritSummoning {
     const stats = isFlesh ? flesh.stats : spiritDef.stats(force);
     const powers = isFlesh ? flesh.powers : spiritDef.powers;
 
+    const typeKey = Object.keys(SPIRIT_TYPES).find(k => SPIRIT_TYPES[k] === spiritDef);
     const spirit = await Actor.create({
       name:   `${spiritDef.label}${isFlesh ? ' (flesh)' : ''} F${force} [${conjurer?.name ?? '?'}]`,
       type:   'npc',
-      img:    spiritIcon(spiritDef.category),
-      prototypeToken: { texture: { src: spiritIcon(spiritDef.category) } },
+      img:    spiritIcon(spiritDef.category, typeKey),
+      prototypeToken: { texture: { src: spiritIcon(spiritDef.category, typeKey) } },
       system: {
         attributes: {
           body:         { value: stats.body,         base: stats.body },
@@ -395,7 +396,7 @@ export class SR3ESpiritSummoning {
           spiritType:     spiritDef.category === 'elemental' ? 'elemental' : spiritDef.category === 'insect' ? 'insect' : 'nature',
           ...(spiritDef.category === 'insect' ? { insectForm: isFlesh ? 'flesh' : 'true', insectTotem: spiritDef.totem } : {}),
           ...(isFlesh ? { fleshHost: flesh.hostName, transformation: flesh.outcome.key, incubationWeeks: InsectSpirits.incubationWeeks(force), banishable: false, dualBeing: true, naturalArmor: 0 } : {}),
-          spiritTypeKey:  Object.keys(SPIRIT_TYPES).find(k => SPIRIT_TYPES[k] === spiritDef),
+          spiritTypeKey:  typeKey,
           spiritLabel:    spiritDef.label,
           spiritCategory: spiritDef.category,
           force,
