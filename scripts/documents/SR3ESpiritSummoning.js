@@ -1,5 +1,6 @@
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 import { spiritIcon } from '../data/item-icons.mjs';
+import { NatureSpirits } from '../data/nature-spirits.mjs';
 /**
  * SR3ESpiritSummoning
  *
@@ -17,151 +18,32 @@ import { spiritIcon } from '../data/item-icons.mjs';
 // Spirit definitions
 // ---------------------------------------------------------------------------
 
-const BASE_STATS = (F) => ({
-  body:         F,
-  quickness:    F,
-  strength:     F,
-  charisma:     F,
-  intelligence: F,
-  willpower:    F,
-  essence:      F,
-  magic:        F,
-  reaction:     F,
-  initiative:   F * 2 + 20,
-});
+// Elementals and nature spirits are built from data/nature-spirits.mjs — SR3 pp.266-268.
+export const SPIRIT_TYPES = {};
 
-export const SPIRIT_TYPES = {
-  // ---- Elementals (SR3 p.258-261) ----------------------------------------
-  earth_elemental: {
-    label:    'Earth Elemental',
+for (const [key, t] of Object.entries(NatureSpirits.ELEMENTALS)) {
+  SPIRIT_TYPES[key] = {
+    label:    t.label,
     category: 'elemental',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 2, strength: F + 2 }),
-    powers: ['Materialization', 'Engulf (Earth)', 'Movement', 'Concealment'],
-  },
-  air_elemental: {
-    label:    'Air Elemental',
-    category: 'elemental',
-    stats: (F) => ({ ...BASE_STATS(F), quickness: F + 2 }),
-    powers: ['Materialization', 'Engulf (Air)', 'Movement', 'Concealment', 'Immunity to Normal Weapons'],
-  },
-  fire_elemental: {
-    label:    'Fire Elemental',
-    category: 'elemental',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 1 }),
-    powers: ['Materialization', 'Engulf (Fire)', 'Movement', 'Concealment', 'Immunity to Normal Weapons'],
-  },
-  water_elemental: {
-    label:    'Water Elemental',
-    category: 'elemental',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 1 }),
-    powers: ['Materialization', 'Engulf (Water)', 'Movement', 'Concealment'],
-  },
+    spiritClass: t.line,
+    attack:   NatureSpirits.ELEMENT_LINES[t.line].attack,
+    weakness: t.weakness,
+    stats:    (F) => NatureSpirits.stats(t.line, F),
+    powers:   [...t.powers],
+  };
+}
 
-  // ---- Nature Spirits (SR3 p.262-266) -------------------------------------
-  forest_spirit: {
-    label:    'Forest Spirit',
+for (const [key, t] of Object.entries(NatureSpirits.TYPES)) {
+  SPIRIT_TYPES[key] = {
+    label:    t.label,
     category: 'nature',
-    domain:   'Forest',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 2, strength: F + 2 }),
-    powers: ['Accident', 'Concealment', 'Confusion', 'Fear', 'Guard', 'Materialization', 'Movement'],
-  },
-  river_spirit: {
-    label:    'River Spirit',
-    category: 'nature',
-    domain:   'Water',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 1 }),
-    powers: ['Accident', 'Concealment', 'Confusion', 'Engulf (Water)', 'Guard', 'Materialization', 'Movement'],
-  },
-  wind_spirit: {
-    label:    'Wind Spirit',
-    category: 'nature',
-    domain:   'Air',
-    stats: (F) => ({ ...BASE_STATS(F), quickness: F + 2 }),
-    powers: ['Accident', 'Concealment', 'Confusion', 'Guard', 'Materialization', 'Movement'],
-  },
-  field_spirit: {
-    label:    'Field Spirit',
-    category: 'nature',
-    domain:   'Plains',
-    stats: (F) => BASE_STATS(F),
-    powers: ['Accident', 'Concealment', 'Confusion', 'Guard', 'Materialization', 'Movement'],
-  },
-  city_spirit: {
-    label:    'City Spirit',
-    category: 'nature',
-    domain:   'Urban',
-    stats: (F) => BASE_STATS(F),
-    powers: ['Accident', 'Concealment', 'Confusion', 'Fear', 'Guard', 'Materialization', 'Movement'],
-  },
-  desert_spirit: {
-    label:    'Desert Spirit',
-    category: 'nature',
-    domain:   'Desert',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 1 }),
-    powers: ['Accident', 'Concealment', 'Confusion', 'Guard', 'Materialization', 'Movement'],
-  },
-  mountain_spirit: {
-    label:    'Mountain Spirit',
-    category: 'nature',
-    domain:   'Mountain',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 3, strength: F + 3 }),
-    powers: ['Accident', 'Concealment', 'Confusion', 'Guard', 'Materialization', 'Movement'],
-  },
-  swamp_spirit: {
-    label:    'Swamp Spirit',
-    category: 'nature',
-    domain:   'Swamp',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 1 }),
-    powers: ['Accident', 'Concealment', 'Confusion', 'Fear', 'Guard', 'Materialization', 'Movement'],
-  },
-
-  // ---- The nature spirits the list above was missing (TODO: 0.9.1 fix) ------
-  // Four classes · SR3 p.266 (Land: forest, mountain, desert, prairie · Waters: sea, lake, river, swamp ·
-  // Sky: storm, mist · Man: city, field, hearth). Class attribute lines p.267; each type's powers p.267-268.
-  // These use the book's class modifiers (B/S/R as printed); the eight above predate the audit.
-  hearth_spirit: {   // Spirits of Man · SR3 p.267 (a home is a hearth spirit's domain, p.184)
-    label:    'Hearth Spirit',
-    category: 'nature',
-    domain:   'Home',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 1, quickness: F + 2, strength: F - 2, reaction: F + 1 }),
-    powers: ['Accident', 'Concealment', 'Confusion', 'Guard', 'Materialization', 'Search'],
-  },
-  prairie_spirit: {   // Spirits of the Land · SR3 p.267
-    label:    'Prairie Spirit',
-    category: 'nature',
-    domain:   'Prairie',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 4, quickness: F - 2, strength: F + 4, reaction: F - 2 }),
-    powers: ['Accident', 'Concealment', 'Guard', 'Materialization', 'Movement', 'Search'],
-  },
-  mist_spirit: {   // Spirits of the Sky · SR3 p.267
-    label:    'Mist Spirit',
-    category: 'nature',
-    domain:   'Mist',
-    stats: (F) => ({ ...BASE_STATS(F), body: F - 2, quickness: F + 3, strength: F - 3, reaction: F + 2 }),
-    powers: ['Accident', 'Concealment', 'Confusion', 'Guard', 'Materialization', 'Movement'],
-  },
-  storm_spirit: {   // Spirits of the Sky · SR3 p.267
-    label:    'Storm Spirit',
-    category: 'nature',
-    domain:   'Storm',
-    stats: (F) => ({ ...BASE_STATS(F), body: F - 2, quickness: F + 3, strength: F - 3, reaction: F + 2 }),
-    powers: ['Concealment', 'Confusion', 'Fear', 'Materialization', 'Innate Spell (Lightning Bolt)'],
-  },
-  lake_spirit: {   // Spirits of the Waters · SR3 p.267
-    label:    'Lake Spirit',
-    category: 'nature',
-    domain:   'Lake',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 2, reaction: F - 1 }),
-    powers: ['Accident', 'Engulf (Water)', 'Fear', 'Guard', 'Materialization', 'Movement', 'Search'],
-  },
-  sea_spirit: {   // Spirits of the Waters · SR3 p.268
-    label:    'Sea Spirit',
-    category: 'nature',
-    domain:   'Sea',
-    stats: (F) => ({ ...BASE_STATS(F), body: F + 2, reaction: F - 1 }),
-    powers: ['Accident', 'Concealment', 'Confusion', 'Engulf (Water)', 'Fear', 'Guard', 'Materialization', 'Movement', 'Search'],
-  },
-};
+    domain:   t.domain,
+    spiritClass: t.cls,
+    attack:   NatureSpirits.CLASSES[t.cls].attack,
+    stats:    (F) => NatureSpirits.stats(t.cls, F),
+    powers:   [...t.powers],
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -394,6 +276,9 @@ export class SR3ESpiritSummoning {
           services,
           conjurerId:     conjurer?.id ?? null,
           powers:         spiritDef.powers,
+          moveMultiplier: stats.moveMultiplier ?? null,
+          attack:         spiritDef.attack ?? null,
+          weakness:       spiritDef.weakness ?? null,
         },
       },
     });
@@ -431,7 +316,8 @@ export class SR3ESpiritSummoning {
       },
     });
 
-    ui.notifications.info(`${spiritActor.name} enters combat (Initiative: ${initScore}).`);
+    const phys = spiritDef.stats(force).initiativePhysical;
+    ui.notifications.info(`${spiritActor.name} enters combat (astral Initiative: ${initScore}${phys != null ? `; physical F-based base ${phys} + 1D6` : ''}).`);
   }
 
   // ---------------------------------------------------------------------------

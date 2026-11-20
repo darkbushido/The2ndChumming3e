@@ -4011,3 +4011,6 @@ Make a gear item **Underbarrel Grenade Launcher (Weapon)** (category Firearms Ac
 - [ ] Summon an elemental and a nature spirit: the new actor's sheet and its token both show the spirit icon (orange flame / green leaf), no broken image.
 - [ ] A spirit summoned before the fix (broken picture) is repointed on the next world load; a spirit whose art a GM changed keeps it.
 - [ ] Summon dialog lists Sea Spirit (and Hearth, Prairie, Mist, Storm, Lake); summoning a Sea Spirit creates it with the leaf icon.
+- [ ] Summon a Sea Spirit at Force 4: its sheet shows B 6, Q 4, S 4, C/I/W/Magic 4, R 3 (Waters class, SR3 p.267); the card lists Accident, Concealment, Confusion, Engulf, Fear, Guard, Materialization, Movement, Search.
+- [ ] Summon a Prairie Spirit (B 8, Q 2, S 8, R 2) and a Storm Spirit (B 2, Q 7, S 1, R 6; Innate Spell (Lightning Bolt)); with a combat running, the notice names the astral Initiative base (F + 20) and the physical one.
+- [ ] A spirit summoned before this fix keeps its old stats (no migration — editable).

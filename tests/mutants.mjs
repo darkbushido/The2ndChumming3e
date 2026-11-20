@@ -31,6 +31,7 @@ const SHEAFRULES = { module: '../scripts/data/sheaf-rules.mjs', klass: 'SheafRul
 const DUMPSHOCK = { module: '../scripts/data/dump-shock.mjs', klass: 'DumpShock' };
 const SHEAFSTEPS = { module: '../scripts/data/sheaf-steps.mjs', klass: 'SheafSteps' };
 const ORTHOSHEAF = { module: '../scripts/data/orthodox-sheaf.mjs', klass: 'OrthodoxSheaf' };
+const NATURESPIRITS = { module: '../scripts/data/nature-spirits.mjs', klass: 'NatureSpirits' };
 const SPIRITART = { module: '../scripts/data/spirit-art.mjs', klass: 'SpiritArt' };
 const ORTHOMODE = { module: '../scripts/data/orthodox-mode.mjs', klass: 'OrthodoxMode' };
 const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
@@ -5135,6 +5136,16 @@ export const MUTANTS = [
     was:    'the migration gave every spirit the spirit icon, replacing a picture a GM had chosen instead of only the dead systems/sr3e path',
     impl:   actor => (actor?.flags?.The2ndChumming3e?.spiritCategory
       ? { img: `systems/The2ndChumming3e/styles/icons/spirit-${actor.flags.The2ndChumming3e.spiritCategory}.svg` } : null),
+  },
+
+  /* ── Spirit stats vs the book (SR3 pp.266-268) ─────────────────────────────────────────────────────── */
+  {
+    id:     'spirit-class-reaction-dropped',
+    suite:  'nature-spirits',
+    ...NATURESPIRITS, method: 'stats',
+    was:    'spirits were built with Reaction = Force, ignoring the printed class Reaction modifier (and every other class line)',
+    impl:   (cls, F) => ({ body: F, quickness: F, strength: F, charisma: F, intelligence: F, willpower: F, essence: F, magic: F, reaction: F,
+      initiative: F * 2 + 20, initiativePhysical: F * 2 + 20, moveMultiplier: 1 }),
   },
 
 ];
