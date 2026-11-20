@@ -32,6 +32,14 @@ export async function run(t) {
   const missing = [...cats].filter(c => !existsSync(join(ROOT, 'styles/icons', `spirit-${c}.svg`)));
   t.eq('every spirit category has a drawn icon of its own', missing, []);
 
+  // Every nature spirit the core book lists is summonable (SR3 p.266: land, waters, sky, man) — Sea was missing.
+  const natureKeys = Object.entries(SPIRIT_TYPES).filter(([, d]) => d.category === 'nature').map(([k]) => k).sort();
+  t.eq('all 14 SR3 nature spirits are summonable', natureKeys, [
+    'city_spirit', 'desert_spirit', 'field_spirit', 'forest_spirit', 'hearth_spirit', 'lake_spirit', 'mist_spirit',
+    'mountain_spirit', 'prairie_spirit', 'river_spirit', 'sea_spirit', 'storm_spirit', 'swamp_spirit', 'wind_spirit']);
+  t.is('a Sea Spirit is a nature spirit with the leaf icon', spiritIcon(SPIRIT_TYPES.sea_spirit.category), `${ICON_DIR}/spirit-nature.svg`);
+  t.ok('Sea Spirit carries the Waters class stats (B F+2, R F-1)', SPIRIT_TYPES.sea_spirit.stats(6).body === 8 && SPIRIT_TYPES.sea_spirit.stats(6).reaction === 5);
+
   const mk = (img, tex, flags, isToken = false) => ({ img, isToken, flags, prototypeToken: { texture: { src: tex } } });
   const F = c => ({ The2ndChumming3e: { spiritCategory: c } });
   t.eq('a broken elemental picture and token are repointed', SpiritArt.fixActor(mk(OLD('elemental'), OLD('elemental'), F('elemental'))),
