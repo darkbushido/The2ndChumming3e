@@ -19,7 +19,10 @@ const read = rel => readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
 export async function run(t) {
   /* ── The TN window: never both ─────────────────────────────────────────────── */
   t.eq('ticking the laser sight unticks every smartlink-system row', exclusiveGear('laserSight'), ['smartlink', 'smartlinkShot', 'smartGoggles']);
-  t.eq('…and ticking a smart row unticks the laser', SMART_ROWS.map(exclusiveGear), [['laserSight'], ['laserSight'], ['laserSight']]);
+  t.eq('…and ticking a smart row unticks the laser and the other two smart rows', SMART_ROWS.map(exclusiveGear),
+    [['laserSight', 'smartlinkShot', 'smartGoggles'], ['laserSight', 'smartlink', 'smartGoggles'], ['laserSight', 'smartlink', 'smartlinkShot']]);
+  t.eq('ticking smartlink unticks goggles, the shot row and the laser', exclusiveGear('smartlink').sort(), ['laserSight', 'smartGoggles', 'smartlinkShot']);
+  t.is('all three smart rows handed to the sum: −2, not −4', sumModifiers({ smartlink: true, smartGoggles: true, smartlinkShot: true }), -2);
   t.eq('any other row unticks nothing', exclusiveGear('targetRunning'), []);
   t.is('both handed to the sum: only the smartlink\'s −2 counts', sumModifiers({ smartlink: true, laserSight: true }), -2);
   t.is('…with smart goggles: −1, not −2', sumModifiers({ smartGoggles: true, laserSight: true }), -1);

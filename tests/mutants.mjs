@@ -442,6 +442,13 @@ export const MUTANTS = [
     impl:   () => [],
   },
   {
+    id:     'smart-rows-stack',
+    suite:  'laser-smartlink',
+    module: '../scripts/SR3ECombatModifiers.js', klass: 'GearRules', method: 'exclusiveGear',
+    was:    'smartlink, smart goggles and the shotgun smartlink row could all be ticked and stacked to −4 (SR3 p.112/p.117)',
+    impl:   key => (key === 'laserSight' ? ['smartlink', 'smartlinkShot', 'smartGoggles'] : ['smartlink', 'smartlinkShot', 'smartGoggles'].includes(key) ? ['laserSight'] : []),
+  },
+  {
     id:     'weapon-class-rules-unwarned',
     suite:  'weapon-class-mods',
     ...ACCESSORIES, method: 'classWarnings',

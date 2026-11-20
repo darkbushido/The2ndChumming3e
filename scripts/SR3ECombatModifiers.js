@@ -456,11 +456,16 @@ export const SMART_ROWS = ['smartlink', 'smartlinkShot', 'smartGoggles'];
  * @param {string} key
  * @returns {string[]}
  */
-export function exclusiveGear(key) {
-  if (key === 'laserSight') return [...SMART_ROWS];
-  if (SMART_ROWS.includes(key)) return ['laserSight'];
-  return [];
-}
+export const exclusiveGear = key => GearRules.exclusiveGear(key);
+
+/** The rule behind `exclusiveGear`, on an object so a mutant can reinstate the bug (`tests/mutants.mjs`). */
+export const GearRules = {
+  exclusiveGear(key) {
+    if (key === 'laserSight') return [...SMART_ROWS];
+    if (SMART_ROWS.includes(key)) return ['laserSight', ...SMART_ROWS.filter(k => k !== key)];
+    return [];
+  },
+};
 
 /**
  * Sum the ticked modifiers.
@@ -472,6 +477,9 @@ export function exclusiveGear(key) {
  */
 export function sumModifiers(state = {}) {
   let total = 0;
+  // Only ONE smartlink-system row counts (SR3 p.112/p.117): the most negative of those ticked.
+  const smartBest = SR3E_RANGED_MODIFIERS.filter(m => SMART_ROWS.includes(m.key) && state[m.key] && m.mod != null)
+    .reduce((b, m) => (b == null || m.mod < b.mod ? m : b), null);
   for (const m of SR3E_RANGED_MODIFIERS) {
     const v = state[m.key];
     // `value` rows carry their own resolved modifier (visibility, from the table
@@ -482,6 +490,7 @@ export function sumModifiers(state = {}) {
     if (m.value) { total += Number(v) || 0; continue; }
     if (!v || m.mod == null) continue;
     if (m.key === 'laserSight' && SMART_ROWS.some(k => state[k])) continue;
+    if (SMART_ROWS.includes(m.key) && m !== smartBest) continue;
     total += m.per ? m.mod * (Number(v) || 0) : m.mod;
   }
   return total;

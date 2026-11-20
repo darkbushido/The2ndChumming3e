@@ -2537,6 +2537,7 @@ MAIN checkout, so merge first or point it at the branch), then F5. A combat with
   - [ ] A compendium Ares Predator shows smartgun/laser as the packs store them.
   - [ ] Fire a smartgun with Smartlink cyberware: −2 is pre-ticked.
   - [ ] The Ballista (Laser Designator) never pre-ticks a laser sight.
+  - [ ] In the TN window tick Smartlink, then Smart goggles: Smartlink unticks and the modifier is −1 (never stacks to −4 with the shotgun smartlink row either).
   - [ ] After merging, run `npm run packs:install` (Foundry closed), then restart Foundry fully: the data
         model changed.
 - [ ] **trackAmmo default (TODO 55):**
