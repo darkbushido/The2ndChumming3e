@@ -18,9 +18,12 @@ export const STYLE = 'masterpiece, best quality, anime style, flat color, cel sh
   + '(top-down view:1.5), (from directly above:1.5), (overhead view:1.4), (aerial view:1.3), token art, solo, centered, whole creature visible, '
   + '(simple background:1.4), (flat dark grey background:1.5), #242422 background, no shadow, no text, '
   + 'monster, creature, fantasy spirit, glowing eyes, cyberpunk';
+/** For a look that is just a real animal: the 'monster, cyberpunk' tags in STYLE turn a bison into machinery (the maintainer, 2026-11-20: "why not just ask for a bison?"). */
+export const PLAIN_STYLE = 'masterpiece, best quality, anime style, flat color, cel shading, thick black outline, lineart, (top-down view:1.5), (from directly above:1.5), '
+  + '(aerial view:1.3), solo, (simple background:1.4), (flat dark grey background:1.5), #242422 background, no shadow, no text';
 export const NEGATIVE = 'side view, front view, from the side, from below, standing, gradient, vignette, shadow, drop shadow, cast shadow, floor, ground, reflection, scenery, landscape, detailed background, '
   + 'realistic, 3d, photo, painterly, blurry, lowres, text, watermark, signature, logo, border, frame, white outline, halo, multiple views, '
-  + '2girls, 1girl, 1boy, human, person, cropped, out of frame';
+  + 'splayed legs, sprawling, legs spread, spread eagle, distorted anatomy, bad anatomy, 2girls, 1girl, 1boy, human, person, cropped, out of frame';
 
 /** Slug → { name, look }. Keys mirror SPIRIT_TYPES (tests/spirit-art.test.mjs keeps them equal). */
 export const LOOKS = {
@@ -40,12 +43,12 @@ export const LOOKS = {
   'lake-spirit':       { name: 'Lake Spirit',       look: 'seen from above: a single graceful water creature with a long finned body of blue-green water curled in a gentle circle, lily pads on its back, a serene face, silver eyes' },
   'storm-spirit':      { name: 'Storm Spirit',      look: 'seen from above: a churning thundercloud being, dark grey swirling cloud body with crackling yellow lightning arcs spreading outward like limbs, bright white eyes' },
   'mist-spirit':       { name: 'Mist Spirit',       look: 'seen from above: a drifting ghostly fog being, soft pale grey wisps curling outward from a hazy hooded face, thin tendrils of vapour, faint cold blue glowing eyes' },
-  'prairie-spirit':    { name: 'Prairie Spirit',    look: 'seen from above: a single large bison-like grassland guardian, shaggy brown back covered in long grass and wildflowers, two curved horns spread wide, amber eyes, one creature only' },
+  'prairie-spirit':    { name: 'Prairie Spirit',    look: 'animal, bison, buffalo, brown fur, big hump, curved horns, glowing amber eyes', plain: true },
   'hearth-spirit':     { name: 'Hearth Spirit',     look: 'seen from above: a small domestic household guardian with a round body of warm embers and glowing coals ringed by a circle of bricks, tiny arms holding a lit candle and a broom, soft orange glow, friendly bright eyes' },
 };
 
-export const batch = () => Object.entries(LOOKS).map(([slug, { name, look }]) =>
-  ({ slug, name, look, prompt: `${name}, ${look}, ${STYLE}`, negative: NEGATIVE }));
+export const batch = () => Object.entries(LOOKS).map(([slug, { name, look, plain }]) =>
+  ({ slug, name, look, prompt: plain ? `${look}, ${PLAIN_STYLE}` : `${name}, ${look}, ${STYLE}`, negative: NEGATIVE }));
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const file = resolve(process.argv[2] ?? join(ROOT, 'dist', 'spirit-art', 'prompts.json'));
