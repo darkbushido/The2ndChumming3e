@@ -21,6 +21,9 @@ export const INSECT_TOTEMS = {
   Beetle: 'solitary', Cicada: 'solitary', Firefly: 'solitary', Mantid: 'solitary', Mosquito: 'solitary', Roach: 'solitary',
 };
 
+// reading of MitS p.136 table — maintainer to confirm: (1) Body "F+b/y": only b is used, y (read as natural armour) is NOT applied;
+// (2) Quickness "(F+q) x m": q is the attribute, m the movement multiplier; (3) Reaction column taken literally (Fx r).
+// The whole table is this one block — a correction is one edit. Every stat stays editable on the spirit's sheet.
 const row = (label, b, q, m, s, r, attack, powers) => ({ label, b, q, m, s, r, attack, powers });
 const SMELL = 'Enhanced Senses (Smell)';
 const WEAK = ['Reduced Senses (Sight)', 'Vulnerability (Insecticides)'];

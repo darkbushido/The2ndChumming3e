@@ -206,6 +206,9 @@ export class SR3ESpiritSummoning {
         <div id="sr3e-phys-warn" style="color:var(--sr-red,#c44); font-size:0.85em; display:none;">
           ⚠ Force &gt; Magic (${magicBase}) — Drain will be Physical!
         </div>
+        <div id="sr3e-insect-host" style="font-size:0.85em; display:none;">
+          🐛 True-form insect spirits need no host body (MitS p.128). A <b>flesh-form</b> spirit does — it merges with a living host — and is not modelled here yet (TODO 312).
+        </div>
         <div id="sr3e-insect-warn" style="color:var(--sr-amber,#c90); font-size:0.85em; display:none;">
           ⚠ ${conjurer.name}'s totem (${totem || 'none'}) is not an insect — only insect shamans summon insect spirits (MitS p.127). GM's call.
         </div>
@@ -230,7 +233,9 @@ export class SR3ESpiritSummoning {
         const poolSpan = el.querySelector('#sr3e-conj-pool');
         const typeSel  = el.querySelector('#sr3e-spirit-type');
         const insWarn  = el.querySelector('#sr3e-insect-warn');
+        const insHost  = el.querySelector('#sr3e-insect-host');
         const refresh  = () => {
+          if (insHost) insHost.style.display = SPIRIT_TYPES[typeSel.value]?.category === 'insect' ? '' : 'none';
           if (insWarn) insWarn.style.display = SPIRIT_TYPES[typeSel.value]?.category === 'insect' && !InsectSpirits.isInsectTotem(totem) ? '' : 'none';
           const f      = parseInt(forceIn.value) || 0;
           const held   = Math.min(maxHold, Math.max(0, parseInt(holdIn?.value) || 0));
