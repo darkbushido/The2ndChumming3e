@@ -21,8 +21,9 @@ export const INSECT_TOTEMS = {
   Beetle: 'solitary', Cicada: 'solitary', Firefly: 'solitary', Mantid: 'solitary', Mosquito: 'solitary', Roach: 'solitary',
 };
 
-// reading of MitS p.136 table — maintainer to confirm: (1) Body "F+b/y": only b is used, y (read as natural armour) is NOT applied;
-// (2) Quickness "(F+q) x m": q is the attribute, m the movement multiplier; (3) Reaction column taken literally (Fx r).
+// reading of MitS p.136 table — maintainer to confirm: (1) Body "F+b/y": only b is used; what y means is UNKNOWN (maintainer, 2026-11-20:
+// not simply armour; the Essence column is a pair too, "F/A") and it is NOT applied. Verified against the text-layer PDF.
+// (2) Quickness "(F+q) x m": q is the attribute, m the movement multiplier — confirmed by the maintainer. (3) Reaction column is literal (Fx r) — settled.
 // The whole table is this one block — a correction is one edit. Every stat stays editable on the spirit's sheet.
 const row = (label, b, q, m, s, r, attack, powers) => ({ label, b, q, m, s, r, attack, powers });
 const SMELL = 'Enhanced Senses (Smell)';
@@ -43,7 +44,7 @@ export const INSECT_TABLE = {
     female: row('Female', 1, 4, 4, 4, 2, '(STR)M', [SMELL, 'Materialization', 'Paralyzing Touch', 'Venom']),
   } },
   fly: { totem: 'Fly', castes: {
-    male: row('Male', 0, -1, 4, 2, 2, '(STR)M', [SMELL, 'Materialization', 'Pestilence']),
+    male: row('Male', 0, 1, 4, 2, 2, '(STR)M', [SMELL, 'Materialization', 'Pestilence']),
   } },
   beetle: { totem: 'Beetle', castes: {
     male:   row('Male', 3, 1, 4, 6, 2, '(STR)S', [SMELL, 'Materialization']),
@@ -53,7 +54,7 @@ export const INSECT_TABLE = {
     male: row('Male', 2, 1, 4, 3, 1, '(STR)L', [SMELL, 'Materialization']),
   } },
   firefly: { totem: 'Firefly', castes: {
-    male: row('Male', 0, -1, 4, 1, 2, '(STR)L', [SMELL, 'Materialization']),
+    male: row('Male', 0, 1, 4, 1, 2, '(STR)L', [SMELL, 'Materialization']),
   } },
   mantid: { totem: 'Mantid', castes: {
     male: row('Male', 2, 5, 4, 3, 3, '(STR)M', [SMELL, 'Venom']),
@@ -113,8 +114,79 @@ export const InsectSpirits = {
   powers: (type, caste) => InsectSpirits.entry(type, caste)?.powers ?? [],
   weaknesses: () => [...WEAK],
 
-  /** Banishing a true-form insect spirit counts its Force doubled — MitS p.128. */
+  /** Banishing a true-form insect spirit counts its Force doubled — MitS p.128. A flesh-form cannot be banished at all. */
   banishForce: F => F * 2,
+  banishable: form => form !== 'flesh',
+
+  // ---- Flesh-form · MitS p.128-129 ---------------------------------------------------------------------------------
+  // A flesh-form is the spirit merged with a host body (usually a metahuman; "in a pinch" an animal or paracritter).
+
+  /** Which flesh-form rule a caste follows. Workers have their own; soldiers AND the solitary males/females share one (p.128).
+   *  Queens, Mothers and the female mantid (always a flesh-form, host-based) are not offered yet — TODO 312. */
+  fleshRule: caste => (caste === 'worker' ? 'worker' : (caste === 'soldier' || caste === 'male' || caste === 'female') ? 'soldier' : null),
+  fleshAvailable: (type, caste) => !!InsectSpirits.entry(type, caste) && InsectSpirits.fleshRule(caste) !== null,
+
+  /**
+   * Attributes of a flesh-form at Force `F` on `host` ({ body, quickness, strength }) — MitS p.128.
+   *   worker:  physical = host − 1 each;  soldier / solitary: physical = host + F.  Mental = F; Essence and Magic F as true-form.
+   * Reaction is "calculated normally" (the table's footnote for the female mantid, p.137): (Quickness + Intelligence) / 2, down.
+   * Initiative = Reaction + 10, as the true-form rows. No natural armour (p.128) — the table's "/y" body half is not applied anyway.
+   */
+  fleshStats(type, caste, F, host = {}) {
+    const rule = InsectSpirits.fleshRule(caste);
+    const r = InsectSpirits.entry(type, caste);
+    if (!rule || !r) return null;
+    const d = rule === 'worker' ? -1 : F;
+    const phys = a => Math.max(1, (Number(a) || 0) + d);
+    const body = phys(host.body), quickness = phys(host.quickness), strength = phys(host.strength);
+    const reaction = Math.floor((quickness + F) / 2);
+    return {
+      body, quickness, strength,
+      charisma: F, intelligence: F, willpower: F, essence: F, magic: F,
+      reaction, initiative: reaction + 10, moveMult: 1, attack: r.attack,
+    };
+  },
+
+  /** Powers of a flesh-form: the row's, minus Materialization (already in the flesh). */
+  fleshPowers: (type, caste) => InsectSpirits.powers(type, caste).filter(p => p !== 'Materialization'),
+  /** Flesh-form workers and soldiers keep Reduced Senses (Sight) but NOT the insecticide vulnerability — MitS p.128. */
+  fleshWeaknesses: () => WEAK.filter(w => !w.startsWith('Vulnerability')),
+
+  /** Karma Pool when summoned: flesh 1, true-form 2, Queen/Mother 4; a good merge is half the host's, rounded up — MitS p.129. */
+  karmaPool: (form, { hostKarmaPool = 0, merge = false } = {}) =>
+    form === 'flesh' ? (merge ? Math.ceil((Number(hostKarmaPool) || 0) / 2) : 1) : 2,
+
+  /** Weeks of incubation in the host = the spirit's Force — MitS p.129. */
+  incubationWeeks: F => F,
+
+  /**
+   * The transformation Opposed Test — MitS p.129: host Willpower against the spirit's Force. Each side rolls its rating
+   * against the other's rating as target number; a Queen/Mother that helped summon adds +2 to the HOST's target number.
+   */
+  transformationTest: ({ hostWillpower, force, queenHelped = false }) => ({
+    hostDice: Math.max(0, Number(hostWillpower) || 0), hostTN: force + (queenHelped ? 2 : 0),
+    spiritDice: force, spiritTN: Math.max(2, Number(hostWillpower) || 0),
+  }),
+
+  /** The Transformation Table (MitS p.128) for the host's NET successes (host successes minus the spirit's). */
+  transformation(net) {
+    if (net <= 0) return { key: 'destroyed', flesh: false, merge: false, text: 'The host is destroyed and a true-form insect spirit emerges.' };
+    if (net <= 2) return { key: 'full', flesh: true, merge: false, text: 'The host becomes a human-sized version of the insect — changed shape and mass, extra limbs. A flesh-form.' };
+    if (net === 3) return { key: 'partial', flesh: true, merge: false, text: 'The host gains some insectoid traits — chitinous armour, multifaceted eyes, undeveloped extra limbs. A flesh-form.' };
+    if (net === 4) return { key: 'aspect', flesh: true, merge: false, text: 'The host gains only a single physical aspect of the insect. A flesh-form.' };
+    return { key: 'good-merge', flesh: true, merge: true, text: 'A "good merge": the host keeps its original form and gains aura masking (p.117). Not a free spirit — it stays under the Queen\'s or shaman\'s control. The spirit has the host\'s memories and can mimic them.' };
+  },
+
+  /** Successes of `dice` d6 against `tn`, Rule of Six (a 6 is rolled again and added). `rng()` is in [0,1). */
+  rollSuccesses(dice, tn, rng = Math.random) {
+    let hits = 0;
+    for (let i = 0; i < dice; i++) {
+      let total = 0, die;
+      do { die = 1 + Math.floor(rng() * 6); total += die; } while (die === 6);
+      if (total >= tn) hits++;
+    }
+    return hits;
+  },
 
   /** Flat list for building `SPIRIT_TYPES`: [{ key, type, caste, label, totem }]. */
   list() {

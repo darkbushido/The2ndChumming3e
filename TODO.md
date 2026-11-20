@@ -1313,13 +1313,17 @@ tradition and spirit type; whether the astral version follows the astral-signatu
 
 ## 312. Insect spirits — what the first cut leaves out (MitS p.127-137) — **requested 2026-11-19, provisional**
 
-0.9.1 summons **true-form** workers, soldiers, males and females (`scripts/data/insect-spirits.mjs`, MitS p.136-137) by the
-ordinary Conjuring Test and Drain; insect totems are on the totem list; the GM, and insect shamans, see the types. Left out:
+0.9.1 summons **true-form and flesh-form** workers, soldiers, males and females (`scripts/data/insect-spirits.mjs`,
+MitS p.128-129, 136-137) by the ordinary Conjuring Test and Drain; insect totems are on the totem list; the GM, and insect
+shamans, see the types. A flesh-form rolls the host's Willpower against the spirit's Force and reads the Transformation Table
+(p.128); nothing is done to the host — the card says it dies and the GM decides. Left out:
 
-- **Confirm two table columns against the PDF** (read from page images): the Body column's "/y" half (read as natural
-  armour, **not applied**) and the Reaction multiplier (stored as the table says, `Fx2`; INIT is Reaction + 10).
-- **Flesh-form spirits** (p.128): they merge with a host — Willpower-vs-Force transformation test (p.129), host
-  attributes + Force (soldier) or host − 1 (worker), mental = Force, no insecticide weakness, Karma Pool 1.
+- **Confirm two table cells' meaning** (table re-read against the text-layer PDF 2026-11-20 — every number matches, and
+  Fly/Firefly Quickness is F+1, fixed): the Body column's "/y" half (read as natural armour, **not applied**; flesh-forms
+  have none, p.128) and the Reaction multiplier (stored as the table says, `Fx2`; INIT is Reaction + 10).
+- **Flesh-form leftovers:** Queens/Mothers and the Female Mantid (always a flesh-form, host-based, p.137) are not offered
+  one; no-host-chosen uses host stats 3 (edit the sheet); animal/paracritter hosts read the same Attributes; the spirit is
+  created at once, not after the Force-week incubation; the host actor is not changed or removed.
 - **Queens and Mothers** (p.128, 130-132): initiate with invoking, great-form rules, Mother Drain Force +50 %, 10-day
   incubation, Spirit Energy, Summoning/Compulsion/Share Minds/Animal Control powers; Female Mantid rules (p.131).
 - **Hive and nest limits** (p.129-132): Potency x 10 spirits, total Force Magic x Potency x 5, Queen's daily Force points.

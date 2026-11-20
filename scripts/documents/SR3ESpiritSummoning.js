@@ -124,6 +124,7 @@ for (const e of InsectSpirits.list()) {
     category: 'insect',
     totem:    e.totem,
     colony:   InsectSpirits.colony(e.totem),
+    insectType: e.type, insectCaste: e.caste,
     stats:    (F) => InsectSpirits.stats(e.type, e.caste, F),
     powers:   [...InsectSpirits.powers(e.type, e.caste), ...InsectSpirits.weaknesses().map(w => `Weakness: ${w}`)],
   };
@@ -167,6 +168,10 @@ export class SR3ESpiritSummoning {
       ? Object.entries(SPIRIT_TYPES).filter(([, v]) => v.category === 'insect')
         .map(([k, v]) => `<option value="${k}" ${k === defaultSpiritType ? 'selected' : ''}>${v.label}</option>`).join('')
       : '';
+    // Host bodies for a flesh-form: any live actor, world-wide (a roster, like pilots) — usually a metahuman, "in a pinch" an animal.
+    const hostOptions = game.actors
+      .filter(a => game.sr3e.isLiveActor(a) && a.id !== conjurer.id)
+      .map(a => `<option value="${actorRef(a)}">${a.name}</option>`).join('');
     const insectGroup = insectOptions ? `<optgroup label="── Insect Spirits (true-form) ──">${insectOptions}</optgroup>` : '';
 
     const holdBackField = maxHold > 0
@@ -206,8 +211,24 @@ export class SR3ESpiritSummoning {
         <div id="sr3e-phys-warn" style="color:var(--sr-red,#c44); font-size:0.85em; display:none;">
           ⚠ Force &gt; Magic (${magicBase}) — Drain will be Physical!
         </div>
+        <div id="sr3e-insect-form" style="display:none; flex-direction:column; gap:6px;">
+          <div style="display:grid; grid-template-columns:130px 1fr; align-items:center; gap:6px;">
+            <label style="font-weight:bold;">Insect form</label>
+            <select id="sr3e-insect-form-sel">
+              <option value="true">True-form (no host needed)</option>
+              <option value="flesh">Flesh-form (merges with a host)</option>
+            </select>
+          </div>
+          <div id="sr3e-insect-hostrow" style="display:none; grid-template-columns:130px 1fr; align-items:center; gap:6px;">
+            <label style="font-weight:bold;">Host body</label>
+            <select id="sr3e-insect-host-sel"><option value="">— none chosen (host stats 3) —</option>${hostOptions}</select>
+          </div>
+          <label id="sr3e-insect-queenrow" style="display:none; font-size:0.85em;">
+            <input type="checkbox" id="sr3e-insect-queen" /> A Queen/Mother helped summon (+2 to the host's target number)
+          </label>
+        </div>
         <div id="sr3e-insect-host" style="font-size:0.85em; display:none;">
-          🐛 True-form insect spirits need no host body (MitS p.128). A <b>flesh-form</b> spirit does — it merges with a living host — and is not modelled here yet (TODO 312).
+          🐛 True-form insect spirits need no host body (MitS p.128). A <b>flesh-form</b> spirit does: it is incubated in a host for Force weeks, and the host's Willpower is tested against the spirit's Force (MitS p.129). <b>The host does not survive it</b> (GM's call). A flesh-form cannot be banished.
         </div>
         <div id="sr3e-insect-warn" style="color:var(--sr-amber,#c90); font-size:0.85em; display:none;">
           ⚠ ${conjurer.name}'s totem (${totem || 'none'}) is not an insect — only insect shamans summon insect spirits (MitS p.127). GM's call.
@@ -234,8 +255,20 @@ export class SR3ESpiritSummoning {
         const typeSel  = el.querySelector('#sr3e-spirit-type');
         const insWarn  = el.querySelector('#sr3e-insect-warn');
         const insHost  = el.querySelector('#sr3e-insect-host');
+        const formBox  = el.querySelector('#sr3e-insect-form');
+        const formSel  = el.querySelector('#sr3e-insect-form-sel');
+        const hostRow  = el.querySelector('#sr3e-insect-hostrow');
+        const queenRow = el.querySelector('#sr3e-insect-queenrow');
         const refresh  = () => {
-          if (insHost) insHost.style.display = SPIRIT_TYPES[typeSel.value]?.category === 'insect' ? '' : 'none';
+          const def     = SPIRIT_TYPES[typeSel.value];
+          const isIns   = def?.category === 'insect';
+          const canFlesh = isIns && InsectSpirits.fleshAvailable(def.insectType, def.insectCaste);
+          if (!canFlesh) formSel.value = 'true';
+          const flesh   = canFlesh && formSel.value === 'flesh';
+          if (formBox)  formBox.style.display  = canFlesh ? 'flex' : 'none';
+          if (hostRow)  hostRow.style.display  = flesh ? 'grid' : 'none';
+          if (queenRow) queenRow.style.display = flesh ? '' : 'none';
+          if (insHost) insHost.style.display = isIns ? '' : 'none';
           if (insWarn) insWarn.style.display = SPIRIT_TYPES[typeSel.value]?.category === 'insect' && !InsectSpirits.isInsectTotem(totem) ? '' : 'none';
           const f      = parseInt(forceIn.value) || 0;
           const held   = Math.min(maxHold, Math.max(0, parseInt(holdIn?.value) || 0));
@@ -247,6 +280,7 @@ export class SR3ESpiritSummoning {
         };
         forceIn.addEventListener('input', refresh);
         typeSel.addEventListener('change', refresh);
+        formSel?.addEventListener('change', refresh);
         holdIn?.addEventListener('input', refresh);
         refresh();
       },
@@ -261,6 +295,11 @@ export class SR3ESpiritSummoning {
             confirmed       = true;
             result.typeKey  = el.querySelector('#sr3e-spirit-type').value;
             result.force    = Math.max(1, parseInt(el.querySelector('#sr3e-spirit-force').value) || 1);
+            const fdef = SPIRIT_TYPES[result.typeKey];
+            const fleshOk = fdef?.category === 'insect' && InsectSpirits.fleshAvailable(fdef.insectType, fdef.insectCaste);
+            result.insectForm  = fleshOk && el.querySelector('#sr3e-insect-form-sel')?.value === 'flesh' ? 'flesh' : 'true';
+            result.hostRef     = result.insectForm === 'flesh' ? (el.querySelector('#sr3e-insect-host-sel')?.value || null) : null;
+            result.queenHelped = result.insectForm === 'flesh' && !!el.querySelector('#sr3e-insect-queen')?.checked;
             result.heldBack = Math.min(maxHold, Math.max(0, parseInt(el.querySelector('#sr3e-summon-holdback')?.value ?? '0') || 0));
           },
         },
@@ -294,7 +333,10 @@ export class SR3ESpiritSummoning {
         conjuringContext: {
           conjurerActorId: actorRef(conjurer),
           spiritTypeKey:   typeKey,
-          spiritLabel:     spiritDef.label,
+          spiritLabel:     result.insectForm === 'flesh' ? `${spiritDef.label} (flesh-form)` : spiritDef.label,
+          insectForm:      result.insectForm ?? 'true',
+          hostRef:         result.hostRef ?? null,
+          queenHelped:     !!result.queenHelped,
           force,
           drainIsPhysical,
           drainLevel,        // from the Force-vs-Charisma table
@@ -314,18 +356,24 @@ export class SR3ESpiritSummoning {
     const spiritDef = SPIRIT_TYPES[spiritTypeKey];
     if (!spiritDef) { ui.notifications.error(`Unknown spirit type: ${spiritTypeKey}`); return; }
 
-    const spiritActor = await SR3ESpiritSummoning._createSpiritActor(conjurer, spiritDef, force, services);
+    // Flesh-form insect (MitS p.128-129): the host's Willpower is tested against the spirit's Force, and the Transformation
+    // Table says what comes out. The host is never deleted or damaged here — the card says what the book says; the GM decides.
+    let flesh = null;
+    if (payload.insectForm === 'flesh') flesh = await SR3ESpiritSummoning._fleshTransformation(payload, spiritDef);
+
+    const spiritActor = await SR3ESpiritSummoning._createSpiritActor(conjurer, spiritDef, force, services, flesh);
 
     // Only join a fight that's already running — never start/activate combat from a summon.
     if (game.combat?.started) {
-      await SR3ESpiritSummoning._addSpiritToCombat(spiritActor, force, spiritDef);
+      await SR3ESpiritSummoning._addSpiritToCombat(spiritActor, force, spiritDef, flesh?.asFlesh ? flesh.stats.initiative : null);
     }
 
     ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: conjurer }),
       content: `
-        ✅ <b>${conjurer?.name ?? 'Conjurer'}</b> successfully summoned a <b>${spiritDef.label}</b> (Force ${force}). It is bound for <b>${services} service${services !== 1 ? 's' : ''}</b>.<br>
-        <i>Powers: ${spiritDef.powers.join(', ')}.</i>
+        ✅ <b>${conjurer?.name ?? 'Conjurer'}</b> successfully summoned a <b>${flesh?.asFlesh ? `${spiritDef.label} (flesh-form)` : spiritDef.label}</b> (Force ${force}). It is bound for <b>${services} service${services !== 1 ? 's' : ''}</b>.<br>
+        <i>Powers: ${(flesh?.asFlesh ? flesh.powers : spiritDef.powers).join(', ')}.</i>
+        ${flesh ? `<hr>${flesh.html}` : ''}
       `,
     });
   }
@@ -350,11 +398,49 @@ export class SR3ESpiritSummoning {
     return actor?.getFlag('The2ndChumming3e', key) ?? actor?.flags?.sr3e?.[key];
   }
 
-  static async _createSpiritActor(conjurer, spiritDef, force, services) {
-    const stats = spiritDef.stats(force);
+  /**
+   * Flesh-form insect: roll the host's Willpower against the spirit's Force (MitS p.129), read the Transformation Table
+   * (p.128) and build the flesh-form's numbers from the host (p.128). Returns what the spirit actor and the card need.
+   * A net 0 or fewer destroys the host and a TRUE-form emerges instead (`asFlesh: false`). Nothing is applied to the host.
+   */
+  static async _fleshTransformation(payload, spiritDef) {
+    const { force } = payload;
+    const host = payload.hostRef ? actorFrom(payload.hostRef) : null;
+    const att  = k => host?.system?.attributes?.[k]?.value ?? host?.system?.attributes?.[k]?.base ?? 3;   // no host chosen → 3
+    const hostStats = { body: att('body'), quickness: att('quickness'), strength: att('strength') };
+    const wp   = att('willpower');
+    const test = InsectSpirits.transformationTest({ hostWillpower: wp, force, queenHelped: !!payload.queenHelped });
+    const rng  = () => (CONFIG.Dice?.randomUniform ?? Math.random)();
+    const hostHits   = InsectSpirits.rollSuccesses(test.hostDice, test.hostTN, rng);
+    const spiritHits = InsectSpirits.rollSuccesses(test.spiritDice, test.spiritTN, rng);
+    const net     = hostHits - spiritHits;
+    const outcome = InsectSpirits.transformation(net);
+    const stats   = outcome.flesh ? InsectSpirits.fleshStats(spiritDef.insectType, spiritDef.insectCaste, force, hostStats) : null;
+    const karmaPool = outcome.flesh
+      ? InsectSpirits.karmaPool('flesh', { hostKarmaPool: host?.system?.karmaPool ?? 0, merge: outcome.merge })
+      : InsectSpirits.karmaPool('true');
+    const weeks = InsectSpirits.incubationWeeks(force);
+    const hostName = host?.name ?? 'the host (none chosen — host stats taken as 3, edit the sheet)';
+    const html = `
+      <b>🐛 Flesh-form transformation</b> — ${hostName}<br>
+      Host Willpower ${test.hostDice} dice vs TN ${test.hostTN}: <b>${hostHits}</b> · Spirit Force ${test.spiritDice} dice vs TN ${test.spiritTN}: <b>${spiritHits}</b> → host net successes <b>${net}</b>.<br>
+      <i>${outcome.text}</i><br>
+      Incubation: <b>${weeks} week${weeks !== 1 ? 's' : ''}</b>. Karma Pool ${karmaPool}.
+      ${outcome.flesh ? 'A flesh-form cannot be banished.' : ''}
+      <br><b>${hostName.split(' (')[0]} does not survive</b> once incubation begins, even if the spirit is later banished or idled (MitS p.129) — the GM decides; nothing was changed on the host.`;
+    return {
+      asFlesh: outcome.flesh, outcome, net, stats, karmaPool, html, hostName: host?.name ?? null,
+      powers: [...InsectSpirits.fleshPowers(spiritDef.insectType, spiritDef.insectCaste), ...InsectSpirits.fleshWeaknesses().map(w => `Weakness: ${w}`)],
+    };
+  }
+
+  static async _createSpiritActor(conjurer, spiritDef, force, services, flesh = null) {
+    const isFlesh = !!flesh?.asFlesh;
+    const stats = isFlesh ? flesh.stats : spiritDef.stats(force);
+    const powers = isFlesh ? flesh.powers : spiritDef.powers;
 
     const spirit = await Actor.create({
-      name:   `${spiritDef.label} F${force} [${conjurer?.name ?? '?'}]`,
+      name:   `${spiritDef.label}${isFlesh ? ' (flesh)' : ''} F${force} [${conjurer?.name ?? '?'}]`,
       type:   'npc',
       img:    spiritIcon(spiritDef.category),
       prototypeToken: { texture: { src: spiritIcon(spiritDef.category) } },
@@ -370,19 +456,21 @@ export class SR3ESpiritSummoning {
           magic:        { value: stats.magic,        base: stats.magic },
           reaction:     { value: stats.reaction,     base: stats.reaction },
         },
+        ...(flesh ? { karmaPool: flesh.karmaPool } : {}),
       },
       flags: {
         The2ndChumming3e: {
           isSpirit:       true,
           spiritType:     spiritDef.category === 'elemental' ? 'elemental' : spiritDef.category === 'insect' ? 'insect' : 'nature',
-          ...(spiritDef.category === 'insect' ? { insectForm: 'true', insectTotem: spiritDef.totem } : {}),
+          ...(spiritDef.category === 'insect' ? { insectForm: isFlesh ? 'flesh' : 'true', insectTotem: spiritDef.totem } : {}),
+          ...(isFlesh ? { fleshHost: flesh.hostName, transformation: flesh.outcome.key, incubationWeeks: InsectSpirits.incubationWeeks(force), banishable: false } : {}),
           spiritTypeKey:  Object.keys(SPIRIT_TYPES).find(k => SPIRIT_TYPES[k] === spiritDef),
           spiritLabel:    spiritDef.label,
           spiritCategory: spiritDef.category,
           force,
           services,
           conjurerId:     conjurer?.id ?? null,
-          powers:         spiritDef.powers,
+          powers,
         },
       },
     });
@@ -394,14 +482,14 @@ export class SR3ESpiritSummoning {
   // ---------------------------------------------------------------------------
   // Add the spirit to active combat.
   // ---------------------------------------------------------------------------
-  static async _addSpiritToCombat(spiritActor, force, spiritDef) {
+  static async _addSpiritToCombat(spiritActor, force, spiritDef, initOverride = null) {
     const combat = game.combat;
     if (!combat?.started) return;   // don't create/activate combat from a summon
 
     await combat.createEmbeddedDocuments('Combatant', [{ actorId: spiritActor.id, hidden: false }]);
 
     const initRoll  = await new Roll('1d6').evaluate();
-    const baseInit  = spiritDef.stats(force).initiative;
+    const baseInit  = initOverride ?? spiritDef.stats(force).initiative;
     const initScore = baseInit + initRoll.total;
 
     const combatant = combat.combatants.find(c => c.actorId === spiritActor.id);

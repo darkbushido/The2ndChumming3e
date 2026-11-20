@@ -4222,6 +4222,7 @@ _prepareCharacter(sys, attr) {
             spiritTypeKey:   cc.spiritTypeKey,
             force:           cc.force,
             services:        successes,
+            ...(cc.insectForm === 'flesh' ? { insectForm: 'flesh', hostRef: cc.hostRef ?? null, queenHelped: !!cc.queenHelped } : {}),
           }).replace(/'/g, '&#39;');
           postRollHtml += `
             <div class="sr-soak-action">

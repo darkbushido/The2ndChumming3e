@@ -5147,6 +5147,20 @@ export const MUTANTS = [
     impl:   (type, caste, F) => ({ body: F, quickness: F, strength: F, charisma: F, intelligence: F, willpower: F, essence: F, magic: F, reaction: F, initiative: F * 2 + 20, moveMult: 1, attack: '(STR)M' }),
   },
   {
+    id:     'insect-flesh-soldier-ignores-host',
+    suite:  'insect-spirits',
+    ...INSECTSPIRITS, method: 'fleshStats',
+    was:    'a flesh-form soldier was built from Force alone, as a true-form, ignoring the host body it merged with (MitS p.128: physical = host + Force)',
+    impl:   (type, caste, F) => ({ body: F, quickness: F, strength: F, charisma: F, intelligence: F, willpower: F, essence: F, magic: F, reaction: F, initiative: F + 10, moveMult: 1, attack: '(STR)M' }),
+  },
+  {
+    id:     'insect-transformation-table-off-by-one',
+    suite:  'insect-spirits',
+    ...INSECTSPIRITS, method: 'transformation',
+    was:    'the Transformation Table counted 4 net successes as a good merge (it is 5+): a host with a single insect aspect was given aura masking and the host\'s memories',
+    impl:   net => (net >= 4 ? { key: 'good-merge', flesh: true, merge: true, text: '' } : net <= 0 ? { key: 'destroyed', flesh: false, merge: false, text: '' } : net <= 2 ? { key: 'full', flesh: true, merge: false, text: '' } : { key: 'partial', flesh: true, merge: false, text: '' }),
+  },
+  {
     id:     'insect-warns-the-gm',
     suite:  'insect-spirits',
     ...INSECTSPIRITS, method: 'summonVerdict',
