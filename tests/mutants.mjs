@@ -31,6 +31,7 @@ const SHEAFRULES = { module: '../scripts/data/sheaf-rules.mjs', klass: 'SheafRul
 const DUMPSHOCK = { module: '../scripts/data/dump-shock.mjs', klass: 'DumpShock' };
 const SHEAFSTEPS = { module: '../scripts/data/sheaf-steps.mjs', klass: 'SheafSteps' };
 const ORTHOSHEAF = { module: '../scripts/data/orthodox-sheaf.mjs', klass: 'OrthodoxSheaf' };
+const SPIRITART = { module: '../scripts/data/spirit-art.mjs', klass: 'SpiritArt' };
 const ORTHOMODE = { module: '../scripts/data/orthodox-mode.mjs', klass: 'OrthodoxMode' };
 const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
@@ -5124,6 +5125,16 @@ export const MUTANTS = [
     ...ORTHOMODE, method: 'modeFor',
     was:    'Log On always applied VR-Hot whatever mode the player picked in the dialog',
     impl:   () => 'VR-Hot',
+  },
+
+  /* ── Spirit pictures: the 0.9.1 migration ──────────────────────────────────────────────────────────── */
+  {
+    id:     'spirit-art-overwrites-gm-art',
+    suite:  'spirit-art',
+    ...SPIRITART, method: 'fixActor',
+    was:    'the migration gave every spirit the spirit icon, replacing a picture a GM had chosen instead of only the dead systems/sr3e path',
+    impl:   actor => (actor?.flags?.The2ndChumming3e?.spiritCategory
+      ? { img: `systems/The2ndChumming3e/styles/icons/spirit-${actor.flags.The2ndChumming3e.spiritCategory}.svg` } : null),
   },
 
 ];

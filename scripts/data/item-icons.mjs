@@ -286,11 +286,16 @@ export function restockImage(item) {
 }
 
 /** Every icon file `itemIcon` can name, for the test that they are all drawn. */
+/** A summoned spirit's picture by `spiritCategory` (`SPIRIT_TYPES` in SR3ESpiritSummoning); anything else gets the plain spirit. */
+export const SPIRIT_ICON_OF = { elemental: 'spirit-elemental', nature: 'spirit-nature' };
+export const SPIRIT_FALLBACK = 'spirit';
+export const spiritIcon = category => icon(SPIRIT_ICON_OF[category] ?? SPIRIT_FALLBACK);
+
 export function allIconNames() {
   const names = new Set(['gear-case', 'medical-patch', 'medical-clinic', 'medical-medkit', 'ammo-arrows', 'ammo-bolts',
     'ammo-minigrenade', 'ammo-belt', 'ammo-dart', 'ammo-rocket', 'ammo-mortar', 'ammo-mine', 'ammo-mag', 'ammo-rounds', 'gear-goggles',
     ...ARMOR_KINDS.map(([, n]) => n), 'armor-jacket',
-    ...Object.values(GEAR_ICONS)]);
+    ...Object.values(GEAR_ICONS), ...Object.values(SPIRIT_ICON_OF), SPIRIT_FALLBACK]);
   for (const r of new Set([...Object.values(ROUND_OF_CLASS), ...Object.values(CLIP_ROUND_BY_SIZE)])) { names.add(`ammo-mag-${r}`); names.add(`ammo-rounds-${r}`); }
   for (const n of Object.values(FIREARM_ICON_OF)) names.add(n);
   for (const n of [...Object.values(MELEE_ICON_OF), ...MELEE_BY_NAME.map(([, n]) => n), 'melee-edged',

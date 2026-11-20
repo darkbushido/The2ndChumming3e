@@ -52,6 +52,7 @@ import { WeaponCategoryFixes } from './data/weapon-category-fixes.mjs';
 import { convergenceDelta } from './data/sheaf-steps.mjs';
 import { OrthodoxMode } from './data/orthodox-mode.mjs';
 import { ExampleCharacterArt } from './data/example-character-art.mjs';
+import { SpiritArt } from './data/spirit-art.mjs';
 
 const SYSTEM = 'The2ndChumming3e';
 const SETTING = 'systemMigrationVersion';
@@ -793,6 +794,19 @@ const MIGRATIONS = [
      * World actors and unlinked tokens (picture only). Idempotent.
      */
     fixActor: actor => ExampleCharacterArt.fixActor(actor),
+  },
+
+  {
+    version: '0.9.1',
+    label: 'Summoned spirits with a broken picture get their spirit icon',
+    /**
+     * Spirits were summoned with `systems/sr3e/assets/spirits/<category>.svg` (wrong system id, folder never existed).
+     * Rule in `SpiritArt` (`scripts/data/spirit-art.mjs`, pure, tested).
+     *
+     * ⚠ **This OVERWRITES `img` and the prototype token texture, and argues for it:** only while the value starts with that
+     * dead prefix; a GM's own art is never touched. World actors and unlinked tokens (picture only). Idempotent.
+     */
+    fixActor: actor => SpiritArt.fixActor(actor),
   },
 
 ];

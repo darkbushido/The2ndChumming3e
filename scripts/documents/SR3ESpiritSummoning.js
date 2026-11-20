@@ -1,4 +1,5 @@
 import { actorFrom, actorRef } from '../data/actor-ref.mjs';
+import { spiritIcon } from '../data/item-icons.mjs';
 /**
  * SR3ESpiritSummoning
  *
@@ -320,7 +321,8 @@ export class SR3ESpiritSummoning {
     const spirit = await Actor.create({
       name:   `${spiritDef.label} F${force} [${conjurer?.name ?? '?'}]`,
       type:   'npc',
-      img:    `systems/sr3e/assets/spirits/${spiritDef.category}.svg`,
+      img:    spiritIcon(spiritDef.category),
+      prototypeToken: { texture: { src: spiritIcon(spiritDef.category) } },
       system: {
         attributes: {
           body:         { value: stats.body,         base: stats.body },

@@ -232,6 +232,21 @@ ${[42, 54, 66, 78].map(p => `<rect x="${p}" y="22" width="6" height="12"/><rect 
 ${[38, 64, 90].map((x, i) => `<rect x="${x - 6}" y="${58 - (i % 2) * 12}" width="12" height="${28 + (i % 2) * 12}" rx="2"/>
 <path d="M${x} ${50 - (i % 2) * 12} Q${x - 6} ${42 - (i % 2) * 12} ${x} ${30 - (i % 2) * 12} Q${x + 6} ${42 - (i % 2) * 12} ${x} ${50 - (i % 2) * 12} Z" ${lit(NEON.magic)}/>`).join('')}`],
 
+  /* Spirits — a summoned spirit's picture, by category (SR3 p.258-261). Fallback is a plain ghost. */
+  'spirit-elemental': [NEON.boom, `
+<path d="M64 14 Q92 44 90 74 Q90 104 64 112 Q38 104 38 74 Q36 54 52 38 Q54 52 62 54 Q58 34 64 14 Z"/>
+<path d="M64 62 Q78 78 74 92 Q70 102 64 102 Q58 102 54 92 Q50 78 64 62 Z" ${lit(NEON.boom)}/>`],
+  'spirit-nature': [NEON.medical, `
+<path d="M62 112 V60 M62 84 Q40 80 30 58 Q54 56 62 76 M62 68 Q84 64 96 40 Q70 38 62 60" fill="none" stroke="${RIM}" stroke-width="6" stroke-linecap="round"/>
+<path d="M22 46 Q24 20 52 16 Q54 42 22 46 Z"/>
+<path d="M76 28 Q100 20 108 44 Q84 54 76 28 Z" ${lit(NEON.medical)}/>
+<path d="M62 112 V60 M62 84 Q40 80 30 58 Q54 56 62 76" ${line(NEON.medical, 3)}/>`],
+  'spirit': [NEON.magic, `
+<path d="M64 16 Q94 16 94 50 V104 L82 94 L72 106 L64 96 L56 106 L46 94 L34 104 V50 Q34 16 64 16 Z"/>
+<ellipse cx="52" cy="50" rx="7" ry="9" ${lit(NEON.magic)}/>
+<ellipse cx="76" cy="50" rx="7" ry="9" ${lit(NEON.magic)}/>
+<path d="M52 72 Q64 80 76 72" ${line(NEON.magic, 3)}/>`],
+
   /* Armour — a garment per kind, steel-blue neon on the seams; accessories are cyan */
   'armor-jacket': [NEON.armor, `
 <path d="M38 26 L54 21 Q64 31 74 21 L90 26 L114 62 L100 72 L90 60 V106 H38 V60 L28 72 L14 62 Z"/>
