@@ -267,6 +267,7 @@ background-color: var(--sr-surface) !important;
 .sr-gas-resist-btn,
 .sr-flash-btn,
 .sr-wind-btn,
+.sr-pushback-btn,
 .sr-prone-btn {
   width: 100%;
   height: auto;      /* core gives buttons a fixed height — grow with wrapped text */
@@ -490,11 +491,13 @@ background-color: var(--sr-surface) !important;
 
 /* muted — applies a STATUS rather than rolling. Deliberately quieter than the test button
    it sits under, so "roll this" and "record the result" do not look like the same weight. */
+.sr-pushback-btn,
 .sr-prone-btn {
   background: color-mix(in srgb, var(--sr-muted) 12%, transparent);
   border: 1px solid var(--sr-border-hi);
   color: var(--sr-text);
 }
+.sr-pushback-btn:hover:not(:disabled),
 .sr-prone-btn:hover:not(:disabled) {
   background: color-mix(in srgb, var(--sr-muted) 22%, transparent);
   border-color: var(--sr-text);

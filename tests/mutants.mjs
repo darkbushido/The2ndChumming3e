@@ -38,6 +38,7 @@ const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun'
 const EXTRADMG = { module: '../scripts/data/extra-damage.mjs', klass: 'ExtraDamage' };
 const INTEGRALRC = { module: '../scripts/data/integral-rc.mjs', klass: 'IntegralRC' };
 const BARRIER = { module: '../scripts/data/barrier.mjs', klass: 'Barrier' };
+const TOKENNUDGE = { module: '../scripts/data/token-nudge.mjs', klass: 'TokenNudge' };
 const SHOTGUN = { module: '../scripts/data/shotgun.mjs', klass: 'Shotgun' };
 const WCATFIX = { module: '../scripts/data/weapon-category-fixes.mjs', klass: 'WeaponCategoryFixes' };
 const MODFIX = { module: '../scripts/data/mod-book-fixes.mjs', klass: 'ModBookFixes' };
@@ -3630,6 +3631,17 @@ export const MUTANTS = [
     impl:   ({ burstRounds = 0, shotgunSpread = 0, woundMod = 0, sustain = 0, drugs = 0 } = {}) => {
       const n = v => Math.max(0, Math.trunc(Number(v) || 0));
       return 4 + Math.floor(n(burstRounds) / 3) + n(shotgunSpread) - Math.min(0, Math.trunc(Number(woundMod) || 0)) + n(sustain) + n(drugs);
+    },
+  },
+  {
+    id:     'pushback-away-points-at-the-attacker',
+    suite:  'token-nudge',
+    ...TOKENNUDGE, method: 'awayVector',
+    was:    'the "directly away from the attacker" vector ran target → attacker, so a driven-back target was pulled INTO the attacker (the natural slip: subtracting the points the wrong way round)',
+    impl:   (attacker, target) => {
+      if (!attacker || !target) return null;
+      const dx = attacker.x - target.x, dy = attacker.y - target.y, len = Math.hypot(dx, dy);
+      return len > 0 ? { dx: dx / len, dy: dy / len } : null;
     },
   },
   {

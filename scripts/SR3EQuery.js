@@ -616,6 +616,22 @@ export class SR3EQuery {
       });
 
     /**
+     * Nudge a token's x/y on the GM's client · TODO 313. Relays an absolute destination, so it is idempotent.
+     * ⚠ Writes ONLY `x`/`y` — never `rotation`: the point of the move is that the token is not turned.
+     * Refused unless the requester owns the token (or is a GM), because this runs with GM rights.
+     */
+    CONFIG.queries['sr3e.token.nudge'] = async ({ rid, uuid, x, y, _requesterId }) => SR3EQuery.once(rid, async () => {
+      SR3EQuery.assertActiveGM();
+      const tok = fromUuidSync(uuid);
+      if (!tok || tok.documentName !== 'Token') throw new Error(`SR3E | token.nudge: unknown token '${uuid}'`);
+      const who = game.users.get(_requesterId);
+      if (!who || !tok.testUserPermission(who, 'OWNER')) throw new Error('SR3E | token.nudge: requester does not own that token');
+      if (!Number.isFinite(x) || !Number.isFinite(y)) throw new Error('SR3E | token.nudge: bad destination');
+      await SR3EQueue.run(tok.uuid, () => tok.update({ x, y }, { sr3eNudge: true }));
+      return { ok: true };
+    });
+
+    /**
      * Apply damage boxes. Relays the DELTA; the GM reads current/max and does
      * the `Math.min(max, current + boxes)` against live data. With `messageId` + `role` (an
      * Assign button's step key) it applies ONCE per button, table-wide (TODO 137,

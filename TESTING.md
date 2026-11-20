@@ -4014,3 +4014,11 @@ Make a gear item **Underbarrel Grenade Launcher (Weapon)** (category Firearms Ac
 - [ ] Summon a Sea Spirit at Force 4: its sheet shows B 6, Q 4, S 4, C/I/W/Magic 4, R 3 (Waters class, SR3 p.267); the card lists Accident, Concealment, Confusion, Engulf, Fear, Guard, Materialization, Movement, Search.
 - [ ] Summon a Prairie Spirit (B 8, Q 2, S 8, R 2) and a Storm Spirit (B 2, Q 7, S 1, R 6; Innate Spell (Lightning Bolt)); with a combat running, the notice names the astral Initiative base (F + 20) and the physical one.
 - [ ] A spirit summoned before this fix keeps its old stats (no migration — editable).
+
+### Knockdown push-back · TODO 313
+- [ ] Make a Knockdown Test come out *some successes but below the threshold*: the card says "driven back about a metre" and shows **↩ Move <name> back 1 m**. A full-success or no-success result shows no such button.
+- [ ] As the target's owner (Player2/3): the button works; as a non-owner it is disabled with a tooltip. Click → dialog lists *Directly away from the attacker* first (when the attacker has a token on the scene) plus eight compass points; distance defaults to 1 in the scene's units.
+- [ ] Move: the token slides about one grid square directly away from the attacker; **its facing (rotation) is unchanged** (check `token.document.rotation` before/after in `javascript_tool`). With About Face enabled, still unchanged — if it rotates, note it.
+- [ ] Cancel the dialog → the button is usable again. After a move it reads "↩ Moved" and is spent.
+- [ ] A player who cannot update the token directly (e.g. only the actor is shared) still moves it via the GM client (`sr3e.token.nudge`); the GM tab must be reloaded to the new code.
+- [ ] Token HUD: right-click an owned token → **Step 1 m** opens the same dialog (no attacker → no "away" option), moves x/y only.
