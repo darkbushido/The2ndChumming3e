@@ -12,6 +12,6 @@
 <path d="M34 34 Q64 14 94 34 L110 52 V68 H92 V108 H36 V68 H18 V52 Z"/>
 <rect x="46" y="50" width="36" height="34" rx="4" fill="#8fb4ff" stroke="none" filter="url(#neon)"/>
 <path d="M46 67 H82 M64 50 V84" stroke="#131416" stroke-width="2" fill="none"/>
-<path d="M22 56 H40 M88 56 H106" fill="none" stroke="#8fb4ff" stroke-width="3" stroke-linecap="round" filter="url(#neon)"
+<path d="M22 56 H40 M88 56 H106" fill="none" stroke="#8fb4ff" stroke-width="3" stroke-linecap="round" filter="url(#neon)"/>
 </g>
 </svg>

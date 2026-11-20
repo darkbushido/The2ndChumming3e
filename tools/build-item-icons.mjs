@@ -263,12 +263,12 @@ ${caption('clothing')}`],
   'armor-suit': [NEON.armor, `
 <path d="M46 16 H82 L112 48 L100 60 L90 50 L94 112 H70 L64 74 L58 112 H34 L38 50 L28 60 L16 48 Z"/>
 <path d="M64 20 V70" ${line(NEON.armor, 3)}/>
-<path d="M40 52 H88" ${line(NEON.armor, 2)}`],
+<path d="M40 52 H88" ${line(NEON.armor, 2)}/>`],
   'armor-plate': [NEON.armor, `
 <path d="M34 34 Q64 14 94 34 L110 52 V68 H92 V108 H36 V68 H18 V52 Z"/>
 <rect x="46" y="50" width="36" height="34" rx="4" ${lit(NEON.armor)}/>
 <path d="M46 67 H82 M64 50 V84" stroke="${HOLE}" stroke-width="2" fill="none"/>
-<path d="M22 56 H40 M88 56 H106" ${line(NEON.armor, 3)}`],
+<path d="M22 56 H40 M88 56 H106" ${line(NEON.armor, 3)}/>`],
   'armor-dress': [NEON.armor, `
 <path d="M50 20 H78 L76 46 L100 108 H28 L52 46 Z"/>
 <path d="M52 46 H76" ${line(NEON.armor, 4)}/>
@@ -282,7 +282,7 @@ ${caption('clothing')}`],
 <path d="M34 22 H94 V78 Q94 104 64 114 Q34 104 34 78 Z"/>
 <rect x="46" y="34" width="36" height="16" rx="4" ${hole}/>
 <path d="M42 28 H86" ${line(NEON.armor, 3)}/>
-<path d="M40 60 V76 Q40 96 64 106" ${line(NEON.armor, 2)}`],
+<path d="M40 60 V76 Q40 96 64 106" ${line(NEON.armor, 2)}/>`],
   'armor-gloves': [NEON.armor, `
 <rect x="44" y="62" width="40" height="34" rx="6"/>
 ${[44, 55, 66, 77].map((x, i) => `<rect x="${x}" y="${34 + (i === 1 || i === 2 ? -6 : 0) + (i === 3 ? 6 : 0)}" width="9" height="34" rx="4.5"/>`).join('')}
