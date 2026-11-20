@@ -15,26 +15,27 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const STYLE = 'masterpiece, best quality, anime style, flat color, cel shading, thick black outline, lineart, '
-  + 'solo, full body, centered, (simple background:1.4), (flat dark grey background:1.5), #242422 background, no shadow, no text, '
+  + '(top-down view:1.5), (from directly above:1.5), (overhead view:1.4), (aerial view:1.3), token art, solo, centered, whole creature visible, '
+  + '(simple background:1.4), (flat dark grey background:1.5), #242422 background, no shadow, no text, '
   + 'monster, creature, fantasy spirit, glowing eyes, cyberpunk';
-export const NEGATIVE = 'gradient, vignette, shadow, drop shadow, cast shadow, floor, ground, reflection, scenery, landscape, detailed background, '
+export const NEGATIVE = 'side view, front view, from the side, from below, standing, gradient, vignette, shadow, drop shadow, cast shadow, floor, ground, reflection, scenery, landscape, detailed background, '
   + 'realistic, 3d, photo, painterly, blurry, lowres, text, watermark, signature, logo, border, frame, white outline, halo, multiple views, '
   + '2girls, 1girl, 1boy, human, person, cropped, out of frame';
 
 /** Slug → { name, look }. Keys mirror SPIRIT_TYPES (tests/spirit-art.test.mjs keeps them equal). */
 export const LOOKS = {
-  'earth-elemental':   { name: 'Earth Elemental',   look: 'a hulking humanoid golem of packed soil, boulders and glittering crystal veins, moss on its shoulders, heavy fists, glowing amber eyes' },
-  'air-elemental':     { name: 'Air Elemental',     look: 'a swirling tornado-shaped being of pale wind and cloud, a faint vague face and sweeping arms of spiralling gusts, pale blue and white' },
-  'fire-elemental':    { name: 'Fire Elemental',    look: 'a lean humanoid made entirely of roaring orange and yellow flame, ember sparks flying off, white-hot eyes, trailing fire for hair' },
-  'water-elemental':   { name: 'Water Elemental',   look: 'a flowing humanoid shape of clear blue water with a rippling surface, foam crests, bubbles and drifting currents inside it, deep teal eyes' },
-  'forest-spirit':     { name: 'Forest Spirit',     look: 'a tall antlered woodland guardian of bark, twisted branches and leaves, a stag-skull face with soft green glowing eyes, vines and mushrooms growing on it' },
-  'river-spirit':      { name: 'River Spirit',      look: 'a graceful serpentine water being with a long flowing body of river current, reeds and river stones, fish scales shimmering along its sides, silver eyes' },
-  'wind-spirit':       { name: 'Wind Spirit',       look: 'a bird-like airy being with wide feathery wings made of streaming wind ribbons and drifting leaves, sharp pale face, swift and weightless' },
-  'field-spirit':      { name: 'Field Spirit',      look: 'a gentle scarecrow-like harvest guardian of wheat stalks, straw and wildflowers, a hare-eared head, warm golden glow, poppies at its feet' },
-  'city-spirit':       { name: 'City Spirit',       look: 'a gaunt urban being woven from concrete, rebar, wires, neon tubes and scrap, a hooded figure of sewer steam and smog, glowing magenta eyes' },
-  'desert-spirit':     { name: 'Desert Spirit',     look: 'a lithe jackal-headed being of swirling sand and sun-bleached bone, cracked dry earth skin, a billowing sand cloak, burning orange eyes' },
-  'mountain-spirit':   { name: 'Mountain Spirit',   look: 'a massive rugged stone giant with a craggy granite body, snow-capped shoulders, icicle beard, deep-set pale blue eyes, rock fists' },
-  'swamp-spirit':      { name: 'Swamp Spirit',      look: 'a hunched bog creature of dark mud, rotting roots and hanging moss, glowing will-o-wisp lights, slimy lily pads, sickly yellow-green eyes' },
+  'earth-elemental':   { name: 'Earth Elemental',   look: 'seen from above: a hulking stone golem with broad boulder shoulders and two heavy fists spread out, crystal veins and moss across its back, glowing amber eyes looking up' },
+  'air-elemental':     { name: 'Air Elemental',     look: 'seen from above: a spiralling whirlwind with a pale vague face at its eye, arms of wind curling outward in a circular swirl, pale blue and white' },
+  'fire-elemental':    { name: 'Fire Elemental',    look: 'seen from above: a spreading humanoid of roaring orange and yellow flame, arms and legs splayed outward like a starfish, ember sparks scattering, white-hot eyes' },
+  'water-elemental':   { name: 'Water Elemental',   look: 'seen from above: a splash-shaped being of clear blue water spreading in all directions with a ripple ring around a face-like swirl, foam and bubbles' },
+  'forest-spirit':     { name: 'Forest Spirit',     look: 'seen from above: an antlered woodland guardian, wide antlers and bark shoulders, arms of twisted branches with leaves, mushrooms and vines on its back, green glowing eyes' },
+  'river-spirit':      { name: 'River Spirit',      look: 'seen from above: a coiled serpentine water being curled in a loop, river-current body with fish scales and reeds, a finned head with silver eyes' },
+  'wind-spirit':       { name: 'Wind Spirit',       look: 'seen from above: a bird-like airy being with two wide feathered wings fully spread, wings of streaming wind ribbons and leaves, a sharp pale head' },
+  'field-spirit':      { name: 'Field Spirit',      look: 'seen from above: a scarecrow-like harvest guardian with a hare-eared head, arms spread of wheat stalks and straw, wildflowers and poppies, warm golden glow' },
+  'city-spirit':       { name: 'City Spirit',       look: 'seen from above: a gaunt hooded urban being woven from concrete, rebar, wires and neon tubes, long clawed arms spread, steam and smog, glowing magenta eyes' },
+  'desert-spirit':     { name: 'Desert Spirit',     look: 'seen from above: a lithe jackal-headed being of sand and bone, arms spread, billowing sand cloak around it, burning orange eyes' },
+  'mountain-spirit':   { name: 'Mountain Spirit',   look: 'seen from above: a massive rugged stone giant, broad craggy granite shoulders with snowy caps, icicle beard, fists spread wide, pale blue eyes' },
+  'swamp-spirit':      { name: 'Swamp Spirit',      look: 'seen from above: a sprawling bog creature of dark mud and rotting roots, hanging moss, lily pads and will-o-wisp lights, limbs splayed, yellow-green eyes' },
 };
 
 export const batch = () => Object.entries(LOOKS).map(([slug, { name, look }]) =>
