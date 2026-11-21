@@ -347,6 +347,7 @@ export class NpcData extends foundry.abstract.TypeDataModel {
           base:  new NumberField({ integer: true, initial: 3, min: 0 }),
           bonus: new NumberField({ integer: true, initial: 0 }),
           force: new NumberField({ integer: true, initial: 0, min: 0 }),
+          override: new BooleanField({ initial: false }),   // a summoned spirit keeps its book Reaction (NatureSpirits.attributeData)
         }),
       }),
       wounds:         _wounds(),

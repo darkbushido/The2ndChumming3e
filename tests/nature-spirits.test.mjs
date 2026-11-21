@@ -61,4 +61,9 @@ export async function run(t) {
   t.ok('_createSpiritActor builds attributes with NatureSpirits.attributeData', /attributes:\s*NatureSpirits\.attributeData\(stats\)/.test(src));
   const act = readFileSync(new URL('../scripts/documents/SR3EActor.js', import.meta.url), 'utf8');
   t.ok('SR3EActor honours reaction.override', /if \(!attr\.reaction\.override\)/.test(act));
+  // Summoned spirits are type 'npc': its data model must declare reaction.override, or Foundry drops it on create (seen live).
+  const dm = readFileSync(new URL('../scripts/data/ActorDataModels.js', import.meta.url), 'utf8');
+  const npcBlock = dm.slice(dm.indexOf('class NpcData'));
+  const npcReaction = npcBlock.slice(npcBlock.indexOf('reaction: new SchemaField'), npcBlock.indexOf('wounds:'));
+  t.ok('the NPC data model declares reaction.override', /override:\s*new BooleanField/.test(npcReaction));
 }
