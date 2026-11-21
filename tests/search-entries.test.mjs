@@ -35,4 +35,9 @@ export async function run(t) {
   const dir = readFileSync(new URL('../scripts/SR3ECompendiumDirectory.js', import.meta.url), 'utf8');
   t.ok('the sidebar prunes the matches after core has found them',
     /_matchSearchDocuments\(query, documents\)\s*\{\s*super\._matchSearchDocuments\(query, documents\);\s*SearchEntries\.prune\(documents,/.test(dir));
+
+  // The item sheet's 📚 Pick from compendium listed the null-id duplicate too (Ares Predator III twice, 0.9.1).
+  const pick = readFileSync(new URL('../scripts/sheets/SR3EItemSheet.js', import.meta.url), 'utf8');
+  t.ok('Pick from compendium skips an entry with no _id or uuid',
+    /_onPickFromCompendium[\s\S]{0,600}for \(const entry of pack\.index\) \{[\s\S]{0,200}if \(!entry\._id \|\| !entry\.uuid\) continue;/.test(pick));
 }

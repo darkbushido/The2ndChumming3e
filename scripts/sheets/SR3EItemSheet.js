@@ -1649,6 +1649,8 @@ export class SR3EItemSheet extends foundry.applications.sheets.ItemSheetV2 {
     for (const pack of game.sr3e.SR3EItem._packsForType(type)) {
       await pack.getIndex();
       for (const entry of pack.index) {
+        // A broken `_id: null` record (TODO 145) is a duplicate with no uuid — listing it showed every such item twice.
+        if (!entry._id || !entry.uuid) continue;
         packItems.push({ uuid: entry.uuid, name: entry.name });
       }
     }
