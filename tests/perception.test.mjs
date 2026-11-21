@@ -58,12 +58,13 @@ export async function run(t) {
   const sheet = read('scripts/sheets/SR3EActorSheet.js');
   t.ok('sheet registers openPerception', /openPerception:\s*SR3EActorSheet\._onOpenPerception/.test(sheet));
   t.ok('the button sits right after 🩹 Healing', /🩹 Healing<\/button>\s*<button[^>]*data-action="openPerception"/.test(sheet));
-  // The row fit (maintainer, 2026-11-18): Stun over Physical, and Healing…Carry as one nowrap group.
-  t.ok('Stun and Physical are stacked', /<div class="wound-track-stack">\s*\$\{this\._woundTrack\('stun'[\s\S]{0,120}_woundTrack\('physical'[^\n]*\n\s*<\/div>/.test(sheet));
+  // The row fit (maintainer, 0.9.1): Stun and Physical side by side; Healing…Carry one nowrap group on its own line.
+  t.ok('Stun and Physical share one container', /<div class="wound-track-stack">\s*\$\{this\._woundTrack\('stun'[\s\S]{0,120}_woundTrack\('physical'[^\n]*\n\s*<\/div>/.test(sheet));
   t.ok('Healing, Perception, Stim and Carry are one group', /<div class="wound-actions">\s*<button[^>]*openHealing[\s\S]*?openPerception[\s\S]*?system\.stimBonus[\s\S]*?Carry: <strong>\$\{weightDisplay\}<\/strong>\s*<\/span>\s*<\/div>/.test(sheet));
   const css = read('styles/sr3e.css');
   t.ok('the group never wraps inside', /\.wound-actions\s*\{[^}]*flex-wrap:\s*nowrap/.test(css));
-  t.ok('the stack is a column', /\.wound-track-stack\s*\{[^}]*flex-direction:\s*column/.test(css));
+  t.ok('Stun and Physical sit side by side', /\.wound-track-stack\s*\{[^}]*flex-direction:\s*row/.test(css));
+  t.ok('the buttons take a line of their own', /\.wound-actions\s*\{[^}]*flex-basis:\s*100%/.test(css));
   t.ok('the handler opens SR3EPerception', /_onOpenPerception[\s\S]{0,120}SR3EPerception\.open\(this\.actor\)/.test(sheet));
   const dlg = read('scripts/SR3EPerception.js');
   t.ok('dialog waits and wires through render', /DialogV2\.wait\(/.test(dlg) && /render: \(_event, dialog\) => wireDialog/.test(dlg));

@@ -1419,10 +1419,10 @@ background-color: var(--sr-surface) !important;
   flex-wrap: wrap;
 }
 
-/* TODO 304 follow-up: Stun over Physical, and the buttons as one unbreakable group, so the row fits the
-   sheet's default 860px (it wrapped Perception, Stim and Carry onto a ragged second line). */
-.wound-track-stack { display: flex; flex-direction: column; gap: 4px; }
-.wound-actions { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; white-space: nowrap; }
+/* TODO 304 follow-up (maintainer, 0.9.1): Stun and Physical side by side on one line; Healing, Perception, Stim
+   and Carry as one unbreakable group on a line of their own below (flex-basis 100%). */
+.wound-track-stack { display: flex; flex-direction: row; flex-wrap: wrap; gap: 4px 14px; }
+.wound-actions { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; white-space: nowrap; flex-basis: 100%; }
 
 .wound-track {
   display: flex;
