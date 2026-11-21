@@ -375,17 +375,7 @@ export class SR3ESpiritSummoning {
       img:    spiritIcon(spiritDef.category, typeKey),
       prototypeToken: { texture: { src: spiritIcon(spiritDef.category, typeKey) } },
       system: {
-        attributes: {
-          body:         { value: stats.body,         base: stats.body },
-          quickness:    { value: stats.quickness,    base: stats.quickness },
-          strength:     { value: stats.strength,     base: stats.strength },
-          charisma:     { value: stats.charisma,     base: stats.charisma },
-          intelligence: { value: stats.intelligence, base: stats.intelligence },
-          willpower:    { value: stats.willpower,    base: stats.willpower },
-          essence:      { value: stats.essence,      base: stats.essence },
-          magic:        { value: stats.magic,        base: stats.magic },
-          reaction:     { value: stats.reaction,     base: stats.reaction },
-        },
+        attributes: NatureSpirits.attributeData(stats),   // Reaction via the override, so the book figure stands
         ...(flesh ? { karmaPool: flesh.karmaPool } : {}),
         // A flesh-form is a dual being (MitS p.128).
         ...(isFlesh ? { astralMode: 'dual' } : {}),

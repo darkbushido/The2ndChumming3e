@@ -4027,6 +4027,7 @@ Make a gear item **Underbarrel Grenade Launcher (Weapon)** (category Firearms Ac
 - [ ] Summon a Sea Spirit at Force 4: its sheet shows B 6, Q 4, S 4, C/I/W/Magic 4, R 3 (Waters class, SR3 p.267); the card lists Accident, Concealment, Confusion, Engulf, Fear, Guard, Materialization, Movement, Search.
 - [ ] Summon a Prairie Spirit (B 8, Q 2, S 8, R 2) and a Storm Spirit (B 2, Q 7, S 1, R 6; Innate Spell (Lightning Bolt)); with a combat running, the notice names the astral Initiative base (F + 20) and the physical one.
 - [ ] A spirit summoned before this fix keeps its old stats (no migration — editable).
+- [ ] Summon a Sea Spirit at Force 4: the sheet's **Reaction reads 3** (book, SR3 p.267), not the derived (Q4+I4)/2 = 4; Prairie F4 reads 2, Storm F4 reads 6; an insect (Wasp female) shows its table Reaction (8). The Reaction field is still editable by the GM. Spirits summoned before this fix keep the derived Reaction — no migration; the GM edits it (tick the Reaction override).
 
 ### Knockdown push-back · TODO 313
 - [ ] Make a Knockdown Test come out *some successes but below the threshold*: the card says "driven back about a metre" and shows **↩ Move <name> back 1 m**. A full-success or no-success result shows no such button.

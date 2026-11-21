@@ -65,4 +65,19 @@ export const NatureSpirits = {
       moveMultiplier: c.moveX,
     };
   },
+
+  /**
+   * The `system.attributes` a summoned spirit is created with (nature, elemental and insect alike).
+   * ⚠ The book prints a spirit's Reaction (SR3 p.266-268, MitS p.136-137), but `prepareDerivedData` recomputes
+   * Reaction as ⌊(Quickness + Intelligence) / 2⌋ unless `reaction.override` is set — so it is written through that
+   * override, which stays GM-editable and changes nothing for any other actor.
+   */
+  attributeData(stats) {
+    const a = (v) => ({ value: v, base: v });
+    return {
+      body: a(stats.body), quickness: a(stats.quickness), strength: a(stats.strength), charisma: a(stats.charisma),
+      intelligence: a(stats.intelligence), willpower: a(stats.willpower), essence: a(stats.essence), magic: a(stats.magic),
+      reaction: { value: stats.reaction, base: stats.reaction, override: true },
+    };
+  },
 };

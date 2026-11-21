@@ -3,7 +3,9 @@
  * Table-driven: B Q S C I W E R as printed, the astral/physical Initiative bases, and each spirit's power list.
  * (Before 0.9.1 the code used ad-hoc modifiers, no Reaction, no Search, and Initiative F×2+20 for all.)
  */
+import { readFileSync } from 'node:fs';
 import { SPIRIT_TYPES } from '../scripts/documents/SR3ESpiritSummoning.js';
+import { NatureSpirits } from '../scripts/data/nature-spirits.mjs';
 
 export const name = 'nature-spirits';
 
@@ -47,4 +49,16 @@ export async function run(t) {
     t.eq(`${key}: powers as printed`, [...d.powers].sort(), [...powers].sort());
   }
   t.eq('Sea Spirit is summonable', SPIRIT_TYPES.sea_spirit.label, 'Sea Spirit');
+
+  // The created actor's Reaction must be the book's: derivation recomputes it unless `reaction.override` is set.
+  for (const [key, [, , , r]] of Object.entries(BOOK)) {
+    const at = NatureSpirits.attributeData(SPIRIT_TYPES[key].stats(F));
+    t.eq(`${key}: created Reaction is the book's, written through the override`, [at.reaction.value, at.reaction.override], [r, true]);
+  }
+  t.eq('Wasp female (insect) Reaction is carried through the override too',
+    NatureSpirits.attributeData({ ...SPIRIT_TYPES.sea_spirit.stats(F), reaction: 8 }).reaction, { value: 8, base: 8, override: true });
+  const src = readFileSync(new URL('../scripts/documents/SR3ESpiritSummoning.js', import.meta.url), 'utf8');
+  t.ok('_createSpiritActor builds attributes with NatureSpirits.attributeData', /attributes:\s*NatureSpirits\.attributeData\(stats\)/.test(src));
+  const act = readFileSync(new URL('../scripts/documents/SR3EActor.js', import.meta.url), 'utf8');
+  t.ok('SR3EActor honours reaction.override', /if \(!attr\.reaction\.override\)/.test(act));
 }

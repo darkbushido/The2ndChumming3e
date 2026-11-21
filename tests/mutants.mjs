@@ -5161,6 +5161,14 @@ export const MUTANTS = [
       initiative: F * 2 + 20, initiativePhysical: F * 2 + 20, moveMultiplier: 1 }),
   },
 
+  {
+    id:     'spirit-reaction-not-overridden',
+    suite:  'nature-spirits',
+    ...NATURESPIRITS, method: 'attributeData',
+    was:    'a created spirit stored the book Reaction without reaction.override, so the sheet re-derived (QUI+INT)/2 (Sea F4 showed 4, not 3)',
+    impl:   (stats) => ({ reaction: { value: stats.reaction, base: stats.reaction } }),
+  },
+
   /* ── Insect spirits (MitS p.136-137) ─────────────────────────────────────────────────────────────────── */
   {
     id:     'insect-spirit-plain-stats',
