@@ -2,6 +2,39 @@
 
 What changed, for the people running games with it. Newest first.
 
+## 0.9.1 — 2026-11-21
+
+Bug fixes from the first 0.9.0 sessions, plus everything a conjurer needs: every spirit the core book lists now summons with the book's numbers, and insect spirits and blood spirits join them. A knocked-back character can be moved without turning their token, and the two sample-character compendiums are one.
+
+### Before you upgrade
+
+- **Fully restart Foundry** after updating — the Characters compendium and the NPC data model changed.
+- **A world migration runs once on the GM's client.** It re-points summoned spirits' broken pictures, gives existing spirits their new portraits (only where the picture was still our default), fixes the example characters' art, and re-points world copies of the example characters at the merged Characters pack. Art a GM chose is never touched.
+- **Spirits summoned before 0.9.1 keep their old stats.** Correct their Reaction and attributes on the sheet, or dismiss and re-summon.
+
+### Spirits
+
+- **All 18 spirits match the book** (SR3 pp.264-268): the four elementals and fourteen nature spirits, now including Hearth, Prairie, Mist, Storm, Lake and Sea. Each uses its class's attribute line, its printed powers, and astral Initiative Force + 20. ⚠ **This changes numbers:** Reaction is now the book's figure, not (Quickness + Intelligence) ÷ 2 — a Force 4 Sea Spirit has Reaction 3, a Storm Spirit 6. It stays editable on the sheet.
+- **Insect spirits** (MitS pp.127-137): every caste in true form, with insect totems; flesh-forms roll the host's Willpower against the spirit's Force on the Transformation Table (MitS p.128-129) and build their stats from the host. Nothing is done to the host — the card says what happens, the GM decides. Flesh-forms are dual beings and can't be banished.
+- **Blood spirits** (MitS pp.133-134). Any conjurer may pick one; without *Sacrificing* on the sheet a warning shows, never a refusal. The ritual time, the sacrifice, the Force caps, the leash and the upkeep are stated on the card, never applied.
+- **Every spirit has a picture**: a drawn portrait for each elemental and nature spirit, a neon icon for insect and blood spirits.
+
+### At the table
+
+- **Knocked back** (SR3 p.124): a Knockdown result that drives the target back offers **↩ Move back 1 m** — directly away from the attacker or a compass point — and the token moves without changing its facing. The Token HUD's **Step 1 m** does the same for any owned token.
+- **The combat tracker shows this phase's score** (a 16 reads 6 in the second pass); click into it to edit the roll.
+- **The firing TN window's smart rows don't stack**: smartlink, smart goggles and the shotgun smartlink are one modifier, the best one counts (they could reach −4).
+- **Wound row**: Stun and Physical side by side, with Healing, Perception, Stim and Carry on their own line.
+
+### Compendiums
+
+- **One Characters compendium** in role folders (Street Fighters, Magic, Matrix & Tech, Riggers, Face & Legwork, Opposition (GM)); the separate Example Characters pack is gone. Their art is the default icon instead of a missing picture.
+- **Pick from compendium** no longer lists an item twice when an installed pack carries a broken entry (TODO 145).
+
+### Designer
+
+- Unselected weapon and vehicle types are readable, broken armour icons are fixed, and the weapon art was regenerated without the white halo.
+
 ## 0.9.0 — DRAFT (not yet dated)
 
 Mods go *inside* things now: a gun carries its scope and gas vent, armour its gel packs, a cybereye its magnification, a vehicle its armour and engine mods, and each one changes the numbers it should. Vehicles can be designed from a chassis with *Rigger 3*'s Design Points, and weapons sit on hardpoints, firmpoints and turrets. 🛒 Buy gear has a cart and a Quantity, and a GM toggle puts contact orders and natural healing on the clock. The GM gets 🔎 Legwork, a Matrix host generator, Karma Pools for NPCs, and the core book's sixteen sample characters. Tokens see with low-light, thermographic, ultrasound and astral vision, and Invisibility hides them. A gear designer website lets players build weapons, armour and vehicles and import them into Foundry. Every shipped spell, every Little Black Book contact and the IC pack were checked against their books.
