@@ -2,6 +2,7 @@ import { actorFrom, actorRef } from '../data/actor-ref.mjs';
 import { spiritIcon } from '../data/item-icons.mjs';
 import { NatureSpirits } from '../data/nature-spirits.mjs';
 import { InsectSpirits } from '../data/insect-spirits.mjs';
+import { BloodSpirits } from '../data/blood-spirits.mjs';
 /**
  * SR3ESpiritSummoning
  *
@@ -59,6 +60,16 @@ for (const e of InsectSpirits.list()) {
   };
 }
 
+// ---- Blood spirits (MitS p.133-134; rules in data/blood-spirits.mjs) — TODO 315 -----------------------------
+SPIRIT_TYPES[BloodSpirits.KEY] = {
+  label:    BloodSpirits.LABEL,
+  category: 'blood',
+  attack:   '(STR)M',
+  weakness: BloodSpirits.weaknesses().join('; '),
+  stats:    (F) => BloodSpirits.stats(F),
+  powers:   [...BloodSpirits.powers(), ...BloodSpirits.weaknesses().map(w => `Weakness: ${w}`)],
+};
+
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -101,6 +112,11 @@ export class SR3ESpiritSummoning {
     const hostOptions = game.actors
       .filter(a => game.sr3e.isLiveActor(a) && a.id !== conjurer.id)
       .map(a => `<option value="${actorRef(a)}">${a.name}</option>`).join('');
+    // Blood spirits (MitS p.134): Sacrificing initiates only — listed for everyone, a warning for anyone else.
+    const knowsSac   = BloodSpirits.knowsSacrificing({ itemNames: conjurer.items?.map(i => i.name) ?? [], notes: conjurer.system?.notes ?? '' });
+    const bloodWarn  = BloodSpirits.summonVerdict({ isGM: !!game.user?.isGM, knowsSacrificing: knowsSac }).warn;
+    const bloodGroup = `<optgroup label="── Blood Spirits ──">${Object.entries(SPIRIT_TYPES).filter(([, v]) => v.category === 'blood')
+      .map(([k, v]) => `<option value="${k}" ${k === defaultSpiritType ? 'selected' : ''}>${v.label}</option>`).join('')}</optgroup>`;
     const insectGroup = insectOptions ? `<optgroup label="── Insect Spirits (true-form) ──">${insectOptions}</optgroup>` : '';
 
     const holdBackField = maxHold > 0
@@ -119,6 +135,7 @@ export class SR3ESpiritSummoning {
             <optgroup label="── Elementals ──">${elementalOptions}</optgroup>
             <optgroup label="── Nature Spirits ──">${natureOptions}</optgroup>
             ${insectGroup}
+            ${bloodGroup}
           </select>
         </div>
         <div style="display:grid; grid-template-columns:130px 70px 1fr; align-items:center; gap:6px;">
@@ -159,6 +176,10 @@ export class SR3ESpiritSummoning {
         <div id="sr3e-insect-host" style="font-size:0.85em; display:none;">
           🐛 True-form insect spirits need no host body (MitS p.128). A <b>flesh-form</b> spirit does: it is incubated in a host for Force weeks, and the host's Willpower is tested against the spirit's Force (MitS p.129). <b>The host does not survive it</b> (GM's call). A flesh-form cannot be banished.
         </div>
+        <div id="sr3e-blood-cost" style="font-size:0.85em; display:none;">🩸 <span id="sr3e-blood-cost-text"></span></div>
+        <div id="sr3e-blood-warn" style="color:var(--sr-amber,#c90); font-size:0.85em; display:none;">
+          ⚠ ${conjurer.name} has no Sacrificing metamagic on the sheet — only initiates who know it summon blood spirits (MitS p.134). GM's call.
+        </div>
         <div id="sr3e-insect-warn" style="color:var(--sr-amber,#c90); font-size:0.85em; display:none;">
           ⚠ ${conjurer.name}'s totem (${totem || 'none'}) is not an insect — only insect shamans summon insect spirits (MitS p.127). GM's call.
         </div>
@@ -198,6 +219,11 @@ export class SR3ESpiritSummoning {
           if (hostRow)  hostRow.style.display  = flesh ? 'grid' : 'none';
           if (queenRow) queenRow.style.display = flesh ? '' : 'none';
           if (insHost) insHost.style.display = isIns ? '' : 'none';
+          const isBlood = def?.category === 'blood';
+          const bCost = el.querySelector('#sr3e-blood-cost'), bWarn = el.querySelector('#sr3e-blood-warn'), bText = el.querySelector('#sr3e-blood-cost-text');
+          if (bCost) bCost.style.display = isBlood ? '' : 'none';
+          if (bWarn) bWarn.style.display = isBlood && bloodWarn ? '' : 'none';
+          if (bText) bText.textContent = BloodSpirits.costText(Math.max(1, parseInt(forceIn.value) || 1));
           if (insWarn) insWarn.style.display = SPIRIT_TYPES[typeSel.value]?.category === 'insect' && !InsectSpirits.isInsectTotem(totem) ? '' : 'none';
           const f      = parseInt(forceIn.value) || 0;
           const held   = Math.min(maxHold, Math.max(0, parseInt(holdIn?.value) || 0));
@@ -303,6 +329,7 @@ export class SR3ESpiritSummoning {
         ✅ <b>${conjurer?.name ?? 'Conjurer'}</b> successfully summoned a <b>${flesh?.asFlesh ? `${spiritDef.label} (flesh-form)` : spiritDef.label}</b> (Force ${force}). It is bound for <b>${services} service${services !== 1 ? 's' : ''}</b>.<br>
         <i>Powers: ${(flesh?.asFlesh ? flesh.powers : spiritDef.powers).join(', ')}.</i>
         ${flesh ? `<hr>${flesh.html}` : ''}
+        ${spiritDef.category === 'blood' ? `<hr>🩸 ${BloodSpirits.costText(force)}<br>${BloodSpirits.upkeepText(force)}` : ''}
       `,
     });
   }
@@ -383,7 +410,7 @@ export class SR3ESpiritSummoning {
       flags: {
         The2ndChumming3e: {
           isSpirit:       true,
-          spiritType:     spiritDef.category === 'elemental' ? 'elemental' : spiritDef.category === 'insect' ? 'insect' : 'nature',
+          spiritType:     spiritDef.category === 'elemental' ? 'elemental' : spiritDef.category === 'insect' ? 'insect' : spiritDef.category === 'blood' ? 'blood' : 'nature',
           ...(spiritDef.category === 'insect' ? { insectForm: isFlesh ? 'flesh' : 'true', insectTotem: spiritDef.totem } : {}),
           ...(isFlesh ? { fleshHost: flesh.hostName, transformation: flesh.outcome.key, incubationWeeks: InsectSpirits.incubationWeeks(force), banishable: false, dualBeing: true, naturalArmor: 0 } : {}),
           spiritTypeKey:  typeKey,

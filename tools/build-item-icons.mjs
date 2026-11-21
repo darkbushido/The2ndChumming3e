@@ -247,6 +247,9 @@ ${[38, 64, 90].map((x, i) => `<rect x="${x - 6}" y="${58 - (i % 2) * 12}" width=
 <path d="M58 34 Q50 18 40 16 M70 34 Q78 18 88 16 M46 66 L22 54 M46 82 L20 86 M48 98 L28 116 M82 66 L106 54 M82 82 L108 86 M80 98 L100 116" fill="none" stroke="${RIM}" stroke-width="5" stroke-linecap="round"/>
 <ellipse cx="64" cy="80" rx="8" ry="20" ${lit(NEON.boom)}/>
 <path d="M58 34 Q50 18 40 16 M70 34 Q78 18 88 16" ${line(NEON.boom, 3)}/>`],
+  'spirit-blood': [NEON.melee, `
+<path d="M64 14 Q96 60 96 82 Q96 112 64 112 Q32 112 32 82 Q32 60 64 14 Z"/>
+<path d="M64 52 Q82 78 82 88 Q82 102 64 102 Q46 102 46 88 Q46 78 64 52 Z" ${lit(NEON.melee)}/>`],
   'spirit': [NEON.magic, `
 <path d="M64 16 Q94 16 94 50 V104 L82 94 L72 106 L64 96 L56 106 L46 94 L34 104 V50 Q34 16 64 16 Z"/>
 <ellipse cx="52" cy="50" rx="7" ry="9" ${lit(NEON.magic)}/>

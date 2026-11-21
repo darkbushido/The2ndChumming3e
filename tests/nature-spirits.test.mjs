@@ -39,7 +39,7 @@ const BOOK = {
 };
 
 export async function run(t) {
-  t.eq('every elemental and nature spirit type is in the book table, and the table has no extras (insects: insect-spirits suite)', Object.keys(SPIRIT_TYPES).filter(k => !k.startsWith('insect_')).sort(), Object.keys(BOOK).sort());
+  t.eq('every elemental and nature spirit type is in the book table, and the table has no extras (insects: insect-spirits suite)', Object.keys(SPIRIT_TYPES).filter(k => !k.startsWith('insect_') && !k.startsWith('blood_')).sort(), Object.keys(BOOK).sort());
   for (const [key, [b, q, s, r, ia, ip, powers, cat]] of Object.entries(BOOK)) {
     const d = SPIRIT_TYPES[key], st = d.stats(F);
     t.eq(`${key}: category`, d.category, cat);

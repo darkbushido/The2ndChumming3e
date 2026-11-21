@@ -33,6 +33,7 @@ const SHEAFSTEPS = { module: '../scripts/data/sheaf-steps.mjs', klass: 'SheafSte
 const ORTHOSHEAF = { module: '../scripts/data/orthodox-sheaf.mjs', klass: 'OrthodoxSheaf' };
 const NATURESPIRITS = { module: '../scripts/data/nature-spirits.mjs', klass: 'NatureSpirits' };
 const INSECTSPIRITS = { module: '../scripts/data/insect-spirits.mjs', klass: 'InsectSpirits' };
+const BLOODSPIRITS = { module: '../scripts/data/blood-spirits.mjs', klass: 'BloodSpirits' };
 const SPIRITART = { module: '../scripts/data/spirit-art.mjs', klass: 'SpiritArt' };
 const ORTHOMODE = { module: '../scripts/data/orthodox-mode.mjs', klass: 'OrthodoxMode' };
 const SHOCKSTUN = { module: '../scripts/data/shock-stun.mjs', klass: 'ShockStun' };
@@ -5197,6 +5198,22 @@ export const MUTANTS = [
     ...INSECTSPIRITS, method: 'summonVerdict',
     was:    'the GM was treated as a non-insect shaman and warned on every insect summon',
     impl:   ({ totem = '' } = {}) => ({ offered: false, warn: true, totem }),
+  },
+
+  /* ── Blood spirits (MitS p.134) — TODO 315 ────────────────────────────────────────────────────────────────── */
+  {
+    id:     'blood-spirit-plain-stats',
+    suite:  'blood-spirits',
+    ...BLOODSPIRITS, method: 'stats',
+    was:    'a blood spirit was built like a plain spirit (every attribute = Force, astral Init F+20), losing the p.134 line: B F+1, Q F+2, S F-2, R F+1, Init (F+1)+20',
+    impl:   F => ({ body: F, quickness: F, strength: F, charisma: F, intelligence: F, willpower: F, essence: F, magic: F, reaction: F, initiative: F + 20, initiativePhysical: F + 10, moveMultiplier: 3 }),
+  },
+  {
+    id:     'blood-refuses-non-sacrificer',
+    suite:  'blood-spirits',
+    ...BLOODSPIRITS, method: 'summonVerdict',
+    was:    'a conjurer without Sacrificing was refused a blood spirit instead of warned (warn, never refuse)',
+    impl:   ({ isGM = false, knowsSacrificing = false } = {}) => ({ offered: isGM || knowsSacrificing, warn: !isGM && !knowsSacrificing }),
   },
 
   {

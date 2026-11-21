@@ -34,7 +34,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 
 ## Contents
 
-**104 open.** 210 done — see [TODO-DONE.md](TODO-DONE.md).
+**105 open.** 210 done — see [TODO-DONE.md](TODO-DONE.md).
 
 | Group | Open |
 |---|---|
@@ -45,7 +45,7 @@ table below is regenerated — do not edit the table by hand. Grouping is by *ki
 | 📦 Content gaps | [9](#9) Re-add the archived fan books and conversions<br>[11](#11) Restore the sr3e-macros pack (and the character importer's delivery)<br>[19](#19) Convert the SR3 GM Screen into a compendium — as data, not page images<br>[83](#83) Mr Johnson's Little Black Book<br>[85](#85) Review `devdrawdiy/sr3e` for functionality we lack<br>[86](#86) The Little Black Book contacts' cyberware does nothing<br>[91](#91) Core gear that ships nowhere — eight item types with zero documents<br>[92](#92) Repeat the gear audit for the other default-on books<br>[104](#104) Art for the vehicles<br>[117](#117) Every shipped document must carry a book and page<br>[125](#125) Evaluate shadowrun2e.com as a source for 2nd-edition gear |
 | 🔧 Tooling & infrastructure | [7](#7) Expand test coverage for combat, initiative and pools<br>[18](#18) Structured gear data for weapon-accessory TN modifiers<br>[105](#105) Tie vehicle passengers to the Rideable module<br>[121](#121) Check the code's rules against *sr3-guides* on every version bump<br>[127](#127) Tagged releases, with the guides versioned beside them<br>[293](#293) Find text-layer misreads in the PDFs whose text layer is OCR — re-read formulas and figures from the page image<br>[294](#294) Little Black Book contacts' alphaware ships as Standard grade — *LBB pp.40-67*<br>[295](#295) `patch-johnson-stats.mjs --check` churns the checkout's LevelDB<br>[298](#298) Web gear designer on GitHub Pages — weapons first, imports into Foundry<br>[300](#300) Weapon designer as a shop — chips, picture cards, misfits, per-model art (follow-up to TODO 298) |
 | 🧹 Housekeeping | [6](#6) Open upstream bugs and PRs for the pushed non-Shadowfork branches<br>[286](#286) Pack data no book in the library can verify |
-| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens<br>[299](#299) Token senses — low-light, thermographic, ultrasound, astral sight<br>[302](#302) 🖨 Print a character sheet<br>[303](#303) Export a character to Nullsheen JSON<br>[304](#304) 👁 Perception Test button on the character sheet<br>[305](#305) 🛡 Armour tab on the web gear designer<br>[306](#306) 🛡 Per-model armour art, as the weapons, vehicles and drones have<br>[309](#309) Train first — an optional learning roll in Spend Karma (SR3 p.245, p.95)<br>[310](#310) Virtual Instructor chips priced by the formula, not flat (SR3 p.296, p.95)<br>[313](#313) Knockdown "driven back" — a one-click move that does not turn the token (SR3 p.124)<br>[314](#314) One Characters compendium — the example characters merged in, role folders |
+| 🗂 Unsorted | [190](#190) DocWagon and lifestyle expire — track the date and let a month go by<br>[196](#196) Healing takes time — record the result, apply it when the time has passed<br>[204](#204) Chunky Salsa ignores the map — asks the GM to draw walls the scene already has<br>[209](#209) Barrier Ratings on map walls, and blasts that open ½-metre holes<br>[212](#212) GM undo for a Karma spend<br>[216](#216) Adding Karma Pool to a roll didn't add any dice<br>[217](#217) Ploder's Karma Pool is 9 after only 34 Karma<br>[219](#219) Magic in the Shadows: the Good Karma uses<br>[220](#220) 🧪 Test in Foundry — everything on branch `feature/karma-uses`<br>[256](#256) Show which cyberware goes inside a cyberlimb<br>[259](#259) Show where each weapon mod mounts<br>[260](#260) Unlinked NPC tokens share wounds and statuses through their sidebar actor<br>[262](#262) Meet the contact — a name and a face for a Little Black Book archetype<br>[267](#267) Karma for NPCs, the Pool in Resources, undoing an award, the Hand of God<br>[268](#268) Legwork — a GM tool for asking contacts and searching the Matrix<br>[269](#269) Go over contacts — SR3's Level 1-3 against the system's Loyalty and Connection<br>[270](#270) NPCs start with loaded guns and 3–6 reloads when ammunition is tracked<br>[271](#271) 🛒 Buy ammo from the gun<br>[272](#272) Metatype Shift — Meet the contact restates the stats for the chosen race<br>[273](#273) Race-agnostic generic NPCs<br>[274](#274) The core rulebook's sample characters as an Actor pack<br>[275](#275) The derived Hacking Pool follows the world's Matrix ruleset<br>[289](#289) A rules digest and lookup — load the rules in fewer tokens<br>[299](#299) Token senses — low-light, thermographic, ultrasound, astral sight<br>[302](#302) 🖨 Print a character sheet<br>[303](#303) Export a character to Nullsheen JSON<br>[304](#304) 👁 Perception Test button on the character sheet<br>[305](#305) 🛡 Armour tab on the web gear designer<br>[306](#306) 🛡 Per-model armour art, as the weapons, vehicles and drones have<br>[309](#309) Train first — an optional learning roll in Spend Karma (SR3 p.245, p.95)<br>[310](#310) Virtual Instructor chips priced by the formula, not flat (SR3 p.296, p.95)<br>[313](#313) Knockdown "driven back" — a one-click move that does not turn the token (SR3 p.124)<br>[314](#314) One Characters compendium — the example characters merged in, role folders<br>[315](#315) Blood spirits — summon them (MitS p.133-134) |
 | 📌 Notes & parked | combat-audit questions · known drift · ODM/MDF |
 
 ### 🔵 In progress
@@ -3784,7 +3784,18 @@ role folders (Street Fighters · Magic · Matrix & Tech · Riggers · Face & Leg
 `book: sr3` gate (the old pack had none) — acceptable, but say so if a GM ever hides the core book; and
 `rawdata`/audit ledgers still name the old pack (history, left as is).
 
-### 📌 Notes & parked
+## 315. Blood spirits — summon them (MitS p.133-134) — **requested 2026-11-20, provisional**
+
+0.9.1 summons a **Blood Spirit** (`scripts/data/blood-spirits.mjs`, MitS p.134) by the ordinary Conjuring Test and Drain:
+the p.134 stat line (Reaction through the override), powers and weakness, the red neon icon. Anyone may pick it; a
+conjurer with no item or note naming *Sacrificing* gets a warning, never a refusal. The ritual hours, the sacrifice's death
+and the Blood Spirit Table's Force caps, the Force x 100 m leash and the 1-Essence-a-day upkeep are stated on the dialog and
+the ✅ card — nothing is applied. Live steps: TESTING.md, *Blood spirits*. Left out:
+
+- **Great form** (an initiate or dragon sacrifice + invoking, MitS p.106-107, 134) — not offered.
+- **No Force cap is checked** against the sacrifice — the dialog states the table; the GM rules. No victim picker.
+- **Sacrificing is not a field** (metamagics are free text) — detected by an item name or the notes.
+- **Essence upkeep and Essence Drain** are not tracked on the spirit; free blood spirits not modelled.
 
 ## Open questions carried from the combat audit
 
@@ -3901,6 +3912,8 @@ no longer holds).
 ---
 
 <a id="56"></a>
+
+### 📌 Notes & parked
 
 ### 📌 Notes & parked
 

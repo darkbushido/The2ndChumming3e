@@ -65,8 +65,8 @@ export async function run(t) {
   const files = readdirSync(join(ROOT, 'styles/spirits')).filter(f => f.endsWith('.webp')).map(f => f.slice(0, -5)).sort();
   t.eq('SPIRIT_PICTURES matches styles/spirits/*.webp', [...SPIRIT_PICTURES].sort(), files);
   // Insect spirits have no portraits yet — they keep the neon fallback (follow-up).
-  t.eq('every elemental and nature spirit type has a portrait', slugs.filter(s => !s.startsWith('insect-') && !SPIRIT_PICTURES.has(s)), []);
-  t.eq('the prompt batch covers exactly the spirit types', Object.keys(LOOKS).sort(), slugs.filter(s => !s.startsWith('insect-')).sort());
+  t.eq('every elemental and nature spirit type has a portrait', slugs.filter(s => !s.startsWith('insect-') && !s.startsWith('blood-') && !SPIRIT_PICTURES.has(s)), []);
+  t.eq('the prompt batch covers exactly the spirit types', Object.keys(LOOKS).sort(), slugs.filter(s => !s.startsWith('insect-') && !s.startsWith('blood-')).sort());
   t.ok('every prompt states the flat dark background and no shadow; the negative bans shadow and gradient',
     batch().every(e => e.prompt.includes('#242422') && e.prompt.includes('no shadow') && /shadow/.test(e.negative) && /gradient/.test(e.negative)) && STYLE && NEGATIVE);
   const [first] = Object.keys(SPIRIT_TYPES);

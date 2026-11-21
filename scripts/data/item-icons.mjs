@@ -287,7 +287,7 @@ export function restockImage(item) {
 
 /** Every icon file `itemIcon` can name, for the test that they are all drawn. */
 /** A summoned spirit's picture by `spiritCategory` (`SPIRIT_TYPES` in SR3ESpiritSummoning); anything else gets the plain spirit. */
-export const SPIRIT_ICON_OF = { elemental: 'spirit-elemental', nature: 'spirit-nature', insect: 'spirit-insect' };
+export const SPIRIT_ICON_OF = { elemental: 'spirit-elemental', nature: 'spirit-nature', insect: 'spirit-insect', blood: 'spirit-blood' };
 export const SPIRIT_FALLBACK = 'spirit';
 /** Spirit types (the `SPIRIT_TYPES` key, dashes) with a drawn portrait in `styles/spirits/<slug>.webp`; tests/spirit-art.test.mjs keeps it equal to the folder. */
 export const SPIRIT_PICTURES = new Set([

@@ -413,6 +413,11 @@ On the active combatant's card: **Complex** (full width) + two **Simple** button
 - [ ] **Flesh-form:** pick **Ant Spirit — Soldier**: an *Insect form* picker appears. Choose Flesh-form, a **Host body** (say Body 5 / Quickness 4 / Strength 3, Willpower 3), Force 4, Summon, Confirm. The chat card shows the host's Willpower roll vs TN 4 against the spirit's Force roll vs TN 3, the net successes, the Transformation Table line (MitS p.128), incubation 4 weeks and "does not survive". The NPC is **Ant Spirit — Soldier (flesh) F4**: Body 9 Quickness 8 Strength 7, mental 4, Reaction 6, Karma Pool 1, powers without Materialization, weakness Reduced Senses only. A net of 0 gives the **true-form** instead. A **Worker** reads host − 1 each (4/3/2). The host actor is untouched. With a Queen/Mother ticked, the host's TN is 6.
 - [ ] As GM with a **Bear** shaman: the insect group shows; picking one shows the amber "not an insect shaman" warning and still lets you Summon. As a **Player** with a Bear shaman the group is absent.
 
+## Blood spirits — TODO 315 (branch `claude/blood-spirits-247240`) — needs a live pass
+- [ ] Any conjurer, Summon → the dialog lists *Blood Spirits*. Pick **Blood Spirit**, Force 4: a 🩸 line states the 4-hour ritual, the sacrifice killed at its end and the Force caps (MitS p.134). As a **Player** whose conjurer has no item or note naming *Sacrificing*, an amber warning shows and Summon still works; add an item named "Metamagic: Sacrificing" and the warning is gone. As GM: no warning.
+- [ ] Summon, Confirm → NPC **Blood Spirit F4**: Body 5, Quickness 6, Strength 2, Cha/Int/Wil/Ess/Mag 4, **Reaction 5** (not (Q+I)/2); powers Essence Drain, Fear, Guard, Materialization, Noxious Breath + Weakness: Essence Loss; image the red neon blood-drop icon. The ✅ card repeats the cost and the leash (400 m) and upkeep. Nothing is done to any other actor.
+- [ ] In a started combat, the summoned spirit enters at astral Initiative 25 + 1D6.
+
 ## Meet the contact — TODO 262 (`feature/meet-the-contact`)
 
 Needs a **full Foundry restart** (new `contact.npcUuid` field). With a portrait module active and without one:
