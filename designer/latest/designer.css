@@ -75,7 +75,7 @@
 .vd-toggle button.active, .vd-type.active, .vd-shelf.active { background: var(--sr-accent); color: #fff; }
 .vd-types, .vd-shelves { display: flex; flex-wrap: wrap; gap: 4px; }
 .vd-type, .vd-shelf { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 92px; padding: 4px; border: 1px solid var(--sr-border);
-  border-radius: var(--r); background: var(--sr-surface); font-size: 11px; line-height: 1.1; }
+  border-radius: var(--r); background: var(--sr-surface); color: var(--sr-text); font-size: 11px; line-height: 1.1; }
 .vd-type .vd-art { height: 34px; }
 .vd-shelf { width: 104px; }
 .vd-shelf .vd-art { height: 24px; width: 24px; }

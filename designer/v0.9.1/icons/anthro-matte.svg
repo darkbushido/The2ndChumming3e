@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 100 100">
+<!-- anthro (anthroform drone), matte, 1 × 1 m, front facing south. Drawn by tools/build-vehicle-art.mjs. -->
+<g stroke-linejoin="round">
+<rect x="16" y="38" width="16" height="34" rx="6" fill="#64676c" stroke="#141518" stroke-width="2"/><rect x="68" y="38" width="16" height="34" rx="6" fill="#64676c" stroke="#141518" stroke-width="2"/><ellipse cx="50" cy="42" rx="34" ry="14" fill="#7d8187" stroke="#141518" stroke-width="3"/><rect x="38" y="30" width="24" height="14" rx="4" fill="#585a5f" stroke="#141518" stroke-width="2"/><circle cx="50" cy="48" r="11" fill="#979a9f" stroke="#141518" stroke-width="2.5"/><rect x="42" y="53" width="16" height="5" rx="2" fill="#26313b" stroke="#141518" stroke-width="1"/>
+</g>
+</svg>
